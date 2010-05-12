@@ -26,33 +26,33 @@ package org.epics.css.dal.simple;
 
 /**
  * <p>
- * RemoteInfo class presents target in remote system. It briefly follows URI 
+ * RemoteInfo class presents target in remote system. It briefly follows URI
  * notation, but does not necessary conform with the specifications.
  * RemoteInfo consists of following basic components:
  * </p>
  * <ul>
- * <li>remote name, in URI notation this is path with authority. 
- * RemoteInfo does not try to interpret this part or modify (like URI escaping), 
+ * <li>remote name, in URI notation this is path with authority.
+ * RemoteInfo does not try to interpret this part or modify (like URI escaping),
  * but leaves to plug implementation to handle the remote name as pleased.</li>
  * <li>type of name, in URI notation schema.</li>
  * <li>characteristic, in URI notation a fragment.</li>
  * <li>query, (as in URI notation), used for addressing commands on device.</li>
  * </ul>
- * 
+ *
  * <p>
  * In current DAL implementation only type and remote name are handled by DAL.
  * Characteristic and query part are there for future compatibility.
- * </p>  
- * 
+ * </p>
+ *
  * @author Igor Kriznar
  */
 public final class RemoteInfo
 {
-	/** 
-	 * Prefix, which is used for concate URI schema part from plug type name. 
+	/**
+	 * Prefix, which is used for concate URI schema part from plug type name.
 	 */
 	public static final String DAL_TYPE_PREFIX = "DAL-";
-	
+
 	/**
 	 * Separator betwean URI schema part and rest of remote name.
 	 */
@@ -65,30 +65,70 @@ public final class RemoteInfo
 	private final String characteristic;
 
 	private final String query;
-	
-	private DataFlavor typeHint; 
 
-	/**
-	 * Creates a new remote info with all provided components.
-	 * 
-	 * @param connectionType type of remote info, 
-	 * @param remoteName name of remote target, must not be <code>null</code>
-	 * @param characteristic name of characteristic, can be <code>null</code>
-	 * @param query query part of remote name
-	 *
-	 * @throws NullPointerException if remote name is null
-	 */
-	public RemoteInfo(String connectionType, String remoteName, String characteristic, String query)
-	{
-		if (remoteName== null) {
-			throw new NullPointerException("The remoteName is null.");
-		}
-		
-		this.connectionType=connectionType;
-		this.remoteName=remoteName;
-		this.characteristic=characteristic;
-		this.query=query;
-	}
+	private DataFlavor typeHint;
+
+    private final ChangeType changeType;
+
+    /**
+     * The EPICS based implementation allows for selection of the type of changes which should be
+     * monitored. Other implementations ignore this.
+     */
+    public enum ChangeType {
+        UNDEFINED, DISPLAY, ALARM, ARCHIVE
+    }
+
+    /**
+     * Creates a new remote info with all provided components.
+     *
+     * @param connectionType type of remote info,
+     * @param remoteName name of remote target, must not be <code>null</code>
+     * @param characteristic name of characteristic, can be <code>null</code>
+     * @param query query part of remote name
+     * @throws NullPointerException if remote name is null
+     */
+    public RemoteInfo(final String connectionType,
+                      final String remoteName,
+                      final String characteristic,
+                      final String query) {
+        this(connectionType, remoteName, characteristic, query, ChangeType.UNDEFINED);
+    }
+
+    /**
+     * Creates a new remote info with all provided components.
+     *
+     * @param connectionType type of remote info,
+     * @param remoteName name of remote target, must not be <code>null</code>
+     * @param characteristic name of characteristic, can be <code>null</code>
+     * @param query query part of remote name
+     * @param changeType hint for the implementation to register for certain changes. Might not be
+     *            implemented by all implementations.
+     * @throws NullPointerException if remote name is null
+     */
+    public RemoteInfo(final String connectionType,
+                      final String remoteName,
+                      final String characteristic,
+                      final String query,
+                      final ChangeType changeType) {
+        if (remoteName == null) {
+            throw new NullPointerException("The remoteName is null.");
+        }
+
+        this.connectionType = connectionType;
+        this.remoteName = remoteName;
+        this.characteristic = characteristic;
+        this.query = query;
+        this.changeType = changeType;
+    }
+
+    /**
+     * Hint for the implementation to connect only for a specific type of changes.
+     *
+     * @return type of changes
+     */
+    public ChangeType getChangeType() {
+        return changeType;
+    }
 
 	/**
 	 * Returns the remote name part of this remote info.
@@ -111,15 +151,15 @@ public final class RemoteInfo
 	}
 
 	/**
-	 * Returns the DAL plug name of this RemoteInfo. 
-	 * DAL Plug type is defined trough connection type, which begins with 'DAL-'. 
+	 * Returns the DAL plug name of this RemoteInfo.
+	 * DAL Plug type is defined trough connection type, which begins with 'DAL-'.
 	 * Plug type corresponds to connection type stripped of the 'DAL-' part.
 	 *
 	 * @return the DAL plug name of this RemoteInfo, or <code>null</code> if type is <code>null</code> or does not conform to DAL plug type declaration
 	 */
 	public String getPlugType()
 	{
-		if (connectionType !=null && connectionType.length()>DAL_TYPE_PREFIX.length() && connectionType.toUpperCase().startsWith(DAL_TYPE_PREFIX)) {
+		if ((connectionType !=null) && (connectionType.length()>DAL_TYPE_PREFIX.length()) && connectionType.toUpperCase().startsWith(DAL_TYPE_PREFIX)) {
 			return connectionType.substring(DAL_TYPE_PREFIX.length());
 		}
 		return null;
@@ -134,7 +174,7 @@ public final class RemoteInfo
 	{
 		return query;
 	}
-	
+
 	/**
 	 * Returns the characteristic part of this remote info if it exists.
 	 *
@@ -143,14 +183,14 @@ public final class RemoteInfo
 	public String getCharacteristic() {
 		return characteristic;
 	}
-	
+
 	@Override
 	public String toString() {
-		if (connectionType==null && characteristic==null && query==null) {
+		if ((connectionType==null) && (characteristic==null) && (query==null)) {
 			return remoteName;
 		}
-		
-		StringBuilder sb= new StringBuilder(128);
+
+		final StringBuilder sb= new StringBuilder(128);
 		if (connectionType!=null) {
 			sb.append(connectionType);
 			sb.append(TYPE_SEPARATOR);
@@ -166,55 +206,63 @@ public final class RemoteInfo
 		}
 		return sb.toString();
 	}
-	
+
 	/**
 	 * If string is URI formated, like connectionType://remoteName#characteristic?query or DAL-plugType://remoteName#characteristic?query,
 	 * then it is properly parsed into RemoteInfo.
-	 * 
-	 *  
+	 *
+	 *
 	 * @param name remote name or URI
 	 * @return new remote info
 	 */
-	public static RemoteInfo fromString(String name) {
-		return fromString(name,null);
-	}
-	
-	/**
-	 * @see RemoteInfo#fromString(String)
-	 * @deprecated use fromString(String)
-	 */
-	public static RemoteInfo remoteInfoFromString(String name) {
+	public static RemoteInfo fromString(final String name) {
 		return fromString(name,null);
 	}
 
 	/**
-	 * @see RemoteInfo#fromString(String, String)
+	 * @see RemoteInfo#fromString(Stri@Deprecated
+ng)
+	 * @deprecated use fromString(String)
+	 */
+	@Deprecated
+    public static RemoteInfo remoteInfoFromString(final String name) {
+		return fromString(name,null);
+	}
+
+	/**
+	 * @see RemoteInfo#fromString(String, String@Deprecated
+)
 	 * @deprecated use fromString(String, String)
 	 */
-	public static RemoteInfo remoteInfoFromString(String name, String defaultType) {
+	@Deprecated
+    public static RemoteInfo remoteInfoFromString(final String name, final String defaultType) {
 		return fromString(name, defaultType);
 	}
 
 	/**
 	 * If string is URI formated, like connectionType://remoteName#characteristic?query or DAL-plugType://remoteName#characteristic?query,
 	 * then it is properly parsed into RemoteInfo.
-	 * 
-	 *  
+	 *
+	 *
 	 * @param name remote name or URI
 	 * @param defaultType default connection type
 	 * @return new remote info
 	 */
-	public static RemoteInfo fromString(String name, String defaultType) {
+	public static RemoteInfo fromString(String name, final String defaultType) {
 		final String type, remoteName;
 		String characteristic = null, query = null;
 		int sep = name.indexOf('?');
 		if (sep > 0) {
-			if (sep < name.length()-1) query = name.substring(sep+1);
+			if (sep < name.length()-1) {
+                query = name.substring(sep+1);
+            }
 			name = name.substring(0, sep);
 		}
 		sep = name.indexOf('#');
 		if (sep > 0) {
-			if (sep < name.length()-1) characteristic = name.substring(sep+1);
+			if (sep < name.length()-1) {
+                characteristic = name.substring(sep+1);
+            }
 			name = name.substring(0, sep);
 		}
         sep = name.indexOf(TYPE_SEPARATOR);
@@ -228,7 +276,7 @@ public final class RemoteInfo
             type = defaultType;
             remoteName = name;
         }
-		
+
 		return new RemoteInfo(type, remoteName, characteristic, query);
 	}
 
