@@ -42,11 +42,11 @@ import static org.csstudio.sds.model.AbstractWidgetModel.PROP_PRIMARY_PV;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
-import org.csstudio.sds.components.ui.internal.figures.RefreshableLabelFigure;
 import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.sds.ui.editparts.AbstractWidgetEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.figures.ITextFigure;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.draw2d.IFigure;
@@ -73,7 +73,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(null));
                 return true;
             }
@@ -83,7 +83,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         // precision
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_PRECISION));
                 return true;
             }
@@ -93,7 +93,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         // aliases
         IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
             }
@@ -102,7 +102,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         // primary pv
         IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
             }

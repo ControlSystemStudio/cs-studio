@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.sds.components.ui.internal.figures;
@@ -27,6 +27,7 @@ import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedPaintHelper;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.ITextFigure;
 import org.csstudio.sds.util.AntialiasingUtil;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -39,27 +40,27 @@ import org.eclipse.swt.graphics.Font;
 
 /**
  * A label figure.
- * 
+ *
  * @author jbercic
- * 
+ *
  */
-public final class RefreshableLabelFigure extends Shape implements ICrossedFigure {
-	
+public final class RefreshableLabelFigure extends Shape implements ICrossedFigure, ITextFigure {
+
 	/**
 	 * A border adapter, which covers all border drawing.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
+
 	/**
 	 * Default label font.
 	 */
 	private Font _font = CustomMediaFactory.getInstance().getFont("Arial", 8, SWT.NONE);
-	
+
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
-	
+
 	/**
 	 * The alignment of the text.
 	 */
@@ -85,21 +86,23 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	 */
 	private boolean _transparent=true;
 
-    private CrossedPaintHelper _crossedPaintHelper;
-	
+    private final CrossedPaintHelper _crossedPaintHelper;
+
 	/**
 	 * Fills the image. Nothing to do here.
 	 * @param gfx The {@link Graphics} to use.
 	 */
-	protected void fillShape(final Graphics gfx) {}
-	
+	@Override
+    protected void fillShape(final Graphics gfx) {/* Nothing to do here.*/}
+
 	/**
 	 * Draws the outline of the image. Nothing to do here.
 	 * @param gfx The {@link Graphics} to use.
 	 */
-	protected void outlineShape(final Graphics gfx) {}
-	
-	
+	@Override
+    protected void outlineShape(final Graphics gfx) {/* Nothing to do here.*/}
+
+
 	public RefreshableLabelFigure() {
 	    _crossedPaintHelper = new CrossedPaintHelper();
     }
@@ -107,12 +110,13 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	 * The main drawing routine.
 	 * @param gfx The {@link Graphics} to use.
 	 */
-	public void paintFigure(final Graphics gfx) {
-		
+	@Override
+    public void paintFigure(final Graphics gfx) {
+
 		Rectangle bound=getBounds().getCopy();
 		bound.crop(this.getInsets());
 		gfx.translate(bound.x,bound.y);
-		
+
 		if (!_transparent) {
 			gfx.setBackgroundColor(getBackgroundColor());
 			gfx.fillRectangle(0,0,bound.width,bound.height);
@@ -120,8 +124,8 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 		gfx.setFont(_font);
 		gfx.setForegroundColor(getForegroundColor());
 		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
-		
-		
+
+
 		Point textPoint;
 		int alignment;
 		switch (_alignment) {
@@ -157,7 +161,7 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 			} else {
 				TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x+1,textPoint.y+1,alignment);
 			}
-			
+
 			gfx.setForegroundColor(ColorConstants.buttonDarker);
 		}
 		if (Math.round(_rotation)==90) {
@@ -174,17 +178,17 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	public void setFont(final Font newval) {
 		_font=newval;
 	}
-	
+
 	/**
 	 * Sets the alignment for the text.
 	 * @param newval The alignment for the text
 	 */
 	public void setTextAlignment(final int newval) {
-		if (newval>=0 && newval<_alignments.length) {
+		if ((newval>=0) && (newval<_alignments.length)) {
 			_alignment=newval;
 		}
 	}
-	
+
 	/**
 	 * Sets the transparent state of the background.
 	 * @param newval The transparent state
@@ -192,7 +196,7 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	public void setTransparent(final boolean newval) {
 		_transparent=newval;
 	}
-	
+
 	/**
 	 * Sets the rotation for the text.
 	 * @param newval The rotation for the text
@@ -200,23 +204,23 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	public void setRotation(final double newval) {
 		_rotation=newval;
 	}
-	
+
 	/**
-	 * Sets the x offset for the text. 
+	 * Sets the x offset for the text.
 	 * @param newval The x offset
 	 */
 	public void setXOff(final int newval) {
 		_xOff=newval;
 	}
-	
+
 	/**
-	 * Sets the y offset for the text. 
+	 * Sets the y offset for the text.
 	 * @param newval The y offset
 	 */
 	public void setYOff(final int newval) {
 		_yOff=newval;
 	}
-	
+
 	/**
 	 * Sets the value for the text.
 	 * @param newval The value for the text
@@ -239,8 +243,8 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 		return null;
 	}
 
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);    
+    public void setCrossedOut(final boolean newValue) {
+        _crossedPaintHelper.setCrossed(newValue);
     }
-	
+
 }

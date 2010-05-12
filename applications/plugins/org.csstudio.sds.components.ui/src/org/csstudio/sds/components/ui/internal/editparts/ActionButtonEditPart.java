@@ -80,7 +80,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
 		ActionButtonModel model = (ActionButtonModel) getWidgetModel();
 
 		final RefreshableActionButtonFigure buttonFigure = new RefreshableActionButtonFigure();
-		buttonFigure.setText(determineLabel(null));
+		buttonFigure.setTextValue(determineLabel(null));
 		buttonFigure.setFont(getModelFont(ActionButtonModel.PROP_FONT));
 		buttonFigure.setTextAlignment(model.getTextAlignment());
 		buttonFigure.setEnabled(getExecutionMode().equals(
@@ -223,9 +223,7 @@ public final class ActionButtonEditPart extends AbstractTextTypeWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				RefreshableActionButtonFigure rabFigure = getCastedFigure();
-//				figure.setText(newValue.toString());
-//				figure.setText(determineLabel(ActionButtonModel.PROP_LABEL));
-				rabFigure.setText(determineLabel(null));
+				rabFigure.setTextValue(determineLabel(null));
 				return true;
 			}
 		};

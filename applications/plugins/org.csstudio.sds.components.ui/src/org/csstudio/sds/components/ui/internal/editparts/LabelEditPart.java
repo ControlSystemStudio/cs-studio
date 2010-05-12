@@ -22,6 +22,7 @@ import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
+import org.csstudio.sds.ui.figures.ITextFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.Request;
@@ -95,6 +96,17 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         super.registerPropertyChangeHandlers();
+        // Text
+        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                    final Object newValue, final IFigure refreshableFigure) {
+                ITextFigure textFigure = (ITextFigure) refreshableFigure;
+                textFigure.setTextValue(determineLabel(null));
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, labelHandler);
+
         // changes to the font property
         setPropertyChangeHandler(LabelModel.PROP_FONT,
                                  new FontChangeHander<RefreshableLabelFigure>() {
