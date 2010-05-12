@@ -29,7 +29,7 @@ public class DisplayModel extends AbstractContainerModel {
 	
 	public DisplayModel() {
 		super();
-		setLocation(0, 0);
+		setLocation(-1, -1);
 		setSize(800, 600);
 	}
 

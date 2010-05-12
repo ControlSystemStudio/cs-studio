@@ -150,7 +150,8 @@ public class RunModeService {
 			newWindow = 
 				PlatformUI.getWorkbench().openWorkbenchWindow("org.csstudio.opibuilder.OPIRunner", null); //$NON-NLS-1$
 			if(windowBounds != null){
-				newWindow.getShell().setLocation(windowBounds.x, windowBounds.y);
+				if(windowBounds.x != -1 && windowBounds.y != -1)
+					newWindow.getShell().setLocation(windowBounds.x, windowBounds.y);
 				newWindow.getShell().setSize(windowBounds.width+45, windowBounds.height + 165);
 			}
 		
