@@ -118,7 +118,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		this.plug = plug;
 		this.parameters=param;
 		
-		int mask= Monitor.ALARM | Monitor.VALUE;
+		int mask= plug.getDefaultMonitorMask();
 		
 		if (param!=null && param.get(EPICSPlug.PARAMETER_MONITOR_MASK) instanceof Integer) {
 			mask= (Integer)param.get(EPICSPlug.PARAMETER_MONITOR_MASK);

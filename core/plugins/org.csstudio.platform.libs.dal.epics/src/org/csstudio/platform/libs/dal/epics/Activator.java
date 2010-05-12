@@ -61,6 +61,9 @@ public class Activator extends Plugin {
         } else {
             DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.use_jni", "true");
         }
+        
+        String defaultValue = (new Integer(EpicsPlugin.getDefault().getMonitorMask().getMask())).toString();
+        DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration().setProperty("EPICSPlug.default_monitor_mask", defaultValue);
 	}
 
 	/*

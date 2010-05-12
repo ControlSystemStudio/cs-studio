@@ -26,6 +26,7 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
+import gov.aps.jca.Monitor;
 import gov.aps.jca.TimeoutException;
 import gov.aps.jca.configuration.DefaultConfiguration;
 import gov.aps.jca.dbr.DBRType;
@@ -147,6 +148,19 @@ public class EPICSPlug extends AbstractPlug
 	public static final String PARAMETER_MONITOR_MASK = "EPICSPlug.monitor.mask";
 	
 	/**
+	 * Property name for default monitor property. 
+	 * Value is of type Integer and provides mask value for default EPICS monitor creation.
+	 */
+	public static final String DEFAULT_MONITOR_MASK = "EPICSPlug.default_monitor_mask";
+	
+	/**
+	 * Property name for JNI flush timer delay.
+	 * The default value is 100 ms and it is overridden if provided in the configuration.
+	 * Property defined in System properties take precedence before property in defined in configuration.
+	 */
+	public static final String JNI_FLUSH_TIMER_DELAY = "EPICSPlug.jni_flush_timer_delay";
+	
+	/**
 	 * Defines if a common <code>Executor</code> from this <code>EPICSPlug</code> should be used instead of
 	 * individual <code>Executor<code>s in <code>PropertyProxyImpl</code>s.
 	 * 
@@ -193,6 +207,31 @@ public class EPICSPlug extends AbstractPlug
 	 * is selected.
 	 */
 	private ThreadPoolExecutor executor;
+	
+	/**
+	 * Flag that indicates if JNI is used.
+	 */
+	private boolean use_jni = false;
+	
+	private int defaultMonitorMask = Monitor.ALARM | Monitor.VALUE;
+	
+	/**
+	 * If JNI is used, this flag indicates if <code>flushIO</code> method has been
+	 * called and flushIO should be called on context on next run of
+	 * <code>jniFlushTimer</code>.
+	 */
+	private boolean jniFlushIO = false;
+	
+	/**
+	 * Timer that is used for flushingIO when JNI is used.
+	 */
+	private Timer jniFlushTimer;
+	
+	/**
+	 * Delay for <code>jniFlushTimer</code> that is used for flushingIO when JNI
+	 * is used.
+	 */
+	private long jniFlushTimerDelay = 100;
 	
 	/**
 	 * Create EPICS plug instance.
@@ -298,8 +337,12 @@ public class EPICSPlug extends AbstractPlug
 			}
 		}
 		
+		if (System.getProperties().containsKey(DEFAULT_MONITOR_MASK)) {
+			defaultMonitorMask = new Integer(System.getProperty(DEFAULT_MONITOR_MASK, (new Integer(defaultMonitorMask)).toString()));
+		} else {
+			defaultMonitorMask = new Integer(getConfiguration().getProperty(DEFAULT_MONITOR_MASK, (new Integer(defaultMonitorMask)).toString()));
+		}
 		
-		boolean use_jni=false;
 		if (System.getProperties().containsKey(USE_JNI)) {
 			use_jni = new Boolean(System.getProperty(USE_JNI, "false"));
 		} else {
@@ -311,6 +354,28 @@ public class EPICSPlug extends AbstractPlug
 		} else {
 			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
+			
+			if (System.getProperties().containsKey(JNI_FLUSH_TIMER_DELAY)) {
+				jniFlushTimerDelay = new Long(System.getProperty(JNI_FLUSH_TIMER_DELAY, (new Long(jniFlushTimerDelay)).toString()));
+			} else {
+				jniFlushTimerDelay = new Long(getConfiguration().getProperty(JNI_FLUSH_TIMER_DELAY, (new Long(jniFlushTimerDelay)).toString()));
+			}
+			
+			jniFlushTimer = new Timer();
+			jniFlushTimer.scheduleAtFixedRate(new TimerTask() {
+				@Override
+				public void run() {
+					if (jniFlushIO) {
+						jniFlushIO = false;
+						try {
+							getContext().flushIO();
+						} catch (Throwable th) {
+							th.printStackTrace();
+						}
+					}
+					
+				}
+			}, jniFlushTimerDelay, jniFlushTimerDelay);
 		}
 		
 		// initialize supported proxy implementation
@@ -487,11 +552,15 @@ public class EPICSPlug extends AbstractPlug
 	 * @see Context.flushIO(double)
 	 */
 	public void flushIO() {
-		try {
-			// CAJ will take care of optimization
-			getContext().flushIO();
-		} catch (Throwable th) {
-			th.printStackTrace();
+		if (use_jni) {
+			jniFlushIO = true;
+		} else {
+			try {
+				// CAJ will take care of optimization
+				getContext().flushIO();
+			} catch (Throwable th) {
+				th.printStackTrace();
+			}
 		}
 	}
 
@@ -573,6 +642,14 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public double getTimeout() {
 		return timeout;
+	}
+	
+	/**
+	 * Gets the default monitor mask.
+	 * @return the default monitor mask
+	 */
+	public int getDefaultMonitorMask() {
+		return defaultMonitorMask;
 	}
 	
 	/**
