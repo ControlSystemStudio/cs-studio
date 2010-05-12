@@ -57,7 +57,6 @@ public class FullScreenAction extends WorkbenchPartAction {
 		super.init();
 		setText("Full Screen");
 		setId(ID);
-		setActionDefinitionId(ID); 
 		}
 	
 	/**
