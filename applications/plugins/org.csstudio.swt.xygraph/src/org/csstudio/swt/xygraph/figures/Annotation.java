@@ -10,6 +10,7 @@ import org.csstudio.swt.xygraph.undo.MovingAnnotationLabelCommand;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
+import org.eclipse.draw2d.InputEvent;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -93,7 +94,7 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	private double dx = 40;
 	private double dy = -40;
 	//label's relative center position to currentPosition
-	private int x0, y0;
+	private double x0, y0;
 	private boolean knowX0Y0 = false;
 	private boolean infoLabelArmed = false;
 	
@@ -168,8 +169,10 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		graphics.setForegroundColor(tempColor);
 		Dimension size = infoLabel.getPreferredSize();
 		updateX0Y0Fromdxdy(size);	
-		Rectangle infoBounds = new Rectangle(currentPosition.x + x0 - size.width/2, 
-				currentPosition.y +y0 - size.height/2, size.width, size.height);
+		//System.out.println(x0 +": " +y0 + " ");
+
+		Rectangle infoBounds = new Rectangle(currentPosition.x + (int)x0 - size.width/2, 
+				(int) (currentPosition.y +y0 - size.height/2), size.width, size.height);
 		
 		infoLabel.setBounds(infoBounds);		
 		
@@ -239,39 +242,48 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		
 	}
 
+	
+	
 	/**update (x0, y0) if it is unknown.
 	 * @param size the label size
 	 * @return
 	 */
-	private void updateX0Y0Fromdxdy(Dimension size) {
+	public void updateX0Y0Fromdxdy(Dimension size) {
 		if(!knowX0Y0){
+		//	System.out.print(dx + ": " + dy + "  " + x0 +": " +y0 + " " + size);
+
 			knowX0Y0 = true;
 			int h = size.height;
 			int w = size.width;
-			//assume this is the intersection
-			y0 = (int) (dy-h/2);
-			x0 = (int) ((dx/dy)*y0);
-			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(x0-w/2, x0 + w/2).inRange(dx))
-				return;
-			
-			y0 = (int) (dy+h/2);
-			x0 = (int) ((dx/dy)*y0);
-			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(x0-w/2, x0 + w/2).inRange(dx))
-				return;
-			
-			x0 = (int) (dx+w/2);
-			y0 = (int) ((dy/dx)*x0);
-			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(y0-h/2, y0+h/2).inRange(dy))
-				return;
-			
-			x0 = (int) (dx-w/2);
-			y0 = (int) ((dy/dx)*x0);
-			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(y0-h/2, y0+h/2).inRange(dy))
-				return;	
+			if(dy != 0){
+				//assume this is the intersection
+				y0 = dy-h/2;
+				x0 = (dx/dy)*y0;
+				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
+						new Range(x0-w/2, x0 + w/2).inRange(dx))
+					return;
+				
+				y0 = dy+h/2;
+				x0 = (dx/dy)*y0;
+				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
+						new Range(x0-w/2, x0 + w/2).inRange(dx))
+					return;
+			}else{
+				
+			}
+			if(dx!=0){
+				x0 = dx+w/2;
+				y0 = (dy/dx)*x0;
+				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
+						new Range(y0-h/2, y0+h/2).inRange(dy))
+					return;
+				
+				x0 = dx-w/2;
+				y0 = (dy/dx)*x0;
+				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
+						new Range(y0-h/2, y0+h/2).inRange(dy))
+					return;
+			}
 		}else		
 			return;
 	}
@@ -297,6 +309,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 					new Range(x0-w/2, x0 + w/2).inRange(dx))
 				return;
 		}
+		else
+			dy=0;
 		if(x0 != 0){
 			dx = x0-size.width/2;
 			dy = y0*dx/x0;
@@ -309,9 +323,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) &&
 					new Range(y0-h/2, y0+h/2).inRange(dy))
 				return;	
-		}
-		dx =0;
-		dy =0;
+		}else
+			dx=0;
 	}
 	
 	
@@ -341,13 +354,13 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			currentPosition = new Point(xAxis.getValuePosition(xValue, false),
 				yAxis.getValuePosition(yValue, false));	
 		}
-		updateInfoLableText();
+		updateInfoLableText(true);
 	}
 
 	/**
 	 * 
 	 */
-	private void updateInfoLableText() {
+	private void updateInfoLableText(boolean updateX0Y0) {
 		String info = "";		
 		if(showName)
 			info = name;
@@ -357,9 +370,14 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 				info += "\n" + "(" + xAxis.format(xValue) + ", " + 
 				(Double.isNaN(yValue) ? "NaN" : yAxis.format(yValue)) + ")";				
 		infoLabel.setText(info);
-		knowX0Y0 =false;
+		knowX0Y0 = !updateX0Y0;
 		
 	}
+	
+	private void updateInfoLableText(){
+		updateInfoLableText(true);
+	}
+	
 	
 	/**
 	 * @param axis the xAxis to set
@@ -478,29 +496,43 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 	/**
 	 * @param currentPosition the currentPosition to set
 	 */
-	public void setCurrentPosition(Point currentPosition) {
+	public void setCurrentPosition(Point currentPosition, boolean keepLablePosition) {
+		if(keepLablePosition){
+			int deltaX = this.currentPosition.x - currentPosition.x;
+			int deltaY = this.currentPosition.y - currentPosition.y;
+			//System.out.print(x0 +": " +y0 + " ");
+			x0 +=deltaX;
+			y0 +=deltaY;
+			knowX0Y0 = true;
+			updatedxdyFromX0Y0();
+			
+			//System.out.println(x0 + ":" + y0 +" " + dx + ": " + dy + " " + this.currentPosition + " " +currentPosition);
+		}
 		this.currentPosition = currentPosition;
 		xValue = xAxis.getPositionValue(currentPosition.x, false);
 		yValue = yAxis.getPositionValue(currentPosition.y, false);
-		updateInfoLableText();
+		
+		updateInfoLableText(keepLablePosition);
+		
 		repaint();	
 	}
 
 	/**
 	 * @param currentSnappedSample the currentSnappedSample to set
+	 * @param keepLabelPosition 
 	 */
-	public void setCurrentSnappedSample(ISample currentSnappedSample) {
+	public void setCurrentSnappedSample(ISample currentSnappedSample, boolean keepLabelPosition) {
 		if(!trace.getHotSampleList().contains(currentSnappedSample))
 			updateToDefaultPosition();
 		else{
 			this.currentSnappedSample = currentSnappedSample;
-			currentPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
+			Point newPosition = new Point(xAxis.getValuePosition(currentSnappedSample.getXValue(), false),
 				 yAxis.getValuePosition(currentSnappedSample.getYValue(), false));
 			xValue = currentSnappedSample.getXValue();
 			yValue = currentSnappedSample.getYValue();
 			if(Double.isNaN(currentSnappedSample.getXPlusError()))
 				yValue = Double.NaN;
-			updateInfoLableText();
+			setCurrentPosition(newPosition, keepLabelPosition);
 		}
 		repaint();
 	}
@@ -653,7 +685,8 @@ class Pointer extends Figure{
 		public void mouseDragged(MouseEvent me) {
 			//free
 			if(trace == null){
-				setCurrentPosition(me.getLocation());		
+				setCurrentPosition(me.getLocation(), 
+						me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));		
 			}else{ //snap to trace
 				//double tempX = xAxis.getPositionValue(me.getLocation().x, false);
 				//double tempY = yAxis.getPositionValue(me.getLocation().y, false);
@@ -670,9 +703,11 @@ class Pointer extends Figure{
 					}						 
 				}	
 				if(tempSample != null && currentSnappedSample != tempSample)
-					setCurrentSnappedSample(tempSample);
+					setCurrentSnappedSample(tempSample, 
+							me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));
 				else if(tempSample == null){
-					setCurrentPosition(me.getLocation());	
+					setCurrentPosition(me.getLocation(), 
+							me.getState() == (InputEvent.BUTTON1 | InputEvent.CONTROL));	
 					pointerDragged = true;
 				}
 							
@@ -688,6 +723,7 @@ class Pointer extends Figure{
 				command.setBeforeMovePosition(currentPosition);
 			else
 				command.setBeforeMoveSnappedSample(currentSnappedSample);
+			command.setBeforeDxDy(dx, dy);
 			me.consume(); //it must be consumed to make dragging smoothly.
 		}
 		
@@ -697,6 +733,7 @@ class Pointer extends Figure{
 					command.setAfterMovePosition(currentPosition);
 				else
 					command.setAfterMoveSnappedSample(currentSnappedSample);
+				command.setAfterDxDy(dx, dy);
 				xyGraph.getOperationsManager().addCommand(command);
 			}
 			

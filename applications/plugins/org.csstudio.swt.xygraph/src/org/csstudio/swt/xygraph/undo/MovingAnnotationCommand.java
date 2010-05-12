@@ -15,6 +15,7 @@ public class MovingAnnotationCommand implements IUndoableCommand {
 	private Point afterMovePosition;
 	private ISample beforeMoveSnappedSample;
 	private ISample afterMoveSnappedSample;
+	private double beforeDx, beforeDy, afterDx, afterDy;
 	
 	
 	public MovingAnnotationCommand(Annotation annotation) {
@@ -23,16 +24,28 @@ public class MovingAnnotationCommand implements IUndoableCommand {
 	
 	public void redo() {
 		if(annotation.isFree())
-			annotation.setCurrentPosition(afterMovePosition);
+			annotation.setCurrentPosition(afterMovePosition, false);
 		else
-			annotation.setCurrentSnappedSample(afterMoveSnappedSample);		
+			annotation.setCurrentSnappedSample(afterMoveSnappedSample, false);
+		annotation.setdxdy(afterDx, afterDy);
 	}
 
 	public void undo() {
 		if(annotation.isFree())
-			annotation.setCurrentPosition(beforeMovePosition);
+			annotation.setCurrentPosition(beforeMovePosition, false);
 		else
-			annotation.setCurrentSnappedSample(beforeMoveSnappedSample);
+			annotation.setCurrentSnappedSample(beforeMoveSnappedSample, false);
+		annotation.setdxdy(beforeDx, beforeDy);
+	}
+	
+	public void setBeforeDxDy(double dx, double dy){
+		beforeDx = dx;
+		beforeDy = dy;
+	}
+	
+	public void setAfterDxDy(double dx, double dy){
+		afterDx = dx;
+		afterDy = dy;
 	}
 	
 	/**
