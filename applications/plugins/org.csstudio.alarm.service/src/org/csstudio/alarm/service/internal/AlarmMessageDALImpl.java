@@ -28,7 +28,6 @@ import javax.jms.MapMessage;
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
-import org.epics.css.dal.Timestamp.Format;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.Severity;
 
@@ -134,7 +133,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 				 * resulting message: STATUS=HIHI_ALARM
 				 * 
                 */
-            	result = _anyData.getStatus();  
+            	result = _anyData.getSeverity().descriptionToString();  
                 break;
             case FACILITY:
                 // TODO MCL: there's currently no facility available from DAL

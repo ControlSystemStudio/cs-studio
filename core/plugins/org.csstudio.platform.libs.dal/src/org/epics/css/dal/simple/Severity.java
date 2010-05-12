@@ -52,6 +52,9 @@ public interface Severity
     /** @return Returns the textual representation for this severity. */
     public String toString();
 
+    /** @return Returns the textual representation of the description. */
+    public String descriptionToString();
+    
     /** @return Returns <code>true</code> if this severity is in
      *          the 'OK' category.
      */

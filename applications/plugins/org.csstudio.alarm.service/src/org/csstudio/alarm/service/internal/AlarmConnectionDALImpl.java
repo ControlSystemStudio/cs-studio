@@ -193,7 +193,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
         @Override
         public void valueChanged(final DynamicValueEvent event) {
-            // processEvent("valueChanged", event);
+             processEvent("valueChanged", event);
         }
 
         private void processEvent(final String text, final DynamicValueEvent event) {

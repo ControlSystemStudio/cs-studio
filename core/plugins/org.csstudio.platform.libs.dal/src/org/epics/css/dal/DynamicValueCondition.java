@@ -248,6 +248,17 @@ public class DynamicValueCondition implements Severity
 		return sb.toString();
 	}
 
+	public String descriptionToString() {
+        final String result;
+        
+        if (description != null) {
+            result = description;
+        } else {
+            result = "NO_STATUS";
+        }
+        return result;
+    }
+
 	public boolean hasValue() {
 		// TODO is this OK?
 		return !containsStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});

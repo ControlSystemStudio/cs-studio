@@ -25,7 +25,11 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 
 		public boolean isOK() {
 			return false;
-		}};
+		}
+
+        public String descriptionToString() {
+            return null;
+        }};
 
 	public UninitializedAnyDataImpl(DynamicValueProperty<T> property) {
 		super(property,Long.MIN_VALUE);
