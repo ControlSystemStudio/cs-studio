@@ -69,26 +69,17 @@ public final class RemoteInfo
 	private DataFlavor typeHint;
 
     /**
-     * The EPICS based implementation allows for selection of the type of changes which should be
-     * monitored. Other implementations ignore this.
-     */
-    public enum ChangeType {
-        UNDEFINED, DISPLAY, ALARM, ARCHIVE
-    }
-
-    /**
      * Creates a new remote info with all provided components.
      *
      * @param connectionType type of remote info,
      * @param remoteName name of remote target, must not be <code>null</code>
      * @param characteristic name of characteristic, can be <code>null</code>
      * @param query query part of remote name
+     *
      * @throws NullPointerException if remote name is null
      */
-    public RemoteInfo(final String connectionType,
-                      final String remoteName,
-                      final String characteristic,
-                      final String query) {
+    public RemoteInfo(String connectionType, String remoteName, String characteristic, String query)
+    {
         if (remoteName == null) {
             throw new NullPointerException("The remoteName is null.");
         }
@@ -159,7 +150,7 @@ public final class RemoteInfo
 			return remoteName;
 		}
 
-		final StringBuilder sb= new StringBuilder(128);
+		StringBuilder sb= new StringBuilder(128);
 		if (connectionType!=null) {
 			sb.append(connectionType);
 			sb.append(TYPE_SEPARATOR);
@@ -184,27 +175,25 @@ public final class RemoteInfo
 	 * @param name remote name or URI
 	 * @return new remote info
 	 */
-	public static RemoteInfo fromString(final String name) {
+	public static RemoteInfo fromString(String name) {
 		return fromString(name,null);
 	}
 
 	/**
-	 * @see RemoteInfo#fromString(Stri@Deprecated
-ng)
+	 * @see RemoteInfo#fromString(String)
 	 * @deprecated use fromString(String)
 	 */
 	@Deprecated
-    public static RemoteInfo remoteInfoFromString(final String name) {
+    public static RemoteInfo remoteInfoFromString(String name) {
 		return fromString(name,null);
 	}
 
 	/**
-	 * @see RemoteInfo#fromString(String, String@Deprecated
-)
+	 * @see RemoteInfo#fromString(String, String)
 	 * @deprecated use fromString(String, String)
 	 */
 	@Deprecated
-    public static RemoteInfo remoteInfoFromString(final String name, final String defaultType) {
+    public static RemoteInfo remoteInfoFromString(String name, String defaultType) {
 		return fromString(name, defaultType);
 	}
 
@@ -217,7 +206,7 @@ ng)
 	 * @param defaultType default connection type
 	 * @return new remote info
 	 */
-	public static RemoteInfo fromString(String name, final String defaultType) {
+	public static RemoteInfo fromString(String name, String defaultType) {
 		final String type, remoteName;
 		String characteristic = null, query = null;
 		int sep = name.indexOf('?');
