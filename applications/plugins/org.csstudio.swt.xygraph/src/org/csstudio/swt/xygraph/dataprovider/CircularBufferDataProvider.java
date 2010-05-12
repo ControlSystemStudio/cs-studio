@@ -1,5 +1,6 @@
 package org.csstudio.swt.xygraph.dataprovider;
 
+import java.util.Calendar;
 import java.util.Iterator;
 
 import org.csstudio.swt.xygraph.linearscale.Range;
@@ -210,8 +211,12 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 		if(!concatenate_data)
 			traceData.clear();
 		if(chronological){
-			if(xAxisDateEnabled)
-				newXValue = currentYDataTimestamp;		
+			if(xAxisDateEnabled){
+				if(updateMode != UpdateMode.TRIGGER)
+					newXValue = currentYDataTimestamp;
+				else
+					newXValue = Calendar.getInstance().getTimeInMillis();
+			}
 			else{
 				if(traceData.size() == 0)
 					newXValue = 0;
@@ -356,6 +361,9 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	 * @param triggerValue the triggerValue to set
 	 */
 	public void triggerUpdate() {
+		//do not update if no new data was added, otherwise, it will add (0,0) which is not a real sample.
+		if(traceData.size() == 0 && !(currentYDataChanged || currentYDataArrayChanged))
+			return;
 		if(currentYDataArray.length > 0)
 			addDataArray();
 		else
