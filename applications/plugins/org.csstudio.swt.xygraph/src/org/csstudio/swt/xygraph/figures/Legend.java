@@ -65,7 +65,9 @@ public class Legend extends RectangleFigure {
 	}
 	
 	@Override
-	protected void paintClientArea(Graphics graphics) {
+	protected void fillShape(Graphics graphics) {
+		if(!((XYGraph)getParent()).isTransparent())
+			super.fillShape(graphics);
 		int hPos = bounds.x + INNER_GAP;
 		int vPos = bounds.y + INNER_GAP;
 		int i=0;
@@ -87,7 +89,7 @@ public class Legend extends RectangleFigure {
 			hPos = hEnd;
 			i++;
 		}
-		super.paintClientArea(graphics);		
+		
 	}
 	
 	private void drawTraceLagend(Trace trace, Graphics graphics, int hPos, int vPos){
