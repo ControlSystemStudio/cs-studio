@@ -5,8 +5,8 @@
       version="2.0.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
-   <description url="http://www.example.com/description">
-      [Enter Feature Description here.]
+   <description>
+      MPS Config Editor, ...
    </description>
 
    <copyright>
