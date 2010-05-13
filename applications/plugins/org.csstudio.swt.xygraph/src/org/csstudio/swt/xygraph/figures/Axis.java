@@ -9,6 +9,7 @@ import org.csstudio.swt.xygraph.linearscale.Range;
 import org.csstudio.swt.xygraph.undo.AxisPanOrZoomCommand;
 import org.csstudio.swt.xygraph.undo.SaveStateCommand;
 import org.csstudio.swt.xygraph.undo.ZoomType;
+import org.csstudio.swt.xygraph.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory.CURSOR_TYPE;
 import org.eclipse.draw2d.FigureUtilities;
@@ -23,11 +24,7 @@ import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.GC;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.graphics.Transform;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -183,48 +180,16 @@ public class Axis extends LinearScale{
 		}else{	
 		    final int w = titleSize.height;
 		    final int h = titleSize.width +1;
-			Image image = new Image(Display.getCurrent(),w, h);			
-				try {
-				    final GC gc = new GC(image);	
-				    final Color titleColor = graphics.getForegroundColor();
-				    RGB transparentRGB = new RGB(240, 240, 240);
-					if(xyGraph !=null)
-						if(!xyGraph.isTransparent())
-							transparentRGB = xyGraph.getBackgroundColor().getRGB();	
-									
-					gc.setBackground(XYGraphMediaFactory.getInstance().getColor(transparentRGB));
-					gc.fillRectangle(image.getBounds());
-					gc.setForeground(titleColor);
-					gc.setFont(titleFont);
-					final Transform tr = new Transform(Display.getCurrent());
-					if(getTickLablesSide() == LabelSide.Primary){
-						tr.translate(0, h);
-						tr.rotate(-90);
-						gc.setTransform(tr);
-					}else{
-						tr.translate(w, 0);
-						tr.rotate(90);
-						gc.setTransform(tr);
-					}
-					gc.drawText(title, 0, 0);
-					tr.dispose();
-					gc.dispose();
-					final ImageData imageData = image.getImageData();				
-					image.dispose();
-					imageData.transparentPixel = imageData.palette.getPixel(transparentRGB);
-					image = new Image(Display.getCurrent(), imageData);				
-					if(getTickLablesSide() == LabelSide.Primary){					
-						graphics.translate(bounds.x, bounds.y);			
-						graphics.drawImage(image, 0, bounds.height/2 - h/2);
-					} else {				
-						//draw vertical title text image				
-						graphics.translate(bounds.x, bounds.y);			
-						graphics.drawImage(image, bounds.width - w, bounds.height/2 - h/2);
-					}
-				} finally{
-					image.dispose();		
-				}
-		}
+	
+			if(getTickLablesSide() == LabelSide.Primary){					
+				GraphicsUtil.drawVerticalText(graphics, title,
+							bounds.x, bounds.y + bounds.height/2 - h/2, false);
+			}else {				
+				GraphicsUtil.drawVerticalText(graphics, title, 
+								bounds.x + bounds.width - w, bounds.y + bounds.height/2 - h/2, true);
+			}
+		} 
+		
 		graphics.popState();		
 		
 		// Show the start/end cursor or the 'rubberband' of a zoom operation?
