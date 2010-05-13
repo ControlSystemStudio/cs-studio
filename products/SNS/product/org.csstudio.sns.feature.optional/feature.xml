@@ -6,7 +6,7 @@
       provider-name="SNS, Kay Kasemir">
 
    <description>
-      SNS Control Room Tools: JMS Monitor, MPS config, ...
+      SNS Control Room Tools: JMS Monitor, alarm GUI, ...
    </description>
 
    <copyright>
@@ -34,6 +34,16 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          id="org.csstudio.sns.feature.alarm"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.sns.feature.optional.linux"
+         version="0.0.0"
+         os="linux"/>
+
+   <includes
+         id="org.csstudio.sns.feature.optional.win32"
+         version="0.0.0"
+         os="win32"/>
+
    <requires>
       <import plugin="org.junit4"/>
       <import plugin="org.eclipse.ui"/>
@@ -46,11 +56,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.utility.rdb" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.swt"/>
-      <import plugin="org.eclipse.jface"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ui.views"/>
-      <import plugin="org.csstudio.platform.libs.jdbc"/>
       <import plugin="org.eclipse.core.runtime" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.core.resources" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
@@ -74,14 +79,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.debugging.rdbshell"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.mps.sns"
-         os="linux,win32"
          download-size="0"
          install-size="0"
          version="0.0.0"
