@@ -42,7 +42,7 @@ protected boolean calculateEnabled() {
  */
 protected void init() {
 	super.init();
-	setText("Print");
+	setText("Print...");
 	setToolTipText("Print Display");
 	setId(ActionFactory.PRINT.getId());
 	setActionDefinitionId("org.eclipse.ui.file.print"); //$NON-NLS-1$
