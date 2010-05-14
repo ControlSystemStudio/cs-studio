@@ -122,6 +122,14 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 		manualSetValue = false;
 	}
 	
+	/**Set Value from manual control of the widget. Value will be coerced in range.
+	 * @param value
+	 */
+	public void manualSetValue(double value){
+		setValue(
+				value < minimum ? minimum : (value > maximum ? maximum : value));
+	}
+	
 	/**
 	 * @param increment the increment to set
 	 */
@@ -241,7 +249,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					
 					
 					oldValuePosition = ((RoundScale)scale).getValuePosition(
-							value, true);
+							getCoercedValue(), true);
 					me.consume();
 				}
 				
@@ -256,7 +264,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					
 					//coerce currentPP to min or max
 					if(currentPP.theta * 180.0/Math.PI > (((RoundScale)scale).getLengthInDegrees())) {
-						if(Math.abs(((RoundScale)scale).getValuePosition(value, true)-
+						if(Math.abs(((RoundScale)scale).getValuePosition(getCoercedValue(), true)-
 							(((RoundScale)scale).getLengthInDegrees())) < ((RoundScale)scale).getLengthInDegrees()/2.0)
 							currentPP.theta = ((RoundScale)scale).getLengthInDegrees() * Math.PI/180.0;
 						else
@@ -268,9 +276,9 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
 						manualSetValue = true;
 						if(increment > 0)
-							setValue(value + increment * Math.round(valueChange/increment));		
+							manualSetValue(value + increment * Math.round(valueChange/increment));		
 						else 
-							setValue(value + valueChange);
+							manualSetValue(value + valueChange);
 											
 						oldValuePosition = ((RoundScale)scale).getValuePosition(
 							value, true);						
@@ -411,7 +419,7 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			if(scale != null && thumb != null && thumb.isVisible()){
 				Point thumbCenter = new Point(bulbBounds.x + bulbBounds.width*7.0/8.0, 
 						bulbBounds.y + bulbBounds.height/2);
-				double valuePosition = 360 - scale.getValuePosition(value, false);				
+				double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);				
 				thumbCenter = RotationUtil.rotate(thumbCenter,	valuePosition, center);
 				int thumbDiameter = bulbBounds.width/6;
 				

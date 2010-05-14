@@ -208,6 +208,14 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		super.setValue(value);
 		revalidate();
 	}
+	
+	/**Set Value from manual control of the widget. Value will be coerced in range.
+	 * @param value
+	 */
+	public void manualSetValue(double value){
+		setValue(
+				value < minimum ? minimum : (value > maximum ? maximum : value));
+	}
 
 	
 	/**
@@ -296,9 +304,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					
 					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
 						if(increment > 0)							
-							setValue(value + increment * Math.round(valueChange/increment));
+							manualSetValue(value + increment * Math.round(valueChange/increment));
 						else							
-							setValue(value + valueChange);
+							manualSetValue(value + valueChange);
 						
 						fireManualValueChange(value);
 						//ScaledSliderFigure.this.revalidate();
@@ -312,7 +320,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		protected void fillShape(Graphics graphics) {		
 			
 			graphics.setAntialias(SWT.ON);			
-			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 			if(effect3D && support3D) {		
 				//fill background
@@ -438,13 +446,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					double oldValue = value;
 					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
 						if(increment > 0)
-							setValue(value + increment * Math.round(valueChange/increment));		
+							manualSetValue(value + increment * Math.round(valueChange/increment));		
 						else 
-							setValue(value + valueChange);
+							manualSetValue(value + valueChange);
 						label.setVisible(true);
 						double newValue = value;
 						double valuePosition = 
-								((LinearScale)scale).getValuePosition(value, false);
+								((LinearScale)scale).getValuePosition(getCoercedValue(), false);
 						start = new Point(
 									horizontal? valuePosition: 0, 
 									horizontal ? 0 : valuePosition);
@@ -609,7 +617,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			
 			if(thumb != null) {	
 				PointList newPointList = thumb.verticalThumbPointList.getCopy();
-				newPointList.translate(scale.getValuePosition(value, false) - Thumb.BREADTH/2,
+				newPointList.translate(scale.getValuePosition(getCoercedValue(), false) - Thumb.BREADTH/2,
 						area.y + area.height/2 - Thumb.LENGTH/2 + 1
 						);
 				thumb.setPoints(newPointList);
@@ -649,7 +657,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			if(thumb != null) {	
 				PointList newPointList = thumb.horizontalThumbPointList.getCopy();
 				newPointList.translate(area.x + area.width/2 - Thumb.LENGTH/2 + 1,
-						scale.getValuePosition(value, false) - Thumb.BREADTH/2);
+						scale.getValuePosition(getCoercedValue(), false) - Thumb.BREADTH/2);
 				thumb.setPoints(newPointList);
 			}
 			if(label != null && label.isVisible())

@@ -208,7 +208,7 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 		protected void fillShape(Graphics graphics) {		
 			
 			graphics.setAntialias(SWT.ON);			
-			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
 			double tempOrigin;
 			if(originIgnored)
 				tempOrigin = minimum;

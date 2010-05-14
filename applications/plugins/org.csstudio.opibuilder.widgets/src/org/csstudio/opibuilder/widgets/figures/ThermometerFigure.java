@@ -187,8 +187,11 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			graphics.setForegroundColor(outlineColor);
 			graphics.setBackgroundColor(fillBackgroundColor);
 			
-			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
-			
+			int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
+			if(value > maximum)
+				valuePosition -= 10;
+			else if(value < minimum)
+				valuePosition +=10;
 			boolean support3D = false;
 			if(effect3D)
 				 support3D = GraphicsUtil.testPatternSupported(graphics);

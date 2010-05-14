@@ -301,7 +301,11 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 				needlePoints.setPoint(
 						new Point(center.x, center.y + NeedleCenter.DIAMETER/2 - 3), 2);
 	
-				double valuePosition = 360 - scale.getValuePosition(value, false);
+				double valuePosition = 360 - scale.getValuePosition(getCoercedValue(), false);
+				if(value > maximum)
+					valuePosition += 10;
+				else if(value < minimum)
+					valuePosition -=10;
 				needlePoints.setPoint(
 						RotationUtil.rotate(needlePoints.getPoint(0),	valuePosition, center), 0);
 				needlePoints.setPoint(

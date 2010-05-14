@@ -141,16 +141,16 @@ public class RoundScale extends AbstractScale {
 	 * Get the position of the value in degrees. Which is the angular coordinate in the polar 
 	 * coordinate system, whose pole(the origin) is the center of the bounds, whose polar axis 
 	 * is from left to right on horizontal if relative is false.    
-	 * @param value the value to find its position. It would be coerced to the range of scale.
+	 * @param value the value to find its position. It can be value out of range.
 	 * @param relative the polar axs would be counterclockwisely rotated to the endAngle if true.
 	 * @return position in degrees
 	 */
 	public double getValuePosition(double value, boolean relative) {
 		updateTick();
 		//coerce to range
-		double min = getRange().getLower();
-        double max = getRange().getUpper();
-		value = value < min ? min : (value > max ? max : value);
+//		double min = getRange().getLower();
+//        double max = getRange().getUpper();
+//		value = value < min ? min : (value > max ? max : value);
 		double valuePosition;
 		if(isLogScaleEnabled()) {
 			if(value <=0)

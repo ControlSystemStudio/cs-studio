@@ -106,7 +106,7 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 			corner.height = fill_corner;
 			corner.width = fill_corner;
 			graphics.setAntialias(SWT.ON);			
-			int valuePosition = ((LinearScale) scale).getValuePosition(value, false);
+			int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
 			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
 	//		Pattern pattern = null;
 //			//just test if pattern is supported on the platform.
