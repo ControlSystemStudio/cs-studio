@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2008-2009 SWTChart project. All rights reserved. 
+ * 
+ * This code is distributed under the terms of the Eclipse Public License v1.0
+ * which is available at http://www.eclipse.org/legal/epl-v10.html
+ *******************************************************************************/
+
 package org.csstudio.swt.xygraph.linearscale;
 
 import java.text.DecimalFormat;
@@ -11,7 +18,7 @@ import org.eclipse.swt.SWT;
 
 /**
  * The abstract scale has the common properties for linear(straight) scale and 
- * round scale.
+ * round scale. Part of code of this class is from SWTChart which is available at http://www.swtchart.org/
  * @author Xihui Chen
  *
  */
