@@ -3,7 +3,9 @@ package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -20,7 +22,7 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	public static final String PROP_SHOW_BULB = "show_bulb"; //$NON-NLS-1$
 	
 	/** The ID of the fahrenheit property. */	
-	public static final String PROP_FAHRENHEIT = "fahrenheit"; //$NON-NLS-1$
+	public static final String PROP_UNIT = "unit"; //$NON-NLS-1$
 	
 	/** The ID of the effect 3D property. */
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
@@ -64,8 +66,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 		addProperty(new BooleanProperty(PROP_SHOW_BULB, "Show Bulb", 
 				WidgetPropertyCategory.Display, true));	
 		
-		addProperty(new BooleanProperty(PROP_FAHRENHEIT, "Fahrenheit?", 
-				WidgetPropertyCategory.Display, false));	
+		addProperty(new ComboProperty(PROP_UNIT, "Unit", 
+				WidgetPropertyCategory.Display, TemperatureUnit.stringValues(), 0));	
 		
 		addProperty(new ColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground",
 				WidgetPropertyCategory.Display, DEFAULT_FILLBACKGROUND_COLOR));
@@ -102,8 +104,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return true if unit is in fahrenheit, false otherwise
 	 */
-	public boolean isFahrenheit() {
-		return (Boolean) getProperty(PROP_FAHRENHEIT).getPropertyValue();	
+	public TemperatureUnit getUnit() {
+		return TemperatureUnit.values()[(Integer) getProperty(PROP_UNIT).getPropertyValue()];	
 	}	
 
 	/**

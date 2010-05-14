@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.ThermometerFigure;
+import org.csstudio.opibuilder.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.csstudio.opibuilder.widgets.model.ThermometerModel;
 import org.eclipse.draw2d.IFigure;
 
@@ -26,7 +27,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		
 		initializeCommonFigureProperties(thermometer, model);		
 		thermometer.setFillColor(model.getFillColor());
-		thermometer.setFahrenheit(model.isFahrenheit());
+		thermometer.setUnit(model.getUnit());
 		thermometer.setShowBulb(model.isShowBulb());	
 		thermometer.setFillBackgroundColor(model.getFillbackgroundColor());
 		thermometer.setEffect3D(model.isEffect3D());
@@ -82,17 +83,17 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_SHOW_BULB, showBulbHandler);	
 		
-		//fahrenheit
+		//unit
 		IWidgetPropertyChangeHandler fahrenheitHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
-				thermometer.setFahrenheit((Boolean) newValue);
+				thermometer.setUnit(TemperatureUnit.values()[(Integer)newValue]);
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ThermometerModel.PROP_FAHRENHEIT, fahrenheitHandler);
+		setPropertyChangeHandler(ThermometerModel.PROP_UNIT, fahrenheitHandler);
 		
 		//effect 3D
 		IWidgetPropertyChangeHandler effect3DHandler = new IWidgetPropertyChangeHandler() {

@@ -30,6 +30,39 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public class ThermometerFigure extends AbstractLinearMarkedFigure {	
+	
+	/**Temperature Unit Enum
+	 * @author Xihui Chen
+	 *
+	 */
+	public enum TemperatureUnit {
+		CELSIUS("Celsius", "\u2103"), //$NON-NLS-2$
+		FAHRENHEIT("Fahrenheit", "\u2109"), //$NON-NLS-2$
+		KELVIN("Kelvin", "K"); //$NON-NLS-2$
+		
+		private String name, unitString;
+		private TemperatureUnit(String name, String unitString) {
+			this.name = name;
+			this.unitString = unitString;
+		}
+		@Override
+		public String toString() {
+			return name;
+		}
+		
+		public String getUnitString(){
+			return unitString;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i=0;
+			for(TemperatureUnit t : values()){
+				result[i++] = t.toString();
+			}
+			return result;
+		}
+	}
 
 	private Color fillColor;
 	private Color fillBackgroundColor;
@@ -106,14 +139,13 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		revalidate();
 	}
 
+	
 	/**
-	 * @param fahrenheit the fahrenheit to set
+	 * @param temperatureUnit the unit to set.
 	 */
-	public void setFahrenheit(boolean fahrenheit) {
-		if(fahrenheit) {
-			unit.setText("\u2109");
-		}else
-			unit.setText("\u2103");
+	public void setUnit(TemperatureUnit temperatureUnit) {		
+			unit.setText(temperatureUnit.getUnitString());
+		
 	}
 
 	/**
