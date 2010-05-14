@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="dal2jms" id="org.csstudio.alarm.dal2jms.product" application="org.csstudio.alarm.dal2jms.application" useFeatures="false" includeLaunchers="true">
+<product name="dal2jms" id="org.csstudio.alarm.dal2jms.product" application="org.csstudio.alarm.dal2jms.application" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -31,7 +31,6 @@
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.jsr"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.workspace"/>
@@ -63,6 +62,10 @@
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit4"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.alarm.dal2jms.feature" version="1.0.0.qualifier"/>
+   </features>
 
    <configurations>
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
