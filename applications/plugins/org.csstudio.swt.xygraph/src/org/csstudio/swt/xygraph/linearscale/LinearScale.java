@@ -162,7 +162,7 @@ public class LinearScale extends AbstractScale {
 
     /**
 	 * Get the position of the value based on scale. 
-	 * @param value the value to find its position. It would be coerced to the range of scale.
+	 * @param value the value to find its position. Support value out of range.
 	 * @param relative return the position relative to the left/bottom bound of the scale if true. 
 	 * If false, return the absolute position which has the scale bounds counted.
 	 * @return position in pixels
