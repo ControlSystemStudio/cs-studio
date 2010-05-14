@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.util;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
@@ -13,6 +14,18 @@ import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.SWTGraphics;
+import org.eclipse.draw2d.geometry.Rectangle;
+import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.LayerConstants;
+import org.eclipse.gef.editparts.LayerManager;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.GC;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPathEditorInput;
 import org.eclipse.ui.ide.FileStoreEditorInput;
@@ -149,5 +162,61 @@ public class ResourceUtil {
 	
 	public static boolean isURL(String url){
 		return url.contains("://");
-	}	
+	}
+	
+	/**Get screenshot image from GraphicalViewer
+	 * @param viewer the GraphicalViewer
+	 * @return the screenshot image
+	 */
+	public static Image getScreenshotImage(GraphicalViewer viewer){		
+		LayerManager lm = (LayerManager)viewer.getEditPartRegistry().get(LayerManager.ID);
+		IFigure f = lm.getLayer(LayerConstants.PRIMARY_LAYER);
+		
+		Rectangle bounds = f.getBounds();
+		Image image = new Image(null, bounds.width + 6, bounds.height + 6);
+		GC gc = new GC(image);
+		SWTGraphics graphics = new SWTGraphics(gc); 
+		graphics.translate(-bounds.x + 3, -bounds.y + 3);
+		graphics.setBackgroundColor(viewer.getControl().getBackground());	
+		graphics.fillRectangle(bounds);
+		f.paint(graphics);
+		gc.dispose();
+		
+		return image;
+	}
+	
+	
+	public static String getScreenshotFile(GraphicalViewer viewer) throws Exception{
+		File file;
+		 // Get name for snapshot file
+        try
+        {
+            file = File.createTempFile("opi", ".png"); //$NON-NLS-1$ //$NON-NLS-2$
+            file.deleteOnExit();
+        }
+        catch (Exception ex)
+        {
+            throw new Exception("Cannot create tmp. file:\n" + ex.getMessage());
+        }
+        
+        // Create snapshot file
+        try
+        {
+            final ImageLoader loader = new ImageLoader();
+            
+            final Image image = getScreenshotImage(viewer);
+            loader.data = new ImageData[]{image.getImageData()};
+            image.dispose();
+            loader.save(file.getAbsolutePath(), SWT.IMAGE_PNG);
+        }
+        catch (Exception ex)
+        {
+            throw new Exception(
+                    NLS.bind("Cannot create snapshot in {0}:\n{1}",
+                            file.getAbsolutePath(), ex.getMessage()));
+        }
+        return file.getAbsolutePath();
+    }
+
+	
 }

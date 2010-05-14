@@ -4,6 +4,8 @@ package org.csstudio.opibuilder.runmode;
 import java.util.List;
 
 import org.csstudio.opibuilder.actions.FullScreenAction;
+import org.csstudio.opibuilder.actions.SendEMailAction;
+import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.actions.WidgetActionMenuAction;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -50,9 +52,12 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 		ActionRegistry actionRegistry =
 			(ActionRegistry) PlatformUI.getWorkbench().getActiveWorkbenchWindow().
 			getActivePage().getActiveEditor().getAdapter(ActionRegistry.class);
-	
-		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
+		
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(FullScreenAction.ID));
+		if(SendToElogAction.isElogAvailable())
+			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendToElogAction.ID));
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendEMailAction.ID));
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(ActionFactory.PRINT.getId()));
 
 		MenuManager cssMenu = new MenuManager("CSS", "css");
 		cssMenu.add(new Separator("additions")); //$NON-NLS-1$

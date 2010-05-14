@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
+import org.csstudio.opibuilder.actions.SendEMailAction;
+import org.csstudio.opibuilder.actions.SendToElogAction;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -114,6 +116,10 @@ public class OPIRunner extends EditorPart {
 		
 		getActionRegistry().registerAction(new PrintDisplayAction(this));
 		getActionRegistry().registerAction(new FullScreenAction(this));
+		if(SendToElogAction.isElogAvailable())
+			getActionRegistry().registerAction(new SendToElogAction(this));
+		getActionRegistry().registerAction(new SendEMailAction(this));
+		
 	}
 	
 	
