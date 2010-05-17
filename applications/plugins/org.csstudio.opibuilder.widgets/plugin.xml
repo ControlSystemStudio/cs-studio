@@ -443,6 +443,20 @@
                tooltip="Show/Hide XY-Graph Toolbar">
          </action>
       </objectContribution>
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.opibuilder.widgets.reloadOPI"
+            objectClass="org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart">
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.ReloadOPIAction"
+               enablesFor="1"
+               icon="icons/refresh.gif"
+               id="org.csstudio.opibuilder.widgets.reloadOPIAction"
+               label="Reload OPI"
+               menubarPath="group"
+               tooltip="Reload OPI into this container.">
+         </action>
+      </objectContribution>
    </extension>
    <extension
          point="org.csstudio.opibuilder.graphicalFeedbackFactory">
