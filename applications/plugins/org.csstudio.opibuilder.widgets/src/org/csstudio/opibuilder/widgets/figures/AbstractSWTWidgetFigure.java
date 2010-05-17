@@ -64,7 +64,8 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
-		getSWTWidget().setEnabled(runmode && value);
+		if(getSWTWidget() != null)
+			getSWTWidget().setEnabled(runmode && value);
 	}
 
 	@Override
@@ -77,19 +78,22 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	 * 
 	 */
 	private void updateWidgetVisibility() {
-		getSWTWidget().setVisible(isVisible() && isShowing());
+		if(getSWTWidget() != null)
+			getSWTWidget().setVisible(isVisible() && isShowing());
 	}
 
 	@Override
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
-		getSWTWidget().setForeground(fg);
+		if(getSWTWidget() != null)
+			getSWTWidget().setForeground(fg);
 	}
 
 	@Override
 	public void setBackgroundColor(Color bg) {
 		super.setBackgroundColor(bg);
-		getSWTWidget().setBackground(bg);
+		if(getSWTWidget() != null)
+			getSWTWidget().setBackground(bg);
 	}
 
 	@Override
@@ -128,14 +132,15 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	 * relocate the widget so it follows the figure position.
 	 */
 	protected void relocateWidget() {
-		Rectangle rect = getClientArea().getCopy();		
-		translateToAbsolute(rect);
-		org.eclipse.swt.graphics.Rectangle trim = getSWTWidget().computeTrim(0, 0, 0, 0);
-		rect.translate(trim.x, trim.y);
-		rect.width += trim.width;
-		rect.height += trim.height;
-		getSWTWidget().setBounds(rect.x, rect.y, rect.width, rect.height);		
-		
+		if(getSWTWidget() != null){
+			Rectangle rect = getClientArea().getCopy();		
+			translateToAbsolute(rect);
+			org.eclipse.swt.graphics.Rectangle trim = getSWTWidget().computeTrim(0, 0, 0, 0);
+			rect.translate(trim.x, trim.y);
+			rect.width += trim.width;
+			rect.height += trim.height;
+			getSWTWidget().setBounds(rect.x, rect.y, rect.width, rect.height);		
+		}
 	}
 
 	/**
@@ -143,13 +148,15 @@ public abstract class AbstractSWTWidgetFigure extends Figure {
 	 */
 	public void setRunMode(boolean runMode) {
 		this.runmode = runMode;
-		getSWTWidget().setEnabled(runMode);
+		if(getSWTWidget() != null)
+			getSWTWidget().setEnabled(runMode);
 	}
 
 	@Override
 	public void setFont(Font f) {
 		super.setFont(f);
-		getSWTWidget().setFont(f);
+		if(getSWTWidget() != null)
+			getSWTWidget().setFont(f);
 	}
 
 	public void dispose() {
