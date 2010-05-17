@@ -68,6 +68,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	private AlphaLabel label;
 	
 	private double increment = 1;
+	private double pageIncrement = 10;
 
 	/**
 	 * Listeners that react on slider events.
@@ -156,6 +157,10 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		this.increment = increment;
 	}
 
+	public void setPageIncrement(double pageIncrement) {
+		this.pageIncrement = pageIncrement;
+	}
+	
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
@@ -265,7 +270,18 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		return change;
 	}
 
+	public void pageUp(){
+		manualSetValue(getValue() + pageIncrement);
+		fireManualValueChange(getValue());
+	}
 
+
+	public void pageDown(){
+		manualSetValue(getValue() - pageIncrement);
+		fireManualValueChange(getValue());
+	}
+
+	
 	/**
 	 * Definition of listeners that react on slider events.
 	 * 
@@ -284,35 +300,55 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	
 	class Track extends RectangleFigure {		
 		public static final int TRACK_BREADTH = 6;
+		private RepeatFiringBehavior behavior = new RepeatFiringBehavior();
+		private double pressedValue;
+		private boolean pageUp;
 		public Track() {
 			super();
+			
 			setOutline(false);
 			setForegroundColor(GRAY_COLOR);
 			setCursor(Cursors.HAND);
+			
+			behavior.setRunTask(new Runnable() {
+				
+				public void run() {
+					if(pageUp){
+						if(getValue() >=pressedValue)
+							behavior.suspend();
+						else
+							pageUp();
+						
+					}else{
+						if(getValue() <= pressedValue)
+							behavior.suspend();
+						else
+							pageDown();						
+					}
+				}
+			});
+			
 			addMouseListener(new MouseListener.Stub(){
 				@Override
 				public void mousePressed(MouseEvent me) {
-					Point start = thumb.getLocation();
+					Point start = me.getLocation();
 					if(horizontal)
 						start.x = start.x + thumb.getBounds().width/2;
 					else
 						start.y = start.y + thumb.getBounds().height/2;
-			
-					Dimension difference = me.getLocation().getDifference(start);					
-					
-					double valueChange = calcValueChange(difference, value);
-					
-					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
-						if(increment > 0)							
-							manualSetValue(value + increment * Math.round(valueChange/increment));
-						else							
-							manualSetValue(value + valueChange);
-						
-						fireManualValueChange(value);
-						//ScaledSliderFigure.this.revalidate();
-						//ScaledSliderFigure.this.repaint();
-					}
-				}				
+					pressedValue = ((LinearScale)scale).getPositionValue(horizontal? start.x : start.y, false);
+					if(pressedValue > getValue())
+						pageUp = true;
+					else
+						pageUp = false;		
+					behavior.pressed();		
+					me.consume();
+				}
+				@Override
+				public void mouseReleased(MouseEvent me) {
+					behavior.released();
+				}	
+				
 			});
 		}	
 	
@@ -433,9 +469,14 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			
 				public void mousePressed(MouseEvent me) {
 					armed = true;
-					start = me.getLocation();					
+					double valuePosition = 
+						((LinearScale)scale).getValuePosition(getCoercedValue(), false);
+					start = new Point(
+							horizontal? valuePosition: 0, 
+							horizontal ? 0 : valuePosition);
 					label.setVisible(true);
 					me.consume();
+					
 				}
 				
 				public void mouseDragged(MouseEvent me) {
@@ -450,14 +491,15 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 						else 
 							manualSetValue(value + valueChange);
 						label.setVisible(true);
-						double newValue = value;
 						double valuePosition = 
 								((LinearScale)scale).getValuePosition(getCoercedValue(), false);
+					
+						if(value != oldValue){
+							fireManualValueChange(value);
+						}
 						start = new Point(
 									horizontal? valuePosition: 0, 
 									horizontal ? 0 : valuePosition);
-						if(newValue != oldValue)
-							fireManualValueChange(value);							
 					}
 					me.consume();
 				}

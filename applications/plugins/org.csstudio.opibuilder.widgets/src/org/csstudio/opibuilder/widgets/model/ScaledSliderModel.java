@@ -33,7 +33,12 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	/**
 	 * The ID of the increment property.
 	 */
-	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
+	public static final String PROP_STEP_INCREMENT = "step_increment"; //$NON-NLS-1$
+	
+	/** The amount the scrollbar will move when the page up or page down areas are
+	pressed.*/
+	public static final String PROP_PAGE_INCREMENT = "page_increment"; //$NON-NLS-1$		
+	
 	
 //	/**
 //	 * The ID of the pv name property.
@@ -90,8 +95,12 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 		addProperty(new ColorProperty(PROP_THUMB_COLOR, "Thumb Color",
 				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
 		
-		addProperty(new DoubleProperty(PROP_INCREMENT, "Increment",
+		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step_Increment",
 				WidgetPropertyCategory.Behavior, 1.0));
+		
+
+		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
+				WidgetPropertyCategory.Behavior, 5));
 		
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
@@ -146,7 +155,11 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	 * 
 	 * @return The increment value.
 	 */
-	public double getIncrement() {
-		return (Double) getProperty(PROP_INCREMENT).getPropertyValue();
+	public double getStepIncrement() {
+		return (Double) getProperty(PROP_STEP_INCREMENT).getPropertyValue();
+	}
+	
+	public double getPageIncrement() {
+		return (Double) getProperty(PROP_PAGE_INCREMENT).getPropertyValue();
 	}
 }

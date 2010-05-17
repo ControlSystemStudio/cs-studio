@@ -33,7 +33,8 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		slider.setFillBackgroundColor(model.getFillbackgroundColor());
 		slider.setThumbColor(model.getThumbColor());
 		slider.setHorizontal(model.isHorizontal());
-		slider.setIncrement(model.getIncrement());
+		slider.setIncrement(model.getStepIncrement());
+		slider.setPageIncrement(model.getPageIncrement());
 		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
 			public void sliderValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
@@ -155,7 +156,18 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(ScaledSliderModel.PROP_INCREMENT, incrementHandler);
+		setPropertyChangeHandler(ScaledSliderModel.PROP_STEP_INCREMENT, incrementHandler);
+		
+		IWidgetPropertyChangeHandler pageIncrementHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
+				slider.setPageIncrement((Double)newValue);
+				return true;
+			}
+		};
+		setPropertyChangeHandler(ScaledSliderModel.PROP_PAGE_INCREMENT, pageIncrementHandler);
 		
 	}
 
