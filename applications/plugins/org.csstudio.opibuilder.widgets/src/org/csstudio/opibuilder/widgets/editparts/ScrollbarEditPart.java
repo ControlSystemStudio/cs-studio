@@ -220,13 +220,21 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScrollBar figure = (ScrollBar) refreshableFigure;
+				
+				ScrollBarModel model = getWidgetModel();
+				if((Boolean) newValue) //from vertical to horizontal
+					model.setLocation(model.getLocation().x - model.getSize().height/2 + model.getSize().width/2,
+						model.getLocation().y + model.getSize().height/2 - model.getSize().width/2);
+				else  //from horizontal to vertical
+					model.setLocation(model.getLocation().x + model.getSize().width/2 - model.getSize().height/2,
+						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);					
+				
+				model.setSize(model.getSize().height, model.getSize().width);
 				figure.setHorizontal((Boolean)newValue);
 				return false;
 			}
 		};
 		setPropertyChangeHandler(ScrollBarModel.PROP_HORIZONTAL, horizontalHandler);
-		
-		
 		
 	}
 	
