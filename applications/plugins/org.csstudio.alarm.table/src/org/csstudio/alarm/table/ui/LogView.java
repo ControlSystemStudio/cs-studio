@@ -37,6 +37,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
@@ -511,7 +512,7 @@ public class LogView extends ViewPart {
     }
     
     private void createMessageAreaToggleAction(final IActionBars bars) {
-        Action displayMessageArea = new Action() {
+        Action displayMessageAreaAction = new Action() {
             @Override
             public void run() {
                 if (_messageArea.isVisible()) {
@@ -521,10 +522,12 @@ public class LogView extends ViewPart {
                 }
             }
         };
-        // TODO jp Chose fancy icon for the tool bar
-        displayMessageArea.setText(Messages.LogView_messageArea);
-        displayMessageArea.setToolTipText(Messages.LogView_messageAreaToolTip);
-        bars.getToolBarManager().add(displayMessageArea);
+        displayMessageAreaAction.setText(Messages.LogView_messageArea);
+        displayMessageAreaAction.setToolTipText(Messages.LogView_messageAreaToolTip);
+        
+        ImageDescriptor image = JmsLogsPlugin.getImageDescriptor("icons/details_view.gif");
+        displayMessageAreaAction.setImageDescriptor(image);
+        bars.getToolBarManager().add(displayMessageAreaAction);
     }
     
     /**
