@@ -405,8 +405,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	public synchronized void setPVValue(String pvPropId, Object value){		
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
-			try {
-				pv.setValue(value);
+			try {				
 				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null){ //activate suppress timer
 					if(updateSuppressTimer == null || timerTask == null)
 						initUpdateSuppressTimer();
@@ -415,6 +414,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					else
 						startUpdateSuppressTimer();	
 				}
+				pv.setValue(value);
 			} catch (final Exception e) {
 				UIBundlingThread.getInstance().addRunnable(new Runnable(){
 					public void run() {
