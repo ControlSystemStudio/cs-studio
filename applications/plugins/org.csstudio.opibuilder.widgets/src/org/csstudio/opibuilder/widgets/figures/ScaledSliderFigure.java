@@ -471,7 +471,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					
 					
 				}else {
-					int fillHeight = bounds.height - (valuePosition - bounds.y) - getLineWidth();				
+					int fillHeight = bounds.height - (valuePosition - bounds.y);				
 					graphics.fillRectangle(new Rectangle(bounds.x,
 						valuePosition, bounds.width, fillHeight));
 					graphics.setBackgroundPattern(backGroundPattern);
