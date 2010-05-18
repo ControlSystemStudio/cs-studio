@@ -23,7 +23,7 @@
             targetID="org.csstudio.desy.config.AlarmManagment">
          <view
                closeable="false"
-               id="org.csstudio.alarm.treeView.views.LdapTView"
+               id="org.csstudio.alarm.treeView.views.AlarmTreeView"
                minimized="false"
                moveable="true"
                ratio="0.2f"
