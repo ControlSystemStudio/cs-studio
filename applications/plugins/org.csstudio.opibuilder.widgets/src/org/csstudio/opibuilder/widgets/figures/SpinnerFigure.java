@@ -32,6 +32,7 @@ public class SpinnerFigure extends Figure {
 	private double min = -100;
 	private double max = 100;
 	private double stepIncrement = 1;
+	private double pageIncrement = 10;
 	private double value = 0;
 	
 	private ArrowButton buttonUp, buttonDown;
@@ -56,8 +57,12 @@ public class SpinnerFigure extends Figure {
 				public void keyPressed(KeyEvent ke) {
 					if(ke.keycode == SWT.ARROW_DOWN)
 						stepDown();
-					if(ke.keycode == SWT.ARROW_UP)
+					else if(ke.keycode == SWT.ARROW_UP)
 						stepUp();
+					else if(ke.keycode == SWT.PAGE_UP)
+						pageUp();
+					else if(ke.keycode == SWT.PAGE_DOWN)
+						pageDown();
 				}
 			});
 			
@@ -169,7 +174,7 @@ public class SpinnerFigure extends Figure {
 	 * Cause the spinner to increase its value by its step increment;
 	 */
 	protected void stepUp() {
-		if(setValue(getValue() + getStepIncrement()))
+		if(manualSetValue(getValue() + getStepIncrement()))
 			fireManualValueChange(getValue());
 	}
 
@@ -177,9 +182,27 @@ public class SpinnerFigure extends Figure {
 	 * Cause the spinner to decrease its value by its step increment;
 	 */
 	protected void stepDown() {
-		if(setValue(getValue() - getStepIncrement()))
+		if(manualSetValue(getValue() - getStepIncrement()))
 			fireManualValueChange(getValue());
 	}
+	
+	
+	/**
+	 * Cause the spinner to increase its value by its step increment;
+	 */
+	protected void pageUp() {
+		if(manualSetValue(getValue() + getPageIncrement()))
+			fireManualValueChange(getValue());
+	}
+
+	/**
+	 * Cause the spinner to decrease its value by its step increment;
+	 */
+	protected void pageDown() {
+		if(manualSetValue(getValue() - getPageIncrement()))
+			fireManualValueChange(getValue());
+	}
+	
 	
 	/**
 	 * @return the min
@@ -223,6 +246,14 @@ public class SpinnerFigure extends Figure {
 		this.stepIncrement = stepIncrement;
 	}
 
+	public void setPageIncrement(double pageIncrement) {
+		this.pageIncrement = pageIncrement;
+	}
+	
+	public double getPageIncrement() {
+		return pageIncrement;
+	}
+	
 	/**
 	 * @return the value
 	 */
@@ -236,13 +267,21 @@ public class SpinnerFigure extends Figure {
 	 * @param value the value to set
 	 * @return true if value changed. false otherwise.
 	 */
-	public final boolean setValue(double value) {
-		value = Math.max(getMin(), Math.min(getMax(), value));
+	public void setValue(double value) {
 		if (this.value == value)
-			return false;
+			return;
 		this.value = value;
-		labelFigure.setText(format.format(value));
-		return true;
+		labelFigure.setText(format.format(value));		
+	}
+	
+	/**Set Value from manual control of the widget. Value will be coerced in range.
+	 * @param value
+	 */
+	public boolean manualSetValue(double value){
+		double oldValue = getValue();
+		setValue(
+				value < min ? min : (value > max ? max : value));
+		return oldValue != getValue();
 	}
 	
 	/**Set the displayed value in the spinner. It may out of the range.
