@@ -64,13 +64,10 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      */
     COMPONENT("epicsComponent", ECOM_FIELD_NAME, "component"),
 
-    /**
-     * The subcomponent object class (esco).
-     * FIXME (bknerr) : might be obsolete
-     */
-    SUBCOMPONENT("epicsSubComponent", ESCO_FIELD_NAME, "subComponent"),
-
+    @Deprecated
     IOC("epicsIOC", ECON_FIELD_NAME, "ioc"),
+    @Deprecated
+    SUBCOMPONENT("epicsSubComponent", ESCO_FIELD_NAME, "subComponent"),
 
     /**
      * The record object class (eren).
@@ -86,14 +83,14 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
         // Initialize the _nestedClass attribute
         RECORD._nestedClasses = Collections.emptySet();
 
+        // FIXME (bknerr) : this structure is obsolete
         IOC._nestedClasses.add(RECORD);
-
         SUBCOMPONENT._nestedClasses.addAll(IOC._nestedClasses);
         SUBCOMPONENT._nestedClasses.add(IOC);
         SUBCOMPONENT._nestedClasses.add(SUBCOMPONENT);
+        SUBCOMPONENT._nestedClasses.add(COMPONENT);
 
         COMPONENT._nestedClasses.addAll(SUBCOMPONENT._nestedClasses);
-        COMPONENT._nestedClasses.add(RECORD);
         COMPONENT._nestedClasses.add(COMPONENT);
 
         FACILITY._nestedClasses.addAll(COMPONENT._nestedClasses);
