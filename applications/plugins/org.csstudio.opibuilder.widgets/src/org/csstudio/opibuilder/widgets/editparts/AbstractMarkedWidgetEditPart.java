@@ -65,7 +65,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 		super.doActivate();
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			final AbstractMarkedWidgetModel model = (AbstractMarkedWidgetModel)getModel();
-			if(model.isLimitsFromDB()){
+			if(model.isLimitsFromPV()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){	
 					pvLoadLimitsListener = new PVListener() {				
@@ -99,7 +99,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 	@Override
 	protected void doDeActivate() {
 		super.doDeActivate();
-		if(getWidgetModel().isLimitsFromDB()){
+		if(getWidgetModel().isLimitsFromPV()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 			if(pv != null){	
 				pv.removeListener(pvLoadLimitsListener);

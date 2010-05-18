@@ -56,7 +56,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	public static final String PROP_HIHI_COLOR = "color_hihi"; //$NON-NLS-1$		
 
 	/** The ID of the hihi color property. */
-	public static final String PROP_LIMITS_FROMDB = "limits_from_pv"; //$NON-NLS-1$		
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
 	
 	/** The default value of the levels property. */
 	private static final double[] DEFAULT_LEVELS = new double[]{10, 20, 80, 90};	
@@ -104,7 +104,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 				WidgetPropertyCategory.Display, DEFAULT_HI_COLOR));
 		addProperty(new ColorProperty(PROP_HIHI_COLOR, "Color HIHI",
 				WidgetPropertyCategory.Display, DEFAULT_HIHI_COLOR));		
-		addProperty(new BooleanProperty(PROP_LIMITS_FROMDB, "Limits From PV",
+		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, true));
 		
 		
@@ -215,7 +215,7 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	/**
 	 * @return true if limits will be load from DB, false otherwise
 	 */
-	public boolean isLimitsFromDB() {
-		return (Boolean) getProperty(PROP_LIMITS_FROMDB).getPropertyValue();
+	public boolean isLimitsFromPV() {
+		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
 	}
 }
