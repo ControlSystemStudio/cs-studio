@@ -98,7 +98,7 @@ public class ContentModelTest {
     @Test
     public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.FACILITY);
+        Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.FACILITY);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.FACILITY).intValue());
 
         childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.COMPONENT);
@@ -123,7 +123,7 @@ public class ContentModelTest {
     @Test
     public void testBothNameCaches() {
 
-        ILdapComponent<LdapEpicsControlsObjectClass> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, "testLDAP");
+        ILdapBaseComponent<LdapEpicsControlsObjectClass> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, "testLDAP");
 
         Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
                                             ECOM_FIELD_NAME, "EPICS-IOC",

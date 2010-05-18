@@ -23,7 +23,6 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,9 +30,6 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 
@@ -53,18 +49,6 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
      * This node's children.
      */
     private final Map<String, IAlarmTreeNode> _childrenPVMap;
-
-
-
-	/**
-	 * The name of this node.
-	 */
-	private String _name;
-
-	/**
-	 * The object class of this node in the directory.
-	 */
-	private final LdapEpicsAlarmCfgObjectClass _objectClass;
 
 	/**
 	 * The highest severity of the child nodes.
@@ -118,9 +102,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 */
 	private SubtreeNode(@Nonnull final String name,
 	                    @Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) {
+	    super(name, objectClass);
 
-		this._name = name;
-		this._objectClass = objectClass;
 		_childrenPVMap = new HashMap<String, IAlarmTreeNode>();
 		_childrenSubtreeMap = new HashMap<String, IAlarmTreeNode>();
 		_highestChildSeverity = Severity.NO_ALARM;
@@ -158,26 +141,6 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	@Nonnull
 	public Set<LdapEpicsAlarmCfgObjectClass> getRecommendedChildSubtreeClasses() {
 		return _objectClass.getNestedContainerClasses();
-	}
-
-
-	@CheckForNull
-    public LdapName getLdapName() {
-		try {
-			if (_objectClass == null) {
-				return new LdapName("");
-			}
-
-			final LdapName result = new LdapName(Collections.singletonList(
-					new Rdn(_objectClass.getRdnType(), _name)));
-			final IAlarmSubtreeNode parent = getParent();
-			if (parent != null) {
-				result.addAll(0, parent.getLdapName());
-			}
-			return result;
-		} catch (final InvalidNameException e) {
-			return null;
-		}
 	}
 
     /**
@@ -247,28 +210,6 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	    children.addAll(_childrenSubtreeMap.values());
 
 		return children.toArray(new IAlarmTreeNode[children.size()]);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getName() {
-		return _name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void setName(final String name) {
-		_name = name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String toString() {
-		return _name;
 	}
 
 	/**

@@ -37,11 +37,6 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 
 
 	/**
-	 * The name of this node.
-	 */
-	private String _name;
-
-	/**
 	 * The active alarm for this node.
 	 */
 	private Alarm _activeAlarm;
@@ -89,7 +84,7 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
     }
 
 	private ProcessVariableNode(final String name) {
-		this._name = name;
+	    super(name, LdapEpicsAlarmCfgObjectClass.RECORD);
 		this._activeAlarm = null;
 		this._highestUnacknowledgedAlarm = null;
 	}
@@ -99,20 +94,6 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	 */
 	public final LdapEpicsAlarmCfgObjectClass getObjectClass() {
 		return LdapEpicsAlarmCfgObjectClass.RECORD;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getName() {
-		return _name;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final void setName(final String name) {
-		_name = name;
 	}
 
 	/**
@@ -131,9 +112,8 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 	public final Severity getAlarmSeverity() {
 		if (_activeAlarm != null) {
 			return _activeAlarm.getSeverity();
-		} else {
-			return Severity.NO_ALARM;
 		}
+        return Severity.NO_ALARM;
 	}
 
 	/**
@@ -218,11 +198,4 @@ public class ProcessVariableNode extends AbstractAlarmTreeNode
 		}
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final String toString() {
-		return _name;
-	}
 }

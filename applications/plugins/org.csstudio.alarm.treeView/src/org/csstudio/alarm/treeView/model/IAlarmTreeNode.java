@@ -25,6 +25,7 @@ import java.net.URL;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 
@@ -50,6 +51,14 @@ public interface IAlarmTreeNode {
 	 *            the new name.
 	 */
 	void setName(String name);
+
+    /**
+     * Returns the name of this node in the LDAP directory.
+     *
+     * @return the name of this node in the directory.
+     */
+    @CheckForNull
+    LdapName getLdapName();
 
 	/**
 	 * Returns the alarm severity for this node. If this node has children,

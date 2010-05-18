@@ -23,12 +23,17 @@ package org.csstudio.alarm.treeView.model;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**
@@ -44,14 +49,29 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 */
 	private final Map<AlarmTreeNodePropertyId, String> _properties;
 
+	/**
+	 * The parent node of this node.
+	 */
     private IAlarmSubtreeNode _parent;
 
+    /**
+     * The name of this node.
+     */
+    private String _name;
+
+    /**
+     * The object class of this node in the directory.
+     */
+    protected final LdapEpicsAlarmCfgObjectClass _objectClass;
 
 
     /**
 	 * Creates a new abstract alarm tree node.
 	 */
-	public AbstractAlarmTreeNode() {
+	protected AbstractAlarmTreeNode(@Nonnull final String name,
+	                                @Nonnull final LdapEpicsAlarmCfgObjectClass oc) {
+	    _name = name;
+	    _objectClass = oc;
 		_properties = new HashMap<AlarmTreeNodePropertyId, String>();
 	}
 
@@ -191,5 +211,50 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
             }
         }
         return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CheckForNull
+    public LdapName getLdapName() {
+        try {
+            if (_objectClass == null) {
+                return new LdapName("");
+            }
+
+            final LdapName result =
+                new LdapName(Collections.singletonList(new Rdn(_objectClass.getRdnType(), _name)));
+
+            final IAlarmSubtreeNode parent = getParent();
+            if (parent != null) {
+                result.addAll(0, parent.getLdapName());
+            }
+            return result;
+        } catch (final InvalidNameException e) {
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final String getName() {
+    	return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public final void setName(final String name) {
+    	_name = name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final String toString() {
+        return _name;
     }
 }

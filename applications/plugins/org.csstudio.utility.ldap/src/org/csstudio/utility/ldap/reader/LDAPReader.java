@@ -338,12 +338,4 @@ public class LDAPReader extends Job {
         }
         return null;
     }
-
-    /**
-     * Set the Scope. @link SearchControls.
-     * @param defaultScope set the given Scope.
-     */
-    private void setDefaultScope(final int defaultScope) {
-        _searchParams.setScope(defaultScope);
-    }
 }

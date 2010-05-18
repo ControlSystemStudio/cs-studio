@@ -25,6 +25,7 @@ import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPIC
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
+import java.sql.Date;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -35,20 +36,20 @@ import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
+import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Platform;
@@ -133,10 +134,13 @@ public final class AlarmTreeBuilder {
         if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
             // TODO (bknerr) : set alarm state has to be removed here
-            AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
+            //AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
+            AlarmTreeNodeModifier.setEpicsAttributes(newNode, modelNode.getAttributes());
+            newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
+
         } else {
             final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
-            for (final ILdapComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
+            for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
                 createAlarmSubtree(newNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) child, ctx, monitor);
 
                 if ((monitor != null) && monitor.isCanceled()) {
@@ -147,54 +151,6 @@ public final class AlarmTreeBuilder {
 
         return false;
     }
-
-
-    /**
-     * Finds a node with the given name in the given tree. If the node does
-     * not exist yet, it is created.
-     *
-     * @param root
-     *            the root node of the tree to search.
-     * @param name
-     *            the LDAP name of the node to search.
-     * @return the node.
-     */
-    static SubtreeNode findCreateSubtreeNode(final SubtreeNode root,
-            final LdapName name) {
-        final SubtreeNode directParent = findCreateParentNode(root, name);
-        final String simpleName = LdapNameUtils.simpleName(name);
-
-        final Rdn rdn = name.getRdn(name.size() - 1);
-        SubtreeNode result = (SubtreeNode) directParent.getChild(simpleName);
-        if (result == null) {
-            final LdapEpicsAlarmCfgObjectClass oClass = root.getObjectClass().getObjectClassByRdnType(rdn.getType());
-            result = new SubtreeNode.Builder(simpleName, oClass).setParent(directParent).build();
-        }
-        return result;
-    }
-
-
-    /**
-     * Finds the parent node of the node with the specified name. If the parent
-     * node does not exist, it is created.
-     *
-     * @param root
-     *            the root node of the tree which is searched.
-     * @param name
-     *            the name of the node whose parent is to be found.
-     * @return the parent node of the node with the specified name.
-     */
-    static SubtreeNode findCreateParentNode(final SubtreeNode root,
-                                            final LdapName name) {
-        if (name.size() > 1) {
-            final LdapName parentName = (LdapName) name.getPrefix(name.size() - 1);
-            final SubtreeNode parent = findCreateSubtreeNode(root, parentName);
-            return parent;
-        }
-        return root;
-    }
-
-
 
     /**
      * Retrieves the alarm tree information for the facilities given in the
@@ -214,16 +170,18 @@ public final class AlarmTreeBuilder {
         ensureTestFacilityExists(ctx);
 
         final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
+
         final String[] facilityNames = retrieveFacilityNames();
+
         final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
             configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
-//      final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-//      configService.retrieveInitialContentModelFromFile("D:\\development\\bknerr\\workspace\\org.csstudio.alarm.treeView\\EpicsAlarmCfg.xml");
 
-        for (final ILdapComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
+//        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+//        configService.retrieveInitialContentModelFromFile("D:\\development\\bknerr\\workspace\\org.csstudio.alarm.treeView\\EpicsAlarmCfg.xml");
+
+        for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
             createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, ctx, monitor);
         }
         return true;
     }
-
 }

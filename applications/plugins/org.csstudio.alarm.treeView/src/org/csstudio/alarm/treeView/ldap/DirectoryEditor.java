@@ -22,14 +22,16 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+
 import java.net.URL;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
-import javax.naming.Name;
-import javax.naming.NamingEnumeration;
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
-import javax.naming.SizeLimitExceededException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttribute;
@@ -40,8 +42,8 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -49,7 +51,8 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -59,28 +62,19 @@ import org.csstudio.utility.ldap.engine.Engine;
  */
 public final class DirectoryEditor {
 
-	private static final String CONTROLS_ROOT = "ou=EpicsControls";
-
 	/**
 	 * The logger that is used by this class.
 	 */
 	private static final CentralLogger LOG = CentralLogger.getInstance();
 
-	/**
-	 * The directory that is searched.
-	 */
-	private static DirContext _directory;
-
-
-	static {
-		_directory = Engine.getInstance().getLdapDirContext();
-	}
+	private static final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
 
 
 	/**
 	 * Private constructor.
 	 */
 	private DirectoryEditor() {
+	    // Don't instantiate.
 	}
 
 
@@ -94,16 +88,15 @@ public final class DirectoryEditor {
 	 */
 	public static void delete(final IAlarmTreeNode node)
 			throws DirectoryEditException {
-		final LdapName name = fullLdapName(node);
-		try {
-			LOG.debug(DirectoryEditor.class, "Unbinding " + name);
-			_directory.unbind(name);
-			node.getParent().removeChild(node);
-		} catch (final NamingException e) {
-			LOG.error(DirectoryEditor.class,
-					"Error unbinding directory entry", e);
-			throw new DirectoryEditException(e.getMessage(), e);
+		final LdapName name = node.getLdapName();
+		if (!_ldapService.removeComponent(name)) {
+		    final String message = "Error unbinding directory entry " + name;
+            final DirectoryEditException editException =
+		        new DirectoryEditException(message, new NamingException());
+		    LOG.error(message, editException);
+		    throw editException;
 		}
+		node.getParent().removeChild(node);
 	}
 
 
@@ -213,21 +206,25 @@ public final class DirectoryEditor {
 	 *             if the attribute could not be modified.
 	 */
 	private static void modifyAttribute(final IAlarmTreeNode node,
-			final String attribute, final String value)
+	                                    final String attribute,
+	                                    final String value)
 			throws DirectoryEditException {
-		final LdapName name = fullLdapName(node);
+
+		final LdapName name = node.getLdapName();
 		final Attribute attr = new BasicAttribute(attribute, value);
 		final int op = value == null
 				? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;
 		final ModificationItem[] mods = new ModificationItem[] {
 				new ModificationItem(op, attr) };
+
 		try {
 			LOG.debug(DirectoryEditor.class, name + ": " + mods[0]);
-			_directory.modifyAttributes(name, mods);
+			_ldapService.modifyAttributes(name, mods);
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class, "Failed: " + name + ": " + mods[0], e);
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
+
 	}
 
 	/**
@@ -244,13 +241,14 @@ public final class DirectoryEditor {
 	public static void rename(final IAlarmTreeNode node, final String newName)
 			throws DirectoryEditException {
 		try {
-			final LdapName oldLdapName = fullLdapName(node);
+			final LdapName oldLdapName = node.getLdapName();
 			final String type = oldLdapName.getRdn(oldLdapName.size() - 1).getType();
-			Rdn newRdn;
-			newRdn = new Rdn(type, newName);
+
+			final Rdn newRdn = new Rdn(type, newName);
 			final LdapName newLdapName = (LdapName) oldLdapName.getPrefix(oldLdapName.size() - 1);
 			newLdapName.add(newRdn);
-			_directory.rename(oldLdapName, newLdapName);
+
+			_ldapService.rename(oldLdapName, newLdapName);
 			node.setName(newName);
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class, "Error renaming node", e);
@@ -383,7 +381,7 @@ public final class DirectoryEditor {
 	 *             if an error occurs.
 	 */
 	private static void copyProcessVariableNode(final ProcessVariableNode node,
-			final SubtreeNode target) throws DirectoryEditException {
+	                                            final SubtreeNode target) throws DirectoryEditException {
 		copyDirectoryEntry(node, target);
 		final ProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName()).setParent(target).build();
 		copy.updateAlarm(node.getAlarm());
@@ -395,25 +393,28 @@ public final class DirectoryEditor {
 	 * Copies an entry in the LDAP directory. All of the entries attributes will
 	 * be copied into the new entry.
 	 *
-	 * @param node
+	 * @param source
 	 *            the original node which will be copied.
 	 * @param target
 	 *            the target node which will be the parent of the copy.
 	 * @throws DirectoryEditException
 	 *             if an error occurs.
 	 */
-	private static void copyDirectoryEntry(final IAlarmTreeNode node,
-			final SubtreeNode target) throws DirectoryEditException {
+	private static void copyDirectoryEntry(final IAlarmTreeNode source,
+	                                       final SubtreeNode target) throws DirectoryEditException {
 		try {
-			Attributes attributes = _directory.getAttributes(fullLdapName(node));
-			attributes = (Attributes) attributes.clone();
-			final LdapName newName = (LdapName) fullLdapName(target).add(
-					new Rdn(node.getObjectClass().getRdnType(), node
-							.getName()));
-			createEntry(newName, attributes);
+			Attributes attributes = _ldapService.getAttributes(source.getLdapName());
+			if (attributes != null) {
+			    attributes = (Attributes) attributes.clone();
+			}
+			final LdapName newName =
+			    (LdapName) target.getLdapName().add(new Rdn(source.getObjectClass().getRdnType(), source.getName()));
+			if (!_ldapService.createComponent(newName, attributes)) {
+			    throw new NamingException("Error binding component.");
+			}
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class,
-					"Error creating directory entry", e);
+					  "Error creating directory entry", e);
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
@@ -427,7 +428,7 @@ public final class DirectoryEditor {
 	 *            the destination.
 	 */
 	private static void copyProperties(final AbstractAlarmTreeNode source,
-			final AbstractAlarmTreeNode destination) {
+	                                   final AbstractAlarmTreeNode destination) {
 		for (final AlarmTreeNodePropertyId id : AlarmTreeNodePropertyId.values()) {
 			final String value = source.getOwnProperty(id);
 			if (value != null) {
@@ -447,13 +448,14 @@ public final class DirectoryEditor {
 	 *            the name of the process variable record.
 	 * @throws DirectoryEditException if the entry could not be created.
 	 */
-	public static void createProcessVariableRecord(
-			final SubtreeNode parent, final String recordName)
+	public static void createProcessVariableRecord(@Nonnull final SubtreeNode parent,
+	                                               @Nonnull final String recordName)
 			throws DirectoryEditException {
 		try {
 			final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getRdnType(), recordName);
-			final LdapName fullName = (LdapName) ((LdapName) fullLdapName(parent).clone()).add(rdn);
-			Attributes attrs = baseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
+			final LdapName fullName = (LdapName) ((LdapName) parent.getLdapName().clone()).add(rdn);
+			Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
+			// TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
 			attrs = addAlarmAttributes(attrs, recordName);
 			createEntry(fullName, attrs);
 			final ProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
@@ -479,13 +481,9 @@ public final class DirectoryEditor {
 	 */
 	public static void createComponent(final SubtreeNode parent,
 	                                   final String componentName) throws DirectoryEditException {
-		final Set<LdapEpicsAlarmCfgObjectClass> oclasses = parent.getRecommendedChildSubtreeClasses();
-		if (oclasses.isEmpty()) {
-			createEntry(fullLdapName(parent), componentName, LdapEpicsAlarmCfgObjectClass.RECORD);
-		}
 
-		final LdapEpicsAlarmCfgObjectClass oclass = LdapEpicsAlarmCfgObjectClass.COMPONENT;
-		new SubtreeNode.Builder(componentName, oclass).setParent(parent).build();
+		createEntry(parent.getLdapName(), componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT);
+		new SubtreeNode.Builder(componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT).setParent(parent).build();
 	}
 
 
@@ -507,7 +505,7 @@ public final class DirectoryEditor {
 		try {
 			final Rdn rdn = new Rdn(objectClass.getRdnType(), name);
 			final LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
-			final Attributes attrs = baseAttributesForEntry(objectClass, rdn);
+			final Attributes attrs = createBaseAttributesForEntry(objectClass, rdn);
 			createEntry(fullName, attrs);
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class,
@@ -530,36 +528,13 @@ public final class DirectoryEditor {
 	                                final Attributes attributes) throws DirectoryEditException {
 		try {
 			LOG.debug(DirectoryEditor.class,
-					"Creating entry " + name + " with attributes " + attributes);
-			_directory.bind(name, null, attributes);
+					  "Creating entry " + name + " with attributes " + attributes);
+			if (!_ldapService.createComponent(name, attributes)) {
+			    throw new NamingException("Binding error of " + name);
+			}
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class,
-					"Error creating directory entry", e);
-			throw new DirectoryEditException(e.getMessage(), e);
-		}
-	}
-
-	/**
-	 * Returns the full name of the given node in the directory.
-	 *
-	 * @param node
-	 *            the node.
-	 * @return the full name of the node in the directory.
-	 * @throws DirectoryEditException
-	 *             if the node has an invalid name.
-	 */
-	private static LdapName fullLdapName(final IAlarmTreeNode node)
-			throws DirectoryEditException {
-		try {
-			final LdapName name = new LdapName("");
-			if (node instanceof ProcessVariableNode) {
-				name.addAll(node.getParent().getLdapName());
-				name.add(new Rdn(AlarmTreeLdapConstants.EREN_FIELD_NAME, node.getName()));
-			} else {
-				name.addAll(((SubtreeNode) node).getLdapName());
-			}
-			return name;
-		} catch (final InvalidNameException e) {
+					  "Error creating directory entry", e);
 			throw new DirectoryEditException(e.getMessage(), e);
 		}
 	}
@@ -574,8 +549,8 @@ public final class DirectoryEditor {
 	 *            the relative name of the entry.
 	 * @return the attributes for the new entry.
 	 */
-	private static Attributes baseAttributesForEntry(final LdapEpicsAlarmCfgObjectClass objectClass,
-			final Rdn rdn) {
+	private static Attributes createBaseAttributesForEntry(final LdapEpicsAlarmCfgObjectClass objectClass,
+	                                                 final Rdn rdn) {
 		final Attributes result = rdn.toAttributes();
 		result.put(LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
 		result.put("epicsCssType", objectClass.getCssType());
@@ -594,37 +569,25 @@ public final class DirectoryEditor {
 	 */
 	private static Attributes addAlarmAttributes(final Attributes target,
 	                                             final String recordName) throws NamingException {
-		final Name searchRootName = new LdapName(CONTROLS_ROOT);
 
-		final SearchControls ctrl = new SearchControls();
-		ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-		ctrl.setCountLimit(0); // unlimited
+	    final LdapSearchResult searchResult =
+	        _ldapService.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+	                                                       createLdapQuery(EREN_FIELD_NAME, recordName).toString(),
+	                                                       SearchControls.SUBTREE_SCOPE);
 
-		final NamingEnumeration<SearchResult> searchResults =
-			_directory.search(searchRootName, "eren=" + recordName, ctrl);
-		try {
-			if (searchResults.hasMore()) {
-				final SearchResult result = searchResults.next();
-				final Attributes foundAttributes = result.getAttributes();
-				final String[] attrs = { "epicsAlarmSeverity", "epicsAlarmTimeStamp",
-						"epicsAlarmHighUnAckn" };
-				for (final String attr : attrs) {
-					final Attribute foundAttribute = foundAttributes.get(attr);
-					if (foundAttribute != null) {
-						target.put((Attribute) foundAttribute.clone());
-					}
-				}
-			}
-		} catch (final SizeLimitExceededException e) {
-			LOG.error(DirectoryEditor.class, "Size limit exceeded while reading search results: "
-					+ e.getExplanation(), e);
-		} finally {
-			try {
-				searchResults.close();
-			} catch (final NamingException e) {
-				LOG.warn(DirectoryEditor.class, "Error closing search results", e);
-			}
-		}
+	    final Set<SearchResult> answer = searchResult.getAnswerSet();
+	    if (!answer.isEmpty()) {
+	        final SearchResult result = answer.iterator().next();
+	        final Attributes foundAttributes = result.getAttributes();
+	        final String[] attrs = { "epicsAlarmSeverity", "epicsAlarmTimeStamp", "epicsAlarmHighUnAckn" };
+	        for (final String attr : attrs) {
+	            final Attribute foundAttribute = foundAttributes.get(attr);
+	            if (foundAttribute != null) {
+	                target.put((Attribute) foundAttribute.clone());
+	            }
+	        }
+	    }
+
 		return target;
 	}
 }

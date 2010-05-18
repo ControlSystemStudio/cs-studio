@@ -46,7 +46,7 @@ import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 /**
- * TODO (bknerr) :
+ * Generic content model to capture arbitrary LDAP tree structures.
  *
  * @author bknerr
  * @author $Author$
@@ -62,11 +62,11 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
     private ILdapTreeComponent<T> _treeRoot;
 
-    private Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndLdapName;
+    private Map<T, Map<String, ILdapBaseComponent<T>>> _cacheByTypeAndLdapName;
 
-    private Map<T, Map<String, ILdapComponent<T>>> _cacheByTypeAndSimpleName;
+    private Map<T, Map<String, ILdapBaseComponent<T>>> _cacheByTypeAndSimpleName;
 
-    private Map<String, ILdapComponent<T>> _cacheByLdapName;
+    private Map<String, ILdapBaseComponent<T>> _cacheByLdapName;
 
 
 
@@ -96,7 +96,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      * @param objectClassRoot
      */
     private void initFields(@Nonnull final T objectClassRoot) {
-        _cacheByLdapName = new HashMap<String, ILdapComponent<T>>();
+        _cacheByLdapName = new HashMap<String, ILdapBaseComponent<T>>();
 
         _cacheByTypeAndLdapName = initCacheByType(objectClassRoot.getDeclaringClass());
 
@@ -118,8 +118,8 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
 
     @Nonnull
-    private Map<T, Map<String, ILdapComponent<T>>> initCacheByType(@Nonnull final Class<T> enumClass) {
-        return new EnumMap<T, Map<String, ILdapComponent<T>>>(enumClass);
+    private Map<T, Map<String, ILdapBaseComponent<T>>> initCacheByType(@Nonnull final Class<T> enumClass) {
+        return new EnumMap<T, Map<String, ILdapBaseComponent<T>>>(enumClass);
     }
 
 
@@ -189,7 +189,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     }
 
 
-    public void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapComponent<T> newChild) {
+    public void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapBaseComponent<T> newChild) {
 
         parent.addChild(newChild);
 
@@ -199,9 +199,9 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         // MORE CACHING
         final T type = newChild.getType();
         if (!_cacheByTypeAndLdapName.containsKey(type)) {
-            _cacheByTypeAndLdapName.put(type, new HashMap<String, ILdapComponent<T>>());
+            _cacheByTypeAndLdapName.put(type, new HashMap<String, ILdapBaseComponent<T>>());
         }
-        final Map<String, ILdapComponent<T>> childrenByLdapName = _cacheByTypeAndLdapName.get(type);
+        final Map<String, ILdapBaseComponent<T>> childrenByLdapName = _cacheByTypeAndLdapName.get(type);
 
         final String nameKey = newChild.getLdapName().toString();
         if (!childrenByLdapName.containsKey(nameKey)) {
@@ -210,9 +210,9 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         // AND EVEN MORE CACHING
         if (!_cacheByTypeAndSimpleName.containsKey(type)) {
-            _cacheByTypeAndSimpleName.put(type, new HashMap<String, ILdapComponent<T>>());
+            _cacheByTypeAndSimpleName.put(type, new HashMap<String, ILdapBaseComponent<T>>());
         }
-        final Map<String, ILdapComponent<T>> childrenBySimpleName = _cacheByTypeAndSimpleName.get(type);
+        final Map<String, ILdapBaseComponent<T>> childrenBySimpleName = _cacheByTypeAndSimpleName.get(type);
 
         final String simpleName = newChild.getName();
         if (!childrenBySimpleName.containsKey(simpleName)) {
@@ -228,33 +228,33 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      */
     @Nonnull
     public Set<String> getSimpleNames(@Nonnull final T type) {
-        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
 
         return new HashSet<String>(children.keySet());
     }
 
     @CheckForNull
-    public Map<String, ILdapComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
+    public Map<String, ILdapBaseComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
         return _cacheByTypeAndLdapName.get(type);
     }
 
 
     @CheckForNull
-    public Map<String, ILdapComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
+    public Map<String, ILdapBaseComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
         return _cacheByTypeAndSimpleName.get(type);
     }
 
 
     @CheckForNull
-    public ILdapComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
-        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndLdapName.get(type);
+    public ILdapBaseComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndLdapName.get(type);
         return children != null ? children.get(key) : null;
     }
 
 
     @CheckForNull
-    public ILdapComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
-        final Map<String, ILdapComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+    public ILdapBaseComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
         return children != null ? children.get(key) : null;
     }
 

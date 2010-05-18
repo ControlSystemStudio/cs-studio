@@ -50,7 +50,7 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
 
     private final Set<T> _subComponentTypes;
 
-    private final Map<String, ILdapComponent<T>> _children = new HashMap<String, ILdapComponent<T>>();
+    private final Map<String, ILdapBaseComponent<T>> _children = new HashMap<String, ILdapBaseComponent<T>>();
 
     /**
      * Constructor.
@@ -86,7 +86,7 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
      * {@inheritDoc}
      */
     @Override
-    public void addChild(@Nonnull final ILdapComponent<T> child) {
+    public void addChild(@Nonnull final ILdapBaseComponent<T> child) {
 
         if(!_subComponentTypes.contains(child.getType())) {
             throw new IllegalArgumentException("The child type " + child.getType() + " is not permitted for this component!");
@@ -104,7 +104,7 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
      */
     @Override
     @Nonnull
-    public Collection<ILdapComponent<T>> getDirectChildren() {
+    public Collection<ILdapBaseComponent<T>> getDirectChildren() {
         return _children.values();
     }
 
@@ -113,15 +113,15 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
      */
     @Override
     @Nonnull
-    public Map<String, ILdapComponent<T>> getChildrenByType(@Nonnull final T type) {
+    public Map<String, ILdapBaseComponent<T>> getChildrenByType(@Nonnull final T type) {
         if (_children.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        final Map<String, ILdapComponent<T>> resultMap = new HashMap<String, ILdapComponent<T>>();
+        final Map<String, ILdapBaseComponent<T>> resultMap = new HashMap<String, ILdapBaseComponent<T>>();
 
-        for (final Entry<String, ILdapComponent<T>> childEntry : _children.entrySet()) {
-            final ILdapComponent<T> child = childEntry.getValue();
+        for (final Entry<String, ILdapBaseComponent<T>> childEntry : _children.entrySet()) {
+            final ILdapBaseComponent<T> child = childEntry.getValue();
             if (child.getType().equals(type)) {
                 resultMap.put(child.getLdapName().toString(), child);
             }
@@ -145,7 +145,7 @@ public class LdapTreeComponent<T extends Enum<T>> extends LdapBaseComponent<T>
      */
     @Override
     @Nonnull
-    public ILdapComponent<T> getChild(@Nonnull final String name) {
+    public ILdapBaseComponent<T> getChild(@Nonnull final String name) {
         return _children.get(name);
     }
 

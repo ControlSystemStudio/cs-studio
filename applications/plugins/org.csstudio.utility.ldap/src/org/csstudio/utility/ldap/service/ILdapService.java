@@ -24,8 +24,9 @@ package org.csstudio.utility.ldap.service;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.reader.LDAPReader;
@@ -45,23 +46,20 @@ public interface ILdapService {
 
     /**
      * Creates a new Record in LDAP.
-     * @param context the directory context
      * @param newComponentName the record
      * @param attributes the attributes of the new ldap component
      * @return true if the new record could be created, false otherwise
      */
-    boolean createComponent(@Nonnull DirContext ldapDirContext,
-                            @Nonnull LdapName newComponentName,
+    boolean createComponent(@Nonnull LdapName newComponentName,
                             @Nullable Attributes attributes);
 
 
     /**
      * Removes the leaf component from the LDAP context.
      * Attention, the component may not have children components!
-     * @param context .
-     * @param query .
+     * @param component .
      */
-    boolean removeComponent(@Nonnull DirContext context, @Nonnull LdapName query);
+    boolean removeComponent(@Nonnull LdapName component);
 
     /**
      * Retrieves LDAP entries for the given query and search scope synchronously.
@@ -90,5 +88,32 @@ public interface ILdapService {
                                    @Nullable LdapSearchResult result,
                                    @Nullable IJobCompletedCallBack callBack);
 
+
+    /**
+     * Modifies given attributes for given LDAP component
+     * @param name .
+     * @param mods .
+     * @throws NamingException
+     */
+    void modifyAttributes(@Nonnull LdapName name, @Nonnull ModificationItem[] mods) throws NamingException;
+
+
+    /**
+     * Renames LDAP component.
+     * @param oldLdapName .
+     * @param newLdapName .
+     * @throws NamingException
+     */
+    void rename(@Nonnull LdapName oldLdapName, @Nonnull LdapName newLdapName) throws NamingException;
+
+
+    /**
+     * Retrieves the attributes for a given LDAP component
+     * @param ldapName .
+     * @return the attributes
+     * @throws NamingException
+     */
+    @CheckForNull
+    Attributes getAttributes(@Nonnull LdapName ldapName) throws NamingException;
 
 }

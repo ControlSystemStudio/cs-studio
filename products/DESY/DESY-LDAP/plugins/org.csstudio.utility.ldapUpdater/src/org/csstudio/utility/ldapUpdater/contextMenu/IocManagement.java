@@ -34,7 +34,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
@@ -76,12 +75,10 @@ public class IocManagement implements IManagementCommand {
         try {
             switch (IocModificationCommand.valueOf(command)) {
                 case DELETE :
-                    LDAP_UPDATER_SERVICE.removeIocEntryFromLdap(Engine.getInstance().getLdapDirContext(),
-                                                                iocName,
+                    LDAP_UPDATER_SERVICE.removeIocEntryFromLdap(iocName,
                                                                 facilityName);
                     break;
-                case TIDY_UP : LDAP_UPDATER_SERVICE.tidyUpIocEntryInLdap(Engine.getInstance().getLdapDirContext(),
-                                                                         iocName,
+                case TIDY_UP : LDAP_UPDATER_SERVICE.tidyUpIocEntryInLdap(iocName,
                                                                          facilityName,
                                                                          LdapAccess.getValidRecordsForIOC(iocName));
                 break;

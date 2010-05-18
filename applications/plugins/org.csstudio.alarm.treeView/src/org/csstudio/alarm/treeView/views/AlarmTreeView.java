@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
@@ -38,7 +39,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
-import org.csstudio.alarm.treeView.ldap.UpdateTreeLdapReader;
+import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -162,12 +163,11 @@ public class AlarmTreeView extends ViewPart {
         public void onDisconnect() {
             Display.getDefault().asyncExec(new Runnable() {
                 public void run() {
-                    _myMessageArea
-                    .showMessage(SWT.ICON_WARNING,
-                                 "Connection error",
-                                 "Some or all of the information displayed "
-                                 + "may be outdated. The alarm tree is currently "
-                                 + "not connected to all alarm servers.");
+                    _myMessageArea.showMessage(SWT.ICON_WARNING,
+                                               "Connection error",
+                                               "Some or all of the information displayed "
+                                               + "may be outdated. The alarm tree is currently "
+                                               + "not connected to all alarm servers.");
                 }
             });
         }
@@ -205,6 +205,7 @@ public class AlarmTreeView extends ViewPart {
         }
 
         public void dragFinished(final DragSourceEvent event) {
+            // EMPTY
         }
     }
 
@@ -450,51 +451,9 @@ public class AlarmTreeView extends ViewPart {
     }
 
     /**
-     * This action opens the strip chart associated with the selected node.
-     */
-    private class OpenStripChartAction extends Action {
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public void run() {
-            final IAlarmTreeNode node = getSelectedNode();
-            if (node != null) {
-                final IPath path = new Path(node.getCssStripChart());
-
-                // The following code assumes that the path is relative to
-                // the Eclipse workspace.
-                final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                final IWorkbenchPage page = getSite().getPage();
-                try {
-                    EditorUtil.openEditor(page, file);
-                } catch (final PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", e.getMessage());
-                }
-            }
-        }
-
-        /**
-         * Returns the node that is currently selected in the tree.
-         *
-         * @return the selected node, or <code>null</code> if the selection is empty or the selected
-         *         node is not of type <code>IAlarmTreeNode</code>.
-         */
-        private IAlarmTreeNode getSelectedNode() {
-            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
-            final Object selected = selection.getFirstElement();
-            if (selected instanceof IAlarmTreeNode) {
-                return (IAlarmTreeNode) selected;
-            }
-            return null;
-        }
-    }
-
-    /**
      * The ID of this view.
      */
-    private static final String ID = "org.csstudio.alarm.treeView.views.LdapTView";
+    private static final String ID = "org.csstudio.alarm.treeView.views.AlarmTreeView";
 
     /**
      * The ID of the property view.
@@ -740,52 +699,48 @@ public class AlarmTreeView extends ViewPart {
         final SubtreeNode rootNode = new SubtreeNode.Builder(AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE,
                                                              LdapEpicsAlarmCfgObjectClass.ROOT).build();
 
-        final Job directoryReaderJob = new Job("LDAPDirectoryReader") {
-            @Override
-            protected IStatus run(final IProgressMonitor monitor) {
-                monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
+        final Job directoryReaderJob =
+            new Job("LDAPDirectoryReader") {
+                @Override
+                protected IStatus run(final IProgressMonitor monitor) {
+                    monitor.beginTask("Initializing Alarm Tree", IProgressMonitor.UNKNOWN);
 
-                try {
-                    final long startTime = System.currentTimeMillis();
+                    try {
+                        final long startTime = System.currentTimeMillis();
 
-                    final boolean canceled = AlarmTreeBuilder.build(rootNode, monitor);
-                    if (canceled) {
-                        return Status.CANCEL_STATUS;
+                        final boolean canceled = AlarmTreeBuilder.build(rootNode, monitor);
+                        if (canceled) {
+                            return Status.CANCEL_STATUS;
+                        }
+
+                        final long endTime = System.currentTimeMillis();
+                        _log.debug("Directory reader time: " + (endTime - startTime) + "ms");
+                    } catch (final NamingException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } finally {
+                        monitor.done();
                     }
-
-                    final long endTime = System.currentTimeMillis();
-                    _log.debug("Directory reader time: " + (endTime - startTime) + "ms");
-                } catch (final NamingException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
-                } finally {
-                    monitor.done();
+                    return Status.OK_STATUS;
                 }
-                return Status.OK_STATUS;
-            }
-        };
+            };
 
-        directoryReaderJob.addJobChangeListener(new JobChangeAdapter() {
-            @Override
-            public void done(final IJobChangeEvent event) {
-                asyncSetViewerInput(rootNode); // Display the new tree.
-                final Job directoryUpdater = new UpdateTreeLdapReader(rootNode);
-                directoryUpdater.addJobChangeListener(new JobChangeAdapter() {
-                    @Override
-                    public void done(final IJobChangeEvent innerEvent) {
-                        _alarmListener.setUpdater(new AlarmTreeUpdater(rootNode)); // Apply updates
-                        // to the new
-                        // tree
-                        getSite().getShell().getDisplay().asyncExec(new Runnable() {
-                            public void run() {
-                                _viewer.refresh();
-                            }
-                        });
-                    }
-                });
-                progressService.schedule(directoryUpdater, 0, true);
-            }
-        });
+        directoryReaderJob.addJobChangeListener(
+                                new JobChangeAdapter() {
+                                    @Override
+                                    public void done(final IJobChangeEvent innerEvent) {
+                                        asyncSetViewerInput(rootNode); // Display the new tree.
+                                        _alarmListener.setUpdater(new AlarmTreeUpdater(rootNode)); // Apply updates
+                                        // to the new
+                                        // tree
+                                        getSite().getShell().getDisplay().asyncExec(new Runnable() {
+                                            public void run() {
+                                                _viewer.refresh();
+                                            }
+                                        });
+                                    }
+                                }
+        );
 
         // Set the tree to which updates are applied to null. This means updates
         // will be queued for later application.
@@ -1010,132 +965,220 @@ public class AlarmTreeView extends ViewPart {
      * Creates the actions offered by this view.
      */
     private void makeActions() {
-        _reloadAction = new Action() {
+        _reloadAction = createReloadAction();
+
+        _acknowledgeAction = createAcknowledgeAction(_viewer);
+
+        _runCssAlarmDisplayAction = createCssAlarmDisplayAction(_viewer);
+
+        _runCssDisplayAction = createRunCssDisplayAction(_viewer);
+
+        _openCssStripChartAction = createCssStripChartAction();
+
+        _showHelpGuidanceAction= createShowHelpGuidanceAction(_viewer);
+
+        _showHelpPageAction = createShowHelpPageAction(_viewer);
+
+        _createRecordAction = createCreateRecordAction(_viewer);
+
+        _createComponentAction = createCreateComponentAction(_viewer);
+
+        _renameAction = createRenameAction(_viewer);
+
+        _deleteNodeAction = createDeleteNodeAction(_viewer);
+
+        _showPropertyViewAction = createShowPropertyViewAction();
+
+        _toggleFilterAction = createToggleFilterAction(_viewer, _currentAlarmFilter);
+
+    }
+
+    private Action createToggleFilterAction(@Nonnull final TreeViewer viewer,
+                                            @Nonnull final ViewerFilter currentAlarmFilter) {
+        final Action toggleFilterAction = new Action("Show Only Alarms", IAction.AS_CHECK_BOX) {
             @Override
             public void run() {
-                startDirectoryReaderJob();
+                if (_isFilterActive) {
+                    viewer.removeFilter(currentAlarmFilter);
+                    _isFilterActive = false;
+                } else {
+                    viewer.addFilter(currentAlarmFilter);
+                    _isFilterActive = true;
+                }
             }
         };
-        _reloadAction.setText("Reload");
-        _reloadAction.setToolTipText("Reload");
-        _reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
+        toggleFilterAction.setToolTipText("Show Only Alarms");
+        toggleFilterAction.setChecked(_isFilterActive);
+        toggleFilterAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/no_alarm_filter.png"));
 
-        _acknowledgeAction = new Action() {
+        return toggleFilterAction;
+    }
+
+    private Action createShowPropertyViewAction() {
+        final Action showPropertyViewAction = new Action() {
             @Override
             public void run() {
-                final Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
-                for (final Iterator<?> i = selection.iterator(); i.hasNext();) {
-                    final Object o = i.next();
-                    if (o instanceof SubtreeNode) {
-                        final SubtreeNode snode = (SubtreeNode) o;
-                        for (final ProcessVariableNode pvnode : snode.collectUnacknowledgedAlarms()) {
-                            final String name = pvnode.getName();
-                            final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
-                            final Map<String, String> properties = new HashMap<String, String>();
-                            properties.put("NAME", name);
-                            properties.put("SEVERITY", severity.toString());
-                            messages.add(properties);
+                try {
+                    getSite().getPage().showView(PROPERTY_VIEW_ID);
+                } catch (final PartInitException e) {
+                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", e.getMessage());
+                }
+            }
+        };
+        showPropertyViewAction.setText("Properties");
+        showPropertyViewAction.setToolTipText("Show property view");
+
+        final IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench().getViewRegistry();
+        final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+        showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+
+        return showPropertyViewAction;
+    }
+
+    private Action createDeleteNodeAction(@Nonnull final TreeViewer viewer) {
+        final Action deleteNodeAction = new Action() {
+            @Override
+            public void run() {
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+                final Object selected = selection.getFirstElement();
+                if (selected instanceof IAlarmTreeNode) {
+                    final IAlarmTreeNode nodeToDelete = (IAlarmTreeNode) selected;
+                    final IAlarmSubtreeNode parent = nodeToDelete.getParent();
+                    try {
+                        DirectoryEditor.delete(nodeToDelete);
+                        if (parent != null) {
+                            viewer.refresh(parent);
                         }
-                    } else if (o instanceof ProcessVariableNode) {
-                        final ProcessVariableNode pvnode = (ProcessVariableNode) o;
-                        final String name = pvnode.getName();
-                        final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
-                        final Map<String, String> properties = new HashMap<String, String>();
-                        properties.put("NAME", name);
-                        properties.put("SEVERITY", severity.toString());
-                        messages.add(properties);
+                    } catch (final DirectoryEditException e) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "Delete",
+                                                "Could not delete this node: " + e.getMessage());
                     }
-                }
-                if (!messages.isEmpty()) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "Scheduling send acknowledgement ("
-                                                      + messages.size() + " messages)");
-                    final SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
-                    ackJob.schedule();
                 }
             }
         };
-        _acknowledgeAction.setText("Send Acknowledgement");
-        _acknowledgeAction.setToolTipText("Send alarm acknowledgement");
-        _acknowledgeAction.setEnabled(false);
+        deleteNodeAction.setText("Delete");
+        return deleteNodeAction;
+    }
 
-        _runCssAlarmDisplayAction = new Action() {
+    private Action createRenameAction(@Nonnull final TreeViewer viewer) {
+        final Action renameAction = new Action() {
             @Override
             public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+                final IAlarmTreeNode selected = (IAlarmTreeNode) selection.getFirstElement();
+                final String name = promptForNewName(selected.getName());
+                if (name != null) {
+                    try {
+                        DirectoryEditor.rename(selected, name);
+                    } catch (final DirectoryEditException e) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "Rename",
+                                                "Could not rename the entry: " + e.getMessage());
+                    }
+                    viewer.refresh(selected);
+                }
+            }
+
+            private String promptForNewName(final String oldName) {
+                final InputDialog dialog = new InputDialog(getSite().getShell(),
+                                                           "Rename",
+                                                           "Name:",
+                                                           oldName,
+                                                           new NodeNameInputValidator());
+                if (Window.OK == dialog.open()) {
+                    return dialog.getValue();
+                }
+                return null;
+            }
+        };
+        renameAction.setText("Rename...");
+        return renameAction;
+    }
+
+    private Action createCreateComponentAction(@Nonnull final TreeViewer viewer) {
+        final Action createComponentAction = new Action() {
+            @Override
+            public void run() {
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object selected = selection.getFirstElement();
-                if (selected instanceof IAlarmTreeNode) {
-                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final IPath path = new Path(node.getCssAlarmDisplay());
-                    final Map<String, String> aliases = new HashMap<String, String>();
-                    if (node instanceof ProcessVariableNode) {
-                        aliases.put("channel", node.getName());
+                if (selected instanceof SubtreeNode) {
+                    final SubtreeNode parent = (SubtreeNode) selected;
+                    final String name = promptForRecordName();
+                    if ( (name != null) && !name.equals("")) {
+                        try {
+                            DirectoryEditor.createComponent(parent, name);
+                        } catch (final DirectoryEditException e) {
+                            MessageDialog.openError(getSite().getShell(),
+                                                    "Create New Component",
+                                                    "Could not create the new component: "
+                                                    + e.getMessage());
+                        }
+                        viewer.refresh(parent);
                     }
-                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
-                    RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
                 }
             }
-        };
-        _runCssAlarmDisplayAction.setText("Run Alarm Display");
-        _runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
-        _runCssAlarmDisplayAction.setEnabled(false);
 
-        _runCssDisplayAction = new Action() {
+            private String promptForRecordName() {
+                final InputDialog dialog = new InputDialog(getSite().getShell(),
+                                                           "Create New Component",
+                                                           "Component name:",
+                                                           null,
+                                                           new NodeNameInputValidator());
+                if (Window.OK == dialog.open()) {
+                    return dialog.getValue();
+                }
+                return null;
+            }
+        };
+        createComponentAction.setText("Create Component...");
+        return createComponentAction;
+    }
+
+    private Action createCreateRecordAction(@Nonnull final TreeViewer viewer) {
+        final Action createRecordAction = new Action() {
             @Override
             public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object selected = selection.getFirstElement();
-                if (selected instanceof IAlarmTreeNode) {
-                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final IPath path = new Path(node.getCssDisplay());
-                    final Map<String, String> aliases = new HashMap<String, String>();
-                    if (node instanceof ProcessVariableNode) {
-                        aliases.put("channel", node.getName());
-                    }
-                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
-                    RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
-                }
-            }
-        };
-        _runCssDisplayAction.setText("Run Display");
-        _runCssDisplayAction.setToolTipText("Run the display for this PV");
-        _runCssDisplayAction.setEnabled(false);
-
-        _openCssStripChartAction = new OpenStripChartAction();
-        _openCssStripChartAction.setText("Open Strip Chart");
-        _openCssStripChartAction.setToolTipText("Open the strip chart for this node");
-        _openCssStripChartAction.setEnabled(false);
-
-        _showHelpGuidanceAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof IAlarmTreeNode) {
-                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final String helpGuidance = node.getHelpGuidance();
-                    if (helpGuidance != null) {
-                        MessageDialog.openInformation(getSite().getShell(),
-                                                      node.getName(),
-                                                      helpGuidance);
+                if (selected instanceof SubtreeNode) {
+                    final SubtreeNode parent = (SubtreeNode) selected;
+                    final String name = promptForRecordName();
+                    if ( (name != null) && !name.equals("")) {
+                        try {
+                            DirectoryEditor.createProcessVariableRecord(parent, name);
+                        } catch (final DirectoryEditException e) {
+                            MessageDialog.openError(getSite().getShell(),
+                                                    "Create New Record",
+                                                    "Could not create the new record: "
+                                                    + e.getMessage());
+                        }
+                        viewer.refresh(parent);
                     }
                 }
             }
-        };
-        _showHelpGuidanceAction.setText("Show Help Guidance");
-        _showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
-        _showHelpGuidanceAction.setEnabled(false);
 
-        _showHelpPageAction = new Action() {
+            private String promptForRecordName() {
+                final InputDialog dialog = new InputDialog(getSite().getShell(),
+                                                           "Create New Record",
+                                                           "Record name:",
+                                                           null,
+                                                           new NodeNameInputValidator());
+                if (Window.OK == dialog.open()) {
+                    return dialog.getValue();
+                }
+                return null;
+            }
+        };
+        createRecordAction.setText("Create Record...");
+        return createRecordAction;
+    }
+
+    private Action createShowHelpPageAction(@Nonnull final TreeViewer viewer) {
+        final Action showHelpPageAction = new Action() {
             @Override
             public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode node = (IAlarmTreeNode) selected;
@@ -1158,172 +1201,185 @@ public class AlarmTreeView extends ViewPart {
                 }
             }
         };
-        _showHelpPageAction.setText("Open Help Page");
-        _showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
-        _showHelpPageAction.setEnabled(false);
+        showHelpPageAction.setText("Open Help Page");
+        showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
+        showHelpPageAction.setEnabled(false);
+        return showHelpPageAction;
+    }
 
-        _createRecordAction = new Action() {
+    private Action createShowHelpGuidanceAction(@Nonnull final TreeViewer viewer) {
+        final Action showHelpGuidanceAction = new Action() {
             @Override
             public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof SubtreeNode) {
-                    final SubtreeNode parent = (SubtreeNode) selected;
-                    final String name = promptForRecordName();
-                    if ( (name != null) && !name.equals("")) {
-                        try {
-                            DirectoryEditor.createProcessVariableRecord(parent, name);
-                        } catch (final DirectoryEditException e) {
-                            MessageDialog.openError(getSite().getShell(),
-                                                    "Create New Record",
-                                                    "Could not create the new record: "
-                                                    + e.getMessage());
-                        }
-                        _viewer.refresh(parent);
-                    }
-                }
-            }
-
-            private String promptForRecordName() {
-                final InputDialog dialog = new InputDialog(getSite().getShell(),
-                                                           "Create New Record",
-                                                           "Record name:",
-                                                           null,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
-        _createRecordAction.setText("Create Record...");
-
-        _createComponentAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof SubtreeNode) {
-                    final SubtreeNode parent = (SubtreeNode) selected;
-                    final String name = promptForRecordName();
-                    if ( (name != null) && !name.equals("")) {
-                        try {
-                            DirectoryEditor.createComponent(parent, name);
-                        } catch (final DirectoryEditException e) {
-                            MessageDialog.openError(getSite().getShell(),
-                                                    "Create New Component",
-                                                    "Could not create the new component: "
-                                                    + e.getMessage());
-                        }
-                        _viewer.refresh(parent);
-                    }
-                }
-            }
-
-            private String promptForRecordName() {
-                final InputDialog dialog = new InputDialog(getSite().getShell(),
-                                                           "Create New Component",
-                                                           "Component name:",
-                                                           null,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
-        _createComponentAction.setText("Create Component...");
-
-        _renameAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
-                final IAlarmTreeNode selected = (IAlarmTreeNode) selection.getFirstElement();
-                final String name = promptForNewName(selected.getName());
-                if (name != null) {
-                    try {
-                        DirectoryEditor.rename(selected, name);
-                    } catch (final DirectoryEditException e) {
-                        MessageDialog.openError(getSite().getShell(),
-                                                "Rename",
-                                                "Could not rename the entry: " + e.getMessage());
-                    }
-                    _viewer.refresh(selected);
-                }
-            }
-
-            private String promptForNewName(final String oldName) {
-                final InputDialog dialog = new InputDialog(getSite().getShell(),
-                                                           "Rename",
-                                                           "Name:",
-                                                           oldName,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
-        _renameAction.setText("Rename...");
-
-        _deleteNodeAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) _viewer
-                .getSelection();
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
-                    final IAlarmTreeNode nodeToDelete = (IAlarmTreeNode) selected;
-                    final IAlarmSubtreeNode parent = nodeToDelete.getParent();
-                    try {
-                        DirectoryEditor.delete(nodeToDelete);
-                        _viewer.refresh(parent);
-                    } catch (final DirectoryEditException e) {
-                        MessageDialog.openError(getSite().getShell(),
-                                                "Delete",
-                                                "Could not delete this node: " + e.getMessage());
+                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
+                    final String helpGuidance = node.getHelpGuidance();
+                    if (helpGuidance != null) {
+                        MessageDialog.openInformation(getSite().getShell(),
+                                                      node.getName(),
+                                                      helpGuidance);
                     }
                 }
             }
         };
-        _deleteNodeAction.setText("Delete");
+        showHelpGuidanceAction.setText("Show Help Guidance");
+        showHelpGuidanceAction.setToolTipText("Show the help guidance for this node");
+        showHelpGuidanceAction.setEnabled(false);
+        return showHelpGuidanceAction;
+    }
 
-        _showPropertyViewAction = new Action() {
+    private Action createCssStripChartAction() {
+        final Action openCssStripChartAction = new Action() {
             @Override
             public void run() {
-                try {
-                    getSite().getPage().showView(PROPERTY_VIEW_ID);
-                } catch (final PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", e.getMessage());
+                final IAlarmTreeNode node = getSelectedNode();
+                if (node != null) {
+                    final IPath path = new Path(node.getCssStripChart());
+
+                    // The following code assumes that the path is relative to
+                    // the Eclipse workspace.
+                    final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                    final IWorkbenchPage page = getSite().getPage();
+                    try {
+                        EditorUtil.openEditor(page, file);
+                    } catch (final PartInitException e) {
+                        MessageDialog.openError(getSite().getShell(), "Alarm Tree", e.getMessage());
+                    }
+                }
+            }
+            /**
+             * Returns the node that is currently selected in the tree.
+             *
+             * @return the selected node, or <code>null</code> if the selection is empty or the selected
+             *         node is not of type <code>IAlarmTreeNode</code>.
+             */
+            private IAlarmTreeNode getSelectedNode() {
+                final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+                final Object selected = selection.getFirstElement();
+                if (selected instanceof IAlarmTreeNode) {
+                    return (IAlarmTreeNode) selected;
+                }
+                return null;
+            }
+        };
+        openCssStripChartAction.setText("Open Strip Chart");
+        openCssStripChartAction.setToolTipText("Open the strip chart for this node");
+        openCssStripChartAction.setEnabled(false);
+        return openCssStripChartAction;
+    }
+
+    private Action createRunCssDisplayAction(@Nonnull final TreeViewer viewer) {
+
+        final Action runCssDisplayAction = new Action() {
+            @Override
+            public void run() {
+
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+                final Object selected = selection.getFirstElement();
+                if (selected instanceof IAlarmTreeNode) {
+                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
+                    final IPath path = new Path(node.getCssDisplay());
+                    final Map<String, String> aliases = new HashMap<String, String>();
+                    if (node instanceof ProcessVariableNode) {
+                        aliases.put("channel", node.getName());
+                    }
+                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
+                    RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
                 }
             }
         };
-        _showPropertyViewAction.setText("Properties");
-        _showPropertyViewAction.setToolTipText("Show property view");
+        runCssDisplayAction.setText("Run Display");
+        runCssDisplayAction.setToolTipText("Run the display for this PV");
+        runCssDisplayAction.setEnabled(false);
 
-        final IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
-        .getViewRegistry();
-        final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
-        _showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
+        return runCssDisplayAction;
+    }
 
-        _toggleFilterAction = new Action("Show Only Alarms", IAction.AS_CHECK_BOX) {
+    private Action createCssAlarmDisplayAction(@Nonnull final TreeViewer viewer) {
+        final Action runCssAlarmDisplayAction = new Action() {
             @Override
             public void run() {
-                if (_isFilterActive) {
-                    _viewer.removeFilter(_currentAlarmFilter);
-                    _isFilterActive = false;
-                } else {
-                    _viewer.addFilter(_currentAlarmFilter);
-                    _isFilterActive = true;
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+                final Object selected = selection.getFirstElement();
+                if (selected instanceof IAlarmTreeNode) {
+                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
+                    final IPath path = new Path(node.getCssAlarmDisplay());
+                    final Map<String, String> aliases = new HashMap<String, String>();
+                    if (node instanceof ProcessVariableNode) {
+                        aliases.put("channel", node.getName());
+                    }
+                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
+                    RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
                 }
             }
         };
-        _toggleFilterAction.setToolTipText("Show Only Alarms");
-        _toggleFilterAction.setChecked(_isFilterActive);
-        _toggleFilterAction.setImageDescriptor(AlarmTreePlugin
-                                               .getImageDescriptor("./icons/no_alarm_filter.png"));
+        runCssAlarmDisplayAction.setText("Run Alarm Display");
+        runCssAlarmDisplayAction.setToolTipText("Run the alarm display for this PV");
+        runCssAlarmDisplayAction.setEnabled(false);
+
+        return runCssAlarmDisplayAction;
+    }
+
+    private Action createAcknowledgeAction(@Nonnull final TreeViewer viewer) {
+        final Action acknowledgeAction = new Action() {
+            @Override
+            public void run() {
+                final Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
+
+                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
+
+                for (final Iterator<?> i = selection.iterator(); i.hasNext();) {
+                    final Object o = i.next();
+                    if (o instanceof SubtreeNode) {
+                        final SubtreeNode snode = (SubtreeNode) o;
+                        for (final AbstractAlarmTreeNode pvnode : snode.collectUnacknowledgedAlarms()) {
+                            final String name = pvnode.getName();
+                            final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+                            final Map<String, String> properties = new HashMap<String, String>();
+                            properties.put("NAME", name);
+                            properties.put("SEVERITY", severity.toString());
+                            messages.add(properties);
+                        }
+                    } else if (o instanceof ProcessVariableNode) {
+                        final AbstractAlarmTreeNode pvnode = (AbstractAlarmTreeNode) o;
+                        final String name = pvnode.getName();
+                        final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+                        final Map<String, String> properties = new HashMap<String, String>();
+                        properties.put("NAME", name);
+                        properties.put("SEVERITY", severity.toString());
+                        messages.add(properties);
+                    }
+                }
+                if (!messages.isEmpty()) {
+                    CentralLogger.getInstance().debug(this,
+                                                      "Scheduling send acknowledgement ("
+                                                      + messages.size() + " messages)");
+                    final SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
+                    ackJob.schedule();
+                }
+            }
+        };
+        acknowledgeAction.setText("Send Acknowledgement");
+        acknowledgeAction.setToolTipText("Send alarm acknowledgement");
+        acknowledgeAction.setEnabled(false);
+
+        return acknowledgeAction;
+    }
+
+    private Action createReloadAction() {
+        final Action reloadAction = new Action() {
+            @Override
+            public void run() {
+                startDirectoryReaderJob();
+            }
+        };
+        reloadAction.setText("Reload");
+        reloadAction.setToolTipText("Reload");
+        reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
+
+        return reloadAction;
     }
 
     /**

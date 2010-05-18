@@ -23,9 +23,7 @@
  */
 package org.csstudio.alarm.treeView.model;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.Name;
 
 /**
  * Extends the general alarm tree node interface for all nodes, that may possess
@@ -68,14 +66,6 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      * @param child the child node to add.
      */
     void addPVChild(@Nonnull final IAlarmTreeNode child);
-
-    /**
-     * Returns the name of this node in the LDAP directory.
-     *
-     * @return the name of this node in the directory.
-     */
-    @CheckForNull
-    Name getLdapName();
 
     /**
      * Signals to this node that the alarm severity of one of its children

@@ -21,6 +21,7 @@ package org.csstudio.alarm.treeView;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -42,9 +43,19 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     private IAlarmService _alarmService;
 
+    /**
+     * The alarm configuration service
+     */
+    private IAlarmConfigurationService _alarmConfigurationService;
+
+    /**
+     * The LDAP service
+     */
+    private ILdapService _ldapService;
+
+
     private static AlarmTreePlugin INSTANCE;
 
-    private IAlarmConfigurationService _alarmConfigurationService;
 
     /**
      * Returns the shared instance.
@@ -73,6 +84,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     protected void doStart(final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
         _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
+        _ldapService = getService(context, ILdapService.class);
     }
 
     /**
@@ -114,6 +126,13 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
+    }
+
+    /**
+     * @return the LDAP service or null
+     */
+    public ILdapService getLdapService() {
+        return _ldapService;
     }
 
 

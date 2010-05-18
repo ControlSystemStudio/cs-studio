@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
  package org.csstudio.alarm.treeView.views;
@@ -24,7 +24,10 @@
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
@@ -45,8 +48,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	/**
 	 * Cache for Image objects.
 	 */
-	private Map<String, Image> _imageCache;
-	
+	private final Map<String, Image> _imageCache;
+
 	/**
 	 * Creates a new alarm tree label provider.
 	 */
@@ -60,7 +63,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 	 * @return the element's name, or an empty string if the element doesn't
 	 * have a name.
 	 */
-	public final String getText(final Object element) {
+	@Override
+    public final String getText(final Object element) {
 		if (element instanceof IAlarmTreeNode){
 			return ((IAlarmTreeNode)element).getName();
 		}
@@ -69,33 +73,33 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 		}
 		return "";
 	}
-	
+
 	/**
 	 * Returns the character that represents the given alarm severity in the
 	 * icon's filename.
 	 * @param alarmSeverity the severity.
 	 * @return the character that represents the given severity.
 	 */
-	private String getIconName(final Severity alarmSeverity) {
+	private String getIconName(@Nonnull final Severity alarmSeverity) {
 		switch (alarmSeverity) {
-		case NO_ALARM:
-			return "green";
-		case INVALID:
-			return "blue";
-		case MINOR:
-			return "yellow";
-		case MAJOR:
-			return "red";
-		default:
-			// should never get here
-		    return "grey";
+		    case UNKNOWN :
+		        return "grey";
+    		case NO_ALARM:
+    			return "green";
+    		case INVALID:
+    			return "blue";
+    		case MINOR:
+    			return "yellow";
+    		case MAJOR:
+    			return "red";
 		}
+        throw new IllegalStateException("Alarm severity of unhandled type. Checkstyle turned off?");
 	}
-	
+
 	/**
 	 * Returns the names of the two icons that should be displayed for the given
 	 * severities.
-	 * 
+	 *
 	 * @param activeAlarmSeverity
 	 *            the severity of the currently active alarm.
 	 * @param unacknowledgedAlarmSeverity
@@ -108,8 +112,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         	// If the active and unack severity are the same, only the active
         	// alarm is displayed.
             return new String[] { getIconName(activeAlarmSeverity) };
-        } else if (activeAlarmSeverity != Severity.NO_ALARM
-        		&& unacknowledgedAlarmSeverity == Severity.NO_ALARM) {
+        } else if ((activeAlarmSeverity != Severity.NO_ALARM)
+        		&& (unacknowledgedAlarmSeverity == Severity.NO_ALARM)) {
         	// There is an active alarm which is acknowledged.
             return new String[] {
             		getIconName(activeAlarmSeverity),
@@ -120,16 +124,17 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             		getIconName(activeAlarmSeverity) };
         }
     }
-    
+
 	/**
 	 * Returns the icon for the given element.
 	 * @param element the element.
 	 * @return the icon for the element, or {@code null} if there is no icon
 	 * for the element.
 	 */
-	public final Image getImage(final Object element) {
+	@Override
+    public final Image getImage(final Object element) {
 		if (element instanceof ProcessVariableNode) {
-			ProcessVariableNode node = (ProcessVariableNode) element;
+			final AbstractAlarmTreeNode node = (AbstractAlarmTreeNode) element;
 			return node.hasAlarm() ? alarmImageFor(node) : defaultNodeImage();
 		} else if (element instanceof SubtreeNode) {
 			return alarmImageFor((SubtreeNode) element);
@@ -137,20 +142,20 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 			return null;
 		}
 	}
-	
+
 	/**
 	 * Returns the image for the given node if that node is in an alarm state.
 	 * @param node the node.
 	 * @return the image.
 	 */
 	private Image alarmImageFor(final IAlarmTreeNode node) {
-		Severity activeAlarmSeverity = node.getAlarmSeverity();
-		Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
-		String[] iconNames = getIconNames(activeAlarmSeverity,unacknowledgedAlarmSeverity);
+		final Severity activeAlarmSeverity = node.getAlarmSeverity();
+		final Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
+		final String[] iconNames = getIconNames(activeAlarmSeverity,unacknowledgedAlarmSeverity);
 		return createImage(iconNames);
 	}
-	
-	
+
+
 
     /**
 	 * Returns the image for a leaf node that does not have any alarms set.
@@ -160,7 +165,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 		return PlatformUI.getWorkbench().getSharedImages().getImage(
 				ISharedImages.IMG_OBJ_ELEMENT);
 	}
-	
+
 	/**
 	 * Loads an image. The image is added to a cache kept by this provider and
 	 * is disposed of when this provider is disposed of.
@@ -172,33 +177,33 @@ public class AlarmTreeLabelProvider extends LabelProvider {
 			return _imageCache.get(name);
 		} else {
 		    try{
-    			Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
+    			final Image image = AlarmTreePlugin.getImageDescriptor(name).createImage();
     			_imageCache.put(name, image);
     			return image;
-		    }catch (NullPointerException e) {
+		    }catch (final NullPointerException e) {
 		        System.out.println("NullPointerException:"+name );
             }
 		    return null;
 		}
 	}
-	
+
 	   /**
      * Create an image. The image is added to a cache kept by this provider and
      * is disposed of when this provider is disposed of.
      * @param name the image name.
-	 * @param rightImage 
-	 * @param leftImage 
+	 * @param rightImage
+	 * @param leftImage
      * @return the image.
      */
     private Image createImage(final String[] names) {
         String name = "";
-        for (String string : names) {
+        for (final String string : names) {
             name = name.concat(string);
         }
         if (_imageCache.containsKey(name)) {
             return _imageCache.get(name);
         } else {
-            Image leftImage; 
+            Image leftImage;
             Image rightImage;
             int width;
             Image dualImage;
@@ -207,7 +212,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
                 rightImage = loadImage("/icons/"+names[1]+".gif");
                 width = leftImage.getBounds().width/3+2+ rightImage.getBounds().width;
                 dualImage = new Image(leftImage.getDevice(),width, leftImage.getBounds().height);
-                GC gc = new GC(dualImage);
+                final GC gc = new GC(dualImage);
                 if(names[1].equals("checked")){
                     gc.drawImage(leftImage, leftImage.getBounds().width/3+2, 0);
                     gc.drawImage(rightImage, 2, 0);
@@ -217,12 +222,12 @@ public class AlarmTreeLabelProvider extends LabelProvider {
                 }
                 gc.dispose();
 
-                
+
             }else{
                 leftImage=loadImage("/icons/"+names[0]+".gif");
                 width = leftImage.getBounds().width/3+2+ leftImage.getBounds().width;
                 dualImage = new Image(leftImage.getDevice(),width, leftImage.getBounds().height);
-                GC gc = new GC(dualImage);
+                final GC gc = new GC(dualImage);
                 gc.drawImage(leftImage, leftImage.getBounds().width/3+2, 0);
                 gc.dispose();
 
@@ -232,13 +237,13 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         }
     }
 
-	
+
 	/**
 	 * Disposes of the images created by this label provider.
 	 */
 	@Override
 	public final void dispose() {
-		for (Image image : _imageCache.values()) {
+		for (final Image image : _imageCache.values()) {
 			image.dispose();
 		}
 		super.dispose();

@@ -49,7 +49,7 @@ import org.csstudio.platform.logging.CentralLogger;
 public final class AlarmTreeNodeModifier {
 
     // TODO (bknerr) : if used anywhere else in this package, encapsulate
-    // in static package visible class
+    // in static package-visible class
 
     private static final String EPICS_ALARM_HIGH_UN_ACKN = "epicsAlarmHighUnAckn";
 

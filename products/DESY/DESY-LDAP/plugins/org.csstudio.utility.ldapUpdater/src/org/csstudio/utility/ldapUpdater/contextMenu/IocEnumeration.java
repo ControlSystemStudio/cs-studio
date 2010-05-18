@@ -43,7 +43,7 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -71,12 +71,12 @@ public class IocEnumeration implements IDynamicParameterValues {
         final ContentModel<LdapEpicsControlsObjectClass> model =
             new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
 
-        final Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> iocs =
+        final Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> iocs =
             model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
 
         final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-        for (final ILdapComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
+        for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
             final LdapName ldapName = ioc.getLdapName();
             final String efanName =
                 LdapNameUtils.getValueOfRdnType(ldapName,

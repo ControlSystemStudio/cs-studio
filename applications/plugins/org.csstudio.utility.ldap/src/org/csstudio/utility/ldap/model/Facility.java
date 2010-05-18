@@ -37,13 +37,13 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 
 /**
- *
+ * Deprecated.
  *
  * @author bknerr
  */
 @Deprecated
 public class Facility {
-    private final Logger LOG = CentralLogger.getInstance().getLogger(this);
+    private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
     private final String _name;
 
@@ -73,9 +73,9 @@ public class Facility {
                 try {
                     ioc.setResponsible((String)emailAddressAttr.get());
                 } catch (final NoSuchElementException nsee) {
-                    LOG.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " has not any values set.");
+                    _log.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " has not any values set.");
                 } catch (final NamingException ne) {
-                    LOG.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " could not be retrieved.\n" + ne.getExplanation());
+                    _log.warn("Attribute " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON + " could not be retrieved.\n" + ne.getExplanation());
                 }
             }
         }

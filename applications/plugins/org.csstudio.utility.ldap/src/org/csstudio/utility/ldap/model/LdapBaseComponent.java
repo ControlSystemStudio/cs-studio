@@ -40,7 +40,7 @@ import javax.naming.ldap.LdapName;
  * @since 30.04.2010
  * @param <T> der Enum type
  */
-public class LdapBaseComponent<T extends Enum<T>> implements ILdapComponent<T> {
+public class LdapBaseComponent<T extends Enum<T>> implements ILdapBaseComponent<T> {
 
     private final String _name;
 

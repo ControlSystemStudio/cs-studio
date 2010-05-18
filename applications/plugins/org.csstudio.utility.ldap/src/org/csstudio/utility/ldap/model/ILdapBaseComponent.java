@@ -30,7 +30,7 @@ import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
 /**
- * TODO (bknerr) :
+ * Interface for the base class of LDAP components.
  *
  * @author bknerr
  * @author $Author$
@@ -38,7 +38,7 @@ import javax.naming.ldap.LdapName;
  * @param <T>
  * @since 30.04.2010
  */
-public interface ILdapComponent<T extends Enum<T>> {
+public interface ILdapBaseComponent<T extends Enum<T>> {
 
     @Nonnull
     String getName();

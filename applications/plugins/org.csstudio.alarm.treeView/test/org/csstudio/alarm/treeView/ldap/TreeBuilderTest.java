@@ -23,9 +23,6 @@
 package org.csstudio.alarm.treeView.ldap;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import javax.naming.ldap.LdapName;
 
@@ -69,58 +66,4 @@ public class TreeBuilderTest {
 		assertEquals(new LdapName("ecom=b,efan=a"), _b.getLdapName());
 	}
 
-	@Test
-	public void testDirectoryNameOfNodeWithSpecialCharacters() throws Exception {
-		final LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
-		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
-		assertEquals(name, node.getLdapName());
-	}
-
-	@Test
-	public void testFindExistingSubtreeNode() throws Exception {
-		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, _nameB);
-		assertSame(_b, node);
-	}
-
-	@Test
-	public void testCreateNewSubtreeNode() throws Exception {
-		final LdapName name = new LdapName("ecom=c,efan=a");
-		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
-		assertNotNull(node);
-		assertSame(node, _a.getChild("c"));
-		assertSame(_a, node.getParent());
-		assertEquals(name, node.getLdapName());
-	}
-
-	@Test
-	public void testCreateSubtreeNodeWithSpecialCharacters() throws Exception {
-		final LdapName name = new LdapName("ecom=c\\=1\\,2,efan=a");
-		final SubtreeNode node = AlarmTreeBuilder.findCreateSubtreeNode(_tree, name);
-		assertNotNull(node);
-		assertSame(node, _a.getChild("c=1,2"));
-		assertSame(_a, node.getParent());
-	}
-
-	@Test
-	public void testFindParentOfPv() throws Exception {
-		final LdapName name = new LdapName("eren=pv:1,efan=a");
-		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
-		assertSame(_a, parent);
-	}
-
-	@Test
-	public void testFindParentOfPvWithSpecialCharacters() throws Exception {
-		final LdapName name = new LdapName("eren=pv\\=1\\,2,efan=a");
-		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
-		assertSame(_a, parent);
-	}
-
-	@Test
-	public void testCreateParentForPv() throws Exception {
-		final LdapName name = new LdapName("efen=pv:2,ecom=c,efan=a");
-		final SubtreeNode parent = AlarmTreeBuilder.findCreateParentNode(_tree, name);
-		assertTrue(_a.getChild("c") instanceof SubtreeNode);
-		assertSame(_a, parent.getParent());
-		assertEquals(new LdapName("ecom=c,efan=a"), parent.getLdapName());
-	}
 }

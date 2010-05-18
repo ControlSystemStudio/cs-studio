@@ -68,7 +68,7 @@ public class AlarmTreeUpdater {
      *            the eventtime of the alarm.
      */
     void applyAlarm(final String name, final Severity severity, final Date eventtime) {
-        final List<ProcessVariableNode> nodes = findNodes(name);
+        final List<ProcessVariableNode> nodes = findProcessVariableNodes(name);
         for (final ProcessVariableNode node : nodes) {
             final Alarm alarm = new Alarm(name, severity, eventtime);
             node.updateAlarm(alarm);
@@ -83,7 +83,7 @@ public class AlarmTreeUpdater {
      *            the name of the process variable to which the acknowledgement applies.
      */
     void applyAcknowledgement(final String name) {
-        final List<ProcessVariableNode> nodes = findNodes(name);
+        final List<ProcessVariableNode> nodes = findProcessVariableNodes(name);
         for (final ProcessVariableNode node : nodes) {
             node.removeHighestUnacknowledgedAlarm();
         }
@@ -114,7 +114,7 @@ public class AlarmTreeUpdater {
      *            the process variable name.
      * @return a list of alarm nodes. If no nodes are found, returns an empty list.
      */
-    private List<ProcessVariableNode> findNodes(final String name) {
+    private List<ProcessVariableNode> findProcessVariableNodes(final String name) {
         return _tree.findProcessVariableNodes(name);
     }
 

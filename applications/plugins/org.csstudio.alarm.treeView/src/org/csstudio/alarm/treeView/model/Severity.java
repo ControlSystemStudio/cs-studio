@@ -28,6 +28,10 @@
  */
 public enum Severity {
 
+    /**
+     * Uninitialized or otherwise unknown state.
+     */
+    UNKNOWN,
 	/**
 	 * Severity representing no alarm.
 	 */
@@ -59,15 +63,6 @@ public enum Severity {
 	 * @return the severity represented by the given string.
 	 */
 	public static Severity parseSeverity(final String severityString) {
-//		if (severityString.equals("MAJOR")) {
-//			return MAJOR;
-//		} else if (severityString.equals("MINOR")) {
-//			return MINOR;
-//		} else if (severityString.equals("INVALID")) {
-//			return INVALID;
-//		} else {
-//			return NO_ALARM;
-//		}
 		try {
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
@@ -78,12 +73,12 @@ public enum Severity {
 
 	/**
 	 * Returns {@code true} if this severity is an actual alarm severity,
-	 * {@code false} if it represents NO_ALARM severity.
+	 * {@code false} if it represents NO_ALARM or UNKNOWN severity.
 	 *
 	 * @return whether this alarm is an actual alarm severity.
 	 */
 	public boolean isAlarm() {
-		return this != NO_ALARM;
+		return (this != NO_ALARM) && (this != UNKNOWN);
 	}
 
 }

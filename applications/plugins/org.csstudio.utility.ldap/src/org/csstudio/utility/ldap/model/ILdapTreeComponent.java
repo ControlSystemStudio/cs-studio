@@ -39,14 +39,14 @@ import javax.annotation.Nonnull;
  * @since 30.04.2010
  * @param <T> Enum type of possible LDAP structural components
  */
-public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapComponent<T> {
+public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapBaseComponent<T> {
 
     /**
      * Retrieves the list of children of the current component (but without children subtrees).
      * @return a collection of direct children components
      */
     @Nonnull
-    Collection<ILdapComponent<T>> getDirectChildren();
+    Collection<ILdapBaseComponent<T>> getDirectChildren();
 
     /**
      * Retrieves a child component with the given nameKey
@@ -54,9 +54,9 @@ public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapComponent<T>
      * @return
      */
     @CheckForNull
-    ILdapComponent<T> getChild(@Nonnull String nameKey);
+    ILdapBaseComponent<T> getChild(@Nonnull String nameKey);
 
-    void addChild(@Nonnull ILdapComponent<T> child);
+    void addChild(@Nonnull ILdapBaseComponent<T> child);
 
     void removeChild(@Nonnull String name);
 
@@ -64,5 +64,5 @@ public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapComponent<T>
     Set<T> getSubComponentTypes();
 
     @Nonnull
-    Map<String, ILdapComponent<T>> getChildrenByType(@Nonnull T type);
+    Map<String, ILdapBaseComponent<T>> getChildrenByType(@Nonnull T type);
 }

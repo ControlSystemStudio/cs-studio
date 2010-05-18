@@ -45,7 +45,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
@@ -53,7 +52,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
@@ -81,8 +80,7 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      */
     @Override
-    public boolean createLDAPRecord(@Nonnull final DirContext context,
-                                    @Nonnull final LdapName newLdapName) {
+    public boolean createLDAPRecord(@Nonnull final LdapName newLdapName) {
 
         final String recordName =
             LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsObjectClass.RECORD.getRdnType());
@@ -91,7 +89,7 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
                                    EREN_FIELD_NAME, recordName);
 
-        return _ldapService.createComponent(context, newLdapName, afe);
+        return _ldapService.createComponent(newLdapName, afe);
     }
 
 
@@ -138,10 +136,8 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * @throws InvalidNameException
      * @throws InterruptedException
      */
-    @SuppressWarnings("null")
     @Override
-    public void removeIocEntryFromLdap(@Nonnull final DirContext context,
-                                       @Nonnull final String iocName,
+    public void removeIocEntryFromLdap(@Nonnull final String iocName,
                                        @Nonnull final String facilityName) throws InvalidNameException, InterruptedException {
 
         final LdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
@@ -149,30 +145,29 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
         if (recordsSearchResult != null) {
             final ContentModel<LdapEpicsControlsObjectClass> model =
                 new ContentModel<LdapEpicsControlsObjectClass>(recordsSearchResult, LdapEpicsControlsObjectClass.ROOT);
-            final Collection<ILdapComponent<LdapEpicsControlsObjectClass>> records =
+            final Collection<ILdapBaseComponent<LdapEpicsControlsObjectClass>> records =
                 model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.RECORD).values();
 
-            for (final ILdapComponent<LdapEpicsControlsObjectClass> record : records) {
+            for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> record : records) {
                 final LdapName ldapName = record.getLdapName();
                 ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
-                _ldapService.removeComponent(context, ldapName);
+                _ldapService.removeComponent(ldapName);
 
             }
         }
 
-        _ldapService.removeComponent(context, createLdapQuery(ECON_FIELD_NAME, iocName,
-                                                              ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                                              EFAN_FIELD_NAME, facilityName,
-                                                              OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE));
+        _ldapService.removeComponent(createLdapQuery(ECON_FIELD_NAME, iocName,
+                                                     ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                                     EFAN_FIELD_NAME, facilityName,
+                                                     OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE));
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public void tidyUpIocEntryInLdap(@Nonnull final DirContext context,
-                                     @Nonnull final String iocName,
+    public void tidyUpIocEntryInLdap(@Nonnull final String iocName,
                                      @Nonnull final String facilityName,
                                      @Nonnull final Set<Record> validRecords)  {
 
@@ -183,16 +178,16 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 final ContentModel<LdapEpicsControlsObjectClass> model =
                     new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
 
-                final Map<String, ILdapComponent<LdapEpicsControlsObjectClass>> recordsInLdap =
+                final Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> recordsInLdap =
                     model.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD);
 
-                for (final ILdapComponent<LdapEpicsControlsObjectClass> record : recordsInLdap.values()) {
+                for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> record : recordsInLdap.values()) {
                     if (!validRecords.contains(new Record(record.getName()))) {
 
                         final LdapName ldapName = record.getLdapName();
                         ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
-                        _ldapService.removeComponent(context, ldapName);
+                        _ldapService.removeComponent(ldapName);
                         _log.info("Tidying: Record " + record.getName() + " removed.");
                     }
                 }

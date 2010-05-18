@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -26,22 +26,22 @@ import org.csstudio.alarm.treeView.model.Severity;
 /**
  * An update in response to an alarm or acknowledgement message which has not yet been applied to
  * the tree.
- * 
+ *
  * @author Joerg Rathlev
  */
 public abstract class PendingUpdate {
-    
+
     /**
      * Applies this update.
-     * 
+     *
      * @param updater
      *            the updater which will be used to apply this update.
      */
     public abstract void apply(final AlarmTreeUpdater updater);
-    
+
     /**
      * Creates an update which will update the alarm tree based on an acknowledgement message.
-     * 
+     *
      * @param name
      *            the name of the node to which the acknowledgement will apply.
      * @return an update which will apply the acknowledgement.
@@ -52,18 +52,17 @@ public abstract class PendingUpdate {
             public void apply(final AlarmTreeUpdater updater) {
                 updater.applyAcknowledgement(name);
             }
-            
+
             @Override
             public String toString() {
-                return new StringBuilder("PendingUpdate[Acknowledgement,name=").append(name)
-                        .append("]").toString();
+                return "PendingUpdate[Acknowledgement,name=" + name + "]";
             }
         };
     }
-    
+
     /**
      * Creates an update which will update the alarm tree based on an alarm message.
-     * 
+     *
      * @param name
      *            the name of the node to which the alarm will apply.
      * @param severity
@@ -80,7 +79,7 @@ public abstract class PendingUpdate {
             public void apply(final AlarmTreeUpdater updater) {
                 updater.applyAlarm(name, severity, eventtime);
             }
-            
+
             @Override
             public String toString() {
                 return new StringBuilder("PendingUpdate[Alarm,name=").append(name)

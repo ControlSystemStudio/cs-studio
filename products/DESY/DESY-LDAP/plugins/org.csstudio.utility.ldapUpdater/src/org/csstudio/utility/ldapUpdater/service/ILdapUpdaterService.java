@@ -29,7 +29,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
-import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.model.Record;
@@ -47,12 +46,10 @@ public interface ILdapUpdaterService {
 
     /**
      * Creates a new Record in LDAP.
-     * @param context the directory context
      * @param newLdapName the new complete ldap name of the record
      * @return true if the new record could be created, false otherwise
      */
-    boolean createLDAPRecord(@Nonnull DirContext context,
-                             @Nonnull LdapName newLdapName);
+    boolean createLDAPRecord(@Nonnull LdapName newLdapName);
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -74,25 +71,25 @@ public interface ILdapUpdaterService {
      * @throws InvalidNameException
      */
     @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix, @Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
+    LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix,
+                                           @Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
 
 
     /**
      * Removes all records for the given IOC from LDAP that are not contained in the valid records set.
-     * @param context .
      * @param iocName .
      * @param facilityName .
      * @param validRecords .
      */
-    void tidyUpIocEntryInLdap(@Nonnull DirContext context, @Nonnull String iocName,@Nonnull String facilityName,@Nonnull Set<Record> validRecords);
+    void tidyUpIocEntryInLdap(@Nonnull String iocName, @Nonnull String facilityName, @Nonnull Set<Record> validRecords);
 
     /**
      * Removes the IOC entry from the LDAP context.
-     * @param context .
      * @param iocName .
      * @param facilityName .
      * @throws InvalidNameException
      * @throws InterruptedException
      */
-    void removeIocEntryFromLdap(@Nonnull DirContext context,@Nonnull  String iocName,@Nonnull String facilityName) throws InvalidNameException, InterruptedException;
+    void removeIocEntryFromLdap(@Nonnull String iocName,
+                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException;
 }

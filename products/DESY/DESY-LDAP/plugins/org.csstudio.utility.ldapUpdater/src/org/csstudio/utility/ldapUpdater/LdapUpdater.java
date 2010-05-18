@@ -57,7 +57,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapComponent;
+import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
@@ -275,7 +275,7 @@ public final class LdapUpdater {
             for (final String iocNameKey : iocsFromLDAP) {
                 _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-                final ILdapComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocNameKey);
+                final ILdapBaseComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocNameKey);
                 if (ioc != null) {
                     final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
                     String person = DEFAULT_RESPONSIBLE_PERSON;

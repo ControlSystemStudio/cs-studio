@@ -22,16 +22,25 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.NameNotFoundException;
+import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
@@ -51,6 +60,7 @@ public final class LdapServiceImpl implements ILdapService {
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
+    private static DirContext CONTEXT = Engine.getInstance().getLdapDirContext();
 
     /**
      * {@inheritDoc}
@@ -80,7 +90,42 @@ public final class LdapServiceImpl implements ILdapService {
                                                               @Nonnull final String filter,
                                                               final int searchScope) {
 
-        return LDAPReader.getSearchResultSynchronously(new LdapSearchParams(searchRoot, filter, searchScope));
+        final LdapSearchParams params = new LdapSearchParams(searchRoot, filter, searchScope);
+        if(CONTEXT != null){
+            final SearchControls ctrl = new SearchControls();
+            ctrl.setSearchScope(params.getScope());
+            NamingEnumeration<SearchResult> answer = null;
+            try {
+                answer = CONTEXT.search(params.getSearchRoot(),
+                                         params.getFilter(),
+                                         ctrl);
+
+                final Set<SearchResult> answerSet = new HashSet<SearchResult>();
+                while(answer.hasMore()){
+                    answerSet.add(answer.next());
+                }
+
+                final LdapSearchResult result = new LdapSearchResult();
+                result.setResult(params, answerSet);
+                return result;
+
+            } catch (final NameNotFoundException nnfe){
+                Engine.getInstance().reconnectDirContext();
+                _log.info("Wrong LDAP name?" + nnfe.getExplanation());
+            } catch (final NamingException e) {
+                Engine.getInstance().reconnectDirContext();
+                _log.info("Wrong LDAP query. " + e.getExplanation());
+            } finally {
+                try {
+                    if (answer != null) {
+                        answer.close();
+                    }
+                } catch (final NamingException e) {
+                    _log.warn("Error closing search results: ", e);
+                }
+            }
+        }
+        return null;
 
     }
 
@@ -89,12 +134,11 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}
      */
     @Override
-    public boolean createComponent(@Nonnull final DirContext context,
-                                   @Nonnull final LdapName newComponentName,
+    public boolean createComponent(@Nonnull final LdapName newComponentName,
                                    @Nullable final Attributes attributes) {
         try {
-            context.bind(newComponentName, null, attributes);
-            _log.info( "Record written: " + newComponentName.toString());
+            CONTEXT.bind(newComponentName, null, attributes);
+            _log.info( "New LDAP Component: " + newComponentName.toString());
         } catch (final NamingException e) {
             _log.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
             _log.warn(e.getExplanation());
@@ -107,17 +151,48 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      */
     @Override
-    public boolean removeComponent(@Nonnull final DirContext context,
-                                   @Nonnull final LdapName query) {
+    public boolean removeComponent(@Nonnull final LdapName component) {
         try {
-            context.unbind(query);
-            _log.info("Entry removed from LDAP: " + query);
+            _log.debug("Unbind entry from LDAP: " + component);
+            CONTEXT.unbind(component);
         } catch (final NamingException e) {
-            _log.warn("Naming Exception while trying to unbind: " + query);
+            _log.warn("Naming Exception while trying to unbind: " + component);
             _log.warn(e.getExplanation());
             return false;
         }
         return true;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void modifyAttributes(@Nonnull final LdapName name,
+                                 @Nonnull final ModificationItem[] mods) throws NamingException {
+        _log.debug("Modify entry for: " + name);
+        CONTEXT.modifyAttributes(name, mods);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws NamingException
+     */
+    @Override
+    public void rename(@Nonnull final LdapName oldLdapName,
+                       @Nonnull final LdapName newLdapName) throws NamingException {
+        _log.debug("Rename entry from: " + oldLdapName.toString() + " to " + oldLdapName.toString());
+        CONTEXT.rename(oldLdapName, newLdapName);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @throws NamingException
+     */
+    @Override
+    @CheckForNull
+    public Attributes getAttributes(@Nonnull final LdapName ldapName) throws NamingException {
+        return CONTEXT.getAttributes(ldapName);
+    }
+
 
 }
