@@ -494,9 +494,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				super.fillShape(graphics);				
 				graphics.setBackgroundColor(fillColor);
 				if(horizontal)
-					graphics.fillRectangle(new Rectangle(bounds.x + lineWidth,
+					graphics.fillRectangle(new Rectangle(bounds.x,
 							bounds.y, 						
-							valuePosition - bounds.x - lineWidth, 
+							valuePosition - bounds.x, 
 							bounds.height));
 				else
 					graphics.fillRectangle(new Rectangle(bounds.x,
