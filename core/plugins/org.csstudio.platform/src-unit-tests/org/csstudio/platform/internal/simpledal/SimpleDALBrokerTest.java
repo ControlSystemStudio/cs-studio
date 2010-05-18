@@ -8,7 +8,6 @@ import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.Request;
 import org.epics.css.dal.ResponseEvent;
 import org.epics.css.dal.ResponseListener;
-import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;

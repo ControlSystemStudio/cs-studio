@@ -17,10 +17,13 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 
 /**
@@ -51,8 +54,14 @@ public class AlarmServiceDALImpl implements IAlarmService {
      * {@inheritDoc}
      */
     @Override
-    public IAlarmConnection newAlarmConnection() {
+    public final IAlarmConnection newAlarmConnection() {
         return new AlarmConnectionDALImpl(_alarmConfigService);
+    }
+    
+    
+    @Override
+    public void retrieveInitialState(@SuppressWarnings("unused") List<? extends IAlarmInitItem> initItems) {
+        // There is nothing to do in the DAL implementation. The usual listeners will take care of the state changes.
     }
 
 }

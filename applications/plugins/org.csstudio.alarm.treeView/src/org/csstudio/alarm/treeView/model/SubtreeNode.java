@@ -380,6 +380,25 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	}
 
 	/**
+	 * Finds all process variable nodes below this node. If
+	 * no nodes are found, returns an empty list.
+	 * @return a list of the nodes.
+	 */
+	@SuppressWarnings("unchecked")
+    @Nonnull
+	public List<ProcessVariableNode> findAllProcessVariableNodes() {
+	    
+	    final List<ProcessVariableNode> result = new ArrayList<ProcessVariableNode>();
+	    result.addAll((Collection<? extends ProcessVariableNode>) _childrenPVMap.values());
+	    
+	    for (final IAlarmTreeNode child : _childrenSubtreeMap.values()) {
+	        final List<ProcessVariableNode> subList = ((SubtreeNode) child).findAllProcessVariableNodes();
+	        result.addAll(subList);
+	    }
+	    return result;
+	}
+	
+	/**
 	 * Returns a collection of the PV nodes (leaf nodes) below this subtree
 	 * node that have unacknowledged alarms.
 	 *

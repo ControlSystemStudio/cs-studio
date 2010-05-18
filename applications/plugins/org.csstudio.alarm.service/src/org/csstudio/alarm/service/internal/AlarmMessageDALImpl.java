@@ -64,8 +64,9 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         try {
             key = Key.valueOf(keyAsString);
         } catch (IllegalArgumentException e) {
-            _log.error(this, ERROR_MESSAGE);
-            throw new AlarmMessageException(ERROR_MESSAGE);
+            final String errorMessage = ERROR_MESSAGE + ". getString for undefined key-string : " + keyAsString;
+            _log.error(this, errorMessage);
+            throw new AlarmMessageException(errorMessage);
         }
         return getString(key);
     }
@@ -170,7 +171,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 result = Application_ID;
                 break;
             default:
-                _log.error(this, ERROR_MESSAGE + "key" + key);
+                _log.error(this, ERROR_MESSAGE + ". getString for undefined key : " + key);
 //                throw new AlarmMessageException(ERROR_MESSAGE);
         }
         return result;

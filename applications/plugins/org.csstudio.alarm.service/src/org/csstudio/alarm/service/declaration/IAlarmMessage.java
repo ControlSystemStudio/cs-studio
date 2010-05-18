@@ -53,12 +53,12 @@ public interface IAlarmMessage {
     /**
      * format of the time string
      */
-    public static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
+    String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     
     /**
      * application ID for this application
      */
-    public static String Application_ID = "CSS_AlarmService";
+    String Application_ID = "CSS_AlarmService";
     
     /**
      * The message essentially is a map from String to String. Here you get the value for the key.

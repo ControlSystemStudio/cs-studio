@@ -23,40 +23,31 @@
  */
 package org.csstudio.alarm.service.declaration;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 /**
- * This service abstracts access to alarm and log messages.
- * 
- * Currently two implementations exist with different abilities. The DAL implementation allows for<br>
- * - monitoring the connection state<br>
- * - listening to alarm and log messages<br>
- * 
- * The JMS implementation also allows for<br>
- * - selection of topics, which are actually topics from the JMS server<br>
- * - sending acknowledges<br>
+ * The abstract implementation takes care of construction with the name of the PV and updating the hasFinished-Flag.
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
- * @since 21.04.2010
+ * @since 18.05.2010
  */
-public interface IAlarmService {
+public abstract class AbstractAlarmInitItem implements IAlarmInitItem {
+    
+    private final String _pvName;
+
+    protected AbstractAlarmInitItem(@Nonnull String pvName) {
+        _pvName = pvName;
+    }
     
     /**
-     * @return the currently available implementation of the alarm connection
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
-    IAlarmConnection newAlarmConnection();
+    public final String getPVName() {
+        return _pvName;
+    }
     
-    /**
-     * Synchronously retrieve the initial state of the given PVs.
-     * 
-     * On entry, the init items list has to contain the names of all PVs which should be initialized.
-     * The implementations of the alarm init item may contain other data as well. When the state could
-     * be retrieved, the init method of the init item is called.
-     */
-    void retrieveInitialState(@Nonnull List<? extends IAlarmInitItem> initItems);
 }

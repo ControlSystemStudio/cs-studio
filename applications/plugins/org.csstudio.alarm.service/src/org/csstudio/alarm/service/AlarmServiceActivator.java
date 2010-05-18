@@ -50,7 +50,7 @@ public class AlarmServiceActivator implements BundleActivator {
      * {@inheritDoc}
      */
     @Override
-    public void start(@Nonnull final BundleContext context) throws Exception {
+    public final void start(@Nonnull final BundleContext context) throws Exception {
         _log.debug(this, "Starting AlarmService");
 
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
@@ -58,7 +58,7 @@ public class AlarmServiceActivator implements BundleActivator {
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined dynamically
         registerJMSService(context);
-        //registerDALService(context, getService(context, IAlarmConfigurationService.class));
+//        registerDALService(context, getService(context, IAlarmConfigurationService.class));
     }
 
     /**
@@ -114,7 +114,7 @@ public class AlarmServiceActivator implements BundleActivator {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    protected <T> T getService(@Nonnull final BundleContext context, @Nonnull final Class<T> typeOfService) {
+    protected final <T> T getService(@Nonnull final BundleContext context, @Nonnull final Class<T> typeOfService) {
         final ServiceReference reference = context.getServiceReference(typeOfService.getName());
         return (T) (reference == null ? null : context.getService(reference));
     }

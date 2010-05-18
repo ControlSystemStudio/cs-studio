@@ -23,40 +23,34 @@
  */
 package org.csstudio.alarm.service.declaration;
 
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 /**
- * This service abstracts access to alarm and log messages.
+ * An init item is the type which the alarm service uses for retrieving the initial state of process variables.
  * 
- * Currently two implementations exist with different abilities. The DAL implementation allows for<br>
- * - monitoring the connection state<br>
- * - listening to alarm and log messages<br>
- * 
- * The JMS implementation also allows for<br>
- * - selection of topics, which are actually topics from the JMS server<br>
- * - sending acknowledges<br>
+ * Implementors might want to subclass from @see org.csstudio.alarm.service.declaration.AbstractAlarmInitItem
  * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
- * @since 21.04.2010
+ * @since 18.05.2010
  */
-public interface IAlarmService {
+public interface IAlarmInitItem {
     
     /**
-     * @return the currently available implementation of the alarm connection
+     * @return the name of the PV which shall be initialized
      */
     @Nonnull
-    IAlarmConnection newAlarmConnection();
+    String getPVName();
     
     /**
-     * Synchronously retrieve the initial state of the given PVs.
+     * The init method is called when the state could be retrieved. Implementations usually have to update the
+     * representation of the PVs in the UI when init is called.
      * 
-     * On entry, the init items list has to contain the names of all PVs which should be initialized.
-     * The implementations of the alarm init item may contain other data as well. When the state could
-     * be retrieved, the init method of the init item is called.
+     * This must be implemented by clients.
+     * 
+     * @param alarmMessage contains the retrieved state
      */
-    void retrieveInitialState(@Nonnull List<? extends IAlarmInitItem> initItems);
+    void init(@Nonnull IAlarmMessage alarmMessage);
+    
 }

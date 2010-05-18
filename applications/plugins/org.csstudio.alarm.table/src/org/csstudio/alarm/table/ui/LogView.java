@@ -213,7 +213,7 @@ public class LogView extends ViewPart {
         
         MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
-                                         .getColumnSet(_currentTopicSet), messageList);
+                .getColumnSet(_currentTopicSet), messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
         
@@ -285,7 +285,7 @@ public class LogView extends ViewPart {
      */
     protected IAlarmTableListener getAlarmTableListener() {
         return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
-                                                                 .getJMSTopics(_currentTopicSet));
+                .getJMSTopics(_currentTopicSet));
     }
     
     /**
@@ -309,13 +309,13 @@ public class LogView extends ViewPart {
             } catch (AlarmConnectionException e) {
                 CentralLogger.getInstance().error(this,
                                                   "Connecting for topicSet " + topicSet.getName()
-                                                  + " failed",
+                                                          + " failed",
                                                   e);
-                _messageArea.showMessage(SWT.ICON_WARNING,
-                                         "Connection error",
-                                         "Some or all of the information displayed "
-                                         + "may be outdated. The alarm tree is currently "
-                                         + "not connected to all alarm servers.");
+                _messageArea
+                        .showMessage(SWT.ICON_WARNING,
+                                     "Connection error",
+                                     "Some or all of the information displayed may be outdated. "
+                                             + "The alarm table is currently not connected to all alarm servers.");
                 // Returns a dummy message list which will never get any input
                 return createMessageList();
             }
@@ -326,8 +326,8 @@ public class LogView extends ViewPart {
     private Integer getMaximumNumberOfMessages() {
         ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                                                                     JmsLogsPlugin.getDefault()
-                                                                    .getBundle()
-                                                                    .getSymbolicName());
+                                                                            .getBundle()
+                                                                            .getSymbolicName());
         String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
         Integer result = 200; // Default
         try {
@@ -335,7 +335,7 @@ public class LogView extends ViewPart {
         } catch (NumberFormatException e) {
             CentralLogger.getInstance().warn(this,
                                              "Invalid value format for maximum number"
-                                             + " of messages in preferences");
+                                                     + " of messages in preferences");
         }
         return result;
     }
@@ -414,7 +414,7 @@ public class LogView extends ViewPart {
                 super.widgetSelected(e);
                 String oldTopicSet = _currentTopicSet;
                 _currentTopicSet = _topicSetColumnService.getTopicSets().get(topicSetsCombo
-                                                                             .getSelectionIndex()).getName();
+                        .getSelectionIndex()).getName();
                 if (!oldTopicSet.equals(_currentTopicSet)) {
                     _messageTable.setMessageUpdatePause(false);
                     _pauseButton.setSelection(false);
@@ -501,7 +501,7 @@ public class LogView extends ViewPart {
         showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
         
         IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
-        .getViewRegistry();
+                .getViewRegistry();
         IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
         showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
         IActionBars bars = getViewSite().getActionBars();
@@ -551,7 +551,7 @@ public class LogView extends ViewPart {
             CentralLogger.getInstance().debug(this, "No topic set from previous session"); //$NON-NLS-1$
         } else {
             CentralLogger.getInstance()
-            .debug(this, "Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
+                    .debug(this, "Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
         }
     }
     
@@ -564,7 +564,7 @@ public class LogView extends ViewPart {
         if ( (memento != null) && (_currentTopicSet != null)) {
             CentralLogger.getInstance().debug(this,
                                               "Save latest topic set in IMemento: "
-                                              + _currentTopicSet);
+                                                      + _currentTopicSet);
             memento.putString("previousTopicSet", _currentTopicSet); //$NON-NLS-1$
         }
     }
@@ -631,7 +631,7 @@ public class LogView extends ViewPart {
             // Be careful if changing the GridData below! The label will not wrap
             // correctly for some settings.
             _messageAreaDescription
-            .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
+                    .setLayoutData(new GridData(SWT.FILL, SWT.BEGINNING, true, false));
         }
         
         /**
