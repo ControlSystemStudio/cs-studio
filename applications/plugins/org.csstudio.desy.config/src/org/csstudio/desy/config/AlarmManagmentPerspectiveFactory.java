@@ -38,9 +38,9 @@ public class AlarmManagmentPerspectiveFactory implements IPerspectiveFactory {
     /* (non-Javadoc)
      * @see org.eclipse.ui.IPerspectiveFactory#createInitialLayout(org.eclipse.ui.IPageLayout)
      */
-    public void createInitialLayout(IPageLayout layout) {
+    public void createInitialLayout(final IPageLayout layout) {
         layout.setEditorAreaVisible(false);
-//        layout.addView("org.csstudio.alarm.treeView.views.LdapTView", IPageLayout.LEFT, 0.2f, IPageLayout.ID_NAVIGATE_ACTION_SET);
+//        layout.addView("org.csstudio.alarm.treeView.views.AlarmTreeView", IPageLayout.LEFT, 0.2f, IPageLayout.ID_NAVIGATE_ACTION_SET);
 //        layout.addView("org.csstudio.alarm.table.ViewAlarm", IPageLayout.TOP, 0.8f, IPageLayout.ID_PROP_SHEET);
 //        layout.addView("org.csstudio.alarm.table.ViewLog", IPageLayout.TOP, 0.8f, IPageLayout.ID_BOOKMARKS);
 //        layout.addView(IConsoleConstants.ID_CONSOLE_VIEW, IPageLayout.BOTTOM,
