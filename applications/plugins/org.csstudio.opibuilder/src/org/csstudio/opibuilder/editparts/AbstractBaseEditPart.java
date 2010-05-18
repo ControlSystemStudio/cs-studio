@@ -40,6 +40,7 @@ import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.visualparts.TooltipLabel;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
 import org.csstudio.platform.logging.CentralLogger;
@@ -53,11 +54,9 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
-import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.LabeledBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
-import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.GraphicalEditPart;
@@ -83,7 +82,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	private ExecutionMode executionMode;
 	
-	private Label tooltipLabel;
+	private TooltipLabel tooltipLabel;
 	
 	/**
 	 * This is true if deactivating has been triggered. 
@@ -92,7 +91,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	private Map<String, Object> externalObjectsMap;
 	public AbstractBaseEditPart() {
 		propertyListenerMap = new HashMap<String, WidgetPropertyChangeListener>();
-		tooltipLabel = new Label();	
+			
 	}
 	
 	
@@ -150,7 +149,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	/** initialize the figure
 	 * @param figure
 	 */
-	protected void initFigure(IFigure figure) {
+	protected void initFigure(final IFigure figure) {
 		if(figure == null)
 			throw new IllegalArgumentException("Editpart does not provide a figure!"); //$NON-NLS-1$
 		Set<String> allPropIds = getWidgetModel().getAllPropertyIDs();
@@ -180,19 +179,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				getWidgetModel().getBorderStyle(), getWidgetModel().getBorderWidth(), 
 				getWidgetModel().getBorderColor(), getWidgetModel().getName()));		
 			
-		if(allPropIds.contains(AbstractWidgetModel.PROP_TOOLTIP)){
+		if(allPropIds.contains(AbstractWidgetModel.PROP_TOOLTIP)){			
 			if(!getWidgetModel().getTooltip().equals("")){ //$NON-NLS-1$
-				tooltipLabel.setText(getWidgetModel().getTooltip());
+				tooltipLabel = new TooltipLabel(getWidgetModel());
 				figure.setToolTip(tooltipLabel);
 			}			
-			figure.addMouseMotionListener(new MouseMotionListener.Stub(){
-				@Override
-				public void mouseEntered(MouseEvent me) {
-					//update tooltip text
-					//notice: if the figure is disabled, this code won't be executed.
-					tooltipLabel.setText(getWidgetModel().getTooltip());
-				}
-			});
 		}
 	}
 	
@@ -518,10 +509,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				if(newValue.toString().equals("")) //$NON-NLS-1$
 					figure.setToolTip(null);
 				else{
-					tooltipLabel.setText(newValue.toString());
+					if(tooltipLabel == null)
+						tooltipLabel = new TooltipLabel(getWidgetModel());
 					figure.setToolTip(tooltipLabel);		
 				}
-				return true;
+				return false;
 			}
 		};		
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_TOOLTIP, tooltipHandler);
