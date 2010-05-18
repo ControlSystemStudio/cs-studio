@@ -16,10 +16,10 @@ import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simulation.SimulatorPlug;
 
 public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
-	
+
 	private static DefaultPropertyFactoryBroker manager;
-	
-	private HashMap<String, PropertyFactory> factories = new HashMap<String, PropertyFactory>();
+
+	private final HashMap<String, PropertyFactory> factories = new HashMap<String, PropertyFactory>();
 	private String[] supportedTypes = null;
 	private String defaultPlugType=SimulatorPlug.PLUG_TYPE;
 	private AbstractApplicationContext ctx;
@@ -28,25 +28,25 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	public static final synchronized DefaultPropertyFactoryBroker getInstance() {
 		if (manager == null) {
 			manager = new DefaultPropertyFactoryBroker();
-			
-			AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Borker Context");
+
+			final AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Borker Context");
 			manager.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
 		return manager;
 	}
-	
+
 	private DefaultPropertyFactoryBroker() {
-		
+
 	}
-	
+
 	/**
-	 * Return default plug type, which is used for all remote names, which does not 
+	 * Return default plug type, which is used for all remote names, which does not
 	 * explicitly declare plug or connection type.
-	 * 
+	 *
 	 * <p>
 	 * By default (if not set) plug type equals to Simulator.
 	 * </p>
-	 * 
+	 *
 	 *  @return default plug type
 	 */
 	public String getDefaultPlugType() {
@@ -54,17 +54,17 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	/**
-	 * Sets default plug type, which is used for all remote names, which does not 
-	 * explicitly declare plug or connection type. 
-	 * 
+	 * Sets default plug type, which is used for all remote names, which does not
+	 * explicitly declare plug or connection type.
+	 *
 	 * <p>
 	 * So far supported values are: EPICS, TINE, Simulator.
 	 * By default (if not set) plug type equals to Simulator.
 	 * </p>
-	 * 
+	 *
 	 * @param defautl plug type.
 	 */
-	public void setDefaultPlugType(String plugType) {
+	public void setDefaultPlugType(final String plugType) {
 		defaultPlugType = plugType;
 	}
 
@@ -73,32 +73,34 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			type=defaultPlugType;
 		}
 		PropertyFactory f = factories.get(type);
-		if (f != null) return f;
+		if (f != null) {
+            return f;
+        }
 		try {
 			f = (PropertyFactory) Plugs.getInstance(ctx.getConfiguration()).getPropertyFactoryClassForPlug(type).newInstance();
 			f.initialize(ctx, linkPolicy);
 			factories.put(type, f);
-		} catch (InstantiationException e) {
-		} catch (IllegalAccessException e) {
+		} catch (final InstantiationException e) {
+		} catch (final IllegalAccessException e) {
 		}
 		return f;
 	}
-	
+
 	public String[] getSupportedPlugTypes() {
 		if (supportedTypes == null) {
     		supportedTypes = Plugs.getInstance(ctx.getConfiguration()).getPlugNames();
     	}
     	return supportedTypes;
 	}
-	
-	public RemoteInfo asyncLinkProperty(RemoteInfo name,
-			Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l)
+
+	public RemoteInfo asyncLinkProperty(final RemoteInfo name,
+			final Class<? extends DynamicValueProperty<?>> type, final LinkListener<?> l)
 			throws InstantiationException, RemoteException {
 		return getPropertyFactory(name.getPlugType()).asyncLinkProperty(name, type, l);
 	}
 
-	public RemoteInfo asyncLinkProperty(String name,
-			Class<? extends DynamicValueProperty<?>> type, LinkListener<?> l)
+	public RemoteInfo asyncLinkProperty(final String name,
+			final Class<? extends DynamicValueProperty<?>> type, final LinkListener<?> l)
 			throws InstantiationException, RemoteException {
 		return asyncLinkProperty(
 				RemoteInfo.fromString(name,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
@@ -106,18 +108,18 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 				l);
 	}
 
-	public DynamicValueProperty<?> getProperty(String uniqueName)
+	public DynamicValueProperty<?> getProperty(final String uniqueName)
 			throws InstantiationException, RemoteException {
 		return getProperty(RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType));
 	}
 
-	public DynamicValueProperty<?> getProperty(RemoteInfo ri)
+	public DynamicValueProperty<?> getProperty(final RemoteInfo ri)
 			throws InstantiationException, RemoteException {
 		return getPropertyFactory(ri.getPlugType()).getProperty(ri);
 	}
 
-	public <P extends DynamicValueProperty<?>> P getProperty(String uniqueName,
-			Class<P> type, LinkListener<?> l) throws InstantiationException,
+	public <P extends DynamicValueProperty<?>> P getProperty(final String uniqueName,
+			final Class<P> type, final LinkListener<?> l) throws InstantiationException,
 			RemoteException {
 		return getProperty(
 				RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
@@ -125,8 +127,8 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 				l);
 	}
 
-	public <P extends DynamicValueProperty<?>> P getProperty(RemoteInfo ri,
-			Class<P> type, LinkListener<?> l) throws InstantiationException,
+	public <P extends DynamicValueProperty<?>> P getProperty(final RemoteInfo ri,
+			final Class<P> type, final LinkListener<?> l) throws InstantiationException,
 			RemoteException {
 		return getPropertyFactory(ri.getPlugType()).getProperty(ri, type, l);
 	}
@@ -135,9 +137,9 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		// has no sense
 		return null;
 	}
-	
-	public void destroy(DynamicValueProperty<?> property) {
-		Iterator<PropertyFactory> it = factories.values().iterator();
+
+	public void destroy(final DynamicValueProperty<?> property) {
+		final Iterator<PropertyFactory> it = factories.values().iterator();
 		while(it.hasNext()) {
 			it.next().getPropertyFamily().destroy(property);
 		}
@@ -164,8 +166,8 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	public String getPlugType() {
 		return getPlug().getPlugType();
 	}
- 
-	public void initialize(AbstractApplicationContext ctx, LinkPolicy policy) {
+
+	public void initialize(final AbstractApplicationContext ctx, final LinkPolicy policy) {
 		this.ctx = ctx;
 		this.linkPolicy = policy;
 	}
