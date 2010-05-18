@@ -34,15 +34,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	/** The ID of the horizontal property. */
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 	
-//	/**
-//	 * The ID of the pv name property.
-//	 */
-//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-//	
-//	/**
-//	 * The ID of the pv value property.
-//	 */
-//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
@@ -50,7 +42,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	/** The default value of the maximum property. */
 	private static final double DEFAULT_MAX = 100;	
 	
-	private static final double DEFAULT_PAGE_INCREMENT = 20;	
+	private static final double DEFAULT_PAGE_INCREMENT = 10;	
 	private static final double DEFAULT_STEP_INCREMENT = 1;	
 	private static final double DEFAULT_BAR_LENGTH = 10;	
 	
@@ -62,10 +54,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	@Override
 	protected void configureProperties() {		
-//		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-//		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
-//		
-		
+	
 		addProperty(new DoubleProperty(PROP_MIN, "Minimum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MIN));
 		
@@ -83,6 +72,9 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
 				WidgetPropertyCategory.Display, true));
+		
+		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
+				WidgetPropertyCategory.Behavior, true));
 		
 	}	
 
@@ -130,7 +122,12 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	public Double getBarLength() {
 		return (Double) getProperty(PROP_BAR_LENGTH).getPropertyValue();
 	}
-	
+	/**
+	 * @return true if limits will be load from DB, false otherwise
+	 */
+	public boolean isLimitsFromPV() {
+		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
+	}
 	
 	@Override
 	public String getTypeID() {

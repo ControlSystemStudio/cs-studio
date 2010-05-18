@@ -35,21 +35,10 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	 */
 	public static final String PROP_STEP_INCREMENT = "step_increment"; //$NON-NLS-1$
 	
-	/** The amount the scrollbar will move when the page up or page down areas are
+	/** The amount the slider will move when page up or page down areas are
 	pressed.*/
 	public static final String PROP_PAGE_INCREMENT = "page_increment"; //$NON-NLS-1$		
 	
-	
-//	/**
-//	 * The ID of the pv name property.
-//	 */
-//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-//	
-//	/**
-//	 * The ID of the pv value property.
-//	 */
-//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
-//	
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
 	
@@ -64,6 +53,9 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	
 	/** The default value of the thumb color property. */
 	private static final RGB DEFAULT_THUMB_COLOR = new RGB(172, 172, 172);
+	
+	private static final double DEFAULT_PAGE_INCREMENT = 10;	
+	private static final double DEFAULT_STEP_INCREMENT = 1;	
 	/**
 	 * The ID of this widget model.
 	 */
@@ -77,9 +69,7 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 	@Override
 	protected void configureProperties() {
 		super.configureProperties();		
-//		addPVProperty(new StringProperty(PROP_CONTROL_PV, "Control PV", WidgetPropertyCategory.Basic,
-//		""), new PVValueProperty(PROP_CONTROL_PV_VALUE, null));
-		
+	
 		addProperty(new ColorProperty(PROP_FILL_COLOR, "Fill Color",
 				WidgetPropertyCategory.Display,DEFAULT_FILL_COLOR));	
 		
@@ -96,15 +86,14 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
 		
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step_Increment",
-				WidgetPropertyCategory.Behavior, 1.0));
+				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));
 		
 
 		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
-				WidgetPropertyCategory.Behavior, 5));
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT));
 		
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
-		//setPropertyDescription(PROP_PVNAME, "Readback PV");
 		
 	}	
 

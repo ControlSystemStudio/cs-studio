@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.model;
 
+import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -23,6 +24,12 @@ public class SpinnerModel extends LabelModel {
 	pressed.*/	
 	public static final String PROP_STEP_INCREMENT = "step_increment"; //$NON-NLS-1$		
 	
+	/** The amount the scrollbar will move when the page up or page down areas are
+	pressed.*/
+	public static final String PROP_PAGE_INCREMENT = "page_increment"; //$NON-NLS-1$	
+
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
+
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = Double.NEGATIVE_INFINITY;
@@ -32,6 +39,7 @@ public class SpinnerModel extends LabelModel {
 	
 	private static final double DEFAULT_STEP_INCREMENT = 1;	
 	
+	private static final double DEFAULT_PAGE_INCREMENT = 10;
 	
 	public SpinnerModel() {		
 		setSize(85, 25);
@@ -54,6 +62,11 @@ public class SpinnerModel extends LabelModel {
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step Increment", 
 				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));		
 	
+		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT));
+		
+		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
+				WidgetPropertyCategory.Behavior, true));
 		
 	}	
 
@@ -84,13 +97,19 @@ public class SpinnerModel extends LabelModel {
 		return (Double) getProperty(PROP_STEP_INCREMENT).getPropertyValue();
 	}
 	
+	public double getPageIncrement() {
+		return (Double) getProperty(PROP_PAGE_INCREMENT).getPropertyValue();
+	}
 	
-	
+	/**
+	 * @return true if limits will be load from DB, false otherwise
+	 */
+	public boolean isLimitsFromPV() {
+		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
+	}
+		
 	@Override
 	public String getTypeID() {
 		return ID;
-	}
-
-	
-	
+	}		
 }

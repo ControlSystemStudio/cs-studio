@@ -8,8 +8,11 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
+import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.ScrollBar;
@@ -22,6 +25,9 @@ import org.eclipse.draw2d.ScrollBar;
  */
 public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	
+	private PVListener pvLoadLimitsListener;
+	private INumericMetaData meta = null;
+	
 	/**
 	 * All double value properties can converted to integer value by multiplying
 	 * this number. 
@@ -33,6 +39,34 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public ScrollBarModel getWidgetModel() {
 		return (ScrollBarModel) super.getWidgetModel();
+	}
+	
+	@Override
+	protected void doActivate() {
+		super.doActivate();
+		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+			final ScrollBarModel model = getWidgetModel();
+			if(model.isLimitsFromPV()){
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if(pv != null){	
+					pvLoadLimitsListener = new PVListener() {				
+						public void pvValueUpdate(PV pv) {
+							IValue value = pv.getValue();
+							if (value != null && value.getMetaData() instanceof INumericMetaData){
+								INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+								if(meta == null || !meta.equals(new_meta)){
+									meta = new_meta;
+									model.setPropertyValue(ScrollBarModel.PROP_MAX,	meta.getDisplayHigh());
+									model.setPropertyValue(ScrollBarModel.PROP_MIN,	meta.getDisplayLow());								
+								}
+							}
+						}					
+						public void pvDisconnected(PV pv) {}
+					};
+					pv.addListener(pvLoadLimitsListener);				
+				}
+			}
+		}
 	}
 	
 	private void updateMutiplyFactor(IFigure figure, double value){
@@ -237,7 +271,18 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 		setPropertyChangeHandler(ScrollBarModel.PROP_HORIZONTAL, horizontalHandler);
 		
 	}
-	
+
+	@Override
+	protected void doDeActivate() {
+		super.doDeActivate();
+		if(getWidgetModel().isLimitsFromPV()){
+			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			if(pv != null){	
+				pv.removeListener(pvLoadLimitsListener);
+			}
+		}
+		
+	}
 
 	@Override
 	public void setValue(Object value) {
