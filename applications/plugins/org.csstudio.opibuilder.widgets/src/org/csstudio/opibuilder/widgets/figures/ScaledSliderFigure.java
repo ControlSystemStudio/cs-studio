@@ -13,11 +13,16 @@ import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
 import org.eclipse.draw2d.AbstractLayout;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FigureUtilities;
+import org.eclipse.draw2d.FocusEvent;
+import org.eclipse.draw2d.FocusListener;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
+import org.eclipse.draw2d.KeyEvent;
+import org.eclipse.draw2d.KeyListener;
 import org.eclipse.draw2d.LineBorder;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -67,7 +72,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	private Thumb thumb;
 	private AlphaLabel label;
 	
-	private double increment = 1;
+	private double stepIncrement = 1;
 	private double pageIncrement = 10;
 
 	/**
@@ -113,6 +118,39 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				revalidate();				
 			}
 		});	
+		
+		setRequestFocusEnabled(true);
+		setFocusTraversable(true);		
+		addKeyListener(new KeyListener() {
+				
+				public void keyReleased(KeyEvent ke) {				
+				}
+				
+				public void keyPressed(KeyEvent ke) {
+					if((ke.keycode == SWT.ARROW_DOWN && !horizontal) ||
+							(ke.keycode == SWT.ARROW_LEFT && horizontal) )
+						stepDown();
+					else if((ke.keycode == SWT.ARROW_UP && !horizontal) ||
+							(ke.keycode == SWT.ARROW_RIGHT && horizontal) )
+						stepUp();
+					else if(ke.keycode == SWT.PAGE_UP)
+						pageUp();
+					else if(ke.keycode == SWT.PAGE_DOWN)
+						pageDown();
+				}
+			});
+			
+		addFocusListener(new FocusListener() {
+				
+				public void focusLost(FocusEvent fe) {
+					repaint();
+				}
+				
+				public void focusGained(FocusEvent fe) {
+					repaint();
+				}
+		});
+		
 	}
 
 	/**
@@ -154,7 +192,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	 * @param increment the increment to set
 	 */
 	public void setIncrement(double increment) {
-		this.increment = increment;
+		this.stepIncrement = increment;
 	}
 
 	public void setPageIncrement(double pageIncrement) {
@@ -164,6 +202,13 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
+		if(hasFocus()){
+			graphics.setForegroundColor(ColorConstants.black);
+			graphics.setBackgroundColor(ColorConstants.white);
+
+			Rectangle area = getClientArea();					
+			graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
+		}
 		if(!isEnabled()) {
 			graphics.setAlpha(DISABLED_ALPHA);
 			graphics.setBackgroundColor(GRAY_COLOR);
@@ -282,6 +327,17 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	}
 
 	
+	public void stepUp(){
+		manualSetValue(getValue() + stepIncrement);
+		fireManualValueChange(getValue());
+	}
+
+
+	public void stepDown(){
+		manualSetValue(getValue() - stepIncrement);
+		fireManualValueChange(getValue());
+	}
+	
 	/**
 	 * Definition of listeners that react on slider events.
 	 * 
@@ -342,6 +398,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					else
 						pageUp = false;		
 					behavior.pressed();		
+					if(!ScaledSliderFigure.this.hasFocus()){
+						ScaledSliderFigure.this.requestFocus();
+					}
 					me.consume();
 				}
 				@Override
@@ -475,6 +534,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 							horizontal? valuePosition: 0, 
 							horizontal ? 0 : valuePosition);
 					label.setVisible(true);
+					if(!ScaledSliderFigure.this.hasFocus()){
+						ScaledSliderFigure.this.requestFocus();
+					}
 					me.consume();
 					
 				}
@@ -485,9 +547,9 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 					Dimension difference = me.getLocation().getDifference(start);
 					double valueChange = calcValueChange(difference, value);
 					double oldValue = value;
-					if(increment <= 0 || Math.abs(valueChange) > increment/2.0) {
-						if(increment > 0)
-							manualSetValue(value + increment * Math.round(valueChange/increment));		
+					if(stepIncrement <= 0 || Math.abs(valueChange) > stepIncrement/2.0) {
+						if(stepIncrement > 0)
+							manualSetValue(value + stepIncrement * Math.round(valueChange/stepIncrement));		
 						else 
 							manualSetValue(value + valueChange);
 						label.setVisible(true);

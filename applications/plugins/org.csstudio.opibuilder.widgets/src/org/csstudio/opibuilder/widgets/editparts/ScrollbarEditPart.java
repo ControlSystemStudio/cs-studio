@@ -7,6 +7,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.figures.ScrollbarFigure;
 import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
@@ -97,14 +98,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		ScrollBar scrollBar = new ScrollBar(){ 
-			//synchronize this method to avoid the race condition which
-			//could be caused from manual operation and inner update from new PV value.
-			@Override
-			public synchronized void setValue(int v) {
-				super.setValue(v);
-			}
-		};
+		ScrollbarFigure scrollBar = new ScrollbarFigure();
 		ScrollBarModel model = getWidgetModel();
 		updateMutiplyFactor(null, model.getMaximum());
 		updateMutiplyFactor(null, model.getMinimum());

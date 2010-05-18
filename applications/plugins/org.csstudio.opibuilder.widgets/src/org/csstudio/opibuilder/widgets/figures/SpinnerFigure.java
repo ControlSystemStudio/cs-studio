@@ -91,7 +91,7 @@ public class SpinnerFigure extends Figure {
 					graphics.setBackgroundColor(ColorConstants.white);
 
 					Rectangle area = getClientArea();					
-					graphics.drawFocus(area.x, area.y, area.width, area.height);
+					graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
 					
 				}
 			}
