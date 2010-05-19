@@ -22,8 +22,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
@@ -33,7 +31,7 @@ import org.epics.css.dal.simple.Severity;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
@@ -41,151 +39,130 @@ import org.epics.css.dal.simple.Severity;
  */
 public class AlarmMessageDALImpl implements IAlarmMessage {
     private static final String ERROR_MESSAGE = "Error analyzing DAL message";
-    
+
     private final CentralLogger _log = CentralLogger.getInstance();
-    
+
     private final AnyData _anyData;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param anyData
      */
-    public AlarmMessageDALImpl(final AnyData anyData) {
+    public AlarmMessageDALImpl(@Nonnull final AnyData anyData) {
         this._anyData = anyData;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getString(@Nonnull final String keyAsString) throws AlarmMessageException {
+    public final String getString(@Nonnull final String keyAsString) throws AlarmMessageException {
         Key key = null;
         try {
             key = Key.valueOf(keyAsString);
         } catch (IllegalArgumentException e) {
-            final String errorMessage = ERROR_MESSAGE + ". getString for undefined key-string : " + keyAsString;
+            final String errorMessage = ERROR_MESSAGE + ". getString for undefined key-string : "
+                    + keyAsString;
             _log.error(this, errorMessage);
             throw new AlarmMessageException(errorMessage);
         }
         return getString(key);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getString(final Key key) throws AlarmMessageException {
+    @Nonnull
+    public final String getString(@Nonnull final Key key) {
         String result = null;
 
-        
         switch (key) {
             case EVENTTIME:
-            	if (_anyData.getTimestamp() == null) {
-                	result = "noTimeStamp";
-                	return result; 
-                }
-            	SimpleDateFormat sdf = new SimpleDateFormat( JMS_DATE_FORMAT);
-            	result = sdf.format(_anyData.getTimestamp().getMilliseconds());
+                result = retrieveEventtimeAsString();
                 break;
             case NAME:
-            	if (_anyData.getMetaData() == null) {
-                	result = "noMetaData";
-                	return result; 
-                }
-                result = _anyData.getMetaData().getName();
+                result = retrieveNameAsString();
                 break;
             case SEVERITY:
-            	if (_anyData.getMetaData() == null) {
-                	result = "noMetaData";
-                	return result; 
-                }
-                result = getSeverityAsString(_anyData.getSeverity());
+                result = retrieveSeverityAsString();
                 break;
             case STATUS:
-               /**
-                * getStatus() is actually calling: getSeverity().toString()
-                * toString was implemented in DynamicValueCondition as: 
-                * 
-				//		StringBuilder sb= new StringBuilder(256);
-				//		sb.append(states.toString());
-				//		if (timestamp!=null) {
-				//			sb.append(", ");
-				//			sb.append(timestamp);
-				//		} else {
-				//			sb.append(", no-time");
-				//		}
-				//		if (description!=null) {
-				//			sb.append(", ");
-				//			sb.append(description);
-				//		}
-				//		return sb.toString();
-				 * 
-				 * resulting message: STATUS=[ALARM], 2010-05-10T16:59:46.786747944, HIHI_ALARM
-				 * 
-				 * this was modified to actually create what we need:
-				 * 
-				//		if (description==null) {
-				//			return "NO_STATUS";
-				//		} else {
-				//			return description;
-				//		}
-				 * 
-				 * resulting message: STATUS=HIHI_ALARM
-				 * 
-                */
-            	result = _anyData.getSeverity().descriptionToString();  
+                result = retrieveStatusAsString();
                 break;
             case FACILITY:
                 // TODO MCL: there's currently no facility available from DAL
-            	// this could be retrieved from LDAP - necessary ?? 
-            	result = "NN";
+                // this could be retrieved from LDAP - necessary ??
+                result = "NN";
                 break;
             case HOST:
-                // TODO MCL: we can get the host name from the DAL connection - available?
-            	if (_anyData.getMetaData() == null) {
-                	result = "noMetaData";
-                	return result; 
-                }
-            	String hostName = _anyData.getMetaData().getHostname();
-            	if ( hostName != null) {
-            		result = hostName;
-            	} else {
-            		result = "hostUndefined";
-            	}
+                result = retrieveHostnameAsString();
                 break;
-//            case TEXT:
-//              // TODO MCL: this is actually the descriptor information from the channel
-//            	// this is not available by default - it could be retrieved from the channel - as an additional DAL request
-//            	// ... maybe too much effort ...
-//                break;
+            //            case TEXT:
+            //              // TODO MCL: this is actually the descriptor information from the channel
+            //            	// this is not available by default - it could be retrieved from the channel - as an additional DAL request
+            //            	// ... maybe too much effort ...
+            //                break;
             case TYPE:
-                // TODO MCL: the type is an event-alarm from the IOC as a result ...
-            	// we'll have to add this to the MAP manually - as a default value ...
-            	result = "event";
+                // The type is hard coded as an alarm event, because we registered for such a beast.
+                result = "event";
                 break;
             case VALUE:
-                result = _anyData.stringValue();
+                result = retrieveValueAsString();
                 break;
             case APPLICATION_ID:
                 result = Application_ID;
                 break;
             default:
-                _log.error(this, ERROR_MESSAGE + ". getString for undefined key : " + key);
-//                throw new AlarmMessageException(ERROR_MESSAGE);
+                _log.error(this, ERROR_MESSAGE + ". getString called for undefined key : " + key);
+                result = "No value, key " + key + " undefined";
         }
         return result;
     }
-    
-    private String getSeverityAsString(final Severity severity) {
+
+    @Nonnull
+    private String retrieveEventtimeAsString() {
+        String result;
+        if (_anyData.getTimestamp() == null) {
+            result = "noTimeStamp";
+        } else {
+            SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
+            result = sdf.format(_anyData.getTimestamp().getMilliseconds());
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveNameAsString() {
+        String result;
+        if (hasValidMetaData()) {
+            result = "noMetaData";
+        } else {
+            result = _anyData.getMetaData().getName();
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveSeverityAsString() {
+        String result;
+        if (hasValidMetaData() && (_anyData.getSeverity() != null)) {
+            result = "noMetaData";
+        } else {
+            result = getSeverityAsString(_anyData.getSeverity());
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String getSeverityAsString(@Nonnull final Severity severity) {
         String result = null;
-        
-        if (severity == null) {
-        	return "noMetaData";
-        } else if (severity.hasValue()) {
+
+        if (severity.hasValue()) {
             result = severity.toString();
         }
-        
+
         if (severity.isMajor()) {
             result = "MAJOR";
         } else if (severity.isMinor()) {
@@ -197,32 +174,73 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         }
         return result;
     }
-    
-    @Override
-    public Map<String, String> getMap() throws AlarmMessageException {
-        // TODO jp performance: cache the result map.
-        Map<String, String> result = new HashMap<String, String>();
-        for (Key key : Key.values()) {
-            result.put(key.name(), getString(key));
+
+    @Nonnull
+    private String retrieveStatusAsString() {
+        return _anyData.getSeverity().descriptionToString();
+    }
+
+    @Nonnull
+    private String retrieveHostnameAsString() {
+        // TODO MCL: we can get the host name from the DAL connection - available?
+        String result;
+        if (hasValidMetaData()) {
+            result = "noMetaData";
+        } else {
+            result = _anyData.getMetaData().getHostname();
+            if (result == null) {
+                result = "host undefined";
+            }
         }
         return result;
     }
-    
-    @Override
-    public MapMessage getMapMessage(MapMessage message) throws AlarmMessageException, JMSException {
-        // TODO jp performance: cache the result map.
-        for (Key key : Key.values()) {
-        	/*
-        	 * if the value is noTimeStamp or Uninitialized or noMetaData
-        	 * return null -> do NOT create message !
-        	 */
-        	String value = getString(key);
-        	if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
-        		message.setString(key.name(), value);
-        	} else {
-        		return null;
-        	}
+
+    @Nonnull
+    private String retrieveValueAsString() {
+        String result;
+        if (_anyData.getSeverity().hasValue()) {
+            System.out.println("Severity " + _anyData.getSeverity().toString());
+            System.out.println("Severity " + _anyData.getSeverity().hasValue());
+            try {
+                System.out.println("Value " + _anyData.stringValue());
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+            result = "-.--";
+//            result = _anyData.stringValue();
+
+        } else {
+            result = "value undefined";
         }
-        return message;
+        return result;
+    }
+
+    private boolean hasValidMetaData() {
+        return _anyData.getMetaData() == null;
+    }
+
+    @Override
+    public Map<String, String> getMap() {
+        Map<String, String> result = new HashMap<String, String>();
+        for (Key key : Key.values()) {
+            // TODO jp securely access incoming message
+            result.put(key.name(), getString(key));
+        }
+        return result;
+
+        // TODO jp What to do if message is undefined? Do not create alarm message, i.e. stop processing and ignore jms message?
+        /*
+         * if the value is noTimeStamp or Uninitialized or noMetaData
+         * return null -> do NOT create message !
+         *        String value = getString(key);
+         *        if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
+         */
+    }
+
+    @Override
+    public final String toString() {
+        return "DAL-AlarmMessage for " + getString(Key.NAME) + ", " + getString(Key.SEVERITY)
+                + getString(Key.STATUS);
     }
 }

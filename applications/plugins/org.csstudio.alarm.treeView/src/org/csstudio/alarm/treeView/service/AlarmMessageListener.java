@@ -21,9 +21,12 @@ import java.util.Date;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
@@ -180,25 +183,21 @@ public class AlarmMessageListener implements IAlarmListener {
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
-    public void onMessage(final IAlarmMessage message) {
+    public void onMessage(@Nonnull final IAlarmMessage message) {
         _log.debug(this, "received: " + message);
-        try {
-            processAlarmMessage(message);
-        } catch (final AlarmMessageException e) {
-            _log.error(this, "error processing message", e);
-        }
+        processAlarmMessage(message);
     }
 
     /**
      * Processes an alarm message.
      */
-    private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
-        final String name = message.getString("NAME");
+    private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
+        final String name = message.getString(Key.NAME);
         if (isAcknowledgement(message)) {
             _log.debug(this, "received ack: name=" + name);
             _queueWorker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
         } else {
-            final String severityValue = message.getString("SEVERITY");
+            final String severityValue = message.getString(Key.SEVERITY);
             if (severityValue == null) {
                 _log.warn(this,
                           "Received alarm message which did not contain SEVERITY! Message ignored. Message was: "
@@ -206,7 +205,7 @@ public class AlarmMessageListener implements IAlarmListener {
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
-            final String eventtimeValue = message.getString("EVENTTIME");
+            final String eventtimeValue = message.getString(Key.EVENTTIME);
             Date eventtime = null;
             if (eventtimeValue != null) {
                 eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
@@ -214,11 +213,14 @@ public class AlarmMessageListener implements IAlarmListener {
             if (eventtime == null) {
                 // eventtime is null if the message did not contain an EVENTTIME
                 // field or if the EVENTTIME could not be parsed.
-                _log.warn(this, "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: "
+                _log
+                        .warn(this,
+                              "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: "
                                       + message);
                 eventtime = new Date();
             }
-            _log.debug(this, "received alarm: name=" + name + ", severity=" + severity + ", eventtime=" + eventtime);
+            _log.debug(this, "received alarm: name=" + name + ", severity=" + severity
+                    + ", eventtime=" + eventtime);
             _queueWorker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
         }
     }
@@ -227,6 +229,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * Returns whether the given message is an alarm acknowledgement.
      */
     private boolean isAcknowledgement(final IAlarmMessage message) {
+        // TODO jp currently not working, returns always false
         String ack = null;
         try {
             ack = message.getString("ACK");

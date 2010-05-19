@@ -19,6 +19,7 @@ package org.csstudio.alarm.table;
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
@@ -86,6 +87,11 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     private IAlarmService _alarmService;
     
     /**
+     * The alarm configuration service
+     */
+    private IAlarmConfigurationService _alarmConfigurationService;
+
+    /**
      * The constructor.
      */
     public JmsLogsPlugin() {
@@ -105,7 +111,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      */
     public void doStart(final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
-        
+        _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
+
         // Might be registered as OSGI services
         _topicsetServiceForLogViews = new TopicsetService("for log views");
         _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
@@ -260,4 +267,11 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         return _alarmService;
     }
     
+    /**
+     * @return the alarm configuration service or null
+     */
+    public IAlarmConfigurationService getAlarmConfigurationService() {
+        return _alarmConfigurationService;
+    }
+
 }

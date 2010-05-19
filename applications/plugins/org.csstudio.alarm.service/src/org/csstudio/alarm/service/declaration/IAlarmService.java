@@ -30,7 +30,9 @@ import javax.annotation.Nonnull;
 /**
  * This service abstracts access to alarm and log messages.
  * 
- * Currently two implementations exist with different abilities. The DAL implementation allows for<br>
+ * Currently two implementations exist with different abilities (DAL and JMS).<br>
+ * Both implementations allow for<br>
+ * - retrieving the initial state of a pv<br>
  * - monitoring the connection state<br>
  * - listening to alarm and log messages<br>
  * 
@@ -46,6 +48,8 @@ import javax.annotation.Nonnull;
 public interface IAlarmService {
     
     /**
+     * Create a new connection to the underlying alarm system.
+     * 
      * @return the currently available implementation of the alarm connection
      */
     @Nonnull
@@ -55,8 +59,10 @@ public interface IAlarmService {
      * Synchronously retrieve the initial state of the given PVs.
      * 
      * On entry, the init items list has to contain the names of all PVs which should be initialized.
-     * The implementations of the alarm init item may contain other data as well. When the state could
-     * be retrieved, the init method of the init item is called.
+     * The implementations of the alarm init item may contain other data as well.
+     * 
+     * When the state could be retrieved, the init method of the init item is called from the service.
+     * Handling of connections is done internally in the service.
      */
     void retrieveInitialState(@Nonnull List<? extends IAlarmInitItem> initItems);
 }

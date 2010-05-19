@@ -133,7 +133,7 @@ public final class AlarmTreeBuilder {
 
         if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
-            // TODO (bknerr) : set alarm state has to be removed here
+            // TODO jp Init set alarm state has to be removed here
             //AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
             AlarmTreeNodeModifier.setEpicsAttributes(newNode, modelNode.getAttributes());
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));

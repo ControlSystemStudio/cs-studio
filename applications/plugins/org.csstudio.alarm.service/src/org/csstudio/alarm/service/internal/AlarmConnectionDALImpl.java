@@ -30,16 +30,15 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
-import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
-import org.epics.css.dal.simple.AnyData;
+import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
-import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simple.SimpleDALBroker;
 
@@ -54,24 +53,23 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
-    private static final String COULD_NOT_RETRIEVE_FROM_LDAP = "Could not retrieve records from LDAP";
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
-    
+
     private final CentralLogger _log = CentralLogger.getInstance();
-    
+
     private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
     private final IAlarmConfigurationService _alarmConfigService;
-    
+
     /**
      * Constructor must be called only from the AlarmService.
      *
      * @param alarmConfigService .
      */
-    AlarmConnectionDALImpl(final IAlarmConfigurationService alarmConfigService) {
+    AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService) {
         _alarmConfigService = alarmConfigService;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -79,7 +77,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     public boolean canHandleTopics() {
         return false;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -98,9 +96,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             }
         }
         _listenerItems.clear();
-        
+
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -109,7 +107,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                     @Nonnull final IAlarmListener listener) throws AlarmConnectionException {
         connectWithListenerForTopics(connectionMonitor, listener, new String[0]);
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -118,27 +116,28 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                              @Nonnull final IAlarmListener listener,
                                              @Nonnull final String[] topics) throws AlarmConnectionException {
         _log.info(this, "Connecting to DAL for topics " + Arrays.toString(topics) + ".");
-        
+
         // TODO jp error handling currently removed
         bla(connectionMonitor, listener);
     }
-    
-    private void connectToPV(final IAlarmConnectionMonitor connectionMonitor,
-                             final IAlarmListener listener,
-                             final String pvName) {
-        
+
+    private void connectToPV(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                             @Nonnull final IAlarmListener listener,
+                             @Nonnull final String pvName) {
+
         final RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
                                                      pvName,
                                                      null,
                                                      null);
-        
+
         final ListenerItem item = new ListenerItem();
+        // TODO jp Review: hard coded Double.class in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
-        item._dynamicValueAdapter = new DynamicValueListenerAdapter(listener, connectionMonitor);
+        item._dynamicValueAdapter = new DynamicValueListenerAdapter<Double, DoubleProperty>(listener, connectionMonitor);
         // TODO jp use constants for parameterization
         item._parameters = new HashMap<String, Object>();
         // item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
-        
+
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
                     .registerListener(item._connectionParameters,
@@ -149,18 +148,18 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         } catch (CommonException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
         }
-        
+
         _listenerItems.add(item);
     }
-    
-    private void bla(final IAlarmConnectionMonitor connectionMonitor, final IAlarmListener listener) {
-        
+
+    private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor, @Nonnull final IAlarmListener listener) {
+
         // TODO jp the facilities must be given as parameter
         List<String> facilitiesAsString = new ArrayList<String>();
         facilitiesAsString.add("Test");
         final ContentModel<LdapEpicsAlarmCfgObjectClass> model = _alarmConfigService
                 .retrieveInitialContentModel(facilitiesAsString);
-        
+
         for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
             _log.debug(this, "Connecting to " + recordName);
             connectToPV(connectionMonitor, listener, recordName);
@@ -169,57 +168,55 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         //        connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
         //        connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
     }
-    
+
     /**
      * Object-based adapter.
      * Adapts the IAlarmListener and the IAlarmConnectionMonitor
      * to the DynamicValueListener expected by DAL.
      */
-    private static class DynamicValueListenerAdapter extends DynamicValueAdapter {
-        
+    private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends DynamicValueAdapter<T, P> {
+
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
-        
-        public DynamicValueListenerAdapter(final IAlarmListener alarmListener,
-                                           final IAlarmConnectionMonitor alarmConnectionMonitor) {
+
+        public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener,
+                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
             _alarmListener = alarmListener;
             _connectionMonitor = alarmConnectionMonitor;
         }
-        
+
         @Override
-        public void conditionChange(final DynamicValueEvent event) {
+        public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
+            // TODO jp process state change correctly
             processEvent("conditionChange", event);
         }
-        
+
         @Override
-        public void valueChanged(final DynamicValueEvent event) {
+        public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
             processEvent("valueChanged", event);
         }
-        
-        private void processEvent(final String text, final DynamicValueEvent event) {
+
+        private void processEvent(@Nonnull final String text, @Nonnull final DynamicValueEvent<T, P> event) {
+            // TODO jp Review access to event
             CentralLogger.getInstance().debug(this,
                                               text + " received " + event.getCondition() + " for "
                                               + event.getProperty().getUniqueName());
             if (event.getProperty().isConnected()) {
-                
-                AnyData data = event.getData();
-                MetaData meta = data != null ? data.getMetaData() : null;
-                
-                final IAlarmMessage message = new AlarmMessageDALImpl(data);
-                _alarmListener.onMessage(message);
-                
+                _alarmListener.onMessage(new AlarmMessageDALImpl(event.getData()));
             }
         }
-        
+
     }
-    
+
     /**
      * These items are stored in a list for later disconnection.
      */
+    // CHECKSTYLE:OFF
     private static final class ListenerItem {
         ConnectionParameters _connectionParameters;
-        DynamicValueAdapter _dynamicValueAdapter;
+        DynamicValueAdapter<?, ?> _dynamicValueAdapter;
         Map<String, Object> _parameters;
     }
-    
+    // CHECKSTYLE:ON
+
 }

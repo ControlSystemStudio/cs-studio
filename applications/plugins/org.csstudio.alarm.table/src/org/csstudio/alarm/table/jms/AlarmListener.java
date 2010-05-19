@@ -20,7 +20,9 @@ package org.csstudio.alarm.table.jms;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
@@ -30,93 +32,87 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * Listens for alarm messages and adds incoming messages to the internally hold message list.
  * Clients may register further listeners to provide view-based operations, e.g. sound.
- * 
+ *
  * @author Joerg Penning
  */
 public class AlarmListener implements IAlarmTableListener {
-    
+
     /**
      * The logger used by this listener.
      */
     private final CentralLogger _log = CentralLogger.getInstance();
-    
+
     /**
      * This is the destination for the messages
      */
     private MessageList _messageList;
-    
+
     /**
      * Registered listeners will be notified when a message comes in
      */
     private final List<IAlarmListener> _listeners = new ArrayList<IAlarmListener>();
-    
+
     /**
      * Creates a new alarm message listener.
      */
     public AlarmListener() {
         // Nothing to do
     }
-    
+
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
     public void stop() {
         // Nothing to do
     }
-    
+
     /**
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
-    public void onMessage(final IAlarmMessage message) {
+    public void onMessage(@Nullable final IAlarmMessage message) {
         _log.debug(this, "received: " + message);
-        try {
-            // TODO jp Does null actually show up here?
-            if (message == null) {
-                _log.error(this, "Error processing message (was null)");
-            } else {
-                processAlarmMessage(message);
-                callListeners(message);
-            }
-        } catch (AlarmMessageException e) {
-            _log.error(this, "Error processing message", e);
+        // TODO jp Does null actually show up here?
+        if (message == null) {
+            _log.error(this, "Error processing message (was null)");
+        } else {
+            processAlarmMessage(message);
+            callListeners(message);
         }
     }
-    
-    private void callListeners(final IAlarmMessage message) {
+
+    private void callListeners(@Nonnull final IAlarmMessage message) {
         for (IAlarmListener listener : _listeners) {
             listener.onMessage(message);
         }
     }
-    
-    private void processAlarmMessage(final IAlarmMessage message) throws AlarmMessageException {
-        _log.debug(this, "Received map message: EVENTTIME: " + message.getString("EVENTTIME")
-                   + " NAME: " + message.getString("NAME")); // + " ACK: " + message.getString("ACK"));
+
+    private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
         _messageList.addMessage(new BasicMessage(message.getMap()));
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void setMessageList(final MessageList messageList) {
+    public final void setMessageList(@Nonnull final MessageList messageList) {
         _messageList = messageList;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void registerAlarmListener(final IAlarmListener alarmListener) {
+    public final void registerAlarmListener(@Nonnull final IAlarmListener alarmListener) {
         _listeners.add(alarmListener);
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public void deRegisterAlarmListener(final IAlarmListener alarmListener) {
+    public final void deRegisterAlarmListener(@Nonnull final IAlarmListener alarmListener) {
         _listeners.remove(alarmListener);
     }
-    
+
 }

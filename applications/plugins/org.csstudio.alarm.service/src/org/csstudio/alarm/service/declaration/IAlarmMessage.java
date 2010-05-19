@@ -20,27 +20,25 @@ package org.csstudio.alarm.service.declaration;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 
 /**
  * Is used by the AlarmService to represent a message from DAL or JMS resp.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
 public interface IAlarmMessage {
-    
+
     /**
      * Set of keys for the alarm message.
-     * TODO: MCL support for '-' in enums like in APPLICATION-ID and change APPLICATION_ID
+     * TODO jp support for '-' in enums like in APPLICATION-ID and change APPLICATION_ID
      */
     enum Key {
         EVENTTIME, NAME, SEVERITY, STATUS, FACILITY, HOST, TYPE, VALUE, APPLICATION_ID
     }
-    
+
     /**
      * Set of keys for the alarm message - currently NOT supported
      * beware!!! SEVERITY_OLD translates into the TAG: SEVERITY-OLD !!!
@@ -49,35 +47,42 @@ public interface IAlarmMessage {
     enum NoKey {
         ACK, SEVERITY_OLD, STATUS_OLD, HOST_PHYS, TEXT
     }
-    
+
     /**
      * format of the time string
      */
     String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-    
+
     /**
      * application ID for this application
      */
     String Application_ID = "CSS_AlarmService";
-    
+
     /**
-     * The message essentially is a map from String to String. Here you get the value for the key.
-     * 
+     * The message essentially is a map from String to String. Here you get the value for the key (given as String).
+     *
      * @param key
      * @return value
      * @throws AlarmMessageException
      */
+    @Nonnull
     String getString(@Nonnull final String key) throws AlarmMessageException;
-    
-    String getString(@Nonnull final Key key) throws AlarmMessageException;
-    
+
+    /**
+     * The message essentially is a map from String to String. Here you get the value for the key (given as enum)
+     *
+     * @param key
+     * @return value
+     */
+    String getString(@Nonnull final Key key);
+
     /**
      * The message essentially is a map from String to String. Here you get the whole map.
-     * 
+     * The map is filled with the values of the keys in the enum Key.
+     *
      * @return the map
-     * @throws AlarmMessageException
      */
-    Map<String, String> getMap() throws AlarmMessageException;
+    @Nonnull
+    Map<String, String> getMap();
 
-	MapMessage getMapMessage(MapMessage message) throws AlarmMessageException, JMSException;
 }

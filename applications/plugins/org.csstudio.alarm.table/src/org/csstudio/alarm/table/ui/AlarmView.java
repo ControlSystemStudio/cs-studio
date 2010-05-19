@@ -18,15 +18,23 @@
 package org.csstudio.alarm.table.ui;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import javax.annotation.Nonnull;
+
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
@@ -37,6 +45,7 @@ import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
+import org.csstudio.utility.ldap.model.ContentModel;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -54,9 +63,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
 
 /**
- * Add to the base class {@link LogView}: acknowledge button and combo box, send method for jms
- * acknowledge messages.
- * 
+ * Add to the base class {@link LogView}: acknowledge button and combo box,
+ * send method for jms acknowledge messages.
+ *
  * @see LogView
  * @author jhatje
  * @author $Author$
@@ -64,76 +73,81 @@ import org.eclipse.swt.widgets.TableItem;
  * @since 06.06.2007
  */
 public class AlarmView extends LogView {
-    
+
     public static final String ID = AlarmView.class.getName();
-    
+
     private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
-    
+
     private Button _soundEnableButton;
-    
+
     private Button _ackButton;
-    
+
     private final SoundHandler _soundHandler = new SoundHandler();
-    
+
     /**
      * Creates the view for the alarm log table.
-     * 
+     *
      * @param parent
      */
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(@Nonnull final Composite parent) {
         boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
-        
+
         // Read column names and JMS topic settings from preferences
         _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
                                                            AlarmViewPreferenceConstants.P_STRINGAlarm);
-        
+
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews());
         defineCurrentTopicSet();
-        
+
         // Create UI
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         _parent.setLayout(grid);
-        
+
         createMessageArea(_parent);
-        
+
         Composite logTableManagementComposite = new Composite(_parent, SWT.NONE);
-        
+
         RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
-        
+
         addJmsTopicItems(logTableManagementComposite);
         addAcknowledgeItems(canExecute, logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
         _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
                                                            AlarmViewPreferenceConstants.P_STRINGAlarm);
-        
+
         initializeMessageTable();
-        _pauseButton.addSelectionListener(new SelectionListener() {
-            
+        _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
+
+    }
+
+    @Nonnull
+    private SelectionListener newSelectionListenerForPauseButton() {
+        return new SelectionListener() {
+
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 if (_pauseButton.getSelection()) {
                     _ackButton.setEnabled(false);
                 } else {
                     _ackButton.setEnabled(true);
                 }
-                
+
             }
-            
+
             @Override
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
-        });
-        
+        };
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -143,10 +157,11 @@ public class AlarmView extends LogView {
         _messageTable = null;
         _soundHandler.enableSound(false);
     }
-    
+
     /**
      * {@inheritDoc}
      */
+    @Override
     protected void initializeMessageTable() {
         // Initialize JMS message list
         if (_columnMapping != null) {
@@ -167,7 +182,7 @@ public class AlarmView extends LogView {
             _tableComposite.dispose();
             _tableComposite = null;
         }
-        
+
         _tableComposite = new Composite(_parent, SWT.NONE);
         GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableComposite.setLayoutData(gridData);
@@ -175,59 +190,80 @@ public class AlarmView extends LogView {
         grid2.numColumns = 1;
         _tableComposite.setLayout(grid2);
         _tableViewer = new TableViewer(_tableComposite, SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
-        
+
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
         Font font = _topicSetColumnService.getFont(getCurrentTopicSet());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
-        
+
         GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
-        
+
         String[] columnSet = _topicSetColumnService.getColumnSet(getCurrentTopicSet());
         String[] columnSetWithAck = new String[columnSet.length + 1];
         columnSetWithAck[0] = "ACK,25";
         for (int i = 0; i < columnSet.length; i++) {
             columnSetWithAck[i + 1] = columnSet[i];
         }
-        
+
         MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck, messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
-        
+
+        // TODO jp Init: On each change of the topic set, but only the first time
+        // retrieveInitialStateSynchronously(messageList);
+
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
                                                                            getCurrentTopicSet());
         addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRINGAlarm,
                                     AlarmViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);
         makeActions();
-        
+
         _parent.layout();
-        
+
         // Set initial state for playing sounds based on the state of the sound enable button
         _soundHandler.enableSound(_soundEnableButton.getSelection());
     }
-    
+
+    private void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+        // TODO jp Init: Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
+        final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
+                .getAlarmConfigurationService();
+        final String[] facilityNames = new String[] { "Test" };
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> model = configService
+                .retrieveInitialContentModel(Arrays.asList(facilityNames));
+
+        Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
+        List<PVItem> initItems = new ArrayList<PVItem>();
+        for (String pvName : pvNames) {
+            initItems.add(new PVItem(pvName, messageList));
+        }
+
+        JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
+    }
+
     @Override
     protected MessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();
     }
-    
+
+    // CHECKSTYLE:OFF
     private void addAcknowledgeItems(final boolean canExecute,
-                                     final Composite logTableManagementComposite) {
-        
+                                     @Nonnull final Composite logTableManagementComposite) {
+
         Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
-        
+
         acknowledgeItemGroup.setText(Messages.AlarmView_acknowledgeTitle);
-        
+
         RowLayout layout = new RowLayout();
         acknowledgeItemGroup.setLayout(layout);
-        
+
         _ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
         _ackButton.setLayoutData(new RowData(60, 21));
         _ackButton.setText(Messages.AlarmView_acknowledgeButton);
@@ -235,104 +271,118 @@ public class AlarmView extends LogView {
         final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
         ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
         IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0)
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE0));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE1).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE1).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE1));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE2).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE2).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE2));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE3).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE3).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE3));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE4).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE4).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE4));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE5).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE5).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE5));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE6).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE6).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE6));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE7).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE7).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE7));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE8).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE8).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE8));
-        if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0)
+        }
+        if (prefs.getString(JmsLogPreferenceConstants.VALUE9).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE9));
+        }
         ackCombo.select(4);
-        
-        _ackButton.addSelectionListener(new SelectionListener() {
-            
+
+        _ackButton.addSelectionListener(newSelectionListenerForAckButton(ackCombo));
+    }
+
+    // CHECKSTYLE:ON
+
+    @Nonnull
+    private SelectionListener newSelectionListenerForAckButton(@Nonnull final Combo ackCombo) {
+        return new SelectionListener() {
+
             /**
              * Acknowledge button is pressed for all (selection 0) messages or messages with a
              * special severity (selection 1-3).
              */
-            public void widgetSelected(final SelectionEvent e) {
-                
-                TableItem[] items = _tableViewer.getTable().getItems();
-                AlarmMessage message = null;
-                
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
-                for (TableItem ti : items) {
-                    
+                for (TableItem ti : _tableViewer.getTable().getItems()) {
+
                     if (ti.getData() instanceof AlarmMessage) {
-                        message = (AlarmMessage) ti.getData();
+                        AlarmMessage message = (AlarmMessage) ti.getData();
                         // ComboBox selection for all messages or for a special
                         // severity
                         if (ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message
-                                                                                  .getProperty("SEVERITY")) //$NON-NLS-1$
-                                                                                  || (ackCombo.getItem(ackCombo.getSelectionIndex())
-                                                                                          .equals(Messages.AlarmView_acknowledgeAllDropDown))) {
+                                .getProperty("SEVERITY")) //$NON-NLS-1$
+                                || (ackCombo.getItem(ackCombo.getSelectionIndex())
+                                        .equals(Messages.AlarmView_acknowledgeAllDropDown))) {
                             // add the message only if it is not yet
                             // acknowledged.
-                            if (message.isAcknowledged() == false) {
+                            if (!message.isAcknowledged()) {
                                 msgList.add(message.copy(new AlarmMessage()));
                             }
                         }
-                        
+
                     } else {
                         JmsLogsPlugin.logInfo("unknown item type in table"); //$NON-NLS-1$
                     }
-                    
+
                 }
                 CentralLogger.getInstance().debug(this,
                                                   "Number of msg in list to send: "
-                                                  + msgList.size());
+                                                          + msgList.size());
                 CentralLogger.getInstance().debug(this,
                                                   "Number of msg in table: "
-                                                  + _tableViewer.getTable().getItemCount());
-                
+                                                          + _tableViewer.getTable().getItemCount());
+
                 SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
                 sendAck.schedule();
             }
-            
-            public void widgetDefaultSelected(final SelectionEvent e) {
+
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+                // Nothing to do
             }
-        });
+        };
     }
-    
-    private void addSoundButton(final Composite logTableManagementComposite) {
+
+    private void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
         Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
-        
+
         soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
-        
+
         RowLayout layout = new RowLayout();
         soundButtonGroup.setLayout(layout);
-        
+
         _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);
         _soundEnableButton.setLayoutData(new RowData(60, 21));
         _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
-        
+
         // TODO jp Set initial state for playing sounds based on saved state
         _soundEnableButton.setSelection(true);
-        
+
         _soundEnableButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
-            
-            public void widgetDefaultSelected(final SelectionEvent e) {
+
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
         });
     }
-    
+
     /**
      * Sound is played dependent of the state of the sound enable button. If it is enabled, the
      * so-called sound playing listener (encapsulated here) is registered at the alarm table
@@ -343,50 +393,47 @@ public class AlarmView extends LogView {
      * is recorded in here.
      */
     private final class SoundHandler {
-        
+
         /**
          * Service for playing sounds
          */
         private final IAlarmSoundService _alarmSoundService = JmsLogsPlugin.getDefault()
-        .getAlarmSoundService();
-        
+                .getAlarmSoundService();
+
         /**
          * This listener listens to incoming messages for playing sounds. Each sound handler uses
          * only one sound playing listener and registers it at the appropriate alarm table listener.
          */
         private IAlarmListener _soundPlayingListener = null;
-        
+
         /**
          * Keep track where the sound playing listener is registered
          */
         private IAlarmTableListener _currentAlarmTableListener = null;
-        
+
         public SoundHandler() {
             // Nothing to do
         }
-        
+
+        @Nonnull
         private IAlarmListener getSoundPlayingListener() {
             if (_soundPlayingListener == null) {
                 _soundPlayingListener = new IAlarmListener() {
-                    
+
                     @Override
                     public void stop() {
                         // Nothing to do
                     }
-                    
+
                     @Override
-                    public void onMessage(final IAlarmMessage message) {
-                        try {
-                            _alarmSoundService.playAlarmSound(message.getString("SEVERITY"));
-                        } catch (AlarmMessageException e) {
-                            CentralLogger.getInstance().warn(this, "Error reading message", e);
-                        }
+                    public void onMessage(@Nonnull final IAlarmMessage message) {
+                        _alarmSoundService.playAlarmSound(message.getString(Key.SEVERITY));
                     }
                 };
             }
             return _soundPlayingListener;
         }
-        
+
         public void enableSound(final boolean yes) {
             // Built in a robust way: Deregister always, register at the current alarm table
             // listener.
@@ -395,14 +442,42 @@ public class AlarmView extends LogView {
                 _currentAlarmTableListener = null;
                 CentralLogger.getInstance().debug(this, "Sound deregistered");
             }
-            
+
             if (yes) {
                 _currentAlarmTableListener = getAlarmTableListener();
                 _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
                 CentralLogger.getInstance().debug(this, "Sound registered");
             }
         }
-        
+
     }
-    
+
+    /**
+     * The message list gets updated when the initial state is retrieved.
+     */
+    private static class PVItem implements IAlarmInitItem {
+        // Destination for the messages
+        private final MessageList _messageList;
+        private final String _pvName;
+
+        protected PVItem(@Nonnull final String pvName, @Nonnull final MessageList messageList) {
+            _pvName = pvName;
+            _messageList = messageList;
+        }
+
+        @Override
+        @Nonnull
+        public String getPVName() {
+            return _pvName;
+        }
+
+        @Override
+        public void init(@Nonnull final IAlarmMessage message) {
+            // TODO jp Init: update message list correctly
+            CentralLogger.getInstance().debug(this, "init for pv " + _pvName + ", msg: " + message);
+            _messageList.addMessage(new BasicMessage(message.getMap()));
+        }
+
+    }
+
 }

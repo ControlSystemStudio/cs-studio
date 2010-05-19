@@ -17,28 +17,30 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import javax.annotation.Nonnull;
+
 /**
  * Is used by the AlarmService as callback when an external message arrives.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
 public interface IAlarmListener {
-    
+
     /**
      * This is called when a message is received. You have to provide a listener implementation and
      * register it via the alarm connection.
-     * 
+     *
      * @param message .
      */
-    void onMessage(IAlarmMessage message);
-    
+    void onMessage(@Nonnull IAlarmMessage message);
+
     /**
      * Is called when the connection is disconnected. May be used to end concurrent processing of
      * messages.
      */
     void stop();
-    
+
 }
