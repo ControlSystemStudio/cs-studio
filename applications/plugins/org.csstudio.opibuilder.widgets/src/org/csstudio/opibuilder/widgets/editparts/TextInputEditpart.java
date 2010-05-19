@@ -63,10 +63,8 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 					}else if(value instanceof IStringValue){
 					*/	
 					//}
-					if(getWidgetModel().getPVName().trim().length() == 0)
-						((LabelFigure)figure).setText(text);
-					else {
-						FormatEnum formatEnum = getWidgetModel().getFormat();
+					((LabelFigure)figure).setText(text);
+					FormatEnum formatEnum = getWidgetModel().getFormat();
 						switch (formatEnum){
 						case STRING:
 							Integer[] iString = new Integer[text.length()];
@@ -82,7 +80,6 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
 							break;
 						}
-					}
 					return false;
 				}
 			};			

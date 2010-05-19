@@ -118,10 +118,9 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 
 						if(getExecutionMode() == ExecutionMode.RUN_MODE){
 	
-							if(getWidgetModel().getPVName().trim().length() == 0)
-								((SpinnerFigure)figure).setValue(value);
-							else
-								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);						
+							((SpinnerFigure)figure).setValue(value);
+							
+							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);						
 							return false;
 						}else
 							((SpinnerFigure)figure).setValue(value);
