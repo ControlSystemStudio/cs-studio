@@ -141,9 +141,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         
         @Override
         public void channelStateUpdate(@Nonnull AnyDataChannel channel) {
-            System.out.println("Alarm-Tree node initializer: channelStateUpdate "
-                    + channel.getUniqueName() + "\n               " + System.currentTimeMillis()
-                    + ", state " + channel.getStateInfo());
             _initItem.init(new AlarmMessageDALImpl(channel.getData()));
         }
     }
