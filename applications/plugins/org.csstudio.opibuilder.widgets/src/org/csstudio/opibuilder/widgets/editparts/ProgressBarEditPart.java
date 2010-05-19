@@ -35,6 +35,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 		bar.setShowLabel(model.isShowLabel());
 		bar.setOrigin(model.getOrigin());
 		bar.setOriginIgnored(model.isOriginIgnored());
+		bar.setIndicatorMode(model.isIndicatorMode());
 		return bar;
 
 	}
@@ -118,6 +119,17 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_SHOW_LABEL, showLabelHandler);	
+		
+		IWidgetPropertyChangeHandler indicatorHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
+				slider.setIndicatorMode((Boolean) newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ProgressBarModel.PROP_INDICATOR_MODE, indicatorHandler);	
 		
 		//horizontal
 		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {

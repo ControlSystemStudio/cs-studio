@@ -33,6 +33,8 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 
 	public static final String PROP_ORIGIN_IGNORED= "origin_ignored"; //$NON-NLS-1$
 	
+	public static final String PROP_INDICATOR_MODE= "indicator_mode"; //$NON-NLS-1$
+	
 	/** The default value of the default fill color property. */
 	private static final RGB DEFAULT_FILL_COLOR = new RGB(0,0,255);
 	
@@ -78,7 +80,10 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 				0));
 			
 		addProperty(new BooleanProperty(PROP_ORIGIN_IGNORED, "Origine Ignored", 
-				WidgetPropertyCategory.Behavior , true));	
+				WidgetPropertyCategory.Behavior , true));
+		
+		addProperty(new BooleanProperty(PROP_INDICATOR_MODE, "Indicator Mode", 
+				WidgetPropertyCategory.Display, false));
 	
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));
@@ -128,6 +133,10 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	
 	public boolean isOriginIgnored(){
 		return (Boolean)getPropertyValue(PROP_ORIGIN_IGNORED);
+	}
+	
+	public boolean isIndicatorMode(){
+		return (Boolean)getPropertyValue(PROP_INDICATOR_MODE);
 	}
 	
 	
