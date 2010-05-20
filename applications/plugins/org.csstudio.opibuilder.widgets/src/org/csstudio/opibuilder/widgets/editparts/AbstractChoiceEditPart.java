@@ -201,7 +201,6 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		
 		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
 
-			@Override
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				((AbstractChoiceFigure)figure).setHorizontal((Boolean)newValue);
