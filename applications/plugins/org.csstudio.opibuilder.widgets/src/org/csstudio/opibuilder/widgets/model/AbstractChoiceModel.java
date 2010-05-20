@@ -29,6 +29,9 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 
 	public static final RGB DEFAULT_SELECTED_COLOR = CustomMediaFactory.COLOR_WHITE;
 	
+	/** The ID of the horizontal property. */
+	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
+	
 	public static final String[] DEFAULT_ITEMS = new String[]{"Choice 1", "Choice 2", "Choice 3"};
 	
 	public AbstractChoiceModel() {
@@ -46,6 +49,8 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 				PROP_ITEMS_FROM_PV, "Items From PV", WidgetPropertyCategory.Behavior, true));
 		addProperty(new ColorProperty(PROP_SELECTED_COLOR, "Selected Color", 
 				WidgetPropertyCategory.Display, DEFAULT_SELECTED_COLOR));
+		addProperty(new BooleanProperty(PROP_HORIZONTAL, "Horizontal", 
+				WidgetPropertyCategory.Display, false));	
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -65,5 +70,13 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 	public OPIColor getSelectedColor(){
 		return (OPIColor)getPropertyValue(PROP_SELECTED_COLOR);
 	}
+
+	/**
+	 * @return true if the widget is in horizontal orientation, false otherwise
+	 */
+	public boolean isHorizontal() {
+		return (Boolean) getProperty(PROP_HORIZONTAL).getPropertyValue();
+	}
+	
 
 }

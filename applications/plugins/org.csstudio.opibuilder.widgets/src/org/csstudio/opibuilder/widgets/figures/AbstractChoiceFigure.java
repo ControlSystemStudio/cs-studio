@@ -30,7 +30,8 @@ public abstract class AbstractChoiceFigure extends Figure {
 	private List<IChoiceButtonListener> listeners;
 	
 	private boolean fromSetState = false;
-
+	private boolean isHorizontal = false;
+	
 	protected Color selectedColor = ColorConstants.black;
 
 	
@@ -47,12 +48,23 @@ public abstract class AbstractChoiceFigure extends Figure {
 		super.layout();
 		if(states.size() >0){
 			Rectangle clientArea = getClientArea();
-			int avgHeight = clientArea.height/states.size();
-			int startY = clientArea.y;		
-			for(Object child : getChildren()){
-				((Figure)child).setBounds(new Rectangle(
-						clientArea.x, startY, clientArea.width, avgHeight));
-				startY += avgHeight;
+			if (isHorizontal){
+				int avgWidth = clientArea.width/states.size();
+				int startX = clientArea.x;		
+				for(Object child : getChildren()){
+					((Figure)child).setBounds(new Rectangle(
+							startX, clientArea.y, avgWidth, clientArea.height));
+					startX += avgWidth;
+				}
+			}
+			else {
+				int avgHeight = clientArea.height/states.size();
+				int startY = clientArea.y;		
+				for(Object child : getChildren()){
+					((Figure)child).setBounds(new Rectangle(
+							clientArea.x, startY, clientArea.width, avgHeight));
+					startY += avgHeight;
+				}
 			}
 		}
 	}
@@ -158,6 +170,11 @@ public abstract class AbstractChoiceFigure extends Figure {
 		 * @param value the string value of the state.
 		 */
 		public void buttonPressed(int index, String value);		
+	}
+
+	public void setHorizontal(Boolean newValue) {
+		isHorizontal = newValue;
+		layout();
 	}
 	
 }

@@ -52,6 +52,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		choiceFigure.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont().getFontData()));
 		
+		choiceFigure.setHorizontal((Boolean)(model.getPropertyValue(AbstractChoiceModel.PROP_HORIZONTAL)));
 		if(!model.isItemsFromPV() || getExecutionMode() == ExecutionMode.EDIT_MODE){
 			List<String> items = getWidgetModel().getItems();		
 			if(items != null)
@@ -197,6 +198,18 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		};
 		
 		setPropertyChangeHandler(ChoiceButtonModel.PROP_SELECTED_COLOR, selectedColorHandler);
+		
+		IWidgetPropertyChangeHandler horizontalHandler = new IWidgetPropertyChangeHandler() {
+
+			@Override
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				((AbstractChoiceFigure)figure).setHorizontal((Boolean)newValue);
+				return true;
+			}
+		};
+		
+		setPropertyChangeHandler(AbstractChoiceModel.PROP_HORIZONTAL, horizontalHandler);
 		
 		final IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
