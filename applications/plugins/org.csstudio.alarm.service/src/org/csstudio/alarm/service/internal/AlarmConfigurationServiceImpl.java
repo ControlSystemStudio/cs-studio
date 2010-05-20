@@ -36,6 +36,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchControls;
@@ -46,7 +47,10 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ContentModelExporter;
+import org.csstudio.utility.ldap.model.ExportContentModelException;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
+import org.csstudio.utility.ldap.model.ImportContentModelException;
 import org.csstudio.utility.ldap.model.LdapTreeComponent;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -55,6 +59,7 @@ import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
+
 /**
  * Alarm configuration service implementation
  *
@@ -77,10 +82,11 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
     /**
      * {@inheritDoc}
+     * @throws InvalidNameException
      */
     @Override
     @Nonnull
-    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) {
+    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws InvalidNameException {
 
         final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
             new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
@@ -99,15 +105,12 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
     /**
      * {@inheritDoc}
+     * @throws ImportContentModelException occurs on file not found, io error, or parsing error.
+     * @throws InvalidNameException
      */
     @Override
     @CheckForNull
-    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) {
-
-        return loadProject(filePath);
-    }
-
-    private ContentModel<LdapEpicsAlarmCfgObjectClass> loadProject(final String filePath) {
+    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) throws ImportContentModelException {
 
         try {
             final FileInputStream fstream = new FileInputStream(filePath);
@@ -121,34 +124,44 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
             return createContentModelFromFile(doc);
 
         } catch (final FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ImportContentModelException("File " + filePath + " could not be found.", e);
         } catch (final JDOMException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ImportContentModelException("File " + filePath + " contains parsing errors.", e);
         } catch (final IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            throw new ImportContentModelException("File " + filePath + " could not be parsed due to I/O error.", e);
         }
-        return null;
     }
 
     /**
-     * @param doc
+     * @param doc the xml document model
+     * @throws ImportContentModelException if Rdn or LdapName could not be constructed
      */
-    private ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModelFromFile(final Document doc) {
+    @Nonnull
+    private ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModelFromFile(@Nonnull final Document doc)
+        throws ImportContentModelException {
 
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-            new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
-
+        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+        try {
+            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
+        } catch (final InvalidNameException e) {
+            throw new ImportContentModelException("Component model could not be constructed. Invalid LDAP name for root element.", e);
+        }
         final Element rootElement = doc.getRootElement();
 
         // Leave out the root element
-        final List<Element> elements = rootElement.getContent(new ElementFilter());
+        final List<Element> elements = getChildrenElements(rootElement);
         for (final Element child :  elements) {
             processElement(model, child, model.getRoot());
         }
         return model;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    private List<Element> getChildrenElements(@Nonnull final Element element) {
+        final List<Element> children = element.getContent(new ElementFilter());
+        return children;
     }
 
     /**
@@ -156,47 +169,59 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
      * @param model
      * @param element
      * @param iLdapTreeComponent
+     * @throws ImportContentModelException if Rdn or LdapName could not be constructed
      */
-    private void processElement(final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
-                                final Element element,
-                                final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapParent) {
+    private void processElement(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                @Nonnull final Element element,
+                                @Nonnull final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapParent) throws ImportContentModelException {
 
 
         final String type = element.getName();
         final LdapEpicsAlarmCfgObjectClass oc = LdapEpicsAlarmCfgObjectClass.ROOT.getObjectClassByRdnType(type);
         final String name = element.getAttributeValue("name");
 
+        final List<Rdn> rdns = new ArrayList<Rdn>(ldapParent.getLdapName().getRdns());
         try {
-
-            final List<Rdn> rdns = new ArrayList<Rdn>(ldapParent.getLdapName().getRdns());
             rdns.add(new Rdn(type, name));
-            final LdapName fullName = new LdapName(rdns);
-
-            if (model.getByTypeAndLdapName(oc, fullName.toString()) == null) {
-                final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> newLdapChild =
-                    new LdapTreeComponent<LdapEpicsAlarmCfgObjectClass>(name,
-                            oc,
-                            oc.getNestedContainerClasses(),
-                            ldapParent,
-                            new BasicAttributes(),
-                            fullName);
-                System.out.println("new " + fullName.toString());
-                model.addChild(ldapParent, newLdapChild);
-            }
-            final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapComponent =
-                (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) model.getByTypeAndLdapName(oc, fullName.toString());
-
-            final List<Element> children = element.getContent( new ElementFilter() );
-
-            // cycle through all immediate elements under the rootElement
-            for (final Element child : children) {
-                processElement(model, child, ldapComponent);
-            }
         } catch (final InvalidNameException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (final Exception e) {
-            System.out.println("hallo");
+            throw new ImportContentModelException("Rdn for type=" + type + " and name=" + name + " could not be constructed.", e);
+        }
+        final LdapName fullName = new LdapName(rdns);
+
+        if (model.getByTypeAndLdapName(oc, fullName.toString()) == null) {
+            ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> newLdapChild;
+            try {
+                newLdapChild = new LdapTreeComponent<LdapEpicsAlarmCfgObjectClass>(name,
+                        oc,
+                        oc.getNestedContainerClasses(),
+                        ldapParent,
+                        new BasicAttributes(),
+                        fullName);
+            } catch (final InvalidNameException e) {
+                throw new ImportContentModelException("Component model with LdapName " + fullName + " could not be constructed. Invalid LDAP name.", e);
+
+            }
+            model.addChild(ldapParent, newLdapChild);
+        }
+        final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> ldapComponent =
+            (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) model.getByTypeAndLdapName(oc, fullName.toString());
+
+        final List<Element> children = getChildrenElements(element);
+
+        // cycle through all immediate elements under the rootElement
+        for (final Element child : children) {
+            processElement(model, child, ldapComponent);
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void exportContentModelToXmlFile(@Nonnull final String filePath,
+                                            @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                            @Nullable final String dtdFilePath) throws ExportContentModelException {
+        ContentModelExporter.exportContentModelToXmlFile(filePath, model, dtdFilePath);
+    }
+
 }

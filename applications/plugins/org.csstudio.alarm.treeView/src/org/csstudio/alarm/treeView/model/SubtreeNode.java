@@ -50,6 +50,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
      */
     private final Map<String, IAlarmTreeNode> _childrenPVMap;
 
+
 	/**
 	 * The highest severity of the child nodes.
 	 */
@@ -387,17 +388,17 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	@SuppressWarnings("unchecked")
     @Nonnull
 	public List<ProcessVariableNode> findAllProcessVariableNodes() {
-	    
+
 	    final List<ProcessVariableNode> result = new ArrayList<ProcessVariableNode>();
 	    result.addAll((Collection<? extends ProcessVariableNode>) _childrenPVMap.values());
-	    
+
 	    for (final IAlarmTreeNode child : _childrenSubtreeMap.values()) {
 	        final List<ProcessVariableNode> subList = ((SubtreeNode) child).findAllProcessVariableNodes();
 	        result.addAll(subList);
 	    }
 	    return result;
 	}
-	
+
 	/**
 	 * Returns a collection of the PV nodes (leaf nodes) below this subtree
 	 * node that have unacknowledged alarms.

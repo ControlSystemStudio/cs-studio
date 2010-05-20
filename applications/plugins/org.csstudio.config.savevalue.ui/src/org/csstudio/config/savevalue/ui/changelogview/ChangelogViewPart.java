@@ -34,8 +34,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.savevalue.service.ChangelogDeletionService;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.ChangelogService;
@@ -46,7 +48,8 @@ import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapContentModel;
+import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -187,22 +190,22 @@ public class ChangelogViewPart extends ViewPart {
 									}
 								});
 							} catch (final SaveValueServiceException e) {
-								_log.error(this, "Server reported an error.", e); //$NON-NLS-1$
+								LOG.error("Server reported an error.", e); //$NON-NLS-1$
 								showErrorDialog(Messages.ChangelogViewPart_DeletionServiceError);
 							} catch (final RemoteException e) {
-								_log.error(this, "Communication error.", e); //$NON-NLS-1$
+								LOG.error("Communication error.", e); //$NON-NLS-1$
 								showErrorDialog(Messages.ChangelogViewPart_RemoteCallFailed);
 							}
 						} else {
 							showErrorDialog(Messages.ChangelogViewPart_DeletionNotSupported);
 						}
 					} catch (final RemoteException e) {
-						_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+						LOG.error("Could not connect to RMI registry", e); //$NON-NLS-1$
 						showErrorDialog(
 								Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY +
 								e.getMessage());
 					} catch (final NotBoundException e) {
-						_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
+						LOG.error("Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
 						showErrorDialog(
 								Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
 					}
@@ -229,7 +232,7 @@ public class ChangelogViewPart extends ViewPart {
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(ChangelogViewPart.class);
 
 	/**
 	 * The table viewer for the changelog entries.
@@ -338,17 +341,25 @@ public class ChangelogViewPart extends ViewPart {
 				                                              any(ECON_FIELD_NAME),
 				                                              SearchControls.SUBTREE_SCOPE);
 
-				final LdapContentModel model = new LdapContentModel(result);
+				ContentModel<LdapEpicsControlsObjectClass> model;
+                try {
+                    model = new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
 
-				final List<String> iocNames = new ArrayList<String>(model.getIOCNames());
+                    final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsObjectClass.IOC));
 
-				Collections.sort(iocNames);
+                    Collections.sort(iocNames);
+                    Display.getDefault().asyncExec(new Runnable() {
+                        public void run() {
+                            _iocText.setItems(iocNames.toArray(new String[iocNames.size()]));
+                        }
+                    });
 
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						_iocText.setItems(iocNames.toArray(new String[iocNames.size()]));
-					}
-				});
+                } catch (final InvalidNameException e) {
+                    LOG.error("Content model could not be constructed due to invalid LDAP name for root component.", e); //$NON-NLS-1$
+                    monitor.done();
+                    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
+                }
+
 				monitor.done();
 				return new Status(IStatus.OK, Activator.PLUGIN_ID, ""); //$NON-NLS-1$
 			}
@@ -407,16 +418,16 @@ public class ChangelogViewPart extends ViewPart {
 						}
 					});
 				} catch (final RemoteException e) {
-					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+					LOG.error("Could not connect to RMI registry", e); //$NON-NLS-1$
 					showErrorDialog(
 							Messages.ChangelogViewPart_ERRMSG_RMI_REGISTRY +
 							e.getMessage());
 				} catch (final NotBoundException e) {
-					_log.error(this, "Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
+					LOG.error("Changelog Service not bound in RMI registry", e); //$NON-NLS-1$
 					showErrorDialog(
 							Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE);
 				} catch (final SaveValueServiceException e) {
-					_log.error(this, "Server reported an rrror reading the changelog", e); //$NON-NLS-1$
+					LOG.error("Server reported an rrror reading the changelog", e); //$NON-NLS-1$
 					showErrorDialog(
 							Messages.ChangelogViewPart_ERRMSG_SERVICE_NOT_AVAILABLE +
 							e.getMessage());

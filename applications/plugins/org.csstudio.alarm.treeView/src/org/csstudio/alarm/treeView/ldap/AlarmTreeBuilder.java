@@ -26,7 +26,6 @@ import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
 import java.sql.Date;
-import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -37,23 +36,21 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.ContentModel;
 import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * This class provides the Alarm Tree Mgmt methods to build the alarm tree.
@@ -67,7 +64,9 @@ public final class AlarmTreeBuilder {
 	/**
 	 * The logger that is used by this class.
 	 */
-	private static final CentralLogger LOG = CentralLogger.getInstance();
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeBuilder.class);
+
+	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
 	/**
      * Don't instantiate.
@@ -76,33 +75,16 @@ public final class AlarmTreeBuilder {
         // Empty
     }
 
-    private static String[] retrieveFacilityNames() {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        final String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
-                                                      PreferenceConstants.FACILITIES, "", null);
-        String[] facilityNames;
-        if (facilitiesPref.equals("")) {
-            facilityNames = new String[0];
-        } else {
-            facilityNames = facilitiesPref.split(";");
-        }
-
-        if (facilityNames.length == 0) {
-            LOG.debug(AlarmTreeBuilder.class.getName(), "No facility names selected, using TEST facility.");
-            facilityNames = new String[] { "TEST" };
-        }
-        return facilityNames;
-    }
-
-
     private static void ensureTestFacilityExists(@Nonnull final DirContext ctx) {
         try {
             final LdapName testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
                                                                         OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
+
             try {
+                LDAP_SERVICE.lookup(testFacilityName);
                 ctx.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
-                LOG.info(AlarmTreeBuilder.class.getName(), "TEST facility does not exist in LDAP, creating it.");
+                LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
                 attrs.put("objectClass", LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
@@ -133,7 +115,7 @@ public final class AlarmTreeBuilder {
 
         if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
-            // TODO jp Init set alarm state has to be removed here
+            // TODO (bknerr) : set alarm state has to be removed here
             //AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
             AlarmTreeNodeModifier.setEpicsAttributes(newNode, modelNode.getAttributes());
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
@@ -152,32 +134,25 @@ public final class AlarmTreeBuilder {
         return false;
     }
 
+
     /**
      * Retrieves the alarm tree information for the facilities given in the
      * preferences and builds the alarm tree view data structure.
      * Returns the cancellation status, i.e. true if the build process has been
      * cancelled.
      *
-     * @param rootNode
-     * @param monitor
+     * @param rootNode the root node for the alarm tree
+     * @param model the content model
+     * @param monitor the progress monitor
      * @return false if it has been canceled, true otherwise
      * @throws NamingException
      */
     public static boolean build(@Nonnull final SubtreeNode rootNode,
+                                @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                 @Nullable final IProgressMonitor monitor) throws NamingException {
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
 
         ensureTestFacilityExists(ctx);
-
-        final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
-
-        final String[] facilityNames = retrieveFacilityNames();
-
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-            configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
-
-//        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-//        configService.retrieveInitialContentModelFromFile("D:\\development\\bknerr\\workspace\\org.csstudio.alarm.treeView\\EpicsAlarmCfg.xml");
 
         for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
             createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, ctx, monitor);

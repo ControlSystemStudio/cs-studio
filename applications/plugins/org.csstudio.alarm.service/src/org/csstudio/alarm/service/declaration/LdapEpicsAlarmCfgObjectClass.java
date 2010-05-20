@@ -35,9 +35,6 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
@@ -52,7 +49,7 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  * @author Joerg Rathlev
  */
 public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAlarmCfgObjectClass> {
-    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME, "ou"),
+    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE),
 
     /**
      * The facility object class (efan).
@@ -209,9 +206,13 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    public LdapName getRootValue() throws InvalidNameException {
-        final Rdn rdn = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
-        return new LdapName(Collections.singletonList(rdn));
+    public String getRootName() {
+        return AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
     }
+
+
+
+
+
 
 }

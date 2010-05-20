@@ -35,6 +35,7 @@ import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import java.util.EnumMap;
 import java.util.Map;
 
+import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
 import junit.framework.Assert;
@@ -46,7 +47,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) :
+ * Test content model class and builder.
  *
  * @author bknerr
  * @author $Author$
@@ -76,22 +77,26 @@ public class ContentModelTest {
                                                                                                   OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                                                                                   any(ECON_FIELD_NAME),
                                                                                                   SearchControls.SUBTREE_SCOPE);
-        if (searchResult != null) {
-            MODEL_ONE = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
-        } else {
-            Assert.fail("Model setup failed. Search result is null.");
-        }
+        try {
+            if (searchResult != null) {
+                MODEL_ONE = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+            } else {
+                Assert.fail("Model setup failed. Search result is null.");
+            }
 
-        searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
-                                                                                 ECOM_FIELD_NAME, "EPICS-IOC",
-                                                                                 EFAN_FIELD_NAME, "TEST",
-                                                                                 OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                                                 any(EREN_FIELD_NAME),
-                                                                                 SearchControls.SUBTREE_SCOPE);
-        if (searchResult != null) {
-            MODEL_TWO = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
-        } else {
-            Assert.fail("Model setup failed. Search result is null.");
+            searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
+                                                                                     ECOM_FIELD_NAME, "EPICS-IOC",
+                                                                                     EFAN_FIELD_NAME, "TEST",
+                                                                                     OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+                                                                                     any(EREN_FIELD_NAME),
+                                                                                     SearchControls.SUBTREE_SCOPE);
+            if (searchResult != null) {
+                MODEL_TWO = new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
+            } else {
+                Assert.fail("Model setup failed. Search result is null.");
+            }
+        } catch (final InvalidNameException e) {
+            Assert.fail("Exception when reading model from search result.");
         }
     }
 

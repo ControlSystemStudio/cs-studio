@@ -39,8 +39,6 @@ public class TreeBuilderTest {
 	private SubtreeNode _tree;
 	private SubtreeNode _a;
 	private SubtreeNode _b;
-	private LdapName _nameB;
-
 	/**
 	 * <p>Initializes a tree for testing. The tree will have the following
 	 * structure:</p>
@@ -57,7 +55,7 @@ public class TreeBuilderTest {
 		_a = new SubtreeNode.Builder("a", LdapEpicsAlarmCfgObjectClass.FACILITY).setParent(_tree).build();
 		_b = new SubtreeNode.Builder("b", LdapEpicsAlarmCfgObjectClass.COMPONENT).setParent(_a).build();
 
-		_nameB = new LdapName("ecom=b,efan=a");
+		new LdapName("ecom=b,efan=a");
 	}
 
 	@Test

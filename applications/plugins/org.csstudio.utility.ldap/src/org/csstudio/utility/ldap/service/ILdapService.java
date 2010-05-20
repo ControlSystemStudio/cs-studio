@@ -116,4 +116,14 @@ public interface ILdapService {
     @CheckForNull
     Attributes getAttributes(@Nonnull LdapName ldapName) throws NamingException;
 
+
+    /**
+     * Retrieves the named object from LDAP context.
+     *
+     * @param name the object name
+     * @throws NamingException when a naming exception occurs.
+     */
+    @CheckForNull
+    Object lookup(@Nonnull LdapName name) throws NamingException;
+
 }

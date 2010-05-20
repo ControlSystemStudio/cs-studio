@@ -60,10 +60,10 @@ public class LdapBaseComponent<T extends Enum<T>> implements ILdapBaseComponent<
      * @throws InvalidNameException
      */
     public LdapBaseComponent(@Nonnull final String name,
-                         @Nonnull final T type,
-                         @Nullable final ILdapTreeComponent<T> parent,
-                         @Nullable final Attributes attributes,
-                         @Nullable final LdapName fullName) throws InvalidNameException {
+                             @Nonnull final T type,
+                             @Nullable final ILdapTreeComponent<T> parent,
+                             @Nullable final Attributes attributes,
+                             @Nullable final LdapName fullName) throws InvalidNameException {
         _name = name;
         _type = type;
         _parent = parent;

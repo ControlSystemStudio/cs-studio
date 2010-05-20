@@ -68,6 +68,7 @@ public class AlarmTreeUpdater {
      *            the eventtime of the alarm.
      */
     void applyAlarm(final String name, final Severity severity, final Date eventtime) {
+
         final List<ProcessVariableNode> nodes = findProcessVariableNodes(name);
         for (final ProcessVariableNode node : nodes) {
             final Alarm alarm = new Alarm(name, severity, eventtime);

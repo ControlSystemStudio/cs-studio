@@ -103,7 +103,7 @@ public class LdapReferences {
 
     public Entry getEntry ( final String channelName) {
         //
-        // find and return entry in hastable
+        // find and return entry in hashtable
         //
         return this._ldapEntries.get( channelName);
     }

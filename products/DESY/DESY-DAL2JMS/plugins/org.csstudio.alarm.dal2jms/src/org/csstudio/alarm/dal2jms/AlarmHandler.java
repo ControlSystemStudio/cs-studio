@@ -63,8 +63,6 @@ public class AlarmHandler {
     private final IAlarmConnection _connection;
 
     private final static int JMS_MESSAGE_TYPE_ALARM = 1;
-    private final static int JMS_MESSAGE_TYPE_LOG = 2;
-    private final static int JMS_MESSAGE_TYPE_PUT_LOG = 3;
 
     public AlarmHandler() {
 
@@ -77,16 +75,16 @@ public class AlarmHandler {
                     try {
                         LOG.debug(message.getMap().toString());
 
-                        MapMessage mapMessage = getMapMessage(message);
+                        final MapMessage mapMessage = getMapMessage(message);
                         if (mapMessage != null) {
                             JmsMessage.getInstance()
                                     .sendMessage(JMS_MESSAGE_TYPE_ALARM, mapMessage);
                         } else {
                             LOG.debug("INVALID message !");
                         }
-                    } catch (AlarmMessageException e) {
+                    } catch (final AlarmMessageException e) {
                         LOG.error("Error while creating mapMessage", e);
-                    } catch (JMSException e) {
+                    } catch (final JMSException e) {
                         LOG.error("Error while creating mapMessage", e);
                     }
                 }
@@ -98,22 +96,22 @@ public class AlarmHandler {
                 }
 
             });
-        } catch (AlarmConnectionException e) {
+        } catch (final AlarmConnectionException e) {
             LOG.error("Error. Could not connect.", e);
         }
     }
 
     private MapMessage getMapMessage(final IAlarmMessage message) throws AlarmMessageException,
                                                                  JMSException {
-        MapMessage result = JmsMessage.getInstance().createJmsSession().createMapMessage();
+        final MapMessage result = JmsMessage.getInstance().createJmsSession().createMapMessage();
 
-        for (IAlarmMessage.Key key : Key.values()) {
+        for (final IAlarmMessage.Key key : Key.values()) {
             /*
              * if the value is noTimeStamp or Uninitialized or noMetaData
              * return null -> do NOT create message !
              */
-            String value = message.getString(key);
-            if (value != null && !value.equals("noTimeStamp") && !value.equals("Uninitialized")
+            final String value = message.getString(key);
+            if ((value != null) && !value.equals("noTimeStamp") && !value.equals("Uninitialized")
                     && !value.equals("noMetaData")) {
                 result.setString(key.name(), value);
             } else {

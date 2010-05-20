@@ -19,12 +19,11 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.treeView.ldap;
 
 /**
  * Thrown when an edit operation in the directory fails.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class DirectoryEditException extends Exception {
@@ -36,7 +35,7 @@ public class DirectoryEditException extends Exception {
 
 	/**
 	 * Creates a new exception.
-	 * 
+	 *
 	 * @param message the detail message.
 	 * @param cause the cause.
 	 */

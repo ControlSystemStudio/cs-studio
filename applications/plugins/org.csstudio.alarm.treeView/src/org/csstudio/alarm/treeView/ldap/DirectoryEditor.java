@@ -19,7 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
@@ -76,7 +75,6 @@ public final class DirectoryEditor {
 	private DirectoryEditor() {
 	    // Don't instantiate.
 	}
-
 
 	/**
 	 * Deletes the given node from the directory.

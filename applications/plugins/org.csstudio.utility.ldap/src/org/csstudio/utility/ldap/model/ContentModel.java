@@ -23,6 +23,7 @@
  */
 package org.csstudio.utility.ldap.model;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +34,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -74,9 +77,10 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      * Constructor.
      * @param searchResult .
      * @param objectClassRoot .
+     * @throws InvalidNameException
      */
     public ContentModel(@Nonnull final LdapSearchResult searchResult,
-                        @Nonnull final T objectClassRoot) {
+                        @Nonnull final T objectClassRoot) throws InvalidNameException {
 
         initFields(objectClassRoot);
         addSearchResult(searchResult);
@@ -86,16 +90,18 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     /**
      * Constructor.
      * @param objectClassRoot .
+     * @throws InvalidNameException
      */
-    public ContentModel(@Nonnull final T objectClassRoot) {
+    public ContentModel(@Nonnull final T objectClassRoot) throws InvalidNameException {
         initFields(objectClassRoot);
     }
 
 
     /**
      * @param objectClassRoot
+     * @throws InvalidNameException
      */
-    private void initFields(@Nonnull final T objectClassRoot) {
+    private void initFields(@Nonnull final T objectClassRoot) throws InvalidNameException {
         _cacheByLdapName = new HashMap<String, ILdapBaseComponent<T>>();
 
         _cacheByTypeAndLdapName = initCacheByType(objectClassRoot.getDeclaringClass());
@@ -104,13 +110,17 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         _objectClassRoot = objectClassRoot;
 
+        final Rdn rdn = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, objectClassRoot.getRootName());
+        final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
+
+
         try {
             _treeRoot = new LdapTreeComponent<T>(objectClassRoot.getDescription(),
                                                  objectClassRoot,
                                                  objectClassRoot.getNestedContainerClasses() ,
                                                  null,
                                                  null,
-                                                 objectClassRoot.getRootValue());
+                                                 ldapName);
         } catch (final InvalidNameException e) {
             _log.error("Error creating root node in content model.", e);
         }
@@ -135,7 +145,10 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         try {
             for (final SearchResult row : answerSet) {
 
-                createLdapComponent(row, LdapNameUtils.parseSearchResult(row), _treeRoot);
+                final Attributes attributes = row.getAttributes();
+                createLdapComponent(attributes == null ? new BasicAttributes() : attributes,
+                                    LdapNameUtils.parseSearchResult(row),
+                                    _treeRoot);
             }
         } catch (final IndexOutOfBoundsException iooe) {
           _log.error("Tried to remove a name component with index out of bounds.", iooe);
@@ -146,9 +159,9 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         }
     }
 
-    private void createLdapComponent(@Nonnull final SearchResult row,
-                                     @Nonnull final LdapName fullName,
-                                     @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
+    public void createLdapComponent(@Nonnull final Attributes attributes,
+                                    @Nonnull final LdapName fullName,
+                                    @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
         ILdapTreeComponent<T> parent = root;
 
         final LdapName partialName = LdapNameUtils.removeRdns(fullName,
@@ -180,7 +193,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
                                         oc,
                                         oc.getNestedContainerClasses(),
                                         parent,
-                                        row.getAttributes(),
+                                        attributes,
                                         currentPartialName);
             addChild(parent, newChild);
 
@@ -189,7 +202,7 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
     }
 
 
-    public void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapBaseComponent<T> newChild) {
+    public void addChild(@Nonnull final ILdapTreeComponent<T> parent, @Nonnull final ILdapTreeComponent<T> newChild) {
 
         parent.addChild(newChild);
 

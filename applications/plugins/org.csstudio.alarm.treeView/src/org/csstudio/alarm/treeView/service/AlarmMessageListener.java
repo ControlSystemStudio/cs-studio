@@ -23,6 +23,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
@@ -44,7 +45,7 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * The logger used by this listener.
      */
-    private final CentralLogger _log = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageListener.class);
 
     /**
      * The worker used by this listener.
@@ -96,8 +97,10 @@ public class AlarmMessageListener implements IAlarmListener {
                             wait();
                         }
 
-                        _log.debug(this, "applying update: " + update);
+                        LOG.debug("applying update: " + update);
                         update.apply(_updater);
+                        // TODO (bknerr) : the other way around...
+                        // _updater.apply(update);
                     }
                 } catch (final InterruptedException e) {
                     // nothing to do
@@ -184,7 +187,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
     public void onMessage(@Nonnull final IAlarmMessage message) {
-        _log.debug(this, "received: " + message);
+        LOG.debug("received: " + message);
         processAlarmMessage(message);
     }
 
@@ -194,14 +197,13 @@ public class AlarmMessageListener implements IAlarmListener {
     private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
         final String name = message.getString(Key.NAME);
         if (isAcknowledgement(message)) {
-            _log.debug(this, "received ack: name=" + name);
+            LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
         } else {
             final String severityValue = message.getString(Key.SEVERITY);
             if (severityValue == null) {
-                _log.warn(this,
-                          "Received alarm message which did not contain SEVERITY! Message ignored. Message was: "
-                                  + message);
+                LOG.warn("Received alarm message which did not contain " + Key.SEVERITY.name() +  "! Message ignored. Message was: "
+                         + message);
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
@@ -213,14 +215,11 @@ public class AlarmMessageListener implements IAlarmListener {
             if (eventtime == null) {
                 // eventtime is null if the message did not contain an EVENTTIME
                 // field or if the EVENTTIME could not be parsed.
-                _log
-                        .warn(this,
-                              "Received alarm message which did not contain a valid EVENTTIME, using current time instead. Message was: "
+                LOG.warn("Received alarm message which did not contain a valid " + Key.EVENTTIME.name() + ", using current time instead. Message was: "
                                       + message);
                 eventtime = new Date();
             }
-            _log.debug(this, "received alarm: name=" + name + ", severity=" + severity
-                    + ", eventtime=" + eventtime);
+            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime=" + eventtime);
             _queueWorker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
         }
     }
@@ -229,7 +228,6 @@ public class AlarmMessageListener implements IAlarmListener {
      * Returns whether the given message is an alarm acknowledgement.
      */
     private boolean isAcknowledgement(final IAlarmMessage message) {
-        // TODO jp currently not working, returns always false
         String ack = null;
         try {
             ack = message.getString("ACK");

@@ -194,5 +194,14 @@ public final class LdapServiceImpl implements ILdapService {
         return CONTEXT.getAttributes(ldapName);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public Object lookup(@Nonnull final LdapName name) throws NamingException {
+        return CONTEXT.lookup(name);
+    }
+
 
 }

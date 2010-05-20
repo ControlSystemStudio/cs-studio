@@ -24,7 +24,6 @@
 package org.csstudio.utility.ldap;
 
 import org.csstudio.utility.ldap.model.ContentModelTest;
-import org.csstudio.utility.ldap.reader.LDAPReaderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -37,7 +36,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( {
     LdapNameUtilsTest.class,
-    LDAPReaderTest.class,
     ContentModelTest.class
 })
 

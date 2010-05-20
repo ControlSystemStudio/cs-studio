@@ -49,7 +49,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @param inputElement the input element.
 	 * @return the array of elements to display in the viewer.
 	 */
-	@Override
 	public final Object[] getElements(final Object inputElement) {
 		if (inputElement instanceof SubtreeNode) {
 			return getChildren(inputElement);
@@ -67,7 +66,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return the child element's parent, or {@code null} if it has none or if
 	 * the parent element cannot be computed.
 	 */
-	@Override
 	public final Object getParent(final Object child) {
 		if (child instanceof IAlarmTreeNode) {
 			return ((IAlarmTreeNode)child).getParent();
@@ -80,7 +78,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @param parent the input element.
 	 * @return the children of the input element.
 	 */
-	@Override
 	public final Object[] getChildren(final Object parent) {
 		if (parent instanceof SubtreeNode) {
 			return ((SubtreeNode) parent).getChildren();
@@ -94,7 +91,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return {@code true} if the given element has children, {@code false}
 	 * otherwise.
 	 */
-	@Override
 	public final boolean hasChildren(final Object parent) {
 		if (parent instanceof SubtreeNode) {
 			return ((SubtreeNode) parent).hasChildren();
@@ -105,7 +101,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	/**
 	 * Disposes of this content provider.
 	 */
-	@Override
 	public void dispose() {
 		// nothing to do
 	}
@@ -113,7 +108,6 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	/**
 	 * {@inheritDoc}
 	 */
-	@Override
 	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 		// nothing to do
 	}

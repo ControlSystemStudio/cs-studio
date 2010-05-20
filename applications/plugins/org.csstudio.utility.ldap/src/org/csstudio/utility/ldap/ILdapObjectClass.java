@@ -26,8 +26,6 @@ package org.csstudio.utility.ldap;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
 
 
 /**
@@ -44,10 +42,9 @@ public interface ILdapObjectClass<T extends Enum<T>> {
     /**
      * Returns the root value for the root type.
      * @return the root value.
-     * @throws InvalidNameException
      */
     @Nonnull
-    LdapName getRootValue() throws InvalidNameException;
+    String getRootName();
 
     /**
      * Returns the name of this object class in the directory.

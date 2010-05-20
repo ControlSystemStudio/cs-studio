@@ -87,7 +87,7 @@ public final class AlarmTreeNodeModifier {
      *
      * @param attr the object's attributes.
      * @param node the node on which the alarm must be triggered.
-     * @throws NamingException if something bad happens...
+     * @throws NamingException if an attribute could not be retrieved
      */
     public static void evaluateAttributes(@Nonnull final Attributes attrs,
                                           @Nonnull final ProcessVariableNode node) throws NamingException {
@@ -104,7 +104,7 @@ public final class AlarmTreeNodeModifier {
      * @param attrs
      *            the attributes.
      * @throws NamingException
-     *             if an error occurs.
+     *             if an attribute could not be retrieved.
      */
     public static void setEpicsAttributes(@Nonnull final AbstractAlarmTreeNode node,
                                           @Nonnull final Attributes attrs) throws NamingException {
@@ -162,8 +162,6 @@ public final class AlarmTreeNodeModifier {
      *            the node.
      * @param attrs
      *            the attributes.
-     * @throws NamingException
-     *             if an error occurs.
      */
     static void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
             throws NamingException {

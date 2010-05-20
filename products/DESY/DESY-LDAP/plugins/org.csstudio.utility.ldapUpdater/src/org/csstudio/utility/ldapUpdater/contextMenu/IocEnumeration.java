@@ -35,9 +35,12 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.LdapNameUtils;
@@ -57,6 +60,8 @@ import org.csstudio.utility.ldapUpdater.Activator;
  */
 public class IocEnumeration implements IDynamicParameterValues {
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(IocEnumeration.class);
+
     @Override
     @Nonnull
     public CommandParameterEnumValue[] getEnumerationValues() {
@@ -68,33 +73,40 @@ public class IocEnumeration implements IDynamicParameterValues {
                                                       any(ECON_FIELD_NAME),
                                                       SearchControls.SUBTREE_SCOPE);
 
-        final ContentModel<LdapEpicsControlsObjectClass> model =
-            new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
+        ContentModel<LdapEpicsControlsObjectClass> model;
+        try {
+            model = new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
+            final Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> iocs =
+                model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
 
-        final Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> iocs =
-            model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
+            final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-        final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
+            for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
+                final LdapName ldapName = ioc.getLdapName();
+                final String efanName =
+                    LdapNameUtils.getValueOfRdnType(ldapName,
+                                                    LdapEpicsControlsObjectClass.FACILITY.getRdnType());
 
-        for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
-            final LdapName ldapName = ioc.getLdapName();
-            final String efanName =
-                LdapNameUtils.getValueOfRdnType(ldapName,
-                                                LdapEpicsControlsObjectClass.FACILITY.getRdnType());
+                final HashMap<String, String> map = new HashMap<String, String>();
+                map.put(ECON_FIELD_NAME, ioc.getName());
+                map.put(EFAN_FIELD_NAME, efanName);
+                params.add(new CommandParameterEnumValue(map, ioc.getName()));
+            }
 
-            final HashMap<String, String> map = new HashMap<String, String>();
-            map.put(ECON_FIELD_NAME, ioc.getName());
-            map.put(EFAN_FIELD_NAME, efanName);
-            params.add(new CommandParameterEnumValue(map, ioc.getName()));
+            Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
+                @Override
+                public int compare(@Nonnull final CommandParameterEnumValue arg0, @Nonnull final CommandParameterEnumValue arg1) {
+                    return arg0.getLabel().compareToIgnoreCase(arg1.getLabel());
+                }
+            });
+
+            return params.toArray(new CommandParameterEnumValue[params.size()]);
+
+        } catch (final InvalidNameException e) {
+            LOG.error("Content model could not be constructed. Root element has invalid LDAP name.", e);
+            return new CommandParameterEnumValue[0];
         }
 
-        Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
-            @Override
-            public int compare(@Nonnull final CommandParameterEnumValue arg0, @Nonnull final CommandParameterEnumValue arg1) {
-                return arg0.getLabel().compareToIgnoreCase(arg1.getLabel());
-            }
-        });
-        return params.toArray(new CommandParameterEnumValue[params.size()]);
     }
 
 }

@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -143,9 +144,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                     .registerListener(item._connectionParameters,
                                       item._dynamicValueAdapter,
                                       item._parameters);
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
-        } catch (CommonException e) {
+        } catch (final CommonException e) {
             _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
         }
 
@@ -155,10 +156,15 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor, @Nonnull final IAlarmListener listener) {
 
         // TODO jp the facilities must be given as parameter
-        List<String> facilitiesAsString = new ArrayList<String>();
+        final List<String> facilitiesAsString = new ArrayList<String>();
         facilitiesAsString.add("Test");
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model = _alarmConfigService
-                .retrieveInitialContentModel(facilitiesAsString);
+        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+        try {
+            model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
+        } catch (final InvalidNameException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
             _log.debug(this, "Connecting to " + recordName);

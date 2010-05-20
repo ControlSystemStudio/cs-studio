@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
@@ -91,7 +92,7 @@ public class AlarmView extends LogView {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
+        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
         // Read column names and JMS topic settings from preferences
@@ -102,15 +103,15 @@ public class AlarmView extends LogView {
         defineCurrentTopicSet();
 
         // Create UI
-        GridLayout grid = new GridLayout();
+        final GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         _parent.setLayout(grid);
 
         createMessageArea(_parent);
 
-        Composite logTableManagementComposite = new Composite(_parent, SWT.NONE);
+        final Composite logTableManagementComposite = new Composite(_parent, SWT.NONE);
 
-        RowLayout layout = new RowLayout();
+        final RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
@@ -184,31 +185,31 @@ public class AlarmView extends LogView {
         }
 
         _tableComposite = new Composite(_parent, SWT.NONE);
-        GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+        final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableComposite.setLayoutData(gridData);
-        GridLayout grid2 = new GridLayout();
+        final GridLayout grid2 = new GridLayout();
         grid2.numColumns = 1;
         _tableComposite.setLayout(grid2);
         _tableViewer = new TableViewer(_tableComposite, SWT.MULTI | SWT.FULL_SELECTION | SWT.CHECK);
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        Font font = _topicSetColumnService.getFont(getCurrentTopicSet());
+        final Font font = _topicSetColumnService.getFont(getCurrentTopicSet());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
 
-        GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
+        final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        String[] columnSet = _topicSetColumnService.getColumnSet(getCurrentTopicSet());
-        String[] columnSetWithAck = new String[columnSet.length + 1];
+        final String[] columnSet = _topicSetColumnService.getColumnSet(getCurrentTopicSet());
+        final String[] columnSetWithAck = new String[columnSet.length + 1];
         columnSetWithAck[0] = "ACK,25";
         for (int i = 0; i < columnSet.length; i++) {
             columnSetWithAck[i + 1] = columnSet[i];
         }
 
-        MessageList messageList = getOrCreateCurrentMessageList();
+        final MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck, messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
@@ -234,12 +235,17 @@ public class AlarmView extends LogView {
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
         final String[] facilityNames = new String[] { "Test" };
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model = configService
-                .retrieveInitialContentModel(Arrays.asList(facilityNames));
+        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+        try {
+            model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+        } catch (final InvalidNameException e) {
+            // TODO (jp)
+            e.printStackTrace();
+        }
 
-        Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
-        List<PVItem> initItems = new ArrayList<PVItem>();
-        for (String pvName : pvNames) {
+        final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
+        final List<PVItem> initItems = new ArrayList<PVItem>();
+        for (final String pvName : pvNames) {
             initItems.add(new PVItem(pvName, messageList));
         }
 
@@ -257,11 +263,11 @@ public class AlarmView extends LogView {
     private void addAcknowledgeItems(final boolean canExecute,
                                      @Nonnull final Composite logTableManagementComposite) {
 
-        Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
+        final Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         acknowledgeItemGroup.setText(Messages.AlarmView_acknowledgeTitle);
 
-        RowLayout layout = new RowLayout();
+        final RowLayout layout = new RowLayout();
         acknowledgeItemGroup.setLayout(layout);
 
         _ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
@@ -270,7 +276,7 @@ public class AlarmView extends LogView {
         _ackButton.setEnabled(canExecute);
         final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
         ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
-        IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();
+        final IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();
         if (prefs.getString(JmsLogPreferenceConstants.VALUE0).trim().length() > 0) {
             ackCombo.add(prefs.getString(JmsLogPreferenceConstants.VALUE0));
         }
@@ -317,11 +323,11 @@ public class AlarmView extends LogView {
              * special severity (selection 1-3).
              */
             public void widgetSelected(@Nonnull final SelectionEvent e) {
-                List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
-                for (TableItem ti : _tableViewer.getTable().getItems()) {
+                final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
+                for (final TableItem ti : _tableViewer.getTable().getItems()) {
 
                     if (ti.getData() instanceof AlarmMessage) {
-                        AlarmMessage message = (AlarmMessage) ti.getData();
+                        final AlarmMessage message = (AlarmMessage) ti.getData();
                         // ComboBox selection for all messages or for a special
                         // severity
                         if (ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message
@@ -347,7 +353,7 @@ public class AlarmView extends LogView {
                                                   "Number of msg in table: "
                                                           + _tableViewer.getTable().getItemCount());
 
-                SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
+                final SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
                 sendAck.schedule();
             }
 
@@ -358,11 +364,11 @@ public class AlarmView extends LogView {
     }
 
     private void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
-        Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
+        final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
 
-        RowLayout layout = new RowLayout();
+        final RowLayout layout = new RowLayout();
         soundButtonGroup.setLayout(layout);
 
         _soundEnableButton = new Button(soundButtonGroup, SWT.TOGGLE);

@@ -22,7 +22,9 @@
 
 package org.csstudio.alarm.treeView.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -33,7 +35,7 @@ public class SeverityTest {
 
 	@Test
 	public void testIsAlarm() throws Exception {
-		// All severities except NO_ALARM are alarms.		
+		// All severities except NO_ALARM are alarms.
 		assertFalse(Severity.NO_ALARM.isAlarm());
 		assertTrue(Severity.INVALID.isAlarm());
 		assertTrue(Severity.MINOR.isAlarm());
@@ -42,9 +44,12 @@ public class SeverityTest {
 
 	@Test
 	public void testOrder() throws Exception {
+
+	    // FIXME (jpenning) (bknerr) : Don't rely on ordering of enums : ANTIPATTERN
+
 		// The order should be:
 		// INVALID >  MAJOR > MINOR > NO_ALARM
-		
+
 		assertTrue(Severity.INVALID.compareTo(Severity.INVALID) == 0);
 		assertTrue(Severity.INVALID.compareTo(Severity.MAJOR) > 0);
 		assertTrue(Severity.INVALID.compareTo(Severity.MINOR) > 0);
@@ -65,14 +70,14 @@ public class SeverityTest {
 		assertTrue(Severity.NO_ALARM.compareTo(Severity.MINOR) < 0);
 		assertTrue(Severity.NO_ALARM.compareTo(Severity.NO_ALARM) == 0);
 	}
-	
+
 	@Test
 	public void testParseSeverity() throws Exception {
 		assertSame(Severity.MAJOR, Severity.parseSeverity("MAJOR"));
 		assertSame(Severity.MINOR, Severity.parseSeverity("MINOR"));
 		assertSame(Severity.INVALID, Severity.parseSeverity("INVALID"));
 		assertSame(Severity.NO_ALARM, Severity.parseSeverity("NO_ALARM"));
-		
+
 		// unknown strings will return NO_ALARM
 		assertSame(Severity.NO_ALARM, Severity.parseSeverity("foo"));
 	}

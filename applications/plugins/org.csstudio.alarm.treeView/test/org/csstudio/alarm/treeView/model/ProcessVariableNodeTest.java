@@ -28,7 +28,7 @@ public class ProcessVariableNodeTest {
     }
 
     @Test
-    public void testGetters() throws InterruptedException {
+    public void testGetters() {
         assertEquals("A node", _node.getName());
         assertSame(_subtreeNode, _node.getParent());
         assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, _node.getObjectClass());

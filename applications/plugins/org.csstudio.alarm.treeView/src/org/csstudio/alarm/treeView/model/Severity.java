@@ -21,12 +21,16 @@
  */
  package org.csstudio.alarm.treeView.model;
 
+import javax.annotation.Nullable;
+
+
 /**
  * Represents the severity of an alarm.
  *
  * @author Joerg Rathlev
  */
 public enum Severity {
+    // FIXME (jpenning) (bknerr) : don't rely on ordering of enums! ANTI-PATTERN
 
     /**
      * Uninitialized or otherwise unknown state.
@@ -62,8 +66,13 @@ public enum Severity {
 	 * @param severityString the severity represented as a string value.
 	 * @return the severity represented by the given string.
 	 */
-	public static Severity parseSeverity(final String severityString) {
+	public static Severity parseSeverity(@Nullable final String severityString) {
+	    if (severityString == null) {
+	        // TODO (jpenning) : shouldn't be possible
+	        return NO_ALARM;
+	    }
 		try {
+		    // TODO (jpenning) : really? mapping unknown severity to no alarm? Please check
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
             return NO_ALARM;

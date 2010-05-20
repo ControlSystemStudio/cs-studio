@@ -24,6 +24,8 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import javax.annotation.Nullable;
+
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IWorkbench;
@@ -35,7 +37,7 @@ import org.eclipse.ui.PlatformUI;
 
 /**
  * Action that opens the Alarm Tree view in the CSS workbench.
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -47,24 +49,26 @@ public class ShowTreeView implements IWorkbenchWindowActionDelegate {
 	 * {@inheritDoc}
 	 */
 	public void dispose() {
+	    // EMPTY
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final IWorkbenchWindow window) {
+	public void init(@Nullable final IWorkbenchWindow window) {
+	       // EMPTY
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void run(final IAction action) {
-		IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
+	public final void run(@Nullable final IAction action) {
+		final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        final IWorkbenchPage page = window.getActivePage();
 	    try {
 	        page.showView(AlarmTreeView.getID());
-	    } catch (PartInitException e) {
+	    } catch (final PartInitException e) {
 	        e.printStackTrace();
 	    }
 	}
@@ -72,7 +76,9 @@ public class ShowTreeView implements IWorkbenchWindowActionDelegate {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void selectionChanged(final IAction action, final ISelection selection) {
+	public void selectionChanged(@Nullable final IAction action,
+	                             @Nullable final ISelection selection) {
+	       // EMPTY
 	}
 
 }

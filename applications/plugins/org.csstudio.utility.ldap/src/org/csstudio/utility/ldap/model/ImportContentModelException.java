@@ -23,54 +23,24 @@
  */
 package org.csstudio.utility.ldap.model;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
- * Interface for the structural component for the content model tree.
+ * Exception occurring while importing an LDAP tree XML file.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 30.04.2010
- * @param <T> Enum type of possible LDAP structural components
+ * @since 18.05.2010
  */
-public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapBaseComponent<T> {
+public class ImportContentModelException extends Exception {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Retrieves the list of children of the current component (but without children subtrees).
-     * @return a collection of direct children components
+     * Constructor.
      */
-    @Nonnull
-    Collection<ILdapTreeComponent<T>> getDirectChildren();
-
-    /**
-     * Retrieves a child component with the given nameKey
-     * @param name .
-     * @return the child with the specified name
-     */
-    @CheckForNull
-    ILdapTreeComponent<T> getChild(@Nonnull String nameKey);
-
-    /**
-     * Adds the given component as child.
-     * @param child the new child
-     */
-    void addChild(@Nonnull ILdapTreeComponent<T> child);
-
-    /**
-     * Removes the child with the given name (and hence its complete subtree).
-     * @param name .
-     */
-    void removeChild(@Nonnull String name);
-
-    @Nonnull
-    Set<T> getSubComponentTypes();
-
-    @Nonnull
-    Map<String, ILdapTreeComponent<T>> getChildrenByType(@Nonnull T type);
+    public ImportContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
+        super(message, e);
+    }
 }

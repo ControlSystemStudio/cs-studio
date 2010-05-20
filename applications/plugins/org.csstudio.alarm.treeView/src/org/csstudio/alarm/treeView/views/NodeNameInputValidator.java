@@ -21,56 +21,33 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap.model;
+package org.csstudio.alarm.treeView.views;
 
-import java.util.Collection;
-import java.util.Map;
-import java.util.Set;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.eclipse.jface.dialogs.IInputValidator;
 
 /**
- * Interface for the structural component for the content model tree.
+ * Input validator for alarm tree names.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 30.04.2010
- * @param <T> Enum type of possible LDAP structural components
+ * @since 20.05.2010
  */
-public interface ILdapTreeComponent<T extends Enum<T>> extends ILdapBaseComponent<T> {
+final class NodeNameInputValidator implements IInputValidator {
+    public String isValid(final String newText) {
+        if (newText.equals("")) {
+            return "Please enter a name.";
+        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
+            return "The name cannot begin or end with whitespace.";
+        }
 
-    /**
-     * Retrieves the list of children of the current component (but without children subtrees).
-     * @return a collection of direct children components
-     */
-    @Nonnull
-    Collection<ILdapTreeComponent<T>> getDirectChildren();
+        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
+            if (newText.contains(forbiddenString)) {
+                return "The name must not contain the substring or character '" + forbiddenString + "'!";
+            }
+        }
+        return null; // input is valid
 
-    /**
-     * Retrieves a child component with the given nameKey
-     * @param name .
-     * @return the child with the specified name
-     */
-    @CheckForNull
-    ILdapTreeComponent<T> getChild(@Nonnull String nameKey);
-
-    /**
-     * Adds the given component as child.
-     * @param child the new child
-     */
-    void addChild(@Nonnull ILdapTreeComponent<T> child);
-
-    /**
-     * Removes the child with the given name (and hence its complete subtree).
-     * @param name .
-     */
-    void removeChild(@Nonnull String name);
-
-    @Nonnull
-    Set<T> getSubComponentTypes();
-
-    @Nonnull
-    Map<String, ILdapTreeComponent<T>> getChildrenByType(@Nonnull T type);
+    }
 }

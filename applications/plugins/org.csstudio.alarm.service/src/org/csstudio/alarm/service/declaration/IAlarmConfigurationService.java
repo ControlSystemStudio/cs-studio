@@ -26,8 +26,12 @@ package org.csstudio.alarm.service.declaration;
 import java.util.List;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ExportContentModelException;
+import org.csstudio.utility.ldap.model.ImportContentModelException;
 
 
 /**
@@ -45,9 +49,10 @@ public interface IAlarmConfigurationService {
      *
      * @param facilityNames the list of the simple names of the facilities.
      * @return the content model
+     * @throws InvalidNameException
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames);
+    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws InvalidNameException;
 
 
     /**
@@ -55,8 +60,22 @@ public interface IAlarmConfigurationService {
      *
      * @param the filePath to the xml file
      * @return the content model
+     * @throws ImportContentModelException  occurs on file not found, io error, or parsing error
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath);
+    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) throws ImportContentModelException;
+
+
+    /**
+     * Exports the given content model to an xml file.
+     * @param filePath the filePath to the new xml file.
+     * @param model the content model to export
+     * @param dtdFilePath the xml structure of the export file
+     *
+     * @throws ExportContentModelException error on trying to write the xml file
+     */
+    void exportContentModelToXmlFile(@Nonnull final String filePath,
+                                     @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                     @Nullable final String dtdFilePath)  throws ExportContentModelException ;
 
 }
