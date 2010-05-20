@@ -479,7 +479,6 @@ public class AlarmView extends LogView {
 
         @Override
         public void init(@Nonnull final IAlarmMessage message) {
-            // TODO jp Init: update message list correctly
             CentralLogger.getInstance().debug(this, "init for pv " + _pvName + ", msg: " + message);
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }

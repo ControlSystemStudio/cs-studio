@@ -147,7 +147,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveSeverityAsString() {
         String result;
-        if (hasValidMetaData() && (_anyData.getSeverity() != null)) {
+        if (hasValidMetaData() || (_anyData.getSeverity() == null)) {
             result = "noMetaData";
         } else {
             result = getSeverityAsString(_anyData.getSeverity());
@@ -157,6 +157,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String getSeverityAsString(@Nonnull final Severity severity) {
+        // TODO jp use Severity enum here
         String result = null;
 
         if (severity.hasValue()) {

@@ -141,9 +141,11 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
         @Override
         public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
-            // TODO jp Review access to channel
+            // TODO jp Review access to channel (DISABLED)
+            // It is not sufficient to check for isConnected, in the channelStateUpdate the anyData object is not accessible.
+            // Currently there is no way to immediately retrieve the alarm state.
             if (channel.getProperty().isConnected()) {
-                _initItem.init(new AlarmMessageDALImpl(channel.getData()));
+//                _initItem.init(new AlarmMessageDALImpl(channel.getData()));
             }
         }
     }

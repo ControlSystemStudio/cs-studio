@@ -203,7 +203,7 @@ public class AlarmMessageListener implements IAlarmListener {
             final String severityValue = message.getString(Key.SEVERITY);
             if (severityValue == null) {
                 LOG.warn("Received alarm message which did not contain " + Key.SEVERITY.name() +  "! Message ignored. Message was: "
-                         + message);
+                                  + message);
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
@@ -228,6 +228,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * Returns whether the given message is an alarm acknowledgement.
      */
     private boolean isAcknowledgement(final IAlarmMessage message) {
+        // TODO jp DAL impl currently not working, returns always false
         String ack = null;
         try {
             ack = message.getString("ACK");
