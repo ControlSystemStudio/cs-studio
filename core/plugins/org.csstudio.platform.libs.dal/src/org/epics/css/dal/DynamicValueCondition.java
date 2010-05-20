@@ -34,18 +34,18 @@ import org.epics.css.dal.simple.Severity;
  */
 public class DynamicValueCondition implements Severity
 {
-	private EnumSet<DynamicValueState> states;
-	private Timestamp timestamp;
-	private String description;
+	private final EnumSet<DynamicValueState> states;
+	private final Timestamp timestamp;
+	private final String description;
 
 	/**
 	 * Creates new condition.
 	 * @param states a set of stated defining the condition
 	 * @param timestamp the tiemstammp of condition
-	 * @param description a short description of condition 
+	 * @param description a short description of condition
 	 */
-	public DynamicValueCondition(EnumSet<DynamicValueState> states,
-	    Timestamp timestamp, String description)
+	public DynamicValueCondition(final EnumSet<DynamicValueState> states,
+	    Timestamp timestamp, final String description)
 	{
 		super();
 
@@ -60,10 +60,11 @@ public class DynamicValueCondition implements Severity
 
 	/**
 	 * Creates new condition.
-	 * @deprecated use the other constructor: {@link DynamicValueCondition#DynamicValueCondition(EnumSet, Timestamp, String)} 
+	 * @deprecated use the other constructor: {@link DynamicValueCondition#DynamicValueCondition(EnumSet, Timestamp, String)}
 	 */
-	public DynamicValueCondition(EnumSet<DynamicValueState> states,
-	    long timestamp, String description)
+	@Deprecated
+    public DynamicValueCondition(final EnumSet<DynamicValueState> states,
+	    final long timestamp, final String description)
 	{
 		this(states, new Timestamp(timestamp,0),description);
 	}
@@ -169,30 +170,30 @@ public class DynamicValueCondition implements Severity
 	}
 
 	public DynamicValueCondition deriveConditionWithStates(
-	    DynamicValueState... states)
+	    final DynamicValueState... states)
 	{
 		EnumSet<DynamicValueState> s = EnumSet.copyOf(this.states);
 
-		for (int i = 0; i < states.length; i++) {
-			s.add(states[i]);
+		for (DynamicValueState state : states) {
+			s.add(state);
 		}
 
 		return new DynamicValueCondition(s, null, description);
 	}
 
 	public DynamicValueCondition deriveConditionWithoutStates(
-	    DynamicValueState... states)
+	    final DynamicValueState... states)
 	{
 		EnumSet<DynamicValueState> s = EnumSet.copyOf(this.states);
 
-		for (int i = 0; i < states.length; i++) {
-			s.remove(states[i]);
+		for (DynamicValueState state : states) {
+			s.remove(state);
 		}
 
 		return new DynamicValueCondition(s, null, description);
 	}
 
-	public boolean containsStates(DynamicValueState... states)
+	public boolean containsStates(final DynamicValueState... states)
 	{
 		for (int i = 0; i < states.length; i++) {
 			if (!this.states.contains(states[i])) {
@@ -202,11 +203,11 @@ public class DynamicValueCondition implements Severity
 
 		return true;
 	}
-	
-	public boolean containsAnyOfStates(DynamicValueState... states)
+
+	public boolean containsAnyOfStates(final DynamicValueState... states)
 	{
-		for (int i = 0; i < states.length; i++) {
-			if (this.states.contains(states[i])) {
+		for (DynamicValueState state : states) {
+			if (this.states.contains(state)) {
 				return true;
 			}
 		}
@@ -214,7 +215,7 @@ public class DynamicValueCondition implements Severity
 		return false;
 	}
 
-	public boolean areStatesEqual(DynamicValueCondition condition)
+	public boolean areStatesEqual(final DynamicValueCondition condition)
 	{
 		if (condition == null) {
 			return false;
@@ -230,7 +231,7 @@ public class DynamicValueCondition implements Severity
 			return false;
 		}
 	}
-	
+
 	@Override
 	public String toString() {
 		StringBuilder sb= new StringBuilder(256);
@@ -250,7 +251,7 @@ public class DynamicValueCondition implements Severity
 
 	public String descriptionToString() {
         final String result;
-        
+
         if (description != null) {
             result = description;
         } else {
@@ -261,7 +262,8 @@ public class DynamicValueCondition implements Severity
 
 	public boolean hasValue() {
 		// TODO is this OK?
-		return !containsStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
+	    // 2010-05-19 (jp DESY) changed from containsStates to containsAnyOfStates
+		return !containsAnyOfStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
 	}
 
 	public boolean isInvalid() {
