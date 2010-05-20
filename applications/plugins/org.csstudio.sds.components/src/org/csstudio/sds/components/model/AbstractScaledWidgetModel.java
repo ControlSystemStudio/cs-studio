@@ -49,9 +49,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true, false);
+	    addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.DISPLAY, DEFAULT_VALUE, true, PROP_TOOLTIP);
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, true, true, PROP_COLOR_BACKGROUND);
 
-		addDoubleProperty(PROP_VALUE, "Value", WidgetPropertyCategory.BEHAVIOR, DEFAULT_VALUE, false);
 
 		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.SCALE, DEFAULT_MAX, false);
 

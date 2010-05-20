@@ -169,30 +169,27 @@ public final class BargraphModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, DEFAULT_FILL, false);
 
-		// Colors
-		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL_COLOR, false, AbstractWidgetModel.PROP_COLOR_BACKGROUND);
-		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.DISPLAY, DEFAULT_FILLBACKGROUND_COLOR, false, PROP_DEFAULT_FILL_COLOR);
-		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.DISPLAY, true, false);
+	    addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL, true, PROP_COLOR_FOREGROUND);
+		addColorProperty(PROP_DEFAULT_FILL_COLOR, "Fill Color", WidgetPropertyCategory.DISPLAY, DEFAULT_FILL_COLOR, false, PROP_FILL);
+		addColorProperty(PROP_FILLBACKGROUND_COLOR, "Color Fillbackground", WidgetPropertyCategory.DISPLAY, DEFAULT_FILLBACKGROUND_COLOR, false, PROP_TRANSPARENT);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false, PROP_FILLBACKGROUND_COLOR);
 
-		// Levels
+		addBooleanProperty(PROP_TRANSPARENT, "Transparent Background", WidgetPropertyCategory.FORMAT, true, true, PROP_COLOR_BACKGROUND);
+
 		addDoubleProperty(PROP_MAX, "Maximum", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[6], false);
 		addDoubleProperty(PROP_MIN, "Minimum", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[0], false);
 		addArrayOptionProperty(PROP_SHOW_SCALE, "Scale", WidgetPropertyCategory.SCALE, SHOW_LABELS, DEFAULT_SHOW_SCALE, false);
+		addIntegerProperty(PROP_SCALE_SECTION_COUNT, "Scale Sections", WidgetPropertyCategory.SCALE, DEFAULT_SECTION_COUNT, 1, Integer.MAX_VALUE, false, PROP_ORIENTATION);
+		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.SCALE, SHOW_LABELS, DEFAULT_SHOW_MARKS, false);
 		addDoubleProperty(PROP_HIHI_LEVEL, "Level HIHI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[5], false);
 		addDoubleProperty(PROP_HI_LEVEL, "Level HI", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[4], false);
 		addDoubleProperty(PROP_LO_LEVEL, "Level LO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[2], false);
 		addDoubleProperty(PROP_LOLO_LEVEL, "Level LOLO", WidgetPropertyCategory.SCALE, DEFAULT_LEVELS[1], false);
-
-		// Show_Value
 		addBooleanProperty(PROP_SHOW_ONLY_VALUE, "Show only value", WidgetPropertyCategory.SCALE, false, false);
-
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal Orientation", WidgetPropertyCategory.DISPLAY, DEFAULT_ORIENTATION_HORIZONTAL, false);
-		addArrayOptionProperty(PROP_SHOW_MARKS, "Tickmarks", WidgetPropertyCategory.SCALE, SHOW_LABELS, DEFAULT_SHOW_MARKS, false);
-
-		addIntegerProperty(PROP_SCALE_SECTION_COUNT, "Scale Sections", WidgetPropertyCategory.DISPLAY, DEFAULT_SECTION_COUNT, 1, Integer.MAX_VALUE, false);
 		addBooleanProperty(PROP_SHOW_VALUES, "Scale Caption", WidgetPropertyCategory.SCALE, DEFAULT_SHOW_VALUES, false);
+
+
 
 	}
 
