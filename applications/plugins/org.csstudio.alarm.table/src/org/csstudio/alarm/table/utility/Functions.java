@@ -17,10 +17,11 @@ import org.eclipse.core.runtime.Path;
 
 /**
  * Collection of functions that can be used in Rhino scripts.
- * 
+ *
  * @author swende
- * 
+ *
  */
+// TODO jp Still in use in preferences
 public class Functions {
 	private static Player _mp3Player;
 
@@ -32,7 +33,7 @@ public class Functions {
 		return _sound;
 	}
 
-	public static void set_sound(boolean _sound) {
+	public static void set_sound(final boolean _sound) {
 		Functions._sound = _sound;
 	}
 
@@ -45,7 +46,7 @@ public class Functions {
 
 	/**
 	 * Play a MP3 file.
-	 * 
+	 *
 	 * @param path
 	 *            the Workspace path
 	 */
@@ -75,7 +76,7 @@ public class Functions {
 
 	/**
 	 * Play a MP3.
-	 * 
+	 *
 	 * @param stream
 	 *            a MP3 file stream
 	 */

@@ -199,17 +199,15 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private String retrieveValueAsString() {
         String result;
         if (_anyData.getSeverity().hasValue()) {
-            System.out.println("Severity " + _anyData.getSeverity().toString());
-            System.out.println("Severity " + _anyData.getSeverity().hasValue());
+//            System.out.println("Severity " + _anyData.getSeverity().toString());
+//            System.out.println("Severity " + _anyData.getSeverity().hasValue());
             try {
-                System.out.println("Value " + _anyData.stringValue());
+                result = _anyData.stringValue();
+//                System.out.println("Value " + result);
             } catch (Exception e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+//                System.out.println("Exception while analyzing _anyData.stringValue()" + e.getMessage());
+                result = "-.--";
             }
-            result = "-.--";
-//            result = _anyData.stringValue();
-
         } else {
             result = "value undefined";
         }

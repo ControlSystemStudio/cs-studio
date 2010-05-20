@@ -32,6 +32,7 @@ import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
@@ -181,7 +182,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
     			_imageCache.put(name, image);
     			return image;
 		    }catch (final NullPointerException e) {
-		        System.out.println("NullPointerException:"+name );
+		        CentralLogger.getInstance().error(this, "Error while loading image " + name, e);
             }
 		    return null;
 		}
