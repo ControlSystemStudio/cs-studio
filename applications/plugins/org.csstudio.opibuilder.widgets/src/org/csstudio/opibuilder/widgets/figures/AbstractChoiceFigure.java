@@ -174,7 +174,7 @@ public abstract class AbstractChoiceFigure extends Figure {
 
 	public void setHorizontal(Boolean newValue) {
 		isHorizontal = newValue;
-		layout();
+		revalidate();
 	}
 	
 }
