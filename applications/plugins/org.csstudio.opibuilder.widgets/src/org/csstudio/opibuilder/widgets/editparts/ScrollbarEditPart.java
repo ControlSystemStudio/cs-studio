@@ -1,12 +1,10 @@
 package org.csstudio.opibuilder.widgets.editparts;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.widgets.figures.IValueChangeListener;
 import org.csstudio.opibuilder.widgets.figures.ScrollbarFigure;
 import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.platform.data.INumericMetaData;
@@ -15,8 +13,6 @@ import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.RangeModel;
-import org.eclipse.draw2d.ScrollBar;
 
 /**
  * The controller of scrollbar widget.
@@ -29,13 +25,6 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	private PVListener pvLoadLimitsListener;
 	private INumericMetaData meta = null;
 	
-	/**
-	 * All double value properties can converted to integer value by multiplying
-	 * this number. 
-	 */
-	private int multiplyFactor = 1;
-	
-	private boolean innerUpdate;
 
 	@Override
 	public ScrollBarModel getWidgetModel() {
@@ -70,60 +59,29 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 		}
 	}
 	
-	private void updateMutiplyFactor(IFigure figure, double value){
-		int currentPrecision = (int) Math.log10(multiplyFactor);
-		String valueString = Double.toString(value);
-		int dotPosition = valueString.indexOf(".");
-		if(dotPosition < 0)
-			return;
-		int newPrecision = valueString.length() - dotPosition-1; 
-		if(currentPrecision > newPrecision)
-			return;
-		int oldMultiplyFactor = multiplyFactor;
-		multiplyFactor = (int) Math.pow(10, newPrecision);		
-		resetScrollbarWithNewMultiplyFactor(figure, oldMultiplyFactor, multiplyFactor);
-	}
 	
-	private void resetScrollbarWithNewMultiplyFactor(IFigure figure, int oldFactor, int newFactor){
-		if(figure == null || !(figure instanceof ScrollBar))
-			return;
-		ScrollBar scrollBar = (ScrollBar) getFigure();
-		scrollBar.setMaximum(scrollBar.getMaximum()*newFactor/oldFactor);
-		scrollBar.setMinimum(scrollBar.getMinimum()*newFactor/oldFactor);
-		scrollBar.setStepIncrement(scrollBar.getStepIncrement()*newFactor/oldFactor);
-		scrollBar.setPageIncrement(scrollBar.getPageIncrement()*newFactor/oldFactor);
-		scrollBar.setExtent(scrollBar.getExtent()*newFactor/oldFactor);
-	}
+	
 	
 	
 	@Override
 	protected IFigure doCreateFigure() {
 		ScrollbarFigure scrollBar = new ScrollbarFigure();
 		ScrollBarModel model = getWidgetModel();
-		updateMutiplyFactor(null, model.getMaximum());
-		updateMutiplyFactor(null, model.getMinimum());
-		updateMutiplyFactor(null, model.getPageIncrement());
-		updateMutiplyFactor(null, model.getStepIncrement());
-		updateMutiplyFactor(null, model.getBarLength());
 		
-		scrollBar.setMaximum((int) ((model.getMaximum() + model.getBarLength()) * multiplyFactor));
-		scrollBar.setMinimum((int) (model.getMinimum() * multiplyFactor));
-		scrollBar.setStepIncrement((int) (model.getStepIncrement() * multiplyFactor));
-		scrollBar.setPageIncrement((int) (model.getPageIncrement() * multiplyFactor));		
-		scrollBar.setExtent((int) (model.getBarLength() * multiplyFactor));
 		
+		scrollBar.setMaximum(model.getMaximum());
+		scrollBar.setMinimum(model.getMinimum());
+		scrollBar.setStepIncrement(model.getStepIncrement());
+		scrollBar.setPageIncrement(model.getPageIncrement());		
+		scrollBar.setExtent(model.getBarLength());
+		scrollBar.setShowValueTip(model.isShowValueTip());
 		scrollBar.setHorizontal(model.isHorizontal());
 
 		if (getExecutionMode() == ExecutionMode.RUN_MODE){
-			scrollBar.addPropertyChangeListener(RangeModel.PROPERTY_VALUE, 
-					new PropertyChangeListener() {			
-						public void propertyChange(PropertyChangeEvent evt) {
-							if(innerUpdate){
-								innerUpdate = false;
-								return;
-							}
-							setPVValue(ScrollBarModel.PROP_PVNAME, 
-								(((Integer)evt.getNewValue()).doubleValue())/multiplyFactor);
+			scrollBar.addValueChangeListener(new IValueChangeListener() {
+				
+				public void valueChanged(double newValue) {
+					setPVValue(ScrollBarModel.PROP_PVNAME, newValue);					
 				}
 			});
 		}
@@ -134,7 +92,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	protected void registerPropertyChangeHandlers() {
-		((ScrollBar)getFigure()).setEnabled(getWidgetModel().isEnabled() && 
+		((ScrollbarFigure)getFigure()).setEnabled(getWidgetModel().isEnabled() && 
 				(getExecutionMode() == ExecutionMode.RUN_MODE));		
 		
 		removeAllPropertyChangeHandlers(AbstractWidgetModel.PROP_ENABLED);
@@ -157,10 +115,8 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 					final IFigure refreshableFigure) {
 				if(newValue == null)
 					return false;
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				innerUpdate = true;
-				figure.setValue((int) (ValueUtil.getDouble((IValue)newValue) * multiplyFactor));
-				innerUpdate = false;
+				 ((ScrollbarFigure) refreshableFigure).
+				 	setValue(ValueUtil.getDouble((IValue)newValue));
 				return false;
 			}
 		};
@@ -171,11 +127,8 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);	
-				figure.setMinimum((int) (((Double)newValue)*multiplyFactor));
-				figure.setEnabled(getWidgetModel().isEnabled() && 
-						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
+				((ScrollbarFigure) refreshableFigure).setMinimum((Double)newValue);
+				
 				return false;
 			}
 		};
@@ -186,12 +139,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
-				figure.setMaximum((int) (
-						((Double)newValue + getWidgetModel().getBarLength())*multiplyFactor));
-				figure.setEnabled(getWidgetModel().isEnabled() && 
-						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
+				((ScrollbarFigure) refreshableFigure).setMaximum((Double)newValue);
 				return false;
 			}
 		};
@@ -203,9 +151,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
-				figure.setPageIncrement((int) (((Double)newValue)*multiplyFactor));
+				((ScrollbarFigure) refreshableFigure).setPageIncrement((Double)newValue);
 				return false;
 			}
 		};
@@ -216,9 +162,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
-				figure.setStepIncrement((int) (((Double)newValue)*multiplyFactor));
+				((ScrollbarFigure) refreshableFigure).setStepIncrement((Double)newValue);
 				return false;
 			}
 		};
@@ -229,17 +173,22 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				updateMutiplyFactor(refreshableFigure, (Double) newValue);				
-				figure.setExtent((int) (((Double)newValue)*multiplyFactor));
-				figure.setMaximum((int)
-						((getWidgetModel().getMaximum() + (Double)newValue)*multiplyFactor));
-				figure.setEnabled(getWidgetModel().isEnabled() && 
-						getExecutionMode() == ExecutionMode.RUN_MODE && figure.isEnabled());
+				((ScrollbarFigure) refreshableFigure).setExtent((Double)newValue);
 				return false;
 			}
 		};
 		setPropertyChangeHandler(ScrollBarModel.PROP_BAR_LENGTH, barLengthHandler);
+		
+		//value tip
+		IWidgetPropertyChangeHandler valueTipHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue,
+					final IFigure refreshableFigure) {
+				((ScrollbarFigure) refreshableFigure).setShowValueTip((Boolean)newValue);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(ScrollBarModel.PROP_SHOW_VALUE_TIP, valueTipHandler);
 		
 		
 		//horizontal
@@ -247,8 +196,7 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue,
 					final IFigure refreshableFigure) {
-				ScrollBar figure = (ScrollBar) refreshableFigure;
-				
+				((ScrollbarFigure) refreshableFigure).setHorizontal((Boolean)newValue);				
 				ScrollBarModel model = getWidgetModel();
 				if((Boolean) newValue) //from vertical to horizontal
 					model.setLocation(model.getLocation().x - model.getSize().height/2 + model.getSize().width/2,
@@ -258,7 +206,6 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);					
 				
 				model.setSize(model.getSize().height, model.getSize().width);
-				figure.setHorizontal((Boolean)newValue);
 				return false;
 			}
 		};
@@ -281,12 +228,12 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public void setValue(Object value) {
 		if(value instanceof Double)
-			((ScrollBar)getFigure()).setValue((Integer)value);
+			((ScrollbarFigure)getFigure()).setValue((Integer)value);
 	}
 	
 	@Override
-	public Integer getValue() {
-		return ((ScrollBar)getFigure()).getValue();
+	public Double getValue() {
+		return ((ScrollbarFigure)getFigure()).getValue();
 	}
 
 	

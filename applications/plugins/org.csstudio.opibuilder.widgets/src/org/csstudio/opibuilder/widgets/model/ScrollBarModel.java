@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 
 /**
  *The model of scroll bar widget.
@@ -36,6 +37,8 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
 	
+	public static final String PROP_SHOW_VALUE_TIP = "show_value_tip"; //$NON-NLS-1$	
+	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
 	
@@ -49,6 +52,7 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	
 	public ScrollBarModel() {
 		setSize(120, 20);
+		setForegroundColor(CustomMediaFactory.COLOR_BLACK);
 	}
 	
 	
@@ -75,6 +79,9 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, true));
+		
+		addProperty(new BooleanProperty(PROP_SHOW_VALUE_TIP, "Show Value Tip",
+				WidgetPropertyCategory.Display, true));
 		
 	}	
 
@@ -127,6 +134,10 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 	 */
 	public boolean isLimitsFromPV() {
 		return (Boolean) getProperty(PROP_LIMITS_FROM_PV).getPropertyValue();
+	}
+	
+	public boolean isShowValueTip() {
+		return (Boolean) getProperty(PROP_SHOW_VALUE_TIP).getPropertyValue();
 	}
 	
 	@Override

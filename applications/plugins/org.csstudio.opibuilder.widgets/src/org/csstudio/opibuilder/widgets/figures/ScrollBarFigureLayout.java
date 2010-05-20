@@ -117,7 +117,7 @@ public void layout(IFigure parent) {
 		thumb.setVisible(trackBounds.height > thumbHeight);
 
 	int thumbY = (int) (trackBounds.y + (trackBounds.height - thumbHeight) 
-					* (scrollBar.getValue() - min) / valueRange);
+					* (scrollBar.getCoercedValue() - min) / valueRange);
 
 	Rectangle thumbBounds =  new Rectangle(
 		trackBounds.x,

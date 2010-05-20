@@ -13,6 +13,7 @@ import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
 import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.figures.RadioBoxFigure;
+import org.csstudio.opibuilder.widgets.figures.ScrollbarFigure;
 import org.csstudio.opibuilder.widgets.figures.TabFigure;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
@@ -42,7 +43,7 @@ public class WidgetFigureTest {
 	    shell.open();
 	   // shell.setBackground(CustomMediaFactory.getInstance().getColor(0,0,0));
 		final LightweightSystem lws = new LightweightSystem(shell);
-		RadioBoxFigureTest testFigure = new RadioBoxFigureTest();
+		ScrollbarFigureTest testFigure = new ScrollbarFigureTest();
 		lws.setContents(testFigure);
 		
 	    shell.setText("Widget Figure Test");
@@ -327,6 +328,28 @@ class RadioBoxFigureTest extends Figure {
 	@Override
 	protected void layout() {
 		radioBox.setBounds(bounds.getCopy().shrink(20, 20));
+		super.layout();
+	}
+	
+	
+}
+
+
+
+class ScrollbarFigureTest extends Figure {
+	
+	private ScrollbarFigure scrollbar;
+
+	public ScrollbarFigureTest() {
+		scrollbar = new ScrollbarFigure();
+		//scrollbar.setHorizontal(true);
+		scrollbar.setValue(100);
+		scrollbar.setMaximum(10000);
+		add(scrollbar);		
+	}
+	@Override
+	protected void layout() {
+		scrollbar.setBounds(bounds.getCopy().shrink(20, 20));
 		super.layout();
 	}
 	

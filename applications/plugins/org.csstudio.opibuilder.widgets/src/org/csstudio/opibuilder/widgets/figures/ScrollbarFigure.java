@@ -58,53 +58,56 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ScrollbarFigure extends Figure implements Orientable {
 	
-	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("############.##"); //$NON-NLS-1$
 
+
+	private static final DecimalFormat DECIMAL_FORMAT = new DecimalFormat("############.##"); //$NON-NLS-1$ 
+	
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GRAY); 
 	
 	private final static Color LABEL_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(255, 255, 150)); 
-	
+			new RGB(255, 255, 150));
 	private boolean horizontal;
-	
+	private boolean showValueTip = true;
 	private Label label;
 	private OPITimer labelTimer;
-	private Runnable timerTask;
 	
+	private Runnable timerTask;
+
 	private double value = 50;
 
 	private double minimum = 0;
-
+	
 	private double maximum = 100;
 	
 	private double extent = 30;
-	
 	private double stepIncrement = 1;
+	
 	private double pageIncrement = 10;
 	
 	private List<IValueChangeListener> listeners;
-	
 	private IFigure thumb;
 	private Clickable pageUp, pageDown;
+	
+	
 	private Clickable buttonUp, buttonDown;
 	
 	/**
 	 * Transposes from vertical to horizontal if needed.
 	 */
 	protected final Transposer transposer = new Transposer();
-	
+
 	/**
 	 * Listens to mouse events on the scrollbar to take care of scrolling.
 	 */
 	protected ThumbDragger thumbDragger = new ThumbDragger();
-
+	
 	private boolean valueIncreased;
 	
 	private static final Color COLOR_TRACK = FigureUtilities.mixColors(
 			ColorConstants.white,
 			ColorConstants.button);
-	
+
 	public ScrollbarFigure() {
 		
 		listeners = new ArrayList<IValueChangeListener>();
@@ -114,93 +117,38 @@ public class ScrollbarFigure extends Figure implements Orientable {
 		initializeParts();
 		
 	}
-
-	/**
-	 * 
-	 */
-	private void initializeListeners() {
-		setRequestFocusEnabled(true);
-		setFocusTraversable(true);		
-		addKeyListener(new KeyListener() {
-				
-				public void keyReleased(KeyEvent ke) {				
-				}
-				
-				public void keyPressed(KeyEvent ke) {
-					if((ke.keycode == SWT.ARROW_UP && !isHorizontal()) || 
-							(ke.keycode == SWT.ARROW_LEFT && isHorizontal()))
-						stepUp();
-					else if((ke.keycode == SWT.ARROW_DOWN && !isHorizontal()) || 
-							(ke.keycode == SWT.ARROW_RIGHT && isHorizontal()))
-						stepDown();
-					else if((ke.keycode == SWT.PAGE_DOWN && !isHorizontal())||
-							(ke.keycode == SWT.PAGE_UP && isHorizontal()))
-						pageDown();
-					else if((ke.keycode == SWT.PAGE_UP && !isHorizontal())||
-							(ke.keycode == SWT.PAGE_DOWN && isHorizontal()))						
-						pageUp();
-				}
-			});
-			
-		addFocusListener(new FocusListener() {
-				
-				public void focusLost(FocusEvent fe) {
-					repaint();
-				}
-				
-				public void focusGained(FocusEvent fe) {
-					repaint();
-				}
-		});
-	}
 	
-	@Override
-	protected void layout() {
-		super.layout();
-		if(label.isVisible()){
-			Rectangle thumbBounds = thumb.getBounds();
-			Dimension size = label.getPreferredSize();
-			if(isHorizontal())
-				label.setBounds(new Rectangle(
-						thumbBounds.x + (valueIncreased ? -size.width : thumbBounds.width), 
-						thumbBounds.y, size.width, size.height));
-			else
-				label.setBounds(new Rectangle(thumbBounds.x, 
-						thumbBounds.y + (valueIncreased ? -size.height : thumbBounds.height),
-						size.width, size.height));
-		}
-	}
-	
-	@Override
-	protected void paintClientArea(Graphics graphics) {
-		super.paintClientArea(graphics);
-		if(hasFocus()){
-			graphics.setForegroundColor(ColorConstants.black);
-			graphics.setBackgroundColor(ColorConstants.white);
-
-			Rectangle area = getClientArea();					
-			graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
-		}
+	public void addValueChangeListener(IValueChangeListener listener){
+		if(listener != null)
+			listeners.add(listener);
 	}
 	
 	/**
-	 * Initilization of the ScrollBar. Sets the Scrollbar to have a ScrollBarLayout with 
-	 * vertical orientation. Creates the Figures that make up the components of the ScrollBar.
+	 * Creates the default 'Down' ArrowButton for the ScrollBar.
 	 * 
+	 * @return the down button
 	 * @since 2.0
 	 */
-	protected void initializeParts() {
-		setLayoutManager(new ScrollBarFigureLayout(transposer));
-		setUpClickable(createDefaultUpButton());
-		setDownClickable(createDefaultDownButton());
-		setPageUp(createPageUp());
-		setPageDown(createPageDown());
-		setThumb(createDefaultThumb());
-		label = new Label();
-		label.setBackgroundColor(LABEL_COLOR);
-		label.setBorder(new LineBorder(GRAY_COLOR));	
-		label.setVisible(false);
-		add(label, "Label"); //$NON-NLS-1$
+	protected Clickable createDefaultDownButton() {
+		Button buttonDown = new ArrowButton();
+		buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
+		return buttonDown;
+	}
+	
+	/**
+	 * Creates the Scrollbar's "thumb", the draggable Figure that indicates the Scrollbar's 
+	 * position.
+	 * 
+	 * @return the thumb figure
+	 * @since 2.0
+	 */
+	protected IFigure createDefaultThumb() {
+		Panel thumb = new Panel();
+		thumb.setMinimumSize(new Dimension(6, 6));
+		thumb.setBackgroundColor(ColorConstants.button);
+
+		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST));
+		return thumb;
 	}
 	
 
@@ -214,18 +162,6 @@ public class ScrollbarFigure extends Figure implements Orientable {
 		Button buttonUp = new ArrowButton();
 		buttonUp.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
 		return buttonUp;
-	}
-
-	/**
-	 * Creates the default 'Down' ArrowButton for the ScrollBar.
-	 * 
-	 * @return the down button
-	 * @since 2.0
-	 */
-	protected Clickable createDefaultDownButton() {
-		Button buttonDown = new ArrowButton();
-		buttonDown.setBorder(new ButtonBorder(ButtonBorder.SCHEMES.BUTTON_SCROLLBAR));
-		return buttonDown;
 	}
 
 	/**
@@ -261,101 +197,246 @@ public class ScrollbarFigure extends Figure implements Orientable {
 		return clickable;
 	}
 
-	/**
-	 * Creates the Scrollbar's "thumb", the draggable Figure that indicates the Scrollbar's 
-	 * position.
-	 * 
-	 * @return the thumb figure
-	 * @since 2.0
-	 */
-	protected IFigure createDefaultThumb() {
-		Panel thumb = new Panel();
-		thumb.setMinimumSize(new Dimension(6, 6));
-		thumb.setBackgroundColor(ColorConstants.button);
+	private void fireManualValueChange(double value) {
+		for(IValueChangeListener listener : listeners)
+			listener.valueChanged(value);
+	}
 
-		thumb.setBorder(new SchemeBorder(SchemeBorder.SCHEMES.BUTTON_CONTRAST));
-		return thumb;
+	public double getCoercedValue(){
+		return value < minimum ? minimum : (value > maximum ? maximum : value);
 	}
 
 	
 	
 	
 	/**
-	 * Sets the ScrollBar's thumb to the passed Figure. The thumb is the draggable component 
-	 * of the ScrollBar that indicates the ScrollBar's position.
-	 * 
-	 * @param figure the thumb figure
-	 * @since 2.0
+	 * @return the extent
 	 */
-	public void setThumb(IFigure figure) {
-		figure.addMouseListener(new MouseListener.Stub(){
-			@Override
-			public void mousePressed(MouseEvent me) {
+	public double getExtent() {
+		return extent;
+	}
+	/**
+	 * @return the maximum
+	 */
+	public double getMaximum() {
+		return maximum;
+	}
+
+	/**
+	 * @return the minimum
+	 */
+	public double getMinimum() {
+		return minimum;
+	}
+
+
+	
+	/**
+	 * @return the pageIncrement
+	 */
+	public final double getPageIncrement() {
+		return pageIncrement;
+	}
+
+	/**
+	 * @return the stepIncrement
+	 */
+	public final double getStepIncrement() {
+		return stepIncrement;
+	}
+
+	public double getValue() {
+		return value;
+	}
+	/**
+	 * Returns the size of the range of allowable values.
+	 * @return the value range
+	 */
+	protected double getValueRange() {
+		return getMaximum() - getExtent() - getMinimum();
+	}
+
+	
+
+	/**
+	 * @param up
+	 */
+	private void hookFocusListener(Clickable up) {
+		up.addActionListener(new ActionListener() {
+			
+			public void actionPerformed(ActionEvent event) {
 				if(!hasFocus())
-					requestFocus();
+					requestFocus();				
 			}
 		});
-		if (thumb != null) {
-			thumb.removeMouseListener(thumbDragger);
-			thumb.removeMouseMotionListener(thumbDragger);
-			remove(thumb);
-		}
-		thumb = figure;
-		if (thumb != null) {
-			thumb.addMouseListener(thumbDragger);
-			thumb.addMouseMotionListener(thumbDragger);
-			add(thumb, ScrollBarLayout.THUMB);
-		}
 	}
-	/**
-	 * Sets the pagedown button to the passed Clickable. The pagedown button is the figure 
-	 * between the down arrow button and the ScrollBar's thumb figure.
-	 * 
-	 * @param down the page down figure
-	 * @since 2.0
-	 */
-	public void setPageDown(Clickable down) {
-		hookFocusListener(down);
 
-		if (pageDown != null)
-			remove(pageDown);
-		pageDown = down;
-		if (pageDown != null) {
-			pageDown.setFiringMethod(Clickable.REPEAT_FIRING);
-			pageDown.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					pageDown();
-				}
-			});
-			add(down, ScrollBarLayout.PAGE_DOWN);
-		}
-	}
 
 	/**
-	 * Sets the pageup button to the passed Clickable. The pageup button is the rectangular 
-	 * figure between the down arrow button and the ScrollBar's thumb figure.
 	 * 
-	 * @param up the page up figure
-	 * @since 2.0
 	 */
-	public void setPageUp(Clickable up) {
-		hookFocusListener(up);
-
-		if (pageUp != null)
-			remove(pageUp);
-		pageUp = up;
-		if (pageUp != null) {
-			pageUp.setFiringMethod(Clickable.REPEAT_FIRING);
-			pageUp.addActionListener(new ActionListener() {
-				public void actionPerformed(ActionEvent event) {
-					pageUp();
+	private void initializeListeners() {
+		setRequestFocusEnabled(true);
+		setFocusTraversable(true);		
+		addKeyListener(new KeyListener() {
+				
+				public void keyPressed(KeyEvent ke) {
+					if((ke.keycode == SWT.ARROW_UP && !isHorizontal()) || 
+							(ke.keycode == SWT.ARROW_LEFT && isHorizontal()))
+						stepUp();
+					else if((ke.keycode == SWT.ARROW_DOWN && !isHorizontal()) || 
+							(ke.keycode == SWT.ARROW_RIGHT && isHorizontal()))
+						stepDown();
+					else if((ke.keycode == SWT.PAGE_DOWN && !isHorizontal())||
+							(ke.keycode == SWT.PAGE_UP && isHorizontal()))
+						pageDown();
+					else if((ke.keycode == SWT.PAGE_UP && !isHorizontal())||
+							(ke.keycode == SWT.PAGE_DOWN && isHorizontal()))						
+						pageUp();
+				}
+				
+				public void keyReleased(KeyEvent ke) {				
 				}
 			});
-			add(pageUp, ScrollBarLayout.PAGE_UP);
-		}
+			
+		addFocusListener(new FocusListener() {
+				
+				public void focusGained(FocusEvent fe) {
+					repaint();
+				}
+				
+				public void focusLost(FocusEvent fe) {
+					repaint();
+				}
+		});
+	}
+
+	
+	/**
+	 * Initilization of the ScrollBar. Sets the Scrollbar to have a ScrollBarLayout with 
+	 * vertical orientation. Creates the Figures that make up the components of the ScrollBar.
+	 * 
+	 * @since 2.0
+	 */
+	protected void initializeParts() {
+		setLayoutManager(new ScrollBarFigureLayout(transposer));
+		setUpClickable(createDefaultUpButton());
+		setDownClickable(createDefaultDownButton());
+		setPageUp(createPageUp());
+		setPageDown(createPageDown());
+		setThumb(createDefaultThumb());
+		label = new Label();
+		label.setBackgroundColor(LABEL_COLOR);
+		label.setBorder(new LineBorder(GRAY_COLOR));	
+		label.setVisible(false);
+		add(label, "Label"); //$NON-NLS-1$
 	}
 
 
+	private void initLabelTimer(){
+		if(labelTimer == null){
+			labelTimer = new OPITimer();
+			timerTask = new Runnable() {
+				
+				public void run() {
+					Display.getDefault().asyncExec(new Runnable() {
+						
+						public void run() {
+							label.setVisible(false);
+						}
+					});					
+				}
+			};
+		}			
+	}
+
+
+	/**
+	 * @return the horizontal
+	 */
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+	
+	/**
+	 * @return the showValueTip
+	 */
+	public boolean isShowValueTip() {
+		return showValueTip;
+	}
+
+	@Override
+	protected void layout() {
+		super.layout();
+		if(label.isVisible()){
+			Rectangle thumbBounds = thumb.getBounds();
+			Dimension size = label.getPreferredSize();
+			if(isHorizontal())
+				label.setBounds(new Rectangle(
+						thumbBounds.x + (valueIncreased ? -size.width : thumbBounds.width), 
+						thumbBounds.y, size.width, size.height));
+			else
+				label.setBounds(new Rectangle(thumbBounds.x, 
+						thumbBounds.y + (valueIncreased ? -size.height : thumbBounds.height),
+						size.width, size.height));
+		}
+	}
+	
+	/**Set Value from manual control of the widget. Value will be coerced in range.
+	 * @param value
+	 */
+	public void manualSetValue(double value){
+		value = Math.max(getMinimum(), Math.min(getMaximum(), value));
+		if (this.value == value)
+			return;
+		if(showValueTip){
+			valueIncreased = value > this.value;
+				
+			label.setText("" + DECIMAL_FORMAT.format(value));
+			label.setVisible(true);
+			initLabelTimer();
+			if(!labelTimer.isDue())
+				labelTimer.reset();
+			else
+				labelTimer.start(timerTask, 1500);
+		}
+		setValue(value);
+		fireManualValueChange(getValue());
+		
+	}
+	public void pageDown(){
+		manualSetValue(getValue() + pageIncrement);
+	}
+	
+	public void pageUp(){
+		manualSetValue(getValue() - pageIncrement);
+	}
+
+	@Override
+	protected void paintClientArea(Graphics graphics) {
+		super.paintClientArea(graphics);
+		if(hasFocus()){
+			graphics.setForegroundColor(ColorConstants.black);
+			graphics.setBackgroundColor(ColorConstants.white);
+
+			Rectangle area = getClientArea();					
+			graphics.drawFocus(area.x, area.y, area.width-1, area.height-1);
+		}
+	}
+	
+	/**
+	 * @see IFigure#revalidate()
+	 */
+	public void revalidate() {
+		// Override default revalidate to prevent going up the parent chain. Reason for this 
+		// is that preferred size never changes unless orientation changes.
+		invalidate();
+		getUpdateManager().addInvalidFigure(this);
+	}
+	
+	public void setDirection(int direction) {
+		
+	}
 	
 	/**
 	 * Sets the Clickable that represents the down arrow of the Scrollbar to <i>down</i>.
@@ -383,6 +464,166 @@ public class ScrollbarFigure extends Figure implements Orientable {
 			add(buttonDown, ScrollBarLayout.DOWN_ARROW);
 		}
 	}
+	
+	/**
+	 * @see IFigure#setEnabled(boolean)
+	 */
+	public void setEnabled(boolean value) {
+		if (isEnabled() == value)
+			return;
+		super.setEnabled(value);
+		setChildrenEnabled(value);
+		if (thumb != null) {
+			thumb.setVisible(value);
+			revalidate();
+		}
+	}
+
+	/**
+	 * @param extent the extent to set
+	 */
+	public void setExtent(double extent) {
+		this.extent = extent;
+		revalidate();
+	}
+	
+	
+	/**
+	 * Sets the orientation of the ScrollBar. If <code>true</code>, the Scrollbar will have 
+	 * a horizontal orientation. If <code>false</code>, the scrollBar will have a vertical 
+	 * orientation.
+	 * 
+	 * @param value <code>true</code> if the scrollbar should be horizontal
+	 * @since 2.0
+	 */
+	public final void setHorizontal(boolean value) {
+		setOrientation(value ? HORIZONTAL : VERTICAL);
+	}
+
+	/**
+	 * @param maximum the maximum to set
+	 */
+	public void setMaximum(double maximum) {
+		revalidate();
+		this.maximum = maximum;
+	}
+
+	/**
+	 * @param minimum the minimum to set
+	 */
+	public void setMinimum(double minimum) {
+		this.minimum = minimum;
+		revalidate();
+
+	}
+
+	/**
+	 * @see Orientable#setOrientation(int)
+	 */
+	public void setOrientation(int value) {
+		if ((value == HORIZONTAL) == isHorizontal())
+			return;
+		horizontal = value == HORIZONTAL;
+		transposer.setEnabled(horizontal);
+
+		setChildrenOrientation(value);
+		super.revalidate();
+	}
+
+	/**
+	 * Sets the pagedown button to the passed Clickable. The pagedown button is the figure 
+	 * between the down arrow button and the ScrollBar's thumb figure.
+	 * 
+	 * @param down the page down figure
+	 * @since 2.0
+	 */
+	public void setPageDown(Clickable down) {
+		hookFocusListener(down);
+
+		if (pageDown != null)
+			remove(pageDown);
+		pageDown = down;
+		if (pageDown != null) {
+			pageDown.setFiringMethod(Clickable.REPEAT_FIRING);
+			pageDown.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					pageDown();
+				}
+			});
+			add(down, ScrollBarLayout.PAGE_DOWN);
+		}
+	}
+
+	public void setPageIncrement(double pageIncrement) {
+		this.pageIncrement = pageIncrement;
+	}
+
+	/**
+	 * Sets the pageup button to the passed Clickable. The pageup button is the rectangular 
+	 * figure between the down arrow button and the ScrollBar's thumb figure.
+	 * 
+	 * @param up the page up figure
+	 * @since 2.0
+	 */
+	public void setPageUp(Clickable up) {
+		hookFocusListener(up);
+
+		if (pageUp != null)
+			remove(pageUp);
+		pageUp = up;
+		if (pageUp != null) {
+			pageUp.setFiringMethod(Clickable.REPEAT_FIRING);
+			pageUp.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent event) {
+					pageUp();
+				}
+			});
+			add(pageUp, ScrollBarLayout.PAGE_UP);
+		}
+	}
+
+	/**
+	 * @param showValueTip the showValueTip to set
+	 */
+	public void setShowValueTip(boolean showValueTip) {
+		this.showValueTip = showValueTip;
+	}
+
+	/**
+	 * @param stepIncrement the stepIncrement to set
+	 */
+	public final void setStepIncrement(double stepIncrement) {
+		this.stepIncrement = stepIncrement;
+	}
+
+	/**
+	 * Sets the ScrollBar's thumb to the passed Figure. The thumb is the draggable component 
+	 * of the ScrollBar that indicates the ScrollBar's position.
+	 * 
+	 * @param figure the thumb figure
+	 * @since 2.0
+	 */
+	public void setThumb(IFigure figure) {
+		figure.addMouseListener(new MouseListener.Stub(){
+			@Override
+			public void mousePressed(MouseEvent me) {
+				if(!hasFocus())
+					requestFocus();
+			}
+		});
+		if (thumb != null) {
+			thumb.removeMouseListener(thumbDragger);
+			thumb.removeMouseMotionListener(thumbDragger);
+			remove(thumb);
+		}
+		thumb = figure;
+		if (thumb != null) {
+			thumb.addMouseListener(thumbDragger);
+			thumb.addMouseMotionListener(thumbDragger);
+			add(thumb, ScrollBarLayout.THUMB);
+		}
+	}
+	
 
 	/**
 	 * Sets the Clickable that represents the up arrow of the Scrollbar to <i>up</i>.
@@ -411,120 +652,7 @@ public class ScrollbarFigure extends Figure implements Orientable {
 			add(buttonUp, ScrollBarLayout.UP_ARROW);
 		}
 	}
-
-	/**
-	 * @see IFigure#setEnabled(boolean)
-	 */
-	public void setEnabled(boolean value) {
-		if (isEnabled() == value)
-			return;
-		super.setEnabled(value);
-		setChildrenEnabled(value);
-		if (thumb != null) {
-			thumb.setVisible(value);
-			revalidate();
-		}
-	}
-	/**
-	 * @param up
-	 */
-	private void hookFocusListener(Clickable up) {
-		up.addActionListener(new ActionListener() {
-			
-			public void actionPerformed(ActionEvent event) {
-				if(!hasFocus())
-					requestFocus();				
-			}
-		});
-	}
-
 	
-
-	public void pageUp(){
-		manualSetValue(getValue() - pageIncrement);
-	}
-
-
-	public void pageDown(){
-		manualSetValue(getValue() + pageIncrement);
-	}
-
-	
-	public void stepUp(){
-		manualSetValue(getValue() - stepIncrement);
-	}
-
-
-	public void stepDown(){
-		manualSetValue(getValue() + stepIncrement);
-	}
-
-
-	public void setPageIncrement(double pageIncrement) {
-		this.pageIncrement = pageIncrement;
-	}
-	
-	private void initLabelTimer(){
-		if(labelTimer == null){
-			labelTimer = new OPITimer();
-			timerTask = new Runnable() {
-				
-				public void run() {
-					Display.getDefault().asyncExec(new Runnable() {
-						
-						public void run() {
-							label.setVisible(false);
-						}
-					});					
-				}
-			};
-		}			
-	}
-
-	/**
-	 * @see IFigure#revalidate()
-	 */
-	public void revalidate() {
-		// Override default revalidate to prevent going up the parent chain. Reason for this 
-		// is that preferred size never changes unless orientation changes.
-		invalidate();
-		getUpdateManager().addInvalidFigure(this);
-	}
-	
-	/**
-	 * @see Orientable#setOrientation(int)
-	 */
-	public void setOrientation(int value) {
-		if ((value == HORIZONTAL) == isHorizontal())
-			return;
-		horizontal = value == HORIZONTAL;
-		transposer.setEnabled(horizontal);
-
-		setChildrenOrientation(value);
-		super.revalidate();
-	}
-	/**
-	 * Sets the orientation of the ScrollBar. If <code>true</code>, the Scrollbar will have 
-	 * a horizontal orientation. If <code>false</code>, the scrollBar will have a vertical 
-	 * orientation.
-	 * 
-	 * @param value <code>true</code> if the scrollbar should be horizontal
-	 * @since 2.0
-	 */
-	public final void setHorizontal(boolean value) {
-		setOrientation(value ? HORIZONTAL : VERTICAL);
-	}
-	
-	public void setDirection(int direction) {
-		
-	}
-
-	/**
-	 * @return the horizontal
-	 */
-	public boolean isHorizontal() {
-		return horizontal;
-	}
 	
 	/**
 	 * @param value the value to set
@@ -534,124 +662,16 @@ public class ScrollbarFigure extends Figure implements Orientable {
 		revalidate();
 		repaint();
 	}
-	
-	public double getValue() {
-		return value;
-	}
-	
-	public double getCoercedValue(){
-		return value < minimum ? minimum : (value > maximum ? maximum : value);
-	}
-	
-	/**Set Value from manual control of the widget. Value will be coerced in range.
-	 * @param value
-	 */
-	public void manualSetValue(double value){
-		value = Math.max(getMinimum(), Math.min(getMaximum(), value));
-		if (this.value == value)
-			return;
-		valueIncreased = value > this.value;
-			
-		label.setText("" + DECIMAL_FORMAT.format(value));
-		label.setVisible(true);
-		initLabelTimer();
-		if(!labelTimer.isDue())
-			labelTimer.reset();
-		else
-			labelTimer.start(timerTask, 1500);
-		setValue(value);
-		fireManualValueChange(getValue());
-		
+
+	public void stepDown(){
+		manualSetValue(getValue() + stepIncrement);
 	}
 
-	private void fireManualValueChange(double value) {
-		for(IValueChangeListener listener : listeners)
-			listener.valueChanged(value);
-	}
-	
-	
-	public void addValueChangeListener(IValueChangeListener listener){
-		if(listener != null)
-			listeners.add(listener);
+
+	public void stepUp(){
+		manualSetValue(getValue() - stepIncrement);
 	}
 
-	/**
-	 * @return the minimum
-	 */
-	public double getMinimum() {
-		return minimum;
-	}
-
-	/**
-	 * @param minimum the minimum to set
-	 */
-	public void setMinimum(double minimum) {
-		this.minimum = minimum;
-		revalidate();
-
-	}
-
-	/**
-	 * @return the maximum
-	 */
-	public double getMaximum() {
-		return maximum;
-	}
-
-	/**
-	 * @param maximum the maximum to set
-	 */
-	public void setMaximum(double maximum) {
-		revalidate();
-		this.maximum = maximum;
-	}
-
-	/**
-	 * @return the extent
-	 */
-	public double getExtent() {
-		return extent;
-	}
-
-	/**
-	 * @param extent the extent to set
-	 */
-	public void setExtent(double extent) {
-		this.extent = extent;
-		revalidate();
-	}
-
-	/**
-	 * @return the stepIncrement
-	 */
-	public final double getStepIncrement() {
-		return stepIncrement;
-	}
-
-	/**
-	 * @param stepIncrement the stepIncrement to set
-	 */
-	public final void setStepIncrement(double stepIncrement) {
-		this.stepIncrement = stepIncrement;
-	}
-
-	/**
-	 * @return the pageIncrement
-	 */
-	public final double getPageIncrement() {
-		return pageIncrement;
-	}
-	
-
-	/**
-	 * Returns the size of the range of allowable values.
-	 * @return the value range
-	 */
-	protected double getValueRange() {
-		return getMaximum() - getExtent() - getMinimum();
-	}
-	
-	
 	class ThumbDragger
 	extends MouseMotionListener.Stub
 	implements MouseListener
@@ -661,6 +681,17 @@ public class ScrollbarFigure extends Figure implements Orientable {
 	protected double revertValue;
 	protected boolean armed;
 	public ThumbDragger() { }
+	
+	public void mouseDoubleClicked(MouseEvent me) { }
+	
+	public void mouseDragged(MouseEvent me) {
+		if (!armed) 
+			return;
+		Dimension difference = transposer.t(me.getLocation().getDifference(start));
+		double change = (getValueRange()+getExtent()) * difference.height / dragRange;		
+		manualSetValue(revertValue + change);
+		me.consume();
+	}
 	
 	public void mousePressed(MouseEvent me) {
 		armed = true;
@@ -678,26 +709,13 @@ public class ScrollbarFigure extends Figure implements Orientable {
 		me.consume();
 	}
 	
-	public void mouseDragged(MouseEvent me) {
-		if (!armed) 
-			return;
-		Dimension difference = transposer.t(me.getLocation().getDifference(start));
-		double change = (getValueRange()+getExtent()) * difference.height / dragRange;		
-		manualSetValue(revertValue + change);
-		me.consume();
-	}
-	
 	public void mouseReleased(MouseEvent me) {
 		if (!armed) 
 			return;
 		armed = false;
 		me.consume();
 	}
-	
-	public void mouseDoubleClicked(MouseEvent me) { }
 }
-
-
 	
 	
 }
