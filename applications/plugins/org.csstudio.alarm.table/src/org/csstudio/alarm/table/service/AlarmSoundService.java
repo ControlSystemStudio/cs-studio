@@ -38,63 +38,62 @@ import org.osgi.framework.Bundle;
 
 /**
  * Implementation of the alarm sound service
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 27.04.2010
  */
 public class AlarmSoundService implements IAlarmSoundService {
-    
+
     private final CentralLogger _log = CentralLogger.getInstance();
-    
+
     private Map<String, String> _severityToSoundfile;
-    
+
     // Buffer for one sound
     private final ArrayBlockingQueue<String> _queue = new ArrayBlockingQueue<String>(1);
-    
+
     private final Thread _playerThread;
-    
+
     public AlarmSoundService() {
         mapSeverityToSoundfile();
         _playerThread = createPlayerThread();
         _playerThread.start();
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void playAlarmSound(final String severity) {
         _log.debug(this, "playAlarmSound for severity " + severity);
-        
+
         // Guard
         if (!isMappingDefinedForSeverity(severity)) {
             _log.warn(this, "No mapping defined for severity " + severity);
             return;
         }
-        
+
         if (_queue.offer(severity)) {
             _log.debug(this, "sound for severity " + severity + " has been queued");
         } else {
             _log.debug(this, "sound for severity " + severity + " has been ignored");
         }
     }
-    
+
     private String getMp3Path(final String severity) {
         return _severityToSoundfile.get(severity);
     }
-    
+
     private boolean isMappingDefinedForSeverity(final String severity) {
         boolean result = _severityToSoundfile.containsKey(severity);
-        
+
         String filename = _severityToSoundfile.get(severity);
-        result &= filename != null;
-        result &= filename.length() > 0;
-        
+        result = result && (filename != null) && (filename.length() > 0);
+
         return result;
     }
-    
+
     /**
      * Read mapping of severities to colors from preferences and put mapping in a local HashMap.
      * (Performance)
@@ -102,7 +101,7 @@ public class AlarmSoundService implements IAlarmSoundService {
     private void mapSeverityToSoundfile() {
         IPreferenceStore store = new JmsLogPreferencePage().getPreferenceStore();
         _severityToSoundfile = new HashMap<String, String>();
-        
+
         _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY0), store
                 .getString(JmsLogPreferenceConstants.SOUND0));
         _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY1), store
@@ -123,26 +122,26 @@ public class AlarmSoundService implements IAlarmSoundService {
                 .getString(JmsLogPreferenceConstants.SOUND8));
         _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY9), store
                 .getString(JmsLogPreferenceConstants.SOUND9));
-        
+
     }
-    
+
     private Thread createPlayerThread() {
         return new Thread("AlarmSoundService") {
-            
+
             @Override
             public void run() {
                 Player mp3Player = null;
                 BufferedInputStream bufferedInputStream = null;
-                
+
                 while (true) {
                     try {
                         // Remove entries which occurred during previous playtime
                         _queue.clear();
-                        
+
                         // Wait for entry
                         String severity = _queue.take();
                         _log.debug(this, "player started");
-                        
+
                         bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
                         mp3Player = new Player(bufferedInputStream);
                         mp3Player.play();
@@ -164,10 +163,10 @@ public class AlarmSoundService implements IAlarmSoundService {
                     }
                 }
             }
-            
+
             /**
              * The sound ressource is located in the product bundle.
-             * 
+             *
              * @param severity
              * @return
              * @throws IOException
