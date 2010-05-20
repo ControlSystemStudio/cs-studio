@@ -398,7 +398,7 @@ public class ScrollbarFigure extends Figure implements Orientable {
 			if(!labelTimer.isDue())
 				labelTimer.reset();
 			else
-				labelTimer.start(timerTask, 1500);
+				labelTimer.start(timerTask, 1000);
 		}
 		setValue(value);
 		fireManualValueChange(getValue());
