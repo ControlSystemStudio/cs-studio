@@ -34,20 +34,22 @@
 		*/
 package org.csstudio.alarm.dal2jms;
 
-
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import javax.jms.Session;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-
+import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * TODO (jhatje) :
+ * The alarm handler listens to DAL messages and forwards them to the JMS-based alarm system.
+ * It is used in a headless application and allows the processing of alarm messages from IOCs which
+ * are not connected to
  *
  * @author jhatje
  * @author $Author$
@@ -55,12 +57,14 @@ import org.csstudio.alarm.service.declaration.IAlarmMessage;
  * @since 07.05.2010
  */
 public class AlarmHandler {
-   
-    IAlarmConnection _connection;
-    
-	public final static int	JMS_MESSAGE_TYPE_ALARM		= 1;
-	public final static int	JMS_MESSAGE_TYPE_LOG		= 2;
-	public final static int	JMS_MESSAGE_TYPE_PUT_LOG	= 3;
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmHandler.class);
+
+    private final IAlarmConnection _connection;
+
+    private final static int JMS_MESSAGE_TYPE_ALARM = 1;
+    private final static int JMS_MESSAGE_TYPE_LOG = 2;
+    private final static int JMS_MESSAGE_TYPE_PUT_LOG = 3;
 
     public AlarmHandler() {
 
@@ -69,37 +73,54 @@ public class AlarmHandler {
             _connection.connectWithListener(null, new IAlarmListener() {
 
                 @Override
-                public void onMessage(IAlarmMessage message) {
-                    // TODO Auto-generated method stub
+                public void onMessage(final IAlarmMessage message) {
                     try {
-						System.out.println(message.getMap().toString());
-						
-						Session session = JmsMessage.getInstance().createJmsSession();
-						MapMessage mapMessage = message.getMapMessage ( session.createMapMessage());
-						if ( mapMessage != null) {
-							JmsMessage.getInstance().sendMessage( JMS_MESSAGE_TYPE_ALARM, mapMessage);
-						} else {
-							System.out.println("INVALID message !");
-						}
-					} catch (AlarmMessageException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (JMSException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
+                        LOG.debug(message.getMap().toString());
+
+                        MapMessage mapMessage = getMapMessage(message);
+                        if (mapMessage != null) {
+                            JmsMessage.getInstance()
+                                    .sendMessage(JMS_MESSAGE_TYPE_ALARM, mapMessage);
+                        } else {
+                            LOG.debug("INVALID message !");
+                        }
+                    } catch (AlarmMessageException e) {
+                        LOG.error("Error while creating mapMessage", e);
+                    } catch (JMSException e) {
+                        LOG.error("Error while creating mapMessage", e);
+                    }
                 }
 
                 @Override
                 public void stop() {
-                    // TODO Auto-generated method stub
-                    
+                    // Nothing to do
+
                 }
-                
+
             });
         } catch (AlarmConnectionException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            LOG.error("Error. Could not connect.", e);
         }
-    }       
+    }
+
+    private MapMessage getMapMessage(final IAlarmMessage message) throws AlarmMessageException,
+                                                                 JMSException {
+        MapMessage result = JmsMessage.getInstance().createJmsSession().createMapMessage();
+
+        for (IAlarmMessage.Key key : Key.values()) {
+            /*
+             * if the value is noTimeStamp or Uninitialized or noMetaData
+             * return null -> do NOT create message !
+             */
+            String value = message.getString(key);
+            if (value != null && !value.equals("noTimeStamp") && !value.equals("Uninitialized")
+                    && !value.equals("noMetaData")) {
+                result.setString(key.name(), value);
+            } else {
+                return null;
+            }
+        }
+        return result;
+    }
+
 }
