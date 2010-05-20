@@ -26,7 +26,7 @@ import org.csstudio.diag.interconnectionServer.server.LdapSupport;
 
 /**
  * LDAP-based implementation of an IOC directory.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class LdapIocDirectory implements IIocDirectory {
@@ -34,8 +34,8 @@ public class LdapIocDirectory implements IIocDirectory {
 	/**
 	 * {@inheritDoc}
 	 */
-	public String[] getLogicalIocName(String ipAddress, String hostname) {
-		return LdapSupport.getInstance().getLogicalIocName(ipAddress, hostname);
+	public String[] getLogicalIocName(final String ipAddress, final String hostname) {
+		return LdapSupport.INSTANCE.getLogicalIocName(ipAddress, hostname);
 	}
 
 }

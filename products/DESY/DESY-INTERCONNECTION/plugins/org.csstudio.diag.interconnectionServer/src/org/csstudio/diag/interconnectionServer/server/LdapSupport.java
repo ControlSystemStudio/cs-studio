@@ -1,23 +1,23 @@
 package org.csstudio.diag.interconnectionServer.server;
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -29,48 +29,32 @@ import org.csstudio.utility.ldap.engine.Engine;
 
 /**
  * Helper class for local LDAP support.
- * 
- * @author Matthias Clausen
  *
+ * @author Matthias Clausen
+ * @author Bastian Knerr
  */
-public class LdapSupport{
-	
-	private static LdapSupport thisLdapSupportInstance = null;
+public enum LdapSupport {
 
-		
-	public LdapSupport() {
-		/*
-		 * nothing to do
-		 */
-	}
-	public static LdapSupport getInstance() {
-		//
-		// get an instance of our singleton
-		//
-		if ( thisLdapSupportInstance == null) {
-			synchronized (LdapSupport.class) {
-				if (thisLdapSupportInstance == null) {
-					thisLdapSupportInstance = new LdapSupport();
-				}
-			}
-		}
-		return thisLdapSupportInstance;
-	}
-	
+    // Modern singleton pattern with synchronization and serialization safety for free.
+    INSTANCE;
 
-	
+	private LdapSupport() {
+		// EMPTY
+	}
+
+
 	/**
-	 * 
+	 *
 	 * @param ipAddress
 	 * @param ipName
 	 * @param ldapIocName
 	 * @return 1. Param = logicalIocName; 2. Param = ldapIocName
 	 */
-	public String[] getLogicalIocName ( String ipAddress, String ipName) {
-	    
-		String[] stringReturnArray = new String[2];
+	public String[] getLogicalIocName ( final String ipAddress, final String ipName) {
+
+		final String[] stringReturnArray = new String[2];
 		String logicalIocName, ldapIocName = null;
-		
+
 		/*
 		 * error handling
 		 */
@@ -78,9 +62,9 @@ public class LdapSupport{
 			/*
 			 * can't be a valid IP address
 			 */
-			return new String[]{"invalid logical address","invalid ldap name"}; 
+			return new String[]{"invalid logical address","invalid ldap name"};
 		}
-		
+
 		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress);
 		System.out.println("LdapSupport:  ldapIocName = " + ldapIocName);
 		if ( ldapIocName != null) {
@@ -155,15 +139,15 @@ public class LdapSupport{
 				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoFV";
 				return stringReturnArray;
 			} else {
-				return new String[]{"~" + ipName + "~","~" + ipName + "~"}; 
+				return new String[]{"~" + ipName + "~","~" + ipName + "~"};
 			}
 		}
-		
-		
-		
+
+
+
 		/*
 		 * es fehlen: 131.169.112.178 und 131.169.112.108
-		 * 
+		 *
 		 *epicsGPFC01       mkk10KVA1       : Keine Datei Y:\directoryServer\mkk10KVA1.BootLine.dat gefunden
 epicsGPFC02       mkk10KVB1       131.169.112.56
 epicsGPFC03       mkk10KVC1       131.169.112.69
@@ -208,29 +192,29 @@ epicsVME62        mkkPowStatC_A   131.169.112.142
 epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.BootLine.dat gefunden
 		 */
 	}
-	
-	public void setAllRecordsToConnected ( String ldapIocName) {
+
+	public void setAllRecordsToConnected ( final String ldapIocName) {
 		/*
 		 * just a convenience method
 		 */
 
-        String status = "ONLINE";
-        String severity = "NO_ALARM";
+        final String status = "ONLINE";
+        final String severity = "NO_ALARM";
 
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToConnected");
 		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
-		
+
 	}
-	
-	public void setAllRecordsToDisconnected ( String ldapIocName) {
+
+	public void setAllRecordsToDisconnected ( final String ldapIocName) {
 		/*
 		 * just a convenience method
 		 */
-        String status = "DISCONNECTED";
-        String severity = "INVALID";
+        final String status = "DISCONNECTED";
+        final String severity = "INVALID";
 		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToDisconnected");
 		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
-		
+
 	}
 
 	/*
@@ -238,32 +222,32 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
 	 * started. But they will write in parallel to the LDAP server - but in sequence!
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
-	synchronized private void setAllRecordsInLdapServerAndJms (final String ldapIocName, String status, String severity) {
+	synchronized private void setAllRecordsInLdapServerAndJms (final String ldapIocName, final String status, final String severity) {
 	    String logicalIocName = ldapIocName;
 		/*
 		 * find all records belonging to the IOC: logicalIocName
 		 * -> search for econ = logicalIocName
 		 * -> create list for all eren (record) entries
-		 * 
+		 *
 		 * for each eren entry set the epicsAlarmStatus to 'OFFLINE' and the epicsAlarmTimeStamp to the actual time
 		 */
-		
+
 		//
 		// create time stamp written to epicsAlarmTimeStamp
 		// this is a copy from the class ClientRequest
 		//
-		SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
-        java.util.Date currentDate = new java.util.Date();
-        String eventTime = sdf.format(currentDate);
+		final SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
+        final java.util.Date currentDate = new java.util.Date();
+        final String eventTime = sdf.format(currentDate);
 
-		ArrayList<String> allRecordList = Engine.getInstance().getAllRecordsOfIOC(ldapIocName, severity, status, eventTime);
+		final ArrayList<String> allRecordList = Engine.getInstance().getAllRecordsOfIOC(ldapIocName, severity, status, eventTime);
 
         if(logicalIocName==null){
             return;
         }else if(logicalIocName.contains("=")){
             logicalIocName  = logicalIocName.split("[=,]")[1];
         }
-        for (String channelName : allRecordList) {
+        for (final String channelName : allRecordList) {
             CentralLogger.getInstance().debug(this, "Found Channelname: "+channelName);
             if(channelName!=null){
             	/*
@@ -275,7 +259,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
     }
 
 
-	private void setSingleChannel ( String channelName, String status, String severity, String eventTime, String logicalIocName) {
+	private void setSingleChannel ( String channelName, final String status, final String severity, final String eventTime, final String logicalIocName) {
         if(channelName==null){
         	CentralLogger.getInstance().error(this, "no channel name set");
             return;
@@ -288,7 +272,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         if(channelName.contains("=")){
         	channelName  = channelName.split("[=,]")[1];
         }
-        
+
         if(severity!=null){
             Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
             CentralLogger.getInstance().debug(this, "Set SEVERITY: " + severity + " for channel: " + channelName);
@@ -307,8 +291,8 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         if(channelName.contains("=")){
         	channelName  = channelName.split("[=,]")[1];
         }
-		
-		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM, 
+
+		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
 				channelName,														// name
 				null, 																// value
