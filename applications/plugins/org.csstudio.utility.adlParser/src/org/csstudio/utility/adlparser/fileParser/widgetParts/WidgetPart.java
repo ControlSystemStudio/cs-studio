@@ -66,6 +66,9 @@ public abstract class WidgetPart {
 //**        generateElements();
     }
 
+    public WidgetPart(){
+    	init();
+    }
     /**
      * Initialization.
      */
