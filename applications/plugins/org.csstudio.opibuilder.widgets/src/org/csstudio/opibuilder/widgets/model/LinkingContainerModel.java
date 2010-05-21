@@ -8,6 +8,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
@@ -30,6 +31,13 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_OPI_FILE = "opi_file"; //$NON-NLS-1$
 
+	/**
+	 * The name of the group container widget in the OPI file, which
+	 * will be loaded if it is specified. If it is not specified, the whole
+	 * OPI file will be loaded.
+	 */
+	public static final String PROP_GROUP_NAME = "group_name"; //$NON-NLS-1$
+	
 	/**
 	 * The ID of the auto zoom property.
 	 */
@@ -56,8 +64,11 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	protected void configureProperties() {
 		
 		addProperty(new FilePathProperty(PROP_OPI_FILE, "OPI File",
-				WidgetPropertyCategory.Behavior, new Path(""),
+				WidgetPropertyCategory.Behavior, new Path(""), //$NON-NLS-1$
 				new String[] { OPIBuilderPlugin.OPI_FILE_EXTENSION}));
+		
+		addProperty(new StringProperty(PROP_GROUP_NAME, "Group Name",
+				WidgetPropertyCategory.Behavior, "")); //$NON-NLS-1$
 		
 		addProperty(new BooleanProperty(PROP_ZOOMTOFITALL, "Zoom to Fit", WidgetPropertyCategory.Display, true));
 	
@@ -90,6 +101,10 @@ public class LinkingContainerModel extends AbstractContainerModel {
 	 */
 	public boolean isAutoFit() {
 		return (Boolean) getProperty(PROP_ZOOMTOFITALL).getPropertyValue();
+	}
+	
+	public String getGroupName(){
+		return (String)getPropertyValue(PROP_GROUP_NAME);
 	}
 	
 	

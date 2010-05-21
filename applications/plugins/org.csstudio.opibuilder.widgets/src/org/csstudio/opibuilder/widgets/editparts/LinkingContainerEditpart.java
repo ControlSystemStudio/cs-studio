@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.persistence.XMLUtil;
@@ -77,9 +78,16 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 		};
 		
 		setPropertyChangeHandler(LinkingContainerModel.PROP_OPI_FILE, handler);
+			
+		//load from group
+		handler = new IWidgetPropertyChangeHandler() {			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				loadWidgets(getWidgetModel().getOPIFilePath(), true);
+				return false;
+			}
+		};
 		
-		
-		//load
+		setPropertyChangeHandler(LinkingContainerModel.PROP_GROUP_NAME, handler);
 		
 		
 		handler = new IWidgetPropertyChangeHandler(){
@@ -122,7 +130,15 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 			tempDisplayModel.setOpiFilePath(path);
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel);
-			for(AbstractWidgetModel child : tempDisplayModel.getChildren()){	
+			AbstractContainerModel loadTarget = tempDisplayModel;
+			if(!getWidgetModel().getGroupName().trim().equals("")){ //$NON-NLS-1$
+				AbstractWidgetModel group = 
+					tempDisplayModel.getChildByName(getWidgetModel().getGroupName());
+				if(group != null && group instanceof AbstractContainerModel)
+					loadTarget = (AbstractContainerModel) group;
+			}
+				
+			for(AbstractWidgetModel child : loadTarget.getChildren()){	
 				getWidgetModel().addChild(child, false);
 			}
 			getWidgetModel().setBackgroundColor(tempDisplayModel.getBackgroundColor());
