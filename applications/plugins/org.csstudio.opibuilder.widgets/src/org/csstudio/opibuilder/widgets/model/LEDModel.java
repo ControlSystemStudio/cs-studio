@@ -26,6 +26,8 @@ public class LEDModel extends AbstractBoolWidgetModel {
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 20;
 	
+	public static final int MINIMUM_SIZE = 10;
+
 	
 	public LEDModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);

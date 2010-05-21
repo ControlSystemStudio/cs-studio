@@ -30,6 +30,7 @@ public class GaugeModel extends AbstractMarkedWidgetModel{
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 138;
 	
+	public static final int MINIMUM_SIZE = 30;
 
 	/**
 	 * The ID of this widget model.

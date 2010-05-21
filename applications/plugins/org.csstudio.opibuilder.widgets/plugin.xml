@@ -468,6 +468,18 @@
             class="org.csstudio.opibuilder.widgets.feedback.PolygonFeedbackFactory"
             typeId="org.csstudio.opibuilder.widgets.polygon">
       </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.GaugeFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.gauge">
+      </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.LEDFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.LED">
+      </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.KnobFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.knob">
+      </graphicalFeedbackFactory>
    </extension>
 
 </plugin>

@@ -1,7 +1,11 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.KnobFigure;
@@ -133,6 +137,27 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_INCREMENT, incrementHandler);
+		
+		//force square size
+		final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if(((Integer)newValue) < KnobModel.MINIMUM_SIZE)
+					newValue = KnobModel.MINIMUM_SIZE;
+				getWidgetModel().setSize((Integer)newValue, (Integer)newValue);
+				return false;
+			}
+		};		
+		PropertyChangeListener sizeListener = new PropertyChangeListener() {
+		
+			public void propertyChange(PropertyChangeEvent evt) {
+				sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+			}
+		};
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_WIDTH).
+			addPropertyChangeListener(sizeListener);
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_HEIGHT).
+			addPropertyChangeListener(sizeListener);
 		
 	}
 

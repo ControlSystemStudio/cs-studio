@@ -1,5 +1,9 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
@@ -82,6 +86,25 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 		};
 		setPropertyChangeHandler(GaugeModel.PROP_RAMP_GRADIENT, gradientHandler);	
 		
+		final IWidgetPropertyChangeHandler sizeHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				if(((Integer)newValue) < GaugeModel.MINIMUM_SIZE)
+					newValue = GaugeModel.MINIMUM_SIZE;
+				getWidgetModel().setSize((Integer)newValue, (Integer)newValue);
+				return false;
+			}
+		};		
+		PropertyChangeListener sizeListener = new PropertyChangeListener() {
+		
+			public void propertyChange(PropertyChangeEvent evt) {
+				sizeHandler.handleChange(evt.getOldValue(), evt.getNewValue(), getFigure());
+			}
+		};
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_WIDTH).
+			addPropertyChangeListener(sizeListener);
+		getWidgetModel().getProperty(AbstractWidgetModel.PROP_HEIGHT).
+			addPropertyChangeListener(sizeListener);
 		
 		
 	}

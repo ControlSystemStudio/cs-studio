@@ -43,7 +43,7 @@ public class OPIEditorPaletteFactory {
 				IGraphicalFeedbackFactory feedbackFactory = 
 					WidgetsService.getInstance().getWidgetFeedbackFactory(
 							widgetDescriptor.getTypeID());
-				if( feedbackFactory != null){
+				if( feedbackFactory != null && feedbackFactory.getCreationTool() != null){
 					widgetEntry.setToolClass(feedbackFactory.getCreationTool());
 				}				
 				categoryDrawer.add(widgetEntry);

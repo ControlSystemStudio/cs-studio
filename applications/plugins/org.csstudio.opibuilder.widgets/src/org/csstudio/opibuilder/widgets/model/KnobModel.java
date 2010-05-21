@@ -48,15 +48,9 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	/** The default value of the thumb color property. */
 	private static final RGB DEFAULT_THUMB_COLOR = new RGB(127, 127, 127);
 	
-//	/**
-//	 * The ID of the pv name property.
-//	 */
-//	public static final String PROP_CONTROL_PV= "control_pv"; //$NON-NLS-1$
-//	
-//	/**
-//	 * The ID of the pv value property.
-//	 */
-//	public static final String PROP_CONTROL_PV_VALUE= "control_pv_value"; //$NON-NLS-1$
+	public static final int MINIMUM_SIZE = 100;
+
+	
 	/**
 	 * The ID of this widget model.
 	 */

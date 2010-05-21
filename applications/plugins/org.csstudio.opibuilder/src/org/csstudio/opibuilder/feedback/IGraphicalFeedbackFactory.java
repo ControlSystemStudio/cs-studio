@@ -150,7 +150,7 @@ public interface IGraphicalFeedbackFactory {
 	 * @param targetBounds
 	 *            the initial bounds
 	 * @return a undoable command, which sets up the initial size and location
-	 *         changes
+	 *         changes. null if it is not necessary to initialize size and location.
 	 */
 	Command createInitialBoundsCommand(AbstractWidgetModel widgetModel,
 			final CreateRequest request, Rectangle targetBounds);

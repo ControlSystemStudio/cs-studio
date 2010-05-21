@@ -196,8 +196,10 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if(feedbackFactory != null){
 			CompoundCommand compoundCommand = new CompoundCommand();
 			compoundCommand.add(widgetCreateCommand);
-			compoundCommand.add(feedbackFactory.createInitialBoundsCommand(
-					(AbstractWidgetModel)request.getNewObject(), request, (Rectangle)getConstraintFor(request)));
+			Command initialBoundsCommand = feedbackFactory.createInitialBoundsCommand(
+					(AbstractWidgetModel)request.getNewObject(), request, (Rectangle)getConstraintFor(request));
+			if(initialBoundsCommand != null)
+				compoundCommand.add(initialBoundsCommand);
 			return compoundCommand;
 		}else
 			return widgetCreateCommand;
@@ -221,7 +223,8 @@ public class WidgetXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		if(feedbackFactory != null){
 			Shape feedbackFigure = feedbackFactory
 				.createSizeOnDropFeedback(request);
-			addFeedback(feedbackFigure);
+			if(feedbackFigure != null)
+				addFeedback(feedbackFigure);
 			return feedbackFigure;
 		}else{
 			return super.createSizeOnDropFeedback(request);
