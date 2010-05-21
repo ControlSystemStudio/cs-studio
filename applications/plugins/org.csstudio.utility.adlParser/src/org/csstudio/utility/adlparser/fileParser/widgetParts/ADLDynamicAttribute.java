@@ -88,7 +88,11 @@ public class ADLDynamicAttribute extends WidgetPart{
         super(adlDynamicAttribute);
     }
 
-    /**
+    public ADLDynamicAttribute() {
+    	super();
+    }
+
+	/**
      * {@inheritDoc}
      */
     @Override

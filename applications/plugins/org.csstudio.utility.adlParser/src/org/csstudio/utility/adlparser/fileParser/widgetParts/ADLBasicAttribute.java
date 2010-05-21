@@ -55,7 +55,11 @@ public class ADLBasicAttribute extends WidgetPart{
         super(adlBasicAttribute);
 	}
 
-    /** The Color of (front?) Object. */
+    public ADLBasicAttribute() {
+    	super();
+	}
+
+	/** The Color of (front?) Object. */
     private int _clr;
     /** width of the Border. */
     private int _width;
