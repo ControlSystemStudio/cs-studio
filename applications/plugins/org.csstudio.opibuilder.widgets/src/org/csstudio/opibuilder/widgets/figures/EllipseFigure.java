@@ -67,41 +67,34 @@ public final class EllipseFigure extends Ellipse {
 	protected void fillShape(final Graphics graphics) {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		
-		Rectangle figureBounds = getBounds().getCopy();
-		figureBounds.crop(this.getInsets());
-
-		Rectangle backgroundRectangle;
-		Rectangle fillRectangle;
-		if (_orientationHorizontal) {
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			backgroundRectangle = new Rectangle(figureBounds.x + newW,
-					figureBounds.y, figureBounds.width - newW,
-					figureBounds.height);
-			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
-					figureBounds.height);
-		} else {
-			int newH = (int) Math
-					.round(figureBounds.height * (getFill() / 100));
-			backgroundRectangle = new Rectangle(figureBounds.x, figureBounds.y,
-					figureBounds.width, figureBounds.height - newH);
-			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
-					+ figureBounds.height - newH, figureBounds.width, newH);
-		}
+		Rectangle figureBounds = getClientArea();
 		if (!_transparent) {
+				graphics.pushState();
+				graphics.setBackgroundColor(getBackgroundColor());
+				graphics.fillOval(figureBounds);
+				graphics.popState();
+		}
+		if(getFill() > 0){
+			Rectangle fillRectangle;
+			if (_orientationHorizontal) {
+				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
+						figureBounds.height);
+			} else {
+				int newH = (int) Math
+						.round(figureBounds.height * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
+						+ figureBounds.height - newH, figureBounds.width, newH);
+			}			
+			
 			graphics.pushState();
-			graphics.setClip(backgroundRectangle);
-			graphics.setBackgroundColor(getBackgroundColor());
+			
+			graphics.setClip(fillRectangle);
+			graphics.setBackgroundColor(getForegroundColor());
+			
 			graphics.fillOval(figureBounds);
 			graphics.popState();
 		}
-		
-		graphics.pushState();
-		
-		graphics.clipRect(fillRectangle);
-		graphics.setBackgroundColor(getForegroundColor());
-		
-		graphics.fillOval(figureBounds);
-		graphics.popState();
 	}
 
 	/**

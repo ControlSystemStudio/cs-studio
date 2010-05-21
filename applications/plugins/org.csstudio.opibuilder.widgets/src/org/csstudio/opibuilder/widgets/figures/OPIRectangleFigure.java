@@ -72,16 +72,18 @@ public final class OPIRectangleFigure extends RectangleFigure {
 			graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillRectangle(figureBounds);	
 		}
-		graphics.setBackgroundColor(getForegroundColor());
-		Rectangle fillRectangle;
-		if (_orientationHorizontal) {
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
-		} else {
-			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
-			fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+		if(getFill() > 0){
+			graphics.setBackgroundColor(getForegroundColor());
+			Rectangle fillRectangle;
+			if (_orientationHorizontal) {
+				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y,newW,figureBounds.height);
+			} else {
+				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x,figureBounds.y+figureBounds.height-newH,figureBounds.width,newH);
+			}
+			graphics.fillRectangle(fillRectangle);
 		}
-		graphics.fillRectangle(fillRectangle);
 	}
 	
 	/**

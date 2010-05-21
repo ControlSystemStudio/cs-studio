@@ -70,39 +70,33 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		
 		Rectangle figureBounds = getClientArea();
-
-		Rectangle backgroundRectangle;
-		Rectangle fillRectangle;
-		if (_orientationHorizontal) {
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			backgroundRectangle = new Rectangle(figureBounds.x + newW,
-					figureBounds.y, figureBounds.width - newW,
-					figureBounds.height);
-			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
-					figureBounds.height);
-		} else {
-			int newH = (int) Math
-					.round(figureBounds.height * (getFill() / 100));
-			backgroundRectangle = new Rectangle(figureBounds.x, figureBounds.y,
-					figureBounds.width, figureBounds.height - newH);
-			fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
-					+ figureBounds.height - newH, figureBounds.width, newH);
-		}
 		if (!_transparent) {
 			graphics.pushState();
-			graphics.setClip(backgroundRectangle);
 			graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
 			graphics.popState();
 		}
 		
-		graphics.pushState();
-		
-		graphics.clipRect(fillRectangle);
-		graphics.setBackgroundColor(getForegroundColor());
-		
-		graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
-		graphics.popState();
+		if(getFill() > 0){	
+			Rectangle fillRectangle;
+			if (_orientationHorizontal) {
+				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
+						figureBounds.height);
+			} else {
+				int newH = (int) Math
+						.round(figureBounds.height * (getFill() / 100));
+				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y
+						+ figureBounds.height - newH, figureBounds.width, newH);
+			}
+					
+			graphics.pushState();
+			
+			graphics.setClip(fillRectangle);
+			graphics.setBackgroundColor(getForegroundColor());		
+			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
+			graphics.popState();
+		}
 	}
 
 	

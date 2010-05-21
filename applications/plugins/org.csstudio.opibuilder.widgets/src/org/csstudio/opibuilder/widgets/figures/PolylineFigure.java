@@ -81,28 +81,30 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 		
 		Rectangle figureBounds = getBounds();
 
-		
+		graphics.pushState();
 		if(!_transparent){
 			graphics.setForegroundColor(getBackgroundColor());
 			drawPolyLineWithArrow(graphics);
 		}
-		
-		//set clip by fill level
-		if(horizontalFill){
-			
-			int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-			
-			graphics
-				.clipRect(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
-		}else{
-			int newH = (int) Math.round(figureBounds.height * (getFill() / 100));			
-			graphics
-				.clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
-						figureBounds.width, newH));
+		if(getFill() > 0){			
+			//set clip by fill level
+			if(horizontalFill){
+				
+				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+				
+				graphics
+					.clipRect(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
+			}else{
+				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));			
+				graphics
+					.clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
+							figureBounds.width, newH));
+			}
+	
+			graphics.setForegroundColor(getForegroundColor());
+			drawPolyLineWithArrow(graphics);
 		}
-
-		graphics.setForegroundColor(getForegroundColor());
-		drawPolyLineWithArrow(graphics);
+		graphics.popState();
 				
 	}
 
