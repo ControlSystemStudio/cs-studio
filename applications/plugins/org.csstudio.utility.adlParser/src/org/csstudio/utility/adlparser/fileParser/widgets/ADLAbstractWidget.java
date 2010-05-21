@@ -153,4 +153,13 @@ public abstract class ADLAbstractWidget {
 		return _adlPlotcom;
 	}
 
+	public void setAdlBasicAttribute(ADLBasicAttribute basAttr){
+		_adlBasicAttribute = basAttr;
+		_hasBasicAttribute = true;
+	}
+
+	public void setAdlDynamicAttribute(ADLDynamicAttribute dynAttr){
+		_adlDynamicAttribute = dynAttr;
+		_hasDynamicAttribute = true;
+	}
 }	
