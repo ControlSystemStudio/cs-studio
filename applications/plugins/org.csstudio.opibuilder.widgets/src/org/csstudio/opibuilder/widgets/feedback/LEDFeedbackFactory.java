@@ -7,11 +7,11 @@ import org.csstudio.opibuilder.widgets.model.LEDModel;
  * @author Xihui Chen
  *
  */
-public class LEDFeedbackFactory extends AbstractSquareSizeFeedbackFactory {
+public class LEDFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
 
 
 	@Override
-	public int getMinimumSize() {
+	public int getMinimumWidth() {
 		return LEDModel.MINIMUM_SIZE;
 	}
 	

@@ -25,7 +25,7 @@ import org.eclipse.gef.requests.CreateRequest;
  * @author Xihui Chen
  *
  */
-public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFeedbackFactory {
+public abstract class AbstractFixRatioSizeFeedbackFactory implements IGraphicalFeedbackFactory {
 
 	private Shape sizeOnDropFeedback;
 	
@@ -67,15 +67,17 @@ public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFee
 	public void showChangeBoundsFeedback(AbstractWidgetModel widgetModel,
 			PrecisionRectangle newBounds, IFigure feedbackFigure,
 			ChangeBoundsRequest request) {
-		if(isSquareSizeRequired(widgetModel)){	
-			if(newBounds.getSize().getArea() > widgetModel.getSize().getArea())
-				newBounds.width = Math.max(newBounds.width, newBounds.height);
-			else
-				newBounds.width = Math.min(newBounds.width, newBounds.height);
-			if(newBounds.width < getMinimumSize())
-				newBounds.width = getMinimumSize();
-			newBounds.height = newBounds.width;
-		}
+		if(newBounds.getSize().getArea() != widgetModel.getSize().getArea()){
+			if(isSquareSizeRequired(widgetModel)){	
+				if(newBounds.getSize().getArea() > widgetModel.getSize().getArea())
+					newBounds.width = Math.max(newBounds.width, getWidthFromHeight(newBounds.height, widgetModel));
+				else
+					newBounds.width = Math.min(newBounds.width, getWidthFromHeight(newBounds.height, widgetModel));
+				if(newBounds.width < getMinimumWidth())
+					newBounds.width = getMinimumWidth();
+				newBounds.height = getHeightFromWidth(newBounds.width, widgetModel);
+			}
+		}		
 		feedbackFigure.setBounds(newBounds);
 	}
 
@@ -87,11 +89,12 @@ public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFee
 		Dimension size = request.getSize().getCopy();
 		feedback.translateToRelative(size);
 		if(isSquareSizeRequired((AbstractWidgetModel) request.getNewObject())){
-			if(size.width < getMinimumSize() && size.height < getMinimumSize())
-				size.width = getMinimumSize();
+			if(size.width < getMinimumWidth() && size.height < getMinimumWidth())
+				size.width = getMinimumWidth();
 			else
-				size.width = Math.max(size.width, size.height);
-			size.height = size.width;
+				size.width = Math.max(size.width, 
+						getWidthFromHeight(size.height, (AbstractWidgetModel) request.getNewObject()));
+			size.height = getHeightFromWidth(size.width, (AbstractWidgetModel) request.getNewObject());
 		}
 		feedback.setBounds(new Rectangle(p, size));
 	}
@@ -126,12 +129,29 @@ public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFee
 	/**
 	 * @return the minimum size
 	 */
-	public abstract int getMinimumSize();
+	public abstract int getMinimumWidth();
 	
 	public boolean isSquareSizeRequired(AbstractWidgetModel widgetModel){
 		return true;
 	}
 	
+	/**Calculate height from width. Return same value as width by default.
+	 * @param width
+	 * @return height.
+	 */
+	public int getHeightFromWidth(int width, AbstractWidgetModel widgetModel){
+		return width;
+	}
+	
+	
+	
+	/**Calculate width from height. Return same value as height by default.
+	 * @param height
+	 * @return height.
+	 */
+	public int getWidthFromHeight(int height, AbstractWidgetModel widgetModel){
+		return height;
+	}
 	
 	class ChangeSquareBoundsCommand extends Command{
 		/** Stores the new size and location. */
@@ -161,15 +181,17 @@ public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFee
 		@Override
 		public void redo() {
 			widget.setLocation(newBounds.x, newBounds.y);
+			if(newBounds.getSize().getArea() == oldBounds.getSize().getArea())
+				return;
 			if(isSquareSizeRequired(widget)){
 				if(newBounds.getSize().getArea() > oldBounds.getSize().getArea())
-					newBounds.width = Math.max(newBounds.width, newBounds.height);
+					newBounds.width = Math.max(newBounds.width, getWidthFromHeight(newBounds.height, widget));
 				else
-					newBounds.width = Math.min(newBounds.width, newBounds.height);
+					newBounds.width = Math.min(newBounds.width, getWidthFromHeight(newBounds.height, widget));
 				
-				if(newBounds.width < getMinimumSize())
-					newBounds.width = getMinimumSize();
-				newBounds.height = newBounds.width;
+				if(newBounds.width < getMinimumWidth())
+					newBounds.width = getMinimumWidth();
+				newBounds.height = getHeightFromWidth(newBounds.width, widget);
 			}
 			widget.setSize(newBounds.width, newBounds.height);
 		}
@@ -212,11 +234,11 @@ public abstract class AbstractSquareSizeFeedbackFactory implements IGraphicalFee
 			if(isSquareSizeRequired(widget)){		
 				if(newBounds.width <=0 || newBounds.height <= 0)
 					newBounds.width = oldBounds.width;
-				else if(newBounds.width < getMinimumSize() && newBounds.height < getMinimumSize())
-					newBounds.width = getMinimumSize();
+				else if(newBounds.width < getMinimumWidth() && newBounds.height < getMinimumWidth())
+					newBounds.width = getMinimumWidth();
 				else
-					newBounds.width = Math.max(newBounds.width, newBounds.height);
-				newBounds.height = newBounds.width;
+					newBounds.width = Math.max(newBounds.width, getWidthFromHeight(newBounds.height, widget));
+				newBounds.height = getHeightFromWidth(newBounds.width, widget);
 			}
 			widget.setSize(newBounds.width, newBounds.height);
 		}

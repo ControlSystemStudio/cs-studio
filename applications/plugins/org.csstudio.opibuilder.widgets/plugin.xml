@@ -480,6 +480,10 @@
             class="org.csstudio.opibuilder.widgets.feedback.KnobFeedbackFactory"
             typeId="org.csstudio.opibuilder.widgets.knob">
       </graphicalFeedbackFactory>
+      <graphicalFeedbackFactory
+            class="org.csstudio.opibuilder.widgets.feedback.MeterFeedbackFactory"
+            typeId="org.csstudio.opibuilder.widgets.meter">
+      </graphicalFeedbackFactory>
    </extension>
 
 </plugin>

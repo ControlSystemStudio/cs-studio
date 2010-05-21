@@ -42,6 +42,10 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 	
 	public static final int NEEDLE_WIDTH = 16;
 	
+	public final static double ALPHA = SPACE_ANGLE * Math.PI/180;  
+	
+	public final static double HW_RATIO = (1- Math.sin(ALPHA)/2)/(2*Math.cos(ALPHA));	
+	
 	public MeterFigure() {
 		super();
 		transparent = true;
@@ -83,6 +87,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		super.setBounds(rect);
 	}
 	
+	
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
@@ -111,9 +116,7 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 		
 		private static final int GAP_BTW_NEEDLE_SCALE = -5;
 		
-		private final double ALPHA = SPACE_ANGLE * Math.PI/180;  
-		
-		private final double HW_RATIO = (1- Math.sin(ALPHA)/2)/(2*Math.cos(ALPHA));		
+			
 		
 		int M = 0;
 		

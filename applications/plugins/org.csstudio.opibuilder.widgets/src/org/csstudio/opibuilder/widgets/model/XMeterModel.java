@@ -29,6 +29,9 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	/** The default value of the width property. */
 	private static final int DEFAULT_WIDTH = 200;
 	
+	public static final int MINIMUM_WIDTH = 100;
+
+	
 
 	/**
 	 * The ID of this widget model.

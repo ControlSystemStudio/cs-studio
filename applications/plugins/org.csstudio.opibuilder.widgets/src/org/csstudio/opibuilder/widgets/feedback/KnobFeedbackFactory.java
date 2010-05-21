@@ -6,10 +6,10 @@ import org.csstudio.opibuilder.widgets.model.KnobModel;
  * @author Xihui Chen
  *
  */
-public class KnobFeedbackFactory extends AbstractSquareSizeFeedbackFactory {
+public class KnobFeedbackFactory extends AbstractFixRatioSizeFeedbackFactory {
 
 	@Override
-	public int getMinimumSize() {
+	public int getMinimumWidth() {
 		return KnobModel.MINIMUM_SIZE;
 	}
 	
