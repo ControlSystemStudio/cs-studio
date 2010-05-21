@@ -32,31 +32,33 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			if ( rdDisplays.length > 0){
 				ActionsInput ai = menuModel.getActionsInput();
 				for (int ii=0; ii< rdDisplays.length; ii++){
-					OpenDisplayAction odAction = new OpenDisplayAction();
-
-					//Try to add the filename to the PROP_PATH
-					IPath fPath = new Path(rdDisplays[ii].getName().replaceAll("\"", "").replace(".adl", ".opi"));
-					System.out.println("Related display file: " + rdDisplays[ii].getName().replace(".adl", ".opi"));
-					System.out.println("Related display file from IPath: " + fPath.toString() + ", " + fPath.getFileExtension());
-					odAction.setPropertyValue(OpenDisplayAction.PROP_PATH, fPath);
-
-					//Try to add macros
-					System.out.println ("args " + rdDisplays[ii].getArgs());
-					if (rdDisplays[ii].getArgs() != null){
-						String argsIn = "true, " + rdDisplays[ii].getArgs().replaceAll("\"", "");
-						MacrosInput macIn;
-						try {
-							macIn = MacrosInput.recoverFromString( argsIn);
-							odAction.setPropertyValue(OpenDisplayAction.PROP_MACROS, macIn );
-						} catch (Exception e) {
-							e.printStackTrace();
+					if (!(rdDisplays[ii].getName().replaceAll("\"", "").equals(""))){
+						OpenDisplayAction odAction = new OpenDisplayAction();
+	
+						//Try to add the filename to the PROP_PATH
+						IPath fPath = new Path(rdDisplays[ii].getName().replaceAll("\"", "").replace(".adl", ".opi"));
+						System.out.println("Related display file: " + rdDisplays[ii].getName().replace(".adl", ".opi"));
+						System.out.println("Related display file from IPath: " + fPath.toString() + ", " + fPath.getFileExtension());
+						odAction.setPropertyValue(OpenDisplayAction.PROP_PATH, fPath);
+	
+						//Try to add macros
+						System.out.println ("args " + rdDisplays[ii].getArgs());
+						if (rdDisplays[ii].getArgs() != null){
+							String argsIn = "true, " + rdDisplays[ii].getArgs().replaceAll("\"", "");
+							MacrosInput macIn;
+							try {
+								macIn = MacrosInput.recoverFromString( argsIn);
+								odAction.setPropertyValue(OpenDisplayAction.PROP_MACROS, macIn );
+							} catch (Exception e) {
+								e.printStackTrace();
+							}
+							
 						}
-						
+						if (rdDisplays[ii].getLabel() != null){
+							odAction.setPropertyValue(OpenDisplayAction.PROP_DESCRIPTION, rdDisplays[ii].getLabel().replaceAll("\"", ""));
+						}
+						ai.addAction(odAction);
 					}
-					if (rdDisplays[ii].getLabel() != null){
-						odAction.setPropertyValue(OpenDisplayAction.PROP_DESCRIPTION, rdDisplays[ii].getLabel().replaceAll("\"", ""));
-					}
-					ai.addAction(odAction);
 				}
 			}
 		}
