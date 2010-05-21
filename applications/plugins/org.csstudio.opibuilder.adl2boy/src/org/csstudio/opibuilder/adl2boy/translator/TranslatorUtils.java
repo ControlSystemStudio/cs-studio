@@ -4,11 +4,16 @@ import java.util.ArrayList;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.eclipse.swt.graphics.RGB;
 
 public class TranslatorUtils {
-
+	private static ADLBasicAttribute defaultBasicAttribute = new ADLBasicAttribute();
+	private static ADLDynamicAttribute defaultDynamicAttribute = new ADLDynamicAttribute();
+	
 	public static void ConvertChildren(ArrayList<ADLWidget> childWidgets, AbstractContainerModel parentModel, RGB colorMap[]){
+
 		for (ADLWidget adlWidget : childWidgets){
 			try {
 				String widgetType = adlWidget.getType();
@@ -72,7 +77,7 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("meter")){
 					new Meter2Model(adlWidget, colorMap, parentModel);
-					printNotHandledMessage(widgetType);
+					printNotCompletelyHandledMessage(widgetType);
 						
 				}
 				else if (widgetType.equals("oval")){
@@ -129,13 +134,22 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("basic attribute")){
-					printNotHandledMessage(widgetType);
-					
+					ArrayList<ADLWidget> children = adlWidget.getObjects();
+					for (ADLWidget child : children){
+						if (child.getType().equals("attr")){
+							TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute(child);
+						}
+					}
 				}
 				else if (widgetType.equals("dynamic attribute")){
-					printNotHandledMessage(widgetType);
-					
+					ArrayList<ADLWidget> children = adlWidget.getObjects();
+					for (ADLWidget child : children){
+						if (child.getType().equals("attr")){
+							TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute(child);
+						}
+					}
 				}
+
 			}
 			catch (Exception ex) {
 				ex.printStackTrace();
@@ -148,10 +162,10 @@ public class TranslatorUtils {
 	 * Print message that a given ADL file structure is not handled.
 	 */
 	private static void printNotHandledMessage(String type) {
-		System.out.println("EditHandler: " + type + " is not handled");
+		System.out.println("TranslatorUtils: " + type + " is not handled");
 	}
 	private static void printNotCompletelyHandledMessage(String type) {
-		System.out.println("EditHandler: " + type + " is not completely handled");
+		System.out.println("TranslatorUtils: " + type + " is not completely handled");
 	}
 
 	public static int convertTextHeightToFontSize(int h){
@@ -197,5 +211,21 @@ public class TranslatorUtils {
 		else {
 			return 30;
 		}
+	}
+
+	public static ADLBasicAttribute getDefaultBasicAttribute(){
+		return TranslatorUtils.defaultBasicAttribute;
+	}
+
+	public static ADLDynamicAttribute getDefaultDynamicAttribute(){
+		return TranslatorUtils.defaultDynamicAttribute;
+	}
+	
+	public static void initDefaultBasicAttribute(){
+		TranslatorUtils.defaultBasicAttribute = new ADLBasicAttribute();
+	}
+
+	public static void initDefaultDynamicAttribute(){
+		TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute();
 	}
 }
