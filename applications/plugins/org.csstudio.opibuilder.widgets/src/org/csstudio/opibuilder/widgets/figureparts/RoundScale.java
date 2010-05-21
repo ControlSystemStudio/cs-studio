@@ -137,6 +137,14 @@ public class RoundScale extends AbstractScale {
     }
 
 	
+    public double getCoercedValuePosition(double value, boolean relative){
+		//coerce to range
+		double min = getRange().getLower();
+        double max = getRange().getUpper();
+		value = value < min ? min : (value > max ? max : value);
+		return getValuePosition(value, relative);
+    }
+    
     /**
 	 * Get the position of the value in degrees. Which is the angular coordinate in the polar 
 	 * coordinate system, whose pole(the origin) is the center of the bounds, whose polar axis 
@@ -147,10 +155,7 @@ public class RoundScale extends AbstractScale {
 	 */
 	public double getValuePosition(double value, boolean relative) {
 		updateTick();
-		//coerce to range
-//		double min = getRange().getLower();
-//        double max = getRange().getUpper();
-//		value = value < min ? min : (value > max ? max : value);
+
 		double valuePosition;
 		if(isLogScaleEnabled()) {
 			if(value <=0)

@@ -66,7 +66,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure {
 	}
 	
 	public double getCoercedValue(){
-		return value < minimum ? minimum : (value > maximum ? maximum : value);
+		return Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
 	}
 	
 	/**

@@ -99,8 +99,8 @@ public class RoundScaledRamp extends Figure {
     		
     		//update normal
     		normal.value = (lowLimit + upLimit)/2;   	
-    		normal.absolutePosition = (int) scale.getValuePosition(normal.value, false);
-    		normal.relativePosition = (int) scale.getValuePosition(normal.value, true);
+    		normal.absolutePosition = (int) scale.getCoercedValuePosition(normal.value, false);
+    		normal.relativePosition = (int) scale.getCoercedValuePosition(normal.value, true);
     		normal.rightPoint = new PolarPoint(
     					bounds.width/2, (normal.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     		normal.leftPoint = new PolarPoint(
@@ -109,39 +109,39 @@ public class RoundScaledRamp extends Figure {
     		//update min, max
     		min.value = scale.getRange().getLower();
     		max.value = scale.getRange().getUpper();
-    		min.absolutePosition = (int) scale.getValuePosition(min.value, false);
-    		min.relativePosition = (int) scale.getValuePosition(min.value, true);
-    		max.absolutePosition = (int) scale.getValuePosition(max.value, false);
-    		max.relativePosition = (int) scale.getValuePosition(max.value, true);
+    		min.absolutePosition = (int) scale.getCoercedValuePosition(min.value, false);
+    		min.relativePosition = (int) scale.getCoercedValuePosition(min.value, true);
+    		max.absolutePosition = (int) scale.getCoercedValuePosition(max.value, false);
+    		max.relativePosition = (int) scale.getCoercedValuePosition(max.value, true);
     		
     		//update lolo, lo, hi, hihi
     		if(lolo.visible){
-    			lolo.absolutePosition = (int) scale.getValuePosition(lolo.value, false);
-    			lolo.relativePosition = (int) scale.getValuePosition(lolo.value, true);
+    			lolo.absolutePosition = (int) scale.getCoercedValuePosition(lolo.value, false);
+    			lolo.relativePosition = (int) scale.getCoercedValuePosition(lolo.value, true);
     			lolo.rightPoint = new PolarPoint(
     					bounds.width/2, (lolo.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     			lolo.leftPoint = new PolarPoint(
     					bounds.width/2, (lolo.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     		}    			
     		if(lo.visible) {
-    			lo.absolutePosition = (int) scale.getValuePosition(lo.value, false);
-    			lo.relativePosition = (int) scale.getValuePosition(lo.value, true);
+    			lo.absolutePosition = (int) scale.getCoercedValuePosition(lo.value, false);
+    			lo.relativePosition = (int) scale.getCoercedValuePosition(lo.value, true);
     			lo.rightPoint = new PolarPoint(
     					bounds.width/2, (lo.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     			lo.leftPoint = new PolarPoint(
     					bounds.width/2, (lo.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     		}    			
     		if(hi.visible){    			
-    			hi.absolutePosition = (int) scale.getValuePosition(hi.value, false);
-    			hi.relativePosition = (int) scale.getValuePosition(hi.value, true);
+    			hi.absolutePosition = (int) scale.getCoercedValuePosition(hi.value, false);
+    			hi.relativePosition = (int) scale.getCoercedValuePosition(hi.value, true);
     			hi.rightPoint = new PolarPoint(
     					bounds.width/2, (hi.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     			hi.leftPoint = new PolarPoint(
     					bounds.width/2, (hi.absolutePosition + OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     		}    		
     		if(hihi.visible){
-    			hihi.absolutePosition = (int) scale.getValuePosition(hihi.value, false);
-    			hihi.relativePosition = (int) scale.getValuePosition(hihi.value, true);
+    			hihi.absolutePosition = (int) scale.getCoercedValuePosition(hihi.value, false);
+    			hihi.relativePosition = (int) scale.getCoercedValuePosition(hihi.value, true);
     			hihi.rightPoint = new PolarPoint(
     					bounds.width/2, (hihi.absolutePosition - OVERLAP_DEGREE)*Math.PI/180).toAbsolutePoint(bounds);
     			hihi.leftPoint = new PolarPoint(
