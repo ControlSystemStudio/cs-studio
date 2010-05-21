@@ -47,9 +47,14 @@ public abstract class AbstractADL2Model {
 	 * @param widgetModel
 	 */
 	protected void setADLBasicAttributeProps(ADLAbstractWidget adlWidget, AbstractWidgetModel widgetModel, boolean colorForeground){
+		ADLBasicAttribute basAttr;
 		if (adlWidget.hasADLBasicAttribute()){
-			ADLBasicAttribute basAttr = adlWidget.getAdlBasicAttribute();
-			System.out.println("Trying to load color " + basAttr.getClr() );
+			basAttr = adlWidget.getAdlBasicAttribute();
+		}
+		else {
+			basAttr = TranslatorUtils.getDefaultBasicAttribute();
+			adlWidget.setAdlBasicAttribute(basAttr);
+		}
 			if (basAttr.isColorDefined()) {
 				if (colorForeground) {
 					widgetModel.setForegroundColor(colorMap[basAttr.getClr()]);
@@ -67,7 +72,7 @@ public abstract class AbstractADL2Model {
 				}
 				
 			}
-		}
+		
 	}
 	/** set the properties contained in the ADL basic properties section in the 
 	 * created widgetModel
