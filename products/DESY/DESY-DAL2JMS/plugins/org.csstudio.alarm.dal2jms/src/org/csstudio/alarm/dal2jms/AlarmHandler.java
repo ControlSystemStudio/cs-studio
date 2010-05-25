@@ -39,11 +39,10 @@ import javax.jms.MapMessage;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -82,9 +81,7 @@ public class AlarmHandler {
                         } else {
                             LOG.debug("INVALID message !");
                         }
-                    } catch (final AlarmMessageException e) {
-                        LOG.error("Error while creating mapMessage", e);
-                    } catch (final JMSException e) {
+                    } catch (JMSException e) {
                         LOG.error("Error while creating mapMessage", e);
                     }
                 }
@@ -101,11 +98,10 @@ public class AlarmHandler {
         }
     }
 
-    private MapMessage getMapMessage(final IAlarmMessage message) throws AlarmMessageException,
-                                                                 JMSException {
+    private MapMessage getMapMessage(final IAlarmMessage message) throws JMSException {
         final MapMessage result = JmsMessage.getInstance().createJmsSession().createMapMessage();
 
-        for (final IAlarmMessage.Key key : Key.values()) {
+        for (final AlarmMessageKey key : AlarmMessageKey.values()) {
             /*
              * if the value is noTimeStamp or Uninitialized or noMetaData
              * return null -> do NOT create message !
