@@ -156,7 +156,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	private static final int DEFAULT_BUFFER_SIZE = 100;	
 	
 	/** The maximum allowed buffer size. */
-	private static final int MAX_BUFFER_SIZE = 1000000;	
+	private static final int MAX_BUFFER_SIZE = 10000000;	
 	
 	public static final int MAX_AXES_AMOUNT = 4;
 	
@@ -307,7 +307,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			break;
 		case BUFFER_SIZE:
 			addProperty(new IntegerProperty(propID, 
-					traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 0, MAX_BUFFER_SIZE));
+					traceProperty.toString(), category, DEFAULT_BUFFER_SIZE, 1, MAX_BUFFER_SIZE));
 			break;
 		case CONCATENATE_DATA:
 			addProperty(new BooleanProperty(propID, traceProperty.toString(), category, true));
