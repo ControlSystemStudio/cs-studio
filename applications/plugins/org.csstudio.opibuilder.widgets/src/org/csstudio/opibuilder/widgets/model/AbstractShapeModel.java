@@ -105,6 +105,7 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 	public AbstractShapeModel() {
 		setBackgroundColor(CustomMediaFactory.COLOR_BLUE);
 		setForegroundColor(CustomMediaFactory.COLOR_RED);
+		setPropertyValue(PROP_BORDER_ALARMSENSITIVE, false);
 	}
 	
 	/**
