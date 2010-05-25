@@ -131,9 +131,7 @@ public final class RecordFieldTableRowAdapter extends AbstractTableRowAdapter<IR
 				// resolve functions and parameters
 				try {
 					result = value.toString();
-
 					result = ResolutionUtil.resolve(value.toString(), record);
-
 					result = DctActivator.getDefault().getFieldFunctionService().evaluate(result, record, fieldKey);
 
 					result = ResolutionUtil.resolve(result, record);

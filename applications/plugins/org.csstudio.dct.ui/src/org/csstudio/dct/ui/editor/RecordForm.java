@@ -16,6 +16,8 @@ import org.csstudio.dct.util.ResolutionUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.eclipse.gef.commands.CommandStack;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -65,20 +67,19 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		// .. field table
 		Composite composite = new Composite(bar, SWT.NONE);
-		composite.setLayout(LayoutUtil.createGridLayout(1, 5, 8, 8));
+		GridLayoutFactory.swtDefaults().margins(5, 5).spacing(8,8).applyTo(composite);
 
-		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
-		recordFieldTable.getViewer().getControl().setLayoutData(LayoutUtil.createGridDataForFillingCell());
 
+		// .. filter options
 		Composite buttons = new Composite(composite, SWT.None);
 		buttons.setLayout(LayoutUtil.createGridLayout(3, 0, 5, 5));
 
 		// .. promptgroup filter combo
 		Label l = new Label(buttons, SWT.NONE);
 		l.setText("Group:");
-		l.setLayoutData(LayoutUtil.createGridData());
+		GridDataFactory.swtDefaults().applyTo(l);
 		ComboViewer promptGroupCombo = new ComboViewer(new CCombo(buttons, SWT.READ_ONLY | SWT.BORDER));
-		promptGroupCombo.getControl().setLayoutData(LayoutUtil.createGridData());
+		GridDataFactory.swtDefaults().applyTo(promptGroupCombo.getControl());
 		promptGroupCombo.setContentProvider(new ArrayContentProvider());
 		promptGroupCombo.setLabelProvider(new LabelProvider() {
 			@Override
@@ -99,7 +100,7 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		// .. filter button
 		final Button hideDefaultsButton = new Button(buttons, SWT.CHECK);
-		hideDefaultsButton.setLayoutData(LayoutUtil.createGridDataForVerticalFillingCell());
+		GridDataFactory.swtDefaults().applyTo(hideDefaultsButton);
 		hideDefaultsButton.setText("Hide Defaults");
 		hideDefaultsButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -111,10 +112,15 @@ public final class RecordForm extends AbstractPropertyContainerForm<IRecord> {
 
 		hideDefaultsButton.setSelection(false);
 
+		// .. table with record fields
+		recordFieldTable = WidgetUtil.create3ColumnTable(composite, commandStack);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(recordFieldTable.getViewer().getControl());
+
+		
 		// .. the expand item
 		ExpandItem expandItem = new ExpandItem(bar, SWT.NONE);
 		expandItem.setText("Fields");
-		expandItem.setHeight(400);
+		expandItem.setHeight(1400);
 		expandItem.setControl(composite);
 		expandItem.setExpanded(true);
 		expandItem.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(Activator.PLUGIN_ID, "icons/tab_fields.png"));

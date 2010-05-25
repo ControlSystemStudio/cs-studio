@@ -57,6 +57,7 @@ public final class ResolutionUtil {
 			
 			String resolved = "";
 			try {
+				// .. resolve with multiple steps
 				resolved = DctActivator.getDefault().getFieldFunctionService().resolve(value, aliases);
 				resolved = DctActivator.getDefault().getFieldFunctionService().evaluate(resolved, record, key);
 				resolved = DctActivator.getDefault().getFieldFunctionService().resolve(resolved, aliases);
