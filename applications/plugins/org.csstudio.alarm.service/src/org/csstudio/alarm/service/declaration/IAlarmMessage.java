@@ -19,6 +19,7 @@ package org.csstudio.alarm.service.declaration;
 
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -31,13 +32,7 @@ import javax.annotation.Nonnull;
  */
 public interface IAlarmMessage {
 
-    /**
-     * Set of keys for the alarm message.
-     * TODO jp support for '-' in enums like in APPLICATION-ID and change APPLICATION_ID
-     */
-    enum Key {
-        EVENTTIME, NAME, SEVERITY, STATUS, FACILITY, HOST, TYPE, VALUE, APPLICATION_ID
-    }
+    // TODO jp remove enums from interface
 
     /**
      * Set of keys for the alarm message - currently NOT supported
@@ -49,36 +44,28 @@ public interface IAlarmMessage {
     }
 
     /**
-     * format of the time string
-     */
-    String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
-
-    /**
-     * application ID for this application
-     */
-    String Application_ID = "CSS_AlarmService";
-
-    /**
      * The message essentially is a map from String to String. Here you get the value for the key (given as String).
      *
-     * @param key
+     * @param keyAsString the defining name of a key
      * @return value
-     * @throws AlarmMessageException
      */
-    @Nonnull
-    String getString(@Nonnull final String key) throws AlarmMessageException;
+    @CheckForNull
+    String getString(@Nonnull final String keyAsString);
 
     /**
-     * The message essentially is a map from String to String. Here you get the value for the key (given as enum)
+     * The message essentially is a map from String to String. Here you get the value for the key (given as enum).
+     * The method getDefiningName() of the key determines the string.
      *
      * @param key
      * @return value
      */
-    String getString(@Nonnull final Key key);
+    @Nonnull
+    String getString(@Nonnull final AlarmMessageKey key);
 
     /**
-     * The message essentially is a map from String to String. Here you get the whole map.
-     * The map is filled with the values of the keys in the enum Key.
+     * The message essentially is a map from String to String. Here you get the whole map with
+     * the following content:
+     * map: Key.getDefiningName() -> Value
      *
      * @return the map
      */

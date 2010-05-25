@@ -24,10 +24,9 @@ import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
@@ -45,7 +44,8 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * The logger used by this listener.
      */
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageListener.class);
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmMessageListener.class);
 
     /**
      * The worker used by this listener.
@@ -195,19 +195,20 @@ public class AlarmMessageListener implements IAlarmListener {
      * Processes an alarm message.
      */
     private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
-        final String name = message.getString(Key.NAME);
+        final String name = message.getString(AlarmMessageKey.NAME);
         if (isAcknowledgement(message)) {
             LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
         } else {
-            final String severityValue = message.getString(Key.SEVERITY);
+            final String severityValue = message.getString(AlarmMessageKey.SEVERITY);
             if (severityValue == null) {
-                LOG.warn("Received alarm message which did not contain " + Key.SEVERITY.name() +  "! Message ignored. Message was: "
-                                  + message);
+                LOG.warn("Received alarm message which did not contain "
+                        + AlarmMessageKey.SEVERITY.name() + "! Message ignored. Message was: "
+                        + message);
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
-            final String eventtimeValue = message.getString(Key.EVENTTIME);
+            final String eventtimeValue = message.getString(AlarmMessageKey.EVENTTIME);
             Date eventtime = null;
             if (eventtimeValue != null) {
                 eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
@@ -215,11 +216,13 @@ public class AlarmMessageListener implements IAlarmListener {
             if (eventtime == null) {
                 // eventtime is null if the message did not contain an EVENTTIME
                 // field or if the EVENTTIME could not be parsed.
-                LOG.warn("Received alarm message which did not contain a valid " + Key.EVENTTIME.name() + ", using current time instead. Message was: "
-                                      + message);
+                LOG.warn("Received alarm message which did not contain a valid "
+                        + AlarmMessageKey.EVENTTIME.name()
+                        + ", using current time instead. Message was: " + message);
                 eventtime = new Date();
             }
-            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime=" + eventtime);
+            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
+                    + eventtime);
             _queueWorker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
         }
     }
@@ -229,13 +232,7 @@ public class AlarmMessageListener implements IAlarmListener {
      */
     private boolean isAcknowledgement(final IAlarmMessage message) {
         // TODO jp DAL impl currently not working, returns always false
-        String ack = null;
-        try {
-            ack = message.getString("ACK");
-        } catch (final AlarmMessageException e) {
-            // ok, ack will be null
-            return false;
-        }
+        String ack = message.getString("ACK");
         return (ack != null) && ack.equals("TRUE");
     }
 

@@ -21,13 +21,18 @@ import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
+import org.epics.css.dal.DynamicValueCondition;
+import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.Timestamp;
 import org.epics.css.dal.simple.AnyData;
-import org.epics.css.dal.simple.Severity;
+import org.epics.css.dal.simple.MetaData;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
@@ -37,37 +42,56 @@ import org.epics.css.dal.simple.Severity;
  * @version $Revision$
  * @since 21.04.2010
  */
+@SuppressWarnings("unchecked")
 public class AlarmMessageDALImpl implements IAlarmMessage {
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmMessageDALImpl.class);
+
     private static final String ERROR_MESSAGE = "Error analyzing DAL message";
-
-    private final CentralLogger _log = CentralLogger.getInstance();
-
-    private final AnyData _anyData;
+    /**
+     * format of the time string
+     */
+    private static final String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
-     * Constructor.
-     *
+     * application ID for this application
+     */
+    private static final String APPLICATION_ID = "CSS_AlarmService";
+
+
+    // The message is based upon this data
+    private final SimpleProperty _property;
+    private final AnyData _anyDataOpt; // Opt: May be null
+
+    /**
+     * Create alarm message with the given condition and anydata.
+     * @param property
      * @param anyData
      */
-    public AlarmMessageDALImpl(@Nonnull final AnyData anyData) {
-        this._anyData = anyData;
+    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property, @Nonnull final AnyData anyData) {
+        _property = property;
+        _anyDataOpt = anyData;
+
+    }
+
+    /**
+     * Create alarm message with the given property. This one must be used if anydata is not available.
+     *
+     * @param property
+     */
+    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property) {
+        _property = property;
+        _anyDataOpt = null;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public final String getString(@Nonnull final String keyAsString) throws AlarmMessageException {
-        Key key = null;
-        try {
-            key = Key.valueOf(keyAsString);
-        } catch (IllegalArgumentException e) {
-            final String errorMessage = ERROR_MESSAGE + ". getString for undefined key-string : "
-                    + keyAsString;
-            _log.error(this, errorMessage);
-            throw new AlarmMessageException(errorMessage);
-        }
-        return getString(key);
+    @CheckForNull
+    public final String getString(@Nonnull final String keyAsString) {
+        AlarmMessageKey key = AlarmMessageKey.findKeyWithDefiningName(keyAsString);
+        return (key == null) ? null : getString(key);
     }
 
     /**
@@ -75,7 +99,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      */
     @Override
     @Nonnull
-    public final String getString(@Nonnull final Key key) {
+    public final String getString(@Nonnull final AlarmMessageKey key) {
         String result = null;
 
         switch (key) {
@@ -112,119 +136,21 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 result = retrieveValueAsString();
                 break;
             case APPLICATION_ID:
-                result = Application_ID;
+                result = retrieveApplicationIDAsString();
                 break;
             default:
-                _log.error(this, ERROR_MESSAGE + ". getString called for undefined key : " + key);
-                result = "No value, key " + key + " undefined";
+                LOG.error(ERROR_MESSAGE + ". getString called for undefined key : " + key);
+                result = "n.a.";
         }
         return result;
-    }
-
-    @Nonnull
-    private String retrieveEventtimeAsString() {
-        String result;
-        if (_anyData.getTimestamp() == null) {
-            result = "noTimeStamp";
-        } else {
-            SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
-            result = sdf.format(_anyData.getTimestamp().getMilliseconds());
-        }
-        return result;
-    }
-
-    @Nonnull
-    private String retrieveNameAsString() {
-        String result;
-        if (hasValidMetaData()) {
-            result = "noMetaData";
-        } else {
-            result = _anyData.getMetaData().getName();
-        }
-        return result;
-    }
-
-    @Nonnull
-    private String retrieveSeverityAsString() {
-        String result;
-        if (hasValidMetaData() || (_anyData.getSeverity() == null)) {
-            result = "noMetaData";
-        } else {
-            result = getSeverityAsString(_anyData.getSeverity());
-        }
-        return result;
-    }
-
-    @Nonnull
-    private String getSeverityAsString(@Nonnull final Severity severity) {
-        // TODO jp use Severity enum here
-        String result = null;
-
-        if (severity.hasValue()) {
-            result = severity.toString();
-        }
-
-        if (severity.isMajor()) {
-            result = "MAJOR";
-        } else if (severity.isMinor()) {
-            result = "MINOR";
-        } else if (severity.isOK()) {
-            result = "NO_ALARM";
-        } else if (severity.isInvalid()) {
-            result = "INVALID";
-        }
-        return result;
-    }
-
-    @Nonnull
-    private String retrieveStatusAsString() {
-        return _anyData.getSeverity().descriptionToString();
-    }
-
-    @Nonnull
-    private String retrieveHostnameAsString() {
-        // TODO MCL: we can get the host name from the DAL connection - available?
-        String result;
-        if (hasValidMetaData()) {
-            result = "noMetaData";
-        } else {
-            result = _anyData.getMetaData().getHostname();
-            if (result == null) {
-                result = "host undefined";
-            }
-        }
-        return result;
-    }
-
-    @Nonnull
-    private String retrieveValueAsString() {
-        String result;
-        if (_anyData.getSeverity().hasValue()) {
-//            System.out.println("Severity " + _anyData.getSeverity().toString());
-//            System.out.println("Severity " + _anyData.getSeverity().hasValue());
-            try {
-                result = _anyData.stringValue();
-//                System.out.println("Value " + result);
-            } catch (Exception e) {
-//                System.out.println("Exception while analyzing _anyData.stringValue()" + e.getMessage());
-                result = "-.--";
-            }
-        } else {
-            result = "value undefined";
-        }
-        return result;
-    }
-
-    private boolean hasValidMetaData() {
-        return _anyData.getMetaData() == null;
     }
 
     @Override
     public Map<String, String> getMap() {
         Map<String, String> result = new HashMap<String, String>();
-        for (Key key : Key.values()) {
-            // TODO jp securely access incoming message
-            result.put(key.name(), getString(key));
+        // TODO jp securely access incoming message
+        for (AlarmMessageKey key : AlarmMessageKey.values()) {
+            result.put(key.getDefiningName(), getString(key));
         }
         return result;
 
@@ -239,7 +165,108 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Override
     public final String toString() {
-        return "DAL-AlarmMessage for " + getString(Key.NAME) + ", " + getString(Key.SEVERITY)
-                + getString(Key.STATUS);
+        return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
+                + getString(AlarmMessageKey.STATUS);
+    }
+
+    @Nonnull
+    private SimpleProperty getProperty() {
+        return _property;
+    }
+
+    @Nonnull
+    private DynamicValueCondition getCondition() {
+        return getProperty().getCondition();
+    }
+
+    @CheckForNull
+    private AnyData getAnyData() {
+        return _anyDataOpt;
+    }
+
+    private boolean hasAnyData() {
+        return _anyDataOpt != null;
+    }
+
+    @CheckForNull
+    private MetaData getMetaData() {
+        return getAnyData().getMetaData();
+    }
+
+
+    private boolean hasMetaData() {
+        return hasAnyData() && (getAnyData().getMetaData() == null);
+    }
+
+    @Nonnull
+    private String retrieveEventtimeAsString() {
+        String result = "n.a.";
+        Timestamp timestamp = getProperty().getCondition().getTimestamp();
+        if (timestamp != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
+            result = sdf.format(timestamp.getMilliseconds());
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveNameAsString() {
+        return getProperty().getUniqueName();
+    }
+
+    @Nonnull
+    private String retrieveSeverityAsString() {
+        String result = "n.a.";
+        if (getCondition().isMajor()) {
+            result = "MAJOR";
+        } else if (getCondition().isMinor()) {
+            result = "MINOR";
+        } else if (getCondition().isOK()) {
+            result = "NO_ALARM";
+        } else if (getCondition().isInvalid()) {
+            result = "INVALID";
+        }
+
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveStatusAsString() {
+        String result = "n.a.";
+        if (hasAnyData()) {
+            result = getAnyData().getSeverity().descriptionToString();
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveHostnameAsString() {
+        // TODO MCL: we can get the host name from the DAL connection - available?
+        String result = "n.a.";
+        if (hasMetaData()) {
+            result = getMetaData().getHostname();
+            if (result == null) {
+                result = "host undefined";
+            }
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveValueAsString() {
+        String result = "n.a.";
+        if (hasAnyData()) {
+            try {
+                result = getAnyData().stringValue();
+            } catch (Exception e) {
+                result = "value undefined";
+            }
+        }
+        return result;
+    }
+
+    @Nonnull
+    private String retrieveApplicationIDAsString() {
+        return APPLICATION_ID;
     }
 }

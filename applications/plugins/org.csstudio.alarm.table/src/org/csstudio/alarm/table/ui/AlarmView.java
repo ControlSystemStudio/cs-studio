@@ -25,12 +25,12 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
-import org.csstudio.alarm.service.declaration.IAlarmMessage.Key;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
@@ -231,7 +231,7 @@ public class AlarmView extends LogView {
     }
 
     private void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
-        // TODO jp Init: Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
+        // TODO jp Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
         final String[] facilityNames = new String[] { "Test" };
@@ -433,7 +433,7 @@ public class AlarmView extends LogView {
 
                     @Override
                     public void onMessage(@Nonnull final IAlarmMessage message) {
-                        _alarmSoundService.playAlarmSound(message.getString(Key.SEVERITY));
+                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
                     }
                 };
             }

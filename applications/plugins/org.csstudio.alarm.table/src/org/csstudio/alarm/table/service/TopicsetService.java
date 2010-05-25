@@ -33,21 +33,21 @@ import org.csstudio.alarm.table.preferences.TopicSet;
 /**
  * Implementation of the topic set service. A map is maintained, keeping the alarm connection and
  * the message lists as values. The key is given by the name of the topic set.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 27.04.2010
  */
 public class TopicsetService implements ITopicsetService {
-    
+
     private final Map<String, Element> _topicSetMap = new HashMap<String, Element>();
     private final String _name;
-    
+
     public TopicsetService(@Nonnull final String name) {
         _name = name;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -58,22 +58,22 @@ public class TopicsetService implements ITopicsetService {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
         assert alarmTableListener != null : "Failed: alarmTableListener != null";
-        
+
         Element element = new Element();
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
+        element._alarmTableListener.setMessageList(element._messageList);
         element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
                                                          element._alarmTableListener,
                                                          topicSet.getTopics()
                                                                  .toArray(new String[0]));
-        element._alarmTableListener.setMessageList(element._messageList);
-        
+
         _topicSetMap.put(topicSet.getName(), element);
-        
+
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -83,7 +83,7 @@ public class TopicsetService implements ITopicsetService {
             element._connection.disconnect();
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -92,7 +92,7 @@ public class TopicsetService implements ITopicsetService {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._connection;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -101,13 +101,13 @@ public class TopicsetService implements ITopicsetService {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._messageList;
     }
-    
+
     @Override
     public IAlarmTableListener getAlarmTableListenerForTopicSet(final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._alarmTableListener;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -115,12 +115,12 @@ public class TopicsetService implements ITopicsetService {
     public boolean hasTopicSet(final TopicSet topicSet) {
         return _topicSetMap.containsKey(topicSet.getName());
     }
-    
+
     @Override
     public String toString() {
         return "Topicset-Service " + _name;
     }
-    
+
     /**
      * Container for the value of the map. Used only internally.
      */

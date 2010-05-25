@@ -25,7 +25,8 @@ import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 
-import org.csstudio.alarm.service.declaration.AlarmMessageException;
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -38,9 +39,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 21.04.2010
  */
 public class AlarmMessageJMSImpl implements IAlarmMessage {
-    private static final String ERROR_MESSAGE = "Error analyzing JMS message";
-
-    private final CentralLogger _log = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmMessageJMSImpl.class);
 
     private final MapMessage _mapMessage;
 
@@ -58,13 +58,13 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      */
     @Override
     @Nonnull
-    public final String getString(@Nonnull final String key) throws AlarmMessageException {
+    public final String getString(@Nonnull final String key) {
         String result = null;
         try {
             result = _mapMessage.getString(key);
         } catch (JMSException e) {
-            _log.error(this, "Error analyzing JMS message", e);
-            throw new AlarmMessageException(e);
+            LOG.error("Error analyzing JMS message", e);
+            // result is already null
         }
         return result;
     }
@@ -74,17 +74,8 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      */
     @Override
     @Nonnull
-    public final String getString(@Nonnull final Key key) {
-        String result = null;
-        try {
-            // TODO jp access key name with toString
-            result = getString(key.name());
-        } catch (AlarmMessageException e) {
-            final String errorMessage = ERROR_MESSAGE + ". getString failed for key : " + key;
-            _log.error(this, errorMessage);
-            result = "No value, access to " + key + " failed";
-        }
-        return result;
+    public final String getString(@Nonnull final AlarmMessageKey key) {
+        return getString(key.getDefiningName());
     }
 
     @Override
@@ -99,15 +90,15 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
                 result.put(key.toUpperCase(), _mapMessage.getString(key));
             }
         } catch (JMSException e) {
-            _log.error(this, "Error creating map from JMS message", e);
+            LOG.error("Error creating map from JMS message", e);
         }
         return result;
     }
 
     @Override
     public final String toString() {
-        return "JMS-AlarmMessage for " + getString(Key.NAME) + ", " + getString(Key.SEVERITY)
-                + getString(Key.STATUS);
+        return "JMS-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
+                + getString(AlarmMessageKey.STATUS);
     }
 
 }

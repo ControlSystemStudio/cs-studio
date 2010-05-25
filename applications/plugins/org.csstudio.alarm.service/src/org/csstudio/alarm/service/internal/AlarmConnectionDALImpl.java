@@ -134,10 +134,11 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         final ListenerItem item = new ListenerItem();
         // TODO jp Review: hard coded Double.class in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
-        item._dynamicValueAdapter = new DynamicValueListenerAdapter<Double, DoubleProperty>(listener, connectionMonitor);
-        // TODO jp use constants for parameterization
+        item._dynamicValueAdapter = new DynamicValueListenerAdapter<Double, DoubleProperty>(listener,
+                                                                                            connectionMonitor);
+        // TODO jp use constants for parameterization of expert mode
         item._parameters = new HashMap<String, Object>();
-        // item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
+        item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
@@ -153,7 +154,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         _listenerItems.add(item);
     }
 
-    private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor, @Nonnull final IAlarmListener listener) {
+    private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                     @Nonnull final IAlarmListener listener) {
 
         // TODO jp the facilities must be given as parameter
         final List<String> facilitiesAsString = new ArrayList<String>();
@@ -166,13 +168,14 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             e.printStackTrace();
         }
 
-        for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
-            _log.debug(this, "Connecting to " + recordName);
-            connectToPV(connectionMonitor, listener, recordName);
-        }
-        //        connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
-        //        connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
-        //        connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
+        //        for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
+        //            _log.debug(this, "Connecting to " + recordName);
+        //            connectToPV(connectionMonitor, listener, recordName);
+        //        }
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
+        connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
+        connectToPV(connectionMonitor, listener, "alarmTest:NOT_EXISTENT");
     }
 
     /**
@@ -180,7 +183,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      * Adapts the IAlarmListener and the IAlarmConnectionMonitor
      * to the DynamicValueListener expected by DAL.
      */
-    private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends DynamicValueAdapter<T, P> {
+    private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends
+            DynamicValueAdapter<T, P> {
 
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
@@ -194,22 +198,26 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         @Override
         public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
             // TODO jp process state change correctly
-            processEvent("conditionChange", event);
+            CentralLogger.getInstance().debug(this,
+                                              "conditionChange received " + event.getCondition()
+                                                      + " for "
+                                                      + event.getProperty().getUniqueName());
+
+            // Suppress the initial callback, it has no meaning here
+            // TODO jp there should be a better way than testing a hard coded string
+            if (event.getMessage().equals("Initial update.")) {
+                _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty()));
+            }
         }
 
         @Override
         public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
-            processEvent("valueChanged", event);
-        }
-
-        private void processEvent(@Nonnull final String text, @Nonnull final DynamicValueEvent<T, P> event) {
             // TODO jp Review access to event
             CentralLogger.getInstance().debug(this,
-                                              text + " received " + event.getCondition() + " for "
-                                              + event.getProperty().getUniqueName());
-            if (event.getProperty().isConnected()) {
-                _alarmListener.onMessage(new AlarmMessageDALImpl(event.getData()));
-            }
+                                              "valueChanged received " + event.getCondition()
+                                                      + " for "
+                                                      + event.getProperty().getUniqueName());
+            _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
         }
 
     }

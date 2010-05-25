@@ -25,6 +25,7 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -1067,6 +1068,7 @@ public class AlarmTreeView extends ViewPart {
             initItems.add(new PVNodeItem(pvNode));
         }
 
+        // TODO jp Init: NYI initial state for alarm tree
         AlarmTreePlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
     }
 
@@ -1085,8 +1087,8 @@ public class AlarmTreeView extends ViewPart {
         }
 
         public void init(@Nonnull final IAlarmMessage alarmMessage) {
-            final String severityString = alarmMessage.getString(IAlarmMessage.Key.SEVERITY);
-            final Alarm alarm = new Alarm(alarmMessage.getString(IAlarmMessage.Key.NAME),
+            final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
+            final Alarm alarm = new Alarm(alarmMessage.getString(AlarmMessageKey.NAME),
                                           Severity.parseSeverity(severityString));
             _pvNode.updateAlarm(alarm);
         }

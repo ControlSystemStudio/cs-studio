@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
@@ -46,8 +47,8 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
-
-    private final CentralLogger _log = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmServiceJMSImpl.class);
 
     /**
      * Constructor.
@@ -66,6 +67,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     @Override
     public final void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
+        LOG.error("retrieveInitialState for " + initItems.size() + " items");
+
         List<Element> pvsUnderWay = new ArrayList<Element>();
         for (IAlarmInitItem initItem : initItems) {
             registerPVs(pvsUnderWay, initItem);
@@ -83,7 +86,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             // TODO jp use constant from prefs here
             Thread.sleep(2000);
         } catch (InterruptedException e) {
-            _log.warn(this, "retrieveInitialState was interrupted ", e);
+            LOG.warn("retrieveInitialState was interrupted ", e);
         }
     }
 
@@ -92,13 +95,14 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             DalPlugin.getDefault().getSimpleDALBroker()
                     .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
         } catch (InstantiationException e) {
-            _log.error(this, "Error in deregisterPVs", e);
+            LOG.error("Error in deregisterPVs", e);
         } catch (CommonException e) {
-            _log.error(this, "Error in deregisterPVs", e);
+            LOG.error("Error in deregisterPVs", e);
         }
     }
 
-    private void registerPVs(@Nonnull final List<Element> pvsUnderWay, @Nonnull final IAlarmInitItem initItem) {
+    private void registerPVs(@Nonnull final List<Element> pvsUnderWay,
+                             @Nonnull final IAlarmInitItem initItem) {
         try {
             Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
@@ -107,9 +111,9 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                     .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
             pvsUnderWay.add(pvUnderWay);
         } catch (InstantiationException e) {
-            _log.error(this, "Error in registerPVs", e);
+            LOG.error("Error in registerPVs", e);
         } catch (CommonException e) {
-            _log.error(this, "Error in registerPVs", e);
+            LOG.error("Error in registerPVs", e);
         }
     }
 
@@ -145,7 +149,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             // It is not sufficient to check for isConnected, in the channelStateUpdate the anyData object is not accessible.
             // Currently there is no way to immediately retrieve the alarm state.
             if (channel.getProperty().isConnected()) {
-//                _initItem.init(new AlarmMessageDALImpl(channel.getData()));
+                //                _initItem.init(new AlarmMessageDALImpl(channel.getData()));
             }
         }
     }
