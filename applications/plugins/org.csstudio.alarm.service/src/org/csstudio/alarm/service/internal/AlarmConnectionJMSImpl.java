@@ -89,11 +89,11 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
      */
     @Override
     public void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                    @Nonnull final IAlarmListener listener) throws AlarmConnectionException {
+                                    @Nonnull final IAlarmListener listener, String fileName) throws AlarmConnectionException {
         
         // TODO jp The default topics should be preference based
         final String[] topics = "ALARM,ACK".split(",");
-        connectWithListenerForTopics(connectionMonitor, listener, topics);
+        connectWithListenerForTopics(connectionMonitor, listener, topics, null);
     }
     
     /**
@@ -102,7 +102,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     @Override
     public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                              @Nonnull final IAlarmListener listener,
-                                             @Nonnull final String[] topics) throws AlarmConnectionException {
+                                             @Nonnull final String[] topics, String fileName) throws AlarmConnectionException {
         _log.info(this, "Connecting to JMS for topics " + Arrays.toString(topics) + ".");
         
         try {

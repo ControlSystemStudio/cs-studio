@@ -95,6 +95,12 @@
             class="org.csstudio.alarm.table.preferences.JmsLogPreferencePage"
             id="de.desy.css.jmsLogs.page3"
             name="Message Table"/>
+      <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
+            class="org.csstudio.alarm.table.preferences.alarmservice.AlarmServicePreferencePage"
+            id="org.csstudio.alarm.table.preferences.alarmservice.AlarmServicePreferencePage"
+            name="Alarm-Service Preferences">
+      </page>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
@@ -103,6 +109,9 @@
       <initializer class="org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceInitializer"/>
+      <initializer
+            class="org.csstudio.alarm.table.preferences.alarmservice.PreferenceInitializer">
+      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

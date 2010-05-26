@@ -67,7 +67,7 @@ public class TopicsetService implements ITopicsetService {
         element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
                                                          element._alarmTableListener,
                                                          topicSet.getTopics()
-                                                                 .toArray(new String[0]));
+                                                                 .toArray(new String[0]), "c:\\alarmConfig.xml");
 
         _topicSetMap.put(topicSet.getName(), element);
 

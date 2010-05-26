@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
@@ -36,6 +35,7 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ImportContentModelException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
@@ -107,8 +107,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     @Override
     public void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                    @Nonnull final IAlarmListener listener) throws AlarmConnectionException {
-        connectWithListenerForTopics(connectionMonitor, listener, new String[0]);
+                                    @Nonnull final IAlarmListener listener,
+                                    final String fileName) throws AlarmConnectionException {
+        connectWithListenerForTopics(connectionMonitor, listener, new String[0], fileName);
     }
 
     /**
@@ -117,11 +118,37 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     @Override
     public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                              @Nonnull final IAlarmListener listener,
-                                             @Nonnull final String[] topics) throws AlarmConnectionException {
+                                             @Nonnull final String[] topics,
+                                             final String fileName) throws AlarmConnectionException {
         LOG.info("Connecting to DAL for topics " + Arrays.toString(topics) + ".");
 
-        // TODO jp error handling currently removed
-        bla(connectionMonitor, listener);
+        connectToPVsFromConfiguration(connectionMonitor, listener, fileName);
+
+        // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
+        connectionMonitor.onConnect();
+    }
+
+    private void connectToPVsFromConfiguration(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                               @Nonnull final IAlarmListener listener,
+                                               final String fileName) {
+
+        // TODO jp the facilities must be given as parameter
+        final List<String> facilitiesAsString = new ArrayList<String>();
+        facilitiesAsString.add("Test");
+        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+        try {
+            //            model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
+            model = _alarmConfigService.retrieveInitialContentModelFromFile(fileName);
+            // TODO jp Init: Only register PVs for testing
+            for (final String recordName : model
+                    .getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
+                LOG.debug("Connecting to " + recordName);
+                connectToPV(connectionMonitor, listener, recordName);
+            }
+        } catch (ImportContentModelException e) {
+            LOG.error("Could not retrieve initial content model", e);
+        }
+
     }
 
     private void connectToPV(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
@@ -156,30 +183,6 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
     }
 
-    private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                     @Nonnull final IAlarmListener listener) {
-
-        // TODO jp the facilities must be given as parameter
-        final List<String> facilitiesAsString = new ArrayList<String>();
-        facilitiesAsString.add("Test");
-        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
-        try {
-            model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
-            //        for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
-            //            _log.debug(this, "Connecting to " + recordName);
-            //            connectToPV(connectionMonitor, listener, recordName);
-            //        }
-            connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
-            connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
-            connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
-            connectToPV(connectionMonitor, listener, "alarmTest:NOT_EXISTENT");
-        } catch (final InvalidNameException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
     /**
      * Object-based adapter.
      * Adapts the IAlarmListener and the IAlarmConnectionMonitor
@@ -187,22 +190,21 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
-        private static final Logger LOG = CentralLogger.getInstance()
+        private static final Logger LOG2 = CentralLogger.getInstance()
                 .getLogger(AlarmConnectionDALImpl.DynamicValueListenerAdapter.class);
 
         private final IAlarmListener _alarmListener;
-        private final IAlarmConnectionMonitor _connectionMonitor;
 
         public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener,
-                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
+                                           @SuppressWarnings("unused") @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
+            // The alarmConnectionMonitor is not used by the DynamicValueListenerAdapter, instead the connect is sent
+            // directly after connectWithListenerForTopics()
             _alarmListener = alarmListener;
-            _connectionMonitor = alarmConnectionMonitor;
         }
 
         @Override
         public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
-            // TODO jp process state change correctly
-            LOG.debug("conditionChange received " + event.getCondition() + " for "
+            LOG2.debug("conditionChange received " + event.getCondition() + " for "
                     + event.getProperty().getUniqueName());
 
             // Suppress the initial callback, it has no meaning here
@@ -214,8 +216,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
         @Override
         public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
-            // TODO jp Review access to event
-            LOG.debug("valueChanged received " + event.getCondition() + " for "
+            LOG2.debug("valueChanged received " + event.getCondition() + " for "
                     + event.getProperty().getUniqueName());
             _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
         }

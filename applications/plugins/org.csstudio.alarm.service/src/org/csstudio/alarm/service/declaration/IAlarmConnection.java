@@ -41,10 +41,11 @@ public interface IAlarmConnection {
      * 
      * @param connectionMonitor .
      * @param listener .
+     * @param fileName TODO
      * @throws AlarmConnectionException
      */
     void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                             @Nonnull final IAlarmListener listener) throws AlarmConnectionException;
+                             @Nonnull final IAlarmListener listener, String fileName) throws AlarmConnectionException;
     
     // TODO jp Do not use String-Array for parameter topics
     
@@ -56,11 +57,12 @@ public interface IAlarmConnection {
      * @param connectionMonitor .
      * @param listener .
      * @param topics .
+     * @param fileName TODO
      * @throws AlarmConnectionException
      */
     void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                       @Nonnull final IAlarmListener listener,
-                                      @Nonnull final String[] topics) throws AlarmConnectionException;
+                                      @Nonnull final String[] topics, String fileName) throws AlarmConnectionException;
     
     /**
      * Disconnect from the underlying system, freeing resources. The connection monitor will be

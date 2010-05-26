@@ -57,15 +57,17 @@ public class AlarmServiceActivator implements BundleActivator {
 
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined by preferences
-        registerJMSService(context);
-//        registerDALService(context, getService(context, IAlarmConfigurationService.class));
+
+        //        registerJMSService(context);
+        registerDALService(context, getService(context, IAlarmConfigurationService.class));
     }
 
     /**
      * @param context
      * @param iLdapService
      */
-    private void registerAlarmConfigurationService(@Nonnull final BundleContext context, @Nonnull final ILdapService ldapService) {
+    private void registerAlarmConfigurationService(@Nonnull final BundleContext context,
+                                                   @Nonnull final ILdapService ldapService) {
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "Alarm configuration service implementation.");
@@ -114,7 +116,8 @@ public class AlarmServiceActivator implements BundleActivator {
      */
     @SuppressWarnings("unchecked")
     @CheckForNull
-    protected final <T> T getService(@Nonnull final BundleContext context, @Nonnull final Class<T> typeOfService) {
+    protected final <T> T getService(@Nonnull final BundleContext context,
+                                     @Nonnull final Class<T> typeOfService) {
         final ServiceReference reference = context.getServiceReference(typeOfService.getName());
         return (T) (reference == null ? null : context.getService(reference));
     }

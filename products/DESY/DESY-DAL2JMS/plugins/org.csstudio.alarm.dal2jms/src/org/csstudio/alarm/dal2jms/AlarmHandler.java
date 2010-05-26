@@ -89,10 +89,9 @@ public class AlarmHandler {
                 @Override
                 public void stop() {
                     // Nothing to do
-
                 }
 
-            });
+            }, "c:\\dal2jmsConfig.xml");
         } catch (final AlarmConnectionException e) {
             LOG.error("Error. Could not connect.", e);
         }

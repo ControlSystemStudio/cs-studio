@@ -21,7 +21,6 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +69,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     @Override
     public final void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
-        LOG.error("retrieveInitialState for " + initItems.size() + " items");
+        LOG.debug("retrieveInitialState for " + initItems.size() + " items");
 
         List<Element> pvsUnderWay = new ArrayList<Element>();
         for (IAlarmInitItem initItem : initItems) {
@@ -90,12 +89,15 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
             pvUnderWay._listener = new DynamicValueListenerForInit(initItem);
+            // TODO jp Init: expert mode disabled
             // TODO jp use constants for parameterization of expert mode
-            pvUnderWay._parameters = new HashMap<String, Object>();
-            pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
+//            pvUnderWay._parameters = new HashMap<String, Object>();
+//            pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
+//            DalPlugin.getDefault().getSimpleDALBroker()
+//                    .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
             DalPlugin.getDefault().getSimpleDALBroker()
-                    .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
+            .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
             pvsUnderWay.add(pvUnderWay);
         } catch (InstantiationException e) {
             LOG.error("Error in registerPVs", e);
@@ -115,8 +117,12 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     private void deregisterPV(@Nonnull final Element pvUnderWay) {
         try {
+            // TODO jp Init: expert mode disabled
+
+//            DalPlugin.getDefault().getSimpleDALBroker()
+//                    .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
             DalPlugin.getDefault().getSimpleDALBroker()
-                    .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
+            .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
         } catch (InstantiationException e) {
             LOG.error("Error in deregisterPVs", e);
         } catch (CommonException e) {
@@ -153,7 +159,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
         @Override
         public void conditionChange(final DynamicValueEvent event) {
-            // TODO jp process state change correctly
             LOG.debug("conditionChange received " + event.getCondition() + " for "
                     + event.getProperty().getUniqueName());
 

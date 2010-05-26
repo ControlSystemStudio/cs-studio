@@ -484,7 +484,10 @@ public class AlarmTreeView extends ViewPart {
      */
     private IAlarmConnection _connection;
 
-    AlarmMessageListener _alarmListener;
+    /**
+     * The callback for the alarm messages
+     */
+    private AlarmMessageListener _alarmListener;
 
     /**
      * The reload action.
@@ -684,7 +687,7 @@ public class AlarmTreeView extends ViewPart {
                 _connection = AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection();
                 try {
                     _connection.connectWithListener(new AlarmTreeConnectionMonitor(),
-                                                    _alarmListener);
+                                                    _alarmListener, "c:\\alarmConfig.xml");
                 } catch (final AlarmConnectionException e) {
                     throw new RuntimeException("Could not connect via alarm service", e);
                 }

@@ -30,12 +30,14 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ImportContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -52,7 +54,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public final class ImportInitialConfigJob extends Job {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(ImportInitialConfigJob.class);
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(ImportInitialConfigJob.class);
 
     private final AlarmTreeView _alarmTreeView;
     private final SubtreeNode _rootNode;
@@ -77,13 +80,20 @@ public final class ImportInitialConfigJob extends Job {
     protected IStatus run(@Nullable final IProgressMonitor monitor) {
         monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
 
+        String filePath = "c:\\alarmConfig.xml";
         try {
             final long startTime = System.currentTimeMillis();
 
-            final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
-
-            final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-                _configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            // TODO jp Hack: Do not use LDAP if DAL implementation is active
+            boolean isDalImpl = !AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection()
+                    .canHandleTopics();
+            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            if (isDalImpl) {
+                model = _configService.retrieveInitialContentModelFromFile(filePath);
+            } else {
+                final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
+                model = _configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            }
 
             final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);
 
@@ -97,6 +107,12 @@ public final class ImportInitialConfigJob extends Job {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building Tree",
                                       "Could not properly build the full tree: " + e.getMessage());
+        } catch (ImportContentModelException e) {
+            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
+                                      "Building Tree",
+                                      "Error reading config file " + filePath
+                                              + "Could not properly build the full tree: "
+                                              + e.getMessage());
         } finally {
             monitor.done();
         }
