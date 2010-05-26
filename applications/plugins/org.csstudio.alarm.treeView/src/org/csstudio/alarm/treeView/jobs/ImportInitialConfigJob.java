@@ -85,6 +85,7 @@ public final class ImportInitialConfigJob extends Job {
             final long startTime = System.currentTimeMillis();
 
             // TODO jp Hack: Do not use LDAP if DAL implementation is active
+            // TODO jp-mc
             boolean isDalImpl = !AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection()
                     .canHandleTopics();
             ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;

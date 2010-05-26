@@ -311,8 +311,8 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
-                // TODO JP Init NYI retrieveInitialStateSynchronously
-                retrieveInitialStateSynchronously(messageList);
+                // TODO jp-mc retrieveInitialStateSynchronously not enabled
+//                retrieveInitialStateSynchronously(messageList);
                 _messageArea.hide();
             } catch (AlarmConnectionException e) {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);

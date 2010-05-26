@@ -47,6 +47,7 @@ import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.ImportContentModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -235,21 +236,29 @@ public class AlarmView extends LogView {
         final String[] facilityNames = new String[] { "Test" };
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
-            model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+
+            // TODO jp Hack: Do not use LDAP if DAL implementation is active
+            // TODO jp-mc
+            boolean isDalImpl = !JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection()
+                    .canHandleTopics();
+            if (isDalImpl) {
+                model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
+            } else {
+                model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            }
+
+            // ************ end of hack ******************
+
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
-            // TODO jp Init: Only register PVs for testing
-            initItems.add(new PVItem("alarmTest:RAMPA_calc", messageList));
-            initItems.add(new PVItem("alarmTest:RAMPB_calc", messageList));
-            initItems.add(new PVItem("alarmTest:RAMPC_calc", messageList));
-            //            initItems.add(new PVItem("alarmTest:NOT_EXISTENT", messageList));
-
-            //            for (final String pvName : pvNames) {
-            //                initItems.add(new PVItem(pvName, messageList));
-            //            }
+            for (final String pvName : pvNames) {
+                initItems.add(new PVItem(pvName, messageList));
+            }
 
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
         } catch (final InvalidNameException e) {
+            LOG.error("Could not retrieve content model from ConfigService", e);
+        } catch (ImportContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
         }
     }

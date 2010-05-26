@@ -41,6 +41,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
@@ -67,34 +68,53 @@ public class AlarmHandler {
 
         _connection = Activator.getDefault().getAlarmService().newAlarmConnection();
         try {
-            _connection.connectWithListener(null, new IAlarmListener() {
-
-                @Override
-                public void onMessage(final IAlarmMessage message) {
-                    try {
-                        LOG.debug(message.getMap().toString());
-
-                        final MapMessage mapMessage = getMapMessage(message);
-                        if (mapMessage != null) {
-                            JmsMessage.getInstance()
-                                    .sendMessage(JMS_MESSAGE_TYPE_ALARM, mapMessage);
-                        } else {
-                            LOG.debug("INVALID message !");
-                        }
-                    } catch (JMSException e) {
-                        LOG.error("Error while creating mapMessage", e);
-                    }
-                }
-
-                @Override
-                public void stop() {
-                    // Nothing to do
-                }
-
-            }, "c:\\dal2jmsConfig.xml");
+            _connection.connectWithListener(newAlarmConnectionMonitor(), newAlarmListener(), "c:\\dal2jmsConfig.xml");
         } catch (final AlarmConnectionException e) {
             LOG.error("Error. Could not connect.", e);
         }
+    }
+
+    private IAlarmConnectionMonitor newAlarmConnectionMonitor() {
+        return new IAlarmConnectionMonitor() {
+
+            @Override
+            public void onDisconnect() {
+                // Nothing to do
+            }
+
+            @Override
+            public void onConnect() {
+                // Nothing to do
+            }
+        };
+    }
+
+    private IAlarmListener newAlarmListener() {
+        return new IAlarmListener() {
+
+            @Override
+            public void onMessage(final IAlarmMessage message) {
+                try {
+                    LOG.debug(message.getMap().toString());
+
+                    final MapMessage mapMessage = getMapMessage(message);
+                    if (mapMessage != null) {
+                        JmsMessage.getInstance()
+                                .sendMessage(JMS_MESSAGE_TYPE_ALARM, mapMessage);
+                    } else {
+                        LOG.debug("INVALID message !");
+                    }
+                } catch (JMSException e) {
+                    LOG.error("Error while creating mapMessage", e);
+                }
+            }
+
+            @Override
+            public void stop() {
+                // Nothing to do
+            }
+
+        };
     }
 
     private MapMessage getMapMessage(final IAlarmMessage message) throws JMSException {

@@ -76,8 +76,6 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
 
         // Provide implementation for alarm service
-        // TODO jp The implementation must be determined by preferences
-
         boolean isDAL = getPreferenceStore()
                 .getBoolean(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
 
