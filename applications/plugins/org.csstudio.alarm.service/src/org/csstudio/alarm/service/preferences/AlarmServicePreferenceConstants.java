@@ -26,5 +26,5 @@
  */
 public class AlarmServicePreferenceConstants {
 
-	public static final String ALARMSERVICE_DAL = "alarm.service.implementation";//$NON-NLS-1$
+	public static final String ALARMSERVICE_DAL = "alarm.service.dal";//$NON-NLS-1$
 }
