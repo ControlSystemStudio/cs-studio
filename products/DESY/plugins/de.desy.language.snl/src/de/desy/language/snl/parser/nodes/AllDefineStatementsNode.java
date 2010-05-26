@@ -12,17 +12,17 @@ public class AllDefineStatementsNode extends AbstractSNLNode {
 
 	@Override
 	public String humanReadableRepresentation() {
-		return "Define";
+		return "Defines";
 	}
 
 	@Override
 	public String getNodeTypeName() {
-		return "Define";
+		return "Defines";
 	}
 
 	@Override
 	protected String doGetSourceIdentifier() {
-		return "Define";
+		return "Defines";
 	}
 
 }

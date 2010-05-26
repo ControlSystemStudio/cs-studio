@@ -3,15 +3,15 @@ package de.desy.language.snl.ui.adapter;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-import de.desy.language.snl.parser.nodes.AllVariablesNode;
+import de.desy.language.snl.parser.nodes.AllDefineStatementsNode;
 
 /**
- * The specialized {@link IAdapterFactory} for {@link AllVariableNode}s.
+ * The specialized {@link IAdapterFactory} for {@link AllDefineStatementsNode}s.
  * 
  * @author C1 WPS / KM, MZ
  * 
  */
-class AllVariablesNodeAdapterFactory implements IAdapterFactory {
+class AllDefinesNodeAdapterFactory implements IAdapterFactory {
 
 	/**
 	 * {@inheritDoc}
@@ -22,18 +22,18 @@ class AllVariablesNodeAdapterFactory implements IAdapterFactory {
 		assert adaptableObject != null;
 		assert adapterType != null;
 
-		if (adaptableObject instanceof AllVariablesNode) {
-			final AllVariablesNode varNode = (AllVariablesNode) adaptableObject;
+		if (adaptableObject instanceof AllDefineStatementsNode) {
+			final AllDefineStatementsNode varNode = (AllDefineStatementsNode) adaptableObject;
 
 			if (adapterType == IWorkbenchAdapter.class) {
-				return new AbstractSNLWorkbenchAdapter<AllVariablesNode>(varNode) {
+				return new AbstractSNLWorkbenchAdapter<AllDefineStatementsNode>(varNode) {
 					@Override
-					protected String getImageName(final AllVariablesNode node) {
-						return "variable.gif";
+					protected String getImageName(final AllDefineStatementsNode node) {
+						return "define.gif";
 					}
 
 					@Override
-					protected String doGetLabel(final AllVariablesNode node) {
+					protected String doGetLabel(final AllDefineStatementsNode node) {
 						return node.getSourceIdentifier();
 					}
 				};
@@ -47,7 +47,7 @@ class AllVariablesNodeAdapterFactory implements IAdapterFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList() {
-		return new Class[] { AllVariablesNode.class };
+		return new Class[] { AllDefineStatementsNode.class };
 	}
 
 }
