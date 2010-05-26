@@ -22,7 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 
 import org.apache.log4j.Logger;
@@ -93,7 +92,7 @@ public class AlarmView extends LogView {
      * @param parent
      */
     @Override
-    public void createPartControl(@Nonnull final Composite parent) {
+    public void createPartControl(final Composite parent) {
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
@@ -130,12 +129,11 @@ public class AlarmView extends LogView {
 
     }
 
-    @Nonnull
     private SelectionListener newSelectionListenerForPauseButton() {
         return new SelectionListener() {
 
             @Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 if (_pauseButton.getSelection()) {
                     _ackButton.setEnabled(false);
                 } else {
@@ -145,7 +143,7 @@ public class AlarmView extends LogView {
             }
 
             @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 // Nothing to do
             }
         };
@@ -230,7 +228,7 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+    protected void retrieveInitialStateSynchronously(final MessageList messageList) {
         // TODO jp Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
@@ -240,15 +238,20 @@ public class AlarmView extends LogView {
             model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
-            for (final String pvName : pvNames) {
-                initItems.add(new PVItem(pvName, messageList));
-            }
+            // TODO jp Init: Only register PVs for testing
+            initItems.add(new PVItem("alarmTest:RAMPA_calc", messageList));
+            initItems.add(new PVItem("alarmTest:RAMPB_calc", messageList));
+            initItems.add(new PVItem("alarmTest:RAMPC_calc", messageList));
+            //            initItems.add(new PVItem("alarmTest:NOT_EXISTENT", messageList));
+
+            //            for (final String pvName : pvNames) {
+            //                initItems.add(new PVItem(pvName, messageList));
+            //            }
 
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
         } catch (final InvalidNameException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
         }
-
     }
 
     @Override
@@ -260,7 +263,7 @@ public class AlarmView extends LogView {
 
     // CHECKSTYLE:OFF
     private void addAcknowledgeItems(final boolean canExecute,
-                                     @Nonnull final Composite logTableManagementComposite) {
+                                     final Composite logTableManagementComposite) {
 
         final Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
 
@@ -313,15 +316,14 @@ public class AlarmView extends LogView {
 
     // CHECKSTYLE:ON
 
-    @Nonnull
-    private SelectionListener newSelectionListenerForAckButton(@Nonnull final Combo ackCombo) {
+    private SelectionListener newSelectionListenerForAckButton(final Combo ackCombo) {
         return new SelectionListener() {
 
             /**
              * Acknowledge button is pressed for all (selection 0) messages or messages with a
              * special severity (selection 1-3).
              */
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
                 for (final TableItem ti : _tableViewer.getTable().getItems()) {
 
@@ -352,13 +354,13 @@ public class AlarmView extends LogView {
                 sendAck.schedule();
             }
 
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 // Nothing to do
             }
         };
     }
 
-    private void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
+    private void addSoundButton(final Composite logTableManagementComposite) {
         final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
@@ -374,11 +376,11 @@ public class AlarmView extends LogView {
         _soundEnableButton.setSelection(true);
 
         _soundEnableButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
 
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 // Nothing to do
             }
         });
@@ -416,7 +418,6 @@ public class AlarmView extends LogView {
             // Nothing to do
         }
 
-        @Nonnull
         private IAlarmListener getSoundPlayingListener() {
             if (_soundPlayingListener == null) {
                 _soundPlayingListener = new IAlarmListener() {
@@ -427,7 +428,7 @@ public class AlarmView extends LogView {
                     }
 
                     @Override
-                    public void onMessage(@Nonnull final IAlarmMessage message) {
+                    public void onMessage(final IAlarmMessage message) {
                         _alarmSoundService.playAlarmSound(message
                                 .getString(AlarmMessageKey.SEVERITY));
                     }
@@ -462,19 +463,18 @@ public class AlarmView extends LogView {
         private final MessageList _messageList;
         private final String _pvName;
 
-        protected PVItem(@Nonnull final String pvName, @Nonnull final MessageList messageList) {
+        protected PVItem(final String pvName, final MessageList messageList) {
             _pvName = pvName;
             _messageList = messageList;
         }
 
         @Override
-        @Nonnull
         public String getPVName() {
             return _pvName;
         }
 
         @Override
-        public void init(@Nonnull final IAlarmMessage message) {
+        public void init(final IAlarmMessage message) {
             LOG.debug("init for pv " + _pvName + ", msg: " + message);
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }
