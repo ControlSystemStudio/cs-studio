@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: AlarmService
-Bundle-SymbolicName: org.csstudio.alarm.service
+Bundle-SymbolicName: org.csstudio.alarm.service;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.alarm.service.AlarmServiceActivator
 Import-Package: org.csstudio.platform.libs.jms,
@@ -18,7 +18,9 @@ Require-Bundle: org.csstudio.platform.libs.jms;bundle-version="1.1.1",
  org.csstudio.platform.libs.annotations;bundle-version="1.0.0",
  org.csstudio.platform.libs.dal;bundle-version="1.1.0",
  org.csstudio.utility.ldap,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.platform.ui;bundle-version="1.1.1",
+ org.eclipse.ui;bundle-version="3.5.1"
 Export-Package: org.csstudio.alarm.service.declaration
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom.jar,

@@ -19,9 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.table.preferences.alarmservice;
+package org.csstudio.alarm.service.preferences;
 
-import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -44,23 +44,21 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
 
     public AlarmServicePreferencePage() {
         super(GRID);
-        setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-        String impl = JmsLogsPlugin.getDefault().getPreferenceStore().getString(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
-        setDescription("CSS must restart after a change to take effet.");
+        setPreferenceStore(AlarmServiceActivator.getDefault().getPreferenceStore());
+        setDescription("CSS must restart after a change to take effect.");
     }
 
     public void createFieldEditors() {
-        final String context_types[][] =
-        {
-            { "DAL", Boolean.TRUE.toString() },
-            { "JMS", Boolean.FALSE.toString() }
-        };
+        final String context_types[][] = {
+                { "DAL", Boolean.TRUE.toString() },
+                { "JMS", Boolean.FALSE.toString() }
+              };
         final Composite parent = getFieldEditorParent();
         addField(new RadioGroupFieldEditor(AlarmServicePreferenceConstants.ALARMSERVICE_DAL,
-                        "Select implementation for the alarm service",
-                        context_types.length,
-                        context_types,
-                        parent));
+                                           "Select implementation for the alarm service",
+                                           context_types.length,
+                                           context_types,
+                                           parent));
     }
 
     public void init(final IWorkbench workbench) {

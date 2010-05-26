@@ -20,46 +20,78 @@ package org.csstudio.alarm.service;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
+import org.csstudio.alarm.service.preferences.AlarmServicePreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
- * The activator decides, which implementation is used for the alarm service.
+ * The activator decides which implementation is used for the alarm service.
  *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 26.04.2010
  */
-public class AlarmServiceActivator implements BundleActivator {
+public class AlarmServiceActivator extends AbstractCssUiPlugin {
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmServiceActivator.class);
 
-    private final CentralLogger _log = CentralLogger.getInstance();
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.alarm.service"; //$NON-NLS-1$
+
+    // The shared instance.
+    private static AlarmServiceActivator plugin;
 
     /**
-     * {@inheritDoc}
+     * The constructor.
      */
+    public AlarmServiceActivator() {
+        if (plugin != null) {
+            throw new IllegalStateException("Attempt to call plugin constructor more than once.");
+        }
+        plugin = this;
+    }
+
+    /**
+     * Returns the shared instance.
+     */
+    public static AlarmServiceActivator getDefault() {
+        return plugin;
+    }
+
     @Override
-    public final void start(@Nonnull final BundleContext context) throws Exception {
-        _log.debug(this, "Starting AlarmService");
+    protected void doStart(final BundleContext context) throws Exception {
+        LOG.debug("Starting AlarmService");
 
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
 
         // Provide implementation for alarm service
         // TODO jp The implementation must be determined by preferences
 
-        //        registerJMSService(context);
-        registerDALService(context, getService(context, IAlarmConfigurationService.class));
+        boolean isDAL = getPreferenceStore()
+                .getBoolean(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
+
+        if (isDAL) {
+            registerDALService(context, getService(context, IAlarmConfigurationService.class));
+        } else {
+            registerJMSService(context);
+        }
+    }
+
+    @Override
+    protected void doStop(final BundleContext context) throws Exception {
+        LOG.debug("Stopping AlarmService");
+        plugin = null;
     }
 
     /**
@@ -79,6 +111,8 @@ public class AlarmServiceActivator implements BundleActivator {
     }
 
     private void registerJMSService(@Nonnull final BundleContext context) {
+        LOG.debug("Registering JMS implementation for the alarm service");
+
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "JMS implementation of the alarm service");
@@ -90,6 +124,8 @@ public class AlarmServiceActivator implements BundleActivator {
 
     private void registerDALService(@Nonnull final BundleContext context,
                                     @Nonnull final IAlarmConfigurationService alarmConfigService) {
+        LOG.debug("Registering DAL implementation for the alarm service");
+
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "DAL implementation of the alarm service");
@@ -99,26 +135,9 @@ public class AlarmServiceActivator implements BundleActivator {
                                 properties);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void stop(@SuppressWarnings("unused") final BundleContext context) throws Exception {
-        _log.debug(this, "Stopping AlarmService");
+    public String getPluginId() {
+        return PLUGIN_ID;
     }
 
-    /**
-     * Get the implementation of the service
-     *
-     * @param context
-     * @param typeOfService
-     * @return service implementation or null
-     */
-    @SuppressWarnings("unchecked")
-    @CheckForNull
-    protected final <T> T getService(@Nonnull final BundleContext context,
-                                     @Nonnull final Class<T> typeOfService) {
-        final ServiceReference reference = context.getServiceReference(typeOfService.getName());
-        return (T) (reference == null ? null : context.getService(reference));
-    }
 }

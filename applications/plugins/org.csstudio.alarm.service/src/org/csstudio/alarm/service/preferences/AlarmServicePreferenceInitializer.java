@@ -19,12 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences.alarmservice;
+package org.csstudio.alarm.service.preferences;
+
+import org.csstudio.alarm.service.AlarmServiceActivator;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
- * Constant definitions for plug-in preferences
+ * Class used to initialize default preference values.
  */
-public class AlarmServicePreferenceConstants {
+public class AlarmServicePreferenceInitializer extends AbstractPreferenceInitializer {
 
-	public static final String ALARMSERVICE_DAL = "alarm.service.implementation";//$NON-NLS-1$
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
+	 * initializeDefaultPreferences()
+	 */
+	@Override
+    public void initializeDefaultPreferences() {
+		final IPreferenceStore store = AlarmServiceActivator.getDefault()
+				.getPreferenceStore();
+
+		store.setDefault(AlarmServicePreferenceConstants.ALARMSERVICE_DAL, Boolean.TRUE);
+	}
 }
