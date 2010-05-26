@@ -26,6 +26,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -41,7 +42,6 @@ import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -54,10 +54,11 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmConnectionDALImpl.class);
+
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
-
-    private final CentralLogger _log = CentralLogger.getInstance();
 
     private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
     private final IAlarmConfigurationService _alarmConfigService;
@@ -84,16 +85,17 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     @Override
     public void disconnect() {
-        _log.debug(this, "Disconnecting from DAL.");
+        LOG.debug("Disconnecting from DAL.");
         for (final ListenerItem item : _listenerItems) {
             try {
-                SimpleDALBroker.getInstance().deregisterListener(item._connectionParameters,
-                                                                 item._dynamicValueAdapter,
-                                                                 item._parameters);
+                DalPlugin.getDefault().getSimpleDALBroker()
+                        .deregisterListener(item._connectionParameters,
+                                            item._dynamicValueAdapter,
+                                            item._parameters);
             } catch (final InstantiationException e) {
-                _log.error(this, COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
+                LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
             } catch (final CommonException e) {
-                _log.error(this, COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
+                LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
             }
         }
         _listenerItems.clear();
@@ -116,7 +118,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                              @Nonnull final IAlarmListener listener,
                                              @Nonnull final String[] topics) throws AlarmConnectionException {
-        _log.info(this, "Connecting to DAL for topics " + Arrays.toString(topics) + ".");
+        LOG.info("Connecting to DAL for topics " + Arrays.toString(topics) + ".");
 
         // TODO jp error handling currently removed
         bla(connectionMonitor, listener);
@@ -145,13 +147,13 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                     .registerListener(item._connectionParameters,
                                       item._dynamicValueAdapter,
                                       item._parameters);
+            _listenerItems.add(item);
         } catch (final InstantiationException e) {
-            _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
+            LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
         } catch (final CommonException e) {
-            _log.error(this, COULD_NOT_CREATE_DAL_CONNECTION, e);
+            LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
         }
 
-        _listenerItems.add(item);
     }
 
     private void bla(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
@@ -163,19 +165,19 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
             model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
+            //        for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
+            //            _log.debug(this, "Connecting to " + recordName);
+            //            connectToPV(connectionMonitor, listener, recordName);
+            //        }
+            connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
+            connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
+            connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
+            connectToPV(connectionMonitor, listener, "alarmTest:NOT_EXISTENT");
         } catch (final InvalidNameException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
-        //        for (final String recordName : model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
-        //            _log.debug(this, "Connecting to " + recordName);
-        //            connectToPV(connectionMonitor, listener, recordName);
-        //        }
-        connectToPV(connectionMonitor, listener, "alarmTest:RAMPA_calc");
-        connectToPV(connectionMonitor, listener, "alarmTest:RAMPB_calc");
-        connectToPV(connectionMonitor, listener, "alarmTest:RAMPC_calc");
-        connectToPV(connectionMonitor, listener, "alarmTest:NOT_EXISTENT");
     }
 
     /**
@@ -185,6 +187,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
+        private static final Logger LOG = CentralLogger.getInstance()
+                .getLogger(AlarmConnectionDALImpl.DynamicValueListenerAdapter.class);
 
         private final IAlarmListener _alarmListener;
         private final IAlarmConnectionMonitor _connectionMonitor;
@@ -198,10 +202,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         @Override
         public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
             // TODO jp process state change correctly
-            CentralLogger.getInstance().debug(this,
-                                              "conditionChange received " + event.getCondition()
-                                                      + " for "
-                                                      + event.getProperty().getUniqueName());
+            LOG.debug("conditionChange received " + event.getCondition() + " for "
+                    + event.getProperty().getUniqueName());
 
             // Suppress the initial callback, it has no meaning here
             // TODO jp there should be a better way than testing a hard coded string
@@ -213,10 +215,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         @Override
         public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
             // TODO jp Review access to event
-            CentralLogger.getInstance().debug(this,
-                                              "valueChanged received " + event.getCondition()
-                                                      + " for "
-                                                      + event.getProperty().getUniqueName());
+            LOG.debug("valueChanged received " + event.getCondition() + " for "
+                    + event.getProperty().getUniqueName());
             _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
         }
 

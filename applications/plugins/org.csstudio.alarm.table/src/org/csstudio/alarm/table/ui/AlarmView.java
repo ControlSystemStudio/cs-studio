@@ -25,6 +25,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
@@ -74,6 +75,7 @@ import org.eclipse.swt.widgets.TableItem;
  * @since 06.06.2007
  */
 public class AlarmView extends LogView {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmView.class);
 
     public static final String ID = AlarmView.class.getName();
 
@@ -214,9 +216,6 @@ public class AlarmView extends LogView {
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
 
-        // TODO jp Init: On each change of the topic set, but only the first time
-        // retrieveInitialStateSynchronously(messageList);
-
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
                                                                            getCurrentTopicSet());
         addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRINGAlarm,
@@ -230,7 +229,8 @@ public class AlarmView extends LogView {
         _soundHandler.enableSound(_soundEnableButton.getSelection());
     }
 
-    private void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+    @Override
+    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
         // TODO jp Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
@@ -238,18 +238,17 @@ public class AlarmView extends LogView {
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
             model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
+            final List<PVItem> initItems = new ArrayList<PVItem>();
+            for (final String pvName : pvNames) {
+                initItems.add(new PVItem(pvName, messageList));
+            }
+
+            JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
         } catch (final InvalidNameException e) {
-            // TODO (jp)
-            e.printStackTrace();
+            LOG.error("Could not retrieve content model from ConfigService", e);
         }
 
-        final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
-        final List<PVItem> initItems = new ArrayList<PVItem>();
-        for (final String pvName : pvNames) {
-            initItems.add(new PVItem(pvName, messageList));
-        }
-
-        JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
     }
 
     @Override
@@ -346,12 +345,8 @@ public class AlarmView extends LogView {
                     }
 
                 }
-                CentralLogger.getInstance().debug(this,
-                                                  "Number of msg in list to send: "
-                                                          + msgList.size());
-                CentralLogger.getInstance().debug(this,
-                                                  "Number of msg in table: "
-                                                          + _tableViewer.getTable().getItemCount());
+                LOG.debug("Number of msg in list to send: " + msgList.size());
+                LOG.debug("Number of msg in table: " + _tableViewer.getTable().getItemCount());
 
                 final SendAcknowledge sendAck = SendAcknowledge.newFromJMSMessage(msgList);
                 sendAck.schedule();
@@ -433,7 +428,8 @@ public class AlarmView extends LogView {
 
                     @Override
                     public void onMessage(@Nonnull final IAlarmMessage message) {
-                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
+                        _alarmSoundService.playAlarmSound(message
+                                .getString(AlarmMessageKey.SEVERITY));
                     }
                 };
             }
@@ -446,13 +442,13 @@ public class AlarmView extends LogView {
             if (_currentAlarmTableListener != null) {
                 _currentAlarmTableListener.deRegisterAlarmListener(getSoundPlayingListener());
                 _currentAlarmTableListener = null;
-                CentralLogger.getInstance().debug(this, "Sound deregistered");
+                LOG.debug("Sound deregistered");
             }
 
             if (yes) {
                 _currentAlarmTableListener = getAlarmTableListener();
                 _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
-                CentralLogger.getInstance().debug(this, "Sound registered");
+                LOG.debug("Sound registered");
             }
         }
 
@@ -479,7 +475,7 @@ public class AlarmView extends LogView {
 
         @Override
         public void init(@Nonnull final IAlarmMessage message) {
-            CentralLogger.getInstance().debug(this, "init for pv " + _pvName + ", msg: " + message);
+            LOG.debug("init for pv " + _pvName + ", msg: " + message);
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }
 

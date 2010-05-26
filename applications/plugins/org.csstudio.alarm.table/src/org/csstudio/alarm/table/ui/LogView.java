@@ -23,6 +23,7 @@ import java.util.Timer;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
@@ -74,6 +75,7 @@ import org.eclipse.ui.views.IViewRegistry;
  * @author jhatje
  */
 public class LogView extends ViewPart {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LogView.class);
 
     /**
      * The ID of this view.
@@ -305,15 +307,15 @@ public class LogView extends ViewPart {
         if (!_topicsetService.hasTopicSet(topicSet)) {
             IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
+                MessageList messageList = createMessageList();
                 _topicsetService.createAndConnectForTopicSet(topicSet,
-                                                             createMessageList(),
+                                                             messageList,
                                                              alarmTableListener);
+                // TODO JP Init NYI retrieveInitialStateSynchronously
+                retrieveInitialStateSynchronously(messageList);
                 _messageArea.hide();
             } catch (AlarmConnectionException e) {
-                CentralLogger.getInstance().error(this,
-                                                  "Connecting for topicSet " + topicSet.getName()
-                                                          + " failed",
-                                                  e);
+                LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
                 _messageArea
                         .showMessage(SWT.ICON_WARNING,
                                      "Connection error",
@@ -326,6 +328,15 @@ public class LogView extends ViewPart {
         return _topicsetService.getMessageListForTopicSet(topicSet);
     }
 
+    /**
+     * This is called on each creation of a message list so it can be filled with the initial states of the PVs.
+     *
+     * @param messageList
+     */
+    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+        // LogView does no initialization
+    }
+
     private Integer getMaximumNumberOfMessages() {
         ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                                                                     JmsLogsPlugin.getDefault()
@@ -336,9 +347,7 @@ public class LogView extends ViewPart {
         try {
             result = Integer.parseInt(maximumNumberOfMessagesPref);
         } catch (NumberFormatException e) {
-            CentralLogger.getInstance().warn(this,
-                                             "Invalid value format for maximum number"
-                                                     + " of messages in preferences");
+            LOG.warn("Invalid value format for maximum number" + " of messages in preferences");
         }
         return result;
     }
@@ -551,10 +560,9 @@ public class LogView extends ViewPart {
         }
         _currentTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
         if (_currentTopicSet == null) {
-            CentralLogger.getInstance().debug(this, "No topic set from previous session"); //$NON-NLS-1$
+            LOG.debug("No topic set from previous session"); //$NON-NLS-1$
         } else {
-            CentralLogger.getInstance()
-                    .debug(this, "Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
+            LOG.debug("Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
         }
     }
 
@@ -565,9 +573,7 @@ public class LogView extends ViewPart {
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         if ( (memento != null) && (_currentTopicSet != null)) {
-            CentralLogger.getInstance().debug(this,
-                                              "Save latest topic set in IMemento: "
-                                                      + _currentTopicSet);
+            LOG.debug("Save latest topic set in IMemento: " + _currentTopicSet);
             memento.putString("previousTopicSet", _currentTopicSet); //$NON-NLS-1$
         }
     }

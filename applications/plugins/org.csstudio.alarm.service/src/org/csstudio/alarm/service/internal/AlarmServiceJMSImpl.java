@@ -21,7 +21,9 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nonnull;
 
@@ -31,8 +33,9 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
-import org.epics.css.dal.simple.AnyDataChannel;
-import org.epics.css.dal.simple.ChannelListener;
+import org.epics.css.dal.DynamicValueAdapter;
+import org.epics.css.dal.DynamicValueEvent;
+import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
 
@@ -71,13 +74,33 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
         List<Element> pvsUnderWay = new ArrayList<Element>();
         for (IAlarmInitItem initItem : initItems) {
-            registerPVs(pvsUnderWay, initItem);
+            registerPV(pvsUnderWay, initItem);
         }
 
         waitFixedTime();
 
         for (Element pvUnderWay : pvsUnderWay) {
-            deregisterPVs(pvUnderWay);
+            deregisterPV(pvUnderWay);
+        }
+    }
+
+    private void registerPV(@Nonnull final List<Element> pvsUnderWay,
+                             @Nonnull final IAlarmInitItem initItem) {
+        try {
+            Element pvUnderWay = new Element();
+            pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
+            pvUnderWay._listener = new DynamicValueListenerForInit(initItem);
+            // TODO jp use constants for parameterization of expert mode
+            pvUnderWay._parameters = new HashMap<String, Object>();
+            pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
+
+            DalPlugin.getDefault().getSimpleDALBroker()
+                    .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
+            pvsUnderWay.add(pvUnderWay);
+        } catch (InstantiationException e) {
+            LOG.error("Error in registerPVs", e);
+        } catch (CommonException e) {
+            LOG.error("Error in registerPVs", e);
         }
     }
 
@@ -90,30 +113,14 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
     }
 
-    private void deregisterPVs(@Nonnull final Element pvUnderWay) {
+    private void deregisterPV(@Nonnull final Element pvUnderWay) {
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
-                    .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
+                    .deregisterListener(pvUnderWay._connectionParameters, pvUnderWay._listener, pvUnderWay._parameters);
         } catch (InstantiationException e) {
             LOG.error("Error in deregisterPVs", e);
         } catch (CommonException e) {
             LOG.error("Error in deregisterPVs", e);
-        }
-    }
-
-    private void registerPVs(@Nonnull final List<Element> pvsUnderWay,
-                             @Nonnull final IAlarmInitItem initItem) {
-        try {
-            Element pvUnderWay = new Element();
-            pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
-            pvUnderWay._listener = new ChannelListenerForInit(initItem);
-            DalPlugin.getDefault().getSimpleDALBroker()
-                    .registerListener(pvUnderWay._connectionParameters, pvUnderWay._listener);
-            pvsUnderWay.add(pvUnderWay);
-        } catch (InstantiationException e) {
-            LOG.error("Error in registerPVs", e);
-        } catch (CommonException e) {
-            LOG.error("Error in registerPVs", e);
         }
     }
 
@@ -131,33 +138,41 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     /**
      * Listener for retrieval of initial state
      */
-    private static class ChannelListenerForInit implements ChannelListener {
+    private static class DynamicValueListenerForInit extends DynamicValueAdapter
+    {
+        private static final Logger LOG = CentralLogger.getInstance()
+                .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
+
         private final IAlarmInitItem _initItem;
 
-        public ChannelListenerForInit(@Nonnull final IAlarmInitItem initItem) {
+
+        public DynamicValueListenerForInit(@Nonnull final IAlarmInitItem initItem) {
             _initItem = initItem;
         }
 
-        @Override
-        public void channelDataUpdate(@SuppressWarnings("unused") final AnyDataChannel channel) {
-            // Nothing to do
-        }
 
         @Override
-        public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
-            // TODO jp Review access to channel (DISABLED)
-            // It is not sufficient to check for isConnected, in the channelStateUpdate the anyData object is not accessible.
-            // Currently there is no way to immediately retrieve the alarm state.
-            if (channel.getProperty().isConnected()) {
-                //                _initItem.init(new AlarmMessageDALImpl(channel.getData()));
+        public void conditionChange(final DynamicValueEvent event) {
+            // TODO jp process state change correctly
+            LOG.debug("conditionChange received " + event.getCondition() + " for "
+                    + event.getProperty().getUniqueName());
+
+            // Suppress the initial callback, it has no meaning here
+            // TODO jp there should be a better way than testing a hard coded string
+            if (event.getMessage().equals("Initial update.")) {
+                _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
             }
+
         }
+
     }
 
     // CHECKSTYLE:OFF
+    // TODO jp Extract duplicates, see AlarmConnectionDALImpl
     private static class Element {
         ConnectionParameters _connectionParameters;
-        ChannelListenerForInit _listener;
+        DynamicValueListener _listener;
+        Map<String, Object> _parameters;
     }
     // CHECKSTYLE:ON
 
