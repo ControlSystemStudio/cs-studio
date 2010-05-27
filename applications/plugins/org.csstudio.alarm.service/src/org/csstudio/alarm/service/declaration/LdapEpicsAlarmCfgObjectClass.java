@@ -149,7 +149,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -158,7 +157,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public String getRdnType() {
         return _rdnType;
     }
@@ -167,7 +165,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
     public Set<LdapEpicsAlarmCfgObjectClass> getNestedContainerClasses() {
         return _nestedClasses;
     }
@@ -178,7 +175,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * // FIXME (bknerr) : might be obsolete
      * @return the value to use for the epicsCssType attribute.
      */
-    @Nonnull
     public String getCssType() {
         return _cssType;
     }
@@ -187,8 +183,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public LdapEpicsAlarmCfgObjectClass getObjectClassByRdnType(@Nonnull final String rdn) {
+    public LdapEpicsAlarmCfgObjectClass getObjectClassByRdnType(final String rdn) {
         return getObjectClassByRdnTypeStatic(rdn);
     }
 
@@ -197,8 +192,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * @param rdn
      * @return
      */
-    @CheckForNull
-    private static LdapEpicsAlarmCfgObjectClass getObjectClassByRdnTypeStatic(@Nonnull final String rdn) {
+    private static LdapEpicsAlarmCfgObjectClass getObjectClassByRdnTypeStatic(final String rdn) {
         return CACHE_BY_RDN_TYPE.get(rdn);
     }
 

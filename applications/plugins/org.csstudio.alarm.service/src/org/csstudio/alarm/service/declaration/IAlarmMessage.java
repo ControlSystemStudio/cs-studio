@@ -49,8 +49,7 @@ public interface IAlarmMessage {
      * @param keyAsString the defining name of a key
      * @return value
      */
-    @CheckForNull
-    String getString(@Nonnull final String keyAsString);
+    String getString(final String keyAsString);
 
     /**
      * The message essentially is a map from String to String. Here you get the value for the key (given as enum).
@@ -59,8 +58,7 @@ public interface IAlarmMessage {
      * @param key
      * @return value
      */
-    @Nonnull
-    String getString(@Nonnull final AlarmMessageKey key);
+    String getString(final AlarmMessageKey key);
 
     /**
      * The message essentially is a map from String to String. Here you get the whole map with
@@ -69,7 +67,6 @@ public interface IAlarmMessage {
      *
      * @return the map
      */
-    @Nonnull
     Map<String, String> getMap();
 
 }

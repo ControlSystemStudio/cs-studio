@@ -61,7 +61,7 @@ public enum AlarmMessageKey {
      *
      * @param definingName
      */
-    private AlarmMessageKey(@Nullable final String definingName) {
+    private AlarmMessageKey(final String definingName) {
         _definingName = definingName;
     }
 
@@ -71,8 +71,7 @@ public enum AlarmMessageKey {
      * @param definingName
      * @return the key with the definingName
      */
-    @CheckForNull
-    public static AlarmMessageKey findKeyWithDefiningName(@Nonnull final String definingName) {
+    public static AlarmMessageKey findKeyWithDefiningName(final String definingName) {
         AlarmMessageKey result = null;
         for (AlarmMessageKey key : AlarmMessageKey.values()) {
             if (key.getDefiningName().equals(definingName)) {
@@ -84,7 +83,6 @@ public enum AlarmMessageKey {
         return result;
     }
 
-    @Nonnull
     public String getDefiningName() {
         return (_definingName == null) ?  name() : _definingName;
     }

@@ -38,7 +38,6 @@ public interface IAlarmInitItem {
     /**
      * @return the name of the PV which shall be initialized
      */
-    @Nonnull
     String getPVName();
     
     /**
@@ -47,6 +46,6 @@ public interface IAlarmInitItem {
      * 
      * @param alarmMessage contains the retrieved state
      */
-    void init(@Nonnull IAlarmMessage alarmMessage);
+    void init(IAlarmMessage alarmMessage);
     
 }
