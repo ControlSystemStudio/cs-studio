@@ -1,5 +1,6 @@
 package org.csstudio.apputil.formula.test;
 
+import static org.junit.Assert.assertTrue;
 import junit.framework.TestCase;
 
 import org.csstudio.apputil.formula.Formula;
@@ -220,11 +221,12 @@ public class FormulaTest extends TestCase
             assertEquals("Unknown variable 'max2'", ex.getMessage());
         }
         
+        // Not a formula error, but gives Infinity resp. NaN
         f = new Formula("1/0");
-        f.eval();
+        assertTrue(Double.isInfinite(f.eval()));
 
         f = new Formula("sqrt(-1)");
-        f.eval();
+        assertTrue(Double.isNaN(f.eval()));
     }
 
 
