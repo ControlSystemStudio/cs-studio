@@ -1,6 +1,5 @@
 package org.csstudio.apputil.formula.test;
 
-import static org.junit.Assert.assertTrue;
 import junit.framework.TestCase;
 
 import org.csstudio.apputil.formula.Formula;
