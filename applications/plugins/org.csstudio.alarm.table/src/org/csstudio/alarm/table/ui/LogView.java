@@ -276,7 +276,6 @@ public class LogView extends ViewPart {
      *
      * @return the newly created message list
      */
-    @Nonnull
     protected MessageList createMessageList() {
         return new LogMessageList(getMaximumNumberOfMessages());
     }
@@ -333,7 +332,7 @@ public class LogView extends ViewPart {
      *
      * @param messageList
      */
-    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+    protected void retrieveInitialStateSynchronously(final MessageList messageList) {
         // LogView does no initialization
     }
 
@@ -360,12 +359,10 @@ public class LogView extends ViewPart {
         for (TableColumn tableColumn : columns) {
             tableColumn.addControlListener(new ControlListener() {
 
-                @Override
                 public void controlResized(final ControlEvent e) {
                     _columnMapping.saveColumn(colSetPref, topicSetPref);
                 }
 
-                @Override
                 public void controlMoved(final ControlEvent e) {
                     // do nothing
                 }
@@ -421,7 +418,6 @@ public class LogView extends ViewPart {
             i++;
         }
         topicSetsCombo.addSelectionListener(new SelectionAdapter() {
-            @Override
             public void widgetSelected(final SelectionEvent e) {
                 super.widgetSelected(e);
                 String oldTopicSet = _currentTopicSet;
@@ -457,7 +453,6 @@ public class LogView extends ViewPart {
                     _timerTask = new PopUpTimerTask();
                     _timerTask.addExpirationListener(new IExpirationLisener() {
 
-                        @Override
                         public void expired() {
                             _pauseButton.setSelection(false);
                             _tableViewer.refresh();
@@ -487,7 +482,6 @@ public class LogView extends ViewPart {
                 }
             }
 
-            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {
             }
         });
@@ -499,7 +493,6 @@ public class LogView extends ViewPart {
      */
     void makeActions() {
         Action showPropertyViewAction = new Action() {
-            @Override
             public void run() {
                 try {
                     getSite().getPage().showView(PROPERTY_VIEW_ID);
@@ -525,7 +518,6 @@ public class LogView extends ViewPart {
 
     private void createMessageAreaToggleAction(final IActionBars bars) {
         Action displayMessageAreaAction = new Action() {
-            @Override
             public void run() {
                 if (_messageArea.isVisible()) {
                     _messageArea.hide();
@@ -552,7 +544,6 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void init(final IViewSite site, final IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento == null) {
@@ -569,7 +560,6 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         if ( (memento != null) && (_currentTopicSet != null)) {
@@ -581,7 +571,6 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
-    @Override
     public void dispose() {
         super.dispose();
         _messageTable = null;
