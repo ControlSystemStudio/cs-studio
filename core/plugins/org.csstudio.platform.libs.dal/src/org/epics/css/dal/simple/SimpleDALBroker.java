@@ -490,7 +490,7 @@ public class SimpleDALBroker {
 		if ((parameters == null) || (parameters.size()==0)) {
 			ph.property.addDynamicValueListener(listener);
 		} else {
-			blockUntillConnected(ph.property);
+//			blockUntillConnected(ph.property);
 			ph.property.createNewExpertMonitor(listener, parameters);
 		}
 	}

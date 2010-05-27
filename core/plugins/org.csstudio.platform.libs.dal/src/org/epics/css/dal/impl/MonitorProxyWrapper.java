@@ -95,6 +95,16 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 		proxy = p;
 	}
 
+	/**
+	 * Returns <code>true</code> if this <code>MonitorProxyWrapper</code> is
+	 * initialized.
+	 * @return <code>true</code> if already initialized and <code>false</code>
+	 * otherwise
+	 */
+	public boolean isInitialized() {
+		return proxy != null;
+	}
+	
 	private final static String ERROR_MESSAGE = "Error response";
 
 	/* (non-Javadoc)
