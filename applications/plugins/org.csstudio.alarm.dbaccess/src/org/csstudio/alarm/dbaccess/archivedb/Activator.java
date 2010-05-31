@@ -62,13 +62,15 @@ public class Activator extends AbstractCssUiPlugin {
      * )
      */
     public void doStart(BundleContext context) throws Exception {
-        IMessageTypes messageTypes = new MessageTypes();
-        ILogMessageArchiveAccess archiveAccess = new ArchiveDBAccess();
-        ServiceRegistration messageTypesRegistration = context.registerService(
-                IMessageTypes.class.getName(), messageTypes, null);
-        ServiceRegistration archiveAccessRegistration = context
-                .registerService(ILogMessageArchiveAccess.class.getName(),
-                        archiveAccess, null);
+    	// TODO mc
+    	// TODO jp-mc db-startup
+//        IMessageTypes messageTypes = new MessageTypes();
+//        ILogMessageArchiveAccess archiveAccess = new ArchiveDBAccess();
+//        ServiceRegistration messageTypesRegistration = context.registerService(
+//                IMessageTypes.class.getName(), messageTypes, null);
+//        ServiceRegistration archiveAccessRegistration = context
+//                .registerService(ILogMessageArchiveAccess.class.getName(),
+//                        archiveAccess, null);
     }
 
     /*
