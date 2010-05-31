@@ -31,6 +31,7 @@ import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.service.TopicsetService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -43,53 +44,57 @@ import org.osgi.framework.ServiceRegistration;
  * The main plugin class to be used in the desktop.
  */
 public class JmsLogsPlugin extends AbstractCssUiPlugin {
-    
+
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
-    
+
     // The shared instance.
     private static JmsLogsPlugin plugin;
-    
+
     private IMessageTypes _messageTypes;
-    
+
     private ServiceReference _serviceReferenceMessageTypes;
-    
+
     private ServiceReference _serviceReferenceArchiveAccess;
-    
+
     private ILogMessageArchiveAccess _archiveAccess;
-    
+
     private ServiceReference _serviceReferenceSeverityMapping;
-    
+
     private ISeverityMapping _severityMapping;
-    
+
     private ServiceReference _serviceReferenceSendMapMessage;
-    
+
     private ISendMapMessage _sendMapMessage;
-    
+
     /**
      * Stateful service shared by the log views
      */
     private ITopicsetService _topicsetServiceForLogViews;
-    
+
     /**
      * Stateful service shared by the alarm views
      */
     private ITopicsetService _topicsetServiceForAlarmViews;
-    
+
     /**
      * The alarm sound service
      */
     private IAlarmSoundService _alarmSoundService;
-    
+
     /**
      * The alarm service
      */
     private IAlarmService _alarmService;
-    
+
     /**
      * The alarm configuration service
      */
     private IAlarmConfigurationService _alarmConfigurationService;
+
+    // TODO jp Hack: Remove when LDAP-Hack is removed
+    private ILdapService _ldapService;
+
 
     /**
      * The constructor.
@@ -100,12 +105,12 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         }
         plugin = this;
     }
-    
+
     @Override
     public String getPluginId() {
         return PLUGIN_ID;
     }
-    
+
     /**
      * This method is called upon plug-in activation
      */
@@ -117,32 +122,32 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         _topicsetServiceForLogViews = new TopicsetService("for log views");
         _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
         _alarmSoundService = new AlarmSoundService();
-        
+
         ISeverityMapping severityMapping = new SeverityMapping();
-        
+
         @SuppressWarnings("unused")
         ServiceRegistration severityMappingRegistration = context
                 .registerService(ISeverityMapping.class.getName(), severityMapping, null);
-        
+
         _serviceReferenceSeverityMapping = context.getServiceReference(ISeverityMapping.class
                 .getName());
         if (_serviceReferenceSeverityMapping != null) {
             _severityMapping = (ISeverityMapping) context
                     .getService(_serviceReferenceSeverityMapping);
         }
-        
+
         ISendMapMessage sendMapMessage = new SendMapMessage();
-        
+
         @SuppressWarnings("unused")
         ServiceRegistration sendMapMessageRegistration = context
                 .registerService(ISendMapMessage.class.getName(), sendMapMessage, null);
-        
+
         _serviceReferenceSendMapMessage = context.getServiceReference(ISendMapMessage.class
                 .getName());
         if (_serviceReferenceSendMapMessage != null) {
             _sendMapMessage = (ISendMapMessage) context.getService(_serviceReferenceSendMapMessage);
         }
-        
+
         _serviceReferenceMessageTypes = context.getServiceReference(IMessageTypes.class.getName());
         if (_serviceReferenceMessageTypes != null) {
             _messageTypes = (IMessageTypes) context.getService(_serviceReferenceMessageTypes);
@@ -153,8 +158,10 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
             _archiveAccess = (ILogMessageArchiveAccess) context
                     .getService(_serviceReferenceArchiveAccess);
         }
+
+        _ldapService = getService(context, ILdapService.class);
     }
-    
+
     /**
      * This method is called when the plug-in is stopped
      */
@@ -162,15 +169,15 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         CentralLogger.getInstance().info(this, "doStop");
         safelyDisconnect(_topicsetServiceForAlarmViews);
         safelyDisconnect(_topicsetServiceForLogViews);
-        
+
         context.ungetService(_serviceReferenceMessageTypes);
         context.ungetService(_serviceReferenceArchiveAccess);
         context.ungetService(_serviceReferenceSendMapMessage);
         context.ungetService(_serviceReferenceSeverityMapping);
-        
+
         plugin = null;
     }
-    
+
     private void safelyDisconnect(final ITopicsetService topicsetService) {
         try {
             topicsetService.disconnectAll();
@@ -180,98 +187,106 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
                                               e);
         }
     }
-    
+
     /**
      * Returns the shared instance.
      */
     public static JmsLogsPlugin getDefault() {
         return plugin;
     }
-    
+
     /**
      * Returns an image descriptor for the image file at the given plug-in relative path.
-     * 
+     *
      * @param path the path
      * @return the image descriptor
      */
     public static ImageDescriptor getImageDescriptor(final String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.alarm.table", path); //$NON-NLS-1$
     }
-    
+
     /** Add informational message to the plugin log. */
     public static void logInfo(final String message) {
         getDefault().log(IStatus.INFO, message, null);
     }
-    
+
     /** Add error message to the plugin log. */
     public static void logError(final String message) {
         getDefault().log(IStatus.ERROR, message, null);
     }
-    
+
     /** Add an exception to the plugin log. */
     public static void logException(final String message, final Exception e) {
         getDefault().log(IStatus.ERROR, message, e);
     }
-    
+
     /**
      * Add a message to the log.
-     * 
+     *
      * @param type
      * @param message
      */
     private void log(final int type, final String message, final Exception e) {
         getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
     }
-    
+
     public ISeverityMapping getSeverityMapping() {
         return _severityMapping;
     }
-    
+
     public IMessageTypes getMessageTypes() {
         return _messageTypes;
     }
-    
+
     public ILogMessageArchiveAccess getArchiveAccess() {
         return _archiveAccess;
     }
-    
+
     public ISendMapMessage getSendMapMessage() {
         return _sendMapMessage;
     }
-    
+
     /**
      * @return the topic set service to be shared by the log views (or null)
      */
     public ITopicsetService getTopicsetServiceForLogViews() {
         return _topicsetServiceForLogViews;
     }
-    
+
     /**
      * @return the topic set service to be shared by the alarm views (or null)
      */
     public ITopicsetService getTopicsetServiceForAlarmViews() {
         return _topicsetServiceForAlarmViews;
     }
-    
+
     /**
      * @return the alarm sound service or null
      */
     public IAlarmSoundService getAlarmSoundService() {
         return _alarmSoundService;
     }
-    
+
     /**
      * @return the alarm service or null
      */
     public IAlarmService getAlarmService() {
         return _alarmService;
     }
-    
+
     /**
      * @return the alarm configuration service or null
      */
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
     }
+
+    /**
+     * @return the LDAP service
+     */
+    public ILdapService getLdapService() {
+        return _ldapService;
+    }
+
 
 }

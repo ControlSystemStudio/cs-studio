@@ -84,16 +84,15 @@ public final class ImportInitialConfigJob extends Job {
         try {
             final long startTime = System.currentTimeMillis();
 
-            // TODO jp Hack: Do not use LDAP if DAL implementation is active
+            // TODO jp Hack: Need better way to find out whether to use LDAP
             // TODO jp-mc
-            boolean isDalImpl = !AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection()
-                    .canHandleTopics();
+            boolean useLDAP = AlarmTreePlugin.getDefault().getLdapService() != null;
             ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
-            if (isDalImpl) {
-                model = _configService.retrieveInitialContentModelFromFile(filePath);
-            } else {
+            if (useLDAP) {
                 final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
                 model = _configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            } else {
+                model = _configService.retrieveInitialContentModelFromFile(filePath);
             }
 
             final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);

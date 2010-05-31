@@ -45,7 +45,6 @@ import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.ContentModel;
 import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
@@ -101,14 +100,12 @@ public final class AlarmTreeBuilder {
      * Can be canceled.
      * @param parentNode
      * @param modelNode
-     * @param ctx
      * @param monitor
      * @return
      * @throws NamingException
      */
     private static boolean createAlarmSubtree(@Nonnull final SubtreeNode parentNode,
                                               @Nonnull final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
-                                              @Nonnull final DirContext ctx,
                                               @Nullable final IProgressMonitor monitor) throws NamingException {
 
         final String simpleName = modelNode.getName();
@@ -123,7 +120,7 @@ public final class AlarmTreeBuilder {
         } else {
             final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
             for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
-                createAlarmSubtree(newNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) child, ctx, monitor);
+                createAlarmSubtree(newNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) child, monitor);
 
                 if ((monitor != null) && monitor.isCanceled()) {
                     return true;
@@ -150,12 +147,13 @@ public final class AlarmTreeBuilder {
     public static boolean build(@Nonnull final SubtreeNode rootNode,
                                 @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                 @Nullable final IProgressMonitor monitor) throws NamingException {
-        final DirContext ctx = Engine.getInstance().getLdapDirContext();
-
-        ensureTestFacilityExists(ctx);
+        // TODO jp ensureTestFacilityExists disabled
+//        final DirContext ctx = Engine.getInstance().getLdapDirContext();
+//        ensureTestFacilityExists(ctx);
 
         for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
-            createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, ctx, monitor);
+            // TODO jp DirContext ctx no longer used in createAlarmSubtree
+            createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, monitor);
         }
         return true;
     }

@@ -211,7 +211,11 @@ public class AlarmMessageListener implements IAlarmListener {
             final String eventtimeValue = message.getString(AlarmMessageKey.EVENTTIME);
             Date eventtime = null;
             if (eventtimeValue != null) {
-                eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
+                try {
+                    eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
+                } catch (NumberFormatException e) {
+                    // TODO jp whats going on here?
+                }
             }
             if (eventtime == null) {
                 // eventtime is null if the message did not contain an EVENTTIME

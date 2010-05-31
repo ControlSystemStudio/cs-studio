@@ -19,7 +19,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.utility.ldap;
+package org.csstudio.utility.ldap;
+
 //
 import java.util.Dictionary;
 import java.util.Hashtable;
@@ -28,26 +29,28 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * The activator class controls the plug-in life cycle
  */
 public final class LdapActivator extends AbstractCssPlugin {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);
 
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
+    // The plug-in ID
+    public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
 
-	private static LdapActivator INSTANCE;
+    private static LdapActivator INSTANCE;
 
-	private ILdapService _ldapService;
-
+    private ILdapService _ldapService;
 
     /**
      * Don't instantiate.
@@ -60,45 +63,56 @@ public final class LdapActivator extends AbstractCssPlugin {
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	protected void doStart(@Nullable final BundleContext context) throws Exception {
-	    final Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("service.vendor", "DESY");
-        props.put("service.description", "LDAP service implementation");
-	    context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.AbstractCssPlugin#doStart(org.osgi.framework.BundleContext)
+     */
+    @Override
+    protected void doStart(@Nullable final BundleContext context) throws Exception {
 
-	    _ldapService = getService(context, ILdapService.class);
-	}
+        _ldapService = null;
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
-	 */
-	@Override
-	protected void doStop(@Nullable final BundleContext context) throws Exception {
-	    // Empty
-	}
+        // TODO jp Hack: Find a better way to find out whether to use ldap
+        String ldapURLP = getCssPluginPreferences().getString(PreferenceKey.P_STRING_URL.name());
+        boolean useLDAP = (ldapURLP != null) && (ldapURLP.length() > 0);
 
-	/* (non-Javadoc)
-	 * @see org.csstudio.platform.AbstractCssPlugin#getPluginId()
-	 */
-	@Override
-	@Nonnull
-	public String getPluginId() {
-		return PLUGIN_ID;
-	}
+        if (useLDAP) {
+            final Dictionary<String, Object> props = new Hashtable<String, Object>();
+            props.put("service.vendor", "DESY");
+            props.put("service.description", "LDAP service implementation");
+            context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
+            _ldapService = getService(context, ILdapService.class);
+            LOG.info("Register LDAP-Service");
+        } else {
+            LOG.info("Do not register LDAP-Service");
+        }
+    }
 
-	/**
-	 * Returns the singleton instance.
-	 *
-	 * @return the instance
- 	 */
-	@Nonnull
-	public static LdapActivator getDefault() {
-		return INSTANCE;
-	}
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.AbstractCssPlugin#doStop(org.osgi.framework.BundleContext)
+     */
+    @Override
+    protected void doStop(@Nullable final BundleContext context) throws Exception {
+        // Empty
+    }
+
+    /* (non-Javadoc)
+     * @see org.csstudio.platform.AbstractCssPlugin#getPluginId()
+     */
+    @Override
+    @Nonnull
+    public String getPluginId() {
+        return PLUGIN_ID;
+    }
+
+    /**
+     * Returns the singleton instance.
+     *
+     * @return the instance
+     */
+    @Nonnull
+    public static LdapActivator getDefault() {
+        return INSTANCE;
+    }
 
     /**
      * Add informational message to the plugin log.

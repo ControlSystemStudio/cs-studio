@@ -29,6 +29,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -98,11 +99,16 @@ public class AlarmTreeUpdater {
         Display.getDefault().asyncExec(new Runnable() {
             public void run() {
                 // FIXME: improve this!
-                final IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-                        .getActivePage();
-                final IViewPart view = page.findView(AlarmTreeView.getID());
-                if (view instanceof AlarmTreeView) {
-                    ((AlarmTreeView) view).refresh();
+                final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow();
+                if (activeWorkbenchWindow != null) {
+                    final IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+                    if (page != null) {
+                        final IViewPart view = page.findView(AlarmTreeView.getID());
+                        if (view instanceof AlarmTreeView) {
+                            ((AlarmTreeView) view).refresh();
+                        }
+                    }
                 }
             }
         });

@@ -237,14 +237,13 @@ public class AlarmView extends LogView {
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
 
-            // TODO jp Hack: Do not use LDAP if DAL implementation is active
+            // TODO jp Hack: Need better way to find out whether LDAP is active
             // TODO jp-mc
-            boolean isDalImpl = !JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection()
-                    .canHandleTopics();
-            if (isDalImpl) {
-                model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
-            } else {
+            boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
+            if (useLDAP) {
                 model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            } else {
+                model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
             }
 
             // ************ end of hack ******************

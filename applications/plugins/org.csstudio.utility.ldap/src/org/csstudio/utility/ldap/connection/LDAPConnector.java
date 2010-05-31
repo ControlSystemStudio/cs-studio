@@ -73,14 +73,18 @@ public class LDAPConnector {
 
 
         } catch (final NamingException e) {
-            _log.error(e);
-            _log.error("The follow setting(s) a invalid: \r\n"
-                      +"RemainingName: " + e.getRemainingName()+"\r\n"
-                      +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
-                      +"Explanation: " + e.getExplanation()
-            );
+            logError(e);
             throw e;
         }
+    }
+
+    private void logError(final NamingException e) {
+        _log.error(e);
+        _log.error("The follow setting(s) are invalid: \r\n"
+                  +"RemainingName: " + e.getRemainingName()+"\r\n"
+                  +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
+                  +"Explanation: " + e.getExplanation()
+        );
     }
 
     /**
@@ -102,12 +106,7 @@ public class LDAPConnector {
             _ctx = createInitialContext(_prefsMap);
 
         } catch (final NamingException e) {
-            _log.error(e);
-            _log.error("The follow setting(s) a invalid: \r\n"
-                      +e.getRemainingName()+"\r\n"
-                      +e.getResolvedObj()+"\r\n"
-                      +e.getExplanation()
-            );
+            logError(e);
             throw e;
         }
         return _ctx;
