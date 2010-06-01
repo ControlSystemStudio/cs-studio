@@ -42,9 +42,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceKey.P_STRING_USER_PASSWORD.name(), "cssPass"); //$NON-NLS-1$
         prefs.put(PreferenceKey.SECURITY_PROTOCOL.name(), ""); //$NON-NLS-1$
         prefs.put(PreferenceKey.SECURITY_AUTHENTICATION.name(), ""); //$NON-NLS-1$
-        // TODO jp Default for LDAP access changed
-//        prefs.put(PreferenceKey.P_STRING_URL.name(), "ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
-        prefs.put(PreferenceKey.P_STRING_URL.name(), "nos"); //$NON-NLS-1$
+        prefs.put(PreferenceKey.P_STRING_URL.name(), "ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
     }
 
 }
