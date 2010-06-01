@@ -20,6 +20,7 @@ package org.csstudio.alarm.service;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -43,41 +44,42 @@ import org.osgi.framework.BundleContext;
  * @since 26.04.2010
  */
 public class AlarmServiceActivator extends AbstractCssUiPlugin {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmServiceActivator.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmServiceActivator.class);
 
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.alarm.service"; //$NON-NLS-1$
 
     // The shared instance.
-    private static AlarmServiceActivator plugin;
+    private static AlarmServiceActivator PLUGIN;
 
     /**
      * The constructor.
      */
     public AlarmServiceActivator() {
-        if (plugin != null) {
+        if (PLUGIN != null) {
             throw new IllegalStateException("Attempt to call plugin constructor more than once.");
         }
-        plugin = this;
+        PLUGIN = this;
     }
 
     /**
      * Returns the shared instance.
      */
+    @Nonnull
     public static AlarmServiceActivator getDefault() {
-        return plugin;
+        return PLUGIN;
     }
 
     @Override
-    protected void doStart(final BundleContext context) throws Exception {
+    protected void doStart(@CheckForNull final BundleContext context) throws Exception {
         LOG.debug("Starting AlarmService");
 
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
 
         // Provide implementation for alarm service
-        boolean isDAL = getPreferenceStore()
-                .getBoolean(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
+        final boolean isDAL =
+            getPreferenceStore().getBoolean(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
 
         if (isDAL) {
             registerDALService(context, getService(context, IAlarmConfigurationService.class));
@@ -87,9 +89,9 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStop(final BundleContext context) throws Exception {
+    protected void doStop(@SuppressWarnings("unused") @CheckForNull final BundleContext context) throws Exception {
         LOG.debug("Stopping AlarmService");
-        plugin = null;
+        PLUGIN = null;
     }
 
     /**
