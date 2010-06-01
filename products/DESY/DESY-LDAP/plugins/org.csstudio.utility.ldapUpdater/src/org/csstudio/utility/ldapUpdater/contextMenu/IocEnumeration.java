@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
@@ -46,8 +45,11 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ILdapBaseComponent;
+import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.Activator;
@@ -73,10 +75,13 @@ public class IocEnumeration implements IDynamicParameterValues {
                                                       any(ECON_FIELD_NAME),
                                                       SearchControls.SUBTREE_SCOPE);
 
-        ContentModel<LdapEpicsControlsObjectClass> model;
         try {
-            model = new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
-            final Map<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> iocs =
+            final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+            builder.build();
+            final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+
+            final Map<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> iocs =
                 model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
 
             final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
@@ -102,7 +107,7 @@ public class IocEnumeration implements IDynamicParameterValues {
 
             return params.toArray(new CommandParameterEnumValue[params.size()]);
 
-        } catch (final InvalidNameException e) {
+        } catch (final CreateContentModelException e) {
             LOG.error("Content model could not be constructed. Root element has invalid LDAP name.", e);
             return new CommandParameterEnumValue[0];
         }

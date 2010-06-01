@@ -33,14 +33,14 @@ import javax.annotation.Nonnull;
  * @version $Revision$
  * @since 18.05.2010
  */
-public class ImportContentModelException extends Exception {
+public class CreateContentModelException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.
      */
-    public ImportContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
+    public CreateContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
         super(message, e);
     }
 }

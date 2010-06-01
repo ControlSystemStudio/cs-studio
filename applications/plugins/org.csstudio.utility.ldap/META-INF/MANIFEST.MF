@@ -14,6 +14,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.engine,
  org.csstudio.utility.ldap.model,
+ org.csstudio.utility.ldap.model.builder,
  org.csstudio.utility.ldap.preference,
  org.csstudio.utility.ldap.reader,
  org.csstudio.utility.ldap.service,

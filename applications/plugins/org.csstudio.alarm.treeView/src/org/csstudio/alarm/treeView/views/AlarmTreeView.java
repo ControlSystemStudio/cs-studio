@@ -25,20 +25,16 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
-import org.csstudio.alarm.service.declaration.IAlarmInitItem;
-import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
-import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -744,11 +740,9 @@ public class AlarmTreeView extends ViewPart {
     @Nonnull
     private ImportXmlFileJob createImportXmlFileJob() {
         final SubtreeNode rootNode = new SubtreeNode.Builder(AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE,
-                                                             LdapEpicsAlarmCfgObjectClass.ROOT)
-                .build();
+                                                             LdapEpicsAlarmCfgObjectClass.ROOT).build();
 
-        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(this,
-                                                                       "importXmlFileJob",
+        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob("importXmlFileJob",
                                                                        _configService,
                                                                        rootNode);
         importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
@@ -775,7 +769,7 @@ public class AlarmTreeView extends ViewPart {
      *
      * @param inputElement the new input element.
      */
-    void asyncSetViewerInput(final SubtreeNode inputElement) {
+    void asyncSetViewerInput(@Nonnull final SubtreeNode inputElement) {
         getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
                 _viewer.setInput(inputElement);
@@ -797,7 +791,7 @@ public class AlarmTreeView extends ViewPart {
      *
      * @param event the selection event.
      */
-    private void selectionChanged(final SelectionChangedEvent event) {
+    private void selectionChanged(@Nonnull final SelectionChangedEvent event) {
         final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
         _acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
         _runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
@@ -813,7 +807,7 @@ public class AlarmTreeView extends ViewPart {
      * @param node the node.
      * @return <code>true</code> if the node has a strip chart, <code>false</code> otherwise.
      */
-    private boolean hasCssStripChart(final Object node) {
+    private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             return ((IAlarmTreeNode) node).getCssStripChart() != null;
         }
@@ -826,7 +820,7 @@ public class AlarmTreeView extends ViewPart {
      * @param node the node.
      * @return <code>true</code> if the node has a display, <code>false</code> otherwise.
      */
-    private boolean hasCssDisplay(final Object node) {
+    private boolean hasCssDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             return ((IAlarmTreeNode) node).getCssDisplay() != null;
         }
@@ -840,7 +834,7 @@ public class AlarmTreeView extends ViewPart {
      * @return <code>true</code> if the node has a help guidance string, <code>false</code>
      *         otherwise.
      */
-    private boolean hasHelpGuidance(final Object node) {
+    private boolean hasHelpGuidance(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             return ((IAlarmTreeNode) node).getHelpGuidance() != null;
         }
@@ -854,7 +848,7 @@ public class AlarmTreeView extends ViewPart {
      * @return <code>true</code> if the node has an associated help page, <code>false</code>
      *         otherwise.
      */
-    private boolean hasHelpPage(final Object node) {
+    private boolean hasHelpPage(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             return ((IAlarmTreeNode) node).getHelpPage() != null;
         }
@@ -869,7 +863,7 @@ public class AlarmTreeView extends ViewPart {
      * @return <code>true</code> if a CSS alarm display is configured for the node,
      *         <code>false</code> otherwise.
      */
-    private boolean hasCssAlarmDisplay(final Object node) {
+    private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             final String display = ((IAlarmTreeNode) node).getCssAlarmDisplay();
             return (display != null) && display.matches(".+\\.css-sds");
@@ -884,7 +878,7 @@ public class AlarmTreeView extends ViewPart {
      * @return <code>true</code> if the selection contains a node with an unacknowledged alarm,
      *         <code>false</code> otherwise.
      */
-    private boolean containsNodeWithUnackAlarm(final IStructuredSelection sel) {
+    private boolean containsNodeWithUnackAlarm(@Nonnull final IStructuredSelection sel) {
         final Object selectedElement = sel.getFirstElement();
         // Note: selectedElement is not instance of IAlarmTreeNode if nothing
         // is selected (selectedElement == null), and during initialization,
@@ -931,7 +925,7 @@ public class AlarmTreeView extends ViewPart {
      *
      * @param manager the menu manager.
      */
-    private void fillLocalPullDown(final IMenuManager manager) {
+    private void fillLocalPullDown(@Nonnull final IMenuManager manager) {
         // EMPTY
     }
 
@@ -986,7 +980,7 @@ public class AlarmTreeView extends ViewPart {
      *
      * @param manager the menu manager.
      */
-    private void fillLocalToolBar(final IToolBarManager manager) {
+    private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
         manager.add(_toggleFilterAction);
         manager.add(new Separator());
         manager.add(_showPropertyViewAction);
@@ -1044,11 +1038,12 @@ public class AlarmTreeView extends ViewPart {
 
     }
 
+    @Nonnull
     public Boolean getIsFilterActive() {
         return _isFilterActive;
     }
 
-    public void setIsFilterActive(final Boolean isFilterActive) {
+    public void setIsFilterActive(@Nonnull final Boolean isFilterActive) {
         _isFilterActive = isFilterActive;
     }
 
@@ -1065,39 +1060,6 @@ public class AlarmTreeView extends ViewPart {
      */
     public final void refresh() {
         _viewer.refresh();
-    }
-
-    private void retrieveInitialStateSynchronously(@Nonnull final SubtreeNode rootNode) {
-        final List<ProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
-        final List<PVNodeItem> initItems = new ArrayList<PVNodeItem>();
-
-        for (final ProcessVariableNode pvNode : pvNodes) {
-            initItems.add(new PVNodeItem(pvNode));
-        }
-
-        AlarmTreePlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
-    }
-
-    /**
-     * The alarm tag of the PV node will be updated when the initial state was retrieved.
-     */
-    private static class PVNodeItem implements IAlarmInitItem {
-        private final ProcessVariableNode _pvNode;
-
-        protected PVNodeItem(@Nonnull final ProcessVariableNode pvNode) {
-            _pvNode = pvNode;
-        }
-
-        public String getPVName() {
-            return _pvNode.getName();
-        }
-
-        public void init(@Nonnull final IAlarmMessage alarmMessage) {
-            final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
-            final Alarm alarm = new Alarm(alarmMessage.getString(AlarmMessageKey.NAME), Severity
-                    .parseSeverity(severityString));
-            _pvNode.updateAlarm(alarm);
-        }
     }
 
     /**
@@ -1124,7 +1086,7 @@ public class AlarmTreeView extends ViewPart {
          */
         private final Label _messageAreaDescription;
 
-        public MessageArea(final Composite parent) {
+        public MessageArea(@Nonnull final Composite parent) {
             _messageArea = new Composite(parent, SWT.NONE);
             final GridData messageAreaLayoutData = new GridData(SWT.FILL, SWT.FILL, true, false);
             messageAreaLayoutData.exclude = true;
@@ -1164,7 +1126,7 @@ public class AlarmTreeView extends ViewPart {
          * @param message the message.
          * @param description a descriptive text.
          */
-        public void showMessage(final int icon, final String message, final String description) {
+        public void showMessage(final int icon, @Nonnull final String message, @Nonnull final String description) {
             _messageAreaIcon.setImage(Display.getCurrent().getSystemImage(icon));
             _messageAreaMessage.setText(message);
             _messageAreaDescription.setText(description);

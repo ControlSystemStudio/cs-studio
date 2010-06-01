@@ -22,7 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.naming.InvalidNameException;
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
@@ -47,7 +47,7 @@ import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ImportContentModelException;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -236,7 +236,6 @@ public class AlarmView extends LogView {
         final String[] facilityNames = new String[] { "Test" };
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
-
             // TODO jp Hack: Need better way to find out whether LDAP is active
             boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
             if (useLDAP) {
@@ -244,19 +243,19 @@ public class AlarmView extends LogView {
             } else {
                 model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
             }
-
+            
             // ************ end of hack ******************
-
+            
+            
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
+            
             for (final String pvName : pvNames) {
                 initItems.add(new PVItem(pvName, messageList));
             }
-
+            
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
-        } catch (final InvalidNameException e) {
-            LOG.error("Could not retrieve content model from ConfigService", e);
-        } catch (ImportContentModelException e) {
+        } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
         }
     }

@@ -44,11 +44,12 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapBaseComponent;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
+import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
@@ -70,6 +71,7 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 public final class LdapAccess {
 
     public static LdapName NAME_SUFFIX = null;
+
     static {
         try {
             final Rdn ou = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
@@ -125,7 +127,7 @@ public final class LdapAccess {
         }
     }
 
-    public static final Logger LOGGER = CentralLogger.getInstance().getLogger(LdapAccess.class);
+    public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
 
     private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
 
@@ -152,16 +154,17 @@ public final class LdapAccess {
      * @param iocMapFromFS valid IOCs
      * @throws InterruptedException
      * @throws InvalidNameException
+     * @throws CreateContentModelException
      */
     public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> contentModel,
-                                             @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException{
+                                             @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException, CreateContentModelException{
 
-        final Set<Entry<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
+        final Set<Entry<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
             contentModel.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC).entrySet();
 
-        for (final Entry<String, ILdapBaseComponent<LdapEpicsControlsObjectClass>> entry : childrenByTypeSet) {
+        for (final Entry<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> entry : childrenByTypeSet) {
 
-            final ILdapBaseComponent<LdapEpicsControlsObjectClass> iocFromLdap = entry.getValue();
+            final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLdap = entry.getValue();
 
             final String iocName = iocFromLdap.getName();
             final String facName =
@@ -193,7 +196,7 @@ public final class LdapAccess {
 
     @Nonnull
     private static UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> model,
-                                             @Nonnull final ILdapBaseComponent<LdapEpicsControlsObjectClass> iocFromLDAP) throws NamingException {
+                                             @Nonnull final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP) throws NamingException {
 
         final String iocName = iocFromLDAP.getName();
         int numOfRecsWritten = 0;
@@ -203,15 +206,15 @@ public final class LdapAccess {
 
         final StringBuilder forbiddenRecords = new StringBuilder();
 
-        LOGGER.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
+        LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
         for (final Record record : recordsFromFile) {
             final String recordName = record.getName();
 
-            final ILdapBaseComponent<LdapEpicsControlsObjectClass> recordComponent =
+            final ILdapTreeComponent<LdapEpicsControlsObjectClass> recordComponent =
                 model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD, recordName);
 
             if (recordComponent == null) { // does not yet exist
-                LOGGER.info("New Record: " + iocName + " " + recordName);
+                LOG.info("New Record: " + iocName + " " + recordName);
 
                 if (!LdapUtils.filterLDAPNames(recordName)) {
 
@@ -220,13 +223,13 @@ public final class LdapAccess {
 
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
                     if (!LDAP_UPDATER_SERVICE.createLDAPRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
-                        LOGGER.error("Error while updating LDAP record for " + recordName +
+                        LOG.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
                         numOfRecsWritten++;
                     }
                 } else {
-                    LOGGER.warn("Record " + recordName + " could not be written. Unallowed characters!");
+                    LOG.warn("Record " + recordName + " could not be written. Unallowed characters!");
                     forbiddenRecords.append(recordName + "\n");
                 }
             }
@@ -235,7 +238,7 @@ public final class LdapAccess {
 
         // TODO (bknerr) : what to do with success variable ?
         final ILdapTreeComponent<LdapEpicsControlsObjectClass> iLdapComponent =
-            (ILdapTreeComponent<LdapEpicsControlsObjectClass>) model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
+            model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
 
         int numOfChildren = -1;
         if (iLdapComponent != null) {
@@ -249,7 +252,7 @@ public final class LdapAccess {
 
 
 
-    private static void sendUnallowedCharsNotification(@Nonnull final ILdapBaseComponent<LdapEpicsControlsObjectClass> iocFromLDAP,
+    private static void sendUnallowedCharsNotification(@Nonnull final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP,
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
@@ -292,43 +295,46 @@ public final class LdapAccess {
 
             if (historyFileModel.contains(iocName)) {
                 if (!isIOCFileNewerThanHistoryEntry(iocFromFS.getValue(), historyFileModel)) {
-                    LOGGER.debug("IOC file for " + iocName
+                    LOG.debug("IOC file for " + iocName
                                  + " is not newer than history file time stamp.");
                     continue;
                 }
             } // else means 'new IOC file in directory'
 
             //final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
-            final ILdapBaseComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
+            final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
                 model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
 
             if (iocFromLDAP == null) {
-                LOGGER.warn("IOC "
+                LOG.warn("IOC "
                             + iocName
                             + " (from file system) does not exist in LDAP - no facility/group association possible.\n"
                             + "No LDAP Update! Generate an LDAP entry for this IOC manually!");
                 continue;
             }
 
-            LdapSearchResult searchResult;
             try {
-                searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLDAP.getLdapName());
-                model.addSearchResult(searchResult);
+                final LdapSearchResult searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLDAP.getLdapName());
+
+                final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(model);
+                builder.setSearchResult(searchResult);
+                builder.build();
 
                 final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);
                 // TODO (bknerr) : does only make sense when the update process has been stopped
                 if (updateResult.hasNoError()) {
-
                     HistoryFileAccess.appendLineToHistfile(iocName,
                                                            updateResult.getNumOfRecsWritten(),
                                                            updateResult.getNumOfRecsInFile(),
                                                            updateResult.getNumOfRecsInLDAP() );
-
                 }
             } catch (final InvalidNameException e1) {
-                LOGGER.error("Invalid LDAP name.", e1);
+                LOG.error("Invalid LDAP name.", e1);
             } catch (final NamingException e) {
-                LOGGER.error("Update of IOC threw naming exception.", e);
+                LOG.error("Update of IOC threw naming exception.", e);
+            } catch (final CreateContentModelException e) {
+                LOG.error("Error creating content model from LDAP.");
             }
         }
     }

@@ -35,7 +35,7 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ImportContentModelException;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
@@ -54,8 +54,8 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmConnectionDALImpl.class);
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmConnectionDALImpl.class);
 
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
@@ -68,7 +68,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      *
      * @param alarmConfigService .
      */
-    AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService) {
+    public AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService) {
         _alarmConfigService = alarmConfigService;
     }
 
@@ -108,7 +108,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     @Override
     public void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                     @Nonnull final IAlarmListener listener,
-                                    final String fileName) throws AlarmConnectionException {
+                                    @Nonnull final String fileName) throws AlarmConnectionException {
         connectWithListenerForTopics(connectionMonitor, listener, new String[0], fileName);
     }
 
@@ -119,7 +119,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                              @Nonnull final IAlarmListener listener,
                                              @Nonnull final String[] topics,
-                                             final String fileName) throws AlarmConnectionException {
+                                             @Nonnull final String fileName) throws AlarmConnectionException {
         LOG.info("Connecting to DAL for topics " + Arrays.toString(topics) + ".");
 
         connectToPVsFromConfiguration(connectionMonitor, listener, fileName);
@@ -130,7 +130,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
     private void connectToPVsFromConfiguration(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                                @Nonnull final IAlarmListener listener,
-                                               final String fileName) {
+                                               @Nonnull final String fileName) {
 
         // TODO jp the facilities must be given as parameter
         final List<String> facilitiesAsString = new ArrayList<String>();
@@ -145,7 +145,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                 LOG.debug("Connecting to " + recordName);
                 connectToPV(connectionMonitor, listener, recordName);
             }
-        } catch (ImportContentModelException e) {
+        } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve initial content model", e);
         }
 
@@ -180,7 +180,6 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         } catch (final CommonException e) {
             LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
         }
-
     }
 
     /**

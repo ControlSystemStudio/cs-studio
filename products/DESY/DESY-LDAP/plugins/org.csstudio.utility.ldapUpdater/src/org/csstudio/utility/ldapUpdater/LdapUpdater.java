@@ -57,9 +57,11 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ILdapBaseComponent;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
@@ -180,8 +182,9 @@ public final class LdapUpdater {
      * Removes any record from LDAP that is not found in any of the IOC files.
      * @throws InterruptedException
      * @throws InvalidNameException
+     * @throws CreateContentModelException
      */
-    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException {
+    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException {
         if ( _busy ) {
             return;
         }
@@ -199,7 +202,11 @@ public final class LdapUpdater {
             final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
             if (dumpPath != null) {
                 final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-                LdapAccess.tidyUpLDAPFromIOCList(new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT),
+                final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+                builder.build();
+
+                LdapAccess.tidyUpLDAPFromIOCList(builder.getModel(),
                                                  iocMapFromFS);
             } else {
                 _log.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
@@ -234,9 +241,11 @@ public final class LdapUpdater {
                                                           any(ECON_FIELD_NAME),
                                                           SearchControls.SUBTREE_SCOPE);
 
-            final ContentModel<LdapEpicsControlsObjectClass> model =
-                new ContentModel<LdapEpicsControlsObjectClass>(searchResult, LdapEpicsControlsObjectClass.ROOT);
 
+            final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, searchResult);
+            builder.build();
+            final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 

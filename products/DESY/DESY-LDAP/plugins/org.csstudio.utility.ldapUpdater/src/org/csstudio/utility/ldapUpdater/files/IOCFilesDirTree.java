@@ -180,9 +180,9 @@ public final class IOCFilesDirTree {
             br.close();
             return records;
         } catch (final FileNotFoundException e) {
-            LdapAccess.LOGGER.error("Could not find file: " + pathToFile + "\n" + e.getMessage());
+            LdapAccess.LOG.error("Could not find file: " + pathToFile + "\n" + e.getMessage());
         } catch (final IOException e) {
-            LdapAccess.LOGGER.error("Error while reading from file: " + e.getMessage());
+            LdapAccess.LOG.error("Error while reading from file: " + e.getMessage());
         }
         return Collections.emptySet();
     }

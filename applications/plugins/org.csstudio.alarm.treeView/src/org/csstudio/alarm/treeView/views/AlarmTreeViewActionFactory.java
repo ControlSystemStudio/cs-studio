@@ -32,7 +32,6 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -40,7 +39,7 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
-import org.csstudio.alarm.treeView.ldap.ContentModelBuilder;
+import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
@@ -55,6 +54,7 @@ import org.csstudio.platform.ui.util.EditorUtil;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ExportContentModelException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -107,14 +107,19 @@ public final class AlarmTreeViewActionFactory {
             return null;
         }
     }
-
-    private final static Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
 
     /**
      * The ID of the property view.
      */
     private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
 
+    /**
+     * Constructor.
+     */
+    private AlarmTreeViewActionFactory() {
+        // Don't instantiate
+    }
 
     /**
      * @param site
@@ -325,11 +330,8 @@ public final class AlarmTreeViewActionFactory {
         final Action importXmlFileAction = new Action() {
             @Override
             public void run() {
-
                 final String filePath = promptForFileName();
-
                 importXmlFileJob.setXmlFilePath(filePath);
-
                 LOG.debug("Starting XML file importer.");
                 final IWorkbenchSiteProgressService progressService =
                     (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
@@ -337,11 +339,9 @@ public final class AlarmTreeViewActionFactory {
                 // Set the tree to which updates are applied to null. This means updates
                 // will be queued for later application.
                 alarmListener.setUpdater(null);
-
                 // The directory is read in the background. Until then, set the viewer's
                 // input to a placeholder object.
                 viewer.setInput(new Object[] { new PendingUpdateAdapter() });
-
                 // Start the directory reader job.
                 progressService.schedule(importXmlFileJob, 0, true);
             }
@@ -371,14 +371,16 @@ public final class AlarmTreeViewActionFactory {
                                                    @Nonnull final SubtreeNode root,
                                                    @Nonnull final String filePath) {
         try {
-            final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-                ContentModelBuilder.createContentModelSubtree(root);
+
+            final AlarmTreeContentModelBuilder builder = new AlarmTreeContentModelBuilder(root);
+            builder.build();
+            final ContentModel<LdapEpicsAlarmCfgObjectClass> model = builder.getModel();
 
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
             configService.exportContentModelToXmlFile(filePath, model, "org.csstudio.alarm.treeView/epicsAlarmCfg.dtd");
 
-        } catch (final InvalidNameException e) {
+        } catch (final CreateContentModelException e) {
             LOG.error("Creating content model from facility was not possible due to invalid LDAP name.");
             MessageDialog.openError(site.getShell(),
                                     "Save as XML file",

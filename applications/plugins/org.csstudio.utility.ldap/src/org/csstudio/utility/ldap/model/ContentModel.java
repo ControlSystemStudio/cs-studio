@@ -33,10 +33,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
@@ -44,9 +40,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapNameUtils.Direction;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
 /**
  * Generic content model to capture arbitrary LDAP tree structures.
@@ -61,31 +54,15 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
     private final Logger _log = CentralLogger.getInstance().getLogger(this);
 
-    private T _objectClassRoot;
+    private final T _objectClassRoot;
 
     private ILdapTreeComponent<T> _treeRoot;
 
-    private Map<T, Map<String, ILdapBaseComponent<T>>> _cacheByTypeAndLdapName;
+    private Map<T, Map<String, ILdapTreeComponent<T>>> _cacheByTypeAndLdapName;
 
-    private Map<T, Map<String, ILdapBaseComponent<T>>> _cacheByTypeAndSimpleName;
+    private Map<T, Map<String, ILdapTreeComponent<T>>> _cacheByTypeAndSimpleName;
 
-    private Map<String, ILdapBaseComponent<T>> _cacheByLdapName;
-
-
-
-    /**
-     * Constructor.
-     * @param searchResult .
-     * @param objectClassRoot .
-     * @throws InvalidNameException
-     */
-    public ContentModel(@Nonnull final LdapSearchResult searchResult,
-                        @Nonnull final T objectClassRoot) throws InvalidNameException {
-
-        initFields(objectClassRoot);
-        addSearchResult(searchResult);
-    }
-
+    private Map<String, ILdapTreeComponent<T>> _cacheByLdapName;
 
     /**
      * Constructor.
@@ -93,22 +70,22 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      * @throws InvalidNameException
      */
     public ContentModel(@Nonnull final T objectClassRoot) throws InvalidNameException {
-        initFields(objectClassRoot);
+        _objectClassRoot = objectClassRoot;
+        initFields(_objectClassRoot);
     }
-
 
     /**
      * @param objectClassRoot
      * @throws InvalidNameException
      */
     private void initFields(@Nonnull final T objectClassRoot) throws InvalidNameException {
-        _cacheByLdapName = new HashMap<String, ILdapBaseComponent<T>>();
+        _cacheByLdapName = new HashMap<String, ILdapTreeComponent<T>>();
+
 
         _cacheByTypeAndLdapName = initCacheByType(objectClassRoot.getDeclaringClass());
 
         _cacheByTypeAndSimpleName = initCacheByType(objectClassRoot.getDeclaringClass());
 
-        _objectClassRoot = objectClassRoot;
 
         final Rdn rdn = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, objectClassRoot.getRootName());
         final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
@@ -128,77 +105,8 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
 
     @Nonnull
-    private Map<T, Map<String, ILdapBaseComponent<T>>> initCacheByType(@Nonnull final Class<T> enumClass) {
-        return new EnumMap<T, Map<String, ILdapBaseComponent<T>>>(enumClass);
-    }
-
-
-    /**
-     * Adds a given search result to the current LDAP content model.
-     *
-     * @param searchResult the search result .
-     */
-    public void addSearchResult(@Nonnull final LdapSearchResult searchResult) {
-
-
-        final Set<SearchResult> answerSet = searchResult.getAnswerSet();
-        try {
-            for (final SearchResult row : answerSet) {
-
-                final Attributes attributes = row.getAttributes();
-                createLdapComponent(attributes == null ? new BasicAttributes() : attributes,
-                                    LdapNameUtils.parseSearchResult(row),
-                                    _treeRoot);
-            }
-        } catch (final IndexOutOfBoundsException iooe) {
-          _log.error("Tried to remove a name component with index out of bounds.", iooe);
-        } catch (final InvalidNameException ie) {
-            _log.error("Search result row could not be parsed by NameParser or removal of name component violates the syntax rules.", ie);
-        } catch (final NamingException e) {
-            _log.error("NameParser could not be obtained for LDAP Engine and CompositeName.", e);
-        }
-    }
-
-    public void createLdapComponent(@Nonnull final Attributes attributes,
-                                    @Nonnull final LdapName fullName,
-                                    @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
-        ILdapTreeComponent<T> parent = root;
-
-        final LdapName partialName = LdapNameUtils.removeRdns(fullName,
-                                                              LdapFieldsAndAttributes.EFAN_FIELD_NAME,
-                                                              Direction.FORWARD);
-
-        final LdapName currentPartialName = new LdapName("");
-
-
-        for (int i = 0; i < partialName.size(); i++) {
-
-            final Rdn rdn = partialName.getRdn(i);
-            currentPartialName.add(rdn);
-
-
-            // Check whether this component exists already
-            if (_cacheByLdapName.containsKey(currentPartialName.toString())) {
-                if (i < partialName.size() - 1) { // another name component follows => has children
-                    parent = (ILdapTreeComponent<T>) _cacheByLdapName.get(currentPartialName.toString());
-                }
-                continue; // YES
-            }
-            // NO
-
-            final T oc = _objectClassRoot.getObjectClassByRdnType(rdn.getType());
-
-            final ILdapTreeComponent<T> newChild =
-                new LdapTreeComponent<T>((String) rdn.getValue(),
-                                        oc,
-                                        oc.getNestedContainerClasses(),
-                                        parent,
-                                        attributes,
-                                        currentPartialName);
-            addChild(parent, newChild);
-
-            parent = newChild;
-        }
+    private Map<T, Map<String, ILdapTreeComponent<T>>> initCacheByType(@Nonnull final Class<T> enumClass) {
+        return new EnumMap<T, Map<String, ILdapTreeComponent<T>>>(enumClass);
     }
 
 
@@ -212,9 +120,9 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
         // MORE CACHING
         final T type = newChild.getType();
         if (!_cacheByTypeAndLdapName.containsKey(type)) {
-            _cacheByTypeAndLdapName.put(type, new HashMap<String, ILdapBaseComponent<T>>());
+            _cacheByTypeAndLdapName.put(type, new HashMap<String, ILdapTreeComponent<T>>());
         }
-        final Map<String, ILdapBaseComponent<T>> childrenByLdapName = _cacheByTypeAndLdapName.get(type);
+        final Map<String, ILdapTreeComponent<T>> childrenByLdapName = _cacheByTypeAndLdapName.get(type);
 
         final String nameKey = newChild.getLdapName().toString();
         if (!childrenByLdapName.containsKey(nameKey)) {
@@ -223,15 +131,14 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
 
         // AND EVEN MORE CACHING
         if (!_cacheByTypeAndSimpleName.containsKey(type)) {
-            _cacheByTypeAndSimpleName.put(type, new HashMap<String, ILdapBaseComponent<T>>());
+            _cacheByTypeAndSimpleName.put(type, new HashMap<String, ILdapTreeComponent<T>>());
         }
-        final Map<String, ILdapBaseComponent<T>> childrenBySimpleName = _cacheByTypeAndSimpleName.get(type);
+        final Map<String, ILdapTreeComponent<T>> childrenBySimpleName = _cacheByTypeAndSimpleName.get(type);
 
         final String simpleName = newChild.getName();
         if (!childrenBySimpleName.containsKey(simpleName)) {
             childrenBySimpleName.put(simpleName, newChild); // updates the current map in cache by type
         }
-
     }
 
     /**
@@ -241,34 +148,37 @@ public class ContentModel<T extends Enum<T> & ILdapObjectClass<T>> {
      */
     @Nonnull
     public Set<String> getSimpleNames(@Nonnull final T type) {
-        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+        final Map<String, ILdapTreeComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
 
         return new HashSet<String>(children.keySet());
     }
 
     @CheckForNull
-    public Map<String, ILdapBaseComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
+    public Map<String, ILdapTreeComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
         return _cacheByTypeAndLdapName.get(type);
     }
 
-
     @CheckForNull
-    public Map<String, ILdapBaseComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
+    public Map<String, ILdapTreeComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
         return _cacheByTypeAndSimpleName.get(type);
     }
 
-
     @CheckForNull
-    public ILdapBaseComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
-        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndLdapName.get(type);
+    public ILdapTreeComponent<T> getByTypeAndLdapName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapTreeComponent<T>> children = _cacheByTypeAndLdapName.get(type);
         return children != null ? children.get(key) : null;
     }
 
 
     @CheckForNull
-    public ILdapBaseComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
-        final Map<String, ILdapBaseComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
+    public ILdapTreeComponent<T> getByTypeAndSimpleName(@Nonnull final T type, @Nonnull final String key) {
+        final Map<String, ILdapTreeComponent<T>> children = _cacheByTypeAndSimpleName.get(type);
         return children != null ? children.get(key) : null;
+    }
+
+    @CheckForNull
+    public ILdapTreeComponent<T> getChildByLdapName(@Nonnull final String name) {
+        return _cacheByLdapName.get(name);
     }
 
 

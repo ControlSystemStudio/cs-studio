@@ -26,16 +26,15 @@ import javax.naming.NamingException;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ImportContentModelException;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * Job to import an XML file of the alarm tree.
@@ -47,7 +46,6 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public final class ImportXmlFileJob extends Job {
 
-    private final AlarmTreeView _alarmTreeView;
     private final IAlarmConfigurationService _configService;
     private final SubtreeNode _rootNode;
     private String _filePath;
@@ -59,11 +57,10 @@ public final class ImportXmlFileJob extends Job {
      * @param rootNode
      * @param alarmTreeView TODO
      */
-    public ImportXmlFileJob(final AlarmTreeView alarmTreeView, @Nonnull final String name,
+    public ImportXmlFileJob(@Nonnull final String name,
                             @Nonnull final IAlarmConfigurationService service,
                             @Nonnull final SubtreeNode rootNode) {
         super(name);
-        _alarmTreeView = alarmTreeView;
         _configService = service;
         _rootNode = rootNode;
     }
@@ -73,7 +70,7 @@ public final class ImportXmlFileJob extends Job {
     }
 
     @Override
-    protected IStatus run(final IProgressMonitor monitor) {
+    protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
 
         try {
@@ -85,14 +82,10 @@ public final class ImportXmlFileJob extends Job {
                 return Status.CANCEL_STATUS;
             }
 
-        } catch (final ImportContentModelException e) {
-            MessageDialog.openError(_alarmTreeView.getSite().getShell(),
-                                    "Import",
-                                    "Could not import file: " + e.getMessage());
+        } catch (final CreateContentModelException e) {
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not import file: " + e.getMessage(), e);
         } catch (final NamingException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Building Tree",
-                                      "Could not properly build the full tree: " + e.getMessage());
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not properly build the full alarm tree: " + e.getMessage(), e);
         } finally {
             monitor.done();
         }

@@ -33,8 +33,10 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.LdapTreeComponent;
+import org.csstudio.utility.ldap.model.builder.AbstractContentModelBuilder;
 
 /**
  * Builds a content model from the alarm tree view structure.
@@ -44,30 +46,38 @@ import org.csstudio.utility.ldap.model.LdapTreeComponent;
  * @version $Revision$
  * @since 19.05.2010
  */
-public final class ContentModelBuilder {
+public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuilder<LdapEpicsAlarmCfgObjectClass> {
+
+    private final IAlarmTreeNode _alarmTreeNode;
+
     /**
      * Constructor.
      */
-    private ContentModelBuilder() {
-        // Don't instantiate
+    public AlarmTreeContentModelBuilder(@Nonnull final IAlarmTreeNode alarmTreeNode) {
+        _alarmTreeNode = alarmTreeNode;
     }
 
     /**
      * Creates a new node in the content for the given alarm tree node.
      * And then recursively for all of the alarm tree node children.
      *
-     * @param alarmTreeNode
      * @return the content model
      * @throws InvalidNameException
      */
-    public static ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModelSubtree(@Nonnull final IAlarmTreeNode alarmTreeNode) throws InvalidNameException {
+    @Override
+    @Nonnull
+    protected ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModel() throws CreateContentModelException {
 
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-            new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
+        ContentModel<LdapEpicsAlarmCfgObjectClass> model;
+        try {
+            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
 
-        createSubtree(model, alarmTreeNode, model.getRoot());
+            createSubtree(model, _alarmTreeNode, model.getRoot());
 
-        return model;
+            return model;
+        } catch (final InvalidNameException e) {
+            throw new CreateContentModelException("Error creating content model from alarm tree.", e);
+        }
     }
 
     private static void createSubtree(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,

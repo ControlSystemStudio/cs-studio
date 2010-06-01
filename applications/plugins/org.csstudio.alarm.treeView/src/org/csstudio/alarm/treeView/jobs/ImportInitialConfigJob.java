@@ -37,7 +37,7 @@ import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ImportContentModelException;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -102,16 +102,14 @@ public final class ImportInitialConfigJob extends Job {
 
             final long endTime = System.currentTimeMillis();
             LOG.debug("Directory reader time: " + (endTime - startTime) + "ms");
+        } catch (final CreateContentModelException e) {
+            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
+                                      "Building content model",
+                                      "Could not properly build the content model from LDAP: " + e.getMessage());
         } catch (final NamingException e) {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building Tree",
                                       "Could not properly build the full tree: " + e.getMessage());
-        } catch (ImportContentModelException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Building Tree",
-                                      "Error reading config file " + filePath
-                                              + "Could not properly build the full tree: "
-                                              + e.getMessage());
         } finally {
             monitor.done();
         }

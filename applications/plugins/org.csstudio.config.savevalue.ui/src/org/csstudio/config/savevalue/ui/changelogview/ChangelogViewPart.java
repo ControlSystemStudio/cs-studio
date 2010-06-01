@@ -34,7 +34,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
 import org.apache.log4j.Logger;
@@ -49,7 +48,9 @@ import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -341,9 +342,11 @@ public class ChangelogViewPart extends ViewPart {
 				                                              any(ECON_FIELD_NAME),
 				                                              SearchControls.SUBTREE_SCOPE);
 
-				ContentModel<LdapEpicsControlsObjectClass> model;
                 try {
-                    model = new ContentModel<LdapEpicsControlsObjectClass>(result, LdapEpicsControlsObjectClass.ROOT);
+                    final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                        new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+                    builder.build();
+                    final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
 
                     final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsObjectClass.IOC));
 
@@ -354,7 +357,7 @@ public class ChangelogViewPart extends ViewPart {
                         }
                     });
 
-                } catch (final InvalidNameException e) {
+                } catch (final CreateContentModelException e) {
                     LOG.error("Content model could not be constructed due to invalid LDAP name for root component.", e); //$NON-NLS-1$
                     monitor.done();
                     return new Status(IStatus.ERROR, Activator.PLUGIN_ID, ""); //$NON-NLS-1$

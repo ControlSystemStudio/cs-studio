@@ -34,6 +34,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
@@ -46,7 +47,8 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
  * @author bknerr 17.03.2010
  */
 public class IocManagement implements IManagementCommand {
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(IocManagement.class);
 
     private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
 
@@ -85,10 +87,12 @@ public class IocManagement implements IManagementCommand {
                 default : throw new AssertionError("Unknown Ioc Modification Command: " + command);
             }
         } catch (final InvalidNameException e) {
-            _log.error("Invalid name composition while accessing LDAP.", e);
+            LOG.error("Invalid name composition while accessing LDAP.", e);
         } catch (final InterruptedException e) {
-            _log.error("Interrupted.", e);
+            LOG.error("Interrupted.", e);
             Thread.currentThread().interrupt();
+        } catch (final CreateContentModelException e) {
+            LOG.error("Error creating content model from LDAP.", e);
         }
     }
 

@@ -21,34 +21,44 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap;
+package org.csstudio.utility.ldap.model.builder;
 
-import org.csstudio.utility.ldap.model.LdapContentModelBuilderTest;
-import org.csstudio.utility.ldap.model.XmlFileContentModelBuilderTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
-
-/**
- * TODO (bknerr) : Das muss anders gehen.
- * Test database.
- */
-@RunWith(Suite.class)
-@SuiteClasses( {
-    LdapNameUtilsTest.class,
-    LdapContentModelBuilderTest.class,
-    XmlFileContentModelBuilderTest.class
-})
+import org.csstudio.utility.ldap.ILdapObjectClass;
+import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 
 /**
- * TODO (bknerr) : Das muss anders gehen.
+ * Content model builder.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 11.05.2010
+ * @since 21.05.2010
+ * @param <T> the object class type for which a tree shall be created
  */
-public class AllTests {
-    // public? well, should be refactored anyway
+public abstract class AbstractContentModelBuilder<T extends Enum<T> & ILdapObjectClass<T>> {
+
+    private ContentModel<T> _model;
+
+
+
+    @CheckForNull
+    protected abstract ContentModel<T> createContentModel() throws CreateContentModelException;
+
+
+    public void build() throws CreateContentModelException {
+        _model = createContentModel();
+    }
+
+    @CheckForNull
+    public ContentModel<T> getModel() {
+        return _model;
+    }
+
+    protected void setModel(@Nonnull final ContentModel<T> model) {
+        _model = model;
+    }
 }
