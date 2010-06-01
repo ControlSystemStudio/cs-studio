@@ -238,7 +238,6 @@ public class AlarmView extends LogView {
         try {
 
             // TODO jp Hack: Need better way to find out whether LDAP is active
-            // TODO jp-mc
             boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
             if (useLDAP) {
                 model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
