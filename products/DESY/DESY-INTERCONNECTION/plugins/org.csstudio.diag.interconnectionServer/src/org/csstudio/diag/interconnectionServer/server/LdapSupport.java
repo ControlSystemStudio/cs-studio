@@ -42,7 +42,6 @@ public enum LdapSupport {
 		// EMPTY
 	}
 
-
 	/**
 	 *
 	 * @param ipAddress
@@ -79,69 +78,67 @@ public enum LdapSupport {
 				stringReturnArray[0] = logicalIocName;
 				stringReturnArray[1] = ldapIocName;
 				return stringReturnArray;
-			} else {
-				System.out.println("ldapIocName = " + ldapIocName);
-				stringReturnArray[0] = ldapIocName;
-				stringReturnArray[1] = ldapIocName;
-				return stringReturnArray;
 			}
-		} else {
-			CentralLogger.getInstance().warn(this,
-					"No logical name configured in LDAP for IOC: " +
-					ipName + " [" + ipAddress + "]");
-			/*
-			 * in the meantime ...
-			 */
-
-			if ( ipAddress.equals("131.169.112.56")) {
-				stringReturnArray[0] = stringReturnArray[1] = "mkk10KVB1";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.146")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.155")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCMTB";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.68")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.80")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.52")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "krykWetter";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.108")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.104")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoSK47a";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.54")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCB";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.68")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.144")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "heraKryoFel";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.109")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoVC2";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.178")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.225")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfDiagLinac";
-				return stringReturnArray;
-			} else if ( ipAddress.equals("131.169.112.101")) {
-				stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoFV";
-				return stringReturnArray;
-			} else {
-				return new String[]{"~" + ipName + "~","~" + ipName + "~"};
-			}
+            System.out.println("ldapIocName = " + ldapIocName);
+            stringReturnArray[0] = ldapIocName;
+            stringReturnArray[1] = ldapIocName;
+            return stringReturnArray;
 		}
+        CentralLogger.getInstance().warn(this,
+        		"No logical name configured in LDAP for IOC: " +
+        		ipName + " [" + ipAddress + "]");
+        /*
+         * in the meantime ...
+         */
+
+        if ( ipAddress.equals("131.169.112.56")) {
+        	stringReturnArray[0] = stringReturnArray[1] = "mkk10KVB1";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.146")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.155")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCMTB";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.68")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.80")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.52")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "krykWetter";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.108")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoLinac";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.104")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoSK47a";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.54")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoCB";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.68")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "utilityIOC";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.144")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "heraKryoFel";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.109")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoVC2";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.178")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "mthKryoStand";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.225")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfDiagLinac";
+        	return stringReturnArray;
+        } else if ( ipAddress.equals("131.169.112.101")) {
+        	stringReturnArray[0] = stringReturnArray[1] =  "ttfKryoFV";
+        	return stringReturnArray;
+        } else {
+        	return new String[]{"~" + ipName + "~","~" + ipName + "~"};
+        }
 
 
 
