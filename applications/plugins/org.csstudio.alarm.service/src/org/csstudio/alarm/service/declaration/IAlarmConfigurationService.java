@@ -27,11 +27,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
 
 import org.csstudio.utility.ldap.model.ContentModel;
+import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.ExportContentModelException;
-import org.csstudio.utility.ldap.model.ImportContentModelException;
 
 
 /**
@@ -49,10 +48,10 @@ public interface IAlarmConfigurationService {
      *
      * @param facilityNames the list of the simple names of the facilities.
      * @return the content model
-     * @throws InvalidNameException
+     * @throws CreateContentModelException
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(final List<String> facilityNames) throws InvalidNameException;
+    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException;
 
 
     /**
@@ -60,10 +59,10 @@ public interface IAlarmConfigurationService {
      *
      * @param the filePath to the xml file
      * @return the content model
-     * @throws ImportContentModelException  occurs on file not found, io error, or parsing error
+     * @throws CreateContentModelException  occurs on file not found, io error, or parsing error
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(final String filePath) throws ImportContentModelException;
+    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) throws CreateContentModelException;
 
 
     /**
@@ -74,8 +73,8 @@ public interface IAlarmConfigurationService {
      *
      * @throws ExportContentModelException error on trying to write the xml file
      */
-    void exportContentModelToXmlFile(final String filePath,
-                                     final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
-                                     final String dtdFilePath)  throws ExportContentModelException ;
+    void exportContentModelToXmlFile(@Nonnull final String filePath,
+                                     @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                     @Nullable final String dtdFilePath)  throws ExportContentModelException ;
 
 }
