@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 /**
- * 
+ *
  * <code>PropertyTest</code> is a JUnit test for tango property plug properties.
  * It tests get/set actions (synchronous and asynchronous) as well as tests
  * monitoring of values.
@@ -32,8 +32,8 @@ import org.junit.Test;
  *
  */
 public class PropertyTest {
-	
-	private class DoubleResponseListener extends DynamicValueAdapter<Double,DoubleProperty>implements ResponseListener<Double> {
+
+	private class DoubleResponseListener extends DynamicValueAdapter<Double, DoubleProperty> implements ResponseListener<Double> {
 		Response<Double> lastResponse;
 		List<DynamicValueEvent<Double,DoubleProperty>> changeEvents = Collections.synchronizedList(new ArrayList<DynamicValueEvent<Double,DoubleProperty>>());
 		List<DynamicValueEvent<Double,DoubleProperty>> updateEvents = Collections.synchronizedList(new ArrayList<DynamicValueEvent<Double,DoubleProperty>>());
@@ -46,8 +46,10 @@ public class PropertyTest {
 		boolean notify = true;
 		boolean deny = true;
 		boolean denyUpdates = false;
-		public void responseError(ResponseEvent<Double> event) {
-			if (denyUpdates && deny) return;
+		public void responseError(final ResponseEvent<Double> event) {
+			if (denyUpdates && deny) {
+                return;
+            }
 			this.lastResponse = event.getResponse();
 			errorCount++;
 			if (notify) {
@@ -57,8 +59,10 @@ public class PropertyTest {
     			}
 			}
 		}
-		public void responseReceived(ResponseEvent<Double> event) {
-			if (denyUpdates && deny) return;
+		public void responseReceived(final ResponseEvent<Double> event) {
+			if (denyUpdates && deny) {
+                return;
+            }
 			this.lastResponse = event.getResponse();
 			responseCount++;
 			if (notify) {
@@ -68,10 +72,12 @@ public class PropertyTest {
     			}
 			}
 		}
-		
+
 		@Override
-		public void valueChanged(DynamicValueEvent<Double,DoubleProperty> event) {
-			if (denyUpdates && deny) return;
+		public void valueChanged(final DynamicValueEvent<Double,DoubleProperty> event) {
+			if (denyUpdates && deny) {
+                return;
+            }
 			changeCount++;
 			changeEvents.add(event);
 			if (notify) {
@@ -81,10 +87,12 @@ public class PropertyTest {
     			}
 			}
 		}
-		
+
 		@Override
-		public void valueUpdated(DynamicValueEvent<Double,DoubleProperty> event) {
-			if (denyUpdates && deny) return;
+		public void valueUpdated(final DynamicValueEvent<Double,DoubleProperty> event) {
+			if (denyUpdates && deny) {
+                return;
+            }
 			updateCount++;
    			updateEvents.add(event);
    			if (notify && !onlyChangesNotify) {
@@ -92,12 +100,14 @@ public class PropertyTest {
     			synchronized(this) {
     				notifyAll();
     			}
-			}		
+			}
    		}
-		
+
 		@Override
-		public void errorResponse(DynamicValueEvent<Double,DoubleProperty> event) {
-			if (denyUpdates && deny) return;
+		public void errorResponse(final DynamicValueEvent<Double,DoubleProperty> event) {
+			if (denyUpdates && deny) {
+                return;
+            }
 			errorCount++;
 			errorEvents.add(event);
 			if (notify && !onlyChangesNotify) {
@@ -107,8 +117,8 @@ public class PropertyTest {
     			}
 			}
 		}
-		
-		public void reset(boolean onlyChangesNotify, boolean notify, boolean deny) {
+
+		public void reset(final boolean onlyChangesNotify, final boolean notify, final boolean deny) {
 			errorCount = 0;
 			updateCount = 0;
 			responseCount = 0;
@@ -122,80 +132,80 @@ public class PropertyTest {
 			this.onlyChangesNotify = onlyChangesNotify;
 			this.notify = notify;
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public DynamicValueEvent<Double,DoubleProperty>[] getChangeEvents() {
 			return changeEvents.toArray(new DynamicValueEvent[changeEvents.size()]);
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public DynamicValueEvent<Double,DoubleProperty>[] getUpdateEvents() {
 			return updateEvents.toArray(new DynamicValueEvent[updateEvents.size()]);
 		}
-		
+
 		@SuppressWarnings("unchecked")
 		public DynamicValueEvent<Double,DoubleProperty>[] getErrorEvents() {
 			return errorEvents.toArray(new DynamicValueEvent[errorEvents.size()]);
 		}
 	}
-		
+
 	private static final String DEVICE = "tango/tangotest/1";
 	private static final String DOUBLE_PROPERTY = "ampli";
-	
-	private PropertyFactory propertyFactory;
+
+	private final PropertyFactory propertyFactory;
 	private DoubleProperty doubleProperty;
-	
+
 	private DoubleResponseListener doubleResponseListener;
-	
+
 	public PropertyTest() {
 		super();
 		System.setProperty("TANGO_HOST","localhost:20000");
-		TangoApplicationContext ctx = new TangoApplicationContext("TangoPropertyTest");
+		final TangoApplicationContext ctx = new TangoApplicationContext("TangoPropertyTest");
 		propertyFactory = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(ctx,LinkPolicy.SYNC_LINK_POLICY);
 	}
-		
+
 	@Before
 	public void beforeTest() throws RemoteException, InstantiationException {
 		doubleProperty = propertyFactory.getProperty(DEVICE + "/" + DOUBLE_PROPERTY,DoubleProperty.class,null);
 		doubleResponseListener = new DoubleResponseListener();
 		doubleProperty.setValue(0.);
 	}
-	
+
 	@After
 	public void afterTest() {
 		doubleProperty.removeDynamicValueListener(doubleResponseListener);
 		propertyFactory.getPropertyFamily().destroy(doubleProperty);
 	}
-	
+
 	@Test
 	public void testDoubleSyncGet() throws DataExchangeException {
-		Double value = doubleProperty.getValue();
+		final Double value = doubleProperty.getValue();
 		Assert.assertNotNull("Value not null:", value);
 		Assert.assertNotSame("Value not NaN:", Double.NaN,value.doubleValue());
 	}
-	
+
 	@Test
 	public void testDoubleSyncSet() throws DataExchangeException, InterruptedException {
-		double value = 3.2;
+		final double value = 3.2;
 
 		doubleProperty.setValue(value);
 		//this was a synchronous call, but for some reason tango doesn't update it immediately
 		//it is half synchronous
 		Thread.sleep(3000);
-		
-		double valueRet = doubleProperty.getValue();
-		
+
+		final double valueRet = doubleProperty.getValue();
+
 		Assert.assertEquals("Value read is value set:", value, valueRet);
 	}
-	
+
 	@Test
 	public void testDoubleAsyncGet() throws DataExchangeException, InterruptedException {
-		
-		Request<Double> request = doubleProperty.getAsynchronous(doubleResponseListener);
+
+		final Request<Double> request = doubleProperty.getAsynchronous(doubleResponseListener);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(5000);
 		}
-		Response<Double> response = doubleResponseListener.lastResponse;
+		final Response<Double> response = doubleResponseListener.lastResponse;
 		Assert.assertNotNull("Response not null:",response);
 		Assert.assertTrue("Response successful:",response.success());
 		Assert.assertTrue("Response is last:", response.isLast());
@@ -203,22 +213,22 @@ public class PropertyTest {
 		Assert.assertNotSame("Value not NaN:", Double.NaN,response.getValue().doubleValue());
 		Assert.assertEquals("Response same as request response:", request.getLastResponse(),response);
 	}
-		
+
 	@Test
 	public void testDoubleAsyncSet() throws DataExchangeException, InterruptedException {
-		
-		Double value = 3.2;
+
+		final Double value = 3.2;
 		doubleResponseListener.reset(true,true,true);
-		Request<Double> request = doubleProperty.setAsynchronous(value,doubleResponseListener);
+		final Request<Double> request = doubleProperty.setAsynchronous(value,doubleResponseListener);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(5000);
 		}
 		//wait for tango to register
 		Thread.sleep(3000);
-		Double newValue = doubleProperty.getValue();
+		final Double newValue = doubleProperty.getValue();
 		Assert.assertEquals("Value get is value set:", value,newValue);
-		
-		Response<Double> response = doubleResponseListener.lastResponse;
+
+		final Response<Double> response = doubleResponseListener.lastResponse;
 		Assert.assertNotNull("Response not null:",response);
 		Assert.assertTrue("Response successful:",response.success());
 		Assert.assertTrue("Response is last:", response.isLast());
@@ -226,29 +236,29 @@ public class PropertyTest {
 		Assert.assertNotSame("Value get is value set:", value,response.getValue().doubleValue());
 		Assert.assertEquals("Response same as request response:", request.getLastResponse(),response);
 	}
-		
+
 	@Test
 	public void testDoubleChangeMonitor() throws DataExchangeException, UnsupportedOperationException, InterruptedException {
 		doubleProperty.getDefaultMonitor().setHeartbeat(false);
 		doubleProperty.addDynamicValueListener(doubleResponseListener);
 		doubleResponseListener.reset(true,true,false);
 		Thread.sleep(3000);
-		Double value3 = 3.;
+		final Double value3 = 3.;
 		doubleProperty.setValue(value3);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(2000);
 		}
-		DynamicValueEvent<Double,DoubleProperty>[] events = doubleResponseListener.getChangeEvents();
+		final DynamicValueEvent<Double,DoubleProperty>[] events = doubleResponseListener.getChangeEvents();
 		Assert.assertTrue("Number of events must be at least 1.", events.length >= 1);
 		Assert.assertEquals("First change:", value3, events[events.length-1].getValue());
 	}
-	
+
 	@Test
 	public void testDoublePeriodicMonitor() throws DataExchangeException, UnsupportedOperationException, InterruptedException {
 		doubleProperty.getDefaultMonitor().setHeartbeat(true);
 		doubleProperty.getDefaultMonitor().setTimerTrigger(1000);
 		doubleResponseListener.reset(false,false,true);
-		doubleProperty.addDynamicValueListener(doubleResponseListener);	
+		doubleProperty.addDynamicValueListener(doubleResponseListener);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(5000);
 		}
@@ -256,26 +266,26 @@ public class PropertyTest {
 		Assert.assertTrue("Number of changes can be at most 2. It was " + doubleResponseListener.changeCount +".", doubleResponseListener.changeCount <= 2);
 		DynamicValueEvent<Double,DoubleProperty>[] events = doubleResponseListener.getErrorEvents();
 		Assert.assertEquals("Number of errors:",0,events.length);
-		
+
 		doubleProperty.getDefaultMonitor().setTimerTrigger(3000);
 		doubleResponseListener.reset(false,false,true);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(5000);
 		}
-		Assert.assertTrue("Number of updates has to be 2 or 1. It was " + doubleResponseListener.updateCount +".", doubleResponseListener.updateCount == 2 || doubleResponseListener.updateCount == 1);
+		Assert.assertTrue("Number of updates has to be 2 or 1. It was " + doubleResponseListener.updateCount +".", (doubleResponseListener.updateCount == 2) || (doubleResponseListener.updateCount == 1));
 		Assert.assertEquals("Number of changes has to be 0. It was " + doubleResponseListener.changeCount +".", 0, doubleResponseListener.changeCount);
 		events = doubleResponseListener.getErrorEvents();
 		Assert.assertEquals("Number of errors:",0,events.length);
-		
+
 		doubleProperty.getDefaultMonitor().setTimerTrigger(1000);
 		//wait for tango to register
 		Thread.sleep(3000);
 		doubleResponseListener.reset(true,true,false);
-		Double value1 = 1.;
+		final Double value1 = 1.;
 		doubleProperty.setValue(value1);
 		//monitor is periodic and not on change. wait for change to happen
 		Thread.sleep(2000);
-		Double value2 = 2.;
+		final Double value2 = 2.;
 		doubleProperty.setValue(value2);
 		synchronized (doubleResponseListener) {
 			doubleResponseListener.wait(3000);
