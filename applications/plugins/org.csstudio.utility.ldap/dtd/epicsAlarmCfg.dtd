@@ -1,9 +1,0 @@
-<!ELEMENT ou (efan*)>
-<!ELEMENT efan (ecom* , eren*)>
-<!ELEMENT ecom (ecom* , eren*)>
-<!ELEMENT eren (#PCDATA)>
-
-<!ATTLIST ou name CDATA #REQUIRED>
-<!ATTLIST efan name CDATA #REQUIRED>
-<!ATTLIST ecom name CDATA #REQUIRED>
-<!ATTLIST eren name CDATA #REQUIRED>
