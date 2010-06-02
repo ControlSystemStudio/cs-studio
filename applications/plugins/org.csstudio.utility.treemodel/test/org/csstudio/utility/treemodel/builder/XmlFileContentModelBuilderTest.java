@@ -54,6 +54,7 @@ public class XmlFileContentModelBuilderTest {
 
     private ContentModel<TestTreeConfigurator> _model;
 
+
     @BeforeClass
     public static final void buildResourcePath() {
         try {

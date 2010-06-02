@@ -1,12 +1,20 @@
 package org.csstudio.utility.treemodel;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activator.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 02.06.2010
+ */
 public class Activator implements BundleActivator {
 
     // The plug-in ID
@@ -31,16 +39,17 @@ public class Activator implements BundleActivator {
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(@CheckForNull final BundleContext context) throws Exception {
-	    _bundle = context.getBundle();
-	    // EMPTY
+	public void start(@Nullable final BundleContext context) throws Exception {
+	    if (context != null) {
+	        _bundle = context.getBundle(); // for the test class
+	    }
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(@CheckForNull final BundleContext context) throws Exception {
+	public void stop(@Nullable final BundleContext context) throws Exception {
 	    // EMPTY
 	}
 

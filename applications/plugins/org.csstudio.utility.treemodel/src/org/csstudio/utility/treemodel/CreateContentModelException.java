@@ -24,6 +24,7 @@
 package org.csstudio.utility.treemodel;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Exception occurring while importing an LDAP tree XML file.
@@ -40,7 +41,7 @@ public class CreateContentModelException extends Exception {
     /**
      * Constructor.
      */
-    public CreateContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
+    public CreateContentModelException(@Nonnull final String message, @Nullable final Exception e) {
         super(message, e);
     }
 }
