@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -15,14 +15,17 @@
  * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- * 
+ *
  * $Id$
  */
 package org.csstudio.alarm.service.declaration;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * This exception announces a problem with the connection
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
@@ -30,39 +33,39 @@ package org.csstudio.alarm.service.declaration;
  */
 public class AlarmConnectionException extends Exception {
     private static final long serialVersionUID = -6008674229748613308L;
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param message
      *            .
      * @param cause
      *            .
      */
-    public AlarmConnectionException(final String message, final Throwable cause) {
+    public AlarmConnectionException(@Nonnull final String message, @Nullable final Throwable cause) {
         super(message, cause);
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param message
      *            .
      */
-    public AlarmConnectionException(final String message) {
+    public AlarmConnectionException(@Nonnull final String message) {
         super(message);
     }
-    
+
     /**
      * Constructor.
-     * 
+     *
      * @param cause
      *            .
      */
-    public AlarmConnectionException(final Throwable cause) {
+    public AlarmConnectionException(@Nullable final Throwable cause) {
         super(cause);
     }
-    
+
     /**
      * Constructor.
      */

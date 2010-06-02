@@ -21,9 +21,8 @@
  */
 package org.csstudio.alarm.service.declaration;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
 
 /**
  * Set of keys for the alarm message.
@@ -56,12 +55,13 @@ public enum AlarmMessageKey {
         this(null);
     }
 
+
     /**
      * Use this constructor of the defining name of the key is different to the name.
      *
      * @param definingName
      */
-    private AlarmMessageKey(final String definingName) {
+    private AlarmMessageKey(@Nonnull final String definingName) {
         _definingName = definingName;
     }
 
@@ -73,7 +73,7 @@ public enum AlarmMessageKey {
      */
     public static AlarmMessageKey findKeyWithDefiningName(final String definingName) {
         AlarmMessageKey result = null;
-        for (AlarmMessageKey key : AlarmMessageKey.values()) {
+        for (final AlarmMessageKey key : AlarmMessageKey.values()) {
             if (key.getDefiningName().equals(definingName)) {
                 result = key;
                 break;
