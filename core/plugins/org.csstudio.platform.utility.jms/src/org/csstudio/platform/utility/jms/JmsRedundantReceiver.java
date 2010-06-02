@@ -189,7 +189,7 @@ public class JmsRedundantReceiver implements IJmsRedundantReceiver
                 messages = new Hashtable<String, TreeSet<Message>>();
             }
             
-            messages.put(name, new TreeSet<Message>(new MessageComperator()));
+            messages.put(name, new TreeSet<Message>(new MessageComparator()));
             
             result = true;
         }

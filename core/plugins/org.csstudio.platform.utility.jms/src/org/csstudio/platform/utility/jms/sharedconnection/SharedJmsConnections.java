@@ -30,25 +30,26 @@ import org.csstudio.platform.internal.utility.jms.sharedconnection.SharedSenderC
 
 /**
  * Utility class for using the Shared JMS Connection Services.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class SharedJmsConnections {
-	
-	private static final SharedSenderConnectionService 
+
+	private static final SharedSenderConnectionService
 			senderConnectionService = new SharedSenderConnectionService();
 	private static final SharedReceiverConnectionService
 			receiverConnectionService = new SharedReceiverConnectionService();
 
 	// Private constructor to prevent instantiation.
 	private SharedJmsConnections() {
+	    // Empty
 	}
 
 	/**
 	 * Returns a handle to a shared JMS connection for sending JMS messages. If
 	 * the shared connection has not been created yet, this method will create
 	 * and start the connection before it returns.
-	 * 
+	 *
 	 * @return a handle to a shared JMS connection for sending JMS messages.
 	 * @throws JMSException
 	 *             if the shared connection could not be created or started due
@@ -58,12 +59,12 @@ public final class SharedJmsConnections {
 			throws JMSException {
 		return senderConnectionService.sharedConnection();
 	}
-	
+
 	/**
 	 * Returns handles to the shared JMS connections for receiving JMS messages.
 	 * If the shared connections have not been created yet, this method will
 	 * create and start the connections before it returns.
-	 * 
+	 *
 	 * @return handles to the shared connections.
 	 * @throws JMSException
 	 *             if one of the underlying shared connections could not be
@@ -73,11 +74,11 @@ public final class SharedJmsConnections {
 			throws JMSException {
 		return receiverConnectionService.sharedConnections();
 	}
-	
+
 	/**
 	 * Starts a message listener that will listen on the shared receiver
 	 * connections.
-	 * 
+	 *
 	 * @param listener
 	 *            the listener.
 	 * @param topics
@@ -93,9 +94,9 @@ public final class SharedJmsConnections {
 	 *             if an internal error occured in the underlying JMS provider.
 	 */
 	public static IMessageListenerSession startMessageListener(
-			MessageListener listener, String[] topics, int acknowledgeMode)
+			final MessageListener listener, final String[] topics, final int acknowledgeMode)
 			throws JMSException {
-		if (listener == null || topics == null || topics.length == 0) {
+		if ((listener == null) || (topics == null) || (topics.length == 0)) {
 			throw new IllegalArgumentException();
 		}
 		return receiverConnectionService.startSharedConnectionMessageListener(

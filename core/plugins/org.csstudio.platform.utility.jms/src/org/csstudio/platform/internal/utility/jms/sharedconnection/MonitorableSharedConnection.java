@@ -36,13 +36,13 @@ import org.csstudio.platform.utility.jms.sharedconnection.ISharedConnectionHandl
 /**
  * A shared connection to a JMS broker which can be monitored using an
  * {@link IConnectionMonitor}.
- * 
+ *
  * @author Joerg Rathlev
  */
 class MonitorableSharedConnection {
-	
+
 	private ActiveMQConnection _connection;
-	private String _brokerURI;
+	private final String _brokerURI;
 	private boolean _interrupted;
 	private final ConnectionMonitorSupport _monitorSupport;
 
@@ -51,11 +51,11 @@ class MonitorableSharedConnection {
 	 * connection is not started by the constructor. It is started automatically
 	 * as soon as the first handle to this shared connection is requested by
 	 * calling the {@link #createHandle()} method.
-	 * 
+	 *
 	 * @param brokerURI
 	 *            the broker URI.
 	 */
-	MonitorableSharedConnection(String brokerURI) {
+	MonitorableSharedConnection(final String brokerURI) {
 		_brokerURI = brokerURI;
 		_interrupted = false;
 		_monitorSupport = new ConnectionMonitorSupport();
@@ -63,14 +63,14 @@ class MonitorableSharedConnection {
 
 	/**
 	 * Connects to the JMS broker and starts this connection.
-	 * 
+	 *
 	 * @throws JMSException
 	 *             if the connection could not be created or started due to an
 	 *             internal error.
 	 */
 	private void connectAndStart() throws JMSException {
-		if (_connection == null || _connection.isClosed()) {
-			ActiveMQConnectionFactory connectionFactory =
+		if ((_connection == null) || _connection.isClosed()) {
+			final ActiveMQConnectionFactory connectionFactory =
 					new ActiveMQConnectionFactory(_brokerURI);
 			try {
 				_connection = (ActiveMQConnection)
@@ -81,7 +81,7 @@ class MonitorableSharedConnection {
 				// is started explicitly, so we fire the Connected event
 				// manually:
 				_monitorSupport.fireConnectedEvent();
-			} catch (JMSException e) {
+			} catch (final JMSException e) {
 				if (_connection != null) {
 					// Something went wrong, but the connection already exists.
 					// Try to clean up by closing the connection and then set
@@ -89,7 +89,7 @@ class MonitorableSharedConnection {
 					// that it is not connected.
 					try {
 						_connection.close();
-					} catch (JMSException e2) {
+					} catch (final JMSException e2) {
 						// ignore (we can't throw two exceptions -- the
 						// important thing is to set the _connection to null,
 						// which happens in the finally block)
@@ -104,7 +104,7 @@ class MonitorableSharedConnection {
 
 	/**
 	 * Closes this connection.
-	 * 
+	 *
 	 * @throws JMSException
 	 *             if the JMS provider fails to close the connection due to some
 	 *             internal error.
@@ -119,14 +119,14 @@ class MonitorableSharedConnection {
 			_monitorSupport.fireDisconnectedEvent();
 		}
 	}
-	
+
 	private boolean isConnectedAndStarted() {
-		return (_connection != null && _connection.isStarted());
+		return ((_connection != null) && _connection.isStarted());
 	}
 
 	/**
 	 * Returns whether this connection is started and not interrupted.
-	 * 
+	 *
 	 * @return <code>true</code> if this connection is started and not
 	 *         interrupted, <code>false</code> otherwise.
 	 */
@@ -136,7 +136,7 @@ class MonitorableSharedConnection {
 
 	/**
 	 * Creates a handle to access this shared connection.
-	 * 
+	 *
 	 * @return a handle to this connection.
 	 * @throws JMSException
 	 *             if the underlying shared connection could not be created or
@@ -153,32 +153,47 @@ class MonitorableSharedConnection {
 
 	/**
 	 * Handle which provides access to a {@link MonitorableSharedConnection}.
-	 * 
+	 *
 	 * @author Joerg Rathlev
 	 */
 	private class ConnectionHandle implements ISharedConnectionHandle {
 
-		public Session createSession(boolean transacted, int acknowledgeMode)
+	    /**
+	     * {@inheritDoc}
+	     */
+		public Session createSession(final boolean transacted, final int acknowledgeMode)
 				throws JMSException {
 			return _connection.createSession(transacted, acknowledgeMode);
 		}
 
+		/**
+		 * {@inheritDoc}
+		 */
 		public void release() {
 			// This implementation does not track handles and never closes the
 			// shared connection.
-			
+
 			// TODO: track handles and close connection when no longer needed.
 		}
-		
+
+		/**
+		 * {@inheritDoc}
+		 */
 		public boolean isActive() {
 			return MonitorableSharedConnection.this.isActive();
 		}
 
-		public void addMonitor(IConnectionMonitor monitor) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public void addMonitor(final IConnectionMonitor monitor) {
 			_monitorSupport.addMonitor(monitor);
 		}
 
-		public void removeMonitor(IConnectionMonitor monitor) {
+		/**
+		 * {@inheritDoc}
+		 */
+		public void removeMonitor(final IConnectionMonitor monitor) {
 			_monitorSupport.addMonitor(monitor);
 		}
 	}
@@ -186,16 +201,16 @@ class MonitorableSharedConnection {
 	/**
 	 * Transport listener which is used by a {@link MonitorableSharedConnection}
 	 * to track its own connection state.
-	 * 
+	 *
 	 * @author Joerg Rathlev
 	 */
 	private class ConnectionStateTracker implements TransportListener {
 
-		public void onCommand(Object command) {
+		public void onCommand(final Object command) {
 			// do nothing
 		}
 
-		public void onException(IOException e) {
+		public void onException(final IOException e) {
 			_interrupted = true;
 			System.out.println("onException called"); // TODO: remove (for testing only)
 			_monitorSupport.fireDisconnectedEvent();
@@ -213,28 +228,28 @@ class MonitorableSharedConnection {
 			_monitorSupport.fireConnectedEvent();
 		}
 	}
-	
+
 	// TODO: remove (for testing only)
-	public static void main(String[] args) {
-		MonitorableSharedConnection conn = new MonitorableSharedConnection("failover:(tcp://localhost:61616)");
+	public static void main(final String[] args) {
+		final MonitorableSharedConnection conn = new MonitorableSharedConnection("failover:(tcp://localhost:61616)");
 		try {
 			conn._monitorSupport.addMonitor(new IConnectionMonitor() {
-			
+
 				public void onConnected() {
 					System.out.println("onConnected called");
 				}
-			
+
 				public void onDisconnected() {
 					System.out.println("onDisconnected called");
 				}
-				
+
 			});
 			conn.connectAndStart();
 			for (int i = 0; i < 60; i++) {
 				Thread.sleep(1000);
 				System.out.println("isTransportFailed: " + conn._connection.isTransportFailed());
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
