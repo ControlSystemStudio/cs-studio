@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ou SYSTEM "test.dtd">
+
+<ou name="EpicsControls">
+  <efan name="EFAN_1">
+
+    <ecock name="ECOM_2">
+
+      <econ name="ECON_3">
+          <eren name="EREN_9" />
+      </econ>
+
+    </ecock>
+
+  </efan>
+</ou>
+
