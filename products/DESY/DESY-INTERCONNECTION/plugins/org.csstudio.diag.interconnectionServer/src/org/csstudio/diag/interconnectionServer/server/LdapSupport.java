@@ -289,7 +289,7 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         	channelName  = channelName.split("[=,]")[1];
         }
 
-		JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+		JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 				JmsMessage.MESSAGE_TYPE_STATUS, 									// type
 				channelName,														// name
 				null, 																// value

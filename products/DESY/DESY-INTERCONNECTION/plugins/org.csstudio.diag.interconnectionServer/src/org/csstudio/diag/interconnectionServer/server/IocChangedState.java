@@ -59,7 +59,7 @@ public class IocChangedState extends Thread{
 			 * IOC back online
 			 */
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: Host: " + logicalIocName + " connected again - waiting for alarm updates");
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
 					logicalIocName + ":connectState",		// name
 					localHostName, 							// value
@@ -84,7 +84,7 @@ public class IocChangedState extends Thread{
 			 */
 
 			CentralLogger.getInstance().warn(this, "InterconnectionServer: All channels set to <disConnected> mode for Host: " + logicalIocName);
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
 					logicalIocName + ":connectState",		// name
 					localHostName, 							// value
@@ -98,7 +98,7 @@ public class IocChangedState extends Thread{
 			 *
 			 * XXX: Why does this use a different name than the other messages?
 			 */
-			JmsMessage.getInstance().sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
+			JmsMessage.INSTANCE.sendMessage ( JmsMessage.JMS_MESSAGE_TYPE_ALARM,
 					JmsMessage.MESSAGE_TYPE_IOC_ALARM, 		// type
 					localHostName + ":" + logicalIocName + ":selectState",	// name
 					localHostName, 							// value
