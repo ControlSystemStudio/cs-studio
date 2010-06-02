@@ -21,6 +21,8 @@
  */
 package org.csstudio.alarm.service.preferences;
 
+import javax.annotation.Nullable;
+
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -48,20 +50,22 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
         setDescription("CSS must restart after a change to take effect.");
     }
 
+    @Override
     public void createFieldEditors() {
-        final String context_types[][] = {
+        final String[][] contextTypes = {
                 { "DAL", Boolean.TRUE.toString() },
                 { "JMS", Boolean.FALSE.toString() }
               };
         final Composite parent = getFieldEditorParent();
         addField(new RadioGroupFieldEditor(AlarmServicePreferenceConstants.ALARMSERVICE_DAL,
                                            "Select implementation for the alarm service",
-                                           context_types.length,
-                                           context_types,
+                                           contextTypes.length,
+                                           contextTypes,
                                            parent));
     }
 
-    public void init(final IWorkbench workbench) {
+    @Override
+    public void init(@Nullable final IWorkbench workbench) {
         // Nothing to do
     }
 }

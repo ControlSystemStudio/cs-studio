@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -50,8 +51,8 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmServiceJMSImpl.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.class);
 
     /**
      * Constructor.
@@ -72,14 +73,14 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     public final void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
 
-        List<Element> pvsUnderWay = new ArrayList<Element>();
-        for (IAlarmInitItem initItem : initItems) {
+        final List<Element> pvsUnderWay = new ArrayList<Element>();
+        for (final IAlarmInitItem initItem : initItems) {
             registerPV(pvsUnderWay, initItem);
         }
 
         waitFixedTime();
 
-        for (Element pvUnderWay : pvsUnderWay) {
+        for (final Element pvUnderWay : pvsUnderWay) {
             deregisterPV(pvUnderWay);
         }
     }
@@ -87,7 +88,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     private void registerPV(@Nonnull final List<Element> pvsUnderWay,
                             @Nonnull final IAlarmInitItem initItem) {
         try {
-            Element pvUnderWay = new Element();
+            final Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
             pvUnderWay._listener = new DynamicValueListenerForInit(initItem);
             // TODO jp use constants for parameterization of expert mode
@@ -99,9 +100,9 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                                       pvUnderWay._listener,
                                       pvUnderWay._parameters);
             pvsUnderWay.add(pvUnderWay);
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             LOG.error("Error in registerPVs", e);
-        } catch (CommonException e) {
+        } catch (final CommonException e) {
             LOG.error("Error in registerPVs", e);
         }
     }
@@ -110,7 +111,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         try {
             // TODO jp use constant from prefs here
             Thread.sleep(2000);
-        } catch (InterruptedException e) {
+        } catch (final InterruptedException e) {
             LOG.warn("retrieveInitialState was interrupted ", e);
         }
     }
@@ -121,9 +122,9 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                     .deregisterListener(pvUnderWay._connectionParameters,
                                         pvUnderWay._listener,
                                         pvUnderWay._parameters);
-        } catch (InstantiationException e) {
+        } catch (final InstantiationException e) {
             LOG.error("Error in deregisterPVs", e);
-        } catch (CommonException e) {
+        } catch (final CommonException e) {
             LOG.error("Error in deregisterPVs", e);
         }
     }
@@ -143,7 +144,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
      * Listener for retrieval of initial state
      */
     private static class DynamicValueListenerForInit extends DynamicValueAdapter {
-        private static final Logger LOG = CentralLogger.getInstance()
+        private static final Logger LOG1 = CentralLogger.getInstance()
                 .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
 
         private final IAlarmInitItem _initItem;
@@ -153,18 +154,18 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void conditionChange(final DynamicValueEvent event) {
-            LOG.debug("conditionChange received " + event.getCondition() + " for "
-                    + event.getProperty().getUniqueName());
+        public void conditionChange(@Nullable final DynamicValueEvent event) {
+            if (event != null) {
+                LOG1.debug("conditionChange received " + event.getCondition() + " for "
+                          + event.getProperty().getUniqueName());
 
-            // Suppress the initial callback, it has no meaning here
-            // TODO jp there should be a better way than testing a hard coded string
-            if (event.getMessage().equals("Initial update.")) {
-                _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
-            }
-
+                // Suppress the initial callback, it has no meaning here
+                // TODO jp there should be a better way than testing a hard coded string
+                if (event.getMessage().equals("Initial update.")) {
+                    _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
+                }
+            } // else ignore
         }
-
     }
 
     // CHECKSTYLE:OFF

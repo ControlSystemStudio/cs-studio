@@ -92,10 +92,13 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
                                                                                          OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
                                                                                          "(objectClass=*)",
                                                                                          SearchControls.SUBTREE_SCOPE);
-            builder.setSearchResult(result);
-            builder.build();
+            if (result != null) {
+                builder.setSearchResult(result);
+                builder.build();
+            }
         }
-        return builder.getModel();
+        final ContentModel<LdapEpicsAlarmCfgObjectClass> enrichedModel = builder.getModel();
+        return enrichedModel != null ? enrichedModel : model;
     }
 
     /**

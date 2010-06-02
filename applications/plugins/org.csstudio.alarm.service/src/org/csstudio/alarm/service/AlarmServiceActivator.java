@@ -20,8 +20,8 @@ package org.csstudio.alarm.service;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -72,7 +72,11 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStart(@CheckForNull final BundleContext context) throws Exception {
+    protected void doStart(@Nullable final BundleContext context) throws Exception {
+        if (context == null) {
+            throw new IllegalArgumentException("Bundle context is null in doStart method.");
+        }
+
         LOG.debug("Starting AlarmService");
 
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
@@ -89,7 +93,7 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
     }
 
     @Override
-    protected void doStop(@SuppressWarnings("unused") @CheckForNull final BundleContext context) throws Exception {
+    protected void doStop(@Nullable final BundleContext context) throws Exception {
         LOG.debug("Stopping AlarmService");
         PLUGIN = null;
     }

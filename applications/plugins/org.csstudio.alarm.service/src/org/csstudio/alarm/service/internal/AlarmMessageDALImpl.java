@@ -44,6 +44,8 @@ import org.epics.css.dal.simple.MetaData;
  */
 @SuppressWarnings("unchecked")
 public class AlarmMessageDALImpl implements IAlarmMessage {
+    private static final String N_A = "n.a.";
+
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmMessageDALImpl.class);
 
@@ -68,7 +70,8 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      * @param property
      * @param anyData
      */
-    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property, @Nonnull final AnyData anyData) {
+    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property,
+                               @Nonnull final AnyData anyData) {
         _property = property;
         _anyDataOpt = anyData;
 
@@ -90,7 +93,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     @CheckForNull
     public final String getString(@Nonnull final String keyAsString) {
-        AlarmMessageKey key = AlarmMessageKey.findKeyWithDefiningName(keyAsString);
+        final AlarmMessageKey key = AlarmMessageKey.findKeyWithDefiningName(keyAsString);
         return (key == null) ? null : getString(key);
     }
 
@@ -140,16 +143,16 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 break;
             default:
                 LOG.error(ERROR_MESSAGE + ". getString called for undefined key : " + key);
-                result = "n.a.";
+                result = N_A;
         }
         return result;
     }
 
     @Override
     public Map<String, String> getMap() {
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         // TODO jp securely access incoming message
-        for (AlarmMessageKey key : AlarmMessageKey.values()) {
+        for (final AlarmMessageKey key : AlarmMessageKey.values()) {
             result.put(key.getDefiningName(), getString(key));
         }
         return result;
@@ -179,31 +182,12 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         return getProperty().getCondition();
     }
 
-    @CheckForNull
-    private AnyData getAnyData() {
-        return _anyDataOpt;
-    }
-
-    private boolean hasAnyData() {
-        return _anyDataOpt != null;
-    }
-
-    @CheckForNull
-    private MetaData getMetaData() {
-        return getAnyData().getMetaData();
-    }
-
-
-    private boolean hasMetaData() {
-        return hasAnyData() && (getAnyData().getMetaData() == null);
-    }
-
     @Nonnull
     private String retrieveEventtimeAsString() {
-        String result = "n.a.";
-        Timestamp timestamp = getProperty().getCondition().getTimestamp();
+        String result = N_A;
+        final Timestamp timestamp = getProperty().getCondition().getTimestamp();
         if (timestamp != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
+            final SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
             result = sdf.format(timestamp.getMilliseconds());
         }
         return result;
@@ -216,14 +200,16 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveSeverityAsString() {
-        String result = "n.a.";
-        if (getCondition().isMajor()) {
+        String result = N_A;
+        final DynamicValueCondition condition = getCondition();
+
+        if (condition.isMajor()) {
             result = "MAJOR";
-        } else if (getCondition().isMinor()) {
+        } else if (condition.isMinor()) {
             result = "MINOR";
-        } else if (getCondition().isOK()) {
+        } else if (condition.isOK()) {
             result = "NO_ALARM";
-        } else if (getCondition().isInvalid()) {
+        } else if (condition.isInvalid()) {
             result = "INVALID";
         }
 
@@ -232,9 +218,9 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveStatusAsString() {
-        String result = "n.a.";
-        if (hasAnyData()) {
-            result = getAnyData().getSeverity().descriptionToString();
+        String result = N_A;
+        if (_anyDataOpt != null) {
+            result = _anyDataOpt.getSeverity().descriptionToString();
         }
         return result;
     }
@@ -242,23 +228,27 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveHostnameAsString() {
         // TODO MCL: we can get the host name from the DAL connection - available?
-        String result = "n.a.";
-        if (hasMetaData()) {
-            result = getMetaData().getHostname();
-            if (result == null) {
-                result = "host undefined";
+        String result = N_A;
+
+        if (_anyDataOpt != null) {
+            final MetaData metaData = _anyDataOpt.getMetaData();
+            if (metaData != null) {
+                result = metaData.getHostname();
             }
         }
+
         return result;
     }
 
     @Nonnull
     private String retrieveValueAsString() {
-        String result = "n.a.";
-        if (hasAnyData()) {
+        String result = N_A;
+
+        if (_anyDataOpt != null) {
             try {
-                result = getAnyData().stringValue();
-            } catch (Exception e) {
+                result = _anyDataOpt.stringValue();
+                // TODO (jpenning) : what exception?
+            } catch (final Exception e) {
                 result = "value undefined";
             }
         }

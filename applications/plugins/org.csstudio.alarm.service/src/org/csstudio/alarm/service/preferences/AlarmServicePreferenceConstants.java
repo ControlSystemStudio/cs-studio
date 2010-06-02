@@ -24,7 +24,14 @@
 /**
  * Constant definitions for plug-in preferences
  */
-public class AlarmServicePreferenceConstants {
+public final class AlarmServicePreferenceConstants {
+
+    /**
+     * Don't instantiate.
+     */
+    private AlarmServicePreferenceConstants() {
+        // EMPTY
+    }
 
 	public static final String ALARMSERVICE_DAL = "alarm.service.dal";//$NON-NLS-1$
 }

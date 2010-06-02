@@ -25,27 +25,29 @@ package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.Nonnull;
 
+
 /**
  * An init item is the type which the alarm service uses for retrieving the initial state of process variables.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 18.05.2010
  */
 public interface IAlarmInitItem {
-    
+
     /**
      * @return the name of the PV which shall be initialized
      */
+    @Nonnull
     String getPVName();
-    
+
     /**
      * The init method is called when the state could be retrieved. Implementations usually have to update the
      * representation of the PVs in the UI when init is called.
-     * 
+     *
      * @param alarmMessage contains the retrieved state
      */
-    void init(IAlarmMessage alarmMessage);
-    
+    void init(@Nonnull final IAlarmMessage alarmMessage);
+
 }

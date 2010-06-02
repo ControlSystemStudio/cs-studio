@@ -18,42 +18,43 @@
 package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Is used by the AlarmService to represent a connection into JMS or DAL resp.. It abstracts the
  * process of connecting and disconnecting.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 21.04.2010
  */
 public interface IAlarmConnection {
-    
+
     /**
      * @return true, if the underlying implementation can handle topics (currently JMS only)
      */
     boolean canHandleTopics();
-    
+
     /**
      * Connects to the underlying system. You have to provide a connectionMonitor to track
      * connection state. You have to provide a listener to receive messages.
-     * 
+     *
      * @param connectionMonitor .
      * @param listener .
      * @param fileName TODO
      * @throws AlarmConnectionException
      */
     void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                             @Nonnull final IAlarmListener listener, String fileName) throws AlarmConnectionException;
-    
-    // TODO jp Do not use String-Array for parameter topics
-    
+                             @Nonnull final IAlarmListener listener,
+                             @Nullable final String fileName) throws AlarmConnectionException;
+
+
     /**
      * Connects to the underlying system. You have to provide a connectionMonitor to track
      * connection state. You have to provide a listener to receive messages. You have to provide
      * topics, which are actually the names of the JMS topics.
-     * 
+     *
      * @param connectionMonitor .
      * @param listener .
      * @param topics .
@@ -62,13 +63,15 @@ public interface IAlarmConnection {
      */
     void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                       @Nonnull final IAlarmListener listener,
-                                      @Nonnull final String[] topics, String fileName) throws AlarmConnectionException;
-    
+                                      // TODO jp Do not use String-Array for parameter topics
+                                      @Nonnull final String[] topics,
+                                      @Nullable final String fileName) throws AlarmConnectionException;
+
     /**
      * Disconnect from the underlying system, freeing resources. The connection monitor will be
      * removed before disconnection, so disconnect DOES NOT result in a call to the connection
      * monitor.
      */
     void disconnect();
-    
+
 }

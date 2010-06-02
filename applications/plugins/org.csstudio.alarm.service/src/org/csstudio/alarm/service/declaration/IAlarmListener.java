@@ -35,7 +35,7 @@ public interface IAlarmListener {
      *
      * @param message .
      */
-    void onMessage(IAlarmMessage message);
+    void onMessage(@Nonnull final IAlarmMessage message);
 
     /**
      * Is called when the connection is disconnected. May be used to end concurrent processing of

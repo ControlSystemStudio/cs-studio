@@ -57,10 +57,10 @@ public class AlarmServiceDALImpl implements IAlarmService {
     public final IAlarmConnection newAlarmConnection() {
         return new AlarmConnectionDALImpl(_alarmConfigService);
     }
-    
-    
+
+
     @Override
-    public void retrieveInitialState(@SuppressWarnings("unused") List<? extends IAlarmInitItem> initItems) {
+    public void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
         // There is nothing to do in the DAL implementation. The usual listeners will take care of the state changes.
     }
 
