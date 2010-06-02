@@ -43,6 +43,9 @@ import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -112,7 +115,7 @@ public class LdapContentModelBuilderTest {
     @Test
     public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> childrenByType =
+        Map<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> childrenByType =
             MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.FACILITY);
         Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsObjectClass.FACILITY).intValue());
 
@@ -138,7 +141,7 @@ public class LdapContentModelBuilderTest {
     @Test
     public void testBothNameCaches() {
 
-        ILdapTreeComponent<LdapEpicsControlsObjectClass> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, "testLDAP");
+        ISubtreeNodeComponent<LdapEpicsControlsObjectClass> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, "testLDAP");
 
         Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
                                             ECOM_FIELD_NAME, "EPICS-IOC",

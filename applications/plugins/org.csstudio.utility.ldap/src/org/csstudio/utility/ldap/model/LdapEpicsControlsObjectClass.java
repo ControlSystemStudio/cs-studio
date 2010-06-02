@@ -32,8 +32,8 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
  * The object class of an EPICS Controls item. The enumeration constants defined in this
@@ -45,7 +45,8 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  * @version $Revision$
  * @since 03.05.2010
  */
-public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsControlsObjectClass> {
+public enum LdapEpicsControlsObjectClass implements ITreeNodeConfiguration<LdapEpicsControlsObjectClass> {
+
     ROOT(LdapFieldsAndAttributes.OU_FIELD_NAME, "root"),
 
     /**
@@ -69,7 +70,7 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
     RECORD(LdapFieldsAndAttributes.EREN_FIELD_NAME, "record");
 
 
-    private static final Map<String, LdapEpicsControlsObjectClass> CACHE_BY_RDN_TYPE =
+    private static final Map<String, LdapEpicsControlsObjectClass> CACHE_BY_NAME =
         new HashMap<String, LdapEpicsControlsObjectClass>();
 
 
@@ -86,7 +87,7 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
         ROOT._nestedClasses.add(FACILITY);
 
         for (final LdapEpicsControlsObjectClass oc : LdapEpicsControlsObjectClass.values()) {
-            CACHE_BY_RDN_TYPE.put(oc.getRdnType(), oc);
+            CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
 
@@ -100,7 +101,7 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
      * The name of the attribute to use for the RDN of entries of this class in
      * the directory.
      */
-    private final String _rdnType;
+    private final String _nodeTypeName;
 
 
     /**
@@ -113,17 +114,17 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
     /**
      * Creates a new object class.
      *
-     * @param rdnType
+     * @param nodeTypeName
      *            the name of the attribute to use for the RDN.
      * @param description
      *            the description of this tree component.
      */
     //CHECKSTYLE:OFF
-    private LdapEpicsControlsObjectClass(final String rdnType,
+    private LdapEpicsControlsObjectClass(final String nodeTypeName,
                                          final String description) {
     //CHECKSTYLE:ON
+        _nodeTypeName = nodeTypeName;
         _description = description;
-        _rdnType = rdnType;
     }
 
     /**
@@ -140,8 +141,8 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
      */
     @Override
     @Nonnull
-    public String getRdnType() {
-        return _rdnType;
+    public String getNodeTypeName() {
+        return _nodeTypeName;
     }
 
     /**
@@ -158,21 +159,23 @@ public enum LdapEpicsControlsObjectClass implements ILdapObjectClass<LdapEpicsCo
      */
     @Override
     @CheckForNull
-    public LdapEpicsControlsObjectClass getObjectClassByRdnType(@Nonnull final String rdn) {
-        return getObjectClassByRdnTypeStatic(rdn);
+    public LdapEpicsControlsObjectClass getNodeTypeByNodeTypeName(@Nonnull final String name) {
+        return getNodeTypeByNodeNameStatic(name);
     }
 
     @CheckForNull
-    private static LdapEpicsControlsObjectClass getObjectClassByRdnTypeStatic(@Nonnull final String rdn) {
-        return CACHE_BY_RDN_TYPE.get(rdn);
+    private static LdapEpicsControlsObjectClass getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+        return CACHE_BY_NAME.get(name);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRootName() {
-        return LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+    @Nonnull
+    public String getRootTypeName() {
+        return ROOT.getNodeTypeName();
     }
+
 }
 

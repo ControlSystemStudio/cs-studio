@@ -51,10 +51,6 @@ import javax.naming.ldap.LdapName;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ILdapBaseComponent;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
@@ -63,6 +59,9 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 
 /**
  * Implements access to LDAP Service for LdapUpdater application.
@@ -74,7 +73,7 @@ import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
  */
 public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
     private final ILdapService _ldapService = Activator.getDefault().getLdapService();
 
@@ -86,7 +85,7 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
     public boolean createLDAPRecord(@Nonnull final LdapName newLdapName) {
 
         final String recordName =
-            LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsObjectClass.RECORD.getRdnType());
+            LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsObjectClass.RECORD.getNodeTypeName());
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
@@ -138,24 +137,29 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      * @throws InvalidNameException
      * @throws InterruptedException
-     * @throws CreateContentModelException
      */
     @Override
     public void removeIocEntryFromLdap(@Nonnull final String iocName,
-                                       @Nonnull final String facilityName) throws InvalidNameException, InterruptedException, CreateContentModelException {
+                                       @Nonnull final String facilityName) throws InvalidNameException,
+                                                                                  InterruptedException {
 
         final LdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
 
         if (recordsSearchResult != null) {
             final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
                 new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, recordsSearchResult);
-            builder.build();
+            try {
+                builder.build();
+            } catch (final CreateContentModelException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
             final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
 
-            final Collection<ILdapTreeComponent<LdapEpicsControlsObjectClass>> records =
+            final Collection<ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> records =
                 model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.RECORD).values();
 
-            for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> record : records) {
+            for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> record : records) {
                 final LdapName ldapName = record.getLdapName();
                 ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
@@ -187,27 +191,27 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 builder.build();
                 final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
 
-                final Map<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> recordsInLdap =
+                final Map<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> recordsInLdap =
                     model.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD);
 
-                for (final ILdapTreeComponent<LdapEpicsControlsObjectClass> record : recordsInLdap.values()) {
+                for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> record : recordsInLdap.values()) {
                     if (!validRecords.contains(new Record(record.getName()))) {
 
                         final LdapName ldapName = record.getLdapName();
                         ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
                         _ldapService.removeComponent(ldapName);
-                        _log.info("Tidying: Record " + record.getName() + " removed.");
+                        LOG.info("Tidying: Record " + record.getName() + " removed.");
                     }
                 }
             }
         } catch (final InterruptedException e) {
-            _log.error("Interrupted.", e);
+            LOG.error("Interrupted.", e);
             Thread.currentThread().interrupt();
         } catch (final CreateContentModelException e) {
-            _log.error("Error creating content model.");
+            LOG.error("Error creating content model.");
         } catch (final InvalidNameException e) {
-            _log.error("Invalid name exception while adding name suffix on removal query.", e);
+            LOG.error("Invalid name exception while adding name suffix on removal query.", e);
         }
 
     }

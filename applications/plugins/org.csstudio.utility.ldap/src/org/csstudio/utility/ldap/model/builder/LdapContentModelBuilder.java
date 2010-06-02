@@ -23,6 +23,8 @@
  */
 package org.csstudio.utility.ldap.model.builder;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -38,16 +40,16 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapNameUtils.Direction;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ILdapBaseComponent;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
-import org.csstudio.utility.ldap.model.LdapTreeComponent;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+import org.csstudio.utility.treemodel.TreeNodeComponent;
+import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
 
 /**
  * Builds a content model from LDAP.
@@ -58,7 +60,7 @@ import org.csstudio.utility.ldap.reader.LdapSearchResult;
  * @since 21.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public final class LdapContentModelBuilder<T extends Enum<T> & ILdapObjectClass<T>> extends AbstractContentModelBuilder<T> {
+public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapContentModelBuilder.class);
 
@@ -100,7 +102,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ILdapObjectClass<
         final ContentModel<T> model = getModel();
 
         try {
-            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot) : model, _searchResult);
+            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot, EPICS_CTRL_FIELD_VALUE)
+                                                 : model,
+                                   _searchResult);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating content model from LDAP.", e);
         }
@@ -118,7 +122,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ILdapObjectClass<
                                             @Nullable final LdapSearchResult searchResult) {
 
         if (searchResult != null) {
-            final ILdapTreeComponent<T> root = model.getRoot();
+            final ISubtreeNodeComponent<T> root = model.getRoot();
 
             final Set<SearchResult> answerSet = searchResult.getAnswerSet();
             try {
@@ -145,8 +149,8 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ILdapObjectClass<
     private void createLdapComponent(@Nonnull final ContentModel<T> model,
                                      @Nonnull final Attributes attributes,
                                      @Nonnull final LdapName fullName,
-                                     @Nonnull final ILdapTreeComponent<T> root) throws InvalidNameException {
-        ILdapTreeComponent<T> parent = root;
+                                     @Nonnull final ISubtreeNodeComponent<T> root) throws InvalidNameException {
+        ISubtreeNodeComponent<T> parent = root;
 
         final LdapName partialName = LdapNameUtils.removeRdns(fullName,
                                                               LdapFieldsAndAttributes.EFAN_FIELD_NAME,
@@ -161,19 +165,19 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ILdapObjectClass<
             currentPartialName.add(rdn);
 
             // Check whether this component exists already
-            final ILdapBaseComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
+            final ISubtreeNodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
             if (childByLdapName != null) {
                 if (i < partialName.size() - 1) { // another name component follows => has children
-                    parent = (ILdapTreeComponent<T>) childByLdapName;
+                    parent = childByLdapName;
                 }
                 continue; // YES
             }
             // NO
 
-            final T oc = _objectClassRoot.getObjectClassByRdnType(rdn.getType());
+            final T oc = _objectClassRoot.getNodeTypeByNodeTypeName(rdn.getType());
 
-            final ILdapTreeComponent<T> newChild =
-                new LdapTreeComponent<T>((String) rdn.getValue(),
+            final ISubtreeNodeComponent<T> newChild =
+                new TreeNodeComponent<T>((String) rdn.getValue(),
                                         oc,
                                         oc.getNestedContainerClasses(),
                                         parent,

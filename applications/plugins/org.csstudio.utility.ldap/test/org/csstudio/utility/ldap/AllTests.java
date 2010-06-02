@@ -24,7 +24,6 @@
 package org.csstudio.utility.ldap;
 
 import org.csstudio.utility.ldap.model.LdapContentModelBuilderTest;
-import org.csstudio.utility.ldap.model.XmlFileContentModelBuilderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -38,7 +37,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses( {
     LdapNameUtilsTest.class,
     LdapContentModelBuilderTest.class,
-    XmlFileContentModelBuilderTest.class
 })
 
 /**

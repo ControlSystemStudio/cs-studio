@@ -66,7 +66,7 @@ public final class DirectoryEditor {
 	 */
 	private static final CentralLogger LOG = CentralLogger.getInstance();
 
-	private static final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
+	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
 
 	/**
@@ -87,7 +87,7 @@ public final class DirectoryEditor {
 	public static void delete(final IAlarmTreeNode node)
 			throws DirectoryEditException {
 		final LdapName name = node.getLdapName();
-		if (!_ldapService.removeComponent(name)) {
+		if (!LDAP_SERVICE.removeComponent(name)) {
 		    final String message = "Error unbinding directory entry " + name;
             final DirectoryEditException editException =
 		        new DirectoryEditException(message, new NamingException());
@@ -217,7 +217,7 @@ public final class DirectoryEditor {
 
 		try {
 			LOG.debug(DirectoryEditor.class, name + ": " + mods[0]);
-			_ldapService.modifyAttributes(name, mods);
+			LDAP_SERVICE.modifyAttributes(name, mods);
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class, "Failed: " + name + ": " + mods[0], e);
 			throw new DirectoryEditException(e.getMessage(), e);
@@ -246,7 +246,7 @@ public final class DirectoryEditor {
 			final LdapName newLdapName = (LdapName) oldLdapName.getPrefix(oldLdapName.size() - 1);
 			newLdapName.add(newRdn);
 
-			_ldapService.rename(oldLdapName, newLdapName);
+			LDAP_SERVICE.rename(oldLdapName, newLdapName);
 			node.setName(newName);
 		} catch (final NamingException e) {
 			LOG.error(DirectoryEditor.class, "Error renaming node", e);
@@ -401,13 +401,13 @@ public final class DirectoryEditor {
 	private static void copyDirectoryEntry(final IAlarmTreeNode source,
 	                                       final SubtreeNode target) throws DirectoryEditException {
 		try {
-			Attributes attributes = _ldapService.getAttributes(source.getLdapName());
+			Attributes attributes = LDAP_SERVICE.getAttributes(source.getLdapName());
 			if (attributes != null) {
 			    attributes = (Attributes) attributes.clone();
 			}
 			final LdapName newName =
-			    (LdapName) target.getLdapName().add(new Rdn(source.getObjectClass().getRdnType(), source.getName()));
-			if (!_ldapService.createComponent(newName, attributes)) {
+			    (LdapName) target.getLdapName().add(new Rdn(source.getObjectClass().getNodeTypeName(), source.getName()));
+			if (!LDAP_SERVICE.createComponent(newName, attributes)) {
 			    throw new NamingException("Error binding component.");
 			}
 		} catch (final NamingException e) {
@@ -450,7 +450,7 @@ public final class DirectoryEditor {
 	                                               @Nonnull final String recordName)
 			throws DirectoryEditException {
 		try {
-			final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getRdnType(), recordName);
+			final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeName(), recordName);
 			final LdapName fullName = (LdapName) ((LdapName) parent.getLdapName().clone()).add(rdn);
 			Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
 			// TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
@@ -501,7 +501,7 @@ public final class DirectoryEditor {
 	                                final String name,
 	                                final LdapEpicsAlarmCfgObjectClass objectClass) throws DirectoryEditException {
 		try {
-			final Rdn rdn = new Rdn(objectClass.getRdnType(), name);
+			final Rdn rdn = new Rdn(objectClass.getNodeTypeName(), name);
 			final LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
 			final Attributes attrs = createBaseAttributesForEntry(objectClass, rdn);
 			createEntry(fullName, attrs);
@@ -527,7 +527,7 @@ public final class DirectoryEditor {
 		try {
 			LOG.debug(DirectoryEditor.class,
 					  "Creating entry " + name + " with attributes " + attributes);
-			if (!_ldapService.createComponent(name, attributes)) {
+			if (!LDAP_SERVICE.createComponent(name, attributes)) {
 			    throw new NamingException("Binding error of " + name);
 			}
 		} catch (final NamingException e) {
@@ -569,7 +569,7 @@ public final class DirectoryEditor {
 	                                             final String recordName) throws NamingException {
 
 	    final LdapSearchResult searchResult =
-	        _ldapService.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+	        LDAP_SERVICE.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
 	                                                       createLdapQuery(EREN_FIELD_NAME, recordName).toString(),
 	                                                       SearchControls.SUBTREE_SCOPE);
 

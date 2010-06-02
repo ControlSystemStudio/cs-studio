@@ -306,7 +306,7 @@ public class SaveValueDialog extends Dialog {
 	        LdapName ldapName;
             try {
                 ldapName = LdapNameUtils.parseSearchResult(row);
-                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getRdnType());
+                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getNodeTypeName());
                 if (iocName == null) {
                     _log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
                     return false;

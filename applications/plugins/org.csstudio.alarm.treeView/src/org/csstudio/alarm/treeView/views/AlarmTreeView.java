@@ -464,8 +464,8 @@ public class AlarmTreeView extends ViewPart {
      */
     private static final String ID = "org.csstudio.alarm.treeView.views.AlarmTreeView";
 
-    private final IAlarmConfigurationService _configService = AlarmTreePlugin.getDefault()
-            .getAlarmConfigurationService();
+    private final IAlarmConfigurationService _configService =
+        AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
     /**
      * The tree viewer that displays the alarm objects.

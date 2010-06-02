@@ -19,8 +19,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.service.declaration;
+
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECOM_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
@@ -36,8 +36,8 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.ILdapObjectClass;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 
 /**
@@ -48,7 +48,8 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  *
  * @author Joerg Rathlev
  */
-public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAlarmCfgObjectClass> {
+public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapEpicsAlarmCfgObjectClass> {
+
     ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE),
 
     /**
@@ -72,7 +73,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
     RECORD("epicsRecord", EREN_FIELD_NAME, "record");
 
 
-    private static final Map<String, LdapEpicsAlarmCfgObjectClass> CACHE_BY_RDN_TYPE =
+    private static final Map<String, LdapEpicsAlarmCfgObjectClass> CACHE_BY_NAME =
         new HashMap<String, LdapEpicsAlarmCfgObjectClass>();
 
 
@@ -95,7 +96,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
         ROOT._nestedClasses.add(FACILITY);
 
         for (final LdapEpicsAlarmCfgObjectClass oc : LdapEpicsAlarmCfgObjectClass.values()) {
-            CACHE_BY_RDN_TYPE.put(oc.getRdnType(), oc);
+            CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
 
@@ -108,7 +109,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * The name of the attribute to use for the RDN of entries of this class in
      * the directory.
      */
-    private final String _rdnType;
+    private final String _nodeName;
 
 
     /**
@@ -130,18 +131,18 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      *
      * @param description
      *            the name of this object class in the directory.
-     * @param rdnType
+     * @param nodeName
      *            the name of the attribute to use for the RDN.
      * @param cssType
      *            the value for the epicsCssType attribute in the directory.
      */
     //CHECKSTYLE:OFF
     private LdapEpicsAlarmCfgObjectClass(final String description,
-                                         final String rdnType,
+                                         final String nodeName,
                                          final String cssType) {
         //CHECKSTYLE:ON
         _description = description;
-        _rdnType = rdnType;
+        _nodeName = nodeName;
         _cssType = cssType;
     }
 
@@ -149,6 +150,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getDescription() {
         return _description;
     }
@@ -157,14 +159,16 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    public String getRdnType() {
-        return _rdnType;
+    @Nonnull
+    public String getNodeTypeName() {
+        return _nodeName;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public Set<LdapEpicsAlarmCfgObjectClass> getNestedContainerClasses() {
         return _nestedClasses;
     }
@@ -175,6 +179,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * // FIXME (bknerr) : might be obsolete
      * @return the value to use for the epicsCssType attribute.
      */
+    @Nonnull
     public String getCssType() {
         return _cssType;
     }
@@ -183,24 +188,22 @@ public enum LdapEpicsAlarmCfgObjectClass implements ILdapObjectClass<LdapEpicsAl
      * {@inheritDoc}
      */
     @Override
-    public LdapEpicsAlarmCfgObjectClass getObjectClassByRdnType(final String rdn) {
-        return getObjectClassByRdnTypeStatic(rdn);
+    @CheckForNull
+    public LdapEpicsAlarmCfgObjectClass getNodeTypeByNodeTypeName(@Nonnull final String name) {
+        return getNodeTypeByNodeNameStatic(name);
     }
 
-    /**
-     * Static method to encapsulate access to static CACHE object
-     * @param rdn
-     * @return
-     */
-    private static LdapEpicsAlarmCfgObjectClass getObjectClassByRdnTypeStatic(final String rdn) {
-        return CACHE_BY_RDN_TYPE.get(rdn);
+    @CheckForNull
+    private static LdapEpicsAlarmCfgObjectClass getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+        return CACHE_BY_NAME.get(name);
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public String getRootName() {
+    public String getRootTypeName() {
         return AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
     }
 

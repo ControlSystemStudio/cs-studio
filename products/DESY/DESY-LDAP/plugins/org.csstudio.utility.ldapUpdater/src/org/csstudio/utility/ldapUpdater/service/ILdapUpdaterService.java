@@ -31,7 +31,6 @@ import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.utility.ldap.model.CreateContentModelException;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 
@@ -90,8 +89,7 @@ public interface ILdapUpdaterService {
      * @param facilityName .
      * @throws InvalidNameException
      * @throws InterruptedException
-     * @throws CreateContentModelException
      */
     void removeIocEntryFromLdap(@Nonnull String iocName,
-                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException, CreateContentModelException;
+                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException;
 }

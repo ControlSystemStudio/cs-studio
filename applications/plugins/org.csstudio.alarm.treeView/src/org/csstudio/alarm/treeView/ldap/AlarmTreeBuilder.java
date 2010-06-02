@@ -45,10 +45,9 @@ import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ILdapBaseComponent;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
@@ -105,7 +104,7 @@ public final class AlarmTreeBuilder {
      * @throws NamingException
      */
     private static boolean createAlarmSubtree(@Nonnull final SubtreeNode parentNode,
-                                              @Nonnull final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
+                                              @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
                                               @Nullable final IProgressMonitor monitor) throws NamingException {
 
         final String simpleName = modelNode.getName();
@@ -119,8 +118,8 @@ public final class AlarmTreeBuilder {
 
         } else {
             final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
-            for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
-                createAlarmSubtree(newNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) child, monitor);
+            for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
+                createAlarmSubtree(newNode, child, monitor);
 
                 if ((monitor != null) && monitor.isCanceled()) {
                     return true;
@@ -151,9 +150,9 @@ public final class AlarmTreeBuilder {
 //        final DirContext ctx = Engine.getInstance().getLdapDirContext();
 //        ensureTestFacilityExists(ctx);
 
-        for (final ILdapBaseComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
+        for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
             // TODO jp DirContext ctx no longer used in createAlarmSubtree
-            createAlarmSubtree(rootNode, (ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass>) node, monitor);
+            createAlarmSubtree(rootNode, node, monitor);
         }
         return true;
     }

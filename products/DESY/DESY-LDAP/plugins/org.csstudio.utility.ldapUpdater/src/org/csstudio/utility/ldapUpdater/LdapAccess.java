@@ -43,9 +43,6 @@ import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
@@ -58,6 +55,9 @@ import org.csstudio.utility.ldapUpdater.mail.NotificationMail;
 import org.csstudio.utility.ldapUpdater.mail.NotificationType;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 
 
 /**
@@ -159,16 +159,16 @@ public final class LdapAccess {
     public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> contentModel,
                                              @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException, CreateContentModelException{
 
-        final Set<Entry<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
+        final Set<Entry<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>>> childrenByTypeSet =
             contentModel.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC).entrySet();
 
-        for (final Entry<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> entry : childrenByTypeSet) {
+        for (final Entry<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> entry : childrenByTypeSet) {
 
-            final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLdap = entry.getValue();
+            final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLdap = entry.getValue();
 
             final String iocName = iocFromLdap.getName();
             final String facName =
-                LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), LdapEpicsControlsObjectClass.FACILITY.getRdnType());
+                LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), LdapEpicsControlsObjectClass.FACILITY.getNodeTypeName());
 
             if (iocMapFromFS.containsKey(entry.getKey())) {
 
@@ -196,7 +196,7 @@ public final class LdapAccess {
 
     @Nonnull
     private static UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> model,
-                                             @Nonnull final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP) throws NamingException {
+                                             @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLDAP) throws NamingException {
 
         final String iocName = iocFromLDAP.getName();
         int numOfRecsWritten = 0;
@@ -210,7 +210,7 @@ public final class LdapAccess {
         for (final Record record : recordsFromFile) {
             final String recordName = record.getName();
 
-            final ILdapTreeComponent<LdapEpicsControlsObjectClass> recordComponent =
+            final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> recordComponent =
                 model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD, recordName);
 
             if (recordComponent == null) { // does not yet exist
@@ -237,7 +237,7 @@ public final class LdapAccess {
         sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
 
         // TODO (bknerr) : what to do with success variable ?
-        final ILdapTreeComponent<LdapEpicsControlsObjectClass> iLdapComponent =
+        final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iLdapComponent =
             model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
 
         int numOfChildren = -1;
@@ -252,7 +252,7 @@ public final class LdapAccess {
 
 
 
-    private static void sendUnallowedCharsNotification(@Nonnull final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP,
+    private static void sendUnallowedCharsNotification(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLDAP,
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
@@ -302,7 +302,7 @@ public final class LdapAccess {
             } // else means 'new IOC file in directory'
 
             //final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
-            final ILdapTreeComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
+            final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
                 model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
 
             if (iocFromLDAP == null) {

@@ -38,14 +38,14 @@ import javax.naming.directory.SearchControls;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.ContentModelExporter;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ExportContentModelException;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.model.builder.XmlFileContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.ContentModelExporter;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ExportContentModelException;
+import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilder;
 
 /**
  * Alarm configuration service implementation
@@ -77,7 +77,8 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         ContentModel<LdapEpicsAlarmCfgObjectClass> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
+            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT,
+                                                                   EPICS_ALARM_CFG_FIELD_VALUE);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating empty content model.", e);
         }

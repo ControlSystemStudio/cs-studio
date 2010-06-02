@@ -224,7 +224,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
             }
 
             final LdapName result =
-                new LdapName(Collections.singletonList(new Rdn(_objectClass.getRdnType(), _name)));
+                new LdapName(Collections.singletonList(new Rdn(_objectClass.getNodeTypeName(), _name)));
 
             final IAlarmSubtreeNode parent = getParent();
             if (parent != null) {

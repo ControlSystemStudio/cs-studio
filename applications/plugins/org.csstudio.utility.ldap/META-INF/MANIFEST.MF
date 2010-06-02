@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.utility.namespace.utility,
  org.junit4;bundle-version="4.5.0",
- org.csstudio.platform.libs.annotations;bundle-version="1.0.0"
+ org.csstudio.platform.libs.annotations;bundle-version="1.0.0",
+ org.csstudio.utility.treemodel;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.engine,
@@ -19,7 +20,8 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.reader,
  org.csstudio.utility.ldap.service,
  org.csstudio.utility.ldap.service.impl
-Import-Package: org.eclipse.ecf.core.util
+Import-Package: org.csstudio.utility.treemodel,
+ org.eclipse.ecf.core.util
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ClassPath: lib/jdom.jar,
  .

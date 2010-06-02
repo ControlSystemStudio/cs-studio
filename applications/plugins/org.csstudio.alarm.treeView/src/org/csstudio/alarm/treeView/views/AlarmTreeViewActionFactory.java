@@ -53,9 +53,9 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.EditorUtil;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ExportContentModelException;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -377,6 +377,7 @@ public final class AlarmTreeViewActionFactory {
             final ContentModel<LdapEpicsAlarmCfgObjectClass> model = builder.getModel();
 
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
+
 
             configService.exportContentModelToXmlFile(filePath, model, "org.csstudio.alarm.treeView/epicsAlarmCfg.dtd");
 

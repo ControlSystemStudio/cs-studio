@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Vector;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.CompositeName;
 import javax.naming.Name;
 import javax.naming.NameParser;
@@ -59,8 +60,8 @@ import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
- * TODO (bknerr) : - Does it have to be a job itself?
- *                 - refactor wrong singleton pattern
+ * TODO (bknerr) : - Does it have to be a job?
+ *                 - if not so, refactor wrong singleton pattern
  *                 - use a proper synchronized producer-consumer pattern with blocking queues and completion service
  *                 - refactor all ldap access methods to ldap service structure
  *                 - refactor all hard coded strings
@@ -511,14 +512,29 @@ public final class Engine extends Job {
      *            the IP address of the IOC.
      * @return The LDAP distinguished name of the IOC with the given IP address.
      */
-    synchronized public String getLogicalNameFromIPAdr(final String ipAddress) {
-        if ((ipAddress == null)
-                || !ipAddress
-                .matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")) {
-            // TODO (bknerr) : matches 299.299... as well
-            // Better, split on dots, parse as positive ints + zero, check the range 0-255
+    synchronized public String getLogicalNameFromIPAdr(@Nullable final String ipAddress) {
+        if (ipAddress == null) {
             return null;
         }
+//                || !ipAddress
+//                .matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")) {
+
+        // TODO (bknerr) : matches 299.299... as well
+            // Better, split on dots, parse as positive ints + zero, check the range 0-255
+            final String[] fields = ipAddress.split(".");
+            if (fields.length != 4) {
+                return null;
+            }
+            for (final String ipPart : fields) { // check for ipPart is in [0,255]
+                final Integer value = Integer.valueOf(ipPart);
+                if ((value < 0) || (value > 255)) {
+                    return null;
+                }
+            }
+
+
+//            return null;
+//        }
         final DirContext context = getLdapDirContext();
         if (context != null) {
             final SearchControls ctrl = new SearchControls();

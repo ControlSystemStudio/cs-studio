@@ -22,8 +22,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
-import javax.annotation.Nonnull;
-
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -46,8 +44,8 @@ import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -237,23 +235,23 @@ public class AlarmView extends LogView {
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
             // TODO jp Hack: Need better way to find out whether LDAP is active
-            boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
+            final boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
             if (useLDAP) {
                 model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
             } else {
                 model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
             }
-            
+
             // ************ end of hack ******************
-            
-            
+
+
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
-            
+
             for (final String pvName : pvNames) {
                 initItems.add(new PVItem(pvName, messageList));
             }
-            
+
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
         } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);

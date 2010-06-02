@@ -44,15 +44,14 @@ import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ILdapBaseComponent;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldapUpdater.Activator;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 
 
 /**
@@ -81,16 +80,16 @@ public class IocEnumeration implements IDynamicParameterValues {
             builder.build();
             final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
 
-            final Map<String, ILdapTreeComponent<LdapEpicsControlsObjectClass>> iocs =
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> iocs =
                 model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
 
             final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-            for (final ILdapBaseComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
+            for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
                 final LdapName ldapName = ioc.getLdapName();
                 final String efanName =
                     LdapNameUtils.getValueOfRdnType(ldapName,
-                                                    LdapEpicsControlsObjectClass.FACILITY.getRdnType());
+                                                    LdapEpicsControlsObjectClass.FACILITY.getNodeTypeName());
 
                 final HashMap<String, String> map = new HashMap<String, String>();
                 map.put(ECON_FIELD_NAME, ioc.getName());

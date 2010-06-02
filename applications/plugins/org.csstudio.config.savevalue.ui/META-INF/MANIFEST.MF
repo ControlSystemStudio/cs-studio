@@ -11,6 +11,7 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.namespace.utility,
  org.csstudio.config.savevalue.service,
  org.eclipse.help,
- org.junit4;bundle-version="4.5.0"
+ org.junit4;bundle-version="4.5.0",
+ org.csstudio.utility.treemodel;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Bundle-Localization: plugin

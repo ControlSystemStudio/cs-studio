@@ -59,14 +59,14 @@ public class LdapNameUtilsTest {
 	public void testObjectClassOfSingleRdnName() throws Exception {
 		final LdapName name = new LdapName("efan=foobar");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmCfgObjectClass.FACILITY, LdapEpicsAlarmCfgObjectClass.FACILITY.getObjectClassByRdnType(rdn.getType()));
+		assertEquals(LdapEpicsAlarmCfgObjectClass.FACILITY, LdapEpicsAlarmCfgObjectClass.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
 	}
 
 	@Test
 	public void testObjectClassOfHierarchicalLdapName() throws Exception {
 		final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, LdapEpicsAlarmCfgObjectClass.RECORD.getObjectClassByRdnType(rdn.getType()));
+		assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
 	}
 
 }

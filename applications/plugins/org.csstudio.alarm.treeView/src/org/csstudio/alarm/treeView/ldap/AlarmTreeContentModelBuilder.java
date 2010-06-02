@@ -29,14 +29,15 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.utility.ldap.model.ContentModel;
-import org.csstudio.utility.ldap.model.CreateContentModelException;
-import org.csstudio.utility.ldap.model.ILdapTreeComponent;
-import org.csstudio.utility.ldap.model.LdapTreeComponent;
-import org.csstudio.utility.ldap.model.builder.AbstractContentModelBuilder;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.TreeNodeComponent;
+import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
 
 /**
  * Builds a content model from the alarm tree view structure.
@@ -70,7 +71,8 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
         ContentModel<LdapEpicsAlarmCfgObjectClass> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT);
+            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT,
+                                                                   AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
 
             createSubtree(model, _alarmTreeNode, model.getRoot());
 
@@ -82,19 +84,19 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
     private static void createSubtree(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                       @Nonnull final IAlarmTreeNode alarmTreeNode,
-                                      @Nonnull final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> modelParentNode) throws InvalidNameException {
+                                      @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelParentNode) throws InvalidNameException {
 
         final LdapEpicsAlarmCfgObjectClass oc = alarmTreeNode.getObjectClass();
         final String modelNodeName = alarmTreeNode.getName();
 
-        final ILdapTreeComponent<LdapEpicsAlarmCfgObjectClass> newModelComponent =
-            new LdapTreeComponent<LdapEpicsAlarmCfgObjectClass>(
+        final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> newModelComponent =
+            new TreeNodeComponent<LdapEpicsAlarmCfgObjectClass>(
                     modelNodeName,
                     oc,
                     oc.getNestedContainerClasses(),
                     modelParentNode,
                     new BasicAttributes(), // empty yet in this initial xml structure
-                    (LdapName) modelParentNode.getLdapName().add(new Rdn(oc.getRdnType(), modelNodeName)));
+                    (LdapName) modelParentNode.getLdapName().add(new Rdn(oc.getNodeTypeName(), modelNodeName)));
 
         model.addChild(modelParentNode, newModelComponent);
 
