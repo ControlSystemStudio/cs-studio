@@ -45,65 +45,65 @@ public class DynamicValueAdapter<T, P extends SimpleProperty<T>>
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#valueUpdated(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void valueUpdated(DynamicValueEvent<T, P> event)
+	public void valueUpdated(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#valueChanged(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void valueChanged(DynamicValueEvent<T, P> event)
+	public void valueChanged(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#timeoutStarts(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void timeoutStarts(DynamicValueEvent<T, P> event)
+	public void timeoutStarts(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#timeoutStops(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void timeoutStops(DynamicValueEvent<T, P> event)
+	public void timeoutStops(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#timelagStarts(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void timelagStarts(DynamicValueEvent<T, P> event)
+	public void timelagStarts(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#timelagStops(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void timelagStops(DynamicValueEvent<T, P> event)
+	public void timelagStops(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#errorResponse(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void errorResponse(DynamicValueEvent<T, P> event)
+	public void errorResponse(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.DynamicValueListener#conditionChange(org.epics.css.dal.DynamicValueEvent)
 	 */
-	public void conditionChange(DynamicValueEvent<T, P> event)
+	public void conditionChange(final DynamicValueEvent<T, P> event)
 	{
-		// ovrride this if necessary
+		// override this if necessary
 	}
 } /* __oOo__ */
 
