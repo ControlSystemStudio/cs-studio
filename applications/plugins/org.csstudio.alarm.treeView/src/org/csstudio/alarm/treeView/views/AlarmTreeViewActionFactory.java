@@ -379,7 +379,7 @@ public final class AlarmTreeViewActionFactory {
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
 
-            configService.exportContentModelToXmlFile(filePath, model, "org.csstudio.alarm.treeView/epicsAlarmCfg.dtd");
+            configService.exportContentModelToXmlFile(filePath, model, "org.csstudio.alarm.treeView/dtd/epicsAlarmCfg.dtd");
 
         } catch (final CreateContentModelException e) {
             LOG.error("Creating content model from facility was not possible due to invalid LDAP name.");
