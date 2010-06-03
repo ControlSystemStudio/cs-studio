@@ -1,6 +1,7 @@
 package org.csstudio.opibuilder.widgets.figures;
 
 import org.csstudio.opibuilder.util.UIBundlingThread;
+import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.FreeformLayout;
@@ -71,7 +72,15 @@ public class LinkingContainerFigure extends Figure {
 		this.zoomToFitAll = zoomToFitAll;
 	}
 
-	
+	@Override
+	public void setBorder(Border border) {
+		super.setBorder(border);
+		UIBundlingThread.getInstance().addRunnable(new Runnable(){
+			public void run() {
+				updateZoom();
+			}
+		});
+	}
 	
 
 	
