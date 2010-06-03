@@ -96,7 +96,9 @@ public class CreateGroupAction extends AbstractWidgetTargetAction {
 		
 		if(groupingContainerModel.getBorderStyle()== BorderStyle.GROUP_BOX)
 			borderWidth = 30;
-			
+		
+		groupingContainerModel.setPropertyValue(GroupingContainerModel.PROP_LOCK_CHILDREN, true);
+		
 		compoundCommand.add(new WidgetCreateCommand(groupingContainerModel,
 				parent, new Rectangle(minX, minY, maxX-minX + borderWidth, maxY-minY + borderWidth), false));
 		
