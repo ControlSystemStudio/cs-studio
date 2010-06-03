@@ -65,6 +65,14 @@ The utility class to facilitate Javascript programming
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;double</CODE></FONT></TD>
+<TD><CODE><B><A HREF="PVUtil.html#getLong(org.csstudio.utility.pv.PV)">getLong</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Try to get a long integer number from the PV.</TD>
+</TR>
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;double</CODE></FONT></TD>
 <TD><CODE><B><A HREF="PVUtil.html#getDouble(org.csstudio.utility.pv.PV, int)">getDouble</A></B>(org.csstudio.utility.pv.PV&nbsp;pv,
           int&nbsp;index)</CODE>
 
@@ -158,6 +166,28 @@ public static final double <B>getDouble</B>(org.csstudio.utility.pv.PV&nbsp;pv)<
 <DD><DL>
 <DT><B>Parameters:</B><DD><CODE>pv</CODE> - the PV.
 <DT><B>Returns:</B><DD>A double, or <code>Double.NaN</code> in case the value type
+          does not decode into a number, or
+          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
+          indicates that there happens to be no useful value.</DL>
+</DD>
+</DL>
+<HR>
+
+
+<A NAME="getLong(org.csstudio.utility.pv.PV)"><!-- --></A><H3>
+getLong</H3>
+<PRE>
+public static final long <B>getLong</B>(org.csstudio.utility.pv.PV&nbsp;pv)</PRE>
+<DL>
+<DD>Try to get a long integer number from the PV.
+  <p>
+  Some applications only deal with numeric data,
+  so they want to interprete integer, enum and double values
+  all the same.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pv</CODE> - the PV.
+<DT><B>Returns:</B><DD>A long integer or <code>Double.NaN</code> in case the value type
           does not decode into a number, or
           <code>Double.NEGATIVE_INFINITY</code> if the value's severity
           indicates that there happens to be no useful value.</DL>

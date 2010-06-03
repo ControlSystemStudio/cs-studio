@@ -28,7 +28,20 @@ public class PVUtil{
 		return ValueUtil.getDouble(pv.getValue());
 	}
 	
-	
+	 /** Try to get a long integer number from the PV.
+     *  <p>
+     *  Some applications only deal with numeric data,
+     *  so they want to interprete integer, enum and double values
+     *  all the same.
+     *  @param pv the PV.
+     *  @return A long integer, or <code>Double.NaN</code> in case the value type
+     *          does not decode into a number, or
+     *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
+     *          indicates that there happens to be no useful value.
+     */
+	public final static long getLong(PV pv){
+		return (long) ValueUtil.getDouble(pv.getValue());
+	}
 	
 	  /** Try to get a double-typed array element from the Value.
      *  @param pv The PV.
