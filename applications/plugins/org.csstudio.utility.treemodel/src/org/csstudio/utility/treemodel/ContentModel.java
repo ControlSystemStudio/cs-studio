@@ -155,12 +155,12 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         return new HashSet<String>(children.keySet());
     }
 
-    @CheckForNull
+    @Nonnull
     public Map<String, ISubtreeNodeComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
         return _cacheByTypeAndLdapName.get(type);
     }
 
-    @CheckForNull
+    @Nonnull
     public Map<String, ISubtreeNodeComponent<T>> getChildrenByTypeAndSimpleName(@Nonnull final T type) {
         return _cacheByTypeAndSimpleName.get(type);
     }

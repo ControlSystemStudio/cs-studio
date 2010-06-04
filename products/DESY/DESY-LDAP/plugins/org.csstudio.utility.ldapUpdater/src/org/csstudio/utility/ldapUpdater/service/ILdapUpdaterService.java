@@ -58,7 +58,7 @@ public interface ILdapUpdaterService {
      * @param gregorianCalendar
      * @return true if the new ioc could be created, false otherwise
      */
-    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nonnull GregorianCalendar gregorianCalendar);
+    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable GregorianCalendar gregorianCalendar);
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.

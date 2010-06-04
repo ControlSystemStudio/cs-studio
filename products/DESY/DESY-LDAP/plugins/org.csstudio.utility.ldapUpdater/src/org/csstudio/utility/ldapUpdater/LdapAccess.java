@@ -35,6 +35,7 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
 import java.util.ArrayList;
+import java.util.GregorianCalendar;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -149,9 +150,15 @@ public final class LdapAccess {
 
 
     private static boolean isIOCFileNewerThanHistoryEntry(@Nonnull final IOC ioc, @Nonnull final HistoryFileContentModel historyFileModel) {
-        final long timeFromFile = ioc.getLastUpdated().getTimeInMillis() / 1000;
-        final long timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
-        return timeFromFile > timeFromHistoryFile;
+        final GregorianCalendar lastUpdated = ioc.getLastUpdated();
+        if (lastUpdated != null) {
+            final long timeFromFile = lastUpdated.getTimeInMillis() / 1000;
+            final Long timeFromHistoryFile = historyFileModel.getTimeForRecord(ioc.getName());
+            if (timeFromHistoryFile != null) {
+                return timeFromFile > timeFromHistoryFile;
+            }
+        }
+        return true;
     }
 
 
@@ -178,6 +185,11 @@ public final class LdapAccess {
             final String iocName = iocFromLdap.getName();
             final String facName =
                 LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), LdapEpicsControlsObjectClass.FACILITY.getNodeTypeName());
+
+            if (facName == null) {
+                LOG.warn("Facility name could not be retrieved for " + iocFromLdap.getLdapName().toString());
+                continue;
+            }
 
             if (iocMapFromFS.containsKey(entry.getKey())) {
 
@@ -317,12 +329,12 @@ public final class LdapAccess {
                 final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
                 final LdapSearchResult searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
-
-                final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(model);
-                builder.setSearchResult(searchResult);
-                builder.build();
-
+                if (searchResult != null) {
+                    final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
+                        new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(model);
+                    builder.setSearchResult(searchResult);
+                    builder.build();
+                }
                 final UpdateIOCResult updateResult = updateIOC(model, iocFromLdap);
                 // TODO (bknerr) : does only make sense when the update process has been stopped
                 if (updateResult.hasNoError()) {
@@ -362,14 +374,18 @@ public final class LdapAccess {
             LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
 
             final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> parent = model.getChildByLdapName(middleName.toString());
-            iocFromLdap =
-                new TreeNodeComponent<LdapEpicsControlsObjectClass>(iocName,
-                                                                    LdapEpicsControlsObjectClass.IOC,
-                                                                    LdapEpicsControlsObjectClass.IOC.getNestedContainerClasses(),
-                                                                    parent,
-                                                                    null,
-                                                                    iocFromLdapName);
-            model.addChild(parent, iocFromLdap);
+            if (parent != null) {
+                iocFromLdap =
+                    new TreeNodeComponent<LdapEpicsControlsObjectClass>(iocName,
+                            LdapEpicsControlsObjectClass.IOC,
+                            LdapEpicsControlsObjectClass.IOC.getNestedContainerClasses(),
+                            parent,
+                            null,
+                            iocFromLdapName);
+                model.addChild(parent, iocFromLdap);
+            } else {
+                LOG.warn("Parent " + middleName.toString() + " could not be retrieved from the model. No IOC added.");
+            }
         }
         return iocFromLdap;
     }

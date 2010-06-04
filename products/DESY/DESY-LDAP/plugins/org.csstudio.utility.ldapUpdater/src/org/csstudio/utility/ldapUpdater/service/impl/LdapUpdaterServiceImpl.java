@@ -103,12 +103,13 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      */
     @Override
-    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nonnull final GregorianCalendar cal) {
+    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final GregorianCalendar cal) {
 
         final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
+        // TODO (bknerr) : modify schema and add new attribute
 //        ,
 //                                   ATTR_FIELD_LAST_UPDATED, time,
 //                                   ATTR_FIELD_LAST_UPDATED_IN_MILLIS, String.valueOf(cal.getTimeInMillis()));

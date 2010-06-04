@@ -149,7 +149,7 @@ public enum LdapEpicsControlsObjectClass implements ITreeNodeConfiguration<LdapE
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
     public Set<LdapEpicsControlsObjectClass> getNestedContainerClasses() {
         return _nestedClasses;
     }
