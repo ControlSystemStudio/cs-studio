@@ -71,11 +71,11 @@ public class XmlFileContentModelBuilderTest {
     public void testValid() {
         final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
             new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
-                                                                 new File(RES_PATH, TEST_VALID_XML).getAbsolutePath());
+                    new File(RES_PATH, TEST_VALID_XML).getAbsolutePath());
         try {
             builder.build();
             _model = builder.getModel();
-        } catch (final CreateContentModelException e) {
+        } catch (final Exception e) {
             Assert.fail(e.getMessage() + "\n" + e.getCause());
         }
 
@@ -108,6 +108,8 @@ public class XmlFileContentModelBuilderTest {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File " + xmlFilePath + " contains parsing errors. Premature end of file.", e.getMessage());
             return;
+        } catch (final Exception e) {
+            Assert.fail("Wrong exception. " + e.getMessage() + "\n" + e.getCause());
         }
         Assert.fail("No exceptions?");
     }
@@ -125,6 +127,8 @@ public class XmlFileContentModelBuilderTest {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File " + xmlFilePath + " contains parsing errors. Element type \"ecock\" must be declared.", e.getMessage());
             return;
+        } catch (final Exception e) {
+            Assert.fail("Wrong exception. " + e.getMessage() + "\n" + e.getCause());
         }
         Assert.fail("No exceptions?");
     }
