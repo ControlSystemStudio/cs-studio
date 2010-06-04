@@ -23,7 +23,6 @@ package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**
@@ -63,7 +62,9 @@ public enum AlarmMessageKey {
      *
      * @param definingName
      */
-    private AlarmMessageKey(@Nullable final String definingName) {
+    // CHECKSTYLE:OFF
+    private AlarmMessageKey(final String definingName) {
+    // CHECKSTYLE:ON
         _definingName = definingName;
     }
 
