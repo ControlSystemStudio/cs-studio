@@ -46,7 +46,7 @@ public class ShowAlarmView implements IWorkbenchWindowActionDelegate {
 				IWorkbench workbench = PlatformUI.getWorkbench();
 				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 				IWorkbenchPage page = window.getActivePage();
-				page.showView(AlarmView.ID, _instance.toString(),
+				page.showView(AlarmView.ALARM_VIEW_ID, _instance.toString(),
 						IWorkbenchPage.VIEW_ACTIVATE);
 				_instance++;
 			} catch (Exception e) {

@@ -14,13 +14,14 @@
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
  * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.table.ui;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
@@ -75,7 +76,7 @@ import org.eclipse.swt.widgets.TableItem;
 public class AlarmView extends LogView {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmView.class);
 
-    public static final String ID = AlarmView.class.getName();
+    public static final String ALARM_VIEW_ID = AlarmView.class.getCanonicalName();
 
     private static final String SECURITY_ID = "operating"; //$NON-NLS-1$
 
@@ -91,7 +92,7 @@ public class AlarmView extends LogView {
      * @param parent
      */
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(@Nonnull final Composite parent) {
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
@@ -127,12 +128,12 @@ public class AlarmView extends LogView {
         _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
 
     }
-
+    @Nonnull
     private SelectionListener newSelectionListenerForPauseButton() {
         return new SelectionListener() {
 
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 if (_pauseButton.getSelection()) {
                     _ackButton.setEnabled(false);
                 } else {
@@ -142,7 +143,7 @@ public class AlarmView extends LogView {
             }
 
             @Override
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
         };
@@ -227,11 +228,11 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected void retrieveInitialStateSynchronously(final MessageList messageList) {
+    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
         // TODO jp Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
-        final String[] facilityNames = new String[] { "Test" };
+        final String[] facilityNames = new String[] {"Test"};
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
             // TODO jp Hack: Need better way to find out whether LDAP is active
@@ -319,15 +320,15 @@ public class AlarmView extends LogView {
     }
 
     // CHECKSTYLE:ON
-
-    private SelectionListener newSelectionListenerForAckButton(final Combo ackCombo) {
+    @Nonnull
+    private SelectionListener newSelectionListenerForAckButton(@Nonnull final Combo ackCombo) {
         return new SelectionListener() {
 
             /**
              * Acknowledge button is pressed for all (selection 0) messages or messages with a
              * special severity (selection 1-3).
              */
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
                 for (final TableItem ti : _tableViewer.getTable().getItems()) {
 
@@ -358,13 +359,13 @@ public class AlarmView extends LogView {
                 sendAck.schedule();
             }
 
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
         };
     }
 
-    private void addSoundButton(final Composite logTableManagementComposite) {
+    private void addSoundButton(@Nonnull final Composite logTableManagementComposite) {
         final Group soundButtonGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         soundButtonGroup.setText(Messages.AlarmView_soundButtonTitle);
@@ -380,11 +381,11 @@ public class AlarmView extends LogView {
         _soundEnableButton.setSelection(true);
 
         _soundEnableButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nonnull final SelectionEvent e) {
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
 
-            public void widgetDefaultSelected(final SelectionEvent e) {
+            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
         });
@@ -422,6 +423,7 @@ public class AlarmView extends LogView {
             // Nothing to do
         }
 
+        @Nonnull
         private IAlarmListener getSoundPlayingListener() {
             if (_soundPlayingListener == null) {
                 _soundPlayingListener = new IAlarmListener() {
@@ -432,7 +434,7 @@ public class AlarmView extends LogView {
                     }
 
                     @Override
-                    public void onMessage(final IAlarmMessage message) {
+                    public void onMessage(@Nonnull final IAlarmMessage message) {
                         _alarmSoundService.playAlarmSound(message
                                 .getString(AlarmMessageKey.SEVERITY));
                     }
@@ -467,18 +469,19 @@ public class AlarmView extends LogView {
         private final MessageList _messageList;
         private final String _pvName;
 
-        protected PVItem(final String pvName, final MessageList messageList) {
+        protected PVItem(@Nonnull final String pvName, @Nonnull final MessageList messageList) {
             _pvName = pvName;
             _messageList = messageList;
         }
 
         @Override
+        @Nonnull
         public String getPVName() {
             return _pvName;
         }
 
         @Override
-        public void init(final IAlarmMessage message) {
+        public void init(@Nonnull final IAlarmMessage message) {
             LOG.debug("init for pv " + _pvName + ", msg: " + message);
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }

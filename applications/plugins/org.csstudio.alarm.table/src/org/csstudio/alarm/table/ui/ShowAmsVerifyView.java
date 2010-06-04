@@ -44,7 +44,7 @@ public class ShowAmsVerifyView implements IWorkbenchWindowActionDelegate {
 				IWorkbench workbench = PlatformUI.getWorkbench();
 				IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
 				IWorkbenchPage page = window.getActivePage();
-				page.showView(AmsVerifyView.ID);
+				page.showView(AmsVerifyView.AMS_VERIFY_VIEW_ID);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}

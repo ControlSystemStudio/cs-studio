@@ -21,8 +21,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
-import javax.annotation.Nonnull;
-
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.JmsLogsPlugin;
@@ -90,7 +88,7 @@ public class LogView extends ViewPart {
     /**
      * {@link MessageTable} holding a {@link TableViewer} for messages.
      */
-    public MessageTable _messageTable = null;
+    protected MessageTable _messageTable = null;
 
     /**
      * Stateful service maintaining connections and message lists. There are two service
@@ -138,6 +136,7 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void createPartControl(final Composite parent) {
         _parent = parent;
 
@@ -148,14 +147,14 @@ public class LogView extends ViewPart {
         defineCurrentTopicSet();
 
         // Create UI
-        GridLayout grid = new GridLayout();
+        final GridLayout grid = new GridLayout();
         grid.numColumns = 1;
         parent.setLayout(grid);
 
         createMessageArea(_parent);
 
-        Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
-        RowLayout layout = new RowLayout();
+        final Composite logTableManagementComposite = new Composite(parent, SWT.NONE);
+        final RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
@@ -197,9 +196,9 @@ public class LogView extends ViewPart {
             _tableComposite = null;
         }
         _tableComposite = new Composite(_parent, SWT.NONE);
-        GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
+        final GridData gridData = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableComposite.setLayoutData(gridData);
-        GridLayout grid2 = new GridLayout();
+        final GridLayout grid2 = new GridLayout();
         grid2.numColumns = 1;
         _tableComposite.setLayout(grid2);
 
@@ -208,14 +207,14 @@ public class LogView extends ViewPart {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        Font font = _topicSetColumnService.getFont(_currentTopicSet);
+        final Font font = _topicSetColumnService.getFont(_currentTopicSet);
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
-        GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
+        final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        MessageList messageList = getOrCreateCurrentMessageList();
+        final MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
                 .getColumnSet(_currentTopicSet), messageList);
         _messageTable.makeContextMenu(getSite());
@@ -302,18 +301,18 @@ public class LogView extends ViewPart {
      * @return the message list
      */
     protected final MessageList getOrCreateCurrentMessageList() {
-        TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
+        final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
         if (!_topicsetService.hasTopicSet(topicSet)) {
-            IAlarmTableListener alarmTableListener = new AlarmListener();
+            final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
-                MessageList messageList = createMessageList();
+                final MessageList messageList = createMessageList();
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
                 // TODO jp-mc retrieveInitialStateSynchronously not enabled
 //                retrieveInitialStateSynchronously(messageList);
                 _messageArea.hide();
-            } catch (AlarmConnectionException e) {
+            } catch (final AlarmConnectionException e) {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
                 _messageArea
                         .showMessage(SWT.ICON_WARNING,
@@ -337,15 +336,15 @@ public class LogView extends ViewPart {
     }
 
     private Integer getMaximumNumberOfMessages() {
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+        final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                                                                     JmsLogsPlugin.getDefault()
                                                                             .getBundle()
                                                                             .getSymbolicName());
-        String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
+        final String maximumNumberOfMessagesPref = prefStore.getString(LogViewPreferenceConstants.MAX);
         Integer result = 200; // Default
         try {
             result = Integer.parseInt(maximumNumberOfMessagesPref);
-        } catch (NumberFormatException e) {
+        } catch (final NumberFormatException e) {
             LOG.warn("Invalid value format for maximum number" + " of messages in preferences");
         }
         return result;
@@ -355,8 +354,8 @@ public class LogView extends ViewPart {
      * Write new Column width when a column is resized.
      */
     void addControlListenerToColumns(final String colSetPref, final String topicSetPref) {
-        TableColumn[] columns = _tableViewer.getTable().getColumns();
-        for (TableColumn tableColumn : columns) {
+        final TableColumn[] columns = _tableViewer.getTable().getColumns();
+        for (final TableColumn tableColumn : columns) {
             tableColumn.addControlListener(new ControlListener() {
 
                 public void controlResized(final ControlEvent e) {
@@ -376,18 +375,18 @@ public class LogView extends ViewPart {
      * @param logTableManagementComposite
      */
     void addRunningSinceGroup(final Composite logTableManagementComposite) {
-        Group runningSinceGroup = new Group(logTableManagementComposite, SWT.NONE);
+        final Group runningSinceGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         runningSinceGroup.setText(Messages.LogView_runningSince);
 
-        RowLayout layout = new RowLayout();
+        final RowLayout layout = new RowLayout();
         runningSinceGroup.setLayout(layout);
         _runningSinceLabel = new Label(runningSinceGroup, SWT.CENTER);
         _runningSinceLabel.setLayoutData(new RowData(90, 21));
     }
 
     void setCurrentTimeToRunningSince(final Date time) {
-        SimpleDateFormat formater = new SimpleDateFormat();
+        final SimpleDateFormat formater = new SimpleDateFormat();
         _runningSinceLabel.setText(formater.format(time));
     }
 
@@ -398,11 +397,11 @@ public class LogView extends ViewPart {
      * @param logTableManagementComposite
      */
     void addJmsTopicItems(final Composite logTableManagementComposite) {
-        Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
+        final Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
 
         jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
 
-        RowLayout layout = new RowLayout();
+        final RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 5;
         jmsTopicItemsGroup.setLayout(layout);
@@ -410,7 +409,7 @@ public class LogView extends ViewPart {
         final Combo topicSetsCombo = new Combo(jmsTopicItemsGroup, SWT.SINGLE);
         int i = 0;
 
-        for (TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
+        for (final TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
             topicSetsCombo.add(topicSet.getName());
             if (_currentTopicSet.equals(topicSet.getName())) {
                 topicSetsCombo.select(i);
@@ -418,9 +417,10 @@ public class LogView extends ViewPart {
             i++;
         }
         topicSetsCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 super.widgetSelected(e);
-                String oldTopicSet = _currentTopicSet;
+                final String oldTopicSet = _currentTopicSet;
                 _currentTopicSet = _topicSetColumnService.getTopicSets().get(topicSetsCombo
                         .getSelectionIndex()).getName();
                 if (!oldTopicSet.equals(_currentTopicSet)) {
@@ -492,11 +492,12 @@ public class LogView extends ViewPart {
      * Creates action to call property view.
      */
     void makeActions() {
-        Action showPropertyViewAction = new Action() {
+        final Action showPropertyViewAction = new Action() {
+            @Override
             public void run() {
                 try {
                     getSite().getPage().showView(PROPERTY_VIEW_ID);
-                } catch (PartInitException e) {
+                } catch (final PartInitException e) {
                     MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
                                             e.getMessage());
                 }
@@ -505,11 +506,11 @@ public class LogView extends ViewPart {
         showPropertyViewAction.setText(Messages.LogView_properties);
         showPropertyViewAction.setToolTipText(Messages.LogView_propertiesToolTip);
 
-        IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
+        final IViewRegistry viewRegistry = getSite().getWorkbenchWindow().getWorkbench()
                 .getViewRegistry();
-        IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
+        final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
         showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
-        IActionBars bars = getViewSite().getActionBars();
+        final IActionBars bars = getViewSite().getActionBars();
 
         bars.getToolBarManager().add(showPropertyViewAction);
 
@@ -517,7 +518,8 @@ public class LogView extends ViewPart {
     }
 
     private void createMessageAreaToggleAction(final IActionBars bars) {
-        Action displayMessageAreaAction = new Action() {
+        final Action displayMessageAreaAction = new Action() {
+            @Override
             public void run() {
                 if (_messageArea.isVisible()) {
                     _messageArea.hide();
@@ -529,7 +531,7 @@ public class LogView extends ViewPart {
         displayMessageAreaAction.setText(Messages.LogView_messageArea);
         displayMessageAreaAction.setToolTipText(Messages.LogView_messageAreaToolTip);
 
-        ImageDescriptor image = JmsLogsPlugin.getImageDescriptor("icons/details_view.gif");
+        final ImageDescriptor image = JmsLogsPlugin.getImageDescriptor("icons/details_view.gif");
         displayMessageAreaAction.setImageDescriptor(image);
         bars.getToolBarManager().add(displayMessageAreaAction);
     }
@@ -537,6 +539,7 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setFocus() {
         _tableViewer.getTable().setFocus();
     }
@@ -544,6 +547,7 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void init(final IViewSite site, final IMemento memento) throws PartInitException {
         super.init(site, memento);
         if (memento == null) {
@@ -560,6 +564,7 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void saveState(final IMemento memento) {
         super.saveState(memento);
         if ( (memento != null) && (_currentTopicSet != null)) {
@@ -571,6 +576,7 @@ public class LogView extends ViewPart {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dispose() {
         super.dispose();
         _messageTable = null;
