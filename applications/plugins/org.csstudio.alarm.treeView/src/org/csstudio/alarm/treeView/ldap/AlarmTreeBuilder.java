@@ -28,12 +28,10 @@ import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import java.sql.Date;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
-import javax.naming.directory.DirContext;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
@@ -73,21 +71,20 @@ public final class AlarmTreeBuilder {
         // Empty
     }
 
-    private static void ensureTestFacilityExists(@Nonnull final DirContext ctx) {
+    private static void ensureTestFacilityExists() {
         try {
             final LdapName testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
                                                                         OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
 
             try {
                 LDAP_SERVICE.lookup(testFacilityName);
-                ctx.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
                 attrs.put("objectClass", LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
                 attrs.put("epicsCssType", LdapEpicsAlarmCfgObjectClass.FACILITY.getCssType());
-                ctx.bind(testFacilityName, null, attrs);
+                LDAP_SERVICE.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
             LOG.error("Failed to create TEST facility in LDAP", e);
@@ -105,15 +102,15 @@ public final class AlarmTreeBuilder {
      */
     private static boolean createAlarmSubtree(@Nonnull final SubtreeNode parentNode,
                                               @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
-                                              @Nullable final IProgressMonitor monitor) throws NamingException {
+                                              @Nonnull final IProgressMonitor monitor) throws NamingException {
 
         final String simpleName = modelNode.getName();
 
         if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
-            // TODO (bknerr) : set alarm state has to be removed here
-            //AlarmTreeNodeModifier.evaluateAttributes(modelNode.getAttributes(), newNode);
-            AlarmTreeNodeModifier.setEpicsAttributes(newNode, modelNode.getAttributes());
+
+            final Attributes attributes = modelNode.getAttributes();
+            AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
 
         } else {
@@ -121,7 +118,7 @@ public final class AlarmTreeBuilder {
             for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
                 createAlarmSubtree(newNode, child, monitor);
 
-                if ((monitor != null) && monitor.isCanceled()) {
+                if (monitor.isCanceled()) {
                     return true;
                 }
             }
@@ -145,13 +142,10 @@ public final class AlarmTreeBuilder {
      */
     public static boolean build(@Nonnull final SubtreeNode rootNode,
                                 @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
-                                @Nullable final IProgressMonitor monitor) throws NamingException {
-        // TODO jp ensureTestFacilityExists disabled
-//        final DirContext ctx = Engine.getInstance().getLdapDirContext();
-//        ensureTestFacilityExists(ctx);
+                                @Nonnull final IProgressMonitor monitor) throws NamingException {
+        ensureTestFacilityExists();
 
         for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
-            // TODO jp DirContext ctx no longer used in createAlarmSubtree
             createAlarmSubtree(rootNode, node, monitor);
         }
         return true;

@@ -163,7 +163,7 @@ public final class AlarmTreeNodeModifier {
      * @param attrs
      *            the attributes.
      */
-    static void setAlarmState(final ProcessVariableNode node, final Attributes attrs)
+    static void setAlarmState(@Nonnull final ProcessVariableNode node, @Nonnull final Attributes attrs)
             throws NamingException {
         final Attribute severityAttr = attrs.get(EPICS_ALARM_SEVERITY);
         final Attribute eventtimeAttr = attrs.get(EPICS_ALARM_TIME_STAMP);

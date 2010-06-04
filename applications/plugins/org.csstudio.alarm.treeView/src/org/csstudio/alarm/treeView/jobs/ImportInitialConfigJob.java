@@ -24,7 +24,6 @@ package org.csstudio.alarm.treeView.jobs;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
@@ -54,8 +53,8 @@ import org.eclipse.jface.dialogs.MessageDialog;
  */
 public final class ImportInitialConfigJob extends Job {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(ImportInitialConfigJob.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(ImportInitialConfigJob.class);
 
     private final AlarmTreeView _alarmTreeView;
     private final SubtreeNode _rootNode;
@@ -77,15 +76,15 @@ public final class ImportInitialConfigJob extends Job {
     }
 
     @Override
-    protected IStatus run(@Nullable final IProgressMonitor monitor) {
+    protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
 
-        String filePath = "c:\\alarmConfig.xml";
+        final String filePath = "c:\\alarmConfig.xml";
         try {
             final long startTime = System.currentTimeMillis();
 
             // TODO jp Hack: Need better way to find out whether to use LDAP
-            boolean useLDAP = AlarmTreePlugin.getDefault().getLdapService() != null;
+            final boolean useLDAP = AlarmTreePlugin.getDefault().getLdapService() != null;
             ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
             if (useLDAP) {
                 final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();

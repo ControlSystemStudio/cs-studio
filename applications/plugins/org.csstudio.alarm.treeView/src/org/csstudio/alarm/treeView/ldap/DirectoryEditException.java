@@ -21,6 +21,9 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Thrown when an edit operation in the directory fails.
  *
@@ -39,7 +42,7 @@ public class DirectoryEditException extends Exception {
 	 * @param message the detail message.
 	 * @param cause the cause.
 	 */
-	public DirectoryEditException(final String message, final Throwable cause) {
+	public DirectoryEditException(@Nonnull final String message, @Nullable final Throwable cause) {
 		super(message, cause);
 	}
 }
