@@ -21,6 +21,16 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
@@ -40,9 +50,7 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
 import org.csstudio.utility.ldap.model.Record;
@@ -58,6 +66,7 @@ import org.csstudio.utility.ldapUpdater.service.impl.LdapUpdaterServiceImpl;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.TreeNodeComponent;
 
 
 /**
@@ -70,16 +79,17 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  */
 public final class LdapAccess {
 
+    public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
     public static LdapName NAME_SUFFIX = null;
 
     static {
         try {
-            final Rdn ou = new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE);
+            final Rdn ou = new Rdn(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
             final List<Rdn> list = new ArrayList<Rdn>();
             list.add(ou);
             NAME_SUFFIX = new LdapName(list);
         } catch (final InvalidNameException e) {
-            // TODO Auto-generated catch block
+            LOG.warn("Name suffix for EpicsControls could not be created.");
             e.printStackTrace();
         }
     }
@@ -127,9 +137,8 @@ public final class LdapAccess {
         }
     }
 
-    public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
 
-    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
+    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = LdapUpdaterServiceImpl.INSTANCE;
 
     /**
      * Don't instantiate.
@@ -216,13 +225,13 @@ public final class LdapAccess {
             if (recordComponent == null) { // does not yet exist
                 LOG.info("New Record: " + iocName + " " + recordName);
 
-                if (!LdapUtils.filterLDAPNames(recordName)) {
+                if (!filterLDAPNames(recordName)) {
 
                     final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
-                    newLdapName.add(new Rdn(LdapFieldsAndAttributes.EREN_FIELD_NAME, recordName));
+                    newLdapName.add(new Rdn(EREN_FIELD_NAME, recordName));
 
                     // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
-                    if (!LDAP_UPDATER_SERVICE.createLDAPRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
+                    if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
                         LOG.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");
                     } else {
@@ -256,7 +265,7 @@ public final class LdapAccess {
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
-            final Attribute attr = iocFromLDAP.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute attr = iocFromLDAP.getAttribute(ATTR_FIELD_RESPONSIBLE_PERSON);
             String person;
             if ((attr != null) && !StringUtil.hasLength((String) attr.get())) {
                 person = (String) attr.get();
@@ -296,32 +305,25 @@ public final class LdapAccess {
             if (historyFileModel.contains(iocName)) {
                 if (!isIOCFileNewerThanHistoryEntry(iocFromFS.getValue(), historyFileModel)) {
                     LOG.debug("IOC file for " + iocName
-                                 + " is not newer than history file time stamp.");
+                              + " is not newer than history file time stamp.");
                     continue;
                 }
             } // else means 'new IOC file in directory'
 
-            //final IOC iocFromLDAP = ldapContentModel.getIOC(iocName);
-            final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLDAP =
-                model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
-
-            if (iocFromLDAP == null) {
-                LOG.warn("IOC "
-                            + iocName
-                            + " (from file system) does not exist in LDAP - no facility/group association possible.\n"
-                            + "No LDAP Update! Generate an LDAP entry for this IOC manually!");
-                continue;
-            }
-
             try {
-                final LdapSearchResult searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLDAP.getLdapName());
+                final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLdap = getOrCreateIocFromLdap(model,
+                                                                                                               iocFromFS,
+                                                                                                               iocName);
+                final LdapName iocFromLdapName = iocFromLdap.getLdapName();
+
+                final LdapSearchResult searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
 
                 final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
                     new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(model);
                 builder.setSearchResult(searchResult);
                 builder.build();
 
-                final UpdateIOCResult updateResult = updateIOC(model, iocFromLDAP);
+                final UpdateIOCResult updateResult = updateIOC(model, iocFromLdap);
                 // TODO (bknerr) : does only make sense when the update process has been stopped
                 if (updateResult.hasNoError()) {
                     HistoryFileAccess.appendLineToHistfile(iocName,
@@ -337,6 +339,39 @@ public final class LdapAccess {
                 LOG.error("Error creating content model from LDAP.");
             }
         }
+    }
+
+
+    private static ISubtreeNodeComponent<LdapEpicsControlsObjectClass> getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> model,
+                                                                                              @Nonnull final Entry<String, IOC> iocFromFS,
+                                                                                              @Nonnull final String iocName) throws InvalidNameException {
+        ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLdap =
+            model.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocName);
+
+        LdapName iocFromLdapName;
+        if (iocFromLdap == null) {
+            LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
+
+            final LdapName middleName = createLdapQuery(ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                                        EFAN_FIELD_NAME, UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
+
+            iocFromLdapName = (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(ECON_FIELD_NAME, iocName));
+
+            final LdapName fullLdapName = (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE));
+
+            LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
+
+            final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> parent = model.getChildByLdapName(middleName.toString());
+            iocFromLdap =
+                new TreeNodeComponent<LdapEpicsControlsObjectClass>(iocName,
+                                                                    LdapEpicsControlsObjectClass.IOC,
+                                                                    LdapEpicsControlsObjectClass.IOC.getNestedContainerClasses(),
+                                                                    parent,
+                                                                    null,
+                                                                    iocFromLdapName);
+            model.addChild(parent, iocFromLdap);
+        }
+        return iocFromLdap;
     }
 
 }

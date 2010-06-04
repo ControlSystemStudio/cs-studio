@@ -23,6 +23,7 @@
  */
 package org.csstudio.utility.ldapUpdater.service;
 
+import java.util.GregorianCalendar;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -49,7 +50,15 @@ public interface ILdapUpdaterService {
      * @param newLdapName the new complete ldap name of the record
      * @return true if the new record could be created, false otherwise
      */
-    boolean createLDAPRecord(@Nonnull LdapName newLdapName);
+    boolean createLdapRecord(@Nonnull LdapName newLdapName);
+
+    /**
+     * Creates a new IOC in LDAP
+     * @param newLdapName the new complete name of the IOC
+     * @param gregorianCalendar
+     * @return true if the new ioc could be created, false otherwise
+     */
+    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nonnull GregorianCalendar gregorianCalendar);
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.

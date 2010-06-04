@@ -33,7 +33,7 @@ package org.csstudio.utility.ldapUpdater;
  */
 public final class UpdaterLdapConstants {
 
-
+    public static final String FACILITY_MISC_FIELD_VALUE = "MISC";
 
 
 

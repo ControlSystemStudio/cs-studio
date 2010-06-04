@@ -58,7 +58,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public final class LdapServiceImpl implements ILdapService {
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceImpl.class);
 
     private static DirContext CONTEXT = Engine.getInstance().getLdapDirContext();
 
@@ -111,17 +111,17 @@ public final class LdapServiceImpl implements ILdapService {
 
             } catch (final NameNotFoundException nnfe){
                 Engine.getInstance().reconnectDirContext();
-                _log.info("Wrong LDAP name?" + nnfe.getExplanation());
+                LOG.info("Wrong LDAP name?" + nnfe.getExplanation());
             } catch (final NamingException e) {
                 Engine.getInstance().reconnectDirContext();
-                _log.info("Wrong LDAP query. " + e.getExplanation());
+                LOG.info("Wrong LDAP query. " + e.getExplanation());
             } finally {
                 try {
                     if (answer != null) {
                         answer.close();
                     }
                 } catch (final NamingException e) {
-                    _log.warn("Error closing search results: ", e);
+                    LOG.warn("Error closing search results: ", e);
                 }
             }
         }
@@ -138,10 +138,10 @@ public final class LdapServiceImpl implements ILdapService {
                                    @Nullable final Attributes attributes) {
         try {
             CONTEXT.bind(newComponentName, null, attributes);
-            _log.info( "New LDAP Component: " + newComponentName.toString());
+            LOG.info( "New LDAP Component: " + newComponentName.toString());
         } catch (final NamingException e) {
-            _log.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
-            _log.warn(e.getExplanation());
+            LOG.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
+            LOG.warn(e.getExplanation());
             return false;
         }
         return true;
@@ -153,11 +153,11 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public boolean removeComponent(@Nonnull final LdapName component) {
         try {
-            _log.debug("Unbind entry from LDAP: " + component);
+            LOG.debug("Unbind entry from LDAP: " + component);
             CONTEXT.unbind(component);
         } catch (final NamingException e) {
-            _log.warn("Naming Exception while trying to unbind: " + component);
-            _log.warn(e.getExplanation());
+            LOG.warn("Naming Exception while trying to unbind: " + component);
+            LOG.warn(e.getExplanation());
             return false;
         }
         return true;
@@ -169,7 +169,7 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public void modifyAttributes(@Nonnull final LdapName name,
                                  @Nonnull final ModificationItem[] mods) throws NamingException {
-        _log.debug("Modify entry for: " + name);
+        LOG.debug("Modify entry for: " + name);
         CONTEXT.modifyAttributes(name, mods);
     }
 
@@ -180,7 +180,7 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public void rename(@Nonnull final LdapName oldLdapName,
                        @Nonnull final LdapName newLdapName) throws NamingException {
-        _log.debug("Rename entry from: " + oldLdapName.toString() + " to " + oldLdapName.toString());
+        LOG.debug("Rename entry from: " + oldLdapName.toString() + " to " + oldLdapName.toString());
         CONTEXT.rename(oldLdapName, newLdapName);
     }
 

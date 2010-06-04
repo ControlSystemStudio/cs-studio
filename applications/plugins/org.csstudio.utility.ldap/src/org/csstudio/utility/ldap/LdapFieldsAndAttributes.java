@@ -53,12 +53,16 @@ public final class LdapFieldsAndAttributes {
     public static final String EAIN_FIELD_NAME = "eain";
     public static final String EAIG_FIELD_NAME = "eaig";
 
-    public static final String ATTR_VAL_OBJECT_CLASS = "epicsRecord";
+    public static final String ATTR_VAL_RECORD_OBJECT_CLASS = "epicsRecord";
+    public static final String ATTR_VAL_IOC_OBJECT_CLASS = "epicsController";
     public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
+    public static final String ATTR_FIELD_LAST_UPDATED = "lastUpdated";
+    public static final String ATTR_FIELD_LAST_UPDATED_IN_MILLIS = "lastUpdatedInMillis";
 
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
+
     static {
         FORBIDDEN_SUBSTRINGS.add("/");
         FORBIDDEN_SUBSTRINGS.add("\\");

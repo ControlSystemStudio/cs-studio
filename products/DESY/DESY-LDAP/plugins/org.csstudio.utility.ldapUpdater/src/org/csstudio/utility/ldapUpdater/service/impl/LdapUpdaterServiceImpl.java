@@ -24,7 +24,8 @@
 package org.csstudio.utility.ldapUpdater.service.impl;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_VAL_RECORD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
@@ -36,7 +37,9 @@ import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 
+import java.text.SimpleDateFormat;
 import java.util.Collection;
+import java.util.GregorianCalendar;
 import java.util.Map;
 import java.util.Set;
 
@@ -71,7 +74,9 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  * @version $Revision$
  * @since 05.05.2010
  */
-public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
+public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
+
+    INSTANCE;
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
@@ -82,14 +87,31 @@ public class LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      */
     @Override
-    public boolean createLDAPRecord(@Nonnull final LdapName newLdapName) {
+    public boolean createLdapRecord(@Nonnull final LdapName newLdapName) {
 
         final String recordName =
             LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsObjectClass.RECORD.getNodeTypeName());
 
         final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_OBJECT_CLASS,
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_RECORD_OBJECT_CLASS,
                                    EREN_FIELD_NAME, recordName);
+
+        return _ldapService.createComponent(newLdapName, afe);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nonnull final GregorianCalendar cal) {
+
+        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
+
+        final Attributes afe =
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
+//        ,
+//                                   ATTR_FIELD_LAST_UPDATED, time,
+//                                   ATTR_FIELD_LAST_UPDATED_IN_MILLIS, String.valueOf(cal.getTimeInMillis()));
 
         return _ldapService.createComponent(newLdapName, afe);
     }

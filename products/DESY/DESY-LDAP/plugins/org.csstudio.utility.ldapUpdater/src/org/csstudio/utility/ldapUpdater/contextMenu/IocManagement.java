@@ -49,7 +49,7 @@ public class IocManagement implements IManagementCommand {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(IocManagement.class);
 
-    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = new LdapUpdaterServiceImpl();
+    private static final ILdapUpdaterService LDAP_UPDATER_SERVICE = LdapUpdaterServiceImpl.INSTANCE;
 
     /**
      * {@inheritDoc}

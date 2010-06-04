@@ -34,7 +34,7 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
@@ -60,7 +60,7 @@ public class LdapUpdaterServer implements IApplication {
      */
     private static LdapUpdaterServer INSTANCE;
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServer.class);
 
     private volatile boolean _stopped;
 
@@ -81,7 +81,7 @@ public class LdapUpdaterServer implements IApplication {
      *
      * @return the running server.
      */
-    @CheckForNull
+    @Nonnull
     public static LdapUpdaterServer getRunningServer() {
         return INSTANCE;
     }
@@ -100,7 +100,7 @@ public class LdapUpdaterServer implements IApplication {
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
         final Calendar cal = new GregorianCalendar(timeZone);
 
-        System.out.println(cal.getTime());
+//        System.out.println(cal.getTime());
 
         final int hour = (startTimeSec) / 3600;
         cal.set(Calendar.HOUR, hour);
@@ -112,7 +112,7 @@ public class LdapUpdaterServer implements IApplication {
 
         final String delayStr = new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
 
-        _log.info("Autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
+        LOG.info("Autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
 
 
         final String username = getValueFromPreferences(XMPP_USER, "anonymous");
@@ -140,7 +140,7 @@ public class LdapUpdaterServer implements IApplication {
      */
     @Override
     public final synchronized void stop() {
-        _log.debug("stop() was called, stopping server.");
+        LOG.debug("stop() was called, stopping server.");
         _stopped = true;
         notifyAll();
     }
