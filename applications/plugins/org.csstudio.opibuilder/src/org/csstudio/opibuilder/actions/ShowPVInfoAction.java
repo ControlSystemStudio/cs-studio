@@ -40,8 +40,11 @@ public class ShowPVInfoAction implements IObjectActionDelegate {
 		sb.append("State: " + pv.getStateInfo()+ "\n"); //$NON-NLS-2$
 		sb.append("Connected: " + pv.isConnected()+ "\n"); //$NON-NLS-2$
 		sb.append("Running: " + pv.isRunning()+ "\n"); //$NON-NLS-2$
-		sb.append("Value: " + pv.getValue()+ "\n"); //$NON-NLS-2$
-		sb.append("Meta Data: " + pv.getValue().getMetaData());
+		if(pv.isConnected()){
+			sb.append("Value: " + pv.getValue()+ "\n"); //$NON-NLS-2$
+			sb.append("Meta Data: " + pv.getValue().getMetaData());
+		}
+		
 		
 		MessageDialog.openInformation(targetPart.getSite().getShell(), "PV Info", sb.toString());
 		
