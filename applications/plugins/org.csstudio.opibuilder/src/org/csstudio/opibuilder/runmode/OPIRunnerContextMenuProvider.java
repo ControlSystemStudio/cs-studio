@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
@@ -46,7 +47,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public void buildContextMenu(final IMenuManager menu) {				
+	public void buildContextMenu(final IMenuManager menu) {
+		addSettingPropertiesAction(menu);
 		addWidgetActionToMenu(menu);
 		GEFActionConstants.addStandardActionGroups(menu);
 		ActionRegistry actionRegistry =
@@ -89,5 +91,25 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 			}
 		}
 	}
+	
+	private void addSettingPropertiesAction(final IMenuManager menu){
+		List<?> selectedEditParts = ((IStructuredSelection)getViewer().getSelection()).toList();
+		if (selectedEditParts.size()==1) {
+			if (selectedEditParts.get(0) instanceof AbstractBaseEditPart) {
+				AbstractBaseEditPart editPart = (AbstractBaseEditPart) selectedEditParts.get(0);
+				AbstractWidgetModel widget = editPart.getWidgetModel();
+				if(widget.getRuntimePropertyList() != null){
+					menu.add(new ConfigureRuntimePropertiesAction(
+							getViewer().getControl().getShell(), widget));
+				}
+			}
+
+				
+		}
+		
+		
+	}
+	
+	
 
 }

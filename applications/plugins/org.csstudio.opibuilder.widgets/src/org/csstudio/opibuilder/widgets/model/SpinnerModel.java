@@ -60,10 +60,10 @@ public class SpinnerModel extends LabelModel {
 				WidgetPropertyCategory.Behavior, DEFAULT_MAX));			
 		
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step Increment", 
-				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));		
+				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT), true);		
 	
 		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
-				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT));
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
 		
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, true));

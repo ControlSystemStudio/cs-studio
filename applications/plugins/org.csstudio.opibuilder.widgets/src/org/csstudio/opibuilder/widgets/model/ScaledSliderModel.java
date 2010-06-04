@@ -86,11 +86,11 @@ public class ScaledSliderModel extends AbstractMarkedWidgetModel{
 				WidgetPropertyCategory.Display,DEFAULT_THUMB_COLOR));	
 		
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step_Increment",
-				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));
+				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT), true);
 		
 
 		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page_Increment",
-				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT));
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
 		
 		setPropertyValue(PROP_LO_COLOR, new OPIColor(255, 128, 0));
 		setPropertyValue(PROP_HI_COLOR, new OPIColor(255, 128, 0));

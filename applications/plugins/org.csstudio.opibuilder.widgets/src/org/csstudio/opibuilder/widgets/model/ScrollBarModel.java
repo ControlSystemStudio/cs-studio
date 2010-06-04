@@ -65,11 +65,11 @@ public class ScrollBarModel extends AbstractPVWidgetModel {
 		addProperty(new DoubleProperty(PROP_MAX, "Maximum", 
 				WidgetPropertyCategory.Behavior, DEFAULT_MAX));			
 		
-		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page Increment", 
-				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT));
-		
 		addProperty(new DoubleProperty(PROP_STEP_INCREMENT, "Step Increment", 
-				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT));			
+				WidgetPropertyCategory.Behavior, DEFAULT_STEP_INCREMENT), true);
+		
+		addProperty(new DoubleProperty(PROP_PAGE_INCREMENT, "Page Increment", 
+				WidgetPropertyCategory.Behavior, DEFAULT_PAGE_INCREMENT), true);
 		
 		addProperty(new DoubleProperty(PROP_BAR_LENGTH, "Bar Length", 
 				WidgetPropertyCategory.Behavior, DEFAULT_BAR_LENGTH));

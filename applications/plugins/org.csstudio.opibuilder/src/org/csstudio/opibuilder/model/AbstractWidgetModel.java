@@ -22,9 +22,11 @@
 
 package org.csstudio.opibuilder.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -97,6 +99,11 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;
 	
+	/**
+	 * The map contains properties which are allowed to change during running.
+	 */
+	private List<AbstractWidgetProperty> runtimePropertyList;
+	
 	private Map<String, IPropertyDescriptor> propertyDescriptors;
 	
 	private AbstractContainerModel parent;
@@ -123,6 +130,23 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		propertyMap.put(property.getPropertyID(), property);
 		if(property.isVisibleInPropSheet())
 			propertyDescriptors.put(property.getPropertyID(), property.getPropertyDescriptor());		
+	}
+	
+	/**Add a property to the widget with the option to set it running changeable.
+	 * @param property the property to be added.
+	 * @param runtimeChangeable true if this property is changeable during running. false otherwise.
+	 */
+	public void addProperty(final AbstractWidgetProperty property, final boolean runtimeChangeable){
+		addProperty(property);
+		if(runtimeChangeable){
+			if(runtimePropertyList == null)
+				runtimePropertyList = new ArrayList<AbstractWidgetProperty>();
+			runtimePropertyList.add(property);
+		}
+	}
+	
+	public List<AbstractWidgetProperty> getRuntimePropertyList() {
+		return runtimePropertyList;
 	}
 	
 	/**Add a PVNameProperty and its value property correspondingly.
