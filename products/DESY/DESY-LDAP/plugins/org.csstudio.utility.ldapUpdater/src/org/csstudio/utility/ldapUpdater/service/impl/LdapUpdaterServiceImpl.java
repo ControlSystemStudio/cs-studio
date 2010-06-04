@@ -37,7 +37,6 @@ import static org.csstudio.utility.ldap.LdapUtils.any;
 import static org.csstudio.utility.ldap.LdapUtils.attributesForLdapEntry;
 import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 
-import java.text.SimpleDateFormat;
 import java.util.Collection;
 import java.util.GregorianCalendar;
 import java.util.Map;
@@ -105,7 +104,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
     @Override
     public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final GregorianCalendar cal) {
 
-        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
+//        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
