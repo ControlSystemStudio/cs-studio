@@ -63,7 +63,7 @@ public class XmlFileContentModelBuilderTest {
             final File testPath = new File(loc, "test");
             RES_PATH = new File(testPath, "res");
         } catch (final IOException e1) {
-            Assert.fail("File locator could not deliver file");
+            Assert.fail("File locator could not deliver bundle file path.");
         }
     }
 
