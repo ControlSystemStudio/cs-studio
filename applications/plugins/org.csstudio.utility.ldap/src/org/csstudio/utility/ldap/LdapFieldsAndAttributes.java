@@ -59,9 +59,18 @@ public final class LdapFieldsAndAttributes {
     public static final String ATTR_FIELD_LAST_UPDATED = "lastUpdated";
     public static final String ATTR_FIELD_LAST_UPDATED_IN_MILLIS = "lastUpdatedInMillis";
 
+    // TODO (bknerr) : try to figure out whether enums could be used for distinct groups
+    public static final String ATTR_FIELD_ALARM_SEVERITY = "epicsAlarmSeverity";
+    public static final String ATTR_FIELD_ALARM_STATUS = "epicsAlarmStatus";
+    public static final String ATTR_FIELD_ALARM_TIMESTAMP = "epicsAlarmTimeStamp";
+    public static final String ATTR_FIELD_ALARM_HIGH_UNACK = "epicsAlarmHighUnAckn";
+
+
+
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
+
 
     static {
         FORBIDDEN_SUBSTRINGS.add("/");

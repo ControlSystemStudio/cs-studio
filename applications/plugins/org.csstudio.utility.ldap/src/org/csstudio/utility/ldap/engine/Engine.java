@@ -74,7 +74,6 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  */
 public final class Engine extends Job {
 
-
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Engine.class);
 
     private static int LDAP_MAX_BUFFER_SIZE = 10000; // 1000 too small!!
@@ -266,9 +265,11 @@ public final class Engine extends Job {
          *
          */
         LOG.debug("Engine.run - start");
+
         if (_ctx == null) {
             _ctx = getLdapDirContext();
         }
+
 
         while (isRunning() || _doWrite) {
             //
@@ -356,8 +357,7 @@ public final class Engine extends Job {
     synchronized public DirContext getLdapDirContext() {
         if (_ctx == null) {
             try {
-                final LDAPConnector con = new LDAPConnector();
-                _ctx = con.getDirContext();
+                _ctx = new LDAPConnector().getDirContext();
             } catch (final NamingException e1) {
                 try {
                     Thread.sleep(100);
@@ -516,25 +516,20 @@ public final class Engine extends Job {
         if (ipAddress == null) {
             return null;
         }
-//                || !ipAddress
-//                .matches("[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].[0-2]?[0-9]?[0-9].*")) {
 
-        // TODO (bknerr) : matches 299.299... as well
-            // Better, split on dots, parse as positive ints + zero, check the range 0-255
-            final String[] fields = ipAddress.split(".");
-            if (fields.length != 4) {
+        // Better, split on dots, parse as positive ints + zero, check the range 0-255
+        final String[] fields = ipAddress.split("\\.");
+        if (fields.length != 4) {
+            return null;
+        }
+        for (final String ipPart : fields) { // check for ipPart is in [0,255]
+            final Integer value = Integer.valueOf(ipPart);
+            if ((value < 0) || (value > 255)) {
                 return null;
             }
-            for (final String ipPart : fields) { // check for ipPart is in [0,255]
-                final Integer value = Integer.valueOf(ipPart);
-                if ((value < 0) || (value > 255)) {
-                    return null;
-                }
-            }
+        }
 
 
-//            return null;
-//        }
         final DirContext context = getLdapDirContext();
         if (context != null) {
             final SearchControls ctrl = new SearchControls();
@@ -649,6 +644,8 @@ public final class Engine extends Job {
         final long fromLong = fromDate.getTime();
         final long toLong = toDate.getTime();
         final long timeDifference = toLong - fromLong;
+
+
         final int intDiff = (int) timeDifference;
         return intDiff;
     }
@@ -729,11 +726,7 @@ public final class Engine extends Job {
      */
     private void changeValue(final String string, final String channel, final List<ModificationItem> modItems) {
         List<String> namesInNamespace = Collections.emptyList();
-        GregorianCalendar startTime = null;
-
-        // set start time
-        //
-        startTime = new GregorianCalendar();
+        final GregorianCalendar startTime = new GregorianCalendar();
 
         //
         // is channel name already in ldearReference hash table?

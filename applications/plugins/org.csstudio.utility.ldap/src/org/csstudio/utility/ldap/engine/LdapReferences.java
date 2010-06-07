@@ -44,6 +44,14 @@ public class LdapReferences {
         // EMPTY
     }
 
+    /**
+     * TODO (who?) :
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 04.06.2010
+     */
     public static class Entry {
 
         private GregorianCalendar _timeCreated = null;
