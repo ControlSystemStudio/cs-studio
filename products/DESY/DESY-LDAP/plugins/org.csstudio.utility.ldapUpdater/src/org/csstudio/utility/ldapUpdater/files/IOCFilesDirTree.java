@@ -61,7 +61,7 @@ public final class IOCFilesDirTree {
      * @param iocMap
      * */
     private static void doFile(@Nonnull final File f, @Nonnull final Map<String, IOC> iocMap) {
-        final String fileName = splitFileNameFromCanonicalPath(f);
+        final String fileName = f.getName();
 
         if (!filterFileName(fileName, ".")) {
             final GregorianCalendar dateTime = findLastModifiedDateForFile(fileName);
@@ -117,6 +117,7 @@ public final class IOCFilesDirTree {
 
     @Nonnull
     private static String splitFileNameFromCanonicalPath(@Nonnull final File f) {
+
         String fileName = "";
         try {
             final String cP = f.getCanonicalPath();
