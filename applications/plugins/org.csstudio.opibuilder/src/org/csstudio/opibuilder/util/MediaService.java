@@ -14,6 +14,7 @@ import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**A service help to maintain the color macros.
  * @author Xihui Chen
@@ -79,6 +80,9 @@ public final class MediaService {
 			String line;
 			//fill the color map.
 			while((line = reader.readLine()) != null){
+				//support comments
+				if(line.trim().startsWith("#") || line.trim().startsWith("//")) //$NON-NLS-1$ //$NON-NLS-2$
+					continue;
 				int i;
 				if((i = line.indexOf('=')) != -1){
 					String name = line.substring(0, i).trim();
@@ -114,15 +118,20 @@ public final class MediaService {
 			String line;
 			//fill the font map.
 			while((line = reader.readLine()) != null){
+				//support comments
+				if(line.trim().startsWith("#") || line.trim().startsWith("//")) //$NON-NLS-1$ //$NON-NLS-2$
+					continue;
 				int i;
 				if((i = line.indexOf('=')) != -1){
 					String name = line.substring(0, i).trim();
 					try{
 						FontData fontdata = StringConverter.asFontData(line.substring(i+1).trim());
-						
+						if(fontdata.getName().equals("SystemDefault")) //$NON-NLS-1$
+							fontdata.setName(
+									Display.getDefault().getSystemFont().getFontData()[0].getName());
 						fontMap.put(name, new OPIFont(name, fontdata));
 					}catch (DataFormatException e) {
-						CentralLogger.getInstance().error(this, "Failed to read font difinition file.",e);
+						CentralLogger.getInstance().error(this, "Failed to read font definition file.",e);
 					}
 				}				
 			}
