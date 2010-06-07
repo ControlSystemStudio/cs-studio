@@ -53,8 +53,8 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
     @Override
     public void createFieldEditors() {
         final String[][] contextTypes = {
-                { "DAL", Boolean.TRUE.toString() },
-                { "JMS", Boolean.FALSE.toString() }
+                {"DAL", Boolean.TRUE.toString()},
+                {"JMS", Boolean.FALSE.toString()}
               };
         final Composite parent = getFieldEditorParent();
         addField(new RadioGroupFieldEditor(AlarmServicePreferenceConstants.ALARMSERVICE_DAL,
