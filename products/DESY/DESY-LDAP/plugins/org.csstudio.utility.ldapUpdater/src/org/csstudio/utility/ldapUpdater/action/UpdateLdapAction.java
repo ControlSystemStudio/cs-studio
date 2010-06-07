@@ -42,7 +42,7 @@ public class UpdateLdapAction implements IManagementCommand {
     @Override
     @Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
-        final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+        final LdapUpdater ldapUpdater = LdapUpdater.INSTANCE;
         if (!ldapUpdater.isBusy()){
             ldapUpdater.updateLdapFromIOCFiles();
         }else{

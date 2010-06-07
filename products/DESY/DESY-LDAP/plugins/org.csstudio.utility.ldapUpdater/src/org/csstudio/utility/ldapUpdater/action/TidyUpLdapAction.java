@@ -45,7 +45,7 @@ public class TidyUpLdapAction implements IManagementCommand {
 	@Nonnull
     public final CommandResult execute(@Nonnull final CommandParameters parameters) {
 
-	      final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+	      final LdapUpdater ldapUpdater = LdapUpdater.INSTANCE;
 	        try {
 	            if (!ldapUpdater.isBusy()){
 	                ldapUpdater.tidyUpLdapFromIOCFiles();

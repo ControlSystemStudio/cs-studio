@@ -79,20 +79,14 @@ import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
  * @version $Revision$
  * @since 17.04.2008
  */
-public final class LdapUpdater {
+public enum LdapUpdater {
+
+    INSTANCE;
 
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
 
-    /**
-     * Factory method for creating a singleton instance.
-     * @return the singleton instance of this class
-     */
-    @Nonnull
-    public static LdapUpdater getInstance() {
-        return LdapUpdaterHolder.INSTANCE;
-    }
 
     /**
      * Converts milli seconds to a formatted date time string.
@@ -112,42 +106,28 @@ public final class LdapUpdater {
     private static final String UPDATE_ACTION_NAME = "LDAP Update Action";
     private static final String TIDYUP_ACTION_NAME = "LDAP Tidy Up Action";
 
-    /**
-     * LdapUpdaterHolder is loaded on the first execution of LdapUpdater.getInstance()
-     * or the first access to LdapUpdaterHolder.INSTANCE, not before.
-     * And synchronization is hence provided for free.
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 19.04.2010
-     */
-    private static final class LdapUpdaterHolder {
-        private LdapUpdaterHolder() {
-            // Don't instantiate.
-        }
-        private static final LdapUpdater INSTANCE = new LdapUpdater();
-    }
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdater.class);
 
-
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
-
-    private volatile boolean _busy = false;
+    private boolean _busy;
 
     /**
      * Don't instantiate with constructor.
      */
     private LdapUpdater() {
-        // empty
+        setBusy(false);
     }
 
     /**
      * Returns true if the updater is busy.
      * @return true if busy
      */
-    public boolean isBusy() {
+    public synchronized boolean isBusy() {
         return _busy;
+    }
+
+    private synchronized void setBusy(final boolean busy) {
+        _busy = busy;
     }
 
     private void logFooter(@Nonnull final String actionName, final long startTime) {
@@ -160,7 +140,7 @@ public final class LdapUpdater {
         .append("Time used : ").append(deltaTime/1000.).append("s\n")
         .append("End.\n")
         .append("-------------------------------------------------------------------\n");
-        _log.info( builder.toString() );
+        LOG.info( builder.toString() );
     }
 
     private long logHeader(@Nonnull final String action) {
@@ -172,7 +152,7 @@ public final class LdapUpdater {
         .append(action)
         .append(" starts at ").append(now).append("  ( ")
         .append(startTime).append(" )");
-        _log.info(strBuilder.toString() );
+        LOG.info(strBuilder.toString() );
         return startTime;
     }
 
@@ -185,10 +165,10 @@ public final class LdapUpdater {
      * @throws CreateContentModelException
      */
     public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException {
-        if ( _busy ) {
+        if ( isBusy() ) {
             return;
         }
-        _busy = true;
+        setBusy(true);
 
         final long startTime = logHeader(TIDYUP_ACTION_NAME);
 
@@ -209,11 +189,11 @@ public final class LdapUpdater {
                 LdapAccess.tidyUpLDAPFromIOCList(builder.getModel(),
                                                  iocMapFromFS);
             } else {
-                _log.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
+                LOG.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
             }
 
         } finally {
-            _busy = false;
+            setBusy(false);
         }
         logFooter(TIDYUP_ACTION_NAME, startTime);
     }
@@ -224,10 +204,10 @@ public final class LdapUpdater {
      */
     public void updateLdapFromIOCFiles() {
 
-        if ( _busy ) {
+        if ( isBusy() ) {
             return;
         }
-        _busy = true;
+        setBusy(true);
 
         final long startTime = logHeader(UPDATE_ACTION_NAME);
 
@@ -254,7 +234,7 @@ public final class LdapUpdater {
                 final Map<String, IOC> iocMap = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
                 LdapAccess.updateLDAPFromIOCList(model, iocMap, historyFileModel);
             } else {
-                _log.warn("No preference for IOC dump path could be found. Update cancelled!");
+                LOG.warn("No preference for IOC dump path could be found. Update cancelled!");
             }
 
         } catch (final InterruptedException e) {
@@ -263,7 +243,7 @@ public final class LdapUpdater {
         } catch (final Exception e) {
             e.printStackTrace();
         } finally {
-            _busy = false;
+            setBusy(false);
         }
         logFooter(UPDATE_ACTION_NAME, startTime);
     }
@@ -282,7 +262,7 @@ public final class LdapUpdater {
 
         try {
             for (final String iocNameKey : iocsFromLDAP) {
-                _log.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
+                LOG.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
                 final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocNameKey);
                 if (ioc != null) {
@@ -314,7 +294,7 @@ public final class LdapUpdater {
         iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsObjectClass.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
-            _log.warn("IOC " + ioc + " found in history file is not present in LDAP!");
+            LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");
         }
     }
 

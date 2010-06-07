@@ -62,7 +62,7 @@ public class TimerProcessor {
         @Override
         public void run() {
 
-            final LdapUpdater ldapUpdater = LdapUpdater.getInstance();
+            final LdapUpdater ldapUpdater = LdapUpdater.INSTANCE;
             try {
                 long time = 0L;
                 boolean timeOut = false;
