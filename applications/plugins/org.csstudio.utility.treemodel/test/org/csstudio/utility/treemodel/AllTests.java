@@ -34,9 +34,7 @@ import org.junit.runners.Suite.SuiteClasses;
  * Test database.
  */
 @RunWith(Suite.class)
-@SuiteClasses( {
-    XmlFileContentModelBuilderTest.class
-})
+@SuiteClasses(XmlFileContentModelBuilderTest.class)
 
 /**
  * TODO (bknerr) : Das muss anders gehen.
