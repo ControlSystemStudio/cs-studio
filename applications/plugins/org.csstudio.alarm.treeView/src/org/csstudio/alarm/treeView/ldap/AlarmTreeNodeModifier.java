@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.Date;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -37,6 +38,7 @@ import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 
 
 /**
@@ -50,12 +52,6 @@ public final class AlarmTreeNodeModifier {
 
     // TODO (bknerr) : if used anywhere else in this package, encapsulate
     // in static package-visible class
-
-    private static final String EPICS_ALARM_HIGH_UN_ACKN = "epicsAlarmHighUnAckn";
-
-    private static final String EPICS_ALARM_TIME_STAMP = "epicsAlarmTimeStamp";
-
-    private static final String EPICS_ALARM_SEVERITY = "epicsAlarmSeverity";
 
     private static final String EPICS_CSS_STRIP_CHART = "epicsCssStripChart";
 
@@ -163,28 +159,39 @@ public final class AlarmTreeNodeModifier {
      * @param attrs
      *            the attributes.
      */
-    static void setAlarmState(@Nonnull final ProcessVariableNode node, @Nonnull final Attributes attrs)
+    public static void setAlarmState(@Nonnull final ProcessVariableNode node,
+                              @Nonnull final Attributes attrs)
             throws NamingException {
-        final Attribute severityAttr = attrs.get(EPICS_ALARM_SEVERITY);
-        final Attribute eventtimeAttr = attrs.get(EPICS_ALARM_TIME_STAMP);
-        final Attribute highUnAcknAttr = attrs.get(EPICS_ALARM_HIGH_UN_ACKN);
+
+        final Attribute severityAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY);
+        final Attribute eventtimeAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP);
+        setSeverityAndTimestamp(node, severityAttr, eventtimeAttr);
+
+        final Attribute highUnAcknAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK);
+        setHighestUnackAlarm(node, highUnAcknAttr);
+    }
+
+    private static void setSeverityAndTimestamp(@Nonnull final ProcessVariableNode node,
+                                                @Nullable final Attribute severityAttr,
+                                                @Nullable final Attribute eventtimeAttr) throws NamingException {
         if (severityAttr != null) {
             final String severityVal = (String) severityAttr.get();
             if (severityVal != null) {
                 final Severity sev = Severity.parseSeverity(severityVal);
-                Date date = null;
+                Date date = new Date();
                 if (eventtimeAttr != null) {
                     final String eventtimeStr = (String) eventtimeAttr.get();
                     if (eventtimeStr != null) {
                         date = EventtimeUtil.parseTimestamp(eventtimeStr);
                     }
                 }
-                if (date == null) {
-                    date = new Date();
-                }
                 node.updateAlarm(new Alarm(node.getName(), sev, date));
             }
         }
+    }
+
+    private static void setHighestUnackAlarm(@Nonnull final ProcessVariableNode node,
+                                             @Nullable final Attribute highUnAcknAttr) throws NamingException {
         Severity unack = Severity.NO_ALARM;
         if (highUnAcknAttr != null) {
             final String severity = (String) highUnAcknAttr.get();
@@ -194,5 +201,4 @@ public final class AlarmTreeNodeModifier {
         }
         node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));
     }
-
 }

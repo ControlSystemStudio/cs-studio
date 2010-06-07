@@ -21,6 +21,10 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
@@ -52,7 +56,6 @@ import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 
@@ -568,7 +571,7 @@ public final class DirectoryEditor {
     private static Attributes createBaseAttributesForEntry(@Nonnull final LdapEpicsAlarmCfgObjectClass objectClass,
                                                            @Nonnull final Rdn rdn) {
         final Attributes result = rdn.toAttributes();
-        result.put(LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
+        result.put(ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
         result.put("epicsCssType", objectClass.getCssType());
         return result;
     }
@@ -591,23 +594,22 @@ public final class DirectoryEditor {
             LDAP_SERVICE.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
                                                            createLdapQuery(EREN_FIELD_NAME, recordName).toString(),
                                                            SearchControls.SUBTREE_SCOPE);
-        if (searchResult == null) {
-           return target;
-        }
-
-        final Set<SearchResult> answer = searchResult.getAnswerSet();
-        if (!answer.isEmpty()) {
-            final SearchResult result = answer.iterator().next();
-            final Attributes foundAttributes = result.getAttributes();
-            final String[] attrs = {"epicsAlarmSeverity", "epicsAlarmTimeStamp", "epicsAlarmHighUnAckn"};
-            for (final String attr : attrs) {
-                final Attribute foundAttribute = foundAttributes.get(attr);
-                if (foundAttribute != null) {
-                    target.put((Attribute) foundAttribute.clone());
+        if (searchResult != null) {
+            final Set<SearchResult> answer = searchResult.getAnswerSet();
+            if (!answer.isEmpty()) {
+                final SearchResult result = answer.iterator().next();
+                final Attributes foundAttributes = result.getAttributes();
+                final String[] attrs = {ATTR_FIELD_ALARM_SEVERITY,
+                                        ATTR_FIELD_ALARM_TIMESTAMP,
+                                        ATTR_FIELD_ALARM_HIGH_UNACK};
+                for (final String attr : attrs) {
+                    final Attribute foundAttribute = foundAttributes.get(attr);
+                    if (foundAttribute != null) {
+                        target.put((Attribute) foundAttribute.clone());
+                    }
                 }
             }
         }
-
         return target;
     }
 }
