@@ -9,10 +9,10 @@ import org.csstudio.utility.pv.PV;
 public class EPICSPVFactory implements IPVFactory
 {
     /** PV type prefix */
-    public static final String PREFIX = "ca"; //$NON-NLS-1$
+    public static final String PREFIX = "epics"; //$NON-NLS-1$
 
     /** {@inheritDoc} */
-    public PV createPV(String name)
+    public PV createPV(final String name)
     {
         // IOC doesn't seem to provide meta info for the .RTYP channels
         if (name.endsWith(".RTYP")) //$NON-NLS-1$
