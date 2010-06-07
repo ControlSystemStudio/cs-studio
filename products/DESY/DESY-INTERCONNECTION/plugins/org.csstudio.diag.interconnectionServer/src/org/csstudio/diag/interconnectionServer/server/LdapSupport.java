@@ -25,6 +25,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
 
 /**
@@ -256,7 +257,11 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
     }
 
 
-	private void setSingleChannel ( String channelName, final String status, final String severity, final String eventTime, final String logicalIocName) {
+	private void setSingleChannel ( String channelName,
+	                                final String status,
+	                                final String severity,
+	                                final String eventTime,
+	                                final String logicalIocName) {
         if(channelName==null){
         	CentralLogger.getInstance().error(this, "no channel name set");
             return;
@@ -271,14 +276,14 @@ epicsVME62.irm-c  mkk-irm-c       : Keine Datei Y:\directoryServer\mkk-irm-c.Boo
         }
 
         if(severity!=null){
-            Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channelName, severity);
+            Engine.getInstance().addLdapWriteRequest( LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY, channelName, severity);
             CentralLogger.getInstance().debug(this, "Set SEVERITY: " + severity + " for channel: " + channelName);
         }
         if(status!=null){
-            Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channelName, status);
+            Engine.getInstance().addLdapWriteRequest( LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS, channelName, status);
         }
         if(eventTime!=null){
-            Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channelName, eventTime);
+            Engine.getInstance().addLdapWriteRequest( LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP, channelName, eventTime);
         }
         /*
          * up to this point the channelName is still the LDAP address

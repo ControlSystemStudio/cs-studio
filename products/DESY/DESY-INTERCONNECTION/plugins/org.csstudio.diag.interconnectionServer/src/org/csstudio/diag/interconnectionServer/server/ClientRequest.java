@@ -22,6 +22,10 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP;
+
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
@@ -48,6 +52,7 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -975,19 +980,17 @@ public class ClientRequest implements Runnable
 					 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view
 					 * - or other applications will be set to ""
 					 */
-					Engine.getInstance().addLdapWriteRequest ("epicsAlarmHighUnAckn", channel, severity);
+					Engine.getInstance().addLdapWriteRequest (LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK, channel, severity);
 				}
 			}
 
 			//
 			// send values to LDAP engine
 			//
-			Engine.getInstance().addLdapWriteRequest( "epicsAlarmSeverity", channel, severity);
-			Engine.getInstance().addLdapWriteRequest( "epicsAlarmStatus", channel, status);
-			Engine.getInstance().addLdapWriteRequest( "epicsAlarmTimeStamp", channel, timeStamp);
+			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_SEVERITY, channel, severity);
+			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_STATUS, channel, status);
+			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_TIMESTAMP, channel, timeStamp);
 
-		} else {
-			//System.out.println("### - cannot write to LDAP done for NAME= " + tagValue.get("NAME"));
 		}
 
 	}
