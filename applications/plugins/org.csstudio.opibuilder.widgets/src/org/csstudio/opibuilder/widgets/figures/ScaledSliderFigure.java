@@ -387,6 +387,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			addMouseListener(new MouseListener.Stub(){
 				@Override
 				public void mousePressed(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					Point start = me.getLocation();
 					if(horizontal)
 						start.x = start.x + thumb.getBounds().width/2;
@@ -405,6 +407,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				}
 				@Override
 				public void mouseReleased(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					behavior.released();
 				}	
 				
@@ -527,6 +531,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				protected boolean armed;						
 			
 				public void mousePressed(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					armed = true;
 					double valuePosition = 
 						((LinearScale)scale).getValuePosition(getCoercedValue(), false);
@@ -569,6 +575,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 				
 				
 				public void mouseReleased(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					if (!armed) 
 						return;
 					armed = false;

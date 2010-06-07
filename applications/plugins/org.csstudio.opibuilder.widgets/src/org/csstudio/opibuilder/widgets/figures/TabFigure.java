@@ -18,10 +18,7 @@ import org.eclipse.draw2d.PositionConstants;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 
 /**The tab figure.
  * @author Xihui Chen
@@ -38,11 +35,11 @@ public class TabFigure extends Figure {
 	private final static Color DEFAULT_TABCOLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
 	
-	private final static Font DEFAULT_TITLE_FONT = CustomMediaFactory.getInstance().getFont(
-			new FontData("Arial", 12, SWT.BOLD));
+//	private final static Font DEFAULT_TITLE_FONT = CustomMediaFactory.getInstance().getFont(
+//			new FontData("Arial", 12, SWT.BOLD));
 	
 	private final static int MINIMUM_TAB_HEIGHT = 10;
-	private final static int MINIMUM_TAB_WIDTH = 20;
+//	private final static int MINIMUM_TAB_WIDTH = 20;
 	
 	private IFigure pane;
 	private ScrollPane tabArea;
@@ -183,6 +180,8 @@ public class TabFigure extends Figure {
 		tabLabel.addMouseListener(new MouseListener.Stub(){
 			@Override
 			public void mousePressed(MouseEvent me) {
+				if(me.button != 1)
+					return;
 				setActiveTabIndex(tabLabelList.indexOf(tabLabel));
 			}
 		});

@@ -241,6 +241,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 			protected boolean armed;				
 				Point pole;
 				public void mousePressed(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					armed = true;
 					pole = scale.getBounds().getCenter();										
 					startPP = PolarPoint.point2PolarPoint(pole, bounds.getCenter());
@@ -290,6 +292,8 @@ public class KnobFigure extends AbstractRoundRampedFigure {
 				}
 				
 				public void mouseReleased(MouseEvent me) {
+					if(me.button != 1)
+						return;
 					if (!armed) 
 						return;
 					armed = false;
