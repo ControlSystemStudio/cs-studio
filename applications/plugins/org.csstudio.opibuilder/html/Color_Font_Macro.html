@@ -13,22 +13,32 @@
     </h2>
     <p>Color and Font macro allow you predefined some colors or fonts in separate text files.
      The path of the file can be specified in the preference page of BOY (open it from menu: 
-     <b>CSS->Preferences...->CSS Applications->Display->BOY</b>. A restart is needed to make changes take effect).
+     <b>CSS->Preferences...->CSS Applications->Display->BOY</b>).
     </p>
      <h3>Format of Color File</h3>
      <p>
      The format of color file would like this:
      </p>
      <pre class="example_code">
+#comment...
 color_name1=red_value, green_value, blue_value
+#comment...
 color_name2=red_value, green_value, blue_value
 ...</pre>
      <p>For example:</p>
      <pre class="example_code">
-red = 255,0,0
-blue = 0,0,255
-black = 0,0,0
-white = 255,255,255</pre>
+#Color of Tennessee
+Tennessee = 255,127,0
+#Color of Texas
+Texas = 255,0,0
+Arizona = 22,37,107
+White = 255,255,255
+Black = 0,0,0
+Red = 255,0,0
+Green = 0,255,0
+Blue = 0,0,255
+Cranberry = 196,30,58</pre>
+<p>Right click the predifined color list will popup a menu which allows reloading the list from color file.</p>
      <p><img src="img/ColorMacro.png">
      </p>
  <h3>Format of Font File</h3>
@@ -36,14 +46,22 @@ white = 255,255,255</pre>
      The format of font file would like this:
      </p>
      <pre class="example_code">
+#comment...
 font_name1 = name-style-height
+#comment...
 font_name2 = name-style-height
 ...</pre>
      <p>For example:</p>
      <pre class="example_code">
 Header = Aial-bold-18
 Text = Arial-regular-10
-LinkText = Arial-italic-10</pre>
+LinkText = Arial-italic-10
+
+#Use OS system default font name
+SystemHeader = SystemDefault-bold-18
+SystemText = SystemDefault-regular-10
+SystemLinkText = SystemDefault-italic-10</pre>
+<p>Right click the predifined fonts list will popup a menu which allows reloading the list from font file.</p>
 <p><img src="img/FontMacro.png"></p>
   
 </body>

@@ -1,7 +1,11 @@
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -103,7 +107,6 @@ public class OPIColorDialog extends Dialog {
 			}
 		});
 		
-		
 		Group group = new Group(rightComposite, SWT.None);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
 		group.setLayout(new GridLayout(2, false));
@@ -146,6 +149,10 @@ public class OPIColorDialog extends Dialog {
 		});
 		viewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
+
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(new ReloadColorFileAction());
+		viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
 		return viewer;
 	}
 	
@@ -182,5 +189,21 @@ public class OPIColorDialog extends Dialog {
 		return opiColor;
 	}
 	
+	class ReloadColorFileAction extends Action{
+		public ReloadColorFileAction() {
+			setText("Reload List From Color File");
+			setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+					OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif"));
+		}
+		
+		@Override
+		public void run() {
+			MediaService.getInstance().reload();
+			preDefinedColorsViewer.setInput(
+					MediaService.getInstance().getAllPredefinedColors());
+		}
+
+		
+	}
 
 }

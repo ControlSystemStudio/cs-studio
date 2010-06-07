@@ -1,8 +1,11 @@
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -148,7 +151,10 @@ public class OPIFontDialog extends Dialog {
 			}
 		});
 		viewer.getTable().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true));
+				new GridData(SWT.FILL, SWT.FILL, true, true));		
+		MenuManager menuManager = new MenuManager();
+		menuManager.add(new ReloadFontFileAction());
+		viewer.getTable().setMenu(menuManager.createContextMenu(viewer.getTable()));
 		return viewer;
 	}
 	
@@ -184,6 +190,23 @@ public class OPIFontDialog extends Dialog {
 
 	public OPIFont getOutput() {
 		return opiFont;
+	}
+	
+	class ReloadFontFileAction extends Action{
+		public ReloadFontFileAction() {
+			setText("Reload List From Font File");
+			setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
+					OPIBuilderPlugin.PLUGIN_ID, "icons/refresh.gif"));
+		}
+		
+		@Override
+		public void run() {
+			MediaService.getInstance().reload();
+			preDefinedFontsViewer.setInput(
+					MediaService.getInstance().getAllPredefinedFonts());
+		}
+
+		
 	}
 	
 
