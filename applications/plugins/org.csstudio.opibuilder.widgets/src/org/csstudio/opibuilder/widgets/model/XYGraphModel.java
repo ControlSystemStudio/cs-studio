@@ -33,6 +33,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	
 	public enum AxisProperty{
 		Y_AXIS("y_axis", "Y Axis"),
+		VISIBLE("visible", "Visible"),
 		PRIMARY("left_bottom_side", "Left/Bottom Side"),
 		TITLE("axis_title", "Axis Title"),
 		TITLE_FONT("title_font", "Title Font"),
@@ -277,7 +278,10 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 			break;	
 		case GRID_COLOR:
 			addProperty(new ColorProperty(propID, axisProperty.toString(), category,DEFAULT_GRID_COLOR));
-			break;		
+			break;	
+		case VISIBLE:
+			addProperty(new BooleanProperty(propID, axisProperty.toString(), category, true));
+			break;
 		default:
 			break;
 		}

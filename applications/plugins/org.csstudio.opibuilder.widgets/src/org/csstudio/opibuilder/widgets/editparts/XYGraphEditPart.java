@@ -284,6 +284,9 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 			case AUTO_SCALE:
 				axis.setAutoScale((Boolean)newValue);
 				break;
+			case VISIBLE:
+				axis.setVisible((Boolean)newValue);
+				break;
 			case TITLE:
 				axis.setTitle((String)newValue);		
 				break;
