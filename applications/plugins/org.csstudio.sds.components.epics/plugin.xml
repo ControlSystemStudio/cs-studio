@@ -149,7 +149,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.AdvancedSliderAlarmBehavior"
-            description="DESY Alarm Advanced Slider"
+            description="DESY Alarm+Con Advanced Slider"
             id="behavior.desy.advancedslider.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.AdvancedSlider">
       </behavior>
@@ -161,7 +161,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.BargraphAlarmBehavior"
-            description="DESY Alarm Bargraph"
+            description="DESY Alarm+Con Bargraph"
             id="behavior.desy.bargraph.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Bargraph">
       </behavior>
@@ -173,7 +173,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.LabelAlarmBehavior"
-            description="DESY Alarm Default"
+            description="DESY Alarm+Con Default"
             id="behavior.desy.label.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Label">
       </behavior>
@@ -185,7 +185,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.SimpleSliderAlarmBehavior"
-            description="DESY Alarm Simple Slider"
+            description="DESY Alarm+Con Simple Slider"
             id="behavior.desy.simpleslider.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.SimpleSlider">
       </behavior>
@@ -197,7 +197,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.TextinputAlarmBehavior"
-            description="DESY Alarm Textinput"
+            description="DESY Alarm+Con Textinput"
             id="behavior.desy.textinput.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Textinput">
       </behavior>
@@ -215,7 +215,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.TankAlarmBehavior"
-            description="DESY Alarm Tank"
+            description="DESY Alarm+Con Tank"
             id="behavior.desy.tank.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Tank">
       </behavior>
@@ -227,7 +227,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
-            description="DESY Alarm Rectangel"
+            description="DESY Alarm+Con Rectangel"
             id="behavior.desy.rectangel.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Rectangle">
       </behavior>
@@ -239,7 +239,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.EllipseAlarmBehavior"
-            description="DESY Alarm Ellipse"
+            description="DESY Alarm+Con Ellipse"
             id="behavior.desy.ellipse.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Ellipse">
       </behavior>
@@ -251,7 +251,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.PolygonAlarmBehavior"
-            description="DESY Alarm Polygon"
+            description="DESY Alarm+Con Polygon"
             id="behavior.desy.polygon.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Polygon">
       </behavior>
@@ -263,7 +263,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.SixteenBinaryBarAlarmBehavior"
-            description="DESY Alarm Sixteen Binary Bar"
+            description="DESY Alarm+Con Sixteen Binary Bar"
             id="behavior.desy.sixteenbinarybar.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.SixteenBinaryBar">
       </behavior>
@@ -275,7 +275,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.ThumbWheelAlarmBehavior"
-            description="DESY Alarm Thumb Wheel"
+            description="DESY Alarm+Con Thumb Wheel"
             id="behavior.desy.thumbwheel.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.ThumbWheel">
       </behavior>
@@ -287,7 +287,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.ThermometerAlarmBehavior"
-            description="DESY Alarm Thermometer"
+            description="DESY Alarm+Con Thermometer"
             id="behavior.desy.thermometer.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Thermometer">
       </behavior>
@@ -299,7 +299,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.ScaledSliderAlarmBehavior"
-            description="DESY Alarm Scaled Slider"
+            description="DESY Alarm+Con Scaled Slider"
             id="behavior.desy.scaledslider.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.ScaledSlider">
       </behavior>
@@ -311,7 +311,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyAlarmBehavior"
-            description="DESY Alarm Gauge"
+            description="DESY Alarm+Con Gauge"
             id="behavior.desy.gauge.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Gauge">
       </behavior>
@@ -323,7 +323,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.MarkedWidgetDesyAlarmBehavior"
-            description="DESY Alarm XMeter"
+            description="DESY Alarm+Con XMeter"
             id="behavior.desy.xmeter.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.XMeter">
       </behavior>
@@ -335,7 +335,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.KnobAlarmBehavior"
-            description="DESY Alarm Knob"
+            description="DESY Alarm+Con Knob"
             id="behavior.desy.knob.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Knob">
       </behavior>
@@ -347,7 +347,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.ArcAlarmBehavior"
-            description="DESY Alarm Arc"
+            description="DESY Alarm+Con Arc"
             id="behavior.desy.arc.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Arc">
       </behavior>
@@ -359,7 +359,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.ImageAlarmBehavior"
-            description="DESY Alarm Image"
+            description="DESY Alarm+Con Image"
             id="behavior.desy.image.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Image">
       </behavior>
@@ -371,7 +371,7 @@
       </behavior>
       <behavior
             class="org.csstudio.sds.behavior.desy.SwitchAlarmBehavior"
-            description="DESY Alarm Switch"
+            description="DESY Alarm+Con Switch"
             id="behavior.desy.switch.alarmdefault"
             widgetTypeId="org.csstudio.sds.components.Switch">
       </behavior>
