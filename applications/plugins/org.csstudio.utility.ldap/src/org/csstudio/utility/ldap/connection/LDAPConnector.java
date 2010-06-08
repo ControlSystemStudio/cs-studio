@@ -41,8 +41,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * The LDAP Connector.
@@ -53,8 +53,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * @since 12.04.2007
  */
 public class LDAPConnector {
-
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPConnector.class);
 
     private InitialLdapContext _ctx = null;
 
@@ -79,8 +78,8 @@ public class LDAPConnector {
     }
 
     private void logError(final NamingException e) {
-        _log.error(e);
-        _log.error("The follow setting(s) are invalid: \r\n"
+        LOG.error(e);
+        LOG.error("The follow setting(s) are invalid: \r\n"
                   +"RemainingName: " + e.getRemainingName()+"\r\n"
                   +"ResolvedObj: " + e.getResolvedObj()+"\r\n"
                   +"Explanation: " + e.getExplanation()
@@ -123,13 +122,12 @@ public class LDAPConnector {
     @Nonnull
     private Map<PreferenceKey, String> getUIenv() {
 
-        final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
-
-        final String url = prefs.get(PreferenceKey.P_STRING_URL.name(), "");
-        final String proto = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
-        final String auth = prefs.get(PreferenceKey.SECURITY_AUTHENTICATION.name(), "");
-        final String dn = prefs.get(PreferenceKey.P_STRING_USER_DN.name(), "");
-        final String pw = prefs.get(PreferenceKey.P_STRING_USER_PASSWORD.name(), "");
+        IPreferencesService preferencesService = Platform.getPreferencesService();
+        final String url = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_URL.name(), "", null);
+        final String proto = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_PROTOCOL.name(), "", null);
+        final String auth = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_AUTHENTICATION.name(), "", null);
+        final String dn = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_USER_DN.name(), "", null);
+        final String pw = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_USER_PASSWORD.name(), "", null);
 
         _prefsMap = new EnumMap<PreferenceKey, String>(PreferenceKey.class);
 
@@ -149,14 +147,14 @@ public class LDAPConnector {
             _prefsMap.put(PreferenceKey.P_STRING_USER_PASSWORD, pw);
         }
 
-        _log.debug("++++++++++++++++++++++++++++++++++++++++++++++");
-        _log.debug("+ PLUGIN_ID: " + LdapActivator.PLUGIN_ID);
-        _log.debug("+ P_STRING_URL: " + url);
-        _log.debug("+ SECURITY_PROTOCOL: " + proto);
-        _log.debug("+ SECURITY_AUTHENTICATION: " + auth);
-        _log.debug("+ P_STRING_USER_DN: " + dn);
-        _log.debug("+ P_STRING_USER_PASSWORD: " + pw);
-        _log.debug("----------------------------------------------");
+        LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
+        LOG.debug("+ PLUGIN_ID: " + LdapActivator.PLUGIN_ID);
+        LOG.debug("+ P_STRING_URL: " + url);
+        LOG.debug("+ SECURITY_PROTOCOL: " + proto);
+        LOG.debug("+ SECURITY_AUTHENTICATION: " + auth);
+        LOG.debug("+ P_STRING_USER_DN: " + dn);
+        LOG.debug("+ P_STRING_USER_PASSWORD: " + pw);
+        LOG.debug("----------------------------------------------");
 
         return _prefsMap;
     }
