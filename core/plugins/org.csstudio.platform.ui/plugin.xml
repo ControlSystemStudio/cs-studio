@@ -2,6 +2,7 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension-point id="striptool" name="StripTool" schema="schema/striptool.exsd"/>
+   <extension-point id="openDisplay" name="Open Display" schema="schema/openDisplay.exsd"/>
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective

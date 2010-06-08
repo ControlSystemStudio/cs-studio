@@ -214,5 +214,12 @@
          </visibility>
       </objectContribution>
    </extension>
+   <extension
+         point="org.csstudio.platform.ui.openDisplay">
+      <openDisplay
+            class="org.csstudio.opibuilder.actions.ExternalOpenDisplayAction"
+            file_extension="opi">
+      </openDisplay>   
+   </extension>
 
 </plugin>
