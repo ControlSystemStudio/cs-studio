@@ -129,7 +129,8 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 	{
 		if (connectionState == ConnectionState.DESTROYED) return; // TODO throw an exception?
 		
-		deviceFactory.getDeviceFamily().destroy(this);
+		if (deviceFactory != null && deviceFactory.getDeviceFamily() != null)
+			deviceFactory.getDeviceFamily().destroy(this);
 	}
 
 	/* (non-Javadoc)

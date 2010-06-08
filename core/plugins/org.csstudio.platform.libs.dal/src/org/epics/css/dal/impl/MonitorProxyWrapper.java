@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.epics.css.dal.DataExchangeException;
+import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
@@ -59,6 +60,94 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	private Object lastValue = null;
 	private DynamicValueCondition lastCondition;
 	private int suspendCount;
+	
+	private DynamicValueAdapter internalListener = new DynamicValueAdapter<T, P>() {
+
+		/* (non-Javadoc)
+		 * @see org.epics.css.dal.DynamicValueAdapter#conditionChange(org.epics.css.dal.DynamicValueEvent)
+		 */
+		@Override
+		public void conditionChange(DynamicValueEvent<T, P> event) {
+			if (dvl != null) {
+				dvl.conditionChange(event);
+			} else if (dvls != null) {
+				DynamicValueListener<T,P>[] dvlArray = (DynamicValueListener<T,P>[])dvls
+					.toArray();
+
+				for (int i = 0; i < dvlArray.length; i++) {
+					dvlArray[i].conditionChange(event);
+				}
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.epics.css.dal.DynamicValueAdapter#timelagStarts(org.epics.css.dal.DynamicValueEvent)
+		 */
+		@Override
+		public void timelagStarts(DynamicValueEvent<T, P> event) {
+			if (dvl != null) {
+				dvl.timelagStarts(event);
+			} else if (dvls != null) {
+				DynamicValueListener<T,P>[] dvlArray = (DynamicValueListener<T,P>[])dvls
+					.toArray();
+
+				for (int i = 0; i < dvlArray.length; i++) {
+					dvlArray[i].timelagStarts(event);
+				}
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.epics.css.dal.DynamicValueAdapter#timelagStops(org.epics.css.dal.DynamicValueEvent)
+		 */
+		@Override
+		public void timelagStops(DynamicValueEvent<T, P> event) {
+			if (dvl != null) {
+				dvl.timelagStops(event);
+			} else if (dvls != null) {
+				DynamicValueListener<T,P>[] dvlArray = (DynamicValueListener<T,P>[])dvls
+					.toArray();
+
+				for (int i = 0; i < dvlArray.length; i++) {
+					dvlArray[i].timelagStops(event);
+				}
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.epics.css.dal.DynamicValueAdapter#timeoutStarts(org.epics.css.dal.DynamicValueEvent)
+		 */
+		@Override
+		public void timeoutStarts(DynamicValueEvent<T, P> event) {
+			if (dvl != null) {
+				dvl.timeoutStarts(event);
+			} else if (dvls != null) {
+				DynamicValueListener<T,P>[] dvlArray = (DynamicValueListener<T,P>[])dvls
+					.toArray();
+
+				for (int i = 0; i < dvlArray.length; i++) {
+					dvlArray[i].timeoutStarts(event);
+				}
+			}
+		}
+
+		/* (non-Javadoc)
+		 * @see org.epics.css.dal.DynamicValueAdapter#timeoutStops(org.epics.css.dal.DynamicValueEvent)
+		 */
+		@Override
+		public void timeoutStops(DynamicValueEvent<T, P> event) {
+			if (dvl != null) {
+				dvl.timeoutStops(event);
+			} else if (dvls != null) {
+				DynamicValueListener<T,P>[] dvlArray = (DynamicValueListener<T,P>[])dvls
+					.toArray();
+
+				for (int i = 0; i < dvlArray.length; i++) {
+					dvlArray[i].timeoutStops(event);
+				}
+			}
+		}	
+	};
 
 	/**
 	 * Creates a new MonitorProxyWrapper object.
@@ -71,6 +160,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	{
 		dvl = listener;
 		this.property = property;
+		this.property.addDynamicValueListener(internalListener);
 	}
 
 	/**
@@ -335,6 +425,7 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 		//}
 
 		((SimplePropertyImpl)property).removeMonitor(this);
+		property.removeDynamicValueListener(internalListener);
 		if (proxy != null) {
 			proxy.destroy();
 		}
