@@ -23,9 +23,9 @@
 package org.csstudio.config.savevalue;
 
 import org.csstudio.config.savevalue.internal.changelog.ChangelogAppenderTest;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerEscapeTest;
+import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerSplitAndUnescapeTest;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_Escape;
-import org.csstudio.config.savevalue.internal.changelog.ChangelogEntrySerializerTest_SplitAndUnescape;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogReaderTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -39,9 +39,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
 	ChangelogAppenderTest.class,
 	ChangelogEntrySerializerTest.class,
-	ChangelogEntrySerializerTest_Escape.class,
-	ChangelogEntrySerializerTest_SplitAndUnescape.class,
-	ChangelogReaderTest.class,
+	ChangelogEntrySerializerEscapeTest.class,
+	ChangelogEntrySerializerSplitAndUnescapeTest.class,
+	ChangelogReaderTest.class
 })
 public class AllTests {
 	// no code

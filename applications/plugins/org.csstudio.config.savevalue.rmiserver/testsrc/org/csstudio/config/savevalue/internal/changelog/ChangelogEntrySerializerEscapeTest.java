@@ -39,12 +39,12 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Joerg Rathlev
  */
 @RunWith(Parameterized.class)
-public class ChangelogEntrySerializerTest_Escape {
+public class ChangelogEntrySerializerEscapeTest {
 	
 	private String _raw;
 	private String _expected;
 	
-	public ChangelogEntrySerializerTest_Escape(String raw, String expected) {
+	public ChangelogEntrySerializerEscapeTest(String raw, String expected) {
 		_raw = raw;
 		_expected = expected;
 	}

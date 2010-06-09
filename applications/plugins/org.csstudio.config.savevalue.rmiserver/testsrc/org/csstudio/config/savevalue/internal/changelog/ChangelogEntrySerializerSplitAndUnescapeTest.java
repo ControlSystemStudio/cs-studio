@@ -39,12 +39,12 @@ import org.junit.runners.Parameterized.Parameters;
  * @author Joerg Rathlev
  */
 @RunWith(Parameterized.class)
-public class ChangelogEntrySerializerTest_SplitAndUnescape {
+public class ChangelogEntrySerializerSplitAndUnescapeTest {
 
 	private String _line;
 	private String[] _expectedTokens;
 	
-	public ChangelogEntrySerializerTest_SplitAndUnescape(Object line, Object expectedTokens) {
+	public ChangelogEntrySerializerSplitAndUnescapeTest(Object line, Object expectedTokens) {
 		_line = (String) line;
 		_expectedTokens = (String[]) expectedTokens;
 	}
