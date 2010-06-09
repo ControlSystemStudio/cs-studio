@@ -49,7 +49,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Save value service that saves to a ca file.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class CaPutService implements SaveValueService {
@@ -58,7 +58,7 @@ public class CaPutService implements SaveValueService {
 	 * The logger.
 	 */
 	private final CentralLogger _log = CentralLogger.getInstance();
-	
+
 	/**
 	 * The character used to separate channel and value in ca file entries.
 	 */
@@ -69,7 +69,7 @@ public class CaPutService implements SaveValueService {
 	 */
 	private static final SimpleDateFormat CHANGELOG_DATE_FORMAT =
 		new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -91,7 +91,7 @@ public class CaPutService implements SaveValueService {
 
 	/**
 	 * Writes a changelog entry to the given file.
-	 * 
+	 *
 	 * @param file the changelog file.
 	 * @param request the request that was executed.
 	 */
@@ -124,7 +124,7 @@ public class CaPutService implements SaveValueService {
 	 * entry for the given PV, a new entry is added, otherwise, the existing
 	 * entry is replaced. Returns the old value that was replaced, or
 	 * <code>null</code> if a new entry was created.
-	 * 
+	 *
 	 * @param file
 	 *            the file in which to update the value.
 	 * @param pvName
@@ -153,7 +153,7 @@ public class CaPutService implements SaveValueService {
 	 * entries are first written to a temporary file and that file is than
 	 * moved, so that the replacement operation is atomic. If the file to be
 	 * replaced does not exist yet, it is created.
-	 * 
+	 *
 	 * @param file
 	 *            the file to replace.
 	 * @param entries
@@ -184,7 +184,7 @@ public class CaPutService implements SaveValueService {
 					writer.close();
 				}
 			}
-			
+
 			_log.debug(this, "Renaming temporary file to " + file);
 			File target = file.getAbsoluteFile();
 			if (!temp.renameTo(target)) {
@@ -198,7 +198,7 @@ public class CaPutService implements SaveValueService {
 							"Existing file could not be replaced.", null);
 				}
 			}
-			
+
 		} catch (IOException e) {
 			_log.error(this, "Error creating temporary file for writing", e);
 			throw new SaveValueServiceException(
@@ -209,7 +209,7 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * Creates a backup copy of the cafile of the given files. If the file does
 	 * not exist, no backup copy is created.
-	 * 
+	 *
 	 * @param files
 	 *            the files.
 	 */
@@ -235,27 +235,25 @@ public class CaPutService implements SaveValueService {
 			} catch (IOException e) {
 				_log.warn(this, "Backup failed with IOException", e);
 			} finally {
-				if (in != null) {
-					try {
-						in.close();
-					} catch (IOException e) {
-						_log.warn(this, "Error closing input file, backup may have failed", e);
-					}
-				}
-				if (out != null) {
-					try {
-						out.close();
-					} catch (IOException e) {
-						_log.warn(this, "Error closing output file, backup may have failed", e);
-					}
-				}
+			    tryToCloseFileChannel(in, "input file");
+			    tryToCloseFileChannel(out, "output file");
 			}
 		}
 	}
 
+    private void tryToCloseFileChannel( final FileChannel fileChannel, final String channelName) {
+        if (fileChannel != null) {
+            try {
+                fileChannel.close();
+            } catch (IOException e) {
+                _log.warn(this, "Error closing " + channelName + ", backup may have failed", e);
+            }
+        }
+    }
+
 	/**
 	 * Parses the given file and returns its entries.
-	 * 
+	 *
 	 * @param file
 	 *            the file to parse
 	 * @return a map of the entries found in the file. Returns an empty map if
@@ -300,7 +298,7 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * Parses a single line from a ca file. The result will be stored into the
 	 * given map.
-	 * 
+	 *
 	 * @param line
 	 *            the line to parse.
 	 * @param entries

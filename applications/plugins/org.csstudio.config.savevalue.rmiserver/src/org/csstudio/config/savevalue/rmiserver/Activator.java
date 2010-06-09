@@ -37,7 +37,7 @@ public class Activator extends AbstractCssPlugin {
 	/**
 	 * The shared instance.
 	 */
-	private static Activator _plugin;
+	private static Activator PLUGIN;
 	
 	/**
 	 * The constructor.
@@ -49,14 +49,14 @@ public class Activator extends AbstractCssPlugin {
 	 * {@inheritDoc}
 	 */
 	public final void doStart(final BundleContext context) throws Exception {
-		_plugin = this;
+		PLUGIN = this;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	public final void doStop(final BundleContext context) throws Exception {
-		_plugin = null;
+		PLUGIN = null;
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class Activator extends AbstractCssPlugin {
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
-		return _plugin;
+		return PLUGIN;
 	}
 
 	/**

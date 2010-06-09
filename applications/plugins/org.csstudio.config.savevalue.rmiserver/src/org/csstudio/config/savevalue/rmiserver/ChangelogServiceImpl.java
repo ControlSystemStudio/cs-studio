@@ -28,7 +28,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -42,7 +41,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Implementation of the changelog service.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletionService {
@@ -65,7 +64,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 
 	/**
 	 * Reads the entries in the given changelog file.
-	 * 
+	 *
 	 * @param changelog
 	 *            the changelog file to read.
 	 * @return the entries.
@@ -79,9 +78,9 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 
 				reader = new ChangelogReader(new FileReader(changelog));
 				Collection<ChangelogEntry> entries = reader.readLatestEntries();
-				return (ChangelogEntry[]) entries.toArray(
+				return entries.toArray(
 						new ChangelogEntry[entries.size()]);
-				
+
 			} catch (FileNotFoundException e) {
 				_log.error(this,
 						"File exists but could not be opened: " + changelog, e);
@@ -106,7 +105,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	/**
 	 * {@inheritDoc}
 	 */
-	public void deleteEntries(String iocName, String pvName)
+	public void deleteEntries(final String iocName, final String pvName)
 			throws SaveValueServiceException, RemoteException {
 		_log.debug(this, "deleteEntries called with iocName=" + iocName + ", pvName=" + pvName);
 		IocFiles files = new IocFiles(iocName);
@@ -116,13 +115,13 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 
 	/**
 	 * Deletes all entries for the given PV from the given changelog file.
-	 * 
+	 *
 	 * @param changelog
 	 *            the changelog file.
 	 * @param pvName
 	 *            the name of the PV.
 	 */
-	private void deleteEntries(File changelog, String pvName)
+	private void deleteEntries(final File changelog, final String pvName)
 			throws SaveValueServiceException {
 		if (changelog.exists()) {
 			try {
@@ -140,7 +139,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	/**
 	 * Overwrites the given changelog file with a new file which contains the
 	 * entries from the given collection.
-	 * 
+	 *
 	 * @param changelog
 	 *            the changelog file.
 	 * @param entries
@@ -148,8 +147,8 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	 * @throws IOException
 	 *             if an error occurs.
 	 */
-	private void overwriteChangelog(File changelog,
-			Collection<ChangelogEntry> entries) throws IOException {
+	private void overwriteChangelog(final File changelog,
+			final Collection<ChangelogEntry> entries) throws IOException {
 		ChangelogAppender appender = null;
 		try {
 			appender = new ChangelogAppender(new FileWriter(changelog, false));
@@ -169,13 +168,13 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 
 	/**
 	 * Removes the entries with the given PV name from the collection.
-	 * 
+	 *
 	 * @param entries
 	 *            the collection.
 	 * @param pvName
 	 *            the name.
 	 */
-	private void filter(Collection<ChangelogEntry> entries, String pvName) {
+	private void filter(final Collection<ChangelogEntry> entries, final String pvName) {
 		for (Iterator<ChangelogEntry> i = entries.iterator(); i.hasNext();) {
 			ChangelogEntry entry = i.next();
 			if (entry.getPvName().equals(pvName)) {
@@ -188,7 +187,7 @@ public class ChangelogServiceImpl implements ChangelogService, ChangelogDeletion
 	 * @param changelog
 	 * @return
 	 */
-	private Collection<ChangelogEntry> readAllEntries(File changelog)
+	private Collection<ChangelogEntry> readAllEntries(final File changelog)
 			throws IOException {
 		ChangelogReader reader = null;
 		try {

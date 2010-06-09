@@ -60,7 +60,7 @@ public class SaveValueServer implements IApplication {
 	/**
 	 * The running instance of this server.
 	 */
-	private static SaveValueServer _instance;
+	private static SaveValueServer INSTANCE;
 	
 	/**
 	 * Returns a reference to the currently running server instance. Note: it
@@ -69,7 +69,7 @@ public class SaveValueServer implements IApplication {
 	 * @return the running server.
 	 */
 	static SaveValueServer getRunningServer() {
-		return _instance;
+		return INSTANCE;
 	}
 
 	/**
@@ -77,7 +77,7 @@ public class SaveValueServer implements IApplication {
 	 */
 	public final Object start(final IApplicationContext context) throws Exception {
 		
-		_instance = this;
+		INSTANCE = this;
 		
 	    connectToXmppServer();  
 		
