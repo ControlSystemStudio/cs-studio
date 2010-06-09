@@ -309,7 +309,7 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
-                // TODO jp-mc retrieveInitialStateSynchronously not enabled
+                // TODO (jpenning) jp-mc retrieveInitialStateSynchronously not enabled
 //                retrieveInitialStateSynchronously(messageList);
                 _messageArea.hide();
             } catch (final AlarmConnectionException e) {
@@ -584,7 +584,7 @@ public class LogView extends ViewPart {
 
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
-     * TODO jp This is a copy of the inner class of the AlarmTreeView.
+     * TODO (jpenning) This is a copy of the inner class of the AlarmTreeView.
      */
     private static final class MessageArea {
         /**

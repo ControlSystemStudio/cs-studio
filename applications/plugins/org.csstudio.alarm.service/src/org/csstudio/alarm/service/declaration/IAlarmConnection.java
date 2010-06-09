@@ -63,7 +63,7 @@ public interface IAlarmConnection {
      */
     void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                                       @Nonnull final IAlarmListener listener,
-                                      // TODO jp Do not use String-Array for parameter topics
+                                      // TODO (jpenning) Do not use String-Array for parameter topics
                                       @Nonnull final String[] topics,
                                       @Nullable final String fileName) throws AlarmConnectionException;
 

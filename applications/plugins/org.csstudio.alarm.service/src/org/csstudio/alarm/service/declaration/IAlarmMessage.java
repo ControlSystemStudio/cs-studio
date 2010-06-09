@@ -32,7 +32,7 @@ import javax.annotation.Nonnull;
  */
 public interface IAlarmMessage {
 
-    // TODO jp remove enums from interface
+    // TODO (jpenning) remove enums from interface
 
     /**
      * Set of keys for the alarm message - currently NOT supported

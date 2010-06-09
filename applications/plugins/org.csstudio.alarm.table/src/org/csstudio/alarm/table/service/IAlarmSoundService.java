@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -15,26 +15,26 @@
  * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- * 
+ *
  * $Id$
  */
 package org.csstudio.alarm.table.service;
 
 /**
  * Service for playing alarm sounds based on severity of alarms.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 27.04.2010
  */
 public interface IAlarmSoundService {
-    
+
     /**
      * Play a sound dependent on the severity
-     * 
+     *
      * @param severity
      */
-    // TODO jp use enum instead of string
+    // TODO (jpenning) use enum instead of string
     void playAlarmSound(String severity);
 }

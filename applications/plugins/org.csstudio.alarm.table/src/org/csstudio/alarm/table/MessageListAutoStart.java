@@ -10,9 +10,9 @@ import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
 
 public class MessageListAutoStart implements IStartupServiceListener {
-    
+
     private IMessageListService _messageListService;
-    
+
     /**
      * This method is executed by the startup listener from platform at CSS startup. The preferences
      * are read for each table type and the message lists are started for each list with the
@@ -20,8 +20,8 @@ public class MessageListAutoStart implements IStartupServiceListener {
      */
     @Override
     public void run() {
-        // TODO jp Currently disabled
-        
+        // TODO (jpenning) Currently disabled
+
         // ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
         // new InstanceScope(), JmsLogsPlugin.getDefault().getBundle()
         // .getSymbolicName());
@@ -32,7 +32,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
         // startLogLists(maximumNumberOfMessagesPref);
         // startAlarmLists();
     }
-    
+
     private void startLogLists(final String maximumNumberOfMessagesPref) {
         TopicSetColumnService topicSetColumnService = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
                                                                                 LogViewPreferenceConstants.P_STRING);
@@ -44,7 +44,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
             }
         }
     }
-    
+
     private void startAlarmLists() {
         TopicSetColumnService topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
                                                                                 AlarmViewPreferenceConstants.P_STRINGAlarm);

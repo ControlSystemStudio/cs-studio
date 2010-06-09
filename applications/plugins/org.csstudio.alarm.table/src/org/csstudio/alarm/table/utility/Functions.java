@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.Path;
  * @author swende
  *
  */
-// TODO jp Still in use in preferences
+// TODO (jpenning) Still in use in preferences
 public class Functions {
 	private static Player _mp3Player;
 

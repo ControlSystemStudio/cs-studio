@@ -214,7 +214,7 @@ public class AlarmMessageListener implements IAlarmListener {
                 try {
                     eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
                 } catch (NumberFormatException e) {
-                    // TODO jp whats going on here?
+                    // TODO (jpenning) whats going on here?
                 }
             }
             if (eventtime == null) {
@@ -235,7 +235,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * Returns whether the given message is an alarm acknowledgement.
      */
     private boolean isAcknowledgement(final IAlarmMessage message) {
-        // TODO jp DAL impl currently not working, returns always false
+        // TODO (jpenning) DAL impl currently not working, returns always false
         String ack = message.getString("ACK");
         return (ack != null) && ack.equals("TRUE");
     }

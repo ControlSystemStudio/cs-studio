@@ -229,13 +229,13 @@ public class AlarmView extends LogView {
 
     @Override
     protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
-        // TODO jp Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
+        // TODO (jpenning) Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
         final String[] facilityNames = new String[] {"Test"};
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
-            // TODO jp Hack: Need better way to find out whether LDAP is active
+            // TODO (jpenning) Hack: Need better way to find out whether LDAP is active
             final boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
             if (useLDAP) {
                 model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
@@ -377,7 +377,7 @@ public class AlarmView extends LogView {
         _soundEnableButton.setLayoutData(new RowData(60, 21));
         _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 
-        // TODO jp Set initial state for playing sounds based on saved state
+        // TODO (jpenning) Set initial state for playing sounds based on saved state
         _soundEnableButton.setSelection(true);
 
         _soundEnableButton.addSelectionListener(new SelectionListener() {

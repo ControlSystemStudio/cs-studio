@@ -92,7 +92,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      */
     private IAlarmConfigurationService _alarmConfigurationService;
 
-    // TODO jp Hack: Remove when LDAP-Hack is removed
+    // TODO (jpenning) Hack: Remove when LDAP-Hack is removed
     private ILdapService _ldapService;
 
 

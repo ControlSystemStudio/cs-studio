@@ -151,13 +151,13 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     public Map<String, String> getMap() {
         final Map<String, String> result = new HashMap<String, String>();
-        // TODO jp securely access incoming message
+        // TODO (jpenning) securely access incoming message
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
             result.put(key.getDefiningName(), getString(key));
         }
         return result;
 
-        // TODO jp What to do if message is undefined? Do not create alarm message, i.e. stop processing and ignore jms message?
+        // TODO (jpenning) What to do if message is undefined? Do not create alarm message, i.e. stop processing and ignore jms message?
         /*
          * if the value is noTimeStamp or Uninitialized or noMetaData
          * return null -> do NOT create message !

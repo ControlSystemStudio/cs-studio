@@ -72,7 +72,7 @@ public class AlarmListener implements IAlarmTableListener {
      */
     public void onMessage(@Nullable final IAlarmMessage message) {
         _log.debug(this, "received: " + message);
-        // TODO jp Does null actually show up here?
+        // TODO (jpenning) Does null actually show up here?
         if (message == null) {
             _log.error(this, "Error processing message (was null)");
         } else {

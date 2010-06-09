@@ -83,7 +83,7 @@ public final class ImportInitialConfigJob extends Job {
         try {
             final long startTime = System.currentTimeMillis();
 
-            // TODO jp Hack: Need better way to find out whether to use LDAP
+            // TODO (jpenning) Hack: Need better way to find out whether to use LDAP
             final boolean useLDAP = AlarmTreePlugin.getDefault().getLdapService() != null;
             ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
             if (useLDAP) {

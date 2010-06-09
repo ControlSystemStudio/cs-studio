@@ -71,7 +71,7 @@ public final class LdapActivator extends AbstractCssPlugin {
 
         _ldapService = null;
 
-        // TODO jp Hack: Find a better way to find out whether to use ldap
+        // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
         String ldapURL = getCssPluginPreferences().getString(PreferenceKey.P_STRING_URL.name());
         boolean useLDAP = (ldapURL != null) && (ldapURL.length() > 5);
 

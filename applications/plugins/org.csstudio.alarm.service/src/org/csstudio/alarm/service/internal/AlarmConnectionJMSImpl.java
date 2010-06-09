@@ -52,7 +52,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     private AlarmListenerAdapter _listener;
     private IMessageListenerSession _listenerSession;
 
-    // TODO jp CopyOnWrite is missing?!
+    // TODO (jpenning) CopyOnWrite is missing?!
     private AlarmConnectionMonitorAdapter _monitor;
 
     /**
@@ -93,7 +93,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
                                     @Nonnull final IAlarmListener listener,
                                     @Nonnull final String fileName) throws AlarmConnectionException {
 
-        // TODO jp The default topics should be preference based
+        // TODO (jpenning) The default topics should be preference based
         final String[] topics = "ALARM,ACK".split(",");
         connectWithListenerForTopics(connectionMonitor, listener, topics, null);
     }
@@ -137,7 +137,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         }
 
         public void onMessage(@Nonnull final Message message) {
-            // TODO jp cast?
+            // TODO (jpenning) cast?
             _alarmListener.onMessage(new AlarmMessageJMSImpl((MapMessage) message));
         }
 

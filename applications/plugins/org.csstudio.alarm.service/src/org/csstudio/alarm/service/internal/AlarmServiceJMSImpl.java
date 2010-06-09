@@ -91,7 +91,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             final Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
             pvUnderWay._listener = new DynamicValueListenerForInit(initItem);
-            // TODO jp use constants for parameterization of expert mode
+            // TODO (jpenning) use constants for parameterization of expert mode
             pvUnderWay._parameters = new HashMap<String, Object>();
             pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
@@ -109,7 +109,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     private void waitFixedTime() {
         try {
-            // TODO jp use constant from prefs here
+            // TODO (jpenning) use constant from prefs here
             Thread.sleep(2000);
         } catch (final InterruptedException e) {
             LOG.warn("retrieveInitialState was interrupted ", e);
@@ -131,7 +131,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     @Nonnull
     private ConnectionParameters newConnectionParameters(@Nonnull final String pvName) {
-        // TODO jp what about Double.class?
+        // TODO (jpenning) what about Double.class?
         return new ConnectionParameters(newRemoteInfo(pvName), Double.class);
     }
 
@@ -160,7 +160,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                           + event.getProperty().getUniqueName());
 
                 // Suppress the initial callback, it has no meaning here
-                // TODO jp there should be a better way than testing a hard coded string
+                // TODO (jpenning) there should be a better way than testing a hard coded string
                 if (event.getMessage().equals("Initial update.")) {
                     _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
                 }
@@ -169,7 +169,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     }
 
     // CHECKSTYLE:OFF
-    // TODO jp Extract duplicates, see AlarmConnectionDALImpl
+    // TODO (jpenning) Extract duplicates, see AlarmConnectionDALImpl
     private static class Element {
         ConnectionParameters _connectionParameters;
         DynamicValueListener _listener;

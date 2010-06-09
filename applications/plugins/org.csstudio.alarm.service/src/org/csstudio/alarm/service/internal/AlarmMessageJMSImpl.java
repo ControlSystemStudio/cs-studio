@@ -80,7 +80,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
 
     @Override
     public final Map<String, String> getMap() {
-        // TODO jp performance: cache the result map
+        // TODO (jpenning) performance: cache the result map
         Map<String, String> result = new HashMap<String, String>();
         try {
             @SuppressWarnings("unchecked")

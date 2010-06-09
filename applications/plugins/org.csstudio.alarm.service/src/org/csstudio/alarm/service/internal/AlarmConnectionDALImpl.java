@@ -132,14 +132,14 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                                @Nonnull final IAlarmListener listener,
                                                @Nonnull final String fileName) {
 
-        // TODO jp the facilities must be given as parameter
+        // TODO (jpenning) the facilities must be given as parameter
         final List<String> facilitiesAsString = new ArrayList<String>();
         facilitiesAsString.add("Test");
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
             //            model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
             model = _alarmConfigService.retrieveInitialContentModelFromFile(fileName);
-            // TODO jp Init: Only register PVs for testing
+            // TODO (jpenning) Init: Only register PVs for testing
             for (final String recordName : model
                     .getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
                 LOG.debug("Connecting to " + recordName);
@@ -161,11 +161,11 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                                      null);
 
         final ListenerItem item = new ListenerItem();
-        // TODO jp Review: hard coded Double.class in connection parameter
+        // TODO (jpenning) Review: hard coded Double.class in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
         item._dynamicValueAdapter = new DynamicValueListenerAdapter<Double, DoubleProperty>(listener,
                                                                                             connectionMonitor);
-        // TODO jp use constants for parameterization of expert mode
+        // TODO (jpenning) use constants for parameterization of expert mode
         item._parameters = new HashMap<String, Object>();
         item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
@@ -207,7 +207,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                     + event.getProperty().getUniqueName());
 
             // Suppress the initial callback, it has no meaning here
-            // TODO jp there should be a better way than testing a hard coded string
+            // TODO (jpenning) there should be a better way than testing a hard coded string
             if (event.getMessage().equals("Initial update.")) {
                 _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty()));
             }

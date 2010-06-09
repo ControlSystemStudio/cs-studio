@@ -126,7 +126,7 @@ public class AlarmTreeView extends ViewPart {
         @Override
         public void done(@Nullable final IJobChangeEvent innerEvent) {
 
-            // TODO jp-mc retrieveInitialStateSynchronously not enabled
+            // TODO (jpenning) jp-mc retrieveInitialStateSynchronously not enabled
             //            _alarmTreeView.retrieveInitialStateSynchronously(_rootNode);
 
             _alarmTreeView.asyncSetViewerInput(_rootNode); // Display the new tree.
