@@ -25,5 +25,11 @@
          </property>
       </product>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.alarm.dal2jms.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 </plugin>

@@ -21,13 +21,9 @@
  */
 package org.csstudio.alarm.dal2jms;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.jms.JMSException;
-import javax.jms.MapMessage;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.dal2jms.JmsMessage.JmsMessageType;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -40,20 +36,24 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * The alarm handler listens to DAL messages and forwards them to the JMS-based alarm system.
  * It is used in a headless application and allows the processing of alarm messages from IOCs which
- * are not connected to
+ * are not connected to an interconnection server.
  *
  * @author jhatje
  * @author $Author$
  * @version $Revision$
  * @since 07.05.2010
  */
-public final class AlarmHandler {
+final class AlarmHandler {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmHandler.class);
+
+    // Local service to handle jms communication
+    private final JmsMessageService _jmsMessageService;
 
     private IAlarmConnection _connection = null;
 
     public AlarmHandler() {
+        _jmsMessageService = new JmsMessageService();
 
         final IAlarmService alarmService = Activator.getDefault().getAlarmService();
         if (alarmService == null) {
@@ -68,8 +68,8 @@ public final class AlarmHandler {
         }
 
         try {
-            _connection.connectWithListener(createAlarmConnectionMonitor(),
-                                            createAlarmListener(),
+            _connection.connectWithListener(newAlarmConnectionMonitor(),
+                                            newAlarmListener(),
                                             "c:\\dal2jmsConfig.xml");
         } catch (final AlarmConnectionException e) {
             LOG.error("Error. Could not connect.", e);
@@ -77,7 +77,7 @@ public final class AlarmHandler {
     }
 
     @Nonnull
-    private IAlarmConnectionMonitor createAlarmConnectionMonitor() {
+    private IAlarmConnectionMonitor newAlarmConnectionMonitor() {
         return new IAlarmConnectionMonitor() {
 
             @Override
@@ -93,22 +93,18 @@ public final class AlarmHandler {
     }
 
     @Nonnull
-    private IAlarmListener createAlarmListener() {
+    private IAlarmListener newAlarmListener() {
         return new IAlarmListener() {
 
             @Override
             public void onMessage(@Nonnull final IAlarmMessage message) {
-                try {
-                    LOG.debug(message.getMap().toString());
+                LOG.debug(message.getMap().toString());
 
-                    final MapMessage mapMessage = getMapMessage(message);
-                    if (mapMessage != null) {
-                        JmsMessage.INSTANCE.sendMessage(JmsMessageType.JMS_MESSAGE_TYPE_ALARM, mapMessage);
-                    } else {
-                        LOG.debug("INVALID message !");
-                    }
-                } catch (final JMSException e) {
-                    LOG.error("Error while creating mapMessage", e);
+                if (isAlarmMessageOk(message)) {
+                    _jmsMessageService.sendAlarmMessage(message);
+                } else {
+                    LOG.error("Cannot convert alarm message to jms message: "
+                            + message.getMap().toString());
                 }
             }
 
@@ -120,22 +116,17 @@ public final class AlarmHandler {
         };
     }
 
-    @CheckForNull
-    private MapMessage getMapMessage(@Nonnull final IAlarmMessage message) throws JMSException {
-
-        final MapMessage result = JmsMessage.INSTANCE.createJmsSession().createMapMessage();
-
+    // TODO (jpenning) move predicate to alarm message. and fix it.
+    private boolean isAlarmMessageOk(@Nonnull final IAlarmMessage message) {
+        boolean result = true;
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
-            /*
-             * if the value is noTimeStamp or Uninitialized or noMetaData
-             * return null -> do NOT create message !
-             */
-            final String value = message.getString(key);
-            if ((value != null) && !value.equals("noTimeStamp") && !value.equals("Uninitialized")
-                    && !value.equals("noMetaData")) {
-                result.setString(key.name(), value);
-            } else {
-                return null;
+            String value = message.getString(key);
+            result = result && (value != null);
+            result = result && (!value.equals("noTimeStamp"));
+            result = result && (!value.equals("Uninitialized"));
+            result = result && (!value.equals("noMetaData"));
+            if (!result) {
+                break;
             }
         }
         return result;

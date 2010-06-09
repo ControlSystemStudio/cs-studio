@@ -29,7 +29,7 @@ import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
 /**
- * TODO (jpenning) :
+ * The alarm handler is started and the application waits for the stop command being sent via remote command.
  *
  * @author bknerr
  * @author $Author$
@@ -48,21 +48,27 @@ public class Dal2JmsApplication implements IApplication {
 
     @Override
     public Object start(@Nullable final IApplicationContext context) throws Exception {
-        LOG.debug("da2jms");
+        LOG.info("dal2jms headless application starting");
 
         new AlarmHandler();
 
+        LOG.info("dal2jms headless application running");
         synchronized (this) {
             while (!_stopped) {
                 wait();
             }
         }
+
+        LOG.info("dal2jms headless application stopped");
+
         return IApplication.EXIT_OK;
     }
 
     @Override
     public void stop() {
+        LOG.debug("stop() was called, stopping server");
         _stopped = true;
+        notifyAll();
     }
 
 }
