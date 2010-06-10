@@ -5,10 +5,10 @@
   <efan name="EFAN_1">
     <ecom name="ECOM_1">
       <econ name="ECON_1">
-          <eren name="EREN_1" />
-          <eren name="EREN_2" />
-          <eren name="EREN_3" />
-          <eren name="EREN_4" />
+        <eren name="EREN_1" />
+        <eren name="EREN_2" />
+        <eren name="EREN_3" />
+        <eren name="EREN_4" />
       </econ>
       <econ name="ECON_2">
           <eren name="EREN_5" />
