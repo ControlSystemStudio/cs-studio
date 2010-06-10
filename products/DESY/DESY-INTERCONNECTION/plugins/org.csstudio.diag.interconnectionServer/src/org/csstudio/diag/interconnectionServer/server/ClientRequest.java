@@ -331,6 +331,97 @@ public class ClientRequest implements Runnable
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
 
         		break;
+        		
+        	case TagList.SIM_LOG_MESSAGE:
+        		//
+        		// SIM
+        		// A list of channels which are currently in Simulation mode
+        		// purpose: create list for special JMS topic
+        		//
+        		session = null;
+        		try {
+        			session = icServer.createJmsSession();
+        			Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_SIM_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer alarmSender = session.createProducer( alarmDestination);
+                	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
+                	
+            		message = session.createMapMessage();
+            		prepareTypedJmsMessage(message, tagValuePairs, iocMessage.getMessageTypeString());
+            		alarmSender.send(message);
+            		alarmSender.close();
+            		
+            		icServer.getJmsMessageWriteCollector().setValue(LegacyUtil.timeSince(parseTime));
+        		}
+        		catch(JMSException jmse)
+                {
+        			status = false;
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
+                    System.out.println("ClientRequest : send SIM message : *** EXCEPTION *** : " + jmse.getMessage());
+                } finally {
+                	if (session != null) {
+                		try {
+							session.close();
+						} catch (JMSException e) {
+							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+						}
+                	}
+                }
+        		//
+        		// just send a reply
+                //
+    			
+    			ReplySender.send(iocMessage.getMessageId(), status, sender);
+        		
+        		break;
+        		
+        	case TagList.ADIS_LOG_MESSAGE:
+        		//
+        		// ADIS
+        		// A list of channels which are currently in Alarm Disable Mode
+        		// purpose: create list for special JMS topic
+        		//
+        		session = null;
+        		try {
+        			session = icServer.createJmsSession();
+        			Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_ADIS_CONTEXT);
+
+                    // Create a MessageProducer from the Session to the Topic or Queue
+                	MessageProducer alarmSender = session.createProducer( alarmDestination);
+                	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
+                	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
+                	
+            		message = session.createMapMessage();
+            		prepareTypedJmsMessage(message, tagValuePairs, iocMessage.getMessageTypeString());
+            		alarmSender.send(message);
+            		alarmSender.close();
+            		
+            		icServer.getJmsMessageWriteCollector().setValue(LegacyUtil.timeSince(parseTime));
+        		}
+        		catch(JMSException jmse)
+                {
+        			status = false;
+        			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
+                    System.out.println("ClientRequest : send SIM message : *** EXCEPTION *** : " + jmse.getMessage());
+                } finally {
+                	if (session != null) {
+                		try {
+							session.close();
+						} catch (JMSException e) {
+							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
+						}
+                	}
+                }
+        		//
+        		// just send a reply
+                //
+    			
+    			ReplySender.send(iocMessage.getMessageId(), status, sender);
+        		
+        		break;
+        		
 
 //        	case TagList.SNL_LOG_MESSAGE:  // TODO send SNL log to its own topic
         	case TagList.SYSTEM_LOG_MESSAGE:

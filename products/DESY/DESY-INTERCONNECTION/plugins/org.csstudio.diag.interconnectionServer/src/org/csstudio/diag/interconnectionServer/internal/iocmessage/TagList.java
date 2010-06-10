@@ -149,6 +149,16 @@ public final class TagList {
 	 */
 	public static final int SNL_LOG_MESSAGE = 15;
 	
+	/**
+	 * Message type for SIM message (records in SIM mode)
+	 */
+	public static final int SIM_LOG_MESSAGE = 16;
+	
+	/**
+	 * Message type for ADIS messages (records in alarm disable mode)
+	 */
+	public static final int ADIS_LOG_MESSAGE = 17;
+	
 	public static final int REPLY_TYPE_DONE = 1;
 	public static final int REPLY_TYPE_OK = 2;
 	public static final int REPLY_TYPE_ERROR = 3;
@@ -193,6 +203,8 @@ public final class TagList {
 		messageTypes.put("putLog", 				PUT_LOG_MESSAGE); // not yet
 		messageTypes.put("TCom", 				TEST_COMMAND);
 		messageTypes.put("snlLog", 				SNL_LOG_MESSAGE);
+		messageTypes.put("sim", 				SIM_LOG_MESSAGE);
+		messageTypes.put("adis", 				ADIS_LOG_MESSAGE);
 	}
 	
 	private static void fillReplyTypes() {

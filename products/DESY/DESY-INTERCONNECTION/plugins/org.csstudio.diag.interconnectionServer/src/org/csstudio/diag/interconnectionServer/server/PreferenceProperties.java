@@ -44,12 +44,16 @@ public class PreferenceProperties {
 	public static String JMS_ALARM_CONTEXT = "ALARM";
 	public static String JMS_PUT_LOG_CONTEXT = "PUT_LOG";
 	public static String JMS_SNL_LOG_CONTEXT = "SNL_LOG";
+	public static String JMS_SIM_CONTEXT = "SIM";
+	public static String JMS_ADIS_CONTEXT = "ADIS";
 	
 	public static String COMMAND_TAKE_OVER 			= "takeOver";
 	public static String COMMAND_DISCONNECT 		= "disconnect";
 	public static String COMMAND_SEND_ALARM			= "sendAlarm";
 	public static String COMMAND_SEND_ALL_ALARMS 	= "sendAllAlarms";
 	public static String COMMAND_SEND_STATUS 		= "sendStatus";
+	public static String COMMAND_SEND_SIM			= "sendSim";
+	public static String COMMAND_SEND_ADIS	 		= "sendAdis";
 	
 	public static final int COMMAND_TAKE_OVER_I 			= 0;
 	public static final int COMMAND_DISCONNECT_I 			= 1;
@@ -59,7 +63,7 @@ public class PreferenceProperties {
 	
 	public static String[]	COMMAND_LIST = {COMMAND_TAKE_OVER,
 		COMMAND_DISCONNECT, COMMAND_SEND_ALARM, 
-		COMMAND_SEND_ALL_ALARMS, COMMAND_SEND_STATUS };
+		COMMAND_SEND_ALL_ALARMS, COMMAND_SEND_STATUS, COMMAND_SEND_SIM, COMMAND_SEND_ADIS};
 	
 	public static final int	TIME_TO_GET_ANSWER_FROM_IOC_AFTER_COMMAND	= 1000; // 8.7.2008 10 -> 3 sec MCL
 	
