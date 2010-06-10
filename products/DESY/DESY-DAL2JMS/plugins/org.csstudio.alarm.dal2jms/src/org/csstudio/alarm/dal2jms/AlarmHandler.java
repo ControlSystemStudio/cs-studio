@@ -30,13 +30,13 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * The alarm handler listens to DAL messages and forwards them to the JMS-based alarm system.
  * It is used in a headless application and allows the processing of alarm messages from IOCs which
  * are not connected to an interconnection server.
+ * It utilizes a connection monitor and a message listener.
  *
  * @author jhatje
  * @author $Author$
@@ -47,53 +47,42 @@ final class AlarmHandler {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmHandler.class);
 
+    private final IAlarmConnection _alarmConnection;
     // Local service to handle jms communication
     private final JmsMessageService _jmsMessageService;
 
-    private IAlarmConnection _connection = null;
-
-    public AlarmHandler() {
-        _jmsMessageService = new JmsMessageService();
-
-        final IAlarmService alarmService = Activator.getDefault().getAlarmService();
-        if (alarmService == null) {
-            LOG.error("Alarm service must not be null. Connection cannot be established.");
-            return;
-        }
-
-        _connection = alarmService.newAlarmConnection();
-        if (_connection == null) {
-            LOG.error("Alarm service returned null for connection.");
-            return;
-        }
-
-        try {
-            _connection.connectWithListener(newAlarmConnectionMonitor(),
-                                            newAlarmListener(),
-                                            "c:\\dal2jmsConfig.xml");
-        } catch (final AlarmConnectionException e) {
-            LOG.error("Error. Could not connect.", e);
-        }
+    public AlarmHandler(@Nonnull final IAlarmConnection alarmConnection,
+                        @Nonnull final JmsMessageService jmsMessageService) {
+        _alarmConnection = alarmConnection;
+        _jmsMessageService = jmsMessageService;
     }
 
+    public void connect() throws AlarmConnectionException {
+        // TODO (jpenning) use ldap or xml based configuration
+        _alarmConnection.connectWithListener(newAlarmConnectionMonitor(),
+                                             newAlarmListener(_jmsMessageService),
+                                             "c:\\dal2jmsConfig.xml");
+    }
+
+    // dal2jms currently provides no action on connection state changes, they are only logged.
     @Nonnull
     private IAlarmConnectionMonitor newAlarmConnectionMonitor() {
         return new IAlarmConnectionMonitor() {
 
             @Override
             public void onDisconnect() {
-                // Nothing to do
+                LOG.debug("dal2jms received onDisconnect");
             }
 
             @Override
             public void onConnect() {
-                // Nothing to do
+                LOG.debug("dal2jms received onConnect");
             }
         };
     }
 
     @Nonnull
-    private IAlarmListener newAlarmListener() {
+    private IAlarmListener newAlarmListener(@Nonnull final JmsMessageService jmsMessageService) {
         return new IAlarmListener() {
 
             @Override
@@ -101,7 +90,7 @@ final class AlarmHandler {
                 LOG.debug(message.getMap().toString());
 
                 if (isAlarmMessageOk(message)) {
-                    _jmsMessageService.sendAlarmMessage(message);
+                    jmsMessageService.sendAlarmMessage(message);
                 } else {
                     LOG.error("Cannot convert alarm message to jms message: "
                             + message.getMap().toString());

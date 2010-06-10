@@ -21,9 +21,14 @@
  */
 package org.csstudio.alarm.dal2jms;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -38,11 +43,11 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class Dal2JmsApplication implements IApplication {
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(Dal2JmsApplication.class);
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(Dal2JmsApplication.class);
 
     /**
-     * TODO (mclausen) : implement remote command to stop the server
+     * TODO (jpenning) : implement remote command to stop the server
      */
     private volatile boolean _stopped = false;
 
@@ -50,25 +55,51 @@ public class Dal2JmsApplication implements IApplication {
     public Object start(@Nullable final IApplicationContext context) throws Exception {
         LOG.info("dal2jms headless application starting");
 
-        new AlarmHandler();
-
-        LOG.info("dal2jms headless application running");
-        synchronized (this) {
-            while (!_stopped) {
-                wait();
-            }
+        final IAlarmService alarmService = Activator.getDefault().getAlarmService();
+        if (alarmService != null) {
+            LOG.info("dal2jms headless application running");
+            runServerUntilStopped(alarmService);
+        } else {
+            LOG.error("dal2jms headless application could not be started. Alarm service must not be null.");
         }
 
         LOG.info("dal2jms headless application stopped");
-
         return IApplication.EXIT_OK;
     }
 
     @Override
     public void stop() {
-        LOG.debug("stop() was called, stopping server");
+        LOG.debug("dal2jms: stop() was called, stopping server");
         _stopped = true;
         notifyAll();
+    }
+
+    private void runServerUntilStopped(@Nonnull final IAlarmService alarmService) throws InterruptedException {
+        IAlarmConnection connection = null;
+        try {
+            connection = alarmService.newAlarmConnection();
+
+            // JmsMessageService is a local service to handle jms communication
+            AlarmHandler alarmHandler = new AlarmHandler(connection, new JmsMessageService());
+            alarmHandler.connect();
+
+            synchronized (this) {
+                while (!_stopped) {
+                    wait();
+                }
+            }
+        } catch (AlarmConnectionException e) {
+            LOG.debug("dal2jms could not connect", e);
+        } finally {
+            tryToDisconnect(connection);
+        }
+    }
+
+    private void tryToDisconnect(@CheckForNull final IAlarmConnection connection) {
+        if (connection != null) {
+            LOG.debug("dal2jms disconnecting");
+            connection.disconnect();
+        }
     }
 
 }
