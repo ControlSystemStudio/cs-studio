@@ -131,8 +131,8 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
                     final Attributes attributes = row.getAttributes();
                     createLdapComponent(model,
                                         attributes == null ? new BasicAttributes() : attributes,
-                                                LdapNameUtils.parseSearchResult(row),
-                                                root);
+                                        LdapNameUtils.parseSearchResult(row),
+                                        root);
                 }
             } catch (final IndexOutOfBoundsException iooe) {
                 LOG.error("Tried to remove a name component with index out of bounds.", iooe);

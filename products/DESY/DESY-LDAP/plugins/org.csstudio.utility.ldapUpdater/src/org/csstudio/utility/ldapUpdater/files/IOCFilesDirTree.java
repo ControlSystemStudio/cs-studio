@@ -115,20 +115,6 @@ public final class IOCFilesDirTree {
         return dateTime;
     }
 
-    @Nonnull
-    private static String splitFileNameFromCanonicalPath(@Nonnull final File f) {
-
-        String fileName = "";
-        try {
-            final String cP = f.getCanonicalPath();
-            final String[] cA = cP.split("\\\\");
-            fileName = cA[cA.length - 1];
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        return fileName;
-    }
-
     /**
      * doDir - handle one filesystem object by name
      *
@@ -144,7 +130,7 @@ public final class IOCFilesDirTree {
 
         final File f = new File(s);
         if (!f.exists()) {
-            System.out.println(f.getName() + " does not exist");
+            LOG.warn(f.getName() + " does not exist.");
             return;
         }
         if (f.isFile()) {
@@ -160,7 +146,7 @@ public final class IOCFilesDirTree {
                 doDir(depth, recDepth, s + File.separator + filePath, iocMap);
             }
         } else {
-            System.out.println("is unknown: " + f.getName());
+            LOG.warn(f.getAbsolutePath() + " is neither file nor directory.");
         }
     }
 
@@ -169,8 +155,7 @@ public final class IOCFilesDirTree {
      * @param pathToFile the file with records
      */
     @Nonnull
-    public
-    static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
+    public static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
         final Set<Record> records = new HashSet<Record>();
         try {
             final BufferedReader br = new BufferedReader(new FileReader(pathToFile));

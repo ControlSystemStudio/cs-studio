@@ -153,7 +153,7 @@ public class HistoryFileAccess {
                                               dateTime,
                                               String.valueOf(numOfRecordsWritten + "/" + numOfRecordsInFile),
                                               String.valueOf(numOfRecordsInLDAP),
-                                              System.getProperty("line.separator" ));
+                                              System.getProperty("line.separator"));
 
             fw.append ( line );
             fw.flush();

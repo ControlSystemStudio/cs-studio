@@ -33,7 +33,7 @@ package org.csstudio.alarm.service.declaration;
  */
 public final class AlarmTreeLdapConstants {
 
-    public static final String EPICS_ALARM_CFG_FIELD_VALUE = "EpicsAlarmCfg";
+    public static final String EPICS_ALARM_CFG_FIELD_VALUE = "EpicsAlarmcfg";
     public static final String EFAN_FIELD_NAME = "efan";
     public static final String ECOM_FIELD_NAME = "ecom";
     public static final String ESCO_FIELD_NAME = "esco";

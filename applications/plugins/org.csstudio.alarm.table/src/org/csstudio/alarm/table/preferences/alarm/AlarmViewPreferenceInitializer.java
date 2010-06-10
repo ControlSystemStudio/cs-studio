@@ -41,7 +41,7 @@ public class AlarmViewPreferenceInitializer extends AbstractPreferenceInitialize
 		final IPreferenceStore store = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
 
-		store.setDefault(AlarmViewPreferenceConstants.P_STRINGAlarm,
+		store.setDefault(AlarmViewPreferenceConstants.P_STRING_ALARM,
 				"TYPE,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"EVENTTIME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"NAME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$

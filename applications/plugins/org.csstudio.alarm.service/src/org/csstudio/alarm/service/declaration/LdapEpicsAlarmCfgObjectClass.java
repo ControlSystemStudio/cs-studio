@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -50,27 +50,27 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  */
 public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapEpicsAlarmCfgObjectClass> {
 
-    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME, AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE),
+    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME),
 
     /**
      * The facility object class (efan).
      */
-    FACILITY("epicsFacility", EFAN_FIELD_NAME, "facility"),
+    FACILITY("epicsFacility", EFAN_FIELD_NAME),
 
     /**
      * The component object class (ecom).
      */
-    COMPONENT("epicsComponent", ECOM_FIELD_NAME, "component"),
+    COMPONENT("epicsComponent", ECOM_FIELD_NAME),
 
     @Deprecated
-    IOC("epicsIOC", ECON_FIELD_NAME, "ioc"),
+    IOC("epicsIOC", ECON_FIELD_NAME),
     @Deprecated
-    SUBCOMPONENT("epicsSubComponent", ESCO_FIELD_NAME, "subComponent"),
+    SUBCOMPONENT("epicsSubComponent", ESCO_FIELD_NAME),
 
     /**
      * The record object class (eren).
      */
-    RECORD("epicsRecord", EREN_FIELD_NAME, "record");
+    RECORD("epicsRecord", EREN_FIELD_NAME);
 
 
     private static final Map<String, LdapEpicsAlarmCfgObjectClass> CACHE_BY_NAME =
@@ -119,12 +119,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      */
     private Set<LdapEpicsAlarmCfgObjectClass> _nestedClasses = new HashSet<LdapEpicsAlarmCfgObjectClass>();
 
-    /**
-     * The value for the epicsCssType attribute for entries of this class in the
-     * directory.
-     * // FIXME (bknerr) : might be obsolete
-     */
-    private final String _cssType;
 
     /**
      * Creates a new object class.
@@ -138,12 +132,10 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      */
     //CHECKSTYLE:OFF
     private LdapEpicsAlarmCfgObjectClass(final String description,
-                                         final String nodeName,
-                                         final String cssType) {
+                                         final String nodeName) {
         //CHECKSTYLE:ON
         _description = description;
         _nodeName = nodeName;
-        _cssType = cssType;
     }
 
     /**
@@ -174,17 +166,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
     }
 
     /**
-     * Returns the value to use for the epicsCssType attribute of entries of
-     * this object class.
-     * // FIXME (bknerr) : might be obsolete
-     * @return the value to use for the epicsCssType attribute.
-     */
-    @Nonnull
-    public String getCssType() {
-        return _cssType;
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -197,7 +178,6 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
     private static LdapEpicsAlarmCfgObjectClass getNodeTypeByNodeNameStatic(@Nonnull final String name) {
         return CACHE_BY_NAME.get(name);
     }
-
 
     /**
      * {@inheritDoc}

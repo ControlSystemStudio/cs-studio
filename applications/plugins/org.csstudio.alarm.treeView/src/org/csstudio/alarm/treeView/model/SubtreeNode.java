@@ -26,7 +26,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -131,17 +130,6 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	@Nonnull
 	public LdapEpicsAlarmCfgObjectClass getObjectClass() {
 		return _objectClass;
-	}
-
-	/**
-	 * Returns the object class recommended for a <code>SubtreeNode</code>
-	 * that is a child of this node.
-	 *
-	 * @return the object class recommended for subtree children of this node.
-	 */
-	@Nonnull
-	public Set<LdapEpicsAlarmCfgObjectClass> getRecommendedChildSubtreeClasses() {
-		return _objectClass.getNestedContainerClasses();
 	}
 
     /**

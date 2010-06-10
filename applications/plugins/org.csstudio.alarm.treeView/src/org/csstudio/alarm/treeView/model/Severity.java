@@ -30,7 +30,7 @@ import javax.annotation.Nullable;
  * @author Joerg Rathlev
  */
 public enum Severity {
-    // FIXME (jpenning) (bknerr) : don't rely on ordering of enums! ANTI-PATTERN
+    // FIXME jp, bknerr : don't rely on ordering of enums! ANTI-PATTERN
 
     /**
      * Uninitialized or otherwise unknown state.
@@ -68,11 +68,11 @@ public enum Severity {
 	 */
 	public static Severity parseSeverity(@Nullable final String severityString) {
 	    if (severityString == null) {
-	        // TODO (jpenning) : shouldn't be possible
+	        // TODO jp : shouldn't be possible
 	        return NO_ALARM;
 	    }
 		try {
-		    // TODO (jpenning) : really? mapping unknown severity to no alarm? Please check
+		    // TODO jp : really? mapping unknown severity to no alarm? Please check
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
             return NO_ALARM;

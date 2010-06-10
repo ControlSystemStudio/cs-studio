@@ -22,6 +22,9 @@
 
 package org.csstudio.alarm.treeView.views;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.eclipse.jface.viewers.Viewer;
@@ -31,7 +34,7 @@ import org.eclipse.jface.viewers.ViewerFilter;
  * A filter for the alarm tree view which filters nodes based on their alarm
  * state. Only nodes for which the current alarm state is not NO_ALARM make it
  * through the filter.
- * 
+ *
  * @author Joerg Rathlev
  */
 class CurrentAlarmFilter extends ViewerFilter {
@@ -40,12 +43,13 @@ class CurrentAlarmFilter extends ViewerFilter {
 	 * {@inheritDoc}
 	 */
 	@Override
-	public boolean select(final Viewer viewer, final Object parentElement,
-			final Object element) {
+	public boolean select(@CheckForNull final Viewer viewer,
+	                      @CheckForNull final Object parentElement,
+	                      @Nullable final Object element) {
 		if (element instanceof IAlarmTreeNode) {
 			return ((IAlarmTreeNode) element).getAlarmSeverity() != Severity.NO_ALARM;
 		}
-		
+
 		// If the element is not an IAlarmTreeNode, we don't know what it is,
 		// so as a safe default, it passes through the filter.
 		return true;

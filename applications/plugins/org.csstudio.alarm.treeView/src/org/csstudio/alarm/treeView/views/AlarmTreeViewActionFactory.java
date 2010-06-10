@@ -107,7 +107,8 @@ public final class AlarmTreeViewActionFactory {
             return null;
         }
     }
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
 
     /**
      * The ID of the property view.
@@ -467,8 +468,7 @@ public final class AlarmTreeViewActionFactory {
                             .getBrowserSupport().createBrowser("workaround");
                             browser.openURL(helpPage);
                         } catch (final PartInitException e) {
-                            CentralLogger.getInstance()
-                            .error(this, "Failed to initialize workbench browser.", e);
+                            LOG.error("Failed to initialize workbench browser.", e);
                         }
                     }
                 }
@@ -577,7 +577,7 @@ public final class AlarmTreeViewActionFactory {
                     if (node instanceof ProcessVariableNode) {
                         aliases.put("channel", node.getName());
                     }
-                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
+                    LOG.debug("Opening display: " + path);
                     RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
                 }
             }
@@ -607,7 +607,7 @@ public final class AlarmTreeViewActionFactory {
                     if (node instanceof ProcessVariableNode) {
                         aliases.put("channel", node.getName());
                     }
-                    CentralLogger.getInstance().debug(this, "Opening display: " + path);
+                    LOG.debug("Opening display: " + path);
                     RunModeService.getInstance().openDisplayShellInRunMode(path, aliases);
                 }
             }
@@ -655,9 +655,7 @@ public final class AlarmTreeViewActionFactory {
                     }
                 }
                 if (!messages.isEmpty()) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "Scheduling send acknowledgement ("
-                                                      + messages.size() + " messages)");
+                    LOG.debug("Scheduling send acknowledgement (" + messages.size() + " messages)");
                     final SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
                     ackJob.schedule();
                 }

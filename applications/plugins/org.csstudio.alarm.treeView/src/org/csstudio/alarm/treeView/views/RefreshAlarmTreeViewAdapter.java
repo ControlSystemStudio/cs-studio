@@ -23,36 +23,54 @@
  */
 package org.csstudio.alarm.treeView.views;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
+import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.service.AlarmMessageListener;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 
 /**
- * Input validator for alarm tree names.
+ * Alarm tree view refresh adapter
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 20.05.2010
  */
-final class NodeNameInputValidator implements IInputValidator {
+public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
+    private final AlarmTreeView _alarmTreeView;
+    private final SubtreeNode _adapterRootNode;
 
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
+    /**
+     * Constructor.
+     * @param rootNode
+     * @param alarmTreeView TODO
+     */
+    RefreshAlarmTreeViewAdapter(@Nonnull final AlarmTreeView alarmTreeView,
+                                @Nonnull final SubtreeNode rootNode) {
+        _alarmTreeView = alarmTreeView;
+        _adapterRootNode = rootNode;
+    }
+
+    @Override
+    public void done(@Nullable final IJobChangeEvent innerEvent) {
+
+        // TODO jp-mc retrieveInitialStateSynchronously not enabled
+        //            _alarmTreeView.retrieveInitialStateSynchronously(_rootNode);
+
+        _alarmTreeView.asyncSetViewerInput(_adapterRootNode); // Display the new tree.
+
+        final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
+
+        alarmListener.setUpdater(new AlarmTreeUpdater(_adapterRootNode));
+
+        _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+            public void run() {
+                RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer().refresh();
             }
-        }
-        return null; // input is valid
-
+        });
     }
 }

@@ -67,7 +67,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 				getFieldEditorParent());
 		addField(preferenceTopicTableEditor);
 		ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor(
-				AlarmViewPreferenceConstants.P_STRINGAlarm, "Column Settings",
+				AlarmViewPreferenceConstants.P_STRING_ALARM, "Column Settings",
 				getFieldEditorParent());
 		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);

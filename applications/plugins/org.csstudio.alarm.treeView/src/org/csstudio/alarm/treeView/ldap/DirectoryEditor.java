@@ -33,20 +33,17 @@ import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import java.net.URL;
 import java.util.Set;
 
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttribute;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
-import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
@@ -67,10 +64,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
  */
 public final class DirectoryEditor {
 
-    /**
-     * The logger that is used by this class.
-     */
-    private static final CentralLogger LOG = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(DirectoryEditor.class);
 
     private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
@@ -92,18 +86,18 @@ public final class DirectoryEditor {
      */
     public static void delete(@Nonnull final IAlarmTreeNode node) throws DirectoryEditException {
 
-        final LdapName name = node.getLdapName();
-        if (name == null) {
-            throw new DirectoryEditException("LdapName for node " + node.getName() + " could not be created.", null);
-        }
-
-        if (!LDAP_SERVICE.removeComponent(name)) {
-            final String message = "Error unbinding directory entry " + name;
-            final DirectoryEditException editException =
-                new DirectoryEditException(message, new NamingException());
-            LOG.error(message, editException);
-            throw editException;
-        }
+//        final LdapName name = node.getLdapName();
+//        if (name == null) {
+//            throw new DirectoryEditException("LdapName for node " + node.getName() + " could not be created.", null);
+//        }
+//
+//        if (!LDAP_SERVICE.removeComponent(name)) {
+//            final String message = "Error unbinding directory entry " + name;
+//            final DirectoryEditException editException =
+//                new DirectoryEditException(message, new NamingException());
+//            LOG.error(message, editException);
+//            throw editException;
+//        }
         final IAlarmSubtreeNode parent = node.getParent();
         if (parent != null) {
             parent.removeChild(node);
@@ -124,7 +118,7 @@ public final class DirectoryEditor {
      */
     public static void modifyHelpGuidance(@Nonnull final AbstractAlarmTreeNode node,
                                           @Nullable final String value) throws DirectoryEditException {
-        modifyAttribute(node, "epicsHelpGuidance", value);
+        modifyAttribute(node, AlarmTreeNodePropertyId.HELP_GUIDANCE.getLdapAttribute(), value);
         node.setHelpGuidance(value);
     }
 
@@ -142,7 +136,9 @@ public final class DirectoryEditor {
      */
     public static void modifyHelpPage(@Nonnull final AbstractAlarmTreeNode node,
                                       @Nullable final URL value) throws DirectoryEditException {
-        modifyAttribute(node, "epicsHelpPage", value != null ? value.toString() : null);
+        modifyAttribute(node,
+                        AlarmTreeNodePropertyId.HELP_PAGE.getLdapAttribute(),
+                        value != null ? value.toString() : null);
         node.setHelpPage(value);
     }
 
@@ -161,7 +157,7 @@ public final class DirectoryEditor {
      */
     public static void modifyCssAlarmDisplay(@Nonnull final AbstractAlarmTreeNode node,
                                              @Nullable final String value) throws DirectoryEditException {
-        modifyAttribute(node, "epicsCssAlarmDisplay", value);
+        modifyAttribute(node, AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY.getLdapAttribute(), value);
         node.setCssAlarmDisplay(value);
     }
 
@@ -179,7 +175,7 @@ public final class DirectoryEditor {
      */
     public static void modifyCssDisplay(@Nonnull final AbstractAlarmTreeNode node,
                                         @Nullable final String value) throws DirectoryEditException {
-        modifyAttribute(node, "epicsCssDisplay", value);
+        modifyAttribute(node, AlarmTreeNodePropertyId.CSS_DISPLAY.getLdapAttribute(), value);
         node.setCssDisplay(value);
     }
 
@@ -198,7 +194,7 @@ public final class DirectoryEditor {
      */
     public static void modifyCssStripChart(@Nonnull final AbstractAlarmTreeNode node,
                                            @Nullable final String value) throws DirectoryEditException {
-        modifyAttribute(node, "epicsCssStripChart", value);
+        modifyAttribute(node, AlarmTreeNodePropertyId.CSS_STRIP_CHART.getLdapAttribute(), value);
         node.setCssStripChart(value);
     }
 
@@ -221,23 +217,29 @@ public final class DirectoryEditor {
                                         @Nullable final String value)
     throws DirectoryEditException {
 
-        final LdapName name;
-        try {
-            name = node.getLdapName();
-            if (name == null) {
-                throw new InvalidNameException("Node " + node.getName() + " could not construct a valid LdapName." );
-            }
-            final Attribute attr = new BasicAttribute(attribute, value);
-            final int op = value == null ? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;
-            final ModificationItem[] mods = new ModificationItem[] {new ModificationItem(op, attr)};
+//        final LdapName name;
+//        try {
+//            name = node.getLdapName();
+//            if (name == null) {
+//                throw new InvalidNameException("Node " + node.getName() + " could not construct a valid LdapName." );
+//            }
+//            final Attribute attr = new BasicAttribute(attribute, value);
+//            final int op = value == null ? DirContext.REMOVE_ATTRIBUTE : DirContext.REPLACE_ATTRIBUTE;
+//            final ModificationItem[] mods = new ModificationItem[] {new ModificationItem(op, attr)};
+//
+//            LOG.debug(DirectoryEditor.class, name + ": " + mods[0]);
+//            LDAP_SERVICE.modifyAttributes(name, mods);
+//        } catch (final NamingException e) {
+//            LOG.error(DirectoryEditor.class, "Failed to modify attributes for " + node.getName() + " and operation " + value, e);
+//            throw new DirectoryEditException(e.getMessage(), e);
+//        }
 
-            LOG.debug(DirectoryEditor.class, name + ": " + mods[0]);
-            LDAP_SERVICE.modifyAttributes(name, mods);
-        } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class, "Failed to modify attributes for " + node.getName() + " and operation " + value, e);
-            throw new DirectoryEditException(e.getMessage(), e);
+        final AlarmTreeNodePropertyId propId = AlarmTreeNodePropertyId.getIdByLdapAttribute(attribute);
+        if (propId != null) {
+            node.setProperty(propId, value);
+        } else {
+            LOG.warn("No alarm tree node property exists for " + attribute);
         }
-
     }
 
     /**
@@ -254,23 +256,23 @@ public final class DirectoryEditor {
     public static void rename(@Nonnull final IAlarmTreeNode node, @Nonnull final String newName)
         throws DirectoryEditException {
 
-        try {
-            final LdapName oldLdapName = node.getLdapName();
-            if (oldLdapName == null) {
-                throw new DirectoryEditException("LdapName for node " + node.getName() + "could not be created.", null);
-            }
-            final String type = oldLdapName.getRdn(oldLdapName.size() - 1).getType();
+//        try {
+//            final LdapName oldLdapName = node.getLdapName();
+//            if (oldLdapName == null) {
+//                throw new DirectoryEditException("LdapName for node " + node.getName() + "could not be created.", null);
+//            }
+//            final String type = oldLdapName.getRdn(oldLdapName.size() - 1).getType();
+//
+//            final Rdn newRdn = new Rdn(type, newName);
+//            final LdapName newLdapName = (LdapName) oldLdapName.getPrefix(oldLdapName.size() - 1);
+//            newLdapName.add(newRdn);
+//            LDAP_SERVICE.rename(oldLdapName, newLdapName);
 
-            final Rdn newRdn = new Rdn(type, newName);
-            final LdapName newLdapName = (LdapName) oldLdapName.getPrefix(oldLdapName.size() - 1);
-            newLdapName.add(newRdn);
-
-            LDAP_SERVICE.rename(oldLdapName, newLdapName);
             node.setName(newName);
-        } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class, "Error renaming node", e);
-            throw new DirectoryEditException(e.getMessage(), e);
-        }
+//        } catch (final NamingException e) {
+//            LOG.error(DirectoryEditor.class, "Error renaming node", e);
+//            throw new DirectoryEditException(e.getMessage(), e);
+//        }
     }
 
     /**
@@ -339,50 +341,22 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    public static void copyNode(@Nonnull final IAlarmTreeNode node, @Nonnull final SubtreeNode target)
+    @Nonnull
+    public static IAlarmTreeNode copyNode(@Nonnull final IAlarmTreeNode node,
+                                          @Nonnull final SubtreeNode target)
     throws DirectoryEditException {
-        if (node instanceof ProcessVariableNode) {
-            copyProcessVariableNode((ProcessVariableNode) node, target);
-        } else {
-            copySubtree((SubtreeNode) node, target);
-        }
-    }
 
-    /**
-     * Creates a subtree node which is a copy of the given subtree node. All
-     * children of the original subtree node will be copied into the new node.
-     *
-     * @param node
-     *            the original.
-     * @param target
-     *            the target.
-     * @throws DirectoryEditException
-     *             if an error occurs.
-     */
-    private static void copySubtree(@Nonnull final SubtreeNode node, @Nonnull final SubtreeNode target)
-    throws DirectoryEditException {
-        copyDirectoryEntry(node, target);
+        if (node instanceof ProcessVariableNode) {
+            return copyProcessVariableNode((ProcessVariableNode) node, target);
+        }
         final SubtreeNode copy =
             new SubtreeNode.Builder(node.getName(), node.getObjectClass()).setParent(target).build();
-        copyProperties(node, copy);
-        copyChildren(node, copy);
-    }
+        copyProperties((SubtreeNode) node, copy);
 
-    /**
-     * Copies the child nodes of the given subtree node into the target node.
-     * This method works recursively, the children of the copied nodes are
-     * copied as well.
-     *
-     * @param node
-     *            the node which contains the original children.
-     * @param target
-     *            the target node into which the children will be copied.
-     */
-    private static void copyChildren(@Nonnull final SubtreeNode node, @Nonnull final SubtreeNode target)
-    throws DirectoryEditException {
-        for (final IAlarmTreeNode child : node.getChildren()) {
-            copyNode(child, target);
+        for (final IAlarmTreeNode child : ((SubtreeNode) node).getChildren()) {
+            copyNode(child, copy);
         }
+        return copy;
     }
 
 
@@ -397,45 +371,49 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    private static void copyProcessVariableNode(@Nonnull final ProcessVariableNode node,
-                                                @Nonnull final SubtreeNode target) throws DirectoryEditException {
-        copyDirectoryEntry(node, target);
-        final ProcessVariableNode copy = new ProcessVariableNode.Builder(node.getName()).setParent(target).build();
+    @Nonnull
+    private static IAlarmTreeNode copyProcessVariableNode(@Nonnull final ProcessVariableNode node,
+                                                          @Nonnull final SubtreeNode target)
+    throws DirectoryEditException {
+
+        final ProcessVariableNode copy =
+            new ProcessVariableNode.Builder(node.getName()).setParent(target).build();
         copy.updateAlarm(node.getAlarm());
         copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
         copyProperties(node, copy);
+        return copy;
     }
 
-    /**
-     * Copies an entry in the LDAP directory. All of the entries attributes will
-     * be copied into the new entry.
-     *
-     * @param source
-     *            the original node which will be copied.
-     * @param target
-     *            the target node which will be the parent of the copy.
-     * @throws DirectoryEditException
-     *             if an error occurs.
-     */
-    private static void copyDirectoryEntry(@Nonnull final IAlarmTreeNode source,
-                                           @Nonnull final SubtreeNode target) throws DirectoryEditException {
-        try {
-            final LdapName ldapName = source.getLdapName();
-            Attributes attributes = LDAP_SERVICE.getAttributes(ldapName);
-            if (attributes != null) {
-                attributes = (Attributes) attributes.clone();
-            }
-            final LdapName newName =
-                (LdapName) target.getLdapName().add(new Rdn(source.getObjectClass().getNodeTypeName(), source.getName()));
-            if (!LDAP_SERVICE.createComponent(newName, attributes)) {
-                throw new NamingException("Error binding component.");
-            }
-        } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class,
-                      "Error creating directory entry", e);
-            throw new DirectoryEditException(e.getMessage(), e);
-        }
-    }
+//    /**
+//     * Copies an entry in the LDAP directory. All of the entries attributes will
+//     * be copied into the new entry.
+//     *
+//     * @param source
+//     *            the original node which will be copied.
+//     * @param target
+//     *            the target node which will be the parent of the copy.
+//     * @throws DirectoryEditException
+//     *             if an error occurs.
+//     */
+//    private static void copyDirectoryEntry(@Nonnull final IAlarmTreeNode source,
+//                                           @Nonnull final IAlarmTreeNode target) throws DirectoryEditException {
+//        try {
+//            final LdapName ldapName = source.getLdapName();
+//            Attributes attributes = LDAP_SERVICE.getAttributes(ldapName);
+//            if (attributes != null) {
+//                attributes = (Attributes) attributes.clone();
+//            }
+//            final LdapName newName =
+//                (LdapName) target.getLdapName().add(new Rdn(source.getObjectClass().getNodeTypeName(), source.getName()));
+//            if (!LDAP_SERVICE.createComponent(newName, attributes)) {
+//                throw new NamingException("Error binding component.");
+//            }
+//        } catch (final NamingException e) {
+//            LOG.error(DirectoryEditor.class,
+//                      "Error creating directory entry", e);
+//            throw new DirectoryEditException(e.getMessage(), e);
+//        }
+//    }
 
     /**
      * Copies the properties from one node to another node.
@@ -471,16 +449,15 @@ public final class DirectoryEditor {
     throws DirectoryEditException {
         try {
             final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeName(), recordName);
-            final LdapName fullName = (LdapName) ((LdapName) parent.getLdapName().clone()).add(rdn);
+//            final LdapName fullName = (LdapName) ((LdapName) parent.getLdapName().clone()).add(rdn);
             Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
             // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
             attrs = addAlarmAttributes(attrs, recordName);
-            createEntry(fullName, attrs);
+//            createEntry(fullName, attrs);
             final ProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
             AlarmTreeNodeModifier.setAlarmState(node, attrs);
         } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class,
-                      "Error creating directory entry", e);
+            LOG.error("Error creating directory entry", e);
             throw new DirectoryEditException(e.getMessage(), e);
         }
     }
@@ -500,62 +477,62 @@ public final class DirectoryEditor {
     public static void createComponent(@Nonnull final SubtreeNode parent,
                                        @Nonnull final String componentName) throws DirectoryEditException {
 
-        createEntry(parent.getLdapName(), componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT);
+//        createEntry(parent.getLdapName(), componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT);
         new SubtreeNode.Builder(componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT).setParent(parent).build();
     }
 
 
-    /**
-     * Creates a new directory entry.
-     *
-     * @param parentName
-     *            the full name of the parent entry.
-     * @param name
-     *            the name of the entry to be created.
-     * @param objectClass
-     *            the object class of the entry to be created.
-     * @throws DirectoryEditException
-     *             if the entry could not be created.
-     */
-    private static void createEntry(@Nonnull final LdapName parentName,
-                                    @Nonnull final String name,
-                                    @Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) throws DirectoryEditException {
-        try {
-            final Rdn rdn = new Rdn(objectClass.getNodeTypeName(), name);
-            final LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
-            final Attributes attrs = createBaseAttributesForEntry(objectClass, rdn);
-            createEntry(fullName, attrs);
-        } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class,
-                      "Error creating directory entry", e);
-            throw new DirectoryEditException(e.getMessage(), e);
-        }
-    }
+//    /**
+//     * Creates a new directory entry.
+//     *
+//     * @param parentName
+//     *            the full name of the parent entry.
+//     * @param name
+//     *            the name of the entry to be created.
+//     * @param objectClass
+//     *            the object class of the entry to be created.
+//     * @throws DirectoryEditException
+//     *             if the entry could not be created.
+//     */
+//    private static void createEntry(@Nonnull final LdapName parentName,
+//                                    @Nonnull final String name,
+//                                    @Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) throws DirectoryEditException {
+//        try {
+//            final Rdn rdn = new Rdn(objectClass.getNodeTypeName(), name);
+//            final LdapName fullName = (LdapName) ((LdapName) parentName.clone()).add(rdn);
+//            final Attributes attrs = createBaseAttributesForEntry(objectClass, rdn);
+//            createEntry(fullName, attrs);
+//        } catch (final NamingException e) {
+//            LOG.error(DirectoryEditor.class,
+//                      "Error creating directory entry", e);
+//            throw new DirectoryEditException(e.getMessage(), e);
+//        }
+//    }
 
-    /**
-     * Creates a new directory entry.
-     *
-     * @param name
-     *            the full name of the new entry.
-     * @param attributes
-     *            the attributes of the entry.
-     * @throws DirectoryEditException
-     *             if the entry could not be created.
-     */
-    private static void createEntry(@Nonnull final LdapName name,
-                                    @Nonnull final Attributes attributes) throws DirectoryEditException {
-        try {
-            LOG.debug(DirectoryEditor.class,
-                      "Creating entry " + name + " with attributes " + attributes);
-            if (!LDAP_SERVICE.createComponent(name, attributes)) {
-                throw new NamingException("Binding error of " + name);
-            }
-        } catch (final NamingException e) {
-            LOG.error(DirectoryEditor.class,
-                      "Error creating directory entry", e);
-            throw new DirectoryEditException(e.getMessage(), e);
-        }
-    }
+//    /**
+//     * Creates a new directory entry.
+//     *
+//     * @param name
+//     *            the full name of the new entry.
+//     * @param attributes
+//     *            the attributes of the entry.
+//     * @throws DirectoryEditException
+//     *             if the entry could not be created.
+//     */
+//    private static void createEntry(@Nonnull final LdapName name,
+//                                    @Nonnull final Attributes attributes) throws DirectoryEditException {
+//        try {
+//            LOG.debug(DirectoryEditor.class,
+//                      "Creating entry " + name + " with attributes " + attributes);
+//            if (!LDAP_SERVICE.createComponent(name, attributes)) {
+//                throw new NamingException("Binding error of " + name);
+//            }
+//        } catch (final NamingException e) {
+//            LOG.error(DirectoryEditor.class,
+//                      "Error creating directory entry", e);
+//            throw new DirectoryEditException(e.getMessage(), e);
+//        }
+//    }
 
     /**
      * Returns the base attributes (name, objectclass and EPICS type) for a new
@@ -572,23 +549,25 @@ public final class DirectoryEditor {
                                                            @Nonnull final Rdn rdn) {
         final Attributes result = rdn.toAttributes();
         result.put(ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
-        result.put("epicsCssType", objectClass.getCssType());
+        //result.put(ATTR_FIELD_CSS_TYPE, objectClass.getCssType());
         return result;
     }
 
     /**
      * Reads the alarm attributes from the EpicsControls path of the LDAP
-     * directory and adds them to the target attributes.
+     * directory and adds the result to a new copy of the the target attributes.
      *
      * @param target
-     *            the attributes that will be extended.
+     *            an (probably) extended copy the attributes
      * @param recordName
-     *            the name of the record.
+     *            the name of the record
      * @throws NamingException
      */
-    @Nonnull
+    @CheckReturnValue
     private static Attributes addAlarmAttributes(@Nonnull final Attributes target,
                                                  @Nonnull final String recordName) throws NamingException {
+
+        final Attributes attributes = (Attributes) target.clone();
 
         final LdapSearchResult searchResult =
             LDAP_SERVICE.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
@@ -605,11 +584,11 @@ public final class DirectoryEditor {
                 for (final String attr : attrs) {
                     final Attribute foundAttribute = foundAttributes.get(attr);
                     if (foundAttribute != null) {
-                        target.put((Attribute) foundAttribute.clone());
+                        attributes.put((Attribute) foundAttribute.clone());
                     }
                 }
             }
         }
-        return target;
+        return attributes;
     }
 }

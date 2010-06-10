@@ -21,16 +21,36 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapNameUtils.parseSearchResult;
+import static org.csstudio.utility.ldap.LdapNameUtils.removeRdns;
+import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.utility.ldap.LdapNameUtils.Direction;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -47,21 +67,23 @@ import org.eclipse.core.runtime.jobs.Job;
 public final class ImportXmlFileJob extends Job {
 
     private final IAlarmConfigurationService _configService;
+    private final ILdapService _ldapService;
     private final SubtreeNode _rootNode;
     private String _filePath;
 
 
     /**
      * Constructor.
-     * @param name
+     * @param configService
+     * @param ldapService
      * @param rootNode
-     * @param alarmTreeView TODO
      */
-    public ImportXmlFileJob(@Nonnull final String name,
-                            @Nonnull final IAlarmConfigurationService service,
+    public ImportXmlFileJob(@Nonnull final IAlarmConfigurationService configService,
+                            @Nonnull final ILdapService ldapService,
                             @Nonnull final SubtreeNode rootNode) {
-        super(name);
-        _configService = service;
+        super("ImportFileJob");
+        _configService = configService;
+        _ldapService = ldapService;
         _rootNode = rootNode;
     }
 
@@ -75,7 +97,13 @@ public final class ImportXmlFileJob extends Job {
 
         try {
             final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
-                _configService.retrieveInitialContentModelFromFile(this._filePath);
+                _configService.retrieveInitialContentModelFromFile(_filePath);
+
+
+            final IStatus status = checkForExistingFacilities(model, _ldapService, _rootNode);
+            if (!status.isOK()) {
+                return status;
+            }
 
             final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);
             if (canceled) {
@@ -83,12 +111,74 @@ public final class ImportXmlFileJob extends Job {
             }
 
         } catch (final CreateContentModelException e) {
-            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not import file: " + e.getMessage(), e);
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                              "Could not import file: " + e.getMessage(), e);
         } catch (final NamingException e) {
-            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID, "Could not properly build the full alarm tree: " + e.getMessage(), e);
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                              "Could not properly build the full alarm tree: " + e.getMessage(), e);
         } finally {
             monitor.done();
         }
         return Status.OK_STATUS;
+    }
+
+
+    @Nonnull
+    private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                               @Nonnull final ILdapService service,
+                                               @Nonnull final SubtreeNode rootNode)
+        throws NamingException {
+
+
+        final Set<String> existingFacilityNames = new HashSet<String>();
+
+        existingFacilityNames.addAll(getExistingFacilityNamesFromLdap(service));
+
+        existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
+
+        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass>> facilityMap =
+            model.getByType(LdapEpicsAlarmCfgObjectClass.FACILITY);
+
+        existingFacilityNames.retainAll(facilityMap.keySet());
+
+        if (!existingFacilityNames.isEmpty()) {
+            return new Status(IStatus.ERROR, AlarmTreePlugin.PLUGIN_ID,
+                              "Following facility names from XML file already exist in the current view or in LDAP.\n" +
+                              "Please rename them in your file to import:\n" + existingFacilityNames.toString(), null);
+        }
+        return Status.OK_STATUS;
+    }
+
+
+    @Nonnull
+    private Set<String> getExistingFacilitiesFromView(@Nonnull final SubtreeNode rootNode) {
+        final Set<String> facilities = new HashSet<String>();
+        final IAlarmTreeNode[] facilitiesInAlarmTree = rootNode.getChildren();
+        for (final IAlarmTreeNode facilityNode : facilitiesInAlarmTree) {
+            facilities.add(facilityNode.getLdapName().toString());
+        }
+        return facilities;
+    }
+
+
+    @Nonnull
+    private Set<String> getExistingFacilityNamesFromLdap(@Nonnull final ILdapService service)
+        throws NamingException {
+
+        final LdapSearchResult searchResult =
+            service.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME,
+                                                                      EPICS_ALARM_CFG_FIELD_VALUE),
+                                                      any(EFAN_FIELD_NAME),
+                                                      SearchControls.ONELEVEL_SCOPE);
+        final Set<SearchResult> set = searchResult.getAnswerSet();
+        final Set<String> facilityNamesInLdap = new HashSet<String>();
+        for (final SearchResult row : set) {
+            final LdapName fullLdapName= parseSearchResult(row);
+            final LdapName partLdapName = removeRdns(fullLdapName, OU_FIELD_NAME, Direction.FORWARD);
+            facilityNamesInLdap.add(partLdapName.toString());
+        }
+        return facilityNamesInLdap;
     }
 }

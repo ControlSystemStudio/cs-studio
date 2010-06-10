@@ -26,7 +26,7 @@
  */
 public class AlarmViewPreferenceConstants {
 
-	public static final String P_STRINGAlarm = "Alarm.column_names";//$NON-NLS-1$
+	public static final String P_STRING_ALARM = "Alarm.column_names";//$NON-NLS-1$
 	//Sets of JMS topics to be monitored. List separated with
 	//';'. The optional name for the menu is separated with '?'.
 	public static final String TOPIC_SET = "Alarm.topic_set";

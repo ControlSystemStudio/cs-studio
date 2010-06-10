@@ -42,6 +42,7 @@ public interface IAlarmTreeNode {
 	 *
 	 * @return the name of this node.
 	 */
+    @Nonnull
 	String getName();
 
 	/**
@@ -50,7 +51,7 @@ public interface IAlarmTreeNode {
 	 * @param name
 	 *            the new name.
 	 */
-	void setName(String name);
+	void setName(@Nonnull String name);
 
     /**
      * Returns the name of this node in the LDAP directory.
@@ -98,6 +99,7 @@ public interface IAlarmTreeNode {
 	 *
 	 * @return the object class of this node in the directory.
 	 */
+	@Nonnull
 	LdapEpicsAlarmCfgObjectClass getObjectClass();
 
 	/**
@@ -153,7 +155,7 @@ public interface IAlarmTreeNode {
 	 * Sets the parent node of this node.
 	 * @param parent the parent node
 	 */
-	void setParent(IAlarmSubtreeNode parent);
+	void setParent(@CheckForNull IAlarmSubtreeNode parent);
 
     /**
      * Returns the value of a property. If the property is not set on this node,
@@ -166,5 +168,12 @@ public interface IAlarmTreeNode {
      */
     @CheckForNull
     String getProperty(@Nonnull final AlarmTreeNodePropertyId property);
+
+    /**
+     * Sets the property to the given value.
+     * @param property .
+     * @param value the value, if <code>null</code> is passed, the property is removed
+     */
+    void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value);
 
 }

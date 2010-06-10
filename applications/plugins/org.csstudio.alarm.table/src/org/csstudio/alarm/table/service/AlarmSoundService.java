@@ -48,6 +48,8 @@ public class AlarmSoundService implements IAlarmSoundService {
 
     private final CentralLogger _log = CentralLogger.getInstance();
 
+    // TODO jp : refactor to enum map to {@link org.csstudio.alarm.treeView.model.Severity}
+    // perhaps move the Severity definition somewhere else...
     private Map<String, String> _severityToSoundfile;
 
     // Buffer for one sound
@@ -88,7 +90,7 @@ public class AlarmSoundService implements IAlarmSoundService {
     private boolean isMappingDefinedForSeverity(final String severity) {
         boolean result = _severityToSoundfile.containsKey(severity);
 
-        String filename = _severityToSoundfile.get(severity);
+        final String filename = _severityToSoundfile.get(severity);
         result = result && (filename != null) && (filename.length() > 0);
 
         return result;
@@ -99,7 +101,7 @@ public class AlarmSoundService implements IAlarmSoundService {
      * (Performance)
      */
     private void mapSeverityToSoundfile() {
-        IPreferenceStore store = new JmsLogPreferencePage().getPreferenceStore();
+        final IPreferenceStore store = new JmsLogPreferencePage().getPreferenceStore();
         _severityToSoundfile = new HashMap<String, String>();
 
         _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY0), store
@@ -139,13 +141,13 @@ public class AlarmSoundService implements IAlarmSoundService {
                         _queue.clear();
 
                         // Wait for entry
-                        String severity = _queue.take();
+                        final String severity = _queue.take();
                         _log.debug(this, "player started");
 
                         bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
                         mp3Player = new Player(bufferedInputStream);
                         mp3Player.play();
-                    } catch (Exception e) {
+                    } catch (final Exception e) {
                         _log.warn(this, "player stopped on error ", e);
                     } finally {
                         _log.debug(this, "player has finished");
@@ -156,7 +158,7 @@ public class AlarmSoundService implements IAlarmSoundService {
                             if (mp3Player != null) {
                                 mp3Player.close();
                             }
-                        } catch (Exception e2) {
+                        } catch (final Exception e2) {
                             _log.warn(this, "error while closing ressources", e2);
                             // can't help it
                         }
@@ -172,10 +174,10 @@ public class AlarmSoundService implements IAlarmSoundService {
              * @throws IOException
              */
             private InputStream getSoundStreamForSeverity(final String severity) throws IOException {
-                String mp3Path = getMp3Path(severity);
-                Bundle bundle = Platform.getProduct().getDefiningBundle();
-                URL url = FileLocator.find(bundle, new Path(mp3Path), null);
-                InputStream stream = url.openStream();
+                final String mp3Path = getMp3Path(severity);
+                final Bundle bundle = Platform.getProduct().getDefiningBundle();
+                final URL url = FileLocator.find(bundle, new Path(mp3Path), null);
+                final InputStream stream = url.openStream();
                 return stream;
             };
         };

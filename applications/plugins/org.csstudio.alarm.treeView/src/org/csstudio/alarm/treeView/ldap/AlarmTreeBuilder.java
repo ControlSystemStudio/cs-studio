@@ -22,6 +22,7 @@
  package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
@@ -82,8 +83,8 @@ public final class AlarmTreeBuilder {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
-                attrs.put("objectClass", LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
-                attrs.put("epicsCssType", LdapEpicsAlarmCfgObjectClass.FACILITY.getCssType());
+                attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
+                //attrs.put(ATTR_FIELD_CSS_TYPE, LdapEpicsAlarmCfgObjectClass.FACILITY.getCssType());
                 LDAP_SERVICE.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {

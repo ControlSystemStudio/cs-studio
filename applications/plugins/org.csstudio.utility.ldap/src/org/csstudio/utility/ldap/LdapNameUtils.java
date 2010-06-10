@@ -179,8 +179,8 @@ public final class LdapNameUtils {
     }
 
     /**
-     * Removes those Rdns starting from direction that start with the given string.
-     * (excluding) the very rdn.
+     * Removes all those Rdns starting from the given direction that start with the given string.
+     * (excluding) the matching rdn.
      *
      * @param fullName the LDAP name to be modified
      * @param fieldNamePrefix the field

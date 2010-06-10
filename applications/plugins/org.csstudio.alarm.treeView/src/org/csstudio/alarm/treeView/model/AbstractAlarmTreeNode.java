@@ -24,7 +24,7 @@ package org.csstudio.alarm.treeView.model;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collections;
-import java.util.HashMap;
+import java.util.EnumMap;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -72,7 +72,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	                                @Nonnull final LdapEpicsAlarmCfgObjectClass oc) {
 	    _name = name;
 	    _objectClass = oc;
-		_properties = new HashMap<AlarmTreeNodePropertyId, String>();
+		_properties = new EnumMap<AlarmTreeNodePropertyId, String>(AlarmTreeNodePropertyId.class);
 	}
 
 	/**
@@ -83,7 +83,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param value
 	 *            the value.
 	 */
-	public final void setProperty(final AlarmTreeNodePropertyId property, final String value) {
+	public final void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value) {
 		if (value != null) {
 			_properties.put(property, value);
 		} else {
@@ -91,18 +91,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 		}
 	}
 
-	/**
-	 * Returns the property value that is set on this node. The value is not
-	 * inherited from a parent node if no value is set on this node.
-	 *
-	 * @param property
-	 *            the property.
-	 * @return the property value, or <code>null</code> if the property is not
-	 *         set on this node.
-	 */
-	public final String getOwnProperty(final AlarmTreeNodePropertyId property) {
-		return _properties.get(property);
-	}
+
 
 	/**
 	 * Sets the CSS alarm display for this node.
@@ -211,6 +200,20 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
             }
         }
         return result;
+    }
+
+    /**
+     * Returns the property value that is set on this node. The value is not
+     * inherited from a parent node if no value is set on this node.
+     *
+     * @param property
+     *            the property.
+     * @return the property value, or <code>null</code> if the property is not
+     *         set on this node.
+     */
+    @CheckForNull
+    public final String getOwnProperty(@Nonnull final AlarmTreeNodePropertyId property) {
+        return _properties.get(property);
     }
 
     /**

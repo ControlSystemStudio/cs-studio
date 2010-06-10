@@ -323,12 +323,15 @@ public final class LdapAccess {
             } // else means 'new IOC file in directory'
 
             try {
-                final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLdap = getOrCreateIocFromLdap(model,
-                                                                                                               iocFromFS,
-                                                                                                               iocName);
+                final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> iocFromLdap =
+                    getOrCreateIocFromLdap(model,
+                                           iocFromFS,
+                                           iocName);
+
                 final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
-                final LdapSearchResult searchResult = LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
+                final LdapSearchResult searchResult =
+                    LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
                 if (searchResult != null) {
                     final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
                         new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(model);

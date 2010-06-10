@@ -89,12 +89,12 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         _cacheByTypeAndSimpleName = initCacheByType(clazz);
 
 
-        final Rdn rdn = new Rdn(objectClassRoot.getRootTypeName(), rootValue);
+        final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootValue);
         final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
 
 
         try {
-            _treeRoot = new TreeNodeComponent<T>(objectClassRoot.getNodeTypeName(),
+            _treeRoot = new TreeNodeComponent<T>(rootValue,
                                                  objectClassRoot,
                                                  objectClassRoot.getNestedContainerClasses() ,
                                                  null,
@@ -181,6 +181,11 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     @CheckForNull
     public ISubtreeNodeComponent<T> getChildByLdapName(@Nonnull final String name) {
         return _cacheByLdapName.get(name);
+    }
+
+    @CheckForNull
+    public Map<String, ISubtreeNodeComponent<T>> getByType(@Nonnull final T type) {
+        return _cacheByTypeAndLdapName.get(type);
     }
 
 

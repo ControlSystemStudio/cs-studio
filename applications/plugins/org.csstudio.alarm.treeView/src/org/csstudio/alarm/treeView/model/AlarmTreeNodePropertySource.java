@@ -21,12 +21,8 @@
  */
 package org.csstudio.alarm.treeView.model;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import javax.annotation.Nullable;
 
-import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
-import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -175,85 +171,30 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void resetPropertyValue(final Object id) {
+	public final void resetPropertyValue(@Nullable final Object id) {
 		if (id instanceof AlarmTreeNodePropertyId) {
-			try {
-				switch ((AlarmTreeNodePropertyId) id) {
-				case HELP_PAGE:
-					DirectoryEditor.modifyHelpPage(_node, null);
-					break;
-				case HELP_GUIDANCE:
-					DirectoryEditor.modifyHelpGuidance(_node, null);
-					break;
-				case CSS_ALARM_DISPLAY:
-					DirectoryEditor.modifyCssAlarmDisplay(_node, null);
-					break;
-				case CSS_DISPLAY:
-					DirectoryEditor.modifyCssDisplay(_node, null);
-					break;
-				case CSS_STRIP_CHART:
-					DirectoryEditor.modifyCssStripChart(_node, null);
-					break;
-				default:
-					// do nothing
-				}
-			} catch (final DirectoryEditException e) {
-				MessageDialog.openError(null, "Alarm Tree",
-						"The attribute could not be modified. " + e.getMessage());
-			}
+		    _node.setProperty((AlarmTreeNodePropertyId) id, null);
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void setPropertyValue(final Object id, final Object value) {
+	public final void setPropertyValue(@Nullable final Object id, @Nullable final Object value) {
 		if (id instanceof AlarmTreeNodePropertyId) {
-			try {
-				String str = (String) value;
-				if (str.equals("")) {
-					str = null;
-				}
-				switch ((AlarmTreeNodePropertyId) id) {
-				case HELP_GUIDANCE:
-					DirectoryEditor.modifyHelpGuidance(_node, str);
-					break;
-				case HELP_PAGE:
-					try {
-						final URL url = new URL(str);
-						DirectoryEditor.modifyHelpPage(_node, url);
-					} catch (final MalformedURLException e) {
-						MessageDialog.openError(null, "Alarm Tree",
-								"The value is not a valid URL.");
-					}
-					break;
-				case CSS_ALARM_DISPLAY:
-					DirectoryEditor.modifyCssAlarmDisplay(_node, str);
-					break;
-				case CSS_DISPLAY:
-					DirectoryEditor.modifyCssDisplay(_node, str);
-					break;
-				case CSS_STRIP_CHART:
-					DirectoryEditor.modifyCssStripChart(_node, str);
-					break;
-				default:
-					// do nothing
-				}
-			} catch (final DirectoryEditException e) {
-				MessageDialog.openError(null, "Alarm Tree",
-						"The attribute could not be modified. " + e.getMessage());
-			}
+//				String str = (String) value; // on other code location null means 'remove' property! what the heck?!
+//				if (str.equals("")) {        // How to set an attribute to to empty string then?!
+//					str = null;
+//				}
+		    _node.setProperty((AlarmTreeNodePropertyId) id, (String) value);
 		}
+      //else { Ignore }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final boolean isPropertyResettable(final Object id) {
-		return (id == AlarmTreeNodePropertyId.HELP_PAGE)
-			|| (id == AlarmTreeNodePropertyId.HELP_GUIDANCE)
-			|| (id == AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY)
-			|| (id == AlarmTreeNodePropertyId.CSS_DISPLAY)
-			|| (id == AlarmTreeNodePropertyId.CSS_STRIP_CHART);
+	public final boolean isPropertyResettable(@Nullable final Object id) {
+	    return id instanceof AlarmTreeNodePropertyId;
 	}
 }

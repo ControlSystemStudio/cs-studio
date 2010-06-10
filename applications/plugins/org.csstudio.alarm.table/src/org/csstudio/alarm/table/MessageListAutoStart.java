@@ -47,7 +47,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
 
     private void startAlarmLists() {
         TopicSetColumnService topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                                                AlarmViewPreferenceConstants.P_STRINGAlarm);
+                                                                                AlarmViewPreferenceConstants.P_STRING_ALARM);
         List<TopicSet> topicSets = topicSetColumnService.getTopicSets();
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {

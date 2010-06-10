@@ -22,16 +22,50 @@
 
 package org.csstudio.alarm.treeView.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 /**
  * Enumeration of the additional properties that can be set on an alarm tree
  * node.
- * 
+ *
  * @author Joerg Rathlev
  */
 public enum AlarmTreeNodePropertyId {
-	CSS_ALARM_DISPLAY,
-	CSS_DISPLAY,
-	CSS_STRIP_CHART,
-	HELP_GUIDANCE,
-	HELP_PAGE,
+	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay"),
+	CSS_DISPLAY("epicsCssDisplay"),
+	CSS_STRIP_CHART("epicsCssStripChart"),
+	HELP_GUIDANCE("epicsHelpGuidance"),
+	HELP_PAGE("epicsHelpPage");
+
+	private final String _ldapAttribute;
+
+	/**
+	 * Constructor.
+	 * @param ldapAttribute the name as it is defined as attribute in LDAP
+	 */
+	//CHECKSTYLE:OFF No annotations here due to eclipse bug
+	private AlarmTreeNodePropertyId(final String ldapAttribute) {
+	//CHECKSTYLE:ON
+	    _ldapAttribute = ldapAttribute;
+    }
+
+	@Nonnull
+	public String getLdapAttribute() {
+	    return _ldapAttribute;
+	}
+
+    /**
+     * Compares the given string for the LDAP attribute with the field of the enum objects.
+     * @return returns the enum object with the first match of its attribute
+     */
+	@CheckForNull
+	public static AlarmTreeNodePropertyId getIdByLdapAttribute(@Nonnull final String attribute) {
+        for (final AlarmTreeNodePropertyId id : values()) {
+            if (id.getLdapAttribute().equals(attribute)) {
+                return id;
+            }
+        }
+        return null;
+    }
 }

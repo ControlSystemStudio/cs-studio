@@ -51,6 +51,11 @@ final class AlarmHandler {
     // Local service to handle jms communication
     private final JmsMessageService _jmsMessageService;
 
+    /**
+     * Constructor.
+     * @param alarmConnection
+     * @param jmsMessageService
+     */
     public AlarmHandler(@Nonnull final IAlarmConnection alarmConnection,
                         @Nonnull final JmsMessageService jmsMessageService) {
         _alarmConnection = alarmConnection;
@@ -109,7 +114,7 @@ final class AlarmHandler {
     private boolean isAlarmMessageOk(@Nonnull final IAlarmMessage message) {
         boolean result = true;
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
-            String value = message.getString(key);
+            final String value = message.getString(key);
             result = result && (value != null);
             result = result && (!value.equals("noTimeStamp"));
             result = result && (!value.equals("Uninitialized"));

@@ -83,9 +83,9 @@ public final class ContentModelExporter {
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) {
 
-        final T type = model.getRoot().getType();
-        final Element rootElem = new Element(type.getNodeTypeName());
-        rootElem.setAttribute("name", type.getRootTypeName());
+        final T rootType = model.getRoot().getType();
+        final Element rootElem = new Element(rootType.getNodeTypeName());
+        rootElem.setAttribute("name", rootType.getRootTypeName());
 
         final Document doc = new Document(rootElem);
 

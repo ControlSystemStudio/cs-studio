@@ -98,7 +98,7 @@ public class AlarmView extends LogView {
 
         // Read column names and JMS topic settings from preferences
         _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRINGAlarm);
+                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
 
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews());
         defineCurrentTopicSet();
@@ -122,7 +122,7 @@ public class AlarmView extends LogView {
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
         _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRINGAlarm);
+                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
 
         initializeMessageTable();
         _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
@@ -166,12 +166,12 @@ public class AlarmView extends LogView {
     protected void initializeMessageTable() {
         // Initialize JMS message list
         if (_columnMapping != null) {
-            _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRINGAlarm,
+            _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRING_ALARM,
                                       AlarmViewPreferenceConstants.TOPIC_SET);
             _columnMapping = null;
         }
         _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRINGAlarm);
+                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
         // is there already a MessageTable delete it and the message list.
         if (_messageTable != null) {
             _messageTable.disposeMessageTable();
@@ -216,7 +216,7 @@ public class AlarmView extends LogView {
 
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
                                                                            getCurrentTopicSet());
-        addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRINGAlarm,
+        addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRING_ALARM,
                                     AlarmViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);
         makeActions();
