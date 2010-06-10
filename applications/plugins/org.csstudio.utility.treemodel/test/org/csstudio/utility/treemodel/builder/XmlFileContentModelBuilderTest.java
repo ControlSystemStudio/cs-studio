@@ -36,6 +36,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.jdom.input.JDOMParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 /**
  * Test content model class and builder from XML.
  *
@@ -58,9 +59,11 @@ public class XmlFileContentModelBuilderTest {
     @BeforeClass
     public static final void buildResourcePath() {
         try {
-            final File loc = FileLocator.getBundleFile(Activator.getDefault().getBundle());
+            final Bundle bundle = Activator.getDefault().getBundle();
+            final File loc = FileLocator.getBundleFile(bundle);
 
             RES_PATH = new File(loc, "testres");
+
         } catch (final IOException e1) {
             Assert.fail("File locator could not deliver bundle file path.");
         }
