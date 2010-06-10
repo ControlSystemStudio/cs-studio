@@ -341,10 +341,10 @@ public class ClientRequest implements Runnable
         		session = null;
         		try {
         			session = icServer.createJmsSession();
-        			Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_SIM_CONTEXT);
+        			final Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_SIM_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer alarmSender = session.createProducer( alarmDestination);
+                	final MessageProducer alarmSender = session.createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
                 	
@@ -386,10 +386,10 @@ public class ClientRequest implements Runnable
         		session = null;
         		try {
         			session = icServer.createJmsSession();
-        			Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_ADIS_CONTEXT);
+        			final Destination alarmDestination = session.createTopic( PreferenceProperties.JMS_ADIS_CONTEXT);
 
                     // Create a MessageProducer from the Session to the Topic or Queue
-                	MessageProducer alarmSender = session.createProducer( alarmDestination);
+                	final MessageProducer alarmSender = session.createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
                 	
