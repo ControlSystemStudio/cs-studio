@@ -64,6 +64,14 @@
                   label="Send Status"
                   value="sendStatus">
             </enumerationValue>
+            <enumerationValue
+                  label="Send all Records in SIM"
+                  value="sendSim">
+            </enumerationValue>
+            <enumerationValue
+                  label="Send all Records in ADIS"
+                  value="sendAdis">
+            </enumerationValue>
          </enumerationParameter>
       </command>
       <command
