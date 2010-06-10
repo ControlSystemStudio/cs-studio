@@ -45,5 +45,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 
 		prefs.put(PreferenceKey.JMS_TIME_TO_LIVE_ALARMS.getKeyAsString(), "3600000");
+		prefs.put(PreferenceKey.JMS_ALARM_TOPIC_NAME.getKeyAsString(), "ALARM");
 	}
 }

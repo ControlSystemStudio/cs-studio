@@ -29,7 +29,8 @@ import javax.annotation.Nonnull;
  */
 public enum PreferenceKey {
 
-    JMS_TIME_TO_LIVE_ALARMS("TimeToLiveAlarms");
+    JMS_TIME_TO_LIVE_ALARMS("TimeToLiveAlarms"),
+    JMS_ALARM_TOPIC_NAME("AlarmTopicName");
 
     private final String _keyAsString;
 

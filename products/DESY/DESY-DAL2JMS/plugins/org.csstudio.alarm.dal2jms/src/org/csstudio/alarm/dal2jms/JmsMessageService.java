@@ -54,14 +54,18 @@ class JmsMessageService {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(JmsMessageService.class);
 
-    private static final String JMS_ALARM_CONTEXT = "ALARM";
+    // Given as preference
+    private final String _alarmTopicName;
 
-    private final int _jmsTimeToLive;
+    // Given as preference
+    private final int _timeToLiveForAlarms;
 
     public JmsMessageService() {
         IPreferencesService prefs = Platform.getPreferencesService();
-        _jmsTimeToLive = prefs.getInt(Activator.PLUGIN_ID, PreferenceKey.JMS_TIME_TO_LIVE_ALARMS
+        _timeToLiveForAlarms = prefs.getInt(Activator.PLUGIN_ID, PreferenceKey.JMS_TIME_TO_LIVE_ALARMS
                 .getKeyAsString(), 3600000, null);
+        _alarmTopicName = prefs.getString(Activator.PLUGIN_ID, PreferenceKey.JMS_ALARM_TOPIC_NAME
+                .getKeyAsString(), "ALARM", null);
     }
 
     public void sendAlarmMessage(@Nonnull final IAlarmMessage alarmMessage) {
@@ -70,7 +74,7 @@ class JmsMessageService {
             session = newSession();
             MapMessage message = session.createMapMessage();
             copyAlarmMsgToJmsMsg(alarmMessage, message);
-            sendViaProducer(session, message);
+            sendViaMessageProducer(session, message);
         } catch (final JMSException jmse) {
             LOG.debug("dal2jms could not forward alarm message.", jmse);
         } finally {
@@ -78,12 +82,11 @@ class JmsMessageService {
         }
     }
 
-    private void sendViaProducer(@Nonnull final Session session, @Nonnull final MapMessage message) throws JMSException {
+    private void sendViaMessageProducer(@Nonnull final Session session,
+                                        @Nonnull final MapMessage message) throws JMSException {
         MessageProducer producer = null;
         try {
-            // TODO (jpenning) fetch from jms constants
-            String jmsContext = JMS_ALARM_CONTEXT;
-            producer = newMessageProducer(session, jmsContext);
+            producer = newMessageProducer(session);
             producer.send(message);
         } finally {
             tryToCloseMessageProducer(producer);
@@ -91,14 +94,11 @@ class JmsMessageService {
     }
 
     @Nonnull
-    private MessageProducer newMessageProducer(@Nonnull final Session session,
-                                               @Nonnull final String jmsContext) throws JMSException {
-        // Create the destination (Topic or Queue)
-        Destination destination = session.createTopic(jmsContext);
-        // Create a MessageProducer from the Session to the Topic or Queue
+    private MessageProducer newMessageProducer(@Nonnull final Session session) throws JMSException {
+        Destination destination = session.createTopic(_alarmTopicName);
         MessageProducer result = session.createProducer(destination);
         result.setDeliveryMode(DeliveryMode.PERSISTENT);
-        result.setTimeToLive(_jmsTimeToLive);
+        result.setTimeToLive(_timeToLiveForAlarms);
         return result;
     }
 
