@@ -31,13 +31,11 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.dal2jms.preferences.PreferenceKey;
+import org.csstudio.alarm.dal2jms.preferences.Preference;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.jms.sharedconnection.SharedJmsConnections;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Local service directly used by the alarm handler.
@@ -61,11 +59,8 @@ class JmsMessageService {
     private final int _timeToLiveForAlarms;
 
     public JmsMessageService() {
-        IPreferencesService prefs = Platform.getPreferencesService();
-        _timeToLiveForAlarms = prefs.getInt(Activator.PLUGIN_ID, PreferenceKey.JMS_TIME_TO_LIVE_ALARMS
-                .getKeyAsString(), 3600000, null);
-        _alarmTopicName = prefs.getString(Activator.PLUGIN_ID, PreferenceKey.JMS_ALARM_TOPIC_NAME
-                .getKeyAsString(), "ALARM", null);
+        _timeToLiveForAlarms = Preference.JMS_TIME_TO_LIVE_ALARMS.getValue();
+        _alarmTopicName = Preference.JMS_ALARM_TOPIC_NAME.getValue();
     }
 
     public void sendAlarmMessage(@Nonnull final IAlarmMessage alarmMessage) {

@@ -26,15 +26,19 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.dal2jms.preferences.Preference;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.remotercp.common.servicelauncher.ServiceLauncher;
+import org.remotercp.ecf.ECFConstants;
+import org.remotercp.login.connection.HeadlessConnection;
 
 /**
- * The alarm handler is started and the application waits for the stop command being sent via remote command.
+ * The alarm handler is connected and the application waits for the stop command being sent via remote command.
  *
  * @author bknerr
  * @author $Author$
@@ -51,16 +55,36 @@ public class Dal2JmsApplication implements IApplication {
      */
     private volatile boolean _stopped = false;
 
+    /**
+     * The running instance of this server.
+     */
+    private static Dal2JmsApplication INSTANCE;
+
+    /**
+     * Returns a reference to the currently running server instance. Note: it
+     * would probably be better to use the OSGi Application Admin service.
+     *
+     * @return the running server.
+     */
+    @Nonnull
+    static Dal2JmsApplication getRunningServer() {
+        return INSTANCE;
+    }
+
     @Override
-    public Object start(@Nullable final IApplicationContext context) throws Exception {
+    public final Object start(@Nullable final IApplicationContext context) throws Exception {
         LOG.info("dal2jms headless application starting");
+        INSTANCE = this;
+
+        connectToXmppServer();
 
         final IAlarmService alarmService = Activator.getDefault().getAlarmService();
         if (alarmService != null) {
             LOG.info("dal2jms headless application running");
             runServerUntilStopped(alarmService);
         } else {
-            LOG.error("dal2jms headless application could not be started. Alarm service must not be null.");
+            LOG
+                    .error("dal2jms headless application could not be started. Alarm service must not be null.");
         }
 
         LOG.info("dal2jms headless application stopped");
@@ -68,7 +92,7 @@ public class Dal2JmsApplication implements IApplication {
     }
 
     @Override
-    public void stop() {
+    public final synchronized void stop() {
         LOG.debug("dal2jms: stop() was called, stopping server");
         _stopped = true;
         notifyAll();
@@ -102,4 +126,16 @@ public class Dal2JmsApplication implements IApplication {
         }
     }
 
+    /**
+     * Connects to the XMPP server for remote management (ECF-based).
+     */
+    private void connectToXmppServer() throws Exception {
+        String username = Preference.XMPP_DAL2JMS_USER_NAME.getValue();
+        String password = Preference.XMPP_DAL2JMS_PASSWORD.getValue();
+        // TODO (jpenning) retrieve xmpp server from preferences of xmpp
+        String server = "krynfs.desy.de";
+
+        HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
+        ServiceLauncher.startRemoteServices();
+    }
 }

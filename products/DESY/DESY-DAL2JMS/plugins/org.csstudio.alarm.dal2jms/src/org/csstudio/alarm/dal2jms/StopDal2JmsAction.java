@@ -1,9 +1,5 @@
-package org.csstudio.alarm.dal2jms.preferences;
-
-import javax.annotation.Nonnull;
-
 /*
- * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchroton,
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -24,22 +20,30 @@ import javax.annotation.Nonnull;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+package org.csstudio.alarm.dal2jms;
+
+import javax.annotation.Nonnull;
+
+import org.csstudio.platform.management.CommandParameters;
+import org.csstudio.platform.management.CommandResult;
+import org.csstudio.platform.management.IManagementCommand;
+
 /**
- * Constant definitions for plug-in preferences
+ * Remote command registered at the management command extension point.
+ *
+ * @author jpenning
+ * @author $Author$
+ * @version $Revision$
+ * @since 10.06.2010
  */
-public enum PreferenceKey {
+public class StopDal2JmsAction implements IManagementCommand {
 
-    JMS_TIME_TO_LIVE_ALARMS("TimeToLiveAlarms"),
-    JMS_ALARM_TOPIC_NAME("AlarmTopicName");
-
-    private final String _keyAsString;
-
-    private PreferenceKey(@Nonnull final String keyAsString) {
-        _keyAsString = keyAsString;
-    }
-
+	/**
+	 * {@inheritDoc}
+	 */
     @Nonnull
-    public String getKeyAsString() {
-        return _keyAsString;
-    }
-}
+	public final CommandResult execute(@Nonnull final CommandParameters parameters) {
+			Dal2JmsApplication.getRunningServer().stop();
+			return CommandResult.createSuccessResult();
+		}
+	}

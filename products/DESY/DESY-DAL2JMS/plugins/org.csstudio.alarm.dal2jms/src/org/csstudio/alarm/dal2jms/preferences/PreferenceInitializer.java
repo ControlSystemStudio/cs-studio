@@ -21,10 +21,7 @@ package org.csstudio.alarm.dal2jms.preferences;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-import org.csstudio.alarm.dal2jms.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  *
@@ -41,10 +38,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void initializeDefaultPreferences() {
-		final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
-
-		prefs.put(PreferenceKey.JMS_TIME_TO_LIVE_ALARMS.getKeyAsString(), "3600000");
-		prefs.put(PreferenceKey.JMS_ALARM_TOPIC_NAME.getKeyAsString(), "ALARM");
+    public final void initializeDefaultPreferences() {
+	    Preference.initializeDefaultPreferences();
 	}
 }
