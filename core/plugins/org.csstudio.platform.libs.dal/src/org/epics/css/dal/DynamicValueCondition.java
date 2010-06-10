@@ -259,6 +259,10 @@ public class DynamicValueCondition implements Severity
         }
         return result;
     }
+	
+	public boolean containsDescription() {
+		return description != null;
+	}
 
 	public boolean hasValue() {
 		// TODO is this OK?

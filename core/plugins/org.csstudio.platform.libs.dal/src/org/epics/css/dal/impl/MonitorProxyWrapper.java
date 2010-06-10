@@ -61,6 +61,8 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	private DynamicValueCondition lastCondition;
 	private int suspendCount;
 	
+	private Map<String, Object> initialParameters;
+	
 	private DynamicValueAdapter internalListener = new DynamicValueAdapter<T, P>() {
 
 		/* (non-Javadoc)
@@ -158,9 +160,23 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 	public MonitorProxyWrapper(P property,
 	    DynamicValueListener<T,P> listener)
 	{
+		this(property, listener, null);
+	}
+	
+	/**
+	 * Creates a new MonitorProxyWrapper object.
+	 *
+	 * @param property paretn property
+	 * @param listener listener to events
+	 * @param parameters the monitor parameters
+	 */
+	public MonitorProxyWrapper(P property,
+	    DynamicValueListener<T,P> listener, Map<String, Object> parameters)
+	{
 		dvl = listener;
 		this.property = property;
 		this.property.addDynamicValueListener(internalListener);
+		this.initialParameters = parameters;
 	}
 
 	/**
@@ -481,6 +497,10 @@ public class MonitorProxyWrapper<T, P extends SimpleProperty<T>> implements Resp
 		if (proxy instanceof ExpertMonitor) {
 			((ExpertMonitor)proxy).setParameters(param);
 		}
+	}
+	
+	public Map<String, Object> getInitialParameters() {
+		return initialParameters;
 	}
 
 }

@@ -527,7 +527,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			for(MonitorProxyWrapper<T, SimpleProperty<T>> mpw : monitors) {
 				if (!mpw.isInitialized()) {
 					try {
-						MonitorProxy mp = proxy.createMonitor(mpw,mpw.getParameters());
+						MonitorProxy mp = proxy.createMonitor(mpw,mpw.getInitialParameters());
 						mpw.initialize(mp);
 					} catch (RemoteException e1) {
 						// TODO mark mpw for removal from monitors?
@@ -739,7 +739,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	{
 //		if (proxy == null) throw new IllegalStateException("Proxy is null");
 		
-		MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener);
+		MonitorProxyWrapper<T, E> mpw = new MonitorProxyWrapper<T, E>((E) this, listener, parameters);
 		
 		if (proxy != null && isConnected()) {
 			MonitorProxy mp = null;
