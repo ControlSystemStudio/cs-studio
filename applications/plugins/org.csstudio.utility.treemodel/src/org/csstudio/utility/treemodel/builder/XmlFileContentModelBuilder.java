@@ -83,7 +83,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             // Convert our input stream to a dataInputStream
             final DataInputStream in = new DataInputStream(fstream);
 
-            final SAXBuilder builder = new SAXBuilder(true);
+            final SAXBuilder builder = new SAXBuilder(false);
             final Document doc = builder.build(in);
 
             return createContentModelFromFile(doc);
@@ -127,6 +127,12 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
         return model;
     }
 
+
+    /**
+     * Get direct 'structural' children that are those contained in <ecoms> <
+     * @param element
+     * @return
+     */
     @SuppressWarnings("unchecked")
     @Nonnull
     private List<Element> getChildrenElements(@Nonnull final Element element) {
