@@ -19,13 +19,16 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Scale;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
@@ -37,17 +40,31 @@ public class OPIColorDialog extends Dialog {
 	
 	private OPIColor opiColor;
 	private TableViewer preDefinedColorsViewer;
-	private Label outputImageLabel, outputTextLabel;
+	private Label outputTextLabel;
 	private String title;
+	
+	private Group rgbGroup = null;
+	private Label redLabel = null;
+	private Scale redScale = null;
+	private Spinner redSpinner = null;
+	private Label greenLabel = null;
+	private Scale greenScale = null;
+	private Spinner greenSpinner = null;
+	private Label blueLabel = null;
+	private Scale blueScale = null;
+	private Spinner blueSpinner = null;
+	private Canvas colorCanvas;
 
 	protected OPIColorDialog(Shell parentShell, OPIColor color, String dialogTitle) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);
 		this.title = dialogTitle;
-		if(color.isPreDefined())
-			this.opiColor = MediaService.getInstance().getOPIColor(color.getColorName());
-		else
-			this.opiColor = new OPIColor(color.getRGBValue());
+		this.opiColor = color.getCopy();
+//		if(color.isPreDefined())
+//			this.opiColor = new OPIColor(color.getColorName(), 
+//					new RGB(color.getRGBValue().red, color.getRGBValue().green, color.getRGBValue().blue));
+//		else
+//			this.opiColor = new OPIColor(new RGB(color.getRGBValue().red, color.getRGBValue().green, color.getRGBValue().blue));
 	}
 	
 	/**
@@ -83,14 +100,14 @@ public class OPIColorDialog extends Dialog {
 		
 		Composite rightComposite = new Composite(mainComposite, SWT.None);
 		rightComposite.setLayout(new GridLayout(1, false));
-		gd = new GridData(SWT.FILL, SWT.FILL, true, true);
+		gd = new GridData(SWT.LEFT, SWT.BEGINNING, true, true);
 		rightComposite.setLayoutData(gd);
 		
 		
 		createLabel(rightComposite, "");
 		
 		Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
-		colorDialogButton.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
+		colorDialogButton.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
 		colorDialogButton.setText("Choose from Color Dialog");
 		colorDialogButton.addSelectionListener(new SelectionAdapter(){
 			@Override
@@ -99,30 +116,99 @@ public class OPIColorDialog extends Dialog {
 				dialog.setRGB(opiColor.getRGBValue());
 				RGB rgb = dialog.open();
 				if(rgb != null){
-					opiColor = new OPIColor(rgb);
+					opiColor.setColorValue(rgb);
 					preDefinedColorsViewer.setSelection(null);
-					outputImageLabel.setImage(opiColor.getImage());
+					
+					setRGBEditValue(rgb);
+					
 					outputTextLabel.setText(opiColor.getColorName());
+					colorCanvas.setBackground(CustomMediaFactory.getInstance().getColor(opiColor.getRGBValue()));
 				}
 			}
 		});
 		
+		createRGBEditGroup(rightComposite);
+
+		
 		Group group = new Group(rightComposite, SWT.None);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
-		group.setLayout(new GridLayout(2, false));
+		group.setLayout(new GridLayout(3, false));
 		group.setText("Output");
 	
-		outputImageLabel = new Label(group, SWT.None);
-		outputImageLabel.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
-		outputImageLabel.setImage(opiColor.getImage());
+		colorCanvas = new Canvas(group, SWT.BORDER);
+		colorCanvas.setBackground(CustomMediaFactory.getInstance().getColor(opiColor.getRGBValue()));
+		gd = new GridData(SWT.LEFT, SWT.TOP, false, false);
+		gd.widthHint = 30;
+		gd.heightHint = 30;
+		colorCanvas.setLayoutData(gd);
+
 		outputTextLabel = new Label(group, SWT.None);
-		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
+		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		outputTextLabel.setText(opiColor.getColorName());
 		
 		if(opiColor.isPreDefined())
 			preDefinedColorsViewer.setSelection(new StructuredSelection(opiColor));
 		
 		return parent_Composite;
+	}
+
+	/**
+	 * @param rightComposite
+	 */
+	private void createRGBEditGroup(Composite rightComposite) {
+				
+		GridData rgbGD = new GridData();
+		rgbGD.horizontalAlignment = org.eclipse.swt.layout.GridData.CENTER;
+		rgbGD.grabExcessHorizontalSpace = true;
+		GridLayout gridLayout = new GridLayout();
+		gridLayout.numColumns = 3;
+		rgbGroup = new Group(rightComposite, SWT.NONE);
+		rgbGroup.setLayout(gridLayout);
+		redLabel = new Label(rgbGroup, SWT.NONE);
+		redLabel.setText("Red");
+		redLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_RED));
+		redLabel.setLayoutData(rgbGD);		
+		redScale = new Scale(rgbGroup, SWT.NONE);
+		redScale.setMaximum(255);
+		redScale.setIncrement(1);
+		redScale.setPageIncrement(51);		
+		redSpinner = new Spinner(rgbGroup, SWT.BORDER);
+		redSpinner.setMaximum(255);
+		redSpinner.setLayoutData(rgbGD);
+		
+		
+		
+		greenLabel = new Label(rgbGroup, SWT.NONE);
+		greenLabel.setText("Green");
+		greenLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_GREEN));
+		greenLabel.setLayoutData(rgbGD);
+		greenScale = new Scale(rgbGroup, SWT.NONE);
+		greenScale.setPageIncrement(51);
+		greenScale.setMaximum(255);
+
+		greenSpinner = new Spinner(rgbGroup, SWT.BORDER);
+		greenSpinner.setMaximum(255);
+		greenSpinner.setLayoutData(rgbGD);
+		blueLabel = new Label(rgbGroup, SWT.NONE);
+		blueLabel.setText("Blue");
+		blueLabel.setForeground(Display.getCurrent().getSystemColor(SWT.COLOR_BLUE));
+		blueScale = new Scale(rgbGroup, SWT.NONE);
+		blueScale.setPageIncrement(51);
+		blueScale.setMaximum(255);
+		blueSpinner = new Spinner(rgbGroup, SWT.BORDER);
+		blueSpinner.setMaximum(255);
+		
+		setRGBEditValue(opiColor.getRGBValue());
+		
+		redScale.addSelectionListener(new RGBEditListener(0));
+		redSpinner.addSelectionListener(new RGBEditListener(0));
+		
+		greenScale.addSelectionListener(new RGBEditListener(1));
+		greenSpinner.addSelectionListener(new RGBEditListener(1));
+		
+		blueScale.addSelectionListener(new RGBEditListener(2));
+		blueSpinner.addSelectionListener(new RGBEditListener(2));
+
 	}
 	
 	/**
@@ -164,9 +250,11 @@ public class OPIColorDialog extends Dialog {
 				.getSelection();
 		if(!selection.isEmpty() 
 				&& selection.getFirstElement() instanceof OPIColor){
-			opiColor = (OPIColor)selection.getFirstElement();
-			outputImageLabel.setImage(opiColor.getImage());
+			opiColor = ((OPIColor)selection.getFirstElement()).getCopy();
+			setRGBEditValue(opiColor.getRGBValue());
 			outputTextLabel.setText(opiColor.getColorName());
+			colorCanvas.setBackground(CustomMediaFactory.getInstance().getColor(opiColor.getRGBValue()));
+
 		}
 	}
 	
@@ -187,6 +275,63 @@ public class OPIColorDialog extends Dialog {
 
 	public OPIColor getOutput() {
 		return opiColor;
+	}
+	
+	/**
+	 * @param rgb
+	 */
+	private void setRGBEditValue(RGB rgb) {
+		redScale.setSelection(rgb.red);
+		redSpinner.setSelection(rgb.red);
+		greenScale.setSelection(rgb.green);
+		greenSpinner.setSelection(rgb.green);
+		blueScale.setSelection(rgb.blue);
+		blueSpinner.setSelection(rgb.blue);
+	}
+
+	class RGBEditListener extends SelectionAdapter{
+		private int type;
+		private Scale scale;
+		private Spinner spinner;
+		
+		public RGBEditListener(int type) {
+			this.type = type;
+			if(type ==0){
+				scale = redScale;
+				spinner = redSpinner;
+			}else if (type == 1){
+				scale = greenScale;
+				spinner = greenSpinner;
+			}else if (type == 2){
+				scale = blueScale;
+				spinner = blueSpinner;
+			}
+				
+		}
+		
+		@Override
+		public void widgetSelected(SelectionEvent e) {
+			RGB rgb = opiColor.getRGBValue();
+			int newValue = 0;
+			
+			if(e.getSource() instanceof Scale){
+				newValue = ((Scale)e.getSource()).getSelection();
+				spinner.setSelection(newValue);
+			}else if(e.getSource() instanceof Spinner){
+				newValue = ((Spinner)e.getSource()).getSelection();
+				scale.setSelection(newValue);
+			}
+			if(type == 0)
+				rgb.red = newValue;
+			else if(type == 1)
+				rgb.green = newValue;
+			else if(type == 2)
+				rgb.blue = newValue;
+			opiColor.setColorValue(rgb);
+			preDefinedColorsViewer.setSelection(null);
+			colorCanvas.setBackground(CustomMediaFactory.getInstance().getColor(opiColor.getRGBValue()));
+			outputTextLabel.setText(opiColor.getColorName());
+		}
 	}
 	
 	class ReloadColorFileAction extends Action{

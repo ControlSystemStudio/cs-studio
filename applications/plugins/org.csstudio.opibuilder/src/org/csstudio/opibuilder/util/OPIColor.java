@@ -202,4 +202,8 @@ public class OPIColor implements IAdaptable {
 		
 	}
 	
+	public OPIColor getCopy(){
+		return new OPIColor(colorName, new RGB(colorValue.red, colorValue.green, colorValue.blue));
+	}
+	
 }
