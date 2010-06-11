@@ -277,7 +277,7 @@
             category="Controls"
             description="Make a single choice in a radio box group."
             editpart_class="org.csstudio.opibuilder.widgets.editparts.RadioBoxEditpart"
-            icon="icons/RadioButton_Checked.png"
+            icon="icons/radiobutton.gif"
             model_class="org.csstudio.opibuilder.widgets.model.RadioBoxModel"
             name="Radio Box"
             typeId="org.csstudio.opibuilder.widgets.radioBox">
