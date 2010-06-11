@@ -72,7 +72,7 @@ public class AlarmSoundService implements IAlarmSoundService {
 
         // Guard
         if (!isMappingDefinedForSeverity(severity)) {
-            _log.warn(this, "No mapping defined for severity " + severity);
+            _log.debug(this, "No mapping defined for severity " + severity);
             return;
         }
 
