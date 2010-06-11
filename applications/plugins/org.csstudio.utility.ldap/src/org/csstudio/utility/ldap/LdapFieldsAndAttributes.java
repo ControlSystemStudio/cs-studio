@@ -52,6 +52,7 @@ public final class LdapFieldsAndAttributes {
     public static final String ECOM_EPICS_IOC_FIELD_VALUE = "EPICS-IOC";
 
     public static final String EAIN_FIELD_NAME = "eain";
+    public static final String EAIR_FIELD_NAME = "eair";
     public static final String EAIG_FIELD_NAME = "eaig";
 
 
