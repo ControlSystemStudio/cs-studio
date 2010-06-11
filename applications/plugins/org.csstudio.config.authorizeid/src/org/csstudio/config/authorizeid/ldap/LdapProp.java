@@ -2,6 +2,7 @@ package org.csstudio.config.authorizeid.ldap;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIG_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EAIR_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_AUTH_ID_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapUtils.any;
@@ -45,7 +46,7 @@ public class LdapProp {
 	        service.retrieveSearchResultSynchronously(createLdapQuery(EAIN_FIELD_NAME, eain,
 	                                                                  OU_FIELD_NAME, ou,
 	                                                                  OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
-	                                                  any(EAIN_FIELD_NAME),
+	                                                  any(EAIR_FIELD_NAME),
 	                                                  LDAPReader.DEFAULT_SCOPE);
 
 		final List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();

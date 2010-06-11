@@ -36,7 +36,8 @@ public class LdapEain {
 	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
 
 	    final LdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, ou,
+	                                                                            OU_FIELD_NAME, EPICS_AUTH_ID_FIELD_VALUE),
 	                                                  any(EAIN_FIELD_NAME),
 	                                                  LDAPReader.DEFAULT_SCOPE);
 
