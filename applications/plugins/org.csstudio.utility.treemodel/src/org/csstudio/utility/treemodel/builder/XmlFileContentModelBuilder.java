@@ -33,6 +33,7 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -42,11 +43,14 @@ import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 import org.csstudio.utility.treemodel.TreeNodeComponent;
+import org.jdom.Attribute;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.jdom.filter.ElementFilter;
 import org.jdom.input.SAXBuilder;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Builds a content model from an xml file.
@@ -165,13 +169,16 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
         final LdapName fullName = new LdapName(rdns);
 
         if (model.getByTypeAndLdapName(oc, fullName.toString()) == null) {
+
+            final Attributes attributes = extractAttributes(element, oc.getAttributes());
+
             ISubtreeNodeComponent<T> newLdapChild;
             try {
                 newLdapChild = new TreeNodeComponent<T>(name,
                         oc,
                         oc.getNestedContainerClasses(),
                         ldapParent,
-                        new BasicAttributes(),
+                        attributes,
                         fullName);
             } catch (final InvalidNameException e) {
                 throw new CreateContentModelException("Component model with LdapName " + fullName + " could not be constructed. Invalid LDAP name.", e);
@@ -188,6 +195,25 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
         for (final Element child : children) {
             processElement(model, child, ldapComponent);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Attributes extractAttributes(@Nonnull final Element element,
+                                         @Nonnull final ImmutableSet<String> attributes) {
+
+        final Attributes treeNodeAttributes = new BasicAttributes();
+
+
+        final List<Attribute> xmlAttributes = element.getAttributes();
+
+        for (final Attribute xmlAttribute : xmlAttributes) {
+            final String attrName = xmlAttribute.getName();
+            if (attributes.contains(attrName)) {
+                treeNodeAttributes.put(attrName, xmlAttribute.getValue());
+            }
+        }
+
+        return treeNodeAttributes;
     }
 
 }
