@@ -17,10 +17,6 @@
    </license>
 
    <includes
-         id="org.csstudio.platform.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.platform.island.feature.product"
          version="0.0.0"/>
 
@@ -34,6 +30,10 @@
 
    <includes
          id="org.csstudio.configuration.epics.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.platform.eclipse.feature"
          version="0.0.0"/>
 
    <plugin
