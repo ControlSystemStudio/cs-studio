@@ -10,7 +10,8 @@ Require-Bundle: org.csstudio.platform,
  org.junit4,
  org.remotercp.common;bundle-version="1.0.0",
  org.remotercp.ecf;bundle-version="1.0.0",
- org.remotercp.provisioning;bundle-version="1.0.0"
+ org.remotercp.provisioning;bundle-version="1.0.0",
+ org.csstudio.platform.libs.annotations;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Vendor: DESY
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
