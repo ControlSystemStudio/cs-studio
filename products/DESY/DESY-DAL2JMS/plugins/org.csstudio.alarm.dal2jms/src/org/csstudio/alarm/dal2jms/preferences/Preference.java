@@ -1,13 +1,3 @@
-package org.csstudio.alarm.dal2jms.preferences;
-
-import javax.annotation.Nonnull;
-
-import org.csstudio.alarm.dal2jms.Activator;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -29,90 +19,55 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
+package org.csstudio.alarm.dal2jms.preferences;
+
+import java.util.Arrays;
+import java.util.List;
+
+import javax.annotation.Nonnull;
+
+import org.csstudio.alarm.dal2jms.Activator;
+import org.csstudio.platform.AbstractPreference;
 
 /**
  * Constant definitions for plug-in preferences
+ *
+ * @param <T> the type of the preference. It must match the type of the default value.
  *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 10.06.2010
  */
-// TODO (jpenning) extract abstract class
-public final class Preference<T> {
+public final class Preference<T> extends AbstractPreference<T> {
 
     public static final Preference<Integer> JMS_TIME_TO_LIVE_ALARMS = new Preference<Integer>("TimeToLiveAlarms",
                                                                                               3600000);
     public static final Preference<String> JMS_ALARM_TOPIC_NAME = new Preference<String>("AlarmTopicName",
                                                                                          "ALARM");
+    public static final Preference<String> XMPP_DAL2JMS_SERVER_NAME = new Preference<String>("XmppServerName",
+                                                                                             "krynfs.desy.de");
     public static final Preference<String> XMPP_DAL2JMS_USER_NAME = new Preference<String>("XmppUserName",
-                                                                                           "anonymous");
+                                                                                           "dal2jms");
     public static final Preference<String> XMPP_DAL2JMS_PASSWORD = new Preference<String>("XmppPassword",
-                                                                                          "anonymous");
-
-    private static final Preference<?>[] ALL_PREFERENCES = new Preference<?>[] {
-            JMS_TIME_TO_LIVE_ALARMS, JMS_ALARM_TOPIC_NAME, XMPP_DAL2JMS_USER_NAME,
-            XMPP_DAL2JMS_PASSWORD };
-
-    private final String _keyAsString;
-    private final T _defaultValue;
-    private final Class<?> _type;
+                                                                                          "dal2jms");
+    public static final Preference<String> ALARM_CONFIG_XML_FILE_NAME = new Preference<String>("AlarmConfigXMLFileName",
+                                                                                               "resource/dal2jmsConfig.xml");
 
     private Preference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
-        _keyAsString = keyAsString;
-        _defaultValue = defaultValue;
-        _type = defaultValue.getClass();
+        super(keyAsString, defaultValue);
     }
 
-    @Nonnull
-    public String getKeyAsString() {
-        return _keyAsString;
-    }
-
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public T getValue() {
-        IPreferencesService prefs = Platform.getPreferencesService();
-
-        Object result = null;
-
-        if (_type.equals(String.class)) {
-            result = prefs.getString(Preference.getPluginID(),
-                                     getKeyAsString(),
-                                     (String) _defaultValue,
-                                     null);
-        } else if (_type.equals(Integer.class)) {
-            result = prefs.getInt(Preference.getPluginID(),
-                                  getKeyAsString(),
-                                  (Integer) _defaultValue,
-                                  null);
-        }
-        // TODO (jpenning) add further types
-
-        assert result != null : "result must not be null";
-        return (T) result;
-    }
-
-    @Nonnull
-    private static String getPluginID() {
+    @Override
+    protected String getPluginID() {
         return Activator.PLUGIN_ID;
     }
 
     @Nonnull
-    private String getDefaultAsString() {
-        return _defaultValue.toString();
-    }
-
-    /**
-     * Intended to be called from the preference initializer.
-     */
-    public static void initializeDefaultPreferences() {
-        final IEclipsePreferences prefs = new DefaultScope().getNode(Preference.getPluginID());
-
-        for (Preference<?> preference : ALL_PREFERENCES) {
-            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
-        }
-
+    static List<Preference<?>> getAllPreferences() {
+        return Arrays.asList(new Preference<?>[] {JMS_TIME_TO_LIVE_ALARMS, JMS_ALARM_TOPIC_NAME,
+                XMPP_DAL2JMS_SERVER_NAME, XMPP_DAL2JMS_USER_NAME, XMPP_DAL2JMS_PASSWORD,
+                ALARM_CONFIG_XML_FILE_NAME});
     }
 
 }

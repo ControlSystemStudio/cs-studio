@@ -62,11 +62,10 @@ final class AlarmHandler {
         _jmsMessageService = jmsMessageService;
     }
 
-    public void connect() throws AlarmConnectionException {
-        // TODO (jpenning) use ldap or xml based configuration
+    public void connect(@Nonnull final String fileName) throws AlarmConnectionException {
         _alarmConnection.connectWithListener(newAlarmConnectionMonitor(),
                                              newAlarmListener(_jmsMessageService),
-                                             "c:\\dal2jmsConfig.xml");
+                                             fileName);
     }
 
     // dal2jms currently provides no action on connection state changes, they are only logged.

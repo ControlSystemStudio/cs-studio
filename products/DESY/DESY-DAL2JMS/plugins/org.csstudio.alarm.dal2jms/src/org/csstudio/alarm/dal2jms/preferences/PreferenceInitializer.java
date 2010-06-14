@@ -1,4 +1,3 @@
-package org.csstudio.alarm.dal2jms.preferences;
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -21,7 +20,12 @@ package org.csstudio.alarm.dal2jms.preferences;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+package org.csstudio.alarm.dal2jms.preferences;
+
+import org.csstudio.alarm.dal2jms.Activator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  *
@@ -39,6 +43,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	 */
 	@Override
     public final void initializeDefaultPreferences() {
-	    Preference.initializeDefaultPreferences();
+        final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
+
+        for (Preference<?> preference : Preference.getAllPreferences()) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
 	}
 }

@@ -21,6 +21,9 @@
  */
 package org.csstudio.alarm.dal2jms;
 
+import java.io.IOException;
+import java.net.URL;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -31,8 +34,12 @@ import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.osgi.framework.Bundle;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.login.connection.HeadlessConnection;
@@ -50,8 +57,8 @@ public class Dal2JmsApplication implements IApplication {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(Dal2JmsApplication.class);
 
-    /**
-     * TODO (jpenning) : implement remote command to stop the server
+    /*
+     * Flag indicating the remote stop command
      */
     private volatile boolean _stopped = false;
 
@@ -74,6 +81,7 @@ public class Dal2JmsApplication implements IApplication {
     @Override
     public final Object start(@Nullable final IApplicationContext context) throws Exception {
         LOG.info("dal2jms headless application starting");
+        // TODO (jpenning) Singleton defined in start?!
         INSTANCE = this;
 
         connectToXmppServer();
@@ -100,12 +108,15 @@ public class Dal2JmsApplication implements IApplication {
 
     private void runServerUntilStopped(@Nonnull final IAlarmService alarmService) throws InterruptedException {
         IAlarmConnection connection = null;
+        String filePath = null;
         try {
             connection = alarmService.newAlarmConnection();
 
             // JmsMessageService is a local service to handle jms communication
             AlarmHandler alarmHandler = new AlarmHandler(connection, new JmsMessageService());
-            alarmHandler.connect();
+
+            filePath = getFilePath();
+            alarmHandler.connect(filePath);
 
             synchronized (this) {
                 while (!_stopped) {
@@ -114,6 +125,8 @@ public class Dal2JmsApplication implements IApplication {
             }
         } catch (AlarmConnectionException e) {
             LOG.debug("dal2jms could not connect", e);
+        } catch (IOException e) {
+            LOG.debug("dal2jms could not retrieve pv configuration file at " + filePath, e);
         } finally {
             tryToDisconnect(connection);
         }
@@ -126,14 +139,23 @@ public class Dal2JmsApplication implements IApplication {
         }
     }
 
+    @Nonnull
+    private String getFilePath() throws IOException {
+        // TODO (jpenning) path to dtd is not well defined. Currently DTD must lie in root directory.
+        Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+        Path path = new Path(Preference.ALARM_CONFIG_XML_FILE_NAME.getValue());
+        URL url = FileLocator.find(bundle, path, null);
+        String result = FileLocator.toFileURL(url).getPath();
+        return result;
+    }
+
     /**
      * Connects to the XMPP server for remote management (ECF-based).
      */
     private void connectToXmppServer() throws Exception {
         String username = Preference.XMPP_DAL2JMS_USER_NAME.getValue();
         String password = Preference.XMPP_DAL2JMS_PASSWORD.getValue();
-        // TODO (jpenning) retrieve xmpp server from preferences of xmpp
-        String server = "krynfs.desy.de";
+        String server = Preference.XMPP_DAL2JMS_SERVER_NAME.getValue();
 
         HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
         ServiceLauncher.startRemoteServices();

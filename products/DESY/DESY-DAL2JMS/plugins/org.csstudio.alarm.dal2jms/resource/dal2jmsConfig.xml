@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE ou SYSTEM "/epicsAlarmCfg.dtd">
+
+<ou name="EpicsAlarmCfg">
+  <efan name="Test">
+    <ecom name="Test-IOC">
+      <eren name="alarmTest:RAMPA_calc" />
+      <eren name="alarmTest:RAMPB_calc" />
+      <eren name="alarmTest:RAMPC_calc" />
+    </ecom>
+  </efan>
+</ou>
+
