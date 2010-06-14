@@ -60,4 +60,11 @@ public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputM
         // do nothing
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] {TextInputModel.PROP_INPUT_TEXT};
+    }
 }

@@ -57,4 +57,12 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     protected void doProcessMetaDataChange(final TextInputModel widget, final MetaData metaData) {
         // do noting
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String[] doGetSettablePropertyIds() {
+        return new String[] {TextInputModel.PROP_INPUT_TEXT};
+    }
 }
