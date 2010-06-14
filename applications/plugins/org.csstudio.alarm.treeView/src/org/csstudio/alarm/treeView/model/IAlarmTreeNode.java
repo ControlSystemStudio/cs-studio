@@ -21,12 +21,11 @@
  */
  package org.csstudio.alarm.treeView.model;
 
-import java.net.URL;
-
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 
 
@@ -62,31 +61,6 @@ public interface IAlarmTreeNode {
     LdapName getLdapName();
 
 	/**
-	 * Returns the alarm severity for this node. If this node has children,
-	 * returns the highest severity of the childrens' alarms. Returns severity
-	 * NO_ALARM if this node is a subtree root without any children or if this
-	 * node represents a process variable which is not in an alarm state.
-	 *
-	 * @return the alarm severity for this node.
-	 *
-	 * @see #getUnacknowledgedAlarmSeverity()
-	 */
-	Severity getAlarmSeverity();
-
-	/**
-	 * Returns the severity of the highest unacknowledged alarm for this node.
-	 * If this node has children, returns the highest unacknowledged severity
-	 * of the childrens' alarms. Returns severity NO_ALARM if this node is a
-	 * subtree root without any children or if this node represents a process
-	 * variable which doesn't have any unacknowledged alarms.
-	 *
-	 * @return the severity of the highest unacknowledged alarm for this node.
-	 *
-	 * @see #getAlarmSeverity()
-	 */
-	Severity getUnacknowledgedAlarmSeverity();
-
-	/**
 	 * Returns {@code true} if there is an alarm for this node or its children.
 	 *
 	 * @return whether there is an alarm for this node or its children.
@@ -101,46 +75,6 @@ public interface IAlarmTreeNode {
 	 */
 	@Nonnull
 	LdapEpicsAlarmCfgObjectClass getObjectClass();
-
-	/**
-	 * Returns the URL of this node's help page.
-	 *
-	 * @return the URL of this node's help page, or <code>null</code> if this
-	 *         node does not have a help page.
-	 */
-	URL getHelpPage();
-
-	/**
-	 * Returns this node's help guidance string.
-	 *
-	 * @return this node's help guidance string, or <code>null</code> if no
-	 *         help guidance string is configured for this node.
-	 */
-	String getHelpGuidance();
-
-	/**
-	 * Returns the name of the CSS-SDS alarm display file configured for this
-	 * node.
-	 *
-	 * @return the name of this node's alarm display file, or <code>null</code>
-	 *         if no alarm display is configured for this node.
-	 */
-	String getCssAlarmDisplay();
-
-	/**
-	 * Returns the name of the CSS-SDS display file configured for this node.
-	 *
-	 * @return the name of this node's display file, or <code>null</code> if
-	 *         no display is configured for this node.
-	 */
-	String getCssDisplay();
-
-	/**
-	 * Returns the name of the CSS strip chart file associated with this node.
-	 *
-	 * @return the name of the CSS strip chart file for this node.
-	 */
-	String getCssStripChart();
 
     /**
      * Returns the parent node of this node. If this node does not have a
@@ -170,10 +104,40 @@ public interface IAlarmTreeNode {
     String getProperty(@Nonnull final AlarmTreeNodePropertyId property);
 
     /**
+     * Returns the property value that is set on this node. The value is not
+     * inherited from a parent node if no value is set on this node.
+     *
+     * @param property
+     *            the property.
+     * @return the property value, or <code>null</code> if the property is not
+     *         set on this node.
+     */
+    @CheckForNull
+    String getOwnProperty(@Nonnull AlarmTreeNodePropertyId property);
+
+    /**
      * Sets the property to the given value.
      * @param property .
      * @param value the value, if <code>null</code> is passed, the property is removed
      */
     void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value);
+
+    /**
+     * Returns the highest severity of the alarms in the subtree below this
+     * node.
+     *
+     * @return the alarm severity for this node.
+     */
+    @Nonnull
+    Severity getAlarmSeverity();
+
+    /**
+     * Returns the severity of the highest unacknowledged alarm for this node.
+     * If there is no unacknowledged alarm for this node, returns NO_ALARM.
+     *
+     * @return the severity of the highest unacknowledged alarm for this node.
+     */
+    @Nonnull
+    Severity getUnacknowledgedAlarmSeverity();
 
 }

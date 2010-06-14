@@ -20,10 +20,13 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.ImmutableSet.Builder;
 
 /**
  * Enumeration of the additional properties that can be set on an alarm tree
@@ -37,6 +40,17 @@ public enum AlarmTreeNodePropertyId {
 	CSS_STRIP_CHART("epicsCssStripChart"),
 	HELP_GUIDANCE("epicsHelpGuidance"),
 	HELP_PAGE("epicsHelpPage");
+
+
+	private static ImmutableSet<String> LDAP_ATTRIBUTES;
+
+    static {
+	    final Builder<String> builder = ImmutableSet.builder();
+	    for (final AlarmTreeNodePropertyId id : values()) {
+	        builder.add(id.getLdapAttribute());
+	    }
+	    LDAP_ATTRIBUTES = builder.build();
+	}
 
 	private final String _ldapAttribute;
 
@@ -67,5 +81,12 @@ public enum AlarmTreeNodePropertyId {
             }
         }
         return null;
+    }
+
+    /**
+     * @return an immutable collection of the LDAP attributes of an alarm tree node
+     */
+    public static ImmutableSet<String> getLdapAttributes() {
+        return LDAP_ATTRIBUTES;
     }
 }

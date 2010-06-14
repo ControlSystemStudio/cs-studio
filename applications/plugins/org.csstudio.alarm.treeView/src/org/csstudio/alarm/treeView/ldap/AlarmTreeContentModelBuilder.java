@@ -23,13 +23,17 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
+import java.util.List;
+
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -49,13 +53,13 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
  */
 public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuilder<LdapEpicsAlarmCfgObjectClass> {
 
-    private final IAlarmTreeNode _alarmTreeNode;
+    private final List<IAlarmTreeNode> _alarmTreeNodes;
 
     /**
      * Constructor.
      */
-    public AlarmTreeContentModelBuilder(@Nonnull final IAlarmTreeNode alarmTreeNode) {
-        _alarmTreeNode = alarmTreeNode;
+    public AlarmTreeContentModelBuilder(@Nonnull final List<IAlarmTreeNode> alarmTreeNodes) {
+        _alarmTreeNodes = alarmTreeNodes;
     }
 
     /**
@@ -74,7 +78,9 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
             model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT,
                                                                    AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
 
-            createSubtree(model, _alarmTreeNode, model.getRoot());
+            for (final IAlarmTreeNode node : _alarmTreeNodes) {
+                createSubtree(model, node, model.getRoot());
+            }
 
             return model;
         } catch (final InvalidNameException e) {
@@ -89,13 +95,15 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
         final LdapEpicsAlarmCfgObjectClass oc = alarmTreeNode.getObjectClass();
         final String modelNodeName = alarmTreeNode.getName();
 
+        final Attributes attributes = getAttributesFromAlarmTreeNode(alarmTreeNode);
+
         final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> newModelComponent =
             new TreeNodeComponent<LdapEpicsAlarmCfgObjectClass>(
                     modelNodeName,
                     oc,
                     oc.getNestedContainerClasses(),
                     modelParentNode,
-                    new BasicAttributes(), // empty yet in this initial xml structure
+                    attributes,
                     (LdapName) modelParentNode.getLdapName().add(new Rdn(oc.getNodeTypeName(), modelNodeName)));
 
         model.addChild(modelParentNode, newModelComponent);
@@ -105,5 +113,17 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
                 createSubtree(model, alarmTreeChild, newModelComponent);
             }
         }
+    }
+
+    private static Attributes getAttributesFromAlarmTreeNode(final IAlarmTreeNode alarmTreeNode) {
+
+        final Attributes attributes = new BasicAttributes();
+        for (final AlarmTreeNodePropertyId propId : AlarmTreeNodePropertyId.values()) {
+            final String property = alarmTreeNode.getProperty(propId);
+            if (property != null) {
+                attributes.put(propId.getLdapAttribute(), property);
+            }
+        }
+        return attributes;
     }
 }

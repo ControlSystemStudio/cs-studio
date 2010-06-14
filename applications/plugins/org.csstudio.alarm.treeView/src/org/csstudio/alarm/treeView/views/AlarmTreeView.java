@@ -28,6 +28,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
@@ -161,6 +162,11 @@ public class AlarmTreeView extends ViewPart {
     private Action _importXmlFileAction;
 
     /**
+     * The export xml file action.
+     */
+    private Action _exportXmlFileAction;
+
+    /**
      * The acknowledge action.
      */
     private Action _acknowledgeAction;
@@ -237,16 +243,19 @@ public class AlarmTreeView extends ViewPart {
 
 
 
+    /**
+     * The root node of this alarm tree. Shall only be generated once per view!
+     */
     private final SubtreeNode _rootNode;
 
     private final IAlarmConfigurationService _configService =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
-    private final ILdapService _ldapService =
-        AlarmTreePlugin.getDefault().getLdapService();
+    private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
 
 
     /**
+     * Constructor.
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
@@ -302,7 +311,7 @@ public class AlarmTreeView extends ViewPart {
 
         initializeContextMenu();
 
-        makeActions(_viewer, _alarmListener, getSite(), _currentAlarmFilter);
+        createActions(_rootNode, _viewer, _alarmListener, getSite(), _currentAlarmFilter);
 
         contributeToActionBars();
 
@@ -495,7 +504,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getCssStripChart() != null;
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null;
         }
         return false;
     }
@@ -508,7 +517,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getCssDisplay() != null;
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null;
         }
         return false;
     }
@@ -522,7 +531,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpGuidance(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getHelpGuidance() != null;
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null;
         }
         return false;
     }
@@ -536,7 +545,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpPage(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getHelpPage() != null;
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null;
         }
         return false;
     }
@@ -551,7 +560,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node).getCssAlarmDisplay();
+            final String display = ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
             return (display != null) && display.matches(".+\\.css-sds");
         }
         return false;
@@ -672,6 +681,7 @@ public class AlarmTreeView extends ViewPart {
         manager.add(_showPropertyViewAction);
         manager.add(_reloadAction);
         manager.add(_importXmlFileAction);
+        manager.add(_exportXmlFileAction);
     }
 
     /**
@@ -681,22 +691,25 @@ public class AlarmTreeView extends ViewPart {
      * @param viewer
      * @param currentAlarmFilter
      */
-    private void makeActions(@Nonnull final TreeViewer viewer,
-                             @Nonnull final AlarmMessageListener alarmListener,
-                             @Nonnull final IWorkbenchPartSite site,
-                             @Nonnull final ViewerFilter currentAlarmFilter) {
+    private void createActions(@Nonnull final SubtreeNode rootNode,
+                               @Nonnull final TreeViewer viewer,
+                               @Nonnull final AlarmMessageListener alarmListener,
+                               @Nonnull final IWorkbenchPartSite site,
+                               @Nonnull final ViewerFilter currentAlarmFilter) {
 
         _reloadAction =
-            AlarmTreeViewActionFactory.createReloadAction(createImportInitialConfigJob(_rootNode),
+            AlarmTreeViewActionFactory.createReloadAction(createImportInitialConfigJob(rootNode),
                                                           site,
                                                           alarmListener,
                                                           viewer);
 
         _importXmlFileAction =
-            AlarmTreeViewActionFactory.createImportXmlFileAction(createImportXmlFileJob(_rootNode),
+            AlarmTreeViewActionFactory.createImportXmlFileAction(createImportXmlFileJob(rootNode),
                                                                  site,
                                                                  alarmListener,
                                                                  viewer);
+        _exportXmlFileAction = AlarmTreeViewActionFactory.createExportXmlFileAction(site, rootNode);
+
 
         _acknowledgeAction = AlarmTreeViewActionFactory.createAcknowledgeAction(viewer);
 
@@ -723,8 +736,8 @@ public class AlarmTreeView extends ViewPart {
 
         _showPropertyViewAction = AlarmTreeViewActionFactory.createShowPropertyViewAction(site);
 
-        _toggleFilterAction = AlarmTreeViewActionFactory
-                .createToggleFilterAction(this, viewer, currentAlarmFilter);
+        _toggleFilterAction =
+            AlarmTreeViewActionFactory.createToggleFilterAction(this, viewer, currentAlarmFilter);
 
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
 

@@ -22,7 +22,8 @@
 
 package org.csstudio.alarm.treeView.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -33,51 +34,24 @@ import org.junit.Test;
  * @author Joerg Rathlev
  */
 public class AlarmTest {
-	
-	private Date t1 = new Date(0);
-	private Date t2 = new Date(1);
-	
+
+	private final Date t1 = new Date(0);
+	private final Date t2 = new Date(1);
+
 	@Test
 	public void testAlarm() throws Exception {
-		Alarm alarm = new Alarm("foo", Severity.MINOR, t1);
+		final Alarm alarm = new Alarm("foo", Severity.MINOR, t1);
 		assertEquals("foo", alarm.getObjectName());
 		assertEquals(Severity.MINOR, alarm.getSeverity());
 	}
-	
-	@Test
-	public void testMajorIsHigherSeverityThanMinor() throws Exception {
-		Alarm major = new Alarm("foo", Severity.MAJOR, t1);
-		Alarm minor = new Alarm("foo", Severity.MINOR, t1);
-		
-		assertTrue(major.severityHigherThan(minor));
-		assertFalse(minor.severityHigherThan(major));
-	}
-	
-	@Test
-	public void testSeverityComparison() throws Exception {
-		Alarm noalarm = new Alarm("foo", Severity.NO_ALARM, t1);
-		Alarm minor = new Alarm("foo", Severity.MINOR, t1);
-		Alarm major = new Alarm("foo", Severity.MAJOR, t1);
-		Alarm invalid = new Alarm("foo", Severity.INVALID, t1);
-		
-		assertTrue(minor.severityHigherThan(noalarm));
-		assertTrue(major.severityHigherThan(minor));
-		assertTrue(invalid.severityHigherThan(major));
 
-		// All alarms have a higher severity than nothing (null)
-		assertTrue(noalarm.severityHigherThan(null));
-		assertTrue(minor.severityHigherThan(null));
-		assertTrue(major.severityHigherThan(null));
-		assertTrue(invalid.severityHigherThan(null));
-	}
-	
 	@Test
 	public void testEventtimeComparison() throws Exception {
-		Alarm a1 = new Alarm("foo", Severity.MINOR, t1);
-		Alarm a2 = new Alarm("foo", Severity.MINOR, t2);
-		
+		final Alarm a1 = new Alarm("foo", Severity.MINOR, t1);
+		final Alarm a2 = new Alarm("foo", Severity.MINOR, t2);
+
 		assertTrue(a2.occuredAfter(a1));
-		
+
 		assertTrue(a1.occuredAfter(null));
 		assertTrue(a2.occuredAfter(null));
 	}

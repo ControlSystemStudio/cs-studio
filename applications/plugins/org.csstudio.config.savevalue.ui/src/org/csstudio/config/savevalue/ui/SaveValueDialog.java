@@ -31,12 +31,14 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.Set;
 
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.savevalue.service.SaveValueRequest;
 import org.csstudio.config.savevalue.service.SaveValueResult;
 import org.csstudio.config.savevalue.service.SaveValueService;
@@ -82,8 +84,7 @@ public class SaveValueDialog extends Dialog {
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
-
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveValueDialog.class);
 	/**
 	 * Text box that displays the process variable.
 	 */
@@ -276,11 +277,17 @@ public class SaveValueDialog extends Dialog {
 			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE, Messages.SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES);
 			return CANCEL;
 		}
-		if (!findIoc(_pv)) {
-			MessageDialog.openError(null, Messages.SaveValueDialog_DIALOG_TITLE,
-					NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv));
-			return CANCEL;
+
+		final String detailErrorMessage = findIoc(_pv);
+		if (detailErrorMessage != null) {
+		    MessageDialog.openError(null,
+		                            Messages.SaveValueDialog_DIALOG_TITLE,
+		                            NLS.bind(Messages.SaveValueDialog_ERRMSG_IOC_NOT_FOUND, _pv) +
+		                            Messages.SaveValueDialog_ERRMSG_DETAILS + detailErrorMessage);
+		    return CANCEL;
+
 		}
+
 		return super.open();
 	}
 
@@ -293,32 +300,46 @@ public class SaveValueDialog extends Dialog {
 	 * @return <code>true</code> if the IOC was found, <code>false</code>
 	 *         otherwise.
 	 */
-	private boolean findIoc(final String pv) {
-		_log.debug(this, "Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
+	private String findIoc(final String pv) {
+		LOG.debug("Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
 
 		final ILdapService service = Activator.getDefault().getLdapService();
 
-	    final LdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-	                                                                        EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
-	                                                                        SearchControls.SUBTREE_SCOPE);
-	    if (!result.getAnswerSet().isEmpty()) {
-	        final SearchResult row = result.getAnswerSet().iterator().next();
-	        LdapName ldapName;
-            try {
-                ldapName = LdapNameUtils.parseSearchResult(row);
-                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getNodeTypeName());
-                if (iocName == null) {
-                    _log.error(this, "No IOC was found for PV: " + pv); //$NON-NLS-1$
-                    return false;
-                }
-                _iocName = iocName;
-            } catch (final NamingException e) {
-                _log.error("Naming exception while parsing the search result for " + pv + " from LDAP.", e);
-                return false;
-            }
+	    final LdapSearchResult result =
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+	                                                  EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
+	                                                  SearchControls.SUBTREE_SCOPE);
+
+	    if ((result == null) || result.getAnswerSet().isEmpty()) {
+	        return Messages.SaveValueDialog_ERRMSG_DETAIL_NO_ENTRY;
 	    }
-        _log.debug(this, "IOC found: " + _iocName); //$NON-NLS-1$
-		return true;
+	    final Set<SearchResult> answerSet = result.getAnswerSet();
+	    try {
+	        if (answerSet.size() > 1) {
+	            LOG.error("IOC could not be uniquely identified for PV: " + pv ); //$NON-NLS-1$
+	            String iocs = "";
+	            for (final SearchResult row : answerSet) {
+                    final String nameInNamespace = row.getNameInNamespace();
+                    iocs += ("\n" + nameInNamespace);
+	            }
+	            return Messages.SaveValueDialog_ERRMSG_DETAIL_NOT_UNIQUE+ "\n" + iocs;
+	        }
+
+	        final SearchResult row = result.getAnswerSet().iterator().next();
+	        final LdapName ldapName = LdapNameUtils.parseSearchResult(row);
+	        if (ldapName != null) {
+	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getNodeTypeName());
+	            if (iocName != null) {
+	                _iocName = iocName;
+	                return null;
+	            }
+	        }
+	        LOG.error("IOC name could not be parsed out of search result: " + row.getNameInNamespace()); //$NON-NLS-1$
+
+	    } catch (final NamingException e) {
+	        return Messages.SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE + "\n" + e.getLocalizedMessage();
+	    }
+	    return Messages.SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE;
 	}
 
 	/**
@@ -393,17 +414,17 @@ public class SaveValueDialog extends Dialog {
 						} catch (final RemoteException e) {
 							final Throwable cause = e.getCause();
 							if (cause instanceof SocketTimeoutException) {
-								_log.warn(this, "Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
+								LOG.warn("Remote call to " + _services[i] + " timed out"); //$NON-NLS-1$ //$NON-NLS-2$
 								result = Messages.SaveValueDialog_FAILED_TIMEOUT;
 							} else {
-								_log.error(this, "Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
+								LOG.error("Remote call to " + _services[i] + " failed with RemoteException", e); //$NON-NLS-1$ //$NON-NLS-2$
 								result = Messages.SaveValueDialog_FAILED_WITH_REMOTE_EXCEPTION + e.getMessage();
 							}
 						} catch (final SaveValueServiceException e) {
-							_log.warn(this, "Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
+							LOG.warn("Save Value service " + _services[i] + " reported an error", e); //$NON-NLS-1$ //$NON-NLS-2$
 							result = Messages.SaveValueDialog_FAILED_WITH_SERVICE_ERROR + e.getMessage();
 						} catch (final NotBoundException e) {
-							_log.warn(this, "Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
+							LOG.warn("Save value service " + _services[i] + " is not bound in RMI registry"); //$NON-NLS-1$ //$NON-NLS-2$
 							result = Messages.SaveValueDialog_NOT_BOUND;
 						}
 						final int index = i;
@@ -419,7 +440,7 @@ public class SaveValueDialog extends Dialog {
 							}
 						});
 					}
-					_log.debug(this, "Finished calling remote Save Value services"); //$NON-NLS-1$
+					LOG.debug("Finished calling remote Save Value services"); //$NON-NLS-1$
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
 							boolean overallSuccess = true;
@@ -443,7 +464,7 @@ public class SaveValueDialog extends Dialog {
 						}
 					});
 				} catch (final RemoteException e) {
-					_log.error(this, "Could not connect to RMI registry", e); //$NON-NLS-1$
+					LOG.error("Could not connect to RMI registry", e); //$NON-NLS-1$
 					final String message = e.getMessage();
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
@@ -465,7 +486,7 @@ public class SaveValueDialog extends Dialog {
 						Activator.PLUGIN_ID,
 						PreferenceConstants.RMI_REGISTRY_SERVER,
 						null, null);
-				_log.debug(this, "Connecting to RMI registry."); //$NON-NLS-1$
+				LOG.debug("Connecting to RMI registry."); //$NON-NLS-1$
 				_reg = LocateRegistry.getRegistry(registryHost);
 			}
 
@@ -480,7 +501,7 @@ public class SaveValueDialog extends Dialog {
 			private SaveValueResult callService(final SaveValueServiceDescription serviceDescr,
 					final String pvValue)
 					throws SaveValueServiceException, RemoteException, NotBoundException {
-				_log.debug(this, "Calling save value service: " + serviceDescr); //$NON-NLS-1$
+				LOG.debug("Calling save value service: " + serviceDescr); //$NON-NLS-1$
 				final SaveValueService service = (SaveValueService) _reg.lookup(serviceDescr.getRmiName());
 				final SaveValueRequest req = new SaveValueRequest();
 				req.setPvName(_pv);

@@ -125,6 +125,18 @@ public final class ImportXmlFileJob extends Job {
     }
 
 
+    /**
+     * Checks whether a facility from the imported XML file does already exist in the LDAP (might
+     * not be visible in the current alarm tree view if not set in the preferences) or in the current
+     * view itself (in case an XML file containing this facility identifier has been imported before).
+     *
+     * @param model the content model
+     * @param service the LDAP service
+     * @param rootNode the root node of the alarm tree view
+     * @return an error status if a facility does already exist, otherwise OK
+     *
+     * @throws NamingException
+     */
     @Nonnull
     private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                                @Nonnull final ILdapService service,

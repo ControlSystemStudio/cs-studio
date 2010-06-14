@@ -26,6 +26,7 @@ import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EREN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,41 +37,57 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+
+import com.google.common.collect.ImmutableSet;
 
 
 /**
  * The object class of an alarm tree item. The enumeration constants defined in this
  * class store information about the name of the object class in the directory,
  * which attribute to use to construct the name of a directory entry, and the
- * value of the epicsCssType attribute in the directory.
+ * value of the attributes in the directory.
  *
  * @author Joerg Rathlev
  */
 public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapEpicsAlarmCfgObjectClass> {
 
-    ROOT("organizationUnit", LdapFieldsAndAttributes.OU_FIELD_NAME),
+    /**
+     * The root (invisible in the alarm tree view).
+     */
+    ROOT("organizationUnit",
+         OU_FIELD_NAME,
+         ImmutableSet.<String>builder().build()),
 
     /**
      * The facility object class (efan).
      */
-    FACILITY("epicsFacility", EFAN_FIELD_NAME),
+    FACILITY("epicsFacility",
+             EFAN_FIELD_NAME,
+             AlarmTreeNodePropertyId.getLdapAttributes()),
 
     /**
      * The component object class (ecom).
      */
-    COMPONENT("epicsComponent", ECOM_FIELD_NAME),
+    COMPONENT("epicsComponent",
+              ECOM_FIELD_NAME,
+              AlarmTreeNodePropertyId.getLdapAttributes()),
 
     @Deprecated
-    IOC("epicsIOC", ECON_FIELD_NAME),
+    IOC("epicsIOC",
+        ECON_FIELD_NAME,
+        AlarmTreeNodePropertyId.getLdapAttributes()),
     @Deprecated
-    SUBCOMPONENT("epicsSubComponent", ESCO_FIELD_NAME),
+    SUBCOMPONENT("epicsSubComponent",
+                 ESCO_FIELD_NAME,
+                 AlarmTreeNodePropertyId.getLdapAttributes()),
 
     /**
      * The record object class (eren).
      */
-    RECORD("epicsRecord", EREN_FIELD_NAME);
+    RECORD("epicsRecord",
+           EREN_FIELD_NAME,
+           AlarmTreeNodePropertyId.getLdapAttributes());
 
 
     private static final Map<String, LdapEpicsAlarmCfgObjectClass> CACHE_BY_NAME =
@@ -112,6 +129,9 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
     private final String _nodeName;
 
 
+    private final ImmutableSet<String> _attributes;
+
+
     /**
      * The object class of a container nested within a container of this object
      * class. <code>null</code> if this object class is not a container or if
@@ -132,10 +152,12 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      */
     //CHECKSTYLE:OFF
     private LdapEpicsAlarmCfgObjectClass(final String description,
-                                         final String nodeName) {
+                                         final String nodeName,
+                                         final ImmutableSet<String> attributes) {
         //CHECKSTYLE:ON
         _description = description;
         _nodeName = nodeName;
+        _attributes = attributes;
     }
 
     /**
@@ -187,9 +209,11 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
         return AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
     }
 
-
-
-
-
-
+    /**
+     * Getter.
+     * @return the immutable set of permitted attributes.
+     */
+    public ImmutableSet<String> getAttributes() {
+        return _attributes;
+    }
 }

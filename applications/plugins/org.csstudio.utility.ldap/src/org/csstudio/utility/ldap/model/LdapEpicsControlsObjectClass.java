@@ -35,6 +35,8 @@ import javax.annotation.Nonnull;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * The object class of an EPICS Controls item. The enumeration constants defined in this
  * class store information about the name of the object class in the directory,
@@ -175,6 +177,13 @@ public enum LdapEpicsControlsObjectClass implements ITreeNodeConfiguration<LdapE
     @Nonnull
     public String getRootTypeName() {
         return ROOT.getNodeTypeName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public ImmutableSet<String> getAttributes() {
+        return ImmutableSet.<String>builder().build();
     }
 
 }

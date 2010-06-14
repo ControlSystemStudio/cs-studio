@@ -55,7 +55,7 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      *
      * @param child the child node to add.
      */
-    void addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
+    void addSubtreeChild(@Nonnull final SubtreeNode child);
 
     /**
      * Adds the specified child node to the list of this node's children. Note:
@@ -65,7 +65,7 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      *
      * @param child the child node to add.
      */
-    void addPVChild(@Nonnull final IAlarmTreeNode child);
+    void addPVChild(@Nonnull final ProcessVariableNode child);
 
     /**
      * Signals to this node that the alarm severity of one of its children

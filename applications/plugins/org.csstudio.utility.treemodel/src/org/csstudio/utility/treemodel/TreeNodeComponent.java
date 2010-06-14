@@ -45,7 +45,7 @@ import javax.naming.ldap.LdapName;
  * @param <T>
  * @since 30.04.2010
  */
-public class TreeNodeComponent<T extends Enum<T>> extends AbstractTreeNodeComponent<T>
+public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractTreeNodeComponent<T>
     implements ISubtreeNodeComponent<T> {
 
     private final Set<T> _subComponentTypes;

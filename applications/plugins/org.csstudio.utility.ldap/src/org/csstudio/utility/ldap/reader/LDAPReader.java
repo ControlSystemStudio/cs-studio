@@ -132,8 +132,7 @@ public class LDAPReader extends Job {
 
     public static final int DEFAULT_SCOPE = SearchControls.SUBTREE_SCOPE;
 
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class.getName());
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LDAPReader.class);
 
     private final LdapSearchParams _searchParams;
 

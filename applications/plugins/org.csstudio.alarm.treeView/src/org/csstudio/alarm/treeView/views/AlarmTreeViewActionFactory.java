@@ -23,17 +23,25 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.table.SendAcknowledge;
@@ -51,25 +59,26 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.EditorUtil;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.sds.ui.runmode.RunModeService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IInputValidator;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchPartSite;
 import org.eclipse.ui.PartInitException;
@@ -79,6 +88,7 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 import org.eclipse.ui.progress.PendingUpdateAdapter;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.eclipse.ui.views.IViewRegistry;
+import org.osgi.framework.Bundle;
 
 /**
  * Action factory for the alarm tree view.
@@ -90,23 +100,6 @@ import org.eclipse.ui.views.IViewRegistry;
  */
 public final class AlarmTreeViewActionFactory {
 
-    /**
-     * TODO (bknerr) : File name input validator, check for different os's
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 19.05.2010
-     */
-    private static final class FileNameInputValidator implements IInputValidator {
-        @Nonnull
-        public String isValid(@Nonnull final String fileName) {
-            if (!StringUtil.hasLength(fileName)) {
-                return "Please enter a non-empty string.";
-            }
-            return null;
-        }
-    }
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
 
@@ -173,8 +166,8 @@ public final class AlarmTreeViewActionFactory {
                     viewer.refresh(selected);
                 }
             }
-
-            private String promptForNewName(final String oldName) {
+            @CheckForNull
+            private String promptForNewName(@Nullable final String oldName) {
                 final InputDialog dialog = new InputDialog(site.getShell(),
                                                            "Rename",
                                                            "Name:",
@@ -252,7 +245,7 @@ public final class AlarmTreeViewActionFactory {
                     }
                 }
             }
-
+            @CheckForNull
             private String promptForRecordName() {
                 final InputDialog dialog = new InputDialog(site.getShell(),
                                                            "Create New Component",
@@ -287,9 +280,10 @@ public final class AlarmTreeViewActionFactory {
 
                     if (LdapEpicsAlarmCfgObjectClass.FACILITY.equals(root.getObjectClass())) {
 
-                        final String filePath = promptForFileName();
-
-                        createModelAndWriteXmlFile(site, root, filePath);
+                        final String filePath = getFileToSaveTo(site);
+                        if (filePath != null) {
+                            createModelAndWriteXmlFile(site, Collections.<IAlarmTreeNode>singletonList(root), filePath);
+                        }
 
                     } else {
                         LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription() + " type components.");
@@ -299,28 +293,42 @@ public final class AlarmTreeViewActionFactory {
                     }
                 }
             }
-            @CheckForNull
-            private String promptForFileName() {
-                final InputDialog dialog = new InputDialog(site.getShell(),
-                                                           "Enter full path of new XML file name",
-                                                           "Alarm tree configuration file:",
-                                                           null,
-                                                           new IInputValidator() {
-                                                                @Nonnull
-                                                                public String isValid(@Nonnull final String arg0) {
-                                                                    // TODO (bknerr) : write FileNameInputValidator
-                                                                    return null;
-                                                                }
-                                                            });
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
         };
         saveAsXmlFileAction.setText("Save as XML...");
         return saveAsXmlFileAction;
     }
+
+    @CheckForNull
+    private static String getFileToSaveTo(@Nonnull final IWorkbenchPartSite site) {
+        final FileDialog dialog = new FileDialog(site.getShell(), SWT.SAVE);
+        dialog.setText("Save alarm tree configuration file (.xml)");
+        dialog.setOverwrite(true);
+        return dialog.open();
+    }
+
+    /**
+     * @param site
+     * @param viewer
+     * @return
+     */
+    @Nonnull
+    public static Action createExportXmlFileAction(@Nonnull final IWorkbenchPartSite site,
+                                                   @Nonnull final SubtreeNode rootNode) {
+        final Action exportXmlFileAction = new Action() {
+            @Override
+            public void run() {
+                final String filePath = getFileToSaveTo(site);
+                if (filePath != null) {
+                    createModelAndWriteXmlFile(site, Arrays.asList(rootNode.getChildren()), filePath);
+                }
+            }
+        };
+        exportXmlFileAction.setText("Export XML...");
+        exportXmlFileAction.setToolTipText("Export XML");
+        exportXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/exportxml.png"));
+        return exportXmlFileAction;
+    }
+
 
     @Nonnull
     public static Action createImportXmlFileAction(@Nonnull final ImportXmlFileJob importXmlFileJob,
@@ -331,33 +339,29 @@ public final class AlarmTreeViewActionFactory {
         final Action importXmlFileAction = new Action() {
             @Override
             public void run() {
-                final String filePath = promptForFileName();
-                importXmlFileJob.setXmlFilePath(filePath);
-                LOG.debug("Starting XML file importer.");
-                final IWorkbenchSiteProgressService progressService =
-                    (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
+                final String filePath = getFileNameToLoadFrom();
+                if (filePath != null) {
+                    importXmlFileJob.setXmlFilePath(filePath);
+                    LOG.debug("Starting XML file importer.");
+                    final IWorkbenchSiteProgressService progressService =
+                        (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
 
-                // Set the tree to which updates are applied to null. This means updates
-                // will be queued for later application.
-                alarmListener.setUpdater(null);
-                // The directory is read in the background. Until then, set the viewer's
-                // input to a placeholder object.
-                viewer.setInput(new Object[] { new PendingUpdateAdapter() });
-                // Start the directory reader job.
-                progressService.schedule(importXmlFileJob, 0, true);
+                    // Set the tree to which updates are applied to null. This means updates
+                    // will be queued for later application.
+                    alarmListener.setUpdater(null);
+                    // The directory is read in the background. Until then, set the viewer's
+                    // input to a placeholder object.
+                    viewer.setInput(new Object[] {new PendingUpdateAdapter()});
+                    // Start the directory reader job.
+                    progressService.schedule(importXmlFileJob, 0, true);
+                }
             }
 
             @CheckForNull
-            private String promptForFileName() {
-                final InputDialog dialog = new InputDialog(site.getShell(),
-                                                           "Enter the full path to XML file to import",
-                                                           "XML file:",
-                                                           null,
-                                                           new FileNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
+            private String getFileNameToLoadFrom() {
+                final FileDialog dialog = new FileDialog(site.getShell(), SWT.OPEN);
+                dialog.setText("Load alarm tree configuration file (.xml)");
+                return dialog.open();
             }
         };
         importXmlFileAction.setText("Import XML...");
@@ -369,18 +373,22 @@ public final class AlarmTreeViewActionFactory {
 
 
     private static void createModelAndWriteXmlFile(@Nonnull final IWorkbenchPartSite site,
-                                                   @Nonnull final SubtreeNode root,
+                                                   @Nonnull final List<IAlarmTreeNode> list,
                                                    @Nonnull final String filePath) {
         try {
 
-            final AlarmTreeContentModelBuilder builder = new AlarmTreeContentModelBuilder(root);
+            final AlarmTreeContentModelBuilder builder = new AlarmTreeContentModelBuilder(list);
             builder.build();
             final ContentModel<LdapEpicsAlarmCfgObjectClass> model = builder.getModel();
 
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
-
-            configService.exportContentModelToXmlFile(filePath, model, "org.csstudio.alarm.treeView/dtd/epicsAlarmCfg.dtd");
+            if (model != null) {
+                final Bundle bundle = AlarmTreePlugin.getDefault().getBundle();
+                final File loc = FileLocator.getBundleFile(bundle);
+                final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();
+                configService.exportContentModelToXmlFile(filePath, model, dtdFilePath);
+            }
 
         } catch (final CreateContentModelException e) {
             LOG.error("Creating content model from facility was not possible due to invalid LDAP name.");
@@ -393,6 +401,9 @@ public final class AlarmTreeViewActionFactory {
             MessageDialog.openError(site.getShell(),
                                     "Save as XML file",
             "Internal error: XML file could not be for facility.");
+        } catch (final IOException e) {
+            LOG.error("Bundle file path to compose dtd file path could not be identified.");
+            MessageDialog.openError(site.getShell(), "Save as XML file", "Internal error: Bundle path not identifiable.");
         }
     }
 
@@ -427,6 +438,7 @@ public final class AlarmTreeViewActionFactory {
                 }
             }
 
+            @CheckForNull
             private String promptForRecordName() {
                 final InputDialog dialog = new InputDialog(site.getShell(),
                                                            "Create New Record",
@@ -456,7 +468,13 @@ public final class AlarmTreeViewActionFactory {
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final URL helpPage = node.getHelpPage();
+                    URL helpPage;
+                    try {
+                        helpPage = new URL(node.getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
+                    } catch (final MalformedURLException e1) {
+                        LOG.warn("URL property of node " + node.getName() + " was malformed.");
+                        helpPage = null;
+                    }
                     if (helpPage != null) {
                         try {
                             // Note: we have to pass a browser id here to work
@@ -464,8 +482,8 @@ public final class AlarmTreeViewActionFactory {
                             // says that createBrowser accepts null but it will
                             // throw a NullPointerException.
                             // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194988
-                            final IWebBrowser browser = PlatformUI.getWorkbench()
-                            .getBrowserSupport().createBrowser("workaround");
+                            final IWebBrowser browser =
+                                PlatformUI.getWorkbench().getBrowserSupport().createBrowser("workaround");
                             browser.openURL(helpPage);
                         } catch (final PartInitException e) {
                             LOG.error("Failed to initialize workbench browser.", e);
@@ -495,7 +513,7 @@ public final class AlarmTreeViewActionFactory {
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final String helpGuidance = node.getHelpGuidance();
+                    final String helpGuidance = node.getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE);
                     if (helpGuidance != null) {
                         MessageDialog.openInformation(site.getShell(),
                                                       node.getName(),
@@ -523,7 +541,7 @@ public final class AlarmTreeViewActionFactory {
             public void run() {
                 final IAlarmTreeNode node = getSelectedNode();
                 if (node != null) {
-                    final IPath path = new Path(node.getCssStripChart());
+                    final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART));
 
                     // The following code assumes that the path is relative to
                     // the Eclipse workspace.
@@ -542,6 +560,7 @@ public final class AlarmTreeViewActionFactory {
              * @return the selected node, or <code>null</code> if the selection is empty or the selected
              *         node is not of type <code>IAlarmTreeNode</code>.
              */
+            @CheckForNull
             private IAlarmTreeNode getSelectedNode() {
                 final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
                 final Object selected = selection.getFirstElement();
@@ -572,7 +591,7 @@ public final class AlarmTreeViewActionFactory {
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final IPath path = new Path(node.getCssDisplay());
+                    final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY));
                     final Map<String, String> aliases = new HashMap<String, String>();
                     if (node instanceof ProcessVariableNode) {
                         aliases.put("channel", node.getName());
@@ -602,7 +621,7 @@ public final class AlarmTreeViewActionFactory {
                 final Object selected = selection.getFirstElement();
                 if (selected instanceof IAlarmTreeNode) {
                     final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    final IPath path = new Path(node.getCssAlarmDisplay());
+                    final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY));
                     final Map<String, String> aliases = new HashMap<String, String>();
                     if (node instanceof ProcessVariableNode) {
                         aliases.put("channel", node.getName());
@@ -694,7 +713,7 @@ public final class AlarmTreeViewActionFactory {
 
                 // The directory is read in the background. Until then, set the viewer's
                 // input to a placeholder object.
-                viewer.setInput(new Object[] { new PendingUpdateAdapter() });
+                viewer.setInput(new Object[] {new PendingUpdateAdapter()});
 
                 // Start the directory reader job.
                 progressService.schedule(directoryReaderJob, 0, true);

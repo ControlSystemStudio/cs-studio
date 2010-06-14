@@ -27,6 +27,8 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 
+import com.google.common.collect.ImmutableSet;
+
 
 /**
  * Node configuration interface for parametrisable content tree model.
@@ -84,4 +86,11 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      */
     @Nonnull
     T getNodeTypeByNodeTypeName(@Nonnull String nodeTypeName);
+
+    /**
+     * The set of permitted attribute types for a node type.
+     * @return the immutable set of permitted attributes.
+     */
+    @Nonnull
+    ImmutableSet<String> getAttributes();
 }

@@ -37,7 +37,7 @@ public class LdapProp {
 	 * @param ou the group
 	 * @return attributes
 	 */
-	public AuthorizeIdEntry[] getProp(final String eain, final String ou) {
+    public AuthorizeIdEntry[] getProp(final String eain, final String ou) {
 
 	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
 

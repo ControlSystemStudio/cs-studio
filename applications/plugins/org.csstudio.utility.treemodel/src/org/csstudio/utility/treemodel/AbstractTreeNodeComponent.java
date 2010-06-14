@@ -40,7 +40,8 @@ import javax.naming.ldap.LdapName;
  * @since 30.04.2010
  * @param <T> der Enum type
  */
-public abstract class AbstractTreeNodeComponent<T extends Enum<T>> implements INodeComponent<T> {
+public abstract class AbstractTreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>>
+    implements INodeComponent<T> {
 
     private final String _name;
 

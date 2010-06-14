@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
  * @since 30.04.2010
  * @param <T> Enum type of possible LDAP structural components
  */
-public interface ISubtreeNodeComponent<T extends Enum<T>> extends INodeComponent<T> {
+public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> extends INodeComponent<T> {
 
     /**
      * Retrieves the list of children of the current component (but without children subtrees).

@@ -26,7 +26,11 @@ public class Messages extends NLS {
 	public static String ChangelogViewPart_RemoteCallFailed;
 	public static String DATABASE_SERVICE_NAME;
 	public static String EPICS_ORA_SERVICE_NAME;
-	public static String SaveValueDialog_DIALOG_TITLE;
+    public static String SaveValueDialog_DIALOG_TITLE;
+    public static String SaveValueDialog_ERRMSG_DETAIL_IOC_NAME_UNPARSEABLE;
+    public static String SaveValueDialog_ERRMSG_DETAIL_NO_ENTRY;
+    public static String SaveValueDialog_ERRMSG_DETAIL_NOT_UNIQUE;
+    public static String SaveValueDialog_ERRMSG_DETAILS;
 	public static String SaveValueDialog_ERRMSG_IOC_NOT_FOUND;
 	public static String SaveValueDialog_ERRMSG_NO_REQUIRED_SERVICES;
 	public static String SaveValueDialog_ERRMSG_NO_RMI_REGISTRY;
@@ -57,5 +61,6 @@ public class Messages extends NLS {
 	}
 
 	private Messages() {
+	    // EMPTY
 	}
 }

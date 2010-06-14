@@ -23,6 +23,7 @@ package org.csstudio.alarm.treeView.model;
 
 import javax.annotation.Nullable;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;

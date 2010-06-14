@@ -23,6 +23,9 @@ package org.csstudio.alarm.treeView.model;
 
 import java.util.Date;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 
 /**
  * Represents an alarm.
@@ -50,26 +53,15 @@ public final class Alarm {
 
 
 	/**
-	 * Creates a new alarm with the given severity.
-	 * @param objectName the name of the object on which this alarm occured.
-	 * @param severity the severity of the alarm.
-	 *
-	 * @deprecated use {@link #Alarm(String, Severity, Date)} instead.
-	 */
-	@Deprecated
-	public Alarm(final String objectName, final Severity severity) {
-		this(objectName, severity, new Date());
-	}
-
-
-	/**
 	 * Creates a new alarm.
 	 *
 	 * @param objectName the name of the object on which this alarm occured.
 	 * @param severity the severity of the alarm.
 	 * @param eventtime the time at which the alarm event occured.
 	 */
-	public Alarm(final String objectName, final Severity severity, final Date eventtime) {
+	public Alarm(@Nonnull final String objectName,
+	             @Nonnull final Severity severity,
+	             @Nonnull final Date eventtime) {
 		_objectName = objectName;
 		_severity = severity;
 		_eventtime = (Date) eventtime.clone();
@@ -80,7 +72,8 @@ public final class Alarm {
 	 * Returns the severity of this alarm.
 	 * @return the severity of this alarm.
 	 */
-	public final Severity getSeverity() {
+	@Nonnull
+	public Severity getSeverity() {
 		return _severity;
 	}
 
@@ -95,7 +88,7 @@ public final class Alarm {
 	 * @return <code>true</code> if this alarm has a higher severity,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean severityHigherThan(final Alarm alarm) {
+	public boolean severityHigherThan(@CheckForNull final Alarm alarm) {
 		return (alarm == null) || (_severity.compareTo(alarm._severity) > 0);
 	}
 
@@ -109,7 +102,7 @@ public final class Alarm {
 	 * @return <code>true</code> if this alarm occured after the other alarm,
 	 *         <code>false</code> otherwise.
 	 */
-	public boolean occuredAfter(final Alarm alarm) {
+	public boolean occuredAfter(@CheckForNull final Alarm alarm) {
 		return (alarm == null) || _eventtime.after(alarm._eventtime);
 	}
 
@@ -118,7 +111,8 @@ public final class Alarm {
 	 * Returns the name of the object on which this alarm occured.
 	 * @return the name of the object on which this alarm occured.
 	 */
-	public final String getObjectName() {
+	@Nonnull
+	public String getObjectName() {
 		return _objectName;
 	}
 
@@ -128,7 +122,8 @@ public final class Alarm {
 	 * @return a string representation of this alarm.
 	 */
 	@Override
-    public final String toString() {
+	@Nonnull
+    public String toString() {
 		return "Alarm[" + _objectName + "," + _severity + "]";
 	}
 }

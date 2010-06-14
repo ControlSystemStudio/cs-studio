@@ -21,8 +21,6 @@
  */
 package org.csstudio.alarm.treeView.model;
 
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Collections;
 import java.util.EnumMap;
 import java.util.Map;
@@ -33,6 +31,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.eclipse.core.runtime.PlatformObject;
 
@@ -62,7 +61,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * The object class of this node in the directory.
      */
-    protected final LdapEpicsAlarmCfgObjectClass _objectClass;
+    private final LdapEpicsAlarmCfgObjectClass _objectClass;
 
 
     /**
@@ -91,87 +90,6 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 		}
 	}
 
-
-
-	/**
-	 * Sets the CSS alarm display for this node.
-	 * @param display the CSS alarm display for this node.
-	 */
-	public final void setCssAlarmDisplay(final String display) {
-		setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, display);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getCssAlarmDisplay() {
-		return getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getCssDisplay() {
-		return getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY);
-	}
-
-	/**
-	 * Sets the name of the CSS display for this node.
-	 * @param cssDisplay the name of the CSS display for this node.
-	 */
-	public final void setCssDisplay(final String cssDisplay) {
-		setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, cssDisplay);
-	}
-
-	/**
-	 * Sets a help page for this node.
-	 * @param helpPage the help page URI.
-	 */
-	public final void setHelpPage(final URL helpPage) {
-		setProperty(AlarmTreeNodePropertyId.HELP_PAGE, helpPage.toString());
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final URL getHelpPage() {
-		try {
-			return new URL(getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
-		} catch (final MalformedURLException e) {
-			return null;
-		}
-	}
-
-	/**
-	 * Sets a help guidance string for this node.
-	 * @param helpGuidance a help guidance string.
-	 */
-	public final void setHelpGuidance(final String helpGuidance) {
-		setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, helpGuidance);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getHelpGuidance() {
-		return getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public final String getCssStripChart() {
-		return getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART);
-	}
-
-	/**
-	 * Sets the CSS strip chart file for this node.
-	 * @param cssStripChart the name of the file.
-	 */
-	public final void setCssStripChart(final String cssStripChart) {
-		setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, cssStripChart);
-	}
-
 	/**
 	 * {@inheritDoc}
 	 */
@@ -186,6 +104,14 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	public void setParent(@Nonnull final IAlarmSubtreeNode parent) {
 	    _parent = parent;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public LdapEpicsAlarmCfgObjectClass getObjectClass() {
+        return _objectClass;
+    }
 
 	/**
      * {@inheritDoc}
@@ -203,13 +129,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     }
 
     /**
-     * Returns the property value that is set on this node. The value is not
-     * inherited from a parent node if no value is set on this node.
-     *
-     * @param property
-     *            the property.
-     * @return the property value, or <code>null</code> if the property is not
-     *         set on this node.
+     * {@inheritDoc}
      */
     @CheckForNull
     public final String getOwnProperty(@Nonnull final AlarmTreeNodePropertyId property) {
@@ -242,6 +162,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     public final String getName() {
     	return _name;
     }
@@ -249,7 +170,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
-    public final void setName(final String name) {
+    public final void setName(@Nonnull final String name) {
     	_name = name;
     }
 
@@ -257,6 +178,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public final String toString() {
         return _name;
     }

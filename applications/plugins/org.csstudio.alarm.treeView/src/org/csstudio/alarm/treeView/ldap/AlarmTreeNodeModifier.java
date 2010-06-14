@@ -32,6 +32,7 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Alarm;
@@ -109,7 +110,7 @@ public final class AlarmTreeNodeModifier {
         if (alarmDisplayAttr != null) {
             final String display = (String) alarmDisplayAttr.get();
             if (display != null) {
-                node.setCssAlarmDisplay(display);
+                node.setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, display);
             }
         }
 
@@ -118,7 +119,7 @@ public final class AlarmTreeNodeModifier {
             final String helpPage = (String) helpPageAttr.get();
             if ((helpPage != null) && helpPage.matches("^http://.+")) {
                 try {
-                    node.setHelpPage(new URL(helpPage));
+                    node.setProperty(AlarmTreeNodePropertyId.HELP_PAGE, new URL(helpPage).toString());
                 } catch (final MalformedURLException e) {
                     LOG.warn(AlarmTreeBuilder.class.getName(), EPICS_HELP_PAGE + " attribute for node "
                             + node + " contains a malformed URL");
@@ -130,7 +131,7 @@ public final class AlarmTreeNodeModifier {
         if (helpGuidanceAttr != null) {
             final String helpGuidance = (String) helpGuidanceAttr.get();
             if (helpGuidance != null) {
-                node.setHelpGuidance(helpGuidance);
+                node.setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, helpGuidance);
             }
         }
 
@@ -138,7 +139,7 @@ public final class AlarmTreeNodeModifier {
         if (displayAttr != null) {
             final String display = (String) displayAttr.get();
             if (display != null) {
-                node.setCssDisplay(display);
+                node.setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, display);
             }
         }
 
@@ -146,7 +147,7 @@ public final class AlarmTreeNodeModifier {
         if (chartAttr != null) {
             final String chart = (String) chartAttr.get();
             if (chart != null) {
-                node.setCssStripChart(chart);
+                node.setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, chart);
             }
         }
     }

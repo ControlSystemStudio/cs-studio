@@ -21,6 +21,7 @@
  */
  package org.csstudio.alarm.treeView.model;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 
@@ -30,32 +31,48 @@ import javax.annotation.Nullable;
  * @author Joerg Rathlev
  */
 public enum Severity {
-    // FIXME jp, bknerr : don't rely on ordering of enums! ANTI-PATTERN
-
     /**
      * Uninitialized or otherwise unknown state.
      */
-    UNKNOWN,
+    UNKNOWN(false, 0),
 	/**
 	 * Severity representing no alarm.
 	 */
-	NO_ALARM,
+	NO_ALARM(false, 0),
 
 	/**
 	 * Severity value for a minor alarm.
 	 */
-	MINOR,
+	MINOR(true, 1),
 
 	/**
 	 * Severity value for a major alarm.
 	 */
-	MAJOR,
+	MAJOR(true, 2),
 
 	/**
 	 * Severity representing an invalid alarm state.
 	 */
-	INVALID;
+	INVALID(true, 3);
 
+    /**
+     * Indicates whether this severity is an alarm.
+     */
+    private boolean _isAlarm;
+
+    /**
+     * The level, the higher the more severe.
+     */
+    private int _severityLevel;
+
+
+    /**
+     * Constructor.
+     */
+    private Severity(final boolean isAlarm, final int level) {
+        _isAlarm = isAlarm;
+        _severityLevel = level;
+    }
 
 	/**
 	 * Converts a string representation of a severity to a severity. Note that
@@ -66,6 +83,7 @@ public enum Severity {
 	 * @param severityString the severity represented as a string value.
 	 * @return the severity represented by the given string.
 	 */
+    @Nonnull
 	public static Severity parseSeverity(@Nullable final String severityString) {
 	    if (severityString == null) {
 	        // TODO jp : shouldn't be possible
@@ -79,15 +97,21 @@ public enum Severity {
         }
 	}
 
+    /**
+     * Returns the severity level, the higher the more sever
+     * @return number representing the severity level
+     */
+    public int getLevel() {
+        return _severityLevel;
+    }
 
 	/**
-	 * Returns {@code true} if this severity is an actual alarm severity,
-	 * {@code false} if it represents NO_ALARM or UNKNOWN severity.
+	 * Returns {@code true} if this severity is an actual alarm severity.
 	 *
 	 * @return whether this alarm is an actual alarm severity.
 	 */
 	public boolean isAlarm() {
-		return (this != NO_ALARM) && (this != UNKNOWN);
+		return _isAlarm;
 	}
 
 }

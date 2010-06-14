@@ -29,12 +29,16 @@ import java.io.OutputStream;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
 
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * TODO (bknerr) :
@@ -83,7 +87,10 @@ public final class ContentModelExporter {
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) {
 
-        final T rootType = model.getRoot().getType();
+        final ISubtreeNodeComponent<T> modelRootNode = model.getRoot();
+        final T rootType = modelRootNode.getType();
+
+
         final Element rootElem = new Element(rootType.getNodeTypeName());
         rootElem.setAttribute("name", rootType.getRootTypeName());
 
@@ -94,7 +101,7 @@ public final class ContentModelExporter {
             doc.setDocType(docType);
         }
 
-        for (final ISubtreeNodeComponent<T> modelNode : model.getRoot().getDirectChildren()) {
+        for (final ISubtreeNodeComponent<T> modelNode : modelRootNode.getDirectChildren()) {
             createDOMElement(rootElem, modelNode);
         }
 
@@ -106,21 +113,47 @@ public final class ContentModelExporter {
                               @Nonnull final ISubtreeNodeComponent<T> modelNode) {
 
         // FIXME (bknerr) : once the deprecated esco, ioc components have vanished, the next lines can be removed
-        String name = modelNode.getType().getNodeTypeName();
-        if ("econ".equals(name) ||
-            "esco".equals(name)) {
-            name = "ecom";
+        String typeName = modelNode.getType().getNodeTypeName();
+        if ("econ".equals(typeName) ||
+            "esco".equals(typeName)) {
+            typeName = "ecom";
         }
 
-        final Element newNode = new Element(name);
-
-        newNode.setAttribute("name", modelNode.getName());
+        final Element newNode = createElement(modelNode, typeName);
 
         parentElem.addContent(newNode);
 
         for (final ISubtreeNodeComponent<T> child : modelNode.getDirectChildren()) {
             createDOMElement(newNode, child);
         }
+    }
+
+    @Nonnull
+    private static <T extends Enum<T> & ITreeNodeConfiguration<T>> Element
+        createElement(@Nonnull final ISubtreeNodeComponent<T> modelNode,
+                      @Nonnull final String typeName) {
+
+        final Element newNode = new Element(typeName);
+
+        newNode.setAttribute("name", modelNode.getName());
+
+        final T type = modelNode.getType();
+        final ImmutableSet<String> attributes = type.getAttributes();
+        for (final String attributeField : attributes) {
+            final Attribute attribute = modelNode.getAttribute(attributeField);
+            if (attribute != null) {
+                try {
+                    final String attributeVal = (String) attribute.get();
+                    newNode.setAttribute(attributeField, attributeVal);
+                } catch (final NamingException e) {
+                    // Ignore
+                }
+            }
+        }
+
+
+
+        return newNode;
     }
 
 

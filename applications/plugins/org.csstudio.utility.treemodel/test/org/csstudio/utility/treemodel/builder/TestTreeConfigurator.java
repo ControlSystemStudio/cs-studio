@@ -34,6 +34,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
+import com.google.common.collect.ImmutableSet;
+
 /**
  * Test enum configuring the test xml files.
  *
@@ -174,6 +176,11 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
         return ROOT.getNodeTypeName();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ImmutableSet<String> getAttributes() {
+        return ImmutableSet.<String>builder().build();
+    }
 }
-
-

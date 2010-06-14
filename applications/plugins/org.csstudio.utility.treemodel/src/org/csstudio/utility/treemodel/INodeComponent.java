@@ -38,7 +38,7 @@ import javax.naming.ldap.LdapName;
  * @param <T>
  * @since 30.04.2010
  */
-public interface INodeComponent<T extends Enum<T>> {
+public interface INodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     @Nonnull
     String getName();
