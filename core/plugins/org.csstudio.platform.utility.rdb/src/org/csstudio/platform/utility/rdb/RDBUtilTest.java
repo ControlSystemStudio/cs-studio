@@ -16,6 +16,7 @@ public class RDBUtilTest
 //    private static final String USER = "alarm";
 //    private static final String PASSWORD = "$alarm";
 
+    @SuppressWarnings("unused")
     private static final String URL1 = 
         "jdbc:oracle:thin:@" +
         "(DESCRIPTION=" +
@@ -31,8 +32,8 @@ public class RDBUtilTest
         "jdbc:oracle:thin:@" +
         "(DESCRIPTION=(SOURCE_ROUTE=YES)" +
         " (ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1521))" +
-        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1521))" +
+        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))" +
+        "  (ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610))" +
         " )" +
         " (ADDRESS_LIST=(LOAD_BALANCE=OFF)" +
         "  (ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))" +
