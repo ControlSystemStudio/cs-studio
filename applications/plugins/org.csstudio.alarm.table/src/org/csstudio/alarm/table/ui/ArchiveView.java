@@ -125,6 +125,8 @@ public class ArchiveView extends ViewPart {
 
     private Text _timeToText;
 
+    private Button _nextButton;
+
     public ArchiveView() {
         super();
         GregorianCalendar to = (GregorianCalendar) GregorianCalendar
@@ -184,11 +186,6 @@ public class ArchiveView extends ViewPart {
 
         makeActions();
         parent.pack();
-        // _columnPropertyChangeListener = new ColumnPropertyChangeListener(
-        // ArchiveViewPreferenceConstants.P_STRINGArch, _jmsLogTableViewer);
-        //
-        // JmsLogsPlugin.getDefault().getPluginPreferences()
-        // .addPropertyChangeListener(_columnPropertyChangeListener);
     }
 
     private void addManageButtons(Composite archiveTableManagementComposite) {
@@ -224,6 +221,23 @@ public class ArchiveView extends ViewPart {
         gd = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
         _countLabel.setLayoutData(gd);
         _countLabel.setText("0"); //$NON-NLS-1$
+        
+        //Add Button to get next set of messages after the last message of the
+        //current subset.
+        _nextButton = new Button(count, SWT.PUSH);
+        gd = new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1);
+        _nextButton.setLayoutData(gd);
+        _nextButton.setText(Messages.getString("LogViewArchive_nextButton")); //$NON-NLS-1$
+        _nextButton.setEnabled(false);
+        _nextButton.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                super.widgetSelected(e);
+                CentralLogger.getInstance().debug(this, "Get next subset of messages");
+                _filter.setFrom(_jmsMessageList.getLatestMessageDate());
+                readDatabase();
+            }
+        });
     }
 
     private void addPeriodGroup(Composite archiveTableManagementComposite) {
@@ -597,15 +611,20 @@ public class ArchiveView extends ViewPart {
             @Override
             public void onReadFinished(final Result result) {
                 Display.getDefault().syncExec(new Runnable() {
+
                     public void run() {
                         _jmsMessageList.deleteAllMessages();
                         _tableViewer.refresh();
                         int size = result.getMessagesFromDatabase().size();
+                        //If there are more messages in the database (maxsize == true)
+                        //set countLabel background red and enable next button to get
+                        //the next message subset.
                         if (result.isMaxSize()) {
                             _countLabel.setBackground(Display.getCurrent()
                                     .getSystemColor(SWT.COLOR_RED));
                             _countLabel.setText(Messages.ViewArchive_16
                                     + Integer.toString(size));
+                            _nextButton.setEnabled(true);
                         } else {
                             _countLabel.setText(Integer.toString(size));
                             _countLabel
@@ -613,6 +632,7 @@ public class ArchiveView extends ViewPart {
                                             .getCurrent()
                                             .getSystemColor(
                                                     SWT.COLOR_WIDGET_BACKGROUND));
+                            _nextButton.setEnabled(false);
                         }
                         _tableViewer.getTable().setEnabled(true);
                         if (size > 0) {
@@ -712,7 +732,5 @@ public class ArchiveView extends ViewPart {
     public final void dispose() {
     	_columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
         super.dispose();
-        // JmsLogsPlugin.getDefault().getPluginPreferences()
-        // .removePropertyChangeListener(_columnPropertyChangeListener);
     }
 }

@@ -21,9 +21,20 @@
  */
 package org.csstudio.alarm.table.dataModel;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.Vector;
+
+import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.internal.data.Timestamp;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * List of JMSMessages. The Viewers (LabelProviders) of the list registers as
@@ -35,15 +46,6 @@ import java.util.Vector;
 public class ArchiveMessageList extends MessageList {
 
     protected Vector<BasicMessage> _messages = new Vector<BasicMessage>();
-
-    // /**
-    // * Initial property names of the table columns.
-    // */
-    // String[] propertyNames;
-
-    // public ArchiveMessageList(String[] propNames) {
-    // propertyNames = propNames;
-    // }
 
     /**
      * Add a new Message to the collection of Messages
@@ -70,6 +72,8 @@ public class ArchiveMessageList extends MessageList {
             i++;
         }
         super.addMessageList(listOfNewMessages);
+        getClass().getResource("");
+//        JmsLogsPlugin.getDefault().getBundle().getResource(name)
     }
 
     /**
@@ -106,5 +110,30 @@ public class ArchiveMessageList extends MessageList {
     @Override
     public void deleteAllMessages(BasicMessage[] messages) {
         removeMessageArray(messages);
+    }
+
+    /**
+     * Search for the message with the latest EVENTTIME in the list.
+     * 
+     * @return latest timestamp in message list
+     */
+    public GregorianCalendar getLatestMessageDate() {
+        GregorianCalendar previousMessageTime = new GregorianCalendar(1980, 2, 2);
+        GregorianCalendar currentMessageTime = new GregorianCalendar();
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        for (BasicMessage message : _messages) {
+            String time = message.getProperty("EVENTTIME");
+            try {
+                Date date = sdf.parse(time);
+                currentMessageTime.setTime(date);
+                if (currentMessageTime.compareTo(previousMessageTime) > 0) {
+                    previousMessageTime.setTime(currentMessageTime.getTime());
+                }
+            } catch (ParseException e) {
+                CentralLogger.getInstance().warn(this, "cannot parse date string");
+            }
+        }
+        previousMessageTime.setTimeInMillis(previousMessageTime.getTimeInMillis() - 1000);
+        return previousMessageTime;
     }
 }
