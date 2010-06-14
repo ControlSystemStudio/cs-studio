@@ -16,8 +16,8 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.ActionButtonModel;
 import org.epics.css.dal.simple.AnyData;
@@ -44,7 +44,7 @@ public class ActionButtonBehavior extends AbstractDesyConnectionBehavior<ActionB
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(@Nonnull final ActionButtonModel model,@Nonnull final AnyData anyData) {
+    protected void doProcessValueChange( final ActionButtonModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. update button value
         model.setPropertyValue(ActionButtonModel.PROP_LABEL, anyData.stringValue());
@@ -55,7 +55,7 @@ public class ActionButtonBehavior extends AbstractDesyConnectionBehavior<ActionB
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessMetaDataChange(@Nonnull final ActionButtonModel widget,@Nullable final MetaData metaData) {
+    protected void doProcessMetaDataChange( final ActionButtonModel widget,final MetaData metaData) {
         // do nothing
     }
 

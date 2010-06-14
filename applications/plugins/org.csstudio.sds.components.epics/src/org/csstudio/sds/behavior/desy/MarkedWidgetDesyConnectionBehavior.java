@@ -34,8 +34,8 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.epics.css.dal.simple.AnyData;
@@ -78,7 +78,7 @@ public class MarkedWidgetDesyConnectionBehavior<W extends AbstractMarkedWidgetMo
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(@Nonnull final W model,@Nonnull final AnyData anyData) {
+    protected void doProcessValueChange( final W model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. fill level (influenced by current value)
         model.setPropertyValue(AbstractMarkedWidgetModel.PROP_VALUE, anyData.numberValue());
@@ -86,7 +86,7 @@ public class MarkedWidgetDesyConnectionBehavior<W extends AbstractMarkedWidgetMo
 
 
     @Override
-    protected void doProcessMetaDataChange(@Nonnull final W widget,@Nullable final MetaData meta) {
+    protected void doProcessMetaDataChange( final W widget,final MetaData meta) {
         if (meta != null) {
             // .. limits
             widget.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN, meta.getDisplayLow());

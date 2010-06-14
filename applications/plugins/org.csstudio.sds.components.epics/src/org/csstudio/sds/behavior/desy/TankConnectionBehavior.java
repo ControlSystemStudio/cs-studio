@@ -34,8 +34,8 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.TankModel;
 import org.epics.css.dal.context.ConnectionState;
@@ -67,7 +67,7 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
      * {@inheritDoc}
      */
     @Override
-    protected void doInitialize(@Nonnull final TankModel widget) {
+    protected void doInitialize( final TankModel widget) {
         super.doInitialize(widget);
         _defFillColor = widget.getColor(TankModel.PROP_FILL_COLOR);
         _defFillBackColor = widget.getColor(TankModel.PROP_FILLBACKGROUND_COLOR);
@@ -77,7 +77,7 @@ public class TankConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<T
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(@Nonnull final TankModel widget, @Nullable final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final TankModel widget, final ConnectionState connectionState) {
         String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);

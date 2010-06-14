@@ -18,8 +18,8 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.AbstractMarkedWidgetModel;
 import org.csstudio.sds.components.model.KnobModel;
@@ -43,7 +43,7 @@ public class KnobConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<K
      * {@inheritDoc}
      */
     @Override
-    protected void doInitialize(@Nonnull final KnobModel widget) {
+    protected void doInitialize( final KnobModel widget) {
         super.doInitialize(widget);
         _defFillColor = widget.getColor(KnobModel.PROP_KNOB_COLOR);
     }
@@ -52,7 +52,7 @@ public class KnobConnectionBehavior extends MarkedWidgetDesyConnectionBehavior<K
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(@Nonnull final KnobModel widget, @Nullable final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final KnobModel widget, final ConnectionState connectionState) {
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(KnobModel.PROP_KNOB_COLOR, fillColor);
 

@@ -19,9 +19,6 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.csstudio.sds.eventhandling.AbstractBehavior;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.BorderStyleEnum;
@@ -230,8 +227,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Border style for the given {@link ConnectionState}
      */
-    @Nonnull
-    protected final BorderStyleEnum determineBorderStyle(@Nullable final ConnectionState connectionState) {
+
+    protected final BorderStyleEnum determineBorderStyle(final ConnectionState connectionState) {
         return connectionState != null ? borderStyleByConnectionState.get(connectionState)
                 : borderStyleByConnectionState.get(ConnectionState.INITIAL);
     }
@@ -242,8 +239,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Background color for the given {@link ConnectionState}
      */
-    @Nonnull
-    protected final String determineBackgroundColor(@Nullable final ConnectionState connectionState) {
+
+    protected final String determineBackgroundColor(final ConnectionState connectionState) {
         return connectionState != null ? colorsByConnectionState.get(connectionState)
                 : colorsByConnectionState.get(ConnectionState.INITIAL);
     }
@@ -254,8 +251,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Border color for the given {@link ConnectionState}
      */
-    @Nonnull
-    protected final String determineBorderColor(@Nullable final ConnectionState connectionState) {
+
+    protected final String determineBorderColor(final ConnectionState connectionState) {
         return connectionState != null ? borderColorsByConnectionState.get(connectionState)
                 : borderColorsByConnectionState.get(ConnectionState.INITIAL);
     }
@@ -266,8 +263,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param connectionState The Connection State
      * @return the DESY default Border width for the given {@link ConnectionState}
      */
-    @Nonnull
-    protected final Integer determineBorderWidth(@Nullable final ConnectionState connectionState) {
+
+    protected final Integer determineBorderWidth(final ConnectionState connectionState) {
         return connectionState != null ? borderWidthByConnectionState.get(connectionState)
                 : borderWidthByConnectionState.get(ConnectionState.INITIAL);
     }
@@ -278,8 +275,8 @@ public abstract class AbstractDesyBehavior<W extends AbstractWidgetModel> extend
      * @param severity The Severity
      * @return the DESY default color for the given {@link Severity}
      */
-    @Nonnull
-    protected final String determineColorBySeverity(@Nullable final Severity severity,@Nullable final String defColor) {
+
+    protected final String determineColorBySeverity(final Severity severity,final String defColor) {
         String color = "#000000";
 
         if (severity != null) {

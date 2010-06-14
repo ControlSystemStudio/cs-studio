@@ -18,8 +18,8 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.AdvancedSliderModel;
 import org.epics.css.dal.simple.AnyData;
@@ -47,14 +47,14 @@ public class AdvancedSliderConnectionBehavior extends AbstractDesyConnectionBeha
     }
 
     @Override
-    protected void doProcessValueChange(@Nonnull final AdvancedSliderModel model,@Nonnull final AnyData anyData) {
+    protected void doProcessValueChange( final AdvancedSliderModel model, final AnyData anyData) {
         super.doProcessValueChange(model, anyData);
         // .. update slider value
         model.setPropertyValue(AdvancedSliderModel.PROP_VALUE, anyData.doubleValue());
     }
 
     @Override
-    protected void doProcessMetaDataChange(@Nonnull final AdvancedSliderModel widget,@Nullable final MetaData meta) {
+    protected void doProcessMetaDataChange( final AdvancedSliderModel widget,final MetaData meta) {
         if (meta != null) {
             // .. update min / max
             widget.setPropertyValue(AdvancedSliderModel.PROP_MAX, meta.getDisplayHigh());
@@ -63,7 +63,7 @@ public class AdvancedSliderConnectionBehavior extends AbstractDesyConnectionBeha
     }
 
     @Override
-    @Nonnull
+    
     protected String[] doGetSettablePropertyIds() {
         return new String[] { AdvancedSliderModel.PROP_VALUE };
     }

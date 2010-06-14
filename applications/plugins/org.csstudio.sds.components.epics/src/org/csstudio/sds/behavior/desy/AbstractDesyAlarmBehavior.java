@@ -18,9 +18,6 @@
  */
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyData;
@@ -52,13 +49,13 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
     }
 
     @Override
-    protected void doInitialize(@Nonnull final W widget) {
+    protected void doInitialize(final W widget) {
         super.doInitialize(widget);
     }
 
     @Override
-    protected void doProcessConnectionStateChange(@Nonnull final W widget,
-                                                  @Nullable final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange(final W widget,
+                                                  final ConnectionState connectionState) {
         super.doProcessConnectionStateChange(widget, connectionState);
     }
 
@@ -67,7 +64,7 @@ public abstract class AbstractDesyAlarmBehavior<W extends AbstractWidgetModel> e
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(@Nonnull final W model,@Nonnull final AnyData anyData) {
+    protected void doProcessValueChange(final W model,final AnyData anyData) {
         Severity severity = anyData.getSeverity();
         if (severity != null) {
             if (severity.isInvalid()) {

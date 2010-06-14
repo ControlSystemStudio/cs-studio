@@ -34,8 +34,8 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
@@ -65,7 +65,7 @@ public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Ther
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessValueChange(@Nonnull final ThermometerModel model,@Nonnull final AnyData anyData) {
+    protected void doProcessValueChange( final ThermometerModel model, final AnyData anyData) {
         // .. fill level (influenced by current value)
         super.doProcessValueChange(model, anyData);
         // .. fill color (influenced by severity)
@@ -77,7 +77,7 @@ public class ThermometerAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<Ther
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(@Nonnull final ThermometerModel widget,@Nullable final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final ThermometerModel widget,final ConnectionState connectionState) {
         widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, determineBackgroundColor(connectionState));
         widget.setPropertyValue(ThermometerModel.PROP_FILL_COLOR, determineBackgroundColor(connectionState));
 

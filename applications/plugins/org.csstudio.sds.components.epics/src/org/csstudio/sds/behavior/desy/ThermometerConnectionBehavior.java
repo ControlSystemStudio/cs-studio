@@ -34,8 +34,8 @@
 		*/
 package org.csstudio.sds.behavior.desy;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+
+
 
 import org.csstudio.sds.components.model.ThermometerModel;
 import org.epics.css.dal.context.ConnectionState;
@@ -67,7 +67,7 @@ public class ThermometerConnectionBehavior extends MarkedWidgetDesyConnectionBeh
      * {@inheritDoc}
      */
     @Override
-    protected void doInitialize(@Nonnull final ThermometerModel widget) {
+    protected void doInitialize( final ThermometerModel widget) {
         super.doInitialize(widget);
         _defFillColor = widget.getColor(ThermometerModel.PROP_FILL_COLOR);
         _defFillBackColor = widget.getColor(ThermometerModel.PROP_FILLBACKGROUND_COLOR);
@@ -77,7 +77,7 @@ public class ThermometerConnectionBehavior extends MarkedWidgetDesyConnectionBeh
      * {@inheritDoc}
      */
     @Override
-    protected void doProcessConnectionStateChange(@Nonnull final ThermometerModel widget,@Nullable final ConnectionState connectionState) {
+    protected void doProcessConnectionStateChange( final ThermometerModel widget,final ConnectionState connectionState) {
         String fillBackColor = (connectionState==ConnectionState.CONNECTED)?_defFillBackColor  : determineBackgroundColor(connectionState);
         widget.setPropertyValue(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColor);
         String fillColor = (connectionState==ConnectionState.CONNECTED)?_defFillColor  : determineBackgroundColor(connectionState);
