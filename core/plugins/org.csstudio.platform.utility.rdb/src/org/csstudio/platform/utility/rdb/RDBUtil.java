@@ -9,6 +9,16 @@ import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
 
 /** Obtain database connection for various RDB systems.
+ *  <p>
+ *  This utility supports an auto-reconnect feature to handle database
+ *  timeouts: <code>getConnection()</code> will test if the connection
+ *  is still active. If not, it automatically re-connects.
+ *  <p>
+ *  While this simplifies the code for clients that need to perform transactions
+ *  every once in a while over a long run time, the connection test can be
+ *  expensive for a short flurry of transactions.
+ *  It can therefore be suppressed via <code>setAutoReconnect()</code>.
+ *  
  *  @author Kay Kasemir
  *  @author Xihui Chen
  */
@@ -31,7 +41,7 @@ abstract public class RDBUtil
 	final private String password;
 	
     /** Whether reconnect to RDB automatically in case of connection lost */
-    final private boolean autoReconnect;
+    private boolean autoReconnect;
 
     /** Connection to the SQL server */
 	private Connection connection;
@@ -153,6 +163,17 @@ abstract public class RDBUtil
      */
     abstract protected Connection do_connect(final String url,
             final String user, final String password) throws Exception;
+    
+    /** Temporarily disable or later re-enable the auto-reconnect feature.
+     *  @param auto_reconnect <code>false</code> to disable, <code>true</code> to re-enable
+     *  @throws Exception if this RDBUtil was not created with auto-reconnect support
+     */
+    public void setAutoReconnect(final boolean auto_reconnect) throws Exception
+    {
+        if (test_query == null)
+            throw new IllegalStateException("Auto-reconnect support not available");
+        autoReconnect = auto_reconnect;
+    }
 
     /** Get the JDBC connection.
 	 *  This method will try to return a connection that's
