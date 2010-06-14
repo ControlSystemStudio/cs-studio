@@ -4,6 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
 
@@ -107,7 +108,7 @@ abstract public class RDBUtil
     public static RDBUtil connect(final String url,
             final String user, final String password, final boolean autoReconnect) throws Exception
     {
-    	Activator.getLogger().debug("RDBUtil connects to " + url);
+        CentralLogger.getInstance().getLogger(RDBUtil.class).debug("RDBUtil connects to " + url);
         if (url.startsWith(JDBC_MYSQL))
             return new MySQL_RDB(url, user, password, autoReconnect);
         if (url.startsWith(JDBC_ORACLE))
@@ -175,7 +176,7 @@ abstract public class RDBUtil
 	    {
 	        if (connection != null && isConnected())
 	            return connection; // All OK
-            Activator.getLogger().info("Connection Lost! Reconnect to " + url);
+	        CentralLogger.getInstance().getLogger(this).info("Connection Lost! Reconnect to " + url);
 	        if (connection != null)
 	            close();
             connection = do_connect(url, user, password);
@@ -188,7 +189,7 @@ abstract public class RDBUtil
 	/** Close the RDB connection. */
 	public void close()
 	{
-		Activator.getLogger().debug("RDBUtil closes " + url);
+	    CentralLogger.getInstance().getLogger(this).debug("RDBUtil closes " + url);
 		try
 		{
 		    if (autoReconnect)

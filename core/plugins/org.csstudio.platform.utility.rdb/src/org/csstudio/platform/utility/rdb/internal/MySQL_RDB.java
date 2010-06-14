@@ -4,7 +4,8 @@ import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
 
-import org.csstudio.platform.utility.rdb.Activator;
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /** Connect to a MySQL-based RDB
@@ -40,9 +41,13 @@ public class MySQL_RDB extends RDBUtil
         else
             connection = DriverManager.getConnection(url);
         // Basic database info
-        final DatabaseMetaData meta = connection.getMetaData();
-        Activator.getLogger().debug("MySQL connection: " + meta.getDatabaseProductName()
-                        + " " + meta.getDatabaseProductVersion());
+        final Logger logger = CentralLogger.getInstance().getLogger(this);
+        if (logger.isDebugEnabled())
+        {
+            final DatabaseMetaData meta = connection.getMetaData();
+            logger.debug("MySQL connection: " + meta.getDatabaseProductName()
+                            + " " + meta.getDatabaseProductVersion());
+        }
         return connection;
     }
     
