@@ -26,29 +26,40 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 /**
  * Utility methods for parsing timestamps in alarm messages.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class EventtimeUtil {
-	
-	private static final SimpleDateFormat format =
+
+    /**
+     * Constructor.
+     */
+    private EventtimeUtil() {
+        // Empty
+    }
+
+	private static final SimpleDateFormat FORMAT =
 		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
 	/**
 	 * Parses am eventtime timestamp into a Date object. If the string cannot be
 	 * parsed as a timestamp, returns <code>null</code>.
-	 * 
+	 *
 	 * @param timestamp
 	 *            the timestamp.
 	 * @return the parsed date, or <code>null</code> if the string could not be
 	 *         parsed.
 	 */
-	public static Date parseTimestamp(String timestamp) {
+	@CheckForNull
+	public static Date parseTimestamp(@Nullable final String timestamp) {
 		try {
-			return format.parse(timestamp);
-		} catch (ParseException e) {
+			return FORMAT.parse(timestamp);
+		} catch (final ParseException e) {
 			return null;
 		}
 	}

@@ -21,6 +21,8 @@ package org.csstudio.alarm.treeView.views;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.treeView.model.Severity;
 
 /**
@@ -29,7 +31,7 @@ import org.csstudio.alarm.treeView.model.Severity;
  *
  * @author Joerg Rathlev
  */
-public abstract class PendingUpdate {
+public abstract class AbstractPendingUpdate {
 
     /**
      * Applies this update.
@@ -37,7 +39,7 @@ public abstract class PendingUpdate {
      * @param updater
      *            the updater which will be used to apply this update.
      */
-    public abstract void apply(final AlarmTreeUpdater updater);
+    public abstract void apply(@Nonnull final AlarmTreeUpdater updater);
 
     /**
      * Creates an update which will update the alarm tree based on an acknowledgement message.
@@ -46,14 +48,16 @@ public abstract class PendingUpdate {
      *            the name of the node to which the acknowledgement will apply.
      * @return an update which will apply the acknowledgement.
      */
-    public static PendingUpdate createAcknowledgementUpdate(final String name) {
-        return new PendingUpdate() {
+    @Nonnull
+    public static AbstractPendingUpdate createAcknowledgementUpdate(@Nonnull final String name) {
+        return new AbstractPendingUpdate() {
             @Override
-            public void apply(final AlarmTreeUpdater updater) {
+            public void apply(@Nonnull final AlarmTreeUpdater updater) {
                 updater.applyAcknowledgement(name);
             }
 
             @Override
+            @Nonnull
             public String toString() {
                 return "PendingUpdate[Acknowledgement,name=" + name + "]";
             }
@@ -71,16 +75,18 @@ public abstract class PendingUpdate {
      *            the eventtime of the alarm.
      * @return an update which will apply the alarm.
      */
-    public static PendingUpdate createAlarmUpdate(final String name,
-                                                  final Severity severity,
-                                                  final Date eventtime) {
-        return new PendingUpdate() {
+    @Nonnull
+    public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
+                                                          @Nonnull final Severity severity,
+                                                          @Nonnull final Date eventtime) {
+        return new AbstractPendingUpdate() {
             @Override
-            public void apply(final AlarmTreeUpdater updater) {
+            public void apply(@Nonnull final AlarmTreeUpdater updater) {
                 updater.applyAlarm(name, severity, eventtime);
             }
 
             @Override
+            @Nonnull
             public String toString() {
                 return new StringBuilder("PendingUpdate[Alarm,name=").append(name)
                         .append(",severity=").append(severity).append("]").toString();

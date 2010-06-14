@@ -30,7 +30,7 @@ import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
-import org.csstudio.alarm.treeView.views.PendingUpdate;
+import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -66,7 +66,7 @@ public class AlarmMessageListener implements IAlarmListener {
         /**
          * The queued updates.
          */
-        private final BlockingQueue<PendingUpdate> _pendingUpdates;
+        private final BlockingQueue<AbstractPendingUpdate> _pendingUpdates;
 
         /**
          * The alarm tree updater which will be used by this worker. If set to <code>null</code>,
@@ -78,7 +78,7 @@ public class AlarmMessageListener implements IAlarmListener {
          * Creates a new queue worker.
          */
         QueueWorker() {
-            _pendingUpdates = new LinkedBlockingQueue<PendingUpdate>();
+            _pendingUpdates = new LinkedBlockingQueue<AbstractPendingUpdate>();
         }
 
         /**
@@ -88,7 +88,7 @@ public class AlarmMessageListener implements IAlarmListener {
             final Thread thisThread = Thread.currentThread();
             while (_worker == thisThread) {
                 try {
-                    final PendingUpdate update = _pendingUpdates.take();
+                    final AbstractPendingUpdate update = _pendingUpdates.take();
 
                     // synchronize access to the updater
                     synchronized (this) {
@@ -113,7 +113,7 @@ public class AlarmMessageListener implements IAlarmListener {
          *
          * @param update the update.
          */
-        void enqueue(final PendingUpdate update) {
+        void enqueue(final AbstractPendingUpdate update) {
             _pendingUpdates.add(update);
 
             /*
@@ -198,7 +198,7 @@ public class AlarmMessageListener implements IAlarmListener {
         final String name = message.getString(AlarmMessageKey.NAME);
         if (isAcknowledgement(message)) {
             LOG.debug("received ack: name=" + name);
-            _queueWorker.enqueue(PendingUpdate.createAcknowledgementUpdate(name));
+            _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name));
         } else {
             final String severityValue = message.getString(AlarmMessageKey.SEVERITY);
             if (severityValue == null) {
@@ -227,7 +227,7 @@ public class AlarmMessageListener implements IAlarmListener {
             }
             LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
                     + eventtime);
-            _queueWorker.enqueue(PendingUpdate.createAlarmUpdate(name, severity, eventtime));
+            _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime));
         }
     }
 

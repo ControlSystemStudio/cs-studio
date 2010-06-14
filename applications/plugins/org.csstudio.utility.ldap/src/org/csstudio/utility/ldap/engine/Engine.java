@@ -196,8 +196,9 @@ public final class Engine extends Job {
         epicsHelpPage
     }
 
-    private DirContext _ctx = null;
     private static Engine INSTANCE = null;
+
+    private DirContext _ctx = null;
 
     private boolean _doWrite = false;
 
@@ -252,7 +253,7 @@ public final class Engine extends Job {
      * @param args
      */
     @Override
-    protected IStatus run(final IProgressMonitor monitor) {
+    protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         Integer intSleepTimer = null;
 
         LOG.info("Ldap Engine started");
@@ -349,24 +350,24 @@ public final class Engine extends Job {
             _writeVector.add(writeRequest);
         }
         //
-        // aleays trigger writing
+        // always trigger writing
         //
         _doWrite = true;
     }
 
     synchronized public DirContext getLdapDirContext() {
         if (_ctx == null) {
+            LDAPConnector ldapConnector = null;
             try {
-                _ctx = new LDAPConnector().getDirContext();
+                ldapConnector = new LDAPConnector();
+                _ctx = ldapConnector.getDirContext();
+
             } catch (final NamingException e1) {
                 try {
                     Thread.sleep(100);
-                    _ctx = new LDAPConnector().getDirContext();
+                    _ctx = ldapConnector != null ? ldapConnector.getDirContext() : null;
                 } catch (final InterruptedException e) {
-                    LOG.error( e);
-                    return null;
-                } catch (final NamingException e) {
-                    LOG.error( e);
+                    LOG.error(e);
                     return null;
                 }
             }

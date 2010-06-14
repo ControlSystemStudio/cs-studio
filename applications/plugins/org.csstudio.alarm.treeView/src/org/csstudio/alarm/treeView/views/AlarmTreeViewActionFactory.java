@@ -100,6 +100,398 @@ import org.osgi.framework.Bundle;
  */
 public final class AlarmTreeViewActionFactory {
 
+    /**
+     * Achknowledge action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class AcknowledgeAction extends Action {
+        private final TreeViewer _viewer;
+
+        /**
+         * Constructor.
+         * @param viewer
+         */
+        private AcknowledgeAction(@Nonnull final TreeViewer viewer) {
+            _viewer = viewer;
+        }
+
+        @Override
+        public void run() {
+            final Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
+
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+
+            for (final Iterator<?> i = selection.iterator(); i.hasNext();) {
+                final Object o = i.next();
+                if (o instanceof SubtreeNode) {
+                    final SubtreeNode snode = (SubtreeNode) o;
+                    for (final AbstractAlarmTreeNode pvnode : snode.collectUnacknowledgedAlarms()) {
+                        final String name = pvnode.getName();
+                        final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+                        final Map<String, String> properties = new HashMap<String, String>();
+                        properties.put("NAME", name);
+                        properties.put("SEVERITY", severity.toString());
+                        messages.add(properties);
+                    }
+                } else if (o instanceof ProcessVariableNode) {
+                    final AbstractAlarmTreeNode pvnode = (AbstractAlarmTreeNode) o;
+                    final String name = pvnode.getName();
+                    final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
+                    final Map<String, String> properties = new HashMap<String, String>();
+                    properties.put("NAME", name);
+                    properties.put("SEVERITY", severity.toString());
+                    messages.add(properties);
+                }
+            }
+            if (!messages.isEmpty()) {
+                LOG.debug("Scheduling send acknowledgement (" + messages.size() + " messages)");
+                final SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
+                ackJob.schedule();
+            }
+        }
+    }
+
+    /**
+     * Css strip chart action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class CssStripChartAction extends Action {
+        private final TreeViewer _viewer;
+        private final IWorkbenchPartSite _site;
+
+        /**
+         * Constructor.
+         * @param viewer
+         * @param site
+         */
+        private CssStripChartAction(@Nonnull final TreeViewer viewer,
+                                    @Nonnull final IWorkbenchPartSite site) {
+            _viewer = viewer;
+            _site = site;
+        }
+
+        @Override
+        public void run() {
+            final IAlarmTreeNode node = getSelectedNode();
+            if (node != null) {
+                final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART));
+
+                // The following code assumes that the path is relative to
+                // the Eclipse workspace.
+                final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
+                final IWorkbenchPage page = _site.getPage();
+                try {
+                    EditorUtil.openEditor(page, file);
+                } catch (final PartInitException e) {
+                    MessageDialog.openError(_site.getShell(), "Alarm Tree", e.getMessage());
+                }
+            }
+        }
+
+        /**
+         * Returns the node that is currently selected in the tree.
+         *
+         * @return the selected node, or <code>null</code> if the selection is empty or the selected
+         *         node is not of type <code>IAlarmTreeNode</code>.
+         */
+        @CheckForNull
+        private IAlarmTreeNode getSelectedNode() {
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+            final Object selected = selection.getFirstElement();
+            if (selected instanceof IAlarmTreeNode) {
+                return (IAlarmTreeNode) selected;
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Show help page action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class ShowHelpPageAction extends Action {
+        private final TreeViewer _viewer;
+
+        /**
+         * Constructor.
+         * @param viewer
+         */
+        private ShowHelpPageAction(@Nonnull final TreeViewer viewer) {
+            _viewer = viewer;
+        }
+
+        @Override
+        public void run() {
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+            final Object selected = selection.getFirstElement();
+            if (selected instanceof IAlarmTreeNode) {
+                final IAlarmTreeNode node = (IAlarmTreeNode) selected;
+                URL helpPage;
+                try {
+                    helpPage = new URL(node.getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
+                } catch (final MalformedURLException e1) {
+                    LOG.warn("URL property of node " + node.getName() + " was malformed.");
+                    helpPage = null;
+                }
+                if (helpPage != null) {
+                    try {
+                        // Note: we have to pass a browser id here to work
+                        // around a bug in eclipse. The method documentation
+                        // says that createBrowser accepts null but it will
+                        // throw a NullPointerException.
+                        // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194988
+                        final IWebBrowser browser =
+                            PlatformUI.getWorkbench().getBrowserSupport().createBrowser("workaround");
+                        browser.openURL(helpPage);
+                    } catch (final PartInitException e) {
+                        LOG.error("Failed to initialize workbench browser.", e);
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * Create record action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class CreateRecordAction extends Action {
+        private final IWorkbenchPartSite _site;
+        private final TreeViewer _viewer;
+
+        /**
+         * Constructor.
+         * @param site
+         * @param viewer
+         */
+        private CreateRecordAction(@Nonnull final IWorkbenchPartSite site,
+                                   @Nonnull final TreeViewer viewer) {
+            _site = site;
+            _viewer = viewer;
+        }
+
+        @Override
+        public void run() {
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+            final Object selected = selection.getFirstElement();
+            if (selected instanceof SubtreeNode) {
+                final SubtreeNode parent = (SubtreeNode) selected;
+                final String name = promptForRecordName();
+                if ( (name != null) && !name.equals("")) {
+                    try {
+                        DirectoryEditor.createProcessVariableRecord(parent, name);
+                    } catch (final DirectoryEditException e) {
+                        MessageDialog.openError(_site.getShell(),
+                                                "Create New Record",
+                                                "Could not create the new record: "
+                                                + e.getMessage());
+                    }
+                    _viewer.refresh(parent);
+                }
+            }
+        }
+
+        @CheckForNull
+        private String promptForRecordName() {
+            final InputDialog dialog = new InputDialog(_site.getShell(),
+                                                       "Create New Record",
+                                                       "Record name:",
+                                                       null,
+                                                       new NodeNameInputValidator());
+            if (Window.OK == dialog.open()) {
+                return dialog.getValue();
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Import xml file action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class ImportXmlFileAction extends Action {
+        private final IWorkbenchPartSite _site;
+        private final AlarmMessageListener _alarmListener;
+        private final ImportXmlFileJob _importXmlFileJob;
+        private final TreeViewer _viewer;
+
+        /**
+         * Constructor.
+         * @param site
+         * @param alarmListener
+         * @param importXmlFileJob
+         * @param viewer
+         */
+        private ImportXmlFileAction(@Nonnull final IWorkbenchPartSite site,
+                                    @Nonnull final AlarmMessageListener alarmListener,
+                                    @Nonnull final ImportXmlFileJob importXmlFileJob,
+                                    @Nonnull final TreeViewer viewer) {
+            _site = site;
+            _alarmListener = alarmListener;
+            _importXmlFileJob = importXmlFileJob;
+            _viewer = viewer;
+        }
+
+        @Override
+        public void run() {
+            final String filePath = getFileNameToLoadFrom();
+            if (filePath != null) {
+                _importXmlFileJob.setXmlFilePath(filePath);
+                LOG.debug("Starting XML file importer.");
+                final IWorkbenchSiteProgressService progressService =
+                    (IWorkbenchSiteProgressService) _site.getAdapter(IWorkbenchSiteProgressService.class);
+
+                // Set the tree to which updates are applied to null. This means updates
+                // will be queued for later application.
+                _alarmListener.setUpdater(null);
+                // The directory is read in the background. Until then, set the viewer's
+                // input to a placeholder object.
+                _viewer.setInput(new Object[] {new PendingUpdateAdapter()});
+                // Start the directory reader job.
+                progressService.schedule(_importXmlFileJob, 0, true);
+            }
+        }
+
+        @CheckForNull
+        private String getFileNameToLoadFrom() {
+            final FileDialog dialog = new FileDialog(_site.getShell(), SWT.OPEN);
+            dialog.setText("Load alarm tree configuration file (.xml)");
+            return dialog.open();
+        }
+    }
+
+    /**
+     * Create Component action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class CreateComponentAction extends Action {
+        private final IWorkbenchPartSite _site;
+        private final TreeViewer _viewer;
+
+        /**
+         * Constructor.
+         * @param site
+         * @param viewer
+         */
+        private CreateComponentAction(@Nonnull final IWorkbenchPartSite site,
+                                      @Nonnull final TreeViewer viewer) {
+            _site = site;
+            _viewer = viewer;
+        }
+
+        @Override
+        public void run() {
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+            final Object selected = selection.getFirstElement();
+            if (selected instanceof SubtreeNode) {
+                final SubtreeNode parent = (SubtreeNode) selected;
+                final String name = promptForRecordName();
+                if ( (name != null) && !name.equals("")) {
+                    try {
+                        DirectoryEditor.createComponent(parent, name);
+                    } catch (final DirectoryEditException e) {
+                        MessageDialog.openError(_site.getShell(),
+                                                "Create New Component",
+                                                "Could not create the new component: "
+                                                + e.getMessage());
+                    }
+                    _viewer.refresh(parent);
+                }
+            }
+        }
+
+        @CheckForNull
+        private String promptForRecordName() {
+            final InputDialog dialog = new InputDialog(_site.getShell(),
+                                                       "Create New Component",
+                                                       "Component name:",
+                                                       null,
+                                                       new NodeNameInputValidator());
+            if (Window.OK == dialog.open()) {
+                return dialog.getValue();
+            }
+            return null;
+        }
+    }
+
+    /**
+     * The rename action.
+     *
+     * @author bknerr
+     * @author $Author$
+     * @version $Revision$
+     * @since 14.06.2010
+     */
+    private static final class RenameAction extends Action {
+        private final TreeViewer _viewer;
+        private final IWorkbenchPartSite _site;
+
+        /**
+         * Constructor.
+         * @param viewer
+         * @param site
+         */
+        private RenameAction(@Nonnull final TreeViewer viewer,
+                             @Nonnull final IWorkbenchPartSite site) {
+            _viewer = viewer;
+            _site = site;
+        }
+
+        @Override
+        public void run() {
+            final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+            final IAlarmTreeNode selected = (IAlarmTreeNode) selection.getFirstElement();
+            final String name = promptForNewName(selected.getName());
+            if (name != null) {
+                try {
+                    DirectoryEditor.rename(selected, name);
+                } catch (final DirectoryEditException e) {
+                    MessageDialog.openError(_site.getShell(),
+                                            "Rename",
+                                            "Could not rename the entry: " + e.getMessage());
+                }
+                _viewer.refresh(selected);
+            }
+        }
+
+        @CheckForNull
+        private String promptForNewName(@Nullable final String oldName) {
+            final InputDialog dialog = new InputDialog(_site.getShell(),
+                                                       "Rename",
+                                                       "Name:",
+                                                       oldName,
+                                                       new NodeNameInputValidator());
+            if (Window.OK == dialog.open()) {
+                return dialog.getValue();
+            }
+            return null;
+        }
+    }
+
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
 
@@ -149,36 +541,7 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createRenameAction(@Nonnull final IWorkbenchPartSite site,
                                             @Nonnull final TreeViewer viewer) {
-        final Action renameAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-                final IAlarmTreeNode selected = (IAlarmTreeNode) selection.getFirstElement();
-                final String name = promptForNewName(selected.getName());
-                if (name != null) {
-                    try {
-                        DirectoryEditor.rename(selected, name);
-                    } catch (final DirectoryEditException e) {
-                        MessageDialog.openError(site.getShell(),
-                                                "Rename",
-                                                "Could not rename the entry: " + e.getMessage());
-                    }
-                    viewer.refresh(selected);
-                }
-            }
-            @CheckForNull
-            private String promptForNewName(@Nullable final String oldName) {
-                final InputDialog dialog = new InputDialog(site.getShell(),
-                                                           "Rename",
-                                                           "Name:",
-                                                           oldName,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
+        final Action renameAction = new RenameAction(viewer, site);
         renameAction.setText("Rename...");
         return renameAction;
     }
@@ -224,40 +587,7 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createCreateComponentAction(@Nonnull final IWorkbenchPartSite site,
                                                      @Nonnull final TreeViewer viewer) {
-        final Action createComponentAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof SubtreeNode) {
-                    final SubtreeNode parent = (SubtreeNode) selected;
-                    final String name = promptForRecordName();
-                    if ( (name != null) && !name.equals("")) {
-                        try {
-                            DirectoryEditor.createComponent(parent, name);
-                        } catch (final DirectoryEditException e) {
-                            MessageDialog.openError(site.getShell(),
-                                                    "Create New Component",
-                                                    "Could not create the new component: "
-                                                    + e.getMessage());
-                        }
-                        viewer.refresh(parent);
-                    }
-                }
-            }
-            @CheckForNull
-            private String promptForRecordName() {
-                final InputDialog dialog = new InputDialog(site.getShell(),
-                                                           "Create New Component",
-                                                           "Component name:",
-                                                           null,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
+        final Action createComponentAction = new CreateComponentAction(site, viewer);
         createComponentAction.setText("Create Component...");
         return createComponentAction;
     }
@@ -336,34 +666,8 @@ public final class AlarmTreeViewActionFactory {
                                                    @Nonnull final AlarmMessageListener alarmListener,
                                                    @Nonnull final TreeViewer viewer) {
 
-        final Action importXmlFileAction = new Action() {
-            @Override
-            public void run() {
-                final String filePath = getFileNameToLoadFrom();
-                if (filePath != null) {
-                    importXmlFileJob.setXmlFilePath(filePath);
-                    LOG.debug("Starting XML file importer.");
-                    final IWorkbenchSiteProgressService progressService =
-                        (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
-
-                    // Set the tree to which updates are applied to null. This means updates
-                    // will be queued for later application.
-                    alarmListener.setUpdater(null);
-                    // The directory is read in the background. Until then, set the viewer's
-                    // input to a placeholder object.
-                    viewer.setInput(new Object[] {new PendingUpdateAdapter()});
-                    // Start the directory reader job.
-                    progressService.schedule(importXmlFileJob, 0, true);
-                }
-            }
-
-            @CheckForNull
-            private String getFileNameToLoadFrom() {
-                final FileDialog dialog = new FileDialog(site.getShell(), SWT.OPEN);
-                dialog.setText("Load alarm tree configuration file (.xml)");
-                return dialog.open();
-            }
-        };
+        final Action importXmlFileAction = new ImportXmlFileAction(site, alarmListener,
+                                                                   importXmlFileJob, viewer);
         importXmlFileAction.setText("Import XML...");
         importXmlFileAction.setToolTipText("Import XML");
         importXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/importxml.gif"));
@@ -416,41 +720,7 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createCreateRecordAction(@Nonnull final IWorkbenchPartSite site,
                                                   @Nonnull final TreeViewer viewer) {
-        final Action createRecordAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof SubtreeNode) {
-                    final SubtreeNode parent = (SubtreeNode) selected;
-                    final String name = promptForRecordName();
-                    if ( (name != null) && !name.equals("")) {
-                        try {
-                            DirectoryEditor.createProcessVariableRecord(parent, name);
-                        } catch (final DirectoryEditException e) {
-                            MessageDialog.openError(site.getShell(),
-                                                    "Create New Record",
-                                                    "Could not create the new record: "
-                                                    + e.getMessage());
-                        }
-                        viewer.refresh(parent);
-                    }
-                }
-            }
-
-            @CheckForNull
-            private String promptForRecordName() {
-                final InputDialog dialog = new InputDialog(site.getShell(),
-                                                           "Create New Record",
-                                                           "Record name:",
-                                                           null,
-                                                           new NodeNameInputValidator());
-                if (Window.OK == dialog.open()) {
-                    return dialog.getValue();
-                }
-                return null;
-            }
-        };
+        final Action createRecordAction = new CreateRecordAction(site, viewer);
         createRecordAction.setText("Create Record...");
         return createRecordAction;
     }
@@ -461,37 +731,7 @@ public final class AlarmTreeViewActionFactory {
      */
     @Nonnull
     public static Action createShowHelpPageAction(@Nonnull final TreeViewer viewer) {
-        final Action showHelpPageAction = new Action() {
-            @Override
-            public void run() {
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof IAlarmTreeNode) {
-                    final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-                    URL helpPage;
-                    try {
-                        helpPage = new URL(node.getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
-                    } catch (final MalformedURLException e1) {
-                        LOG.warn("URL property of node " + node.getName() + " was malformed.");
-                        helpPage = null;
-                    }
-                    if (helpPage != null) {
-                        try {
-                            // Note: we have to pass a browser id here to work
-                            // around a bug in eclipse. The method documentation
-                            // says that createBrowser accepts null but it will
-                            // throw a NullPointerException.
-                            // See https://bugs.eclipse.org/bugs/show_bug.cgi?id=194988
-                            final IWebBrowser browser =
-                                PlatformUI.getWorkbench().getBrowserSupport().createBrowser("workaround");
-                            browser.openURL(helpPage);
-                        } catch (final PartInitException e) {
-                            LOG.error("Failed to initialize workbench browser.", e);
-                        }
-                    }
-                }
-            }
-        };
+        final Action showHelpPageAction = new ShowHelpPageAction(viewer);
         showHelpPageAction.setText("Open Help Page");
         showHelpPageAction.setToolTipText("Open the help page for this node in the web browser");
         showHelpPageAction.setEnabled(false);
@@ -536,40 +776,7 @@ public final class AlarmTreeViewActionFactory {
     @Nonnull
     public static Action createCssStripChartAction(@Nonnull final IWorkbenchPartSite site,
                                                    @Nonnull final TreeViewer viewer) {
-        final Action openCssStripChartAction = new Action() {
-            @Override
-            public void run() {
-                final IAlarmTreeNode node = getSelectedNode();
-                if (node != null) {
-                    final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART));
-
-                    // The following code assumes that the path is relative to
-                    // the Eclipse workspace.
-                    final IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
-                    final IWorkbenchPage page = site.getPage();
-                    try {
-                        EditorUtil.openEditor(page, file);
-                    } catch (final PartInitException e) {
-                        MessageDialog.openError(site.getShell(), "Alarm Tree", e.getMessage());
-                    }
-                }
-            }
-            /**
-             * Returns the node that is currently selected in the tree.
-             *
-             * @return the selected node, or <code>null</code> if the selection is empty or the selected
-             *         node is not of type <code>IAlarmTreeNode</code>.
-             */
-            @CheckForNull
-            private IAlarmTreeNode getSelectedNode() {
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-                final Object selected = selection.getFirstElement();
-                if (selected instanceof IAlarmTreeNode) {
-                    return (IAlarmTreeNode) selected;
-                }
-                return null;
-            }
-        };
+        final Action openCssStripChartAction = new CssStripChartAction(viewer, site);
         openCssStripChartAction.setText("Open Strip Chart");
         openCssStripChartAction.setToolTipText("Open the strip chart for this node");
         openCssStripChartAction.setEnabled(false);
@@ -644,42 +851,7 @@ public final class AlarmTreeViewActionFactory {
      */
     @Nonnull
     public static Action createAcknowledgeAction(@Nonnull final TreeViewer viewer) {
-        final Action acknowledgeAction = new Action() {
-            @Override
-            public void run() {
-                final Set<Map<String, String>> messages = new HashSet<Map<String, String>>();
-
-                final IStructuredSelection selection = (IStructuredSelection) viewer.getSelection();
-
-                for (final Iterator<?> i = selection.iterator(); i.hasNext();) {
-                    final Object o = i.next();
-                    if (o instanceof SubtreeNode) {
-                        final SubtreeNode snode = (SubtreeNode) o;
-                        for (final AbstractAlarmTreeNode pvnode : snode.collectUnacknowledgedAlarms()) {
-                            final String name = pvnode.getName();
-                            final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
-                            final Map<String, String> properties = new HashMap<String, String>();
-                            properties.put("NAME", name);
-                            properties.put("SEVERITY", severity.toString());
-                            messages.add(properties);
-                        }
-                    } else if (o instanceof ProcessVariableNode) {
-                        final AbstractAlarmTreeNode pvnode = (AbstractAlarmTreeNode) o;
-                        final String name = pvnode.getName();
-                        final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
-                        final Map<String, String> properties = new HashMap<String, String>();
-                        properties.put("NAME", name);
-                        properties.put("SEVERITY", severity.toString());
-                        messages.add(properties);
-                    }
-                }
-                if (!messages.isEmpty()) {
-                    LOG.debug("Scheduling send acknowledgement (" + messages.size() + " messages)");
-                    final SendAcknowledge ackJob = SendAcknowledge.newFromProperties(messages);
-                    ackJob.schedule();
-                }
-            }
-        };
+        final Action acknowledgeAction = new AcknowledgeAction(viewer);
         acknowledgeAction.setText("Send Acknowledgement");
         acknowledgeAction.setToolTipText("Send alarm acknowledgement");
         acknowledgeAction.setEnabled(false);

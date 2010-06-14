@@ -22,6 +22,8 @@ package org.csstudio.alarm.treeView.views;
 import java.util.Date;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
@@ -50,11 +52,7 @@ public class AlarmTreeUpdater {
      * @param tree
      *            the tree to be updated by this updater.
      */
-    public AlarmTreeUpdater(final SubtreeNode tree) {
-        if (tree == null) {
-            throw new NullPointerException("tree must not be null");
-        }
-
+    public AlarmTreeUpdater(@Nonnull final SubtreeNode tree) {
         _tree = tree;
     }
 
@@ -68,7 +66,9 @@ public class AlarmTreeUpdater {
      * @param eventtime
      *            the eventtime of the alarm.
      */
-    void applyAlarm(final String name, final Severity severity, final Date eventtime) {
+    void applyAlarm(@Nonnull final String name,
+                    @Nonnull final Severity severity,
+                    @Nonnull final Date eventtime) {
 
         final List<ProcessVariableNode> nodes = findProcessVariableNodes(name);
         for (final ProcessVariableNode node : nodes) {
@@ -84,7 +84,7 @@ public class AlarmTreeUpdater {
      * @param name
      *            the name of the process variable to which the acknowledgement applies.
      */
-    void applyAcknowledgement(final String name) {
+    void applyAcknowledgement(@Nonnull final String name) {
         final List<ProcessVariableNode> nodes = findProcessVariableNodes(name);
         for (final ProcessVariableNode node : nodes) {
             node.removeHighestUnacknowledgedAlarm();
@@ -121,7 +121,8 @@ public class AlarmTreeUpdater {
      *            the process variable name.
      * @return a list of alarm nodes. If no nodes are found, returns an empty list.
      */
-    private List<ProcessVariableNode> findProcessVariableNodes(final String name) {
+    @Nonnull
+    private List<ProcessVariableNode> findProcessVariableNodes(@Nonnull final String name) {
         return _tree.findProcessVariableNodes(name);
     }
 

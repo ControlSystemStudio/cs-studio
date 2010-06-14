@@ -18,6 +18,9 @@
  */
 package org.csstudio.alarm.treeView;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
@@ -62,6 +65,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      *
      * @return the shared instance.
      */
+    @Nonnull
     public static AlarmTreePlugin getDefault() {
         return INSTANCE;
     }
@@ -81,7 +85,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected void doStart(final BundleContext context) throws Exception {
+    protected void doStart(@Nonnull final BundleContext context) throws Exception {
         _alarmService = getService(context, IAlarmService.class);
         _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
         _ldapService = getService(context, ILdapService.class);
@@ -91,7 +95,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      * {@inheritDoc}
      */
     @Override
-    protected final void doStop(final BundleContext context) throws Exception {
+    protected final void doStop(@Nonnull final BundleContext context) throws Exception {
         // EMPTY
     }
 
@@ -102,7 +106,8 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      *            the path
      * @return the image descriptor
      */
-    public static ImageDescriptor getImageDescriptor(final String path) {
+    @CheckForNull
+    public static ImageDescriptor getImageDescriptor(@Nonnull final String path) {
         return AbstractUIPlugin.imageDescriptorFromPlugin(PLUGIN_ID, path);
     }
 
@@ -110,6 +115,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      * @return this plug-in's id.
      */
     @Override
+    @Nonnull
     public final String getPluginId() {
         return PLUGIN_ID;
     }
@@ -117,6 +123,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * @return the alarm service or null
      */
+    @CheckForNull
     public IAlarmService getAlarmService() {
         return _alarmService;
     }
@@ -124,6 +131,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * @return the alarm configuration service or null
      */
+    @CheckForNull
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
     }
@@ -131,6 +139,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     /**
      * @return the LDAP service or null
      */
+    @CheckForNull
     public ILdapService getLdapService() {
         return _ldapService;
     }

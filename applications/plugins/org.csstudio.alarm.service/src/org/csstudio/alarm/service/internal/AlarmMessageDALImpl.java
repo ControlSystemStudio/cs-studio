@@ -119,7 +119,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 result = retrieveStatusAsString();
                 break;
             case FACILITY:
-                // TODO MCL: there's currently no facility available from DAL
+                // TODO (mclausen): there's currently no facility available from DAL
                 // this could be retrieved from LDAP - necessary ??
                 result = "NN";
                 break;
@@ -127,7 +127,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 result = retrieveHostnameAsString();
                 break;
             //            case TEXT:
-            //              // TODO MCL: this is actually the descriptor information from the channel
+            //              // TODO (mclausen): this is actually the descriptor information from the channel
             //            	// this is not available by default - it could be retrieved from the channel - as an additional DAL request
             //            	// ... maybe too much effort ...
             //                break;
