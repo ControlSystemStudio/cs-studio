@@ -1,6 +1,9 @@
 package org.csstudio.archive.engine.model;
 
-import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.csstudio.archive.engine.Activator;
 import org.csstudio.archive.engine.scanner.ScanThread;
@@ -42,19 +45,21 @@ public class EngineModel
     
     /** All the channels.
      *  <p>
-     *  Thread save to allow HTTPD and main thread to access it.
-     *  Expensive during startup & shutdown because of copies,
-     *  but save and allows concurrent access by HTTPD.
+     *  Accessed by HTTPD and main thread, so lock on <code>this</code>
      */
-    final CopyOnWriteArrayList<ArchiveChannel> channels =
-        new CopyOnWriteArrayList<ArchiveChannel>();
+    final List<ArchiveChannel> channels = new ArrayList<ArchiveChannel>();
+
+    /** Channels mapped by name.
+     *  <p>
+     *  @see channels about thread safety
+     */
+    final Map<String, ArchiveChannel> channel_by_name = new HashMap<String, ArchiveChannel>();
     
     /** Groups of archived channels
      *  <p>
      *  @see channels about thread safety
      */
-    final CopyOnWriteArrayList<ArchiveGroup> groups =
-        new CopyOnWriteArrayList<ArchiveGroup>();
+    final List<ArchiveGroup> groups = new ArrayList<ArchiveGroup>();
     
     /** Scanner for scanned channels */
     final Scanner scanner = new Scanner();
@@ -164,6 +169,8 @@ public class EngineModel
         if (state != State.IDLE)
             throw new Exception("Cannot add group while " + state); //$NON-NLS-1$
         // Avoid duplicates
+        synchronized (this)
+        {
         ArchiveGroup group = getGroup(name);
         if (group != null)
             return group;
@@ -171,10 +178,11 @@ public class EngineModel
         group = new ArchiveGroup(name);
         groups.add(group);
         return group;
+        }
     }
     
     /** @return Number of groups */
-    final public int getGroupCount()
+    final synchronized public int getGroupCount()
     {
         return groups.size();
     }
@@ -184,13 +192,13 @@ public class EngineModel
      *  @return group
      *  @see #getGroupCount()
      */
-    final public ArchiveGroup getGroup(final int group_index)
+    final synchronized public ArchiveGroup getGroup(final int group_index)
     {
         return groups.get(group_index);
     }
 
     /** @return Group by that name or <code>null</code> if not found */
-    final public ArchiveGroup getGroup(final String name)
+    final synchronized public ArchiveGroup getGroup(final String name)
     {
         for (ArchiveGroup group : groups)
             if (group.getName().equals(name))
@@ -199,24 +207,21 @@ public class EngineModel
     }
     
     /** @return Number of channels */
-    public int getChannelCount()
+    final synchronized public int getChannelCount()
     {
         return channels.size();
     }
 
     /** @param i Channel index, 0 ... <code>getChannelCount()-1</code> */
-    public ArchiveChannel getChannel(int i)
+    final synchronized public ArchiveChannel getChannel(int i)
     {
         return channels.get(i);
     }
 
     /** @return Channel by that name or <code>null</code> if not found */
-    final public ArchiveChannel getChannel(final String name)
+    final synchronized public ArchiveChannel getChannel(final String name)
     {
-        for (ArchiveChannel channel : channels)
-            if (channel.getName().equals(name))
-                return channel;
-        return null;
+        return channel_by_name.get(name);
     }
 
     /** Add a channel to the engine under given group.
@@ -302,7 +307,11 @@ public class EngineModel
                                         max_repeats);
                 scanner.add((ScannedArchiveChannel)channel, period);
             }
-            channels.add(channel);
+            synchronized (this)
+            {
+                channels.add(channel);
+                channel_by_name.put(channel.getName(), channel);
+            }
             writer.addChannel(channel);
         }
         // Connect new or old channel to group
@@ -377,8 +386,11 @@ public class EngineModel
     {
         writer.reset();
         scanner.reset();
-        for (ArchiveChannel channel : channels)
-            channel.reset();
+        synchronized (this)
+        {
+            for (ArchiveChannel channel : channels)
+                channel.reset();
+        }
     }
 
     /** Stop monitoring the channels, flush the write buffers. */
@@ -446,8 +458,12 @@ public class EngineModel
     {
         if (state != State.IDLE)
             throw new IllegalStateException("Only allowed in IDLE state");
-        groups.clear();
-        channels.clear();
+        synchronized (this)
+        {
+            groups.clear();
+            channel_by_name.clear();
+            channels.clear();
+        }
         scanner.clear();
     }
 
@@ -456,8 +472,9 @@ public class EngineModel
     public void dumpDebugInfo()
     {
         System.out.println(TimestampFactory.now().toString() + ": Debug info");
-        for (ArchiveChannel channel : channels)
+        for (int c=0; c<getChannelCount(); ++c)
         {
+            final ArchiveChannel channel = getChannel(c);
             StringBuilder buf = new StringBuilder();
             buf.append("'" + channel.getName() + "' (");
             for (int i=0; i<channel.getGroupCount(); ++i)
