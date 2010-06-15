@@ -26,7 +26,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 	
 	@Override
 	protected IFigure doCreateFigure() {
-		LabelFigure labelFigure = new LabelFigure();
+		LabelFigure labelFigure = new LabelFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());

@@ -70,15 +70,21 @@ public class LabelFigure extends Figure{
 	
 	private V_ALIGN v_alignment = V_ALIGN.TOP;
 	private H_ALIGN h_alignment = H_ALIGN.LEFT;
+	
+	private boolean runMode;
 
+	public LabelFigure() {
+		this(false);
+	}
+	
 	/** 
 	 * Creates a new StickyNoteFigure with a MarginBorder that is the given size and a
 	 * FlowPage containing a TextFlow with the style WORD_WRAP_SOFT.
 	 * 
 	 * @param borderSize the size of the MarginBorder
 	 */
-	public LabelFigure() {
-		
+	public LabelFigure(boolean runMode) {
+		this.runMode = runMode;
 		//setLayoutManager(new StackLayout());
 		//add(scrollPane);
 		flowPage = new FlowPage();
@@ -195,6 +201,14 @@ public class LabelFigure extends Figure{
 	public Dimension getAutoSizeDimension(){
 		return flowPage.getPreferredSize().getCopy().expand(
 				getInsets().getWidth(), getInsets().getHeight());
+	}
+	
+	@Override
+	public boolean containsPoint(int x, int y) {
+		if(runMode)
+			return false;
+		else
+			return super.containsPoint(x, y);
 	}
 
 }
