@@ -57,7 +57,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
                 {"JMS", Boolean.FALSE.toString()}
               };
         final Composite parent = getFieldEditorParent();
-        addField(new RadioGroupFieldEditor(AlarmServicePreferenceConstants.ALARMSERVICE_DAL,
+        addField(new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_DAL.getKeyAsString(),
                                            "Select implementation for the alarm service",
                                            contextTypes.length,
                                            contextTypes,

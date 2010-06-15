@@ -29,7 +29,7 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
-import org.csstudio.alarm.service.preferences.AlarmServicePreferenceConstants;
+import org.csstudio.alarm.service.preferences.AlarmPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -82,9 +82,7 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
 
         // Provide implementation for alarm service
-        final boolean isDAL =
-            getPreferenceStore().getBoolean(AlarmServicePreferenceConstants.ALARMSERVICE_DAL);
-
+        final boolean isDAL = AlarmPreference.ALARMSERVICE_DAL.getValue();
         if (isDAL) {
             registerDALService(context, getService(context, IAlarmConfigurationService.class));
         } else {

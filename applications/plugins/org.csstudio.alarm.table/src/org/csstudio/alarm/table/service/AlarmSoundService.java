@@ -48,7 +48,7 @@ public class AlarmSoundService implements IAlarmSoundService {
 
     private final CentralLogger _log = CentralLogger.getInstance();
 
-    // TODO jp : refactor to enum map to {@link org.csstudio.alarm.treeView.model.Severity}
+    // TODO (jpenning) refactor to enum map to {@link org.csstudio.alarm.treeView.model.Severity}
     // perhaps move the Severity definition somewhere else...
     private Map<String, String> _severityToSoundfile;
 

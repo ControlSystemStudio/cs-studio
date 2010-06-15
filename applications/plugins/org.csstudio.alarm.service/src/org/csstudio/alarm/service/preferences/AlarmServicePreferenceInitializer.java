@@ -23,24 +23,25 @@ package org.csstudio.alarm.service.preferences;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * Class used to initialize default preference values.
  */
 public class AlarmServicePreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
-	 * initializeDefaultPreferences()
-	 */
-	@Override
-    public void initializeDefaultPreferences() {
-		final IPreferenceStore store = AlarmServiceActivator.getDefault()
-				.getPreferenceStore();
 
-		store.setDefault(AlarmServicePreferenceConstants.ALARMSERVICE_DAL, Boolean.TRUE);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void initializeDefaultPreferences() {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmServiceActivator.PLUGIN_ID);
+
+        for (AlarmPreference<?> preference : AlarmPreference.getAllPreferences()) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
+    }
+
 }

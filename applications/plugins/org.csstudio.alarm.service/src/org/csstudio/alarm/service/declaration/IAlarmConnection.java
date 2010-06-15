@@ -47,6 +47,7 @@ public interface IAlarmConnection {
      */
     void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                              @Nonnull final IAlarmListener listener,
+                             // TODO (jpenning) use filename only when ldap not available
                              @Nullable final String fileName) throws AlarmConnectionException;
 
 
@@ -65,6 +66,7 @@ public interface IAlarmConnection {
                                       @Nonnull final IAlarmListener listener,
                                       // TODO (jpenning) Do not use String-Array for parameter topics
                                       @Nonnull final String[] topics,
+                                      // TODO (jpenning) use filename only when ldap not available
                                       @Nullable final String fileName) throws AlarmConnectionException;
 
     /**

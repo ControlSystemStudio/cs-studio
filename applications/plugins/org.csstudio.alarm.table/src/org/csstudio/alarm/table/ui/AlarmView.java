@@ -232,6 +232,7 @@ public class AlarmView extends LogView {
         // TODO (jpenning) Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
+        // TODO (jpenning) retrieve facilities from preferences
         final String[] facilityNames = new String[] {"Test"};
         ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
