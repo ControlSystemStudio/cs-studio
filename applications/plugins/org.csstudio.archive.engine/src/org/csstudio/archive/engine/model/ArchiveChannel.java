@@ -34,6 +34,12 @@ abstract public class ArchiveChannel
     final private CopyOnWriteArrayList<ArchiveGroup> groups =
                                 new CopyOnWriteArrayList<ArchiveGroup>();
     
+    /** Channel name.
+     *  This is the name by which the channel was created,
+     *  not the PV name that might include decorations.
+     */
+    final private String name;
+    
     /** Control system PV */
     final private PV pv;
     
@@ -108,6 +114,7 @@ abstract public class ArchiveChannel
                           final int buffer_capacity,
                           final IValue last_archived_value) throws Exception
     {
+        this.name = name;
         this.enablement = enablement;
         this.last_archived_value = last_archived_value;
         this.buffer = new SampleBuffer(name, buffer_capacity);
@@ -143,7 +150,7 @@ abstract public class ArchiveChannel
     /** @return Name of channel */
     final public String getName()
     {
-        return pv.getName();
+        return name;
     }
     
     /** @return How channel affects its groups */
