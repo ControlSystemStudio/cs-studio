@@ -11,9 +11,13 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
 /**
@@ -21,7 +25,7 @@ import org.eclipse.ui.PlatformUI;
  * @author Xihui Chen
  *
  */
-public class RunOPIAction extends Action{
+public class RunOPIAction extends Action implements IWorkbenchWindowActionDelegate{
 
 	public static String ID = "org.csstudio.opibuilder.editor.run"; //$NON-NLS-1$
 	public static String ACITON_DEFINITION_ID = "org.csstudio.opibuilder.runopi"; //$NON-NLS-1$
@@ -35,6 +39,7 @@ public class RunOPIAction extends Action{
 
   @Override
 	public void run() {
+	  System.out.println("run");
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();
 		if(activeEditor instanceof OPIEditor){
@@ -54,5 +59,31 @@ public class RunOPIAction extends Action{
 	
 		}
 			
+	}
+  
+  	@Override
+  	public boolean isEnabled() {
+  		return true;
+  	}
+  	
+  	@Override
+  	public void setEnabled(boolean enabled) {
+  		super.setEnabled(true);
+  	}
+
+	public void dispose() {
+		
+	}
+
+	public void init(IWorkbenchWindow window) {
+		
+	}
+
+	public void run(IAction action) {
+		run();
+	}
+
+	public void selectionChanged(IAction action, ISelection selection) {
+		
 	}
 }

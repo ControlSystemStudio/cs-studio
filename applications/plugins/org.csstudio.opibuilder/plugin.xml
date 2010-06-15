@@ -170,6 +170,13 @@
                toolbarPath="Normal/addtions"
                tooltip="Open Top OPIs in run mode">
          </action>
+         <action
+               class="org.csstudio.opibuilder.actions.RunOPIAction"
+               definitionId="org.csstudio.opibuilder.runopi"
+               id="org.csstudio.opibuilder.runOPIAction"
+               label="Run OPI"
+               style="push">
+         </action>
       </actionSet>
    </extension>
    <extension

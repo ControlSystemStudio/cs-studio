@@ -75,7 +75,21 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		addRetargetAction(a);
 		
 		//This is only for action displaying in toolbar
-		a = new RetargetAction(RunOPIAction.ID, "Run OPI");
+		a = new RetargetAction(RunOPIAction.ID, "Run OPI"){
+			@Override
+			public boolean isEnabled() {
+				return true;
+			}
+			
+			//make this action always runnable even the part is not active
+			@Override
+			protected void setActionHandler(IAction newHandler) {
+				if(newHandler == null)
+					return;
+				super.setActionHandler(newHandler);
+			}
+			
+		};
 		a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
 				OPIBuilderPlugin.PLUGIN_ID, "icons/run.gif"));
 		//same defid can help to display the accelerator key.
@@ -156,8 +170,7 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 		tbm.add(new ZoomComboContributionItem(getPage()));
 		
 		tbm.add(new Separator());
-		tbm.add(getAction(RunOPIAction.ID));
-		
+		tbm.add(getAction(RunOPIAction.ID));		
 	}
 	
 	@Override
