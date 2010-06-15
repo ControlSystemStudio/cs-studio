@@ -64,6 +64,7 @@ public class ScriptsInputDialog extends Dialog {
 	
 	@Override
 	protected void okPressed() {	
+		pvsEditor.forceFocus();
 		for(ScriptData scriptData : scriptDataList){
 			boolean hasTrigger = false;
 			for(PVTuple pvTuple : scriptData.getPVList()){

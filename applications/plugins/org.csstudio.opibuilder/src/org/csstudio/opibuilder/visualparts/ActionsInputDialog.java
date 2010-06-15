@@ -97,6 +97,12 @@ public class ActionsInputDialog extends Dialog {
 		actionsInput.setHookUpToWidget(hookedUpToWidget);
 		return actionsInput;
 	}
+	
+	@Override
+	protected void okPressed() {
+		propertiesViewer.getTable().forceFocus();
+		super.okPressed();
+	}
 
 	/**
 	 * {@inheritDoc}

@@ -84,4 +84,10 @@ public class MacrosInputDialog extends Dialog {
 		}		
 		return new MacrosInput(macrosMap, includeParentMacros);
 	}
+	
+	@Override
+	protected void okPressed() {
+		tableEditor.forceFocus();  //this can help the last edit value applied.
+		super.okPressed();
+	}
 }

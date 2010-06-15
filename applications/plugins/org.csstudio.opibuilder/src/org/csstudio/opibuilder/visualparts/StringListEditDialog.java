@@ -59,4 +59,10 @@ public class StringListEditDialog extends Dialog {
 	public List<String> getResult() {		
 		return contents;
 	}
+	
+	@Override
+	protected void okPressed() {
+		tableEditor.forceFocus();
+		super.okPressed();
+	}
 }
