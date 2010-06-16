@@ -36,6 +36,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -45,6 +46,7 @@ import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.JobChangeAdapter;
+import org.eclipse.jface.viewers.TreeViewer;
 
 /**
  * Alarm tree view refresh adapter
@@ -55,6 +57,9 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  * @since 20.05.2010
  */
 public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
+
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(RefreshAlarmTreeViewAdapter.class);
 
     private final AlarmTreeView _alarmTreeView;
     private final SubtreeNode _adapterRootNode;
@@ -79,12 +84,16 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         _alarmTreeView.asyncSetViewerInput(_adapterRootNode); // Display the new tree.
 
         final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
-
-        alarmListener.setUpdater(new AlarmTreeUpdater(_adapterRootNode));
+        if (alarmListener != null) {
+            alarmListener.setUpdater(new AlarmTreeUpdater(_adapterRootNode));
+        }
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer().refresh();
+                TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer();
+                if (viewer != null) {
+                    viewer.refresh();
+                }
             }
         });
     }
@@ -97,7 +106,13 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             initItems.add(new PVNodeItem(pvNode));
         }
 
-        AlarmTreePlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
+        IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
+        if (alarmService != null) {
+            alarmService.retrieveInitialState(initItems);
+        } else {
+            LOG
+                    .warn("Initial state could not be retrieved because alarm service is not available.");
+        }
     }
 
     /**
@@ -118,19 +133,25 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         }
 
         public void init(@Nonnull final IAlarmMessage alarmMessage) {
-            // TODO jp Init: NYI initial state for alarm tree
+            // TODO (jpenning) Review access to alarm message properties
+            final String nameString = alarmMessage.getString(AlarmMessageKey.NAME);
             final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
-            Date eventTime;
-            try {
-                eventTime = DateFormat.getInstance().parse(alarmMessage.getString(AlarmMessageKey.EVENTTIME));
-                final Alarm alarm = new Alarm(alarmMessage.getString(AlarmMessageKey.NAME),
-                                              Severity.parseSeverity(severityString), eventTime);
-                _pvNode.updateAlarm(alarm);
-            } catch (ParseException e) {
-                LOG.error("Could not retrieve eventtime from " + alarmMessage.getString(AlarmMessageKey.EVENTTIME), e);
+            final String eventTimeString = alarmMessage.getString(AlarmMessageKey.EVENTTIME);
+            if ((nameString != null) && (severityString != null) && (eventTimeString != null)) {
+                Date eventTime = null;
+                try {
+                    Severity severity = Severity.parseSeverity(severityString);
+                    eventTime = DateFormat.getInstance().parse(eventTimeString);
+                    final Alarm alarm = new Alarm(nameString, severity, eventTime);
+                    _pvNode.updateAlarm(alarm);
+                } catch (ParseException e) {
+                    LOG.error("Could not retrieve eventtime from "
+                            + alarmMessage.getString(AlarmMessageKey.EVENTTIME), e);
+                }
+            } else {
+                LOG.warn("Could not retrieve data (name, severity, eventtime) from " + alarmMessage);
             }
         }
     }
-
 
 }

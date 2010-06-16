@@ -21,8 +21,8 @@
  */
  package org.csstudio.alarm.treeView.model;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 
 /**
@@ -84,13 +84,13 @@ public enum Severity {
 	 * @return the severity represented by the given string.
 	 */
     @Nonnull
-	public static Severity parseSeverity(@Nullable final String severityString) {
+	public static Severity parseSeverity(@CheckForNull final String severityString) {
 	    if (severityString == null) {
-	        // TODO jp : shouldn't be possible
+	        // TODO (jpenning) : shouldn't be possible
 	        return NO_ALARM;
 	    }
 		try {
-		    // TODO jp : really? mapping unknown severity to no alarm? Please check
+		    // TODO (jpenning) : really? mapping unknown severity to no alarm? Please check
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
             return NO_ALARM;
