@@ -327,6 +327,15 @@
             name="Web Browser"
             typeId="org.csstudio.opibuilder.widgets.webbrowser">
       </widget>
+      <widget
+            category="Monitors"
+            description="Display the bits in an integer value as a set of LEDs"
+            editpart_class="org.csstudio.opibuilder.widgets.editparts.ByteMonitorEditPart"
+            icon="icons/ByteMonitor.png"
+            model_class="org.csstudio.opibuilder.widgets.model.ByteMonitorModel"
+            name="Byte Monitor"
+            typeId="org.csstudio.opibuilder.widgets.bytemonitor">
+      </widget>
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
