@@ -25,12 +25,12 @@ package org.csstudio.platform;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.List;
+
+import junit.framework.Assert;
+
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -43,66 +43,38 @@ import org.junit.Test;
  */
 public class AbstractPreferenceTest {
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @BeforeClass
-    public static void setUpBeforeClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
-
     @Test
     public void testPreferencesDefaults() {
         // Here the state of the preferences after their declaration is tested.0
-        assertEquals("Some string", Preference.STRING_PREF.getValue());
-        assertEquals("Some string", Preference.STRING_PREF.getDefaultValue());
-        assertEquals("Some string", Preference.STRING_PREF.getDefaultAsString());
-        assertEquals("String_Pref", Preference.STRING_PREF.getKeyAsString());
+        assertEquals("Some string", TestPreference.STRING_PREF.getValue());
+        assertEquals("Some string", TestPreference.STRING_PREF.getDefaultValue());
+        assertEquals("Some string", TestPreference.STRING_PREF.getDefaultAsString());
+        assertEquals("String_Pref", TestPreference.STRING_PREF.getKeyAsString());
 
-        assertEquals((Integer) 1234, Preference.INT_PREF.getValue());
-        assertEquals((Integer) 1234, Preference.INT_PREF.getDefaultValue());
-        assertEquals("1234", Preference.INT_PREF.getDefaultAsString());
-        assertEquals("Int_Pref", Preference.INT_PREF.getKeyAsString());
+        assertEquals((Integer) 1234, TestPreference.INT_PREF.getValue());
+        assertEquals((Integer) 1234, TestPreference.INT_PREF.getDefaultValue());
+        assertEquals("1234", TestPreference.INT_PREF.getDefaultAsString());
+        assertEquals("Int_Pref", TestPreference.INT_PREF.getKeyAsString());
 
-        assertEquals((Long) 1234L, Preference.LONG_PREF.getValue());
-        assertEquals((Long) 1234L, Preference.LONG_PREF.getDefaultValue());
-        assertEquals("1234", Preference.LONG_PREF.getDefaultAsString());
-        assertEquals("Long_Pref", Preference.LONG_PREF.getKeyAsString());
+        assertEquals((Long) 1234L, TestPreference.LONG_PREF.getValue());
+        assertEquals((Long) 1234L, TestPreference.LONG_PREF.getDefaultValue());
+        assertEquals("1234", TestPreference.LONG_PREF.getDefaultAsString());
+        assertEquals("Long_Pref", TestPreference.LONG_PREF.getKeyAsString());
 
-        assertEquals((Float) 12.34f, Preference.FLOAT_PREF.getValue());
-        assertEquals((Float) 12.34f, Preference.FLOAT_PREF.getDefaultValue());
-        assertEquals("12.34", Preference.FLOAT_PREF.getDefaultAsString());
-        assertEquals("Float_Pref", Preference.FLOAT_PREF.getKeyAsString());
+        assertEquals((Float) 12.34f, TestPreference.FLOAT_PREF.getValue());
+        assertEquals((Float) 12.34f, TestPreference.FLOAT_PREF.getDefaultValue());
+        assertEquals("12.34", TestPreference.FLOAT_PREF.getDefaultAsString());
+        assertEquals("Float_Pref", TestPreference.FLOAT_PREF.getKeyAsString());
 
-        assertEquals((Double) 12.34, Preference.DOUBLE_PREF.getValue());
-        assertEquals((Double) 12.34, Preference.DOUBLE_PREF.getDefaultValue());
-        assertEquals("12.34", Preference.DOUBLE_PREF.getDefaultAsString());
-        assertEquals("Double_Pref", Preference.DOUBLE_PREF.getKeyAsString());
+        assertEquals((Double) 12.34, TestPreference.DOUBLE_PREF.getValue());
+        assertEquals((Double) 12.34, TestPreference.DOUBLE_PREF.getDefaultValue());
+        assertEquals("12.34", TestPreference.DOUBLE_PREF.getDefaultAsString());
+        assertEquals("Double_Pref", TestPreference.DOUBLE_PREF.getKeyAsString());
 
-        assertEquals(true, Preference.BOOLEAN_PREF.getValue());
-        assertEquals(true, Preference.BOOLEAN_PREF.getDefaultValue());
-        assertEquals("true", Preference.BOOLEAN_PREF.getDefaultAsString());
-        assertEquals("Boolean_Pref", Preference.BOOLEAN_PREF.getKeyAsString());
+        assertEquals(true, TestPreference.BOOLEAN_PREF.getValue());
+        assertEquals(true, TestPreference.BOOLEAN_PREF.getDefaultValue());
+        assertEquals("true", TestPreference.BOOLEAN_PREF.getDefaultAsString());
+        assertEquals("Boolean_Pref", TestPreference.BOOLEAN_PREF.getKeyAsString());
     }
 
     @Test
@@ -110,43 +82,96 @@ public class AbstractPreferenceTest {
         // Here the use of the preferences service is tested.
 
         // As an example the string-, double- and boolean-based preferences get different values
-        final IEclipsePreferences prefs = new DefaultScope().getNode(Preference.STRING_PREF.getPluginID());
-        prefs.put(Preference.STRING_PREF.getKeyAsString(), "Some other string");
-        prefs.put(Preference.DOUBLE_PREF.getKeyAsString(), "7654.321");
-        prefs.put(Preference.BOOLEAN_PREF.getKeyAsString(), "false"); // Except 'true' nearly any string will do, e.g. 'f' or 'flase'
+        final IEclipsePreferences prefs = new DefaultScope().getNode(TestPreference.STRING_PREF.getPluginID());
+        prefs.put(TestPreference.STRING_PREF.getKeyAsString(), "Some other string");
+        prefs.put(TestPreference.DOUBLE_PREF.getKeyAsString(), "7654.321");
+        prefs.put(TestPreference.BOOLEAN_PREF.getKeyAsString(), "false"); // Except 'true' nearly any string will do, e.g. 'f' or 'flase'
 
-        assertEquals("Some other string", Preference.STRING_PREF.getValue());
-        assertEquals("Some string", Preference.STRING_PREF.getDefaultValue());
-        assertEquals("Some string", Preference.STRING_PREF.getDefaultAsString());
+        assertEquals("Some other string", TestPreference.STRING_PREF.getValue());
+        assertEquals("Some string", TestPreference.STRING_PREF.getDefaultValue());
+        assertEquals("Some string", TestPreference.STRING_PREF.getDefaultAsString());
 
-        assertEquals((Double) 7654.321, Preference.DOUBLE_PREF.getValue());
-        assertEquals((Double) 12.34, Preference.DOUBLE_PREF.getDefaultValue());
-        assertEquals("12.34", Preference.DOUBLE_PREF.getDefaultAsString());
+        assertEquals((Double) 7654.321, TestPreference.DOUBLE_PREF.getValue());
+        assertEquals((Double) 12.34, TestPreference.DOUBLE_PREF.getDefaultValue());
+        assertEquals("12.34", TestPreference.DOUBLE_PREF.getDefaultAsString());
 
-        assertEquals(false, Preference.BOOLEAN_PREF.getValue());
-        assertEquals(true, Preference.BOOLEAN_PREF.getDefaultValue());
-        assertEquals("true", Preference.BOOLEAN_PREF.getDefaultAsString());
+        assertEquals(false, TestPreference.BOOLEAN_PREF.getValue());
+        assertEquals(true, TestPreference.BOOLEAN_PREF.getDefaultValue());
+        assertEquals("true", TestPreference.BOOLEAN_PREF.getDefaultAsString());
     }
 
-    private static class Preference<T> extends AbstractPreference<T> {
-        public static final Preference<String> STRING_PREF = new Preference<String>("String_Pref",
-                                                                                    "Some string");
-        public static final Preference<Integer> INT_PREF = new Preference<Integer>("Int_Pref", 1234);
-        public static final Preference<Long> LONG_PREF = new Preference<Long>("Long_Pref", 1234L);
-        public static final Preference<Float> FLOAT_PREF = new Preference<Float>("Float_Pref",
-                                                                                 12.34f);
-        public static final Preference<Double> DOUBLE_PREF = new Preference<Double>("Double_Pref",
-                                                                                    12.34);
-        public static final Preference<Boolean> BOOLEAN_PREF = new Preference<Boolean>("Boolean_Pref",
-                                                                                       true);
 
-        private Preference(final String keyAsString, final T defaultValue) {
+    @Test
+    public void testGetAllPreferences() {
+        final List<AbstractPreference<?>> prefs = TestPreference.BOOLEAN_PREF.getAllPreferences();
+
+        Assert.assertEquals(6, prefs.size());
+    }
+
+    private static class TestPreference<T> extends AbstractPreference<T> {
+
+        /**
+         * For test purposes
+         */
+        @SuppressWarnings("unused")
+        public final Integer _notTestPreference_0 = new Integer(0);
+
+        public static final TestPreference<String> STRING_PREF =
+            new TestPreference<String>("String_Pref", "Some string");
+
+        public static final TestPreference<Integer> INT_PREF =
+            new TestPreference<Integer>("Int_Pref", 1234);
+
+        public static final TestPreference<Long> LONG_PREF =
+            new TestPreference<Long>("Long_Pref", 1234L);
+
+        public static final TestPreference<Float> FLOAT_PREF =
+            new TestPreference<Float>("Float_Pref", 12.34f);
+
+        public static final TestPreference<Double> DOUBLE_PREF =
+            new TestPreference<Double>("Double_Pref", 12.34);
+
+        public static final TestPreference<Boolean> BOOLEAN_PREF =
+            new TestPreference<Boolean>("Boolean_Pref", true);
+
+        /**
+         * For test purposes
+         */
+        @SuppressWarnings("unused")
+        public static final Integer STATIC_NOT_TESTPREFERENCE = new Integer(0);
+
+
+
+        /**
+         * The following two lines of a non static instance field of type <itself> enable an
+         * infinite recursion while constructing the object => stack overflow.
+         *
+         * public final TestPreference<Boolean> NOT_STATIC =
+         *     new TestPreference<Boolean>("NOT_STATIC", true);
+         */
+
+
+        /**
+         * Constructor.
+         * @param keyAsString
+         * @param defaultValue
+         */
+        private TestPreference(final String keyAsString, final T defaultValue) {
             super(keyAsString, defaultValue);
         }
 
         @Override
         protected String getPluginID() {
             return "QualifierForTest";
+        }
+
+        /**
+         * {@inheritDoc}
+         */
+        @SuppressWarnings("unchecked")
+        @Override
+        protected Class<? extends AbstractPreference<T>> getClassType() {
+            return (Class<? extends AbstractPreference<T>>) TestPreference.class;
         }
 
     }

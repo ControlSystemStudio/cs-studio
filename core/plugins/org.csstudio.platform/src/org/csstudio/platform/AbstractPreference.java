@@ -23,6 +23,12 @@
  */
 package org.csstudio.platform;
 
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -46,6 +52,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @since 10.06.2010
  */
 public abstract class AbstractPreference<T> {
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AbstractPreference.class);
 
     private final String _keyAsString;
     private final T _defaultValue;
@@ -76,7 +85,7 @@ public abstract class AbstractPreference<T> {
      */
     @SuppressWarnings("unchecked")
     public final T getValue() {
-        IPreferencesService prefs = Platform.getPreferencesService();
+        final IPreferencesService prefs = Platform.getPreferencesService();
 
         Object result = null;
 
@@ -109,6 +118,33 @@ public abstract class AbstractPreference<T> {
 
         return _defaultValue;
     }
+
+    @SuppressWarnings("unchecked")
+    public List<AbstractPreference<?>> getAllPreferences() {
+
+        final Class<? extends AbstractPreference> clazz = getClassType();
+
+        final Field[] fields = clazz.getFields();
+
+        final List<AbstractPreference<?>> list = new ArrayList<AbstractPreference<?>>();
+        try {
+            for (final Field field : fields) {
+                if (field.getType().equals(clazz)) {
+                    final Object pref = field.get(null); // for static fields param is ignored
+                    list.add((AbstractPreference<?>) pref);
+                }
+            }
+        } catch (final IllegalAccessException e) {
+            LOG.error("One of the preferences constants in class " + clazz.getName() + " is not accessible.", e);
+        }
+        return list;
+    }
+
+    /**
+     * Returns the runtime (sub-)class of this object.
+     * @return the runtime (sub-)class of this object
+     */
+    protected abstract Class<? extends AbstractPreference<T>> getClassType();
 
     /**
      * @return the subclass has to define the plugin ID, this is used as the qualifier for preference retrieval.
