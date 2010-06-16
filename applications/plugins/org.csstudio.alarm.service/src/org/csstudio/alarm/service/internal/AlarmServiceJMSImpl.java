@@ -34,9 +34,11 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
+import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
+import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
 
@@ -90,7 +92,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         try {
             final Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
-            pvUnderWay._listener = new DynamicValueListenerForInit(initItem);
+            // TODO (jpenning) Review: hard coded Double.class in connection parameter
+            pvUnderWay._listener = new DynamicValueListenerForInit<Double, DoubleProperty>(initItem);
             // TODO (jpenning) use constants for parameterization of expert mode
             pvUnderWay._parameters = new HashMap<String, Object>();
             pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
@@ -143,7 +146,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     /**
      * Listener for retrieval of initial state
      */
-    private static class DynamicValueListenerForInit extends DynamicValueAdapter {
+    private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends DynamicValueAdapter<T, P> {
         private static final Logger LOG1 = CentralLogger.getInstance()
                 .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
 
@@ -154,25 +157,28 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void conditionChange(@Nullable final DynamicValueEvent event) {
-            if (event != null) {
-                LOG1.debug("conditionChange received " + event.getCondition() + " for "
-                          + event.getProperty().getUniqueName());
+        public void conditionChange(@Nullable final DynamicValueEvent<T, P> event) {
+            LOG1.debug("conditionChange received " + event.getCondition() + " for "
+                       + event.getProperty().getUniqueName());
+        }
 
-                // Suppress the initial callback, it has no meaning here
-                // TODO (jpenning) there should be a better way than testing a hard coded string
-                if (event.getMessage().equals("Initial update.")) {
-                    _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
-                }
+        @Override
+        public void valueChanged(final DynamicValueEvent<T, P> event) {
+            if (event != null) {
+                LOG1.debug("valueChanged received " + event.getCondition() + " for "
+                        + event.getProperty().getUniqueName());
+
+                _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
             } // else ignore
         }
+
     }
 
     // CHECKSTYLE:OFF
     // TODO (jpenning) Extract duplicates, see AlarmConnectionDALImpl
     private static class Element {
         ConnectionParameters _connectionParameters;
-        DynamicValueListener _listener;
+        DynamicValueListener<?, ?> _listener;
         Map<String, Object> _parameters;
     }
     // CHECKSTYLE:ON

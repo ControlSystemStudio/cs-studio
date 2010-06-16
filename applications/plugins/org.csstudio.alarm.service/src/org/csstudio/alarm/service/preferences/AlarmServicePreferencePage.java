@@ -24,6 +24,7 @@ package org.csstudio.alarm.service.preferences;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.swt.widgets.Composite;
@@ -57,7 +58,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
                 {"JMS", Boolean.FALSE.toString()}
               };
         final Composite parent = getFieldEditorParent();
-        addField(new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_DAL.getKeyAsString(),
+        addField(new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getKeyAsString(),
                                            "Select implementation for the alarm service",
                                            contextTypes.length,
                                            contextTypes,

@@ -21,15 +21,16 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
@@ -79,18 +80,15 @@ public final class ImportInitialConfigJob extends Job {
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("Initializing alarm tree", IProgressMonitor.UNKNOWN);
 
-        final String filePath = "c:\\alarmConfig.xml";
         try {
             final long startTime = System.currentTimeMillis();
-
-            // TODO (jpenning) Hack: Need better way to find out whether to use LDAP
-            final boolean useLDAP = AlarmTreePlugin.getDefault().getLdapService() != null;
+            // TODO (jpenning) Test: Config via ldap or filename. Nearly a duplicate of AlarmView.
             ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
-            if (useLDAP) {
+            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
                 model = _configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
             } else {
-                model = _configService.retrieveInitialContentModelFromFile(filePath);
+                model = _configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
             }
 
             _rootNode.clearChildren(); // removes all nodes below the root node
@@ -111,6 +109,13 @@ public final class ImportInitialConfigJob extends Job {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building Tree",
                                       "Could not properly build the full tree: " + e.getMessage());
+        } catch (IOException e) {
+            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
+                                      "Building content model",
+                                      "Could not retrieve configuration file name "
+                                              + AlarmPreference.ALARMSERVICE_CONFIG_FILENAME
+                                                      .getValue() + "from preferences: "
+                                              + e.getMessage());
         } finally {
             monitor.done();
         }

@@ -16,8 +16,8 @@
  */
 package org.csstudio.alarm.table.ui;
 
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -25,6 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
@@ -229,23 +230,16 @@ public class AlarmView extends LogView {
 
     @Override
     protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
-        // TODO (jpenning) Init: NYI Get set of PVs from config service (parts of AlarmTreeBuilder belong there)
+        // TODO (jpenning) Test: Config via ldap or filename. Duplicate of ImportInitialConfigJob.
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
-        // TODO (jpenning) retrieve facilities from preferences
-        final String[] facilityNames = new String[] {"Test"};
-        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
-            // TODO (jpenning) Hack: Need better way to find out whether LDAP is active
-            final boolean useLDAP = JmsLogsPlugin.getDefault().getLdapService() != null;
-            if (useLDAP) {
-                model = configService.retrieveInitialContentModel(Arrays.asList(facilityNames));
+            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
+                model = configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
             } else {
-                model = configService.retrieveInitialContentModelFromFile("c:\\alarmConfig.xml");
+                model = configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
             }
-
-            // ************ end of hack ******************
-
 
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
@@ -257,11 +251,13 @@ public class AlarmView extends LogView {
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
         } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
+        } catch (IOException e) {
+            LOG.error("Could not retrieve configuration file name", e);
         }
     }
 
     @Override
-    protected MessageList createMessageList() {
+    protected final MessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();
@@ -378,7 +374,7 @@ public class AlarmView extends LogView {
         _soundEnableButton.setLayoutData(new RowData(60, 21));
         _soundEnableButton.setText(Messages.AlarmView_soundButtonEnable);
 
-        // TODO (jpenning) Set initial state for playing sounds based on saved state
+        // Initial state for playing sounds is always activated on startup, operator must manually turn it off.
         _soundEnableButton.setSelection(true);
 
         _soundEnableButton.addSelectionListener(new SelectionListener() {

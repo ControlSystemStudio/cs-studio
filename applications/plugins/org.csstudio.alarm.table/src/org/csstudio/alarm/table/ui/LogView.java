@@ -21,6 +21,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Timer;
 
+import javax.annotation.Nonnull;
+
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.JmsLogsPlugin;
@@ -275,6 +277,7 @@ public class LogView extends ViewPart {
      *
      * @return the newly created message list
      */
+    @Nonnull
     protected MessageList createMessageList() {
         return new LogMessageList(getMaximumNumberOfMessages());
     }
@@ -309,8 +312,7 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
-                // TODO (jpenning) jp-mc retrieveInitialStateSynchronously not enabled
-//                retrieveInitialStateSynchronously(messageList);
+                retrieveInitialStateSynchronously(messageList);
                 _messageArea.hide();
             } catch (final AlarmConnectionException e) {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
@@ -331,7 +333,7 @@ public class LogView extends ViewPart {
      *
      * @param messageList
      */
-    protected void retrieveInitialStateSynchronously(final MessageList messageList) {
+    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
         // LogView does no initialization
     }
 

@@ -67,7 +67,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
     /**
      * Constructor.
      * @param rootNode
-     * @param alarmTreeView TODO
+     * @param alarmTreeView
      */
     RefreshAlarmTreeViewAdapter(@Nonnull final AlarmTreeView alarmTreeView,
                                 @Nonnull final SubtreeNode rootNode) {
@@ -78,8 +78,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
     @Override
     public void done(@Nullable final IJobChangeEvent innerEvent) {
 
-        // TODO (jpenning) mc retrieveInitialStateSynchronously not enabled
-        //            _alarmTreeView.retrieveInitialStateSynchronously(_adapterRootNode);
+        retrieveInitialStateSynchronously(_adapterRootNode);
 
         _alarmTreeView.asyncSetViewerInput(_adapterRootNode); // Display the new tree.
 
@@ -135,7 +134,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             final String nameString = alarmMessage.getString(AlarmMessageKey.NAME);
             final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
             final String eventTimeString = alarmMessage.getString(AlarmMessageKey.EVENTTIME);
-            if ((nameString != null) && (severityString != null) && (eventTimeString != null)) {
+            if ( (nameString != null) && (severityString != null) && (eventTimeString != null)) {
                 Date eventTime = null;
                 try {
                     final Severity severity = Severity.parseSeverity(severityString);
@@ -147,7 +146,9 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
                             + alarmMessage.getString(AlarmMessageKey.EVENTTIME), e);
                 }
             } else {
-                LOG_INNER.warn("Could not retrieve data (name, severity, eventtime) from " + alarmMessage);
+                LOG_INNER
+                        .warn("Could not retrieve data (name, severity, eventtime) from "
+                                + alarmMessage);
             }
         }
     }

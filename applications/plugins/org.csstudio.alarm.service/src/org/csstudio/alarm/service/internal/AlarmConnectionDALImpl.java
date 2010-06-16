@@ -195,7 +195,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         private final IAlarmListener _alarmListener;
 
         public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener,
-                                           @SuppressWarnings("unused") @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
+                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
             // The alarmConnectionMonitor is not used by the DynamicValueListenerAdapter, instead the connect is sent
             // directly after connectWithListenerForTopics()
             _alarmListener = alarmListener;
@@ -205,12 +205,6 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
             LOG2.debug("conditionChange received " + event.getCondition() + " for "
                     + event.getProperty().getUniqueName());
-
-            // Suppress the initial callback, it has no meaning here
-            // TODO (jpenning) there should be a better way than testing a hard coded string
-            if (event.getMessage().equals("Initial update.")) {
-                _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty()));
-            }
         }
 
         @Override

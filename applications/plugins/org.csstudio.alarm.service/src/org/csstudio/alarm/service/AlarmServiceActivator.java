@@ -24,12 +24,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.internal.AlarmConfigurationServiceImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceDALImpl;
 import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
-import org.csstudio.alarm.service.preferences.AlarmPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -82,7 +82,7 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
         registerAlarmConfigurationService(context, getService(context, ILdapService.class));
 
         // Provide implementation for alarm service
-        final boolean isDAL = AlarmPreference.ALARMSERVICE_DAL.getValue();
+        final boolean isDAL = AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue();
         if (isDAL) {
             registerDALService(context, getService(context, IAlarmConfigurationService.class));
         } else {

@@ -24,6 +24,7 @@ package org.csstudio.alarm.service.preferences;
 import java.util.List;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.platform.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;

@@ -17,6 +17,8 @@
 
 package org.csstudio.alarm.table;
 
+import javax.annotation.CheckForNull;
+
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -256,6 +258,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * @return the topic set service to be shared by the alarm views (or null)
      */
+    @CheckForNull
     public ITopicsetService getTopicsetServiceForAlarmViews() {
         return _topicsetServiceForAlarmViews;
     }
@@ -263,6 +266,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * @return the alarm sound service or null
      */
+    @CheckForNull
     public IAlarmSoundService getAlarmSoundService() {
         return _alarmSoundService;
     }
@@ -270,6 +274,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * @return the alarm service or null
      */
+    @CheckForNull
     public IAlarmService getAlarmService() {
         return _alarmService;
     }
@@ -277,6 +282,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * @return the alarm configuration service or null
      */
+    @CheckForNull
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
     }
@@ -284,6 +290,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     /**
      * @return the LDAP service
      */
+    @CheckForNull
     public ILdapService getLdapService() {
         return _ldapService;
     }
