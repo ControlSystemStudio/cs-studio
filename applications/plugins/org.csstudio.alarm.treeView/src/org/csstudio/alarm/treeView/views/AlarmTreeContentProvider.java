@@ -21,6 +21,10 @@
  */
  package org.csstudio.alarm.treeView.views;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -49,7 +53,8 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @param inputElement the input element.
 	 * @return the array of elements to display in the viewer.
 	 */
-	public final Object[] getElements(final Object inputElement) {
+	@Nonnull
+	public final Object[] getElements(@Nullable final Object inputElement) {
 		if (inputElement instanceof SubtreeNode) {
 			return getChildren(inputElement);
 		} else if (inputElement instanceof Object[]) {
@@ -66,7 +71,8 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return the child element's parent, or {@code null} if it has none or if
 	 * the parent element cannot be computed.
 	 */
-	public final Object getParent(final Object child) {
+	@CheckForNull
+	public final Object getParent(@Nullable final Object child) {
 		if (child instanceof IAlarmTreeNode) {
 			return ((IAlarmTreeNode)child).getParent();
 		}
@@ -78,9 +84,10 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @param parent the input element.
 	 * @return the children of the input element.
 	 */
-	public final Object[] getChildren(final Object parent) {
+	@Nonnull
+	public final Object[] getChildren(@Nonnull final Object parent) {
 		if (parent instanceof SubtreeNode) {
-			return ((SubtreeNode) parent).getChildren();
+			return ((SubtreeNode) parent).getChildren().toArray();
 		}
 		return new Object[0];
 	}
@@ -91,9 +98,9 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	 * @return {@code true} if the given element has children, {@code false}
 	 * otherwise.
 	 */
-	public final boolean hasChildren(final Object parent) {
-		if (parent instanceof SubtreeNode) {
-			return ((SubtreeNode) parent).hasChildren();
+	public final boolean hasChildren(@Nullable final Object parent) {
+		if (parent instanceof IAlarmTreeNode) {
+			return ((IAlarmTreeNode) parent).hasChildren();
 		}
 		return false;
 	}
@@ -108,7 +115,9 @@ public class AlarmTreeContentProvider implements IStructuredContentProvider,
 	/**
 	 * {@inheritDoc}
 	 */
-	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+	public void inputChanged(@CheckForNull final Viewer viewer,
+	                         @CheckForNull final Object oldInput,
+	                         @CheckForNull final Object newInput) {
 		// nothing to do
 	}
 

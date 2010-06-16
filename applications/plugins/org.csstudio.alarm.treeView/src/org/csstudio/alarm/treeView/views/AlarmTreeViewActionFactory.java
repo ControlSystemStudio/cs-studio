@@ -27,7 +27,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -50,7 +49,7 @@ import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -100,6 +99,16 @@ import org.osgi.framework.Bundle;
  */
 public final class AlarmTreeViewActionFactory {
 
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
+
+    /**
+     * The ID of the property view.
+     */
+    private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
+
+
     /**
      * Achknowledge action.
      *
@@ -127,9 +136,9 @@ public final class AlarmTreeViewActionFactory {
 
             for (final Iterator<?> i = selection.iterator(); i.hasNext();) {
                 final Object o = i.next();
-                if (o instanceof SubtreeNode) {
-                    final SubtreeNode snode = (SubtreeNode) o;
-                    for (final AbstractAlarmTreeNode pvnode : snode.collectUnacknowledgedAlarms()) {
+                if (o instanceof IAlarmSubtreeNode) {
+                    final IAlarmSubtreeNode snode = (IAlarmSubtreeNode) o;
+                    for (final IAlarmProcessVariableNode pvnode : snode.collectUnacknowledgedAlarms()) {
                         final String name = pvnode.getName();
                         final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
                         final Map<String, String> properties = new HashMap<String, String>();
@@ -137,8 +146,8 @@ public final class AlarmTreeViewActionFactory {
                         properties.put("SEVERITY", severity.toString());
                         messages.add(properties);
                     }
-                } else if (o instanceof ProcessVariableNode) {
-                    final AbstractAlarmTreeNode pvnode = (AbstractAlarmTreeNode) o;
+                } else if (o instanceof IAlarmProcessVariableNode) {
+                    final IAlarmProcessVariableNode pvnode = (IAlarmProcessVariableNode) o;
                     final String name = pvnode.getName();
                     final Severity severity = pvnode.getUnacknowledgedAlarmSeverity();
                     final Map<String, String> properties = new HashMap<String, String>();
@@ -363,7 +372,7 @@ public final class AlarmTreeViewActionFactory {
 
                 // Set the tree to which updates are applied to null. This means updates
                 // will be queued for later application.
-                _alarmListener.setUpdater(null);
+                _alarmListener.suspendUpdateProcessing();
                 // The directory is read in the background. Until then, set the viewer's
                 // input to a placeholder object.
                 _viewer.setInput(new Object[] {new PendingUpdateAdapter()});
@@ -492,21 +501,6 @@ public final class AlarmTreeViewActionFactory {
         }
     }
 
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmTreeViewActionFactory.class);
-
-    /**
-     * The ID of the property view.
-     */
-    private static final String PROPERTY_VIEW_ID = "org.eclipse.ui.views.PropertySheet";
-
-    /**
-     * Constructor.
-     */
-    private AlarmTreeViewActionFactory() {
-        // Don't instantiate
-    }
-
     /**
      * @param site
      * @return
@@ -563,7 +557,7 @@ public final class AlarmTreeViewActionFactory {
                     final IAlarmTreeNode nodeToDelete = (IAlarmTreeNode) selected;
                     final IAlarmSubtreeNode parent = nodeToDelete.getParent();
                     try {
-                        DirectoryEditor.delete(nodeToDelete);
+                        DirectoryEditor.deleteRecursively(nodeToDelete);
                         if (parent != null) {
                             viewer.refresh(parent);
                         }
@@ -649,7 +643,7 @@ public final class AlarmTreeViewActionFactory {
             public void run() {
                 final String filePath = getFileToSaveTo(site);
                 if (filePath != null) {
-                    createModelAndWriteXmlFile(site, Arrays.asList(rootNode.getChildren()), filePath);
+                    createModelAndWriteXmlFile(site, rootNode.getChildren(), filePath);
                 }
             }
         };
@@ -666,8 +660,10 @@ public final class AlarmTreeViewActionFactory {
                                                    @Nonnull final AlarmMessageListener alarmListener,
                                                    @Nonnull final TreeViewer viewer) {
 
-        final Action importXmlFileAction = new ImportXmlFileAction(site, alarmListener,
-                                                                   importXmlFileJob, viewer);
+        final Action importXmlFileAction = new ImportXmlFileAction(site,
+                                                                   alarmListener,
+                                                                   importXmlFileJob,
+                                                                   viewer);
         importXmlFileAction.setText("Import XML...");
         importXmlFileAction.setToolTipText("Import XML");
         importXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/importxml.gif"));
@@ -879,9 +875,8 @@ public final class AlarmTreeViewActionFactory {
                 final IWorkbenchSiteProgressService progressService =
                     (IWorkbenchSiteProgressService) site.getAdapter(IWorkbenchSiteProgressService.class);
 
-                // Set the tree to which updates are applied to null. This means updates
-                // will be queued for later application.
-                alarmListener.setUpdater(null);
+                // This means updates will be queued for later application.
+                alarmListener.suspendUpdateProcessing();
 
                 // The directory is read in the background. Until then, set the viewer's
                 // input to a placeholder object.
@@ -931,4 +926,10 @@ public final class AlarmTreeViewActionFactory {
         return toggleFilterAction;
     }
 
+    /**
+     * Constructor.
+     */
+    private AlarmTreeViewActionFactory() {
+        // Don't instantiate
+    }
 }

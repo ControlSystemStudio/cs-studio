@@ -22,6 +22,7 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
@@ -29,7 +30,7 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
-import org.csstudio.alarm.treeView.views.AlarmTreeUpdater;
+import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -44,13 +45,15 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * The logger used by this listener.
      */
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmMessageListener.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmMessageListener.class);
 
     /**
      * The worker used by this listener.
      */
     private final QueueWorker _queueWorker;
+
+    private final SubtreeNode _treeRoot;
 
     /**
      * Applies the pending updates to the tree.
@@ -68,16 +71,18 @@ public class AlarmMessageListener implements IAlarmListener {
          */
         private final BlockingQueue<AbstractPendingUpdate> _pendingUpdates;
 
+
         /**
-         * The alarm tree updater which will be used by this worker. If set to <code>null</code>,
-         * this worker waits until an updater is set.
+         * If set to <code>true</code>,
+         * this worker waits until the suspension is set to <code>false</code>.
          */
-        private AlarmTreeUpdater _updater;
+        @GuardedBy("this")
+        private boolean _suspension;
 
         /**
          * Creates a new queue worker.
          */
-        QueueWorker() {
+        private QueueWorker() {
             _pendingUpdates = new LinkedBlockingQueue<AbstractPendingUpdate>();
         }
 
@@ -93,17 +98,15 @@ public class AlarmMessageListener implements IAlarmListener {
                     // synchronize access to the updater
                     synchronized (this) {
                         // wait until we have an updater
-                        while ( (_updater == null) && (_worker == thisThread)) {
+                        while (_suspension && (_worker == thisThread)) {
                             wait();
                         }
 
                         LOG.debug("applying update: " + update);
-                        update.apply(_updater);
-                        // TODO (bknerr) : the other way around...
-                        // _updater.apply(update);
+                        update.apply();
                     }
                 } catch (final InterruptedException e) {
-                    // nothing to do
+                    Thread.currentThread().interrupt();
                 }
             }
         }
@@ -113,7 +116,7 @@ public class AlarmMessageListener implements IAlarmListener {
          *
          * @param update the update.
          */
-        void enqueue(final AbstractPendingUpdate update) {
+        void enqueue(@Nonnull final AbstractPendingUpdate update) {
             _pendingUpdates.add(update);
 
             /*
@@ -129,14 +132,9 @@ public class AlarmMessageListener implements IAlarmListener {
              */
         }
 
-        /**
-         * Sets the updater that will be used by this worker. If the updater is set to
-         * <code>null</code>, this worker will suspend until an updater is set.
-         *
-         * @param updater the updater.
-         */
-        synchronized void setUpdater(final AlarmTreeUpdater updater) {
-            _updater = updater;
+
+        synchronized void setSuspension(final boolean suspension) {
+            _suspension = suspension;
             notify();
         }
 
@@ -160,8 +158,10 @@ public class AlarmMessageListener implements IAlarmListener {
 
     /**
      * Creates a new alarm message listener.
+     * @param rootNode
      */
-    public AlarmMessageListener() {
+    public AlarmMessageListener(@Nonnull final SubtreeNode rootNode) {
+        _treeRoot = rootNode;
         _queueWorker = new QueueWorker();
         _queueWorker.start();
     }
@@ -171,8 +171,17 @@ public class AlarmMessageListener implements IAlarmListener {
      *
      * @param updater the updater which this listener will use.
      */
-    public void setUpdater(final AlarmTreeUpdater updater) {
-        _queueWorker.setUpdater(updater);
+    public void startUpdateProcessing() {
+        _queueWorker.setSuspension(false);
+    }
+
+    /**
+     * Sets the updater which this listener will use.
+     *
+     * @param updater the updater which this listener will use.
+     */
+    public void suspendUpdateProcessing() {
+        _queueWorker.setSuspension(true);
     }
 
     /**
@@ -198,7 +207,7 @@ public class AlarmMessageListener implements IAlarmListener {
         final String name = message.getString(AlarmMessageKey.NAME);
         if (isAcknowledgement(message)) {
             LOG.debug("received ack: name=" + name);
-            _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name));
+            _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
             final String severityValue = message.getString(AlarmMessageKey.SEVERITY);
             if (severityValue == null) {
@@ -213,7 +222,7 @@ public class AlarmMessageListener implements IAlarmListener {
             if (eventtimeValue != null) {
                 try {
                     eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     // TODO (jpenning) whats going on here?
                 }
             }
@@ -227,25 +236,16 @@ public class AlarmMessageListener implements IAlarmListener {
             }
             LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
                     + eventtime);
-            _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime));
+            _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime, _treeRoot));
         }
     }
 
     /**
      * Returns whether the given message is an alarm acknowledgement.
      */
-    private boolean isAcknowledgement(final IAlarmMessage message) {
+    private boolean isAcknowledgement(@Nonnull final IAlarmMessage message) {
         // TODO (jpenning) DAL impl currently not working, returns always false
-        String ack = message.getString("ACK");
+        final String ack = message.getString("ACK");
         return (ack != null) && ack.equals("TRUE");
     }
-
-    public void registerAlarmListener(final IAlarmListener alarmListener) {
-        // Nothing to do
-    }
-
-    public void deRegisterAlarmListener(final IAlarmListener alarmListener) {
-        // Nothing to do
-    }
-
 }

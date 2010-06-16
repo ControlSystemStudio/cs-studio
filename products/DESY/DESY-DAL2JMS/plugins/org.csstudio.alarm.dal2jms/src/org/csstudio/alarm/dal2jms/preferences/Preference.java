@@ -21,9 +21,6 @@
  */
 package org.csstudio.alarm.dal2jms.preferences;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.dal2jms.Activator;
@@ -32,42 +29,48 @@ import org.csstudio.platform.AbstractPreference;
 /**
  * Constant definitions for plug-in preferences
  *
- * @param <T> the type of the preference. It must match the type of the default value.
  *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 10.06.2010
+
+ * @param <T> the type of the preference. It must match the type of the default value.
  */
 public final class Preference<T> extends AbstractPreference<T> {
 
-    public static final Preference<Integer> JMS_TIME_TO_LIVE_ALARMS = new Preference<Integer>("TimeToLiveAlarms",
-                                                                                              3600000);
-    public static final Preference<String> JMS_ALARM_TOPIC_NAME = new Preference<String>("AlarmTopicName",
-                                                                                         "ALARM");
-    public static final Preference<String> XMPP_DAL2JMS_SERVER_NAME = new Preference<String>("XmppServerName",
-                                                                                             "krynfs.desy.de");
-    public static final Preference<String> XMPP_DAL2JMS_USER_NAME = new Preference<String>("XmppUserName",
-                                                                                           "dal2jms");
-    public static final Preference<String> XMPP_DAL2JMS_PASSWORD = new Preference<String>("XmppPassword",
-                                                                                          "dal2jms");
-    public static final Preference<String> ALARM_CONFIG_XML_FILE_NAME = new Preference<String>("AlarmConfigXMLFileName",
-                                                                                               "resource/dal2jmsConfig.xml");
+    public static final Preference<Integer> JMS_TIME_TO_LIVE_ALARMS =
+        new Preference<Integer>("TimeToLiveAlarms", 3600000);
+    public static final Preference<String> JMS_ALARM_TOPIC_NAME =
+        new Preference<String>("AlarmTopicName", "ALARM");
+    public static final Preference<String> XMPP_DAL2JMS_SERVER_NAME =
+        new Preference<String>("XmppServerName", "krynfs.desy.de");
+    public static final Preference<String> XMPP_DAL2JMS_USER_NAME =
+        new Preference<String>("XmppUserName", "dal2jms");
+    public static final Preference<String> XMPP_DAL2JMS_PASSWORD =
+        new Preference<String>("XmppPassword", "dal2jms");
+    public static final Preference<String> ALARM_CONFIG_XML_FILE_NAME =
+        new Preference<String>("AlarmConfigXMLFileName", "resource/dal2jmsConfig.xml");
 
     private Preference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getPluginID() {
         return Activator.PLUGIN_ID;
     }
 
-    @Nonnull
-    static List<Preference<?>> getAllPreferences() {
-        return Arrays.asList(new Preference<?>[] {JMS_TIME_TO_LIVE_ALARMS, JMS_ALARM_TOPIC_NAME,
-                XMPP_DAL2JMS_SERVER_NAME, XMPP_DAL2JMS_USER_NAME, XMPP_DAL2JMS_PASSWORD,
-                ALARM_CONFIG_XML_FILE_NAME});
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Class<? extends AbstractPreference<T>> getClassType() {
+        return (Class<? extends AbstractPreference<T>>) Preference.class;
     }
 
 }

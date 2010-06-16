@@ -140,4 +140,9 @@ public interface IAlarmTreeNode {
     @Nonnull
     Severity getUnacknowledgedAlarmSeverity();
 
+    /**
+     * Returns whether this node has any children.
+     * @return {@code true} if this node has children, {@code false} otherwise.
+     */
+    boolean hasChildren();
 }

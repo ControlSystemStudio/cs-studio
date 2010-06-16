@@ -167,8 +167,7 @@ public final class ImportXmlFileJob extends Job {
     @Nonnull
     private Set<String> getExistingFacilitiesFromView(@Nonnull final SubtreeNode rootNode) {
         final Set<String> facilities = new HashSet<String>();
-        final IAlarmTreeNode[] facilitiesInAlarmTree = rootNode.getChildren();
-        for (final IAlarmTreeNode facilityNode : facilitiesInAlarmTree) {
+        for (final IAlarmTreeNode facilityNode : rootNode.getChildren()) {
             facilities.add(facilityNode.getLdapName().toString());
         }
         return facilities;

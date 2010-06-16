@@ -23,7 +23,15 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
+import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * An update in response to an alarm or acknowledgement message which has not yet been applied to
@@ -39,21 +47,27 @@ public abstract class AbstractPendingUpdate {
      * @param updater
      *            the updater which will be used to apply this update.
      */
-    public abstract void apply(@Nonnull final AlarmTreeUpdater updater);
+    public abstract void apply();
 
     /**
      * Creates an update which will update the alarm tree based on an acknowledgement message.
      *
      * @param name
      *            the name of the node to which the acknowledgement will apply.
+     * @param treeRoot
      * @return an update which will apply the acknowledgement.
      */
     @Nonnull
-    public static AbstractPendingUpdate createAcknowledgementUpdate(@Nonnull final String name) {
+    public static AbstractPendingUpdate createAcknowledgementUpdate(@Nonnull final String name,
+                                                                    @Nonnull final SubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
             @Override
-            public void apply(@Nonnull final AlarmTreeUpdater updater) {
-                updater.applyAcknowledgement(name);
+            public void apply() {
+                for (final IAlarmProcessVariableNode node : treeRoot.findProcessVariableNodes(name)) {
+                    node.removeHighestUnacknowledgedAlarm();
+                }
+                refreshView();
+
             }
 
             @Override
@@ -73,16 +87,22 @@ public abstract class AbstractPendingUpdate {
      *            the severity of the alarm.
      * @param eventtime
      *            the eventtime of the alarm.
+     * @param treeRoot
      * @return an update which will apply the alarm.
      */
     @Nonnull
     public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
                                                           @Nonnull final Severity severity,
-                                                          @Nonnull final Date eventtime) {
+                                                          @Nonnull final Date eventtime,
+                                                          @Nonnull final SubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
             @Override
-            public void apply(@Nonnull final AlarmTreeUpdater updater) {
-                updater.applyAlarm(name, severity, eventtime);
+            public void apply() {
+                for (final IAlarmProcessVariableNode node : treeRoot.findProcessVariableNodes(name)) {
+                    final Alarm alarm = new Alarm(name, severity, eventtime);
+                    node.updateAlarm(alarm);
+                }
+                refreshView();
             }
 
             @Override
@@ -92,5 +112,28 @@ public abstract class AbstractPendingUpdate {
                         .append(",severity=").append(severity).append("]").toString();
             }
         };
+    }
+
+
+    /**
+     * Refreshes the alarm tree view.
+     */
+    public static void refreshView() {
+        Display.getDefault().asyncExec(new Runnable() {
+            public void run() {
+                // FIXME: improve this!
+                final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()
+                        .getActiveWorkbenchWindow();
+                if (activeWorkbenchWindow != null) {
+                    final IWorkbenchPage page = activeWorkbenchWindow.getActivePage();
+                    if (page != null) {
+                        final IViewPart view = page.findView(AlarmTreeView.getID());
+                        if (view instanceof AlarmTreeView) {
+                            ((AlarmTreeView) view).refresh();
+                        }
+                    }
+                }
+            }
+        });
     }
 }

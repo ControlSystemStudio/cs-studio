@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,34 +18,53 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
+ * $Id$
  */
-package org.csstudio.alarm.service.preferences;
+package org.csstudio.alarm.treeView.model;
 
-import java.util.List;
-
-import org.csstudio.alarm.service.AlarmServiceActivator;
-import org.csstudio.platform.AbstractPreference;
-import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import javax.annotation.Nonnull;
 
 /**
- * Class used to initialize default preference values.
+ * TODO (bknerr) :
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 16.06.2010
  */
-public class AlarmServicePreferenceInitializer extends AbstractPreferenceInitializer {
-
+public interface IAlarmProcessVariableNode extends IAlarmTreeNode {
 
     /**
-     * {@inheritDoc}
+     * Returns the active alarm of this node.
      */
-    @Override
-    public final void initializeDefaultPreferences() {
-        final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmServiceActivator.PLUGIN_ID);
+    @Nonnull
+    Alarm getAlarm();
 
-        final List<AbstractPreference<?>> allPreferences = AlarmPreference.ALARMSERVICE_CONFIG_FILENAME.getAllPreferences();
-        for (final AbstractPreference<?> preference : allPreferences) {
-            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
-        }
-    }
+    /**
+     * Removes the highest unacknowledged alarm from this node.
+     */
+    void removeHighestUnacknowledgedAlarm();
+
+    /**
+     * Sets the highest unacknowledged alarm at this node.
+     * @param alarm the alarm.
+     */
+    void setHighestUnacknowledgedAlarm(@Nonnull Alarm alarm);
+
+    /**
+     * Returns the highest unacknowledged alarm of this node.
+     */
+    @Nonnull
+    Alarm getHighestUnacknowledgedAlarm();
+
+    /**
+     * Updates the active alarm state of this node. This method should be called
+     * when a new alarm message was received. The alarm state is updated to the
+     * new alarm only if the new alarm occured after the current alarm.
+     *
+     * @param alarm the new alarm.
+     */
+    void updateAlarm(@Nonnull Alarm alarm);
 
 }

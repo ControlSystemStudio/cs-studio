@@ -25,12 +25,18 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Assert;
 import org.junit.Test;
 
 /**
  * @author Joerg Rathlev
  */
 public class SeverityTest {
+
+    @Test
+    public void testGetLowest() {
+        Assert.assertEquals(Severity.UNKNOWN, Severity.getLowest());
+    }
 
 	@Test
 	public void testIsAlarm() throws Exception {

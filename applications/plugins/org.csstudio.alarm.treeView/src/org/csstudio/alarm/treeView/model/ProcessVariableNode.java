@@ -35,7 +35,8 @@ import org.csstudio.platform.model.IProcessVariable;
  *
  * @author Joerg Rathlev
  */
-public final class ProcessVariableNode extends AbstractAlarmTreeNode implements IProcessVariable {
+public final class ProcessVariableNode extends AbstractAlarmTreeNode
+    implements IProcessVariable, IAlarmProcessVariableNode {
 
 
 	/**
@@ -166,16 +167,16 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode implements 
 		}
 	}
 
-	/**
-	 * Returns the active alarm of this node.
-	 */
+    /**
+     * {@inheritDoc}
+     */
 	@Nonnull
 	public Alarm getAlarm() {
 		return _activeAlarm;
 	}
 
 	/**
-	 * Returns the highest unacknowledged alarm of this node.
+	 * {@inheritDoc}
 	 */
 	@Nonnull
 	public Alarm getHighestUnacknowledgedAlarm() {
@@ -183,8 +184,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode implements 
 	}
 
 	/**
-	 * Sets the highest unacknowledged alarm at this node.
-	 * @param alarm the alarm.
+	 * {@inheritDoc}
 	 */
 	public void setHighestUnacknowledgedAlarm(@Nonnull final Alarm alarm) {
 		_highestUnacknowledgedAlarm = alarm;
@@ -195,16 +195,15 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode implements 
 	}
 
 	/**
-	 * Removes the highest unacknowledged alarm from this node.
+	 * {@inheritDoc}
 	 */
 	public void removeHighestUnacknowledgedAlarm() {
-		if (_highestUnacknowledgedAlarm != null) {
-			_highestUnacknowledgedAlarm = null;
-			final IAlarmSubtreeNode parent = getParent();
-			if (parent != null) {
-			    parent.childSeverityChanged(this);
-			}
-		}
+	    if (_highestUnacknowledgedAlarm != null) {
+	        _highestUnacknowledgedAlarm = null;
+	        final IAlarmSubtreeNode parent = getParent();
+	        if (parent != null) {
+	            parent.childSeverityChanged(this);
+	        }
+	    }
 	}
-
 }

@@ -38,22 +38,38 @@ public enum Severity {
 	/**
 	 * Severity representing no alarm.
 	 */
-	NO_ALARM(false, 0),
+	NO_ALARM(false, 1),
 
 	/**
 	 * Severity value for a minor alarm.
 	 */
-	MINOR(true, 1),
+	MINOR(true, 2),
 
 	/**
 	 * Severity value for a major alarm.
 	 */
-	MAJOR(true, 2),
+	MAJOR(true, 3),
 
 	/**
 	 * Severity representing an invalid alarm state.
 	 */
-	INVALID(true, 3);
+	INVALID(true, 4);
+
+
+    private static final Severity LOWEST_SEVERITY;
+
+    static {
+        int level = Integer.MAX_VALUE;
+        Severity lowestSev = null;
+        for (final Severity sev : values()) {
+            final int sevLevel = sev.getLevel();
+            if (sevLevel < level) {
+                level = sevLevel;
+                lowestSev = sev;
+            }
+        }
+        LOWEST_SEVERITY = lowestSev;
+    }
 
     /**
      * Indicates whether this severity is an alarm.
@@ -64,7 +80,6 @@ public enum Severity {
      * The level, the higher the more severe.
      */
     private int _severityLevel;
-
 
     /**
      * Constructor.
@@ -87,13 +102,13 @@ public enum Severity {
 	public static Severity parseSeverity(@CheckForNull final String severityString) {
 	    if (severityString == null) {
 	        // TODO (jpenning) : shouldn't be possible
-	        return NO_ALARM;
+	        return UNKNOWN;
 	    }
 		try {
 		    // TODO (jpenning) : really? mapping unknown severity to no alarm? Please check
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
-            return NO_ALARM;
+            return UNKNOWN;
         }
 	}
 
@@ -114,4 +129,11 @@ public enum Severity {
 		return _isAlarm;
 	}
 
+    /**
+     * Returns the Severity with the lowest level.
+     * @return the Severity with the lowest level
+     */
+    public static Severity getLowest() {
+        return LOWEST_SEVERITY;
+    }
 }

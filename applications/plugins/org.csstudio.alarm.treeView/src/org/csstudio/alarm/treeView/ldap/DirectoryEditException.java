@@ -42,7 +42,8 @@ public class DirectoryEditException extends Exception {
 	 * @param message the detail message.
 	 * @param cause the cause.
 	 */
-	public DirectoryEditException(@Nonnull final String message, @Nullable final Throwable cause) {
+	public DirectoryEditException(@Nonnull final String message,
+	                              @Nullable final Throwable cause) {
 		super(message, cause);
 	}
 }

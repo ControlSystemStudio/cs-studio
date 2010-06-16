@@ -23,6 +23,9 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import java.util.Collection;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -37,10 +40,7 @@ import javax.annotation.Nonnull;
 public interface IAlarmSubtreeNode extends IAlarmTreeNode {
 
     /**
-     * Removes the given child from this node. If the given node is not a direct
-     * child of this subtree, does nothing. The child node must not have any
-     * children itself. If the child node has children, this method does
-     * nothing.
+     * Removes the given child reference from this node.
      *
      * @param child
      *            the child node to remove.
@@ -48,14 +48,9 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
     void removeChild(@Nonnull final IAlarmTreeNode child);
 
     /**
-     * Adds the specified child node to the list of this node's children. Note:
-     * it is not checked whether the parent node of the child is correctly set
-     * to this node. This method is intended to be called only by constructors
-     * of nodes.
-     *
-     * @param child the child node to add.
+     * Removes all children of this node recursively.
      */
-    void addSubtreeChild(@Nonnull final SubtreeNode child);
+    void removeChildren();
 
     /**
      * Adds the specified child node to the list of this node's children. Note:
@@ -65,7 +60,17 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      *
      * @param child the child node to add.
      */
-    void addPVChild(@Nonnull final ProcessVariableNode child);
+    void addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
+
+    /**
+     * Adds the specified child node to the list of this node's children. Note:
+     * it is not checked whether the parent node of the child is correctly set
+     * to this node. This method is intended to be called only by constructors
+     * of nodes.
+     *
+     * @param child the child node to add.
+     */
+    void addPVChild(@Nonnull final IAlarmProcessVariableNode child);
 
     /**
      * Signals to this node that the alarm severity of one of its children
@@ -76,6 +81,38 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      *
      * @param child the child node whose severity status has changed.
      */
-    void childSeverityChanged(@Nonnull IAlarmTreeNode subtreeNode);
+    void childSeverityChanged(@Nonnull IAlarmTreeNode child);
+
+    /**
+     * Finds all process variable nodes with the given name below this node. If
+     * no nodes are found, returns an empty list.
+     * @param name the name of the nodes.
+     * @return a list of the nodes.
+     */
+    @Nonnull
+    List<IAlarmProcessVariableNode> findProcessVariableNodes(@Nonnull String name);
+
+    /**
+     * Finds all process variable nodes below this node. If
+     * no nodes are found, returns an empty list.
+     * @return a list of the nodes.
+     */
+    @Nonnull
+    List<IAlarmProcessVariableNode> findAllProcessVariableNodes();
+
+    /**
+     * Returns a collection of the PV nodes (leaf nodes) below this subtree
+     * node that have unacknowledged alarms.
+     *
+     * @return a collection of the PV nodes with unacknowledged alarms.
+     */
+    @Nonnull
+    Collection<IAlarmProcessVariableNode> collectUnacknowledgedAlarms();
+
+    /**
+     * Returns the direct children of this node.
+     * @return a list of children if there are any, an empty list otherwise
+     */
+    List<IAlarmTreeNode> getChildren();
 
 }

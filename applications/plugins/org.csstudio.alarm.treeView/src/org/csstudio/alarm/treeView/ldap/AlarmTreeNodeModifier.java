@@ -36,6 +36,7 @@ import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.platform.logging.CentralLogger;
@@ -160,8 +161,8 @@ public final class AlarmTreeNodeModifier {
      * @param attrs
      *            the attributes.
      */
-    public static void setAlarmState(@Nonnull final ProcessVariableNode node,
-                              @Nonnull final Attributes attrs)
+    public static void setAlarmState(@Nonnull final IAlarmProcessVariableNode node,
+                                     @Nonnull final Attributes attrs)
             throws NamingException {
 
         final Attribute severityAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY);
@@ -172,7 +173,7 @@ public final class AlarmTreeNodeModifier {
         setHighestUnackAlarm(node, highUnAcknAttr);
     }
 
-    private static void setSeverityAndTimestamp(@Nonnull final ProcessVariableNode node,
+    private static void setSeverityAndTimestamp(@Nonnull final IAlarmProcessVariableNode node,
                                                 @Nullable final Attribute severityAttr,
                                                 @Nullable final Attribute eventtimeAttr) throws NamingException {
         if (severityAttr != null) {
@@ -191,7 +192,7 @@ public final class AlarmTreeNodeModifier {
         }
     }
 
-    private static void setHighestUnackAlarm(@Nonnull final ProcessVariableNode node,
+    private static void setHighestUnackAlarm(@Nonnull final IAlarmProcessVariableNode node,
                                              @Nullable final Attribute highUnAcknAttr) throws NamingException {
         Severity unack = Severity.NO_ALARM;
         if (highUnAcknAttr != null) {

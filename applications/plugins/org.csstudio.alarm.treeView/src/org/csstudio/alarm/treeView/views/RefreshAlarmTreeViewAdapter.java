@@ -39,7 +39,7 @@ import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
@@ -84,13 +84,12 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         _alarmTreeView.asyncSetViewerInput(_adapterRootNode); // Display the new tree.
 
         final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
-        if (alarmListener != null) {
-            alarmListener.setUpdater(new AlarmTreeUpdater(_adapterRootNode));
-        }
+
+        alarmListener.startUpdateProcessing();
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer();
+                final TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer();
                 if (viewer != null) {
                     viewer.refresh();
                 }
@@ -99,19 +98,18 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
     }
 
     private void retrieveInitialStateSynchronously(@Nonnull final SubtreeNode rootNode) {
-        final List<ProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
+        final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
         final List<PVNodeItem> initItems = new ArrayList<PVNodeItem>();
 
-        for (final ProcessVariableNode pvNode : pvNodes) {
+        for (final IAlarmProcessVariableNode pvNode : pvNodes) {
             initItems.add(new PVNodeItem(pvNode));
         }
 
-        IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
+        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
         if (alarmService != null) {
             alarmService.retrieveInitialState(initItems);
         } else {
-            LOG
-                    .warn("Initial state could not be retrieved because alarm service is not available.");
+            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
         }
     }
 
@@ -119,12 +117,12 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
      * The alarm tag of the PV node will be updated when the initial state was retrieved.
      */
     private static class PVNodeItem implements IAlarmInitItem {
-        private static final Logger LOG = CentralLogger.getInstance()
+        private static final Logger LOG_INNER = CentralLogger.getInstance()
                 .getLogger(RefreshAlarmTreeViewAdapter.PVNodeItem.class);
 
-        private final ProcessVariableNode _pvNode;
+        private final IAlarmProcessVariableNode _pvNode;
 
-        protected PVNodeItem(@Nonnull final ProcessVariableNode pvNode) {
+        protected PVNodeItem(@Nonnull final IAlarmProcessVariableNode pvNode) {
             _pvNode = pvNode;
         }
 
@@ -140,16 +138,16 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             if ((nameString != null) && (severityString != null) && (eventTimeString != null)) {
                 Date eventTime = null;
                 try {
-                    Severity severity = Severity.parseSeverity(severityString);
+                    final Severity severity = Severity.parseSeverity(severityString);
                     eventTime = DateFormat.getInstance().parse(eventTimeString);
                     final Alarm alarm = new Alarm(nameString, severity, eventTime);
                     _pvNode.updateAlarm(alarm);
-                } catch (ParseException e) {
-                    LOG.error("Could not retrieve eventtime from "
+                } catch (final ParseException e) {
+                    LOG_INNER.error("Could not retrieve eventtime from "
                             + alarmMessage.getString(AlarmMessageKey.EVENTTIME), e);
                 }
             } else {
-                LOG.warn("Could not retrieve data (name, severity, eventtime) from " + alarmMessage);
+                LOG_INNER.warn("Could not retrieve data (name, severity, eventtime) from " + alarmMessage);
             }
         }
     }

@@ -93,6 +93,8 @@ public final class ImportInitialConfigJob extends Job {
                 model = _configService.retrieveInitialContentModelFromFile(filePath);
             }
 
+            _rootNode.clearChildren(); // removes all nodes below the root node
+
             final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);
 
             if (canceled) {

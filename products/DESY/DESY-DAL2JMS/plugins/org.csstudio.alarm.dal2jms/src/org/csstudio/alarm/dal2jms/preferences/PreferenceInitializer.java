@@ -22,7 +22,10 @@
 
 package org.csstudio.alarm.dal2jms.preferences;
 
+import java.util.List;
+
 import org.csstudio.alarm.dal2jms.Activator;
+import org.csstudio.platform.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -45,7 +48,8 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public final void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(Activator.PLUGIN_ID);
 
-        for (Preference<?> preference : Preference.getAllPreferences()) {
+        final List<AbstractPreference<?>> preferences = Preference.ALARM_CONFIG_XML_FILE_NAME.getAllPreferences();
+        for (final AbstractPreference<?> preference : preferences) {
             prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
         }
 	}

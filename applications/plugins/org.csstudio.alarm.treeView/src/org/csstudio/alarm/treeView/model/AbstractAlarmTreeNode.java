@@ -177,6 +177,13 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    public boolean hasChildren() {
+        return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Nonnull
     public final String toString() {

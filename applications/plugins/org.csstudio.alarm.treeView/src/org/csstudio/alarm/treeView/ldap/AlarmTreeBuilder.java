@@ -84,7 +84,6 @@ public final class AlarmTreeBuilder {
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
                 attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
-                //attrs.put(ATTR_FIELD_CSS_TYPE, LdapEpicsAlarmCfgObjectClass.FACILITY.getCssType());
                 LDAP_SERVICE.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {

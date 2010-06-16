@@ -151,10 +151,16 @@ public class AlarmTreeView extends ViewPart {
      */
     private AlarmMessageListener _alarmListener;
 
+
     /**
      * The reload action.
      */
     private Action _reloadAction;
+
+    /**
+     * Action to persist current Alarm Tree View in LDAP.
+     */
+    private Action _saveInLdapAction;
 
     /**
      * The import xml file action.
@@ -165,6 +171,11 @@ public class AlarmTreeView extends ViewPart {
      * The export xml file action.
      */
     private Action _exportXmlFileAction;
+
+    /**
+     * Saves the currently configured alarm tree as xml file.
+     */
+    private Action _saveAsXmlFileAction;
 
     /**
      * The acknowledge action.
@@ -231,10 +242,6 @@ public class AlarmTreeView extends ViewPart {
      */
     private Action _toggleFilterAction;
 
-    /**
-     * Saves the currently configured alarm tree as xml file.
-     */
-    private Action _saveAsXmlFileAction;
 
     /**
      * Whether the filter is active.
@@ -291,6 +298,15 @@ public class AlarmTreeView extends ViewPart {
     }
 
     /**
+     * Getter.
+     * @return the reload action reference
+     */
+    @CheckForNull
+    public Action getReloadAction() {
+        return _reloadAction;
+    }
+
+    /**
      * {@inheritDoc}
      */
     @Override
@@ -307,7 +323,7 @@ public class AlarmTreeView extends ViewPart {
 
         _currentAlarmFilter = new CurrentAlarmFilter();
 
-        _alarmListener = new AlarmMessageListener();
+        _alarmListener = new AlarmMessageListener(_rootNode);
 
         initializeContextMenu();
 
@@ -427,9 +443,8 @@ public class AlarmTreeView extends ViewPart {
 
         final Job importInitialConfigJob = createImportInitialConfigJob(rootNode);
 
-        // Set the tree to which updates are applied to null. This means updates
-        // will be queued for later application.
-        _alarmListener.setUpdater(null);
+        // This means updates will be queued for later application.
+        _alarmListener.startUpdateProcessing();
 
         // The directory is read in the background. Until then, set the viewer's
         // input to a placeholder object.
@@ -631,10 +646,9 @@ public class AlarmTreeView extends ViewPart {
      */
     private void fillContextMenu(@Nullable final IMenuManager menuManager) {
         if (menuManager == null) {
-            MessageDialog
-                    .openError(getSite().getShell(),
-                               "Context menu",
-                               "Inernal error occurred when trying to open the context menu (IMenuManager is null).");
+            MessageDialog.openError(getSite().getShell(),
+                                    "Context menu",
+                                    "Inernal error occurred when trying to open the context menu (IMenuManager is null).");
             return;
         }
 
@@ -649,19 +663,20 @@ public class AlarmTreeView extends ViewPart {
             menuManager.add(_showHelpGuidanceAction);
             menuManager.add(_showHelpPageAction);
             menuManager.add(new Separator("edit"));
-            menuManager.add(_renameAction);
             menuManager.add(_deleteNodeAction);
 
-            final Object firstElement = selection.getFirstElement();
-            if (firstElement instanceof SubtreeNode) {
+
+            final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
+            final LdapEpicsAlarmCfgObjectClass oc = firstElement.getObjectClass();
+
+            if (!LdapEpicsAlarmCfgObjectClass.RECORD.equals(oc)) {
                 menuManager.add(_createRecordAction);
                 menuManager.add(_createComponentAction);
-
-                final LdapEpicsAlarmCfgObjectClass oc = ((SubtreeNode) firstElement)
-                        .getObjectClass();
-                if (LdapEpicsAlarmCfgObjectClass.FACILITY.equals(oc)) {
-                    menuManager.add(_saveAsXmlFileAction);
-                }
+            }
+            if (!LdapEpicsAlarmCfgObjectClass.FACILITY.equals(oc)) {
+                menuManager.add(_renameAction);
+            } else {
+                menuManager.add(_saveAsXmlFileAction);
             }
         }
 
@@ -679,7 +694,9 @@ public class AlarmTreeView extends ViewPart {
         manager.add(_toggleFilterAction);
         manager.add(new Separator());
         manager.add(_showPropertyViewAction);
+        //manager.add(_saveInLdapAction);
         manager.add(_reloadAction);
+        manager.add(new Separator());
         manager.add(_importXmlFileAction);
         manager.add(_exportXmlFileAction);
     }
@@ -729,7 +746,6 @@ public class AlarmTreeView extends ViewPart {
 
         _createComponentAction = AlarmTreeViewActionFactory.createCreateComponentAction(site,
                                                                                         viewer);
-
         _renameAction = AlarmTreeViewActionFactory.createRenameAction(site, viewer);
 
         _deleteNodeAction = AlarmTreeViewActionFactory.createDeleteNodeAction(site, viewer);

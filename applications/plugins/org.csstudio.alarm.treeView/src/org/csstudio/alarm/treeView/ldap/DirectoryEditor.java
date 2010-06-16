@@ -31,7 +31,7 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -53,22 +53,6 @@ public final class DirectoryEditor {
      */
     private DirectoryEditor() {
         // Don't instantiate.
-    }
-
-    /**
-     * Deletes the given node from the directory.
-     *
-     * @param node
-     *            the node to delete.
-     * @throws DirectoryEditException
-     *             if the node could not be deleted.
-     */
-    public static void delete(@Nonnull final IAlarmTreeNode node) throws DirectoryEditException {
-
-        final IAlarmSubtreeNode parent = node.getParent();
-        if (parent != null) {
-            parent.removeChild(node);
-        }
     }
 
     /**
@@ -98,15 +82,24 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    public static void moveNode(@Nonnull final IAlarmTreeNode node, @Nonnull final SubtreeNode target)
+    public static void moveNode(@Nonnull final IAlarmTreeNode node,
+                                @Nonnull final SubtreeNode target)
         throws DirectoryEditException {
-        /*
-         * Note: I tried to use _directory.rename(...) here, but that failed
-         * with an "LDAP: error code 50 - Insufficient Access Rights". So for
-         * now, this code uses copy-and-delete to move the node.
-         */
-        copyNode(node, target);
-        deleteRecursively(node);
+
+        // store parent for later child removal
+        final IAlarmSubtreeNode parent = node.getParent();
+
+        if (node instanceof IAlarmSubtreeNode) {
+            target.addSubtreeChild((IAlarmSubtreeNode) node);
+        } else {
+            target.addPVChild((IAlarmProcessVariableNode) node);
+        }
+        if (parent == null) {
+            throw new DirectoryEditException("Node " + node.getName() + " does not have a parent (==ROOT)." +
+                                             "\nMove action not permitted on ROOT.", null);
+        }
+        // remove child from old location
+        parent.removeChild(node);
     }
 
     /**
@@ -117,29 +110,20 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    private static void deleteRecursively(@Nonnull final IAlarmTreeNode node)
-    throws DirectoryEditException {
-        if (node instanceof SubtreeNode) {
-            deleteChildren((SubtreeNode) node);
-        }
-        delete(node);
-    }
+    public static void deleteRecursively(@Nonnull final IAlarmTreeNode node)
+        throws DirectoryEditException {
 
-    /**
-     * Deletes the children of a subtree node (recursively).
-     *
-     * @param node
-     *            the node.
-     * @throws DirectoryEditException
-     *             if an error occurs.
-     */
-    private static void deleteChildren(@Nonnull final SubtreeNode node)
-    throws DirectoryEditException {
-        for (final IAlarmTreeNode child : node.getChildren()) {
-            deleteRecursively(child);
+        if (node instanceof IAlarmSubtreeNode) {
+            ((IAlarmSubtreeNode) node).removeChildren();
+        }
+        final IAlarmSubtreeNode parent = node.getParent();
+        if (parent != null) {
+            parent.removeChild(node);
+        } else {
+            throw new DirectoryEditException("Node is ROOT. Remove action mustn't be triggered on ROOT.",
+                                             null);
         }
     }
-
 
     /**
      * Creates a copy of a node under a new subtree node. If the node to be
@@ -155,17 +139,17 @@ public final class DirectoryEditor {
      */
     @Nonnull
     public static IAlarmTreeNode copyNode(@Nonnull final IAlarmTreeNode node,
-                                          @Nonnull final SubtreeNode target)
+                                          @Nonnull final IAlarmSubtreeNode target)
     throws DirectoryEditException {
 
-        if (node instanceof ProcessVariableNode) {
-            return copyProcessVariableNode((ProcessVariableNode) node, target);
+        if (node instanceof IAlarmProcessVariableNode) {
+            return copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
         }
-        final SubtreeNode copy =
+        final IAlarmSubtreeNode copy =
             new SubtreeNode.Builder(node.getName(), node.getObjectClass()).setParent(target).build();
-        copyProperties((SubtreeNode) node, copy);
+        copyProperties(node, copy);
 
-        for (final IAlarmTreeNode child : ((SubtreeNode) node).getChildren()) {
+        for (final IAlarmTreeNode child : ((IAlarmSubtreeNode) node).getChildren()) {
             copyNode(child, copy);
         }
         return copy;
@@ -184,11 +168,11 @@ public final class DirectoryEditor {
      *             if an error occurs.
      */
     @Nonnull
-    private static IAlarmTreeNode copyProcessVariableNode(@Nonnull final ProcessVariableNode node,
-                                                          @Nonnull final SubtreeNode target)
+    private static IAlarmTreeNode copyProcessVariableNode(@Nonnull final IAlarmProcessVariableNode node,
+                                                          @Nonnull final IAlarmSubtreeNode target)
     throws DirectoryEditException {
 
-        final ProcessVariableNode copy =
+        final IAlarmProcessVariableNode copy =
             new ProcessVariableNode.Builder(node.getName()).setParent(target).build();
         copy.updateAlarm(node.getAlarm());
         copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
@@ -204,8 +188,8 @@ public final class DirectoryEditor {
      * @param destination
      *            the destination.
      */
-    private static void copyProperties(@Nonnull final AbstractAlarmTreeNode source,
-                                       @Nonnull final AbstractAlarmTreeNode destination) {
+    private static void copyProperties(@Nonnull final IAlarmTreeNode source,
+                                       @Nonnull final IAlarmTreeNode destination) {
         for (final AlarmTreeNodePropertyId id : AlarmTreeNodePropertyId.values()) {
             final String value = source.getOwnProperty(id);
             destination.setProperty(id, value);
@@ -223,14 +207,14 @@ public final class DirectoryEditor {
      *            the name of the process variable record.
      * @throws DirectoryEditException if the entry could not be created.
      */
-    public static void createProcessVariableRecord(@Nonnull final SubtreeNode parent,
+    public static void createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
                                                    @Nonnull final String recordName)
     throws DirectoryEditException {
         try {
             final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeName(), recordName);
             final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD, rdn);
             // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
-            final ProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
+            final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName).setParent(parent).build();
             AlarmTreeNodeModifier.setAlarmState(node, attrs);
         } catch (final NamingException e) {
             LOG.error("Error creating directory entry", e);

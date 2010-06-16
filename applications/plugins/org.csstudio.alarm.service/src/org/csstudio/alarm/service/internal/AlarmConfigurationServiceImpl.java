@@ -108,7 +108,8 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
      */
     @Override
     @CheckForNull
-    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath) throws CreateContentModelException {
+    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
+        throws CreateContentModelException {
 
         final XmlFileContentModelBuilder<LdapEpicsAlarmCfgObjectClass> builder =
             new XmlFileContentModelBuilder<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT, filePath);
