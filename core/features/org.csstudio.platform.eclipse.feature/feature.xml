@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.platform.eclipse.feature"
       label="CSS Platform Feature"
-      version="1.2.1.qualifier">
+      version="1.3.0.qualifier">
 
    <description url="http://css.desy.de">
       The Control System Studio defines a platform for control system
@@ -950,6 +950,27 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
 
    <plugin
          id="org.eclipse.ecf.discovery"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.equinox.simpleconfigurator"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.databinding.observable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.databinding.property"
          download-size="0"
          install-size="0"
          version="0.0.0"
