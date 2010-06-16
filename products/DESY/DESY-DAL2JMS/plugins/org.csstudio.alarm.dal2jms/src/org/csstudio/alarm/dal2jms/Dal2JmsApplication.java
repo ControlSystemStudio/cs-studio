@@ -141,7 +141,6 @@ public class Dal2JmsApplication implements IApplication {
 
     @Nonnull
     private String getFilePath() throws IOException {
-        // TODO (jpenning) path to dtd is not well defined. Currently DTD must lie in root directory.
         Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
         Path path = new Path(Preference.ALARM_CONFIG_XML_FILE_NAME.getValue());
         URL url = FileLocator.find(bundle, path, null);

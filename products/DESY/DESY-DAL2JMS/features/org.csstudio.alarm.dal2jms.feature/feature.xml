@@ -16,6 +16,10 @@
       [Enter License Description here.]
    </license>
 
+   <includes
+         id="org.eclipse.rcp"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.platform.utility.jms"
          download-size="0"
@@ -941,6 +945,13 @@
 
    <plugin
          id="org.csstudio.utility.treemodel"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.googlecollections"
          download-size="0"
          install-size="0"
          version="0.0.0"
