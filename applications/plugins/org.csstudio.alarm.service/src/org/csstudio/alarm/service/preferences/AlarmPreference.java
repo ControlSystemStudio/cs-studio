@@ -21,9 +21,6 @@
  */
 package org.csstudio.alarm.service.preferences;
 
-import java.util.Arrays;
-import java.util.List;
-
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
@@ -41,31 +38,39 @@ import org.csstudio.platform.AbstractPreference;
  */
 public final class AlarmPreference<T> extends AbstractPreference<T> {
 
-    public static final AlarmPreference<Boolean> ALARMSERVICE_DAL = new AlarmPreference<Boolean>("alarm.service.dal",
-                                                                                                 true);
-    public static final AlarmPreference<Boolean> ALARMSERVICE_LDAP = new AlarmPreference<Boolean>("alarm.service.ldap",
-                                                                                                  false);
-    public static final AlarmPreference<String> ALARMSERVICE_CONFIG_FILENAME = new AlarmPreference<String>("alarm.service.configFileName",
-                                                                                                           "resource/alarmServiceConfig.xml");
-    public static final AlarmPreference<String> ALARMSERVICE_TOPICS_DEFAULT = new AlarmPreference<String>("alarm.service.topicsDefault",
-                                                                                                          "ALARM,ACK");
-    public static final AlarmPreference<String> ALARMSERVICE_FACILITIES_DEFAULT = new AlarmPreference<String>("alarm.service.facilitiesDefault",
-                                                                                                              "Test");
+    public static final AlarmPreference<Boolean> ALARMSERVICE_DAL =
+        new AlarmPreference<Boolean>("alarm.service.dal", false);
+
+    public static final AlarmPreference<Boolean> ALARMSERVICE_LDAP =
+        new AlarmPreference<Boolean>("alarm.service.ldap", true);
+
+    public static final AlarmPreference<String> ALARMSERVICE_CONFIG_FILENAME =
+        new AlarmPreference<String>("alarm.service.configFileName", "resource/alarmServiceConfig.xml");
+
+    public static final AlarmPreference<String> ALARMSERVICE_TOPICS_DEFAULT =
+        new AlarmPreference<String>("alarm.service.topicsDefault", "ALARM,ACK");
+
+    public static final AlarmPreference<String> ALARMSERVICE_FACILITIES_DEFAULT =
+        new AlarmPreference<String>("alarm.service.facilitiesDefault", "Test");
 
     private AlarmPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getPluginID() {
         return AlarmServiceActivator.PLUGIN_ID;
     }
 
-    @Nonnull
-    static List<AlarmPreference<?>> getAllPreferences() {
-        return Arrays.asList(new AlarmPreference<?>[] {ALARMSERVICE_DAL, ALARMSERVICE_LDAP,
-                ALARMSERVICE_CONFIG_FILENAME, ALARMSERVICE_TOPICS_DEFAULT,
-                ALARMSERVICE_FACILITIES_DEFAULT});
+    /**
+     * {@inheritDoc}
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    protected Class<? extends AbstractPreference<T>> getClassType() {
+        return (Class<? extends AbstractPreference<T>>) AlarmPreference.class;
     }
-
 }
