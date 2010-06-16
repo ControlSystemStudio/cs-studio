@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 
 /**
@@ -62,6 +63,13 @@ public class AlarmServiceDALImpl implements IAlarmService {
     @Override
     public void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
         // There is nothing to do in the DAL implementation. The usual listeners will take care of the state changes.
+    }
+
+    @Override
+    public IAlarmResource newAlarmResource(final List<String> topics,
+                                           final List<String> facilities,
+                                           final String filepath) {
+        return new AlarmResource(topics, facilities, filepath);
     }
 
 }

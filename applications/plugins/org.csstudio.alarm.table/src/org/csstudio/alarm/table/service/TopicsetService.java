@@ -24,6 +24,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.jms.AlarmConnectionMonitor;
@@ -64,10 +65,10 @@ public class TopicsetService implements ITopicsetService {
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
         element._alarmTableListener.setMessageList(element._messageList);
-        element._connection.connectWithListenerForTopics(new AlarmConnectionMonitor(),
-                                                         element._alarmTableListener,
-                                                         topicSet.getTopics()
-                                                                 .toArray(new String[0]), "c:\\alarmConfig.xml");
+        IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().newAlarmResource(topicSet.getTopics(), null, null);
+        element._connection.connectWithListenerForResource(new AlarmConnectionMonitor(),
+                                                           element._alarmTableListener,
+                                                           alarmResource);
 
         _topicSetMap.put(topicSet.getName(), element);
 

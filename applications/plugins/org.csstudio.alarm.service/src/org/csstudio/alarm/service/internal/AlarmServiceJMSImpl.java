@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
@@ -85,6 +86,13 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         for (final Element pvUnderWay : pvsUnderWay) {
             deregisterPV(pvUnderWay);
         }
+    }
+
+    @Override
+    public IAlarmResource newAlarmResource(final List<String> topics,
+                                           final List<String> facilities,
+                                           final String filepath) {
+        return new AlarmResource(topics, facilities, filepath);
     }
 
     private void registerPV(@Nonnull final List<Element> pvsUnderWay,
@@ -175,7 +183,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     }
 
     // CHECKSTYLE:OFF
-    // TODO (jpenning) Extract duplicates, see AlarmConnectionDALImpl
     private static class Element {
         ConnectionParameters _connectionParameters;
         DynamicValueListener<?, ?> _listener;

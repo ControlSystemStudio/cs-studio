@@ -30,6 +30,7 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -63,9 +64,11 @@ final class AlarmHandler {
     }
 
     public void connect(@Nonnull final String fileName) throws AlarmConnectionException {
-        _alarmConnection.connectWithListener(newAlarmConnectionMonitor(),
-                                             newAlarmListener(_jmsMessageService),
-                                             fileName);
+        IAlarmResource alarmResource = Activator.getDefault().getAlarmService()
+                .newAlarmResource(null, null, fileName);
+        _alarmConnection.connectWithListenerForResource(newAlarmConnectionMonitor(),
+                                                        newAlarmListener(_jmsMessageService),
+                                                        alarmResource);
     }
 
     // dal2jms currently provides no action on connection state changes, they are only logged.

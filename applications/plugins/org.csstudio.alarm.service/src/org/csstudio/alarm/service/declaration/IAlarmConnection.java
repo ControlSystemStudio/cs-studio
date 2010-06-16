@@ -18,7 +18,6 @@
 package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 /**
  * Is used by the AlarmService to represent a connection into JMS or DAL resp.. It abstracts the
@@ -37,37 +36,19 @@ public interface IAlarmConnection {
     boolean canHandleTopics();
 
     /**
-     * Connects to the underlying system. You have to provide a connectionMonitor to track
-     * connection state. You have to provide a listener to receive messages.
+     * Connects to the underlying system.
+     * You have to provide a connectionMonitor to track connection state.
+     * You have to provide a listener to receive messages.
+     * You have to provide the alarm resource (create it via alarm service) which supplies the parameters.
      *
-     * @param connectionMonitor .
-     * @param listener .
-     * @param fileName TODO
+     * @param connectionMonitor
+     * @param listener
+     * @param resource
      * @throws AlarmConnectionException
      */
-    void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                             @Nonnull final IAlarmListener listener,
-                             // TODO (jpenning) use filename only when ldap not available
-                             @Nullable final String fileName) throws AlarmConnectionException;
-
-
-    /**
-     * Connects to the underlying system. You have to provide a connectionMonitor to track
-     * connection state. You have to provide a listener to receive messages. You have to provide
-     * topics, which are actually the names of the JMS topics.
-     *
-     * @param connectionMonitor .
-     * @param listener .
-     * @param topics .
-     * @param fileName TODO
-     * @throws AlarmConnectionException
-     */
-    void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                      @Nonnull final IAlarmListener listener,
-                                      // TODO (jpenning) Do not use String-Array for parameter topics
-                                      @Nonnull final String[] topics,
-                                      // TODO (jpenning) use filename only when ldap not available
-                                      @Nullable final String fileName) throws AlarmConnectionException;
+    void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                        @Nonnull final IAlarmListener listener,
+                                        @Nonnull final IAlarmResource resource) throws AlarmConnectionException;
 
     /**
      * Disconnect from the underlying system, freeing resources. The connection monitor will be

@@ -47,18 +47,23 @@ import org.osgi.framework.Bundle;
  */
 public final class AlarmPreference<T> extends AbstractPreference<T> {
 
-    public static final AlarmPreference<Boolean> ALARMSERVICE_IS_DAL_IMPL = new AlarmPreference<Boolean>("isDalImpl",
-                                                                                                         false);
-    public static final AlarmPreference<Boolean> ALARMSERVICE_CONFIG_VIA_LDAP = new AlarmPreference<Boolean>("configViaLdap",
-                                                                                                             true);
-    public static final AlarmPreference<String> ALARMSERVICE_CONFIG_FILENAME = new AlarmPreference<String>("configFileName",
-                                                                                                           "resource/alarmServiceConfig.xml");
-    public static final AlarmPreference<String> ALARMSERVICE_TOPICS = new AlarmPreference<String>("topics",
-                                                                                                  "ALARM,ACK");
+    public static final AlarmPreference<Boolean> ALARMSERVICE_IS_DAL_IMPL =
+        new AlarmPreference<Boolean>("isDalImpl", false);
+
+    public static final AlarmPreference<Boolean> ALARMSERVICE_CONFIG_VIA_LDAP =
+        new AlarmPreference<Boolean>("configViaLdap", true);
+
+    public static final AlarmPreference<String> ALARMSERVICE_CONFIG_FILENAME =
+        new AlarmPreference<String>("configFileName", "resource/alarmServiceConfig.xml");
+
+    public static final AlarmPreference<String> ALARMSERVICE_TOPICS =
+        new AlarmPreference<String>("topics", "ALARM,ACK");
+
     // TODO (jpenning) define facilities in one place
     // Currently the facilities are defined in the alarm tree and in the alarm service
-    public static final AlarmPreference<String> ALARMSERVICE_FACILITIES = new AlarmPreference<String>("facilities",
-                                                                                                      "Test");
+    public static final AlarmPreference<String> ALARMSERVICE_FACILITIES =
+        new AlarmPreference<String>("facilities", "CMTB,Flash,Rechnersysteme,TEST,Test,Wasseranlagen");
+
 
     private AlarmPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
@@ -79,6 +84,19 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     }
 
     /**
+     * The topic names are defined in a string like this: "ALARM,ACK", i.e. comma separated without blanks.
+     * This method splits them at the commas.
+     *
+     * @return an unmodifiable list with the topic names
+     */
+    @Nonnull
+    public static List<String> getTopicNames() {
+        String resultString = ALARMSERVICE_TOPICS.getValue();
+        String[] result = resultString.split(",");
+        return Arrays.asList(result);
+    }
+
+    /**
      * The facility names are defined in a string like this: "CMTB,Flash,Test", i.e. comma separated without blanks.
      * This method splits them at the commas.
      *
@@ -86,8 +104,8 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      */
     @Nonnull
     public static List<String> getFacilityNames() {
-        String facilitiesString = ALARMSERVICE_FACILITIES.getValue();
-        String[] result = facilitiesString.split(",");
+        String resultString = ALARMSERVICE_FACILITIES.getValue();
+        String[] result = resultString.split(",");
         return Arrays.asList(result);
     }
 

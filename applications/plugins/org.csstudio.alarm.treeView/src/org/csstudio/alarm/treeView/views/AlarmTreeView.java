@@ -17,6 +17,7 @@
 package org.csstudio.alarm.treeView.views;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -31,6 +32,7 @@ import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
@@ -39,6 +41,7 @@ import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -394,14 +397,19 @@ public class AlarmTreeView extends ViewPart {
                 try {
                     final AlarmMessageListener listener = AlarmTreeView.this.getAlarmListener();
                     if (listener == null) {
-                        throw new IllegalStateException("Listener of " +
-                                                        AlarmTreeView.class.getName() +
-                                                        " mustn't be null.");
+                        throw new IllegalStateException("Listener of "
+                                + AlarmTreeView.class.getName() + " mustn't be null.");
                     }
-                    _connection.connectWithListener(new AlarmTreeConnectionMonitor(AlarmTreeView.this,
-                                                                                   _rootNode),
-                                                    listener,
-                                                    "c:\\alarmConfig.xml");
+                    // JMS: topics: default,    facilities: don't care,      filename: don't care
+                    // DAL: topics: don't care, facilities: from tree prefs, filename: ok
+                    final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
+                    IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
+                            .newAlarmResource(null, Arrays.asList(facilityNames), null);
+                    AlarmTreeConnectionMonitor connectionMonitor = new AlarmTreeConnectionMonitor(AlarmTreeView.this,
+                                                                                                  _rootNode);
+                    _connection.connectWithListenerForResource(connectionMonitor,
+                                                               listener,
+                                                               alarmResource);
 
                 } catch (final AlarmConnectionException e) {
                     throw new RuntimeException("Could not connect via alarm service", e);

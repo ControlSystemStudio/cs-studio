@@ -18,7 +18,6 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,11 +25,12 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
+import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
@@ -102,49 +102,28 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void connectWithListener(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                    @Nonnull final IAlarmListener listener,
-                                    @Nonnull final String fileName) throws AlarmConnectionException {
-        connectWithListenerForTopics(connectionMonitor, listener, new String[0], fileName);
-    }
+    public void connectWithListenerForResource(final IAlarmConnectionMonitor connectionMonitor,
+                                               final IAlarmListener listener,
+                                               final IAlarmResource resource) {
+        LOG.info("Connecting to DAL for resource " + resource + ".");
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void connectWithListenerForTopics(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                             @Nonnull final IAlarmListener listener,
-                                             @Nonnull final String[] topics,
-                                             @Nonnull final String fileName) throws AlarmConnectionException {
-        LOG.info("Connecting to DAL for topics " + Arrays.toString(topics) + ".");
-
-        connectToPVsFromConfiguration(connectionMonitor, listener, fileName);
-
-        // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
-        connectionMonitor.onConnect();
-    }
-
-    private void connectToPVsFromConfiguration(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                               @Nonnull final IAlarmListener listener,
-                                               @Nonnull final String fileName) {
-
-        // TODO (jpenning) the facilities must be given as parameter
-        final List<String> facilitiesAsString = new ArrayList<String>();
-        facilitiesAsString.add("Test");
-        ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
         try {
-            //            model = _alarmConfigService.retrieveInitialContentModel(facilitiesAsString);
-            model = _alarmConfigService.retrieveInitialContentModelFromFile(fileName);
-            // TODO (jpenning) Init: Only register PVs for testing
+            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
+                model = _alarmConfigService.retrieveInitialContentModel(resource.getFacilities());
+            } else {
+                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource.getFilepath());
+            }
+
             for (final String recordName : model
                     .getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
                 LOG.debug("Connecting to " + recordName);
                 connectToPV(connectionMonitor, listener, recordName);
             }
+
+            // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
+            connectionMonitor.onConnect();
         } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve initial content model", e);
         }

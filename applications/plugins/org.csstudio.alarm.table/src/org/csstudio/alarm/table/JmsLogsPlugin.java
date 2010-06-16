@@ -33,7 +33,6 @@ import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.service.TopicsetService;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
-import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -93,10 +92,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      * The alarm configuration service
      */
     private IAlarmConfigurationService _alarmConfigurationService;
-
-    // TODO (jpenning) Hack: Remove when LDAP-Hack is removed
-    private ILdapService _ldapService;
-
 
     /**
      * The constructor.
@@ -160,8 +155,6 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
             _archiveAccess = (ILogMessageArchiveAccess) context
                     .getService(_serviceReferenceArchiveAccess);
         }
-
-        _ldapService = getService(context, ILdapService.class);
     }
 
     /**
@@ -286,14 +279,5 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
     }
-
-    /**
-     * @return the LDAP service
-     */
-    @CheckForNull
-    public ILdapService getLdapService() {
-        return _ldapService;
-    }
-
 
 }
