@@ -5,9 +5,9 @@ import org.epics.css.dal.DynamicValueState;
 
 /**
  * Rule to control the border style dependent on the severity.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class AlarmBorder implements IRule {
 
@@ -27,7 +27,7 @@ public class AlarmBorder implements IRule {
 	 * visible. Handle DynamicValueState for DAL severities and Double for
 	 * EPICS.SEVR.
 	 */
-	public Object evaluate(Object[] arguments) {
+	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
 			double d = 300.0;
 			String s = "init";
@@ -51,7 +51,7 @@ public class AlarmBorder implements IRule {
 					|| (s.equals(DynamicValueState.ALARM.toString()))) {
 				return 1;
 			}
-			if ((d >= 3.0 && d <= 255.0)
+			if (((d >= 3.0) && (d <= 255.0))
 					|| (s.equals(DynamicValueState.ERROR.toString()))) {
 				return 1;
 			}
@@ -59,5 +59,14 @@ public class AlarmBorder implements IRule {
 
 		return 0;
 	}
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

@@ -48,10 +48,10 @@ public class TickmarkRule implements IRule {
      * Normally the first argument was return unless the second argument is
      * "No_ALARM" then return Double.NaN. This switch off the Tick mark on the
      * Bargraph.
-     * 
+     *
      * {@inheritDoc}
      */
-    public Object evaluate(Object[] arguments) {
+    public Object evaluate(final Object[] arguments) {
         if (arguments != null) {
             if (arguments.length > 1) {
                 if (arguments[1] instanceof Double) {
@@ -74,6 +74,15 @@ public class TickmarkRule implements IRule {
             }
         }
         return 0.0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

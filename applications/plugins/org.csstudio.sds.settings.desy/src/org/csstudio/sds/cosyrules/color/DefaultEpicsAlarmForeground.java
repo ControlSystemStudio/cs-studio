@@ -48,7 +48,7 @@ public class DefaultEpicsAlarmForeground implements IRule{
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object[] arguments) {
+    public Object evaluate(final Object[] arguments) {
          if ((arguments != null) && (arguments.length > 0)) {
              double serverity = 0.0;
              if (arguments[0] instanceof Double) {
@@ -67,5 +67,14 @@ public class DefaultEpicsAlarmForeground implements IRule{
              }
          }
          return ColorAndFontUtil.toHex(138,43,226);    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

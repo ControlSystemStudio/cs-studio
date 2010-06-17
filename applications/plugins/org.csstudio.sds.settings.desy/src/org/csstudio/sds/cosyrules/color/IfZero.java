@@ -47,8 +47,8 @@ public class IfZero implements IRule {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object[] arguments) {
-        if(arguments!=null&&arguments.length>0){
+    public Object evaluate(final Object[] arguments) {
+        if((arguments!=null)&&(arguments.length>0)){
             if (arguments[0] instanceof Double) {
                 Double d = (Double) arguments[0];
                 boolean b1 = d<0.0001;
@@ -58,17 +58,26 @@ public class IfZero implements IRule {
                 return ((Long)  arguments[0])!=0;
             }else if(arguments[0] instanceof String) {
                 try{
-                    Double d = Double.parseDouble((String) arguments[0]);  
+                    Double d = Double.parseDouble((String) arguments[0]);
                     boolean b1 = d<0.0001;
                     boolean b2 = d>-0.0001;
                     return b1&&b2;
                 }catch (NumberFormatException e) {
                     return false;
                 }
-                    
+
             }
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

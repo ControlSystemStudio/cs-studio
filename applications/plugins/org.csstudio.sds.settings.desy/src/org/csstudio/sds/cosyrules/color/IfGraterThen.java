@@ -47,14 +47,14 @@ public class IfGraterThen implements IRule {
     /**
      * {@inheritDoc}
      */
-    public Object evaluate(Object[] arguments) {
+    public Object evaluate(final Object[] arguments) {
         if ((arguments != null) && (arguments.length > 1)) {
             double d1 = 0.0;
             if (arguments[0] instanceof Double) {
                 d1 = ((Double) arguments[0]);
             } else if (arguments[0] instanceof Long) {
                 d1 = ((Long) arguments[0]).doubleValue();
-            } else if (arguments[0] instanceof String && arguments[2] instanceof String) {
+            } else if ((arguments[0] instanceof String) && (arguments[2] instanceof String)) {
                 return ((String) arguments[0]).compareTo((String) arguments[1]) > 0;
             } else if (arguments[0] instanceof String) {
                 try {
@@ -79,6 +79,15 @@ public class IfGraterThen implements IRule {
             return d1 > d2;
         }
         return false;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getDescription() {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }
