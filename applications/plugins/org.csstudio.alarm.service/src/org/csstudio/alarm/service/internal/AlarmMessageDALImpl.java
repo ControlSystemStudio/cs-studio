@@ -60,10 +60,9 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      */
     private static final String APPLICATION_ID = "CSS_AlarmService";
 
-
     // The message is based upon this data
     private final SimpleProperty _property;
-    private final AnyData _anyDataOpt; // Opt: May be null
+    private final AnyData _anyData;
 
     /**
      * Create alarm message with the given condition and anydata.
@@ -71,20 +70,22 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      * @param anyData
      */
     public AlarmMessageDALImpl(@Nonnull final SimpleProperty property,
-                               @Nonnull final AnyData anyData) {
+                                @Nonnull final AnyData anyData) {
         _property = property;
-        _anyDataOpt = anyData;
-
+        _anyData = anyData;
     }
 
-    /**
-     * Create alarm message with the given property. This one must be used if anydata is not available.
-     *
-     * @param property
-     */
-    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property) {
-        _property = property;
-        _anyDataOpt = null;
+    public static boolean canCreateAlarmMessageFrom(@Nonnull final SimpleProperty property,
+                                                    @Nonnull final AnyData anyData) {
+        // TODO (jpenning) define correctness of alarm message from DAL here
+        return true;
+    }
+
+    public static IAlarmMessage newAlarmMessage(@Nonnull final SimpleProperty property,
+                                                @Nonnull final AnyData anyData) {
+        assert canCreateAlarmMessageFrom(property, anyData) : "Alarm message cannot be created for "
+                + property.getUniqueName();
+        return null;
     }
 
     /**
@@ -168,8 +169,8 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Override
     public final String toString() {
-        return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
-                + getString(AlarmMessageKey.STATUS);
+        return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", "
+                + getString(AlarmMessageKey.SEVERITY) + getString(AlarmMessageKey.STATUS);
     }
 
     @Nonnull
@@ -218,23 +219,17 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveStatusAsString() {
-        String result = N_A;
-        if (_anyDataOpt != null) {
-            result = _anyDataOpt.getSeverity().descriptionToString();
-        }
-        return result;
+        return _anyData.getSeverity().descriptionToString();
     }
 
     @Nonnull
     private String retrieveHostnameAsString() {
-        // TODO MCL: we can get the host name from the DAL connection - available?
+        // TODO (jpenning) we can get the host name from the DAL connection - available?
         String result = N_A;
 
-        if (_anyDataOpt != null) {
-            final MetaData metaData = _anyDataOpt.getMetaData();
-            if (metaData != null) {
-                result = metaData.getHostname();
-            }
+        final MetaData metaData = _anyData.getMetaData();
+        if (metaData != null) {
+            result = metaData.getHostname();
         }
 
         return result;
@@ -244,13 +239,11 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private String retrieveValueAsString() {
         String result = N_A;
 
-        if (_anyDataOpt != null) {
-            try {
-                result = _anyDataOpt.stringValue();
-                // TODO (jpenning) : what exception?
-            } catch (final Exception e) {
-                result = "value undefined";
-            }
+        try {
+            result = _anyData.stringValue();
+            // TODO (jpenning) : what exception?
+        } catch (final Exception e) {
+            result = "value undefined";
         }
         return result;
     }

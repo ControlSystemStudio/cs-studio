@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -55,8 +54,8 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
-    private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.class);
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmServiceJMSImpl.class);
 
     /**
      * Constructor.
@@ -156,7 +155,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     /**
      * Listener for retrieval of initial state
      */
-    private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends DynamicValueAdapter<T, P> {
+    private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends
+            DynamicValueAdapter<T, P> {
         private static final Logger LOG1 = CentralLogger.getInstance()
                 .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
 
@@ -167,18 +167,20 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void conditionChange(@Nullable final DynamicValueEvent<T, P> event) {
-            LOG1.debug("conditionChange received " + event.getCondition() + " for "
-                       + event.getProperty().getUniqueName());
+        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
+            if (event != null) {
+//                LOG1.debug("conditionChange received " + event.getCondition() + " for "
+//                        + event.getProperty().getUniqueName());
+            } // else ignore
         }
 
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
-                LOG1.debug("valueChanged received " + event.getCondition() + " for "
-                        + event.getProperty().getUniqueName());
+//                LOG1.debug("valueChanged received " + event.getCondition() + " for "
+//                        + event.getProperty().getUniqueName());
 
-                _initItem.init(new AlarmMessageDALImpl(event.getProperty()));
+                _initItem.init(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
             } // else ignore
         }
 
