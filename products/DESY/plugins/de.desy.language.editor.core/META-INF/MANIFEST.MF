@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: The core Plug-in of editor support for diffrent languages supported at DESY
 Bundle-SymbolicName: de.desy.language.editor.core;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: de.desy.language.editor.core.Activator
 Bundle-Vendor: C1 WPS mbH / DESy (Deutsches Elektronen Syncroton)
 Require-Bundle: org.eclipse.core.runtime,

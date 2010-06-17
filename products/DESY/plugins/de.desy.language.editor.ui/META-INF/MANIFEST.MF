@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in of editor core
 Bundle-SymbolicName: de.desy.language.editor.ui;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: de.desy.language.editor.ui.EditorUIActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
