@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: NameSpaceBrowser Tine Plug-in
 Bundle-SymbolicName: org.csstudio.utility.nameSpaceBrowser.tine;singleton:=true
-Bundle-Version: 1.0.11
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.utility.namespacebrowser.tine.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
