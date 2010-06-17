@@ -21,6 +21,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -37,12 +39,14 @@ import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
+import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -245,20 +249,20 @@ public class AlarmTreeView extends ViewPart {
      */
     private Action _toggleFilterAction;
 
-
     /**
      * Whether the filter is active.
      */
     private Boolean _isFilterActive = Boolean.FALSE;
-
-
 
     /**
      * The root node of this alarm tree. Shall only be generated once per view!
      */
     private final SubtreeNode _rootNode;
 
-    private final IAlarmConfigurationService _configService =
+    final Queue<ITreeModificationItem> _modificationItems =
+        new ConcurrentLinkedQueue<ITreeModificationItem>();
+
+    private static final IAlarmConfigurationService _configService =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
     private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
@@ -330,7 +334,8 @@ public class AlarmTreeView extends ViewPart {
 
         initializeContextMenu();
 
-        createActions(_rootNode, _viewer, _alarmListener, getSite(), _currentAlarmFilter);
+        createActions(_rootNode, _viewer, _alarmListener,
+                      getSite(), _currentAlarmFilter, _modificationItems);
 
         contributeToActionBars();
 
@@ -425,7 +430,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private void addDragAndDropSupport() {
         final DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
-        dropAdapter.addDropTargetListener(new AlarmTreeLocalSelectionDropListener(this));
+        dropAdapter.addDropTargetListener(new AlarmTreeLocalSelectionDropListener(this, _modificationItems));
         dropAdapter.addDropTargetListener(new AlarmTreeProcessVariableDropListener(this));
         _viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
                                dropAdapter.getTransfers(),
@@ -463,7 +468,7 @@ public class AlarmTreeView extends ViewPart {
     }
 
     @Nonnull
-    private ImportXmlFileJob createImportXmlFileJob(@Nonnull final SubtreeNode rootNode) {
+    private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
         final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(_configService,
                                                                        _ldapService,
                                                                        rootNode);
@@ -473,7 +478,7 @@ public class AlarmTreeView extends ViewPart {
     }
 
     @Nonnull
-    private Job createImportInitialConfigJob(@Nonnull final SubtreeNode rootNode) {
+    private Job createImportInitialConfigJob(@Nonnull final IAlarmSubtreeNode rootNode) {
 
         final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, _configService);
 
@@ -487,7 +492,7 @@ public class AlarmTreeView extends ViewPart {
      *
      * @param inputElement the new input element.
      */
-    void asyncSetViewerInput(@Nonnull final SubtreeNode inputElement) {
+    void asyncSetViewerInput(@Nonnull final IAlarmSubtreeNode inputElement) {
         getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
                 _viewer.setInput(inputElement);
@@ -634,17 +639,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private void contributeToActionBars() {
         final IActionBars bars = getViewSite().getActionBars();
-        fillLocalPullDown(bars.getMenuManager());
         fillLocalToolBar(bars.getToolBarManager());
-    }
-
-    /**
-     * Adds the actions for the action bar's pull down menu.
-     *
-     * @param manager the menu manager.
-     */
-    private void fillLocalPullDown(@Nonnull final IMenuManager manager) {
-        // EMPTY
     }
 
     /**
@@ -702,7 +697,7 @@ public class AlarmTreeView extends ViewPart {
         manager.add(_toggleFilterAction);
         manager.add(new Separator());
         manager.add(_showPropertyViewAction);
-        //manager.add(_saveInLdapAction);
+        manager.add(_saveInLdapAction);
         manager.add(_reloadAction);
         manager.add(new Separator());
         manager.add(_importXmlFileAction);
@@ -716,23 +711,31 @@ public class AlarmTreeView extends ViewPart {
      * @param viewer
      * @param currentAlarmFilter
      */
-    private void createActions(@Nonnull final SubtreeNode rootNode,
+    private void createActions(@Nonnull final IAlarmSubtreeNode rootNode,
                                @Nonnull final TreeViewer viewer,
                                @Nonnull final AlarmMessageListener alarmListener,
                                @Nonnull final IWorkbenchPartSite site,
-                               @Nonnull final ViewerFilter currentAlarmFilter) {
+                               @Nonnull final ViewerFilter currentAlarmFilter,
+                               @Nonnull final Queue<ITreeModificationItem> modificationItems) {
 
         _reloadAction =
             AlarmTreeViewActionFactory.createReloadAction(createImportInitialConfigJob(rootNode),
                                                           site,
                                                           alarmListener,
-                                                          viewer);
+                                                          viewer,
+                                                          modificationItems);
+
+        _saveInLdapAction = AlarmTreeViewActionFactory.createSaveInLdapAction(rootNode,
+                                                                              site,
+                                                                              viewer,
+                                                                              modificationItems);
 
         _importXmlFileAction =
             AlarmTreeViewActionFactory.createImportXmlFileAction(createImportXmlFileJob(rootNode),
                                                                  site,
                                                                  alarmListener,
                                                                  viewer);
+
         _exportXmlFileAction = AlarmTreeViewActionFactory.createExportXmlFileAction(site, rootNode);
 
 
@@ -750,13 +753,20 @@ public class AlarmTreeView extends ViewPart {
 
         _showHelpPageAction = AlarmTreeViewActionFactory.createShowHelpPageAction(viewer);
 
-        _createRecordAction = AlarmTreeViewActionFactory.createCreateRecordAction(site, viewer);
+        _createRecordAction = AlarmTreeViewActionFactory.createCreateRecordAction(site,
+                                                                                  viewer,
+                                                                                  modificationItems);
 
         _createComponentAction = AlarmTreeViewActionFactory.createCreateComponentAction(site,
-                                                                                        viewer);
-        _renameAction = AlarmTreeViewActionFactory.createRenameAction(site, viewer);
+                                                                                        viewer,
+                                                                                        modificationItems);
+        _renameAction = AlarmTreeViewActionFactory.createRenameAction(site,
+                                                                      viewer,
+                                                                      modificationItems);
 
-        _deleteNodeAction = AlarmTreeViewActionFactory.createDeleteNodeAction(site, viewer);
+        _deleteNodeAction = AlarmTreeViewActionFactory.createDeleteNodeAction(site,
+                                                                              viewer,
+                                                                              modificationItems);
 
         _showPropertyViewAction = AlarmTreeViewActionFactory.createShowPropertyViewAction(site);
 
@@ -764,7 +774,6 @@ public class AlarmTreeView extends ViewPart {
             AlarmTreeViewActionFactory.createToggleFilterAction(this, viewer, currentAlarmFilter);
 
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
-
     }
 
     @Nonnull

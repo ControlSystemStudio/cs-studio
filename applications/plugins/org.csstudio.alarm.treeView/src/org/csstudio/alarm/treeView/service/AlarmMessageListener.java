@@ -14,7 +14,6 @@
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
  * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.treeView.service;
 
 import java.util.Date;
@@ -102,7 +101,7 @@ public class AlarmMessageListener implements IAlarmListener {
                             wait();
                         }
 
-                        LOG.debug("applying update: " + update);
+                        //LOG.debug("applying update: " + update);
                         update.apply();
                     }
                 } catch (final InterruptedException e) {
@@ -126,7 +125,7 @@ public class AlarmMessageListener implements IAlarmListener {
              * empty and an updater is available, the update could be applied directly by the JMS
              * thread. However, checking whether the queue is empty and an updater is available, and
              * preventing this from changing during the execution of this method would require
-             * additional synchronization, so such an implementation would not necessarily have
+             * additional synchronisation, so such an implementation would not necessarily have
              * better performance characteristics than the current implementation, but would be a
              * lot more complex.
              */
@@ -196,7 +195,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
     public void onMessage(@Nonnull final IAlarmMessage message) {
-        LOG.debug("received: " + message);
+        //LOG.debug("received: " + message);
         processAlarmMessage(message);
     }
 
@@ -206,7 +205,7 @@ public class AlarmMessageListener implements IAlarmListener {
     private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
         final String name = message.getString(AlarmMessageKey.NAME);
         if (isAcknowledgement(message)) {
-            LOG.debug("received ack: name=" + name);
+            //LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
             final String severityValue = message.getString(AlarmMessageKey.SEVERITY);
@@ -234,8 +233,8 @@ public class AlarmMessageListener implements IAlarmListener {
                         + ", using current time instead. Message was: " + message);
                 eventtime = new Date();
             }
-            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
-                    + eventtime);
+//            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
+//                    + eventtime);
             _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime, _treeRoot));
         }
     }

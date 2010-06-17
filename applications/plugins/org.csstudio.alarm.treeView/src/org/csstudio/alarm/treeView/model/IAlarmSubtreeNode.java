@@ -113,6 +113,12 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      * Returns the direct children of this node.
      * @return a list of children if there are any, an empty list otherwise
      */
+    @Nonnull
     List<IAlarmTreeNode> getChildren();
+
+    /**
+     * Removes all children and their subtrees from the node. Clears all caches and maps.
+     */
+    void clearChildren();
 
 }

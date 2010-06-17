@@ -59,7 +59,14 @@ public interface ILdapService {
      * Attention, the component may not have children components!
      * @param component .
      */
-    boolean removeComponent(@Nonnull LdapName component);
+    boolean removeLeafComponent(@Nonnull LdapName component);
+
+//    /**
+//     * Removes the subtree component from the LDAP context.
+//     * @param component .
+//     */
+//    boolean removeComponent(@Nonnull LdapName component);
+
 
     /**
      * Retrieves LDAP entries for the given query and search scope synchronously.
@@ -125,5 +132,14 @@ public interface ILdapService {
      */
     @CheckForNull
     Object lookup(@Nonnull LdapName name) throws NamingException;
+
+
+    /**
+     * Moves the object with the given name to the new location
+     * @param oldLdapName
+     * @param newLdapName
+     * @throws NamingException
+     */
+    void move(@Nonnull LdapName oldLdapName, @Nonnull LdapName newLdapName) throws NamingException;
 
 }

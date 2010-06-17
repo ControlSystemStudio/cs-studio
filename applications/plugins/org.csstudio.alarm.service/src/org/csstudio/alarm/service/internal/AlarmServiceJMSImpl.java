@@ -27,6 +27,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -167,11 +168,9 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
-            if (event != null) {
-//                LOG1.debug("conditionChange received " + event.getCondition() + " for "
-//                        + event.getProperty().getUniqueName());
-            } // else ignore
+        public void conditionChange(@Nullable final DynamicValueEvent<T, P> event) {
+//            LOG1.debug("conditionChange received " + event.getCondition() + " for "
+//                       + event.getProperty().getUniqueName());
         }
 
         @Override

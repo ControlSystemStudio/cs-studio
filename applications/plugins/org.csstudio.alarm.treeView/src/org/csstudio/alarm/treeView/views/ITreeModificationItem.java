@@ -23,36 +23,44 @@
  */
 package org.csstudio.alarm.treeView.views;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
-
 /**
- * Input validator for alarm tree names.
+ * Interface to apply a modification of the alarm
+ * tree view to the LDAP or the persistence engine.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 20.05.2010
+ * @since 16.06.2010
  */
-public final class NodeNameInputValidator implements IInputValidator {
+public interface ITreeModificationItem {
 
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
+    /**
+     * Description for the tree modification item.
+     * @return the description
+     */
+    @Nonnull
+    String getDescription();
 
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
-            }
-        }
-        return null; // input is valid
+    /**
+     * The modification is applied.
+     * @return <code>true</code> if the modification has been successful,
+     *  <code>false</code> otherwise
+     * @throws AlarmTreeModficationException
+     */
+    boolean apply() throws AlarmTreeModificationException;
 
-    }
+    /**
+     * Sets the applied field of the modification item.
+     *
+     * @param applied .
+     */
+    void setApplied(boolean applied);
+
+    /**
+     * Returns whether this modification item has already been applied.
+     * @return <code>true</code> if the mod item has been applied
+     */
+    boolean hasBeenApplied();
 }

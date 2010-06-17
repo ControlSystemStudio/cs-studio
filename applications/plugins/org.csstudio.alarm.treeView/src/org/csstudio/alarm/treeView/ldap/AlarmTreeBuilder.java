@@ -39,6 +39,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -100,7 +101,7 @@ public final class AlarmTreeBuilder {
      * @return
      * @throws NamingException
      */
-    private static boolean createAlarmSubtree(@Nonnull final SubtreeNode parentNode,
+    private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
                                               @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
                                               @Nonnull final IProgressMonitor monitor) throws NamingException {
 
@@ -140,7 +141,7 @@ public final class AlarmTreeBuilder {
      * @return false if it has been canceled, true otherwise
      * @throws NamingException
      */
-    public static boolean build(@Nonnull final SubtreeNode rootNode,
+    public static boolean build(@Nonnull final IAlarmSubtreeNode rootNode,
                                 @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                 @Nonnull final IProgressMonitor monitor) throws NamingException {
         ensureTestFacilityExists();

@@ -43,8 +43,8 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -68,7 +68,7 @@ public final class ImportXmlFileJob extends Job {
 
     private final IAlarmConfigurationService _configService;
     private final ILdapService _ldapService;
-    private final SubtreeNode _rootNode;
+    private final IAlarmSubtreeNode _rootNode;
     private String _filePath;
 
 
@@ -80,7 +80,7 @@ public final class ImportXmlFileJob extends Job {
      */
     public ImportXmlFileJob(@Nonnull final IAlarmConfigurationService configService,
                             @Nonnull final ILdapService ldapService,
-                            @Nonnull final SubtreeNode rootNode) {
+                            @Nonnull final IAlarmSubtreeNode rootNode) {
         super("ImportFileJob");
         _configService = configService;
         _ldapService = ldapService;
@@ -140,7 +140,7 @@ public final class ImportXmlFileJob extends Job {
     @Nonnull
     private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
                                                @Nonnull final ILdapService service,
-                                               @Nonnull final SubtreeNode rootNode)
+                                               @Nonnull final IAlarmSubtreeNode rootNode)
         throws NamingException {
 
 
@@ -165,7 +165,7 @@ public final class ImportXmlFileJob extends Job {
 
 
     @Nonnull
-    private Set<String> getExistingFacilitiesFromView(@Nonnull final SubtreeNode rootNode) {
+    private Set<String> getExistingFacilitiesFromView(@Nonnull final IAlarmSubtreeNode rootNode) {
         final Set<String> facilities = new HashSet<String>();
         for (final IAlarmTreeNode facilityNode : rootNode.getChildren()) {
             facilities.add(facilityNode.getLdapName().toString());

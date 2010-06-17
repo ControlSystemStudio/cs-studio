@@ -31,6 +31,8 @@ import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 
 import java.util.ArrayList;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.naming.NamingEnumeration;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
@@ -54,9 +56,9 @@ import org.eclipse.swt.widgets.Shell;
  *
  */
 public class AddMountPointDlg extends Dialog {
-	public AddMountPointDlg(final Shell parentShell) {
+
+    public AddMountPointDlg(@Nonnull final Shell parentShell) {
 		super(parentShell);
-		// TODO Auto-generated constructor stub
 	}
 
 	private DirContext _connection;
@@ -67,6 +69,7 @@ public class AddMountPointDlg extends Dialog {
 		_connection = Engine.getInstance().getLdapDirContext();
 	}
 
+	@Nonnull
 	private String[] getSubDirs() {
 		final ArrayList<String> strcoll = new ArrayList<String>();
 		try {
@@ -100,13 +103,14 @@ public class AddMountPointDlg extends Dialog {
 	}
 
 	@Override
-    protected void configureShell(final Shell newShell)	{
+    protected void configureShell(@Nonnull final Shell newShell)	{
 	    super.configureShell(newShell);
 	    newShell.setText("Add new mount point");
 	}
 
 	@Override
-    protected Control createDialogArea(final Composite parent) {
+	@Nonnull
+    protected Control createDialogArea(@CheckForNull final Composite parent) {
 	    final Composite composite = (Composite)super.createDialogArea(parent);
 	    final GridLayout layout = new GridLayout();
 	    layout.numColumns = 1;
@@ -124,6 +128,7 @@ public class AddMountPointDlg extends Dialog {
 		_result = _mountPoints.getSelection();
 	}
 
+	@Nonnull
 	public String getResult() {
 		if (_result[0] == null) {
             return "";
@@ -137,7 +142,4 @@ public class AddMountPointDlg extends Dialog {
 	    setReturnCode(0);
 	    super.close();
 	}
-
-
-
 }

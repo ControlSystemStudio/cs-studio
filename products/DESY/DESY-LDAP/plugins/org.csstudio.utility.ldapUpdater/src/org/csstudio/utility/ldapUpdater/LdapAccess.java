@@ -242,7 +242,6 @@ public final class LdapAccess {
                     final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
                     newLdapName.add(new Rdn(EREN_FIELD_NAME, recordName));
 
-                    // TODO (bknerr) : Stopping or proceeding? Transaction rollback? Hist file update ?
                     if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
                         LOG.error("Error while updating LDAP record for " + recordName +
                         "\nProceed with next record.");

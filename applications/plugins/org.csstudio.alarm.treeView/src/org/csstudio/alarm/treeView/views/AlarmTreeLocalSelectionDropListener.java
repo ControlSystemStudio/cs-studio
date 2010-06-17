@@ -25,6 +25,7 @@ package org.csstudio.alarm.treeView.views;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
@@ -55,13 +56,17 @@ import org.eclipse.swt.widgets.TreeItem;
 public final class AlarmTreeLocalSelectionDropListener implements TransferDropTargetListener {
 
     private final AlarmTreeView _alarmTreeView;
+    private final Queue<ITreeModificationItem> _modificationItems;
 
     /**
      * Constructor.
-     * @param alarmTreeView
+     * @param alarmTreeView the view
+     * @param modificationItems list to collect the alarm tree modifications
      */
-    public AlarmTreeLocalSelectionDropListener(@Nonnull final AlarmTreeView alarmTreeView) {
+    public AlarmTreeLocalSelectionDropListener(@Nonnull final AlarmTreeView alarmTreeView,
+                                               @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         _alarmTreeView = alarmTreeView;
+        _modificationItems = modificationItems;
     }
 
     /**
@@ -161,8 +166,8 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
      */
     public void drop(@Nonnull final DropTargetEvent event) {
         final SubtreeNode dropTarget = (SubtreeNode) event.item.getData();
-        final List<IAlarmTreeNode> droppedNodes = AlarmTreeView.selectionToNodeList(LocalSelectionTransfer
-                .getTransfer().getSelection());
+        final List<IAlarmTreeNode> droppedNodes =
+            AlarmTreeView.selectionToNodeList(LocalSelectionTransfer.getTransfer().getSelection());
         if (event.detail == DND.DROP_COPY) {
             try {
                 copyNodes(droppedNodes, dropTarget);
@@ -200,7 +205,8 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     private void moveNodes(@Nonnull final List<IAlarmTreeNode> nodes,
                            @Nonnull final SubtreeNode target) throws DirectoryEditException {
         for (final IAlarmTreeNode node : nodes) {
-            DirectoryEditor.moveNode(node, target);
+            final ITreeModificationItem item = DirectoryEditor.moveNode(node, target);
+            _modificationItems.add(item);
         }
     }
 
@@ -208,7 +214,6 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
      * {@inheritDoc}
      */
     public void dragOperationChanged(@Nonnull final DropTargetEvent event) {
-        // TODO Auto-generated method stub
-
+        // Empty
     }
 }

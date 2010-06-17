@@ -23,36 +23,45 @@
  */
 package org.csstudio.alarm.treeView.views;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
 
 /**
- * Input validator for alarm tree names.
+ * Abstract alarm tree modification item.
  *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 20.05.2010
+ * @since 16.06.2010
  */
-public final class NodeNameInputValidator implements IInputValidator {
+public abstract class AbstractTreeModificationItem implements ITreeModificationItem {
 
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
+    private boolean _applied = false;
 
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
-            }
-        }
-        return null; // input is valid
+    /**
+     * {@inheritDoc}
+     * @throws AlarmTreeModificationException
+     */
+    @Override
+    public abstract boolean apply() throws AlarmTreeModificationException;
 
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public abstract String getDescription();
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean hasBeenApplied() {
+        return _applied;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void setApplied(final boolean applied) {
+        _applied = applied;
     }
 }

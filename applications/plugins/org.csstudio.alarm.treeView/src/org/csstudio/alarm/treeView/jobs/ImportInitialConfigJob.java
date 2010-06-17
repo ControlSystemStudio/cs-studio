@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -31,7 +32,7 @@ import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.logging.CentralLogger;
@@ -57,7 +58,7 @@ public final class ImportInitialConfigJob extends Job {
         CentralLogger.getInstance().getLogger(ImportInitialConfigJob.class);
 
     private final AlarmTreeView _alarmTreeView;
-    private final SubtreeNode _rootNode;
+    private final IAlarmSubtreeNode _rootNode;
     private final IAlarmConfigurationService _configService;
 
     /**
@@ -67,7 +68,7 @@ public final class ImportInitialConfigJob extends Job {
      * @param configService
      */
     public ImportInitialConfigJob(@Nonnull final AlarmTreeView alarmTreeView,
-                                  @Nonnull final SubtreeNode rootNode,
+                                  @Nonnull final IAlarmSubtreeNode rootNode,
                                   @Nonnull final IAlarmConfigurationService service) {
         super("Initialize alarm tree job.");
         _alarmTreeView = alarmTreeView;

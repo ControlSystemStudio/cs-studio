@@ -169,7 +169,8 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
         if (recordsSearchResult != null) {
             final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, recordsSearchResult);
+                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT,
+                                                                          recordsSearchResult);
             try {
                 builder.build();
             } catch (final CreateContentModelException e) {
@@ -185,12 +186,12 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 final LdapName ldapName = record.getLdapName();
                 ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
-                _ldapService.removeComponent(ldapName);
+                _ldapService.removeLeafComponent(ldapName);
 
             }
         }
 
-        _ldapService.removeComponent(createLdapQuery(ECON_FIELD_NAME, iocName,
+        _ldapService.removeLeafComponent(createLdapQuery(ECON_FIELD_NAME, iocName,
                                                      ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
                                                      EFAN_FIELD_NAME, facilityName,
                                                      OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE));
@@ -222,7 +223,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
                         final LdapName ldapName = record.getLdapName();
                         ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
-                        _ldapService.removeComponent(ldapName);
+                        _ldapService.removeLeafComponent(ldapName);
                         LOG.info("Tidying: Record " + record.getName() + " removed.");
                     }
                 }

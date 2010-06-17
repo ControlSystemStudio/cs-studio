@@ -151,7 +151,12 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 
             final IAlarmSubtreeNode parent = getParent();
             if (parent != null) {
-                result.addAll(0, parent.getLdapName());
+
+                final LdapName ldapName = parent.getLdapName();
+                if (ldapName == null) {
+                    return null;
+                }
+                result.addAll(0, ldapName);
             }
             return result;
         } catch (final InvalidNameException e) {

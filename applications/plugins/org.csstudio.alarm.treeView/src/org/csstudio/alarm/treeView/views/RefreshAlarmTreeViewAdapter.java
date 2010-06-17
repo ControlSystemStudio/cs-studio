@@ -38,8 +38,8 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.Severity;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -60,7 +60,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             .getLogger(RefreshAlarmTreeViewAdapter.class);
 
     private final AlarmTreeView _alarmTreeView;
-    private final SubtreeNode _adapterRootNode;
+    private final IAlarmSubtreeNode _adapterRootNode;
 
     /**
      * Constructor.
@@ -68,7 +68,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
      * @param alarmTreeView
      */
     RefreshAlarmTreeViewAdapter(@Nonnull final AlarmTreeView alarmTreeView,
-                                @Nonnull final SubtreeNode rootNode) {
+                                @Nonnull final IAlarmSubtreeNode rootNode) {
         _alarmTreeView = alarmTreeView;
         _adapterRootNode = rootNode;
     }
@@ -94,7 +94,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         });
     }
 
-    private void retrieveInitialStateSynchronously(@Nonnull final SubtreeNode rootNode) {
+    private void retrieveInitialStateSynchronously(@Nonnull final IAlarmSubtreeNode rootNode) {
         final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
         final List<PVNodeItem> initItems = new ArrayList<PVNodeItem>();
 

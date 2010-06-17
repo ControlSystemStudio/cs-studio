@@ -151,7 +151,7 @@ public final class LdapServiceImpl implements ILdapService {
      * {@inheritDoc}}
      */
     @Override
-    public boolean removeComponent(@Nonnull final LdapName component) {
+    public boolean removeLeafComponent(@Nonnull final LdapName component) {
         try {
             LOG.debug("Unbind entry from LDAP: " + component);
             CONTEXT.unbind(component);
@@ -162,6 +162,25 @@ public final class LdapServiceImpl implements ILdapService {
         }
         return true;
     }
+
+//    /**
+//     * {@inheritDoc}}
+//     */
+//    @Override
+//    public boolean removeComponent(@Nonnull final LdapName component) {
+//        try {
+//            LOG.debug("Unbind entry from LDAP incl. its subtree: " + component);
+//            final Object object = CONTEXT.lookup(component);
+//
+//
+//            CONTEXT.unbind(component);
+//        } catch (final NamingException e) {
+//            LOG.warn("Naming Exception while trying to unbind: " + component);
+//            LOG.warn(e.getExplanation());
+//            return false;
+//        }
+//        return true;
+//    }
 
     /**
      * {@inheritDoc}
@@ -180,9 +199,24 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public void rename(@Nonnull final LdapName oldLdapName,
                        @Nonnull final LdapName newLdapName) throws NamingException {
-        LOG.debug("Rename entry from: " + oldLdapName.toString() + " to " + oldLdapName.toString());
+        LOG.info("Rename entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
         CONTEXT.rename(oldLdapName, newLdapName);
     }
+
+    /**
+     * {@inheritDoc}
+     * @throws NamingException
+     */
+    @Override
+    public void move(@Nonnull final LdapName oldLdapName,
+                     @Nonnull final LdapName newLdapName) throws NamingException {
+        LOG.info("Move entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
+        final Object o = CONTEXT.lookup(oldLdapName);
+        CONTEXT.bind(newLdapName, o);
+        removeLeafComponent(oldLdapName); // unbind not allowed on non-leaf
+    }
+
+
 
     /**
      * {@inheritDoc}
