@@ -23,6 +23,7 @@ package org.csstudio.alarm.service.declaration;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 
 /**
@@ -47,7 +48,7 @@ public enum AlarmMessageKey {
     VALUE,
     APPLICATION_ID("APPLICATION-ID");
 
-    private final String _definingName;
+    private final String _definingName; // May be null
 
     /**
      * Use this constructor of the defining name of the key is equal to the name.
@@ -62,9 +63,7 @@ public enum AlarmMessageKey {
      *
      * @param definingName
      */
-    // CHECKSTYLE:OFF
-    private AlarmMessageKey(final String definingName) {
-    // CHECKSTYLE:ON
+    private AlarmMessageKey(@Nullable final String definingName) {
         _definingName = definingName;
     }
 

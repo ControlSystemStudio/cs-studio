@@ -19,6 +19,7 @@ package org.csstudio.alarm.service.internal;
 
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -66,9 +67,9 @@ public class AlarmServiceDALImpl implements IAlarmService {
     }
 
     @Override
-    public IAlarmResource newAlarmResource(final List<String> topics,
-                                           final List<String> facilities,
-                                           final String filepath) {
+    public final IAlarmResource newAlarmResource(@CheckForNull final List<String> topics,
+                                           @CheckForNull final List<String> facilities,
+                                           @CheckForNull final String filepath) {
         return new AlarmResource(topics, facilities, filepath);
     }
 

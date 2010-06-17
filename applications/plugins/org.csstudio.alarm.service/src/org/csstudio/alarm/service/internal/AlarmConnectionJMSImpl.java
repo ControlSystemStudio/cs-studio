@@ -86,9 +86,9 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
     }
 
     @Override
-    public void connectWithListenerForResource(final IAlarmConnectionMonitor connectionMonitor,
-                                               final IAlarmListener listener,
-                                               final IAlarmResource resource) throws AlarmConnectionException {
+    public void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                               @Nonnull final IAlarmListener listener,
+                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
         LOG.info("Connecting to JMS for topics " + resource.getTopics() + ".");
 
         try {

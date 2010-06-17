@@ -23,16 +23,14 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * This is just a bag of parameters, which are necessary for the alarm service and alarm connection implementations.
@@ -43,7 +41,6 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 16.06.2010
  */
 public class AlarmResource implements IAlarmResource {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmResource.class);
 
     private final List<String> _topics;
     private final List<String> _facilities;
@@ -54,31 +51,26 @@ public class AlarmResource implements IAlarmResource {
                          @CheckForNull final String filepath) {
         _topics = topics == null ? AlarmPreference.getTopicNames() : topics;
         _facilities = facilities == null ? AlarmPreference.getFacilityNames() : facilities;
-
-        String configFilename = null;
-        try {
-            configFilename = AlarmPreference.getConfigFilename();
-        } catch (IOException e) {
-            LOG.error("Error creating alarm resource. Could not retrieve configuration file name.", e);
-            // TODO (jpenning) promote to caller?
-        }
-        _filepath = filepath == null ? configFilename : filepath;
+        _filepath = filepath == null ? AlarmPreference.getConfigFilename() : filepath;
     }
 
-    public List<String> getTopics() {
+    @Nonnull
+    public final List<String> getTopics() {
         return Collections.unmodifiableList(_topics);
     }
 
-    public List<String> getFacilities() {
+    @Nonnull
+    public final List<String> getFacilities() {
         return Collections.unmodifiableList(_facilities);
     }
 
-    public String getFilepath() {
+    @Nonnull
+    public final String getFilepath() {
         return _filepath;
     }
 
     @Override
-    public String toString() {
+    public final String toString() {
         return "topics: " + _topics + ", facilities: " + _facilities + ", file: " + _filepath;
     }
 }

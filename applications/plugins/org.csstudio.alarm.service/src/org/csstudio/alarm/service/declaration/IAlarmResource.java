@@ -25,6 +25,8 @@ package org.csstudio.alarm.service.declaration;
 
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 /**
  * The operation of the alarm service depends on its implementation (JMS or DAL) and
  * certain parameters (topics, facilities for ldap, filename).
@@ -43,10 +45,22 @@ public interface IAlarmResource {
 
     // alarm resource objects are created using factory methods in the alarm service
 
+    /**
+     * @return list of topics usable for registering at jms
+     */
+    @Nonnull
     List<String> getTopics();
 
+    /**
+     * @return list of facilities usable for ldap based retrieving of a content model
+     */
+    @Nonnull
     List<String> getFacilities();
 
+    /**
+     * @return path to xml file containing a content model
+     */
+    @Nonnull
     String getFilepath();
 
 }

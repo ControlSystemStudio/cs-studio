@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -55,8 +56,10 @@ import com.cosylab.util.CommonException;
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
+
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmConnectionDALImpl.class);
 
+    private static final String COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL = "Could not retrieve initial content model";
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
 
@@ -103,9 +106,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     }
 
     @Override
-    public void connectWithListenerForResource(final IAlarmConnectionMonitor connectionMonitor,
-                                               final IAlarmListener listener,
-                                               final IAlarmResource resource) {
+    public void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                               @Nonnull final IAlarmListener listener,
+                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
         LOG.info("Connecting to DAL for resource " + resource + ".");
 
         try {
@@ -125,7 +128,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
             connectionMonitor.onConnect();
         } catch (final CreateContentModelException e) {
-            LOG.error("Could not retrieve initial content model", e);
+            LOG.error(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
+            throw new AlarmConnectionException(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
         }
 
     }

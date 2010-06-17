@@ -25,6 +25,7 @@ package org.csstudio.alarm.service.declaration;
 
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -66,7 +67,6 @@ public interface IAlarmService {
      */
     void retrieveInitialState(@Nonnull List<? extends IAlarmInitItem> initItems);
 
-
     /**
      * Create an alarm resource.
      * You give as much of the parameters as you know in your context, e.g.:
@@ -86,5 +86,8 @@ public interface IAlarmService {
      *
      * @return the new alarm resource
      */
-    IAlarmResource newAlarmResource(List<String> topics, List<String> facilities, String filepath);
+    @Nonnull
+    IAlarmResource newAlarmResource(@CheckForNull List<String> topics,
+                                    @CheckForNull List<String> facilities,
+                                    @CheckForNull String filepath);
 }

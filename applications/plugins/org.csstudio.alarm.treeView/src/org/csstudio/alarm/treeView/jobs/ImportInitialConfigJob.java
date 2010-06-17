@@ -21,7 +21,6 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
-import java.io.IOException;
 import java.util.Arrays;
 
 import javax.annotation.Nonnull;
@@ -104,18 +103,11 @@ public final class ImportInitialConfigJob extends Job {
         } catch (final CreateContentModelException e) {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building content model",
-                                      "Could not properly build the content model from LDAP: " + e.getMessage());
+                                      "Could not properly build the content model from LDAP or XML: " + e.getMessage());
         } catch (final NamingException e) {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building Tree",
                                       "Could not properly build the full tree: " + e.getMessage());
-        } catch (IOException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Building content model",
-                                      "Could not retrieve configuration file name "
-                                              + AlarmPreference.ALARMSERVICE_CONFIG_FILENAME
-                                                      .getValue() + "from preferences: "
-                                              + e.getMessage());
         } finally {
             monitor.done();
         }

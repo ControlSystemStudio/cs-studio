@@ -16,7 +16,6 @@
  */
 package org.csstudio.alarm.table.ui;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -249,10 +248,9 @@ public class AlarmView extends LogView {
             }
 
             JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
+            // TODO (jpenning) error message visible in message window
         } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
-        } catch (IOException e) {
-            LOG.error("Could not retrieve configuration file name", e);
         }
     }
 

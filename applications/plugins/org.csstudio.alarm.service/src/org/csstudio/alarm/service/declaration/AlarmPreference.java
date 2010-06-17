@@ -28,8 +28,10 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.platform.AbstractPreference;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
@@ -46,6 +48,8 @@ import org.osgi.framework.Bundle;
  * @since 10.06.2010
  */
 public final class AlarmPreference<T> extends AbstractPreference<T> {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmPreference.class);
 
     public static final AlarmPreference<Boolean> ALARMSERVICE_IS_DAL_IMPL =
         new AlarmPreference<Boolean>("isDalImpl", false);
@@ -115,15 +119,24 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      *
      * Here the prefix for the plugin is added, so the caller needn't worry.
      *
+     * If the filename is misspelled an IOException will occur. It is catched right here, because it is not known
+     * if the filename will be used at all. If it is used eventually, an io-error will occur and must be handled anyway.
+     *
      * @return the full pathname
-     * @throws IOException
      */
     @Nonnull
-    public static String getConfigFilename() throws IOException {
+    public static String getConfigFilename() {
         Bundle bundle = Platform.getBundle(AlarmServiceActivator.PLUGIN_ID);
         Path path = new Path(ALARMSERVICE_CONFIG_FILENAME.getValue());
         URL url = FileLocator.find(bundle, path, null);
-        String result = FileLocator.toFileURL(url).getPath();
+        String result = null;
+        try {
+            result = FileLocator.toFileURL(url).getPath();
+        } catch (IOException e) {
+            result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
+            LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
+        }
+        assert result != null : "result must not be null";
         return result;
     }
 

@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -89,9 +90,10 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     }
 
     @Override
-    public IAlarmResource newAlarmResource(final List<String> topics,
-                                           final List<String> facilities,
-                                           final String filepath) {
+    @Nonnull
+    public final IAlarmResource newAlarmResource(@CheckForNull final List<String> topics,
+                                                 @CheckForNull final List<String> facilities,
+                                                 @CheckForNull final String filepath) {
         return new AlarmResource(topics, facilities, filepath);
     }
 
@@ -171,7 +173,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void valueChanged(final DynamicValueEvent<T, P> event) {
+        public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
                 LOG1.debug("valueChanged received " + event.getCondition() + " for "
                         + event.getProperty().getUniqueName());
