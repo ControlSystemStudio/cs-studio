@@ -477,7 +477,7 @@ public class AlarmView extends LogView {
 
         @Override
         public void init(@Nonnull final IAlarmMessage message) {
-            LOG.debug("init for pv " + _pvName + ", msg: " + message);
+//            LOG.debug("init for pv " + _pvName + ", msg: " + message);
             _messageList.addMessage(new BasicMessage(message.getMap()));
         }
 
