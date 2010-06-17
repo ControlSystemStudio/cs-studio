@@ -55,9 +55,9 @@ public final class AEND_dlog implements IRule {
             }
 			if (Math.abs(d-0.00)<0.00001) {
 //			    old Valve closed color Red
-			    return ColorAndFontUtil.toHex(253,0,0);
+//			    return ColorAndFontUtil.toHex(253,0,0);
 			    // new Valve closed color dark gray
-//				return "#707070";
+				return "#707070";
 			}
 			if (Math.abs(d-1.00)<0.00001) {
 				return ColorAndFontUtil.toHex(42,99,228);
