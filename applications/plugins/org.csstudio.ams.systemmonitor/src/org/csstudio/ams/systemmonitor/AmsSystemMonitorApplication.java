@@ -131,7 +131,7 @@ public class AmsSystemMonitorApplication implements IApplication
             monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
             if(monitorStatusHandler.sendErrorSms())
             {
-                sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO:64");
+                sendErrorSms("AmsSystemMonitor could not initialize JMS. HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                 monitorStatusHandler.setSmsSent(true);
             }
             
@@ -222,7 +222,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     
                     if(amsStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("AMS does NOT respond to the current check. HOWTO:64");
+                        sendErrorSms("AMS does NOT respond to the current check. HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         amsStatusHandler.setSmsSent(true);
                     }
                     else
@@ -240,7 +240,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     if(monitorStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("AmsSystemMonitor could not send JMS check message. HOWTO:64");
+                        sendErrorSms("AmsSystemMonitor could not send JMS check message. HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         monitorStatusHandler.setSmsSent(true);
                     }
                     else
@@ -315,7 +315,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     monitorStatusHandler.setCurrentStatus(CheckResult.ERROR);
                     if(monitorStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("AmsSystemMonitor could not send JMS check message. HOWTO:64");
+                        sendErrorSms("AmsSystemMonitor could not send JMS check message. HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         monitorStatusHandler.setSmsSent(true);
                     }
                     else
@@ -341,7 +341,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     
                     if(modemStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("SmsConnector does NOT respond to the current check: " + asme.getMessage() + " HOWTO:64");
+                        sendErrorSms("SmsConnector does NOT respond to the current check: " + asme.getMessage() + " HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
@@ -358,7 +358,7 @@ public class AmsSystemMonitorApplication implements IApplication
                     
                     if(modemStatusHandler.sendErrorSms())
                     {
-                        sendErrorSms("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO:64");
+                        sendErrorSms("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
@@ -376,13 +376,13 @@ public class AmsSystemMonitorApplication implements IApplication
                     
                     if(modemStatusHandler.getPreviousStatus() == CheckResult.ERROR)
                     {
-                        sendErrorSms("SmsConnector switched from " + CheckResult.ERROR + " to WARN: " + asme.getMessage() + " HOWTO:64");
+                        sendErrorSms("SmsConnector switched from " + CheckResult.ERROR + " to WARN: " + asme.getMessage() + " HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     
                     if(modemStatusHandler.sendWarnMail())
                     {
-                        sendWarnMail("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO:64");
+                        sendWarnMail("SmsConnector responds a modem problem: " + asme.getMessage() + " HOWTO: http://elogbook.desy.de:8080/eLogbook/HowTo?ACTION=VIEW&VALUE=64");
                         modemStatusHandler.setSmsSent(true);
                     }
                     else
