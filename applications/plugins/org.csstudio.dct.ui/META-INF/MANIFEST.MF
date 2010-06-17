@@ -4,7 +4,7 @@ Bundle-ActivationPolicy: lazy
 Bundle-ManifestVersion: 2
 Bundle-Name: Ui Plug-in
 Bundle-SymbolicName: org.csstudio.dct.ui;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.dct.ui.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

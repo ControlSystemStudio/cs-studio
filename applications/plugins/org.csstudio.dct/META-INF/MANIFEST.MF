@@ -3,7 +3,7 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ManifestVersion: 2
 Bundle-Name: Dct Plug-in
 Bundle-SymbolicName: org.csstudio.dct;singleton:=true
-Bundle-Version: 1.0.0
+Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.dct.DctActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
