@@ -56,6 +56,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
@@ -188,26 +189,6 @@ public class ArchiveView extends ViewPart {
         parent.pack();
     }
 
-    private void addManageButtons(Composite archiveTableManagementComposite) {
-        GridData gd;
-        Group messageButtons = new Group(archiveTableManagementComposite,
-                SWT.LINE_SOLID);
-        messageButtons.setText(Messages.ViewArchive_messagesGroup);
-        GridLayout layout = new GridLayout(1, true);
-        messageButtons.setLayout(layout);
-        gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
-        gd.minimumHeight = 60;
-        gd.minimumWidth = 60;
-        messageButtons.setLayoutData(gd);
-        createExportButton(messageButtons);
-
-        if (_canExecute) {
-            layout.numColumns = 2;
-            gd.minimumWidth = 120;
-            createDeleteButton(messageButtons);
-        }
-    }
-
     private void addMessageCount(Composite archiveTableManagementComposite) {
         GridData gd;
         Group count = new Group(archiveTableManagementComposite, SWT.LINE_SOLID);
@@ -244,72 +225,91 @@ public class ArchiveView extends ViewPart {
         GridData gd;
         final Group periodGroup = new Group(archiveTableManagementComposite,
                 SWT.LINE_SOLID);
-        periodGroup.setLayout(new GridLayout(4, false));
+        periodGroup.setLayout(new GridLayout(5, false));
         periodGroup.setText(Messages.getString("LogViewArchive_period")); //$NON-NLS-1$" +
+
+        //Set Layout for group
         gd = new GridData(SWT.LEFT, SWT.FILL, true, false, 1, 1);
         gd.minimumHeight = 160;
-        gd.minimumWidth = 310;
+        gd.minimumWidth = 360;
         periodGroup.setLayoutData(gd);
 
+        //Set label and current 'from time' from filter in label and text field
         new Label(periodGroup, SWT.NONE).setText(Messages.ViewArchive_fromTime);
-
         _timeFromText = new Text(periodGroup, SWT.SINGLE);
         _timeFromText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 1, 1));
+        _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom())
+                              .toString());
+        _timeFromText.addFocusListener(new DateTextFieldFocusListener());
+        
+        //Create Buttons for direct search
         createFixedSearchButton(periodGroup, 24, "1 day");
+        createFixedSearchButton(periodGroup, 72, "3 day");
         createFixedSearchButton(periodGroup, 168, "7 day");
 
-        _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom())
-                .toString());
+        //Set label and current 'from time' from filter in label and text field
         new Label(periodGroup, SWT.NONE).setText(Messages.ViewArchive_toTime);
         _timeToText = new Text(periodGroup, SWT.SINGLE);
         _timeToText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true,
                 false, 1, 1));
         _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo())
                 .toString());
-
-        _timeFromText.addFocusListener(new DateTextFieldFocusListener());
         _timeToText.addFocusListener(new DateTextFieldFocusListener());
-        createFixedSearchButton(periodGroup, 72, "3 day");
+
+        //Create Button for search with filter and variable time
         Button variableSearchButton = new Button(periodGroup, SWT.PUSH);
         variableSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
                 true, false, 1, 1));
         variableSearchButton.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
-
-        variableSearchButton.addSelectionListener(new SelectionAdapter() {
-            public void widgetSelected(final SelectionEvent e) {
-                FilterSettingDialog filterSettingDialog = new FilterSettingDialog(
-                        periodGroup.getShell(), _filter, _filterSettingHistory,
-                        _messageProperties, TimestampFactory.fromCalendar(
-                                _filter.getFrom()).toString(), TimestampFactory
-                                .fromCalendar(_filter.getTo()).toString());
-                if (filterSettingDialog.open() == filterSettingDialog.OK) {
-                    String lowString = filterSettingDialog
-                            .getStartSpecification();
-                    String highString = filterSettingDialog
-                            .getEndSpecification();
-                    try {
-                        StartEndTimeParser parser = new StartEndTimeParser(
-                                lowString, highString);
-                        _filter.setFrom((GregorianCalendar) parser.getStart());
-                        _filter.setTo((GregorianCalendar) parser.getEnd());
-                        _timeFromText.setText(TimestampFactory.fromCalendar(
-                                _filter.getFrom()).toString());
-
-                        _timeToText.setText(TimestampFactory.fromCalendar(
-                                _filter.getTo()).toString());
-                        // redraw
-                        _timeFromText.getParent().getParent().redraw();
-                        _timeToText.getParent().getParent().redraw();
-                        readDatabase();
-                    } catch (Exception e1) {
-                        JmsLogsPlugin.logError("Time/Date parser error");
-                    }
-                }
-            }
-        });
+        variableSearchButton.addSelectionListener(new FilterDialogListener(periodGroup));
+        
+        //Add drop down for filter saved by the user
+        Combo filterSelector = new Combo (periodGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
+        filterSelector.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                                                        true, false, 2, 1));
     }
 
+    /*
+     * Call filter with current time setting, get new user settings and
+     * start database search
+     */
+    private final class FilterDialogListener extends SelectionAdapter {
+        private final Group periodGroup;
+        
+        private FilterDialogListener(Group periodGroup) {
+            this.periodGroup = periodGroup;
+        }
+        
+        public void widgetSelected(final SelectionEvent e) {
+            FilterSettingDialog filterSettingDialog = new FilterSettingDialog(periodGroup.getShell(),
+                          _filter, _filterSettingHistory, _messageProperties,
+                          TimestampFactory.fromCalendar(_filter.getFrom()).toString(),
+                          TimestampFactory.fromCalendar(_filter.getTo()).toString());
+            if (filterSettingDialog.open() == filterSettingDialog.OK) {
+                String lowString = filterSettingDialog
+                .getStartSpecification();
+                String highString = filterSettingDialog
+                .getEndSpecification();
+                try {
+                    StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
+                    _filter.setFrom((GregorianCalendar) parser.getStart());
+                    _filter.setTo((GregorianCalendar) parser.getEnd());
+                    _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom()).toString());
+                    _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo()).toString());
+                    _timeFromText.getParent().getParent().redraw();
+                    _timeToText.getParent().getParent().redraw();
+                    readDatabase();
+                } catch (Exception e1) {
+                    JmsLogsPlugin.logError("Time/Date parser error");
+                }
+            }
+        }
+    }
+ 
+    /* 
+     * Set new from and to dates to filter if valid otherwise set previous dates.
+     */
     private class DateTextFieldFocusListener extends FocusAdapter {
         @Override
         public void focusLost(FocusEvent e) {
