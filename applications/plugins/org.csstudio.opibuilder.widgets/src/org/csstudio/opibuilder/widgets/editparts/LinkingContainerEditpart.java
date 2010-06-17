@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.util.LinkedHashMap;
+
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractContainerEditpart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
@@ -137,7 +139,11 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 				if(group != null && group instanceof AbstractContainerModel)
 					loadTarget = (AbstractContainerModel) group;
 			}
-				
+			if(tempDisplayModel.getMacrosInput().isInclude_parent_macros())
+				tempDisplayModel.setMacroMap(
+						(LinkedHashMap<String, String>) tempDisplayModel.getParentMacroMap());
+			tempDisplayModel.getMacroMap().putAll(tempDisplayModel.getMacrosInput().getMacrosMap());
+			tempDisplayModel.getMacroMap().putAll(getWidgetModel().getMacroMap());	
 			for(AbstractWidgetModel child : loadTarget.getChildren()){	
 				getWidgetModel().addChild(child, false);
 			}
