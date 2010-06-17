@@ -25,7 +25,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
@@ -95,13 +94,7 @@ final class AlarmHandler {
             @Override
             public void onMessage(@Nonnull final IAlarmMessage message) {
                 LOG.debug(message.getMap().toString());
-
-                if (isAlarmMessageOk(message)) {
-                    jmsMessageService.sendAlarmMessage(message);
-                } else {
-                    LOG.error("Cannot convert alarm message to jms message: "
-                            + message.getMap().toString());
-                }
+                jmsMessageService.sendAlarmMessage(message);
             }
 
             @Override
@@ -110,22 +103,6 @@ final class AlarmHandler {
             }
 
         };
-    }
-
-    // TODO (jpenning) move predicate to alarm message. and fix it.
-    private boolean isAlarmMessageOk(@Nonnull final IAlarmMessage message) {
-        boolean result = true;
-        for (final AlarmMessageKey key : AlarmMessageKey.values()) {
-            final String value = message.getString(key);
-            result = result && (value != null);
-            result = result && (!value.equals("noTimeStamp"));
-            result = result && (!value.equals("Uninitialized"));
-            result = result && (!value.equals("noMetaData"));
-            if (!result) {
-                break;
-            }
-        }
-        return result;
     }
 
 }

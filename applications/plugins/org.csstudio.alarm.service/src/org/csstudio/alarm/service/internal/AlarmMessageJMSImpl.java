@@ -24,6 +24,7 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
+import javax.jms.Message;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
@@ -49,8 +50,18 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      *
      * @param mapMessage this message will be evaluated by subsequent calls to getString
      */
-    public AlarmMessageJMSImpl(@Nonnull final MapMessage mapMessage) {
+    private AlarmMessageJMSImpl(@Nonnull final MapMessage mapMessage) {
         this._mapMessage = mapMessage;
+    }
+
+    public static boolean canCreateAlarmMessageFrom(@Nonnull final Message message) {
+        // TODO (jpenning) define correctness of alarm message from JMS here
+        return message instanceof MapMessage;
+    }
+
+    public static IAlarmMessage newAlarmMessage(@Nonnull final Message message) {
+        assert canCreateAlarmMessageFrom(message) : "Alarm message cannot be created";
+        return new AlarmMessageJMSImpl((MapMessage) message);
     }
 
     /**

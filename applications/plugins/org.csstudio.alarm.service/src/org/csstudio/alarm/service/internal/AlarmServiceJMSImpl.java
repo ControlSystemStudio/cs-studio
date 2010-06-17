@@ -77,12 +77,24 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     public final void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
 
+        // There may be more than a thousand pv for which the initial state is requested at once.
+        // Therefore the process of registering is performed in chunks with a delay of approx. 100 msec.
+        // TODO (jpenning) define prefs for chunk size and delay times
+
         final List<Element> pvsUnderWay = new ArrayList<Element>();
-        for (final IAlarmInitItem initItem : initItems) {
-            registerPV(pvsUnderWay, initItem);
+
+        for (int i = 0; i < initItems.size(); i++) {
+            registerPV(pvsUnderWay, initItems.get(i));
+            if ((i % 500) == 0) {
+                waitFixedTime(100);
+            }
         }
 
-        waitFixedTime();
+//        for (final IAlarmInitItem initItem : initItems) {
+//            registerPV(pvsUnderWay, initItem);
+//        }
+
+        waitFixedTime(1000);
 
         for (final Element pvUnderWay : pvsUnderWay) {
             deregisterPV(pvUnderWay);
@@ -120,10 +132,10 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
     }
 
-    private void waitFixedTime() {
+    private void waitFixedTime(final int delayInMsec) {
         try {
             // TODO (jpenning) use constant from prefs here
-            Thread.sleep(2000);
+            Thread.sleep(delayInMsec);
         } catch (final InterruptedException e) {
             LOG.warn("retrieveInitialState was interrupted ", e);
         }
@@ -169,17 +181,22 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
         @Override
         public void conditionChange(@Nullable final DynamicValueEvent<T, P> event) {
-//            LOG1.debug("conditionChange received " + event.getCondition() + " for "
-//                       + event.getProperty().getUniqueName());
+            //            LOG1.debug("conditionChange received " + event.getCondition() + " for "
+            //                       + event.getProperty().getUniqueName());
         }
 
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
-//                LOG1.debug("valueChanged received " + event.getCondition() + " for "
-//                        + event.getProperty().getUniqueName());
-
-                _initItem.init(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
+                //                LOG1.debug("valueChanged received " + event.getCondition() + " for "
+                //                        + event.getProperty().getUniqueName());
+                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
+                                                                  .getData())) {
+                    _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event
+                            .getData()));
+                } else {
+                    LOG1.warn("Could not create alarm message for " + event.getProperty().getUniqueName());
+                }
             } // else ignore
         }
 

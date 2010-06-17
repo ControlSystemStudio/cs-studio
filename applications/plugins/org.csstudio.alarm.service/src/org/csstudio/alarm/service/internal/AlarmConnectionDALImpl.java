@@ -180,7 +180,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener,
                                            @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
             // The alarmConnectionMonitor is not used by the DynamicValueListenerAdapter, instead the connect is sent
-            // directly after connectWithListenerForTopics()
+            // directly after connectWithListenerForResource()
             _alarmListener = alarmListener;
         }
 
@@ -194,7 +194,13 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
             LOG2.debug("valueChanged received " + event.getCondition() + " for "
                     + event.getProperty().getUniqueName());
-            _alarmListener.onMessage(new AlarmMessageDALImpl(event.getProperty(), event.getData()));
+
+            if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
+                                                              .getData())) {
+                _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event.getData()));
+            } else {
+                LOG2.warn("Could not create alarm message for " + event.getProperty().getUniqueName());
+            }
         }
 
     }

@@ -69,7 +69,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
      * @param property
      * @param anyData
      */
-    public AlarmMessageDALImpl(@Nonnull final SimpleProperty property,
+    private AlarmMessageDALImpl(@Nonnull final SimpleProperty property,
                                 @Nonnull final AnyData anyData) {
         _property = property;
         _anyData = anyData;
@@ -78,6 +78,15 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     public static boolean canCreateAlarmMessageFrom(@Nonnull final SimpleProperty property,
                                                     @Nonnull final AnyData anyData) {
         // TODO (jpenning) define correctness of alarm message from DAL here
+
+        /*
+         * if the value is noTimeStamp or Uninitialized or noMetaData
+         * return null -> do NOT create message !
+         *        String value = getString(key);
+         *        if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
+         */
+
+
         return true;
     }
 
@@ -85,7 +94,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                                                 @Nonnull final AnyData anyData) {
         assert canCreateAlarmMessageFrom(property, anyData) : "Alarm message cannot be created for "
                 + property.getUniqueName();
-        return null;
+        return new AlarmMessageDALImpl(property, anyData);
     }
 
     /**
@@ -157,14 +166,6 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
             result.put(key.getDefiningName(), getString(key));
         }
         return result;
-
-        // TODO (jpenning) What to do if message is undefined? Do not create alarm message, i.e. stop processing and ignore jms message?
-        /*
-         * if the value is noTimeStamp or Uninitialized or noMetaData
-         * return null -> do NOT create message !
-         *        String value = getString(key);
-         *        if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
-         */
     }
 
     @Override

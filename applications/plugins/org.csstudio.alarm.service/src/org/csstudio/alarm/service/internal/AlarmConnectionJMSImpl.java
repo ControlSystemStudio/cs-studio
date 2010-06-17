@@ -19,7 +19,6 @@ package org.csstudio.alarm.service.internal;
 
 import javax.annotation.Nonnull;
 import javax.jms.JMSException;
-import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.Session;
@@ -120,8 +119,12 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         }
 
         public void onMessage(@Nonnull final Message message) {
-            // TODO (jpenning) cast?
-            _alarmListener.onMessage(new AlarmMessageJMSImpl((MapMessage) message));
+            if (AlarmMessageJMSImpl.canCreateAlarmMessageFrom(message)) {
+                _alarmListener.onMessage(AlarmMessageJMSImpl.newAlarmMessage(message));
+            }
+            else {
+                LOG.warn("Could not create alarm message from " + message);
+            }
         }
 
         @Nonnull
