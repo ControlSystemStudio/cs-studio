@@ -5,6 +5,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Utility methods for handling strings.
@@ -124,6 +126,17 @@ public class StringUtil {
 			resultList.add(subString);
 		}
 		return resultList.toArray(new String[resultList.size()]);
+	}
+
+	/**If a String contains the regular expression.
+	 * @param source the source string.
+	 * @param regex the regular expression.
+	 * @return true if the source string contains the input regex. false other wise. 
+	 */
+	public static boolean containRegex(String source, String regex) {
+		Pattern p = Pattern.compile(regex);
+		Matcher m = p.matcher(source);
+		return m.find();
 	}
 
 }
