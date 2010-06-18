@@ -33,7 +33,6 @@ import org.eclipse.ui.PlatformUI;
  */
 public class LinkingContainerEditpart extends AbstractContainerEditpart{
 
-	private DisplayModel tempDisplayModel = new DisplayModel();
 
 	@Override
 	protected IFigure doCreateFigure() {
@@ -110,7 +109,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 	/**
 	 * @param path the path of the OPI file
 	 */
-	private void loadWidgets(IPath path, boolean checkSelf) {	
+	private synchronized void loadWidgets(IPath path, boolean checkSelf) {	
 		getWidgetModel().removeAllChildren();
 		if(path ==null || path.isEmpty())
 			return;
@@ -129,6 +128,7 @@ public class LinkingContainerEditpart extends AbstractContainerEditpart{
 					}
 				}
 			}
+			DisplayModel tempDisplayModel = new DisplayModel();
 			tempDisplayModel.setOpiFilePath(path);
 			XMLUtil.fillDisplayModelFromInputStream(
 					ResourceUtil.pathToInputStream(path), tempDisplayModel);
