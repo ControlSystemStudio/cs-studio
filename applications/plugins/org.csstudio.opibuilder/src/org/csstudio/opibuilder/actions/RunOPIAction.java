@@ -39,7 +39,6 @@ public class RunOPIAction extends Action implements IWorkbenchWindowActionDelega
 
   @Override
 	public void run() {
-	  System.out.println("run");
 		IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
 		IEditorPart activeEditor = page.getActiveEditor();
 		if(activeEditor instanceof OPIEditor){
