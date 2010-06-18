@@ -28,7 +28,7 @@ public class ScriptData implements IAdaptable {
 	/**
 	 * The input PVs of the script. Which can be accessed in the script and trigger the script execution.
 	 */
-	private List<PVTuple> pvList;
+	protected List<PVTuple> pvList;
 	
 	
 	public ScriptData() {

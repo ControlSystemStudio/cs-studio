@@ -1,13 +1,11 @@
 package org.csstudio.opibuilder.script;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.pv.PV;
+import org.eclipse.osgi.util.NLS;
 import org.mozilla.javascript.Context;
 
 /**The center service for script execution.
@@ -21,8 +19,6 @@ public class ScriptService {
 	public static final String WIDGET_CONTROLLER = "widgetController";
 
 	private static ScriptService instance;
-	
-	private Map<ScriptData, RhinoScriptStore> scriptMap = new HashMap<ScriptData, RhinoScriptStore>();
 	
 	private Context scriptContext;
 	
@@ -59,29 +55,16 @@ public class ScriptService {
 	public void registerScript(final ScriptData scriptData, final AbstractBaseEditPart editpart, final PV[] pvArray){		
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
-				RhinoScriptStore scriptStore = null;
 				try {					
-					scriptStore = new RhinoScriptStore(scriptData, editpart, pvArray);
-					scriptMap.put(scriptData, scriptStore);
+					new RhinoScriptStore(scriptData, editpart, pvArray);
 				}catch (Exception e) {
-					String errorInfo = "Failed to register script: " +
-					scriptData.getPath().toString() + ". " + e.getMessage();
+					String name = scriptData instanceof RuleScriptData ? 
+							((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
+					String errorInfo = NLS.bind("Failed to register {0}. \n{1}",
+							name, e.getMessage());
 					ConsoleService.getInstance().writeError(errorInfo);
 					CentralLogger.getInstance().error(this, errorInfo, e);
 				} 				
-			}
-		});
-		
-	}
-	
-	public void unregisterScript(final ScriptData scriptData){
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				if(scriptMap.containsKey(scriptData)){
-					scriptMap.get(scriptData).dispose();
-					scriptMap.remove(scriptData);	
-				}
-									
 			}
 		});
 		

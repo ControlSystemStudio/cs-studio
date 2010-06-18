@@ -40,6 +40,8 @@ public class RhinoScriptStore {
 	
 	private IPath scriptPath;
 	
+	private String errorSource;
+	
 	private Map<PV, PVListener> pvListenerMap;
 	
 	private boolean errorInScript;
@@ -47,26 +49,34 @@ public class RhinoScriptStore {
 	private Map<PV, Boolean> pvConnectStatusMap;	
 	
 	public RhinoScriptStore(ScriptData scriptData, final AbstractBaseEditPart editpart, 
-			final PV[] pvArray) throws Exception {	
-		scriptPath = scriptData.getPath();
-		if(!scriptPath.isAbsolute())
-			scriptPath = ResourceUtil.buildAbsolutePath(
-					editpart.getWidgetModel(), scriptPath);
-		
+			final PV[] pvArray) throws Exception {
 		errorInScript = false;
-		scriptContext = ScriptService.getInstance().getScriptContext();
-	
+		scriptContext = ScriptService.getInstance().getScriptContext();		
 		scriptScope = new ImporterTopLevel(scriptContext);	
 		
-		//read file			
-		InputStream inputStream = ResourceUtil.pathToInputStream(scriptPath);
-		BufferedReader reader = new BufferedReader(
-				new InputStreamReader(inputStream));	
+		errorSource = scriptData instanceof RuleScriptData ? 
+				((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
 		
-		//compile
-		script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
-		inputStream.close();
-		reader.close();
+		if(scriptData instanceof RuleScriptData){
+			script = scriptContext.compileString(((RuleScriptData)scriptData).getScriptString(),
+					"rule", 1, null);
+		}else{
+			scriptPath = scriptData.getPath();
+			if(!scriptPath.isAbsolute()){
+				scriptPath = ResourceUtil.buildAbsolutePath(
+						editpart.getWidgetModel(), scriptPath);
+			}
+			//read file			
+			InputStream inputStream = ResourceUtil.pathToInputStream(scriptPath);
+			BufferedReader reader = new BufferedReader(
+					new InputStreamReader(inputStream));	
+			
+			//compile
+			script = scriptContext.compileReader(reader, "script", 1, null); //$NON-NLS-1$
+			inputStream.close();
+			reader.close();
+		}
+	
 		
 		widgetController = Context.javaToJS(editpart, scriptScope);
 		pvArrayObject = Context.javaToJS(pvArray, scriptScope);
@@ -88,7 +98,7 @@ public class RhinoScriptStore {
 					//if pv connection is restored from connection
 					if(!pvConnectStatusMap.get(pv)){
 						ConsoleService.getInstance().writeInfo(
-								NLS.bind("Connection to PV {0} has been restored.", pv.getName()));
+								NLS.bind("Connection to PV {0} restored.", pv.getName()));
 						pvConnectStatusMap.put(pv, true);
 					}
 					
@@ -97,8 +107,8 @@ public class RhinoScriptStore {
 						for(PV pv2 : pvArray){
 							if(!pv2.isConnected()){
 								String message = NLS.bind(
-										"The script: {0} did not executed because the input PV: {1} is disconnected", 
-										scriptPath.toString(), pv2.getName());
+										"{0} did not executed because the input PV: {1} is disconnected", 
+										errorSource, pv2.getName());
 								ConsoleService.getInstance().writeWarning(message);
 								return;
 							}
@@ -112,10 +122,8 @@ public class RhinoScriptStore {
 									script.exec(scriptContext, scriptScope);
 								} catch (Exception e) {
 									errorInScript = true;
-									final String message = NLS.bind("Error in script {0}.\nAs a consequence, the script will not be executed.\n{1}",
-										scriptPath.toString() , e.getMessage());
-									//MessageDialog.openError(null, "Script Error", 
-									//		message);
+									final String message = NLS.bind("Error in {0}.\nAs a consequence, the script or rule will not be executed.\n{1}",
+										errorSource, e.getMessage());									
 									ConsoleService.getInstance().writeError(message);
 								}
 							}
@@ -126,8 +134,8 @@ public class RhinoScriptStore {
 					if(pv.isRunning()){
 						pvConnectStatusMap.put(pv, false);
 						String message = NLS.bind(
-								"The PV: {0} which is one of the inputs of the script: {1} is disconnected.", 
-								pv.getName(), scriptPath.toString());
+								"The PV: {0} which is one of the inputs of the script or rule: {1} is disconnected.", 
+								pv.getName(), errorSource);
 						ConsoleService.getInstance().writeWarning(message);
 					}
 					

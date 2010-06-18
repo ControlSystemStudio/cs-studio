@@ -38,10 +38,12 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.PVValueProperty;
+import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.properties.ScriptProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.UnchangableStringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.opibuilder.script.ScriptsInput;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.WidgetDescriptor;
@@ -68,6 +70,8 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public static final String PROP_NAME = "name";//$NON-NLS-1$
 	
 	public static final String PROP_SCRIPTS = "scripts";//$NON-NLS-1$
+	
+	public static final String PROP_RULES = "rules";//$NON-NLS-1$
 	
 	public static final String PROP_XPOS = "x";//$NON-NLS-1$
 	
@@ -188,7 +192,7 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		addProperty(new ActionsProperty(PROP_ACTIONS, "Actions", 
 				WidgetPropertyCategory.Behavior));
 		addProperty(new StringProperty(PROP_TOOLTIP, "Tooltip", WidgetPropertyCategory.Display, "", true));
-			
+		addProperty(new RulesProperty(PROP_RULES, "Rules", WidgetPropertyCategory.Behavior));	
 			
 		WidgetDescriptor descriptor = WidgetsService.getInstance().getWidgetDescriptor(getTypeID());
 		String name;
@@ -305,6 +309,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	
 	public LinkedHashMap<StringProperty, PVValueProperty> getPVMap(){
 		return pvMap;
+	}
+	
+	public RulesInput getRulesInput() {
+		return (RulesInput)getPropertyValue(PROP_RULES);
 	}
 	
 	public ScriptsInput getScriptsInput(){
@@ -545,7 +553,5 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	 */
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
-	}
-	
-	
+	}	
 }

@@ -21,7 +21,9 @@
  */
 package org.csstudio.opibuilder.editparts;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -32,6 +34,8 @@ import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.properties.WidgetPropertyChangeListener;
 import org.csstudio.opibuilder.script.PVTuple;
+import org.csstudio.opibuilder.script.RuleData;
+import org.csstudio.opibuilder.script.RuleScriptData;
 import org.csstudio.opibuilder.script.ScriptData;
 import org.csstudio.opibuilder.script.ScriptService;
 import org.csstudio.opibuilder.script.ScriptsInput;
@@ -251,10 +255,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 					}
 				}
 				
-				//script execution
+				//script and rules execution
 				pvMap.clear();				
-				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();		
-				for(final ScriptData scriptData : scriptsInput.getScriptList()){						
+				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();	
+				List<ScriptData> scriptDataList = new ArrayList<ScriptData>(scriptsInput.getScriptList());
+				for(RuleData rd : getWidgetModel().getRulesInput().getRuleDataList()){
+					scriptDataList.add(rd.convertToScriptData());
+				}
+				for(final ScriptData scriptData : scriptDataList){						
 						final PV[] pvArray = new PV[scriptData.getPVList().size()];
 						int i = 0;
 						for(PVTuple pvTuple : scriptData.getPVList()){
@@ -326,10 +334,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 										return Status.OK_STATUS;
 									}
 									else if (connectAttempts == 0){  //give up
-										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of script {1},  which is attached to {2}.\nThe script will still be executed once the PV was connected.",
+										String name = scriptData instanceof RuleScriptData ? 
+												((RuleScriptData)scriptData).getRuleData().getName() : scriptData.getPath().toString();
+										final String message = NLS.bind("Failed to connect to {0} in 30 seconds.\nThey are the input PVs of {1},  which is attached to {2}.\n" +
+												"The script will still be executed once the PV was connected.",
 												new String[]{
 												disconnectedPVs.substring(0, disconnectedPVs.length()-2), 
-												scriptData.getPath().toString(), 
+												name, 
 												AbstractBaseEditPart.this.getWidgetModel().getName()});
 										ConsoleService.getInstance().writeWarning(message);
 										ScriptService.getInstance().registerScript(
@@ -366,13 +377,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			for(String id : getWidgetModel().getAllPropertyIDs()){
 				getWidgetModel().getProperty(id).removeAllPropertyChangeListeners();//removePropertyChangeListener(propertyListenerMap.get(id));				
 			}
-			if(executionMode == ExecutionMode.RUN_MODE){
-				ScriptsInput scriptsInput = getWidgetModel().getScriptsInput();
-				
-				for(final ScriptData scriptData : scriptsInput.getScriptList()){
-					ScriptService.getInstance().unregisterScript(scriptData);
-				}
-				
+			if(executionMode == ExecutionMode.RUN_MODE){					
 				for(PV pv : pvMap.values())
 					pv.stop();
 			}			

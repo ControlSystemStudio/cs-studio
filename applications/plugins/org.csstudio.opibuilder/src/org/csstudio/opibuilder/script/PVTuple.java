@@ -13,4 +13,8 @@ public class PVTuple{
 		this.trigger = trigger;
 	}
 	
+	public PVTuple getCopy(){
+		return new PVTuple(pvName, trigger);
+	}
+	
 }
