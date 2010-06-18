@@ -103,6 +103,7 @@ public enum ZoomType{
 				cursor = new Cursor(Display.getDefault(), SWT.CURSOR_ARROW);
 			else
 				cursor = new Cursor(Display.getDefault(), cursorImage.getImageData(), 8, 8);
+			XYGraphMediaFactory.getInstance().registerCursor(cursor);
 			this.flags = flags;
 		}
 		

@@ -22,6 +22,8 @@
  package org.csstudio.swt.xygraph.util;
 
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.csstudio.swt.xygraph.Activator;
 import org.eclipse.core.runtime.Plugin;
@@ -73,6 +75,8 @@ public final class XYGraphMediaFactory {
 	 * The font registry.
 	 */
 	private FontRegistry _fontRegistry;
+	
+	private Set<Cursor> cursorRegistry;
 
 	/**
 	 * Map that holds the provided image descriptors.
@@ -86,9 +90,15 @@ public final class XYGraphMediaFactory {
 	private static Cursor CURSOR_GRABBING;	
 	
 	
-	public static void disposeResources(){
+	public void disposeResources(){
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
 			CURSOR_GRABBING.dispose();
+		if(cursorRegistry != null)
+			for(Cursor cursor : cursorRegistry){
+				if(cursor != null && !cursor.isDisposed())
+				cursor.dispose();
+			}
+		
 	}
 
 	public static Cursor getCursor(CURSOR_TYPE cursorType){
@@ -121,6 +131,7 @@ public final class XYGraphMediaFactory {
 				for (Image img : _imageCache.values()) {
 					img.dispose();
 				}
+				disposeResources();
 			}
 		});
 
@@ -375,6 +386,17 @@ public final class XYGraphMediaFactory {
 		}
 		return _imageCache.get(imageDescriptor);
 	}
+	
+	/**Register the cursor so it can be disposed when the plugin stopped.
+	 * @param cursor
+	 */
+	public void registerCursor(Cursor cursor){
+		if(cursorRegistry == null){
+			cursorRegistry = new HashSet<Cursor>();
+		}
+		cursorRegistry.add(cursor);
+	}
+	
     /** the color for light blue */
     final static public RGB COLOR_LIGHT_BLUE = new RGB(153, 186, 243);
 

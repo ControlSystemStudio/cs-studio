@@ -1,7 +1,5 @@
 package org.csstudio.swt.xygraph;
 
-import org.csstudio.swt.xygraph.undo.ZoomType;
-import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -40,10 +38,7 @@ public class Activator extends AbstractUIPlugin {
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	@Override
-    public void stop(BundleContext context) throws Exception {
-		XYGraphMediaFactory.disposeResources();			
-		for(ZoomType z : ZoomType.values())
-			z.getCursor().dispose();
+    public void stop(BundleContext context) throws Exception {		
 		plugin = null;	
 		super.stop(context);
 	}
