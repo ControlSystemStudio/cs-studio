@@ -91,12 +91,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         LOG.debug("retrieveInitialState about to wait");
         waitFixedTime(1000);
 
-        // TODO (jpenning) do not deregister all at once
-
+        // The process of deregistering is also performed in chunks with a delay
         LOG.debug("retrieveInitialState about to deregister " + pvsUnderWay.size() + " pvs");
-//        for (final Element pvUnderWay : pvsUnderWay) {
-//            deregisterPV(pvUnderWay);
-//        }
         for (int i = 0; i < pvsUnderWay.size(); i++) {
             deregisterPV(pvsUnderWay.get(i));
             if ((i % 500) == 0) {

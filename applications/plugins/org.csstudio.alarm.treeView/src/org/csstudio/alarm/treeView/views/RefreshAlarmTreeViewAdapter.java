@@ -24,7 +24,6 @@
 package org.csstudio.alarm.treeView.views;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -131,15 +130,12 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         public void init(@Nonnull final IAlarmMessage alarmMessage) {
             // TODO (jpenning) Review access to alarm message properties
-            final String nameString = alarmMessage.getString(AlarmMessageKey.NAME);
-            final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
-            if ( (nameString != null) && (severityString != null)) {
-                final Severity severity = Severity.parseSeverity(severityString);
-                final Alarm alarm = new Alarm(nameString, severity, alarmMessage.getEventtimeOrCurrentTime());
+            final String name = alarmMessage.getString(AlarmMessageKey.NAME);
+            if (name != null) {
+                final Alarm alarm = new Alarm(name, alarmMessage.getSeverity(), alarmMessage.getEventtimeOrCurrentTime());
                 _pvNode.updateAlarm(alarm);
             } else {
-                LOG_INNER.warn("Could not retrieve data (name, severity) from "
-                        + alarmMessage);
+                LOG_INNER.warn("Could not retrieve name from " + alarmMessage);
             }
         }
 

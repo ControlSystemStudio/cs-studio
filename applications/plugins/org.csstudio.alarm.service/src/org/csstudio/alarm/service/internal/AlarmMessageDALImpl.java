@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.SimpleProperty;
@@ -168,7 +169,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     public final String toString() {
         return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", "
-                + getString(AlarmMessageKey.SEVERITY) + ", " + getString(AlarmMessageKey.STATUS);
+                + getSeverity() + ", " + getString(AlarmMessageKey.STATUS);
     }
 
     @Nonnull
@@ -211,20 +212,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveSeverityAsString() {
-        String result = NOT_AVAILABLE;
-        final DynamicValueCondition condition = getCondition();
-
-        if (condition.isMajor()) {
-            result = "MAJOR";
-        } else if (condition.isMinor()) {
-            result = "MINOR";
-        } else if (condition.isOK()) {
-            result = "NO_ALARM";
-        } else if (condition.isInvalid()) {
-            result = "INVALID";
-        }
-
-        return result;
+        return getSeverity().name();
     }
 
     private String retrieveSeverityOldAsString() {
@@ -289,6 +277,29 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveApplicationIDAsString() {
         return APPLICATION_ID;
+    }
+
+    /**
+     * Maps the condition from the DAL event to the severity enum.
+     *
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public Severity getSeverity()
+    {
+        Severity result = Severity.UNKNOWN;
+
+        final DynamicValueCondition condition = getCondition();
+        if (condition.isMajor()) {
+            result = Severity.MAJOR;
+        } else if (condition.isMinor()) {
+            result = Severity.MINOR;
+        } else if (condition.isOK()) {
+            result = Severity.NO_ALARM;
+        } else if (condition.isInvalid()) {
+            result = Severity.INVALID;
+        }
+        return result;
     }
 
     @Override

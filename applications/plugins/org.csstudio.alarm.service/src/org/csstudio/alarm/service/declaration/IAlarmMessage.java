@@ -44,6 +44,12 @@ public interface IAlarmMessage {
     String getString(@Nonnull final AlarmMessageKey key);
 
     /**
+     * @return the severity
+     */
+    @Nonnull
+    Severity getSeverity();
+
+    /**
      * Tries to retrieve the event time and returns the date if it succeeds, else null.
      *
      * @return the event time or null

@@ -20,6 +20,10 @@
  */
 package org.csstudio.alarm.table.service;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.alarm.service.declaration.Severity;
+
 /**
  * Service for playing alarm sounds based on severity of alarms.
  *
@@ -35,6 +39,5 @@ public interface IAlarmSoundService {
      *
      * @param severity
      */
-    // TODO (jpenning) use enum instead of string
-    void playAlarmSound(String severity);
+    void playAlarmSound(@Nonnull Severity severity);
 }

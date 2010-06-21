@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -111,8 +112,14 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
 
     @Override
     public final String toString() {
-        return "JMS-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
+        return "JMS-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getSeverity()
                 + ", " + getString(AlarmMessageKey.STATUS);
+    }
+
+    @Nonnull
+    public Severity getSeverity()
+    {
+        return Severity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
     }
 
     @Override

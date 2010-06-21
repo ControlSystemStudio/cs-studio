@@ -101,11 +101,9 @@ public enum Severity {
     @Nonnull
 	public static Severity parseSeverity(@CheckForNull final String severityString) {
 	    if (severityString == null) {
-	        // TODO (jpenning) : shouldn't be possible
 	        return UNKNOWN;
 	    }
 		try {
-		    // TODO (jpenning) : really? mapping unknown severity to no alarm? Please check
 		    return valueOf(severityString);
 		} catch (final IllegalArgumentException e) {
             return UNKNOWN;
@@ -133,6 +131,7 @@ public enum Severity {
      * Returns the Severity with the lowest level.
      * @return the Severity with the lowest level
      */
+	@Nonnull
     public static Severity getLowest() {
         return LOWEST_SEVERITY;
     }

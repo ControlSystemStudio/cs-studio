@@ -25,8 +25,13 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import javazoom.jl.player.Player;
 
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
 import org.csstudio.platform.logging.CentralLogger;
@@ -46,10 +51,10 @@ import org.osgi.framework.Bundle;
  */
 public class AlarmSoundService implements IAlarmSoundService {
 
-    private final CentralLogger _log = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmSoundService.class);
 
     // TODO (jpenning) refactor to enum map to {@link org.csstudio.alarm.treeView.model.Severity}
-    // perhaps move the Severity definition somewhere else...
     private Map<String, String> _severityToSoundfile;
 
     // Buffer for one sound
@@ -59,35 +64,32 @@ public class AlarmSoundService implements IAlarmSoundService {
 
     public AlarmSoundService() {
         mapSeverityToSoundfile();
-        _playerThread = createPlayerThread();
+        _playerThread = new PlayerThread("AlarmSoundService");
         _playerThread.start();
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void playAlarmSound(final String severity) {
-        _log.debug(this, "playAlarmSound for severity " + severity);
+    public void playAlarmSound(@Nonnull final Severity severity) {
+        LOG.debug("playAlarmSound for severity " + severity);
 
         // Guard
-        if (!isMappingDefinedForSeverity(severity)) {
-            _log.debug(this, "No mapping defined for severity " + severity);
+        if (!isMappingDefinedForSeverity(severity.name())) {
+            LOG.debug("No mapping defined for severity " + severity);
             return;
         }
 
-        if (_queue.offer(severity)) {
-            _log.debug(this, "sound for severity " + severity + " has been queued");
+        if (_queue.offer(severity.name())) {
+            LOG.debug("sound for severity " + severity + " has been queued");
         } else {
-            _log.debug(this, "sound for severity " + severity + " has been ignored");
+            LOG.debug("sound for severity " + severity + " has been ignored");
         }
     }
 
-    private String getMp3Path(final String severity) {
+    @Nonnull
+    private String getMp3Path(@Nonnull final String severity) {
         return _severityToSoundfile.get(severity);
     }
 
-    private boolean isMappingDefinedForSeverity(final String severity) {
+    private boolean isMappingDefinedForSeverity(@Nonnull final String severity) {
         boolean result = _severityToSoundfile.containsKey(severity);
 
         final String filename = _severityToSoundfile.get(severity);
@@ -127,59 +129,70 @@ public class AlarmSoundService implements IAlarmSoundService {
 
     }
 
-    private Thread createPlayerThread() {
-        return new Thread("AlarmSoundService") {
+    /**
+     * Class for the player thread
+     */
+    private class PlayerThread extends Thread {
 
-            @Override
-            public void run() {
-                Player mp3Player = null;
-                BufferedInputStream bufferedInputStream = null;
+        public PlayerThread(@Nonnull final String name) {
+            super(name);
+        }
 
-                while (true) {
-                    try {
-                        // Remove entries which occurred during previous playtime
-                        _queue.clear();
+        @Override
+        public void run() {
+            Player mp3Player = null;
+            BufferedInputStream bufferedInputStream = null;
 
-                        // Wait for entry
-                        final String severity = _queue.take();
-                        _log.debug(this, "player started");
+            while (true) {
+                try {
+                    // Remove entries which occurred during previous playtime
+                    _queue.clear();
 
-                        bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
-                        mp3Player = new Player(bufferedInputStream);
-                        mp3Player.play();
-                    } catch (final Exception e) {
-                        _log.warn(this, "player stopped on error ", e);
-                    } finally {
-                        _log.debug(this, "player has finished");
-                        try {
-                            if (bufferedInputStream != null) {
-                                bufferedInputStream.close();
-                            }
-                            if (mp3Player != null) {
-                                mp3Player.close();
-                            }
-                        } catch (final Exception e2) {
-                            _log.warn(this, "error while closing ressources", e2);
-                            // can't help it
-                        }
-                    }
+                    // Wait for entry
+                    final String severity = _queue.take();
+                    LOG.debug("player started");
+
+                    bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
+                    mp3Player = new Player(bufferedInputStream);
+                    mp3Player.play();
+                } catch (final Exception e) {
+                    LOG.warn("player stopped on error ", e);
+                } finally {
+                    LOG.debug("player has finished");
+                    tryToClose(mp3Player, bufferedInputStream);
                 }
             }
+        }
 
-            /**
-             * The sound ressource is located in the product bundle.
-             *
-             * @param severity
-             * @return
-             * @throws IOException
-             */
-            private InputStream getSoundStreamForSeverity(final String severity) throws IOException {
-                final String mp3Path = getMp3Path(severity);
-                final Bundle bundle = Platform.getProduct().getDefiningBundle();
-                final URL url = FileLocator.find(bundle, new Path(mp3Path), null);
-                final InputStream stream = url.openStream();
-                return stream;
-            };
-        };
+        private void tryToClose(@CheckForNull final Player mp3Player, @CheckForNull final BufferedInputStream bufferedInputStream) {
+            try {
+                if (bufferedInputStream != null) {
+                    bufferedInputStream.close();
+                }
+                if (mp3Player != null) {
+                    mp3Player.close();
+                }
+            } catch (final Exception e2) {
+                LOG.warn("error while closing resources", e2);
+                // can't help it
+            }
+        }
+
+        /**
+         * The sound resource is located in the product bundle.
+         *
+         * @param severity
+         * @return
+         * @throws IOException
+         */
+        @Nonnull
+        private InputStream getSoundStreamForSeverity(@Nonnull final String severity) throws IOException {
+            final String mp3Path = getMp3Path(severity);
+            final Bundle bundle = Platform.getProduct().getDefiningBundle();
+            final URL url = FileLocator.find(bundle, new Path(mp3Path), null);
+            final InputStream stream = url.openStream();
+            return stream;
+        }
+
     }
 }

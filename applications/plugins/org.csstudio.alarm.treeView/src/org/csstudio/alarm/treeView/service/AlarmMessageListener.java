@@ -207,14 +207,7 @@ public class AlarmMessageListener implements IAlarmListener {
             //LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
-            final String severityValue = message.getString(AlarmMessageKey.SEVERITY);
-            if (severityValue == null) {
-                LOG.warn("Received alarm message which did not contain "
-                        + AlarmMessageKey.SEVERITY.name() + "! Message ignored. Message was: "
-                        + message);
-                return;
-            }
-            final Severity severity = Severity.parseSeverity(severityValue);
+            final Severity severity = message.getSeverity();
             Date eventtime = message.getEventtimeOrCurrentTime();
 //            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
 //                    + eventtime);

@@ -23,7 +23,6 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
@@ -430,8 +429,7 @@ public class AlarmView extends LogView {
 
                     @Override
                     public void onMessage(@Nonnull final IAlarmMessage message) {
-                        _alarmSoundService.playAlarmSound(message
-                                .getString(AlarmMessageKey.SEVERITY));
+                        _alarmSoundService.playAlarmSound(message.getSeverity());
                     }
                 };
             }

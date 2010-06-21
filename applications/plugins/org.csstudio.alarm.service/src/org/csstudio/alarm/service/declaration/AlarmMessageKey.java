@@ -61,7 +61,6 @@ public enum AlarmMessageKey {
         this(null);
     }
 
-
     /**
      * Use this constructor of the defining name of the key is different to the name.
      *
