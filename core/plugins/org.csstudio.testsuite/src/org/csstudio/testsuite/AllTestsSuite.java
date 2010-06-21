@@ -105,21 +105,19 @@ public class AllTestsSuite {
 				if (!isFragment(bundle)) {
 					try {
 						testClass = bundle.loadClass(testClassName);
+						System.out.println("TestClassName: " + testClassName);
 					} catch (Exception e) {
-						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
-						*/
 					}
 				} else {
 					Bundle hostbundle = getHostBundle(bundle);
 					try {
+					    System.out.println("TestClassName: " + testClassName);
 						testClass = hostbundle.loadClass(testClassName);
 					} catch (Exception e) {
-						/*
 						throw new RuntimeException("Could not load class: " 
 								+ testClassName, e);
-						*/
 					}
 				}
 
