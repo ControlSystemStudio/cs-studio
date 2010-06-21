@@ -107,8 +107,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         if (alarmService != null) {
             alarmService.retrieveInitialState(initItems);
         } else {
-            LOG
-                    .warn("Initial state could not be retrieved because alarm service is not available.");
+            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
         }
     }
 
@@ -140,7 +139,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
                 final Alarm alarm = new Alarm(nameString, severity, eventTime);
                 _pvNode.updateAlarm(alarm);
             } else {
-                LOG_INNER.warn("Could not retrieve data (name, severity, eventtime) from "
+                LOG_INNER.warn("Could not retrieve data (name, severity) from "
                         + alarmMessage);
             }
         }
