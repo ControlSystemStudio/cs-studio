@@ -39,6 +39,9 @@ public class KryoNameResolved {
     }
 
     public String getLabel() {
+        if (label == null) {
+            label = "";
+        }
         return label;
     }
 
