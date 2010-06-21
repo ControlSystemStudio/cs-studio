@@ -27,7 +27,6 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -170,7 +169,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
      */
     private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
-        private static final Logger LOG1 = CentralLogger.getInstance()
+        private static final Logger LOG_INNER = CentralLogger.getInstance()
                 .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
 
         private final IAlarmInitItem _initItem;
@@ -180,22 +179,24 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
 
         @Override
-        public void conditionChange(@Nullable final DynamicValueEvent<T, P> event) {
-            //            LOG1.debug("conditionChange received " + event.getCondition() + " for "
-            //                       + event.getProperty().getUniqueName());
+        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
+            // Currently we are not interested in conditionChange-Events
+            //            LOG_INNER.debug("conditionChange received " + event.getCondition() + " for "
+            //                    + event.getProperty().getUniqueName());
         }
 
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
-                //                LOG1.debug("valueChanged received " + event.getCondition() + " for "
-                //                        + event.getProperty().getUniqueName());
+                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
+                        + event.getProperty().getUniqueName());
                 if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
-                                                                  .getData())) {
+                        .getData())) {
                     _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event
                             .getData()));
                 } else {
-                    LOG1.warn("Could not create alarm message for " + event.getProperty().getUniqueName());
+                    LOG_INNER.warn("Could not create alarm message for "
+                            + event.getProperty().getUniqueName());
                 }
             } // else ignore
         }

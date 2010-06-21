@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -56,8 +57,8 @@ import com.cosylab.util.CommonException;
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmConnectionDALImpl.class);
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(AlarmConnectionDALImpl.class);
 
     private static final String COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL = "Could not retrieve initial content model";
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
@@ -116,7 +117,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 model = _alarmConfigService.retrieveInitialContentModel(resource.getFacilities());
             } else {
-                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource.getFilepath());
+                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource
+                        .getFilepath());
             }
 
             for (final String recordName : model
@@ -172,7 +174,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
      */
     private static class DynamicValueListenerAdapter<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
-        private static final Logger LOG2 = CentralLogger.getInstance()
+        private static final Logger LOG_INNER = CentralLogger.getInstance()
                 .getLogger(AlarmConnectionDALImpl.DynamicValueListenerAdapter.class);
 
         private final IAlarmListener _alarmListener;
@@ -185,22 +187,26 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         }
 
         @Override
-        public void conditionChange(@Nonnull final DynamicValueEvent<T, P> event) {
-            LOG2.debug("conditionChange received " + event.getCondition() + " for "
-                    + event.getProperty().getUniqueName());
+        public void conditionChange(@CheckForNull final DynamicValueEvent<T, P> event) {
+            // Currently we are not interested in conditionChange-Events
+//            LOG_INNER.debug("conditionChange received " + event.getCondition() + " for "
+//                    + event.getProperty().getUniqueName());
         }
 
         @Override
-        public void valueChanged(@Nonnull final DynamicValueEvent<T, P> event) {
-            LOG2.debug("valueChanged received " + event.getCondition() + " for "
-                    + event.getProperty().getUniqueName());
-
-            if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
-                                                              .getData())) {
-                _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event.getData()));
-            } else {
-                LOG2.warn("Could not create alarm message for " + event.getProperty().getUniqueName());
-            }
+        public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
+            if (event != null) {
+                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
+                        + event.getProperty().getUniqueName());
+                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
+                        .getData())) {
+                    _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event
+                            .getProperty(), event.getData()));
+                } else {
+                    LOG_INNER.warn("Could not create alarm message for "
+                            + event.getProperty().getUniqueName());
+                }
+            } // else ignore
         }
 
     }
