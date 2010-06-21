@@ -24,6 +24,7 @@ package org.csstudio.utility.ldap.service;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.ModificationItem;
@@ -63,6 +64,15 @@ public interface ILdapService {
      */
     boolean removeLeafComponent(@Nonnull LdapName component);
 
+    /**
+     * Removes the component from the LDAP context incl. its subtree!
+     * @param component .
+     * @throws InvalidNameException
+     * @throws CreateContentModelException
+     */
+    <T extends Enum<T> & ITreeNodeConfiguration<T>>
+        boolean removeComponent(@Nonnull final T configurationRoot,
+                                @Nonnull LdapName component) throws InvalidNameException, CreateContentModelException;
 
     /**
      * Retrieves LDAP entries for the given query and search scope synchronously.
@@ -136,14 +146,15 @@ public interface ILdapService {
      * to copy the subtree (depth first search) to the new location and delete it at the old
      * location.
      * @param root
-     *
      * @param oldLdapName
      * @param newLdapName
      * @return whether the complete move could be performed
      * @throws NamingException
      * @throws CreateContentModelException
      */
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> boolean move(T configurationRoot, LdapName oldLdapName, LdapName newLdapName)
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> boolean move(@Nonnull T configurationRoot,
+                                                                 @Nonnull LdapName oldLdapName,
+                                                                 @Nonnull LdapName newLdapName)
         throws NamingException, CreateContentModelException;
 
 

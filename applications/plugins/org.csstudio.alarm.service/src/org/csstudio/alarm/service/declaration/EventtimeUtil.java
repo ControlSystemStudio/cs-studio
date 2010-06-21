@@ -29,12 +29,17 @@ import java.util.Date;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+
 /**
  * Utility methods for parsing timestamps in alarm messages.
  *
  * @author Joerg Rathlev
  */
 public final class EventtimeUtil {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(EventtimeUtil.class);
 
     /**
      * Constructor.
@@ -64,8 +69,12 @@ public final class EventtimeUtil {
             }
         } catch (final ParseException e) {
             // Already handled
+            LOG.error("ParseException: " + timestamp, e);
         } catch (final NumberFormatException e) {
             // Already handled
+//            LOG.error("NumberFormatException: " + timestamp, e);
+        } catch (final ArrayIndexOutOfBoundsException e) {
+            LOG.error("ArrayIndexOutOfBoundsException: " + timestamp, e);
         }
         return result;
     }

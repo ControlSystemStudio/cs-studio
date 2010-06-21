@@ -56,7 +56,8 @@ import org.eclipse.swt.widgets.Text;
  */
 public class CustomInputDialog extends Dialog {
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(CustomInputDialog.class);
+
 
     /**
      * The title of the dialog.
@@ -149,8 +150,12 @@ public class CustomInputDialog extends Dialog {
      * @param eairSel The Selection for the eair Combo
      * @param eaigSel The Selection for the eaig Combo
      */
-    public CustomInputDialog(final Shell parentShell, final String dialogTitle,
-            final String dialogMessage1, final String dialogMessage2, final String eaigSel, final String eairSel) {
+    public CustomInputDialog(final Shell parentShell,
+                             final String dialogTitle,
+                             final String dialogMessage1,
+                             final String dialogMessage2,
+                             final String eaigSel,
+                             final String eairSel) {
         super(parentShell);
         _title = dialogTitle;
         _message1 = dialogMessage1;
@@ -307,7 +312,7 @@ public class CustomInputDialog extends Dialog {
                         _eairCombo.select(selIndex);
                     }
                 } catch (final NamingException e) {
-                    _log.error("Could not parse first selected element into valid LDAP name", e);
+                    LOG.error("Could not parse first selected element into valid LDAP name", e);
                 }
             }
 

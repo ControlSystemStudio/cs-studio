@@ -295,7 +295,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @CheckForNull
     public Date getEventtime() {
         Date result = null;
-        Timestamp timestamp = getTimestamp();
+        final Timestamp timestamp = getTimestamp();
         if (timestamp != null) {
             result = new Date(timestamp.getMilliseconds());
         }

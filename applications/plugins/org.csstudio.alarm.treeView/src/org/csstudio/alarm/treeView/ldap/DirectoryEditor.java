@@ -24,7 +24,6 @@ package org.csstudio.alarm.treeView.ldap;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import javax.annotation.Nonnull;
-import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
@@ -40,12 +39,9 @@ import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
-import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.treemodel.CreateContentModelException;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -55,57 +51,9 @@ import org.csstudio.utility.treemodel.CreateContentModelException;
  */
 public final class DirectoryEditor {
 
-    /**
-     * Creates the LDAP component with the given name;
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 17.06.2010
-     */
-    private static final class CreateLdapEntryItem extends AbstractTreeModificationItem {
-        private final LdapName _newName;
-        private final Attributes _attrs;
-
-        /**
-         * Constructor.
-         * @param parent
-         * @param newName
-         * @param attrs
-         * @param recordName
-         */
-        private CreateLdapEntryItem(@Nonnull final LdapName newName,
-                                    @Nonnull final Attributes attrs) {
-            _newName = new LdapName(newName.getRdns());
-            _attrs = (Attributes) attrs.clone();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public String getDescription() {
-            return "CREATE LDAP ENTRY " + _newName.toString();
-        }
-
-        /**
-         * {@inheritDoc}
-         */
-        @Override
-        public boolean apply() throws AlarmTreeModificationException {
-            if (LDAP_SERVICE.createComponent(_newName, _attrs)) {
-                setApplied(true);
-                return true;
-            }
-            throw new AlarmTreeModificationException("CREATE RECORD for " + _newName.toString() +
-                                                     " failed in LDAP.", null);
-        }
-    }
-
-
     private static final Logger LOG = CentralLogger.getInstance().getLogger(DirectoryEditor.class);
 
-    private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
+    static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
 
     /**
@@ -135,33 +83,7 @@ public final class DirectoryEditor {
         final LdapName oldLdapName = node.getLdapName();
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
 
-        final ITreeModificationItem item = new AbstractTreeModificationItem() {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public boolean apply() throws AlarmTreeModificationException {
-                try {
-                    newLdapName.remove(newLdapName.size() - 1);
-                    final Rdn rdn = new Rdn(node.getObjectClass().getNodeTypeName(), newName);
-                    newLdapName.add(rdn);
-                    LDAP_SERVICE.rename(oldLdapName, newLdapName);
-                    setApplied(true);
-                } catch (final InvalidNameException e) {
-                    throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
-                } catch (final NamingException e) {
-                    throw new AlarmTreeModificationException("LDAP rename action failed.", e);
-                }
-                return true;
-            }
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public String getDescription() {
-                return "RENAME " + oldLdapName.toString() + " to " + newName;
-            }
-        };
+        final ITreeModificationItem item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
 
         node.setName(newName);
 
@@ -191,33 +113,11 @@ public final class DirectoryEditor {
         final String nodeObjectClass = node.getObjectClass().getNodeTypeName();
         final String nodeSimpleName = node.getName();
 
-        final ITreeModificationItem item = new AbstractTreeModificationItem() {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public boolean apply() throws AlarmTreeModificationException {
-                try {
-                    newLdapName.add(new Rdn(nodeObjectClass, nodeSimpleName));
-                    LDAP_SERVICE.move(LdapEpicsAlarmCfgObjectClass.ROOT, oldNodeName, newLdapName);
-                } catch (final InvalidNameException e) {
-                    throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
-                } catch (final NamingException e) {
-                    throw new AlarmTreeModificationException("LDAP move action failed.", e);
-                } catch (final CreateContentModelException e) {
-                    throw new AlarmTreeModificationException("LDAP move action failed. Content model for subtree could not be constructed.", e);
-                }
-                setApplied(true);
-                return false;
-            }
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public String getDescription() {
-                return "!!!ATTENTION - MOVE ON NON-LEAF NODES NOT YET IMPLEMENTED!!!\nMOVE node " + oldNodeName.toString() + " under " + targetName.toString();
-            }
-        };
+        final ITreeModificationItem item = new MoveSubtreeModificationItem(newLdapName,
+                                                                           oldNodeName,
+                                                                           nodeSimpleName,
+                                                                           nodeObjectClass,
+                                                                           targetName);
 
         // store parent for child removal at the end of this method
         final IAlarmSubtreeNode parent = node.getParent();
@@ -251,22 +151,7 @@ public final class DirectoryEditor {
 
         final LdapName nodeName = new LdapName(node.getLdapName().getRdns());
 
-        final ITreeModificationItem item = new AbstractTreeModificationItem() {
-            /**
-             * {@inheritDoc}
-             */
-            @Override
-            public String getDescription() {
-                return "DELETE NODE " + node.getLdapName().toString();
-            }
-
-            @Override
-            public boolean apply() throws AlarmTreeModificationException {
-                final boolean result = LDAP_SERVICE.removeLeafComponent(nodeName);
-                setApplied(result);
-                return result;
-            }
-        };
+        final ITreeModificationItem item = new DeleteRecursivelyModificationItem(node, nodeName);
 
         if (node instanceof IAlarmSubtreeNode) {
             ((IAlarmSubtreeNode) node).removeChildren();
@@ -367,7 +252,7 @@ public final class DirectoryEditor {
     @Nonnull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
                                                                     @Nonnull final String recordName)
-    throws DirectoryEditException {
+        throws DirectoryEditException {
 
         try {
             final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeName(), recordName);

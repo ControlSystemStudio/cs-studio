@@ -52,8 +52,9 @@ import com.cosylab.util.CommonException;
  * @since 21.04.2010
  */
 public class AlarmServiceJMSImpl implements IAlarmService {
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmServiceJMSImpl.class);
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.class);
 
     /**
      * Constructor.
@@ -168,8 +169,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
      */
     private static class DynamicValueListenerForInit<T, P extends SimpleProperty<T>> extends
             DynamicValueAdapter<T, P> {
-        private static final Logger LOG_INNER = CentralLogger.getInstance()
-                .getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
+        private static final Logger LOG_INNER =
+            CentralLogger.getInstance().getLogger(AlarmServiceJMSImpl.DynamicValueListenerForInit.class);
 
         private final IAlarmInitItem _initItem;
 
@@ -189,10 +190,11 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             if (event != null) {
 //                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
 //                        + event.getProperty().getUniqueName());
-                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
-                        .getData())) {
-                    _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event
-                            .getData()));
+                if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(),
+                                                                  event.getData())) {
+
+                    _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(),
+                                                                       event.getData()));
                 } else {
                     LOG_INNER.warn("Could not create alarm message for "
                             + event.getProperty().getUniqueName());

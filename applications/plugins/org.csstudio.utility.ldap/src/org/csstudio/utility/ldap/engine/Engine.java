@@ -473,8 +473,8 @@ public final class Engine extends Job {
                 String ldapChannelName = "";
                 if (attributeSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
                     final SearchControls sc = attributeSet.getSearchControls();
-                    final NamingEnumeration<SearchResult> searchResults = getLdapDirContext().search(attributeSet
-                                                                                                     .getPath(), attributeSet.getFilter(), sc);
+                    final NamingEnumeration<SearchResult> searchResults =
+                        getLdapDirContext().search(attributeSet.getPath(), attributeSet.getFilter(), sc);
                     if (searchResults.hasMore()) {
                         final SearchResult element = searchResults.next();
                         // element.getAttributes().get(attriebute.name()).get().toString();
