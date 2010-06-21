@@ -27,6 +27,7 @@ import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
 import java.sql.Date;
+import java.util.Collection;
 
 import javax.annotation.Nonnull;
 import javax.naming.NameNotFoundException;
@@ -47,6 +48,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -101,8 +103,9 @@ public final class AlarmTreeBuilder {
      * @return
      * @throws NamingException
      */
+    @SuppressWarnings("unchecked")
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
-                                              @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
+                                              @Nonnull final INodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
                                               @Nonnull final IProgressMonitor monitor) throws NamingException {
 
         final String simpleName = modelNode.getName();
@@ -116,11 +119,15 @@ public final class AlarmTreeBuilder {
 
         } else {
             final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
-            for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> child : modelNode.getDirectChildren()) {
-                createAlarmSubtree(newNode, child, monitor);
+            if (modelNode instanceof ISubtreeNodeComponent) {
+                final Collection<INodeComponent<LdapEpicsAlarmCfgObjectClass>> children =
+                    ((ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass>) modelNode).getDirectChildren();
 
-                if (monitor.isCanceled()) {
-                    return true;
+                for (final INodeComponent<LdapEpicsAlarmCfgObjectClass> child : children) {
+                    createAlarmSubtree(newNode, child, monitor);
+                    if (monitor.isCanceled()) {
+                        return true;
+                    }
                 }
             }
         }
@@ -146,7 +153,7 @@ public final class AlarmTreeBuilder {
                                 @Nonnull final IProgressMonitor monitor) throws NamingException {
         ensureTestFacilityExists();
 
-        for (final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
+        for (final INodeComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
             createAlarmSubtree(rootNode, node, monitor);
         }
         return true;

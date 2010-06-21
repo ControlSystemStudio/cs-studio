@@ -22,12 +22,18 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapNameUtils.removeRdns;
+import static org.csstudio.utility.ldap.LdapUtils.any;
+
 import java.util.HashSet;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
@@ -37,15 +43,23 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.INodeComponent;
+import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 
 /**
@@ -55,6 +69,8 @@ import org.csstudio.utility.ldap.service.ILdapService;
  * @author $Author$
  * @version $Revision$
  * @since 09.04.2010
+ *
+ *
  */
 public final class LdapServiceImpl implements ILdapService {
 
@@ -153,7 +169,7 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public boolean removeLeafComponent(@Nonnull final LdapName component) {
         try {
-            LOG.debug("Unbind entry from LDAP: " + component);
+            LOG.info("Unbind entry from LDAP: " + component);
             CONTEXT.unbind(component);
         } catch (final NamingException e) {
             LOG.warn("Naming Exception while trying to unbind: " + component);
@@ -205,16 +221,72 @@ public final class LdapServiceImpl implements ILdapService {
 
     /**
      * {@inheritDoc}
-     * @throws NamingException
      */
     @Override
-    public void move(@Nonnull final LdapName oldLdapName,
-                     @Nonnull final LdapName newLdapName) throws NamingException {
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
+        boolean move(@Nonnull final T configurationRoot,
+                     @Nonnull final LdapName oldLdapName,
+                     @Nonnull final LdapName newLdapName) throws NamingException, CreateContentModelException {
+
         LOG.info("Move entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
-        final Object o = CONTEXT.lookup(oldLdapName);
-        CONTEXT.bind(newLdapName, o);
-        removeLeafComponent(oldLdapName); // unbind not allowed on non-leaf
+
+        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(), configurationRoot.getRootTypeName());
+
+        // create for 'oldLdapName' entry a new one under 'newLdapName'
+        final Attributes attributes = CONTEXT.getAttributes(oldLdapName);
+        createComponent(newLdapName, attributes);
+
+        // get complete subtree of 'oldLdapName' and create model
+        final LdapSearchResult result =
+            retrieveSearchResultSynchronously(oldLdapName,
+                                              any(ATTR_FIELD_OBJECT_CLASS),
+                                              SearchControls.SUBTREE_SCOPE);
+
+        final LdapContentModelBuilder<T> builder =
+            new LdapContentModelBuilder<T>(configurationRoot, result);
+        builder.build();
+        final ContentModel<T> model = builder.getModel();
+
+        final LdapName oldLdapNameInModel = removeRdns(oldLdapName,
+                                                       EFAN_FIELD_NAME,
+                                                       Direction.FORWARD);
+        // do the copy and the removal
+        copyAndRemoveTreeComponent(newLdapName,
+                                   model.getChildByLdapName(oldLdapNameInModel.toString()),
+                                   rootRdn);
+
+        // and finally delete the old one
+        removeLeafComponent(oldLdapName);
+
+        return true;
     }
+
+
+    private <T extends Enum<T> & ITreeNodeConfiguration<T>>
+        void copyAndRemoveTreeComponent(@Nonnull final LdapName ldapParentName,
+                                        @Nonnull final ISubtreeNodeComponent<T> treeParent,
+                                        @CheckForNull final Rdn rootRdn) throws InvalidNameException {
+
+        // process contents of model and build subtree below 'newLdapName'
+        for (final INodeComponent<T> child : treeParent.getDirectChildren()) {
+
+            final LdapName newChildLdapName = new LdapName(ldapParentName.getRdns());
+            newChildLdapName.add(new Rdn(((ITreeNodeConfiguration<T>) child.getType()).getNodeTypeName(), child.getName()));
+
+            // generate LDAP component for child
+            createComponent(newChildLdapName, child.getAttributes());
+
+            if (child.hasChildren()) {
+                copyAndRemoveTreeComponent(newChildLdapName, (ISubtreeNodeComponent<T>) child, rootRdn);
+            }
+            // leaf node, remove it from ldap
+
+            final LdapName ldapName = new LdapName(child.getLdapName().getRdns());
+            removeLeafComponent((LdapName) ldapName.add(0, rootRdn));
+        }
+    }
+
+
 
 
 

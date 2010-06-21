@@ -50,7 +50,8 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
 
     private final Set<T> _subComponentTypes;
 
-    private final Map<String, ISubtreeNodeComponent<T>> _children = new HashMap<String, ISubtreeNodeComponent<T>>();
+    private final Map<String, INodeComponent<T>> _children =
+        new HashMap<String, INodeComponent<T>>();
 
     /**
      * Constructor.
@@ -86,7 +87,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      * {@inheritDoc}
      */
     @Override
-    public void addChild(@Nonnull final ISubtreeNodeComponent<T> child) {
+    public void addChild(@Nonnull final INodeComponent<T> child) {
 
         if(!_subComponentTypes.contains(child.getType())) {
             throw new IllegalArgumentException("The child type " + child.getType() + " is not permitted for this component!");
@@ -104,7 +105,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      */
     @Override
     @Nonnull
-    public Collection<ISubtreeNodeComponent<T>> getDirectChildren() {
+    public Collection<INodeComponent<T>> getDirectChildren() {
         return _children.values();
     }
 
@@ -113,20 +114,20 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      */
     @Override
     @Nonnull
-    public Map<String, ISubtreeNodeComponent<T>> getChildrenByType(@Nonnull final T type) {
+    public Map<String, INodeComponent<T>> getChildrenByType(@Nonnull final T type) {
         if (_children.isEmpty()) {
             return Collections.emptyMap();
         }
 
-        final Map<String, ISubtreeNodeComponent<T>> resultMap = new HashMap<String, ISubtreeNodeComponent<T>>();
+        final Map<String, INodeComponent<T>> resultMap = new HashMap<String, INodeComponent<T>>();
 
-        for (final Entry<String, ISubtreeNodeComponent<T>> childEntry : _children.entrySet()) {
-            final ISubtreeNodeComponent<T> child = childEntry.getValue();
+        for (final Entry<String, INodeComponent<T>> childEntry : _children.entrySet()) {
+            final INodeComponent<T> child = childEntry.getValue();
             if (child.getType().equals(type)) {
                 resultMap.put(child.getLdapName().toString(), child);
             }
             if (child.hasChildren()) {
-                resultMap.putAll((child).getChildrenByType(type));
+                resultMap.putAll( ((ISubtreeNodeComponent<T>) child).getChildrenByType(type));
             }
         }
         return resultMap;
@@ -145,7 +146,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      */
     @Override
     @Nonnull
-    public ISubtreeNodeComponent<T> getChild(@Nonnull final String name) {
+    public INodeComponent<T> getChild(@Nonnull final String name) {
         return _children.get(name);
     }
 

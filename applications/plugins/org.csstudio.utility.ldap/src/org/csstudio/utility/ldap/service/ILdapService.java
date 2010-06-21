@@ -33,6 +33,8 @@ import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
  * LDAP Service.
@@ -60,12 +62,6 @@ public interface ILdapService {
      * @param component .
      */
     boolean removeLeafComponent(@Nonnull LdapName component);
-
-//    /**
-//     * Removes the subtree component from the LDAP context.
-//     * @param component .
-//     */
-//    boolean removeComponent(@Nonnull LdapName component);
 
 
     /**
@@ -135,11 +131,21 @@ public interface ILdapService {
 
 
     /**
-     * Moves the object with the given name to the new location
+     * Moves the object with the given name to the new location.
+     * <b>Attention</b>: the jndi api does not provide this function, hence it is necessary
+     * to copy the subtree (depth first search) to the new location and delete it at the old
+     * location.
+     * @param root
+     *
      * @param oldLdapName
      * @param newLdapName
+     * @return whether the complete move could be performed
      * @throws NamingException
+     * @throws CreateContentModelException
      */
-    void move(@Nonnull LdapName oldLdapName, @Nonnull LdapName newLdapName) throws NamingException;
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> boolean move(T configurationRoot, LdapName oldLdapName, LdapName newLdapName)
+        throws NamingException, CreateContentModelException;
+
+
 
 }

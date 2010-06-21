@@ -45,6 +45,7 @@ import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.treemodel.CreateContentModelException;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -198,11 +199,13 @@ public final class DirectoryEditor {
             public boolean apply() throws AlarmTreeModificationException {
                 try {
                     newLdapName.add(new Rdn(nodeObjectClass, nodeSimpleName));
-                    LDAP_SERVICE.move(oldNodeName, newLdapName);
+                    LDAP_SERVICE.move(LdapEpicsAlarmCfgObjectClass.ROOT, oldNodeName, newLdapName);
                 } catch (final InvalidNameException e) {
                     throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
                 } catch (final NamingException e) {
-                    throw new AlarmTreeModificationException("LDAP move (==rename) action failed.", e);
+                    throw new AlarmTreeModificationException("LDAP move action failed.", e);
+                } catch (final CreateContentModelException e) {
+                    throw new AlarmTreeModificationException("LDAP move action failed. Content model for subtree could not be constructed.", e);
                 }
                 setApplied(true);
                 return false;

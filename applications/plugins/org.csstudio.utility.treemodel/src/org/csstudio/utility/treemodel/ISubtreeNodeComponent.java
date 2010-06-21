@@ -46,7 +46,7 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
      * @return a collection of direct children components
      */
     @Nonnull
-    Collection<ISubtreeNodeComponent<T>> getDirectChildren();
+    Collection<INodeComponent<T>> getDirectChildren();
 
     /**
      * Retrieves a child component with the given nameKey
@@ -54,13 +54,13 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
      * @return the child with the specified name
      */
     @CheckForNull
-    ISubtreeNodeComponent<T> getChild(@Nonnull String nameKey);
+    INodeComponent<T> getChild(@Nonnull String nameKey);
 
     /**
      * Adds the given component as child.
      * @param child the new child
      */
-    void addChild(@Nonnull ISubtreeNodeComponent<T> child);
+    void addChild(@Nonnull INodeComponent<T> child);
 
     /**
      * Removes the child with the given name (and hence its complete subtree).
@@ -72,5 +72,5 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
     Set<T> getSubComponentTypes();
 
     @Nonnull
-    Map<String, ISubtreeNodeComponent<T>> getChildrenByType(@Nonnull T type);
+    Map<String, INodeComponent<T>> getChildrenByType(@Nonnull T type);
 }

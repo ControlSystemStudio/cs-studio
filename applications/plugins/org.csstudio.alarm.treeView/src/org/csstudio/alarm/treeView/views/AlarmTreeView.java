@@ -408,9 +408,9 @@ public class AlarmTreeView extends ViewPart {
                     // JMS: topics: default,    facilities: don't care,      filename: don't care
                     // DAL: topics: don't care, facilities: from tree prefs, filename: ok
                     final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
-                    IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
+                    final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
                             .newAlarmResource(null, Arrays.asList(facilityNames), null);
-                    AlarmTreeConnectionMonitor connectionMonitor = new AlarmTreeConnectionMonitor(AlarmTreeView.this,
+                    final AlarmTreeConnectionMonitor connectionMonitor = new AlarmTreeConnectionMonitor(AlarmTreeView.this,
                                                                                                   _rootNode);
                     _connection.connectWithListenerForResource(connectionMonitor,
                                                                listener,
@@ -651,7 +651,7 @@ public class AlarmTreeView extends ViewPart {
         if (menuManager == null) {
             MessageDialog.openError(getSite().getShell(),
                                     "Context menu",
-                                    "Inernal error occurred when trying to open the context menu (IMenuManager is null).");
+                                    "Internal error occurred when trying to open the context menu (IMenuManager is null).");
             return;
         }
 

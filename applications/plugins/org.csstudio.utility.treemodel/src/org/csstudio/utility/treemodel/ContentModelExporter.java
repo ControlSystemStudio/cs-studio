@@ -101,16 +101,17 @@ public final class ContentModelExporter {
             doc.setDocType(docType);
         }
 
-        for (final ISubtreeNodeComponent<T> modelNode : modelRootNode.getDirectChildren()) {
+        for (final INodeComponent<T> modelNode : modelRootNode.getDirectChildren()) {
             createDOMElement(rootElem, modelNode);
         }
 
         return doc;
     }
 
+    @SuppressWarnings("unchecked")
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         void createDOMElement(@Nonnull final Element parentElem,
-                              @Nonnull final ISubtreeNodeComponent<T> modelNode) {
+                              @Nonnull final INodeComponent<T> modelNode) {
 
         // FIXME (bknerr) : once the deprecated esco, ioc components have vanished, the next lines can be removed
         String typeName = modelNode.getType().getNodeTypeName();
@@ -123,14 +124,16 @@ public final class ContentModelExporter {
 
         parentElem.addContent(newNode);
 
-        for (final ISubtreeNodeComponent<T> child : modelNode.getDirectChildren()) {
-            createDOMElement(newNode, child);
+        if (modelNode instanceof ISubtreeNodeComponent) {
+            for (final INodeComponent<T> child : ((ISubtreeNodeComponent<T>) modelNode).getDirectChildren()) {
+                createDOMElement(newNode, child);
+            }
         }
     }
 
     @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>> Element
-        createElement(@Nonnull final ISubtreeNodeComponent<T> modelNode,
+        createElement(@Nonnull final INodeComponent<T> modelNode,
                       @Nonnull final String typeName) {
 
         final Element newNode = new Element(typeName);
