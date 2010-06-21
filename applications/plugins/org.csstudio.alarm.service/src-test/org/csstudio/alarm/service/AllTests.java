@@ -1,6 +1,7 @@
 package org.csstudio.alarm.service;
 
 import org.csstudio.alarm.service.declaration.EventtimeUtilTest;
+import org.csstudio.alarm.service.declaration.SeverityTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
@@ -14,7 +15,9 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since 14.06.2010
  */
 @RunWith(Suite.class)
-@SuiteClasses( {EventtimeUtilTest.class})
+@SuiteClasses( {
+    SeverityTest.class,
+    EventtimeUtilTest.class })
 public class AllTests {
     // This is a suite which should not contain code.
 }

@@ -25,8 +25,8 @@ package org.csstudio.alarm.treeView.views;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.Severity;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 

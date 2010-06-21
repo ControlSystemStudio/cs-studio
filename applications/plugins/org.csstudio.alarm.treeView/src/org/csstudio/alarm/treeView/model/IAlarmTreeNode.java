@@ -27,6 +27,7 @@ import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.Severity;
 
 
 /**

@@ -27,10 +27,10 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;

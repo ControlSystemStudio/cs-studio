@@ -59,7 +59,9 @@ public final class EventtimeUtil {
     public static Date parseTimestamp(@Nullable final String timestamp) {
         Date result = null;
         try {
-            result = FORMAT.parse(timestamp);
+            synchronized (FORMAT) {
+                result = FORMAT.parse(timestamp);
+            }
         } catch (final ParseException e) {
             // Already handled
         } catch (final NumberFormatException e) {

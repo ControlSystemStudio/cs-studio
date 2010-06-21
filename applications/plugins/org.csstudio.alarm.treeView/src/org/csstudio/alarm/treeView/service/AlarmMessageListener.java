@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.treeView.model.Severity;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
 import org.csstudio.platform.logging.CentralLogger;

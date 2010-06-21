@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.treeView.model;
+package org.csstudio.alarm.service.declaration;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertSame;
@@ -83,7 +83,7 @@ public class SeverityTest {
 		assertSame(Severity.INVALID, Severity.parseSeverity("INVALID"));
 		assertSame(Severity.NO_ALARM, Severity.parseSeverity("NO_ALARM"));
 
-		// unknown strings will return NO_ALARM
-		assertSame(Severity.NO_ALARM, Severity.parseSeverity("foo"));
+		// unknown strings will return UNKNOWN
+		assertSame(Severity.UNKNOWN, Severity.parseSeverity("foo"));
 	}
 }

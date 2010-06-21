@@ -22,9 +22,9 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
-import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;

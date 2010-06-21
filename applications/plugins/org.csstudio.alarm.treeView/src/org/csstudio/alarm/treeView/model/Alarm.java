@@ -26,6 +26,8 @@ import java.util.Date;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.Severity;
+
 
 /**
  * Represents an alarm.
