@@ -188,8 +188,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
-                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
-                        + event.getProperty().getUniqueName());
+//                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
+//                        + event.getProperty().getUniqueName());
                 if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
                         .getData())) {
                     _initItem.init(AlarmMessageDALImpl.newAlarmMessage(event.getProperty(), event

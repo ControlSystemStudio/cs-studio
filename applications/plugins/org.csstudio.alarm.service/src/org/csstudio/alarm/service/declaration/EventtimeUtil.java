@@ -46,22 +46,26 @@ public final class EventtimeUtil {
 	private static final SimpleDateFormat FORMAT =
 		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 
-	/**
-	 * Parses am eventtime timestamp into a Date object. If the string cannot be
-	 * parsed as a timestamp, returns <code>null</code>.
-	 *
-	 * @param timestamp
-	 *            the timestamp.
-	 * @return the parsed date, or <code>null</code> if the string could not be
-	 *         parsed.
-	 */
-	@CheckForNull
-	public static Date parseTimestamp(@Nullable final String timestamp) {
-		try {
-			return FORMAT.parse(timestamp);
-		} catch (final ParseException e) {
-			return null;
-		}
-	}
+    /**
+     * Parses am eventtime timestamp into a Date object. If the string cannot be
+     * parsed as a timestamp, returns <code>null</code>.
+     *
+     * @param timestamp
+     *            the timestamp.
+     * @return the parsed date, or <code>null</code> if the string could not be
+     *         parsed.
+     */
+    @CheckForNull
+    public static Date parseTimestamp(@Nullable final String timestamp) {
+        Date result = null;
+        try {
+            result = FORMAT.parse(timestamp);
+        } catch (final ParseException e) {
+            // Already handled
+        } catch (final NumberFormatException e) {
+            // Already handled
+        }
+        return result;
+    }
 
 }
