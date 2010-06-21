@@ -8,6 +8,8 @@ import org.csstudio.opibuilder.preferences.MacroEditDialog;
 import org.csstudio.opibuilder.util.MacrosInput;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -16,6 +18,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.jdom.Verifier;
 
 /**The dialog for editing macros.
  * @author Xihui Chen
@@ -88,6 +91,15 @@ public class MacrosInputDialog extends Dialog {
 	@Override
 	protected void okPressed() {
 		tableEditor.forceFocus();  //this can help the last edit value applied.
+		String reason;
+		for(String[] row : contents){
+			reason = Verifier.checkElementName(row[0]);
+			if(reason != null){
+				MessageDialog.openError(getShell(),	"Illegal Macro Name", 
+						NLS.bind("{0} is not a valid Macro name.\n {1}", row[0], reason));
+				return;
+			}
+		}
 		super.okPressed();
 	}
 }
