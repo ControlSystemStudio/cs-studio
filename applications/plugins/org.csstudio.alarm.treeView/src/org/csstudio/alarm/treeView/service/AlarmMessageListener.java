@@ -215,16 +215,7 @@ public class AlarmMessageListener implements IAlarmListener {
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
-            Date eventtime = message.getEventtime();
-            if (eventtime == null) {
-                // TODO (jpenning) What to do if event time could not be parsed?
-                // eventtime is null if the message did not contain an EVENTTIME
-                // field or if the EVENTTIME could not be parsed.
-                LOG.warn("Received alarm message which did not contain a valid "
-                        + AlarmMessageKey.EVENTTIME.name()
-                        + ", using current time instead. Message was: " + message);
-                eventtime = new Date();
-            }
+            Date eventtime = message.getEventtimeOrCurrentTime();
 //            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
 //                    + eventtime);
             _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime, _treeRoot));

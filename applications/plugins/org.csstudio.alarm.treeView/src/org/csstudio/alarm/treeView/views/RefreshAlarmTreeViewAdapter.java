@@ -86,7 +86,8 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                final TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView.getViewer();
+                final TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView
+                        .getViewer();
                 if (viewer != null) {
                     viewer.refresh();
                 }
@@ -106,7 +107,8 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         if (alarmService != null) {
             alarmService.retrieveInitialState(initItems);
         } else {
-            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
+            LOG
+                    .warn("Initial state could not be retrieved because alarm service is not available.");
         }
     }
 
@@ -123,6 +125,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             _pvNode = pvNode;
         }
 
+        @Nonnull
         public String getPVName() {
             return _pvNode.getName();
         }
@@ -131,24 +134,17 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             // TODO (jpenning) Review access to alarm message properties
             final String nameString = alarmMessage.getString(AlarmMessageKey.NAME);
             final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
-            final String eventTimeString = alarmMessage.getString(AlarmMessageKey.EVENTTIME);
-            if ( (nameString != null) && (severityString != null) && (eventTimeString != null)) {
-                final Date eventTime = null;
-//                try {
-                    final Severity severity = Severity.parseSeverity(severityString);
-                    //eventTime = DateFormat.getInstance().parse(eventTimeString);
-                    final Alarm alarm = new Alarm(nameString, severity, new Date(System.currentTimeMillis()));
-                    _pvNode.updateAlarm(alarm);
-//                } catch (final ParseException e) {
-//                    LOG_INNER.error("Could not retrieve eventtime from "
-//                            + alarmMessage.getString(AlarmMessageKey.EVENTTIME), e);
-//                }
+            Date eventTime = alarmMessage.getEventtimeOrCurrentTime();
+            if ( (nameString != null) && (severityString != null)) {
+                final Severity severity = Severity.parseSeverity(severityString);
+                final Alarm alarm = new Alarm(nameString, severity, eventTime);
+                _pvNode.updateAlarm(alarm);
             } else {
-                LOG_INNER
-                        .warn("Could not retrieve data (name, severity, eventtime) from "
-                                + alarmMessage);
+                LOG_INNER.warn("Could not retrieve data (name, severity, eventtime) from "
+                        + alarmMessage);
             }
         }
+
     }
 
 }

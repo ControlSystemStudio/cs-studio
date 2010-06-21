@@ -103,20 +103,14 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     /**
      * {@inheritDoc}
      */
-    @CheckForNull
-    private final String getString(@Nonnull final String keyAsString) {
-        final AlarmMessageKey key = AlarmMessageKey.findKeyWithDefiningName(keyAsString);
-        return (key == null) ? null : getString(key);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Nonnull
     public final String getString(@Nonnull final AlarmMessageKey key) {
         String result = null;
 
         switch (key) {
+            case ACK:
+                result = retrieveAckAsString();
+                break;
             case EVENTTIME:
                 result = retrieveEventtimeAsString();
                 break;
@@ -126,22 +120,27 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
             case SEVERITY:
                 result = retrieveSeverityAsString();
                 break;
+            case SEVERITY_OLD:
+                result = retrieveSeverityOldAsString();
+                break;
             case STATUS:
                 result = retrieveStatusAsString();
                 break;
-            case FACILITY:
-                // TODO (mclausen): there's currently no facility available from DAL
-                // this could be retrieved from LDAP - necessary ??
-                result = "NN";
+            case STATUS_OLD:
+                result = retrieveStatusOldAsString();
+                break;
+            case HOST_PHYS:
+                result = retrieveHostPhysAsString();
                 break;
             case HOST:
                 result = retrieveHostnameAsString();
                 break;
-            //            case TEXT:
-            //              // TODO (mclausen): this is actually the descriptor information from the channel
-            //            	// this is not available by default - it could be retrieved from the channel - as an additional DAL request
-            //            	// ... maybe too much effort ...
-            //                break;
+            case FACILITY:
+                result = retrieveFacilityString();
+                break;
+            case TEXT:
+                result = retrieveText();
+                break;
             case TYPE:
                 // The type is hard coded as an alarm event, because we registered for such a beast.
                 result = "event";
@@ -162,7 +161,6 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     public Map<String, String> getMap() {
         final Map<String, String> result = new HashMap<String, String>();
-        // TODO (jpenning) securely access incoming message
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
             result.put(key.getDefiningName(), getString(key));
         }
@@ -185,9 +183,15 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         return getProperty().getCondition();
     }
 
+    private String retrieveAckAsString() {
+        return NOT_AVAILABLE;
+    }
+
     @Nonnull
     private String retrieveEventtimeAsString() {
         String result = NOT_AVAILABLE;
+        // TODO (jpenning) which source for the timestamp is ok?
+//      final Timestamp timestamp = _anyData.getTimestamp();
         final Timestamp timestamp = getProperty().getCondition().getTimestamp();
         if (timestamp != null) {
             final SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
@@ -219,9 +223,24 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         return result;
     }
 
+    private String retrieveSeverityOldAsString() {
+        // TODO (jpenning) NYI
+        return NOT_AVAILABLE;
+    }
+
     @Nonnull
     private String retrieveStatusAsString() {
         return _anyData.getSeverity().descriptionToString();
+    }
+
+    private String retrieveStatusOldAsString() {
+        // TODO (jpenning) NYI
+        return NOT_AVAILABLE;
+    }
+
+    private String retrieveHostPhysAsString() {
+        // TODO (jpenning) NYI
+        return NOT_AVAILABLE;
     }
 
     @Nonnull
@@ -235,6 +254,19 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         }
 
         return result;
+    }
+
+    private String retrieveFacilityString() {
+        // TODO (jpenning): there's currently no facility available from DAL
+        // this could be retrieved from LDAP - necessary ??
+        return NOT_AVAILABLE;
+    }
+
+    private String retrieveText() {
+        // TODO (jpenning): this is actually the descriptor information from the channel
+        // this is not available by default - it could be retrieved from the channel - as an additional DAL request
+        // ... maybe too much effort ...
+        return NOT_AVAILABLE;
     }
 
     @Nonnull
@@ -256,21 +288,25 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     }
 
     @Override
+    @CheckForNull
     public Date getEventtime() {
-        // TODO (jpenning) NYI event time
-        Date result = null;
-
-        final String eventtimeValue = getString(AlarmMessageKey.EVENTTIME);
-        if (eventtimeValue != null) {
-            try {
-                result = EventtimeUtil.parseTimestamp(eventtimeValue);
-            } catch (final NumberFormatException e) {
-                // TODO (jpenning) whats going on here?
-            }
+        Date result = EventtimeUtil.parseTimestamp(getString(AlarmMessageKey.EVENTTIME));
+        if (result == null) {
+            LOG.warn("Could not retrieve event time from " + this);
         }
-
         return result;
     }
+
+    @Nonnull
+    public Date getEventtimeOrCurrentTime() {
+        Date result = getEventtime();
+        if (result == null) {
+            result = new Date(System.currentTimeMillis());
+        }
+        return result;
+    }
+
+
 
     @Override
     public boolean isAcknowledgement() {

@@ -52,6 +52,14 @@ public interface IAlarmMessage {
     Date getEventtime();
 
     /**
+     * Tries to parse the event time and returns the date if it succeeds, else the current time.
+     *
+     * @return the event time or the current time
+     */
+    @Nonnull
+    Date getEventtimeOrCurrentTime();
+
+    /**
      * @return true if this message is an alarm acknowledgement.
      */
     boolean isAcknowledgement();

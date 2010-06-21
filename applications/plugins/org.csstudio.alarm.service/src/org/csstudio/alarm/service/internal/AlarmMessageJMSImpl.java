@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
@@ -29,6 +30,7 @@ import javax.jms.Message;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -71,12 +73,12 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      */
     @Nonnull
     private final String getString(@Nonnull final String key) {
-        String result = null;
+        String result = "";
         try {
             result = _mapMessage.getString(key);
         } catch (JMSException e) {
             LOG.error("Error analyzing JMS message", e);
-            // result is already null
+            // result is already empty string
         }
         return result;
     }
@@ -114,14 +116,23 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     }
 
     @Override
+    @CheckForNull
     public Date getEventtime() {
-        // TODO (jpenning) NYI event time
-        return new Date(0L);
+        return EventtimeUtil.parseTimestamp(getString(AlarmMessageKey.EVENTTIME));
+    }
+
+    @Nonnull
+    public Date getEventtimeOrCurrentTime() {
+        Date result = getEventtime();
+        if (result == null) {
+            result = new Date(System.currentTimeMillis());
+        }
+        return result;
     }
 
     @Override
     public boolean isAcknowledgement() {
-        final String ack = getString("ACK");
+        final String ack = getString(AlarmMessageKey.ACK);
         return (ack != null) && ack.equals("TRUE");
     }
 

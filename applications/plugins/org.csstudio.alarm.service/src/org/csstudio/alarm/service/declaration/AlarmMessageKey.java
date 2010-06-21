@@ -42,14 +42,14 @@ public enum AlarmMessageKey {
     NAME,
     SEVERITY,
     SEVERITY_OLD("SEVERITY-OLD"),
+    STATUS,
     STATUS_OLD("STATUS-OLD"),
     HOST_PHYS("HOST-PHYS"),
-    STATUS,
-    FACILITY,
     HOST,
+    FACILITY,
+    TEXT,
     TYPE,
     VALUE,
-    TEXT,
     APPLICATION_ID("APPLICATION-ID");
 
     private final String _definingName; // May be null
