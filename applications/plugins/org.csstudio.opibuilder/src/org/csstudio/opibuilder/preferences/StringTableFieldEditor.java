@@ -28,11 +28,11 @@ public class StringTableFieldEditor extends FieldEditor {
 
 	private static final char QUOTE = '\"'; //$NON-NLS-1$
 
-	private StringTableEditor tableEditor;
+	protected StringTableEditor tableEditor;
 	
 	private String[] headers;
 	private boolean[] editable;
-	private List<String[]> items;
+	protected List<String[]> items;
 	private int[] columnsMinWidth;
 	private RowEditDialog rowEditDialog;
 	

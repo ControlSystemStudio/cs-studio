@@ -3,13 +3,20 @@ package org.csstudio.opibuilder.preferences;
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.FocusListener;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.jdom.Verifier;
 
 /**The preference page for OPIBuilder
  * @author Xihui Chen
@@ -20,6 +27,10 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 
 	// private static final String RESTART_MESSAGE = "Changes only takes effect after restart.";
 	private static final String PREF_QUALIFIER_ID = OPIBuilderPlugin.PLUGIN_ID;
+	
+	private String wrongMacroName = "";
+
+	private StringTableFieldEditor macrosEditor;
 	
 	public OPIBuilderPreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
@@ -33,9 +44,55 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 	protected void createFieldEditors() {
 		final Composite parent = getFieldEditorParent();
 		
-		StringTableFieldEditor macrosEditor = new StringTableFieldEditor(
+		macrosEditor = new StringTableFieldEditor(
 				PreferencesHelper.RUN_MACROS, "Macros: " , parent, new String[]{"Name", "Value"}, 
-				new boolean[]{true, true}, new MacroEditDialog(parent.getShell()), new int[]{120, 120});
+				new boolean[]{true, true}, new MacroEditDialog(parent.getShell()), new int[]{120, 120}){
+			
+			@Override
+			public boolean isValid() {
+				String reason;
+				for(String[] row : items){
+					reason = Verifier.checkElementName(row[0]);
+					if(reason != null){
+						wrongMacroName = row[0];
+						return false;
+					}
+				}
+				return true;
+			}
+			
+			
+			@Override
+			protected void doStore() {
+				if(!isValid())
+					return;
+				super.doStore();
+			}
+			
+			@Override
+			protected void doFillIntoGrid(Composite parent,
+							int numColumns) {
+				super.doFillIntoGrid(parent, numColumns);
+				tableEditor.getTableViewer().getTable().addKeyListener(new KeyAdapter() {
+					@Override
+					public void keyReleased(KeyEvent e) {
+						boolean valid = isValid();
+						fireStateChanged(IS_VALID, !valid, valid);
+					}
+				});
+				tableEditor.getTableViewer().getTable().addFocusListener(new FocusListener() {
+							
+					public void focusLost(FocusEvent e) {
+						boolean valid = isValid();
+						fireStateChanged(IS_VALID, !valid, valid);							}
+							
+					public void focusGained(FocusEvent e) {
+						boolean valid = isValid();
+						fireStateChanged(IS_VALID, !valid, valid);							}
+				});
+			}
+					
+		};
 		addField(macrosEditor);
 		WorkspaceFileFieldEditor colorEditor = 
 			new WorkspaceFileFieldEditor(PreferencesHelper.COLOR_FILE, 
@@ -77,14 +134,27 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 		
 	}
 	
-//	@Override
-//	public void propertyChange(PropertyChangeEvent event) {
-//		super.propertyChange(event);
-//		Object  src = event.getSource();
-//		if(src instanceof FieldEditor){
-//			String prefName = ((FieldEditor)src).getPreferenceName();
-//			if(prefName.equals(PreferencesHelper.NO_EDIT))
-//				setMessage(RESTART_MESSAGE, WARNING);
-//		}
-//	}
+	@Override
+	public void propertyChange(PropertyChangeEvent event) {
+		super.propertyChange(event);
+		Object  src = event.getSource();
+		if(src instanceof FieldEditor){
+			String prefName = ((FieldEditor)src).getPreferenceName();
+			if(prefName.equals(PreferencesHelper.RUN_MACROS)){
+				if((Boolean)event.getNewValue())
+					setMessage(null);
+				else
+					setMessage(wrongMacroName + " is not a valid Macro name!", ERROR);
+			}
+		}
+	}
+	
+	@Override
+	public boolean performOk() {
+		macrosEditor.tableEditor.getTableViewer().getTable().forceFocus();
+		if(!isValid())
+			return false;
+		return super.performOk();
+	}
+	
 }
