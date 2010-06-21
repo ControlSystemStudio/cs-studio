@@ -18,6 +18,7 @@
 package org.csstudio.alarm.service.internal;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,6 +27,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
+import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
@@ -36,6 +38,7 @@ import org.epics.css.dal.simple.MetaData;
 
 /**
  * DAL based implementation of the message abstraction of the AlarmService
+ * This is an immutable class.
  *
  * @author jpenning
  * @author $Author$
@@ -44,7 +47,7 @@ import org.epics.css.dal.simple.MetaData;
  */
 @SuppressWarnings("unchecked")
 public class AlarmMessageDALImpl implements IAlarmMessage {
-    private static final String N_A = "n.a.";
+    private static final String NOT_AVAILABLE = "n.a.";
 
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmMessageDALImpl.class);
@@ -100,9 +103,8 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     /**
      * {@inheritDoc}
      */
-    @Override
     @CheckForNull
-    public final String getString(@Nonnull final String keyAsString) {
+    private final String getString(@Nonnull final String keyAsString) {
         final AlarmMessageKey key = AlarmMessageKey.findKeyWithDefiningName(keyAsString);
         return (key == null) ? null : getString(key);
     }
@@ -110,7 +112,6 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Nonnull
     public final String getString(@Nonnull final AlarmMessageKey key) {
         String result = null;
@@ -153,7 +154,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
                 break;
             default:
                 LOG.error(ERROR_MESSAGE + ". getString called for undefined key : " + key);
-                result = N_A;
+                result = NOT_AVAILABLE;
         }
         return result;
     }
@@ -186,7 +187,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveEventtimeAsString() {
-        String result = N_A;
+        String result = NOT_AVAILABLE;
         final Timestamp timestamp = getProperty().getCondition().getTimestamp();
         if (timestamp != null) {
             final SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
@@ -202,7 +203,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveSeverityAsString() {
-        String result = N_A;
+        String result = NOT_AVAILABLE;
         final DynamicValueCondition condition = getCondition();
 
         if (condition.isMajor()) {
@@ -226,7 +227,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveHostnameAsString() {
         // TODO (jpenning) we can get the host name from the DAL connection - available?
-        String result = N_A;
+        String result = NOT_AVAILABLE;
 
         final MetaData metaData = _anyData.getMetaData();
         if (metaData != null) {
@@ -238,7 +239,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Nonnull
     private String retrieveValueAsString() {
-        String result = N_A;
+        String result = NOT_AVAILABLE;
 
         try {
             result = _anyData.stringValue();
@@ -252,5 +253,28 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveApplicationIDAsString() {
         return APPLICATION_ID;
+    }
+
+    @Override
+    public Date getEventtime() {
+        // TODO (jpenning) NYI event time
+        Date result = null;
+
+        final String eventtimeValue = getString(AlarmMessageKey.EVENTTIME);
+        if (eventtimeValue != null) {
+            try {
+                result = EventtimeUtil.parseTimestamp(eventtimeValue);
+            } catch (final NumberFormatException e) {
+                // TODO (jpenning) whats going on here?
+            }
+        }
+
+        return result;
+    }
+
+    @Override
+    public boolean isAcknowledgement() {
+        // The DAL implementation currently does not support alarm acknowledgment
+        return false;
     }
 }

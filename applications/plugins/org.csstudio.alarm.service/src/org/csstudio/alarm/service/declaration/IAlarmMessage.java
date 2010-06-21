@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import java.util.Date;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -32,35 +33,28 @@ import javax.annotation.Nonnull;
  */
 public interface IAlarmMessage {
 
-    // TODO (jpenning) remove enums from interface
-
-    /**
-     * Set of keys for the alarm message - currently NOT supported
-     * beware!!! SEVERITY_OLD translates into the TAG: SEVERITY-OLD !!!
-     * the same applies for STATUS_OLD and HOST_PHYS
-     */
-    enum NoKey {
-        ACK, SEVERITY_OLD, STATUS_OLD, HOST_PHYS, TEXT
-    }
-
-    /**
-     * The message essentially is a map from String to String. Here you get the value for the key (given as String).
-     *
-     * @param keyAsString the defining name of a key
-     * @return value
-     */
-    @CheckForNull
-    String getString(@Nonnull final String keyAsString);
-
     /**
      * The message essentially is a map from String to String. Here you get the value for the key (given as enum).
-     * The method getDefiningName() of the key determines the string.
+     * The method getDefiningName() of the key determines the string for the key.
      *
      * @param key
      * @return value
      */
     @CheckForNull
     String getString(@Nonnull final AlarmMessageKey key);
+
+    /**
+     * Tries to parse the event time and returns the date if it succeeds, else null.
+     *
+     * @return the event time or null
+     */
+    @CheckForNull
+    Date getEventtime();
+
+    /**
+     * @return true if this message is an alarm acknowledgement.
+     */
+    boolean isAcknowledgement();
 
     /**
      * The message essentially is a map from String to String. Here you get the whole map with

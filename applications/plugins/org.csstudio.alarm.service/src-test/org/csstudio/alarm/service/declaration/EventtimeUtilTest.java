@@ -20,48 +20,38 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.treeView;
+package org.csstudio.alarm.service.declaration;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import static org.junit.Assert.assertEquals;
+
 import java.util.Date;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
+import org.csstudio.alarm.service.declaration.EventtimeUtil;
+import org.junit.Test;
+
 
 /**
- * Utility methods for parsing timestamps in alarm messages.
- *
  * @author Joerg Rathlev
+ *
  */
-public final class EventtimeUtil {
+public class EventtimeUtilTest {
 
-    /**
-     * Constructor.
-     */
-    private EventtimeUtil() {
-        // Empty
-    }
+	@Test
+	public void testParseTimestamp() throws Exception {
+		/*
+		 * Important note: This test will fail in any timezone except Central
+		 * European Time ("mitteleuropaeische Zeit") because DESY uses
+		 * timestamps without timezone information.
+		 * 
+		 * The time difference to UTC is +1 normal, +2 daylight savings time.
+		 */
+		String timestamp = "1970-01-01 01:00:00.000";
+		Date parsed = EventtimeUtil.parseTimestamp(timestamp);
+		assertEquals(0L, parsed.getTime());
 
-	private static final SimpleDateFormat FORMAT =
-		new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-
-	/**
-	 * Parses am eventtime timestamp into a Date object. If the string cannot be
-	 * parsed as a timestamp, returns <code>null</code>.
-	 *
-	 * @param timestamp
-	 *            the timestamp.
-	 * @return the parsed date, or <code>null</code> if the string could not be
-	 *         parsed.
-	 */
-	@CheckForNull
-	public static Date parseTimestamp(@Nullable final String timestamp) {
-		try {
-			return FORMAT.parse(timestamp);
-		} catch (final ParseException e) {
-			return null;
-		}
+		// this is a date in daylight savings time
+		timestamp = "2009-08-01 02:00:00.000";
+		parsed = EventtimeUtil.parseTimestamp(timestamp);
+		assertEquals(1249084800000L, parsed.getTime());
 	}
-
 }

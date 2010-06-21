@@ -9,6 +9,6 @@ import org.junit.runners.Suite.SuiteClasses;
 @SuiteClasses({
     JMSAlarmMessageListTest.class,
 })
-public class AllUnitTests {
+public class AllTests {
     // This is a suite which should not contain code.
 }

@@ -37,14 +37,19 @@ import javax.annotation.Nonnull;
  * @since 25.05.2010
  */
 public enum AlarmMessageKey {
+    ACK,
     EVENTTIME,
     NAME,
     SEVERITY,
+    SEVERITY_OLD("SEVERITY-OLD"),
+    STATUS_OLD("STATUS-OLD"),
+    HOST_PHYS("HOST-PHYS"),
     STATUS,
     FACILITY,
     HOST,
     TYPE,
     VALUE,
+    TEXT,
     APPLICATION_ID("APPLICATION-ID");
 
     private final String _definingName; // May be null

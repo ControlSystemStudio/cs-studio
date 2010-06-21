@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.treeView.EventtimeUtil;
 import org.csstudio.alarm.treeView.model.Severity;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
@@ -204,7 +203,7 @@ public class AlarmMessageListener implements IAlarmListener {
      */
     private void processAlarmMessage(@Nonnull final IAlarmMessage message) {
         final String name = message.getString(AlarmMessageKey.NAME);
-        if (isAcknowledgement(message)) {
+        if (message.isAcknowledgement()) {
             //LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
@@ -216,16 +215,9 @@ public class AlarmMessageListener implements IAlarmListener {
                 return;
             }
             final Severity severity = Severity.parseSeverity(severityValue);
-            final String eventtimeValue = message.getString(AlarmMessageKey.EVENTTIME);
-            Date eventtime = null;
-            if (eventtimeValue != null) {
-                try {
-                    eventtime = EventtimeUtil.parseTimestamp(eventtimeValue);
-                } catch (final NumberFormatException e) {
-                    // TODO (jpenning) whats going on here?
-                }
-            }
+            Date eventtime = message.getEventtime();
             if (eventtime == null) {
+                // TODO (jpenning) What to do if event time could not be parsed?
                 // eventtime is null if the message did not contain an EVENTTIME
                 // field or if the EVENTTIME could not be parsed.
                 LOG.warn("Received alarm message which did not contain a valid "
@@ -239,12 +231,4 @@ public class AlarmMessageListener implements IAlarmListener {
         }
     }
 
-    /**
-     * Returns whether the given message is an alarm acknowledgement.
-     */
-    private boolean isAcknowledgement(@Nonnull final IAlarmMessage message) {
-        // TODO (jpenning) DAL impl currently not working, returns always false
-        final String ack = message.getString("ACK");
-        return (ack != null) && ack.equals("TRUE");
-    }
 }

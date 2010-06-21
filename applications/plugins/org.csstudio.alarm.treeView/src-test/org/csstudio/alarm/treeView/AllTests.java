@@ -23,7 +23,6 @@ import org.junit.runners.Suite.SuiteClasses;
     TreeBuilderTest.class,
     SeverityTest.class,
     ProcessVariableNodeTest.class,
-    EventtimeUtilTest.class,
     LdapNameUtilsTest.class})
 public class AllTests {
     // This is a suite which should not contain code.

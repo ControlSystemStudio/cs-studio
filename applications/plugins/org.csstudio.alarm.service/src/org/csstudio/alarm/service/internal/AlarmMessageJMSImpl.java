@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,6 +34,7 @@ import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * JMS based implementation of the message abstraction of the AlarmService
+ * This is an immutable class.
  *
  * @author jpenning
  * @author $Author$
@@ -67,9 +69,8 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     /**
      * {@inheritDoc}
      */
-    @Override
     @Nonnull
-    public final String getString(@Nonnull final String key) {
+    private final String getString(@Nonnull final String key) {
         String result = null;
         try {
             result = _mapMessage.getString(key);
@@ -110,6 +111,18 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     public final String toString() {
         return "JMS-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
                 + getString(AlarmMessageKey.STATUS);
+    }
+
+    @Override
+    public Date getEventtime() {
+        // TODO (jpenning) NYI event time
+        return new Date(0L);
+    }
+
+    @Override
+    public boolean isAcknowledgement() {
+        final String ack = getString("ACK");
+        return (ack != null) && ack.equals("TRUE");
     }
 
 }
