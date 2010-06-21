@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.model;
@@ -31,7 +31,7 @@ import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
- * 
+ *
  * @author Sven Wende
  */
 public abstract class AbstractPolyModel extends AbstractWidgetModel {
@@ -81,12 +81,12 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	@Override
 	protected void configureProperties() {
 		addPointlistProperty(PROP_POINTS, "Points", WidgetPropertyCategory.POSITION, new PointList(), false);
-		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.BEHAVIOR, 100.0, 0.0, 100.0, false);
+		addDoubleProperty(PROP_FILL, "Value", WidgetPropertyCategory.DISPLAY, 100.0, 0.0, 100.0, true, PROP_TOOLTIP);
 	}
 
 	/**
 	 * Sets the specified _points for the polygon.
-	 * 
+	 *
 	 * @param points
 	 *            the polygon points
 	 * @param rememberPoints
@@ -110,7 +110,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 	/**
 	 * Gets the polygon _points.
-	 * 
+	 *
 	 * @return the polygon _points
 	 */
 	public final PointList getPoints() {
@@ -119,7 +119,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 	/**
 	 * Returns the fill grade.
-	 * 
+	 *
 	 * @return the fill grade
 	 */
 	public final double getFill() {
@@ -139,14 +139,14 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 		double topLeftX = pointList.getBounds().x;
 		double topLeftY = pointList.getBounds().y;
 
-		if (oldW != targetW || oldH != targetH) {
+		if ((oldW != targetW) || (oldH != targetH)) {
 			PointList newPoints = new PointList();
 			for (int i = 0; i < pointList.size(); i++) {
 				int x = pointList.getPoint(i).x;
 				int y = pointList.getPoint(i).y;
 
 				Point newPoint = new Point(x, y);
-				if (oldW > 0 && oldH > 0) {
+				if ((oldW > 0) && (oldH > 0)) {
 					double oldRelX = (x - topLeftX) / oldW;
 					double oldRelY = (y - topLeftY) / oldH;
 
@@ -181,7 +181,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 
 	/**
 	 * Rotates all points.
-	 * 
+	 *
 	 * @param points
 	 *            The PoinList, which points should be rotated
 	 * @param angle
@@ -209,7 +209,7 @@ public abstract class AbstractPolyModel extends AbstractWidgetModel {
 	/**
 	 * Rotates the given points to 0 degrees and sets them as
 	 * <code>_originalPoints</code>.
-	 * 
+	 *
 	 * @param points
 	 *            The current {@link PointList}
 	 */

@@ -109,18 +109,18 @@ public final class SimpleSliderModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.BEHAVIOR, 50.0, false);
+		addDoubleProperty(PROP_VALUE, "Slider Value", WidgetPropertyCategory.DISPLAY, 50.0, true, PROP_TOOLTIP);
 		addBooleanProperty(PROP_SHOW_VALUE_AS_TEXT, "Show Value As Text", WidgetPropertyCategory.DISPLAY, false, false);
-		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.BEHAVIOR, 0.0, false);
-		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.BEHAVIOR, 100.0, false);
+		addDoubleProperty(PROP_MIN, "Min", WidgetPropertyCategory.DISPLAY, 0.0, false, PROP_SHOW_VALUE_AS_TEXT);
+		addDoubleProperty(PROP_MAX, "Max", WidgetPropertyCategory.DISPLAY, 100.0, false, PROP_MIN);
+		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.DISPLAY, 1.0, 0.001, 1000.0, false);
 		// The increment is limited to the range 0.001..1000 because the
 		// scrollbar control used internally by the widget causes problems
 		// if the value range of the scrollbar gets too large, probably because
 		// it uses integer numbers internally.
-		addDoubleProperty(PROP_INCREMENT, "Increment", WidgetPropertyCategory.BEHAVIOR, 1.0, 0.001, 1000.0, false);
-		addBooleanProperty(PROP_ORIENTATION, "Horizontal orientation", WidgetPropertyCategory.DISPLAY, true, false);
-		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.BEHAVIOR, 2, 0, 5, false);
-		addIntegerProperty(PROP_SLIDER_WIDTH, "Slider wide", WidgetPropertyCategory.DISPLAY, 5, 0, Integer.MAX_VALUE, false);
+		addBooleanProperty(PROP_ORIENTATION, "Horizontal orientation", WidgetPropertyCategory.FORMAT, true, false);
+		addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.FORMAT, 2, 0, 5, false);
+		addIntegerProperty(PROP_SLIDER_WIDTH, "Slider wide", WidgetPropertyCategory.FORMAT, 5, 0, Integer.MAX_VALUE, false);
 		setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, "#ffffff");
 		setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, "#d0d0d0");
 	}

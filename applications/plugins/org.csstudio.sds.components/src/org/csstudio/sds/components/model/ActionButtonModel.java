@@ -21,11 +21,14 @@
  */
 package org.csstudio.sds.components.model;
 
+import static org.csstudio.sds.model.WidgetPropertyCategory.ACTIONS;
+import static org.csstudio.sds.model.WidgetPropertyCategory.DISPLAY;
+import static org.csstudio.sds.model.WidgetPropertyCategory.FORMAT;
+
 import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.TextAlignmentEnum;
 import org.csstudio.sds.model.TextTypeEnum;
-import org.csstudio.sds.model.WidgetPropertyCategory;
 import org.csstudio.sds.util.ColorAndFontUtil;
 
 /**
@@ -101,21 +104,28 @@ public final class ActionButtonModel extends AbstractTextTypeWidgetModel {
 	@Override
 	protected void configureProperties() {
 	    // Display
-		addStringProperty(PROP_LABEL, "Label Text", WidgetPropertyCategory.DISPLAY, "", true, PROP_TOOLTIP); //$NON-NLS-1$
-		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", WidgetPropertyCategory.DISPLAY, DEFAULT_TOGGLE_BUTTON, false,PROP_LABEL);
-        addArrayOptionProperty(PROP_TEXT_TYPE, "Value Type", WidgetPropertyCategory.DISPLAY, TextTypeEnum.getDisplayNames(),
-                               TextTypeEnum.DOUBLE.getIndex(), false, PROP_TOGGLE_BUTTON);
-        addIntegerProperty(PROP_PRECISION, "Decimal places", WidgetPropertyCategory.DISPLAY, 2, 0, 10, false,PROP_TEXT_TYPE);
+		addStringProperty(PROP_LABEL, "Label Text", DISPLAY, "", true, PROP_TOOLTIP); //$NON-NLS-1$
+		addBooleanProperty(PROP_TOGGLE_BUTTON, "Toggle Button", DISPLAY, DEFAULT_TOGGLE_BUTTON,
+		                   false,PROP_LABEL);
+        addArrayOptionProperty(PROP_TEXT_TYPE, "Value Type", DISPLAY,
+                               TextTypeEnum.getDisplayNames(), TextTypeEnum.DOUBLE.getIndex(),
+                               false, PROP_TOGGLE_BUTTON);
+        addIntegerProperty(PROP_PRECISION, "Decimal places", DISPLAY, 2, 0, 10,
+                           false,PROP_TEXT_TYPE);
 
 
 		// Format
-		addFontProperty(PROP_FONT, "Font", WidgetPropertyCategory.FORMAT, ColorAndFontUtil.toFontString("Arial", 8), false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
-		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", WidgetPropertyCategory.FORMAT, TextAlignmentEnum.getDisplayNames(),
-				TextAlignmentEnum.CENTER.getIndex(), false, PROP_FONT);
+		addFontProperty(PROP_FONT, "Font", FORMAT, ColorAndFontUtil.toFontString("Arial", 8),
+		                false, PROP_COLOR_FOREGROUND); //$NON-NLS-1$
+		addArrayOptionProperty(PROP_TEXT_ALIGNMENT, "Text Alignment", FORMAT,
+		                       TextAlignmentEnum.getDisplayNames(), TextAlignmentEnum.CENTER.getIndex(),
+		                       false, PROP_FONT);
 
 		// Action
-		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", WidgetPropertyCategory.ACTIONS, -1, -1, Integer.MAX_VALUE, false, AbstractWidgetModel.PROP_ACTIONDATA);
-		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", WidgetPropertyCategory.ACTIONS, 0, -1, Integer.MAX_VALUE,false, PROP_ACTION_PRESSED_INDEX);
+		addIntegerProperty(PROP_ACTION_PRESSED_INDEX, "Action Index (pressed)", ACTIONS, -1, -1,
+		                   Integer.MAX_VALUE, false, AbstractWidgetModel.PROP_ACTIONDATA);
+		addIntegerProperty(PROP_ACTION_RELEASED_INDEX, "Action Index (released)", ACTIONS, 0, -1,
+		                   Integer.MAX_VALUE,false, PROP_ACTION_PRESSED_INDEX);
 
 		// .. hide properties
 		hideProperty(PROP_BORDER_COLOR, getTypeID());
