@@ -50,8 +50,6 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
 
     private AlarmListenerAdapter _listener;
     private IMessageListenerSession _listenerSession;
-
-    // TODO (jpenning) CopyOnWrite is missing?!
     private AlarmConnectionMonitorAdapter _monitor;
 
     /**

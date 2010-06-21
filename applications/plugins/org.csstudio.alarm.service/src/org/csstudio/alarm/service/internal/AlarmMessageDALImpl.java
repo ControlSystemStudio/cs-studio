@@ -27,7 +27,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
-import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
@@ -88,7 +87,6 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
          *        String value = getString(key);
          *        if ( value!=null && !value.equals("noTimeStamp")&& !value.equals("Uninitialized") && !value.equals("noMetaData")) {
          */
-
 
         return true;
     }
@@ -170,7 +168,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     public final String toString() {
         return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", "
-                + getString(AlarmMessageKey.SEVERITY) + getString(AlarmMessageKey.STATUS);
+                + getString(AlarmMessageKey.SEVERITY) + ", " + getString(AlarmMessageKey.STATUS);
     }
 
     @Nonnull
@@ -190,14 +188,20 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Nonnull
     private String retrieveEventtimeAsString() {
         String result = NOT_AVAILABLE;
-        // TODO (jpenning) which source for the timestamp is ok?
-//      final Timestamp timestamp = _anyData.getTimestamp();
-        final Timestamp timestamp = getProperty().getCondition().getTimestamp();
+        final Timestamp timestamp = getTimestamp();
         if (timestamp != null) {
             final SimpleDateFormat sdf = new SimpleDateFormat(JMS_DATE_FORMAT);
             result = sdf.format(timestamp.getMilliseconds());
         }
         return result;
+    }
+
+    @CheckForNull
+    private Timestamp getTimestamp() {
+        // TODO (jpenning) which source for the timestamp is ok?
+        //      final Timestamp timestamp = _anyData.getTimestamp();
+        final Timestamp timestamp = getProperty().getCondition().getTimestamp();
+        return timestamp;
     }
 
     @Nonnull
@@ -290,9 +294,10 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     @Override
     @CheckForNull
     public Date getEventtime() {
-        Date result = EventtimeUtil.parseTimestamp(getString(AlarmMessageKey.EVENTTIME));
-        if (result == null) {
-            LOG.warn("Could not retrieve event time from " + this);
+        Date result = null;
+        Timestamp timestamp = getTimestamp();
+        if (timestamp != null) {
+            result = new Date(timestamp.getMilliseconds());
         }
         return result;
     }
@@ -305,8 +310,6 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         }
         return result;
     }
-
-
 
     @Override
     public boolean isAcknowledgement() {

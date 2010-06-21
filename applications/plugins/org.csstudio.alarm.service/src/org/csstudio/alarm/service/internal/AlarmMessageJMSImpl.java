@@ -112,7 +112,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     @Override
     public final String toString() {
         return "JMS-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", " + getString(AlarmMessageKey.SEVERITY)
-                + getString(AlarmMessageKey.STATUS);
+                + ", " + getString(AlarmMessageKey.STATUS);
     }
 
     @Override

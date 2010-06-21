@@ -44,7 +44,7 @@ public interface IAlarmMessage {
     String getString(@Nonnull final AlarmMessageKey key);
 
     /**
-     * Tries to parse the event time and returns the date if it succeeds, else null.
+     * Tries to retrieve the event time and returns the date if it succeeds, else null.
      *
      * @return the event time or null
      */
@@ -52,7 +52,7 @@ public interface IAlarmMessage {
     Date getEventtime();
 
     /**
-     * Tries to parse the event time and returns the date if it succeeds, else the current time.
+     * Tries to retrieve the event time and returns the date if it succeeds, else the current time.
      *
      * @return the event time or the current time
      */

@@ -21,9 +21,7 @@
 package org.csstudio.alarm.service.internal;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -89,15 +87,23 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             }
         }
 
-//        for (final IAlarmInitItem initItem : initItems) {
-//            registerPV(pvsUnderWay, initItem);
-//        }
-
+        LOG.debug("retrieveInitialState about to wait");
         waitFixedTime(1000);
 
-        for (final Element pvUnderWay : pvsUnderWay) {
-            deregisterPV(pvUnderWay);
+        // TODO (jpenning) do not deregister all at once
+
+        LOG.debug("retrieveInitialState about to deregister " + pvsUnderWay.size() + " pvs");
+//        for (final Element pvUnderWay : pvsUnderWay) {
+//            deregisterPV(pvUnderWay);
+//        }
+        for (int i = 0; i < pvsUnderWay.size(); i++) {
+            deregisterPV(pvsUnderWay.get(i));
+            if ((i % 500) == 0) {
+                waitFixedTime(100);
+            }
         }
+
+        LOG.debug("retrieveInitialState finished");
     }
 
     @Override
@@ -115,14 +121,9 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
             // TODO (jpenning) Review: hard coded Double.class in connection parameter
             pvUnderWay._listener = new DynamicValueListenerForInit<Double, DoubleProperty>(initItem);
-            // TODO (jpenning) use constants for parameterization of expert mode
-            pvUnderWay._parameters = new HashMap<String, Object>();
-            pvUnderWay._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
-
             DalPlugin.getDefault().getSimpleDALBroker()
                     .registerListener(pvUnderWay._connectionParameters,
-                                      pvUnderWay._listener,
-                                      pvUnderWay._parameters);
+                                      pvUnderWay._listener);
             pvsUnderWay.add(pvUnderWay);
         } catch (final InstantiationException e) {
             LOG.error("Error in registerPVs", e);
@@ -133,7 +134,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     private void waitFixedTime(final int delayInMsec) {
         try {
-            // TODO (jpenning) use constant from prefs here
             Thread.sleep(delayInMsec);
         } catch (final InterruptedException e) {
             LOG.warn("retrieveInitialState was interrupted ", e);
@@ -144,8 +144,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         try {
             DalPlugin.getDefault().getSimpleDALBroker()
                     .deregisterListener(pvUnderWay._connectionParameters,
-                                        pvUnderWay._listener,
-                                        pvUnderWay._parameters);
+                                        pvUnderWay._listener);
         } catch (final InstantiationException e) {
             LOG.error("Error in deregisterPVs", e);
         } catch (final CommonException e) {
@@ -207,7 +206,6 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     private static class Element {
         ConnectionParameters _connectionParameters;
         DynamicValueListener<?, ?> _listener;
-        Map<String, Object> _parameters;
     }
     // CHECKSTYLE:ON
 

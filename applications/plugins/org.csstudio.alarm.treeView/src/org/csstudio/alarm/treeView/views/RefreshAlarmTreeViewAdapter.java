@@ -133,10 +133,9 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             // TODO (jpenning) Review access to alarm message properties
             final String nameString = alarmMessage.getString(AlarmMessageKey.NAME);
             final String severityString = alarmMessage.getString(AlarmMessageKey.SEVERITY);
-            Date eventTime = alarmMessage.getEventtimeOrCurrentTime();
             if ( (nameString != null) && (severityString != null)) {
                 final Severity severity = Severity.parseSeverity(severityString);
-                final Alarm alarm = new Alarm(nameString, severity, eventTime);
+                final Alarm alarm = new Alarm(nameString, severity, alarmMessage.getEventtimeOrCurrentTime());
                 _pvNode.updateAlarm(alarm);
             } else {
                 LOG_INNER.warn("Could not retrieve data (name, severity) from "
