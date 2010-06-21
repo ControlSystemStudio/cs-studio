@@ -32,11 +32,14 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -56,25 +59,25 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * <p>Base class for widgets that implement a chart (waveform, strip chart).</p>
- * 
+ *
  * <p>This class paints the plot, labels and axes. It is also responsible for
  * transforming data values to display coordinates and can autoscale the y-axis
  * if requested by the user.</p>
- * 
+ *
  * <p>Subsclasses of this class are responsible for managing the actual data
  * values to be displayed in the plot. They must provide these values to this
  * base class by implementing the {@link #dataValues} method. If the data range
  * of the y-axis or the x-axis changes, subclasses must call the methods
  * {@link #dataRangeChanged} or {@link #xAxisRangeChanged}, respectively.</p>
- * 
+ *
  * @author Joerg Rathlev
  * @author based on waveform by Kai Meyer and Sven Wende
  */
-public abstract class AbstractChartFigure extends Figure implements ICrossedFigure {
+public abstract class AbstractChartFigure extends Figure implements IAdaptable {
 
 	// TODO: format all comments
 	// TODO: check all method names for "waveform" etc.
-	
+
 	/**
 	 * Constant value which represents that a scale or grid lines should be
 	 * shown for the x-axis.
@@ -119,7 +122,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
-	
+
 	/**
 	 * Whether this figure has a transparent background.
 	 */
@@ -140,12 +143,12 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 * @see #SHOW_BOTH
 	 */
 	private int _showAxes = 0;
-	
+
 	/**
 	 * Whether the axes ticks are labeled.
 	 */
 	private boolean _labeledTicks = true;
-	
+
 	/**
 	 * The maximum data value set in this waveform's properties.
 	 */
@@ -160,29 +163,29 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 * Whether autoscaling is enabled.
 	 */
 	private boolean _autoscale = false;
-	
+
 	/**
 	 * The plot colors for the data arrays.
 	 */
-	private Color[] _plotColor;
-	
+	private final Color[] _plotColor;
+
 	/**
 	 * Whether the plot is enabled.
 	 */
-	private boolean[] _plotEnabled;
+	private final boolean[] _plotEnabled;
 
 	/**
 	 * Whether this figure is drawn as a line chart.
 	 */
 	private boolean _lineChart = false;
-	
+
 	/**
 	 * <code>true</code> until the figure is painted for the first time. This is
 	 * used to prevent recalculating the layout of the subfigures while the
 	 * properties are set initially.
 	 */
 	private boolean _deferLayout = true;
-	
+
 	/**
 	 * The number of data series displayed by this figure.
 	 */
@@ -198,11 +201,11 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 * The y-axis data mapping.
 	 */
 	private IAxis _yAxis = new LinearAxis(0.0, 0.0, 0);
-	
+
 	/**
 	 * The x-axis data mapping.
 	 */
-	private IAxis _xAxis = new LinearAxis(0.0, 0.0, 0);
+	private final IAxis _xAxis = new LinearAxis(0.0, 0.0, 0);
 
 	/**
 	 * The scale for the x-axis.
@@ -228,17 +231,17 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 * The graph of this waveform.
 	 */
 	private PlotFigure _plotFigure;
-	
+
 	/**
 	 * The label for this waveform.
 	 */
 	private Label _waveformLabel;
-	
+
 	/**
 	 * The x-axis label.
 	 */
 	private Label _xAxisLabel;
-	
+
 	/**
 	 * The y-axis label.
 	 */
@@ -247,18 +250,21 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	/**
 	 * The logger used by this object.
 	 */
-	private Logger _logger = CentralLogger.getInstance().getLogger(this);
+	private final Logger _logger = CentralLogger.getInstance().getLogger(this);
 
 	/**
 	 * The aliases of this waveform.
 	 */
 	private Map<String, String> _aliases;
 
-    private CrossedPaintHelper _crossedPaintHelper;
-	
+    private ICrossedFigure _crossedOutAdapter;
+
+    private IRhombusEquippedWidget _rhombusAdapter;
+
+
 	/**
 	 * Creates a new chart figure.
-	 * 
+	 *
 	 * @param numberOfDataSeries
 	 *            the number of data series to be displayed by this figure.
 	 */
@@ -266,30 +272,30 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		if (numberOfDataSeries < 0) {
 			throw new IllegalArgumentException("numberOfDataSeries must be >= 0");
 		}
-	      _crossedPaintHelper = new CrossedPaintHelper();
 		_numberOfDataSeries = numberOfDataSeries;
 
 		_plotColor = new Color[_numberOfDataSeries];
 		Arrays.fill(_plotColor, ColorConstants.black);
 		_plotEnabled = new boolean[_numberOfDataSeries];
 		Arrays.fill(_plotEnabled, true);
-		
+
 		setLayoutManager(new XYLayout());
 		createSubfigures();
 		addRefreshLayoutListener();
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
+	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
         Rectangle bound = getBounds().getCopy();
-        _crossedPaintHelper.paintCross(graphics, bound);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
 
 	}
-	
+
 	/**
 	 * Registers a figure listener that listens for movement events and
-	 * refreshes the layout of the subfigures when the figure has moved. 
+	 * refreshes the layout of the subfigures when the figure has moved.
 	 */
 	private void addRefreshLayoutListener() {
 		addFigureListener(new FigureListener() {
@@ -300,7 +306,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	}
 
 	/**
-	 * Creates the subfigures that this figure contains. 
+	 * Creates the subfigures that this figure contains.
 	 */
 	private void createSubfigures() {
 		_yAxisGridLines = new Scale();
@@ -314,21 +320,21 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		_xAxisGridLines.setShowValues(false);
 		_xAxisGridLines.setForegroundColor(ColorConstants.lightGray);
 		this.add(_xAxisGridLines);
-		
+
 		_yAxisScale = new Scale();
 		_yAxisScale.setHorizontalOrientation(false);
 		_yAxisScale.setShowValues(_labeledTicks);
 		_yAxisScale.setAlignment(true);
 		_yAxisScale.setForegroundColor(this.getForegroundColor());
 		this.add(_yAxisScale);
-		
+
 		_xAxisScale = new Scale();
 		_xAxisScale.setHorizontalOrientation(true);
 		_xAxisScale.setShowValues(_labeledTicks);
 		_xAxisScale.setAlignment(false);
 		_xAxisScale.setForegroundColor(this.getForegroundColor());
 		this.add(_xAxisScale);
-		
+
 		_plotFigure = new PlotFigure();
 		this.add(_plotFigure);
 
@@ -338,63 +344,63 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		this.add(_xAxisLabel);
 		_yAxisLabel = new Label("");
 		this.add(_yAxisLabel);
-		
+
 		/* TODO: Draw y-label text vertically.
-		 * 
+		 *
 		 * The following way to do this is recommended in the Eclipse
 		 * newsgroups, but it currently causes a NullPointerException:
-		 * 
+		 *
 		 * _yAxisLabel = new Label("") {
 		 *     protected void paintFigure(...) {
 		 *         graphics.rotate(90);
 		 *         super.paintFigure(...);
 		 *     }
 		 * }
-		 * 
+		 *
 		 * http://dev.eclipse.org/newslists/news.eclipse.tools.gef/msg15609.html
 		 * http://dev.eclipse.org/mhonarc/newsLists/news.eclipse.tools.gef/msg20487.html
 		 */
 	}
-	
+
 	/**
 	 * Returns the lowest data value.
-	 * 
+	 *
 	 * @return the lowest data value.
 	 */
 	protected abstract double lowestDataValue();
-	
+
 	/**
 	 * Returns the greatest data value.
-	 * 
+	 *
 	 * @return the greatest data value.
 	 */
 	protected abstract double greatestDataValue();
-	
+
 	/**
 	 * Sends the data points of the data series with the specified index to the
 	 * processor.
-	 * 
+	 *
 	 * @param index
 	 *            the index of the data series.
 	 * @param processor
 	 *            the processor.
 	 */
 	protected abstract void dataValues(int index, IDataPointProcessor processor);
-	
+
 	/**
 	 * Returns the lowest x-axis value.
-	 * 
+	 *
 	 * @return the lowest x-axis value.
 	 */
 	protected abstract double xAxisMinimum();
-	
+
 	/**
 	 * Returns the greatest x-axis value.
-	 * 
+	 *
 	 * @return the greatest x-axis value.
 	 */
 	protected abstract double xAxisMaximum();
-	
+
 	/**
 	 * Notifies this figure that the range of the x-axis has changed. This
 	 * method must be called by subclasses when the range of the x-axis has
@@ -405,7 +411,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		_xAxis.setDataRange(xAxisMinimum(), xAxisMaximum());
 		refreshConstraints();
 	}
-	
+
 	/**
 	 * Notifies this figure that the data range has changed. This method must
 	 * be called by subclasses when the lowest or greates data value has
@@ -417,19 +423,19 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			refreshConstraints();
 		}
 	}
-	
+
 	/**
 	 * Returns the lower bound of the y-axis.
-	 * 
+	 *
 	 * @return the lower bound of the y-axis.
 	 */
 	private double yAxisLowerBound() {
 		return _autoscale ? lowestDataValue() : _propertyMin;
 	}
-	
+
 	/**
 	 * Returns the upper bound of the y-axis.
-	 * 
+	 *
 	 * @return the upper bound of the y-axis.
 	 */
 	private double yAxisUpperBound() {
@@ -446,6 +452,16 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
+		} else if(adapter == ICrossedFigure.class) {
+		    if(_crossedOutAdapter==null) {
+		        _crossedOutAdapter = new CrossedOutAdapter(this);
+		    }
+		    return _crossedOutAdapter;
+		} else if(adapter == IRhombusEquippedWidget.class) {
+		    if(_rhombusAdapter==null) {
+		        _rhombusAdapter = new RhombusAdapter(this);
+		    }
+		    return _rhombusAdapter;
 		}
 		return null;
 	}
@@ -456,7 +472,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	@Override
 	protected final void paintFigure(final Graphics graphics) {
 		super.paintFigure(graphics);
-		
+
 		// After the background of this figure is painted, its children will
 		// be painted, so if we have not layed them out yet, we must do so now.
 		if (_deferLayout) {
@@ -464,17 +480,17 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			this.refreshConstraints();
 		}
 	}
-	
+
 	/**
 	 * Sets the transparent state of the background.
-	 * 
+	 *
 	 * @param transparent
 	 *            the transparent state.
 	 */
 	public final void setTransparent(final boolean transparent) {
 		_transparent = transparent;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -484,7 +500,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets which axes should be displayed.
-	 * 
+	 *
 	 * @param axes
 	 *            a value representing which axes should be displayed.
 	 * @see #SHOW_X_AXIS
@@ -498,7 +514,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the axes for which grid lines should be displayed.
-	 * 
+	 *
 	 * @param axes
 	 *            a value representing for which axes grid lines should be
 	 *            displayed.
@@ -510,7 +526,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		_showGridLines = axes;
 		refreshConstraints();
 	}
-	
+
 	/**
 	 * Sets the width of the lines of the graph.
 	 * @param lineWidth
@@ -539,7 +555,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the color for the grid lines.
-	 * 
+	 *
 	 * @param color
 	 *            the color
 	 */
@@ -547,10 +563,10 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		_yAxisGridLines.setForegroundColor(color);
 		_xAxisGridLines.setForegroundColor(color);
 	}
-	
+
 	/**
 	 * Sets, if the values should be shown.
-	 * 
+	 *
 	 * @param showValues
 	 *            True, if the values should be shown, false otherwise
 	 */
@@ -563,7 +579,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the y-axis scaling of this waveform figure.
-	 * 
+	 *
 	 * @param scaling
 	 *            the new scaling. 0 = linear, 1 = logarithmic.
 	 */
@@ -584,7 +600,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the label.
-	 * 
+	 *
 	 * @param label the label.
 	 */
 	public final void setLabel(final String label) {
@@ -601,7 +617,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the x-axis label.
-	 * 
+	 *
 	 * @param axisLabel the label.
 	 */
 	public final void setXAxisLabel(final String axisLabel) {
@@ -618,7 +634,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the y-axis label.
-	 * 
+	 *
 	 * @param axisLabel the label.
 	 */
 	public final void setYAxisLabel(final String axisLabel) {
@@ -635,14 +651,14 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the aliases of this waveform.
-	 * 
+	 *
 	 * @param aliases
 	 *            the aliases of this waveform.
 	 */
 	public final void setAliases(final Map<String, String> aliases) {
 		_aliases = aliases != null ? aliases : new HashMap<String, String>();
 	}
-	
+
 	/**
 	 * Sets the max value for the graph.
 	 * @param max
@@ -686,7 +702,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets whether the chart is a line chart.
-	 * 
+	 *
 	 * @param lineChart
 	 *            <code>true</code> if the chart should be drawn as a line
 	 *            chart, <code>false</code> otherwise.
@@ -697,7 +713,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Sets the data point drawing style.
-	 * 
+	 *
 	 * @param style the style.
 	 */
 	public final void setDataPointDrawingStyle(final int style) {
@@ -708,7 +724,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	/**
 	 * Sets the color to be used for the plot of the data with the specified
 	 * index.
-	 * 
+	 *
 	 * @param index
 	 *            the data index. This must be a positive integer or zero, and
 	 *            smaller than the number of data arrays specified in the
@@ -717,16 +733,16 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 *            the color.
 	 */
 	public final void setPlotColor(final int index, final Color color) {
-		if (index < 0 || index >= _numberOfDataSeries) {
+		if ((index < 0) || (index >= _numberOfDataSeries)) {
 			throw new IndexOutOfBoundsException(
 					"invalid index: " + index);
 		}
 		_plotColor[index] = color;
 	}
-	
+
 	/**
 	 * Enables or disables the plot with the specified index.
-	 * 
+	 *
 	 * @param index
 	 *            the data index. This must be a positive integer or zero, and
 	 *            smaller than the number of data arrays specified in the
@@ -735,7 +751,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	 *            whether the plot should be enabled.
 	 */
 	public final void setPlotEnabled(final int index, final boolean enabled) {
-		if (index < 0 || index >= _numberOfDataSeries) {
+		if ((index < 0) || (index >= _numberOfDataSeries)) {
 			throw new IndexOutOfBoundsException(
 					"invalid index: " + index);
 		}
@@ -744,48 +760,48 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Checks whether the x-axis is displayed.
-	 * 
+	 *
 	 * @return <code>true</code> if the x-axis is displayed,
 	 *         <code>false</code> otherwise.
 	 */
 	protected final boolean showXAxis() {
-		return (_showAxes == SHOW_X_AXIS || _showAxes == SHOW_BOTH);
+		return ((_showAxes == SHOW_X_AXIS) || (_showAxes == SHOW_BOTH));
 	}
 
 	/**
 	 * Checks whether the y-axis is displayed.
-	 * 
+	 *
 	 * @return <code>true</code> if the y-axis is displayed,
 	 *         <code>false</code> otherwise.
 	 */
 	protected final boolean showYAxis() {
-		return (_showAxes == SHOW_Y_AXIS || _showAxes == SHOW_BOTH);
+		return ((_showAxes == SHOW_Y_AXIS) || (_showAxes == SHOW_BOTH));
 	}
 
 	/**
 	 * Checks whether gridlines are displayed for the x-axis.
-	 * 
+	 *
 	 * @return <code>true</code> if gridlines are displayed,
 	 *         <code>false</code> otherwise.
 	 */
 	protected final boolean showXAxisGrid() {
-		return (_showGridLines == SHOW_X_AXIS || _showGridLines == SHOW_BOTH);
+		return ((_showGridLines == SHOW_X_AXIS) || (_showGridLines == SHOW_BOTH));
 	}
 
 	/**
 	 * Checks whether gridlines are displayed for the y-axis.
-	 * 
+	 *
 	 * @return <code>true</code> if gridlines are displayed,
 	 *         <code>false</code> otherwise.
 	 */
 	protected final boolean showYAxisGrid() {
-		return (_showGridLines == SHOW_Y_AXIS || _showGridLines == SHOW_BOTH);
+		return ((_showGridLines == SHOW_Y_AXIS) || (_showGridLines == SHOW_BOTH));
 	}
-	
+
 	/**
 	 * Returns the y position relative to the top of the plot at which the given
 	 * value should be drawn.
-	 * 
+	 *
 	 * @param value
 	 *            the y value.
 	 * @return the y position.
@@ -793,17 +809,17 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	private int valueToYPos(final double value) {
 		// the data values are mapped to [0, height-1]
 		int plotHeight = _plotBounds.height - 1;
-		
+
 		// the axis calculates the distance from the lower bound of the data
 		// range, but for the y coordinate, we need the distance from the top
 		// of the plot, so we subtract the returned value from plotHeight.
 		return plotHeight - _yAxis.valueToCoordinate(value);
 	}
-	
+
 	/**
 	 * Returns the x position relative to the left of the plot at which the
 	 * given value should be drawn.
-	 * 
+	 *
 	 * @param value
 	 *            the x value. This is usually the index of the data point
 	 *            within the data array.
@@ -812,7 +828,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 	private int valueToXPos(final double value) {
 		return _xAxis.valueToCoordinate(value);
 	}
-	
+
 	/**
 	 * Performs the layout of the subfigures of this figure.
 	 */
@@ -820,33 +836,33 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		if (_deferLayout) {
 			return;
 		}
-		
+
 		Rectangle figBounds = this.getBounds().getCopy();
 		figBounds.crop(this.getInsets());
-		
+
 		// These bounds are used for the placement of the sub-figures below.
 		// The bounds are cropped after the placement of each sub-figure and
 		// the next sub-figure will be placed in the remaining bounds.
 		Rectangle bounds = new Rectangle(0, 0, figBounds.width, figBounds.height);
-		
+
 		Rectangle labelBounds = calculateLabelBounds(bounds);
 		setConstraint(_waveformLabel, labelBounds);
-		
+
 		Rectangle xAxisLabelBounds = calculateXAxisLabelBounds(bounds);
 		setConstraint(_xAxisLabel, xAxisLabelBounds);
-		
+
 		Rectangle xAxisBounds = calculateXAxisBounds(bounds);
 		setConstraint(_xAxisScale, xAxisBounds);
-		
+
 		Rectangle yAxisLabelBounds = calculateYAxisLabelBounds(bounds);
 		setConstraint(_yAxisLabel, yAxisLabelBounds);
-		
+
 		Rectangle yAxisBounds = calculateYAxisBounds(bounds);
 		setConstraint(_yAxisScale, yAxisBounds);
-		
+
 		_plotBounds = calculatePlotBounds(bounds);
 		setConstraint(_plotFigure, _plotBounds);
-		
+
 		// Grid lines are located on top of the plot (within the same bounds,
 		// but the y-axis grid needs to be adjusted for the text height at the
 		// top to align with the y-axis).
@@ -871,7 +887,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the y-axis label.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the label will be displayed. These
 	 *            bounds will be cropped to the remaining bounds.
@@ -891,7 +907,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the x-axis label.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the label will be displayed. These
 	 *            bounds will be cropped to the remaining bounds.
@@ -911,7 +927,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the plot of this figure.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the plot will be displayed. Note:
 	 *            unlike the other {@code calculate...} methods, this method
@@ -935,7 +951,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the x-axis of this figure.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the x-axis will be displayed. These
 	 *            bounds will be cropped to the remaining bounds.
@@ -958,7 +974,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the width of the y-axis label.
-	 * 
+	 *
 	 * @return the width of the y-axis label.
 	 */
 	private int yAxisLabelWidth() {
@@ -967,7 +983,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the y-axis of this figure.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the y-axis will be displayed. These
 	 *            bounds will be cropped to the remaining bounds.
@@ -990,7 +1006,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the bounds of the label of this figure.
-	 * 
+	 *
 	 * @param bounds
 	 *            the bounds within which the label will be displayed. These
 	 *            bounds will be cropped to the remaining bounds.
@@ -1010,7 +1026,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Returns whether this figure has a label.
-	 * 
+	 *
 	 * @return <code>true</code> if this figure has a label,
 	 *         <code>false</code> otherwise.
 	 */
@@ -1020,7 +1036,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Returns whether this figure has a label on its x-axis.
-	 * 
+	 *
 	 * @return <code>true</code> if the x-axis is labeled, <code>false</code>
 	 *         otherwise.
 	 */
@@ -1030,7 +1046,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Returns whether this figure has a label on its y-axis.
-	 * 
+	 *
 	 * @return <code>true</code> if the y-axis is labeled, <code>false</code>
 	 *         otherwise.
 	 */
@@ -1040,7 +1056,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Calculates the width of the y-axis.
-	 * 
+	 *
 	 * @return the width of the y-axis in pixels.
 	 */
 	private int yAxisWidth() {
@@ -1051,13 +1067,9 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		}
 	}
 
-	public void setCrossedOut(boolean newValue) {
-	    _crossedPaintHelper.setCrossed(newValue);
-	}
-
 	/**
 	 * Calculates the height of the x-axis.
-	 * 
+	 *
 	 * @return the height of the x-axis in pixels.
 	 */
 	private int xAxisHeight() {
@@ -1070,7 +1082,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * Gets the IFigure for the tooltip.
-	 * 
+	 *
 	 * @return IFigure The IFigure for the tooltip
 	 */
 	private IFigure getToolTipFigure() {
@@ -1085,7 +1097,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * A drawing style for drawing data points in a plot.
-	 * 
+	 *
 	 * @author Joerg Rathlev
 	 */
 	private enum DataPointDrawingStyle {
@@ -1101,7 +1113,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				g.drawPoint(p.x, p.y);
 			}
 		},
-		
+
 		/**
 		 * Draws a data point as a small plus sign.
 		 */
@@ -1120,7 +1132,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				g.drawLine(p.x-2, p.y, p.x+2, p.y);
 			}
 		},
-		
+
 		/**
 		 * Draws a data point as a small square (3x3 pixels).
 		 */
@@ -1133,7 +1145,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				g.fillRectangle(p.x-1, p.y-1, 3, 3);
 			}
 		},
-		
+
 		/**
 		 * Draws a diamod-shaped data point.
 		 */
@@ -1148,37 +1160,37 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				//  #####
 				//   ###
 				//    #
-				
+
 				// Note: the call to drawPolygon is required because otherwise
 				// for some reason the polygon drawn by fillPolygon is a bit
-				// too small (the right edge is drawn one pixel to the left). 
+				// too small (the right edge is drawn one pixel to the left).
 				g.drawPolygon(new int[] {
 						p.x-2, p.y, p.x, p.y-2, p.x+2, p.y, p.x, p.y+2 });
 				g.fillPolygon(new int[] {
 						p.x-2, p.y, p.x, p.y-2, p.x+2, p.y, p.x, p.y+2 });
 			}
 		};
-		
+
 		/**
 		 * Draws a data point at the specified coordinates.
-		 * 
+		 *
 		 * @param g the graphics object to use for drawing.
 		 * @param p the coordinates of the data point.
 		 */
 		protected abstract void draw(Graphics g, Point p);
 	}
-	
+
 	/**
 	 * Receives data points from a subclass implementation and processes them.
-	 * 
+	 *
 	 * @author Joerg Rathlev
 	 */
 	protected interface IDataPointProcessor {
-		
+
 		/**
 		 * Processes the specified data point. The values of the data point must
 		 * be given in data value units (not display units).
-		 * 
+		 *
 		 * @param x
 		 *            the x-value of the data point.
 		 * @param y
@@ -1195,7 +1207,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		 * The width of the lines of the graph.
 		 */
 		private int _plotLineWidth = 1;
-		
+
 		/**
 		 * The drawing style used for the data points.
 		 */
@@ -1212,12 +1224,12 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 					figureBounds.y + figureBounds.height);
 			graphics.drawLine(figureBounds.x, figureBounds.bottom() - 1,
 					figureBounds.x + figureBounds.width, figureBounds.bottom() - 1);
-			
+
 			for (int i = 0; i < _numberOfDataSeries; i++) {
 				if (!_plotEnabled[i]) {
 					continue;
 				}
-				
+
 				// TODO: the points don't actually have to be recalculated everytime the plot
 				// is redrawn -- only if the data points have changed or if the size of the
 				// plot has changed.
@@ -1237,7 +1249,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 		/**
 		 * Calculates the coordinates of the data points in the plot area.
-		 * 
+		 *
 		 * @param index
 		 *            the index of the data series
 		 * @return a list of points to be plotted.
@@ -1269,7 +1281,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 		/**
 		 * Sets the data point drawing style of this plot.
-		 * 
+		 *
 		 * @param style the style.
 		 */
 		private void setDataPointDrawingStyle(final int style) {
@@ -1294,7 +1306,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 	/**
 	 * This class represents a scale.
-	 * 
+	 *
 	 * @author Kai Meyer
 	 */
 	private final class Scale extends RectangleFigure {
@@ -1314,12 +1326,12 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		 * True, if the values of the Markers should be shown, false otherwise.
 		 */
 		private boolean _showValues = false;
-	
+
 		/**
 		 * The List of positive ScaleMarkers.
 		 */
-		private List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
-		
+		private final List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
+
 		/**
 		 * Constructor.
 		 */
@@ -1333,12 +1345,12 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				}
 			});
 		}
-		
+
 		/**
 		 * Refreshes the Constraints.
 		 */
 		private void refreshConstraints() {
-			if (this.getBounds().height==0 || this.getBounds().width==0) {
+			if ((this.getBounds().height==0) || (this.getBounds().width==0)) {
 				_posScaleMarkers.clear();
 				this.removeAll();
 				return;
@@ -1349,7 +1361,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				if (_showValues) {
 					height = TEXTHEIGHT + _wideness;
 				}
-				
+
 				int distance = TEXTWIDTH;
 				List<Tick> ticks = _xAxis.calculateIntegerTicks(distance, 3);
 				for (Tick tick : ticks) {
@@ -1368,7 +1380,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				if (_showValues) {
 					width = TEXTWIDTH + _wideness;
 				}
-				
+
 				int distance = TEXTHEIGHT * 2;
 				List<Tick> ticks = _yAxis.calculateTicks(distance, 3);
 				for (Tick tick : ticks) {
@@ -1415,7 +1427,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			scaleMarkers.add(index, marker);
 			this.add(marker);
 		}
-		
+
 		/**
 		 * Removes all ScaleMarkers in the given List, beginning by the given index.
 		 * @param index
@@ -1424,7 +1436,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 		 * 				The List of ScaleMarkers
 		 */
 		private void removeScaleMarkers(final int index, final List<ScaleMarker> scaleMarkers) {
-			if (!scaleMarkers.isEmpty() && index<=scaleMarkers.size()) {
+			if (!scaleMarkers.isEmpty() && (index<=scaleMarkers.size())) {
 				while (index<scaleMarkers.size()) {
 					this.remove(scaleMarkers.remove(index));
 				}
@@ -1440,10 +1452,10 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 //			graphics.setBackgroundColor(ColorConstants.blue);
 //			graphics.fillRectangle(this.getBounds());
 		}
-		
+
 		/**
 		 * Sets the orientation of this Scale.
-		 * 
+		 *
 		 * @param isHorizontal
 		 *            The orientation of this Scale
 		 *            (true=horizontal;false=vertical)
@@ -1452,22 +1464,22 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			_isHorizontal = isHorizontal;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * Sets the alignment for the ScaleMarker.
 		 * @param isTopLeft
 		 * 			  The alignment for the ScaleMarker
 		 *            (true=top/left; false=bottom/right)
-		 * 				
+		 *
 		 */
 		public void setAlignment(final boolean isTopLeft) {
 			_isTopLeft = isTopLeft;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * Sets the wideness of this scale.
-		 * 
+		 *
 		 * @param wideness
 		 *            The wideness of this scale
 		 */
@@ -1475,7 +1487,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			_wideness = wideness;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * Sets, if the values of the Markers should be shown.
 		 * @param showValues
@@ -1485,7 +1497,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			_showValues = showValues;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1496,7 +1508,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				marker.setForegroundColor(fg);
 			}
 		}
-		
+
 		/**
 		 * This class represents a marker for the scale.
 		 * @author Kai Meyer
@@ -1505,11 +1517,11 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			/**
 			 * The Label of this ScaleMarker.
 			 */
-			private Label _textLabel;
+			private final Label _textLabel;
 			/**
 			 * The hyphen of this ScaleMarker.
 			 */
-			private ScaleHyphen _scaleHyphen;
+			private final ScaleHyphen _scaleHyphen;
 			/**
 			 * The needed space of a {@link ScaleHyphen}.
 			 */
@@ -1526,7 +1538,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			 * True, if the values of the Markers should be shown, false otherwise.
 			 */
 			private boolean _showValues = false;
-			
+
 			/**
 			 * Constructor.
 			 */
@@ -1558,7 +1570,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 					// figure if only the tickmark is shown, if the text label
 					// is also shown, the height is the _tickMarkSpace.
 					int tickmarkHeight = _showValues ? _tickMarkSpace : bounds.height;
-					
+
 					if (_topLeft) {
 						this.setConstraint(_scaleHyphen, new Rectangle(0, bounds.height - tickmarkHeight, bounds.width, tickmarkHeight));
 						this.setConstraint(_textLabel, new Rectangle(0, 0, bounds.width, bounds.height-_tickMarkSpace));
@@ -1587,10 +1599,10 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 //				graphics.setBackgroundColor(ColorConstants.green);
 //				graphics.fillRectangle(this.getBounds());
 			}
-			
+
 			/**
 			 * Sets the orientation of the scale to which this marker belongs.
-			 * 
+			 *
 			 * @param isHorizontal
 			 *            <code>true</code> if the scale is a horizontal scale
 			 *            (i.e. along the x-axis), <code>false</code> if it is
@@ -1604,7 +1616,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 
 			/**
 			 * Sets the alignment of this figure.
-			 * 
+			 *
 			 * @param topLeft
 			 *            The alignment of this figure
 			 *            (true=top/left;false=bottom/right)
@@ -1614,7 +1626,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				_scaleHyphen.setAlignment(_topLeft);
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets the displayed text.
 			 * @param text
@@ -1624,7 +1636,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				_textLabel.setText(text);
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets, if the values of the Markers should be shown.
 			 * @param showValues
@@ -1634,7 +1646,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				_showValues = showValues;
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets the wideness of the Hyphen.
 			 * @param wideness
@@ -1643,7 +1655,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 			public void setWideness(final int wideness) {
 				_scaleHyphen.setWideness(wideness);
 			}
-			
+
 			/**
 			 * {@inheritDoc}
 			 */
@@ -1653,8 +1665,8 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				_scaleHyphen.setForegroundColor(fg);
 				_textLabel.setForegroundColor(fg);
 			}
-			
-			
+
+
 			/**
 			 * Refreshes the Label.
 			 */
@@ -1680,15 +1692,15 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 					_textLabel.setVisible(false);
 				}
 			}
-			
+
 			/**
 			 * This class represents a hyphen for the scale.
-			 * 
+			 *
 			 * @author Kai Meyer
 			 */
 			private final class ScaleHyphen extends RectangleFigure {
 				/**
-				 * The height of the line. 
+				 * The height of the line.
 				 */
 				private int _height = 0;
 				/**
@@ -1709,7 +1721,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				 * The Alignment of this Hyphen.
 				 */
 				private boolean _isTopLeft;
-				
+
 				/**
 				 * {@inheritDoc}
 				 */
@@ -1730,7 +1742,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 					}
 					graphics.drawLine(x, y,	x + _width,	y + _height);
 				}
-				
+
 				/**
 				 * Sets the wight and height of this Hyphen.
 				 */
@@ -1743,7 +1755,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 						_width = 0;
 					}
 				}
-				
+
 				/**
 				 * Sets the orientation of this Hyphen. Note, this is the
 				 * orientation of the actual line that will be drawn,
@@ -1751,7 +1763,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				 * vertical axis, which gets horizontal lines for its
 				 * tickmarks, this must be set to <code>true</code>, and
 				 * vice versa.
-				 * 
+				 *
 				 * @param isHorizontal
 				 * 				The Orientation of this Hyphen
 				 * 				true=horizontal; false = vertical
@@ -1760,7 +1772,7 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 					_isHorizontal = isHorizontal;
 					this.setHeightAndWidth();
 				}
-				
+
 				/**
 				 * Sets the wideness of the Hyphen.
 				 * @param wideness
@@ -1769,8 +1781,8 @@ public abstract class AbstractChartFigure extends Figure implements ICrossedFigu
 				public void setWideness(final int wideness) {
 					_wideness = wideness;
 					this.setHeightAndWidth();
-				}			
-				
+				}
+
 				/**
 				 * Sets the alignment of this Hyphen.
 				 * @param isTopLeft

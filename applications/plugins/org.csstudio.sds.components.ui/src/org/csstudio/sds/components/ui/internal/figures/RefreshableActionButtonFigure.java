@@ -22,9 +22,12 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.ITextFigure;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Button;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Label;
@@ -40,7 +43,7 @@ import org.eclipse.swt.graphics.Font;
  *
  */
 public final class RefreshableActionButtonFigure extends Button implements
-		ICrossedFigure, ITextFigure {
+		IAdaptable, ITextFigure {
 
 	/**
 	 * Default label font.
@@ -58,14 +61,14 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 */
 	private final int[] _alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 
-    private final CrossedPaintHelper _crossedPaintHelper;
+    private CrossedOutAdapter _crossedOutAdapter;
 
+    private RhombusAdapter _rhombusAdapter;
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshableActionButtonFigure() {
-	    _crossedPaintHelper = new CrossedPaintHelper();
 		_label = new Label("");
 		setContents(_label);
 		setFont(FONT);
@@ -75,7 +78,8 @@ public final class RefreshableActionButtonFigure extends Button implements
 	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
        Rectangle bound=getBounds().getCopy();
-        _crossedPaintHelper.paintCross(graphics, bound);
+       _crossedOutAdapter.paint(graphics);
+       _rhombusAdapter.paint(graphics);
 	}
 
 	/**
@@ -95,6 +99,11 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 */
 	public void setTextValue(final String s) {
 		_label.setText(s);
+	}
+
+	public void setPressed(final boolean pressed){
+	    getModel().setPressed(pressed);
+
 	}
 
 	/**
@@ -132,10 +141,18 @@ public final class RefreshableActionButtonFigure extends Button implements
 	 */
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
+	    if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
 		return null;
 	}
 
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
-    }
 }

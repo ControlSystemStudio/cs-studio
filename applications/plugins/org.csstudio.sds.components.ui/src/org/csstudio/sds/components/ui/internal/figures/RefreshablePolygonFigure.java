@@ -22,9 +22,12 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
@@ -42,7 +45,7 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public final class RefreshablePolygonFigure extends Polygon implements
-    ICrossedFigure, HandleBounds {
+    IAdaptable, HandleBounds {
 
 	/**
 	 * The fill grade (0 - 100%).
@@ -54,13 +57,15 @@ public final class RefreshablePolygonFigure extends Polygon implements
 	 */
 	private IBorderEquippedWidget _borderAdapter;
 
-    private final CrossedPaintHelper _crossedPaintHelper;
+    private CrossedOutAdapter _crossedOutAdapter;
+
+    private RhombusAdapter _rhombusAdapter;
+
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshablePolygonFigure() {
-	    _crossedPaintHelper = new CrossedPaintHelper();
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
 
@@ -87,13 +92,8 @@ public final class RefreshablePolygonFigure extends Polygon implements
     	        figureBounds.width = figureBounds.width-4;
     	    }
 	    }
-//	    if(figureBounds.height>10) {
-//	        figureBounds.height = figureBounds.height+5;
-//	    } else if(figureBounds.height>5) {
-//	        figureBounds.height = figureBounds.height+3;
-//	    }
-	    _crossedPaintHelper.paintCross(graphics, figureBounds);
-//	    figureBounds = null;
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
 	}
 
 	/**
@@ -181,7 +181,18 @@ public final class RefreshablePolygonFigure extends Polygon implements
 				};
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
+
 		return null;
 	}
 
@@ -236,7 +247,4 @@ public final class RefreshablePolygonFigure extends Polygon implements
 		}
 	}
 
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
-    }
 }

@@ -1,30 +1,33 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polyline;
@@ -36,12 +39,12 @@ import org.eclipse.swt.SWT;
 
 /**
  * A line figure.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class RefreshablePolylineFigure extends Polyline implements
-    ICrossedFigure, HandleBounds {
+    IAdaptable, HandleBounds {
 
 	/**
 	 * The fill grade (0 - 100%).
@@ -59,13 +62,14 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	private final int[] _lineStyles = new int[] { SWT.LINE_SOLID,
 			SWT.LINE_DASH, SWT.LINE_DOT, SWT.LINE_DASHDOT, SWT.LINE_DASHDOTDOT };
 
-    private CrossedPaintHelper _crossedPaintHelper;
+    private CrossedOutAdapter _crossedOutAdapter;
+
+    private RhombusAdapter _rhombusAdapter;
 
 	/**
 	 * Constructor.
 	 */
 	public RefreshablePolylineFigure() {
-	    _crossedPaintHelper = new CrossedPaintHelper();
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
 	}
@@ -78,7 +82,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		Rectangle figureBounds = getBounds();
 
 		PointList points = getPoints();
-		
+
 		int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 		if (newW >= figureBounds.width) {
 			graphics.setForegroundColor(getForegroundColor());
@@ -99,7 +103,9 @@ public final class RefreshablePolylineFigure extends Polyline implements
 			graphics.drawPolyline(points);
 			graphics.popState();
 		}
-		_crossedPaintHelper.paintCross(graphics, figureBounds);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
+
 	}
 
 	/**
@@ -116,16 +122,16 @@ public final class RefreshablePolylineFigure extends Polyline implements
 		Rectangle correctedRectangle = new Rectangle(rect.x, rect.y, correctedWidth, correctedHeight);
 		super.setBounds(correctedRectangle);
 	}
-	
+
 	@Override
 	public void setSize(final int w, final int h) {
 		int correctedWidth = w + getLineWidth();
 		int correctedHeight = h + getLineWidth();
 		super.setSize(correctedWidth, correctedHeight);
 	}
-	
+
 	@Override
-	public void setLocation(Point p) {
+	public void setLocation(final Point p) {
 		super.setLocation(p);
 	}
 
@@ -133,7 +139,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
 	 * some random changes and refresh the figure, when this method is called.
-	 * 
+	 *
 	 */
 	public void randomNoiseRefresh() {
 	}
@@ -147,7 +153,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 
 	/**
 	 * Sets the fill grade.
-	 * 
+	 *
 	 * @param fill
 	 *            the fill grade.
 	 */
@@ -157,7 +163,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 
 	/**
 	 * Gets the fill grade.
-	 * 
+	 *
 	 * @return the fill grade
 	 */
 	public double getFill() {
@@ -168,7 +174,7 @@ public final class RefreshablePolylineFigure extends Polyline implements
 	 * {@inheritDoc}
 	 */
 	public void setLineStyle(final int lineStyle) {
-		if (lineStyle >= 0 && lineStyle < _lineStyles.length) {
+		if ((lineStyle >= 0) && (lineStyle < _lineStyles.length)) {
 			super.setLineStyle(_lineStyles[lineStyle]);
 		}
 	}
@@ -183,11 +189,19 @@ public final class RefreshablePolylineFigure extends Polyline implements
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
+
 		return null;
 	}
 
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);        
-    }
 }

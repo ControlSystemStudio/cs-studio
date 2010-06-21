@@ -1,9 +1,12 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -21,7 +24,7 @@ import org.eclipse.swt.graphics.Font;
  *
  * @author Alen Vrecko, Joerg Rathlev
  */
-public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements ICrossedFigure {
+public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implements IAdaptable {
 
     /**
      * The orientation (horizontal==true | vertical==false).
@@ -57,14 +60,15 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
 
     private Color _labelColor;
 
-    private final CrossedPaintHelper _crossedPaintHelper;
+    private ICrossedFigure _crossedOutAdapter;
+
+    private IRhombusEquippedWidget _rhombusAdapter;
 
     /**
      *
      * Constructor.
      */
     public RefreshableSixteenBinaryBarFigure() {
-        _crossedPaintHelper = new CrossedPaintHelper();
         createLayoutAndBoxes();
     }
 
@@ -72,7 +76,10 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
     public void paint(final Graphics graphics) {
         super.paint(graphics);
         Rectangle bound = getBounds().getCopy();
-        _crossedPaintHelper.paintCross(graphics, bound);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
+
+
     }
 
     /**
@@ -169,7 +176,18 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
                 _borderAdapter = new BorderAdapter(this);
             }
             return _borderAdapter;
+        } else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
         }
+
         return null;
     }
 
@@ -388,13 +406,6 @@ public class RefreshableSixteenBinaryBarFigure extends RectangleFigure implement
             }
         }
 
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
     }
 
 }

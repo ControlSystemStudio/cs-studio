@@ -2,48 +2,52 @@ package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.components.model.AbstractScaledWidgetModel;
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale;
 import org.csstudio.swt.xygraph.linearscale.Range;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
  * Base figure for a widget based on {@link AbstractScaledWidgetModel}.
- * 
+ *
  * @author Xihui Chen
  *
  */
 public abstract class AbstractScaledWidgetFigure extends Figure implements
-    ICrossedFigure {
+    IAdaptable {
 
 	protected AbstractScale scale;
-	
+
 	protected boolean transparent;
-	
+
 	protected double value;
-	
-	protected double minimum;	
-	
+
+	protected double minimum;
+
 	protected double maximum;
-	
+
 	protected double majorTickMarkStepHint;
-	
+
 	protected boolean showMinorTicks;
-	
+
 	protected boolean showScale;
-	
-	protected boolean logScale;	
-	
+
+	protected boolean logScale;
+
 
 	/** A border adapter, which covers all border handlings. */
 	private IBorderEquippedWidget _borderAdapter;
 
-    private CrossedPaintHelper _crossedPaintHelper;
-	
+    private ICrossedFigure _crossedOutAdapter;
+
+    private IRhombusEquippedWidget _rhombusAdapter;
+
 	@Override
 	public boolean isOpaque() {
 		return false;
@@ -51,26 +55,31 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void paintFigure(final Graphics graphics) {		
-	    Rectangle figureBounds = getBounds().getCopy();
+	@Override
+    public void paintFigure(final Graphics graphics) {
 		if (!transparent) {
 			graphics.setBackgroundColor(this.getBackgroundColor());
-			Rectangle bounds = this.getBounds().getCopy();
 			bounds.crop(this.getInsets());
 			graphics.fillRectangle(bounds);
 		}
 		super.paintFigure(graphics);
-        getCrossedPaintHelper().paintCross(graphics, figureBounds);
+		paintAdapter(graphics);
 	}
-	
+
+	protected void paintAdapter(final Graphics graphics) {
+	    _crossedOutAdapter.paint(graphics);
+	    _rhombusAdapter.paint(graphics);
+
+	}
+
 	/**
 	 * @param value the value to set
 	 */
 	public void setValue(final double value) {
-		this.value = 
+		this.value =
 			Math.max(scale.getRange().getLower(), Math.min(scale.getRange().getUpper(), value));
 	}
-	
+
 	/**
 	 * set the range of the scale
 	 * @param min
@@ -81,11 +90,11 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		this.maximum = max;
 		scale.setRange(new Range(min, max));
 	}
-	
+
 	/**
 	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set
 	 */
-	public void setMajorTickMarkStepHint(double majorTickMarkStepHint) {
+	public void setMajorTickMarkStepHint(final double majorTickMarkStepHint) {
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
 		scale.setMajorTickMarkStepHint((int) majorTickMarkStepHint);
 	}
@@ -98,7 +107,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		scale.setMinorTicksVisible(showMinorTicks);
 	}
 
-	
+
 	/**
 	 * @param showScale the showScale to set
 	 */
@@ -114,7 +123,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 		this.logScale = logScale;
 		scale.setLogScale(logScale);
 		scale.setRange(new Range(minimum, maximum));
-	}	
+	}
 
 	/**
 	 * Sets, if this widget should have a transparent background.
@@ -123,10 +132,10 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 	 */
 	public void setTransparent(final boolean transparent) {
 		this.transparent = transparent;
-	}	
-	
+	}
 
-	
+
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -137,19 +146,18 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
 		return null;
 	}
-	
-	protected CrossedPaintHelper getCrossedPaintHelper() {
-        if(_crossedPaintHelper==null) {
-            _crossedPaintHelper = new CrossedPaintHelper();
-        }
-        return _crossedPaintHelper;
-    }
 
-	public void setCrossedOut(boolean newValue) {
-	    getCrossedPaintHelper().setCrossed(newValue);
-	}
-	
 }

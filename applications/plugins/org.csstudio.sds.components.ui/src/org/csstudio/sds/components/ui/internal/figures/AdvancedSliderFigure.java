@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.figures;
@@ -28,9 +28,12 @@ import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -57,10 +60,10 @@ import org.eclipse.swt.SWT;
  * A slider figure. Note that the slider internally maps the values it displays
  * to integer values, so the slider will not work correctly for very large
  * ranges of values.
- * 
+ *
  * @author Sven Wende, Joerg Rathlev
  */
-public final class AdvancedSliderFigure extends Panel implements ICrossedFigure {
+public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	/**
 	 * Insets for the whole figure.
 	 */
@@ -91,7 +94,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * Listeners that react on slider events.
 	 */
-	private List<ISliderListener> _sliderListeners;
+	private final List<ISliderListener> _sliderListeners;
 
 	/**
 	 * A border adapter, which covers all border handlings.
@@ -101,7 +104,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * The scroll bar figure.
 	 */
-	private ScrollBar _scrollBar;
+	private final ScrollBar _scrollBar;
 
 	/**
 	 * Lower border of the displayed value.
@@ -112,13 +115,13 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	 * Upper border of the displayed value.
 	 */
 	private double _max = 100;
-	
+
 	/**
 	 * The multiplier for converting the channel values (double) into scrollbar
 	 * values (integer).
 	 */
 	private double _scrollbarMultiplier = 1.0;
-	
+
 	/**
 	 * The increment when changing the value step by step.
 	 */
@@ -145,55 +148,56 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * The LowLow border.
 	 */
-	private int _lolo = 10;
+	private final int _lolo = 10;
 
 	/**
 	 * The Low border.
 	 */
-	private int _lo = 25;
+	private final int _lo = 25;
 
 	/**
 	 * The High border.
 	 */
-	private int _hi = 70;
+	private final int _hi = 70;
 
 	/**
 	 * The HighHigh border.
 	 */
-	private int _hihi = 95;
+	private final int _hihi = 95;
 
 	/**
 	 * The number of slots in the scale.
 	 */
-	private int _scaleSlotCount = 10;
+	private final int _scaleSlotCount = 10;
 
 	/**
 	 * The scale panel.
 	 */
-	private ScaleFigure _scalePanel;
+	private final ScaleFigure _scalePanel;
 
 	/**
 	 * The value marker figure (little triangle).
 	 */
-	private ValueMarkerFigure _valueMarkerFigure;
+	private final ValueMarkerFigure _valueMarkerFigure;
 
 	/**
 	 * The manual value marker figure (little triangle).
 	 */
-	private ManualValueMarkerFigure _manualValueMarkerFigure;
+	private final ManualValueMarkerFigure _manualValueMarkerFigure;
 
 	/**
 	 * The value label panel (displays textual values).
 	 */
-	private ValueLabelPanel _valueLabelPanel;
+	private final ValueLabelPanel _valueLabelPanel;
 
-    private CrossedPaintHelper _crossedPaintHelper;
+    private CrossedOutAdapter _crossedOutAdapter;
+
+    private RhombusAdapter _rhombusAdapter;
 
 	/**
 	 * Standard constructor.
 	 */
 	public AdvancedSliderFigure() {
-        _crossedPaintHelper = new CrossedPaintHelper();
 		_sliderListeners = new ArrayList<ISliderListener>();
 
 		setLayoutManager(new XYLayout());
@@ -233,15 +237,15 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
+	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
-        Rectangle figureBounds = getBounds().getCopy();
-	    _crossedPaintHelper.paintCross(graphics, figureBounds);
+	    _crossedOutAdapter.paint(graphics);
+	    _rhombusAdapter.paint(graphics);
 	}
-	
+
 	/**
 	 * Calculate the layout constraints for the scale panel.
-	 * 
+	 *
 	 * @return the layout constraints for the scale panel
 	 */
 	private Rectangle calculateScaleConstraints() {
@@ -251,7 +255,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculate the width of the scale.
-	 * 
+	 *
 	 * @return the scale width
 	 */
 	public int calculateScaleWidth() {
@@ -263,7 +267,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculate the layout constraints for the scrollbar.
-	 * 
+	 *
 	 * @return the layout constraints for the scrollbar
 	 */
 	private Rectangle calculateScrollbarConstraints() {
@@ -278,7 +282,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculate the layout constraints for the value panel.
-	 * 
+	 *
 	 * @return the layout constraints for the value panel
 	 */
 	private Rectangle calculateValuePanelConstraints() {
@@ -295,7 +299,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculate the layout constraints for the value marker.
-	 * 
+	 *
 	 * @return the layout constraints for the value marker
 	 */
 	private Rectangle calculateValueMarkerConstraints() {
@@ -304,7 +308,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			double quota = (double) (_currentValue - _min) / (_max - _min);
+			double quota = (_currentValue - _min) / (_max - _min);
 			pos = (int) (scaleWidth * quota);
 		}
 
@@ -314,7 +318,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculate the layout constraints for the manual value marker.
-	 * 
+	 *
 	 * @return the layout constraints for the manual value marker
 	 */
 	private Rectangle calculateManualValueMarkerConstraints() {
@@ -323,7 +327,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			double quota = (double) (_manualValue - _min) / (_max - _min);
+			double quota = (_manualValue - _min) / (_max - _min);
 			pos = (int) (scaleWidth * quota);
 		}
 
@@ -333,7 +337,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Calculates the relative position on the scale for the specified value.
-	 * 
+	 *
 	 * @param value
 	 *            the value
 	 * @return the x position on the scale
@@ -344,7 +348,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 		int pos = 0;
 
 		if (scaleWidth > 0) {
-			double quota = (double) (value - _min) / (_max - _min);
+			double quota = (value - _min) / (_max - _min);
 			pos = (int) (scaleWidth * quota);
 		}
 
@@ -403,7 +407,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Called when the value on the scrollbar was changed.
-	 * 
+	 *
 	 * @param newScrollbarValue the new manual value
 	 */
 	private void scrollbarValueChanged(final int newScrollbarValue) {
@@ -421,17 +425,17 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * Called when a new manual value has been set by the user. This informs
 	 * all listeners about the new value.
-	 * 
+	 *
 	 * @param newValue the new manual value.
 	 */
-	private void onManualValueSet(double newValue) {
+	private void onManualValueSet(final double newValue) {
 		if (_notifySliderListeners) {
 			for (ISliderListener l : _sliderListeners) {
 				l.sliderValueChanged(newValue);
 			}
 		}
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -443,7 +447,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Set the minimum value.
-	 * 
+	 *
 	 * @param min
 	 *            The minimum value.
 	 */
@@ -458,7 +462,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Set the maximum value.
-	 * 
+	 *
 	 * @param max
 	 *            The maximum value.
 	 */
@@ -467,13 +471,13 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 		_notifySliderListeners = false;
 		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
 		_notifySliderListeners = true;
-		
+
 		_scalePanel.repaint();
 	}
 
 	/**
 	 * Set the increment value.
-	 * 
+	 *
 	 * @param increment
 	 *            The increment value.
 	 */
@@ -496,7 +500,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 			// 1/increment, rounded up.
 			_scrollbarMultiplier = Math.ceil(1 / _increment);
 		}
-		
+
 		_notifySliderListeners = false;
 		_scrollBar.setMinimum((int) (_min * _scrollbarMultiplier));
 		_scrollBar.setMaximum((int) (_max * _scrollbarMultiplier));
@@ -509,7 +513,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * Sets the orientation. Choose one of {@link PositionConstants#HORIZONTAL}
 	 * or {@link PositionConstants#VERTICAL}.
-	 * 
+	 *
 	 * @param horizontal
 	 *            true for horizontal and false for vertical layout
 	 */
@@ -520,10 +524,10 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Set the current slider value.
-	 * 
+	 *
 	 * <b>Important:</b> This method should only get called by the Controller
 	 * and not by the figure itself!
-	 * 
+	 *
 	 * @param value
 	 *            the current slider value
 	 */
@@ -549,15 +553,15 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Set the current manual value.
-	 * 
+	 *
 	 * <b>Important:</b> This method should only get called by the Controller
 	 * and not by the figure itself!
-	 * 
+	 *
 	 * @param value
 	 *            the current slider value
 	 */
 	public void setManualValue(final double value) {
-		assert value >= _min && value <= _max;
+		assert (value >= _min) && (value <= _max);
 
 		_manualValue = value;
 
@@ -571,7 +575,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Add a slider listener.
-	 * 
+	 *
 	 * @param listener
 	 *            The slider listener to add.
 	 */
@@ -581,7 +585,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Remove a slider listener.
-	 * 
+	 *
 	 * @param listener
 	 *            The slider listener that is to be removed.
 	 */
@@ -593,7 +597,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
 	 * some random changes and refresh the figure, when this method is called.
-	 * 
+	 *
 	 */
 	public void randomNoiseRefresh() {
 	}
@@ -607,13 +611,23 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
 		return null;
 	}
 
 	/**
 	 * A figure, which draws the scale.
-	 * 
+	 *
 	 * @author swende
 	 */
 	class ScaleFigure extends Panel {
@@ -703,19 +717,19 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 	/**
 	 * A panel, which displays the current value and the manual value in textual
 	 * form.
-	 * 
+	 *
 	 * @author swende
 	 */
 	class ValueLabelPanel extends Panel {
 		/**
 		 * A label, which displays the current manual value.
 		 */
-		private Label _lastManualValueLabel;
+		private final Label _lastManualValueLabel;
 
 		/**
 		 * A label, which displays the current value.
 		 */
-		private Label _lastDalValueLabel;
+		private final Label _lastDalValueLabel;
 
 		/**
 		 * Constructor.
@@ -736,7 +750,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 		/**
 		 * Sets the current value.
-		 * 
+		 *
 		 * @param value
 		 *            the current value
 		 */
@@ -746,7 +760,7 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 		/**
 		 * Sets the current manual value.
-		 * 
+		 *
 		 * @param manualValue
 		 *            the current manual value
 		 */
@@ -757,14 +771,14 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * A triangle figure, which represents the value marker.
-	 * 
+	 *
 	 * @author swende
 	 */
 	class ValueMarkerFigure extends Panel {
 		/**
 		 * A pointlist, which contains the points of the triangle.
 		 */
-		private PointList _points;
+		private final PointList _points;
 
 		/**
 		 * Constructor.
@@ -793,14 +807,14 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * A triangle figure, which represents the manual value marker.
-	 * 
+	 *
 	 * @author swende
 	 */
 	class ManualValueMarkerFigure extends Panel {
 		/**
 		 * A pointlist, which contains the points of the triangle.
 		 */
-		private PointList _points;
+		private final PointList _points;
 
 		/**
 		 * Constructor.
@@ -829,9 +843,9 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * A dragger for the manual value marker.
-	 * 
+	 *
 	 * @author swende
-	 * 
+	 *
 	 */
 	class ManualValueDragger extends MouseMotionListener.Stub implements
 			MouseListener {
@@ -910,23 +924,19 @@ public final class AdvancedSliderFigure extends Panel implements ICrossedFigure 
 
 	/**
 	 * Definition of listeners that react on slider events.
-	 * 
+	 *
 	 * @author Sven Wende
 	 * @version $Revision$
-	 * 
+	 *
 	 */
 	public interface ISliderListener {
 		/**
 		 * React on a slider event.
-		 * 
+		 *
 		 * @param newValue
 		 *            The new slider value.
 		 */
 		void sliderValueChanged(double newValue);
 	}
-
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
-    }
 
 }

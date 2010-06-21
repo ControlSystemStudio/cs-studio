@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.components.ui.internal.figures;
@@ -28,9 +28,12 @@ import java.util.List;
 import java.util.Map;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.FigureListener;
 import org.eclipse.draw2d.Graphics;
@@ -47,12 +50,12 @@ import org.eclipse.swt.graphics.Color;
 
 /**
  * A bargraph figure.
- * 
+ *
  * @author Kai Meyer
- * 
+ *
  */
 public final class RefreshableBargraphFigure extends RectangleFigure implements
-		ICrossedFigure {
+		IAdaptable {
 	/**
 	 * Height of the text.
 	 */
@@ -124,15 +127,15 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * The Scale of this figure.
 	 */
-	private Scale _scale;
+	private final Scale _scale;
 	/**
 	 * The MarkerPanel of this figure.
 	 */
-	private MarkerPanel _markerPanel;
+	private final MarkerPanel _markerPanel;
 	/**
 	 * The FillRectangle of this figure.
 	 */
-	private FillRectangleFigure _fillRectangleFigure;
+	private final FillRectangleFigure _fillRectangleFigure;
 	/**
 	 * The Rectangle for the FillRectangleFigure.
 	 */
@@ -140,27 +143,27 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * The wideness of the Scale.
 	 */
-	private int _scaleWideness = 10;
+	private final int _scaleWideness = 10;
 	/**
 	 * The wideness of the Tickmarks.
 	 */
-	private int _tickMarkWideness = 10;
+	private final int _tickMarkWideness = 10;
 	/**
 	 * The boolean, which indicates, if the figure has a transparent background.
 	 */
-	private boolean _transparent = true;	
+	private boolean _transparent = true;
 	/**
 	 * The boolean, which indicates, if only the fill value should be shown.
 	 */
 	private boolean _showOnlyValue = false;
-    private CrossedPaintHelper _crossedPaintHelper;
-	
+    private CrossedOutAdapter _crossedOutAdapter;
+    private RhombusAdapter _rhombusAdapter;
+
 	/**
 	 * Constructor.
 	 */
 	public RefreshableBargraphFigure() {
 		super();
-        _crossedPaintHelper = new CrossedPaintHelper();
 		this.setSize(200, 30);
 		this.initLevelMap();
 		this.setLayoutManager(new XYLayout());
@@ -192,12 +195,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	}
 
 	@Override
-	public void paint(Graphics graphics) {
+	public void paint(final Graphics graphics) {
 	    super.paint(graphics);
-	    Rectangle figureBounds = getBounds().getCopy();
-	    _crossedPaintHelper.paintCross(graphics, figureBounds);
-	}
-	
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
+ 	}
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -209,7 +212,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			bounds.crop(this.getInsets());
 			graphics.fillRectangle(bounds);
 			graphics.setBackgroundColor(this.getBackgroundColor());
-			graphics.setForegroundColor(_borderColor);	
+			graphics.setForegroundColor(_borderColor);
 		}
 	}
 
@@ -234,7 +237,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	/**
 	 * Refreshes the Constraints.
 	 */
-	public void refreshConstraints() { 
+	public void refreshConstraints() {
 		this.approximateTextWidth();
 		_barRectangle = this.getBarRectangle();
 		this.setConstraint(_fillRectangleFigure, _barRectangle);
@@ -364,9 +367,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * @return int The new length
 	 */
 	private int calculateRealLength(final int length) {
-		if (_showScale == BOTTOM_RIGHT || _showScale == TOP_LEFT) {
+		if ((_showScale == BOTTOM_RIGHT) || (_showScale == TOP_LEFT)) {
 			int neededScaleLines = _scaleSectionCount + 1;
-			return length - ((length - neededScaleLines) % _scaleSectionCount);	
+			return length - ((length - neededScaleLines) % _scaleSectionCount);
 		}
 		return length;
 	}
@@ -383,14 +386,14 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		} else {
 		    return getVerticalBarRectangle(bounds);
 		}
-		
+
 	}
 
 	/**
      * Gets the rectangle for the vertical bargraph.
      * @return Rectangle The rectangle for the vertical bargraph
      */
-	private Rectangle getVerticalBarRectangle(Rectangle bounds) {
+	private Rectangle getVerticalBarRectangle(final Rectangle bounds) {
 	    int yCorrection = 0;
         int xCorrection = 0;
         int widthCorrection = 0;
@@ -429,7 +432,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
      * Gets the rectangle for the horizontal bargraph.
      * @return Rectangle The rectangle for the horizontal bargraph
      */
-    private Rectangle getHorizontalBarRectangle(Rectangle bounds) {
+    private Rectangle getHorizontalBarRectangle(final Rectangle bounds) {
 	    int yCorrection = 0;
         int heightCorrection = 0;
         int xCorrection = 0;
@@ -476,10 +479,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		}
 		return (value - _minimum) / max;
 	}
-	
+
 	/**
 	 * Calculates and also sets the fill grade for the bar based on the current value and
-	 * min/max borders. 
+	 * min/max borders.
 	 */
 	private void updateFillRectangle() {
 		double fillgrade = (_value - _minimum) / (_maximum - _minimum);
@@ -491,13 +494,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
 	 * some random changes and refresh the figure, when this method is called.
-	 * 
+	 *
 	 */
 	public void randomNoiseRefresh() {
 		this.setFill(Math.random() * 100);
 		repaint();
 	}
-	
+
 	/**
 	 * Sets if only the value should be shown instead of the area from minimum to fill level.
 	 * @param showOnlyValue True if only the value should be shown, false otherwise
@@ -505,7 +508,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public void setShowOnlyValue(final boolean showOnlyValue) {
 		_showOnlyValue = showOnlyValue;
 	}
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -653,7 +656,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 	public double getLoLevel() {
 		return _levelMap.get(LABELS[1]);
 	}
-	
+
 	/**
 	 * Sets the hi level.
 	 * @param hiLevel
@@ -700,17 +703,17 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		this.refreshConstraints();
 		updateFillRectangle();
 	}
-	
+
 	public void approximateTextWidth() {
 		float width = 14;
-		if (this.getFont()!=null && this.getFont().getFontData().length>0 && this.getFont().getFontData()[0]!=null) {
-		    width = this.getFont().getFontData()[0].height;	
+		if ((this.getFont()!=null) && (this.getFont().getFontData().length>0) && (this.getFont().getFontData()[0]!=null)) {
+		    width = this.getFont().getFontData()[0].height;
 		}
 		NumberFormat format = NumberFormat.getInstance();
-		format.setMaximumFractionDigits(2); 
+		format.setMaximumFractionDigits(2);
 		int minLength = (int) (format.format(_minimum).length()*width);
 		_textWidth = minLength;
-		if (_showScale==BOTTOM_RIGHT || _showScale==TOP_LEFT) {
+		if ((_showScale==BOTTOM_RIGHT) || (_showScale==TOP_LEFT)) {
 			double increment = (_maximum-_minimum)/Math.max(1, _scaleSectionCount);
 			for (int i=0;i<_scaleSectionCount;i++) {
 				int value = (int) (format.format(minLength + (i*increment)).length()*width);
@@ -769,7 +772,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Sets, how the scale should be shown.
-	 * 
+	 *
 	 * @param showScale
 	 *            0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
@@ -781,7 +784,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Gets, how the scale should be shown.
-	 * 
+	 *
 	 * @return int 0 = don't show, 1 = show Bottom/Right, 2 = show Top/Left
 	 */
 	public int getShowScale() {
@@ -790,7 +793,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Sets the count of sections in the scale.
-	 * 
+	 *
 	 * @param scaleSectionCount
 	 *            The count of sections in the scale
 	 */
@@ -801,13 +804,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * Gets the count of sections in the scale.
-	 * 
+	 *
 	 * @return int The count of sections in the scale.
 	 */
 	public int getScaleSectionCount() {
 		return _scaleSectionCount;
 	}
-	
+
 	/**
 	 * Sets, if this widget should have a transparent background.
 	 * @param transparent
@@ -827,13 +830,24 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
+
 		return null;
 	}
 
 	/**
 	 * This class represents the bargraph.
-	 * 
+	 *
 	 * @author Kai Meyer
 	 */
 	private final class FillRectangleFigure extends RectangleFigure {
@@ -849,7 +863,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * The Color for the border.
 		 */
 		private Color _borderColor;
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -867,7 +881,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					list.addPoint(valueX, bounds.y);
 					list.addPoint(valueX-4, bounds.y+(bounds.height/2));
 					list.addPoint(valueX, bounds.y+bounds.height);
-					list.addPoint(valueX+4, bounds.y+(bounds.height/2));	
+					list.addPoint(valueX+4, bounds.y+(bounds.height/2));
 				} else {
 					int valueY = (int) Math.round(bounds.y + bounds.height - (bounds.height * (this.getFill())));
 					list.addPoint(bounds.x, valueY);
@@ -885,13 +899,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 						bounds.width - 1, bounds.height - 1));
 				graphics.drawRectangle(new Rectangle(fillRectangle.x,
 						fillRectangle.y, fillRectangle.width - 1,
-						fillRectangle.height - 1));	
+						fillRectangle.height - 1));
 			}
 		}
 
 		/**
 		 * Gets the rectangle for the fill level.
-		 * 
+		 *
 		 * @param area
 		 *            The rectangle of the bargraph
 		 * @return Rectangle The rectangle for the fill level
@@ -987,7 +1001,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param topLeft
 		 *            true, if the Marker is on top/left of the bargraph, false
 		 *            otherwise
@@ -999,8 +1013,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_topLeft = topLeft;
 			_isHorizontal = isHorizontal;
 			Marker marker = null;
-			for (int i = 0; i < LABELS.length; i++) {
-				marker = new Marker(LABELS[i], _topLeft, _isHorizontal);
+			for (String element : LABELS) {
+				marker = new Marker(element, _topLeft, _isHorizontal);
 				marker.setForegroundColor(this.getForegroundColor());
 				this.add(marker);
 				_markerList.add(marker);
@@ -1022,7 +1036,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			if (_isHorizontal) {
 				for (int i = 0; i < _markerList.size(); i++) {
 					double weight = getWeight(_levelMap.get(LABELS[i]));
-					if (Double.isNaN(weight) || weight < 0 || weight > 1) {
+					if (Double.isNaN(weight) || (weight < 0) || (weight > 1)) {
 						_markerList.get(i).setVisible(false);
 					} else {
 						_markerList.get(i).setVisible(true);
@@ -1035,7 +1049,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			} else {
 				for (int i = 0; i < _markerList.size(); i++) {
 					double weight = getWeight(_levelMap.get(LABELS[i]));
-					if (Double.isNaN(weight) || weight < 0 || weight > 1) {
+					if (Double.isNaN(weight) || (weight < 0) || (weight > 1)) {
 						_markerList.get(i).setVisible(false);
 					} else {
 						_markerList.get(i).setVisible(true);
@@ -1057,13 +1071,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				Rectangle bounds = this.getBounds();
 				graphics.setBackgroundColor(this.getBackgroundColor());
 				graphics.setForegroundColor(ColorConstants.black);
-				graphics.fillRectangle(bounds);	
+				graphics.fillRectangle(bounds);
 			}
 		}
 
 		/**
 		 * Sets the reference values for this figure.
-		 * 
+		 *
 		 * @param start
 		 *            The start value
 		 * @param end
@@ -1077,7 +1091,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the orientation of this figure.
-		 * 
+		 *
 		 * @param isHorizontal
 		 *            The orientation of this figure
 		 *            (true=horizontal;false=vertical)
@@ -1092,7 +1106,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the alignment of this figure.
-		 * 
+		 *
 		 * @param topLeft
 		 *            The alignment of this figure
 		 *            (true=top/left;false=bottom/right)
@@ -1108,9 +1122,9 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * This class represents a Marker.
-	 * 
+	 *
 	 * @author Kai Meyer
-	 * 
+	 *
 	 */
 	private final class Marker extends RectangleFigure {
 		/**
@@ -1129,16 +1143,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		/**
 		 * The Label for the text.
 		 */
-		private Label _textLabel;
+		private final Label _textLabel;
 
 		/**
 		 * The Tickmark.
 		 */
-		private TickMark _tickMark;
+		private final TickMark _tickMark;
 
 		/**
 		 * Constructor.
-		 * 
+		 *
 		 * @param key
 		 *            The text to display
 		 * @param topLeft
@@ -1173,7 +1187,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public void paintFigure(final Graphics graphics) {
 			// nothing to do;
 		};
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1185,7 +1199,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the orientation of this figure.
-		 * 
+		 *
 		 * @param isHorizontal
 		 *            The orientation of this figure
 		 *            (true=horizontal;false=vertical)
@@ -1198,7 +1212,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the alignment of this figure.
-		 * 
+		 *
 		 * @param topLeft
 		 *            The alignment of this figure
 		 *            (true=top/left;false=bottom/right)
@@ -1208,7 +1222,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_tickMark.setTopLeftAlignment(topLeft);
 			this.refreshLabel();
 		}
-		
+
 		private void refreshConstraints() {
 			Rectangle bounds = this.getBounds();
 			if (_isHorizontal) {
@@ -1254,7 +1268,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * This class represents a tigmark.
-		 * 
+		 *
 		 * @author Kai Meyer
 		 */
 		private final class TickMark extends RectangleFigure {
@@ -1316,7 +1330,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 			/**
 			 * Sets the orientation of this figure.
-			 * 
+			 *
 			 * @param isHorizontal
 			 *            The orientation of this figure
 			 *            (true=horizontal;false=vertical)
@@ -1334,7 +1348,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 			/**
 			 * Sets the alignment of this figure.
-			 * 
+			 *
 			 * @param topLeft
 			 *            The alignment of this figure
 			 *            (true=top/left;false=bottom/right)
@@ -1351,7 +1365,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 	/**
 	 * This class represents a scale.
-	 * 
+	 *
 	 * @author Kai Meyer
 	 */
 	private final class Scale extends RectangleFigure {
@@ -1386,11 +1400,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		/**
 		 * The lenght of the lines.
 		 */
-		private int _wideness = 10;
+		private final int _wideness = 10;
 		/**
 		 * True, if the first Marker should be shown, false otherwise.
 		 */
-		private boolean _showFirst = true;		
+		private final boolean _showFirst = true;
 		/**
 		 * True, if the values of the Markers should be shown, false otherwise.
 		 */
@@ -1403,16 +1417,16 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * The start-value for the markers.
 		 */
 		private double _startValue = 0;
-	
+
 		/**
 		 * The List of positive ScaleMarkers.
 		 */
-		private List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
+		private final List<ScaleMarker> _posScaleMarkers = new LinkedList<ScaleMarker>();
 		/**
 		 * The List of negative ScaleMarkers.
 		 */
-		private List<ScaleMarker> _negScaleMarkers = new LinkedList<ScaleMarker>();
-		
+		private final List<ScaleMarker> _negScaleMarkers = new LinkedList<ScaleMarker>();
+
 		/**
 		 * Constructor.
 		 */
@@ -1426,12 +1440,12 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				}
 			});
 		}
-		
+
 		/**
 		 * Refreshes the Constraints.
 		 */
 		private void refreshConstraints() {
-			if (_length==0 || this.getBounds().height==0 || this.getBounds().width==0) {
+			if ((_length==0) || (this.getBounds().height==0) || (this.getBounds().width==0)) {
 				_posScaleMarkers.clear();
 				_negScaleMarkers.clear();
 				this.removeAll();
@@ -1456,13 +1470,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
                 width = _textWidth + _wideness;
             }
             double value = _startValue;
-            while (pos >= 0 && pos >= _begin) {
+            while ((pos >= 0) && (pos >= _begin)) {
                 if (pos<=_end) {
                     if (index>=_posScaleMarkers.size()) {
                         this.addScaleMarker(index, _posScaleMarkers);
                     }
                     this.setConstraint(_posScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
-                    this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues)); 
+                    this.refreshScaleMarker(_posScaleMarkers.get(index), value, (((index>0) || _showFirst) && _showValues));
                     index++;
                 }
                 value = value + _increment;
@@ -1470,22 +1484,22 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
             }
             this.removeScaleMarkers(index, _posScaleMarkers);
             if (_showNegativSections) {
-                
+
                 pos = _refPos + _length - 1;
                 index = 0;
                 value = _startValue - _increment;
-                while (pos < this.getBounds().height && pos <= _end) {
+                while ((pos < this.getBounds().height) && (pos <= _end)) {
                     if (pos>=_begin) {
                         if (index>=_negScaleMarkers.size()) {
                             this.addScaleMarker(index, _negScaleMarkers);
                         }
                         this.setConstraint(_negScaleMarkers.get(index), new Rectangle(0,pos-TEXTHEIGHT/2,width,TEXTHEIGHT));
                         this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-                        index++;    
+                        index++;
                     }
                     value = value - _increment;
                     pos = pos + _length;
-                }   
+                }
                 this.removeScaleMarkers(index, _negScaleMarkers);
             }
         }
@@ -1501,13 +1515,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
             	height = TEXTHEIGHT + _wideness;
             }
             double value = _startValue;
-            while (pos <= this.getBounds().width && pos <= _end) {
+            while ((pos <= this.getBounds().width) && (pos <= _end)) {
             	if (pos>=_begin) {
             		if (index>=_posScaleMarkers.size()) {
             			this.addScaleMarker(index, _posScaleMarkers);
             		}
             		this.setConstraint(_posScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
-            		this.refreshScaleMarker(_posScaleMarkers.get(index), value, ((index>0 || _showFirst) && _showValues));
+            		this.refreshScaleMarker(_posScaleMarkers.get(index), value, (((index>0) || _showFirst) && _showValues));
             		index++;
             	}
             	value = value + _increment;
@@ -1518,18 +1532,18 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
             	pos = _refPos - _length;
             	index = 0;
             	value = _startValue - _increment;
-            	while (pos > 0 && pos >= _begin) {
+            	while ((pos > 0) && (pos >= _begin)) {
             		if (pos<=_end) {
             			if (index>=_negScaleMarkers.size()) {
             				this.addScaleMarker(index, _negScaleMarkers);
             			}
             			this.setConstraint(_negScaleMarkers.get(index), new Rectangle(pos-_textWidth/2,0,_textWidth,height));
             			this.refreshScaleMarker(_negScaleMarkers.get(index), value, _showValues);
-            			index++;	
+            			index++;
             		}
             		value = value - _increment;
             		pos = pos - _length;
-            	}	
+            	}
             	this.removeScaleMarkers(index, _negScaleMarkers);
             }
         }
@@ -1566,7 +1580,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			scaleMarkers.add(index, marker);
 			this.add(marker);
 		}
-		
+
 		/**
 		 * Removes all ScaleMarkers in the given List, beginning by the given index.
 		 * @param index
@@ -1575,7 +1589,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		 * 				The List of ScaleMarkers
 		 */
 		private void removeScaleMarkers(final int index, final List<ScaleMarker> scaleMarkers) {
-			if (!scaleMarkers.isEmpty() && index<=scaleMarkers.size()) {
+			if (!scaleMarkers.isEmpty() && (index<=scaleMarkers.size())) {
 				while (index<scaleMarkers.size()) {
 					this.remove(scaleMarkers.remove(index));
 				}
@@ -1589,10 +1603,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public void paintFigure(final Graphics graphics) {
 			//Do nothing
 		}
-		
+
 		/**
 		 * Sets the length of this Scale.
-		 * 
+		 *
 		 * @param length
 		 *            The length of this Scale
 		 */
@@ -1602,7 +1616,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the orientation of this Scale.
-		 * 
+		 *
 		 * @param isHorizontal
 		 *            The orientation of this Scale
 		 *            (true=horizontal;false=vertical)
@@ -1611,13 +1625,13 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_isHorizontal = isHorizontal;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * Sets the alignment for the ScaleMarker.
 		 * @param isTopLeft
 		 * 			  The alignment for the ScaleMarker
 		 *            (true=top/left; false=bottom/right)
-		 * 				
+		 *
 		 */
 		public void setAlignment(final boolean isTopLeft) {
 			_isTopLeft = isTopLeft;
@@ -1626,7 +1640,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets the reference values for this figure.
-		 * 
+		 *
 		 * @param refPos
 		 *            The start value
 		 */
@@ -1641,10 +1655,10 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			}
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * The begin and the end of the region, which surrounds the Markers.
-		 * @param begin 
+		 * @param begin
 		 * 			 The begin
 		 * @param end
 		 * 			 The end
@@ -1657,7 +1671,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 		/**
 		 * Sets if the negative sections should be drawn.
-		 * 
+		 *
 		 * @param showNegativ
 		 *            True, if the negativ sections should be drawn, false
 		 *            otherwise.
@@ -1675,7 +1689,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_showValues = showValues;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * {@inheritDoc}
 		 */
@@ -1689,7 +1703,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				marker.setForegroundColor(fg);
 			}
 		}
-		
+
 		/**
 		 * Sets the increment for the Scale.
 		 * @param value
@@ -1699,7 +1713,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			_increment = value;
 			this.refreshConstraints();
 		}
-		
+
 		/**
 		 * Sets the start value for the Markers.
 		 * @param startValue
@@ -1708,7 +1722,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		public void setStartValue(final double startValue) {
 			_startValue = startValue;
 		}
-		
+
 		/**
 		 * This class represents a marker for the scale.
 		 * @author Kai Meyer
@@ -1717,11 +1731,11 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			/**
 			 * The Label of this ScaleMarker.
 			 */
-			private Label _textLabel;
+			private final Label _textLabel;
 			/**
 			 * The hyphen of this ScaleMarker.
 			 */
-			private ScaleHyphen _scaleHyphen;
+			private final ScaleHyphen _scaleHyphen;
 			/**
 			 * The orientation of this Marker.
 			 */
@@ -1738,7 +1752,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			 * The needed space of the hyphen.
 			 */
 			private final int _hyphenSpace = 10;
-			
+
 			/**
 			 * Constructor.
 			 */
@@ -1757,7 +1771,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					}
 				});
 			}
-			
+
 			private void refreshConstraints() {
 				Rectangle bounds = this.getBounds();
 				if (_isHorizontal) {
@@ -1814,7 +1828,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			public void paintFigure(final Graphics graphics) {
 				// nothing to do
 			}
-			
+
 			/**
 			 * Sets the orientation of this figure.
 			 * @param isHorizontal
@@ -1829,7 +1843,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 
 			/**
 			 * Sets the alignment of this figure.
-			 * 
+			 *
 			 * @param topLeft
 			 *            The alignment of this figure
 			 *            (true=top/left;false=bottom/right)
@@ -1839,7 +1853,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				_scaleHyphen.setAlignment(_topLeft);
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets the displayed text.
 			 * @param text
@@ -1849,7 +1863,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				_textLabel.setText(text);
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets, if the values of the Markers should be shown.
 			 * @param showValues
@@ -1859,7 +1873,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				_showValues = showValues;
 				this.refreshLabel();
 			}
-			
+
 			/**
 			 * Sets the wideness of the Hyphen.
 			 * @param wideness
@@ -1868,7 +1882,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 			public void setWideness(final int wideness) {
 				_scaleHyphen.setWideness(wideness);
 			}
-			
+
 			/**
 			 * {@inheritDoc}
 			 */
@@ -1878,15 +1892,15 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				_scaleHyphen.setForegroundColor(fg);
 				_textLabel.setForegroundColor(fg);
 			}
-			
+
 			/**
 			 * This class represents a hyphen for the scale.
-			 * 
+			 *
 			 * @author Kai Meyer
 			 */
 			private final class ScaleHyphen extends RectangleFigure {
 				/**
-				 * The height of the line. 
+				 * The height of the line.
 				 */
 				private int _height = 0;
 				/**
@@ -1905,7 +1919,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				 * The Alignment of this Hyphen.
 				 */
 				private boolean _isTopLeft;
-				
+
 				/**
 				 * {@inheritDoc}
 				 */
@@ -1926,7 +1940,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					}
 					graphics.drawLine(x, y,	x + _width,	y + _height);
 				}
-				
+
 				/**
 				 * Sets the wight and height of this Hyphen.
 				 */
@@ -1939,7 +1953,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 						_width = 0;
 					}
 				}
-				
+
 				/**
 				 * Sets the orientation of this Hyphen.
 				 * @param isHorizontal
@@ -1950,7 +1964,7 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 					_isHorizontal = isHorizontal;
 					this.setHeightAndWidth();
 				}
-				
+
 				/**
 				 * Sets the wideness of the Hyphen.
 				 * @param wideness
@@ -1959,8 +1973,8 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 				public void setWideness(final int wideness) {
 					_wideness = wideness;
 					this.setHeightAndWidth();
-				}			
-				
+				}
+
 				/**
 				 * Sets the alignment of this Hyphen.
 				 * @param isTopLeft
@@ -1973,7 +1987,4 @@ public final class RefreshableBargraphFigure extends RectangleFigure implements
 		}
 	}
 
-    public void setCrossedOut(boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);        
-    }
 }

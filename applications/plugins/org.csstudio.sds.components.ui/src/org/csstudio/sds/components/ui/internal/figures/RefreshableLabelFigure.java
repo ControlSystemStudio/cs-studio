@@ -24,11 +24,14 @@
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.components.ui.internal.utils.TextPainter;
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.ITextFigure;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.PositionConstants;
@@ -44,7 +47,7 @@ import org.eclipse.swt.graphics.Font;
  * @author jbercic
  *
  */
-public final class RefreshableLabelFigure extends Shape implements ICrossedFigure, ITextFigure {
+public final class RefreshableLabelFigure extends Shape implements IAdaptable, ITextFigure {
 
 	/**
 	 * A border adapter, which covers all border drawing.
@@ -86,7 +89,9 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	 */
 	private boolean _transparent=true;
 
-    private final CrossedPaintHelper _crossedPaintHelper;
+    private RhombusAdapter _rhombusAdapter;
+
+    private CrossedOutAdapter _crossedOutAdapter;
 
 	/**
 	 * Fills the image. Nothing to do here.
@@ -104,7 +109,6 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 
 
 	public RefreshableLabelFigure() {
-	    _crossedPaintHelper = new CrossedPaintHelper();
     }
 	/**
 	 * The main drawing routine.
@@ -113,69 +117,83 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 	@Override
     public void paintFigure(final Graphics gfx) {
 
-		Rectangle bound=getBounds().getCopy();
-		bound.crop(this.getInsets());
-		gfx.translate(bound.x,bound.y);
+        Rectangle bound = getBounds().getCopy();
+        bound.crop(this.getInsets());
+        gfx.translate(bound.x, bound.y);
 
-		if (!_transparent) {
-			gfx.setBackgroundColor(getBackgroundColor());
-			gfx.fillRectangle(0,0,bound.width,bound.height);
-		}
-		gfx.setFont(_font);
-		gfx.setForegroundColor(getForegroundColor());
-		AntialiasingUtil.getInstance().enableAntialiasing(gfx);
+        if (!_transparent) {
+            gfx.setBackgroundColor(getBackgroundColor());
+            gfx.fillRectangle(0, 0, bound.width, bound.height);
+        }
+        gfx.setFont(_font);
+        gfx.setForegroundColor(getForegroundColor());
+        AntialiasingUtil.getInstance().enableAntialiasing(gfx);
 
+        Point textPoint;
+        int alignment;
+        switch (_alignment) {
+            case 0: //center
+                textPoint = new Point(bound.width / 2 + _xOff, bound.height / 2 + _yOff);
+                alignment = TextPainter.CENTER;
+                break;
+            case 1: //top
+                textPoint = new Point(bound.width / 2 + _xOff, _yOff);
+                alignment = TextPainter.TOP_CENTER;
+                break;
+            case 2: //bottom
+                textPoint = new Point(bound.width / 2 + _xOff, bound.height + _yOff);
+                alignment = TextPainter.BOTTOM_CENTER;
+                break;
+            case 3: //left
+                textPoint = new Point(_xOff, bound.height / 2 + _yOff);
+                alignment = TextPainter.LEFT;
+                break;
+            case 4: //right
+                textPoint = new Point(bound.width + _xOff, bound.height / 2 + _yOff);
+                alignment = TextPainter.RIGHT;
+                break;
+            default: //default
+                textPoint = new Point(bound.width / 2 + _xOff, bound.height / 2 + _yOff);
+                alignment = TextPainter.CENTER;
+                break;
+        }
+        if (!isEnabled()) {
+            gfx.setForegroundColor(ColorConstants.buttonLightest);
+            if (Math.round(_rotation) == 90) {
+                TextPainter.drawText(gfx, _textValue, textPoint.x, textPoint.y, alignment);
+            } else {
+                TextPainter.drawRotatedText(gfx,
+                                            _textValue,
+                                            90.0 - _rotation,
+                                            textPoint.x + 1,
+                                            textPoint.y + 1,
+                                            alignment);
+            }
 
-		Point textPoint;
-		int alignment;
-		switch (_alignment) {
-		case 0: //center
-			textPoint = new Point(bound.width/2+_xOff,bound.height/2+_yOff);
-			alignment = TextPainter.CENTER;
-			break;
-		case 1: //top
-			textPoint = new Point(bound.width/2+_xOff,_yOff);
-			alignment = TextPainter.TOP_CENTER;
-			break;
-		case 2: //bottom
-			textPoint = new Point(bound.width/2+_xOff,bound.height+_yOff);
-			alignment = TextPainter.BOTTOM_CENTER;
-			break;
-		case 3: //left
-			textPoint = new Point(_xOff,bound.height/2+_yOff);
-			alignment = TextPainter.LEFT;
-			break;
-		case 4: //right
-			textPoint = new Point(bound.width+_xOff,bound.height/2+_yOff);
-			alignment = TextPainter.RIGHT;
-			break;
-		default : //default
-			textPoint = new Point(bound.width/2+_xOff,bound.height/2+_yOff);
-			alignment = TextPainter.CENTER;
-			break;
-		}
-		if (!isEnabled()) {
-			gfx.setForegroundColor(ColorConstants.buttonLightest);
-			if (Math.round(_rotation)==90) {
-				TextPainter.drawText(gfx,_textValue,textPoint.x,textPoint.y,alignment);
-			} else {
-				TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x+1,textPoint.y+1,alignment);
-			}
+            gfx.setForegroundColor(ColorConstants.buttonDarker);
+        }
+        if (Math.round(_rotation) == 90) {
+            TextPainter.drawText(gfx, _textValue, textPoint.x, textPoint.y, alignment);
+        } else {
+            TextPainter.drawRotatedText(gfx,
+                                        _textValue,
+                                        90.0 - _rotation,
+                                        textPoint.x,
+                                        textPoint.y,
+                                        alignment);
+        }
+        gfx.setAntialias(SWT.OFF);
 
-			gfx.setForegroundColor(ColorConstants.buttonDarker);
-		}
-		if (Math.round(_rotation)==90) {
-			TextPainter.drawText(gfx,_textValue,textPoint.x,textPoint.y,alignment);
-		} else {
-			TextPainter.drawRotatedText(gfx,_textValue,90.0-_rotation,textPoint.x,textPoint.y,alignment);
-		}
-		_crossedPaintHelper.paintCross(gfx, new Rectangle(0, 0, bound.width, bound.height));
-	}
+        _crossedOutAdapter.paint(gfx,false);
+        _rhombusAdapter.paint(gfx,false);
+
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setFont(final Font newval) {
+	@Override
+    public void setFont(final Font newval) {
 		_font=newval;
 	}
 
@@ -239,12 +257,19 @@ public final class RefreshableLabelFigure extends Shape implements ICrossedFigur
 				_borderAdapter = new BorderAdapter(this);
 			}
 			return _borderAdapter;
-		}
+		} else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+        }
+
 		return null;
 	}
-
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
-    }
 
 }

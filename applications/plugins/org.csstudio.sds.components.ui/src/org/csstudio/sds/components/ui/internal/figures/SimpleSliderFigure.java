@@ -28,9 +28,12 @@ import java.util.List;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.BorderLayout;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Ellipse;
@@ -42,7 +45,6 @@ import org.eclipse.draw2d.RangeModel;
 import org.eclipse.draw2d.SchemeBorder;
 import org.eclipse.draw2d.ScrollBar;
 import org.eclipse.draw2d.geometry.Dimension;
-import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 
@@ -53,7 +55,7 @@ import org.eclipse.swt.graphics.Color;
  * @version $Revision$
  *
  */
-public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
+public final class SimpleSliderFigure extends Panel implements IAdaptable {
     /**
      * Listeners that react on slider events.
      */
@@ -135,16 +137,16 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
      */
     private boolean _populateEvents = true;
 
-    private final CrossedPaintHelper _crossedPaintHelper;
-
     private boolean _enable;
+
+    private CrossedOutAdapter _crossedOutAdapter;
+
+    private RhombusAdapter _rhombusAdapter;
 
     /**
      * Standard constructor.
      */
     public SimpleSliderFigure() {
-        _crossedPaintHelper = new CrossedPaintHelper();
-
         _sliderListeners = new ArrayList<ISliderListener>();
 
         BorderLayout layout = new BorderLayout();
@@ -165,9 +167,9 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
     @Override
     public void paint(final Graphics graphics) {
         super.paint(graphics);
-        Rectangle figureBounds = getBounds();
         _scrollBar.enableButtons(_enable);
-        _crossedPaintHelper.paintCross(graphics, figureBounds);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
 
     }
 
@@ -550,7 +552,6 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
     @Override
     protected void paintFigure(final Graphics graphics) {
         graphics.setBackgroundColor(getBackgroundColor());
-        Rectangle bounds = this.getBounds().getCopy();
         bounds.crop(this.getInsets());
         graphics.fillRectangle(bounds);
         graphics.setBackgroundColor(getBackgroundColor());
@@ -567,7 +568,18 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
                 _borderAdapter = new BorderAdapter(this);
             }
             return _borderAdapter;
+        } else if (adapter == ICrossedFigure.class) {
+            if (_crossedOutAdapter == null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if (adapter == IRhombusEquippedWidget.class) {
+            if (_rhombusAdapter == null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
         }
+
         return null;
     }
 
@@ -586,10 +598,6 @@ public final class SimpleSliderFigure extends Panel implements ICrossedFigure {
          *            The new slider value.
          */
         void sliderValueChanged(double newValue);
-    }
-
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
     }
 
     /**

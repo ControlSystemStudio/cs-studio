@@ -19,92 +19,94 @@ import org.eclipse.swt.widgets.Display;
 
 /**
  * A tank figure
- * 
+ *
  * @author Xihui Chen
- * 
+ *
  */
 public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
-    
+
     private Color fillColor;
     private Color fillBackgroundColor;
     private Color outlineColor;
     private final static Color WHITE_COLOR = CustomMediaFactory.getInstance()
             .getColor(CustomMediaFactory.COLOR_WHITE);
     private boolean effect3D = true;
-    
-    private Tank tank;
-    
+
+    private final Tank tank;
+
     public RefreshableTankFigure() {
         super();
         ((LinearScale) scale).setOrientation(Orientation.VERTICAL);
         scale.setScaleLineVisible(false);
         scale.setForegroundColor(outlineColor);
-        
+
         tank = new Tank();
         setLayoutManager(new TankLayout());
-        
+
         add(scale, TankLayout.SCALE);
         add(marker, TankLayout.MARKERS);
         add(tank, TankLayout.TANK);
-        
+
     }
-    
+
     @Override
-    public void paint(Graphics graphics) {
+    public void paint(final Graphics graphics) {
         super.paint(graphics);
         Rectangle figureBounds = getBounds().getCopy();
-        getCrossedPaintHelper().paintCross(graphics, figureBounds);
+        paintAdapter(graphics);
     }
-    
+
     @Override
     public boolean isOpaque() {
         return false;
     }
-    
+
     @Override
-    public void setForegroundColor(Color fg) {
+    public void setForegroundColor(final Color fg) {
         super.setForegroundColor(fg);
         outlineColor = fg;
     }
-    
-    public void setFillColor(Color fillColor) {
+
+    public void setFillColor(final Color fillColor) {
         this.fillColor = fillColor;
     }
-    
-    public void setFillBackgroundColor(Color fillBackgroundColor) {
+
+    public void setFillBackgroundColor(final Color fillBackgroundColor) {
         this.fillBackgroundColor = fillBackgroundColor;
     }
-    
+
     /**
      * @param effect3D
      *            the effect3D to set
      */
-    public void setEffect3D(boolean effect3D) {
+    public void setEffect3D(final boolean effect3D) {
         this.effect3D = effect3D;
     }
-    
+
     class Tank extends RoundedRectangle {
         private final Color EFFECT3D_OUTLINE_COLOR = CustomMediaFactory.getInstance()
                 .getColor(new RGB(160, 160, 160));
         private static final int DEFAULT_CORNER = 15;
-        
+
         public Tank() {
             super();
             setOutline(true);
         }
-        
+
         @Override
-        protected void fillShape(Graphics graphics) {
-            
+        protected void fillShape(final Graphics graphics) {
+
             int fill_corner = DEFAULT_CORNER;
             // If this is more close to 1/2, more light the tank will be.
             double intersectFactor = 11d / 20d;
-            if (bounds.width < 2 * DEFAULT_CORNER)
+            if (bounds.width < 2 * DEFAULT_CORNER) {
                 intersectFactor = 12d / 20d;
+            }
             int rectWidth = (int) (bounds.width * intersectFactor);
-            if (fill_corner > (2 * rectWidth - (bounds.width - 2 * getLineWidth())))
+            if (fill_corner > (2 * rectWidth - (bounds.width - 2 * getLineWidth()))) {
                 fill_corner = 2 * rectWidth - bounds.width;
-            
+            }
+
             corner.height = fill_corner;
             corner.width = fill_corner;
             graphics.setAntialias(SWT.ON);
@@ -128,7 +130,7 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
                                                           0);
                 graphics.setBackgroundPattern(leftGradientPattern);
                 graphics.fillRoundRectangle(leftRectangle, corner.width, corner.height);
-                
+
                 Rectangle rightRectangle = new Rectangle(bounds.x + bounds.width - rectWidth,
                                                          bounds.y,
                                                          rectWidth,
@@ -144,10 +146,10 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
                                                            255);
                 graphics.setBackgroundPattern(rightGradientPattern);
                 graphics.fillRoundRectangle(rightRectangle, corner.width, corner.height);
-                
+
                 leftGradientPattern.dispose();
                 rightGradientPattern.dispose();
-                
+
                 // fill value
                 graphics.setBackgroundColor(WHITE_COLOR);
                 int fillHeight = bounds.height - (valuePosition - bounds.y) - getLineWidth();
@@ -167,7 +169,7 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
                                                   0);
                 graphics.setBackgroundPattern(leftGradientPattern);
                 graphics.fillRoundRectangle(leftRectangle, fill_corner, fill_corner);
-                
+
                 rightRectangle = new Rectangle(bounds.x + bounds.width - rectWidth,
                                                valuePosition,
                                                rectWidth,
@@ -183,11 +185,11 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
                                                    255);
                 graphics.setBackgroundPattern(rightGradientPattern);
                 graphics.fillRoundRectangle(rightRectangle, fill_corner, fill_corner);
-                
+
                 leftGradientPattern.dispose();
                 rightGradientPattern.dispose();
                 graphics.setForegroundColor(EFFECT3D_OUTLINE_COLOR);
-                
+
             } else {
                 graphics.setBackgroundColor(fillBackgroundColor);
                 super.fillShape(graphics);
@@ -203,9 +205,9 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
             }
         }
     }
-    
+
     class TankLayout extends AbstractLayout {
-        
+
         /** Used as a constraint for the scale. */
         public static final String SCALE = "scale"; //$NON-NLS-1$
         /** Used as a constraint for the pipe indicator. */
@@ -215,42 +217,43 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
         private LinearScale scale;
         private LinearScaledMarker marker;
         private Tank tank;
-        
+
         @Override
-        public void setConstraint(IFigure child, Object constraint) {
-            if (constraint.equals(SCALE))
+        public void setConstraint(final IFigure child, final Object constraint) {
+            if (constraint.equals(SCALE)) {
                 scale = (LinearScale) child;
-            else if (constraint.equals(MARKERS))
+            } else if (constraint.equals(MARKERS)) {
                 marker = (LinearScaledMarker) child;
-            else if (constraint.equals(TANK))
+            } else if (constraint.equals(TANK)) {
                 tank = (Tank) child;
+            }
         }
-        
+
         @Override
-        protected Dimension calculatePreferredSize(IFigure container, int w, int h) {
+        protected Dimension calculatePreferredSize(final IFigure container, final int w, final int h) {
             Insets insets = container.getInsets();
             Dimension d = new Dimension(64, 4 * 64);
             d.expand(insets.getWidth(), insets.getHeight());
             return d;
         }
-        
-        public void layout(IFigure container) {
+
+        public void layout(final IFigure container) {
             Rectangle area = container.getClientArea();
-            
+
             Dimension scaleSize = new Dimension(0, 0);
             Dimension markerSize = new Dimension(0, 0);
-            
+
             if (scale != null) {
                 scaleSize = scale.getPreferredSize(-1, area.height);
                 scale.setBounds(new Rectangle(area.x, area.y, scaleSize.width, scaleSize.height));
             }
-            
-            if (marker != null && marker.isVisible()) {
+
+            if ((marker != null) && marker.isVisible()) {
                 markerSize = marker.getPreferredSize();
                 marker.setBounds(new Rectangle(area.x + area.width - markerSize.width, marker
                         .getScale().getBounds().y, markerSize.width, markerSize.height));
             }
-            
+
             if (tank != null) {
                 tank.setBounds(new Rectangle(area.x + scaleSize.width,
                                              scale.getValuePosition(scale.getRange().getUpper(),
@@ -260,6 +263,6 @@ public class RefreshableTankFigure extends AbstractLinearMarkedFigure {
                                              scale.getTickLength() + 2 * tank.getLineWidth()));
             }
         }
-        
+
     }
 }

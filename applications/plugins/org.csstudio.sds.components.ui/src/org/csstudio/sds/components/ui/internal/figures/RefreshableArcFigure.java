@@ -22,10 +22,13 @@
 package org.csstudio.sds.components.ui.internal.figures;
 
 import org.csstudio.sds.ui.figures.BorderAdapter;
-import org.csstudio.sds.ui.figures.CrossedPaintHelper;
+import org.csstudio.sds.ui.figures.CrossedOutAdapter;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
 import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
+import org.csstudio.sds.ui.figures.RhombusAdapter;
 import org.csstudio.sds.util.AntialiasingUtil;
+import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Graphics;
@@ -42,7 +45,7 @@ import org.eclipse.swt.graphics.Color;
  * @author jbercic
  *
  */
-public final class RefreshableArcFigure extends Shape implements ICrossedFigure {
+public final class RefreshableArcFigure extends Shape implements IAdaptable {
     /**
      * start angle and length (in degrees) of the arc should it be drawn filled? (using fill_color)
      */
@@ -65,15 +68,15 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     private int _borderWidth;
 
     private boolean _filled;
+    private CrossedOutAdapter _crossedOutAdapter;
+    private RhombusAdapter _rhombusAdapter;
 
-    private final CrossedPaintHelper _crossedPaintHelper;
 
     /**
      *
      * Constructor.
      */
     public RefreshableArcFigure() {
-        _crossedPaintHelper = new CrossedPaintHelper();
     }
 
     /**
@@ -126,11 +129,12 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
     /**
      * The main drawing routine.
      */
-    public void paintFigure(final Graphics gfx) {
-        Rectangle figureBounds = getBounds().getCopy();
-        AntialiasingUtil.getInstance().enableAntialiasing(gfx);
-        super.paintFigure(gfx);
-        _crossedPaintHelper.paintCross(gfx, figureBounds);
+    @Override
+    public void paintFigure(final Graphics graphics) {
+        AntialiasingUtil.getInstance().enableAntialiasing(graphics);
+        super.paintFigure(graphics);
+        _crossedOutAdapter.paint(graphics);
+        _rhombusAdapter.paint(graphics);
     }
 
     public void setTransparent(final boolean newval) {
@@ -189,6 +193,16 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
                 };
             }
             return _borderAdapter;
+        } else if(adapter == ICrossedFigure.class) {
+            if(_crossedOutAdapter==null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+        } else if(adapter == IRhombusEquippedWidget.class) {
+            if(_rhombusAdapter==null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
         }
         return null;
     }
@@ -223,7 +237,4 @@ public final class RefreshableArcFigure extends Shape implements ICrossedFigure 
         }
     }
 
-    public void setCrossedOut(final boolean newValue) {
-        _crossedPaintHelper.setCrossed(newValue);
-    }
 }
