@@ -62,7 +62,20 @@ import org.eclipse.draw2d.IFigure;
  */
 public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditPart {
 
+    /**
+     * The actual figure will be surrounded with a small frame that can be used
+     * to drag the figure around (even if the cell editor is activated).
+     */
+    protected static final int FRAME_WIDTH = 1;
+
+    /**
+     * The input field will be slightly brighter than the actual figure so it
+     * can be easily recognized.
+     */
+    protected static final int INPUT_FIELD_BRIGHTNESS = 10;
+
     private final NumberFormat numberFormat = NumberFormat.getInstance();
+
 
     /**
      *
@@ -72,7 +85,9 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
     protected void registerPropertyChangeHandlers() {
 
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
                 ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(null));
                 return true;
@@ -82,7 +97,9 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         // precision
         IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
                 ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_PRECISION));
                 return true;
@@ -92,7 +109,9 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         // aliases
         IWidgetPropertyChangeHandler aliasHandler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
                 ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
@@ -101,7 +120,9 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
         setPropertyChangeHandler(PROP_ALIASES, aliasHandler);
         // primary pv
         IWidgetPropertyChangeHandler pvHandler = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue, final Object newValue, final IFigure refreshableFigure) {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
                 ITextFigure labelFigure = (ITextFigure) refreshableFigure;
                 labelFigure.setTextValue(determineLabel(PROP_ALIASES));
                 return true;
@@ -117,7 +138,6 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
      * @param updatedPropertyId the Property that was updated
      * @return the new string value
      */
-//    abstract String determineLabel(final String updatedPropertyId);
     protected final String determineLabel(final String updatedPropertyId) {
         AbstractTextTypeWidgetModel model = (AbstractTextTypeWidgetModel) getCastedModel();
 
@@ -128,77 +148,150 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
 
         switch (type) {
             case TEXT:
-                if ( (updatedPropertyId == null)
-                        || updatedPropertyId.equals(model.getStringValueID())) {
-                    toprint = text;
-                }
+                toprint = handleText(updatedPropertyId, model, text, toprint);
                 break;
             case DOUBLE:
-                if ( (updatedPropertyId == null)
-                        || updatedPropertyId.equals(model.getStringValueID())
-                        || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
-                    try {
-                        double d = Double.parseDouble(text);
-                        numberFormat.setMaximumFractionDigits(model.getPrecision());
-                        numberFormat.setMinimumFractionDigits(model.getPrecision());
-                        toprint = numberFormat.format(d);
-                    } catch (Exception e) {
-                        toprint = text;
-                    }
-                }
+                toprint = handleDouble(updatedPropertyId, model, text, toprint);
                 break;
             case ALIAS:
-                if ( (updatedPropertyId == null)
-                        || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_ALIASES)
-                        || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRIMARY_PV)) {
-                    try {
-                        toprint = ChannelReferenceValidationUtil.createCanonicalName(model
-                                .getPrimaryPV(), model.getAllInheritedAliases());
-                    } catch (ChannelReferenceValidationException e) {
-                        toprint = model.getPrimaryPV();
-                    }
-                }
+                toprint = handleAlias(updatedPropertyId, model, toprint);
                 break;
             case HEX:
-                if ( (updatedPropertyId == null)
-                        || updatedPropertyId.equals(model.getStringValueID())) {
-                    try {
-                        long l = Long.parseLong(text);
-                        toprint = Long.toHexString(l);
-                    } catch (Exception e1) {
-                        try {
-                            double d = Double.parseDouble(text);
-                            toprint = Double.toHexString(d);
-                        } catch (Exception e2) {
-                            toprint = text;
-                        }
-                    }
-                }
+                toprint = handleHex(updatedPropertyId, model, text, toprint);
                 break;
             case EXP:
-                if ( (updatedPropertyId == null)
-                        || updatedPropertyId.equals(model.getStringValueID())
-                        || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
-                    try {
-                        String pattern = "0.";
-                        for (int i = 0; i < model.getPrecision(); i++) {
-                            if (i == 0) {
-                                pattern = pattern.concat("0");
-                            } else {
-                                pattern = pattern.concat("#");
-                            }
-                        }
-                        pattern = pattern.concat("E00");
-                        DecimalFormat expFormat = new DecimalFormat(pattern);
-                        double d = Double.parseDouble(text);
-                        toprint = expFormat.format(d);
-                    } catch (Exception e) {
-                        toprint = text;
-                    }
-                }
+                toprint = handleExp(updatedPropertyId, model, text, toprint);
                 break;
             default:
                 toprint = "unknown value type";
+        }
+        return toprint;
+    }
+
+    /**
+     * @param updatedPropertyId
+     * @param model
+     * @param text
+     * @param toprint
+     * @return
+     */
+    private String handleText(final String updatedPropertyId,
+                              final AbstractTextTypeWidgetModel model,
+                              final String text,
+                              final String toprint) {
+        if ( (updatedPropertyId == null)
+                || updatedPropertyId.equals(model.getStringValueID())) {
+            return text;
+        }
+        return toprint;
+    }
+
+    /**
+     * @param updatedPropertyId
+     * @param model
+     * @param text
+     * @param toprint
+     * @return
+     */
+    private String handleHex(final String updatedPropertyId,
+                             final AbstractTextTypeWidgetModel model,
+                             final String text,
+                             final String toprint) {
+        if ( (updatedPropertyId == null)
+                || updatedPropertyId.equals(model.getStringValueID())) {
+            try {
+                long l = Long.parseLong(text);
+                return Long.toHexString(l);
+            } catch (Exception e1) {
+                try {
+                    double d = Double.parseDouble(text);
+                    return Double.toHexString(d);
+                } catch (Exception e2) {
+                    return text;
+                }
+            }
+        }
+        return toprint;
+    }
+
+    /**
+     * @param updatedPropertyId
+     * @param model
+     * @param text
+     * @param toprint
+     * @return
+     */
+    private static String handleExp(final String updatedPropertyId,
+                             final AbstractTextTypeWidgetModel model,
+                             final String text,
+                             final String toprint) {
+        if ( (updatedPropertyId == null)
+                || updatedPropertyId.equals(model.getStringValueID())
+                || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
+            try {
+                String pattern = "0.";
+                for (int i = 0; i < model.getPrecision(); i++) {
+                    if (i == 0) {
+                        pattern = pattern.concat("0");
+                    } else {
+                        pattern = pattern.concat("#");
+                    }
+                }
+                pattern = pattern.concat("E00");
+                DecimalFormat expFormat = new DecimalFormat(pattern);
+                double d = Double.parseDouble(text);
+                return expFormat.format(d);
+            } catch (Exception e) {
+                return text;
+            }
+        }
+        return toprint;
+    }
+
+    /**
+     * @param updatedPropertyId
+     * @param model
+     * @param toprint
+     * @return
+     */
+    private static String handleAlias(final String updatedPropertyId,
+                               final AbstractTextTypeWidgetModel model,
+                               final String toprint) {
+        if ( (updatedPropertyId == null)
+                || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_ALIASES)
+                || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRIMARY_PV)) {
+            try {
+                return ChannelReferenceValidationUtil.createCanonicalName(model
+                        .getPrimaryPV(), model.getAllInheritedAliases());
+            } catch (ChannelReferenceValidationException e) {
+                return model.getPrimaryPV();
+            }
+        }
+        return toprint;
+    }
+
+    /**
+     * @param updatedPropertyId
+     * @param model
+     * @param text
+     * @param toprint
+     * @return
+     */
+    private String handleDouble(final String updatedPropertyId,
+                                final AbstractTextTypeWidgetModel model,
+                                final String text,
+                                final String toprint) {
+        if ( (updatedPropertyId == null)
+                || updatedPropertyId.equals(model.getStringValueID())
+                || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
+            try {
+                double d = Double.parseDouble(text);
+                numberFormat.setMaximumFractionDigits(model.getPrecision());
+                numberFormat.setMinimumFractionDigits(model.getPrecision());
+                return numberFormat.format(d);
+            } catch (Exception e) {
+                return text;
+            }
         }
         return toprint;
     }

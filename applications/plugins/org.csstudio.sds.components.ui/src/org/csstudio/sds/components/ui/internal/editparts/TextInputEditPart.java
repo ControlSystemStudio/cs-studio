@@ -21,8 +21,6 @@
  */
 package org.csstudio.sds.components.ui.internal.editparts;
 
-import java.text.NumberFormat;
-
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -82,19 +80,7 @@ import org.eclipse.swt.widgets.Text;
  *
  */
 public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart implements IProcessVariableWithSamples {
-	/**
-	 * The actual figure will be surrounded with a small frame that can be used
-	 * to drag the figure around (even if the cell editor is activated).
-	 */
-	private static final int FRAME_WIDTH = 1;
 
-	/**
-	 * The input field will be slightly brighter than the actual figure so it
-	 * can be easily recognized.
-	 */
-	private static final int INPUT_FIELD_BRIGHTNESS = 10;
-
-	private final NumberFormat numberFormat = NumberFormat.getInstance();
 
 	/**
 	 * {@inheritDoc}
@@ -244,9 +230,7 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 						return;
 					}
 					DirectEditCommand cmd = new DirectEditCommand(text.getText(), getExecutionMode());
-					// In EDIT mode use the CommandStack provided by the
-					// DisplayEditor to execute
-					// the command.
+					// In EDIT mode use the CommandStack provided by the DisplayEditor to execute the command.
 					if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
 						getViewer().getEditDomain().getCommandStack().execute(cmd);
 					} else {
@@ -462,8 +446,8 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 		// font
 		setPropertyChangeHandler(TextInputModel.PROP_FONT, new FontChangeHander<RefreshableLabelFigure>() {
 			@Override
-			protected void doHandle(final RefreshableLabelFigure figure, final Font font) {
-				figure.setFont(font);
+			protected void doHandle(final RefreshableLabelFigure refreshLableFigure, final Font font) {
+				refreshLableFigure.setFont(font);
 			}
 		});
 
@@ -487,91 +471,6 @@ public final class TextInputEditPart extends AbstractTextTypeWidgetEditPart impl
 		};
 		setPropertyChangeHandler(TextInputModel.PROP_TRANSPARENT, transparentHandler);
 	}
-
-//	@Override
-//    protected String determineLabel(final String updatedPropertyId) {
-//		TextInputModel model = (TextInputModel) getWidgetModel();
-//
-//		TextTypeEnum type = model.getValueType();
-//		String text = model.getInputText();
-//
-//		String toprint = "none";
-//
-//		switch (type) {
-//		case TEXT:
-//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
-//				toprint = text;
-//			}
-//			break;
-//		case DOUBLE:
-//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
-//					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
-//				try {
-//					try {
-//						double d = Double.parseDouble(text);
-//						numberFormat.setMaximumFractionDigits(model.getPrecision());
-//						numberFormat.setMinimumFractionDigits(model.getPrecision());
-//						toprint = numberFormat.format(d);
-//					} catch (NumberFormatException e) {
-//						toprint = text;
-//					}
-//
-//				} catch (Exception e) {
-//					toprint = text;
-//				}
-//			}
-//			break;
-//		case ALIAS:
-//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_ALIASES)
-//					|| updatedPropertyId.equals(TextInputModel.PROP_PRIMARY_PV)) {
-//				try {
-//					toprint = ChannelReferenceValidationUtil.createCanonicalName(model.getPrimaryPV(), model.getAllInheritedAliases());
-//				} catch (ChannelReferenceValidationException e) {
-//					toprint = model.getPrimaryPV();
-//				}
-//			}
-//			break;
-//		case HEX:
-//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)) {
-//				try {
-//					long l = Long.parseLong(text);
-//					toprint = Long.toHexString(l);
-//				} catch (Exception e1) {
-//					try {
-//						double d = Double.parseDouble(text);
-//						toprint = Double.toHexString(d);
-//					} catch (Exception e2) {
-//						toprint = text;
-//					}
-//				}
-//			}
-//			break;
-//		case EXP:
-//			if ((updatedPropertyId == null) || updatedPropertyId.equals(TextInputModel.PROP_INPUT_TEXT)
-//					|| updatedPropertyId.equals(TextInputModel.PROP_PRECISION)) {
-//				try {
-//					String pattern = "0.";
-//					for (int i = 0; i < model.getPrecision(); i++) {
-//						if (i == 0) {
-//							pattern = pattern.concat("0");
-//						} else {
-//							pattern = pattern.concat("#");
-//						}
-//					}
-//					pattern = pattern.concat("E00");
-//					DecimalFormat expFormat = new DecimalFormat(pattern);
-//					double d = Double.parseDouble(text);
-//					toprint = expFormat.format(d);
-//				} catch (Exception e) {
-//					toprint = text;
-//				}
-//			}
-//			break;
-//		default:
-//			toprint = "unknown value type";
-//		}
-//		return toprint;
-//	}
 
 	/**
 	 * {@inheritDoc}
