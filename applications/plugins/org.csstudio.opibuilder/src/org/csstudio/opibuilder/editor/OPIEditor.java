@@ -22,14 +22,12 @@
 
 package org.csstudio.opibuilder.editor;
 import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.PipedInputStream;
-import java.io.PipedOutputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -751,13 +749,13 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		try {
 			XMLUtil.fillDisplayModelFromInputStream(getInputStream(), displayModel);
 		} catch (Exception e) {
-			String message = "Error happened when loading the OPI file! An empty OPI will be created if no widget was loaded.\n"
+			String message = "Error happened when loading the OPI file!\n"
 				+ e.getMessage();
 			MessageDialog.openError(getSite().getShell(), "File Open Error",
 					message);
 			CentralLogger.getInstance().error(this, e);
 			ConsoleService.getInstance().writeError(message);
-			
+			getEditorSite().getPage().closeEditor(this, false);
 		}	
 		displayModel.setOpiFilePath(getOPIFilePath());
 	}
@@ -794,51 +792,76 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	private void performSave() {
 		
 		try {			
+			String content = XMLUtil.XML_HEADER + XMLUtil.WidgetToXMLString(displayModel, true);
 			if (getEditorInput() instanceof FileEditorInput) {
-				final PipedInputStream in = new PipedInputStream();		
-				final PipedOutputStream out = new PipedOutputStream(in);
-				new Thread(
-						 new Runnable(){
-						     public void run(){
-						     	try {
-						     		
-									XMLUtil.WidgetToOutputStream(displayModel, out, true);
-						     		out.close();
-								} catch (IOException e) {
-									MessageDialog.openError(getSite().getShell(),
-											"Save Error", e.getMessage());
-									CentralLogger.getInstance().error(this, e);
-								}
-						      }
-						    }
-				).start();
-				
-				((FileEditorInput) getEditorInput()).getFile().setContents(
+//				final PipedInputStream in = new PipedInputStream();		
+//				final PipedOutputStream out = new PipedOutputStream(in);
+//				new Thread(
+//						 new Runnable(){
+//						     public void run(){
+//						     	try {
+//						     		
+//									XMLUtil.WidgetToOutputStream(displayModel, out, true);
+//						     		out.close();
+//								} catch (IOException e) {
+//									MessageDialog.openError(getSite().getShell(),
+//											"Save Error", e.getMessage());
+//									CentralLogger.getInstance().error(this, e);
+//								}
+//						      }
+//						    }
+//				).start();
+//			
+				InputStream in = new ByteArrayInputStream(content.getBytes());
+				try {
+					in = new ByteArrayInputStream(content.getBytes());
+					((FileEditorInput) getEditorInput()).getFile().setContents(
 						in, false, false, null);
-				in.close();
+					in.close();
+				} catch (Exception e) {
+					in.close();
+					processSaveFailedError(e);
+					return;
+				}
+					
+				
 				
 			} else if (getEditorInput() instanceof FileStoreEditorInput) {
-				File file = URIUtil.toPath(
-						((FileStoreEditorInput) getEditorInput()).getURI())
-						.toFile();
-				String content = XMLUtil.WidgetToXMLString(displayModel, true);
-				
-					FileWriter fileWriter = new FileWriter(file, false);
-					BufferedWriter writer = new BufferedWriter(fileWriter);
-					writer.write(content);
-					writer.flush();
-					writer.close();
+					try {
+						File file = URIUtil.toPath(
+							((FileStoreEditorInput) getEditorInput()).getURI())
+							.toFile();
+
+						FileWriter fileWriter = new FileWriter(file, false);
+						BufferedWriter writer = new BufferedWriter(fileWriter);
+						writer.write(content);
+						writer.flush();
+						writer.close();
+					} catch (Exception e) {
+						processSaveFailedError(e);
+						return;
+					}
+					
 			}	
 		} catch (Exception e) {
-				MessageDialog.openError(getSite().getShell(),
-						"IO Error", e.getMessage());
-				CentralLogger.getInstance().error(this, e);
+				processSaveFailedError(e);
+				return;
 		}		
 
 		getCommandStack().markSaveLocation();
 
 		firePropertyChange(IEditorPart.PROP_DIRTY);
 	
+	}
+
+	/**
+	 * @param e
+	 */
+	private void processSaveFailedError(Exception e) {
+		MessageDialog.openError(getSite().getShell(),
+				"Save Failed!\n", e.getMessage());
+		CentralLogger.getInstance().error(this, e);
+		ConsoleService.getInstance().writeError("Save Failed! " + e);
 	}
 
 	

@@ -28,6 +28,8 @@ import org.jdom.output.XMLOutputter;
  */
 public class XMLUtil {
 	
+	public static final String XML_HEADER = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n"; //$NON-NLS-1$
+
 	public static String XMLTAG_DISPLAY = "display"; //$NON-NLS-1$
 	
 	public static String XMLTAG_WIDGET = "widget"; //$NON-NLS-1$
@@ -71,7 +73,7 @@ public class XMLUtil {
 	public static void WidgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
 		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() : 
 			Format.getRawFormat());
-		out.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n".getBytes());
+		out.write(XML_HEADER.getBytes());
 		xmlOutputter.output(WidgetToXMLElement(widgetModel), out);
 	}
 	
