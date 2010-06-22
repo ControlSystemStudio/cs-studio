@@ -101,7 +101,7 @@ public class RequestImpl<T> implements Request<T>
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.Request#hasResponse()
 	 */
-	public boolean hasResponse()
+	public synchronized boolean hasResponse()
 	{
 		return responses.size() > 0;
 	}
@@ -134,12 +134,13 @@ public class RequestImpl<T> implements Request<T>
 			    "Can not dispatch response which has different source identifeable.");
 		}
 
-		responses.add(r);
-
-		while (capacity>0 && responses.size() > capacity) {
-			responses.removeFirst();
+		synchronized (this) {
+			responses.add(r);
+			while (capacity > 0 && responses.size() > capacity) {
+				responses.removeFirst();
+			}
 		}
-
+		
 		if (listener != null) {
 			ResponseEvent<T> e = new ResponseEvent<T>(source, this, r);
 
@@ -166,7 +167,7 @@ public class RequestImpl<T> implements Request<T>
 	/* (non-Javadoc)
 	 * @see org.epics.css.dal.Request#isCompleted()
 	 */
-	public boolean isCompleted()
+	public synchronized boolean isCompleted()
 	{
 		if (responses.size() > 0) {
 			return responses.getLast().isLast();
@@ -195,7 +196,7 @@ public class RequestImpl<T> implements Request<T>
 	 * (non-Javadoc)
 	 * @see org.epics.css.dal.Request#getFirstResponse()
 	 */
-	public Response<T> getFirstResponse() {
+	public synchronized Response<T> getFirstResponse() {
 		return responses.getFirst();
 	}
 
@@ -203,7 +204,7 @@ public class RequestImpl<T> implements Request<T>
 	 * (non-Javadoc)
 	 * @see org.epics.css.dal.Request#getLastResponse()
 	 */
-	public Response<T> getLastResponse() {
+	public synchronized Response<T> getLastResponse() {
 		return responses.getLast();
 	}
 
