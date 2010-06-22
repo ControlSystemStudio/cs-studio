@@ -27,6 +27,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
@@ -76,27 +77,30 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
 
         // There may be more than a thousand pv for which the initial state is requested at once.
-        // Therefore the process of registering is performed in chunks with a delay of approx. 100 msec.
-        // TODO (jpenning) define prefs for chunk size and delay times
+        // Therefore the process of registering is performed in chunks with a delay
+
+        int pvChunkSize = AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
+        int pvChunkWaitMsec = AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
+        int pvRegisterWaitMsec = AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
 
         final List<Element> pvsUnderWay = new ArrayList<Element>();
 
         for (int i = 0; i < initItems.size(); i++) {
             registerPV(pvsUnderWay, initItems.get(i));
-            if ((i % 500) == 0) {
-                waitFixedTime(100);
+            if ( (i % pvChunkSize) == 0) {
+                waitFixedTime(pvChunkWaitMsec);
             }
         }
 
         LOG.debug("retrieveInitialState about to wait");
-        waitFixedTime(1000);
+        waitFixedTime(pvRegisterWaitMsec);
 
         // The process of deregistering is also performed in chunks with a delay
         LOG.debug("retrieveInitialState about to deregister " + pvsUnderWay.size() + " pvs");
         for (int i = 0; i < pvsUnderWay.size(); i++) {
             deregisterPV(pvsUnderWay.get(i));
-            if ((i % 500) == 0) {
-                waitFixedTime(100);
+            if ( (i % pvChunkSize) == 0) {
+                waitFixedTime(pvChunkWaitMsec);
             }
         }
 

@@ -17,7 +17,6 @@
 package org.csstudio.alarm.treeView.views;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +29,7 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
@@ -44,7 +44,6 @@ import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
-import org.csstudio.alarm.treeView.preferences.PreferenceConstants;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.logging.CentralLogger;
@@ -405,13 +404,9 @@ public class AlarmTreeView extends ViewPart {
                         throw new IllegalStateException("Listener of "
                                 + AlarmTreeView.class.getName() + " mustn't be null.");
                     }
-                    // JMS: topics: default,    facilities: don't care,      filename: don't care
-                    // DAL: topics: don't care, facilities: from tree prefs, filename: ok
-                    final String[] facilityNames = PreferenceConstants.retrieveFacilityNames();
-                    final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
-                            .newAlarmResource(null, Arrays.asList(facilityNames), null);
-                    final AlarmTreeConnectionMonitor connectionMonitor = new AlarmTreeConnectionMonitor(AlarmTreeView.this,
-                                                                                                  _rootNode);
+                    final IAlarmResource alarmResource = newAlarmResource();
+                    final AlarmTreeConnectionMonitor connectionMonitor =
+                        new AlarmTreeConnectionMonitor(AlarmTreeView.this, _rootNode);
                     _connection.connectWithListenerForResource(connectionMonitor,
                                                                listener,
                                                                alarmResource);
@@ -424,6 +419,16 @@ public class AlarmTreeView extends ViewPart {
         };
         return connectionJob;
     }
+
+    @Nonnull
+    private IAlarmResource newAlarmResource() {
+        // JMS: topics: default,    facilities: don't care,      filename: don't care
+        // DAL: topics: don't care, facilities: from tree prefs, filename: ok
+        final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
+                .newAlarmResource(null, AlarmPreference.getFacilityNames(), null);
+        return alarmResource;
+    }
+
 
     /**
      * Adds drag and drop support to the tree viewer.

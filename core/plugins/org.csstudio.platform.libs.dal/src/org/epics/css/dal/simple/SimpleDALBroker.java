@@ -490,8 +490,6 @@ public class SimpleDALBroker {
 		if ((parameters == null) || (parameters.size()==0)) {
 			ph.property.addDynamicValueListener(listener);
 		} else {
-		    // TODO (jpenning) DESY 2010-05-31: Must block. If not blocked the expert mode is not recognized.
-//			blockUntillConnected(ph.property);
 			ph.property.createNewExpertMonitor(listener, parameters);
 		}
 	}

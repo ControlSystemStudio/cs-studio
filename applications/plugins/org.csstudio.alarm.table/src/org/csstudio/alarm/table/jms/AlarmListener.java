@@ -20,9 +20,10 @@ package org.csstudio.alarm.table.jms;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
@@ -37,10 +38,7 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class AlarmListener implements IAlarmTableListener {
 
-    /**
-     * The logger used by this listener.
-     */
-    private final CentralLogger _log = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmListener.class);
 
     /**
      * This is the destination for the messages
@@ -70,11 +68,10 @@ public class AlarmListener implements IAlarmTableListener {
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
-    public void onMessage(@Nullable final IAlarmMessage message) {
-        _log.debug(this, "received: " + message);
-        // TODO (jpenning) Does null actually show up here?
+    public void onMessage(@CheckForNull final IAlarmMessage message) {
+        LOG.debug("received: " + message);
         if (message == null) {
-            _log.error(this, "Error processing message (was null)");
+            LOG.error("Error processing message (was null)");
         } else {
             processAlarmMessage(message);
             callListeners(message);

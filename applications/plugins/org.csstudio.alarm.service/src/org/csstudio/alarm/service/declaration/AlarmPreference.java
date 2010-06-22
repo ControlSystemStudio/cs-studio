@@ -51,6 +51,8 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmPreference.class);
 
+    public static final String STRING_LIST_SEPARATOR = ";";
+
     public static final AlarmPreference<Boolean> ALARMSERVICE_IS_DAL_IMPL =
         new AlarmPreference<Boolean>("isDalImpl", false);
 
@@ -61,12 +63,20 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<String>("configFileName", "resource/alarmServiceConfig.xml");
 
     public static final AlarmPreference<String> ALARMSERVICE_TOPICS =
-        new AlarmPreference<String>("topics", "ALARM,ACK");
+        new AlarmPreference<String>("topics", "ALARM;ACK;");
 
-    // TODO (jpenning) define facilities in one place
-    // Currently the facilities are defined in the alarm tree and in the alarm service
     public static final AlarmPreference<String> ALARMSERVICE_FACILITIES =
-        new AlarmPreference<String>("facilities", "CMTB,Flash,Rechnersysteme,TEST,Test,Wasseranlagen");
+        new AlarmPreference<String>("facilities", "Test;");
+
+    public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_SIZE =
+        new AlarmPreference<Integer>("pvChunkSize", 500);
+
+    public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_WAIT_MSEC =
+        new AlarmPreference<Integer>("pvChunkWaitMsec", 100);
+
+    public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
+        new AlarmPreference<Integer>("pvRegisterWaitMsec", 1000);
+
 
 
     private AlarmPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
@@ -88,29 +98,41 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     }
 
     /**
-     * The topic names are defined in a string like this: "ALARM,ACK", i.e. comma separated without blanks.
-     * This method splits them at the commas.
+     * The topic names are defined in a string like this: "ALARM;ACK;", i.e. separated without blanks,
+     * they are separated properly here.
      *
      * @return an unmodifiable list with the topic names
      */
     @Nonnull
     public static List<String> getTopicNames() {
         String resultString = ALARMSERVICE_TOPICS.getValue();
-        String[] result = resultString.split(",");
+        String[] result = resultString.split(STRING_LIST_SEPARATOR);
         return Arrays.asList(result);
     }
 
     /**
-     * The facility names are defined in a string like this: "CMTB,Flash,Test", i.e. comma separated without blanks.
-     * This method splits them at the commas.
+     * The facility names are defined in a string like this: "CMTB;Flash;Test;", i.e. separated without blanks,
+     * they are separated properly here.
+     *
+     * If the preferences contain no facility names, an entry named 'TEST' will be returned according to specification.
      *
      * @return an unmodifiable list with the facility names
      */
     @Nonnull
     public static List<String> getFacilityNames() {
-        String resultString = ALARMSERVICE_FACILITIES.getValue();
-        String[] result = resultString.split(",");
+        final String resultString = ALARMSERVICE_FACILITIES.getValue();
+
+        String[] result = resultString.split(STRING_LIST_SEPARATOR);
+        if (hasNoFacilityNames(result)) {
+            LOG.debug("No facility names found in preferences, using default.");
+            result = ALARMSERVICE_FACILITIES.getDefaultValue().split(STRING_LIST_SEPARATOR);
+        }
+        LOG.debug("getFacilityNames: " + Arrays.asList(result));
         return Arrays.asList(result);
+    }
+
+    private static boolean hasNoFacilityNames(@Nonnull final String[] result) {
+        return (result.length == 0) || ((result.length == 1) && (result[0].isEmpty()));
     }
 
     /**
@@ -139,7 +161,6 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         assert result != null : "result must not be null";
         return result;
     }
-
 
 
 }

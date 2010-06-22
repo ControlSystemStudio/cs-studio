@@ -26,8 +26,13 @@ import javax.annotation.Nullable;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
+import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.jface.window.Window;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
@@ -48,25 +53,65 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
     public AlarmServicePreferencePage() {
         super(GRID);
         setPreferenceStore(AlarmServiceActivator.getDefault().getPreferenceStore());
-        setDescription("CSS must restart after a change to take effect.");
     }
 
     @Override
     public void createFieldEditors() {
-        final String[][] contextTypes = {
-                {"DAL", Boolean.TRUE.toString()},
-                {"JMS", Boolean.FALSE.toString()}
-              };
-        final Composite parent = getFieldEditorParent();
-        addField(new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getKeyAsString(),
-                                           "Select implementation for the alarm service",
-                                           contextTypes.length,
-                                           contextTypes,
-                                           parent));
+        addField(newImplSelectionEditor());
+        addField(newListEditor());
     }
 
     @Override
     public void init(@Nullable final IWorkbench workbench) {
         // Nothing to do
+    }
+
+    private RadioGroupFieldEditor newImplSelectionEditor() {
+        final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+        group.setText("Alarm Service");
+        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        group.setLayout(new GridLayout(2, false));
+
+        final String[][] contextTypes = {
+                {"DAL", Boolean.TRUE.toString()},
+                {"JMS", Boolean.FALSE.toString()}
+              };
+        return new RadioGroupFieldEditor(AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getKeyAsString(),
+                                           "Select the implementation for the Alarm Service.\nYou must restart CSS after a change to take effect.",
+                                           contextTypes.length,
+                                           contextTypes,
+                                           group);
+    }
+
+    private ListEditor newListEditor() {
+        final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+        group.setText("Facility Names");
+        group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+        group.setLayout(new GridLayout(2, false));
+
+        return new ListEditor(AlarmPreference.ALARMSERVICE_FACILITIES.getKeyAsString(), "Select Facility Names for use in Alarm Tree and Alarm Table\n" +
+        		"The selected facilities will show up in the Alarm Tree. They will also be used to retrieve\n" +
+        		"the initial state of the contained PVs.", group){
+
+            public String[] parseString(final String stringList){
+                return stringList.split(AlarmPreference.STRING_LIST_SEPARATOR);
+            }
+
+            public String getNewInputObject(){
+                AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
+                if (inputDialog.open() == Window.OK) {
+                    return (inputDialog).getResult();
+                }
+                return null;
+            }
+
+            public String createList(final String[] items){
+                String temp = "";
+                for (String item : items) {
+                    temp = temp + item + AlarmPreference.STRING_LIST_SEPARATOR;
+                }
+                return temp;
+            }
+        };
     }
 }

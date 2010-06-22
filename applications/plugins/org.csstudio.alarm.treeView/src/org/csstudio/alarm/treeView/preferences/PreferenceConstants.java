@@ -21,17 +21,11 @@
  */
  package org.csstudio.alarm.treeView.preferences;
 
-import org.apache.log4j.Logger;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Constant definitions for plug-in preferences.
  */
 public final class PreferenceConstants {
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(PreferenceConstants.class);
 
 	/**
 	 * Private constructor.
@@ -56,27 +50,4 @@ public final class PreferenceConstants {
 	 */
 	public static final String JMS_TOPICS = "jms.queue";
 
-	/**
-	 * A preference that stores the facility names that should be displayed
-	 * in the tree.
-	 */
-	public static final String FACILITIES = "NODE";
-
-    public static String[] retrieveFacilityNames() {
-        final IPreferencesService prefs = Platform.getPreferencesService();
-        final String facilitiesPref = prefs.getString(AlarmTreePlugin.PLUGIN_ID,
-                                                      FACILITIES, "", null);
-        String[] facilityNames;
-        if (facilitiesPref.equals("")) {
-            facilityNames = new String[0];
-        } else {
-            facilityNames = facilitiesPref.split(";");
-        }
-
-        if (facilityNames.length == 0) {
-            LOG.debug("No facility names selected, using TEST facility.");
-            facilityNames = new String[] { "TEST" };
-        }
-        return facilityNames;
-    }
 }
