@@ -62,9 +62,9 @@ public final class SaveInLdapAction extends Action {
             try {
                 /*
                   Note: although a concurrent queue is utilised, it has to be explicitly inhibited
-                  that items are added, removed, modified by any other thread during this queue traversal
-                  for the 'save in LDAP' action.
-                  Hence, the synchronized block - that still leaves a tiny time window in between the
+                  that items are added, removed, or modified by any other thread during the following
+                  queue traversal for the 'save in LDAP' action.
+                  Hence, a synchronised block is necessary on the queue - that still leaves a tiny time window in between the
                   the user's 'save in LDAP' activation and the start of this block for the queue to be
                   modified!
                  */
@@ -80,7 +80,7 @@ public final class SaveInLdapAction extends Action {
             } catch (final AlarmTreeModificationException e) {
 
                 for (final ITreeModificationItem item : _ldapModifications) {
-                    notAppliedMods.add("-" + item.getDescription() + "\n");
+                    notAppliedMods.add("\n-" + item.getDescription());
                 }
                 MessageDialog.openInformation(_site.getShell(),
                                               "LDAP persistence status of recent tree modification.",
