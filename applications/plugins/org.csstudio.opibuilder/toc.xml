@@ -14,7 +14,10 @@
   <topic label="Widgets Overview" href="html/Widgets_Overview.html"/>
   <topic label="Widget Properties" href="html/Widget Properties.html"/>
   <topic label="PV Connectivity" href="html/PV Connectivity.html"/>
-  <topic label="Action" href="html/Actions.html"/>
+  <topic href="html/Actions.html" label="Action">
+  </topic>
+  <topic href="html/Rules.html" label="Rules">
+  </topic>
   <topic href="html/Script.html" label="Script">
      <topic href="html/script/AccessWidget.html" label="Access Widget">
      </topic>

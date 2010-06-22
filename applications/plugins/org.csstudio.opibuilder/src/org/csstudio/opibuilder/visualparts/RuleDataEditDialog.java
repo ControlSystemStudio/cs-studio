@@ -8,6 +8,15 @@ import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ColorProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
+import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.FilePathProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
+import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
@@ -91,7 +100,15 @@ public class RuleDataEditDialog extends Dialog {
 		for(String p : UNCHANGEABLE_PROPERTIES){
 			propIDSet.remove(p);
 		}
-		
+		for(String id : propIDSet.toArray(new String[0])){
+			AbstractWidgetProperty prop = ruleData.getWidgetModel().getProperty(id);
+			if(prop instanceof BooleanProperty || prop instanceof DoubleProperty || prop instanceof IntegerProperty
+					|| prop instanceof ComboProperty || prop instanceof ColorProperty || prop instanceof StringProperty
+					|| prop instanceof FilePathProperty || prop instanceof FontProperty)
+				continue;
+			else
+				propIDSet.remove(id);
+		}
 		String[] propArray = propIDSet.toArray(new String[0]);
 		Arrays.sort(propArray);		
 		propIDList = Arrays.asList(propArray);
