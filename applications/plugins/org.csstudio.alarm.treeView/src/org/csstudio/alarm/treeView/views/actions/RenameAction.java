@@ -48,20 +48,20 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public final class RenameAction extends Action {
     private final TreeViewer _viewer;
     private final IWorkbenchPartSite _site;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
      * @param viewer
      * @param site
-     * @param modificationItems
+     * @param ldapModificationItems
      */
     RenameAction(@Nonnull final TreeViewer viewer,
                         @Nonnull final IWorkbenchPartSite site,
-                        @Nonnull final Queue<ITreeModificationItem> modificationItems) {
+                        @Nonnull final Queue<ITreeModificationItem> ldapModificationItems) {
         _viewer = viewer;
         _site = site;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = ldapModificationItems;
     }
 
     @Override
@@ -72,7 +72,9 @@ public final class RenameAction extends Action {
         if (name != null) {
             try {
                 final ITreeModificationItem modItem = DirectoryEditor.rename(selected, name);
-                _modificationItems.add(modItem);
+                if (modItem != null) {
+                    _ldapModificationItems.add(modItem);
+                }
             } catch (final DirectoryEditException e) {
                 MessageDialog.openError(_site.getShell(),
                                         "Rename",

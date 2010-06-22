@@ -37,13 +37,14 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -86,7 +87,7 @@ public final class AlarmTreeBuilder {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(EFAN_FIELD_NAME, "TEST");
-                attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription());
+                attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.FACILITY.getDescription());
                 LDAP_SERVICE.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
@@ -105,26 +106,27 @@ public final class AlarmTreeBuilder {
      */
     @SuppressWarnings("unchecked")
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
-                                              @Nonnull final INodeComponent<LdapEpicsAlarmCfgObjectClass> modelNode,
-                                              @Nonnull final IProgressMonitor monitor) throws NamingException {
+                                              @Nonnull final INodeComponent<LdapEpicsAlarmcfgConfiguration> modelNode,
+                                              @Nonnull final IProgressMonitor monitor,
+                                              @Nonnull final TreeNodeSource source) throws NamingException {
 
         final String simpleName = modelNode.getName();
 
-        if (LdapEpicsAlarmCfgObjectClass.RECORD.equals(modelNode.getType())) {
-            final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName).setParent(parentNode).build();
+        if (LdapEpicsAlarmcfgConfiguration.RECORD.equals(modelNode.getType())) {
+            final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
 
             final Attributes attributes = modelNode.getAttributes();
             AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
 
         } else {
-            final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType()).setParent(parentNode).build();
+            final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
             if (modelNode instanceof ISubtreeNodeComponent) {
-                final Collection<INodeComponent<LdapEpicsAlarmCfgObjectClass>> children =
-                    ((ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass>) modelNode).getDirectChildren();
+                final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> children =
+                    ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
 
-                for (final INodeComponent<LdapEpicsAlarmCfgObjectClass> child : children) {
-                    createAlarmSubtree(newNode, child, monitor);
+                for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> child : children) {
+                    createAlarmSubtree(newNode, child, monitor, source);
                     if (monitor.isCanceled()) {
                         return true;
                     }
@@ -149,12 +151,13 @@ public final class AlarmTreeBuilder {
      * @throws NamingException
      */
     public static boolean build(@Nonnull final IAlarmSubtreeNode rootNode,
-                                @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
-                                @Nonnull final IProgressMonitor monitor) throws NamingException {
+                                @Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
+                                @Nonnull final IProgressMonitor monitor,
+                                @Nonnull final TreeNodeSource source) throws NamingException {
         ensureTestFacilityExists();
 
-        for (final INodeComponent<LdapEpicsAlarmCfgObjectClass> node : model.getRoot().getDirectChildren()) {
-            createAlarmSubtree(rootNode, node, monitor);
+        for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getRoot().getDirectChildren()) {
+            createAlarmSubtree(rootNode, node, monitor, source);
         }
         return true;
     }

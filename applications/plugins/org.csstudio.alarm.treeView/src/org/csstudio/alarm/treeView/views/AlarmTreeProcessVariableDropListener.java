@@ -23,6 +23,8 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import java.util.Queue;
+
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
@@ -44,13 +46,17 @@ import org.eclipse.swt.widgets.TreeItem;
 public final class AlarmTreeProcessVariableDropListener implements TransferDropTargetListener {
 
     private final AlarmTreeView _alarmTreeView;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
      * @param alarmTreeView
+     * @param ldapModificationItems
      */
-    public AlarmTreeProcessVariableDropListener(@Nonnull final AlarmTreeView alarmTreeView) {
+    public AlarmTreeProcessVariableDropListener(@Nonnull final AlarmTreeView alarmTreeView,
+                                                @Nonnull final Queue<ITreeModificationItem> ldapModificationItems) {
         _alarmTreeView = alarmTreeView;
+        _ldapModificationItems = ldapModificationItems;
     }
 
     /**
@@ -122,7 +128,12 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
         boolean errors = false;
         for (final IProcessVariable pv : droppedPVs) {
             try {
-                DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
+
+                final ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
+                if (item != null) {
+                    _ldapModificationItems.add(item);
+                }
+
             } catch (final DirectoryEditException e) {
                 errors = true;
             }

@@ -33,7 +33,7 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -113,7 +113,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         LOG.info("Connecting to DAL for resource " + resource + ".");
 
         try {
-            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 model = _alarmConfigService.retrieveInitialContentModel(resource.getFacilities());
             } else {
@@ -122,7 +122,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             }
 
             for (final String recordName : model
-                    .getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD)) {
+                    .getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD)) {
                 LOG.debug("Connecting to " + recordName);
                 connectToPV(connectionMonitor, listener, recordName);
             }

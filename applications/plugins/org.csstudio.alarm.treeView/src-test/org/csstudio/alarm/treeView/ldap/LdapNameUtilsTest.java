@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.junit.Test;
 
@@ -59,14 +59,14 @@ public class LdapNameUtilsTest {
 	public void testObjectClassOfSingleRdnName() throws Exception {
 		final LdapName name = new LdapName("efan=foobar");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmCfgObjectClass.FACILITY, LdapEpicsAlarmCfgObjectClass.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
+		assertEquals(LdapEpicsAlarmcfgConfiguration.FACILITY, LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
 	}
 
 	@Test
 	public void testObjectClassOfHierarchicalLdapName() throws Exception {
 		final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
 		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
+		assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
 	}
 
 }

@@ -50,7 +50,7 @@ import com.google.common.collect.ImmutableSet;
  *
  * @author Joerg Rathlev
  */
-public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapEpicsAlarmCfgObjectClass> {
+public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<LdapEpicsAlarmcfgConfiguration> {
 
     /**
      * The root (invisible in the alarm tree view).
@@ -90,8 +90,8 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
            AlarmTreeNodePropertyId.getLdapAttributes());
 
 
-    private static final Map<String, LdapEpicsAlarmCfgObjectClass> CACHE_BY_NAME =
-        new HashMap<String, LdapEpicsAlarmCfgObjectClass>();
+    private static final Map<String, LdapEpicsAlarmcfgConfiguration> CACHE_BY_NAME =
+        new HashMap<String, LdapEpicsAlarmcfgConfiguration>();
 
 
     static {
@@ -112,7 +112,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
 
         ROOT._nestedClasses.add(FACILITY);
 
-        for (final LdapEpicsAlarmCfgObjectClass oc : LdapEpicsAlarmCfgObjectClass.values()) {
+        for (final LdapEpicsAlarmcfgConfiguration oc : LdapEpicsAlarmcfgConfiguration.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
@@ -137,7 +137,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      * class. <code>null</code> if this object class is not a container or if
      * there is no standard nested class for this class.
      */
-    private Set<LdapEpicsAlarmCfgObjectClass> _nestedClasses = new HashSet<LdapEpicsAlarmCfgObjectClass>();
+    private Set<LdapEpicsAlarmcfgConfiguration> _nestedClasses = new HashSet<LdapEpicsAlarmcfgConfiguration>();
 
 
     /**
@@ -151,7 +151,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      *            the value for the epicsCssType attribute in the directory.
      */
     //CHECKSTYLE:OFF
-    private LdapEpicsAlarmCfgObjectClass(final String description,
+    private LdapEpicsAlarmcfgConfiguration(final String description,
                                          final String nodeName,
                                          final ImmutableSet<String> attributes) {
         //CHECKSTYLE:ON
@@ -183,7 +183,7 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      */
     @Override
     @Nonnull
-    public Set<LdapEpicsAlarmCfgObjectClass> getNestedContainerClasses() {
+    public Set<LdapEpicsAlarmcfgConfiguration> getNestedContainerClasses() {
         return _nestedClasses;
     }
 
@@ -192,12 +192,12 @@ public enum LdapEpicsAlarmCfgObjectClass implements ITreeNodeConfiguration<LdapE
      */
     @Override
     @CheckForNull
-    public LdapEpicsAlarmCfgObjectClass getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
     @CheckForNull
-    private static LdapEpicsAlarmCfgObjectClass getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static LdapEpicsAlarmcfgConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
         return CACHE_BY_NAME.get(name);
     }
 

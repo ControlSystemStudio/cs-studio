@@ -40,11 +40,12 @@ import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -96,7 +97,7 @@ public final class ImportXmlFileJob extends Job {
         monitor.beginTask("Reading alarm tree from XML file", IProgressMonitor.UNKNOWN);
 
         try {
-            final ContentModel<LdapEpicsAlarmCfgObjectClass> model =
+            final ContentModel<LdapEpicsAlarmcfgConfiguration> model =
                 _configService.retrieveInitialContentModelFromFile(_filePath);
 
 
@@ -105,7 +106,7 @@ public final class ImportXmlFileJob extends Job {
                 return status;
             }
 
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor, TreeNodeSource.XML);
             if (canceled) {
                 return Status.CANCEL_STATUS;
             }
@@ -138,7 +139,7 @@ public final class ImportXmlFileJob extends Job {
      * @throws NamingException
      */
     @Nonnull
-    private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+    private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
                                                @Nonnull final ILdapService service,
                                                @Nonnull final IAlarmSubtreeNode rootNode)
         throws NamingException {
@@ -150,8 +151,8 @@ public final class ImportXmlFileJob extends Job {
 
         existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
 
-        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass>> facilityMap =
-            model.getByType(LdapEpicsAlarmCfgObjectClass.FACILITY);
+        final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap =
+            model.getByType(LdapEpicsAlarmcfgConfiguration.FACILITY);
 
         existingFacilityNames.retainAll(facilityMap.keySet());
 

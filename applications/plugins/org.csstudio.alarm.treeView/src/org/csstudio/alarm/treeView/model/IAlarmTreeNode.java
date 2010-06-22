@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 
 
@@ -69,13 +69,13 @@ public interface IAlarmTreeNode {
 	boolean hasAlarm();
 
 	/**
-	 * Returns the object class of this node in the directory. If this node does
+	 * Returns the tree configuration type of this node in the directory. If this node does
 	 * not correspond to an entry in the directory, returns <code>null</code>.
 	 *
-	 * @return the object class of this node in the directory.
+	 * @return the tree node configuration type of this node in the directory.
 	 */
 	@Nonnull
-	LdapEpicsAlarmCfgObjectClass getObjectClass();
+	LdapEpicsAlarmcfgConfiguration getTreeNodeConfiguration();
 
     /**
      * Returns the parent node of this node. If this node does not have a
@@ -146,4 +146,11 @@ public interface IAlarmTreeNode {
      * @return {@code true} if this node has children, {@code false} otherwise.
      */
     boolean hasChildren();
+
+    /**
+     * Returns the source of this alarm tree node (e.g. LDAP or XML).
+     */
+    @Nonnull
+    TreeNodeSource getSource();
+
 }

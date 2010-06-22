@@ -30,7 +30,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.Date;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.model.IProcessVariable;
 import org.junit.Before;
@@ -53,15 +53,15 @@ public class ProcessVariableNodeTest {
 
     @Before
     public void setUp() {
-        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmCfgObjectClass.ROOT).build();
-        _node = new ProcessVariableNode.Builder("A node").setParent(_subtreeNode).build();
+        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.LDAP).build();
+        _node = new ProcessVariableNode.Builder("A node", TreeNodeSource.LDAP).setParent(_subtreeNode).build();
     }
 
     @Test
     public void testGetters() {
         assertEquals("A node", _node.getName());
         assertSame(_subtreeNode, _node.getParent());
-        assertEquals(LdapEpicsAlarmCfgObjectClass.RECORD, _node.getObjectClass());
+        assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, _node.getTreeNodeConfiguration());
         assertEquals(IProcessVariable.TYPE_ID, _node.getTypeId());
         assertEquals("A node", _node.toString());
     }

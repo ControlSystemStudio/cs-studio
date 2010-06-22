@@ -40,17 +40,17 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public final class SaveInLdapAction extends Action {
     private final IWorkbenchPartSite _site;
-    private final Queue<ITreeModificationItem> _modifications;
+    private final Queue<ITreeModificationItem> _ldapModifications;
 
     /**
      * Constructor.
      * @param site
-     * @param modifications
+     * @param ldapModifications
      */
     SaveInLdapAction(@Nonnull final IWorkbenchPartSite site,
-                     @Nonnull final Queue<ITreeModificationItem> modifications) {
+                     @Nonnull final Queue<ITreeModificationItem> ldapModifications) {
         _site = site;
-        _modifications = modifications;
+        _ldapModifications = ldapModifications;
     }
 
     @Override
@@ -58,7 +58,7 @@ public final class SaveInLdapAction extends Action {
         final List<String> notAppliedMods= new ArrayList<String>();
         String failedMod = "";
         final List<String> appliedMods = new ArrayList<String>();
-        synchronized (_modifications) {
+        synchronized (_ldapModifications) {
             try {
                 /*
                   Note: although a concurrent queue is utilised, it has to be explicitly inhibited
@@ -68,15 +68,18 @@ public final class SaveInLdapAction extends Action {
                   the user's 'save in LDAP' activation and the start of this block for the queue to be
                   modified!
                  */
-                while (!_modifications.isEmpty()) {
-                    final ITreeModificationItem item = _modifications.poll();
+                while (!_ldapModifications.isEmpty()) {
+                    final ITreeModificationItem item = _ldapModifications.poll();
                     failedMod = item.getDescription();
                     item.apply();
-                    appliedMods.add("-" + item.getDescription() + "\n");
+                    appliedMods.add("\n-" + item.getDescription());
                 }
+                MessageDialog.openConfirm(_site.getShell(),
+                                          "LDAP persistence status of recent tree modification.",
+                                          "Applied Modifications:\n" + appliedMods);
             } catch (final AlarmTreeModificationException e) {
 
-                for (final ITreeModificationItem item : _modifications) {
+                for (final ITreeModificationItem item : _ldapModifications) {
                     notAppliedMods.add("-" + item.getDescription() + "\n");
                 }
                 MessageDialog.openInformation(_site.getShell(),
@@ -84,6 +87,8 @@ public final class SaveInLdapAction extends Action {
                                               "Applied Modifications:\n" + appliedMods +
                                               "\n\nFailed Modification:\n" + failedMod +
                                               "\n\nNot Applied Modifications:\n\n" + notAppliedMods);
+
+
             }
         }
     }

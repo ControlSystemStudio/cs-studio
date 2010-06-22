@@ -47,7 +47,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public final class CreateRecordAction extends Action {
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
@@ -56,11 +56,11 @@ public final class CreateRecordAction extends Action {
      * @param modificationItems
      */
     CreateRecordAction(@Nonnull final IWorkbenchPartSite site,
-                              @Nonnull final TreeViewer viewer,
-                              @Nonnull final Queue<ITreeModificationItem> modificationItems) {
+                       @Nonnull final TreeViewer viewer,
+                       @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         _site = site;
         _viewer = viewer;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = modificationItems;
     }
 
     @Override
@@ -74,7 +74,9 @@ public final class CreateRecordAction extends Action {
                 try {
                     final ITreeModificationItem item =
                         DirectoryEditor.createProcessVariableRecord(parent, name);
-                    _modificationItems.add(item);
+                    if (item != null) {
+                        _ldapModificationItems.add(item);
+                    }
                 } catch (final DirectoryEditException e) {
                     MessageDialog.openError(_site.getShell(),
                                             "Create New Record",

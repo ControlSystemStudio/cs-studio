@@ -44,20 +44,20 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public final class DeleteNodeAction extends Action {
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
      * @param site
      * @param viewer
-     * @param modificationItems
+     * @param ldapModificationItems
      */
     DeleteNodeAction(@Nonnull final IWorkbenchPartSite site,
                      @Nonnull final TreeViewer viewer,
-                     @Nonnull final Queue<ITreeModificationItem> modificationItems) {
+                     @Nonnull final Queue<ITreeModificationItem> ldapModificationItems) {
         _site = site;
         _viewer = viewer;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = ldapModificationItems;
     }
 
     /**
@@ -72,7 +72,9 @@ public final class DeleteNodeAction extends Action {
             final IAlarmSubtreeNode parent = nodeToDelete.getParent();
             try {
                 final ITreeModificationItem item = DirectoryEditor.deleteRecursively(nodeToDelete);
-                _modificationItems.add(item);
+                if (item != null) {
+                    _ldapModificationItems.add(item);
+                }
                 if (parent != null) {
                     _viewer.refresh(parent);
                 }

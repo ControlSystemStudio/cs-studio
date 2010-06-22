@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -58,7 +58,7 @@ public abstract class AbstractPendingUpdate {
      */
     @Nonnull
     public static AbstractPendingUpdate createAcknowledgementUpdate(@Nonnull final String name,
-                                                                    @Nonnull final SubtreeNode treeRoot) {
+                                                                    @Nonnull final IAlarmSubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
             @Override
             public void apply() {
@@ -93,7 +93,7 @@ public abstract class AbstractPendingUpdate {
     public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
                                                           @Nonnull final Severity severity,
                                                           @Nonnull final Date eventtime,
-                                                          @Nonnull final SubtreeNode treeRoot) {
+                                                          @Nonnull final IAlarmSubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
             @Override
             public void apply() {

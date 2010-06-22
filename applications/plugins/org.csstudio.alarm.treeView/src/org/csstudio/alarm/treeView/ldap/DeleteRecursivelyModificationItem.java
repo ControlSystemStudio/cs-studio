@@ -25,9 +25,8 @@ import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -45,7 +44,6 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
 
     private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
-    private final IAlarmTreeNode _node;
     private final LdapName _nodeName;
 
     /**
@@ -53,9 +51,7 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
      * @param node
      * @param nodeName
      */
-    DeleteRecursivelyModificationItem(@Nonnull final IAlarmTreeNode node,
-                                              @Nonnull final LdapName nodeName) {
-        _node = node;
+    DeleteRecursivelyModificationItem(@Nonnull final LdapName nodeName) {
         _nodeName = nodeName;
     }
 
@@ -64,14 +60,14 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
      */
     @Override
     public String getDescription() {
-        return "DELETE NODE " + _node.getLdapName().toString();
+        return "DELETE NODE " + _nodeName.toString();
     }
 
     @Override
     public boolean apply() throws AlarmTreeModificationException {
         boolean result;
         try {
-            result = LDAP_SERVICE.removeComponent(LdapEpicsAlarmCfgObjectClass.ROOT, _nodeName);
+            result = LDAP_SERVICE.removeComponent(LdapEpicsAlarmcfgConfiguration.ROOT, _nodeName);
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final CreateContentModelException e) {

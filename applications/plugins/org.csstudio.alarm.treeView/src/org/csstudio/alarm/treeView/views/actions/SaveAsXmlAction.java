@@ -23,7 +23,7 @@ import java.util.Collections;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
@@ -65,7 +65,7 @@ public final class SaveAsXmlAction extends Action {
         if (selected instanceof SubtreeNode) {
             final SubtreeNode root = (SubtreeNode) selected;
 
-            if (LdapEpicsAlarmCfgObjectClass.FACILITY.equals(root.getObjectClass())) {
+            if (LdapEpicsAlarmcfgConfiguration.FACILITY.equals(root.getTreeNodeConfiguration())) {
 
                 final String filePath = AlarmTreeViewActionFactory.getFileToSaveTo(_site);
                 if (filePath != null) {
@@ -73,7 +73,7 @@ public final class SaveAsXmlAction extends Action {
                 }
 
             } else {
-                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmCfgObjectClass.FACILITY.getDescription() + " type components.");
+                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmcfgConfiguration.FACILITY.getDescription() + " type components.");
                 MessageDialog.openError(_site.getShell(),
                                         "Save as XML file",
                                         "Internal error: XML files can only be saved for complete facility subtrees.");

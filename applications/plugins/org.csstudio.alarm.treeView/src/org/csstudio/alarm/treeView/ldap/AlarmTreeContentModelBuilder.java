@@ -34,7 +34,7 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -51,7 +51,7 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
  * @version $Revision$
  * @since 19.05.2010
  */
-public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuilder<LdapEpicsAlarmCfgObjectClass> {
+public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuilder<LdapEpicsAlarmcfgConfiguration> {
 
     private final List<IAlarmTreeNode> _alarmTreeNodes;
 
@@ -71,11 +71,11 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
      */
     @Override
     @Nonnull
-    protected ContentModel<LdapEpicsAlarmCfgObjectClass> createContentModel() throws CreateContentModelException {
+    protected ContentModel<LdapEpicsAlarmcfgConfiguration> createContentModel() throws CreateContentModelException {
 
-        ContentModel<LdapEpicsAlarmCfgObjectClass> model;
+        ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT,
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT,
                                                                    AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
 
             for (final IAlarmTreeNode node : _alarmTreeNodes) {
@@ -88,17 +88,17 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
         }
     }
 
-    private static void createSubtree(@Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+    private static void createSubtree(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
                                       @Nonnull final IAlarmTreeNode alarmTreeNode,
-                                      @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> modelParentNode) throws InvalidNameException {
+                                      @Nonnull final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> modelParentNode) throws InvalidNameException {
 
-        final LdapEpicsAlarmCfgObjectClass oc = alarmTreeNode.getObjectClass();
+        final LdapEpicsAlarmcfgConfiguration oc = alarmTreeNode.getTreeNodeConfiguration();
         final String modelNodeName = alarmTreeNode.getName();
 
         final Attributes attributes = getAttributesFromAlarmTreeNode(alarmTreeNode);
 
-        final ISubtreeNodeComponent<LdapEpicsAlarmCfgObjectClass> newModelComponent =
-            new TreeNodeComponent<LdapEpicsAlarmCfgObjectClass>(
+        final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newModelComponent =
+            new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
                     modelNodeName,
                     oc,
                     oc.getNestedContainerClasses(),

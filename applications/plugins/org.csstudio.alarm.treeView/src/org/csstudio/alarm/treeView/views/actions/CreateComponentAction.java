@@ -47,7 +47,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
 public final class CreateComponentAction extends Action {
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
@@ -60,7 +60,7 @@ public final class CreateComponentAction extends Action {
                           @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         _site = site;
         _viewer = viewer;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = modificationItems;
     }
 
     @Override
@@ -73,7 +73,9 @@ public final class CreateComponentAction extends Action {
             if ( (name != null) && !name.equals("")) {
                 try {
                     final ITreeModificationItem item = DirectoryEditor.createComponent(parent, name);
-                    _modificationItems.add(item);
+                    if (item != null) {
+                        _ldapModificationItems.add(item);
+                    }
                 } catch (final DirectoryEditException e) {
                     MessageDialog.openError(_site.getShell(),
                                             "Create New Component",

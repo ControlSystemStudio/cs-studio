@@ -27,7 +27,7 @@ import java.sql.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.model.IProcessVariable;
 
@@ -61,6 +61,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
      */
     public static final class Builder {
         private final String _name;
+        private final TreeNodeSource _source;
         private IAlarmSubtreeNode _parent;
 
         /**
@@ -68,9 +69,11 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
          * parent.
          *
          * @param name the name of the node.
+         * @param source
          */
-        public Builder(@Nonnull final String name) {
+        public Builder(@Nonnull final String name, @Nonnull final TreeNodeSource source) {
             _name = name;
+            _source = source;
         }
 
         /**
@@ -90,7 +93,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
          */
         @Nonnull
         public ProcessVariableNode build() {
-            final ProcessVariableNode node = new ProcessVariableNode(_name);
+            final ProcessVariableNode node = new ProcessVariableNode(_name, _source);
             if (_parent != null) {
                 _parent.addPVChild(node);
             }
@@ -101,9 +104,10 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
     /**
      * Constructor.
      * @param name the simple name of the process variable
+     * @param source
      */
-	private ProcessVariableNode(@Nonnull final String name) {
-	    super(name, LdapEpicsAlarmCfgObjectClass.RECORD);
+	private ProcessVariableNode(@Nonnull final String name, @Nonnull final TreeNodeSource source) {
+	    super(name, LdapEpicsAlarmcfgConfiguration.RECORD, source);
 		_activeAlarm = new Alarm(name, Severity.UNKNOWN, new Date(0L));
 		_highestUnacknowledgedAlarm = new Alarm(name, Severity.UNKNOWN, new Date(0L));
 	}
@@ -156,8 +160,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	public void updateAlarm(@Nonnull final Alarm alarm) {
 		if ((alarm != null) && alarm.occuredAfter(_activeAlarm)) {
 			_activeAlarm = alarm;
-			Severity severityOfAlarm = alarm.getSeverity();
-            Severity severityOfHighestUnackAlarm = _highestUnacknowledgedAlarm.getSeverity();
+			final Severity severityOfAlarm = alarm.getSeverity();
+            final Severity severityOfHighestUnackAlarm = _highestUnacknowledgedAlarm.getSeverity();
             if (severityOfAlarm.getLevel() > severityOfHighestUnackAlarm.getLevel()) {
 				_highestUnacknowledgedAlarm = alarm;
 			}

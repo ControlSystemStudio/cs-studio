@@ -85,8 +85,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
             public void run() {
-                final TreeViewer viewer = RefreshAlarmTreeViewAdapter.this._alarmTreeView
-                        .getViewer();
+                final TreeViewer viewer = _alarmTreeView.getViewer();
                 if (viewer != null) {
                     viewer.refresh();
                 }

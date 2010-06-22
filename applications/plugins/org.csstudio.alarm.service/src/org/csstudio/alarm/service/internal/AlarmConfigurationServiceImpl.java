@@ -36,7 +36,7 @@ import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
@@ -73,18 +73,18 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
      */
     @Override
     @Nonnull
-    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException {
+    public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames) throws CreateContentModelException {
 
-        ContentModel<LdapEpicsAlarmCfgObjectClass> model;
+        ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT,
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT,
                                                                    EPICS_ALARM_CFG_FIELD_VALUE);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating empty content model.", e);
         }
 
-        final LdapContentModelBuilder<LdapEpicsAlarmCfgObjectClass> builder =
-            new LdapContentModelBuilder<LdapEpicsAlarmCfgObjectClass>(model);
+        final LdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
+            new LdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(model);
 
         for (final String facility : facilityNames) {
             final LdapSearchResult result =
@@ -97,7 +97,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
                 builder.build();
             }
         }
-        final ContentModel<LdapEpicsAlarmCfgObjectClass> enrichedModel = builder.getModel();
+        final ContentModel<LdapEpicsAlarmcfgConfiguration> enrichedModel = builder.getModel();
         return enrichedModel != null ? enrichedModel : model;
     }
 
@@ -108,11 +108,11 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
      */
     @Override
     @CheckForNull
-    public ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
+    public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
         throws CreateContentModelException {
 
-        final XmlFileContentModelBuilder<LdapEpicsAlarmCfgObjectClass> builder =
-            new XmlFileContentModelBuilder<LdapEpicsAlarmCfgObjectClass>(LdapEpicsAlarmCfgObjectClass.ROOT, filePath);
+        final XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
+            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT, filePath);
         builder.build();
         return builder.getModel();
     }
@@ -126,7 +126,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
      */
     @Override
     public void exportContentModelToXmlFile(@Nonnull final String filePath,
-                                            @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                            @Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
                                             @Nullable final String dtdFilePath) throws ExportContentModelException {
         ContentModelExporter.exportContentModelToXmlFile(filePath, model, dtdFilePath);
     }

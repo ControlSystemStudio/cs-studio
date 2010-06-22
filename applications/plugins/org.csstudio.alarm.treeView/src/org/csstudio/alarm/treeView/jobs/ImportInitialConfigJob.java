@@ -27,9 +27,10 @@ import javax.naming.NamingException;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -79,16 +80,20 @@ public final class ImportInitialConfigJob extends Job {
         try {
             final long startTime = System.currentTimeMillis();
             // TODO (jpenning) Test: Config via ldap or filename. Nearly a duplicate of AlarmView.
-            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
+
+            TreeNodeSource source;
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 model = _configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
+                source = TreeNodeSource.LDAP;
             } else {
                 model = _configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
+                source = TreeNodeSource.XML;
             }
 
             _rootNode.clearChildren(); // removes all nodes below the root node
 
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor);
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor, source);
 
             if (canceled) {
                 return Status.CANCEL_STATUS;

@@ -49,7 +49,7 @@ public final class ReloadFromLdapAction extends Action {
     private final IWorkbenchPartSite _site;
     private final TreeViewer _viewer;
     private final AlarmMessageListener _alarmListener;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
     private final Job _directoryReaderJob;
 
     /**
@@ -57,18 +57,18 @@ public final class ReloadFromLdapAction extends Action {
      * @param site
      * @param viewer
      * @param alarmListener
-     * @param modificationItems
+     * @param ldapModificationItems
      * @param directoryReaderJob
      */
     ReloadFromLdapAction(@Nonnull final IWorkbenchPartSite site,
                          @Nonnull final TreeViewer viewer,
                          @Nonnull final AlarmMessageListener alarmListener,
-                         @Nonnull final Queue<ITreeModificationItem> modificationItems,
+                         @Nonnull final Queue<ITreeModificationItem> ldapModificationItems,
                          @Nonnull final Job directoryReaderJob) {
         _site = site;
         _viewer = viewer;
         _alarmListener = alarmListener;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = ldapModificationItems;
         _directoryReaderJob = directoryReaderJob;
     }
 
@@ -78,7 +78,7 @@ public final class ReloadFromLdapAction extends Action {
     @Override
     public void run() {
         // Remove all recent modifications from the queue
-        _modificationItems.clear();
+        _ldapModificationItems.clear();
 
         LOG.debug("Starting directory reader.");
         final IWorkbenchSiteProgressService progressService =

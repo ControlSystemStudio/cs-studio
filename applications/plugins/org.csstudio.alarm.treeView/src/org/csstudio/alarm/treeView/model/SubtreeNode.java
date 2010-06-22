@@ -31,7 +31,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 
 /**
@@ -73,19 +73,23 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 */
 	public static final class Builder {
 	    private final String _name;
-	    private final LdapEpicsAlarmCfgObjectClass _objectClass;
+	    private final LdapEpicsAlarmcfgConfiguration _configurationType;
+	    private final TreeNodeSource _source;
 	    private IAlarmSubtreeNode _parent;
 
-	    public Builder(@Nonnull final String name, @Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) {
+	    public Builder(@Nonnull final String name,
+	                   @Nonnull final LdapEpicsAlarmcfgConfiguration configurationType,
+	                   @Nonnull final TreeNodeSource source) {
 	        _name = name;
+	        _source = source;
 
 	        // FIXME (bknerr) : transform SUBCOMPONENT and IOC to COMPONENT
-	        if (objectClass.equals(LdapEpicsAlarmCfgObjectClass.SUBCOMPONENT) ||
-	            objectClass.equals(LdapEpicsAlarmCfgObjectClass.IOC)) {
+	        if (configurationType.equals(LdapEpicsAlarmcfgConfiguration.SUBCOMPONENT) ||
+	            configurationType.equals(LdapEpicsAlarmcfgConfiguration.IOC)) {
 
-	            _objectClass = LdapEpicsAlarmCfgObjectClass.COMPONENT;
+	            _configurationType = LdapEpicsAlarmcfgConfiguration.COMPONENT;
 	        } else {
-	            _objectClass = objectClass;
+	            _configurationType = configurationType;
 	        }
 	    }
 
@@ -97,7 +101,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 
 	    @Nonnull
 	    public SubtreeNode build() {
-	        final SubtreeNode node = new SubtreeNode(_name, _objectClass);
+	        final SubtreeNode node = new SubtreeNode(_name, _configurationType, _source);
 	        if (_parent != null) {
 	            _parent.addSubtreeChild(node);
 	        }
@@ -110,11 +114,13 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 * itself as a child at the parent node.
 	 *
 	 * @param name the name of this node.
-	 * @param objectClass the object class of this node.
+	 * @param configurationType the object class of this node.
+	 * @param source
 	 */
 	private SubtreeNode(@Nonnull final String name,
-	                    @Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) {
-	    super(name, objectClass);
+	                    @Nonnull final LdapEpicsAlarmcfgConfiguration configurationType,
+	                    @Nonnull final TreeNodeSource source) {
+	    super(name, configurationType, source);
 
 		_childrenPVMap = new HashMap<String, IAlarmProcessVariableNode>();
 		_childrenSubtreeMap = new HashMap<String, IAlarmSubtreeNode>();

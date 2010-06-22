@@ -32,7 +32,7 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**
@@ -59,18 +59,25 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     private String _name;
 
     /**
-     * The object class of this node in the directory.
+     * The configuration type of this node in the directory.
      */
-    private final LdapEpicsAlarmCfgObjectClass _objectClass;
+    private final LdapEpicsAlarmcfgConfiguration _configurationType;
+
+    /**
+     * The source from where this node originated (e.g. LDAP or XML, etc)
+     */
+    private final TreeNodeSource _source;
 
 
     /**
 	 * Creates a new abstract alarm tree node.
 	 */
 	protected AbstractAlarmTreeNode(@Nonnull final String name,
-	                                @Nonnull final LdapEpicsAlarmCfgObjectClass oc) {
+	                                @Nonnull final LdapEpicsAlarmcfgConfiguration oc,
+	                                @Nonnull final TreeNodeSource source) {
 	    _name = name;
-	    _objectClass = oc;
+	    _configurationType = oc;
+	    _source = source;
 		_properties = new EnumMap<AlarmTreeNodePropertyId, String>(AlarmTreeNodePropertyId.class);
 	}
 
@@ -109,8 +116,8 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
      * {@inheritDoc}
      */
     @Nonnull
-    public LdapEpicsAlarmCfgObjectClass getObjectClass() {
-        return _objectClass;
+    public LdapEpicsAlarmcfgConfiguration getTreeNodeConfiguration() {
+        return _configurationType;
     }
 
 	/**
@@ -142,12 +149,12 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     @CheckForNull
     public LdapName getLdapName() {
         try {
-            if (_objectClass == null) {
+            if (_configurationType == null) {
                 return new LdapName("");
             }
 
             final LdapName result =
-                new LdapName(Collections.singletonList(new Rdn(_objectClass.getNodeTypeName(), _name)));
+                new LdapName(Collections.singletonList(new Rdn(_configurationType.getNodeTypeName(), _name)));
 
             final IAlarmSubtreeNode parent = getParent();
             if (parent != null) {
@@ -193,5 +200,13 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     @Nonnull
     public final String toString() {
         return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final TreeNodeSource getSource() {
+       return _source;
     }
 }

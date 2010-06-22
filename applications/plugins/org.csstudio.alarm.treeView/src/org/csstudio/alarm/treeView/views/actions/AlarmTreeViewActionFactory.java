@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
@@ -202,7 +202,7 @@ public final class AlarmTreeViewActionFactory {
 
             final AlarmTreeContentModelBuilder builder = new AlarmTreeContentModelBuilder(list);
             builder.build();
-            final ContentModel<LdapEpicsAlarmCfgObjectClass> model = builder.getModel();
+            final ContentModel<LdapEpicsAlarmcfgConfiguration> model = builder.getModel();
 
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
@@ -347,8 +347,8 @@ public final class AlarmTreeViewActionFactory {
                                             @Nonnull final TreeViewer viewer,
                                             @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action reloadAction = new ReloadFromLdapAction(site, viewer, alarmListener, modificationItems, directoryReaderJob);
-        reloadAction.setText("Reload");
-        reloadAction.setToolTipText("Reload");
+        reloadAction.setText("Reload from LDAP");
+        reloadAction.setToolTipText("Reload from LDAP");
         reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
 
         return reloadAction;

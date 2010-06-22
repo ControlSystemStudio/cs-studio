@@ -23,6 +23,10 @@ package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -32,16 +36,15 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
-import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -52,9 +55,6 @@ import org.csstudio.utility.ldap.service.ILdapService;
 public final class DirectoryEditor {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(DirectoryEditor.class);
-
-    static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
-
 
     /**
      * Private constructor.
@@ -75,7 +75,7 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    @Nonnull
+    @CheckForNull
     public static ITreeModificationItem rename(@Nonnull final IAlarmTreeNode node,
                                                @Nonnull final String newName)
         throws DirectoryEditException {
@@ -83,7 +83,12 @@ public final class DirectoryEditor {
         final LdapName oldLdapName = node.getLdapName();
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
 
-        final ITreeModificationItem item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
+        final ITreeModificationItem item;
+        if (node.getSource().equals(TreeNodeSource.LDAP)) {
+            item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
+        } else {
+            item = null;
+        }
 
         node.setName(newName);
 
@@ -101,41 +106,41 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    @Nonnull
-    public static ITreeModificationItem moveNode(@Nonnull final IAlarmTreeNode node,
-                                                 @Nonnull final SubtreeNode target)
-        throws DirectoryEditException {
-
-        final LdapName oldNodeName = node.getLdapName();
-        final LdapName targetName = target.getLdapName();
-
-        final LdapName newLdapName = new LdapName(targetName.getRdns());
-        final String nodeObjectClass = node.getObjectClass().getNodeTypeName();
-        final String nodeSimpleName = node.getName();
-
-        final ITreeModificationItem item = new MoveSubtreeModificationItem(newLdapName,
-                                                                           oldNodeName,
-                                                                           nodeSimpleName,
-                                                                           nodeObjectClass,
-                                                                           targetName);
-
-        // store parent for child removal at the end of this method
-        final IAlarmSubtreeNode parent = node.getParent();
-
-        if (node instanceof IAlarmSubtreeNode) { // modifies the parent reference of the node
-            target.addSubtreeChild((IAlarmSubtreeNode) node);
-        } else {
-            target.addPVChild((IAlarmProcessVariableNode) node);
-        }
-        if (parent == null) {
-            throw new DirectoryEditException("Node " + node.getName() + " does not have a parent (==ROOT)." +
-                                             "\nMove action not permitted on ROOT.", null);
-        }
-        // remove child from old location
-        parent.removeChild(node);
-
-        return item;
-    }
+//    @Nonnull
+//    public static ITreeModificationItem moveNode(@Nonnull final IAlarmTreeNode node,
+//                                                 @Nonnull final SubtreeNode target)
+//        throws DirectoryEditException {
+//
+//        final LdapName oldNodeName = node.getLdapName();
+//        final LdapName targetName = target.getLdapName();
+//
+//        final LdapName newLdapName = new LdapName(targetName.getRdns());
+//        final String nodeObjectClass = node.getTreeNodeConfiguration().getNodeTypeName();
+//        final String nodeSimpleName = node.getName();
+//
+//        final ITreeModificationItem item = new MoveSubtreeModificationItem(newLdapName,
+//                                                                           oldNodeName,
+//                                                                           nodeSimpleName,
+//                                                                           nodeObjectClass,
+//                                                                           targetName);
+//
+//        // store parent for child removal at the end of this method
+//        final IAlarmSubtreeNode parent = node.getParent();
+//
+//        if (node instanceof IAlarmSubtreeNode) { // modifies the parent reference of the node
+//            target.addSubtreeChild((IAlarmSubtreeNode) node);
+//        } else {
+//            target.addPVChild((IAlarmProcessVariableNode) node);
+//        }
+//        if (parent == null) {
+//            throw new DirectoryEditException("Node " + node.getName() + " does not have a parent (==ROOT)." +
+//                                             "\nMove action not permitted on ROOT.", null);
+//        }
+//        // remove child from old location
+//        parent.removeChild(node);
+//
+//        return item;
+//    }
 
     /**
      * Recursively deletes a node and all of its children.
@@ -145,13 +150,18 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    @Nonnull
+    @CheckForNull
     public static ITreeModificationItem deleteRecursively(@Nonnull final IAlarmTreeNode node)
         throws DirectoryEditException {
 
         final LdapName nodeName = new LdapName(node.getLdapName().getRdns());
 
-        final ITreeModificationItem item = new DeleteRecursivelyModificationItem(node, nodeName);
+        final ITreeModificationItem item;
+        if (node.getSource().equals(TreeNodeSource.LDAP)) {
+            item = new DeleteRecursivelyModificationItem(nodeName);
+        } else {
+            item = null;
+        }
 
         if (node instanceof IAlarmSubtreeNode) {
             ((IAlarmSubtreeNode) node).removeChildren();
@@ -163,7 +173,6 @@ public final class DirectoryEditor {
             throw new DirectoryEditException("Node is ROOT. Remove action mustn't be triggered on ROOT.",
                                              null);
         }
-
         return item;
     }
 
@@ -179,21 +188,55 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if an error occurs.
      */
-    @Nonnull
-    public static IAlarmTreeNode copyNode(@Nonnull final IAlarmTreeNode node,
-                                          @Nonnull final IAlarmSubtreeNode target)
-    throws DirectoryEditException {
+    @CheckForNull
+    public static Queue<ITreeModificationItem> copyNode(@Nonnull final IAlarmTreeNode node,
+                                                        @Nonnull final IAlarmSubtreeNode target)
+        throws DirectoryEditException {
 
+        final Attributes attrs = createBaseAttributesForEntry(node.getTreeNodeConfiguration());
+
+        IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
-            return copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
+            copy = copyProcessVariableNode((IAlarmProcessVariableNode) node, target);
+            try {
+                AlarmTreeNodeModifier.setAlarmState((IAlarmProcessVariableNode) copy, attrs);
+            } catch (final NamingException e) {
+                throw new DirectoryEditException("Alarm state attributes of " +
+                                                 node.getName() + " could not be retrieved.", e);
+            }
+        } else if (node instanceof IAlarmSubtreeNode) {
+            copy = copySubtreeNode(node, target);
+        } else {
+            throw new DirectoryEditException("Node " + node.getName() +
+                                             " is neither a subtree node nor a process variable node.", null);
         }
-        final IAlarmSubtreeNode copy =
-            new SubtreeNode.Builder(node.getName(), node.getObjectClass()).setParent(target).build();
-        copyProperties(node, copy);
 
-        for (final IAlarmTreeNode child : ((IAlarmSubtreeNode) node).getChildren()) {
-            copyNode(child, copy);
+        final Queue<ITreeModificationItem> items = new ConcurrentLinkedQueue<ITreeModificationItem>();
+        if (target.getSource().equals(TreeNodeSource.LDAP)) {
+            items.add(new CreateLdapEntryItem(copy.getLdapName(), attrs));
         }
+
+        if (node instanceof IAlarmSubtreeNode) {
+            // Recursion
+            for (final IAlarmTreeNode child : ((IAlarmSubtreeNode) node).getChildren()) {
+                final Queue<ITreeModificationItem> innerItems = copyNode(child, (IAlarmSubtreeNode) copy);
+                items.addAll(innerItems);
+            }
+        }
+
+        return items;
+    }
+
+
+    @Nonnull
+    private static IAlarmTreeNode copySubtreeNode(@Nonnull final IAlarmTreeNode node,
+                                                  @Nonnull final IAlarmSubtreeNode target) {
+        IAlarmTreeNode copy;
+        copy = new SubtreeNode.Builder(node.getName(),
+                                       node.getTreeNodeConfiguration(),
+                                       target.getSource())
+                              .setParent(target).build();
+        copyProperties(node, copy);
         return copy;
     }
 
@@ -215,7 +258,7 @@ public final class DirectoryEditor {
     throws DirectoryEditException {
 
         final IAlarmProcessVariableNode copy =
-            new ProcessVariableNode.Builder(node.getName()).setParent(target).build();
+            new ProcessVariableNode.Builder(node.getName(), target.getSource()).setParent(target).build();
         copy.updateAlarm(node.getAlarm());
         copy.setHighestUnacknowledgedAlarm(node.getHighestUnacknowledgedAlarm());
         copyProperties(node, copy);
@@ -249,25 +292,27 @@ public final class DirectoryEditor {
      *            the name of the process variable record.
      * @throws DirectoryEditException if the entry could not be created.
      */
-    @Nonnull
+    @CheckForNull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
                                                                     @Nonnull final String recordName)
         throws DirectoryEditException {
 
         try {
-            final Rdn rdn = new Rdn(LdapEpicsAlarmCfgObjectClass.RECORD.getNodeTypeName(), recordName);
+            final Rdn rdn = new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), recordName);
 
             final LdapName newName = new LdapName(parent.getLdapName().getRdns());
             newName.add(rdn);
 
-            final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.RECORD);
+            final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmcfgConfiguration.RECORD);
             // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
             final IAlarmProcessVariableNode node =
-                new ProcessVariableNode.Builder(recordName).setParent(parent).build();
+                new ProcessVariableNode.Builder(recordName, parent.getSource()).setParent(parent).build();
             AlarmTreeNodeModifier.setAlarmState(node, attrs);
 
-            final ITreeModificationItem item = new CreateLdapEntryItem(newName, attrs);
-            return item;
+            if (parent.getSource().equals(TreeNodeSource.LDAP)) {
+                return new CreateLdapEntryItem(newName, attrs);
+            }
+            return null;
 
         } catch (final NamingException e) {
             LOG.error("Error creating directory entry", e);
@@ -287,18 +332,22 @@ public final class DirectoryEditor {
      * @throws DirectoryEditException
      *             if the entry could not be created.
      */
-    @Nonnull
+    @CheckForNull
     public static ITreeModificationItem createComponent(@Nonnull final SubtreeNode parent,
                                                         @Nonnull final String componentName)
         throws DirectoryEditException {
 
         final SubtreeNode node =
-            new SubtreeNode.Builder(componentName, LdapEpicsAlarmCfgObjectClass.COMPONENT)
-                .setParent(parent).build();
-        final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmCfgObjectClass.COMPONENT);
+            new SubtreeNode.Builder(componentName,
+                                    LdapEpicsAlarmcfgConfiguration.COMPONENT,
+                                    parent.getSource())
+                           .setParent(parent).build();
+        final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmcfgConfiguration.COMPONENT);
 
-        final ITreeModificationItem item = new CreateLdapEntryItem(node.getLdapName(), attrs);
-        return item;
+        if (parent.getSource().equals(TreeNodeSource.LDAP)) {
+            return new CreateLdapEntryItem(node.getLdapName(), attrs);
+        }
+        return null;
     }
 
     /**
@@ -312,7 +361,7 @@ public final class DirectoryEditor {
      * @return the attributes for the new entry.
      */
     @Nonnull
-    private static Attributes createBaseAttributesForEntry(@Nonnull final LdapEpicsAlarmCfgObjectClass objectClass) {
+    private static Attributes createBaseAttributesForEntry(@Nonnull final LdapEpicsAlarmcfgConfiguration objectClass) {
         final Attributes result = new BasicAttributes();
         result.put(ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
         return result;

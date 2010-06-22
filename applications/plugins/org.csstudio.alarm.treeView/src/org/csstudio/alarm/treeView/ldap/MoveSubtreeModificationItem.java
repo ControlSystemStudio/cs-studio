@@ -27,7 +27,7 @@ import javax.naming.NamingException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
@@ -80,7 +80,7 @@ public final class MoveSubtreeModificationItem extends AbstractTreeModificationI
     public boolean apply() throws AlarmTreeModificationException {
         try {
             _newLdapName.add(new Rdn(_nodeObjectClass, _nodeSimpleName));
-            LDAP_SERVICE.move(LdapEpicsAlarmCfgObjectClass.ROOT, _oldNodeName, _newLdapName);
+            LDAP_SERVICE.move(LdapEpicsAlarmcfgConfiguration.ROOT, _oldNodeName, _newLdapName);
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final NamingException e) {

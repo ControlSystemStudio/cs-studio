@@ -74,7 +74,7 @@ public final class RenameModificationItem extends AbstractTreeModificationItem {
     public boolean apply() throws AlarmTreeModificationException {
         try {
             _newLdapName.remove(_newLdapName.size() - 1);
-            final Rdn rdn = new Rdn(_node.getObjectClass().getNodeTypeName(), _newName);
+            final Rdn rdn = new Rdn(_node.getTreeNodeConfiguration().getNodeTypeName(), _newName);
             _newLdapName.add(rdn);
             LDAP_SERVICE.rename(_oldLdapName, _newLdapName);
             setApplied(true);

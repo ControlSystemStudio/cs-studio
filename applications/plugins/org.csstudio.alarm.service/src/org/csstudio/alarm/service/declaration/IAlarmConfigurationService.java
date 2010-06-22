@@ -51,7 +51,7 @@ public interface IAlarmConfigurationService {
      * @throws CreateContentModelException
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModel(@Nonnull final List<String> facilityNames)
+    ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModel(@Nonnull final List<String> facilityNames)
         throws CreateContentModelException;
 
 
@@ -63,7 +63,7 @@ public interface IAlarmConfigurationService {
      * @throws CreateContentModelException  occurs on file not found, io error, or parsing error
      */
     @Nonnull
-    ContentModel<LdapEpicsAlarmCfgObjectClass> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
+    ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
         throws CreateContentModelException;
 
 
@@ -76,7 +76,7 @@ public interface IAlarmConfigurationService {
      * @throws ExportContentModelException error on trying to write the xml file
      */
     void exportContentModelToXmlFile(@Nonnull final String filePath,
-                                     @Nonnull final ContentModel<LdapEpicsAlarmCfgObjectClass> model,
+                                     @Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
                                      @Nullable final String dtdFilePath)  throws ExportContentModelException;
 
 }

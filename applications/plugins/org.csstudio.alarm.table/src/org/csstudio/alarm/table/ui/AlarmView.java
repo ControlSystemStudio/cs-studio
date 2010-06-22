@@ -28,7 +28,7 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
@@ -232,14 +232,14 @@ public class AlarmView extends LogView {
         final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
                 .getAlarmConfigurationService();
         try {
-            ContentModel<LdapEpicsAlarmCfgObjectClass> model = null;
+            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 model = configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
             } else {
                 model = configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
             }
 
-            final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmCfgObjectClass.RECORD);
+            final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
             final List<PVItem> initItems = new ArrayList<PVItem>();
 
             for (final String pvName : pvNames) {

@@ -28,7 +28,7 @@ import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.service.declaration.Severity;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -51,7 +51,7 @@ public class AlarmMessageListener implements IAlarmListener {
      */
     private final QueueWorker _queueWorker;
 
-    private final SubtreeNode _treeRoot;
+    private final IAlarmSubtreeNode _treeRoot;
 
     /**
      * Applies the pending updates to the tree.
@@ -158,7 +158,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * Creates a new alarm message listener.
      * @param rootNode
      */
-    public AlarmMessageListener(@Nonnull final SubtreeNode rootNode) {
+    public AlarmMessageListener(@Nonnull final IAlarmSubtreeNode rootNode) {
         _treeRoot = rootNode;
         _queueWorker = new QueueWorker();
         _queueWorker.start();
@@ -207,8 +207,9 @@ public class AlarmMessageListener implements IAlarmListener {
             //LOG.debug("received ack: name=" + name);
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
+
             final Severity severity = message.getSeverity();
-            Date eventtime = message.getEventtimeOrCurrentTime();
+            final Date eventtime = message.getEventtimeOrCurrentTime();
 //            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
 //                    + eventtime);
             _queueWorker.enqueue(AbstractPendingUpdate.createAlarmUpdate(name, severity, eventtime, _treeRoot));

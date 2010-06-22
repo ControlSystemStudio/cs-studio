@@ -26,8 +26,9 @@ import static org.junit.Assert.assertEquals;
 
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -51,11 +52,10 @@ public class TreeBuilderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_tree = new SubtreeNode.Builder("root", LdapEpicsAlarmCfgObjectClass.ROOT).build();
-		_a = new SubtreeNode.Builder("a", LdapEpicsAlarmCfgObjectClass.FACILITY).setParent(_tree).build();
-		_b = new SubtreeNode.Builder("b", LdapEpicsAlarmCfgObjectClass.COMPONENT).setParent(_a).build();
+		_tree = new SubtreeNode.Builder("root", LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.ROOT).build();
+		_a = new SubtreeNode.Builder("a", LdapEpicsAlarmcfgConfiguration.FACILITY, TreeNodeSource.LDAP).setParent(_tree).build();
+		_b = new SubtreeNode.Builder("b", LdapEpicsAlarmcfgConfiguration.COMPONENT, TreeNodeSource.LDAP).setParent(_a).build();
 
-		new LdapName("ecom=b,efan=a");
 	}
 
 	@Test

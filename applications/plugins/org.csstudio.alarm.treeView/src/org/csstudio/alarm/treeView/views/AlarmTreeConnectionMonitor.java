@@ -26,7 +26,7 @@ package org.csstudio.alarm.treeView.views;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 
@@ -43,7 +43,7 @@ import org.eclipse.swt.widgets.Display;
 public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor {
 
     private final AlarmTreeView _alarmTreeView;
-    private final SubtreeNode _monitorRootNode;
+    private final IAlarmSubtreeNode _monitorRootNode;
 
     /**
      *
@@ -51,7 +51,7 @@ public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor
      * @param rootNode the root node of the view
      */
     public AlarmTreeConnectionMonitor(@Nonnull final AlarmTreeView view,
-                                      @Nonnull final SubtreeNode rootNode) {
+                                      @Nonnull final IAlarmSubtreeNode rootNode) {
         _alarmTreeView = view;
         _monitorRootNode = rootNode;
     }

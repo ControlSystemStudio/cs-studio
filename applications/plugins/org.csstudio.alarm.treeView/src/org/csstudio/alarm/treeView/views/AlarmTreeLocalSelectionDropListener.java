@@ -56,7 +56,7 @@ import org.eclipse.swt.widgets.TreeItem;
 public final class AlarmTreeLocalSelectionDropListener implements TransferDropTargetListener {
 
     private final AlarmTreeView _alarmTreeView;
-    private final Queue<ITreeModificationItem> _modificationItems;
+    private final Queue<ITreeModificationItem> _ldapModificationItems;
 
     /**
      * Constructor.
@@ -66,7 +66,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     public AlarmTreeLocalSelectionDropListener(@Nonnull final AlarmTreeView alarmTreeView,
                                                @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         _alarmTreeView = alarmTreeView;
-        _modificationItems = modificationItems;
+        _ldapModificationItems = modificationItems;
     }
 
     /**
@@ -189,24 +189,31 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
         if (viewer != null) {
             viewer.refresh();
         } else {
-            throw new IllegalStateException("Viewer of " + AlarmTreeView.class.getName() +
-            " mustn't be null at this point.");
+            throw new IllegalStateException("Viewer of " +
+                                            AlarmTreeView.class.getName() +
+                                            " mustn't be null at this point.");
         }
     }
 
     private void copyNodes(@Nonnull final List<IAlarmTreeNode> nodes,
                            @Nonnull final SubtreeNode target) throws DirectoryEditException {
         for (final IAlarmTreeNode node : nodes) {
-            DirectoryEditor.copyNode(node, target);
+            final Queue<ITreeModificationItem> items = DirectoryEditor.copyNode(node, target);
+            _ldapModificationItems.addAll(items);
         }
     }
 
 
     private void moveNodes(@Nonnull final List<IAlarmTreeNode> nodes,
                            @Nonnull final SubtreeNode target) throws DirectoryEditException {
+
+        copyNodes(nodes, target);
+
         for (final IAlarmTreeNode node : nodes) {
-            final ITreeModificationItem item = DirectoryEditor.moveNode(node, target);
-            _modificationItems.add(item);
+            final ITreeModificationItem removeItem = DirectoryEditor.deleteRecursively(node);
+            if (removeItem != null) {
+                _ldapModificationItems.add(removeItem);
+            }
         }
     }
 

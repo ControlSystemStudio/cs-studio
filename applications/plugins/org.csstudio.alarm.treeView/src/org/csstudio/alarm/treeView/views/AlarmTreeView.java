@@ -28,29 +28,26 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmCfgObjectClass;
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.jobs.ConnectionJob;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
+import org.csstudio.alarm.treeView.views.actions.SaveInLdapAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -151,6 +148,7 @@ public class AlarmTreeView extends ViewPart {
      * The subscriber to the alarm topic.
      */
     private IAlarmConnection _connection;
+
 
     /**
      * The callback for the alarm messages
@@ -256,12 +254,16 @@ public class AlarmTreeView extends ViewPart {
     /**
      * The root node of this alarm tree. Shall only be generated once per view!
      */
-    private final SubtreeNode _rootNode;
+    private final IAlarmSubtreeNode _rootNode;
 
-    final Queue<ITreeModificationItem> _modificationItems =
+    /**
+     * Queue that stores all modifications that have to be applied to the LDAP store on
+     * {@link SaveInLdapAction}.
+     */
+    private final Queue<ITreeModificationItem> _ldapModificationItems =
         new ConcurrentLinkedQueue<ITreeModificationItem>();
 
-    private static final IAlarmConfigurationService _configService =
+    private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
     private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
@@ -273,8 +275,27 @@ public class AlarmTreeView extends ViewPart {
      */
     public AlarmTreeView() {
         _rootNode = new SubtreeNode.Builder(AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE,
-                                            LdapEpicsAlarmCfgObjectClass.ROOT).build();
+                                            LdapEpicsAlarmcfgConfiguration.ROOT,
+                                            TreeNodeSource.ROOT).build();
     }
+
+    /**
+     * Getter.
+     * @return the view's root node (not visible).
+     */
+    @Nonnull
+    public IAlarmSubtreeNode getRootNode() {
+        return _rootNode;
+    }
+    /**
+     * Getter.
+     * @return the alarm connection
+     */
+    @CheckForNull
+    public IAlarmConnection getConnection() {
+        return _connection;
+    }
+
 
     /**
      * Getter.
@@ -334,7 +355,7 @@ public class AlarmTreeView extends ViewPart {
         initializeContextMenu();
 
         createActions(_rootNode, _viewer, _alarmListener,
-                      getSite(), _currentAlarmFilter, _modificationItems);
+                      getSite(), _currentAlarmFilter, _ldapModificationItems);
 
         contributeToActionBars();
 
@@ -385,58 +406,27 @@ public class AlarmTreeView extends ViewPart {
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
 
-        final Job connectionJob = createConnectionJob();
+        final Job connectionJob = createConnectionJob(this);
 
         progressService.schedule(connectionJob, 0, true);
     }
 
     @Nonnull
-    private Job createConnectionJob() {
-        final Job connectionJob = new Job("Connecting via alarm service") {
+    private Job createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
+        final Job connectionJob = new ConnectionJob(alarmTreeView);
 
-            @Override
-            protected IStatus run(@Nonnull final IProgressMonitor monitor) {
-                monitor.beginTask("Connecting via alarm service", IProgressMonitor.UNKNOWN);
-                _connection = AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection();
-                try {
-                    final AlarmMessageListener listener = AlarmTreeView.this.getAlarmListener();
-                    if (listener == null) {
-                        throw new IllegalStateException("Listener of "
-                                + AlarmTreeView.class.getName() + " mustn't be null.");
-                    }
-                    final IAlarmResource alarmResource = newAlarmResource();
-                    final AlarmTreeConnectionMonitor connectionMonitor =
-                        new AlarmTreeConnectionMonitor(AlarmTreeView.this, _rootNode);
-                    _connection.connectWithListenerForResource(connectionMonitor,
-                                                               listener,
-                                                               alarmResource);
-
-                } catch (final AlarmConnectionException e) {
-                    throw new RuntimeException("Could not connect via alarm service", e);
-                }
-                return Status.OK_STATUS;
-            }
-        };
         return connectionJob;
     }
-
-    @Nonnull
-    private IAlarmResource newAlarmResource() {
-        // JMS: topics: default,    facilities: don't care,      filename: don't care
-        // DAL: topics: don't care, facilities: from tree prefs, filename: ok
-        final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
-                .newAlarmResource(null, AlarmPreference.getFacilityNames(), null);
-        return alarmResource;
-    }
-
 
     /**
      * Adds drag and drop support to the tree viewer.
      */
     private void addDragAndDropSupport() {
         final DelegatingDropAdapter dropAdapter = new DelegatingDropAdapter();
-        dropAdapter.addDropTargetListener(new AlarmTreeLocalSelectionDropListener(this, _modificationItems));
-        dropAdapter.addDropTargetListener(new AlarmTreeProcessVariableDropListener(this));
+        dropAdapter.addDropTargetListener(new AlarmTreeLocalSelectionDropListener(this,
+                                                                                  _ldapModificationItems));
+        dropAdapter.addDropTargetListener(new AlarmTreeProcessVariableDropListener(this,
+                                                                                   _ldapModificationItems));
         _viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
                                dropAdapter.getTransfers(),
                                dropAdapter);
@@ -454,7 +444,7 @@ public class AlarmTreeView extends ViewPart {
      * Starts a job which reads the contents of the directory in the background.
      * @param rootNode
      */
-    public void startImportInitialConfiguration(@Nonnull final SubtreeNode rootNode) {
+    public void startImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
         LOG.debug("Starting directory reader.");
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
                 .getAdapter(IWorkbenchSiteProgressService.class);
@@ -474,7 +464,7 @@ public class AlarmTreeView extends ViewPart {
 
     @Nonnull
     private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(_configService,
+        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
                                                                        _ldapService,
                                                                        rootNode);
         importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
@@ -485,7 +475,7 @@ public class AlarmTreeView extends ViewPart {
     @Nonnull
     private Job createImportInitialConfigJob(@Nonnull final IAlarmSubtreeNode rootNode) {
 
-        final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, _configService);
+        final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, CONFIG_SERVICE);
 
         importInitConfigJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
 
@@ -675,13 +665,13 @@ public class AlarmTreeView extends ViewPart {
 
 
             final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
-            final LdapEpicsAlarmCfgObjectClass oc = firstElement.getObjectClass();
+            final LdapEpicsAlarmcfgConfiguration oc = firstElement.getTreeNodeConfiguration();
 
-            if (!LdapEpicsAlarmCfgObjectClass.RECORD.equals(oc)) {
+            if (!LdapEpicsAlarmcfgConfiguration.RECORD.equals(oc)) {
                 menuManager.add(_createRecordAction);
                 menuManager.add(_createComponentAction);
             }
-            if (!LdapEpicsAlarmCfgObjectClass.FACILITY.equals(oc)) {
+            if (!LdapEpicsAlarmcfgConfiguration.FACILITY.equals(oc)) {
                 menuManager.add(_renameAction);
             } else {
                 menuManager.add(_saveAsXmlFileAction);
