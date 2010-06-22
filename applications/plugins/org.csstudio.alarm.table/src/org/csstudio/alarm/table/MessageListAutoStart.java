@@ -2,16 +2,29 @@ package org.csstudio.alarm.table;
 
 import java.util.List;
 
-import org.csstudio.alarm.table.dataModel.IMessageListService;
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmConnectionException;
+import org.csstudio.alarm.table.dataModel.AlarmMessageList;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
+import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.service.ITopicsetService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.startupservice.IStartupServiceListener;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 public class MessageListAutoStart implements IStartupServiceListener {
 
-    private IMessageListService _messageListService;
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(MessageListAutoStart.class);
+
+    private ITopicsetService _topicsetForAlarmService = null;
+
+    private ITopicsetService _topicsetForLogService = null;
 
     /**
      * This method is executed by the startup listener from platform at CSS startup. The preferences
@@ -20,29 +33,50 @@ public class MessageListAutoStart implements IStartupServiceListener {
      */
     @Override
     public void run() {
-        // TODO (jpenning) Currently disabled
+        // TODO (jpenning) message list auto start currently disabled
 
-        // ScopedPreferenceStore prefStore = new ScopedPreferenceStore(
-        // new InstanceScope(), JmsLogsPlugin.getDefault().getBundle()
-        // .getSymbolicName());
-        // String maximumNumberOfMessagesPref = prefStore
-        // .getString(LogViewPreferenceConstants.MAX);
-        // _messageListService = JmsLogsPlugin.getDefault()
-        // .getMessageListService();
-        // startLogLists(maximumNumberOfMessagesPref);
-        // startAlarmLists();
+        _topicsetForAlarmService = JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews();
+        _topicsetForLogService = JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews();
+
+//        startLogLists();
+//        startAlarmLists();
     }
 
-    private void startLogLists(final String maximumNumberOfMessagesPref) {
+    private Integer getMaximumNumberOfMessages() {
+        final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+                                                                          JmsLogsPlugin
+                                                                                  .getDefault()
+                                                                                  .getBundle()
+                                                                                  .getSymbolicName());
+        final String maximumNumberOfMessagesPref = prefStore
+                .getString(LogViewPreferenceConstants.MAX);
+        Integer result = 200; // Default
+        try {
+            result = Integer.parseInt(maximumNumberOfMessagesPref);
+        } catch (final NumberFormatException e) {
+            LOG.warn("Invalid value format for maximum number" + " of messages in preferences");
+        }
+        return result;
+    }
+
+    private void startLogLists() {
         TopicSetColumnService topicSetColumnService = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
                                                                                 LogViewPreferenceConstants.P_STRING);
         List<TopicSet> topicSets = topicSetColumnService.getTopicSets();
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {
-                _messageListService.initializeLogMessageList(topicSet, Integer
-                        .parseInt(maximumNumberOfMessagesPref));
+                try {
+                    LOG.debug("Start log list for topic set " + topicSet.getName());
+                    _topicsetForLogService
+                            .createAndConnectForTopicSet(topicSet,
+                                                         new LogMessageList(getMaximumNumberOfMessages()),
+                                                         new AlarmListener());
+                } catch (AlarmConnectionException e) {
+                    LOG.error("Could not start log list for topic set " + topicSet.getName(), e);
+                }
             }
         }
+
     }
 
     private void startAlarmLists() {
@@ -51,7 +85,14 @@ public class MessageListAutoStart implements IStartupServiceListener {
         List<TopicSet> topicSets = topicSetColumnService.getTopicSets();
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {
-                _messageListService.initializeAlarmMessageList(topicSet);
+                try {
+                    LOG.error("Start alarm list for topic set " + topicSet.getName());
+                    _topicsetForAlarmService.createAndConnectForTopicSet(topicSet,
+                                                                         new AlarmMessageList(),
+                                                                         new AlarmListener());
+                } catch (AlarmConnectionException e) {
+                    LOG.error("Could not start alarm list for topic set " + topicSet.getName(), e);
+                }
             }
         }
     }
