@@ -103,9 +103,6 @@
       <initializer class="org.csstudio.alarm.table.preferences.JmsLogPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceInitializer"/>
       <initializer class="org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceInitializer"/>
-      <initializer
-            class="org.csstudio.alarm.table.preferences.alarmservice.PreferenceInitializer">
-      </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">
