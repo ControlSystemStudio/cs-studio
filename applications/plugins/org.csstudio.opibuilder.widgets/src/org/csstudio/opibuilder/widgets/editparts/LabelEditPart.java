@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
+import org.csstudio.opibuilder.widgetActions.ActionsInput;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
@@ -32,6 +33,9 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
 		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
 		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
+		labelFigure.setSelectable(
+				!getWidgetModel().getActionsInput().getActionsList().isEmpty() ||
+				getWidgetModel().getTooltip().trim().length() > 0);
 		return labelFigure;
 	}
 	
@@ -82,7 +86,18 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		};		
 		setPropertyChangeHandler(LabelModel.PROP_FONT, fontHandler);
 	
-		
+		IWidgetPropertyChangeHandler clickableHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				((LabelFigure)figure).setSelectable(
+						!((ActionsInput)newValue).getActionsList().isEmpty() || 
+						getWidgetModel().getTooltip().trim().length() > 0);
+				return false;
+			}
+		};
+		setPropertyChangeHandler(LabelModel.PROP_ACTIONS, clickableHandler);
+		setPropertyChangeHandler(LabelModel.PROP_TOOLTIP, clickableHandler);
+
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,

@@ -72,6 +72,8 @@ public class LabelFigure extends Figure{
 	private H_ALIGN h_alignment = H_ALIGN.LEFT;
 	
 	private boolean runMode;
+	
+	private boolean selectable = true;
 
 	public LabelFigure() {
 		this(false);
@@ -205,10 +207,19 @@ public class LabelFigure extends Figure{
 	
 	@Override
 	public boolean containsPoint(int x, int y) {
-		if(runMode)
+		if(runMode && !selectable)
 			return false;
 		else
 			return super.containsPoint(x, y);
 	}
+
+	/**
+	 * @param selectable the selectable to set
+	 */
+	public void setSelectable(boolean selectable) {
+		this.selectable = selectable;
+	}
+
+	
 
 }
