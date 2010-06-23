@@ -86,7 +86,6 @@ public class RuleDataEditDialog extends Dialog {
 		AbstractWidgetModel.PROP_SCRIPTS,
 		AbstractWidgetModel.PROP_RULES,
 		AbstractContainerModel.PROP_MACROS,
-		AbstractPVWidgetModel.PROP_PVNAME,
 		AbstractPVWidgetModel.PROP_PVVALUE};
 	
 	public RuleDataEditDialog(Shell parentShell, RuleData ruleData) {
