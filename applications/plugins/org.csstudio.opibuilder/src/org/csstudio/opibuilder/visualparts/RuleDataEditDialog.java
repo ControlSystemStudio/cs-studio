@@ -199,7 +199,8 @@ public class RuleDataEditDialog extends Dialog {
 		String[] comboItems = new String[propIDList.size()];
 		int i=0;
 		for(String id : propIDList){
-			comboItems[i++] = ruleData.getWidgetModel().getProperty(id).getDescription();
+			comboItems[i++] = ruleData.getWidgetModel().getProperty(id).getDescription() + 
+				"(" + id + ")"; //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		propCombo.setItems(comboItems);
 		propCombo.select(propIDList.indexOf(ruleData.getPropId()));
