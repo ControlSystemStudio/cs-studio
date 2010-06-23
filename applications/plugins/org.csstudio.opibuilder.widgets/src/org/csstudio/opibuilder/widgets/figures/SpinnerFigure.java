@@ -28,6 +28,31 @@ import org.eclipse.swt.graphics.Color;
  *
  */
 public class SpinnerFigure extends Figure {
+	public enum NumericFormatType {
+		DECIAML("Decimal"),
+		EXP("Exponential"),
+		HEX("Hex");
+		
+		private String description;
+		private NumericFormatType(String description) {
+			this.description = description;
+		}
+		
+		@Override
+		public String toString() {
+			return description;
+		}
+		
+		public static String[] stringValues(){
+			String[] result = new String[values().length];
+			int i =0 ;
+			for(NumericFormatType f : values()){
+				result[i++] = f.toString();
+			}
+			return result;
+		}
+	}
+	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 
 	private double min = -100;
 	private double max = 100;
@@ -41,11 +66,10 @@ public class SpinnerFigure extends Figure {
 	
 	private final static int BUTTON_WIDTH = 25;
 	
-	private DecimalFormat format;
-	
+	private NumericFormatType formatType;
 	
 	public SpinnerFigure(ExecutionMode mode) {
-		format = new DecimalFormat();
+		formatType = NumericFormatType.DECIAML;
 		spinnerListeners = new ArrayList<ISpinnerListener>();
 		setRequestFocusEnabled(true);
 		setFocusTraversable(true);
@@ -96,7 +120,7 @@ public class SpinnerFigure extends Figure {
 				}
 			}
 		};
-		labelFigure.setText(format.format(value));
+		labelFigure.setText(format(value));
 		add(labelFigure);
 		
 		ButtonBorder buttonBorder = new ButtonBorder(new ButtonScheme(new Color[]{ColorConstants.buttonLightest},
@@ -271,7 +295,7 @@ public class SpinnerFigure extends Figure {
 		if (this.value == value)
 			return;
 		this.value = value;
-		labelFigure.setText(format.format(value));		
+		labelFigure.setText(format(value));		
 	}
 	
 	/**Set Value from manual control of the widget. Value will be coerced in range.
@@ -291,13 +315,37 @@ public class SpinnerFigure extends Figure {
 		if(this.value == value)
 			return;
 		this.value = value;
-		labelFigure.setText(format.format(value));
+		labelFigure.setText(format(value));
 	}
 	
 	
 	public LabelFigure getLabelFigure() {
 		return labelFigure;
 	}
+	
+	public void setFormatType(NumericFormatType formatType) {
+		this.formatType = formatType;
+		labelFigure.setText(format(value));		
+	}
+	
+	private String format(double value){
+		DecimalFormat format;
+		switch (formatType) {
+		
+		case EXP:
+			format = new DecimalFormat("0.#####################E0");			//$NON-NLS-1$
+			return format.format(value);
+		case HEX:
+			return HEX_PREFIX + Long.toHexString((long)value);
+		case DECIAML:			
+		default:
+			format = new DecimalFormat();
+			format.setMaximumFractionDigits(100);
+			format.setMinimumFractionDigits(0);
+			return format.format(value);
+		}
+	}
+	
 
 	/**
 	 * Definition of listeners that react on spinner manual value change events.

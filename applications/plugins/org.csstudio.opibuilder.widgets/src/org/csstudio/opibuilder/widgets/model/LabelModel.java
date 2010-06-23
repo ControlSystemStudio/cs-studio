@@ -93,6 +93,10 @@ public class LabelModel extends AbstractPVWidgetModel {
 		setPropertyValue(PROP_TEXT, text);
 	}
 	
+	public void setText(String text, boolean fire){
+		getProperty(PROP_TEXT).setPropertyValue(text, fire);
+	}
+	
 	public boolean isTransparent(){
 		return (Boolean)getCastedPropertyValue(PROP_TRANSPARENT);
 	}

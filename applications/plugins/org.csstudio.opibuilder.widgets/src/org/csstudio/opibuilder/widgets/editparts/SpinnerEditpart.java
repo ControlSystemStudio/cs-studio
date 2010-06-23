@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.text.DecimalFormat;
+
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -10,6 +12,7 @@ import org.csstudio.opibuilder.widgets.figures.SpinnerFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.ISpinnerListener;
+import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.SpinnerModel;
 import org.csstudio.platform.data.INumericMetaData;
@@ -44,11 +47,13 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setMin(getWidgetModel().getMinimum());
 		spinner.setStepIncrement(getWidgetModel().getStepIncrement());
 		spinner.setPageIncrement(getWidgetModel().getPageIncrement());
+		spinner.setFormatType(getWidgetModel().getFormat());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			spinner.addManualValueChangeListener(new ISpinnerListener() {
 				
 				public void manualValueChanged(double newValue) {
 					setPVValue(SpinnerModel.PROP_PVNAME, newValue);
+					getWidgetModel().setText(((SpinnerFigure)getFigure()).getLabelFigure().getText(), false);
 				}
 			});
 		}
@@ -111,21 +116,17 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 						IFigure figure) {
 					String text = (String)newValue;						
 					try {						
-						double value = Double.parseDouble(text);
+						double value = new DecimalFormat().parse(text).doubleValue();
 						//coerce value in range
 						value = Math.max(((SpinnerFigure)figure).getMin(), 
 								Math.min(((SpinnerFigure)figure).getMax(), value));
-
-						if(getExecutionMode() == ExecutionMode.RUN_MODE){
-	
-							((SpinnerFigure)figure).setValue(value);
-							
+						((SpinnerFigure)figure).setValue(value);
+						if(getExecutionMode() == ExecutionMode.RUN_MODE)							
 							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, value);						
-							return false;
-						}else
-							((SpinnerFigure)figure).setValue(value);
+						getWidgetModel().setText(
+								((SpinnerFigure)figure).getLabelFigure().getText(), false);
 						return false;
-					} catch (NumberFormatException e) {
+					} catch (Exception e) {
 						return false;
 					}					
 				}
@@ -139,6 +140,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 						return false;
 					double value = ValueUtil.getDouble((IValue) newValue);
 					((SpinnerFigure)figure).setDisplayValue(value);
+					getWidgetModel().setText(((SpinnerFigure)figure).getLabelFigure().getText(), false);
 					return false;
 				}
 			};
@@ -221,7 +223,14 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			};
 			setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handler);
 			
-			
+			handler = new IWidgetPropertyChangeHandler() {
+				
+				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+					((SpinnerFigure)figure).setFormatType(NumericFormatType.values()[(Integer)newValue]);
+					return false;
+				}
+			};
+			setPropertyChangeHandler(SpinnerModel.PROP_FORMAT, handler);
 			
 			
 	}

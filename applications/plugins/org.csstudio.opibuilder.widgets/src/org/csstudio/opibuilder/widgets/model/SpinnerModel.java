@@ -1,9 +1,11 @@
 package org.csstudio.opibuilder.widgets.model;
 
 import org.csstudio.opibuilder.properties.BooleanProperty;
+import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.NumericFormatType;
 
 /**
  *The model of spinner widget.
@@ -30,6 +32,10 @@ public class SpinnerModel extends LabelModel {
 
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
 
+	/**
+	 * The Format of the value.
+	 */
+	public static final String PROP_FORMAT = "format"; //$NON-NLS-1$	
 	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = Double.NEGATIVE_INFINITY;
@@ -67,6 +73,9 @@ public class SpinnerModel extends LabelModel {
 		
 		addProperty(new BooleanProperty(PROP_LIMITS_FROM_PV, "Limits From PV",
 				WidgetPropertyCategory.Behavior, true));
+		
+		addProperty(new ComboProperty(PROP_FORMAT, "Format", 
+				WidgetPropertyCategory.Display, NumericFormatType.stringValues(), 0));
 		
 	}	
 
@@ -111,5 +120,11 @@ public class SpinnerModel extends LabelModel {
 	@Override
 	public String getTypeID() {
 		return ID;
+	}
+
+
+	public NumericFormatType getFormat() {
+		int i = (Integer)getPropertyValue(PROP_FORMAT);
+		return NumericFormatType.values()[i];
 	}		
 }
