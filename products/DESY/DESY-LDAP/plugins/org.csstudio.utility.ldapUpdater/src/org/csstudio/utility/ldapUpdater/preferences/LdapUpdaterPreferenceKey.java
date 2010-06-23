@@ -47,10 +47,10 @@ public enum LdapUpdaterPreferenceKey {
 	 * Known eclipse bug with annotations in enum constructor:
      * {@link https://bugs.eclipse.org/bugs/show_bug.cgi?id=285701}
 	 * @param keyDescription description
+	 *
+	 * CHECKSTYLE:Jsr305Annotations:OFF
 	 */
-	//CHECKSTYLE:OFF
 	LdapUpdaterPreferenceKey (final String keyDescription) {
-	//CHECKSTYLE:ON
 		_description = keyDescription;
 	}
 

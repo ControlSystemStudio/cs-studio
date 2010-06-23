@@ -23,6 +23,6 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.service.impl
 Import-Package: org.csstudio.utility.treemodel,
  org.eclipse.ecf.core.util
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jdom.jar,
  .

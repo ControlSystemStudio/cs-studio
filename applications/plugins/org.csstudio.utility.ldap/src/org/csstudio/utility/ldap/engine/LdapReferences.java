@@ -26,6 +26,10 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -37,6 +41,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 10.05.2010
  */
 public class LdapReferences {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapReferences.class);
 
     private Hashtable<String, Entry> _ldapEntries = new Hashtable<String, Entry>();
 
@@ -54,11 +60,11 @@ public class LdapReferences {
      */
     public static class Entry {
 
-        private GregorianCalendar _timeCreated = null;
-        private GregorianCalendar _lastTimeUsed = null;
-        private List<String> _namesInNamespace = null;
+        private GregorianCalendar _timeCreated;
+        private GregorianCalendar _lastTimeUsed;
+        private List<String> _namesInNamespace;
 
-        public Entry ( final List<String> namesInNamespace) {
+        public Entry(@Nonnull final List<String> namesInNamespace) {
             //
             // initialize timer
             //
@@ -67,12 +73,12 @@ public class LdapReferences {
 
         }
 
-
+        @Nonnull
         public GregorianCalendar getLastTimeUsed() {
             return _lastTimeUsed;
         }
-        public void setLastTimeUsed(final GregorianCalendar lastTimeUsed) {
-            this._lastTimeUsed = lastTimeUsed;
+        public void setLastTimeUsed(@Nonnull final GregorianCalendar lastTimeUsed) {
+            _lastTimeUsed = lastTimeUsed;
         }
         public List<String> getNamesInNamespace() {
             return _namesInNamespace;
@@ -100,28 +106,24 @@ public class LdapReferences {
         this._ldapEntries = entries;
     }
 
-    public void newLdapEntry (final String channelName,
-                              final List<String> namesInNamespace) {
+    public void newLdapEntry (@Nonnull final String channelName,
+                              @Nonnull final List<String> namesInNamespace) {
         //
         // insert new entry
         //
-        final Entry newEntry = new Entry ( namesInNamespace);
-        this._ldapEntries.put( channelName, newEntry);
+        final Entry newEntry = new Entry(namesInNamespace);
+        _ldapEntries.put(channelName, newEntry);
     }
 
-    public Entry getEntry ( final String channelName) {
-        //
-        // find and return entry in hashtable
-        //
-        return this._ldapEntries.get( channelName);
+    @CheckForNull
+    public Entry getEntry(@Nonnull final String channelName) {
+        return _ldapEntries.get(channelName);
     }
 
-    public void changeLdapEntry ( final String channelName, final Vector<String> namesInNamespace) {
-        //
-        // insert new entry
-        //
-        if ( hasEntry( channelName)) {
-            final Entry actualEntry =  this._ldapEntries.get( channelName);
+    public void changeLdapEntry(@Nonnull final String channelName,
+                                @Nonnull final Vector<String> namesInNamespace) {
+        final Entry actualEntry =  _ldapEntries.get(channelName);
+        if (actualEntry != null) {
             actualEntry.replaceNamesInNamespace(namesInNamespace);
             this._ldapEntries.remove(channelName);
             this._ldapEntries.put( channelName, actualEntry);

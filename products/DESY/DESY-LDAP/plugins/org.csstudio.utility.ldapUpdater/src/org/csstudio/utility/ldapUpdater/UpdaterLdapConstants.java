@@ -35,9 +35,6 @@ public final class UpdaterLdapConstants {
 
     public static final String FACILITY_MISC_FIELD_VALUE = "MISC";
 
-
-
-
     /**
      * Don't instantiate.
      */

@@ -26,18 +26,20 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Date;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.Severity;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
@@ -51,25 +53,10 @@ import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
  * @author Joerg Rathlev
  */
 public final class AlarmTreeNodeModifier {
-
-    // TODO (bknerr) : if used anywhere else in this package, encapsulate
-    // in static package-visible class
-
-    private static final String EPICS_CSS_STRIP_CHART = "epicsCssStripChart";
-
-    private static final String EPICS_CSS_DISPLAY = "epicsCssDisplay";
-
-    private static final String EPICS_HELP_PAGE = "epicsHelpPage";
-
-    private static final String EPICS_HELP_GUIDANCE = "epicsHelpGuidance";
-
-    private static final String EPICS_CSS_ALARM_DISPLAY = "epicsCssAlarmDisplay";
-
-
     /**
      * The logger that is used by this class.
      */
-    private static final CentralLogger LOG = CentralLogger.getInstance();
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeNodeModifier.class);
 
 	/**
 	 * Private constructor.
@@ -104,53 +91,52 @@ public final class AlarmTreeNodeModifier {
      * @throws NamingException
      *             if an attribute could not be retrieved.
      */
-    public static void setEpicsAttributes(@Nonnull final AbstractAlarmTreeNode node,
+    public static void setEpicsAttributes(@Nonnull final IAlarmTreeNode node,
                                           @Nonnull final Attributes attrs) throws NamingException {
 
-        final Attribute alarmDisplayAttr = attrs.get(EPICS_CSS_ALARM_DISPLAY);
-        if (alarmDisplayAttr != null) {
-            final String display = (String) alarmDisplayAttr.get();
-            if (display != null) {
-                node.setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, display);
+
+        final String alarmDsp = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
+        if (alarmDsp != null) {
+            node.setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, alarmDsp);
+        }
+
+        final String helpPage = extractAttribute(attrs, AlarmTreeNodePropertyId.HELP_PAGE);
+        if ((helpPage != null) && helpPage.matches("^http://.+")) {
+            try {
+                node.setProperty(AlarmTreeNodePropertyId.HELP_PAGE, new URL(helpPage).toString());
+            } catch (final MalformedURLException e) {
+                LOG.warn(AlarmTreeNodePropertyId.HELP_PAGE.getLdapAttribute() +
+                         " attribute for node " + node + " contains a malformed URL");
             }
         }
 
-        final Attribute helpPageAttr = attrs.get(EPICS_HELP_PAGE);
-        if (helpPageAttr != null) {
-            final String helpPage = (String) helpPageAttr.get();
-            if ((helpPage != null) && helpPage.matches("^http://.+")) {
-                try {
-                    node.setProperty(AlarmTreeNodePropertyId.HELP_PAGE, new URL(helpPage).toString());
-                } catch (final MalformedURLException e) {
-                    LOG.warn(AlarmTreeBuilder.class.getName(), EPICS_HELP_PAGE + " attribute for node "
-                            + node + " contains a malformed URL");
-                }
-            }
+        final String help = extractAttribute(attrs, AlarmTreeNodePropertyId.HELP_GUIDANCE);
+        if (help != null) {
+            node.setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, help);
         }
 
-        final Attribute helpGuidanceAttr = attrs.get(EPICS_HELP_GUIDANCE);
-        if (helpGuidanceAttr != null) {
-            final String helpGuidance = (String) helpGuidanceAttr.get();
-            if (helpGuidance != null) {
-                node.setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, helpGuidance);
-            }
+
+        final String display = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_DISPLAY);
+        if (display != null) {
+            node.setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, display);
         }
 
-        final Attribute displayAttr = attrs.get(EPICS_CSS_DISPLAY);
-        if (displayAttr != null) {
-            final String display = (String) displayAttr.get();
-            if (display != null) {
-                node.setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, display);
-            }
-        }
 
-        final Attribute chartAttr = attrs.get(EPICS_CSS_STRIP_CHART);
-        if (chartAttr != null) {
-            final String chart = (String) chartAttr.get();
-            if (chart != null) {
-                node.setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, chart);
-            }
+        final String chart = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_STRIP_CHART);
+        if (chart != null) {
+            node.setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, chart);
         }
+    }
+
+    @CheckForNull
+    private static String extractAttribute(@Nonnull final Attributes attrs,
+                                           @Nonnull final AlarmTreeNodePropertyId id) throws NamingException {
+
+        final Attribute attr = attrs.get(id.getLdapAttribute());
+        if (attr != null) {
+            return (String) attr.get();
+        }
+        return null;
     }
 
     /**

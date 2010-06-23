@@ -57,10 +57,10 @@ public enum AlarmTreeNodePropertyId {
 	/**
 	 * Constructor.
 	 * @param ldapAttribute the name as it is defined as attribute in LDAP
+	 *
+	 * CHECKSTYLE:Jsr305Annotations:OFF
 	 */
-	//CHECKSTYLE:OFF No annotations here due to eclipse bug
 	private AlarmTreeNodePropertyId(final String ldapAttribute) {
-	//CHECKSTYLE:ON
 	    _ldapAttribute = ldapAttribute;
     }
 
@@ -86,7 +86,8 @@ public enum AlarmTreeNodePropertyId {
     /**
      * @return an immutable collection of the LDAP attributes of an alarm tree node
      */
-    public static ImmutableSet<String> getLdapAttributes() {
+    @Nonnull
+	public static ImmutableSet<String> getLdapAttributes() {
         return LDAP_ATTRIBUTES;
     }
 }

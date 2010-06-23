@@ -28,10 +28,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
-import org.csstudio.alarm.treeView.model.AbstractAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
-import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
@@ -116,13 +113,15 @@ public class AlarmTreeLabelProvider extends LabelProvider {
     @Nonnull
     private String[] getIconNames(@Nonnull final Severity activeAlarmSeverity,
                                   @Nonnull final Severity unacknowledgedAlarmSeverity) {
+
         final String iconName = getIconName(activeAlarmSeverity);
+
         if (activeAlarmSeverity == unacknowledgedAlarmSeverity) {
             // If the active and unack severity are the same, only the active
             // alarm is displayed.
             return new String[] {iconName};
-        } else if ( (activeAlarmSeverity != Severity.NO_ALARM)
-                   && (unacknowledgedAlarmSeverity == Severity.NO_ALARM)) {
+        } else if ((activeAlarmSeverity != Severity.NO_ALARM) &&
+                   (unacknowledgedAlarmSeverity == Severity.NO_ALARM)) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {
@@ -141,14 +140,10 @@ public class AlarmTreeLabelProvider extends LabelProvider {
     @Override
     @CheckForNull
     public final Image getImage(@Nullable final Object element) {
-        if (element instanceof ProcessVariableNode) {
-            final AbstractAlarmTreeNode node = (AbstractAlarmTreeNode) element;
-            return node.hasAlarm() ? alarmImageFor(node) : defaultNodeImage();
-        } else if (element instanceof SubtreeNode) {
-            return alarmImageFor((SubtreeNode) element);
-        } else {
-            return null;
+        if (element instanceof IAlarmTreeNode) {
+            return getAlarmImageFor((IAlarmTreeNode) element);
         }
+        return null;
     }
 
     /**
@@ -159,7 +154,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the image.
      */
     @Nonnull
-    private Image alarmImageFor(@Nonnull final IAlarmTreeNode node) {
+    private Image getAlarmImageFor(@Nonnull final IAlarmTreeNode node) {
         final Severity activeAlarmSeverity = node.getAlarmSeverity();
         final Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
         final String[] iconNames = getIconNames(activeAlarmSeverity, unacknowledgedAlarmSeverity);
@@ -172,7 +167,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the image.
      */
     @CheckForNull
-    private Image defaultNodeImage() {
+    private Image getDefaultImageForNode() {
         return PlatformUI.getWorkbench().getSharedImages().getImage(ISharedImages.IMG_OBJ_ELEMENT);
     }
 

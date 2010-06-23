@@ -32,7 +32,6 @@ import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
@@ -193,7 +192,8 @@ public final class DirectoryEditor {
                                                         @Nonnull final IAlarmSubtreeNode target)
         throws DirectoryEditException {
 
-        final Attributes attrs = createBaseAttributesForEntry(node.getTreeNodeConfiguration());
+        final Attributes attrs = new BasicAttributes();
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getDescription());
 
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
@@ -298,21 +298,20 @@ public final class DirectoryEditor {
         throws DirectoryEditException {
 
         try {
-            final Rdn rdn = new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), recordName);
-
-            final LdapName newName = new LdapName(parent.getLdapName().getRdns());
-            newName.add(rdn);
-
-            final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmcfgConfiguration.RECORD);
-            // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
             final IAlarmProcessVariableNode node =
                 new ProcessVariableNode.Builder(recordName, parent.getSource()).setParent(parent).build();
+
+            final Attributes attrs = new BasicAttributes();
+            attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
+
+            // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
             AlarmTreeNodeModifier.setAlarmState(node, attrs);
 
             if (parent.getSource().equals(TreeNodeSource.LDAP)) {
-                return new CreateLdapEntryItem(newName, attrs);
+                return new CreateLdapEntryItem(node.getLdapName(), attrs);
             }
             return null;
+
 
         } catch (final NamingException e) {
             LOG.error("Error creating directory entry", e);
@@ -333,7 +332,7 @@ public final class DirectoryEditor {
      *             if the entry could not be created.
      */
     @CheckForNull
-    public static ITreeModificationItem createComponent(@Nonnull final SubtreeNode parent,
+    public static ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                         @Nonnull final String componentName)
         throws DirectoryEditException {
 
@@ -342,28 +341,13 @@ public final class DirectoryEditor {
                                     LdapEpicsAlarmcfgConfiguration.COMPONENT,
                                     parent.getSource())
                            .setParent(parent).build();
-        final Attributes attrs = createBaseAttributesForEntry(LdapEpicsAlarmcfgConfiguration.COMPONENT);
+
+        final Attributes attrs = new BasicAttributes();
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryItem(node.getLdapName(), attrs);
         }
         return null;
-    }
-
-    /**
-     * Returns the base attributes (name, objectclass and EPICS type) for a new
-     * entry with the given object class and name.
-     *
-     * @param objectClass
-     *            the object class of the new entry.
-     * @param rdn
-     *            the relative name of the entry.
-     * @return the attributes for the new entry.
-     */
-    @Nonnull
-    private static Attributes createBaseAttributesForEntry(@Nonnull final LdapEpicsAlarmcfgConfiguration objectClass) {
-        final Attributes result = new BasicAttributes();
-        result.put(ATTR_FIELD_OBJECT_CLASS, objectClass.getDescription());
-        return result;
     }
 }

@@ -182,6 +182,7 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build();
     }

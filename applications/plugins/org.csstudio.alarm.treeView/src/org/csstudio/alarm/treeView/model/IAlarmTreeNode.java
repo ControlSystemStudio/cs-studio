@@ -62,13 +62,6 @@ public interface IAlarmTreeNode {
     LdapName getLdapName();
 
 	/**
-	 * Returns {@code true} if there is an alarm for this node or its children.
-	 *
-	 * @return whether there is an alarm for this node or its children.
-	 */
-	boolean hasAlarm();
-
-	/**
 	 * Returns the tree configuration type of this node in the directory. If this node does
 	 * not correspond to an entry in the directory, returns <code>null</code>.
 	 *

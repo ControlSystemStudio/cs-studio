@@ -115,7 +115,8 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
         }
     }
 
-    private static Attributes getAttributesFromAlarmTreeNode(final IAlarmTreeNode alarmTreeNode) {
+    @Nonnull
+    private static Attributes getAttributesFromAlarmTreeNode(@Nonnull final IAlarmTreeNode alarmTreeNode) {
 
         final Attributes attributes = new BasicAttributes();
         for (final AlarmTreeNodePropertyId propId : AlarmTreeNodePropertyId.values()) {

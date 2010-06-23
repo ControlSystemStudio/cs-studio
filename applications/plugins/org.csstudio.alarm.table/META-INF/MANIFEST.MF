@@ -28,3 +28,4 @@ Export-Package: com.sun.mail.handlers,
 Bundle-ClassPath: lib/jl1.0.jar,
  .,
  lib/mailapi.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -725,7 +725,10 @@ public final class Engine extends Job {
      * @param channel
      * @param modItemTemp
      */
-    private void changeValue(final String string, final String channel, final List<ModificationItem> modItems) {
+    private void changeValue(final String string,
+                             final String channel,
+                             final List<ModificationItem> modItems) {
+
         List<String> namesInNamespace = Collections.emptyList();
         final GregorianCalendar startTime = new GregorianCalendar();
 
@@ -796,14 +799,14 @@ public final class Engine extends Job {
     }
 
 
-    private void modifyAttributes(final String ldapChannelName,
+    private void modifyAttributes(@Nonnull final String ldapChannelName,
                                   final List<ModificationItem> modItems,
                                   final String channel,
                                   final GregorianCalendar startTime) {
         //
         // TODO put 'endsWith' into preference page
         //
-        String channelName = new String(ldapChannelName);
+        String channelName = ldapChannelName;
 
         if (channelName.endsWith(",o=DESY,c=DE")) {
             channelName = channelName.substring(0, channelName.length() - 12);
@@ -853,10 +856,10 @@ public final class Engine extends Job {
         }
     }
 
-    private AttributeSet helpAttribute(final String record) {
+    private AttributeSet helpAttribute(@Nonnull final String record) {
         final AttributeSet attributeSet = new AttributeSet();
 
-        String nRecord = new String(record);
+        String nRecord = record;
 
         if (nRecord.length() > 0) {
             // Prüft ob der nRecord schon in der ldapReferences gespeichert ist.
@@ -867,9 +870,9 @@ public final class Engine extends Job {
 
                 final Entry entry = _ldapReferences.getEntry(nRecord);
                 final List<String> vector = entry.getNamesInNamespace();
-                for (final String string : vector) {
-                    if (string.contains("ou=EpicsControls")) {
-                        nRecord = new String(string);
+                for (final String entryStr : vector) {
+                    if (entryStr.contains("ou=EpicsControls")) {
+                        nRecord = entryStr;
                     }
                 }
                 attributeSet.setSearchScope(SearchControls.ONELEVEL_SCOPE);

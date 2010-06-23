@@ -22,10 +22,8 @@
 package org.csstudio.alarm.treeView.model;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
@@ -48,8 +46,8 @@ public class ProcessVariableNodeTest {
 
     private ProcessVariableNode _node;
     private SubtreeNode _subtreeNode;
-    private final Date t1 = new Date(0);
-    private final Date t2 = new Date(1);
+    private final Date t1 = new Date(1L);
+    private final Date t2 = new Date(2L);
 
     @Before
     public void setUp() {
@@ -68,9 +66,8 @@ public class ProcessVariableNodeTest {
 
     @Test
     public void testNewlyCreatedNodeHasNoAlarm() {
-        assertEquals(Severity.NO_ALARM, _node.getAlarmSeverity());
-        assertEquals(Severity.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
-        assertFalse(_node.hasAlarm());
+        assertEquals(Severity.UNKNOWN, _node.getAlarmSeverity());
+        assertEquals(Severity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
     }
 
     @Test
@@ -78,7 +75,6 @@ public class ProcessVariableNodeTest {
 		_node.updateAlarm(new Alarm("", Severity.MINOR, t1));
         assertEquals(Severity.MINOR, _node.getAlarmSeverity());
         assertEquals(Severity.MINOR, _node.getUnacknowledgedAlarmSeverity());
-        assertTrue(_node.hasAlarm());
 	}
 
     @Test
@@ -87,7 +83,6 @@ public class ProcessVariableNodeTest {
 		_node.updateAlarm(new Alarm("", Severity.MAJOR, t2));
         assertEquals(Severity.MAJOR, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
-        assertTrue(_node.hasAlarm());
 	}
 
     @Test
@@ -104,7 +99,6 @@ public class ProcessVariableNodeTest {
 		_node.updateAlarm(new Alarm("", Severity.NO_ALARM, t2));
         assertEquals(Severity.NO_ALARM, _node.getAlarmSeverity());
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
-        assertTrue(_node.hasAlarm()); // XXX: This is unexpected behavior
 	}
 
     @Test
@@ -113,7 +107,6 @@ public class ProcessVariableNodeTest {
 		_node.removeHighestUnacknowledgedAlarm();
         assertEquals(Severity.MAJOR, _node.getAlarmSeverity());
         assertEquals(Severity.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
-        assertTrue(_node.hasAlarm());
 	}
 
     @Test
@@ -122,34 +115,6 @@ public class ProcessVariableNodeTest {
 			assertNull(_node.getProperty(id));
 		}
 	}
-
-//    @Test
-//	public void testPropertyGettersAndSetters() throws Exception {
-//		_node.setCssAlarmDisplay("alarmdisplay");
-//		assertEquals("alarmdisplay", _node.getCssAlarmDisplay());
-//		_node.setCssDisplay("display");
-//		assertEquals("display", _node.getCssDisplay());
-//		_node.setCssStripChart("stripchart");
-//		assertEquals("stripchart", _node.getCssStripChart());
-//		_node.setHelpGuidance("helpguidance");
-//		assertEquals("helpguidance", _node.getHelpGuidance());
-//		_node.setHelpPage(new URL("http://example.com/helppage"));
-//		assertEquals("http://example.com/helppage", _node.getHelpPage().toString());
-//	}
-
-//    @Test
-//	public void testPropertiesAreInheritedFromParentNode() throws Exception {
-//		_subtreeNode.setCssAlarmDisplay("alarmdisplay");
-//		assertEquals("alarmdisplay", _node.getCssAlarmDisplay());
-//		_subtreeNode.setCssDisplay("display");
-//		assertEquals("display", _node.getCssDisplay());
-//		_subtreeNode.setCssStripChart("stripchart");
-//		assertEquals("stripchart", _node.getCssStripChart());
-//		_subtreeNode.setHelpGuidance("helpguidance");
-//		assertEquals("helpguidance", _node.getHelpGuidance());
-//		_subtreeNode.setHelpPage(new URL("http://example.com/helppage"));
-//		assertEquals("http://example.com/helppage", _node.getHelpPage().toString());
-//	}
 
     @Test
 	public void testPropertyInheritance() throws Exception {
