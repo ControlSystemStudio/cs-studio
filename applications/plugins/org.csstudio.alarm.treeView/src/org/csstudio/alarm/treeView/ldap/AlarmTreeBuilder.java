@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.treeView.ldap;
+package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
@@ -61,26 +61,26 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * @author Joerg Rathlev, Jurij Kodre
  */
 public final class AlarmTreeBuilder {
-
-	/**
-	 * The logger that is used by this class.
-	 */
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeBuilder.class);
-
-	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
-
-	/**
+    
+    /**
+     * The logger that is used by this class.
+     */
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeBuilder.class);
+    
+    private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
+    
+    /**
      * Don't instantiate.
      */
     private AlarmTreeBuilder() {
         // Empty
     }
-
+    
     private static void ensureTestFacilityExists() {
         try {
             final LdapName testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
                                                                         OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
-
+            
             try {
                 LDAP_SERVICE.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
@@ -94,7 +94,7 @@ public final class AlarmTreeBuilder {
             LOG.error("Failed to create TEST facility in LDAP", e);
         }
     }
-
+    
     /**
      * Creates the initial alarm tree with all subtrees that end with records.
      * Can be canceled.
@@ -109,35 +109,34 @@ public final class AlarmTreeBuilder {
                                               @Nonnull final INodeComponent<LdapEpicsAlarmcfgConfiguration> modelNode,
                                               @Nonnull final IProgressMonitor monitor,
                                               @Nonnull final TreeNodeSource source) throws NamingException {
-
+        
         final String simpleName = modelNode.getName();
-
+        
         if (LdapEpicsAlarmcfgConfiguration.RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
-
+            
             final Attributes attributes = modelNode.getAttributes();
             AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
-
+            
         } else {
             final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
             if (modelNode instanceof ISubtreeNodeComponent) {
-                final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> children =
+                final Collection<ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> children =
                     ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
-
+                
                 for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> child : children) {
                     createAlarmSubtree(newNode, child, monitor, source);
-                    if (monitor.isCanceled()) {
+                    if (monitor.isCanceled())
                         return true;
-                    }
                 }
             }
         }
-
+        
         return false;
     }
-
-
+    
+    
     /**
      * Retrieves the alarm tree information for the facilities given in the
      * preferences and builds the alarm tree view data structure.
@@ -155,7 +154,7 @@ public final class AlarmTreeBuilder {
                                 @Nonnull final IProgressMonitor monitor,
                                 @Nonnull final TreeNodeSource source) throws NamingException {
         ensureTestFacilityExists();
-
+        
         for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getRoot().getDirectChildren()) {
             createAlarmSubtree(rootNode, node, monitor, source);
         }
