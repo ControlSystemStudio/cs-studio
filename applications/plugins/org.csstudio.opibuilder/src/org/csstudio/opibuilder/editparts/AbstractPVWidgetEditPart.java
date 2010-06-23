@@ -30,6 +30,7 @@ import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Insets;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Cursor;
 import org.eclipse.swt.graphics.RGB;
 
 /**The abstract edit part for all PV armed widgets. 
@@ -60,6 +61,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	
 	private Border saveBorder;
 	private Color saveForeColor, saveBackColor;
+	private Cursor savedCursor;
 	
 	//The update from PV will be suppressed for a brief time when writing was performed
 	protected OPITimer updateSuppressTimer;
@@ -208,17 +210,30 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			//write access
 			if(controlPVPropId != null && 
 					controlPVPropId.equals(pvPropID) && 
-					!writeAccessMarked && !pv.isWriteAllowed()){
-				UIBundlingThread.getInstance().addRunnable(new Runnable(){
-					public void run() {
-						if(!writeAccessMarked){
-							figure.setCursor(Cursors.NO);
-							figure.setEnabled(false);
-							preEnableState = false;		
+					!writeAccessMarked){
+				if(pv.isWriteAllowed()){
+					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+						public void run() {									
+							figure.setCursor(savedCursor);
+							figure.setEnabled(getWidgetModel().isEnabled());
+							preEnableState = getWidgetModel().isEnabled();
 							writeAccessMarked = true;
+											
 						}
-					}
-				});							
+					});	
+				}else{
+					UIBundlingThread.getInstance().addRunnable(new Runnable(){
+						public void run() {
+							if(figure.getCursor() != Cursors.NO)
+								savedCursor = figure.getCursor();
+							preEnableState = false;	
+							figure.setCursor(Cursors.NO);
+							figure.setEnabled(false);								
+							writeAccessMarked = true;							
+						}
+					});	
+				}
+										
 			}
 			
 			getWidgetModel().getPVMap().get(getWidgetModel().
@@ -396,6 +411,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				}
 				try {
 					PV newPV = PVFactory.createPV(newPVName);
+					writeAccessMarked = false;
 					pvConnectedStatusMap.put(pvNamePropID, false);	
 					PVListener pvListener = new WidgetPVListener(pvNamePropID);
 					newPV.addListener(pvListener);						
