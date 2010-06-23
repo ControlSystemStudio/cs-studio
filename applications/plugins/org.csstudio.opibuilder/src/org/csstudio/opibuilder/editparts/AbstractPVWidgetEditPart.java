@@ -155,7 +155,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					boolean c = pvConnectedStatusMap.get(s);
 					allConnected &= c;
 					if(!c)
-						nextDisconnecteName = s;					
+						nextDisconnecteName = 
+							(String) getWidgetModel().getProperty(s).getPropertyValue();					
 				}
 				figure.setEnabled(preEnableState);
 				if(allConnected){
@@ -181,7 +182,50 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			figure.setBorder(BORDER_NO_ALARM);
 		}
 	}
-	
+	class WidgetPVListener implements PVListener{
+		private String pvPropID;
+		
+		public WidgetPVListener(String pvPropID) {
+			this.pvPropID = pvPropID;
+		}
+		
+		public void pvDisconnected(PV pv) {
+			pvConnectedStatusMap.put(pvPropID, false);
+			markWidgetAsDisconnected(pv.getName());
+		}
+
+		public synchronized void pvValueUpdate(PV pv) {
+			if(pv == null)
+				return;
+			Boolean connected = pvConnectedStatusMap.get(pvPropID);
+			
+			//connection status
+			if(connected != null && !connected){
+				pvConnectedStatusMap.put(pvPropID, true);
+				widgetConnectionRecovered(pv.getName());
+			}
+			
+			//write access
+			if(controlPVPropId != null && 
+					controlPVPropId.equals(pvPropID) && 
+					!writeAccessMarked && !pv.isWriteAllowed()){
+				UIBundlingThread.getInstance().addRunnable(new Runnable(){
+					public void run() {
+						if(!writeAccessMarked){
+							figure.setCursor(Cursors.NO);
+							figure.setEnabled(false);
+							preEnableState = false;		
+							writeAccessMarked = true;
+						}
+					}
+				});							
+			}
+			
+			getWidgetModel().getPVMap().get(getWidgetModel().
+					getProperty(pvPropID)).setPropertyValue(pv.getValue());		
+			
+		}
+	};
 	@Override
 	public void activate() {
 		if(!isActive()){
@@ -201,51 +245,52 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 					
 					try {
 						PV pv = PVFactory.createPV((String) sp.getPropertyValue());
-						pvConnectedStatusMap.put(pv.getName(), false);						
+						pvConnectedStatusMap.put(sp.getPropertyID(), false);						
 						
-						PVListener pvListener = new PVListener(){
-							public void pvDisconnected(PV pv) {
-								pvConnectedStatusMap.put(pv.getName(), false);
-								markWidgetAsDisconnected(pv.getName());
-							}
-
-							public synchronized void pvValueUpdate(PV pv) {
-								if(pv == null)
-									return;
-								Boolean connected = pvConnectedStatusMap.get(pv.getName());
-								
-								//connection status
-								if(connected != null && !connected){
-									pvConnectedStatusMap.put(pv.getName(), true);
-									widgetConnectionRecovered(pv.getName());
-								}
-								
-								//write access
-								if(controlPVPropId != null && 
-										controlPVPropId.equals((String)sp.getPropertyID()) && 
-										!writeAccessMarked && !pv.isWriteAllowed()){
-									UIBundlingThread.getInstance().addRunnable(new Runnable(){
-										public void run() {
-											if(!writeAccessMarked){
-												figure.setCursor(Cursors.NO);
-												figure.setEnabled(false);
-												preEnableState = false;		
-												writeAccessMarked = true;
-											}
-										}
-									});							
-								}
-								
-								pvPropertyMap.get(sp).setPropertyValue(pv.getValue());		
-								
-							}							
-						};
+						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
+//						= new PVListener(){
+//							public void pvDisconnected(PV pv) {
+//								pvConnectedStatusMap.put(sp.getPropertyID(), false);
+//								markWidgetAsDisconnected(pv.getName());
+//							}
+//
+//							public synchronized void pvValueUpdate(PV pv) {
+//								if(pv == null)
+//									return;
+//								Boolean connected = pvConnectedStatusMap.get(sp.getPropertyID());
+//								
+//								//connection status
+//								if(connected != null && !connected){
+//									pvConnectedStatusMap.put(sp.getPropertyID(), true);
+//									widgetConnectionRecovered(pv.getName());
+//								}
+//								
+//								//write access
+//								if(controlPVPropId != null && 
+//										controlPVPropId.equals((String)sp.getPropertyID()) && 
+//										!writeAccessMarked && !pv.isWriteAllowed()){
+//									UIBundlingThread.getInstance().addRunnable(new Runnable(){
+//										public void run() {
+//											if(!writeAccessMarked){
+//												figure.setCursor(Cursors.NO);
+//												figure.setEnabled(false);
+//												preEnableState = false;		
+//												writeAccessMarked = true;
+//											}
+//										}
+//									});							
+//								}
+//								
+//								pvPropertyMap.get(sp).setPropertyValue(pv.getValue());		
+//								
+//							}							
+//						};
 						
 						pv.addListener(pvListener);						
 						pvMap.put(sp.getPropertyID(), pv);
 						pvListenerMap.put(sp.getPropertyID(), pvListener);
 					} catch (Exception e) {
-						pvConnectedStatusMap.put((String) sp.getPropertyValue(), false);
+						pvConnectedStatusMap.put(sp.getPropertyID(), false);
 						markWidgetAsDisconnected((String) sp.getPropertyValue());
 						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 								(String)sp.getPropertyValue());
@@ -256,11 +301,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				doActivate();
 				
 				//the pv should be started at the last minute
-				for(PV pv : pvMap.values()){
+				for(String pvPropId : pvMap.keySet()){
+					PV pv = pvMap.get(pvPropId);
 					try {
 						pv.start();
 					} catch (Exception e) {
-						pvConnectedStatusMap.put(pv.getName(), false);
+						pvConnectedStatusMap.put(pvPropId, false);
 						markWidgetAsDisconnected(pv.getName());
 						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
 								pv.getName());
@@ -332,6 +378,56 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
+		
+		class PVNamePropertyChangeHandler implements IWidgetPropertyChangeHandler{
+			private String pvNamePropID;
+			public PVNamePropertyChangeHandler(String pvNamePropID) {
+				this.pvNamePropID = pvNamePropID;
+			}
+			public boolean handleChange(Object oldValue, Object newValue,
+					IFigure figure) {
+				String newPVName = ((String)newValue).trim();
+				if(newPVName.length() < 0)
+					return false;
+				PV oldPV = pvMap.get(pvNamePropID);
+				if(oldPV != null){
+					oldPV.stop();
+					oldPV.removeListener(pvListenerMap.get(pvNamePropID));
+				}
+				try {
+					PV newPV = PVFactory.createPV(newPVName);
+					pvConnectedStatusMap.put(pvNamePropID, false);	
+					PVListener pvListener = new WidgetPVListener(pvNamePropID);
+					newPV.addListener(pvListener);						
+					pvMap.put(pvNamePropID, newPV);
+					pvListenerMap.put(pvNamePropID, pvListener);
+					markWidgetAsDisconnected(newPVName);
+					
+					try {
+						newPV.start();
+					} catch (Exception e) {
+						pvConnectedStatusMap.put(pvNamePropID, false);
+						markWidgetAsDisconnected(newPVName);
+						CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+								newPVName);
+					}
+					
+				} catch (Exception e) {
+					pvConnectedStatusMap.put(pvNamePropID, false);
+					markWidgetAsDisconnected(newPVName);
+					CentralLogger.getInstance().error(this, "Unable to connect to PV:" +
+							newPVName);
+				}
+				
+				return false;
+			}
+		}
+		//PV name
+		for(StringProperty pvNameProperty : getWidgetModel().getPVMap().keySet()){
+			if(getExecutionMode() == ExecutionMode.RUN_MODE)
+				setPropertyChangeHandler(pvNameProperty.getPropertyID(), 
+					new PVNamePropertyChangeHandler(pvNameProperty.getPropertyID()));
+		}
 		
 		//border alarm sensitive
 		IWidgetPropertyChangeHandler borderAlarmSentiveHandler = new IWidgetPropertyChangeHandler() {
