@@ -86,20 +86,42 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * @author Joerg Rathlev
  */
 public class AlarmTreeView extends ViewPart {
-
+    
     /**
      * The ID of this view.
      */
     private static final String ID = "org.csstudio.alarm.treeView.views.AlarmTreeView";
-
+    
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeView.class);
-
+    
+    /**
+     * Returns whether a list of nodes contains only ProcessVariableNodes.
+     */
+    static boolean containsOnlyPVNodes(@Nonnull final List<IAlarmTreeNode> nodes) {
+        for (final IAlarmTreeNode node : nodes) {
+            if (!(node instanceof ProcessVariableNode))
+                return false;
+        }
+        return true;
+    }
+    
+    
+    /**
+     * Returns the id of this view.
+     *
+     * @return the id of this view.
+     */
+    @Nonnull
+    public static String getID() {
+        return ID;
+    }
+    
     /**
      * Converts a selection into a list of selected alarm tree nodes.
      */
     @Nonnull
     static List<IAlarmTreeNode> selectionToNodeList(@Nullable final ISelection selection) {
-
+        
         if (selection instanceof IStructuredSelection) {
             final List<IAlarmTreeNode> result = new ArrayList<IAlarmTreeNode>();
             final IStructuredSelection s = (IStructuredSelection) selection;
@@ -110,165 +132,142 @@ public class AlarmTreeView extends ViewPart {
         }
         return Collections.emptyList();
     }
-
-
-    /**
-     * Returns whether a list of nodes contains only ProcessVariableNodes.
-     */
-    static boolean containsOnlyPVNodes(@Nonnull final List<IAlarmTreeNode> nodes) {
-        for (final IAlarmTreeNode node : nodes) {
-            if (!(node instanceof ProcessVariableNode)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
-     * Returns the id of this view.
-     *
-     * @return the id of this view.
-     */
-    @Nonnull
-    public static String getID() {
-        return ID;
-    }
-
+    
     /**
      * The tree viewer that displays the alarm objects.
      */
     private TreeViewer _viewer;
-
+    
     /**
      * The message area above the tree viewer
      */
     private MessageArea _myMessageArea;
-
+    
     /**
      * The subscriber to the alarm topic.
      */
     private IAlarmConnection _connection;
-
-
+    
+    
     /**
      * The callback for the alarm messages
      */
     private AlarmMessageListener _alarmListener;
-
-
+    
+    
     /**
      * The reload action.
      */
     private Action _reloadAction;
-
+    
     /**
      * Action to persist current Alarm Tree View in LDAP.
      */
     private Action _saveInLdapAction;
-
+    
     /**
      * The import xml file action.
      */
     private Action _importXmlFileAction;
-
+    
     /**
      * The export xml file action.
      */
     private Action _exportXmlFileAction;
-
+    
     /**
      * Saves the currently configured alarm tree as xml file.
      */
     private Action _saveAsXmlFileAction;
-
+    
     /**
      * The acknowledge action.
      */
     private Action _acknowledgeAction;
-
+    
     /**
      * The Run CSS Alarm Display action.
      */
     private Action _runCssAlarmDisplayAction;
-
+    
     /**
      * The Run CSS Display action.
      */
     private Action _runCssDisplayAction;
-
+    
     /**
      * The Open CSS Strip Chart action.
      */
     private Action _openCssStripChartAction;
-
+    
     /**
      * The Show Help Page action.
      */
     private Action _showHelpPageAction;
-
+    
     /**
      * The Show Help Guidance action.
      */
     private Action _showHelpGuidanceAction;
-
+    
     /**
      * The Create Record action.
      */
     private Action _createRecordAction;
-
+    
     /**
      * The Create Component action.
      */
     private Action _createComponentAction;
-
+    
     /**
      * The Rename action.
      */
     private Action _renameAction;
-
+    
     /**
      * The Delete action.
      */
     private Action _deleteNodeAction;
-
+    
     /**
      * The Show Property View action.
      */
     private Action _showPropertyViewAction;
-
+    
     /**
      * A filter which hides all nodes which are not currently in an alarm state.
      */
     private ViewerFilter _currentAlarmFilter;
-
+    
     /**
      * The action which toggles the filter on and off.
      */
     private Action _toggleFilterAction;
-
+    
     /**
      * Whether the filter is active.
      */
     private Boolean _isFilterActive = Boolean.FALSE;
-
+    
     /**
      * The root node of this alarm tree. Shall only be generated once per view!
      */
     private final IAlarmSubtreeNode _rootNode;
-
+    
     /**
      * Queue that stores all modifications that have to be applied to the LDAP store on
      * {@link SaveInLdapAction}.
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems =
         new ConcurrentLinkedQueue<ITreeModificationItem>();
-
+    
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
-
+    
     private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
-
-
+    
+    
     /**
      * Constructor.
      * Creates an LDAP tree viewer.
@@ -278,146 +277,7 @@ public class AlarmTreeView extends ViewPart {
                                             LdapEpicsAlarmcfgConfiguration.ROOT,
                                             TreeNodeSource.ROOT).build();
     }
-
-    /**
-     * Getter.
-     * @return the view's root node (not visible).
-     */
-    @Nonnull
-    public IAlarmSubtreeNode getRootNode() {
-        return _rootNode;
-    }
-    /**
-     * Getter.
-     * @return the alarm connection
-     */
-    @CheckForNull
-    public IAlarmConnection getConnection() {
-        return _connection;
-    }
-
-
-    /**
-     * Getter.
-     * @param the alarm listener
-     */
-    @CheckForNull
-    public AlarmMessageListener getAlarmListener() {
-        return _alarmListener;
-    }
-
-    /**
-     * Getter.
-     * @return the tree viewer
-     */
-    @CheckForNull
-    public TreeViewer getViewer() {
-        return _viewer;
-    }
-
-    /**
-     * Getter.
-     * @return the message area
-     */
-    @CheckForNull
-    public MessageArea getMessageArea() {
-        return _myMessageArea;
-    }
-
-    /**
-     * Getter.
-     * @return the reload action reference
-     */
-    @CheckForNull
-    public Action getReloadAction() {
-        return _reloadAction;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void createPartControl(@Nonnull final Composite parent) {
-
-        final GridLayout layout = new GridLayout(1, false);
-        layout.marginHeight = 0;
-        layout.marginWidth = 0;
-        parent.setLayout(layout);
-
-        _myMessageArea = new MessageArea(parent);
-
-        _viewer = createTreeViewer(parent);
-
-        _currentAlarmFilter = new CurrentAlarmFilter();
-
-        _alarmListener = new AlarmMessageListener(_rootNode);
-
-        initializeContextMenu();
-
-        createActions(_rootNode, _viewer, _alarmListener,
-                      getSite(), _currentAlarmFilter, _ldapModificationItems);
-
-        contributeToActionBars();
-
-        getSite().setSelectionProvider(_viewer);
-
-        startConnection();
-
-        addDragAndDropSupport();
-    }
-
-
-    /**
-     * @param parent
-     */
-    @Nonnull
-    private TreeViewer createTreeViewer(@Nonnull final Composite parent) {
-        final TreeViewer viewer = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
-
-        viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
-
-        viewer.setContentProvider(new AlarmTreeContentProvider());
-        viewer.setLabelProvider(new AlarmTreeLabelProvider());
-        viewer.setComparator(new ViewerComparator());
-
-        final ISelectionChangedListener selectionChangedListener =
-            new ISelectionChangedListener() {
-                public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-                    AlarmTreeView.this.selectionChanged(event);
-                }
-            };
-        viewer.addSelectionChangedListener(selectionChangedListener);
-
-        return viewer;
-    }
-
-    /**
-     * Starts the connection.
-     */
-    private void startConnection() {
-        LOG.debug("Starting connection.");
-
-        if (_connection != null) {
-            // There is still an old connection. This shouldn't happen.
-            _connection.disconnect();
-            LOG.warn("There was an active connection when starting a new connection");
-        }
-
-        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
-                .getAdapter(IWorkbenchSiteProgressService.class);
-
-        final Job connectionJob = createConnectionJob(this);
-
-        progressService.schedule(connectionJob, 0, true);
-    }
-
-    @Nonnull
-    private Job createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
-        final Job connectionJob = new ConnectionJob(alarmTreeView);
-
-        return connectionJob;
-    }
-
+    
     /**
      * Adds drag and drop support to the tree viewer.
      */
@@ -430,7 +290,7 @@ public class AlarmTreeView extends ViewPart {
         _viewer.addDropSupport(DND.DROP_COPY | DND.DROP_MOVE,
                                dropAdapter.getTransfers(),
                                dropAdapter);
-
+        
         final DelegatingDragAdapter dragAdapter = new DelegatingDragAdapter();
         dragAdapter.addDragSourceListener(new AlarmTreeLocalSelectionDragListener(this));
         dragAdapter.addDragSourceListener(new AlarmTreeProcessVariableDragListener(this));
@@ -439,49 +299,6 @@ public class AlarmTreeView extends ViewPart {
                                dragAdapter.getTransfers(),
                                dragAdapter);
     }
-
-    /**
-     * Starts a job which reads the contents of the directory in the background.
-     * @param rootNode
-     */
-    public void startImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
-        LOG.debug("Starting directory reader.");
-        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
-                .getAdapter(IWorkbenchSiteProgressService.class);
-
-        final Job importInitialConfigJob = createImportInitialConfigJob(rootNode);
-
-        // This means updates will be queued for later application.
-        _alarmListener.startUpdateProcessing();
-
-        // The directory is read in the background. Until then, set the viewer's
-        // input to a placeholder object.
-        _viewer.setInput(new Object[] {new PendingUpdateAdapter()});
-
-        // Start the directory reader job.
-        progressService.schedule(importInitialConfigJob, 0, true);
-    }
-
-    @Nonnull
-    private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
-                                                                       _ldapService,
-                                                                       rootNode);
-        importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
-
-        return importXmlFileJob;
-    }
-
-    @Nonnull
-    private Job createImportInitialConfigJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-
-        final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, CONFIG_SERVICE);
-
-        importInitConfigJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
-
-        return importInitConfigJob;
-    }
-
     /**
      * Sets the input for the tree. The actual work will be done asynchronously in the UI thread.
      *
@@ -494,101 +311,8 @@ public class AlarmTreeView extends ViewPart {
             }
         });
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public final void dispose() {
-        _connection.disconnect();
-        super.dispose();
-    }
-
-    /**
-     * Called when the selection of the tree changes.
-     *
-     * @param event the selection event.
-     */
-    private void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-        final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
-        _acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
-        _runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
-        _runCssDisplayAction.setEnabled(hasCssDisplay(sel.getFirstElement()));
-        _openCssStripChartAction.setEnabled(hasCssStripChart(sel.getFirstElement()));
-        _showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
-        _showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
-    }
-
-    /**
-     * Returns whether the given node has a CSS strip chart.
-     *
-     * @param node the node.
-     * @return <code>true</code> if the node has a strip chart, <code>false</code> otherwise.
-     */
-    private boolean hasCssStripChart(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null;
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether the given node has a CSS display.
-     *
-     * @param node the node.
-     * @return <code>true</code> if the node has a display, <code>false</code> otherwise.
-     */
-    private boolean hasCssDisplay(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null;
-        }
-        return false;
-    }
-
-    /**
-     * Return whether help guidance is available for the given node.
-     *
-     * @param node the node.
-     * @return <code>true</code> if the node has a help guidance string, <code>false</code>
-     *         otherwise.
-     */
-    private boolean hasHelpGuidance(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null;
-        }
-        return false;
-    }
-
-    /**
-     * Return whether the given node has an associated help page.
-     *
-     * @param node the node.
-     * @return <code>true</code> if the node has an associated help page, <code>false</code>
-     *         otherwise.
-     */
-    private boolean hasHelpPage(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null;
-        }
-        return false;
-    }
-
-    /**
-     * Returns whether the given process variable node in the tree has an associated CSS alarm
-     * display configured.
-     *
-     * @param node the node.
-     * @return <code>true</code> if a CSS alarm display is configured for the node,
-     *         <code>false</code> otherwise.
-     */
-    private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
-        if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
-            return (display != null) && display.matches(".+\\.css-sds");
-        }
-        return false;
-    }
-
+    
+    
     /**
      * Returns whether the given selection contains at least one node with an unacknowledged alarm.
      *
@@ -601,34 +325,11 @@ public class AlarmTreeView extends ViewPart {
         // Note: selectedElement is not instance of IAlarmTreeNode if nothing
         // is selected (selectedElement == null), and during initialization,
         // when it is an instance of PendingUpdateAdapter.
-        if (selectedElement instanceof IAlarmTreeNode) {
+        if (selectedElement instanceof IAlarmTreeNode)
             return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != Severity.NO_ALARM;
-        }
         return false;
     }
-
-    /**
-     * Adds a context menu to the tree view.
-     */
-    private void initializeContextMenu() {
-        final MenuManager menuMgr = new MenuManager("#PopupMenu");
-        menuMgr.setRemoveAllWhenShown(true);
-
-        // add menu items to the context menu when it is about to show
-        menuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(@Nullable final IMenuManager manager) {
-                AlarmTreeView.this.fillContextMenu(manager);
-            }
-        });
-
-        // add the context menu to the tree viewer
-        final Menu contextMenu = menuMgr.createContextMenu(_viewer.getTree());
-        _viewer.getTree().setMenu(contextMenu);
-
-        // register the context menu for extension by other plug-ins
-        getSite().registerContextMenu(menuMgr, _viewer);
-    }
-
+    
     /**
      * Adds tool buttons and menu items to the action bar of this view.
      */
@@ -636,69 +337,7 @@ public class AlarmTreeView extends ViewPart {
         final IActionBars bars = getViewSite().getActionBars();
         fillLocalToolBar(bars.getToolBarManager());
     }
-
-    /**
-     * Adds the context menu actions.
-     *
-     * @param menuManager the menu manager.
-     */
-    private void fillContextMenu(@Nullable final IMenuManager menuManager) {
-        if (menuManager == null) {
-            MessageDialog.openError(getSite().getShell(),
-                                    "Context menu",
-                                    "Internal error occurred when trying to open the context menu (IMenuManager is null).");
-            return;
-        }
-
-        final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
-        if (selection.size() > 0) {
-            menuManager.add(_acknowledgeAction);
-        }
-        if (selection.size() == 1) {
-            menuManager.add(_runCssAlarmDisplayAction);
-            menuManager.add(_runCssDisplayAction);
-            menuManager.add(_openCssStripChartAction);
-            menuManager.add(_showHelpGuidanceAction);
-            menuManager.add(_showHelpPageAction);
-            menuManager.add(new Separator("edit"));
-            menuManager.add(_deleteNodeAction);
-
-
-            final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
-            final LdapEpicsAlarmcfgConfiguration oc = firstElement.getTreeNodeConfiguration();
-
-            if (!LdapEpicsAlarmcfgConfiguration.RECORD.equals(oc)) {
-                menuManager.add(_createRecordAction);
-                menuManager.add(_createComponentAction);
-            }
-            if (!LdapEpicsAlarmcfgConfiguration.FACILITY.equals(oc)) {
-                menuManager.add(_renameAction);
-            } else {
-                menuManager.add(_saveAsXmlFileAction);
-            }
-        }
-
-        // adds a separator after which contributed actions from other plug-ins
-        // will be displayed
-        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
-    }
-
-    /**
-     * Adds the tool bar actions.
-     *
-     * @param manager the menu manager.
-     */
-    private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
-        manager.add(_toggleFilterAction);
-        manager.add(new Separator());
-        manager.add(_showPropertyViewAction);
-        manager.add(_saveInLdapAction);
-        manager.add(_reloadAction);
-        manager.add(new Separator());
-        manager.add(_importXmlFileAction);
-        manager.add(_exportXmlFileAction);
-    }
-
+    
     /**
      * Creates the actions offered by this view.
      * @param iWorkbenchPartSite
@@ -714,74 +353,390 @@ public class AlarmTreeView extends ViewPart {
                                @Nonnull final IWorkbenchPartSite site,
                                @Nonnull final ViewerFilter currentAlarmFilter,
                                @Nonnull final Queue<ITreeModificationItem> modificationItems) {
-
+        
         _reloadAction =
             AlarmTreeViewActionFactory.createReloadAction(createImportInitialConfigJob(rootNode),
                                                           site,
                                                           alarmListener,
                                                           viewer,
                                                           modificationItems);
-
+        
         _saveInLdapAction = AlarmTreeViewActionFactory.createSaveInLdapAction(rootNode,
                                                                               site,
                                                                               viewer,
                                                                               modificationItems);
-
+        
         _importXmlFileAction =
             AlarmTreeViewActionFactory.createImportXmlFileAction(createImportXmlFileJob(rootNode),
                                                                  site,
                                                                  alarmListener,
                                                                  viewer);
-
+        
         _exportXmlFileAction = AlarmTreeViewActionFactory.createExportXmlFileAction(site, rootNode);
-
-
+        
+        
         _acknowledgeAction = AlarmTreeViewActionFactory.createAcknowledgeAction(viewer);
-
+        
         _runCssAlarmDisplayAction = AlarmTreeViewActionFactory.createCssAlarmDisplayAction(viewer);
-
+        
         _runCssDisplayAction = AlarmTreeViewActionFactory.createRunCssDisplayAction(viewer);
-
+        
         _openCssStripChartAction = AlarmTreeViewActionFactory.createCssStripChartAction(site,
                                                                                         viewer);
-
+        
         _showHelpGuidanceAction = AlarmTreeViewActionFactory.createShowHelpGuidanceAction(site,
                                                                                           viewer);
-
+        
         _showHelpPageAction = AlarmTreeViewActionFactory.createShowHelpPageAction(viewer);
-
+        
         _createRecordAction = AlarmTreeViewActionFactory.createCreateRecordAction(site,
                                                                                   viewer,
                                                                                   modificationItems);
-
+        
         _createComponentAction = AlarmTreeViewActionFactory.createCreateComponentAction(site,
                                                                                         viewer,
                                                                                         modificationItems);
         _renameAction = AlarmTreeViewActionFactory.createRenameAction(site,
                                                                       viewer,
                                                                       modificationItems);
-
+        
         _deleteNodeAction = AlarmTreeViewActionFactory.createDeleteNodeAction(site,
                                                                               viewer,
                                                                               modificationItems);
-
+        
         _showPropertyViewAction = AlarmTreeViewActionFactory.createShowPropertyViewAction(site);
-
+        
         _toggleFilterAction =
             AlarmTreeViewActionFactory.createToggleFilterAction(this, viewer, currentAlarmFilter);
-
+        
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
     }
-
+    
+    @Nonnull
+    private Job createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
+        final Job connectionJob = new ConnectionJob(alarmTreeView);
+        
+        return connectionJob;
+    }
+    
+    @Nonnull
+    private Job createImportInitialConfigJob(@Nonnull final IAlarmSubtreeNode rootNode) {
+        
+        final Job importInitConfigJob = new ImportInitialConfigJob(this, rootNode, CONFIG_SERVICE);
+        
+        importInitConfigJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
+        
+        return importInitConfigJob;
+    }
+    
+    
+    @Nonnull
+    private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
+        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
+                                                                       _ldapService,
+                                                                       rootNode);
+        importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
+        
+        return importXmlFileJob;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void createPartControl(@Nonnull final Composite parent) {
+        
+        final GridLayout layout = new GridLayout(1, false);
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        parent.setLayout(layout);
+        
+        _myMessageArea = new MessageArea(parent);
+        
+        _viewer = createTreeViewer(parent);
+        
+        _currentAlarmFilter = new CurrentAlarmFilter();
+        
+        _alarmListener = new AlarmMessageListener(_rootNode);
+        
+        initializeContextMenu();
+        
+        createActions(_rootNode, _viewer, _alarmListener,
+                      getSite(), _currentAlarmFilter, _ldapModificationItems);
+        
+        contributeToActionBars();
+        
+        getSite().setSelectionProvider(_viewer);
+        
+        startConnection();
+        
+        addDragAndDropSupport();
+    }
+    
+    /**
+     * @param parent
+     */
+    @Nonnull
+    private TreeViewer createTreeViewer(@Nonnull final Composite parent) {
+        final TreeViewer viewer = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
+        
+        viewer.getControl().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        
+        viewer.setContentProvider(new AlarmTreeContentProvider());
+        viewer.setLabelProvider(new AlarmTreeLabelProvider());
+        viewer.setComparator(new ViewerComparator());
+        
+        final ISelectionChangedListener selectionChangedListener =
+            new ISelectionChangedListener() {
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+                AlarmTreeView.this.selectionChanged(event);
+            }
+        };
+        viewer.addSelectionChangedListener(selectionChangedListener);
+        
+        return viewer;
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void dispose() {
+        _connection.disconnect();
+        super.dispose();
+    }
+    
+    /**
+     * Adds the context menu actions.
+     *
+     * @param menuManager the menu manager.
+     */
+    private void fillContextMenu(@Nullable final IMenuManager menuManager) {
+        if (menuManager == null) {
+            MessageDialog.openError(getSite().getShell(),
+                                    Messages.AlarmTreeView_MessageDialog_ContextMenu_Error_Title,
+                                    Messages.AlarmTreeView_MessageDialog_ContextMenu_Error_Message);
+            return;
+        }
+        
+        final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
+        if (selection.size() > 0) {
+            menuManager.add(_acknowledgeAction);
+        }
+        if (selection.size() == 1) {
+            menuManager.add(_runCssAlarmDisplayAction);
+            menuManager.add(_runCssDisplayAction);
+            menuManager.add(_openCssStripChartAction);
+            menuManager.add(_showHelpGuidanceAction);
+            menuManager.add(_showHelpPageAction);
+            menuManager.add(new Separator(Messages.AlarmTreeView_Menu_Separator_Edit));
+            menuManager.add(_deleteNodeAction);
+            
+            
+            final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
+            final LdapEpicsAlarmcfgConfiguration oc = firstElement.getTreeNodeConfiguration();
+            
+            if (!LdapEpicsAlarmcfgConfiguration.RECORD.equals(oc)) {
+                menuManager.add(_createRecordAction);
+                menuManager.add(_createComponentAction);
+            }
+            if (!LdapEpicsAlarmcfgConfiguration.FACILITY.equals(oc)) {
+                menuManager.add(_renameAction);
+            } else {
+                menuManager.add(_saveAsXmlFileAction);
+            }
+        }
+        
+        // adds a separator after which contributed actions from other plug-ins
+        // will be displayed
+        menuManager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
+    }
+    
+    /**
+     * Adds the tool bar actions.
+     *
+     * @param manager the menu manager.
+     */
+    private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
+        manager.add(_toggleFilterAction);
+        manager.add(new Separator());
+        manager.add(_showPropertyViewAction);
+        manager.add(_saveInLdapAction);
+        manager.add(_reloadAction);
+        manager.add(new Separator());
+        manager.add(_importXmlFileAction);
+        manager.add(_exportXmlFileAction);
+    }
+    
+    /**
+     * Getter.
+     * @param the alarm listener
+     */
+    @CheckForNull
+    public AlarmMessageListener getAlarmListener() {
+        return _alarmListener;
+    }
+    
+    /**
+     * Getter.
+     * @return the alarm connection
+     */
+    @CheckForNull
+    public IAlarmConnection getConnection() {
+        return _connection;
+    }
+    
     @Nonnull
     public Boolean getIsFilterActive() {
         return _isFilterActive;
     }
-
-    public void setIsFilterActive(@Nonnull final Boolean isFilterActive) {
-        _isFilterActive = isFilterActive;
+    
+    /**
+     * Getter.
+     * @return the message area
+     */
+    @CheckForNull
+    public MessageArea getMessageArea() {
+        return _myMessageArea;
     }
-
+    
+    /**
+     * Getter.
+     * @return the reload action reference
+     */
+    @CheckForNull
+    public Action getReloadAction() {
+        return _reloadAction;
+    }
+    
+    /**
+     * Getter.
+     * @return the view's root node (not visible).
+     */
+    @Nonnull
+    public IAlarmSubtreeNode getRootNode() {
+        return _rootNode;
+    }
+    
+    /**
+     * Getter.
+     * @return the tree viewer
+     */
+    @CheckForNull
+    public TreeViewer getViewer() {
+        return _viewer;
+    }
+    
+    /**
+     * Returns whether the given process variable node in the tree has an associated CSS alarm
+     * display configured.
+     *
+     * @param node the node.
+     * @return <code>true</code> if a CSS alarm display is configured for the node,
+     *         <code>false</code> otherwise.
+     */
+    private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
+        if (node instanceof IAlarmTreeNode) {
+            final String display = ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
+            return display != null && display.matches(".+\\.css-sds");
+        }
+        return false;
+    }
+    
+    /**
+     * Returns whether the given node has a CSS display.
+     *
+     * @param node the node.
+     * @return <code>true</code> if the node has a display, <code>false</code> otherwise.
+     */
+    private boolean hasCssDisplay(@Nonnull final Object node) {
+        if (node instanceof IAlarmTreeNode)
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null;
+        return false;
+    }
+    
+    /**
+     * Returns whether the given node has a CSS strip chart.
+     *
+     * @param node the node.
+     * @return <code>true</code> if the node has a strip chart, <code>false</code> otherwise.
+     */
+    private boolean hasCssStripChart(@Nonnull final Object node) {
+        if (node instanceof IAlarmTreeNode)
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null;
+        return false;
+    }
+    
+    /**
+     * Return whether help guidance is available for the given node.
+     *
+     * @param node the node.
+     * @return <code>true</code> if the node has a help guidance string, <code>false</code>
+     *         otherwise.
+     */
+    private boolean hasHelpGuidance(@Nonnull final Object node) {
+        if (node instanceof IAlarmTreeNode)
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null;
+        return false;
+    }
+    
+    /**
+     * Return whether the given node has an associated help page.
+     *
+     * @param node the node.
+     * @return <code>true</code> if the node has an associated help page, <code>false</code>
+     *         otherwise.
+     */
+    private boolean hasHelpPage(@Nonnull final Object node) {
+        if (node instanceof IAlarmTreeNode)
+            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null;
+        return false;
+    }
+    
+    /**
+     * Adds a context menu to the tree view.
+     */
+    private void initializeContextMenu() {
+        final MenuManager menuMgr = new MenuManager("#PopupMenu");
+        menuMgr.setRemoveAllWhenShown(true);
+        
+        // add menu items to the context menu when it is about to show
+        menuMgr.addMenuListener(new IMenuListener() {
+            public void menuAboutToShow(@Nullable final IMenuManager manager) {
+                AlarmTreeView.this.fillContextMenu(manager);
+            }
+        });
+        
+        // add the context menu to the tree viewer
+        final Menu contextMenu = menuMgr.createContextMenu(_viewer.getTree());
+        _viewer.getTree().setMenu(contextMenu);
+        
+        // register the context menu for extension by other plug-ins
+        getSite().registerContextMenu(menuMgr, _viewer);
+    }
+    
+    /**
+     * Refreshes this view.
+     */
+    public final void refresh() {
+        _viewer.refresh();
+    }
+    
+    /**
+     * Called when the selection of the tree changes.
+     *
+     * @param event the selection event.
+     */
+    private void selectionChanged(@Nonnull final SelectionChangedEvent event) {
+        final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
+        _acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
+        _runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
+        _runCssDisplayAction.setEnabled(hasCssDisplay(sel.getFirstElement()));
+        _openCssStripChartAction.setEnabled(hasCssStripChart(sel.getFirstElement()));
+        _showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
+        _showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
+    }
+    
     /**
      * Passes the focus request to the viewer's control.
      */
@@ -789,11 +744,50 @@ public class AlarmTreeView extends ViewPart {
     public final void setFocus() {
         _viewer.getControl().setFocus();
     }
-
+    
+    public void setIsFilterActive(@Nonnull final Boolean isFilterActive) {
+        _isFilterActive = isFilterActive;
+    }
+    
     /**
-     * Refreshes this view.
+     * Starts the connection.
      */
-    public final void refresh() {
-        _viewer.refresh();
+    private void startConnection() {
+        LOG.debug("Starting connection.");
+        
+        if (_connection != null) {
+            // There is still an old connection. This shouldn't happen.
+            _connection.disconnect();
+            LOG.warn("There was an active connection when starting a new connection");
+        }
+        
+        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
+        .getAdapter(IWorkbenchSiteProgressService.class);
+        
+        final Job connectionJob = createConnectionJob(this);
+        
+        progressService.schedule(connectionJob, 0, true);
+    }
+    
+    /**
+     * Starts a job which reads the contents of the directory in the background.
+     * @param rootNode
+     */
+    public void startImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
+        LOG.debug("Starting directory reader.");
+        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
+        .getAdapter(IWorkbenchSiteProgressService.class);
+        
+        final Job importInitialConfigJob = createImportInitialConfigJob(rootNode);
+        
+        // This means updates will be queued for later application.
+        _alarmListener.startUpdateProcessing();
+        
+        // The directory is read in the background. Until then, set the viewer's
+        // input to a placeholder object.
+        _viewer.setInput(new Object[] {new PendingUpdateAdapter()});
+        
+        // Start the directory reader job.
+        progressService.schedule(importInitialConfigJob, 0, true);
     }
 }

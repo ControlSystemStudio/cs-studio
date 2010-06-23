@@ -31,6 +31,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeConnectionMonitor;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
+import org.csstudio.alarm.treeView.views.Messages;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -45,10 +46,10 @@ import org.eclipse.core.runtime.jobs.Job;
  * @since 22.06.2010
  */
 public final class ConnectionJob extends Job {
-
+    
     private final AlarmTreeView _view;
     private IAlarmConnection _connection;
-
+    
     /**
      * Constructor.
      * @param name
@@ -57,38 +58,37 @@ public final class ConnectionJob extends Job {
         super("Connecting via alarm service");
         _view = view;
     }
-
+    
+    @Nonnull
+    private IAlarmResource newAlarmResource() {
+        // JMS: topics: default,    facilities: don't care,      filename: don't care
+        // DAL: topics: don't care, facilities: from tree prefs, filename: ok
+        final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
+        .newAlarmResource(null, AlarmPreference.getFacilityNames(), null);
+        return alarmResource;
+    }
+    
     @Override
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
-        monitor.beginTask("Connecting via alarm service", IProgressMonitor.UNKNOWN);
+        monitor.beginTask(Messages.AlarmTreeView_Monitor_ConnectionJob_Start, IProgressMonitor.UNKNOWN);
         _connection = AlarmTreePlugin.getDefault().getAlarmService().newAlarmConnection();
         try {
             final AlarmMessageListener listener = _view.getAlarmListener();
-            if (listener == null) {
+            if (listener == null)
                 throw new IllegalStateException("Listener of " +
                                                 AlarmTreeView.class.getName() + " mustn't be null.");
-            }
             final IAlarmResource alarmResource = newAlarmResource();
             final AlarmTreeConnectionMonitor connectionMonitor =
                 new AlarmTreeConnectionMonitor(_view, _view.getRootNode());
             _connection.connectWithListenerForResource(connectionMonitor,
                                                        listener,
                                                        alarmResource);
-
+            
         } catch (final AlarmConnectionException e) {
             throw new RuntimeException("Could not connect via alarm service", e);
         }
         return Status.OK_STATUS;
-
+        
     }
-
-    @Nonnull
-    private IAlarmResource newAlarmResource() {
-        // JMS: topics: default,    facilities: don't care,      filename: don't care
-        // DAL: topics: don't care, facilities: from tree prefs, filename: ok
-        final IAlarmResource alarmResource = AlarmTreePlugin.getDefault().getAlarmService()
-                .newAlarmResource(null, AlarmPreference.getFacilityNames(), null);
-        return alarmResource;
-    }
-
+    
 }
