@@ -17,6 +17,9 @@
 
 package org.csstudio.alarm.table.preferences;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.Nonnull;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -51,27 +54,33 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
 	private TopicTableEditorMouseListener _topicTableEditorMouseListener;
 
-	/**
-	 * Creates a new list field editor
-	 */
-	protected PreferenceTopicTableEditor() {
-	}
+	private final List<ColumnDescription> _columnDescriptions;
 
-	/**
-	 * Creates a list field editor.
-	 *
-	 * @param name
-	 *            the name of the preference this field editor works on
-	 * @param labelText
-	 *            the label text of the field editor
-	 * @param parent
-	 *            the parent of the field editor's control
-	 * @param preferenceColumnTableEditor
-	 */
-	public PreferenceTopicTableEditor(final String name, final String labelText,
-			final Composite parent) {
-		super(name, labelText, parent);
-	}
+	public PreferenceTopicTableEditor(@Nonnull final List<ColumnDescription> columnDescriptions) {
+	    super();
+	    _columnDescriptions = new ArrayList<ColumnDescription>();
+	    for (ColumnDescription columnDescription : columnDescriptions) {
+	        _columnDescriptions.add(columnDescription);
+	    }
+    }
+
+
+    /**
+     * Initializes the field editor.
+     *
+     * @param name
+     *            the name of the preference this field editor works on
+     * @param labelText
+     *            the label text of the field editor
+     * @param parent
+     *            the parent of the field editor's control
+     */
+    public void init(@Nonnull final String name,
+                     @Nonnull final String labelText,
+                     @Nonnull final Composite parent) {
+        init(name, labelText);
+        createControl(parent);
+    }
 
 	/**
 	 * Notifies that the Add button has been pressed. A new tableItem is set at
@@ -82,10 +91,10 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 		int itemNumber = tableViewer.getTable().getItemCount();
 		TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE,
 				itemNumber);
-		for (ColumnDescription columnDescription : ColumnDescription.values()) {
+		for (ColumnDescription columnDescription : _columnDescriptions) {
 		    String defaultValue = columnDescription.getDefaultValue();
 		    if (defaultValue != null) {
-		        item.setText(columnDescription.getColumnIndex(), defaultValue);
+		        item.setText(_columnDescriptions.indexOf(columnDescription), defaultValue);
             }
         }
 	}
@@ -112,10 +121,11 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * @return the combined string
 	 * @see #parseString
 	 */
-    protected String createList(final TableItem[] items) {
+	@Nonnull
+    protected String createList(@Nonnull final TableItem[] items) {
         StringBuffer preferenceString = new StringBuffer();
         for (TableItem tableItem : items) {
-            for (ColumnDescription columnDescription : ColumnDescription.values()) {
+            for (ColumnDescription columnDescription : _columnDescriptions) {
                 appendStringForColumn(preferenceString, tableItem, columnDescription);
                 appendSeparator(preferenceString, columnDescription);
             }
@@ -195,8 +205,8 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 
-			for (ColumnDescription columnDescription : ColumnDescription.values()) {
-			    TableColumn column = new TableColumn(table, SWT.LEFT, columnDescription.getColumnIndex());
+			for (ColumnDescription columnDescription : _columnDescriptions) {
+			    TableColumn column = new TableColumn(table, SWT.LEFT, _columnDescriptions.indexOf(columnDescription));
 			    column.setText(columnDescription.getTitle());
 			    column.setWidth(columnDescription.getColumnWidth());
             }
@@ -259,7 +269,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
 	public int getNumberOfControls() {
-		return ColumnDescription.values().length;
+		return _columnDescriptions.size();
 	}
 
 	/**

@@ -92,22 +92,6 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	}
 
 	/**
-	 * Creates a list field editor.
-	 *
-	 * @param name
-	 *            the name of the preference this field editor works on
-	 * @param labelText
-	 *            the label text of the field editor
-	 * @param parent
-	 *            the parent of the field editor's control
-	 */
-	public PreferenceTableEditor(final String name, final String labelText,
-			final Composite parent) {
-		init(name, labelText);
-		createControl(parent);
-	}
-
-	/**
 	 * Notifies that the Add button has been pressed. A new tableItem is set at
 	 * the end of the table with initial stings that the user has to adjust.
 	 */

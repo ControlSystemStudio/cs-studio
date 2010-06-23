@@ -20,6 +20,8 @@ package org.csstudio.alarm.table.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -68,23 +70,27 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	/**
 	 * Creates a new list field editor
 	 */
-	protected PreferenceColumnTableEditor() {
+	public PreferenceColumnTableEditor() {
+	    super();
 	}
 
-	/**
-	 * Creates a list field editor.
-	 *
-	 * @param name
-	 *            the name of the preference this field editor works on
-	 * @param labelText
-	 *            the label text of the field editor
-	 * @param parent
-	 *            the parent of the field editor's control
-	 */
-	public PreferenceColumnTableEditor(final String name, final String labelText,
-			final Composite parent) {
-		super(name, labelText, parent);
-	}
+    /**
+     * Initializes the field editor.
+     *
+     * @param name
+     *            the name of the preference this field editor works on
+     * @param labelText
+     *            the label text of the field editor
+     * @param parent
+     *            the parent of the field editor's control
+     */
+    public void init(@Nonnull final String name,
+                     @Nonnull final String labelText,
+                     @Nonnull final Composite parent) {
+        init(name, labelText);
+        createControl(parent);
+    }
+
 
 	/**
 	 * Notifies that the Add button has been pressed. A new tableItem is set at

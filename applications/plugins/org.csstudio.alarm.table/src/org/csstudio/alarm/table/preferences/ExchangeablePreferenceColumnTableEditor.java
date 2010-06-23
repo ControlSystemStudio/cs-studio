@@ -17,6 +17,8 @@
 
 package org.csstudio.alarm.table.preferences;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
@@ -37,7 +39,8 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	/**
 	 * Creates a new list field editor
 	 */
-	protected ExchangeablePreferenceColumnTableEditor() {
+	public ExchangeablePreferenceColumnTableEditor() {
+	    super();
 	}
 
 	/**
@@ -50,9 +53,10 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	 * @param parent
 	 *            the parent of the field editor's control
 	 */
-	public ExchangeablePreferenceColumnTableEditor(final String name, final String labelText,
-			final Composite parent) {
-		super(name, labelText, parent);
+	public void init(@Nonnull final String name, @Nonnull final String labelText,
+	                 @Nonnull final Composite parent) {
+        init(name, labelText);
+        createControl(parent);
 		_row = -1;
 	}
 
