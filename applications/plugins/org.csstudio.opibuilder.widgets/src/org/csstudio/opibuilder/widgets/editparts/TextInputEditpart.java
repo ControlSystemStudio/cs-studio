@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import java.text.DecimalFormat;
+import java.text.ParseException;
+
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -7,6 +10,10 @@ import org.csstudio.opibuilder.widgets.figures.LabelFigure;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
+import org.csstudio.platform.data.INumericMetaData;
+import org.csstudio.platform.data.IValue;
+import org.csstudio.utility.pv.PV;
+import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -18,6 +25,8 @@ import org.eclipse.gef.RequestConstants;
  */
 public class TextInputEditpart extends TextIndicatorEditPart {
 
+	private PVListener pvLoadLimitsListener;
+	private INumericMetaData meta = null;
 	
 	@Override
 	public TextInputModel getWidgetModel() {
@@ -35,6 +44,43 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	public void activate() {
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		super.activate();
+	}
+	
+	@Override
+	protected void doActivate() {	
+		super.doActivate();
+		registerLoadLimitsListener();
+	}
+
+
+	/**
+	 * 
+	 */
+	private void registerLoadLimitsListener() {
+		if(getExecutionMode() == ExecutionMode.RUN_MODE){
+			final TextInputModel model = getWidgetModel();
+			if(model.isLimitsFromPV()){
+				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+				if(pv != null){	
+					if(pvLoadLimitsListener == null)
+						pvLoadLimitsListener = new PVListener() {				
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof INumericMetaData){
+									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+									if(meta == null || !meta.equals(new_meta)){
+										meta = new_meta;
+										model.setPropertyValue(TextInputModel.PROP_MAX,	meta.getDisplayHigh());
+										model.setPropertyValue(TextInputModel.PROP_MIN,	meta.getDisplayLow());								
+									}
+								}
+							}					
+							public void pvDisconnected(PV pv) {}
+						};
+					pv.addListener(pvLoadLimitsListener);				
+				}
+			}
+		}
 	}
 	
 	@Override
@@ -77,7 +123,18 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 							break;
 						case DEFAULT:
 						default:
-							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+							try {
+								DecimalFormat format = new DecimalFormat();
+								double value = format.parse(text).doubleValue();
+								double min = getWidgetModel().getMinimum();
+								double max = getWidgetModel().getMaximum();
+								double coValue = Math.max(min, Math.min(value, max));
+								if(coValue != value)
+									((LabelFigure)figure).setText(format.format(coValue));
+								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, coValue);
+							} catch (ParseException e) {
+								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
+							}
 							break;
 						}
 					return false;
@@ -85,9 +142,29 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 			};			
 			setPropertyChangeHandler(LabelModel.PROP_TEXT, handler);
 		}
+		
+		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				registerLoadLimitsListener();
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
 	
 	}
 	
+	@Override
+	protected void doDeActivate() {
+		super.doDeActivate();
+		if(getWidgetModel().isLimitsFromPV()){
+			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
+			if(pv != null && pvLoadLimitsListener != null){	
+				pv.removeListener(pvLoadLimitsListener);
+			}
+		}
+		
+	}
 	
 	@Override
 	public void performRequest(Request request){
