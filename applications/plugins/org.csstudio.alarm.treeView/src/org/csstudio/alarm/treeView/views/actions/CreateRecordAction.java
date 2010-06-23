@@ -20,20 +20,13 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import java.util.Queue;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
-import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
-import org.csstudio.alarm.treeView.views.NodeNameInputValidator;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
@@ -44,10 +37,7 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @version $Revision$
  * @since 14.06.2010
  */
-public final class CreateRecordAction extends Action {
-    private final IWorkbenchPartSite _site;
-    private final TreeViewer _viewer;
-    private final Queue<ITreeModificationItem> _ldapModificationItems;
+public final class CreateRecordAction extends AbstractCreateComponentAction {
 
     /**
      * Constructor.
@@ -58,46 +48,17 @@ public final class CreateRecordAction extends Action {
     CreateRecordAction(@Nonnull final IWorkbenchPartSite site,
                        @Nonnull final TreeViewer viewer,
                        @Nonnull final Queue<ITreeModificationItem> modificationItems) {
-        _site = site;
-        _viewer = viewer;
-        _ldapModificationItems = modificationItems;
+        super(site, viewer, modificationItems);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws DirectoryEditException
+     */
     @Override
-    public void run() {
-        final IStructuredSelection selection = (IStructuredSelection) _viewer.getSelection();
-        final Object selected = selection.getFirstElement();
-        if (selected instanceof SubtreeNode) {
-            final SubtreeNode parent = (SubtreeNode) selected;
-            final String name = promptForRecordName();
-            if ( (name != null) && !name.equals("")) {
-                try {
-                    final ITreeModificationItem item =
-                        DirectoryEditor.createProcessVariableRecord(parent, name);
-                    if (item != null) {
-                        _ldapModificationItems.add(item);
-                    }
-                } catch (final DirectoryEditException e) {
-                    MessageDialog.openError(_site.getShell(),
-                                            "Create New Record",
-                                            "Could not create the new record: "
-                                            + e.getMessage());
-                }
-                _viewer.refresh(parent);
-            }
-        }
-    }
-
-    @CheckForNull
-    private String promptForRecordName() {
-        final InputDialog dialog = new InputDialog(_site.getShell(),
-                                                   "Create New Record",
-                                                   "Record name:",
-                                                   null,
-                                                   new NodeNameInputValidator());
-        if (Window.OK == dialog.open()) {
-            return dialog.getValue();
-        }
-        return null;
+    @Nonnull
+    protected ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
+                                                    @Nonnull final String name) throws DirectoryEditException {
+        return DirectoryEditor.createProcessVariableRecord(parent, name);
     }
 }
