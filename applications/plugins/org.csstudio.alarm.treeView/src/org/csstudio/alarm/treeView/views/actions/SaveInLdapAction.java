@@ -72,11 +72,15 @@ public final class SaveInLdapAction extends Action {
                     final ITreeModificationItem item = _ldapModifications.poll();
                     failedMod = item.getDescription();
                     item.apply();
-                    appliedMods.add("\n-" + item.getDescription());
+                    appliedMods.add(item.getDescription() + "\n");
                 }
+
+                final String summary = appliedMods.isEmpty() ? "No LDAP Modifications!" :
+                                                               ("Applied Modifications:\n" + appliedMods);
+
                 MessageDialog.openConfirm(_site.getShell(),
                                           "LDAP persistence status of recent tree modification.",
-                                          "Applied Modifications:\n" + appliedMods);
+                                          summary);
             } catch (final AlarmTreeModificationException e) {
 
                 for (final ITreeModificationItem item : _ldapModifications) {
@@ -84,9 +88,7 @@ public final class SaveInLdapAction extends Action {
                 }
                 MessageDialog.openInformation(_site.getShell(),
                                               "LDAP persistence status of recent tree modification.",
-                                              "Applied Modifications:\n" + appliedMods +
-                                              "\n\nFailed Modification:\n" + failedMod +
-                                              "\n\nNot Applied Modifications:\n\n" + notAppliedMods);
+                                              "Applied Modifications:\n" + appliedMods + "\n\nFailed Modification:\n" + failedMod + "\n\nNot Applied Modifications:\n\n" + notAppliedMods);
 
 
             }
