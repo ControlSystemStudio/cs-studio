@@ -117,29 +117,37 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void doActivate() {
 		super.doActivate();
+		registerLoadItemsListener();
+	}
+
+	/**
+	 * 
+	 */
+	private void registerLoadItemsListener() {
 		//load items from PV
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			if(getWidgetModel().isItemsFromPV()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){	
-					loadItemsFromPVListener = new PVListener() {					
-						public void pvValueUpdate(PV pv) {
-							IValue value = pv.getValue();
-							if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
-								IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
-								if(meta  == null || !meta.equals(new_meta)){
-									meta = new_meta;
-									List<String> itemsFromPV = new ArrayList<String>();
-									for(String writeValue : meta.getStates()){										
-										itemsFromPV.add(writeValue);
+					if(loadItemsFromPVListener == null)
+						loadItemsFromPVListener = new PVListener() {					
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
+									IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
+									if(meta  == null || !meta.equals(new_meta)){
+										meta = new_meta;
+										List<String> itemsFromPV = new ArrayList<String>();
+										for(String writeValue : meta.getStates()){										
+											itemsFromPV.add(writeValue);
+										}
+										getWidgetModel().setPropertyValue(
+												ComboModel.PROP_ITEMS, itemsFromPV);
 									}
-									getWidgetModel().setPropertyValue(
-											ComboModel.PROP_ITEMS, itemsFromPV);
 								}
-							}
-						}					
-						public void pvDisconnected(PV pv) {}
-					};
+							}					
+							public void pvDisconnected(PV pv) {}
+						};
 					pv.addListener(loadItemsFromPVListener);				
 				}
 			}
@@ -151,7 +159,7 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 		super.doDeActivate();
 		if(getWidgetModel().isItemsFromPV()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null){	
+			if(pv != null && loadItemsFromPVListener !=null){	
 				pv.removeListener(loadItemsFromPVListener);
 			}
 		}
@@ -163,6 +171,16 @@ public final class ComboEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				registerLoadItemsListener();
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+	
+		
 		autoSizeWidget((ComboFigure) getFigure());
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {

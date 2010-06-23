@@ -148,32 +148,40 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void doActivate() {
 		super.doActivate();
+		registerLoadActionsListener();
+	}
+
+	/**
+	 * 
+	 */
+	private void registerLoadActionsListener() {
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			if(getWidgetModel().isActionsFromPV()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){	
-					loadActionsFromPVListener = new PVListener() {					
-						public void pvValueUpdate(PV pv) {
-							IValue value = pv.getValue();
-							if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
-								IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
-								if(meta  == null || !meta.equals(new_meta)){
-									meta = new_meta;
-									ActionsInput actionsInput = new ActionsInput();
-									for(String writeValue : meta.getStates()){
-										WritePVAction action = new WritePVAction();
-										action.setPropertyValue(WritePVAction.PROP_PVNAME, getWidgetModel().getPVName());
-										action.setPropertyValue(WritePVAction.PROP_VALUE, writeValue);
-										actionsInput.getActionsList().add(action);
+					if(loadActionsFromPVListener == null)
+						loadActionsFromPVListener = new PVListener() {					
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof IEnumeratedMetaData){
+									IEnumeratedMetaData new_meta = (IEnumeratedMetaData)value.getMetaData();
+									if(meta  == null || !meta.equals(new_meta)){
+										meta = new_meta;
+										ActionsInput actionsInput = new ActionsInput();
+										for(String writeValue : meta.getStates()){
+											WritePVAction action = new WritePVAction();
+											action.setPropertyValue(WritePVAction.PROP_PVNAME, getWidgetModel().getPVName());
+											action.setPropertyValue(WritePVAction.PROP_VALUE, writeValue);
+											actionsInput.getActionsList().add(action);
+										}
+										getWidgetModel().setPropertyValue(
+												AbstractWidgetModel.PROP_ACTIONS, actionsInput);
+										
 									}
-									getWidgetModel().setPropertyValue(
-											AbstractWidgetModel.PROP_ACTIONS, actionsInput);
-									
 								}
-							}
-						}					
-						public void pvDisconnected(PV pv) {}
-					};
+							}					
+							public void pvDisconnected(PV pv) {}
+						};
 					pv.addListener(loadActionsFromPVListener);				
 				}
 			}
@@ -185,7 +193,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 		super.doDeActivate();
 		if(getWidgetModel().isActionsFromPV()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null){	
+			if(pv != null && loadActionsFromPVListener != null){	
 				pv.removeListener(loadActionsFromPVListener);
 			}
 		}
@@ -197,6 +205,15 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	protected void registerPropertyChangeHandlers() {
+		IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+				registerLoadActionsListener();
+				return false;
+			}
+		};		
+		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+	
 		
 		// PV_Value
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {

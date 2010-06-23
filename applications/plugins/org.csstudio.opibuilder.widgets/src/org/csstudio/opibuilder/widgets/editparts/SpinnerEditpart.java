@@ -83,25 +83,34 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	@Override
 	protected void doActivate() {
 		super.doActivate();
+		registerLoadLimitsListener();
+	}
+
+
+	/**
+	 * 
+	 */
+	private void registerLoadLimitsListener() {
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
 			final SpinnerModel model = getWidgetModel();
 			if(model.isLimitsFromPV()){
 				PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
 				if(pv != null){	
-					pvLoadLimitsListener = new PVListener() {				
-						public void pvValueUpdate(PV pv) {
-							IValue value = pv.getValue();
-							if (value != null && value.getMetaData() instanceof INumericMetaData){
-								INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
-								if(meta == null || !meta.equals(new_meta)){
-									meta = new_meta;
-									model.setPropertyValue(SpinnerModel.PROP_MAX,	meta.getDisplayHigh());
-									model.setPropertyValue(SpinnerModel.PROP_MIN,	meta.getDisplayLow());								
+					if(pvLoadLimitsListener == null)
+						pvLoadLimitsListener = new PVListener() {				
+							public void pvValueUpdate(PV pv) {
+								IValue value = pv.getValue();
+								if (value != null && value.getMetaData() instanceof INumericMetaData){
+									INumericMetaData new_meta = (INumericMetaData)value.getMetaData();
+									if(meta == null || !meta.equals(new_meta)){
+										meta = new_meta;
+										model.setPropertyValue(SpinnerModel.PROP_MAX,	meta.getDisplayHigh());
+										model.setPropertyValue(SpinnerModel.PROP_MIN,	meta.getDisplayLow());								
+									}
 								}
-							}
-						}					
-						public void pvDisconnected(PV pv) {}
-					};
+							}					
+							public void pvDisconnected(PV pv) {}
+						};
 					pv.addListener(pvLoadLimitsListener);				
 				}
 			}
@@ -132,6 +141,16 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 				}
 			};			
 			setPropertyChangeHandler(SpinnerModel.PROP_TEXT, handler);
+			
+			IWidgetPropertyChangeHandler pvNameHandler = new IWidgetPropertyChangeHandler() {
+				
+				public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
+					registerLoadLimitsListener();
+					return false;
+				}
+			};		
+			setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVNAME, pvNameHandler);
+		
 			
 			//pv value
 			handler = new IWidgetPropertyChangeHandler() {				
@@ -254,7 +273,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		super.doDeActivate();
 		if(getWidgetModel().isLimitsFromPV()){
 			PV pv = getPV(AbstractPVWidgetModel.PROP_PVNAME);
-			if(pv != null){	
+			if(pv != null && pvLoadLimitsListener != null){	
 				pv.removeListener(pvLoadLimitsListener);
 			}
 		}
