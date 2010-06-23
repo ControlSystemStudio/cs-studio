@@ -134,7 +134,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
         Object object = SecureStore.getInstance().getObject(XMPP_USER_NAME);
         if (object instanceof String) {
             String new_name = (String) object;
-            if (!new_name.isEmpty()) {
+            if (new_name.length() > 0) {
                 userName = new_name;
             }
 
