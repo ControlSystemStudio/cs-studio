@@ -1,5 +1,7 @@
 package org.csstudio.alarm.table.preferences;
 
+import javax.annotation.Nonnull;
+
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.TableEditor;
@@ -18,13 +20,44 @@ import org.eclipse.swt.widgets.TableItem;
  * This class is a copy from the abstract eclipse class 'ListEditor' with
  * changes that now the items are not displayed in a 'List' but in a 'Table'. In
  * addition the items in the table are editable.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
-	private ExchangeablePreferenceColumnTableEditor _preferenceColumnTableEditor = null;
+	private static final String ITEM_SEPARATOR = ";";
+    private static final String INNER_ITEM_SEPARATOR_AS_REGEX = "\\?";
+    private static final String INNER_ITEM_SEPARATOR = "?";
+
+    private enum ColumnDescription {
+        DEFAULT("Default", 40), TOPICS("Topics", 150), NAME("Name", 150), POPUP_MODE("PopUp Mode", 80),
+        AUTO_START("Auto Start", 80), FONT("Font", 100);
+
+        private final String _title;
+        private final int _columnWidth;
+
+        private ColumnDescription(@Nonnull final String title, final int columnWidth) {
+            _title = title;
+            _columnWidth = columnWidth;
+        }
+
+        @Nonnull
+        public String getTitle() {
+            return _title;
+        }
+
+        public int getColumnWidth() {
+            return _columnWidth;
+        }
+
+        public int getColumnIndex() {
+            return ordinal();
+        }
+
+    }
+
+    private ExchangeablePreferenceColumnTableEditor _preferenceColumnTableEditor = null;
 
 	private TopicTableEditorMouseListener _topicTableEditorMouseListener;
 
@@ -36,7 +69,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
 	/**
 	 * Creates a list field editor.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the preference this field editor works on
 	 * @param labelText
@@ -45,14 +78,14 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 *            the parent of the field editor's control
 	 * @param preferenceColumnTableEditor
 	 */
-	public PreferenceTopicTableEditor(String name, String labelText,
-			Composite parent) {
+	public PreferenceTopicTableEditor(final String name, final String labelText,
+			final Composite parent) {
 		super(name, labelText, parent);
 	}
 
 	/**
 	 * Notifies that the Add button has been pressed. A new tableItem is set at
-	 * the end of the table with initial stings that the user has to adjust.
+	 * the end of the table with initial strings that the user has to adjust.
 	 */
 	void addPressed() {
 		setPresentsDefaultValue(false);
@@ -69,7 +102,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void adjustForNumColumns(int numColumns) {
+	protected void adjustForNumColumns(final int numColumns) {
 		Control control = getLabelControl();
 		((GridData) control.getLayoutData()).horizontalSpan = numColumns;
 		((GridData) tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
@@ -82,35 +115,35 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @param items
 	 *            the list of items
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	protected String createList(TableItem[] items) {
+	protected String createList(final TableItem[] items) {
 		StringBuffer preferenceString = new StringBuffer();
 		for (TableItem tableItem : items) {
 			// Is topic set to default
 			if (tableItem.getChecked()) {
 				preferenceString.append("default");
 			}
-			preferenceString.append("?");
+			preferenceString.append(INNER_ITEM_SEPARATOR);
 			// Set of topics
 			preferenceString.append(tableItem.getText(1));
-			preferenceString.append("?");
+			preferenceString.append(INNER_ITEM_SEPARATOR);
 			// Name for set of topics
 			preferenceString.append(tableItem.getText(2));
-			preferenceString.append("?");
+			preferenceString.append(INNER_ITEM_SEPARATOR);
 			// Is pop up mode set to true or false
 			preferenceString.append(tableItem.getText(3));
-			preferenceString.append("?");
+			preferenceString.append(INNER_ITEM_SEPARATOR);
 			// Is auto start mode set to true or false
 			preferenceString.append(tableItem.getText(4));
-			preferenceString.append("?");
+			preferenceString.append(INNER_ITEM_SEPARATOR);
 			// Selected font
 			preferenceString.append(tableItem.getText(5));
-			preferenceString.append(";");
+			preferenceString.append(ITEM_SEPARATOR);
 		}
 		return preferenceString.toString();
 	}
@@ -131,7 +164,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 			TableItem item;
 			for (int i = 0; i < array.length; i++) {
 				item = new TableItem(tableViewer.getTable(), SWT.NONE);
-				String[] tableRowFromPreferences = array[i].split("\\?");
+				String[] tableRowFromPreferences = array[i].split(INNER_ITEM_SEPARATOR_AS_REGEX);
 				if (tableRowFromPreferences[0].equals("default")) {
 					tableRowFromPreferences[0] = "";
 					item.setChecked(true);
@@ -155,37 +188,24 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
 	/**
 	 * Returns this field editor's table control.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent control
 	 * @return the list control
 	 */
-	public TableViewer getTableControl(Composite parent) {
+	public TableViewer getTableControl(final Composite parent) {
 		if (tableViewer == null) {
 			int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.CHECK;
 			Table table = new Table(parent, style);
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
-			TableColumn column;
-			column = new TableColumn(table, SWT.LEFT, 0);
-			column.setText("Default");
-			column.setWidth(40);
-			column = new TableColumn(table, SWT.LEFT, 1);
-			column.setText("Topics");
-			column.setWidth(150);
-			column = new TableColumn(table, SWT.LEFT, 2);
-			column.setText("Name");
-			column.setWidth(150);
-			column = new TableColumn(table, SWT.LEFT, 3);
-			column.setText("PupUp Mode");
-			column.setWidth(80);
-			column = new TableColumn(table, SWT.LEFT, 4);
-			column.setText("Auto Start");
-			column.setWidth(80);
-			column = new TableColumn(table, SWT.LEFT, 5);
-			column.setText("Font");
-			column.setWidth(100);
+
+			for (ColumnDescription columnDescription : ColumnDescription.values()) {
+			    TableColumn column = new TableColumn(table, SWT.LEFT, columnDescription.getColumnIndex());
+			    column.setText(columnDescription.getTitle());
+			    column.setWidth(columnDescription.getColumnWidth());
+            }
 
 			// Create an editor object to use for text editing
 			final TableEditor editor = new TableEditor(table);
@@ -196,7 +216,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 			tableViewer.getTable().setFont(parent.getFont());
 			tableViewer.getTable().addSelectionListener(getSelectionListener());
 			tableViewer.getTable().addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent event) {
+				public void widgetDisposed(final DisposeEvent event) {
 					tableViewer = null;
 				}
 			});
@@ -206,7 +226,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
 			table.addSelectionListener(new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent e) {
+				public void widgetSelected(final SelectionEvent e) {
 					// just the selection of 'checkbox' (detail 32) is of
 					// interest.
 					if (e.detail != 32) {
@@ -234,7 +254,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @return a new item
 	 */
 	protected String getNewInputObject() {
@@ -254,27 +274,27 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @param stringList
 	 *            the string
 	 * @return an array of <code>String</code>
 	 * @see #createList
 	 */
-	protected String[] parseString(String stringList) {
-		return stringList.split(";");
+	protected String[] parseString(final String stringList) {
+		return stringList.split(ITEM_SEPARATOR);
 	}
 
 
 	public void setColumnTableReference(
-			ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor) {
+			final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor) {
 		_preferenceColumnTableEditor = preferenceColumnTableEditor;
 	}
 
-	public void setRowOfTopicSelection(int i, String topicTitle) {
+	public void setRowOfTopicSelection(final int i, final String topicTitle) {
 		_preferenceColumnTableEditor.setSelectionToColumnEditor(i, topicTitle);
 	}
 
-	public void updateTopicTitle(String text) {
+	public void updateTopicTitle(final String text) {
 		_preferenceColumnTableEditor.updateTopicTitle(text);
 	}
 }
