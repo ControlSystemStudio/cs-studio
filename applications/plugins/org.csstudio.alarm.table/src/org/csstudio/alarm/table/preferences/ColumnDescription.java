@@ -17,19 +17,54 @@
 
 package org.csstudio.alarm.table.preferences;
 
-public interface ISeverityMapping {
-    /**
-     * returns the severity value for the severity key of this message.
-     *
-     * @return
-     */
-    public String findSeverityValue(String severityKey);
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
-    /**
-     * Returns the number of the severity. The number represents the level of
-     * the severity.
-     *
-     * @return
-     */
-    public int getSeverityNumber(String severityKey);
+/**
+ * Description of the columns contain the title header, the column width, default value and the like.
+ */
+enum ColumnDescription {
+    IS_DEFAULT_ENTRY("Default", 40),
+    TOPIC_SET("Topics", 150, "Topics"),
+    NAME_FOR_TOPIC_SET("Name", 150, "Name"),
+    POPUP_MODE("PopUp Mode", 80, "false"),
+    AUTO_START("Auto Start", 80, "false"),
+    FONT("Font", 100, "Tahoma,0,8");
+
+    private final String _title;
+    private final int _columnWidth;
+    private final String _defaultValue;
+
+    private ColumnDescription(@Nonnull final String title, final int columnWidth) {
+        this(title, columnWidth, null);
+    }
+
+    private ColumnDescription(@Nonnull final String title, final int columnWidth, @CheckForNull final String defaultValue) {
+        _title = title;
+        _columnWidth = columnWidth;
+        _defaultValue = defaultValue;
+    }
+
+    @Nonnull
+    public String getTitle() {
+        return _title;
+    }
+
+    public int getColumnWidth() {
+        return _columnWidth;
+    }
+
+    @CheckForNull
+    public String getDefaultValue() {
+        return _defaultValue;
+    }
+
+    public int getColumnIndex() {
+        return ordinal();
+    }
+
+    public boolean isLast() {
+        return ordinal() == (values().length - 1);
+    }
+
 }

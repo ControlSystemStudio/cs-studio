@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
+ * Association, (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN
+ * "../AS IS" BASIS. WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN
+ * ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS
+ * DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS
+ * AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE,
+ * SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE
+ * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
 package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
@@ -17,14 +34,14 @@ import org.eclipse.swt.widgets.TableItem;
 
 /**
  * Preference Table to set the names and widths of columns in message tables.
- * 
+ *
  * TODO: Previously this class has handled different column settings for each
  * topic set (now it is handles by the derived class
  * {@link ExchangeablePreferenceColumnTableEditor} ). There are still some parts
  * that should be moved to {@link ExchangeablePreferenceColumnTableEditor}.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 
@@ -56,7 +73,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 
 	/**
 	 * Creates a list field editor.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the preference this field editor works on
 	 * @param labelText
@@ -64,8 +81,8 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 * @param parent
 	 *            the parent of the field editor's control
 	 */
-	public PreferenceColumnTableEditor(String name, String labelText,
-			Composite parent) {
+	public PreferenceColumnTableEditor(final String name, final String labelText,
+			final Composite parent) {
 		super(name, labelText, parent);
 	}
 
@@ -94,13 +111,13 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @param items
 	 *            the list of items
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	protected String createList(TableItem[] items) {
+	protected String createList(final TableItem[] items) {
 		StringBuffer preferenceString = new StringBuffer();
 		for (TableItem tableItem : items) {
 			// Name
@@ -116,7 +133,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
+	protected void doFillIntoGrid(final Composite parent, final int numColumns) {
 		_topicSetName = new Label(parent, SWT.NONE);
 		GridData gdata = new GridData();
 		gdata.horizontalSpan = 2;
@@ -172,12 +189,12 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 
 	/**
 	 * Returns this field editor's table control.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent control
 	 * @return the list control
 	 */
-	public TableViewer getTableControl(Composite parent) {
+	public TableViewer getTableControl(final Composite parent) {
 		if (tableViewer == null) {
 			int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
@@ -200,7 +217,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 			tableViewer.getTable().setFont(parent.getFont());
 			tableViewer.getTable().addSelectionListener(getSelectionListener());
 			tableViewer.getTable().addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent event) {
+				public void widgetDisposed(final DisposeEvent event) {
 					tableViewer = null;
 				}
 			});
@@ -218,7 +235,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @return a new item
 	 */
 	protected String getNewInputObject() {
@@ -238,13 +255,13 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @param stringList
 	 *            the string
 	 * @return an array of <code>String</code>
 	 * @see #createList
 	 */
-	protected List<List<String[]>> parseString(String stringList) {
+	protected List<List<String[]>> parseString(final String stringList) {
 		List<List<String[]>> columnsSets = new ArrayList<List<String[]>>();
 
 		String[] tableColumns = stringList.split("\\?");
@@ -260,7 +277,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 		return columnsSets;
 	}
 
-	void setTableSettingsToPreferenceString(Table table) {
+	void setTableSettingsToPreferenceString(final Table table) {
 		if (0 <= _row) {
 			_currentColumnTableSet = new ArrayList<String[]>();
 			for (int i = 0; i < table.getItemCount(); i++) {

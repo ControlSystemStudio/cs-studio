@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
+ * Association, (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN
+ * "../AS IS" BASIS. WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN
+ * ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS
+ * DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS
+ * AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE,
+ * SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE
+ * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
 package org.csstudio.alarm.table.preferences;
 
 import org.eclipse.swt.SWT;
@@ -14,10 +31,10 @@ import org.eclipse.swt.widgets.Text;
 
 public class ColumnTableEditorMouseListener extends MouseAdapter {
 
-	private TableEditor _editor;
-	private PreferenceColumnTableEditor _preferenceColumnTableEditor;
+	private final TableEditor _editor;
+	private final PreferenceColumnTableEditor _preferenceColumnTableEditor;
 
-	public ColumnTableEditorMouseListener(TableEditor editor, PreferenceColumnTableEditor preferenceColumnTableEditor) {
+	public ColumnTableEditorMouseListener(final TableEditor editor, final PreferenceColumnTableEditor preferenceColumnTableEditor) {
 		_editor = editor;
 		_preferenceColumnTableEditor = preferenceColumnTableEditor;
 	}
@@ -28,7 +45,7 @@ public class ColumnTableEditorMouseListener extends MouseAdapter {
 	 * down.
 	 */
 	@Override
-	public void mouseDown(MouseEvent event) {
+	public void mouseDown(final MouseEvent event) {
 		// Dispose any existing editor
 		Control old = _editor.getEditor();
 		if (old != null)
@@ -39,7 +56,7 @@ public class ColumnTableEditorMouseListener extends MouseAdapter {
 	 * Make the selected cell editable with a double click. (Copy from an
 	 * internet example)
 	 */
-	public void mouseDoubleClick(MouseEvent event) {
+	public void mouseDoubleClick(final MouseEvent event) {
 		// Dispose any existing editor
 		Control old = _editor.getEditor();
 		if (old != null)
@@ -84,7 +101,7 @@ public class ColumnTableEditorMouseListener extends MouseAdapter {
 			// any time it's modified
 			final int col = column;
 			text.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent event) {
+				public void modifyText(final ModifyEvent event) {
 					_preferenceColumnTableEditor.updateColumnSettings();
 					// Set the text of the editor's control back into the cell
 					item.setText(col, text.getText());

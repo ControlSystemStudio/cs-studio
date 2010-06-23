@@ -1,3 +1,20 @@
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
+ * Association, (DESY), HAMBURG, GERMANY. THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN
+ * "../AS IS" BASIS. WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO
+ * EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+ * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
+ * THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN
+ * ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS
+ * DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS
+ * AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE,
+ * SUPPORT, UPDATES, ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE
+ * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
+ * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
+ * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+
 package org.csstudio.alarm.table.preferences;
 
 import org.eclipse.core.runtime.Assert;
@@ -24,9 +41,9 @@ import org.eclipse.swt.widgets.Widget;
  * This class is a copy from the abstract eclipse class 'ListEditor' with
  * changes that now the items are not displayed in a 'List' but in a 'Table'. In
  * addition the items in the table are editable.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public abstract class PreferenceTableEditor extends FieldEditor {
 
@@ -76,7 +93,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * Creates a list field editor.
-	 * 
+	 *
 	 * @param name
 	 *            the name of the preference this field editor works on
 	 * @param labelText
@@ -84,8 +101,8 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @param parent
 	 *            the parent of the field editor's control
 	 */
-	public PreferenceTableEditor(String name, String labelText,
-			Composite parent) {
+	public PreferenceTableEditor(final String name, final String labelText,
+			final Composite parent) {
 		init(name, labelText);
 		createControl(parent);
 	}
@@ -99,7 +116,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void adjustForNumColumns(int numColumns) {
+	protected void adjustForNumColumns(final int numColumns) {
 		Control control = getLabelControl();
 		((GridData) control.getLayoutData()).horizontalSpan = numColumns;
 		((GridData) tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
@@ -107,11 +124,11 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * Creates the Add, Remove, Up, and Down button in the given button box.
-	 * 
+	 *
 	 * @param box
 	 *            the box for the buttons
 	 */
-	private void createButtons(Composite box) {
+	private void createButtons(final Composite box) {
 		addButton = createPushButton(box, "ListEditor.add");//$NON-NLS-1$
 		removeButton = createPushButton(box, "ListEditor.remove");//$NON-NLS-1$
 		upButton = createPushButton(box, "ListEditor.up");//$NON-NLS-1$
@@ -124,7 +141,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @param items
 	 *            the list of items
 	 * @return the combined string
@@ -134,14 +151,14 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * Helper method to create a push button.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent control
 	 * @param key
 	 *            the resource name used to supply the button's label text
 	 * @return Button
 	 */
-	private Button createPushButton(Composite parent, String key) {
+	private Button createPushButton(final Composite parent, final String key) {
 		Button button = new Button(parent, SWT.PUSH);
 		button.setText(JFaceResources.getString(key));
 		button.setFont(parent.getFont());
@@ -160,7 +177,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 */
 	public void createSelectionListener() {
 		selectionListener = new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent event) {
+			public void widgetSelected(final SelectionEvent event) {
 				Widget widget = event.widget;
 				if (widget == addButton) {
 					addPressed();
@@ -177,7 +194,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 		};
 	}
 
-	protected void doFillIntoGrid(Composite parent, int numColumns) {
+	protected void doFillIntoGrid(final Composite parent, final int numColumns) {
 		Control control = getLabelControl(parent);
 		GridData gd = new GridData();
 		gd.horizontalSpan = numColumns;
@@ -226,12 +243,12 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/**
 	 * Returns this field editor's button box containing the Add, Remove, Up,
 	 * and Down button.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent control
 	 * @return the button box
 	 */
-	public Composite getButtonBoxControl(Composite parent) {
+	public Composite getButtonBoxControl(final Composite parent) {
 		if (buttonBox == null) {
 			buttonBox = new Composite(parent, SWT.NULL);
 			GridLayout layout = new GridLayout();
@@ -239,7 +256,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 			buttonBox.setLayout(layout);
 			createButtons(buttonBox);
 			buttonBox.addDisposeListener(new DisposeListener() {
-				public void widgetDisposed(DisposeEvent event) {
+				public void widgetDisposed(final DisposeEvent event) {
 					addButton = null;
 					removeButton = null;
 					upButton = null;
@@ -258,7 +275,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * Returns this field editor's table control.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent control
 	 * @return the list control
@@ -270,7 +287,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * <p>
 	 * Subclasses must implement this method.
 	 * </p>
-	 * 
+	 *
 	 * @return a new item
 	 */
 	protected abstract String getNewInputObject();
@@ -283,7 +300,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/**
 	 * Returns this field editor's selection listener. The listener is created
 	 * if necessary.
-	 * 
+	 *
 	 * @return the selection listener
 	 */
 	protected SelectionListener getSelectionListener() {
@@ -299,7 +316,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * This method is internal to the framework; subclassers should not call
 	 * this method.
 	 * </p>
-	 * 
+	 *
 	 * @return the shell
 	 */
 	protected Shell getShell() {
@@ -346,12 +363,12 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * Moves the currently selected item up or down.
-	 * 
+	 *
 	 * @param up
 	 *            <code>true</code> if the item should move up, and
 	 *            <code>false</code> if it should move down
 	 */
-	private void swap(boolean up) {
+	private void swap(final boolean up) {
 		setPresentsDefaultValue(false);
 		int index = tableViewer.getTable().getSelectionIndex();
 		int target = up ? index - 1 : index + 1;
@@ -381,7 +398,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * @see FieldEditor.setEnabled(boolean,Composite).
 	 */
-	public void setEnabled(boolean enabled, Composite parent) {
+	public void setEnabled(final boolean enabled, final Composite parent) {
 		super.setEnabled(enabled, parent);
 		getTableControl(parent).getTable().setEnabled(enabled);
 		addButton.setEnabled(enabled);
