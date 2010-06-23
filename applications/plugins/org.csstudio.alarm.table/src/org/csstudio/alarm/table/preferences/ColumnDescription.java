@@ -57,11 +57,6 @@ public enum ColumnDescription {
     }
 
     @Nonnull
-    public static ColumnDescription getColumnDescriptionForIndex(final int index) {
-        return ColumnDescription.values()[index];
-    }
-
-    @Nonnull
     public String getTitle() {
         return _title;
     }
@@ -79,13 +74,4 @@ public enum ColumnDescription {
     public MouseActionDescription getMouseActionDescription() {
         return _mouseActionDescription;
     }
-
-    public int getColumnIndex() {
-        return ordinal();
-    }
-
-    public boolean isLast() {
-        return ordinal() == (values().length - 1);
-    }
-
 }

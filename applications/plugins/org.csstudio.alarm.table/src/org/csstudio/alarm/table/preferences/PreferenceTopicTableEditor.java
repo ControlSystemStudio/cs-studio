@@ -18,6 +18,7 @@
 package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -126,8 +127,9 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
         StringBuffer preferenceString = new StringBuffer();
         for (TableItem tableItem : items) {
             for (ColumnDescription columnDescription : _columnDescriptions) {
-                appendStringForColumn(preferenceString, tableItem, columnDescription);
-                appendSeparator(preferenceString, columnDescription);
+                int columnIndex = _columnDescriptions.indexOf(columnDescription);
+                appendStringForColumn(preferenceString, tableItem, columnDescription, columnIndex);
+                appendSeparator(preferenceString, isLast(columnIndex));
             }
         }
         return preferenceString.toString();
@@ -135,25 +137,31 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
     private void appendStringForColumn(@Nonnull final StringBuffer preferenceString,
                                        @Nonnull final TableItem tableItem,
-                                       @Nonnull final ColumnDescription columnDescription) {
+                                       @Nonnull final ColumnDescription columnDescription,
+                                       final int columnIndex) {
         if (columnDescription == ColumnDescription.IS_DEFAULT_ENTRY) {
             // Special case for the checkbox
             if (tableItem.getChecked()) {
                 preferenceString.append("default");
             }
         } else {
-            preferenceString.append(tableItem.getText(columnDescription.getColumnIndex()));
+            preferenceString.append(tableItem.getText(columnIndex));
         }
     }
 
 
-	private void appendSeparator(@Nonnull final StringBuffer preferenceString, @Nonnull final ColumnDescription columnDescription) {
-        if (columnDescription.isLast()) {
+	private void appendSeparator(@Nonnull final StringBuffer preferenceString,
+	                             final boolean isLast) {
+        if (isLast) {
             preferenceString.append(ITEM_SEPARATOR);
         } else {
             preferenceString.append(INNER_ITEM_SEPARATOR);
         }
     }
+
+	private boolean isLast(final int columnIndex) {
+	    return columnIndex == (_columnDescriptions.size() - 1);
+	}
 
     /**
 	 * Set the file path and menu name set by the user from preferences in the
@@ -271,6 +279,11 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	public int getNumberOfControls() {
 		return _columnDescriptions.size();
 	}
+
+	@Nonnull
+	public List<ColumnDescription> getColumnDescriptions() {
+        return Collections.unmodifiableList(_columnDescriptions);
+    }
 
 	/**
 	 * Splits the given string into a list of strings. This method is the

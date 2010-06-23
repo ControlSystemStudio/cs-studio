@@ -104,7 +104,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 		final TableItem item = _table.getItem(pt);
 		if (item != null) {
 			int column = getColumnIndex(pt, item);
-			ColumnDescription columnDescription = ColumnDescription.getColumnDescriptionForIndex(column);
+			ColumnDescription columnDescription = _preferenceTopicTableEditor.getColumnDescriptions().get(column);
             switch (columnDescription.getMouseActionDescription()) {
                 case NO_ACTION:
                     break;
