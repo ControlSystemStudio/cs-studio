@@ -312,7 +312,7 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
-                retrieveInitialStateSynchronously(messageList);
+                retrieveInitialState(messageList);
                 _messageArea.hide();
             } catch (final AlarmConnectionException e) {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
@@ -333,10 +333,11 @@ public class LogView extends ViewPart {
      *
      * @param messageList
      */
-    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
+    protected void retrieveInitialState(@Nonnull final MessageList messageList) {
         // LogView does no initialization
     }
 
+    @Nonnull
     private Integer getMaximumNumberOfMessages() {
         final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                                                                     JmsLogsPlugin.getDefault()

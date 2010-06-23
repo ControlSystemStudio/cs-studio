@@ -18,22 +18,16 @@ package org.csstudio.alarm.table.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmPreference;
-import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
-import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
@@ -44,8 +38,7 @@ import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.utility.treemodel.ContentModel;
-import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -61,6 +54,7 @@ import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 /**
  * Add to the base class {@link LogView}: acknowledge button and combo box,
@@ -227,30 +221,15 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected void retrieveInitialStateSynchronously(@Nonnull final MessageList messageList) {
-        // TODO (jpenning) Test: Config via ldap or filename. Duplicate of ImportInitialConfigJob.
-        final IAlarmConfigurationService configService = JmsLogsPlugin.getDefault()
-                .getAlarmConfigurationService();
-        try {
-            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
-            if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = configService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
-            } else {
-                model = configService.retrieveInitialContentModelFromFile(AlarmPreference.getConfigFilename());
-            }
+    protected final void retrieveInitialState(@Nonnull final MessageList messageList) {
+        InitialStateRetriever retriever = new InitialStateRetriever(messageList);
+        Job job = retriever.newRetrieveInitialStateJob();
 
-            final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
-            final List<PVItem> initItems = new ArrayList<PVItem>();
+        // Start the job.
+        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
+                .getAdapter(IWorkbenchSiteProgressService.class);
 
-            for (final String pvName : pvNames) {
-                initItems.add(new PVItem(pvName, messageList));
-            }
-
-            JmsLogsPlugin.getDefault().getAlarmService().retrieveInitialState(initItems);
-            // TODO (jpenning) error message visible in message window
-        } catch (final CreateContentModelException e) {
-            LOG.error("Could not retrieve content model from ConfigService", e);
-        }
+        progressService.schedule(job, 0, true);
     }
 
     @Override
@@ -450,33 +429,6 @@ public class AlarmView extends LogView {
                 _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
                 LOG.debug("Sound registered");
             }
-        }
-
-    }
-
-    /**
-     * The message list gets updated when the initial state is retrieved.
-     */
-    private static class PVItem implements IAlarmInitItem {
-        // Destination for the messages
-        private final MessageList _messageList;
-        private final String _pvName;
-
-        protected PVItem(@Nonnull final String pvName, @Nonnull final MessageList messageList) {
-            _pvName = pvName;
-            _messageList = messageList;
-        }
-
-        @Override
-        @Nonnull
-        public String getPVName() {
-            return _pvName;
-        }
-
-        @Override
-        public void init(@Nonnull final IAlarmMessage message) {
-//            LOG.debug("init for pv " + _pvName + ", msg: " + message);
-            _messageList.addMessage(new BasicMessage(message.getMap()));
         }
 
     }

@@ -168,8 +168,10 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Override
     public final String toString() {
-        return "DAL-AlarmMessage for " + getString(AlarmMessageKey.NAME) + ", "
-                + getSeverity() + ", " + getString(AlarmMessageKey.STATUS);
+        return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) +
+               " for " + getString(AlarmMessageKey.NAME) +
+               ", Severity " + getSeverity() +
+               ", Status " + getString(AlarmMessageKey.STATUS);
     }
 
     @Nonnull
@@ -267,7 +269,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
         try {
             result = _anyData.stringValue();
-            // TODO (jpenning) : what exception?
+            // TODO (jpenning) : which kind of exception may come up?
         } catch (final Exception e) {
             result = "value undefined";
         }

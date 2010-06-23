@@ -79,7 +79,6 @@ public final class ImportInitialConfigJob extends Job {
 
         try {
             final long startTime = System.currentTimeMillis();
-            // TODO (jpenning) Test: Config via ldap or filename. Nearly a duplicate of AlarmView.
             ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
 
             TreeNodeSource source;
