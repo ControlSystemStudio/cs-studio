@@ -1,41 +1,48 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<?xml version='1.0' encoding='iso-8859-1'?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de" dir="ltr">
 
-<html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+	<meta content="text/html; charset=ISO-8859-1" http-equiv="content-type" />
+	<!-- meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" / -->
 	<title>CSS-System-Monitor</title>
 </head>
 
 <body> 
 <h1>CSS-System-Monitor</h1>
-Ein einfacher System-Monitor zum Überwachen der Speicherbenutzung.
+Ein einfacher System-Monitor zum &Uuml;berwachen der Speicherbenutzung.
 <p>
 Die angezeigten "max", "total" und "free" Speicherwerte werden von der Java-
-<b>Runtime</b>-API übernommen. Ihre Bedeutung ist nicht unmittelbar einleuchtend:
+<b>Runtime</b>-API &uuml;bernommen. Ihre Bedeutung ist nicht unmittelbar einleuchtend:
 
+<object>
 <ul>
-<li>"Max" Memory:<br>
+<li>"Max" Memory:<br />
 Der maximale Betrag an Speicher, den die Java Virtual Machine (JVM) je zu 
 benutzen versuchen wird. Dies ist eine Obergrenze, die sicherstellt, 
-dass JVM nicht den gesamten Speicher belegt.
-<li>"Total":<br>
-Der Betrag an Speicher, den die JVM aktuell für "objects in-use" in Benutzung hat
-und für neue Objekte bereits reserviert hat. Viele Leute nennen diesen Speicher
-"Available" Memory.
-<li>"Free":<br>
-Speicher, den die JVM als "frei" betrachtet.
+da&szlig; JVM nicht den gesamten Speicher belegt. </li>
+<li>"Total":<br />
+Der Betrag an Speicher, den die JVM aktuell f&uuml;r "objects in-use" in Benutzung hat
+und f&uuml;r neue Objekte bereits reserviert hat. Viele Leute nennen diesen Speicher
+"Available" Memory. </li>
+<li>"Free":<br />
+Speicher, den die JVM als "frei" betrachtet. </li>
 </ul>
-Wenn man einfach "available" and "used" Memory betrachtet, könnte man
-annehmen, dass "max - total + free" gleich dem verfügbaren Speicher ist,
+</object>
+Wenn man einfach "available" and "used" Memory betrachtet, k&ouml;nnte man
+annehmen, dass "max - total + free" gleich dem verf&uuml;gbaren Speicher ist,
 aber das Verhalten der JVM Garbage-Collection ist sehr unvorhersagbar:
 Manchmal wird Speicher festgehalten, der eigentlich schon frei sein sollte
 und manchmal wird er sofort freigegeben.
+<object>
 <h2>Manuelle Garbage-Collection</h2>
-Die Betätigung des "GC"-Knopfs triggert eine Garbage Collection.
-Das kann für Tests sinnvoll sein, aber im Allgemeinen ist es am Besten, 
-die Garbage-Collection der JVM zu überlassen; d.h., es ist nicht nötig, dass
+Die Bet&auml;tigung des "GC"-Knopfs triggert eine Garbage Collection.
+Das kann f&uuml;r Tests sinnvoll sein, aber im Allgemeinen ist es am Besten, 
+die Garbage-Collection der JVM zu &uuml;berlassen; d.h., es ist nicht n&ouml;tig, da&szlig;
 Benutzer periodisch die Garbage-Collection triggern.
 <h2>Setup</h2>
-Alle Einstellungen können über die System-Monitor-Preference-Page verändert werden.
+Alle Einstellungen k&ouml;nnen &uuml;ber die System-Monitor-Preference-Page ver&auml;ndert werden.
+</object>
+</p>
 </body>
 </html>

@@ -16,5 +16,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.apputil,
  org.csstudio.apputil.ui,
  org.junit4
-Eclipse-LazyStart: true
-Bundle-ClassPath: .
+Bundle-ActivationPolicy: lazy
