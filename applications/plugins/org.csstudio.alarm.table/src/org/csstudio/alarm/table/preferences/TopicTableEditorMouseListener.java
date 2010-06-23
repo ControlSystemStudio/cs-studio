@@ -114,7 +114,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
                     break;
 
                 case OPEN_FONT_DIALOGUE:
-                    openFontDialogue(item);
+                    openFontDialogue(item, column);
                     break;
 
                 case TOGGLE_BOOL:
@@ -130,7 +130,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 		}
 	}
 
-    private void toggleBool(@Nonnull final TableItem item, @Nonnull final int column) {
+    private void toggleBool(@Nonnull final TableItem item, final int column) {
         String text = item.getText(column);
         if (text.equals("false")) {
             item.setText(column, "true");
@@ -140,9 +140,9 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         LOG.debug("text of column " + column + ": " + text);
     }
 
-    private void openFontDialogue(@Nonnull final TableItem item) {
+    private void openFontDialogue(@Nonnull final TableItem item, final int column) {
         // read current font settings to initialize FontDialog
-        String[] fontDataString = item.getText(5).split(",");
+        String[] fontDataString = item.getText(column).split(",");
         FontDialog fontDialog;
         FontData[] font = createFontFromPreferenceString(fontDataString);
         try {
@@ -152,9 +152,9 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
         } catch (Exception e) {
             LOG.error("Error creating font " + e.getMessage());
         }
-        item.setText(5, font[0].getName() + "," + font[0].getStyle()
+        item.setText(column, font[0].getName() + "," + font[0].getStyle()
                 + "," + font[0].getHeight());
-        LOG.debug("text of column 5: Name " + font[0].getName()
+        LOG.debug("text of column " + column + ": Name " + font[0].getName()
                         + " style " + font[0].getStyle() + " height "
                         + font[0].getHeight() + " string "
                         + font[0].toString());
