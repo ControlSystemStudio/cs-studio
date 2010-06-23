@@ -317,6 +317,10 @@ public class StringTableEditor extends Composite
 		downButton.setEnabled(count == 1);
 		deleteButton.setEnabled(count > 0);
 	}
+	
+	public TableViewer getTableViewer() {
+		return tableViewer;
+	}
 }	
 	
 
