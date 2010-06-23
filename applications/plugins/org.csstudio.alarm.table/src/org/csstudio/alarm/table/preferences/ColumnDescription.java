@@ -23,26 +23,42 @@ import javax.annotation.Nonnull;
 /**
  * Description of the columns contain the title header, the column width, default value and the like.
  */
-enum ColumnDescription {
-    IS_DEFAULT_ENTRY("Default", 40),
-    TOPIC_SET("Topics", 150, "Topics"),
-    NAME_FOR_TOPIC_SET("Name", 150, "Name"),
-    POPUP_MODE("PopUp Mode", 80, "false"),
-    AUTO_START("Auto Start", 80, "false"),
-    FONT("Font", 100, "Tahoma,0,8");
+public enum ColumnDescription {
+    IS_DEFAULT_ENTRY("Default", 40, MouseActionDescription.NO_ACTION),
+    TOPIC_SET("Topics", 150, "Topics", MouseActionDescription.EDIT_STRING),
+    NAME_FOR_TOPIC_SET("Name", 150, "Name", MouseActionDescription.EDIT_STRING),
+    POPUP_MODE("PopUp Mode", 80, "false", MouseActionDescription.TOGGLE_BOOL),
+    AUTO_START("Auto Start", 80, "false", MouseActionDescription.TOGGLE_BOOL),
+    FONT("Font", 100, "Tahoma,0,8", MouseActionDescription.OPEN_FONT_DIALOGUE);
+
+
+    /**
+     * Description of the action on mouse double click
+     */
+    public enum MouseActionDescription {
+        NO_ACTION, EDIT_STRING, TOGGLE_BOOL, OPEN_FONT_DIALOGUE
+    }
 
     private final String _title;
     private final int _columnWidth;
     private final String _defaultValue;
+    private final MouseActionDescription _mouseActionDescription;
 
-    private ColumnDescription(@Nonnull final String title, final int columnWidth) {
-        this(title, columnWidth, null);
+    private ColumnDescription(@Nonnull final String title, final int columnWidth, @Nonnull final MouseActionDescription mouseActionDescription) {
+        this(title, columnWidth, null, mouseActionDescription);
     }
 
-    private ColumnDescription(@Nonnull final String title, final int columnWidth, @CheckForNull final String defaultValue) {
+    private ColumnDescription(@Nonnull final String title, final int columnWidth, @CheckForNull final String defaultValue,
+                              @Nonnull final MouseActionDescription mouseActionDescription) {
         _title = title;
         _columnWidth = columnWidth;
         _defaultValue = defaultValue;
+        _mouseActionDescription = mouseActionDescription;
+    }
+
+    @Nonnull
+    public static ColumnDescription getColumnDescriptionForIndex(final int index) {
+        return ColumnDescription.values()[index];
     }
 
     @Nonnull
@@ -57,6 +73,11 @@ enum ColumnDescription {
     @CheckForNull
     public String getDefaultValue() {
         return _defaultValue;
+    }
+
+    @Nonnull
+    public MouseActionDescription getMouseActionDescription() {
+        return _mouseActionDescription;
     }
 
     public int getColumnIndex() {
