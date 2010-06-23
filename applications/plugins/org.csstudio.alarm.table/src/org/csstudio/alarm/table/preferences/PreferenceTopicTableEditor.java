@@ -1,5 +1,6 @@
 package org.csstudio.alarm.table.preferences;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -30,16 +31,29 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
     private static final String INNER_ITEM_SEPARATOR_AS_REGEX = "\\?";
     private static final String INNER_ITEM_SEPARATOR = "?";
 
+    /**
+     * Description of the columns contain the title header, the column width, default value and the like.
+     */
     private enum ColumnDescription {
-        DEFAULT("Default", 40), TOPICS("Topics", 150), NAME("Name", 150), POPUP_MODE("PopUp Mode", 80),
-        AUTO_START("Auto Start", 80), FONT("Font", 100);
+        IS_DEFAULT_ENTRY("Default", 40),
+        TOPIC_SET("Topics", 150, "Topics"),
+        NAME_FOR_TOPIC_SET("Name", 150, "Name"),
+        POPUP_MODE("PopUp Mode", 80, "false"),
+        AUTO_START("Auto Start", 80, "false"),
+        FONT("Font", 100, "Tahoma,0,8");
 
         private final String _title;
         private final int _columnWidth;
+        private final String _defaultValue;
 
         private ColumnDescription(@Nonnull final String title, final int columnWidth) {
+            this(title, columnWidth, null);
+        }
+
+        private ColumnDescription(@Nonnull final String title, final int columnWidth, @CheckForNull final String defaultValue) {
             _title = title;
             _columnWidth = columnWidth;
+            _defaultValue = defaultValue;
         }
 
         @Nonnull
@@ -51,8 +65,17 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
             return _columnWidth;
         }
 
+        @CheckForNull
+        public String getDefaultValue() {
+            return _defaultValue;
+        }
+
         public int getColumnIndex() {
             return ordinal();
+        }
+
+        public boolean isLast() {
+            return ordinal() == (values().length - 1);
         }
 
     }
@@ -92,11 +115,12 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 		int itemNumber = tableViewer.getTable().getItemCount();
 		TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE,
 				itemNumber);
-		item.setText(1, "Topics");
-		item.setText(2, "Name");
-		item.setText(3, "false");
-		item.setText(4, "false");
-		item.setText(5, "Tahoma,0,8");
+		for (ColumnDescription columnDescription : ColumnDescription.values()) {
+		    String defaultValue = columnDescription.getDefaultValue();
+		    if (defaultValue != null) {
+		        item.setText(columnDescription.getColumnIndex(), defaultValue);
+            }
+        }
 	}
 
 	/*
@@ -121,35 +145,40 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	protected String createList(final TableItem[] items) {
-		StringBuffer preferenceString = new StringBuffer();
-		for (TableItem tableItem : items) {
-			// Is topic set to default
-			if (tableItem.getChecked()) {
-				preferenceString.append("default");
-			}
-			preferenceString.append(INNER_ITEM_SEPARATOR);
-			// Set of topics
-			preferenceString.append(tableItem.getText(1));
-			preferenceString.append(INNER_ITEM_SEPARATOR);
-			// Name for set of topics
-			preferenceString.append(tableItem.getText(2));
-			preferenceString.append(INNER_ITEM_SEPARATOR);
-			// Is pop up mode set to true or false
-			preferenceString.append(tableItem.getText(3));
-			preferenceString.append(INNER_ITEM_SEPARATOR);
-			// Is auto start mode set to true or false
-			preferenceString.append(tableItem.getText(4));
-			preferenceString.append(INNER_ITEM_SEPARATOR);
-			// Selected font
-			preferenceString.append(tableItem.getText(5));
-			preferenceString.append(ITEM_SEPARATOR);
-		}
-		return preferenceString.toString();
-	}
+    protected String createList(final TableItem[] items) {
+        StringBuffer preferenceString = new StringBuffer();
+        for (TableItem tableItem : items) {
+            for (ColumnDescription columnDescription : ColumnDescription.values()) {
+                appendStringForColumn(preferenceString, tableItem, columnDescription);
+                appendSeparator(preferenceString, columnDescription);
+            }
+        }
+        return preferenceString.toString();
+    }
+
+    private void appendStringForColumn(@Nonnull final StringBuffer preferenceString,
+                                       @Nonnull final TableItem tableItem,
+                                       @Nonnull final ColumnDescription columnDescription) {
+        if (columnDescription == ColumnDescription.IS_DEFAULT_ENTRY) {
+            // Special case for the checkbox
+            if (tableItem.getChecked()) {
+                preferenceString.append("default");
+            }
+        } else {
+            preferenceString.append(tableItem.getText(columnDescription.getColumnIndex()));
+        }
+    }
 
 
-	/**
+	private void appendSeparator(@Nonnull final StringBuffer preferenceString, @Nonnull final ColumnDescription columnDescription) {
+        if (columnDescription.isLast()) {
+            preferenceString.append(ITEM_SEPARATOR);
+        } else {
+            preferenceString.append(INNER_ITEM_SEPARATOR);
+        }
+    }
+
+    /**
 	 * Set the file path and menu name set by the user from preferences in the
 	 * table rows.
 	 */
@@ -158,17 +187,15 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 */
 	protected void doLoad() {
 		if (tableViewer != null) {
-			int defaultColumn = 0;
 			String s = getPreferenceStore().getString(getPreferenceName());
 			String[] array = parseString(s);
 			TableItem item;
-			for (int i = 0; i < array.length; i++) {
+			for (String element : array) {
 				item = new TableItem(tableViewer.getTable(), SWT.NONE);
-				String[] tableRowFromPreferences = array[i].split(INNER_ITEM_SEPARATOR_AS_REGEX);
+				String[] tableRowFromPreferences = element.split(INNER_ITEM_SEPARATOR_AS_REGEX);
 				if (tableRowFromPreferences[0].equals("default")) {
 					tableRowFromPreferences[0] = "";
 					item.setChecked(true);
-					defaultColumn = i;
 				}
 				item.setText(tableRowFromPreferences);
 			}
