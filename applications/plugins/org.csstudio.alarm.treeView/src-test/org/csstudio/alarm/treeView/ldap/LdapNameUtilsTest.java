@@ -28,7 +28,6 @@ import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.LdapNameUtils;
 import org.junit.Test;
 
 
@@ -37,36 +36,18 @@ import org.junit.Test;
  */
 public class LdapNameUtilsTest {
 
-	@Test
-	public void testSimpleNameOfSingleRdnName() throws Exception {
-		final LdapName name = new LdapName("foo=bar");
-		assertEquals("bar", LdapNameUtils.simpleName(name));
-	}
+    @Test
+    public void testObjectClassOfSingleRdnName() throws Exception {
+        final LdapName name = new LdapName("efan=foobar");
+        final Rdn rdn = name.getRdn(name.size() - 1);
+        assertEquals(LdapEpicsAlarmcfgConfiguration.FACILITY, LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
+    }
 
-	@Test
-	public void testSimpleNameOfHierarchicalLdapName() throws Exception {
-		final LdapName name = new LdapName("foo=bar,ou=Test,dc=example,dc=com");
-		assertEquals("bar", LdapNameUtils.simpleName(name));
-	}
-
-	@Test
-	public void testSimpleNameOfNameWithSpecialCharacters() throws Exception {
-		final LdapName name = new LdapName("foo=name/with\\=special\\,characters");
-		assertEquals("name/with=special,characters", LdapNameUtils.simpleName(name));
-	}
-
-	@Test
-	public void testObjectClassOfSingleRdnName() throws Exception {
-		final LdapName name = new LdapName("efan=foobar");
-		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmcfgConfiguration.FACILITY, LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
-	}
-
-	@Test
-	public void testObjectClassOfHierarchicalLdapName() throws Exception {
-		final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
-		final Rdn rdn = name.getRdn(name.size() - 1);
-		assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
-	}
+    @Test
+    public void testObjectClassOfHierarchicalLdapName() throws Exception {
+        final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
+        final Rdn rdn = name.getRdn(name.size() - 1);
+        assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
+    }
 
 }

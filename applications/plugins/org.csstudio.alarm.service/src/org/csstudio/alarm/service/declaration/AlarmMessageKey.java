@@ -65,10 +65,9 @@ public enum AlarmMessageKey {
      * Use this constructor of the defining name of the key is different to the name.
      *
      * @param definingName
+     * CHECKSTYLE:Jsr305Annotations:OFF (no annotations in enum constructors due to eclipse bug)
      */
-    // CHECKSTYLE:OFF  - Do not use annotations in constructor of enum type due to eclipse bug
     private AlarmMessageKey(final String definingName) {
-        // CHECKSTYLE:ON
         _definingName = definingName;
     }
 

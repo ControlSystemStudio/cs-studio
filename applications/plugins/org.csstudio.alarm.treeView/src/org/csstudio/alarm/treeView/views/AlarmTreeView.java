@@ -705,6 +705,8 @@ public class AlarmTreeView extends ViewPart {
      * @param alarmListener
      * @param viewer
      * @param currentAlarmFilter
+     *
+     * CHECKSTYLE:MethodLength:OFF (this method properly encapsulates all view actions)
      */
     private void createActions(@Nonnull final IAlarmSubtreeNode rootNode,
                                @Nonnull final TreeViewer viewer,

@@ -32,7 +32,7 @@ import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.recordproperty.Activator;
@@ -343,7 +343,7 @@ public class RecordPropertyGetRDB {
 	            LdapName ldapName;
 	            try {
 	                ldapName = LdapNameUtils.parseSearchResult(row);
-	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getNodeTypeName());
+	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsTreeConfiguration.IOC.getNodeTypeName());
 	                if (iocName == null) {
 	                    _log.error(this, "No IOC was found for PV: " + _record); //$NON-NLS-1$
 	                    _nameIOC = "";

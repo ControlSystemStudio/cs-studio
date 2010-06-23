@@ -44,7 +44,7 @@ import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -75,21 +75,21 @@ public class IocEnumeration implements IDynamicParameterValues {
                                                       SearchControls.SUBTREE_SCOPE);
 
         try {
-            final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+            final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
             builder.build();
-            final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+            final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
 
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> iocs =
-                model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.IOC);
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> iocs =
+                model.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.IOC);
 
             final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-            for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> ioc : iocs.values()) {
+            for (final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> ioc : iocs.values()) {
                 final LdapName ldapName = ioc.getLdapName();
                 final String efanName =
                     LdapNameUtils.getValueOfRdnType(ldapName,
-                                                    LdapEpicsControlsObjectClass.FACILITY.getNodeTypeName());
+                                                    LdapEpicsControlsTreeConfiguration.FACILITY.getNodeTypeName());
 
                 final HashMap<String, String> map = new HashMap<String, String>();
                 map.put(ECON_FIELD_NAME, ioc.getName());

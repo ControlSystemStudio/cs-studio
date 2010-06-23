@@ -21,6 +21,8 @@
  */
  package org.csstudio.alarm.treeView.preferences;
 
+import javax.annotation.CheckForNull;
+
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -54,8 +56,9 @@ public class AlarmTreePreferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
-	public final void createFieldEditors() {
-		Group jmsGroup = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
+	@Override
+    public final void createFieldEditors() {
+		final Group jmsGroup = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
 		jmsGroup.setText("JMS settings");
 		jmsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
 		jmsGroup.setLayout(new GridLayout(2, false));
@@ -74,7 +77,7 @@ public class AlarmTreePreferencePage
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(final IWorkbench workbench) {
+	public void init(@CheckForNull final IWorkbench workbench) {
 	    // Nothing to do
 	}
 

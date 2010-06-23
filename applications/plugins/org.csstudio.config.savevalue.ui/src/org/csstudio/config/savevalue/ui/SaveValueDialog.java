@@ -49,7 +49,7 @@ import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.Platform;
@@ -328,7 +328,7 @@ public class SaveValueDialog extends Dialog {
 	        final SearchResult row = result.getAnswerSet().iterator().next();
 	        final LdapName ldapName = LdapNameUtils.parseSearchResult(row);
 	        if (ldapName != null) {
-	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsObjectClass.IOC.getNodeTypeName());
+	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsTreeConfiguration.IOC.getNodeTypeName());
 	            if (iocName != null) {
 	                _iocName = iocName;
 	                return null;

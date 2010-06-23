@@ -47,7 +47,7 @@ import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -343,12 +343,12 @@ public class ChangelogViewPart extends ViewPart {
 				                                              SearchControls.SUBTREE_SCOPE);
 
                 try {
-                    final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                        new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+                    final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                        new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
                     builder.build();
-                    final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+                    final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
 
-                    final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsObjectClass.IOC));
+                    final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC));
 
                     Collections.sort(iocNames);
                     Display.getDefault().asyncExec(new Runnable() {

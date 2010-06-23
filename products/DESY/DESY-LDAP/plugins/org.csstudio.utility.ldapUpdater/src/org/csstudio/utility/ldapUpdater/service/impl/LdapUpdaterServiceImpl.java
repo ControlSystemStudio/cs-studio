@@ -53,7 +53,7 @@ import javax.naming.ldap.LdapName;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
@@ -89,7 +89,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
     public boolean createLdapRecord(@Nonnull final LdapName newLdapName) {
 
         final String recordName =
-            LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsObjectClass.RECORD.getNodeTypeName());
+            LdapNameUtils.getValueOfRdnType(newLdapName, LdapEpicsControlsTreeConfiguration.RECORD.getNodeTypeName());
 
         final Attributes afe =
             attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_RECORD_OBJECT_CLASS,
@@ -168,8 +168,8 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         final LdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
 
         if (recordsSearchResult != null) {
-            final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT,
+            final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT,
                                                                           recordsSearchResult);
             try {
                 builder.build();
@@ -177,12 +177,12 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+            final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
 
-            final Collection<ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> records =
-                model.getChildrenByTypeAndLdapName(LdapEpicsControlsObjectClass.RECORD).values();
+            final Collection<ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> records =
+                model.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.RECORD).values();
 
-            for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> record : records) {
+            for (final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> record : records) {
                 final LdapName ldapName = record.getLdapName();
                 ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
 
@@ -209,15 +209,15 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
             final LdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
 
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, searchResult);
+                final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, searchResult);
                 builder.build();
-                final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+                final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
 
-                final Map<String, ISubtreeNodeComponent<LdapEpicsControlsObjectClass>> recordsInLdap =
-                    model.getChildrenByTypeAndSimpleName(LdapEpicsControlsObjectClass.RECORD);
+                final Map<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> recordsInLdap =
+                    model.getChildrenByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.RECORD);
 
-                for (final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> record : recordsInLdap.values()) {
+                for (final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> record : recordsInLdap.values()) {
                     if (!validRecords.contains(new Record(record.getName()))) {
 
                         final LdapName ldapName = record.getLdapName();

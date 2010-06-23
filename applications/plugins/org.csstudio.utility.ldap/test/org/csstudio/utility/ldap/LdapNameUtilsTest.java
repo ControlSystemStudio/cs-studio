@@ -13,7 +13,7 @@
  * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
  * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
- * OR MODIFICATIONS. 
+ * OR MODIFICATIONS.
  * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
@@ -22,6 +22,8 @@
  * $Id$
  */
 package org.csstudio.utility.ldap;
+
+import static org.junit.Assert.assertEquals;
 
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
@@ -68,6 +70,24 @@ public class LdapNameUtilsTest {
                                   COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
 
         RESULT.setNameInNamespace(QUERY.toString());
+    }
+
+    @Test
+    public void testSimpleNameOfSingleRdnName() throws Exception {
+        final LdapName name = new LdapName("foo=bar");
+        assertEquals("bar", LdapNameUtils.simpleName(name));
+    }
+
+    @Test
+    public void testSimpleNameOfHierarchicalLdapName() throws Exception {
+        final LdapName name = new LdapName("foo=bar,ou=Test,dc=example,dc=com");
+        assertEquals("bar", LdapNameUtils.simpleName(name));
+    }
+
+    @Test
+    public void testSimpleNameOfNameWithSpecialCharacters() throws Exception {
+        final LdapName name = new LdapName("foo=name/with\\=special\\,characters");
+        assertEquals("name/with=special,characters", LdapNameUtils.simpleName(name));
     }
 
     @Test

@@ -57,7 +57,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsObjectClass;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -182,8 +182,8 @@ public enum LdapUpdater {
             final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
             if (dumpPath != null) {
                 final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-                final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, result);
+                final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
                 builder.build();
 
                 LdapAccess.tidyUpLDAPFromIOCList(builder.getModel(),
@@ -222,10 +222,10 @@ public enum LdapUpdater {
                                                           SearchControls.SUBTREE_SCOPE);
 
 
-            final LdapContentModelBuilder<LdapEpicsControlsObjectClass> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsObjectClass>(LdapEpicsControlsObjectClass.ROOT, searchResult);
+            final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, searchResult);
             builder.build();
-            final ContentModel<LdapEpicsControlsObjectClass> model = builder.getModel();
+            final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
@@ -249,10 +249,10 @@ public enum LdapUpdater {
     }
 
 
-    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsObjectClass> ldapModel,
+    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> ldapModel,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
-        Set<String> iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsObjectClass.IOC);
+        Set<String> iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC);
 
         final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
@@ -264,7 +264,7 @@ public enum LdapUpdater {
             for (final String iocNameKey : iocsFromLDAP) {
                 LOG.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-                final ISubtreeNodeComponent<LdapEpicsControlsObjectClass> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsObjectClass.IOC, iocNameKey);
+                final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC, iocNameKey);
                 if (ioc != null) {
                     final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
                     String person = DEFAULT_RESPONSIBLE_PERSON;
@@ -291,7 +291,7 @@ public enum LdapUpdater {
         }
 
 
-        iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsObjectClass.IOC);
+        iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");
