@@ -32,7 +32,7 @@ import org.eclipse.swt.widgets.Display;
  */
 public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
-	private static final String HEX_PREFIX = "0x";
+	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
 
 	@Override
 	protected IFigure doCreateFigure() {
