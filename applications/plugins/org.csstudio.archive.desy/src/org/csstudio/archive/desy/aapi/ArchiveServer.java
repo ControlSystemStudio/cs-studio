@@ -181,8 +181,7 @@ public class ArchiveServer extends org.csstudio.archive.ArchiveServer
 	
      int getRequestCode(String request_name) throws Exception
 	 {
-    	 if( request_name.equalsIgnoreCase("AVERAGE") ) return AAPI.MIN_MAX_AVERAGE_M;
+    	 if( request_name.equalsIgnoreCase("AVERAGE") ) return AAPI.MIN_MAX_AVERAGE_METHOD;
     	 return AAPI.NO_FILTERING_M;
   	}
-
 }

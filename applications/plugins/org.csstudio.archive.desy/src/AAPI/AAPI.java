@@ -83,12 +83,12 @@ public class AAPI
 	public final static int		MAX_METHOD_NUMBER			= LINEAR_AND_STEP_METHOD;
 	
 	public final static int		AVERAGE_M			= 1;//Albert was 1
-	public final static int		NO_FILTERING_M		= 6;
-	public final static int		MIN_MAX_AVERAGE_M	= 7;
+	public final static int		TAIL_RAW_M			= 2;
 	public final static int		SHARP_M			    = 3;
 	public final static int		SPLINE_M			= 4; //Albert was 1
 	public final static int		FFT_M				= 5;
-	public final static int		TAIL_RAW_M			= 2;
+	public final static int		NO_FILTERING_M		= 6;
+	public final static int		MIN_MAX_AVERAGE_M	= 7;
 	
 	
 
