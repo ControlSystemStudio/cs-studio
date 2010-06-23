@@ -17,6 +17,7 @@ import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
@@ -231,7 +232,12 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 * @return
 	 */
 	private void formatValue(Object newValue, String propId, IFigure figure) {
-		IValue value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		
+		IValue value = null;
+		if(getExecutionMode() == ExecutionMode.RUN_MODE)
+			value= getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
+		else
+			value = ValueFactory.createStringValue(null, null, null, null, new String[]{getValue()});
 		FormatEnum formatEnum = getWidgetModel().getFormat();
 		int precision = getWidgetModel().getPrecision();
 		if(getWidgetModel().isPrecisionFromDB())
