@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.NumericFormatType;
@@ -30,7 +31,9 @@ public class SpinnerModel extends LabelModel {
 	pressed.*/
 	public static final String PROP_PAGE_INCREMENT = "page_increment"; //$NON-NLS-1$	
 
-	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
+	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$	
+	public static final String PROP_PRECISION = "precision";	//$NON-NLS-1$
+
 
 	/**
 	 * The Format of the value.
@@ -77,6 +80,9 @@ public class SpinnerModel extends LabelModel {
 		addProperty(new ComboProperty(PROP_FORMAT, "Format", 
 				WidgetPropertyCategory.Display, NumericFormatType.stringValues(), 0));
 		
+		addProperty(new IntegerProperty(PROP_PRECISION, "Precision", 
+				WidgetPropertyCategory.Display, 3, 0, 100));
+
 	}	
 
 

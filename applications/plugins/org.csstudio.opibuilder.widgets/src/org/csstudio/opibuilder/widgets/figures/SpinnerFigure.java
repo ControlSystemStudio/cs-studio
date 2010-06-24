@@ -68,6 +68,8 @@ public class SpinnerFigure extends Figure {
 	
 	private NumericFormatType formatType;
 	
+	private int precision = 3;
+	
 	public SpinnerFigure(ExecutionMode mode) {
 		formatType = NumericFormatType.DECIAML;
 		spinnerListeners = new ArrayList<ISpinnerListener>();
@@ -333,19 +335,40 @@ public class SpinnerFigure extends Figure {
 		switch (formatType) {
 		
 		case EXP:
-			format = new DecimalFormat("0.#####################E0");			//$NON-NLS-1$
+			 StringBuffer pattern = new StringBuffer(10);
+	            pattern.append("0."); //$NON-NLS-1$
+	            for (int i=0; i<precision; ++i)
+	                pattern.append('#'); //$NON-NLS-1$
+	            pattern.append("E0"); //$NON-NLS-1$
+			format = new DecimalFormat(pattern.toString());			//$NON-NLS-1$
 			return format.format(value);
 		case HEX:
 			return HEX_PREFIX + Long.toHexString((long)value);
 		case DECIAML:			
 		default:
 			format = new DecimalFormat();
-			format.setMaximumFractionDigits(100);
+			format.setMaximumFractionDigits(precision);
 			format.setMinimumFractionDigits(0);
 			return format.format(value);
 		}
 	}
 	
+
+	/**
+	 * @param precision the precision to set
+	 */
+	public void setPrecision(int precision) {
+		this.precision = precision;
+		labelFigure.setText(format(value));		
+	}
+
+	/**
+	 * @return the precision
+	 */
+	public int getPrecision() {
+		return precision;
+	}
+
 
 	/**
 	 * Definition of listeners that react on spinner manual value change events.
