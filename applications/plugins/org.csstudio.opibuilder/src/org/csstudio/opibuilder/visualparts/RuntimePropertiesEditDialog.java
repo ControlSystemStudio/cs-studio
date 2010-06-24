@@ -47,7 +47,9 @@ public class RuntimePropertiesEditDialog extends Dialog {
 			}
 		}else { 
 			propertyDataArray = new PropertyData[0];
-		}			
+		}
+        // Allow resize
+        setShellStyle(getShellStyle() | SWT.RESIZE);
 	}
 	
 	public PropertyData[] getOutput(){
