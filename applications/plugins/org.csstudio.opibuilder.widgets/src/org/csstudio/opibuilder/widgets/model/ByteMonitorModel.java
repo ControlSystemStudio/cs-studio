@@ -48,6 +48,10 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 
+	public ByteMonitorModel() {
+		setSize(292, 20);
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.csstudio.opibuilder.model.AbstractWidgetModel#configureProperties()
 	 */

@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.figureparts.Bulb;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.RGB;
@@ -29,13 +29,13 @@ public class ByteMonitorFigure extends Figure {
 	/** The value to be displayed */
 	private int value;
 	/** The color to be displayed if a bit is 1 */
-	private RGB onColor;
+	private RGB onColor = CustomMediaFactory.COLOR_GREEN;
 	/** The color to be displayed if a bit is 0 */
-	private RGB offColor;
+	private RGB offColor = new RGB(0,128,0);
 	
 	/** Give the objects representing the bits a 3dEffect */
-	private Boolean effect3D;
-	private Boolean squareLED;
+	private boolean effect3D;
+	private boolean squareLED;
 	
 	
 	/* (non-Javadoc)
@@ -91,7 +91,7 @@ public class ByteMonitorFigure extends Figure {
 		this.numBits = numBits;
 		removeAll();
 		for (int ii =0; ii < numBits; ii++){
-			add(new Bulb());
+			add(createLED());
 		}
 		revalidate();
 	}
@@ -139,8 +139,6 @@ public class ByteMonitorFigure extends Figure {
 	 */
 	public void drawValue() {
 		Object[] children = getChildren().toArray();
-		RGB onColor = getOnColor();
-		RGB offColor = getOffColor();
 		
 		for (int ii=startBit; ii< startBit+numBits; ii++){
 			int widgetIndex =0;
@@ -150,15 +148,13 @@ public class ByteMonitorFigure extends Figure {
 			else{
 				widgetIndex = (numBits - 1) -(ii-startBit);
 			}
-			Bulb bulb = ((Bulb)children[widgetIndex]);
+			LEDFigure led = ((LEDFigure)children[widgetIndex]);
 			if (((value>>ii)&0x1) == 1){
-				bulb.setBulbColor(onColor);
-				bulb.repaint();
+				led.setBooleanValue(true);
 			}
 			else {
 				
-				bulb.setBulbColor(offColor);
-				bulb.repaint();
+				led.setBooleanValue(false);
 			}
 		}
 
@@ -187,6 +183,10 @@ public class ByteMonitorFigure extends Figure {
 	public void setOnColor(RGB rgb) {
 //		this.onColor = new Color(null, rgb);
 		this.onColor = rgb;
+		for (Object child : getChildren()){
+			LEDFigure led = (LEDFigure)child;
+			led.setOnColor(rgb);
+		}
 	}
 
 	/**
@@ -196,6 +196,10 @@ public class ByteMonitorFigure extends Figure {
 	public void setOffColor(RGB rgb) {
 //		this.offColor = new Color(null, rgb);
 		this.offColor = rgb;
+		for (Object child : getChildren()){
+			LEDFigure led = (LEDFigure)child;
+			led.setOffColor(rgb);
+		}
 	}
 
 	/**
@@ -232,7 +236,7 @@ public class ByteMonitorFigure extends Figure {
 	public void setEffect3D(Boolean newValue) {
 		this.effect3D = newValue;
 		for (Object child : getChildren()){
-			Bulb bulb = (Bulb)child;
+			LEDFigure bulb = (LEDFigure)child;
 			bulb.setEffect3D(this.effect3D);
 		}
 	}
@@ -240,12 +244,22 @@ public class ByteMonitorFigure extends Figure {
 	 * Set if the displayed LEDs should be square or round.  
 	 * @param squareLED boolean true if square, false if round
 	 */
-	public void setSquareLED(Boolean squareLED) {
+	public void setSquareLED(boolean squareLED) {
 		this.squareLED = squareLED;
 		for (Object child : getChildren()){
-			Bulb bulb = (Bulb)child;
+			LEDFigure bulb = (LEDFigure)child;
 			bulb.setSquareLED(this.squareLED);
 		}
+	}
+	
+	private LEDFigure createLED(){
+		LEDFigure led = new LEDFigure();
+		led.setShowBooleanLabel(false);
+		led.setOnColor(getOnColor());
+		led.setOffColor(getOffColor());
+		led.setSquareLED(squareLED);
+		led.setEffect3D(effect3D);
+		return led;
 	}
 
 }

@@ -7,7 +7,6 @@ import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.figures.ByteMonitorFigure;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
-import org.csstudio.opibuilder.widgets.model.LEDModel;
 import org.csstudio.platform.data.IValue;
 import org.eclipse.draw2d.IFigure;
 
@@ -54,10 +53,16 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
 		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getRGBValue() );
 		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getRGBValue() );
+		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
 		fig.setValue(new Integer(0x1111));
 		fig.drawValue();
 
 		return fig;
+	}
+	
+	@Override
+	public ByteMonitorModel getWidgetModel() {
+		return (ByteMonitorModel) super.getWidgetModel();
 	}
 
 	/* (non-Javadoc)
@@ -131,6 +136,16 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 					IFigure refreshableFigure) {
 				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
 				figure.setHorizontal((Boolean)newValue);
+				ByteMonitorModel model = getWidgetModel();
+				if((Boolean) newValue) //from vertical to horizontal
+					model.setLocation(model.getLocation().x - model.getSize().height/2 + model.getSize().width/2,
+						model.getLocation().y + model.getSize().height/2 - model.getSize().width/2);
+				else  //from horizontal to vertical
+					model.setLocation(model.getLocation().x + model.getSize().width/2 - model.getSize().height/2,
+						model.getLocation().y - model.getSize().width/2 + model.getSize().height/2);					
+				
+				model.setSize(model.getSize().height, model.getSize().width);
+		
 				figure.drawValue();
 				return true;
 			}
@@ -158,8 +173,8 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure refreshableFigure) {
 				ByteMonitorFigure figure = (ByteMonitorFigure)refreshableFigure;
-				int maxBits = figure.getMAX_BITS();
-				int numBits = figure.getNumBits();
+//				int maxBits = figure.getMAX_BITS();
+//				int numBits = figure.getNumBits();
 /*
  * 				if ((Integer)newValue < maxBits && ((Integer)newValue + numBits) < maxBits){
  */
@@ -200,7 +215,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LEDModel.PROP_SQUARE_LED, squareLEDHandler);	
+		setPropertyChangeHandler(ByteMonitorModel.PROP_SQUARE_LED, squareLEDHandler);	
 		
 		
 		//effect 3D
@@ -213,7 +228,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 				return true;
 			}
 		};
-		setPropertyChangeHandler(LEDModel.PROP_EFFECT3D, effect3DHandler);	
+		setPropertyChangeHandler(ByteMonitorModel.PROP_EFFECT3D, effect3DHandler);	
 		
 
 	}
