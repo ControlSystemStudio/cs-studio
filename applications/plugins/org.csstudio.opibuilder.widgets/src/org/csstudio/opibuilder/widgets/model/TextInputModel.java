@@ -27,6 +27,10 @@ public class TextInputModel extends TextIndicatorModel {
 	/** The default value of the maximum property. */
 	private static final double DEFAULT_MAX = Double.POSITIVE_INFINITY;	
 	
+	public TextInputModel() {
+		setPropertyValue(PROP_LIMITS_FROM_PV, false);
+	}
+	
 	@Override
 	public String getTypeID() {
 		return "org.csstudio.opibuilder.widgets.TextInput"; //$NON-NLS-1$;
