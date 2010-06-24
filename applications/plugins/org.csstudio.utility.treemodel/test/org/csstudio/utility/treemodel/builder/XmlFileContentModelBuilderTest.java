@@ -29,6 +29,8 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.Activator;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -47,6 +49,9 @@ import org.osgi.framework.Bundle;
  */
 public class XmlFileContentModelBuilderTest {
 
+    private static final Logger LOG = CentralLogger.getInstance()
+            .getLogger(XmlFileContentModelBuilderTest.class);
+
     private static final String TEST_VALID_XML = "Test_Valid.xml";
     private static final String TEST_EMPTY_XML = "Test_Empty.xml";
     private static final String TEST_INVALID_XML = "Test_InvalidStructure.xml";
@@ -64,7 +69,7 @@ public class XmlFileContentModelBuilderTest {
 
             RES_PATH = new File(loc, "testres");
 
-
+            LOG.error("Resource path: " + RES_PATH.toString());
 
         } catch (final IOException e1) {
             Assert.fail("File locator could not deliver bundle file path.");
