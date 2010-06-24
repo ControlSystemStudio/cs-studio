@@ -23,6 +23,14 @@
  */
 package org.csstudio.utility.ldap;
 
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.O_FIELD_NAME;
+import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.InvalidNameException;
@@ -50,6 +58,7 @@ public class LdapNameUtilsTest {
     private static final String COUNTRY_FIELD_VALUE = "DE";
     private static final String ECON_FIELD_VALUE = "berndTest";
     private static final String EFAN_FIELD_VALUE = "TEST";
+    private static final String O_FIELD_VALUE = "DESY";
 
     private static SearchResult RESULT;
     private static LdapName QUERY;
@@ -62,12 +71,12 @@ public class LdapNameUtilsTest {
                                    null,
                                    null);
 
-        QUERY = LdapUtils.createLdapQuery(LdapFieldsAndAttributes.ECON_FIELD_NAME, ECON_FIELD_VALUE,
-                                  LdapFieldsAndAttributes.ECOM_FIELD_NAME, LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                                  LdapFieldsAndAttributes.EFAN_FIELD_NAME, EFAN_FIELD_VALUE,
-                                  LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE,
-                                  "o","DESY",
-                                  COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
+        QUERY = createLdapQuery(ECON_FIELD_NAME, ECON_FIELD_VALUE,
+                                ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
+                                EFAN_FIELD_NAME, EFAN_FIELD_VALUE,
+                                OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE,
+                                O_FIELD_NAME, O_FIELD_VALUE,
+                                COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
 
         RESULT.setNameInNamespace(QUERY.toString());
     }
