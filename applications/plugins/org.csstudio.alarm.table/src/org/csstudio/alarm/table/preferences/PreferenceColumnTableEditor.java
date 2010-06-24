@@ -18,8 +18,10 @@
 package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.eclipse.jface.viewers.TableViewer;
@@ -45,7 +47,7 @@ import org.eclipse.swt.widgets.TableItem;
  * @author jhatje
  *
  */
-public class PreferenceColumnTableEditor extends PreferenceTableEditor {
+public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 
 	/**
 	 * Current row selected in topic table. For each row in topic table this
@@ -98,14 +100,14 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 */
 	void addPressed() {
 		setPresentsDefaultValue(false);
-		int[] selectionIndices = tableViewer.getTable().getSelectionIndices();
+		int[] selectionIndices = _tableViewer.getTable().getSelectionIndices();
 		int newItemIndex;
 		if (selectionIndices.length == 0) {
-			newItemIndex = tableViewer.getTable().getItemCount();
+			newItemIndex = _tableViewer.getTable().getItemCount();
 		} else {
 			newItemIndex = selectionIndices[0];
 		}
-		TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE,
+		TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE,
 				newItemIndex);
 		item.setText(0, "Name");
 		item.setText(1, "100");
@@ -123,7 +125,8 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	protected String createList(final TableItem[] items) {
+	@Override
+    protected String createList(final TableItem[] items) {
 		StringBuffer preferenceString = new StringBuffer();
 		for (TableItem tableItem : items) {
 			// Name
@@ -139,7 +142,8 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doFillIntoGrid(final Composite parent, final int numColumns) {
+	@Override
+    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
 		_topicSetName = new Label(parent, SWT.NONE);
 		GridData gdata = new GridData();
 		gdata.horizontalSpan = 2;
@@ -165,7 +169,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 		}
 		TableItem item;
 		for (String[] column : columnSet) {
-			item = new TableItem(tableViewer.getTable(), SWT.NONE);
+			item = new TableItem(_tableViewer.getTable(), SWT.NONE);
 			item.setText(column);
 		}
 	}
@@ -176,7 +180,7 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	protected void doStore() {
 		// String s = createList(tableViewer.getTable().getItems());
 		// if (s != null) {
-		setTableSettingsToPreferenceString(tableViewer.getTable());
+		setTableSettingsToPreferenceString(_tableViewer.getTable());
 		StringBuffer buffer = new StringBuffer();
 		for (List<String[]> columnSetting : _columnTableSettings) {
 			for (String[] strings : columnSetting) {
@@ -200,8 +204,9 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 *            the parent control
 	 * @return the list control
 	 */
-	public TableViewer getTableControl(final Composite parent) {
-		if (tableViewer == null) {
+	@Override
+    public TableViewer getTableControl(final Composite parent) {
+		if (_tableViewer == null) {
 			int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 			Table table = new Table(parent, style);
@@ -219,21 +224,21 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 			final TableEditor editor = new TableEditor(table);
 			editor.horizontalAlignment = SWT.LEFT;
 			editor.grabHorizontal = true;
-			tableViewer = new TableViewer(table);
-			tableViewer.getTable().setFont(parent.getFont());
-			tableViewer.getTable().addSelectionListener(getSelectionListener());
-			tableViewer.getTable().addDisposeListener(new DisposeListener() {
+			_tableViewer = new TableViewer(table);
+			_tableViewer.getTable().setFont(parent.getFont());
+			_tableViewer.getTable().addSelectionListener(getSelectionListener());
+			_tableViewer.getTable().addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(final DisposeEvent event) {
-					tableViewer = null;
+					_tableViewer = null;
 				}
 			});
 			_mouseListener = new ColumnTableEditorMouseListener(editor, this);
 			table.addMouseListener(_mouseListener);
 
 		} else {
-			checkParent(tableViewer.getTable(), parent);
+			checkParent(_tableViewer.getTable(), parent);
 		}
-		return tableViewer;
+		return _tableViewer;
 	}
 
 	/**
@@ -244,14 +249,17 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 	 *
 	 * @return a new item
 	 */
-	protected String getNewInputObject() {
+	@Override
+    protected String getNewInputObject() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc) Method declared on FieldEditor.
-	 */
-	public int getNumberOfControls() {
+	
+	/**
+     * {@inheritDoc}
+     */
+	@Override
+    public int getNumberOfControls() {
 		return 2;
 	}
 
@@ -283,16 +291,14 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 		return columnsSets;
 	}
 
-	void setTableSettingsToPreferenceString(final Table table) {
+	void setTableSettingsToPreferenceString(@Nonnull final Table table) {
 		if (0 <= _row) {
-			_currentColumnTableSet = new ArrayList<String[]>();
-			for (int i = 0; i < table.getItemCount(); i++) {
-				String[] tableItemContent = new String[2];
-				TableItem item = table.getItem(i);
-				tableItemContent[0] = item.getText(0);
-				tableItemContent[1] = item.getText(1);
-				_currentColumnTableSet.add(tableItemContent);
-			}
+			_currentColumnTableSet = new ArrayList<String[]>(table.getItems().length);
+			
+			for (TableItem item : table.getItems()) {
+			    _currentColumnTableSet.add(new String[] {item.getText(0),
+			                                             item.getText(1)});
+            }
 			try {
 				_columnTableSettings.remove(_row);
 			} catch (IndexOutOfBoundsException e) {
@@ -309,14 +315,13 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 
 	public void updateColumnSettings() {
 		_currentColumnTableSet = new ArrayList<String[]>();
-		Table table = tableViewer.getTable();
-		for (int i = 0; i < table.getItemCount(); i++) {
-			String[] tableItemContent = new String[2];
-			TableItem item = table.getItem(i);
-			tableItemContent[0] = item.getText(0);
-			tableItemContent[1] = item.getText(1);
-			_currentColumnTableSet.add(tableItemContent);
-		}
+		Table table = _tableViewer.getTable();
+		
+        for (TableItem item : table.getItems()) {
+            _currentColumnTableSet.add(new String[]{item.getText(0),
+                                                    item.getText(1)});
+        }
+
 		try {
 			_columnTableSettings.remove(_row);
 		} catch (IndexOutOfBoundsException e) {
@@ -329,9 +334,10 @@ public class PreferenceColumnTableEditor extends PreferenceTableEditor {
 			_columnTableSettings.add(_currentColumnTableSet);
 		}
 	}
-
+	
+	@CheckForNull
 	public Table getTable() {
-		return tableViewer.getTable();
+		return _tableViewer.getTable();
 	}
 
 }

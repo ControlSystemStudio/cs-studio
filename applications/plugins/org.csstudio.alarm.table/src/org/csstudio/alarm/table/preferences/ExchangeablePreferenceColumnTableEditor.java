@@ -53,7 +53,8 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	 * @param parent
 	 *            the parent of the field editor's control
 	 */
-	public void init(@Nonnull final String name, @Nonnull final String labelText,
+	@Override
+    public void init(@Nonnull final String name, @Nonnull final String labelText,
 	                 @Nonnull final Composite parent) {
         init(name, labelText);
         createControl(parent);
@@ -68,9 +69,10 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doLoad() {
+	@Override
+    protected void doLoad() {
 		// if (tableViewer != null) {
-		String s = getPreferenceStore().getString(getPreferenceName());
+		final String s = getPreferenceStore().getString(getPreferenceName());
 		_columnTableSettings = parseString(s);
 	}
 
@@ -82,7 +84,7 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 	 * @param row
 	 * @param topicTitle
 	 */
-	public void setSelectionToColumnEditor(final int row, final String topicTitle) {
+	public void setSelectionToColumnEditor(final int row, @Nonnull final String topicTitle) {
 		CentralLogger.getInstance().debug(this,
 				"Selected row in topic table: " + row + " " + topicTitle);
 
@@ -95,7 +97,7 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 		}
 		updateTopicTitle(topicTitle);
 
-		Table table = tableViewer.getTable();
+		final Table table = _tableViewer.getTable();
 		// write current table content in the array of the previous selected
 		// topic row.
 		if (0 <= _row) {
@@ -118,16 +120,16 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 		}
 		TableItem item;
 		for (int i = 0; i < _currentColumnTableSet.size(); i++) {
-			item = new TableItem(tableViewer.getTable(), SWT.NONE);
-			String[] tableRowFromPreferences = _currentColumnTableSet.get(i);
+			item = new TableItem(_tableViewer.getTable(), SWT.NONE);
+			final String[] tableRowFromPreferences = _currentColumnTableSet.get(i);
 			item.setText(tableRowFromPreferences);
 		}
 		// _topicSetName.redraw();
-		tableViewer.getTable().redraw();
+		_tableViewer.getTable().redraw();
 	}
 
 
-	public void updateTopicTitle(final String topicTitle) {
+	public void updateTopicTitle(@Nonnull final String topicTitle) {
 		_topicSetName.setText(topicTitle);
 	}
 

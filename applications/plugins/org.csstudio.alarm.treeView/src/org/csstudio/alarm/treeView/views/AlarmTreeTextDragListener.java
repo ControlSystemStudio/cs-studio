@@ -57,7 +57,6 @@ final class AlarmTreeTextDragListener implements TransferDragSourceListener {
         return TextTransfer.getInstance();
     }
 
-
     public void dragStart(@Nonnull final DragSourceEvent event) {
         final TreeViewer viewer = _alarmTreeView.getViewer();
         if (viewer != null) {

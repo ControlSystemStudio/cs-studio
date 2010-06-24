@@ -53,22 +53,24 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 		setDescription(Messages.columnNamesMessageKeys);
 	}
 
-	public void createFieldEditors() {
-		Label l = new Label(getFieldEditorParent(), SWT.NONE);
-		Font font = l.getFont();
-		FontData fontData = font.getFontData()[0];
+	@Override
+    public void createFieldEditors() {
+		final Label l = new Label(getFieldEditorParent(), SWT.NONE);
+		final Font font = l.getFont();
+		final FontData fontData = font.getFontData()[0];
 		fontData.setStyle(1);
-		Font font2 = CustomMediaFactory.getInstance().getFont(fontData);
+		final Font font2 = CustomMediaFactory.getInstance().getFont(fontData);
 		l.setFont(font2);
 		l.setText("Die Einstellungen in den Spalten Popup Mode und Auto Start werden noch nicht ausgewertet.");
 
-		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(Arrays.asList(ColumnDescription.values()));
+		final PreferenceTopicTableEditor preferenceTopicTableEditor =
+		    new PreferenceTopicTableEditor(Arrays.asList(ColumnDescription.values()));
         preferenceTopicTableEditor.init(AmsVerifyViewPreferenceConstants.TOPIC_SET,
                                         "&Topic Sets: ",
                                         getFieldEditorParent());
 		addField(preferenceTopicTableEditor);
 
-		ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
+		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
         preferenceColumnTableEditor.init(AmsVerifyViewPreferenceConstants.P_STRING,
                                          "Column Settings",
                                          getFieldEditorParent());

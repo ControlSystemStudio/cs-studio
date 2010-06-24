@@ -24,19 +24,44 @@ import javax.annotation.Nonnull;
  * Description of the columns contain the title header, the column width, default value and the like.
  */
 public enum ColumnDescription {
-    IS_DEFAULT_ENTRY("Default", 40, MouseActionDescription.NO_ACTION),
-    TOPIC_SET("Topics", 150, "Topics", MouseActionDescription.EDIT_STRING),
-    NAME_FOR_TOPIC_SET("Name", 150, "Name", MouseActionDescription.EDIT_STRING),
-    POPUP_MODE("PopUp Mode", 80, "false", MouseActionDescription.TOGGLE_BOOL),
-    AUTO_START("Auto Start", 80, "false", MouseActionDescription.TOGGLE_BOOL),
-    FONT("Font", 100, "Tahoma,0,8", MouseActionDescription.OPEN_FONT_DIALOGUE);
+    IS_DEFAULT_ENTRY("Default",
+                     40,
+                     MouseActionDescription.NO_ACTION),
+
+    TOPIC_SET("Topics",
+              150,
+              "Topics",
+              MouseActionDescription.EDIT_STRING),
+
+    NAME_FOR_TOPIC_SET("Name",
+                       150,
+                       "Name",
+                       MouseActionDescription.EDIT_STRING),
+
+    POPUP_MODE("PopUp Mode",
+               80,
+               "false",
+               MouseActionDescription.TOGGLE_BOOL),
+
+    AUTO_START("Auto Start",
+               80,
+               "false",
+               MouseActionDescription.TOGGLE_BOOL),
+
+    FONT("Font",
+         100,
+         "Tahoma,0,8",
+         MouseActionDescription.OPEN_FONT_DIALOGUE);
 
 
     /**
      * Description of the action on mouse double click
      */
     public enum MouseActionDescription {
-        NO_ACTION, EDIT_STRING, TOGGLE_BOOL, OPEN_FONT_DIALOGUE
+        NO_ACTION,
+        EDIT_STRING,
+        TOGGLE_BOOL,
+        OPEN_FONT_DIALOGUE
     }
 
     private final String _title;
@@ -44,11 +69,28 @@ public enum ColumnDescription {
     private final String _defaultValue;
     private final MouseActionDescription _mouseActionDescription;
 
-    private ColumnDescription(@Nonnull final String title, final int columnWidth, @Nonnull final MouseActionDescription mouseActionDescription) {
+    /**
+     * Constructor.
+     * @param title
+     * @param columnWidth
+     * @param mouseActionDescription
+     */
+    private ColumnDescription(@Nonnull final String title,
+                              final int columnWidth,
+                              @Nonnull final MouseActionDescription mouseActionDescription) {
         this(title, columnWidth, null, mouseActionDescription);
     }
 
-    private ColumnDescription(@Nonnull final String title, final int columnWidth, @CheckForNull final String defaultValue,
+    /**
+     * Constructor.
+     * @param title
+     * @param columnWidth
+     * @param defaultValue
+     * @param mouseActionDescription
+     */
+    private ColumnDescription(@Nonnull final String title,
+                              final int columnWidth,
+                              @CheckForNull final String defaultValue,
                               @Nonnull final MouseActionDescription mouseActionDescription) {
         _title = title;
         _columnWidth = columnWidth;

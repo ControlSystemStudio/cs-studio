@@ -37,6 +37,14 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
+/**
+ * TODO (jpenning) :
+ *
+ * @author jpenning
+ * @author $Author$
+ * @version $Revision$
+ * @since 24.06.2010
+ */
 public class TopicTableEditorMouseListener extends MouseAdapter {
 
     private static final Logger LOG = CentralLogger.getInstance()
@@ -50,7 +58,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 	                                     @Nonnull final PreferenceTopicTableEditor preferenceTopicTableEditor) {
 		_editor = editor;
 		_preferenceTopicTableEditor = preferenceTopicTableEditor;
-		_table = preferenceTopicTableEditor.tableViewer.getTable();
+		_table = preferenceTopicTableEditor._tableViewer.getTable();
 	}
 
 	/**
@@ -61,27 +69,26 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 	@Override
 	public void mouseDown(@Nonnull final MouseEvent event) {
 		// Dispose any existing editor
-		Control old = _editor.getEditor();
+		final Control old = _editor.getEditor();
 		if (old != null) {
             old.dispose();
         }
 
 		// Determine where the mouse was clicked
-		Point pt = new Point(event.x, event.y);
+		final Point pt = new Point(event.x, event.y);
 
 		// Determine which row was selected
 		final TableItem item = _table.getItem(pt);
 		for (int i = 0; i < _table.getItemCount(); i++) {
 			if (item == _table.getItem(i)) {
-				String topicTitle = item.getText(2);
+				final String topicTitle = item.getText(2);
 				if (_preferenceTopicTableEditor != null) {
 					_preferenceTopicTableEditor.setRowOfTopicSelection(i,
 							topicTitle);
 					break;
-				} else {
-				    LOG.error("Cannot update column tabel (null)!");
-					break;
 				}
+                LOG.error("Cannot update column tabel (null)!");
+                break;
 			}
 		}
 	}
@@ -90,21 +97,22 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 	 * Make the selected cell editable with a double click. (Copy from an
 	 * internet example)
 	 */
-	public void mouseDoubleClick(@Nonnull final MouseEvent event) {
+	@Override
+    public void mouseDoubleClick(@Nonnull final MouseEvent event) {
 		// Dispose any existing editor
-		Control old = _editor.getEditor();
+		final Control old = _editor.getEditor();
 		if (old != null) {
             old.dispose();
         }
 
 		// Determine where the mouse was clicked
-		Point pt = new Point(event.x, event.y);
+		final Point pt = new Point(event.x, event.y);
 
 		// Determine which row was selected
 		final TableItem item = _table.getItem(pt);
 		if (item != null) {
-			int column = getColumnIndex(pt, item);
-			ColumnDescription columnDescription = _preferenceTopicTableEditor.getColumnDescriptions().get(column);
+			final int column = getColumnIndex(pt, item);
+			final ColumnDescription columnDescription = _preferenceTopicTableEditor.getColumnDescriptions().get(column);
             switch (columnDescription.getMouseActionDescription()) {
                 case NO_ACTION:
                     break;
@@ -126,12 +134,11 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
                             + " not handled after double clicking column " + column);
                     break;
             }
-
 		}
 	}
 
     private void toggleBool(@Nonnull final TableItem item, final int column) {
-        String text = item.getText(column);
+        final String text = item.getText(column);
         if (text.equals("false")) {
             item.setText(column, "true");
         } else {
@@ -142,14 +149,14 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 
     private void openFontDialogue(@Nonnull final TableItem item, final int column) {
         // read current font settings to initialize FontDialog
-        String[] fontDataString = item.getText(column).split(",");
+        final String[] fontDataString = item.getText(column).split(",");
         FontDialog fontDialog;
-        FontData[] font = createFontFromPreferenceString(fontDataString);
+        final FontData[] font = createFontFromPreferenceString(fontDataString);
         try {
             fontDialog = new FontDialog(_table.getShell());
             fontDialog.setFontList(font);
             font[0] = fontDialog.open();
-        } catch (Exception e) {
+        } catch (final Exception e) {
             LOG.error("Error creating font " + e.getMessage());
         }
         item.setText(column, font[0].getName() + "," + font[0].getStyle()
@@ -209,7 +216,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 						.parseInt(fontDataString[2]), Integer
 						.parseInt(fontDataString[1]));
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 		    LOG.error("Cannot create font, " + e.getMessage());
 		}
 		if (font[0] == null) {
@@ -222,7 +229,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 		// Determine which column was selected
 		int column = -1;
 		for (int i = 0, n = _table.getColumnCount(); i < n; i++) {
-			Rectangle rect = item.getBounds(i);
+			final Rectangle rect = item.getBounds(i);
 			if (rect.contains(pt)) {
 				// This is the selected column
 				column = i;

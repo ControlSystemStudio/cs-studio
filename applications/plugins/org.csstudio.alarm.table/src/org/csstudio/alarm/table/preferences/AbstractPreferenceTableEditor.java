@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Widget;
 
@@ -45,50 +46,51 @@ import org.eclipse.swt.widgets.Widget;
  * @author jhatje
  *
  */
-public abstract class PreferenceTableEditor extends FieldEditor {
+public abstract class AbstractPreferenceTableEditor extends FieldEditor {
 
 	/**
 	 * The table for the items in the menu. (Currently the options of the JFace
 	 * component are not used. The TableViewer is just a container for the SWT
 	 * table. Maybe the TableViewer can be replaced with the SWT table.)
 	 */
-	TableViewer tableViewer;
+	protected TableViewer _tableViewer;
 
 	/**
 	 * The button box containing the Add, Remove, Up, and Down buttons;
 	 * <code>null</code> if none (before creation or after disposal).
 	 */
-	private Composite buttonBox;
+	private Composite _buttonBox;
 
 	/**
 	 * The Add button.
 	 */
-	private Button addButton;
+	private Button _addButton;
 
 	/**
 	 * The Remove button.
 	 */
-	private Button removeButton;
+	private Button _removeButton;
 
 	/**
 	 * The Up button.
 	 */
-	private Button upButton;
+	private Button _upButton;
 
 	/**
 	 * The Down button.
 	 */
-	private Button downButton;
+	private Button _downButton;
 
 	/**
 	 * The selection listener.
 	 */
-	private SelectionListener selectionListener;
+	private SelectionListener _selectionListener;
 
 	/**
 	 * Creates a new list field editor
 	 */
-	protected PreferenceTableEditor() {
+	protected AbstractPreferenceTableEditor() {
+	    // EMPTY
 	}
 
 	/**
@@ -100,10 +102,11 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
+	@Override
 	protected void adjustForNumColumns(final int numColumns) {
-		Control control = getLabelControl();
+		final Control control = getLabelControl();
 		((GridData) control.getLayoutData()).horizontalSpan = numColumns;
-		((GridData) tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
+		((GridData) _tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
 	}
 
 	/**
@@ -113,10 +116,10 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 *            the box for the buttons
 	 */
 	private void createButtons(final Composite box) {
-		addButton = createPushButton(box, "ListEditor.add");//$NON-NLS-1$
-		removeButton = createPushButton(box, "ListEditor.remove");//$NON-NLS-1$
-		upButton = createPushButton(box, "ListEditor.up");//$NON-NLS-1$
-		downButton = createPushButton(box, "ListEditor.down");//$NON-NLS-1$
+		_addButton = createPushButton(box, "ListEditor.add");//$NON-NLS-1$
+		_removeButton = createPushButton(box, "ListEditor.remove");//$NON-NLS-1$
+		_upButton = createPushButton(box, "ListEditor.up");//$NON-NLS-1$
+		_downButton = createPushButton(box, "ListEditor.down");//$NON-NLS-1$
 	}
 
 	/**
@@ -131,7 +134,7 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	abstract String createList(TableItem[] items);
+	protected abstract String createList(TableItem[] items);
 
 	/**
 	 * Helper method to create a push button.
@@ -143,11 +146,11 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @return Button
 	 */
 	private Button createPushButton(final Composite parent, final String key) {
-		Button button = new Button(parent, SWT.PUSH);
+		final Button button = new Button(parent, SWT.PUSH);
 		button.setText(JFaceResources.getString(key));
 		button.setFont(parent.getFont());
-		GridData data = new GridData(GridData.FILL_HORIZONTAL);
-		int widthHint = convertHorizontalDLUsToPixels(button,
+		final GridData data = new GridData(GridData.FILL_HORIZONTAL);
+		final int widthHint = convertHorizontalDLUsToPixels(button,
 				IDialogConstants.BUTTON_WIDTH);
 		data.widthHint = Math.max(widthHint, button.computeSize(SWT.DEFAULT,
 				SWT.DEFAULT, true).x);
@@ -160,41 +163,43 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * Creates a selection listener.
 	 */
 	public void createSelectionListener() {
-		selectionListener = new SelectionAdapter() {
-			public void widgetSelected(final SelectionEvent event) {
-				Widget widget = event.widget;
-				if (widget == addButton) {
+		_selectionListener = new SelectionAdapter() {
+			@Override
+            public void widgetSelected(final SelectionEvent event) {
+				final Widget widget = event.widget;
+				if (widget == _addButton) {
 					addPressed();
-				} else if (widget == removeButton) {
+				} else if (widget == _removeButton) {
 					removePressed();
-				} else if (widget == upButton) {
+				} else if (widget == _upButton) {
 					upPressed();
-				} else if (widget == downButton) {
+				} else if (widget == _downButton) {
 					downPressed();
-				} else if (widget == tableViewer.getTable()) {
+				} else if (widget == _tableViewer.getTable()) {
 					selectionChanged();
 				}
 			}
 		};
 	}
 
-	protected void doFillIntoGrid(final Composite parent, final int numColumns) {
-		Control control = getLabelControl(parent);
+	@Override
+    protected void doFillIntoGrid(final Composite parent, final int numColumns) {
+		final Control control = getLabelControl(parent);
 		GridData gd = new GridData();
 		gd.horizontalSpan = numColumns;
 		control.setLayoutData(gd);
 
-		tableViewer = getTableControl(parent);
+		_tableViewer = getTableControl(parent);
 		gd = new GridData(GridData.FILL_HORIZONTAL);
 		gd.verticalAlignment = GridData.FILL;
 		gd.horizontalSpan = numColumns - 1;
 		gd.grabExcessHorizontalSpace = true;
-		tableViewer.getTable().setLayoutData(gd);
+		_tableViewer.getTable().setLayoutData(gd);
 
-		buttonBox = getButtonBoxControl(parent);
+		_buttonBox = getButtonBoxControl(parent);
 		gd = new GridData();
 		gd.verticalAlignment = GridData.BEGINNING;
-		buttonBox.setLayoutData(gd);
+		_buttonBox.setLayoutData(gd);
 	}
 	/**
 	 * Set the file path and menu name set by the user from preferences in the
@@ -203,19 +208,22 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	abstract protected void doLoad();
+	@Override
+    protected abstract void doLoad();
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doLoadDefault() {
+	@Override
+    protected void doLoadDefault() {
 		// there are no defaults for the quickstart menu.
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	abstract protected void doStore();
+	@Override
+    protected abstract void doStore();
 
 	/**
 	 * Notifies that the Down button has been pressed.
@@ -233,28 +241,28 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @return the button box
 	 */
 	public Composite getButtonBoxControl(final Composite parent) {
-		if (buttonBox == null) {
-			buttonBox = new Composite(parent, SWT.NULL);
-			GridLayout layout = new GridLayout();
+		if (_buttonBox == null) {
+			_buttonBox = new Composite(parent, SWT.NULL);
+			final GridLayout layout = new GridLayout();
 			layout.marginWidth = 0;
-			buttonBox.setLayout(layout);
-			createButtons(buttonBox);
-			buttonBox.addDisposeListener(new DisposeListener() {
+			_buttonBox.setLayout(layout);
+			createButtons(_buttonBox);
+			_buttonBox.addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(final DisposeEvent event) {
-					addButton = null;
-					removeButton = null;
-					upButton = null;
-					downButton = null;
-					buttonBox = null;
+					_addButton = null;
+					_removeButton = null;
+					_upButton = null;
+					_downButton = null;
+					_buttonBox = null;
 				}
 			});
 
 		} else {
-			checkParent(buttonBox, parent);
+			checkParent(_buttonBox, parent);
 		}
 
 		selectionChanged();
-		return buttonBox;
+		return _buttonBox;
 	}
 
 	/**
@@ -279,7 +287,8 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	public abstract int getNumberOfControls();
+	@Override
+    public abstract int getNumberOfControls();
 
 	/**
 	 * Returns this field editor's selection listener. The listener is created
@@ -288,10 +297,10 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @return the selection listener
 	 */
 	protected SelectionListener getSelectionListener() {
-		if (selectionListener == null) {
+		if (_selectionListener == null) {
 			createSelectionListener();
 		}
-		return selectionListener;
+		return _selectionListener;
 	}
 
 	/**
@@ -304,10 +313,10 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 * @return the shell
 	 */
 	protected Shell getShell() {
-		if (addButton == null) {
+		if (_addButton == null) {
 			return null;
 		}
-		return addButton.getShell();
+		return _addButton.getShell();
 	}
 
 
@@ -316,9 +325,9 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 */
 	private void removePressed() {
 		setPresentsDefaultValue(false);
-		int index = tableViewer.getTable().getSelectionIndex();
+		final int index = _tableViewer.getTable().getSelectionIndex();
 		if (index >= 0) {
-			tableViewer.getTable().remove(index);
+			_tableViewer.getTable().remove(index);
 			selectionChanged();
 		}
 	}
@@ -328,20 +337,22 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 */
 	private void selectionChanged() {
 
-		int index = tableViewer.getTable().getSelectionIndex();
-		int size = tableViewer.getTable().getItemCount();
+		final int index = _tableViewer.getTable().getSelectionIndex();
+		final int size = _tableViewer.getTable().getItemCount();
 
-		removeButton.setEnabled(index >= 0);
-		upButton.setEnabled(size > 1 && index > 0);
-		downButton.setEnabled(size > 1 && index >= 0 && index < size - 1);
+		_removeButton.setEnabled(index >= 0);
+		_upButton.setEnabled((size > 1) && (index > 0));
+		_downButton.setEnabled((size > 1) && (index >= 0) && (index < size - 1));
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	public void setFocus() {
-		if (tableViewer.getTable() != null) {
-			tableViewer.getTable().setFocus();
+	@Override
+    public void setFocus() {
+		final Table table = _tableViewer.getTable();
+        if (table != null) {
+			table.setFocus();
 		}
 	}
 
@@ -354,20 +365,20 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	 */
 	private void swap(final boolean up) {
 		setPresentsDefaultValue(false);
-		int index = tableViewer.getTable().getSelectionIndex();
-		int target = up ? index - 1 : index + 1;
+		final int index = _tableViewer.getTable().getSelectionIndex();
+		final int target = up ? index - 1 : index + 1;
 
 		if (index >= 0) {
-			TableItem[] selection = tableViewer.getTable().getSelection();
+			final TableItem[] selection = _tableViewer.getTable().getSelection();
 			Assert.isTrue(selection.length == 1);
-			String[] tableRow = new String[2];
+			final String[] tableRow = new String[2];
 			tableRow[0] = selection[0].getText(0);
 			tableRow[1] = selection[0].getText(1);
-			tableViewer.getTable().remove(index);
-			TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE,
+			_tableViewer.getTable().remove(index);
+			final TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE,
 					target);
 			item.setText(tableRow);
-			tableViewer.getTable().setSelection(target);
+			_tableViewer.getTable().setSelection(target);
 		}
 		selectionChanged();
 	}
@@ -382,12 +393,13 @@ public abstract class PreferenceTableEditor extends FieldEditor {
 	/*
 	 * @see FieldEditor.setEnabled(boolean,Composite).
 	 */
-	public void setEnabled(final boolean enabled, final Composite parent) {
+	@Override
+    public void setEnabled(final boolean enabled, final Composite parent) {
 		super.setEnabled(enabled, parent);
 		getTableControl(parent).getTable().setEnabled(enabled);
-		addButton.setEnabled(enabled);
-		removeButton.setEnabled(enabled);
-		upButton.setEnabled(enabled);
-		downButton.setEnabled(enabled);
+		_addButton.setEnabled(enabled);
+		_removeButton.setEnabled(enabled);
+		_upButton.setEnabled(enabled);
+		_downButton.setEnabled(enabled);
 	}
 }

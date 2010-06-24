@@ -13,8 +13,9 @@
  * THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE
  * DISTRIBUTION OF THIS PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY
  * FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ *
+ * $Id$
  */
-
 package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
@@ -45,7 +46,7 @@ import org.eclipse.swt.widgets.TableItem;
  * @author jhatje
  *
  */
-public class PreferenceTopicTableEditor extends PreferenceTableEditor {
+public class PreferenceTopicTableEditor extends AbstractPreferenceTableEditor {
 
 	private static final String ITEM_SEPARATOR = ";";
     private static final String INNER_ITEM_SEPARATOR_AS_REGEX = "\\?";
@@ -59,10 +60,7 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 
 	public PreferenceTopicTableEditor(@Nonnull final List<ColumnDescription> columnDescriptions) {
 	    super();
-	    _columnDescriptions = new ArrayList<ColumnDescription>();
-	    for (ColumnDescription columnDescription : columnDescriptions) {
-	        _columnDescriptions.add(columnDescription);
-	    }
+	    _columnDescriptions = new ArrayList<ColumnDescription>(columnDescriptions);
     }
 
 
@@ -87,26 +85,30 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * Notifies that the Add button has been pressed. A new tableItem is set at
 	 * the end of the table with initial strings that the user has to adjust.
 	 */
-	void addPressed() {
+	@Override
+    void addPressed() {
 		setPresentsDefaultValue(false);
-		int itemNumber = tableViewer.getTable().getItemCount();
-		TableItem item = new TableItem(tableViewer.getTable(), SWT.NONE,
+		final int itemNumber = _tableViewer.getTable().getItemCount();
+		final TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE,
 				itemNumber);
-		for (ColumnDescription columnDescription : _columnDescriptions) {
-		    String defaultValue = columnDescription.getDefaultValue();
+		int i = 0;
+		for (final ColumnDescription columnDescription : _columnDescriptions) {
+		    final String defaultValue = columnDescription.getDefaultValue();
 		    if (defaultValue != null) {
-		        item.setText(_columnDescriptions.indexOf(columnDescription), defaultValue);
-            }
-        }
+		        item.setText(i, defaultValue);
+		    }
+		    i++;
+		}
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void adjustForNumColumns(final int numColumns) {
-		Control control = getLabelControl();
+	@Override
+    protected void adjustForNumColumns(final int numColumns) {
+		final Control control = getLabelControl();
 		((GridData) control.getLayoutData()).horizontalSpan = numColumns;
-		((GridData) tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
+		((GridData) _tableViewer.getTable().getLayoutData()).horizontalSpan = numColumns - 1;
 	}
 
 
@@ -122,42 +124,43 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 * @return the combined string
 	 * @see #parseString
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
     protected String createList(@Nonnull final TableItem[] items) {
-        StringBuffer preferenceString = new StringBuffer();
-        for (TableItem tableItem : items) {
-            for (ColumnDescription columnDescription : _columnDescriptions) {
-                int columnIndex = _columnDescriptions.indexOf(columnDescription);
-                appendStringForColumn(preferenceString, tableItem, columnDescription, columnIndex);
-                appendSeparator(preferenceString, isLast(columnIndex));
+        final StringBuilder prefBuilder = new StringBuilder();
+        for (final TableItem tableItem : items) {
+            int i = 0;
+            for (final ColumnDescription columnDescription : _columnDescriptions) {
+                prefBuilder.append(getStringForColumn(tableItem, columnDescription, i));
+                prefBuilder.append(getColSeparator(isLast(i)));
+                i++;
             }
         }
-        return preferenceString.toString();
+        return prefBuilder.toString();
     }
 
-    private void appendStringForColumn(@Nonnull final StringBuffer preferenceString,
-                                       @Nonnull final TableItem tableItem,
-                                       @Nonnull final ColumnDescription columnDescription,
-                                       final int columnIndex) {
-        if (columnDescription == ColumnDescription.IS_DEFAULT_ENTRY) {
-            // Special case for the checkbox
-            if (tableItem.getChecked()) {
-                preferenceString.append("default");
-            }
-        } else {
-            preferenceString.append(tableItem.getText(columnIndex));
-        }
-    }
+	@Nonnull
+	private String getStringForColumn(@Nonnull final TableItem tableItem,
+                                      @Nonnull final ColumnDescription columnDescription,
+                                      final int columnIndex) {
 
+	    if (columnDescription == ColumnDescription.IS_DEFAULT_ENTRY) {
+	        // Special case for the checkbox
+	        if (tableItem.getChecked()) {
+	            return "default";
+	        }
+            return "";
+	    }
+        return tableItem.getText(columnIndex);
+	}
 
-	private void appendSeparator(@Nonnull final StringBuffer preferenceString,
-	                             final boolean isLast) {
+	@Nonnull
+	private String getColSeparator(final boolean isLast) {
         if (isLast) {
-            preferenceString.append(ITEM_SEPARATOR);
-        } else {
-            preferenceString.append(INNER_ITEM_SEPARATOR);
+            return ITEM_SEPARATOR;
         }
-    }
+        return INNER_ITEM_SEPARATOR;
+	}
 
 	private boolean isLast(final int columnIndex) {
 	    return columnIndex == (_columnDescriptions.size() - 1);
@@ -170,14 +173,14 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doLoad() {
-		if (tableViewer != null) {
-			String s = getPreferenceStore().getString(getPreferenceName());
-			String[] array = parseString(s);
-			TableItem item;
-			for (String element : array) {
-				item = new TableItem(tableViewer.getTable(), SWT.NONE);
-				String[] tableRowFromPreferences = element.split(INNER_ITEM_SEPARATOR_AS_REGEX);
+	@Override
+    protected void doLoad() {
+		if (_tableViewer != null) {
+			final String s = getPreferenceStore().getString(getPreferenceName());
+			final String[] array = s.split(ITEM_SEPARATOR);
+			for (final String element : array) {
+			    final TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE);
+				final String[] tableRowFromPreferences = element.split(INNER_ITEM_SEPARATOR_AS_REGEX);
 				if (tableRowFromPreferences[0].equals("default")) {
 					tableRowFromPreferences[0] = "";
 					item.setChecked(true);
@@ -191,8 +194,9 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	protected void doStore() {
-		String s = createList(tableViewer.getTable().getItems());
+	@Override
+    protected void doStore() {
+		final String s = createList(_tableViewer.getTable().getItems());
 		if (s != null) {
 			getPreferenceStore().setValue(getPreferenceName(), s);
 		}
@@ -205,16 +209,19 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 *            the parent control
 	 * @return the list control
 	 */
-	public TableViewer getTableControl(final Composite parent) {
-		if (tableViewer == null) {
-			int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
+	@Override
+	@Nonnull
+    public TableViewer getTableControl(final Composite parent) {
+		if (_tableViewer == null) {
+			final int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION | SWT.CHECK;
-			Table table = new Table(parent, style);
+			final Table table = new Table(parent, style);
 			table.setLinesVisible(true);
 			table.setHeaderVisible(true);
 
-			for (ColumnDescription columnDescription : _columnDescriptions) {
-			    TableColumn column = new TableColumn(table, SWT.LEFT, _columnDescriptions.indexOf(columnDescription));
+			int i = 0;
+			for (final ColumnDescription columnDescription : _columnDescriptions) {
+			    final TableColumn column = new TableColumn(table, SWT.LEFT, i++);
 			    column.setText(columnDescription.getTitle());
 			    column.setWidth(columnDescription.getColumnWidth());
             }
@@ -224,12 +231,12 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 			editor.horizontalAlignment = SWT.LEFT;
 			editor.grabHorizontal = true;
 
-			tableViewer = new TableViewer(table);
-			tableViewer.getTable().setFont(parent.getFont());
-			tableViewer.getTable().addSelectionListener(getSelectionListener());
-			tableViewer.getTable().addDisposeListener(new DisposeListener() {
+			_tableViewer = new TableViewer(table);
+			_tableViewer.getTable().setFont(parent.getFont());
+			_tableViewer.getTable().addSelectionListener(getSelectionListener());
+			_tableViewer.getTable().addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(final DisposeEvent event) {
-					tableViewer = null;
+					_tableViewer = null;
 				}
 			});
 			_topicTableEditorMouseListener = new TopicTableEditorMouseListener(
@@ -245,20 +252,20 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 						return;
 					}
 					super.widgetSelected(e);
-					Table table = tableViewer.getTable();
-					for (int i = 0; i < table.getItemCount(); i++) {
-						if (table.getItem(i).getChecked()) {
-							table.getItem(i).setChecked(false);
+					final Table innerTable = _tableViewer.getTable();
+					for (int j = 0; j < innerTable .getItemCount(); j++) {
+						if (innerTable .getItem(j).getChecked()) {
+						    innerTable .getItem(j).setChecked(false);
 						}
 					}
-					TableItem item = (TableItem) e.item;
+					final TableItem item = (TableItem) e.item;
 					item.setChecked(true);
 				}
 			});
 		} else {
-			checkParent(tableViewer.getTable(), parent);
+			checkParent(_tableViewer.getTable(), parent);
 		}
-		return tableViewer;
+		return _tableViewer;
 	}
 
 	/**
@@ -269,14 +276,16 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
 	 *
 	 * @return a new item
 	 */
-	protected String getNewInputObject() {
+	@Override
+    protected String getNewInputObject() {
 		return null;
 	}
 
 	/*
 	 * (non-Javadoc) Method declared on FieldEditor.
 	 */
-	public int getNumberOfControls() {
+	@Override
+    public int getNumberOfControls() {
 		return _columnDescriptions.size();
 	}
 
@@ -285,33 +294,16 @@ public class PreferenceTopicTableEditor extends PreferenceTableEditor {
         return Collections.unmodifiableList(_columnDescriptions);
     }
 
-	/**
-	 * Splits the given string into a list of strings. This method is the
-	 * converse of <code>createList</code>.
-	 * <p>
-	 * Subclasses must implement this method.
-	 * </p>
-	 *
-	 * @param stringList
-	 *            the string
-	 * @return an array of <code>String</code>
-	 * @see #createList
-	 */
-	protected String[] parseString(final String stringList) {
-		return stringList.split(ITEM_SEPARATOR);
-	}
 
-
-	public void setColumnTableReference(
-			final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor) {
+	public final void setColumnTableReference(@Nonnull final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor) {
 		_preferenceColumnTableEditor = preferenceColumnTableEditor;
 	}
 
-	public void setRowOfTopicSelection(final int i, final String topicTitle) {
+	public void setRowOfTopicSelection(final int i, @Nonnull final String topicTitle) {
 		_preferenceColumnTableEditor.setSelectionToColumnEditor(i, topicTitle);
 	}
 
-	public void updateTopicTitle(final String text) {
+	public void updateTopicTitle(@Nonnull final String text) {
 		_preferenceColumnTableEditor.updateTopicTitle(text);
 	}
 }
