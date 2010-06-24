@@ -23,6 +23,7 @@ package org.csstudio.platform.security;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
@@ -38,14 +39,33 @@ import org.eclipse.core.runtime.Platform;
  * This class (de-)activates the registered objects if the current user has the
  * permission for the id of the object.
  * 
- * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * Memory complication:
+ * This is used by for example the AbstractUserDependentAction to automatically
+ * enable/disable an action based on changing authorization of the user.
+ * These Actions can be used in dynamically created context menues.
+ * The menu API allows the creation of such context menues, but there is no
+ * obvious way to remove menu entries. The menu is simply garbage-collected
+ * when Eclipse decides that it is no longer needed.
+ * If the AbstractUserDependentAction registered itself with the ActivationService,
+ * it cannot be garbage collected as long as the ActivationService still
+ * has a reference to the action.
+ * For this reason, the ActivateableList must only keep week references to
+ * registered objects.
  * 
+ * 
+ * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
+ * @author Kay Kasemir Weak Reference handling
  */
 public final class ActivationService implements IUserManagementListener,
 		IRightsManagementListener {
 
 	/**
 	 * A HashMap which contains a ActivateableList under an ID.
+	 * 
+	 * Contains entries like
+	 *   "alarm_ack" -> ActivateableList { object, adapter }
+	 * for all the items that need to be enabled/disabled based on
+	 * the "alarm_ack" right.
 	 */
 	private final Map<String, ActivateableList> _activatesMap;
 
@@ -226,14 +246,16 @@ public final class ActivationService implements IUserManagementListener,
 	/**
 	 * Checks all registered objects if they should be activated or deactivated.
 	 */
-	private void doRefreshState() {
-		String[] keys = _activatesMap.keySet().toArray(new String[0]);
-		for (int i = 0; i < keys.length; i++) {
-			for (int j = 0; j < _activatesMap.get(keys[i]).size(); j++) {
-				ActivateableList liste = _activatesMap.get(keys[i]);
-				liste.activate(j, SecurityFacade.getInstance().canExecute(
-						keys[i]));
-			}
+	private void doRefreshState()
+	{
+	    final Set<String> key_set = _activatesMap.keySet();
+        final String keys[] = key_set.toArray(new String[key_set.size()]);
+		for (int i = 0; i < keys.length; ++i)
+		{
+			final ActivateableList activatable_list = _activatesMap.get(keys[i]);
+            final boolean activate =
+                SecurityFacade.getInstance().canExecute(keys[i]);
+            activatable_list.activate(activate);
 		}
 	}
 

@@ -28,10 +28,20 @@ import org.csstudio.platform.security.IActivationAdapter;
 
 /**
  * This class contains a List of ObjectAdapterTupel and an IRight.
+ * 
+ * All the objects referenced from this list use weak links to allow
+ * them to be garbage collected.
+ * This means that all code in here must handle the case of object references
+ * turning to <code>null</code>.
+ * 
+ * The list 'shrinks' to remove references to garbage-collected objects
+ * in <code>activate()</code>
+ *
+ * @see ActivationService for more comments on weak references
  * @author Kai Meyer & Torsten Witte
+ * @author Kay Kasemir Weak Reference handling
  */
 public class ActivateableList {
-	
 	/**
 	 * The List for the ObjectAdapterTupel.
 	 */
@@ -66,11 +76,12 @@ public class ActivateableList {
 	 * @return  True if the object could be removed; false otherwise
 	 */
 	public final boolean removeObject(final Object object) {
-		for (int i = 0; i < _tupel.size(); i++) {
-			if (_tupel.get(i).getObject().equals(object)) {
+	    if (object == null)
+	        return false;
+	    // object is non-null, but tupel's object references might be!
+		for (int i = 0; i < _tupel.size(); i++)
+			if (object.equals(_tupel.get(i).getObject()))
 				return _tupel.remove(_tupel.get(i));
-			}
-		}
 		return false;
 	}
 	
@@ -88,11 +99,12 @@ public class ActivateableList {
 	 * @return  True if the object is contained; false otherwise
 	 */
 	public final boolean contains(final Object object) {
-		for (int i = 0; i < _tupel.size(); i++) {
-			if (_tupel.get(i).getObject().equals(object)) {
+	    if (object == null)
+	        return false;
+        // object is non-null, but tupel's object references might be!
+		for (int i = 0; i < _tupel.size(); i++)
+			if (object.equals(_tupel.get(i).getObject()))
 				return true;
-			}
-		}
 		return false;
 	}
 	
@@ -105,14 +117,26 @@ public class ActivateableList {
 	}
 	
 	/**
-	 * Forces the IActivationAdapter for the object at an index to activate the object.
-	 * @param i  The index of the object
+	 * Invoke the IActivationAdapter for all objects on the list
 	 * @param activate  The value for the activation
 	 */
-	public final void activate(final int i, final boolean activate) {
-		if (i >= 0 && i < _tupel.size()) {
-			ObjectAdapterTupel tupel = _tupel.get(i);
-			tupel.getAdapter().activate(tupel.getObject(), activate);
+	public final void activate(final boolean activate)
+	{
+	    int i = 0;
+	    while (i < _tupel.size())
+	    {
+	        final ObjectAdapterTupel tupel = _tupel.get(i);
+			final Object object = tupel.getObject();
+			if (object == null)
+			{   // Referenced object has been garbage collected,
+			    // remove from list
+			    _tupel.remove(i);
+			}
+			else
+			{   // Update activation state of object, move to next list item
+                tupel.getAdapter().activate(object, activate);
+                ++i;
+			}
 		}
 	}
 	

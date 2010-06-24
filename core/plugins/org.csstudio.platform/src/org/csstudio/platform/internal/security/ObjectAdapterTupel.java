@@ -21,21 +21,25 @@
  */
 package org.csstudio.platform.internal.security;
 
+import java.lang.ref.WeakReference;
+
 import org.csstudio.platform.security.IActivationAdapter;
 
 
 
 /**
  * This class represents an object and its IActivationAdapter.
+ * @see ActivationService for comments on weak references
  * @author Kai Meyer & Torsten Witte
- *
+ * @author Kay Kasemir Weak Reference handling
  */
 public class ObjectAdapterTupel {
 	
 	/**
-	 * The Object. 
+	 * Weak reference to the Object. 
 	 */
-	private final Object _object;
+	private final WeakReference<Object> _object_ref;
+	
 	/**
 	 * The IActivationAdapter.
 	 */
@@ -48,16 +52,17 @@ public class ObjectAdapterTupel {
 	 */
 	public ObjectAdapterTupel(final Object object, final IActivationAdapter adapter) {
 		assert object!=null;
-		_object = object;
+		_object_ref = new WeakReference<Object>(object);
 		_adapter = adapter;
 	}
 	
 	/**
 	 * Delivers the object.
-	 * @return  The object
+	 * @return  The object or <code>null</code> if the object has already
+	 *          been garbage collected
 	 */
 	public final Object getObject() {
-		return _object;
+		return _object_ref.get();
 	}
 	
 	/**
@@ -73,7 +78,10 @@ public class ObjectAdapterTupel {
 	 * @param activate  The value for the activation
 	 */
 	public final void activate(final boolean activate) {
-		_adapter.activate(_object, activate);
+        // Object might be garbage collected ...
+        final Object object = _object_ref.get();
+        if (object != null)
+            _adapter.activate(object, activate);
 	}
 	
 	/**
@@ -81,9 +89,12 @@ public class ObjectAdapterTupel {
 	 * @param o another ObjectAdapterTupel
 	 * @return true, if this is equal to another ObjectAdapterTupel
 	 */
-	public final boolean equals(final Object o) {
+	@Override
+    public final boolean equals(final Object o) {
 		if (o instanceof ObjectAdapterTupel) {
-			return this.getObject().equals(((ObjectAdapterTupel)o).getObject());
+	        // Object might be garbage collected ...
+	        final Object object = _object_ref.get();
+			return object != null  && object.equals(((ObjectAdapterTupel)o).getObject());
 		} else {
 			return false;
 		}
@@ -93,7 +104,8 @@ public class ObjectAdapterTupel {
 	 * @see java.lang.Object#hashCode()
 	 * @return  the hashCode of this instance
 	 */
-	public final int hashCode() {
+	@Override
+    public final int hashCode() {
 		return super.hashCode();
 	}
 
