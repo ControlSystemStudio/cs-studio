@@ -27,6 +27,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.NamingException;
@@ -83,6 +84,20 @@ public final class ContentModelExporter {
         }
     }
 
+    /**
+     * Exports the given content model to String.
+     * @throws ExportContentModelException
+     */
+    @CheckForNull
+    public static <T extends Enum<T> & ITreeNodeConfiguration<T>>
+        String exportContentModelToXmlString(@Nonnull final ContentModel<T> model,
+                                     @Nullable final String dtdFilePath) throws ExportContentModelException {
+        
+            final XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            final Document doc = createDOM(model, dtdFilePath);
+            return outputter.outputString(doc);
+    }
+    
     @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) {
