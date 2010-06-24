@@ -21,9 +21,7 @@
  */
 package org.csstudio.platform.ui.security;
 
-import org.csstudio.platform.internal.rightsmanagement.IRightsManagementListener;
 import org.csstudio.platform.internal.rightsmanagement.RightsManagementEvent;
-import org.csstudio.platform.internal.rightsmanagement.RightsManagementService;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.ActivationService;
@@ -51,7 +49,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Xihui Chen
  */
 public abstract class AbstractUserDependentAction extends Action implements
-		IUserManagementListener, IRightsManagementListener {
+		IUserManagementListener {
 
 	/**
 	 * ID of the right necessary to execute this action.
@@ -90,7 +88,6 @@ public abstract class AbstractUserDependentAction extends Action implements
 		_defaultPermission = defaultPermission;
 		
 		SecurityFacade.getInstance().addUserManagementListener(this);
-		RightsManagementService.getInstance().addRightsManagementListener(this);
 		ActivationService.getInstance().registerWidget(_rightId, null, this, new EnableActionAdapter());
 		updateState();
 	}
@@ -269,7 +266,6 @@ public abstract class AbstractUserDependentAction extends Action implements
 		super.finalize();
 		ActivationService.getInstance().unregisterObject(getRightId(), this);
 		SecurityFacade.getInstance().removeUserManagementListener(this);
-		RightsManagementService.getInstance().removeListener(this);
 	}
 
 }
