@@ -21,9 +21,7 @@
  */
 package org.csstudio.platform.internal.rightsmanagement;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -41,7 +39,9 @@ import org.eclipse.core.runtime.Platform;
  * functionalities for the management of <code>Rights</code>.
  * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende & Joerg Rathlev
+ * @author Kay Kasemir Removed unused listener list
  */
+@SuppressWarnings("nls")
 public final class RightsManagementService {
 
 	/**
@@ -49,11 +49,6 @@ public final class RightsManagementService {
 	 */
 	private static RightsManagementService _instance = null;
 
-	/**
-	 * Receivers of rights management events.
-	 */
-	private List<IRightsManagementListener> _listener = new ArrayList<IRightsManagementListener>();
-	
 	/**
 	 * Stores the rights of the users.
 	 */
@@ -150,7 +145,7 @@ public final class RightsManagementService {
 	 * Returns the rights for the action with the given id.
 	 * @param id the id of the action.
 	 */
-	private RightSet getRightsForAction(String id) {
+    private RightSet getRightsForAction(String id) {
 		IAuthorizationProvider provider = getAuthorizationProvider();
 		if (provider != null) {
 			RightSet result = provider.getRights(id);
@@ -171,10 +166,12 @@ public final class RightsManagementService {
 	 * 
 	 * @param listener
 	 *            The listener.
+	 * @deprecated Nobody ever invokes the listener, so why would you want to register?
 	 */
+	@Deprecated
 	public void addRightsManagementListener(
 			final IRightsManagementListener listener) {
-		_listener.add(listener);
+        // NOP
 	}
 
 	/**
@@ -183,16 +180,17 @@ public final class RightsManagementService {
 	 * 
 	 * @param listener
 	 *            The listener.
-	 */
+     * @deprecated Nobody ever invokes the listener, so why would you want to register?
+     */
+    @Deprecated
 	public void removeListener(final IRightsManagementListener listener) {
-		_listener.remove(listener);
+        // NOP
 	}
 
 	/**
 	 * Reads the rights of the given user.
 	 * @param user the user.
 	 */
-	@SuppressWarnings("nls")
     public void readRightsForUser(final User user) {
 		IAuthorizationProvider provider = getAuthorizationProvider();
 		if (provider != null) {
