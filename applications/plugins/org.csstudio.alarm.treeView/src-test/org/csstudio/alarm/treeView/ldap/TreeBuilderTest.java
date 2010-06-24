@@ -25,8 +25,12 @@ package org.csstudio.alarm.treeView.ldap;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
 
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.junit.Before;
@@ -37,9 +41,15 @@ import org.junit.Test;
  */
 public class TreeBuilderTest {
 
-	private SubtreeNode _tree;
-	private SubtreeNode _a;
-	private SubtreeNode _b;
+    private static final String A = "a";
+	private static final String B = "b";
+    private static final String C = "c";
+
+    private IAlarmSubtreeNode _tree;
+	private IAlarmSubtreeNode _a;
+	private IAlarmSubtreeNode _b;
+	private IAlarmProcessVariableNode _c;
+
 	/**
 	 * <p>Initializes a tree for testing. The tree will have the following
 	 * structure:</p>
@@ -52,16 +62,24 @@ public class TreeBuilderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_tree = new SubtreeNode.Builder("root", LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.ROOT).build();
-		_a = new SubtreeNode.Builder("a", LdapEpicsAlarmcfgConfiguration.FACILITY, TreeNodeSource.LDAP).setParent(_tree).build();
-		_b = new SubtreeNode.Builder("b", LdapEpicsAlarmcfgConfiguration.COMPONENT, TreeNodeSource.LDAP).setParent(_a).build();
+		_tree = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue(), LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.ROOT).build();
+		_a = new SubtreeNode.Builder(A, LdapEpicsAlarmcfgConfiguration.FACILITY, TreeNodeSource.LDAP).setParent(_tree).build();
+		_b = new SubtreeNode.Builder(B, LdapEpicsAlarmcfgConfiguration.COMPONENT, TreeNodeSource.LDAP).setParent(_a).build();
+		_c = new ProcessVariableNode.Builder(C, TreeNodeSource.LDAP).setParent(_b).build();
 
 	}
 
 	@Test
 	public void testDirectoryNames() throws Exception {
-		assertEquals(new LdapName("efan=a"), _a.getLdapName());
-		assertEquals(new LdapName("ecom=b,efan=a"), _b.getLdapName());
+	    final LdapName aName = new LdapName("");
+	    aName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.ROOT.getNodeTypeName(), LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue()));
+	    aName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeName(), A));
+        assertEquals(aName, _a.getLdapName());
+
+        final LdapName cName = new LdapName(aName.getRdns());
+        cName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.COMPONENT.getNodeTypeName(), B));
+        cName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), C));
+        assertEquals(cName, _c.getLdapName());
 	}
 
 }
