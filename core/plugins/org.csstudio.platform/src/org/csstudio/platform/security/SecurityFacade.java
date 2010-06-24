@@ -21,6 +21,7 @@
  */
 package org.csstudio.platform.security;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -41,7 +42,6 @@ import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
-
 /**
  * This Service executes instances of
  * AbstractExecuteable if the current user has the permission to
@@ -49,9 +49,19 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * the permission to access the objects behind an identifier. Offers methods to
  * get the current instance of the IRights- and IUserManagement.
  * 
+ * Allows registration of <code>IUserManagementListener</code> to be notified
+ * when the currently logged in user changes.
+ * That listener list uses weak references to allow for example actions from
+ * dynamically created context menues to register. The MenuManager can then
+ * simply garbage collect the menu actions. Since the actions have no way
+ * to know when they should remove themselves as IUserManagementListener,
+ * the weak references allow them to be garbage collected.
+ * 
  * @author Kai Meyer & Torsten Witte & Alexander Will & Sven Wende
  * & Jörg Rathlev & Anze Vodovnik & Xihui Chen
+ * @author Kay Kasemir Weak Reference handling
  */
+@SuppressWarnings("nls")
 public final class SecurityFacade {
 
 	/**
@@ -69,7 +79,8 @@ public final class SecurityFacade {
 	 */
 	private List<ISecurityListener> _listeners;
 
-	private ArrayList<IUserManagementListener> _userListeners;
+	final private ArrayList<WeakReference<IUserManagementListener>> _userListeners =
+	    new ArrayList<WeakReference<IUserManagementListener>>();
 
 	/**
 	 * The interactive callback handler to use for the application login.
@@ -112,7 +123,6 @@ public final class SecurityFacade {
 	 */
 	private SecurityFacade() {
 		_listeners = new ArrayList<ISecurityListener>();
-		_userListeners = new ArrayList<IUserManagementListener>();
 		_context = new LoginContext("PrimaryLoginContext");
 		
 		// Set the "loginAvailable" system property. This is used by the UI to
@@ -267,17 +277,35 @@ public final class SecurityFacade {
 	 * @param handler
 	 * 			The {@link ILoginCallbackHandler} for the login
 	 */
-	private void login(ILoginCallbackHandler handler) {
+	private void login(final ILoginCallbackHandler handler)
+	{
 		this._context.login(handler);
-		for (IUserManagementListener uml : _userListeners) {
-			try {
-				uml.handleUserManagementEvent(new UserManagementEvent());
-			} catch (RuntimeException e) {
-				CentralLogger.getInstance().warn(this,
-						"User management event listener threw unexpected RuntimeException", e);
-			}
+
+		// Inform all listeners about changed user
+        final UserManagementEvent event = new UserManagementEvent();
+		int i=0;
+		while (i < _userListeners.size())
+		{
+		    final IUserManagementListener uml = _userListeners.get(i).get();
+		    if (uml == null)
+		    {
+		        // Listener was garbage collected
+		        _userListeners.remove(i);
+		    }
+		    else
+		    {   // Valid entry: Invoke listener, move to next
+    		    try
+    		    {
+                    uml.handleUserManagementEvent(event);
+    			}
+    		    catch (RuntimeException e)
+    		    {
+    				CentralLogger.getInstance().warn(this,
+    						"User management event listener threw unexpected RuntimeException", e);
+    			}
+    		    ++i;
+		    }
 		}
-		
 	}
 	
 	/**
@@ -301,12 +329,32 @@ public final class SecurityFacade {
 		_listeners.remove(listener);
 	}
 
-	public void addUserManagementListener(IUserManagementListener listener) {
-		_userListeners.add(listener);
+	public void addUserManagementListener(final IUserManagementListener listener)
+	{
+		_userListeners.add(new WeakReference<IUserManagementListener>(listener));
 	}
 	
-	public void removeUserManagementListener(IUserManagementListener listener) {
-		_userListeners.remove(listener);
+	public void removeUserManagementListener(final IUserManagementListener listener)
+	{
+	    int i=0;
+	    while (i<_userListeners.size())
+	    {
+	        final IUserManagementListener uml = _userListeners.get(i).get();
+	        if (uml == null)
+	        {   // Listener was garbage collected, remove from list
+	            _userListeners.remove(i);
+	        }
+	        else
+	        {
+	            if (uml == listener)
+	            {   // Found it; remove; done
+	                _userListeners.remove(i);
+	                return;
+	            }
+	            // Keep looking
+	            ++i;
+	        }
+	    }
 	}
 
 	/**
@@ -407,7 +455,7 @@ public final class SecurityFacade {
 	 *         does not contain any usage descriptions, the returned list will
 	 *         be empty.
 	 */
-	private List<AuthorizationIdUsage> loadAuthorizationIdUsages(
+    private List<AuthorizationIdUsage> loadAuthorizationIdUsages(
 			IConfigurationElement element) {
 		IConfigurationElement[] usageElements = element.getChildren("usage");
 		List<AuthorizationIdUsage> usages = new ArrayList<AuthorizationIdUsage>(usageElements.length);
