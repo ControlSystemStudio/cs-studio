@@ -23,8 +23,6 @@
  */
 package org.csstudio.utility.ldap.model.builder;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
@@ -102,7 +100,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         final ContentModel<T> model = getModel();
 
         try {
-            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot, EPICS_CTRL_FIELD_VALUE)
+            return addSearchResult(model == null ? new ContentModel<T>(_objectClassRoot)
                                                  : model,
                                    _searchResult);
         } catch (final InvalidNameException e) {
@@ -179,7 +177,6 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             final ISubtreeNodeComponent<T> newChild =
                 new TreeNodeComponent<T>((String) rdn.getValue(),
                                         oc,
-                                        oc.getNestedContainerClasses(),
                                         parent,
                                         attributes,
                                         currentPartialName);

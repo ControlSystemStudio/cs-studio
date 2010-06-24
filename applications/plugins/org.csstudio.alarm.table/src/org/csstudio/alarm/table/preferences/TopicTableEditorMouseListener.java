@@ -125,14 +125,13 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
                     openFontDialogue(item, column);
                     break;
 
-                case TOGGLE_BOOL:
-                    toggleBool(item, column);
-                    break;
+//                case TOGGLE_BOOL:
+//                    toggleBool(item, column);
+//                    break;
+//                    default :
+//                LOG.error("Mouse action " + columnDescription.getMouseActionDescription()
+//                        + " not handled after double clicking column " + column);
 
-                default:
-                    LOG.error("Mouse action " + columnDescription.getMouseActionDescription()
-                            + " not handled after double clicking column " + column);
-                    break;
             }
 		}
 	}

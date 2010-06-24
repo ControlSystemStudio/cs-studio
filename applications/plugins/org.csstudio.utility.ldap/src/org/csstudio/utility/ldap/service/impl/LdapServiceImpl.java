@@ -191,7 +191,7 @@ public final class LdapServiceImpl implements ILdapService {
 
         LOG.debug("Remove entry incl. subtree:\n" + component.toString());
 
-        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(), configurationRoot.getRootTypeName());
+        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(), configurationRoot.getRootTypeValue());
 
         // get complete subtree of 'oldLdapName' and create model
         final LdapSearchResult result =
@@ -251,7 +251,8 @@ public final class LdapServiceImpl implements ILdapService {
 
         LOG.debug("Move entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
 
-        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(), configurationRoot.getRootTypeName());
+        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(),
+                                    configurationRoot.getRootTypeValue());
 
         // create for 'oldLdapName' entry a new one under 'newLdapName'
         final Attributes attributes = CONTEXT.getAttributes(oldLdapName);

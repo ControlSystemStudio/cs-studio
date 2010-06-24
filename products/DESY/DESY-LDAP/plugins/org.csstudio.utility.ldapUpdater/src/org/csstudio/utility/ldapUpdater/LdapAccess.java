@@ -378,9 +378,9 @@ public final class LdapAccess {
             final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> parent = model.getChildByLdapName(middleName.toString());
             if (parent != null) {
                 iocFromLdap =
-                    new TreeNodeComponent<LdapEpicsControlsTreeConfiguration>(iocName,
+                    new TreeNodeComponent<LdapEpicsControlsTreeConfiguration>(
+                            iocName,
                             LdapEpicsControlsTreeConfiguration.IOC,
-                            LdapEpicsControlsTreeConfiguration.IOC.getNestedContainerClasses(),
                             parent,
                             null,
                             iocFromLdapName);

@@ -42,30 +42,32 @@ import com.google.common.collect.ImmutableSet;
  */
 public interface ITreeNodeConfiguration<T extends Enum<T>> {
 
-    /**
-     * Returns the root value for the root type.
-     * @return the root value.
-     */
-    @Nonnull
-    String getRootTypeName();
 
     /**
-     * Returns the name of this object class in the directory.
-     * @return the name of this object class in the directory.
+     * Returns the description of this tree node configuration type .
+     * @return the description of this tree node configuration type .
      */
     @Nonnull
     String getDescription();
 
     /**
-     * Returns the name of the tree node (the e.g. RDN in Ldap).
-     * @return returns the name of the tree node (the e.g. RDN in Ldap).
+     * Returns the name of the tree node (the e.g. last RDN in LdapName).
+     * @return returns the name of the tree node (the e.g. last RDN in LdapName).
      *
      */
     @Nonnull
     String getNodeTypeName();
 
     /**
-     * Returns the object class that a container entry nested within this an
+     * Returns the root value (e.g. 'EpicsAlarmcfg' or 'EpicsControls') for the root type (typically 'ou').
+     * @return the root value.
+     */
+    @Nonnull
+    String getRootTypeValue();
+
+    /**
+
+     * Returns the TreeConfiguration types that a container entry nested within this an
      * entry of this object class should have. If this object class is not a
      * container class or if there is no recommended class for nested
      * containers, this method returns <code>null</code>.
@@ -75,7 +77,7 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      *         recommended class.
      */
     @Nonnull
-    Set<T> getNestedContainerClasses();
+    Set<T> getNestedContainerTypes();
 
     /**
      * Returns the object class of an LDAP rdn attribute (efan, eren, ...).

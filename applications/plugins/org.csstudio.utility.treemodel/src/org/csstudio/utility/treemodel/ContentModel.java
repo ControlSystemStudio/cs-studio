@@ -52,7 +52,7 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ContentModel.class);
 
-    private final T _objectClassRoot;
+    private final T _configurationRoot;
 
     private ISubtreeNodeComponent<T> _treeRoot;
 
@@ -64,13 +64,12 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     /**
      * Constructor.
-     * @param objectClassRoot .
+     * @param configurationRoot .
      * @throws InvalidNameException
      */
-    public ContentModel(@Nonnull final T objectClassRoot,
-                        @Nonnull final String rootValue) throws InvalidNameException {
-        _objectClassRoot = objectClassRoot;
-        initFields(_objectClassRoot, rootValue);
+    public ContentModel(@Nonnull final T configurationRoot) throws InvalidNameException {
+        _configurationRoot = configurationRoot;
+        initFields(_configurationRoot);
     }
 
     /**
@@ -78,8 +77,7 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
      * @param rootValue
      * @throws InvalidNameException
      */
-    private void initFields(@Nonnull final T objectClassRoot,
-                            @Nonnull final String rootValue) throws InvalidNameException {
+    private void initFields(@Nonnull final T objectClassRoot) throws InvalidNameException {
         _cacheByLdapName = new HashMap<String, ISubtreeNodeComponent<T>>();
 
 
@@ -88,15 +86,14 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         _cacheByTypeAndLdapName = initCacheByType(clazz);
         _cacheByTypeAndSimpleName = initCacheByType(clazz);
 
-
-        final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootValue);
+        final String rootTypeValue = objectClassRoot.getRootTypeValue();
+        final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootTypeValue);
         final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
 
 
         try {
-            _treeRoot = new TreeNodeComponent<T>(rootValue,
+            _treeRoot = new TreeNodeComponent<T>(rootTypeValue,
                                                  objectClassRoot,
-                                                 objectClassRoot.getNestedContainerClasses() ,
                                                  null,
                                                  null,
                                                  ldapName);

@@ -66,12 +66,11 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
      */
     public TreeNodeComponent(@Nonnull final String name,
                              @Nonnull final T type,
-                             @Nonnull final Set<T> subComponentTypes,
                              @Nullable final ISubtreeNodeComponent<T> parent,
                              @Nullable final Attributes attributes,
                              @Nullable final LdapName fullName) throws InvalidNameException {
         super(name, type, parent, attributes, fullName);
-        _subComponentTypes = subComponentTypes;
+        _subComponentTypes = type.getNestedContainerTypes();
     }
 
     /**

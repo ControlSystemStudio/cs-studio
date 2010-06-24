@@ -32,7 +32,6 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -75,8 +74,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT,
-                                                                   AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT);
 
             for (final IAlarmTreeNode node : _alarmTreeNodes) {
                 createSubtree(model, node, model.getRoot());
@@ -101,7 +99,6 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
             new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(
                     modelNodeName,
                     oc,
-                    oc.getNestedContainerClasses(),
                     modelParentNode,
                     attributes,
                     (LdapName) modelParentNode.getLdapName().add(new Rdn(oc.getNodeTypeName(), modelNodeName)));

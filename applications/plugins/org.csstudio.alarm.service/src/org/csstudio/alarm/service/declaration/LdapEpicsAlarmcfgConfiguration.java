@@ -183,7 +183,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      */
     @Override
     @Nonnull
-    public Set<LdapEpicsAlarmcfgConfiguration> getNestedContainerClasses() {
+    public Set<LdapEpicsAlarmcfgConfiguration> getNestedContainerTypes() {
         return _nestedClasses;
     }
 
@@ -205,7 +205,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      * {@inheritDoc}
      */
     @Override
-    public String getRootTypeName() {
+    public String getRootTypeValue() {
         return AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
     }
 

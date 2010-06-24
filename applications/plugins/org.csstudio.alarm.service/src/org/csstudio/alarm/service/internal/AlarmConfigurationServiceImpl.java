@@ -77,8 +77,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT,
-                                                                   EPICS_ALARM_CFG_FIELD_VALUE);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating empty content model.", e);
         }

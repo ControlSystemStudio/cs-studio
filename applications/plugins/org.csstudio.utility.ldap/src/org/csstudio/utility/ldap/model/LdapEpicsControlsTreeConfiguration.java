@@ -152,7 +152,7 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
      */
     @Override
     @Nonnull
-    public Set<LdapEpicsControlsTreeConfiguration> getNestedContainerClasses() {
+    public Set<LdapEpicsControlsTreeConfiguration> getNestedContainerTypes() {
         return _nestedClasses;
     }
 
@@ -175,8 +175,8 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
      */
     @Override
     @Nonnull
-    public String getRootTypeName() {
-        return ROOT.getNodeTypeName();
+    public String getRootTypeValue() {
+        return LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
     }
 
     /**
@@ -184,7 +184,7 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
      */
     @Nonnull
     public ImmutableSet<String> getAttributes() {
-        return ImmutableSet.<String>builder().build();
+        return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type
     }
 
 }

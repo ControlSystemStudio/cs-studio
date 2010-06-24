@@ -63,16 +63,16 @@ import com.google.common.collect.ImmutableSet;
  */
 public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T> {
 
-    private final T _objectClassRoot;
+    private final T _configurationRoot;
     private final String _filePath;
 
 
     /**
      * Constructor.
      */
-    public XmlFileContentModelBuilder(@Nonnull final T objectClassRoot,
+    public XmlFileContentModelBuilder(@Nonnull final T configurationRoot,
                                       @Nonnull final String filePath) {
-        _objectClassRoot = objectClassRoot;
+        _configurationRoot = configurationRoot;
         _filePath = filePath;
     }
 
@@ -116,8 +116,12 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             if ((attributeValue == null) || (attributeValue.length() == 0)) {
                 throw new CreateContentModelException("Root element has not a valid name attribute.", null);
             }
+            final String typeValue = _configurationRoot.getRootTypeValue();
+            if (!attributeValue.equals(typeValue)) {
+                throw new CreateContentModelException("Root element does not match root type value=" + typeValue + " in Enum " + _configurationRoot.name(), null);
+            }
 
-            model = new ContentModel<T>(_objectClassRoot, attributeValue);
+            model = new ContentModel<T>(_configurationRoot);
 
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Component model could not be constructed. Invalid LDAP name for root element.", e);
@@ -157,7 +161,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
 
 
         final String type = element.getName();
-        final T oc = _objectClassRoot.getNodeTypeByNodeTypeName(type);
+        final T oc = _configurationRoot.getNodeTypeByNodeTypeName(type);
         final String name = element.getAttributeValue("name");
 
         final List<Rdn> rdns = new ArrayList<Rdn>(ldapParent.getLdapName().getRdns());
@@ -176,7 +180,6 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             try {
                 newLdapChild = new TreeNodeComponent<T>(name,
                         oc,
-                        oc.getNestedContainerClasses(),
                         ldapParent,
                         attributes,
                         fullName);

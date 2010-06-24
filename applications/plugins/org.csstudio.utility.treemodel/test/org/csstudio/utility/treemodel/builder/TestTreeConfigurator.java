@@ -149,7 +149,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @CheckForNull
-    public Set<TestTreeConfigurator> getNestedContainerClasses() {
+    public Set<TestTreeConfigurator> getNestedContainerTypes() {
         return _nestedClasses;
     }
 
@@ -172,7 +172,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @Nonnull
-    public String getRootTypeName() {
+    public String getRootTypeValue() {
         return ROOT.getNodeTypeName();
     }
 
