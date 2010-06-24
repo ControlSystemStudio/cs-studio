@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -27,7 +28,7 @@
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Support GIF, PNG, JPG, JPEG, BMP image file.&#xD;
+    <text>Support GIF, PNG, JPG, JPEG, BMP image file. Image file path can be URL. For exampe: http://neutrons.ornl.gov/images/sns_aerial.jpg&#xD;
 &#xD;
 -Auto Size(auto_size) Adujst the widget's size along with the image size.&#xD;
 -Strech to Fit(strech_to_fit) Strech the image to fit the widget size.&#xD;
@@ -41,11 +42,12 @@
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>745</width>
+    <width>781</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
-    <height>132</height>
+    <height>171</height>
     <border_width>1</border_width>
     <name>Label_4</name>
     <border_color>
@@ -53,7 +55,7 @@
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>107</y>
+    <y>101</y>
     <actions hook="false" />
     <tooltip />
     <x>17</x>
@@ -76,6 +78,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -109,6 +112,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -141,6 +145,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -173,6 +178,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -199,31 +205,32 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <auto_size>true</auto_size>
     <scripts />
-    <height>274</height>
-    <name>Image_1</name>
+    <height>235</height>
     <stretch_to_fit>true</stretch_to_fit>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
+    <name>Image_1</name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
     <widget_type>Image</widget_type>
-    <width>240</width>
+    <enabled>true</enabled>
     <no_animation>false</no_animation>
-    <border_style>0</border_style>
+    <width>355</width>
     <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules />
     <crop_bottom>0</crop_bottom>
     <border_width>1</border_width>
-    <image_file>../pictures/yixiu.jpg</image_file>
+    <image_file>../pictures/yangshuo-china.jpg</image_file>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>306</y>
     <actions hook="false" />
-    <y>283</y>
-    <x>17</x>
     <tooltip />
+    <x>20</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
     <crop_right>0</crop_right>
@@ -238,30 +245,31 @@ $(pv_value)</tooltip>
       </path>
     </scripts>
     <height>57</height>
-    <name>Image</name>
     <stretch_to_fit>false</stretch_to_fit>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
+    <name>Image</name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
     <widget_type>Image</widget_type>
-    <width>116</width>
+    <enabled>true</enabled>
     <no_animation>false</no_animation>
-    <border_style>0</border_style>
+    <width>116</width>
     <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules />
     <crop_bottom>0</crop_bottom>
     <border_width>1</border_width>
     <image_file>../pictures/horses.gif</image_file>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>578</y>
     <actions hook="false" />
-    <y>307</y>
-    <x>294</x>
     <tooltip />
+    <x>326</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -272,7 +280,7 @@ $(pv_value)</tooltip>
     <name>Action Button_1</name>
     <pv_name />
     <background_color>
-      <color red="240" green="240" blue="240" />
+      <color red="255" green="0" blue="0" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
@@ -288,12 +296,13 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image />
+    <rules />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>382</y>
+    <y>649</y>
     <actions hook="false">
       <action type="WRITE_PV">
         <pv_name>loc://horsestop</pv_name>
@@ -301,7 +310,7 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>472</x>
+    <x>344</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -312,14 +321,14 @@ $(pv_value)</tooltip>
     <name>Action Button_2</name>
     <pv_name />
     <background_color>
-      <color red="240" green="240" blue="240" />
+      <color red="0" green="255" blue="0" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
-    <text>Start</text>
+    <text>Run</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
@@ -328,12 +337,13 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image />
+    <rules />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>381</y>
+    <y>649</y>
     <actions hook="false">
       <action type="WRITE_PV">
         <pv_name>loc://horsestop</pv_name>
@@ -341,43 +351,56 @@ $(pv_value)</tooltip>
       </action>
     </actions>
     <tooltip />
-    <x>379</x>
+    <x>265</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Image" version="1.0">
     <crop_right>0</crop_right>
     <crop_left>0</crop_left>
     <visible>true</visible>
     <auto_size>true</auto_size>
-    <scripts>
-      <path pathString="../scripts/DynamicLoadImage.js">
-        <pv trig="true">sim://ramp(0,3,1,0.5)</pv>
-      </path>
-    </scripts>
-    <height>91</height>
+    <scripts />
+    <height>229</height>
+    <stretch_to_fit>true</stretch_to_fit>
     <name>Image_2</name>
-    <stretch_to_fit>false</stretch_to_fit>
-    <foreground_color>
-      <color red="192" green="192" blue="192" />
-    </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="192" green="192" blue="192" />
+    </foreground_color>
     <widget_type>Image</widget_type>
-    <width>94</width>
+    <enabled>true</enabled>
     <no_animation>false</no_animation>
-    <border_style>0</border_style>
+    <width>316</width>
     <crop_top>0</crop_top>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Dynamic Load Image" prop_id="image_file" out_exp="false">
+        <exp bool_exp="pv0==0">
+          <value>../pictures/snscontrol.jpg</value>
+        </exp>
+        <exp bool_exp="pv0==1">
+          <value>/BOY Examples/pictures/snsBuilding.jpg</value>
+        </exp>
+        <exp bool_exp="pv0==2">
+          <value>../pictures/neutron.jpg</value>
+        </exp>
+        <exp bool_exp="pv0==3">
+          <value>http://neutrons.ornl.gov/images/sns_aerial.jpg</value>
+        </exp>
+        <pv trig="true">sim://ramp(0,3,1,1)</pv>
+      </rule>
+    </rules>
     <crop_bottom>0</crop_bottom>
     <border_width>1</border_width>
-    <image_file>DynamicSymbols/Haha.jpg</image_file>
+    <image_file>http://neutrons.ornl.gov/images/sns_aerial.jpg</image_file>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
+    <y>309</y>
     <actions hook="false" />
-    <y>466</y>
-    <x>427</x>
     <tooltip />
+    <x>423</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -404,12 +427,13 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
+    <rules />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
-    <y>571</y>
+    <y>651</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
@@ -417,15 +441,16 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
-    <x>17</x>
+    <x>21</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Example 2: GIF animation and changing its position by script.</text>
+    <text>Example 3: GIF animation and changing its position by script.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -434,6 +459,7 @@ $(pv_value)</tooltip>
     <width>368</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>26</height>
     <border_width>1</border_width>
@@ -443,10 +469,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>258</y>
+    <y>545</y>
     <actions hook="false" />
     <tooltip />
-    <x>293</x>
+    <x>228</x>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -463,9 +489,10 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="10" style="0" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>162</width>
+    <width>160</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>26</height>
     <border_width>1</border_width>
@@ -475,10 +502,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>253</y>
+    <y>278</y>
     <actions hook="false" />
     <tooltip />
-    <x>17</x>
+    <x>118</x>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>
@@ -489,7 +516,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
-    <text>Example 3: Dynamic loading image by script.</text>
+    <text>Example 2: Dynamic loading image by rule.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -498,6 +525,7 @@ $(pv_value)</tooltip>
     <width>347</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>26</height>
     <border_width>1</border_width>
@@ -507,10 +535,10 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>0</horizontal_alignment>
     <transparent>false</transparent>
-    <y>433</y>
+    <y>278</y>
     <actions hook="false" />
     <tooltip />
-    <x>293</x>
+    <x>415</x>
     <background_color>
       <color red="255" green="255" blue="223" />
     </background_color>

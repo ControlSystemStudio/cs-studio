@@ -5,6 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>true</show_ruler>
   <height>600</height>
@@ -40,6 +41,7 @@ Step4. Run OPI and then you can set the PV value by dragging the thumb on the kn
     <width>552</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>142</height>
     <border_width>1</border_width>
@@ -90,6 +92,7 @@ Step4. Run OPI and then you can set the PV value by dragging the thumb on the kn
     </font>
     <width>100</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -125,6 +128,7 @@ You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...
     <width>552</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>261</height>
     <border_width>1</border_width>
@@ -157,6 +161,7 @@ You can also show PV value from other widgets (e.g. Gauge, Meter, Thermometer...
     <width>338</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -190,6 +195,7 @@ $(pv_value)</tooltip>
     <width>270</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -227,9 +233,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://noise</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -254,6 +260,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -290,14 +297,14 @@ $(pv_value)</tooltip>
       <color red="150" green="150" blue="150" />
     </knob_color>
     <height>156</height>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <increment>1.0</increment>
     <enabled>true</enabled>
     <widget_type>Knob</widget_type>
-    <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>163</width>
     <show_lolo>true</show_lolo>
@@ -319,7 +326,6 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="0" />
     </color_hi>
     <pv_name>loc://test</pv_name>
-    <control_pv>loc://test</control_pv>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -330,6 +336,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_value_label>true</show_value_label>
     <limits_from_pv>false</limits_from_pv>
@@ -373,6 +380,7 @@ $(pv_value)</tooltip>
     </font>
     <width>107</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -396,6 +404,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -417,23 +426,36 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>557</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -442,16 +464,11 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>25</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
@@ -465,6 +482,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -497,6 +515,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -529,6 +548,7 @@ $(pv_value)</tooltip>
     <width>202</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>18</height>
     <border_width>1</border_width>
@@ -550,23 +570,36 @@ $(pv_value)</tooltip>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>See All Widgets</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>119</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>557</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -575,15 +608,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>622</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

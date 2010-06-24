@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -44,6 +45,7 @@
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>205</height>
     <border_width>1</border_width>
@@ -76,6 +78,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -109,6 +112,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -141,6 +145,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -173,6 +178,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -209,9 +215,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(1,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -236,6 +242,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -272,9 +279,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Meter</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -298,6 +305,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>false</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -334,9 +342,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge_1</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -361,6 +369,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -397,9 +406,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge_2</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -424,6 +433,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -460,9 +470,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Gauge_3</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -487,6 +497,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_markers>false</show_markers>
     <show_hi>true</show_hi>
@@ -523,9 +534,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <name>Meter_1</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -549,6 +560,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>false</transparent_background>
     <show_markers>false</show_markers>
     <show_hi>true</show_hi>
@@ -585,9 +597,9 @@ $(pv_value)</tooltip>
     <color_lo>
       <color red="255" green="255" blue="0" />
     </color_lo>
-    <major_tick_step_hint>50.0</major_tick_step_hint>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
     <name>Meter_2</name>
+    <major_tick_step_hint>50</major_tick_step_hint>
     <pv_name>sim://ramp(1,100,1,0.1)</pv_name>
     <color_hi>
       <color red="255" green="255" blue="0" />
@@ -611,6 +623,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>false</transparent_background>
     <show_markers>true</show_markers>
     <show_hi>true</show_hi>
@@ -632,23 +645,36 @@ $(pv_value)</tooltip>
     <x>578</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>550</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -657,15 +683,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>23</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -39,6 +40,7 @@
     <width>419</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>182</height>
     <border_width>1</border_width>
@@ -72,6 +74,7 @@
     <width>419</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>100</height>
     <border_width>1</border_width>
@@ -104,6 +107,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -137,6 +141,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -169,6 +174,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -201,6 +207,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -233,6 +240,7 @@ $(pv_value)</tooltip>
     <width>76</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -263,6 +271,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>229</width>
     <border_style>13</border_style>
+    <rules />
     <lock_children>true</lock_children>
     <scripts />
     <height>50</height>
@@ -292,6 +301,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_4</name>
@@ -299,13 +309,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -315,6 +325,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>3</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -336,6 +347,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_1</name>
@@ -343,13 +355,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -359,6 +371,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>7</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -380,6 +393,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_3</name>
@@ -387,13 +401,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -403,6 +417,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>4</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -424,6 +439,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_7</name>
@@ -431,13 +447,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -447,6 +463,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -468,6 +485,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED</name>
@@ -475,13 +493,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -491,6 +509,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>6</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -512,6 +531,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_2</name>
@@ -519,13 +539,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -535,6 +555,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>5</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -556,6 +577,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_6</name>
@@ -563,13 +585,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -579,6 +601,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>1</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -600,6 +623,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_5</name>
@@ -607,13 +631,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -623,6 +647,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>2</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -645,6 +670,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>37</width>
     <border_style>0</border_style>
+    <rules />
     <lock_children>true</lock_children>
     <scripts />
     <height>44</height>
@@ -681,11 +707,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <fill_level>0.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv>loc://switch</pv>
-        </path>
-      </scripts>
+      <scripts />
       <arrows>0</arrows>
       <height>26</height>
       <anti_alias>true</anti_alias>
@@ -709,9 +731,24 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>1</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="On Off Color " prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0 == 0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0 == 1">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">loc://switch</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
       <line_width>2</line_width>
+      <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -724,12 +761,11 @@ $(pv_value)</tooltip>
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>0.0</fill_level>
+      <line_color>
+        <color red="128" green="0" blue="255" />
+      </line_color>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv>loc://switch</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>30</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -754,9 +790,24 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>37</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="On Off Color " prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0 == 0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0 == 1">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">loc://switch</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
       <line_width>0</line_width>
+      <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -770,11 +821,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <total_angle>180</total_angle>
       <start_angle>0</start_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv>loc://switch</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>21</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -793,6 +840,21 @@ $(pv_value)</tooltip>
       <width>35</width>
       <fill>true</fill>
       <border_style>0</border_style>
+      <rules>
+        <rule name="On Off Color " prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0 == 0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0 == 1">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">loc://switch</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <border_color>
@@ -813,6 +875,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>292</width>
     <border_style>13</border_style>
+    <rules />
     <lock_children>false</lock_children>
     <scripts />
     <height>246</height>
@@ -840,55 +903,56 @@ $(pv_value)</tooltip>
       <color_fillbackground>
         <color red="210" green="210" blue="210" />
       </color_fillbackground>
-      <minimum>0.0</minimum>
       <color_hihi>
         <color red="255" green="0" blue="0" />
       </color_hihi>
-      <fahrenheit>false</fahrenheit>
       <show_lo>true</show_lo>
       <scripts />
       <height>200</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <major_tick_step_hint>50</major_tick_step_hint>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <widget_type>Thermometer</widget_type>
+      <enabled>true</enabled>
+      <show_minor_ticks>true</show_minor_ticks>
+      <width>100</width>
+      <border_style>0</border_style>
+      <show_lolo>true</show_lolo>
+      <effect_3d>true</effect_3d>
+      <show_bulb>true</show_bulb>
+      <show_markers>true</show_markers>
+      <show_hi>true</show_hi>
+      <maximum>100.0</maximum>
+      <border_width>1</border_width>
+      <log_scale>false</log_scale>
+      <minimum>0.0</minimum>
       <show_scale>true</show_scale>
       <show_hihi>true</show_hihi>
       <color_lo>
         <color red="255" green="128" blue="0" />
       </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Thermometer</name>
       <pv_name>sim://noise</pv_name>
       <color_hi>
         <color red="255" green="128" blue="0" />
       </color_hi>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Thermometer</widget_type>
-      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
-      <show_minor_ticks>true</show_minor_ticks>
-      <width>100</width>
       <level_hihi>90.0</level_hihi>
-      <border_style>0</border_style>
-      <show_lolo>true</show_lolo>
-      <effect_3d>true</effect_3d>
-      <show_bulb>true</show_bulb>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
       <fill_color>
         <color red="255" green="0" blue="0" />
       </fill_color>
+      <rules />
+      <unit>0</unit>
       <transparent_background>true</transparent_background>
-      <show_markers>true</show_markers>
-      <show_hi>true</show_hi>
-      <maximum>100.0</maximum>
-      <border_width>1</border_width>
-      <log_scale>false</log_scale>
       <limits_from_pv>true</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
@@ -909,6 +973,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <width>134</width>
       <border_style>0</border_style>
+      <rules />
       <lock_children>true</lock_children>
       <scripts />
       <height>71</height>
@@ -933,6 +998,9 @@ $(pv_value)</tooltip>
         <border_alarm_sensitive>true</border_alarm_sensitive>
         <visible>true</visible>
         <fill_level>100.0</fill_level>
+        <line_color>
+          <color red="128" green="0" blue="255" />
+        </line_color>
         <scripts />
         <height>71</height>
         <anti_alias>true</anti_alias>
@@ -952,9 +1020,10 @@ $(pv_value)</tooltip>
         <line_style>0</line_style>
         <width>134</width>
         <border_style>0</border_style>
+        <rules />
         <border_width>1</border_width>
-        <horizontal_fill>true</horizontal_fill>
         <line_width>0</line_width>
+        <horizontal_fill>true</horizontal_fill>
         <border_color>
           <color red="0" green="128" blue="255" />
         </border_color>
@@ -994,6 +1063,7 @@ $(pv_value)</tooltip>
         </font>
         <width>100</width>
         <border_style>0</border_style>
+        <rules />
         <border_width>1</border_width>
         <border_color>
           <color red="0" green="128" blue="255" />
@@ -1008,23 +1078,36 @@ $(pv_value)</tooltip>
     </widget>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>559</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -1033,15 +1116,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>17</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

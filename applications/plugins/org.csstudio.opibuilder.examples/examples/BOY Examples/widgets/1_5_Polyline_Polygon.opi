@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -43,6 +44,7 @@
     <width>384</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>153</height>
     <border_width>1</border_width>
@@ -75,6 +77,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -108,6 +111,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -140,6 +144,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -172,6 +177,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -199,11 +205,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <fill_level>100.0</fill_level>
     <rotation_angle>0.0</rotation_angle>
-    <scripts>
-      <path pathString="../scripts/RotatePolygon.js">
-        <pv trig="true">sim://ramp(0,360,10,0.01)</pv>
-      </path>
-    </scripts>
+    <scripts />
     <arrows>0</arrows>
     <height>102</height>
     <anti_alias>true</anti_alias>
@@ -231,6 +233,14 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>101</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Rotate Polygon Rule" prop_id="rotation_angle" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">sim://ramp(0,360,10,0.01)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
     <line_width>1</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -251,11 +261,7 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <rotation_angle>0.0</rotation_angle>
-    <scripts>
-      <path pathString="../scripts/RotatePolygon.js">
-        <pv trig="true">sim://ramp(0,360,10,0.1)</pv>
-      </path>
-    </scripts>
+    <scripts />
     <height>120</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -282,6 +288,14 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>104</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -325,6 +339,7 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>123</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <line_width>1</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -369,6 +384,7 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>93</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <line_width>4</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -412,6 +428,7 @@ $(pv_value)</tooltip>
     <line_style>1</line_style>
     <width>123</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <line_width>1</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -432,11 +449,7 @@ $(pv_value)</tooltip>
       <color red="128" green="0" blue="255" />
     </line_color>
     <rotation_angle>0.0</rotation_angle>
-    <scripts>
-      <path pathString="../scripts/FillLevel.js">
-        <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
-      </path>
-    </scripts>
+    <scripts />
     <height>103</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -460,6 +473,14 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>68</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>false</horizontal_fill>
@@ -506,6 +527,7 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>148</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <line_width>0</line_width>
     <horizontal_fill>true</horizontal_fill>
@@ -532,6 +554,7 @@ $(pv_value)</tooltip>
     <width>220</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>255</height>
     <border_width>1</border_width>
@@ -564,6 +587,7 @@ $(pv_value)</tooltip>
     <width>189</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -599,6 +623,7 @@ Drag the yellow point to change the point position.</text>
     <width>384</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>153</height>
     <border_width>1</border_width>
@@ -631,6 +656,7 @@ Drag the yellow point to change the point position.</text>
     <width>108</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -661,6 +687,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>49</width>
     <border_style>0</border_style>
+    <rules />
     <lock_children>true</lock_children>
     <scripts />
     <height>52</height>
@@ -697,11 +724,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <fill_level>0.0</fill_level>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <arrows>0</arrows>
       <height>30</height>
       <anti_alias>true</anti_alias>
@@ -725,6 +748,21 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>1</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>2</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -744,11 +782,7 @@ $(pv_value)</tooltip>
         <color red="128" green="0" blue="255" />
       </line_color>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>30</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -773,6 +807,21 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>40</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -789,11 +838,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <total_angle>180</total_angle>
       <start_angle>0</start_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>21</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -812,12 +857,27 @@ $(pv_value)</tooltip>
       <width>38</width>
       <fill>true</fill>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>0</y>
+      <y>-1</y>
       <actions hook="false" />
       <tooltip>$(pv.name)</tooltip>
       <x>1</x>
@@ -832,6 +892,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>60</width>
     <border_style>0</border_style>
+    <rules />
     <lock_children>true</lock_children>
     <scripts />
     <height>59</height>
@@ -859,11 +920,7 @@ $(pv_value)</tooltip>
       <line_color>
         <color red="128" green="0" blue="255" />
       </line_color>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>48</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -882,6 +939,21 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>46</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -902,11 +974,7 @@ $(pv_value)</tooltip>
         <color red="128" green="0" blue="255" />
       </line_color>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>21</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -931,6 +999,21 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>46</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -950,11 +1033,7 @@ $(pv_value)</tooltip>
       <line_color>
         <color red="128" green="0" blue="255" />
       </line_color>
-      <scripts>
-        <path pathString="../scripts/OnOffColor.js">
-          <pv trig="true">sim://ramp(0,1,1,1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>16</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -973,6 +1052,21 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>37</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="OnOff Color Rule" prop_id="background_color" out_exp="false">
+          <exp bool_exp="pv0&gt;0">
+            <value>
+              <color red="0" green="255" blue="0" />
+            </value>
+          </exp>
+          <exp bool_exp="pv0&lt;=0">
+            <value>
+              <color red="255" green="0" blue="0" />
+            </value>
+          </exp>
+          <pv trig="true">sim://ramp(0,1,1,1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>0</line_width>
       <horizontal_fill>true</horizontal_fill>
@@ -1011,6 +1105,7 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
+    <rules />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>

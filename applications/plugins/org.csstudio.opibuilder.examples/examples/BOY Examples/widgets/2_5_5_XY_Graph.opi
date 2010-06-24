@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -36,6 +37,7 @@
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -68,6 +70,7 @@
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -100,6 +103,7 @@
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -121,25 +125,22 @@
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <trace_0_contatenate_data>true</trace_0_contatenate_data>
-    <trace_1_trace_type>3</trace_1_trace_type>
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
     </trace_0_trace_color>
     <axis_0_auto_scale>true</axis_0_auto_scale>
     <axis_1_time_format>0</axis_1_time_format>
-    <trace_1_point_size>4</trace_1_point_size>
     <trace_0_plot_mode>0</trace_0_plot_mode>
-    <trace_count>2</trace_count>
+    <trace_count>1</trace_count>
     <trace_0_chronological>true</trace_0_chronological>
     <axis_0_show_grid>true</axis_0_show_grid>
     <axis_0_log_scale>false</axis_0_log_scale>
-    <trace_1_name>Trace 1</trace_1_name>
     <trace_0_point_size>4</trace_0_point_size>
     <show_legend>true</show_legend>
-    <y>171</y>
-    <x>17</x>
+    <y>174</y>
+    <x>435</x>
     <visible>true</visible>
+    <axis_1_visible>true</axis_1_visible>
     <height>290</height>
     <axis_1_maximum>100.0</axis_1_maximum>
     <axis_1_title_font>
@@ -153,18 +154,13 @@
     <axis_1_auto_scale_threshold>0.0</axis_1_auto_scale_threshold>
     <trace_0_line_width>1</trace_0_line_width>
     <show_toolbar>false</show_toolbar>
-    <trace_1_update_delay>0</trace_1_update_delay>
     <axis_1_show_grid>true</axis_1_show_grid>
     <axis_0_grid_color>
       <color red="200" green="200" blue="200" />
     </axis_0_grid_color>
-    <trace_1_line_width>4</trace_1_line_width>
     <axis_0_auto_scale_threshold>0.0</axis_0_auto_scale_threshold>
-    <trace_0_name>$(trace_0_y_pv)</trace_0_name>
-    <trace_1_anti_alias>true</trace_1_anti_alias>
+    <trace_0_name />
     <trace_0_update_mode>0</trace_0_update_mode>
-    <trace_1_chronological>true</trace_1_chronological>
-    <trace_1_buffer_size>100</trace_1_buffer_size>
     <axis_0_axis_title>Time</axis_0_axis_title>
     <axis_1_axis_color>
       <color red="0" green="0" blue="0" />
@@ -172,33 +168,31 @@
     <foreground_color>
       <color red="0" green="128" blue="0" />
     </foreground_color>
-    <trace_1_update_mode>0</trace_1_update_mode>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <axis_1_axis_title>Primary Y Axis (1)</axis_1_axis_title>
     <axis_0_maximum>100.0</axis_0_maximum>
-    <trace_1_contatenate_data>true</trace_1_contatenate_data>
-    <axis_0_time_format>1</axis_0_time_format>
-    <trace_1_plot_mode>0</trace_1_plot_mode>
+    <axis_0_time_format>2</axis_0_time_format>
     <axis_1_log_scale>false</axis_1_log_scale>
-    <trace_1_point_style>0</trace_1_point_style>
     <title_font>
       <fontdata fontName="Arial" height="12" style="1" />
     </title_font>
     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+    <axis_0_visible>true</axis_0_visible>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <trace_0_x_pv />
-    <trace_0_y_pv>sim://sine(0,100,100,0.1)</trace_0_y_pv>
+    <trace_0_y_pv />
     <axis_0_title_font>
       <fontdata fontName="Arial" height="9" style="0" />
     </axis_0_title_font>
     <axis_1_auto_scale>true</axis_1_auto_scale>
+    <trace_0_concatenate_data>true</trace_0_concatenate_data>
     <actions hook="false" />
-    <trace_1_x_pv />
     <show_plot_area_border>false</show_plot_area_border>
     <widget_type>XY Graph</widget_type>
     <enabled>true</enabled>
     <width>354</width>
     <trace_0_buffer_size>100</trace_0_buffer_size>
+    <trigger_pv />
     <axis_count>2</axis_count>
     <transparent>false</transparent>
     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
@@ -207,15 +201,12 @@
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
-    <trace_1_x_axis_index>0</trace_1_x_axis_index>
     <trace_0_y_axis_index>1</trace_0_y_axis_index>
     <border_style>2</border_style>
     <plot_area_background_color>
       <color red="255" green="255" blue="255" />
     </plot_area_background_color>
     <title>Trends</title>
-    <trace_1_y_pv>sim://noise(0,100,100,0.1)</trace_1_y_pv>
-    <pv_name />
     <axis_1_minimum>0.0</axis_1_minimum>
     <axis_0_minimum>0.0</axis_0_minimum>
     <border_color>
@@ -226,10 +217,20 @@ $(pv_value)</tooltip>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <trace_1_trace_color>
-      <color red="0" green="0" blue="255" />
-    </trace_1_trace_color>
-    <trace_1_y_axis_index>1</trace_1_y_axis_index>
+    <rules>
+      <rule name="Change Trace PV " prop_id="trace_0_y_pv" out_exp="true">
+        <exp bool_exp="true">
+          <value>pvStr0</value>
+        </exp>
+        <pv trig="true">loc://trace0PV</pv>
+      </rule>
+      <rule name="Update Legend " prop_id="trace_0_name" out_exp="true">
+        <exp bool_exp="true">
+          <value>pvStr0</value>
+        </exp>
+        <pv trig="true">loc://trace0PV</pv>
+      </rule>
+    </rules>
     <trace_0_trace_type>0</trace_0_trace_type>
     <axis_1_grid_color>
       <color red="200" green="200" blue="200" />
@@ -237,7 +238,6 @@ $(pv_value)</tooltip>
     <trace_0_update_delay>0</trace_0_update_delay>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-    <trace_0_contatenate_data>true</trace_0_contatenate_data>
     <trace_1_trace_type>0</trace_1_trace_type>
     <trace_0_trace_color>
       <color red="255" green="0" blue="0" />
@@ -258,9 +258,10 @@ $(pv_value)</tooltip>
     <axis_2_minimum>0.0</axis_2_minimum>
     <trace_0_point_size>4</trace_0_point_size>
     <show_legend>true</show_legend>
-    <y>171</y>
-    <x>384</x>
+    <y>174</y>
+    <x>17</x>
     <visible>true</visible>
+    <axis_1_visible>true</axis_1_visible>
     <height>290</height>
     <axis_1_maximum>100.0</axis_1_maximum>
     <axis_1_title_font>
@@ -301,7 +302,6 @@ $(pv_value)</tooltip>
     <axis_1_axis_title>Log Scale</axis_1_axis_title>
     <axis_2_y_axis>true</axis_2_y_axis>
     <axis_0_maximum>100.0</axis_0_maximum>
-    <trace_1_contatenate_data>true</trace_1_contatenate_data>
     <axis_0_time_format>0</axis_0_time_format>
     <trace_1_plot_mode>0</trace_1_plot_mode>
     <axis_1_log_scale>true</axis_1_log_scale>
@@ -312,6 +312,7 @@ $(pv_value)</tooltip>
     </title_font>
     <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
     <axis_2_dash_grid_line>true</axis_2_dash_grid_line>
+    <axis_0_visible>true</axis_0_visible>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <trace_0_x_pv>sim://ramp(100,0,1,0.1)</trace_0_x_pv>
     <trace_0_y_pv>sim://sine(0.1,90,100,0.1)</trace_0_y_pv>
@@ -319,6 +320,7 @@ $(pv_value)</tooltip>
       <fontdata fontName="Arial" height="9" style="0" />
     </axis_0_title_font>
     <axis_1_auto_scale>false</axis_1_auto_scale>
+    <trace_0_concatenate_data>true</trace_0_concatenate_data>
     <actions hook="false" />
     <trace_1_x_pv>sim://sine(0.1,90,100,0.1)</trace_1_x_pv>
     <show_plot_area_border>false</show_plot_area_border>
@@ -327,6 +329,7 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <width>405</width>
     <trace_0_buffer_size>120</trace_0_buffer_size>
+    <trigger_pv />
     <axis_count>3</axis_count>
     <transparent>false</transparent>
     <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
@@ -348,7 +351,6 @@ $(pv_value)</tooltip>
     <title>XY-Graph</title>
     <trace_1_y_pv>sim://ramp(100,0,1,0.1)</trace_1_y_pv>
     <axis_2_auto_scale>false</axis_2_auto_scale>
-    <pv_name />
     <axis_1_minimum>0.1</axis_1_minimum>
     <axis_2_axis_color>
       <color red="0" green="0" blue="128" />
@@ -365,7 +367,10 @@ $(pv_value)</tooltip>
     <trace_1_trace_color>
       <color red="141" green="31" blue="170" />
     </trace_1_trace_color>
+    <axis_2_visible>true</axis_2_visible>
     <trace_1_y_axis_index>2</trace_1_y_axis_index>
+    <trace_1_concatenate_data>true</trace_1_concatenate_data>
+    <rules />
     <trace_0_trace_type>2</trace_0_trace_type>
     <axis_1_grid_color>
       <color red="200" green="200" blue="200" />
@@ -373,23 +378,36 @@ $(pv_value)</tooltip>
     <trace_0_update_delay>0</trace_0_update_delay>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button_2</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Back</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image />
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button_2</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>560</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -398,35 +416,43 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>710</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="128" />
     </foreground_color>
-  </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>560</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -435,15 +461,82 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>17</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>23</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Combo Box</name>
+    <pv_name>loc://trace0PV(sim://sine(0,100,100,1)</pv_name>
     <background_color>
-      <color red="240" green="240" blue="240" />
+      <color red="255" green="255" blue="255" />
     </background_color>
     <foreground_color>
-      <color red="0" green="0" blue="128" />
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Combo Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>203</width>
+    <border_style>0</border_style>
+    <rules />
+    <items>
+      <s>sim://sine(0,100,100,1)</s>
+      <s>sim://ramp(0,100,1,1)</s>
+      <s>sim://noise(20,80,1)</s>
+    </items>
+    <border_width>1</border_width>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>146</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>575</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
+    <widget_type>Label</widget_type>
+    <enabled>true</enabled>
+    <text>Select PV to draw:</text>
+    <visible>true</visible>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <vertical_alignment>1</vertical_alignment>
+    <width>113</width>
+    <border_style>0</border_style>
+    <auto_size>false</auto_size>
+    <rules />
+    <scripts />
+    <height>20</height>
+    <border_width>1</border_width>
+    <name>Label</name>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <transparent>true</transparent>
+    <y>148</y>
+    <actions hook="false" />
+    <tooltip />
+    <x>445</x>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
     </foreground_color>
   </widget>
 </display>

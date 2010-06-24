@@ -4,7 +4,7 @@ var value = PVUtil.getLong(pvArray[0]);
 
 var mainContainer = widgetController.getChild("Main Container");
 
-var opiArray=["1_1_Rectangle_Ellipse.opi","1_5_Polyline_Polygon.opi","2_3_Gauge_Meter.opi", "2_5_5_XY_Graph.opi"];
+var opiArray=["1_1_Rectangle_Ellipse.opi","1_5_Polyline_Polygon.opi","2_3_Gauge_Meter.opi", "1_4_Arc.opi"];
 
 //recover border style for all other widgets 
 for(var i=0; i<4; i++){	

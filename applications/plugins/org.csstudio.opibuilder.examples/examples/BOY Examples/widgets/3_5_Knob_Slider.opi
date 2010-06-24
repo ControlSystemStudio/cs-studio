@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -48,6 +49,7 @@
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>255</height>
     <border_width>1</border_width>
@@ -80,6 +82,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -113,6 +116,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -145,6 +149,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -177,6 +182,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -213,14 +219,14 @@ $(pv_value)</tooltip>
       <color red="150" green="150" blue="150" />
     </knob_color>
     <height>173</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <increment>1.0</increment>
     <enabled>true</enabled>
     <widget_type>Knob</widget_type>
-    <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>173</width>
     <show_lolo>true</show_lolo>
@@ -242,7 +248,6 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="0" />
     </color_hi>
     <pv_name>loc://k1</pv_name>
-    <control_pv>loc://k1</control_pv>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -253,6 +258,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_value_label>true</show_value_label>
     <limits_from_pv>false</limits_from_pv>
@@ -282,14 +288,14 @@ $(pv_value)</tooltip>
       <color red="172" green="172" blue="172" />
     </thumb_color>
     <height>190</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <page_increment>10.0</page_increment>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <enabled>true</enabled>
     <widget_type>Scaled Slider</widget_type>
-    <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>120</width>
     <show_lolo>true</show_lolo>
@@ -312,10 +318,10 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </color_hi>
     <pv_name>loc://k1</pv_name>
-    <control_pv>loc://k1</control_pv>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <step_increment>1.0</step_increment>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <level_hihi>90.0</level_hihi>
@@ -325,6 +331,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
@@ -353,14 +360,14 @@ $(pv_value)</tooltip>
       <color red="109" green="174" blue="254" />
     </knob_color>
     <height>173</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
+    <increment>1.0</increment>
     <enabled>true</enabled>
     <widget_type>Knob</widget_type>
-    <increment>1.0</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>173</width>
     <show_lolo>true</show_lolo>
@@ -382,7 +389,6 @@ $(pv_value)</tooltip>
       <color red="255" green="255" blue="0" />
     </color_hi>
     <pv_name>loc://k1</pv_name>
-    <control_pv>loc://k1</control_pv>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
@@ -393,6 +399,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <show_value_label>true</show_value_label>
     <limits_from_pv>false</limits_from_pv>
@@ -422,14 +429,14 @@ $(pv_value)</tooltip>
       <color red="172" green="172" blue="172" />
     </thumb_color>
     <height>120</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <major_tick_step_hint>50</major_tick_step_hint>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <page_increment>10.0</page_increment>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <enabled>true</enabled>
     <widget_type>Scaled Slider</widget_type>
-    <increment>0.1</increment>
     <show_minor_ticks>true</show_minor_ticks>
     <width>200</width>
     <show_lolo>true</show_lolo>
@@ -452,10 +459,10 @@ $(pv_value)</tooltip>
       <color red="255" green="128" blue="0" />
     </color_hi>
     <pv_name>loc://k1</pv_name>
-    <control_pv>loc://k1</control_pv>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <step_increment>1.0</step_increment>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <level_hi>80.0</level_hi>
     <level_hihi>90.0</level_hihi>
@@ -465,6 +472,7 @@ $(pv_value)</tooltip>
     <color_lolo>
       <color red="255" green="0" blue="0" />
     </color_lolo>
+    <rules />
     <transparent_background>true</transparent_background>
     <limits_from_pv>false</limits_from_pv>
     <border_color>
@@ -502,6 +510,7 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
+    <rules />
     <toggle_button>false</toggle_button>
     <border_width>1</border_width>
     <border_color>
@@ -515,6 +524,7 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
@@ -524,6 +534,7 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <minimum>0.0</minimum>
+    <show_value_tip>true</show_value_tip>
     <bar_length>10.0</bar_length>
     <scripts />
     <height>20</height>
@@ -531,22 +542,23 @@ $(pv_value)</tooltip>
     <name>Scrollbar</name>
     <page_increment>20.0</page_increment>
     <pv_name>loc://k1</pv_name>
-    <control_pv>loc://k1</control_pv>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
-      <color red="192" green="192" blue="192" />
+      <color red="0" green="0" blue="0" />
     </foreground_color>
+    <step_increment>1.0</step_increment>
     <widget_type>Scrollbar</widget_type>
     <enabled>true</enabled>
-    <step_increment>1.0</step_increment>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <width>197</width>
     <border_style>0</border_style>
+    <rules />
     <maximum>100.0</maximum>
     <border_width>1</border_width>
     <horizontal>true</horizontal>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -559,12 +571,13 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.spinner" version="1.0">
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <scripts />
     <height>25</height>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Spinner</name>
+    <page_increment>10.0</page_increment>
     <transparent>false</transparent>
     <pv_name>loc://k1</pv_name>
     <background_color>
@@ -577,13 +590,17 @@ $(pv_value)</tooltip>
     <enabled>true</enabled>
     <step_increment>1.0</step_increment>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>2</precision>
     <font>
       <fontdata fontName="Arial" height="9" style="0" />
     </font>
     <width>85</width>
     <border_style>3</border_style>
+    <format>0</format>
+    <rules />
     <border_width>1</border_width>
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -624,6 +641,7 @@ $(pv_value)</tooltip>
     <width>131</width>
     <border_style>0</border_style>
     <internalFrameSize>1</internalFrameSize>
+    <rules />
     <maximum>100.0</maximum>
     <border_width>1</border_width>
     <border_color>

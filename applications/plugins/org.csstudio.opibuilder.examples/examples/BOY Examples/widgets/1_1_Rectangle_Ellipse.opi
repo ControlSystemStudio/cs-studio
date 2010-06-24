@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -41,6 +42,7 @@
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>141</height>
     <border_width>1</border_width>
@@ -73,6 +75,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -106,6 +109,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -138,6 +142,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -170,6 +175,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -194,13 +200,16 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>30.0</fill_level>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
     <scripts />
     <height>55</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Rectangle</name>
     <transparent>false</transparent>
-    <pv_name />
+    <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <background_color>
       <color red="150" green="150" blue="150" />
     </background_color>
@@ -213,9 +222,17 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>148</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">$(pv_name)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -229,11 +246,10 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>40.0</fill_level>
-    <scripts>
-      <path pathString="../scripts/FillLevel.js">
-        <pv>$(pv_name)</pv>
-      </path>
-    </scripts>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
+    <scripts />
     <height>61</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
@@ -252,9 +268,17 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>141</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">$(pv_name)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
-    <horizontal_fill>true</horizontal_fill>
     <line_width>0</line_width>
+    <horizontal_fill>true</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -268,17 +292,16 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>40.0</fill_level>
-    <scripts>
-      <path pathString="../scripts/FillLevel.js">
-        <pv>sim://ramp(0,100,1,0.1)</pv>
-      </path>
-    </scripts>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
+    <scripts />
     <height>118</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Ellipse_2</name>
     <transparent>true</transparent>
-    <pv_name />
+    <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
     <background_color>
       <color red="150" green="150" blue="150" />
     </background_color>
@@ -291,9 +314,17 @@ $(pv_value)</tooltip>
     <line_style>1</line_style>
     <width>118</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">$(pv_name)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
-    <horizontal_fill>false</horizontal_fill>
     <line_width>1</line_width>
+    <horizontal_fill>false</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -307,11 +338,10 @@ $(pv_value)</tooltip>
     <border_alarm_sensitive>true</border_alarm_sensitive>
     <visible>true</visible>
     <fill_level>30.0</fill_level>
-    <scripts>
-      <path pathString="../scripts/FillLevel.js">
-        <pv>sim://ramp(0,100,1,0.1)</pv>
-      </path>
-    </scripts>
+    <line_color>
+      <color red="128" green="0" blue="255" />
+    </line_color>
+    <scripts />
     <height>139</height>
     <anti_alias>true</anti_alias>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -330,9 +360,17 @@ $(pv_value)</tooltip>
     <line_style>0</line_style>
     <width>77</width>
     <border_style>0</border_style>
+    <rules>
+      <rule name="Fill Level Rule" prop_id="fill_level" out_exp="true">
+        <exp bool_exp="true">
+          <value>pv0</value>
+        </exp>
+        <pv trig="true">$(pv_name)</pv>
+      </rule>
+    </rules>
     <border_width>1</border_width>
-    <horizontal_fill>false</horizontal_fill>
     <line_width>1</line_width>
+    <horizontal_fill>false</horizontal_fill>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -343,23 +381,36 @@ $(pv_value)</tooltip>
     <x>442</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>552</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -368,15 +419,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>14</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

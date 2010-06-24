@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -46,6 +47,7 @@
     <width>419</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>249</height>
     <border_width>1</border_width>
@@ -78,6 +80,7 @@
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -111,6 +114,7 @@ $(pv_value)</tooltip>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -143,6 +147,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -175,6 +180,7 @@ $(pv_value)</tooltip>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -198,6 +204,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
@@ -225,7 +232,10 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>3</border_style>
+    <rules />
     <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -266,6 +276,7 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -280,6 +291,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
@@ -307,7 +319,10 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>3</border_style>
+    <rules />
     <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -348,6 +363,7 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -362,6 +378,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
     <auto_size>false</auto_size>
@@ -389,7 +406,10 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>3</border_style>
+    <rules />
     <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -430,6 +450,7 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -444,6 +465,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>false</show_units>
     <auto_size>false</auto_size>
@@ -471,7 +493,10 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>3</border_style>
+    <rules />
     <border_width>1</border_width>
+    <maximum>1.7976931348623157E308</maximum>
+    <limits_from_pv>false</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
@@ -493,7 +518,7 @@ $(pv_value)</tooltip>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Text Update_3</name>
     <format_type>2</format_type>
-    <precision_from_pv>true</precision_from_pv>
+    <precision_from_pv>false</precision_from_pv>
     <transparent>false</transparent>
     <pv_name>loc://t4</pv_name>
     <background_color>
@@ -512,6 +537,7 @@ $(pv_value)</tooltip>
     </font>
     <width>100</width>
     <border_style>0</border_style>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -535,6 +561,7 @@ $(pv_value)</tooltip>
     <width>76</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -570,6 +597,7 @@ Press "Enter" to send value to PV.</text>
     <width>419</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>60</height>
     <border_width>1</border_width>
@@ -591,23 +619,36 @@ Press "Enter" to send value to PV.</text>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>553</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -616,15 +657,10 @@ Press "Enter" to send value to PV.</text>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>17</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

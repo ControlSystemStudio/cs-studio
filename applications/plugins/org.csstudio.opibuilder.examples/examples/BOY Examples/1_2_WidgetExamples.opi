@@ -5,6 +5,7 @@
     <include_parent_macros>true</include_parent_macros>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>true</show_ruler>
   <height>700</height>
@@ -31,6 +32,7 @@
     <visible>true</visible>
     <width>799</width>
     <border_style>13</border_style>
+    <rules />
     <lock_children>false</lock_children>
     <scripts />
     <height>181</height>
@@ -63,6 +65,7 @@
       <width>141</width>
       <border_style>0</border_style>
       <auto_size>false</auto_size>
+      <rules />
       <scripts />
       <height>32</height>
       <border_width>1</border_width>
@@ -90,40 +93,40 @@
       <auto_size>true</auto_size>
       <scripts />
       <height>70</height>
-      <name>Image</name>
       <stretch_to_fit>false</stretch_to_fit>
-      <foreground_color>
-        <color red="192" green="192" blue="192" />
-      </foreground_color>
+      <name>Image</name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <enabled>true</enabled>
+      <foreground_color>
+        <color red="192" green="192" blue="192" />
+      </foreground_color>
       <widget_type>Image</widget_type>
-      <width>80</width>
+      <enabled>true</enabled>
       <no_animation>false</no_animation>
-      <border_style>0</border_style>
+      <width>80</width>
       <crop_top>0</crop_top>
+      <border_style>0</border_style>
+      <rules />
       <crop_bottom>0</crop_bottom>
       <border_width>1</border_width>
       <image_file>pictures/fish.gif</image_file>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <actions hook="false" />
       <y>24</y>
-      <x>156</x>
+      <actions hook="false" />
       <tooltip />
+      <x>156</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>40.0</fill_level>
-      <scripts>
-        <path pathString="scripts/FillLevel.js">
-          <pv>$(pv_name)</pv>
-        </path>
-      </scripts>
+      <line_color>
+        <color red="128" green="0" blue="255" />
+      </line_color>
+      <scripts />
       <height>43</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>true</forecolor_alarm_sensitive>
@@ -142,9 +145,17 @@
       <line_style>0</line_style>
       <width>91</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="Fille Level" prop_id="fill_level" out_exp="true">
+          <exp bool_exp="true">
+            <value>pv0</value>
+          </exp>
+          <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
       <line_width>0</line_width>
+      <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -166,6 +177,7 @@ $(pv_value)</tooltip>
       <width>141</width>
       <border_style>0</border_style>
       <auto_size>false</auto_size>
+      <rules />
       <scripts />
       <height>32</height>
       <border_width>1</border_width>
@@ -190,11 +202,10 @@ $(pv_value)</tooltip>
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>30.0</fill_level>
-      <scripts>
-        <path pathString="scripts/FillLevel.js">
-          <pv>sim://ramp(0,100,1,0.1)</pv>
-        </path>
-      </scripts>
+      <line_color>
+        <color red="128" green="0" blue="255" />
+      </line_color>
+      <scripts />
       <height>89</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -213,9 +224,17 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>46</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="Fille Level" prop_id="fill_level" out_exp="true">
+          <exp bool_exp="true">
+            <value>pv0</value>
+          </exp>
+          <pv trig="true">sim://ramp(0,100,1,0.1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
-      <horizontal_fill>false</horizontal_fill>
       <line_width>1</line_width>
+      <horizontal_fill>false</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -237,6 +256,7 @@ $(pv_value)</tooltip>
       <width>141</width>
       <border_style>0</border_style>
       <auto_size>false</auto_size>
+      <rules />
       <scripts />
       <height>32</height>
       <border_width>1</border_width>
@@ -289,9 +309,10 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>125</width>
       <border_style>0</border_style>
+      <rules />
       <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
       <line_width>4</line_width>
+      <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -306,11 +327,7 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <total_angle>135</total_angle>
       <start_angle>15</start_angle>
-      <scripts>
-        <path pathString="scripts/ArcStartAngle.js">
-          <pv>sim://ramp(0,360, 10, 0.1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>100</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -329,6 +346,14 @@ $(pv_value)</tooltip>
       <width>100</width>
       <fill>true</fill>
       <border_style>0</border_style>
+      <rules>
+        <rule name="Animate rotating by changing Start Angle" prop_id="start_angle" out_exp="true">
+          <exp bool_exp="true">
+            <value>pv0</value>
+          </exp>
+          <pv trig="true">sim://ramp(0,360, 10, 0.1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
       <line_width>2</line_width>
       <border_color>
@@ -344,12 +369,11 @@ $(pv_value)</tooltip>
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <fill_level>60.0</fill_level>
+      <line_color>
+        <color red="128" green="0" blue="255" />
+      </line_color>
       <rotation_angle>0.0</rotation_angle>
-      <scripts>
-        <path pathString="scripts/RotatePolygon.js">
-          <pv>sim://ramp(0,360,10,0.1)</pv>
-        </path>
-      </scripts>
+      <scripts />
       <height>85</height>
       <anti_alias>true</anti_alias>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
@@ -376,9 +400,17 @@ $(pv_value)</tooltip>
       <line_style>0</line_style>
       <width>77</width>
       <border_style>0</border_style>
+      <rules>
+        <rule name="Rotate Polygon" prop_id="rotation_angle" out_exp="true">
+          <exp bool_exp="true">
+            <value>pv0</value>
+          </exp>
+          <pv trig="true">sim://ramp(0,360,10,0.1)</pv>
+        </rule>
+      </rules>
       <border_width>1</border_width>
-      <horizontal_fill>true</horizontal_fill>
       <line_width>0</line_width>
+      <horizontal_fill>true</horizontal_fill>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -398,6 +430,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>799</width>
     <border_style>13</border_style>
+    <rules />
     <lock_children>false</lock_children>
     <scripts />
     <height>313</height>
@@ -448,6 +481,7 @@ $(pv_value)</tooltip>
       </font>
       <width>100</width>
       <border_style>0</border_style>
+      <rules />
       <border_width>1</border_width>
       <border_color>
         <color red="0" green="128" blue="255" />
@@ -468,6 +502,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED</name>
@@ -475,13 +510,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -491,6 +526,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>0</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -533,6 +569,7 @@ $(pv_value)</tooltip>
       </font>
       <width>100</width>
       <border_style>0</border_style>
+      <rules />
       <border_width>1</border_width>
       <border_color>
         <color red="0" green="128" blue="255" />
@@ -560,9 +597,9 @@ $(pv_value)</tooltip>
       <color_lo>
         <color red="255" green="255" blue="0" />
       </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Meter</name>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
       <color_hi>
         <color red="255" green="255" blue="0" />
@@ -586,6 +623,7 @@ $(pv_value)</tooltip>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <rules />
       <transparent_background>false</transparent_background>
       <show_markers>true</show_markers>
       <show_hi>true</show_hi>
@@ -622,9 +660,9 @@ $(pv_value)</tooltip>
       <color_lo>
         <color red="255" green="255" blue="0" />
       </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Gauge</name>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
       <color_hi>
         <color red="255" green="255" blue="0" />
@@ -649,6 +687,7 @@ $(pv_value)</tooltip>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <rules />
       <transparent_background>true</transparent_background>
       <show_markers>true</show_markers>
       <show_hi>true</show_hi>
@@ -678,6 +717,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>20</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>LED_1</name>
@@ -685,13 +725,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="192" green="192" blue="192" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <widget_type>LED</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -701,6 +741,7 @@ $(pv_value)</tooltip>
       <width>20</width>
       <border_style>0</border_style>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>1</bit>
       <on_label>ON</on_label>
       <border_width>1</border_width>
@@ -720,55 +761,56 @@ $(pv_value)</tooltip>
       <color_fillbackground>
         <color red="210" green="210" blue="210" />
       </color_fillbackground>
-      <minimum>0.0</minimum>
       <color_hihi>
         <color red="255" green="0" blue="0" />
       </color_hihi>
-      <fahrenheit>true</fahrenheit>
       <show_lo>true</show_lo>
       <scripts />
       <height>141</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <major_tick_step_hint>50</major_tick_step_hint>
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <widget_type>Thermometer</widget_type>
+      <enabled>true</enabled>
+      <show_minor_ticks>true</show_minor_ticks>
+      <width>92</width>
+      <border_style>0</border_style>
+      <show_lolo>true</show_lolo>
+      <effect_3d>true</effect_3d>
+      <show_bulb>true</show_bulb>
+      <show_markers>false</show_markers>
+      <show_hi>true</show_hi>
+      <maximum>100.0</maximum>
+      <border_width>1</border_width>
+      <log_scale>true</log_scale>
+      <minimum>0.0</minimum>
       <show_scale>true</show_scale>
       <show_hihi>true</show_hihi>
       <color_lo>
         <color red="255" green="128" blue="0" />
       </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Thermometer_1</name>
       <pv_name>sim://ramp(0.1,100,1,0.1)</pv_name>
       <color_hi>
         <color red="255" green="128" blue="0" />
       </color_hi>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
-      <widget_type>Thermometer</widget_type>
-      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
-      <show_minor_ticks>true</show_minor_ticks>
-      <width>92</width>
       <level_hihi>90.0</level_hihi>
-      <border_style>0</border_style>
-      <show_lolo>true</show_lolo>
-      <effect_3d>true</effect_3d>
-      <show_bulb>true</show_bulb>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
       <fill_color>
         <color red="255" green="0" blue="0" />
       </fill_color>
+      <rules />
+      <unit>0</unit>
       <transparent_background>true</transparent_background>
-      <show_markers>false</show_markers>
-      <show_hi>true</show_hi>
-      <maximum>100.0</maximum>
-      <border_width>1</border_width>
-      <log_scale>true</log_scale>
       <limits_from_pv>true</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
@@ -799,9 +841,9 @@ $(pv_value)</tooltip>
       <color_lo>
         <color red="255" green="128" blue="0" />
       </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Tank</name>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <pv_name>sim://ramp(0,100,1,0.1)</pv_name>
       <color_hi>
         <color red="255" green="128" blue="0" />
@@ -828,6 +870,7 @@ $(pv_value)</tooltip>
       <fill_color>
         <color red="0" green="0" blue="255" />
       </fill_color>
+      <rules />
       <transparent_background>true</transparent_background>
       <show_markers>true</show_markers>
       <show_hi>true</show_hi>
@@ -846,71 +889,75 @@ $(pv_value)</tooltip>
       <x>222</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.progressbar" version="1.0">
-      <border_alarm_sensitive>false</border_alarm_sensitive>
       <level_lo>20.0</level_lo>
-      <visible>true</visible>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
       <color_fillbackground>
         <color red="200" green="200" blue="200" />
       </color_fillbackground>
-      <minimum>0.0</minimum>
+      <visible>true</visible>
       <color_hihi>
         <color red="255" green="0" blue="0" />
       </color_hihi>
       <show_lo>true</show_lo>
       <scripts />
       <height>56</height>
-      <show_scale>true</show_scale>
-      <show_hihi>true</show_hihi>
-      <color_lo>
-        <color red="255" green="128" blue="0" />
-      </color_lo>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Progress Bar</name>
-      <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
-      <color_hi>
-        <color red="255" green="128" blue="0" />
-      </color_hi>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
+      <enabled>true</enabled>
+      <widget_type>Progress Bar</widget_type>
+      <show_minor_ticks>true</show_minor_ticks>
+      <width>181</width>
+      <show_lolo>true</show_lolo>
+      <border_style>0</border_style>
+      <effect_3d>true</effect_3d>
+      <show_markers>false</show_markers>
+      <show_hi>true</show_hi>
+      <horizontal>true</horizontal>
+      <border_width>1</border_width>
+      <maximum>100.0</maximum>
+      <log_scale>false</log_scale>
+      <minimum>0.0</minimum>
+      <show_hihi>true</show_hihi>
+      <show_scale>true</show_scale>
+      <color_lo>
+        <color red="255" green="128" blue="0" />
+      </color_lo>
+      <name>Progress Bar</name>
+      <color_hi>
+        <color red="255" green="128" blue="0" />
+      </color_hi>
+      <pv_name>sim://ramp(0,100,1,0.2)</pv_name>
+      <origin_ignored>true</origin_ignored>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <show_label>true</show_label>
-      <widget_type>Progress Bar</widget_type>
-      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
-      <show_minor_ticks>true</show_minor_ticks>
-      <width>181</width>
       <level_hihi>90.0</level_hihi>
-      <border_style>0</border_style>
-      <show_lolo>true</show_lolo>
-      <effect_3d>true</effect_3d>
-      <color_lolo>
-        <color red="255" green="0" blue="0" />
-      </color_lolo>
+      <origin>0.0</origin>
       <fill_color>
         <color red="0" green="0" blue="255" />
       </fill_color>
+      <color_lolo>
+        <color red="255" green="0" blue="0" />
+      </color_lolo>
+      <rules />
       <transparent_background>true</transparent_background>
-      <show_markers>false</show_markers>
-      <show_hi>true</show_hi>
-      <maximum>100.0</maximum>
-      <border_width>1</border_width>
-      <horizontal>true</horizontal>
-      <log_scale>false</log_scale>
       <limits_from_pv>true</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>222</y>
-      <actions hook="false" />
       <level_lolo>10.0</level_lolo>
+      <actions hook="false" />
+      <y>222</y>
+      <x>-7</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>-7</x>
+      <indicator_mode>false</indicator_mode>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.tab" version="1.0">
       <macros>
@@ -936,12 +983,12 @@ $(pv_value)</tooltip>
       <visible>true</visible>
       <scripts />
       <height>277</height>
-      <tab_1_foreground_color>
-        <color red="0" green="0" blue="0" />
-      </tab_1_foreground_color>
       <tab_1_font>
         <fontdata fontName="Arial" height="10" style="0" />
       </tab_1_font>
+      <tab_1_foreground_color>
+        <color red="0" green="0" blue="0" />
+      </tab_1_foreground_color>
       <tab_0_title>XY Graph</tab_0_title>
       <background_color>
         <color red="240" green="240" blue="240" />
@@ -957,6 +1004,7 @@ $(pv_value)</tooltip>
       <tab_0_font>
         <fontdata fontName="Arial" height="10" style="0" />
       </tab_0_font>
+      <rules />
       <tab_count>2</tab_count>
       <tooltip />
       <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
@@ -968,6 +1016,7 @@ $(pv_value)</tooltip>
         <visible>true</visible>
         <width>407</width>
         <border_style>0</border_style>
+        <rules />
         <lock_children>false</lock_children>
         <scripts />
         <height>247</height>
@@ -989,7 +1038,6 @@ $(pv_value)</tooltip>
         <x>1</x>
         <tooltip />
         <widget typeId="org.csstudio.opibuilder.widgets.xyGraph" version="1.0">
-          <trace_0_contatenate_data>true</trace_0_contatenate_data>
           <trace_1_trace_type>3</trace_1_trace_type>
           <trace_0_trace_color>
             <color red="255" green="0" blue="0" />
@@ -1008,6 +1056,7 @@ $(pv_value)</tooltip>
           <y>6</y>
           <x>6</x>
           <visible>true</visible>
+          <axis_1_visible>true</axis_1_visible>
           <height>241</height>
           <axis_1_maximum>100.0</axis_1_maximum>
           <axis_1_title_font>
@@ -1044,7 +1093,6 @@ $(pv_value)</tooltip>
           <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
           <axis_1_axis_title>Amplitude</axis_1_axis_title>
           <axis_0_maximum>100.0</axis_0_maximum>
-          <trace_1_contatenate_data>true</trace_1_contatenate_data>
           <axis_0_time_format>1</axis_0_time_format>
           <trace_1_plot_mode>0</trace_1_plot_mode>
           <axis_1_log_scale>false</axis_1_log_scale>
@@ -1053,6 +1101,7 @@ $(pv_value)</tooltip>
             <fontdata fontName="Arial" height="12" style="1" />
           </title_font>
           <axis_1_dash_grid_line>true</axis_1_dash_grid_line>
+          <axis_0_visible>true</axis_0_visible>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
           <trace_0_x_pv />
           <trace_0_y_pv>sim://sine(0,100,100,0.1)</trace_0_y_pv>
@@ -1060,6 +1109,7 @@ $(pv_value)</tooltip>
             <fontdata fontName="Arial" height="9" style="0" />
           </axis_0_title_font>
           <axis_1_auto_scale>true</axis_1_auto_scale>
+          <trace_0_concatenate_data>true</trace_0_concatenate_data>
           <actions hook="false" />
           <trace_1_x_pv />
           <show_plot_area_border>false</show_plot_area_border>
@@ -1067,6 +1117,7 @@ $(pv_value)</tooltip>
           <enabled>true</enabled>
           <width>397</width>
           <trace_0_buffer_size>100</trace_0_buffer_size>
+          <trigger_pv />
           <axis_count>2</axis_count>
           <transparent>true</transparent>
           <axis_0_dash_grid_line>true</axis_0_dash_grid_line>
@@ -1083,7 +1134,6 @@ $(pv_value)</tooltip>
           </plot_area_background_color>
           <title>Trends</title>
           <trace_1_y_pv>sim://noise(0,100,100,0.1)</trace_1_y_pv>
-          <pv_name />
           <axis_1_minimum>0.0</axis_1_minimum>
           <axis_0_minimum>0.0</axis_0_minimum>
           <border_color>
@@ -1098,6 +1148,8 @@ $(pv_value)</tooltip>
             <color red="0" green="0" blue="255" />
           </trace_1_trace_color>
           <trace_1_y_axis_index>1</trace_1_y_axis_index>
+          <trace_1_concatenate_data>true</trace_1_concatenate_data>
+          <rules />
           <trace_0_trace_type>0</trace_0_trace_type>
           <axis_1_grid_color>
             <color red="200" green="200" blue="200" />
@@ -1114,6 +1166,7 @@ $(pv_value)</tooltip>
         <visible>false</visible>
         <width>407</width>
         <border_style>0</border_style>
+        <rules />
         <lock_children>false</lock_children>
         <scripts />
         <height>247</height>
@@ -1136,49 +1189,82 @@ $(pv_value)</tooltip>
         <tooltip />
         <widget typeId="org.csstudio.opibuilder.widgets.intensityGraph" version="1.0">
           <border_alarm_sensitive>true</border_alarm_sensitive>
-          <graph_area_width>200</graph_area_width>
           <visible>true</visible>
-          <minimum>-1.0</minimum>
-          <data_height>256</data_height>
+          <x_axis_axis_title>X Axis</x_axis_axis_title>
           <scripts>
             <path pathString="scripts/SetIntensityGraphData.js">
-              <pv>const://name(1)</pv>
-              <pv>const://name2(1)</pv>
+              <pv trig="true">const://name(1)</pv>
+              <pv trig="true">const://name2(1)</pv>
             </path>
           </scripts>
           <height>200</height>
           <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-          <name>WaveGraph</name>
-          <data_width>256</data_width>
-          <pv_name />
+          <y_axis_maximum>100.0</y_axis_maximum>
           <background_color>
             <color red="240" green="240" blue="240" />
           </background_color>
-          <foreground_color>
-            <color red="0" green="0" blue="0" />
-          </foreground_color>
-          <widget_type>Intensity Graph</widget_type>
           <enabled>true</enabled>
-          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <widget_type>Intensity Graph</widget_type>
           <width>262</width>
-          <border_style>0</border_style>
           <color_map>
             <interpolate>true</interpolate>
             <autoscale>true</autoscale>
             <map>2</map>
           </color_map>
-          <graph_area_height>200</graph_area_height>
+          <border_style>0</border_style>
+          <vertical_profile_y_pv_name />
+          <x_axis_minimum>0.0</x_axis_minimum>
+          <x_axis_show_minor_ticks>true</x_axis_show_minor_ticks>
+          <crop_bottom>0</crop_bottom>
           <maximum>1.0</maximum>
           <border_width>1</border_width>
+          <x_axis_title_font>
+            <fontdata fontName="Arial" height="9" style="1" />
+          </x_axis_title_font>
+          <x_axis_maximum>100.0</x_axis_maximum>
+          <crop_right>0</crop_right>
+          <y_axis_visible>true</y_axis_visible>
+          <crop_left>0</crop_left>
+          <graph_area_width>147</graph_area_width>
+          <minimum>-1.0</minimum>
+          <data_height>256</data_height>
+          <y_axis_axis_title>Y Axis</y_axis_axis_title>
+          <y_axis_major_tick_step_hint>50</y_axis_major_tick_step_hint>
+          <x_axis_axis_color>
+            <color red="0" green="0" blue="0" />
+          </x_axis_axis_color>
+          <y_axis_title_font>
+            <fontdata fontName="Arial" height="9" style="1" />
+          </y_axis_title_font>
+          <x_axis_visible>true</x_axis_visible>
+          <name>WaveGraph</name>
+          <y_axis_axis_color>
+            <color red="0" green="0" blue="0" />
+          </y_axis_axis_color>
+          <data_width>256</data_width>
+          <vertical_profile_x_pv_name />
+          <y_axis_show_minor_ticks>true</y_axis_show_minor_ticks>
+          <pv_name />
+          <y_axis_minimum>0.0</y_axis_minimum>
+          <horizon_profile_y_pv_name />
+          <foreground_color>
+            <color red="0" green="0" blue="0" />
+          </foreground_color>
+          <horizon_profile_x_pv_name />
+          <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+          <crop_top>0</crop_top>
+          <graph_area_height>145</graph_area_height>
+          <rules />
+          <x_axis_major_tick_step_hint>50</x_axis_major_tick_step_hint>
           <show_ramp>true</show_ramp>
           <border_color>
             <color red="0" green="128" blue="255" />
           </border_color>
-          <y>24</y>
           <actions hook="false" />
+          <y>24</y>
+          <x>60</x>
           <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-          <x>60</x>
         </widget>
       </widget>
     </widget>
@@ -1192,6 +1278,7 @@ $(pv_value)</tooltip>
       <color red="0" green="255" blue="0" />
     </on_color>
     <height>55</height>
+    <data_type>0</data_type>
     <show_boolean_label>false</show_boolean_label>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
     <name>Boolean Switch_1</name>
@@ -1199,13 +1286,13 @@ $(pv_value)</tooltip>
       <color red="0" green="100" blue="0" />
     </off_color>
     <pv_name>loc://boolTest</pv_name>
-    <off_label>OFF</off_label>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
     <foreground_color>
       <color red="0" green="0" blue="0" />
     </foreground_color>
+    <off_label>OFF</off_label>
     <released__action_index>0</released__action_index>
     <widget_type>Boolean Switch</widget_type>
     <enabled>true</enabled>
@@ -1218,6 +1305,7 @@ $(pv_value)</tooltip>
     <push_action_index>0</push_action_index>
     <confirm_message>Are your sure you want to do this?</confirm_message>
     <effect_3d>true</effect_3d>
+    <rules />
     <bit>6</bit>
     <toggle_button>true</toggle_button>
     <show_confirm_dialog>true</show_confirm_dialog>
@@ -1241,6 +1329,7 @@ $(pv_value)</tooltip>
     <visible>true</visible>
     <width>799</width>
     <border_style>13</border_style>
+    <rules />
     <lock_children>false</lock_children>
     <scripts />
     <height>205</height>
@@ -1277,14 +1366,14 @@ $(pv_value)</tooltip>
         <color red="150" green="150" blue="150" />
       </knob_color>
       <height>154</height>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
+      <increment>1.0</increment>
       <enabled>true</enabled>
       <widget_type>Knob</widget_type>
-      <increment>1.0</increment>
       <show_minor_ticks>true</show_minor_ticks>
       <width>169</width>
       <show_lolo>true</show_lolo>
@@ -1306,7 +1395,6 @@ $(pv_value)</tooltip>
         <color red="255" green="255" blue="0" />
       </color_hi>
       <pv_name>loc://k1</pv_name>
-      <control_pv>loc://k1</control_pv>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
@@ -1317,6 +1405,7 @@ $(pv_value)</tooltip>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <rules />
       <transparent_background>true</transparent_background>
       <show_value_label>true</show_value_label>
       <limits_from_pv>false</limits_from_pv>
@@ -1333,6 +1422,7 @@ $(pv_value)</tooltip>
     <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
       <visible>true</visible>
+      <minimum>-Infinity</minimum>
       <vertical_alignment>1</vertical_alignment>
       <show_units>false</show_units>
       <auto_size>false</auto_size>
@@ -1360,7 +1450,10 @@ $(pv_value)</tooltip>
       </font>
       <width>100</width>
       <border_style>3</border_style>
+      <rules />
       <border_width>1</border_width>
+      <maximum>Infinity</maximum>
+      <limits_from_pv>true</limits_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
@@ -1377,16 +1470,16 @@ $(pv_value)</tooltip>
       <actions_from_pv>false</actions_from_pv>
       <scripts />
       <height>35</height>
-      <name>Menu Button_1</name>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <foreground_color>
-        <color red="0" green="0" blue="0" />
-      </foreground_color>
+      <name>Menu Button_1</name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <enabled>true</enabled>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
       <widget_type>Menu Button</widget_type>
+      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="10" style="1" />
@@ -1394,6 +1487,7 @@ $(pv_value)</tooltip>
       <width>101</width>
       <border_style>6</border_style>
       <label>Select Menu...</label>
+      <rules />
       <border_width>1</border_width>
       <border_color>
         <color red="0" green="128" blue="255" />
@@ -1409,14 +1503,15 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>true</replace>
+          <description />
         </action>
         <action type="WRITE_PV">
           <pv_name>loc://test</pv_name>
           <value>100</value>
         </action>
       </actions>
-      <x>206</x>
       <tooltip />
+      <x>206</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.BoolButton" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1428,6 +1523,7 @@ $(pv_value)</tooltip>
       </on_color>
       <height>33</height>
       <show_led>true</show_led>
+      <data_type>0</data_type>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Boolean Button_2</name>
@@ -1435,13 +1531,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <released__action_index>0</released__action_index>
       <widget_type>Boolean Button</widget_type>
       <enabled>true</enabled>
@@ -1454,6 +1550,7 @@ $(pv_value)</tooltip>
       <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>2</bit>
       <toggle_button>true</toggle_button>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1479,6 +1576,7 @@ $(pv_value)</tooltip>
       </on_color>
       <height>58</height>
       <show_led>false</show_led>
+      <data_type>0</data_type>
       <show_boolean_label>true</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Boolean Button_5</name>
@@ -1486,13 +1584,14 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>STOP</off_label>
       <background_color>
         <color red="255" green="0" blue="0" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <off_label>STOP</off_label>
+      <released__action_index>0</released__action_index>
       <widget_type>Boolean Button</widget_type>
       <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
@@ -1504,6 +1603,7 @@ $(pv_value)</tooltip>
       <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>4</bit>
       <toggle_button>false</toggle_button>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1520,23 +1620,36 @@ $(pv_value)</tooltip>
       <x>5</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>28</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Action Button</name>
+      <pv_name />
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="128" />
+      </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Go Home</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="1" />
       </font>
       <width>79</width>
       <push_action_index>0</push_action_index>
+      <border_style>0</border_style>
       <image>pictures/home-16x16.png</image>
-      <scripts />
+      <rules />
       <toggle_button>false</toggle_button>
-      <height>28</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Action Button</name>
-      <pv_name />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
       <y>144</y>
       <actions hook="true">
         <action type="OPEN_DISPLAY">
@@ -1545,16 +1658,11 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>false</replace>
+          <description />
         </action>
       </actions>
       <tooltip />
       <x>5</x>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="0" green="0" blue="128" />
-      </foreground_color>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.scaledslider" version="1.0">
       <level_lo>30.0</level_lo>
@@ -1572,14 +1680,14 @@ $(pv_value)</tooltip>
         <color red="172" green="172" blue="172" />
       </thumb_color>
       <height>104</height>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
+      <page_increment>10.0</page_increment>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Scaled Slider</widget_type>
-      <increment>1.0</increment>
       <show_minor_ticks>true</show_minor_ticks>
       <width>180</width>
       <show_lolo>true</show_lolo>
@@ -1602,10 +1710,10 @@ $(pv_value)</tooltip>
         <color red="255" green="128" blue="0" />
       </color_hi>
       <pv_name>loc://k1</pv_name>
-      <control_pv>loc://k1</control_pv>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <step_increment>1.0</step_increment>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>70.0</level_hi>
       <level_hihi>90.0</level_hihi>
@@ -1615,6 +1723,7 @@ $(pv_value)</tooltip>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <rules />
       <transparent_background>true</transparent_background>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
@@ -1628,23 +1737,36 @@ $(pv_value)</tooltip>
 $(pv_value)</tooltip>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+      <border_alarm_sensitive>false</border_alarm_sensitive>
+      <visible>true</visible>
+      <scripts />
+      <height>28</height>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Action Button_2</name>
+      <pv_name />
+      <background_color>
+        <color red="240" green="240" blue="240" />
+      </background_color>
+      <foreground_color>
+        <color red="0" green="0" blue="128" />
+      </foreground_color>
       <widget_type>Action Button</widget_type>
       <enabled>true</enabled>
       <text>Back</text>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-      <visible>true</visible>
       <font>
         <fontdata fontName="Arial" height="9" style="1" />
       </font>
       <width>79</width>
       <push_action_index>0</push_action_index>
+      <border_style>0</border_style>
       <image />
-      <scripts />
+      <rules />
       <toggle_button>false</toggle_button>
-      <height>28</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <name>Action Button_2</name>
-      <pv_name />
+      <border_width>1</border_width>
+      <border_color>
+        <color red="0" green="128" blue="255" />
+      </border_color>
       <y>144</y>
       <actions hook="true">
         <action type="OPEN_DISPLAY">
@@ -1653,16 +1775,11 @@ $(pv_value)</tooltip>
             <include_parent_macros>true</include_parent_macros>
           </macros>
           <replace>true</replace>
+          <description />
         </action>
       </actions>
       <tooltip />
       <x>690</x>
-      <background_color>
-        <color red="240" green="240" blue="240" />
-      </background_color>
-      <foreground_color>
-        <color red="0" green="0" blue="128" />
-      </foreground_color>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.BoolSwitch" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1673,6 +1790,7 @@ $(pv_value)</tooltip>
         <color red="211" green="211" blue="211" />
       </on_color>
       <height>100</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Boolean Switch</name>
@@ -1680,13 +1798,13 @@ $(pv_value)</tooltip>
         <color red="192" green="192" blue="192" />
       </off_color>
       <pv_name />
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <released__action_index>0</released__action_index>
       <widget_type>Boolean Switch</widget_type>
       <enabled>true</enabled>
@@ -1699,6 +1817,7 @@ $(pv_value)</tooltip>
       <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>0</bit>
       <toggle_button>true</toggle_button>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1722,6 +1841,7 @@ $(pv_value)</tooltip>
         <color red="0" green="255" blue="0" />
       </on_color>
       <height>53</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Boolean Switch_1</name>
@@ -1729,13 +1849,13 @@ $(pv_value)</tooltip>
         <color red="0" green="100" blue="0" />
       </off_color>
       <pv_name>loc://test</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <released__action_index>0</released__action_index>
       <widget_type>Boolean Switch</widget_type>
       <enabled>true</enabled>
@@ -1748,6 +1868,7 @@ $(pv_value)</tooltip>
       <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
       <effect_3d>true</effect_3d>
+      <rules />
       <bit>0</bit>
       <toggle_button>true</toggle_button>
       <show_confirm_dialog>false</show_confirm_dialog>
@@ -1778,14 +1899,14 @@ $(pv_value)</tooltip>
         <color red="172" green="172" blue="172" />
       </thumb_color>
       <height>166</height>
+      <major_tick_step_hint>50</major_tick_step_hint>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-      <major_tick_step_hint>50.0</major_tick_step_hint>
+      <page_increment>10.0</page_increment>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <enabled>true</enabled>
       <widget_type>Scaled Slider</widget_type>
-      <increment>1.0</increment>
       <show_minor_ticks>true</show_minor_ticks>
       <width>97</width>
       <show_lolo>true</show_lolo>
@@ -1808,10 +1929,10 @@ $(pv_value)</tooltip>
         <color red="255" green="128" blue="0" />
       </color_hi>
       <pv_name>loc://k1</pv_name>
-      <control_pv>loc://k1</control_pv>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <step_increment>1.0</step_increment>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>70.0</level_hi>
       <level_hihi>90.0</level_hihi>
@@ -1821,6 +1942,7 @@ $(pv_value)</tooltip>
       <color_lolo>
         <color red="255" green="0" blue="0" />
       </color_lolo>
+      <rules />
       <transparent_background>true</transparent_background>
       <limits_from_pv>false</limits_from_pv>
       <border_color>
@@ -1837,39 +1959,40 @@ $(pv_value)</tooltip>
       <border_alarm_sensitive>true</border_alarm_sensitive>
       <visible>true</visible>
       <scripts />
-      <height>23</height>
-      <name>Combo Box</name>
+      <height>27</height>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+      <name>Combo Box</name>
       <pv_name />
-      <foreground_color>
-        <color red="0" green="0" blue="0" />
-      </foreground_color>
       <background_color>
         <color red="255" green="255" blue="255" />
       </background_color>
-      <enabled>true</enabled>
+      <foreground_color>
+        <color red="0" green="0" blue="0" />
+      </foreground_color>
       <widget_type>Combo Box</widget_type>
+      <enabled>true</enabled>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <font>
         <fontdata fontName="Arial" height="9" style="0" />
       </font>
       <width>142</width>
       <border_style>0</border_style>
+      <rules />
       <items>
         <s>Apple</s>
         <s>Orange</s>
         <s>Banana</s>
       </items>
       <border_width>1</border_width>
+      <items_from_pv>false</items_from_pv>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <items_from_pv>false</items_from_pv>
-      <actions hook="false" />
       <y>9</y>
-      <x>332</x>
+      <actions hook="false" />
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+      <x>332</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.checkbox" version="1.0">
       <border_alarm_sensitive>true</border_alarm_sensitive>
@@ -1895,6 +2018,7 @@ $(pv_value)</tooltip>
       <width>100</width>
       <border_style>0</border_style>
       <label>Check Box</label>
+      <rules />
       <bit>0</bit>
       <border_width>1</border_width>
       <border_color>
@@ -1913,18 +2037,19 @@ $(pv_value)</tooltip>
       <auto_size>true</auto_size>
       <scripts />
       <height>35</height>
+      <data_type>0</data_type>
       <show_boolean_label>false</show_boolean_label>
       <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <name>Image Boolean Button_3</name>
       <stretch_to_fit>false</stretch_to_fit>
       <pv_name>loc://boolTest</pv_name>
-      <off_label>OFF</off_label>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
+      <off_label>OFF</off_label>
       <released__action_index>0</released__action_index>
       <widget_type>Image Boolean Button</widget_type>
       <enabled>true</enabled>
@@ -1936,6 +2061,7 @@ $(pv_value)</tooltip>
       <border_style>0</border_style>
       <push_action_index>0</push_action_index>
       <confirm_message>Are your sure you want to do this?</confirm_message>
+      <rules />
       <bit>0</bit>
       <toggle_button>true</toggle_button>
       <show_confirm_dialog>false</show_confirm_dialog>
