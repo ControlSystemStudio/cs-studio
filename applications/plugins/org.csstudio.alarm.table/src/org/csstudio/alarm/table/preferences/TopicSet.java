@@ -20,6 +20,8 @@ package org.csstudio.alarm.table.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
@@ -44,7 +46,7 @@ public class TopicSet {
 
     private Font _font = null;
 
-    public TopicSet(final String defTopic,
+    public TopicSet(@Nonnull final String defTopic,
                     final String listOfTopics,
                     final String name,
                     final String popUp,
