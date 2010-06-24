@@ -40,7 +40,8 @@ public class SimulatedPVFactory implements IPVFactory
             else
                 value = new NoiseValue(name);
             values.put(name, value);
-        }
+        }else
+        	value.update();
         return new SimulatedPV(PREFIX, value);
     }
 }
