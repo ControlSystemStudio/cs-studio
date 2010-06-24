@@ -141,11 +141,17 @@ public class RuleData implements IAdaptable{
 				"importPackage(Packages.org.csstudio.opibuilder.scriptUtil); \n"); //$NON-NLS-1$
 		
 		AbstractWidgetProperty property = widgetModel.getProperty(propId);
-		boolean needDbl = false, needStr = false, needSev=false;
+		boolean needDbl = false, needInt = false, needStr = false, needSev=false;
 		for(Expression exp : expressionList){
 			if(!needDbl)
 				needDbl = StringUtil.containRegex(exp.getBooleanExpression(), "pv\\d") || //$NON-NLS-1$
 						(outputExpValue && StringUtil.containRegex(exp.getValue().toString(), "pv\\d")); //$NON-NLS-1$
+			if(!needInt){
+				if(exp.getBooleanExpression().contains("pvInt")) //$NON-NLS-1$
+					needInt = true;
+				if(outputExpValue && exp.getValue().toString().contains("pvInt")) //$NON-NLS-1$
+					needInt = true;
+			}
 			if(!needStr){
 				if(exp.getBooleanExpression().contains("pvStr")) //$NON-NLS-1$
 					needStr = true;
@@ -163,6 +169,8 @@ public class RuleData implements IAdaptable{
 		for(int i=0; i<pvList.size(); i++){
 			if(needDbl)
 				sb.append("var pv" + i + " = PVUtil."+ "getDouble(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+			if(needInt)
+				sb.append("var pvInt" + i + " = PVUtil."+ "getLong(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(needStr)
 				sb.append("var pvStr" + i + " = PVUtil."+ "getString(pvArray[" + i + "]);\n");  //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			if(needSev)

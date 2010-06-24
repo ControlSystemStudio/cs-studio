@@ -34,12 +34,9 @@ public class PVUtil{
      *  so they want to interprete integer, enum and double values
      *  all the same.
      *  @param pv the PV.
-     *  @return A long integer, or <code>Double.NaN</code> in case the value type
-     *          does not decode into a number, or
-     *          <code>Double.NEGATIVE_INFINITY</code> if the value's severity
-     *          indicates that there happens to be no useful value.
+     *  @return A long integer.
      */
-	public final static long getLong(PV pv){
+	public final static Long getLong(PV pv){
 		return (long) ValueUtil.getDouble(pv.getValue());
 	}
 	
