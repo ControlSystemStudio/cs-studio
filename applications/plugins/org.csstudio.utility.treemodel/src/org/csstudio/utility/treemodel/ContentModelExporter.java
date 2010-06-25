@@ -51,6 +51,8 @@ import com.google.common.collect.ImmutableSet;
  */
 public final class ContentModelExporter {
 
+    private static final String XML_ENCODING_FORMAT = "ISO-8859-1";
+
     /**
      * Constructor.
      */
@@ -93,7 +95,9 @@ public final class ContentModelExporter {
         String exportContentModelToXmlString(@Nonnull final ContentModel<T> model,
                                      @Nullable final String dtdFilePath) throws ExportContentModelException {
         
-            final XMLOutputter outputter = new XMLOutputter(Format.getPrettyFormat());
+            Format f = Format.getPrettyFormat();
+            f.setEncoding(XML_ENCODING_FORMAT);
+            final XMLOutputter outputter = new XMLOutputter(f);
             final Document doc = createDOM(model, dtdFilePath);
             return outputter.outputString(doc);
     }
@@ -110,6 +114,7 @@ public final class ContentModelExporter {
         rootElem.setAttribute("name", rootType.getRootTypeValue());
 
         final Document doc = new Document(rootElem);
+        
 
         if (dtdFilePath != null) {
             final DocType docType = new DocType(rootElem.getName(), dtdFilePath);
