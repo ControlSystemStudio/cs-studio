@@ -29,7 +29,6 @@ import java.util.Date;
 
 import org.csstudio.alarm.service.declaration.Severity;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 
 
 /**
