@@ -47,19 +47,6 @@ import org.eclipse.swt.widgets.Text;
 public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
 
     /**
-     * The actual figure will be surrounded with a small frame that can be used to drag the figure
-     * around (even if the cell editor is activated).
-     */
-    private static final int FRAME_WIDTH = 1;
-
-    /**
-     * The input field will be slightly brighter than the actual figure so it can be easily
-     * recognized.
-     */
-    private static final int INPUT_FIELD_BRIGHTNESS = 10;
-
-
-    /**
      * Returns the casted model. This is just for convenience.
      *
      * @return the casted {@link LabelModel}
@@ -96,29 +83,77 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
     @Override
     protected void registerPropertyChangeHandlers() {
         super.registerPropertyChangeHandlers();
-        // Text
-        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
+
+        registerTextvaluePropertyChangeHandlers();
+        registerFontPropertyChangeHandlers();
+        registerTextAlignPropertyChangeHandlers();
+        registerTextTransparentPropertyChangeHandlers();
+        registerTextRotationPropertyChangeHandlers();
+        registerXOffPropertyChangeHandlers();
+        registerYOffPropertyChangeHandlers();
+
+    }
+
+    private void registerYOffPropertyChangeHandlers() {
+        // changes to the y offset property
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
-                    final Object newValue, final IFigure refreshableFigure) {
-                ITextFigure textFigure = (ITextFigure) refreshableFigure;
-                textFigure.setTextValue(determineLabel(null));
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                labelFigure.setYOff((Integer) newValue);
                 return true;
             }
         };
-        setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, labelHandler);
+        setPropertyChangeHandler(LabelModel.PROP_YOFF, handle);
+    }
 
-        // changes to the font property
-        setPropertyChangeHandler(LabelModel.PROP_FONT,
-                                 new FontChangeHander<RefreshableLabelFigure>() {
+    private void registerXOffPropertyChangeHandlers() {
+        // changes to the x offset property
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                labelFigure.setXOff((Integer) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_XOFF, handle);
+    }
 
-                                     @Override
-                                     protected void doHandle(final RefreshableLabelFigure refreshableFigure,
-                                                             final Font font) {
-                                         refreshableFigure.setFont(font);
-                                     }
+    /**
+     *
+     */
+    private void registerTextRotationPropertyChangeHandlers() {
+        // changes to the text rotation property
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                labelFigure.setRotation((Double) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_TEXT_ROTATION, handle);
+    }
 
-                                 });
+    private void registerTextTransparentPropertyChangeHandlers() {
+        // changes to the transparency property
+        IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
+            public boolean handleChange(final Object oldValue,
+                                        final Object newValue,
+                                        final IFigure refreshableFigure) {
+                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
+                labelFigure.setTransparent((Boolean) newValue);
+                return true;
+            }
+        };
+        setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handle);
+    }
 
+    private void registerTextAlignPropertyChangeHandlers() {
         // changes to the text alignment property
         IWidgetPropertyChangeHandler handle = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
@@ -130,54 +165,33 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
             }
         };
         setPropertyChangeHandler(LabelModel.PROP_TEXT_ALIGN, handle);
+    }
 
-        // changes to the transparency property
-        handle = new IWidgetPropertyChangeHandler() {
+    private void registerFontPropertyChangeHandlers() {
+        // changes to the font property
+        setPropertyChangeHandler(LabelModel.PROP_FONT,
+                                 new FontChangeHander<RefreshableLabelFigure>() {
+
+                                     @Override
+                                     protected void doHandle(final RefreshableLabelFigure refreshableFigure,
+                                                             final Font font) {
+                                         refreshableFigure.setFont(font);
+                                     }
+
+                                 });
+    }
+
+    private void registerTextvaluePropertyChangeHandlers() {
+        // Text
+        IWidgetPropertyChangeHandler labelHandler = new IWidgetPropertyChangeHandler() {
             public boolean handleChange(final Object oldValue,
-                                        final Object newValue,
-                                        final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
-                labelFigure.setTransparent((Boolean) newValue);
+                    final Object newValue, final IFigure refreshableFigure) {
+                ITextFigure textFigure = (ITextFigure) refreshableFigure;
+                textFigure.setTextValue(determineLabel(null));
                 return true;
             }
         };
-        setPropertyChangeHandler(LabelModel.PROP_TRANSPARENT, handle);
-
-        // changes to the text rotation property
-        handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                                        final Object newValue,
-                                        final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
-                labelFigure.setRotation((Double) newValue);
-                return true;
-            }
-        };
-        setPropertyChangeHandler(LabelModel.PROP_TEXT_ROTATION, handle);
-
-        // changes to the x offset property
-        handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                                        final Object newValue,
-                                        final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
-                labelFigure.setXOff((Integer) newValue);
-                return true;
-            }
-        };
-        setPropertyChangeHandler(LabelModel.PROP_XOFF, handle);
-
-        // changes to the y offset property
-        handle = new IWidgetPropertyChangeHandler() {
-            public boolean handleChange(final Object oldValue,
-                                        final Object newValue,
-                                        final IFigure refreshableFigure) {
-                RefreshableLabelFigure labelFigure = (RefreshableLabelFigure) refreshableFigure;
-                labelFigure.setYOff((Integer) newValue);
-                return true;
-            }
-        };
-        setPropertyChangeHandler(LabelModel.PROP_YOFF, handle);
+        setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, labelHandler);
     }
 
     /**
