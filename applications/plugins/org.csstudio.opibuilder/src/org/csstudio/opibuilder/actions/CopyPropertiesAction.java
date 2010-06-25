@@ -29,18 +29,26 @@ import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.persistence.XMLUtil;
+import org.csstudio.opibuilder.visualparts.PropertiesSelectDialog;
 import org.eclipse.gef.ui.actions.SelectionAction;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.dnd.Transfer;
+import org.jdom.Element;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 /**The action that only copy properties from a widget.
  * @author Xihui Chen, Joerg Rathlev (part of the code is copied from SDS)
  *
  */
 public class CopyPropertiesAction extends SelectionAction {
+	
+	private static final String ROOT_ELEMENT = "PropCopyData";  //$NON-NLS-1$
 
+	public static final String PROPID_ELEMENT = "Properties";  //$NON-NLS-1$
 
 	public static final String ID = "org.csstudio.opibuilder.actions.copyproperties";
-	private PastePropertiesAction pastePropertiesAction;
 	
 	/**
 	 * @param part the OPI Editor
@@ -48,11 +56,10 @@ public class CopyPropertiesAction extends SelectionAction {
 	 * help to update the enable state of the paste action
 	 * after copy action invoked.
 	 */
-	public CopyPropertiesAction(OPIEditor part, PastePropertiesAction pasteWidgetsAction) {
+	public CopyPropertiesAction(OPIEditor part) {
 		super(part);
-		setText("Copy Properties");
+		setText("Copy Properties...");
 		setId(ID);
-		this.pastePropertiesAction = pasteWidgetsAction;
 	}
 
 	@Override
@@ -66,10 +73,32 @@ public class CopyPropertiesAction extends SelectionAction {
 	
 	@Override
 	public void run() {
-		((OPIEditor)getWorkbenchPart()).getClipboard()
-			.setContents(new Object[]{getSelectedWidgetModels()}, 
-				new Transfer[]{OPIWidgetsTransfer.getInstance()});
-		pastePropertiesAction.update();
+		PropertiesSelectDialog dialog = new PropertiesSelectDialog(null, getSelectedWidgetModels().get(0));
+		if(dialog.open() == Window.OK){
+			List<String> propList = dialog.getOutput();
+			if(!propList.isEmpty()){
+				
+				Element widgetElement = XMLUtil.WidgetToXMLElement(getSelectedWidgetModels().get(0));
+				
+				Element propertisElement = new Element(PROPID_ELEMENT);
+				
+				for(String propID : propList){
+					propertisElement.addContent(new Element(propID));
+				}
+				Element rootElement = new Element(ROOT_ELEMENT);
+				
+				rootElement.addContent(widgetElement);
+				rootElement.addContent(propertisElement);
+				
+				XMLOutputter xmlOutputter = new XMLOutputter(Format.getRawFormat());
+				String xmlString = xmlOutputter.outputString(rootElement);
+				
+				((OPIEditor)getWorkbenchPart()).getClipboard()
+					.setContents(new Object[]{xmlString}, 
+					new Transfer[]{PropertiesCopyDataTransfer.getInstance()});
+			}
+		}
+		
 	}
 	
 	/**
