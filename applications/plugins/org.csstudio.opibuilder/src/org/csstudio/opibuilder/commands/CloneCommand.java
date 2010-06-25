@@ -29,6 +29,7 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.model.GuideModel;
+import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
@@ -155,7 +156,14 @@ public final class CloneCommand extends Command {
 	 */
 	public void execute() {		
 		Clipboard clipboard = new Clipboard(Display.getCurrent());
-		clipboard.setContents(new Object[] { _models },
+		DisplayModel tempModel = new DisplayModel();
+		
+		for(AbstractWidgetModel widget : _models){
+			tempModel.addChild(widget, false);
+		}
+		
+		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
+		clipboard.setContents(new Object[] { xml },
 				new Transfer[] { OPIWidgetsTransfer.getInstance() });
 		
 		_clonedWidgets = getWidgetsFromClipboard();
