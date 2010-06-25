@@ -25,10 +25,10 @@ public class MeterWidget extends Canvas implements DisposeListener,
 {
     /** Line width for scale outline (rest uses width 1) */
 	final private static int LINE_WIDTH = 5;
-	
+
 	/** Number of labels (and ticks) */
 	final private static int LABEL_COUNT = 5;
-    
+
     final private static int start_angle = 140;
     final private static int end_angle = 40;
     final private static double scale_width = 0.35;
@@ -42,22 +42,22 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
     /** Minimum value. */
     private double min = -10.0;
-    
+
     /** Lower alarm limit. */
     private double low_alarm = -5.0;
-    
+
     /** Lower warning limit. */
     private double low_warning = -4.0;
 
     /** Upper warning limit. */
     private double high_warning = 4.0;
-    
+
     /** Upper alarm limit. */
     private double high_alarm = 5.0;
-    
+
     /** Maximum value. */
     private double max = +10.0;
-    
+
     /** Display precision. */
     private int precision = 4;
 
@@ -72,16 +72,16 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
     /** X-coord of needle pivot point */
     private int pivot_x;
-    
+
     /** Y-coord of needle pivot point */
     private int pivot_y;
 
     /** X-Radius of scale */
     private int x_radius;
-    
+
     /** Y-Radius of scale */
     private int y_radius;
-    
+
 	/** Constructor */
 	public MeterWidget(final Composite parent, final int style)
 	{
@@ -102,11 +102,11 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
     /** Configure the meter.
      *  @param min Minimum value.
-     *  @param low_alarm Lower alarm limit. 
+     *  @param low_alarm Lower alarm limit.
      *  @param low_warning Lower warning limit.
      *  @param high_warning Upper warning limit.
      *  @param high_alarm Upper alarm limit.
-     *  @param max Maximum value. 
+     *  @param max Maximum value.
      *  @param precision Display precision
      */
     public void configure(final double min,
@@ -137,26 +137,31 @@ public class MeterWidget extends Canvas implements DisposeListener,
         this.high_warning = high_warning;
         this.high_alarm = high_alarm;
         // Correct limits that are outside the value range
-        if (this.low_alarm < this.min ||  this.low_alarm > this.max)
+        if ((this.low_alarm < this.min) ||  (this.low_alarm > this.max)) {
             this.low_alarm = this.min;
-        if (this.low_warning < this.min || this.low_warning > this.max)
+        }
+        if ((this.low_warning < this.min) || (this.low_warning > this.max)) {
             this.low_alarm = this.min;
-        if (this.high_warning < this.min || this.high_warning > this.max)
+        }
+        if ((this.high_warning < this.min) || (this.high_warning > this.max)) {
             this.high_alarm = this.max;
-        if (this.high_alarm < this.min || this.high_alarm > this.max)
+        }
+        if ((this.high_alarm < this.min) || (this.high_alarm > this.max)) {
             this.high_alarm = this.max;
-            
+        }
+
         this.precision = precision;
         resetScale();
         redraw();
     }
-    
+
     /** Set current value. */
-    public void setValue(double value)
+    public void setValue(final double value)
     {
         this.value = value;
-        if (!isDisposed())
+        if (!isDisposed()) {
             redraw();
+        }
     }
 
     /** Reset the scale.
@@ -173,7 +178,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
     }
 
     /** @see org.eclipse.swt.events.DisposeListener */
-    public void widgetDisposed(DisposeEvent e)
+    public void widgetDisposed(final DisposeEvent e)
     {
         resetScale();
         alarm_color.dispose();
@@ -186,44 +191,48 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
 	/** @see org.eclipse.swt.widgets.Composite#computeSize(int, int, boolean) */
 	@Override
-	public Point computeSize(int wHint, int hHint, boolean changed)
+	public Point computeSize(final int wHint, final int hHint, final boolean changed)
 	{
 		int width, height;
 		height = 100;
 		width = 100;
-		if (wHint != SWT.DEFAULT)
-			width = wHint;
-		if (hHint != SWT.DEFAULT)
-			height = hHint;
+		if (wHint != SWT.DEFAULT) {
+            width = wHint;
+        }
+		if (hHint != SWT.DEFAULT) {
+            height = hHint;
+        }
 		return new Point(width, height);
 	}
 
     /** @return Angle in degrees for given value on scale. */
     private double getAngle(final double value)
     {
-        if (value <= min)
+        if (value <= min) {
             return start_angle;
-        if (value >= max)
+        }
+        if (value >= max) {
             return end_angle;
+        }
         return end_angle + (start_angle - end_angle) * (max-value) / (max-min);
     }
-    
+
 	/** @see org.eclipse.swt.events.PaintListener */
     public void paintControl(final PaintEvent e)
     {
         final GC gc = e.gc;
-        
+
         // Get the rectangle that exactly fills the 'inner' area
         // such that drawRectangle() will match.
         final Rectangle client_rect = getClientArea();
-        
+
         // Background and border
         gc.setForeground(face_color);
         gc.setBackground(background_color);
         gc.setLineWidth(LINE_WIDTH);
         gc.setLineCap(SWT.CAP_ROUND);
         gc.setLineJoin(SWT.JOIN_ROUND);
-        
+
         // To reduce flicker, the scale is drawn as a prepared image into
         // the widget whose background has not been cleared.
         createScaleImage(gc, client_rect);
@@ -250,7 +259,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                 new Image(gc.getDevice(), scale_image, SWT.IMAGE_DISABLE);
             gc.drawImage(grayed, 0, 0);
             grayed.dispose();
-            
+
             final String message = Messages.MeterWidget_NoNumericInfo;
             final Point size = gc.textExtent(message);
             gc.drawString(message,
@@ -262,9 +271,10 @@ public class MeterWidget extends Canvas implements DisposeListener,
     private void createScaleImage(final GC gc, final Rectangle client_rect)
     {
         // Is there already a matching image?
-        if (scale_image != null  &&  old_client_rect.equals(client_rect))
+        if ((scale_image != null)  &&  old_client_rect.equals(client_rect)) {
             return;
-        
+        }
+
         // Remember the client rect for the next call:
         old_client_rect = client_rect;
 
@@ -276,8 +286,9 @@ public class MeterWidget extends Canvas implements DisposeListener,
 
         // Create image buffer, prepare GC for it.
         // In case there's old one, delete it.
-        if (scale_image != null)
+        if (scale_image != null) {
             scale_image.dispose();
+        }
         scale_image = new Image(gc.getDevice(), client_rect);
         final GC scale_gc = new GC(scale_image);
         scale_gc.setForeground(face_color);
@@ -285,7 +296,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         scale_gc.setLineWidth(LINE_WIDTH);
         scale_gc.setLineCap(SWT.CAP_ROUND);
         scale_gc.setLineJoin(SWT.JOIN_ROUND);
-        
+
         // Background, border
         scale_gc.fillRectangle(real_client_rect);
         scale_gc.drawRectangle(real_client_rect);
@@ -295,12 +306,12 @@ public class MeterWidget extends Canvas implements DisposeListener,
         pivot_y = real_client_rect.y + real_client_rect.height;
         final NumberFormat fmt = NumberFormat.getNumberInstance();
         fmt.setMaximumFractionDigits(precision);
-   
+
         final Point min_size = scale_gc.textExtent(fmt.format(min));
         final Point max_size = scale_gc.textExtent(fmt.format(max));
         final int text_width_idea = Math.max(min_size.x, max_size.x);
         final int text_height_idea = min_size.y;
-   
+
         // Labels should somehow fit around the outside of the scale
         final int tick_x_radius = real_client_rect.width/2 - text_width_idea;
         final int tick_y_radius = real_client_rect.height - 2*text_height_idea;
@@ -312,7 +323,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         // Lower end of ticks.
         final int tick_x_radius2 = (int)(0.6*x_radius2);
         final int tick_y_radius2 = (int)(0.6*y_radius2);
-                
+
         // Path for outline of scale
         final Path scale_path = createSectionPath(scale_gc.getDevice(),
                         pivot_x, pivot_y,
@@ -323,7 +334,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         scale_gc.setBackground(ok_color);
         scale_gc.fillPath(scale_path);
         // Border around the scale drawn later...
-   
+
         // Colored alarm sections
         final int high_alarm_start = (int) getAngle(high_alarm);
         final Path high_alarm_path = createSectionPath(scale_gc.getDevice(),
@@ -334,7 +345,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         scale_gc.setBackground(alarm_color);
         scale_gc.fillPath(high_alarm_path);
         high_alarm_path.dispose();
-   
+
         final int low_alarm_end = (int) getAngle(low_alarm);
         final Path low_alarm_path = createSectionPath(scale_gc.getDevice(),
                         pivot_x, pivot_y,
@@ -343,7 +354,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                         start_angle, low_alarm_end);
         scale_gc.fillPath(low_alarm_path);
         low_alarm_path.dispose();
-        
+
         // Warning sections
         final int high_warning_start = (int) getAngle(high_warning);
         final Path high_warning_path = createSectionPath(scale_gc.getDevice(),
@@ -354,7 +365,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         scale_gc.setBackground(warning_color);
         scale_gc.fillPath(high_warning_path);
         high_warning_path.dispose();
-   
+
         final int low_warning_end = (int) getAngle(low_warning);
         final Path low_warning_path = createSectionPath(scale_gc.getDevice(),
                         pivot_x, pivot_y,
@@ -363,7 +374,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                         low_alarm_end, low_warning_end);
         scale_gc.fillPath(low_warning_path);
         low_warning_path.dispose();
-        
+
         // Scale outline
         scale_gc.drawPath(scale_path);
         scale_path.dispose();
@@ -381,7 +392,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
                 (int)(pivot_y - tick_y_radius2*sin_angle),
                 (int)(pivot_x + tick_x_radius*cos_angle),
                 (int)(pivot_y - tick_y_radius*sin_angle));
-            
+
             final String label_text = fmt.format(label_value);
             final Point size = scale_gc.textExtent(label_text);
             scale_gc.drawString(label_text,
@@ -405,7 +416,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
      *  @param end_angle degrees
      *  @return
      */
-    private Path createSectionPath(Device device,
+    private Path createSectionPath(final Device device,
                     final int x0, final int y0,
                     final int x_radius, final int y_radius,
                     final int x_radius2, final int y_radius2,
@@ -427,7 +438,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         path.close();
         return path;
     }
-    
+
     /** Add a clockwise arc from start to end angle to path.
      *  @param path
      *  @param x0 Center of arc

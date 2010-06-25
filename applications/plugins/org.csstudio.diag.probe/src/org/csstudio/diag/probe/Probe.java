@@ -72,20 +72,19 @@ import org.eclipse.ui.part.ViewPart;
  * @author Helge Rickens
  * @author Joerg Rathlev
  */
-public class Probe extends ViewPart implements PVListener
-{
+public class Probe extends ViewPart implements PVListener {
     /** Multiple Probe views are allowed.
      *  Their ID has to be ID + ":<instance>"
      */
-    final public static String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
+    public static final String ID = "org.csstudio.diag.probe.Probe"; //$NON-NLS-1$
 
     /** Memento tag */
-    final private static String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
+    private static final String PV_LIST_TAG = "pv_list"; //$NON-NLS-1$
     /** Memento tag */
-    final private static String PV_TAG = "PVName"; //$NON-NLS-1$
+    private static final String PV_TAG = "PVName"; //$NON-NLS-1$
     /** Memento tag */
-    final private static String METER_TAG = "meter"; //$NON-NLS-1$
-    
+    private static final String METER_TAG = "meter"; //$NON-NLS-1$
+
 	/**
 	 * Id of the save value command.
 	 */
@@ -108,7 +107,7 @@ public class Probe extends ViewPart implements PVListener
      *  @see #createNewInstance()
      */
     private static int instance = 0;
-    
+
     /** Memento used to preserve the PV name. */
     private IMemento memento = null;
 
@@ -122,28 +121,30 @@ public class Probe extends ViewPart implements PVListener
 
     /** The process variable that we monitor. */
     private PV pv = null;
-    
+
     /** Most recent value of the pv */
-    private ValueInfo value = new ValueInfo();
-    
-    private NumberFormat period_format;
-    
+    private final ValueInfo value = new ValueInfo();
+
+    private final NumberFormat period_format;
+
     /** Is this a new channel where we never received a value? */
     private boolean new_channel = true;
-    
+
     final Runnable update_value = new Runnable()
     {
         public void run()
         {   // Might run after the view is already disposed...
-            if (lbl_value.isDisposed())
+            if (lbl_value.isDisposed()) {
                 return;
+            }
             lbl_value.setText(value.getValueDisplayText());
             lbl_time.setText(value.getTimeText());
+            new_value.setText(value.getValueDisplayText());
 
-            INumericMetaData meta = value.getNumericMetaData();
-            if (meta == null)
+            final INumericMetaData meta = value.getNumericMetaData();
+            if (meta == null) {
                 meter.setEnabled(false);
-            else
+            } else
             {   // Configure on first value from new channel
                 if (new_channel)
                 {
@@ -157,9 +158,9 @@ public class Probe extends ViewPart implements PVListener
                                         meta.getDisplayHigh(),
                                         meta.getPrecision());
                         meter.setEnabled(true);
-                    }
-                    else
+                    } else {
                         meter.setEnabled(false);
+                    }
                 }
                 meter.setValue(value.getDouble());
             }
@@ -168,12 +169,13 @@ public class Probe extends ViewPart implements PVListener
                                 + " " + lbl_value.getText()); //$NON-NLS-1$
 
             final double period = value.getUpdatePeriod();
-            if (period > 0)
+            if (period > 0) {
                 lbl_status.setText(Messages.S_Period
                             + period_format.format(period)
                             + Messages.S_Seconds);
-            else
+            } else {
                 lbl_status.setText(Messages.S_OK);
+            }
             new_channel = false;
         }
     };
@@ -183,6 +185,8 @@ public class Probe extends ViewPart implements PVListener
     private Button btn_save_to_ioc;
     private ICommandListener saveToIocCmdListener;
 
+    private Text new_value;
+
 
     /** Create or re-display a probe view with the given PV name.
      *  <p>
@@ -191,26 +195,26 @@ public class Probe extends ViewPart implements PVListener
      *  @param pv_name The PV to 'probe'
      *  @return Returns <code>true</code> when successful.
      */
-    public static boolean activateWithPV(IProcessVariable pv_name)
+    public static boolean activateWithPV(final IProcessVariable pv_name)
     {
         try
         {
-            IWorkbench workbench = PlatformUI.getWorkbench();
-            IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-            IWorkbenchPage page = window.getActivePage();
-            Probe probe = (Probe) page.showView(ID, createNewInstance(),
+            final IWorkbench workbench = PlatformUI.getWorkbench();
+            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+            final IWorkbenchPage page = window.getActivePage();
+            final Probe probe = (Probe) page.showView(ID, createNewInstance(),
                                                 IWorkbenchPage.VIEW_ACTIVATE);
             probe.setPVName(pv_name.getName());
             return true;
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
         }
         return false;
     }
-    
+
     /** @return a new view instance */
     public static String createNewInstance()
     {
@@ -227,7 +231,7 @@ public class Probe extends ViewPart implements PVListener
 
     /** ViewPart interface, keep the memento. */
     @Override
-    public void init(IViewSite site, IMemento memento) throws PartInitException
+    public void init(final IViewSite site, final IMemento memento) throws PartInitException
     {
         super.init(site, memento);
         this.memento = memento;
@@ -235,7 +239,7 @@ public class Probe extends ViewPart implements PVListener
 
     /** ViewPart interface, persist state */
     @Override
-    public void saveState(IMemento memento)
+    public void saveState(final IMemento memento)
     {
         super.saveState(memento);
         memento.putString(PV_TAG, cbo_name.getCombo().getText());
@@ -245,7 +249,7 @@ public class Probe extends ViewPart implements PVListener
 
     /** ViewPart interface, create UI. */
     @Override
-    public void createPartControl(Composite parent)
+    public void createPartControl(final Composite parent)
     {
         createGUI(parent);
 
@@ -253,8 +257,8 @@ public class Probe extends ViewPart implements PVListener
         new ProcessVariableDropTarget(cbo_name.getControl())
         {
             @Override
-            public void handleDrop(IProcessVariable name,
-                                   DropTargetEvent event)
+            public void handleDrop(final IProcessVariable name,
+                                   final DropTargetEvent event)
             {
                 setPVName(name.getName());
             }
@@ -328,17 +332,17 @@ public class Probe extends ViewPart implements PVListener
         grid = new GridLayout();
         grid.numColumns = 3;
         bottom_box.setLayout(grid);
-        
+
         label = new Label(bottom_box, 0);
         label.setText(Messages.S_Value);
         label.setLayoutData(new GridData());
-        
+
         lbl_value = new Label(bottom_box, SWT.BORDER);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         lbl_value.setLayoutData(gd);
-        
+
         show_meter = new Button(bottom_box, SWT.CHECK);
         show_meter.setText(Messages.S_Meter);
         show_meter.setToolTipText(Messages.S_Meter_TT);
@@ -355,7 +359,7 @@ public class Probe extends ViewPart implements PVListener
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         lbl_time.setLayoutData(gd);
-        
+
         btn_save_to_ioc = new Button(bottom_box, SWT.PUSH);
         btn_save_to_ioc.setText(Messages.S_SaveToIoc);
         btn_save_to_ioc.setToolTipText(Messages.S_SaveToIocTooltip);
@@ -369,18 +373,19 @@ public class Probe extends ViewPart implements PVListener
         new_value_label.setText(Messages.S_NewValueLabel);
         new_value_label.setLayoutData(new GridData());
         new_value_label.setVisible(false);
-        
-        final Text new_value = new Text(bottom_box, SWT.BORDER);
+
+        new_value = new Text(bottom_box, SWT.BORDER);
         new_value.setToolTipText(Messages.S_NewValueTT);
         new_value.setLayoutData(new GridData(SWT.FILL, 0, true, false));
         new_value.setVisible(false);
-        
+        new_value.setText(value.getValueDisplayText());
+
         final Button btn_adjust = new Button(bottom_box, SWT.CHECK);
         btn_adjust.setText(Messages.S_Adjust);
         btn_adjust.setToolTipText(Messages.S_ModValue);
         btn_adjust.setLayoutData(new GridData());
         btn_adjust.setEnabled(canExecute);
-        
+
         // Status bar
         label = new Label(bottom_box, SWT.SEPARATOR | SWT.HORIZONTAL);
         gd = new GridData();
@@ -420,22 +425,22 @@ public class Probe extends ViewPart implements PVListener
         fd.right = new FormAttachment(100, 0);
         fd.bottom = new FormAttachment(100, 0);
         bottom_box.setLayoutData(fd);
-        
+
         // Connect actions
         name_helper = new ComboHistoryHelper(
                         Plugin.getDefault().getDialogSettings(),
                         PV_LIST_TAG, cbo_name)
         {
             @Override
-            public void newSelection(String pv_name)
-            { 
-                setPVName(pv_name);   
+            public void newSelection(final String pv_name)
+            {
+                setPVName(pv_name);
             }
         };
-        
+
         cbo_name.getCombo().addDisposeListener(new DisposeListener()
         {
-            public void widgetDisposed(DisposeEvent e)
+            public void widgetDisposed(final DisposeEvent e)
             {
                 disposeChannel();
                 name_helper.saveSettings();
@@ -445,7 +450,7 @@ public class Probe extends ViewPart implements PVListener
         btn_info.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent ev)
+            public void widgetSelected(final SelectionEvent ev)
             {
                 showInfo();
             }
@@ -454,27 +459,27 @@ public class Probe extends ViewPart implements PVListener
         btn_adjust.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent ev)
+            public void widgetSelected(final SelectionEvent ev)
             {
                 final boolean enable = btn_adjust.getSelection();
                 new_value_label.setVisible(enable);
                 new_value.setVisible(enable);
             }
         });
-        
+
         new_value.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetDefaultSelected(SelectionEvent e)
+            public void widgetDefaultSelected(final SelectionEvent e)
             {
                 adjustValue(new_value.getText().trim());
             }
         });
-        
+
         btn_save_to_ioc.addSelectionListener(new SelectionAdapter()
         {
         	@Override
-        	public void widgetSelected(SelectionEvent e)
+        	public void widgetSelected(final SelectionEvent e)
         	{
         		saveToIoc();
         	}
@@ -483,7 +488,7 @@ public class Probe extends ViewPart implements PVListener
         // the availability of a command handler.
         saveToIocCmdListener = new ICommandListener()
         {
-			public void commandChanged(CommandEvent commandEvent)
+			public void commandChanged(final CommandEvent commandEvent)
 			{
 				if (commandEvent.isEnabledChanged())
 				{
@@ -492,13 +497,13 @@ public class Probe extends ViewPart implements PVListener
 				}
 			}
         };
-        // Set the initial vilibility of the button 
+        // Set the initial vilibility of the button
         updateSaveToIocButtonVisibility();
 
         show_meter.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent ev)
+            public void widgetSelected(final SelectionEvent ev)
             {   showMeter(show_meter.getSelection());   }
         });
 
@@ -510,21 +515,21 @@ public class Probe extends ViewPart implements PVListener
         	// Per default, the meter is shown.
         	// Hide according to memento.
         	final String show = memento.getString(METER_TAG);
-        	if (show != null  &&  show.equals("false")) //$NON-NLS-1$
+        	if ((show != null)  &&  show.equals("false")) //$NON-NLS-1$
         	{
         	    show_meter.setSelection(false);
         	    showMeter(false);
         	}
         }
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public void dispose() {
 	   	if (saveToIocCmdListener != null) {
-    		Command svc = getSaveValueCommand();
+    		final Command svc = getSaveValueCommand();
     		svc.removeCommandListener(saveToIocCmdListener);
     	}
     }
@@ -534,18 +539,18 @@ public class Probe extends ViewPart implements PVListener
      */
     private void saveToIoc()
     {
-		IHandlerService handlerService =
+		final IHandlerService handlerService =
 			(IHandlerService) getSite().getService(IHandlerService.class);
 		try {
-			ParameterizedCommand cmd = createParameterizedSaveValueCommand();
+			final ParameterizedCommand cmd = createParameterizedSaveValueCommand();
 			handlerService.executeCommand(cmd, null);
-		} catch (ExecutionException e) {
+		} catch (final ExecutionException e) {
 			// Execution of the command handler failed.
 			Plugin.getLogger().error("Error executing save value command.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocExecutionError);
-		} catch (NotDefinedException e) {
+		} catch (final NotDefinedException e) {
 			// Thrown if the command or one of the parameters is undefined.
 			// This should never happen (the command id is defined in the
 			// platform). Log an error, disable the button, and return.
@@ -554,12 +559,12 @@ public class Probe extends ViewPart implements PVListener
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotDefinedError);
 			btn_save_to_ioc.setEnabled(false);
-		} catch (NotEnabledException e) {
+		} catch (final NotEnabledException e) {
 			MessageDialog.openWarning(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotEnabled);
 			updateSaveToIocButtonVisibility();
-		} catch (NotHandledException e) {
+		} catch (final NotHandledException e) {
 			MessageDialog.openWarning(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotEnabled);
@@ -578,7 +583,7 @@ public class Probe extends ViewPart implements PVListener
 	/**
 	 * Creates a save value command parameterized for saving the currently
 	 * displayed value.
-	 * 
+	 *
 	 * @return the parameterized command.
 	 * @throws NotDefinedException
 	 *             if one of the parameter ids is undefined (this should never
@@ -587,14 +592,14 @@ public class Probe extends ViewPart implements PVListener
 	private ParameterizedCommand createParameterizedSaveValueCommand()
 			throws NotDefinedException
 	{
-		Command saveValueCommand = getSaveValueCommand();
-		IParameter pvParamter = saveValueCommand.getParameter(PV_PARAMETER_ID);
-		Parameterization pvParameterization = new Parameterization(
+		final Command saveValueCommand = getSaveValueCommand();
+		final IParameter pvParamter = saveValueCommand.getParameter(PV_PARAMETER_ID);
+		final Parameterization pvParameterization = new Parameterization(
 				pvParamter, pv.getName());
-		IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
-		Parameterization valueParameterization = new Parameterization(
+		final IParameter valueParameter = saveValueCommand.getParameter(VALUE_PARAMETER_ID);
+		final Parameterization valueParameterization = new Parameterization(
 				valueParameter, value.getValueString());
-		ParameterizedCommand cmd =
+		final ParameterizedCommand cmd =
 			new ParameterizedCommand(saveValueCommand,
 					new Parameterization[] { pvParameterization, valueParameterization });
 		return cmd;
@@ -602,12 +607,12 @@ public class Probe extends ViewPart implements PVListener
 
 	/**
 	 * Returns the save value command.
-	 * 
+	 *
 	 * @return the save value command.
 	 */
 	private Command getSaveValueCommand()
 	{
-		ICommandService commandService =
+		final ICommandService commandService =
 			(ICommandService) getSite().getService(ICommandService.class);
 		return commandService.getCommand(SAVE_VALUE_COMMAND_ID);
 	}
@@ -619,7 +624,7 @@ public class Probe extends ViewPart implements PVListener
         {   // Meter about to become visible
             // Attach bottom box to bottom of screen,
             // and meter stretches between top and bottom box.
-            FormData fd = new FormData();
+            final FormData fd = new FormData();
             fd.left = new FormAttachment(0, 0);
             fd.right = new FormAttachment(100, 0);
             fd.bottom = new FormAttachment(100, 0);
@@ -628,7 +633,7 @@ public class Probe extends ViewPart implements PVListener
         else
         {   // Meter about to be hidden.
             // Attach bottom box to top box.
-            FormData fd = new FormData();
+            final FormData fd = new FormData();
             fd.left = new FormAttachment(0, 0);
             fd.top = new FormAttachment(top_box);
             fd.right = new FormAttachment(100, 0);
@@ -649,18 +654,18 @@ public class Probe extends ViewPart implements PVListener
      */
     private void makeContextMenu()
     {
-        MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
+        final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         manager.addMenuListener(new IMenuListener()
         {
-            public void menuAboutToShow(IMenuManager manager)
+            public void menuAboutToShow(final IMenuManager manager)
             {
                 manager.add(new Separator(
                                 IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
-        Control control = cbo_name.getControl();
+        final Control control = cbo_name.getControl();
         //Control control = pv_label;
-        Menu menu = manager.createContextMenu(control);
+        final Menu menu = manager.createContextMenu(control);
         control.setMenu(menu);
         getSite().registerContextMenu(manager, cbo_name);
     }
@@ -671,9 +676,9 @@ public class Probe extends ViewPart implements PVListener
      *  @param name
      */
     @SuppressWarnings("nls")
-    public boolean setPVName(String pv_name)
+    public boolean setPVName(final String pv_name)
     {
-        Plugin.getLogger().debug("setPVName(" + pv_name+ ")");
+        Plugin.getLogger().debug("setPVName(" + pv_name + ")");
 
         // Close a previous channel
         disposeChannel();
@@ -682,24 +687,26 @@ public class Probe extends ViewPart implements PVListener
         lbl_value.setText("");
         lbl_time.setText("");
         value.reset();
+        new_value.setText("");
         meter.setEnabled(false);
         new_channel = true;
-        
+
         // Check the name
-        if (pv_name == null || pv_name.equals(""))
+        if ((pv_name == null) || pv_name.equals(""))
         {
             cbo_name.getCombo().setText("");
             updateStatus(Messages.S_Waiting);
             return false;
         }
-        
+
         name_helper.addEntry(pv_name);
         cbo_name.setSelection(
             new StructuredSelection(
                         CentralItemFactory.createProcessVariable(pv_name)));
         // Update displayed name, unless it's already current
-        if (! (cbo_name.getCombo().getText().equals(pv_name)))
+        if (! (cbo_name.getCombo().getText().equals(pv_name))) {
             cbo_name.getCombo().setText(pv_name);
+        }
 
         // Create a new channel
         try
@@ -709,7 +716,7 @@ public class Probe extends ViewPart implements PVListener
             pv.addListener(this);
             pv.start();
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Plugin.getLogger().error(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
@@ -719,25 +726,27 @@ public class Probe extends ViewPart implements PVListener
     }
 
     // PVListener
-    public void pvDisconnected(PV pv)
+    public void pvDisconnected(final PV pv)
     {
         updateStatus(Messages.S_Disconnected);
     }
 
     // PVListener
-    public void pvValueUpdate(PV pv)
+    public void pvValueUpdate(final PV pv)
     {
         Plugin.getLogger().debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
         // We might receive events after the view is already disposed....
-        if (lbl_value.isDisposed())
+        if (lbl_value.isDisposed()) {
             return;
+        }
         try
         {
-            value.update(pv.getValue());
+            final IValue newVal = pv.getValue();
+            value.update(newVal);
             // Perform update in GUI thread.
             Display.getDefault().asyncExec(update_value);
         }
-        catch (Exception e)
+        catch (final Exception e)
         {
             Plugin.getLogger().error("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
@@ -768,8 +777,9 @@ public class Probe extends ViewPart implements PVListener
             {
                 public void run()
                 {
-                    if (! lbl_status.isDisposed())
+                    if (! lbl_status.isDisposed()) {
                         lbl_status.setText(text);
+                    }
                 }
             });
         }
@@ -791,21 +801,24 @@ public class Probe extends ViewPart implements PVListener
         else
         {
             info.append(nl + Messages.S_ChannelInfo + "  " + pv.getName() + nl); //$NON-NLS-1$
-            if (pv.isConnected())
+            if (pv.isConnected()) {
                 info.append(Messages.S_STATEConn + nl);
-            else
+            } else {
                 info.append(Messages.S_STATEDisconn + nl);
+            }
             final IValue value = pv.getValue();
             if (value != null)
             {
                 final IMetaData meta = value.getMetaData();
-                if (meta != null)
+                if (meta != null) {
                     info.append(meta.toString());
+                }
             }
         }
-        if (info.length() == 0)
+        if (info.length() == 0) {
             info.append(Messages.S_NoInfo);
-        MessageBox box =
+        }
+        final MessageBox box =
             new MessageBox(lbl_value.getShell(), SWT.ICON_INFORMATION);
         box.setText(Messages.S_Info);
         box.setMessage(info.toString());
@@ -829,7 +842,7 @@ public class Probe extends ViewPart implements PVListener
             }
             pv.setValue(new_value);
         }
-        catch (Throwable ex)
+        catch (final Throwable ex)
         {
             Plugin.getLogger().error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
