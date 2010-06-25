@@ -85,7 +85,7 @@ public class XMLUtil {
 		return XMLElementToWidget(root);		
 	}
 	
-	private static AbstractWidgetModel XMLElementToWidget(Element element) throws Exception {
+	public static AbstractWidgetModel XMLElementToWidget(Element element) throws Exception {
 		return XMLElementToWidget(element, null);
 	}
 
