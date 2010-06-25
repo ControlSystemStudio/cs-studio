@@ -10,6 +10,8 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.DisplayEditpart;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
+import org.csstudio.opibuilder.persistence.XMLUtil;
 import org.eclipse.gef.ui.actions.SelectionAction;
 import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.ui.ISharedImages;
@@ -23,15 +25,14 @@ import org.eclipse.ui.actions.ActionFactory;
 public class CopyWidgetsAction extends SelectionAction {
 
 
-	private PasteWidgetsAction pasteWidgetsAction;
-	
+
 	/**
 	 * @param part the OPI Editor
 	 * @param pasteWidgetsAction pass the paste action will 
 	 * help to update the enable state of the paste action
 	 * after copy action invoked.
 	 */
-	public CopyWidgetsAction(OPIEditor part, PasteWidgetsAction pasteWidgetsAction) {
+	public CopyWidgetsAction(OPIEditor part) {
 		super(part);
 		setText("Copy");
 		setActionDefinitionId("org.eclipse.ui.edit.copy"); //$NON-NLS-1$
@@ -40,7 +41,6 @@ public class CopyWidgetsAction extends SelectionAction {
 			part.getSite().getWorkbenchWindow().getWorkbench().getSharedImages();
 		setImageDescriptor(sharedImages
         .getImageDescriptor(ISharedImages.IMG_TOOL_COPY));
-		this.pasteWidgetsAction = pasteWidgetsAction;
 	}
 
 	@Override
@@ -54,11 +54,19 @@ public class CopyWidgetsAction extends SelectionAction {
 	
 	
 	@Override
-	public void run() {
+	public void run() {	
+		
+		DisplayModel tempModel = new DisplayModel();
+		
+		for(AbstractWidgetModel widget : getSelectedWidgetModels()){
+			tempModel.addChild(widget, false);
+		}
+		
+		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
+		
 		((OPIEditor)getWorkbenchPart()).getClipboard()
-			.setContents(new Object[]{getSelectedWidgetModels()}, 
+			.setContents(new Object[]{xml}, 
 				new Transfer[]{OPIWidgetsTransfer.getInstance()});
-		pasteWidgetsAction.update();
 	}
 	
 	/**

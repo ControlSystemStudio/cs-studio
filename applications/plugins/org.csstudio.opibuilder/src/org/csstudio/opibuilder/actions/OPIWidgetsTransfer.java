@@ -62,24 +62,12 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 		return new String[] {TYPE_NAME};
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	protected void javaToNative(Object object, TransferData transferData) {
 		if (!isSupportedType(transferData) || !(checkInput(object))) {
 			DND.error(DND.ERROR_INVALID_DATA);
 		}
-		
-		List<AbstractWidgetModel> widgets = (List<AbstractWidgetModel>)object;
-		
-		DisplayModel tempModel = new DisplayModel();
-		
-		for(AbstractWidgetModel widget : widgets){
-			tempModel.addChild(widget, false);
-		}
-		
-		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
-		
-		super.javaToNative(xml.getBytes(), transferData);
+		super.javaToNative(((String)object).getBytes(), transferData);
 	}
 	
 	@Override
@@ -109,25 +97,11 @@ public class OPIWidgetsTransfer extends ByteArrayTransfer {
 	 * @return true, if the input object is valid, false otherwise
 	 */
 	private boolean checkInput(final Object input) {
-		boolean result = true;
-
-		if (input instanceof List<?>) {
-			List<?> list = (List<?>) input;
-
-			if (list.size() > 0) {
-				for (Object o : list) {
-					if (!(o instanceof AbstractWidgetModel)) {
-						result = false;
-					}
-				}
-			} else {
-				result = false;
-			}
-		} else {
-			result = false;
-		}
-
-		return result;
+		
+		if(input == null)
+			return false;
+		return input instanceof String;
+		
 	}
 
 }

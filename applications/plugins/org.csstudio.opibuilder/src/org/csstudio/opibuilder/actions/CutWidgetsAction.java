@@ -14,8 +14,8 @@ public class CutWidgetsAction extends CopyWidgetsAction {
 
 	private DeleteAction deleteAction;
 	
-	public CutWidgetsAction(OPIEditor part, DeleteAction deleteAction, PasteWidgetsAction pasteWidgetsAction ) {
-		super(part, pasteWidgetsAction);
+	public CutWidgetsAction(OPIEditor part, DeleteAction deleteAction) {
+		super(part);
 		this.deleteAction = deleteAction;
 		setText("Cut");
 		setActionDefinitionId("org.eclipse.ui.edit.cut"); //$NON-NLS-1$

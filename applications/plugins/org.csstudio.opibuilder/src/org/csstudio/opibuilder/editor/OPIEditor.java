@@ -360,14 +360,12 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
-		action = new CopyWidgetsAction(this, 
-				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
+		action = new CopyWidgetsAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
 		action = new CutWidgetsAction(this,
-				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()),
-				(PasteWidgetsAction) registry.getAction(ActionFactory.PASTE.getId()));
+				(DeleteAction) registry.getAction(ActionFactory.DELETE.getId()));
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		
@@ -450,7 +448,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		registry.registerAction(pastePropAction);
 		getSelectionActions().add(pastePropAction.getId());
 		
-		action = new CopyPropertiesAction(this, pastePropAction);
+		action = new CopyPropertiesAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	
