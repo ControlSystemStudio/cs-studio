@@ -19,6 +19,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -40,6 +41,18 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
         addInvisiblePropertyId(TextInputModel.PROP_INPUT_TEXT);
         addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
+        addInvisiblePropertyId(TextInputModel.PROP_BORDER_WIDTH);
+        addInvisiblePropertyId(TextInputModel.PROP_BORDER_STYLE);
+        addInvisiblePropertyId(TextInputModel.PROP_BORDER_COLOR);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final TextInputModel widget) {
+        super.doInitialize(widget);
+        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, BorderStyleEnum.LOWERED.getIndex());
     }
 
     /**
