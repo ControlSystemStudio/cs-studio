@@ -25,6 +25,14 @@ package org.csstudio.alarm.treeView.views;
 
 import junit.framework.Assert;
 
+import org.csstudio.alarm.treeView.views.actions.ReloadFromLdapAction;
+import org.eclipse.jface.action.Action;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 /**
@@ -36,11 +44,25 @@ import org.junit.Test;
  * @since 24.06.2010
  */
 public class AlarmTreeViewTest {
+    private static AlarmTreeView VIEW;
+
+    @BeforeClass
+    public static void findView() throws PartInitException {
+
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        final IWorkbenchPage activePage = window.getActivePage();
+
+        activePage.showView(AlarmTreeView.getID());
+        final IViewPart view = activePage.findView(AlarmTreeView.getID());
+
+        Assert.assertTrue(view instanceof AlarmTreeView);
+        VIEW = (AlarmTreeView) view;
+    }
 
     @Test
     public void testView() {
-
-        Assert.assertTrue(true);
+        final Action reloadAction = VIEW.getReloadAction();
+        Assert.assertTrue(reloadAction instanceof ReloadFromLdapAction);
     }
 
 }
