@@ -23,6 +23,7 @@ package org.csstudio.sds.cosyrules.color;
 
 import org.csstudio.sds.model.IRule;
 import org.csstudio.sds.util.ColorAndFontUtil;
+import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
 
 /**
@@ -32,61 +33,117 @@ import org.epics.css.dal.DynamicValueState;
  *
  */
 public final class Alarm implements IRule {
-	/**
-	 * The ID for this rule.
-	 */
-	public static final String TYPE_ID = "cosyrules.color.alarm";
+    /**
+     * The ID for this rule.
+     */
+    public static final String TYPE_ID = "cosyrules.color.alarm";
 
-	/**
-	 * Standard constructor.
-	 */
-	public Alarm() {
-	}
+    /**
+     * Standard constructor.
+     */
+    public Alarm() {
+        // Nothing to do.
+    }
 
-	/**
-	 * Map the severity of a pv value to a color. For DAL severities
-	 * (pv_name[severity]) the parameter 'arguments' is of type
-	 * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
-	 * a number.
-	 *
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		if ((arguments != null) && (arguments.length > 0)) {
-			double d = 300.0;
-			String s = "init";
-			if (arguments[0] instanceof Double) {
-				d = (Double) arguments[0];
-			} else if (arguments[0] instanceof Long) {
-				d = ((Long) arguments[0]).doubleValue();
-			} else if (arguments[0] instanceof String) {
-				s = (String) arguments[0];
-			}
+    /**
+     * Map the severity of a pv value to a color. For DAL severities
+     * (pv_name[severity]) the parameter 'arguments' is of type
+     * DynamicValueState.ID. Using the EPICS field (record.SEVR) the severity is
+     * a number.
+     *
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        DynamicValueState dvc = null;
+        if ( (arguments != null) && (arguments.length > 0)) {
 
-			if ((Math.abs(d - 0.0) < 0.00001)
-					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
-			    // Green
-				return ColorAndFontUtil.toHex(0, 216, 0);
-			}
-			if ((Math.abs(d - 1.0) < 0.00001)
-					|| (s.equals(DynamicValueState.WARNING.toString()))) {
-			    // Yellow
-				return ColorAndFontUtil.toHex(251, 243, 74);
-			}
-			if ((Math.abs(d - 2.0) < 0.00001)
-					|| (s.equals(DynamicValueState.ALARM.toString()))) {
-			    // RED
-				return ColorAndFontUtil.toHex(253, 0, 0);
-			}
-			if (((d >= 3.0) && (d <= 255.0))
-					|| (s.equals(DynamicValueState.ERROR.toString()))) {
-			    // white
-				return ColorAndFontUtil.toHex(255, 255, 255);
-			}
-		}
+            if (arguments[0] instanceof Double) {
+                dvc = getDynamicValueCondition((Double) arguments[0]);
+            } else if (arguments[0] instanceof Long) {
+                dvc = getDynamicValueCondition((Long) arguments[0]);
+            } else if (arguments[0] instanceof String) {
+                dvc = getDynamicValueCondition((String) arguments[0]);
+            } else if (arguments[0] instanceof DynamicValueCondition) {
+                dvc = getDynamicValueCondition((DynamicValueCondition) arguments[0]);
+            }
 
-		return ColorAndFontUtil.toHex(0, 0, 0);
-	}
+            if (dvc != null) {
+                switch (dvc) {
+                    case ALARM:
+                        // RED
+                        return ColorAndFontUtil.toHex(253, 0, 0);
+                    case NORMAL:
+                        // Green
+                        return ColorAndFontUtil.toHex(0, 216, 0);
+                    case WARNING:
+                        // Yellow
+                        return ColorAndFontUtil.toHex(251, 243, 74);
+                    case TIMELAG:
+                    case LINK_NOT_AVAILABLE:
+                    case TIMEOUT:
+                    case ERROR:
+                        // white
+                        return ColorAndFontUtil.toHex(255, 255, 255);
+                }
+            }
+        }
+
+        // Wrong State violet
+        return "#8000FF";
+    }
+
+    /**
+     * @param dynamicValueCondition
+     * @return
+     */
+    private DynamicValueState getDynamicValueCondition(final DynamicValueCondition dynamicValueCondition) {
+        if(dynamicValueCondition.containsStates(DynamicValueState.ALARM)) {
+            return DynamicValueState.ALARM;
+        } else if(dynamicValueCondition.containsStates(DynamicValueState.WARNING)) {
+            return DynamicValueState.WARNING;
+        } else if(dynamicValueCondition.containsStates(DynamicValueState.NORMAL)) {
+            return DynamicValueState.NORMAL;
+        }
+        return DynamicValueState.ERROR;
+    }
+
+    /**
+     * @param string
+     * @return
+     */
+    private DynamicValueState getDynamicValueCondition(final String alarmState) {
+        if (alarmState.equals("NO_ALARM") ||alarmState.equals(DynamicValueState.NORMAL.toString())) {
+            return DynamicValueState.NORMAL;
+        } else  if (alarmState.equals("MINOR") || alarmState.equals(DynamicValueState.WARNING.toString())) {
+            return DynamicValueState.WARNING;
+        } else  if (alarmState.equals("MAJOR") || alarmState.equals(DynamicValueState.ALARM.toString())) {
+            return DynamicValueState.ALARM;
+        }
+        return DynamicValueState.ERROR;
+    }
+
+    /**
+     * @param alarmState
+     * @return
+     */
+    private DynamicValueState getDynamicValueCondition(final Long alarmState) {
+        return getDynamicValueCondition(alarmState.doubleValue());
+    }
+
+    /**
+     * @param double1
+     * @return
+     */
+    private DynamicValueState getDynamicValueCondition(final Double alarmState) {
+        if ( (Math.abs(alarmState - 0.0) < 0.00001)) {
+            return DynamicValueState.NORMAL;
+        } else  if ( (Math.abs(alarmState - 1.0) < 0.00001)) {
+            return DynamicValueState.WARNING;
+        } else  if ( (Math.abs(alarmState - 2.0) < 0.00001)) {
+            return DynamicValueState.ALARM;
+        }
+        return DynamicValueState.ERROR;
+    }
 
     /**
      * {@inheritDoc}

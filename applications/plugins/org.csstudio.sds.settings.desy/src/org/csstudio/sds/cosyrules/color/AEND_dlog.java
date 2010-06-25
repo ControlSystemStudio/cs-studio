@@ -47,11 +47,16 @@ public final class AEND_dlog implements IRule {
 	 */
 	public Object evaluate(final Object[] arguments) {
 		if ((arguments != null) && (arguments.length > 0)) {
-            double d = 0.0;
+            double d = -10.0;
             if (arguments[0] instanceof Double) {
                  d = (Double) arguments[0];
             }else if (arguments[0] instanceof Long) {
                 d = ((Long)  arguments[0]).doubleValue();
+            }
+
+            if(d<=-10.) {
+                //illegal state
+                return "#8070FF";
             }
 			if (Math.abs(d-0.00)<0.00001) {
 //			    old Valve closed color Red
@@ -73,7 +78,7 @@ public final class AEND_dlog implements IRule {
 			}
 		}
 
-		return ColorAndFontUtil.toHex(0,0,0);
+		return "#8070FF";
 	}
 
     /**
