@@ -5,6 +5,8 @@ import java.util.GregorianCalendar;
 
 import org.csstudio.platform.logging.CentralLogger;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * Filter for JMSMessages in DB archive. The filter is set by the user in
  * LogViewArchive.
@@ -18,76 +20,92 @@ public class Filter {
      * List of filter items. An item is e.g. 'SEVERITY == MAJOR' and the
      * connection with the next item e.g. AND,OR,end.
      */
-    private ArrayList<FilterItem> filterItems = new ArrayList<FilterItem>();
+    private ArrayList<FilterItem> _filterItems = new ArrayList<FilterItem>();
 
     /**
      * Begin of the time period.
      */
-    private GregorianCalendar from;
+    private GregorianCalendar _from;
 
     /**
      * End of the time period.
      */
-    private GregorianCalendar to;
+    private GregorianCalendar _to;
 
     /**
      * Maximum number of messages for the database request.
      */
     private int _maximumMessageNumber;
 
+    /**
+     * Name of the filter. Important for stored filters to display name in combo box.
+     * For current filter setting the name is null.
+     */
+    private String _filterName;
+
+    public Filter(String name) {
+        this(name, null, null, null, 5000);
+    }
+    
     public Filter(GregorianCalendar from, GregorianCalendar to) {
-        this(null, from, to, 5000);
+        this(null, from, to);
     }
 
     public Filter(ArrayList<FilterItem> filterItems, GregorianCalendar from,
             GregorianCalendar to) {
-        this(filterItems, from, to, 5000);
+        this(null, filterItems, from, to, 5000);
     }
 
-    public Filter(ArrayList<FilterItem> filterItems, GregorianCalendar from,
+    public Filter(String name, ArrayList<FilterItem> filterItems, GregorianCalendar from,
+                  GregorianCalendar to) {
+        this(name, filterItems, from, to, 5000);
+    }
+
+    public Filter(@Nullable String name, ArrayList<FilterItem> filterItems, GregorianCalendar from,
             GregorianCalendar to, int maxMsgSize) {
         if (filterItems != null) {
-            this.filterItems = filterItems;
+            this._filterItems = filterItems;
         }
-        this.from = from;
-        this.to = to;
-        this._maximumMessageNumber = maxMsgSize;
+        _filterName = name;
+        _from = from;
+        _to = to;
+        _maximumMessageNumber = maxMsgSize;
     }
 
     public GregorianCalendar getTo() {
-        return to;
+        return _to;
     }
 
     public void setTo(GregorianCalendar to) {
-        this.to = to;
+        this._to = to;
     }
 
     public void clearFilter() {
-        filterItems.clear();
+        _filterItems.clear();
     }
 
     public void addFilterItem(String property, String value, String relation) {
-        filterItems.add(new FilterItem(property, value, relation));
+        _filterItems.add(new FilterItem(property, value, relation));
     }
     
     public ArrayList<FilterItem> getFilterItems() {
-        return filterItems;
+        return _filterItems;
     }
 
     public void setFilterItems(ArrayList<FilterItem> filterItems) {
-        this.filterItems = filterItems;
+        this._filterItems = filterItems;
     }
 
     public void setFilterItem(FilterItem filterItem) {
-        filterItems.add(filterItem);
+        _filterItems.add(filterItem);
     }
 
     public GregorianCalendar getFrom() {
-        return from;
+        return _from;
     }
 
     public void setFrom(GregorianCalendar from) {
-        this.from = from;
+        this._from = from;
     }
 
     /**
@@ -109,13 +127,13 @@ public class Filter {
         ArrayList<FilterItem> filterSettingsAndAssociated = new ArrayList<FilterItem>();
         // if filter is null (user searches only for time period) set one
         // empty list of filter settings.
-        if ((filterItems == null) || (filterItems.size() == 0)) {
+        if ((_filterItems == null) || (_filterItems.size() == 0)) {
             filterSettingsAndAssociated = new ArrayList<FilterItem>();
             separatedFilterSettings.add(filterSettingsAndAssociated);
             return separatedFilterSettings;
         }
         String association = "BEGIN";
-        for (FilterItem setting : filterItems) {
+        for (FilterItem setting : _filterItems) {
             if (association.equalsIgnoreCase("AND")) {
                 if (filterSettingsAndAssociated != null) {
                     association = setting.getRelation();
@@ -152,10 +170,14 @@ public class Filter {
      * @return The copy of this filter
      */
     public Filter copy() {
-        GregorianCalendar newFrom = (GregorianCalendar) this.getFrom().clone();
-        GregorianCalendar newTo = (GregorianCalendar) this.getTo().clone();
+        GregorianCalendar newFrom = null;
+        GregorianCalendar newTo = null;
+        if ((_from != null) && (_to != null)) {
+            newFrom = (GregorianCalendar) _from.clone();
+            newTo = (GregorianCalendar) _to.clone();
+        }
         ArrayList<FilterItem> newFilterItems = new ArrayList<FilterItem>();
-        if (this.filterItems != null) {
+        if (this._filterItems != null) {
             for (FilterItem filterItem : this.getFilterItems()) {
                 FilterItem f = new FilterItem(filterItem.getProperty(),
                         filterItem.getOriginalValue(), filterItem.getRelation());
@@ -164,7 +186,7 @@ public class Filter {
         } else {
             newFilterItems = null;
         }
-        return new Filter(newFilterItems, newFrom, newTo, _maximumMessageNumber);
+        return new Filter(_filterName, newFilterItems, newFrom, newTo, _maximumMessageNumber);
     }
 
     public int getMaximumMessageSize() {
@@ -173,5 +195,40 @@ public class Filter {
 
     public void setMaximumMessageNumber(int messageNumber) {
         _maximumMessageNumber = messageNumber;
+    }
+
+    @Nullable
+    public String getName() {
+        return _filterName;
+    }
+
+    public void setName(@Nullable String name) {
+        _filterName = name;
+    }
+
+    /**
+     * Check weather the THIS filter has the same setting as the given one.
+     * Without time settings
+	 */ 
+    public boolean compareWithoutTime(Filter filter) {
+        if ((_filterName.equals(filter.getName()) == false) ||
+            (_filterItems.size() != filter.getFilterItems().size())) {
+            return false;
+        }
+        for (FilterItem localItem : _filterItems) {
+            boolean isIncluded = false;
+            for (FilterItem newItem : filter.getFilterItems()) {
+                if (newItem.compare(localItem)) {
+                    isIncluded = true;
+                    break;
+                }
+            }
+            //THIS filter and given filter are different because one item is
+            //not included in THIS filter.
+            if (isIncluded == false) {
+                return false;
+            }
+        }
+        return true;
     }
 }

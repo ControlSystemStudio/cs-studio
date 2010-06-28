@@ -52,12 +52,12 @@ public class FilterItem {
 		return _property.toUpperCase();
 	}
 
-	public void set_property(String _property) {
-		this._property = _property;
+	public void set_property(String property) {
+		_property = property;
 	}
 
 	/**
-	 * Get original value entered by user.
+	 * Get original (not converted) value entered by user.
 	 * @return
 	 */
 	public String getOriginalValue() {
@@ -73,15 +73,31 @@ public class FilterItem {
 		return _value.replace("*", "%").replace("?", "_");
 	}
 	
-	public void set_value(String _value) {
-		this._value = _value;
+	public void setValue(String value) {
+		_value = value;
 	}
 
 	public String getRelation() {
 		return _relation;
 	}
 
-	public void set_relation(String _relation) {
-		this._relation = _relation;
+	public void setRelation(String relation) {
+		_relation = relation;
 	}
+
+    /**
+     * Check weather the THIS filter item has the same setting as the given one.
+     */ 
+    public boolean compare(FilterItem localItem) {
+        if (localItem.getOriginalValue().equals(_value) == false) {
+            return false;
+        }
+        if (localItem.getProperty().equals(_property) == false) {
+            return false;
+        }
+        if (localItem.getRelation().equals(_relation) == false) {
+            return false;
+        }
+        return true;
+    }
 }
