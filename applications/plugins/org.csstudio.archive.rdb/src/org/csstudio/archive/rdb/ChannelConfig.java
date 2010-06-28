@@ -157,6 +157,7 @@ public class ChannelConfig extends StringID
                         archive.getSQL().channel_sel_last_time_by_id);
         try
         {
+            statement.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
             statement.setInt(1, getId());
             ResultSet rs = statement.executeQuery();
             if (!rs.next())

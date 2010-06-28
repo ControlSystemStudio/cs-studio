@@ -15,7 +15,7 @@ public class RDBArchivePreferences
     public static final String USER = "user";
     public static final String PASSWORD = "password";
     public static final String MAX_TEXT_SAMPLE_LENGTH = "max_text_sample_length";
-
+    public static final String SQL_TIMEOUT = "sql_timeout";
 
     /** @return URL of RDB archive server */
     public static String getURL()
@@ -55,6 +55,14 @@ public class RDBArchivePreferences
         return prefs.getInt(Activator.ID, MAX_TEXT_SAMPLE_LENGTH, 80, null);
     }
 
+    /** @return SQL Timeout in seconds */
+    public static int getSQLTimeout()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return 30*60;
+        return prefs.getInt(Activator.ID, SQL_TIMEOUT, 30*60, null);
+    }
     
     /** Get string preference
      *  @param key Preference key

@@ -32,13 +32,25 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
+/**
+ *  RDB Archive access
+ *  
+ *  This was the initial attempt to have one RDB archive library for the
+ *  sample engine, the engine config tool and the Data Browser.
+ *  
+ *  The Data Browser now uses a separate 'archivereader' lib.
+ *  
+ *  TODO Split this into 3 pieces: Archive configuration, data readout, data writer.
+ * 
+ * @author Kay Kasemir
+ */
 public class RDBArchive
 {
     /** Status string for <code>Double.NaN</code> samples */
-    private static final String NOT_A_NUMBER_STATUS = "NaN"; //$NON-NLS-1$
+    final private static String NOT_A_NUMBER_STATUS = "NaN"; //$NON-NLS-1$
 
     /** Severity string for <code>Double.NaN</code> samples */
-    private static final String NOT_A_NUMBER_SEVERITY = "INVALID"; //$NON-NLS-1$
+    final private static String NOT_A_NUMBER_SEVERITY = "INVALID"; //$NON-NLS-1$
 
     final private int MAX_TEXT_SAMPLE_LENGTH = RDBArchivePreferences.getMaxStringSampleLength();
 
@@ -541,8 +553,11 @@ public class RDBArchive
             final Status status, final double dbl[]) throws Exception
     {
         if (insert_double_sample == null)
+        {
             insert_double_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_double);
+            insert_double_sample.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
+        }
         // Catch not-a-number, which JDBC (at least Oracle) can't handle.
         if (Double.isNaN(dbl[0]))
         {
@@ -600,8 +615,11 @@ public class RDBArchive
             final Status status, final long num) throws Exception
     {
        if (insert_long_sample == null)
+       {
            insert_long_sample =
                rdb.getConnection().prepareStatement(sql.sample_insert_int);
+           insert_long_sample.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
+       }
        insert_long_sample.setLong(5, num);
        completeAndBatchInsert(insert_long_sample, channel, stamp, severity, status);
        ++batched_long_inserts;
@@ -613,8 +631,11 @@ public class RDBArchive
             final Status status, final String txt) throws Exception
     {
         if (insert_txt_sample == null)
+        {
             insert_txt_sample =
                 rdb.getConnection().prepareStatement(sql.sample_insert_string);
+            insert_txt_sample.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
+        }
         if (txt.length() > MAX_TEXT_SAMPLE_LENGTH )
             insert_txt_sample.setString(5, txt.substring(0, MAX_TEXT_SAMPLE_LENGTH));
         else
