@@ -22,11 +22,29 @@ public class TimeWarp
      *  @param time CSS ITimestamp
      *  @return SQL Timestamp
      */
-    @SuppressWarnings("deprecation")
     public static Timestamp getSQLTimestamp(final ITimestamp time)
     {
+        // Only millisecond resolution
+        Timestamp stamp = new Timestamp(time.seconds() * 1000  + 
+                             time.nanoseconds() / 1000000);
+        // Set nanoseconds (again), but this call uses the full
+        // nanosecond resolution
+        stamp.setNanos((int) time.nanoseconds());
+        return stamp;
+    }
+    
+	/** Convert CSS Timestamp into SQL Timestamp.
+     *  @param time CSS ITimestamp
+     *  @return SQL Timestamp
+     */
+    @SuppressWarnings("deprecation")
+    public static Timestamp oldGetSQLTimestamp(final ITimestamp time)
+    {
         final Calendar calendar = time.toCalendar();
-        // Issue: This constructor is deprecated...
+        // Issues:
+        // 1) This constructor is deprecated,
+        // 2) This uses about 3 times the CPU
+        //    of the getSQLTimestamp() implementation above
         Timestamp stamp = new Timestamp(
                         calendar.get(Calendar.YEAR) - 1900,
                         calendar.get(Calendar.MONTH),
@@ -35,13 +53,10 @@ public class TimeWarp
                         calendar.get(Calendar.MINUTE),
                         calendar.get(Calendar.SECOND),
                         (int)time.nanoseconds());
-        // No warnings, but also only millisecond resolution
-        //stamp = new Timestamp(time.seconds() * 1000  + 
-        //                      time.nanoseconds() / 1000000);
         return stamp;
     }
-    
-	/** Convert SQL Timestamp into CSS Timestamp.
+
+    /** Convert SQL Timestamp into CSS Timestamp.
      *  @param time SQL Timestamp
      *  @return CSS ITimestamp
      */
