@@ -1,14 +1,20 @@
 package org.csstudio.alarm.table.ui;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -19,24 +25,28 @@ import org.eclipse.swt.widgets.Shell;
 public class FilterSettingDialog extends StartEndDialog {
 
 	private final int FILTER_SETTING_SIZE = 8;
-	private final Filter _filter;
+	private Filter _filter;
 	private ArrayList<String> _settingHistory;
 	private final String[][] _messageProperties;
 	private Combo[] _patternCombo;
 	private Combo[] _propertyCombo;
 	private Combo[] _conjunctionCombo;
+    private StoredFilters _storedFilters;
+    private Combo _storedFiltersCombo;
 
-	public FilterSettingDialog(Shell parentShell, Filter filter,
+	public FilterSettingDialog(Shell parentShell, Filter filter, StoredFilters storedFilters,
 			ArrayList<String> settingHistory, String[][] messageProperties,
 			String timeFrom, String timeTo) {
 		super(parentShell, timeFrom, timeTo);
 		_filter = filter;
+        _storedFilters = storedFilters;
 		_settingHistory = settingHistory;
 		_messageProperties = messageProperties;
 	}
 
 	@Override
-	protected Control createDialogArea(Composite parent) {
+	@Nonnull
+	protected Control createDialogArea(@Nonnull final Composite parent) {
 
 		final Composite area = (Composite) super.createDialogArea(parent);
 
@@ -106,13 +116,203 @@ public class FilterSettingDialog extends StartEndDialog {
 					false));
 		}
 
+		Label label = new Label(box, SWT.SEPARATOR | SWT.HORIZONTAL);
+        label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 4, 1));
+
+		
+		addStoredFilterItems(box);
 		setCurrentSettings();
-
+		
+		//if filter name is available set it to comboBox
+		if (_filter.getName() != null) {
+            for( int i = 0; i < _storedFiltersCombo.getItemCount(); i++) {
+                String item = _storedFiltersCombo.getItem(i);
+                if (item.equals(_filter.getName())) {
+                    _storedFiltersCombo.select(i);
+                    break;
+                }
+            }
+		}
 		return parent;
-
 	}
 
-	private void setCurrentSettings() {
+	/**
+	 * Add combo box for stored filters and save button to filter dialog.
+	 * 
+	 * @param box 
+     */
+    private void addStoredFilterItems(Group box) {
+        
+        Composite storedFilterComposite = new Composite(box, SWT.NONE);
+        GridData gridData = new GridData();
+        gridData.horizontalSpan = 4;
+        storedFilterComposite.setLayoutData(gridData);
+        
+        
+        final GridLayout layout = new GridLayout();
+        layout.numColumns = 4;
+        storedFilterComposite.setLayout(layout);
+        
+        Label storeLabel = new Label(storedFilterComposite, SWT.NONE);
+        storeLabel.setText("Filterauswahl, zum speichern Namen\nvergeben und 'Save' druecken.");
+
+        //Combobox for stored filters and listener to set the selected filter.
+        _storedFiltersCombo = new Combo(storedFilterComposite, SWT.DROP_DOWN);
+        _storedFiltersCombo.setLayoutData(new GridData(150, 60));
+        _storedFiltersCombo.setSize(280, 20);
+        for (Filter filter : _storedFilters.getFilterList()) {
+            _storedFiltersCombo.add(filter.getName());
+        }
+        _storedFiltersCombo.addSelectionListener(new SelectionAdapter() {
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                String selectedFilterName = _storedFiltersCombo.getText();
+                Filter filterCopy = _storedFilters.getCopyOfFilter(selectedFilterName);
+                if (filterCopy != null) {
+                    _filter = filterCopy;
+                }
+                setDefaultSettings();
+                setCurrentSettings();
+            }
+        });
+        addSaveButton(storedFilterComposite);
+        addDeleteButton(storedFilterComposite);
+    }
+
+    private void addDeleteButton(Composite storedFilterComposite) {
+        Button deleteButton = new Button(storedFilterComposite, SWT.PUSH);
+        deleteButton.setText("Delete");
+        deleteButton.addSelectionListener(new SelectionAdapter() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                super.widgetSelected(e);
+                readFilterItems();
+                //Because the user can edit the filter after selection, it is not sufficient
+                //to check just the filter name, before deletion.
+                boolean isNotChanged = false;
+                for (Filter filter : _storedFilters.getFilterList()) {
+                    if (_filter.compareWithoutTime(filter)) {
+                        isNotChanged = true;
+                        break;
+                    }
+                }
+                
+                if (isNotChanged) {
+                    for( int i = 0; i < _storedFiltersCombo.getItemCount(); i++) {
+                        String item = _storedFiltersCombo.getItem(i);
+                        if (item.equals(_filter.getName())) {
+                            _storedFiltersCombo.remove(i);
+                            _storedFilters.removeFilterByName(_filter.getName());
+                            //set first filter
+                            _storedFiltersCombo.select(0);
+                            setDefaultSettings();
+                            if (_storedFiltersCombo.getItemCount() > 0) {
+                                String newFilterName = _storedFiltersCombo.getItem(0);
+                                Filter filterCopy = _storedFilters.getCopyOfFilter(newFilterName);
+                                if (filterCopy != null) {
+                                    _filter = filterCopy;
+                                    setCurrentSettings();
+                                }
+                            break;
+                            } else {
+                                _storedFiltersCombo.setText("");
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+    }
+
+    private void addSaveButton(Composite storedFilterComposite) {
+        Button saveButton = new Button(storedFilterComposite, SWT.PUSH);
+        saveButton.setText("Save");
+        saveButton.addSelectionListener(new SelectionAdapter() {
+            
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                super.widgetSelected(e);
+                readFilterItems();
+                Filter filterCopy = _filter.copy();
+                filterCopy.setName(_storedFiltersCombo.getText());
+                //the current time range should not be stored.
+                filterCopy.setFrom(null);
+                filterCopy.setTo(null);
+                addNewFilter(filterCopy);
+                _storedFiltersCombo.add(filterCopy.getName());
+            }
+
+            /**
+             * Check weather the name of new filter is already in the list and delete it.
+             */
+            private void addNewFilter(@Nonnull Filter filterCopy) {
+                for (Filter filter : _storedFilters.getFilterList()) {
+                    if (filter.getName().equals(filterCopy.getName())) {
+                        _storedFilters.removeFilterByName(filter.getName());
+                    }
+                }
+                _storedFilters.addCopyOfFilter(filterCopy);
+            }
+        });
+    }
+
+    private void readFilterItems() {
+        if (_filter != null) {
+            _filter.clearFilter();
+            for (int i = 0; i < FILTER_SETTING_SIZE; i++) {
+                if (_patternCombo[i].getText().length() > 0) {
+                    String relation;
+                    if (i < (FILTER_SETTING_SIZE - 1)) {
+                        relation = _conjunctionCombo[i + 1]
+                                                     .getItem((_conjunctionCombo[i + 1]
+                                                                                 .getSelectionIndex()));
+                    } else {
+                        relation = "END";
+                    }
+                    FilterItem filterItem = new FilterItem(_propertyCombo[i]
+                                                                          .getItem((_propertyCombo[i].getSelectionIndex())),
+                                                                          _patternCombo[i].getText(), relation);
+                    _filter.setFilterItem(filterItem);
+                }
+            }
+        }
+        if (_settingHistory != null) {
+            for (Combo element : _patternCombo) {
+                String comboText = element.getText();
+                if (comboText.length() > 0) {
+                    boolean inHistory = false;
+                    for (String historyElement : _settingHistory) {
+                        if (historyElement.equals(comboText)) {
+                            inHistory = true;
+                            break;
+                        }
+                    }
+                    if (!inHistory) {
+                        _settingHistory.add(0, comboText);
+                    }
+                }
+            }
+        }
+        if (_settingHistory != null) {
+            while (_settingHistory.size() > 20) {
+                try {
+                    _settingHistory.remove(20);
+                } catch (IndexOutOfBoundsException e) {
+                    CentralLogger.getInstance().error(
+                                                      this,
+                                                      "list of filter items not larger than threshold"
+                                                      + e.getMessage());
+                }
+            }
+        }
+    }
+
+    /**
+     * Set settings from the current filter to ui filter item elements.
+     */
+    private void setCurrentSettings() {
 		if (_filter == null) {
 			return;
 		} else if (_filter.getFilterItems() == null) {
@@ -133,14 +333,24 @@ public class FilterSettingDialog extends StartEndDialog {
 			String pattern = filterItem.getOriginalValue();
 			boolean patternInHistory = false;
 			for (int i = 0; i < patternItems.length; i++) {
-				if (_patternCombo[j].getItem(i).equalsIgnoreCase(pattern)) {
-					_patternCombo[j].select(i);
-					patternInHistory = true;
-					break;
-				}
+				String item = null;
+                try {
+                    item = _patternCombo[j].getItem(i);
+                    if (item.equalsIgnoreCase(pattern)) {
+                        _patternCombo[j].select(i);
+                        patternInHistory = true;
+                        break;
+                    }
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
 			}
 			if (!patternInHistory) {
-				_patternCombo[j].add(pattern);
+			    //Because filter items can be saved and set from preferences the new pattern has
+			    //to be set for all combo boxes at once.
+			    setPatternToAllCombos(pattern);
+			    //select the new (last) item
 				_patternCombo[j]
 						.select((_patternCombo[j].getItems().length - 1));
 			}
@@ -156,55 +366,33 @@ public class FilterSettingDialog extends StartEndDialog {
 		}
 	}
 
+    /**
+     * Set new pattern to all combo boxes
+     * @param pattern
+	 */
+    private void setPatternToAllCombos(String pattern) {
+        for (Combo comboBox : _patternCombo) {
+            comboBox.add(pattern);
+        }
+    }
+
+    /**
+     * Set all ui filter items to default.
+     */
+    private void setDefaultSettings() {
+        for (int i = 0; i < FILTER_SETTING_SIZE; i++) {
+                _propertyCombo[i].select(0);
+                _patternCombo[i].select(0);
+                if (i < FILTER_SETTING_SIZE - 1) {
+                    _conjunctionCombo[i + 1].select(0);
+                }
+            }
+    }
+
 	/** Memorize entered/selected data */
 	@Override
 	protected void okPressed() {
-		if (_filter != null) {
-			_filter.clearFilter();
-			for (int i = 0; i < FILTER_SETTING_SIZE; i++) {
-				if (_patternCombo[i].getText().length() > 0) {
-					String relation;
-					if (i < (FILTER_SETTING_SIZE - 1)) {
-						relation = _conjunctionCombo[i + 1]
-								.getItem((_conjunctionCombo[i + 1]
-										.getSelectionIndex()));
-					} else {
-						relation = "END";
-					}
-					FilterItem filterItem = new FilterItem(_propertyCombo[i]
-							.getItem((_propertyCombo[i].getSelectionIndex())),
-							_patternCombo[i].getText(), relation);
-					_filter.setFilterItem(filterItem);
-				}
-			}
-		}
-		if (_settingHistory != null) {
-			for (Combo element : _patternCombo) {
-				String comboText = element.getText();
-				if (comboText.length() > 0) {
-					boolean inHistory = false;
-					for (String historyElement : _settingHistory) {
-						if (historyElement.equals(comboText)) {
-							inHistory = true;
-							break;
-						}
-					}
-					if (!inHistory) {
-						_settingHistory.add(0, comboText);
-					}
-				}
-			}
-		}
-		while (_settingHistory.size() > 20) {
-			try {
-				_settingHistory.remove(20);
-			} catch (IndexOutOfBoundsException e) {
-				CentralLogger.getInstance().error(
-						this,
-						"list of filter items not larger than threshold"
-								+ e.getMessage());
-			}
-		}
+	    readFilterItems();
 		super.okPressed();
 	}
 }

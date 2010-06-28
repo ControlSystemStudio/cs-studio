@@ -174,7 +174,7 @@ public class LogView extends ViewPart {
      * previous table will be disposed. This method must be overridden by subclasses.
      *
      * @param parent
-     * @param _columnNames
+     * @param data._columnNames
      */
     protected void initializeMessageTable() {
 

@@ -30,6 +30,7 @@ public class ArchiveViewPreferenceConstants {
 	public static final String DATE_FORMAT = "date format";
 	public static final String MAX_ANSWER_SIZE = "maximum answer size";
 	public static final String MAX_ANSWER_SIZE_EXPORT = "maximum answer size export";
+	public static final String STORED_FILTERS = "storedFilters";
 
 
 }

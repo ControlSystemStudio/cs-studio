@@ -26,6 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 import org.csstudio.alarm.dbaccess.archivedb.Filter;
 import org.csstudio.alarm.dbaccess.archivedb.Result;
@@ -47,6 +48,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlAdapter;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.FocusAdapter;
@@ -63,6 +65,7 @@ import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IActionBars;
@@ -86,6 +89,8 @@ public class ArchiveView extends ViewPart {
     /** The Id of this Object. */
     public static final String ID = ArchiveView.class.getName();
 
+    private Shell _shell;
+    
     /** The JMS message list. */
     private ArchiveMessageList _jmsMessageList = null;
 
@@ -127,7 +132,12 @@ public class ArchiveView extends ViewPart {
     private Text _timeToText;
 
     private Button _nextButton;
+    
+    private StoredFilters _storedFilters = new StoredFilters();
 
+    private Combo _filterSelector;
+
+    
     public ArchiveView() {
         super();
         GregorianCalendar to = (GregorianCalendar) GregorianCalendar
@@ -142,18 +152,33 @@ public class ArchiveView extends ViewPart {
     /** {@inheritDoc} */
     public final void createPartControl(final Composite parent) {
 
+        _shell = parent.getShell();
+        
         _canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID,
                 false);
 
-        // _disp = parent.getDisplay();
+        _storedFilters.readFromPreferences();
+        
+        _storedFilters.addFilterListChangeListener(new IFilterListChangeListener() {
 
+            /**
+             * Update filter names because filter list has changed.
+             */
+            @Override
+            public void FilterListChanged() {
+                if (_filterSelector != null) {
+                    _filterSelector.removeAll();
+                    for (Filter filter : _storedFilters.getFilterList()) {
+                        _filterSelector.add(filter.getName());
+                    }
+                }
+            }
+        });
+        
         _columnNames = JmsLogsPlugin.getDefault().getPluginPreferences()
                 .getString(ArchiveViewPreferenceConstants.P_STRINGArch).split(
                         ";"); //$NON-NLS-1$
         _jmsMessageList = new ArchiveMessageList();
-//        _jmsMessageList = new ArchiveMessageList(_columnNames);
-
-        // _parentShell = parent.getShell();
 
         GridLayout grid = new GridLayout();
         grid.numColumns = 1;
@@ -262,51 +287,64 @@ public class ArchiveView extends ViewPart {
         variableSearchButton.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
                 true, false, 1, 1));
         variableSearchButton.setText(Messages.getString("LogViewArchive_user")); //$NON-NLS-1$
-        variableSearchButton.addSelectionListener(new FilterDialogListener(periodGroup));
-        
-        //Add drop down for filter saved by the user
-        Combo filterSelector = new Combo (periodGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
-        filterSelector.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-                                                        true, false, 2, 1));
-    }
+        variableSearchButton.addSelectionListener(new SelectionAdapter() {
 
-    /*
-     * Call filter with current time setting, get new user settings and
-     * start database search
-     */
-    private final class FilterDialogListener extends SelectionAdapter {
-        private final Group periodGroup;
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                super.widgetSelected(e);
+                callFilterSettingDialog();
+            }
+        });
         
-        private FilterDialogListener(Group periodGroup) {
-            this.periodGroup = periodGroup;
+        _filterSelector = new Combo (periodGroup, SWT.DROP_DOWN | SWT.READ_ONLY);
+        _filterSelector.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
+                                                        true, false, 2, 1));
+        for (Filter filter : _storedFilters.getFilterList()) {
+            _filterSelector.add(filter.getName());
         }
         
-        public void widgetSelected(final SelectionEvent e) {
-            FilterSettingDialog filterSettingDialog = new FilterSettingDialog(periodGroup.getShell(),
-                          _filter, _filterSettingHistory, _messageProperties,
-                          TimestampFactory.fromCalendar(_filter.getFrom()).toString(),
-                          TimestampFactory.fromCalendar(_filter.getTo()).toString());
-            if (filterSettingDialog.open() == filterSettingDialog.OK) {
-                String lowString = filterSettingDialog
-                .getStartSpecification();
-                String highString = filterSettingDialog
-                .getEndSpecification();
-                try {
-                    StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
-                    _filter.setFrom((GregorianCalendar) parser.getStart());
-                    _filter.setTo((GregorianCalendar) parser.getEnd());
-                    _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom()).toString());
-                    _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo()).toString());
-                    _timeFromText.getParent().getParent().redraw();
-                    _timeToText.getParent().getParent().redraw();
-                    readDatabase();
-                } catch (Exception e1) {
-                    JmsLogsPlugin.logError("Time/Date parser error");
+       _filterSelector.addSelectionListener(new SelectionAdapter() {
+           
+            @Override
+            public void widgetSelected(SelectionEvent e) {
+                super.widgetSelected(e);
+                String filterName = _filterSelector.getText();
+                for (Filter filter : _storedFilters.getFilterList()) {
+                    if (filterName.equals(filter.getName())) {
+                        filter.setFrom(_filter.getFrom());
+                        filter.setTo(_filter.getTo());
+                        _filter = filter.copy();
+                    }
                 }
+                callFilterSettingDialog();
+            }
+        });
+    }
+ 
+    private void callFilterSettingDialog() {
+        FilterSettingDialog filterSettingDialog = new FilterSettingDialog(_shell,
+                      _filter, _storedFilters, _filterSettingHistory, _messageProperties,
+                      TimestampFactory.fromCalendar(_filter.getFrom()).toString(),
+                      TimestampFactory.fromCalendar(_filter.getTo()).toString());
+        if (filterSettingDialog.open() == filterSettingDialog.OK) {
+            String lowString = filterSettingDialog
+            .getStartSpecification();
+            String highString = filterSettingDialog
+            .getEndSpecification();
+            try {
+                StartEndTimeParser parser = new StartEndTimeParser(lowString, highString);
+                _filter.setFrom((GregorianCalendar) parser.getStart());
+                _filter.setTo((GregorianCalendar) parser.getEnd());
+                _timeFromText.setText(TimestampFactory.fromCalendar(_filter.getFrom()).toString());
+                _timeToText.setText(TimestampFactory.fromCalendar(_filter.getTo()).toString());
+                _timeFromText.getParent().getParent().redraw();
+                _timeToText.getParent().getParent().redraw();
+                readDatabase();
+            } catch (Exception e1) {
+                JmsLogsPlugin.logError("Time/Date parser error");
             }
         }
     }
- 
     /* 
      * Set new from and to dates to filter if valid otherwise set previous dates.
      */
@@ -712,16 +750,11 @@ public class ArchiveView extends ViewPart {
 	void addControlListenerToColumns(final String colSetPref) {
 		TableColumn[] columns = _tableViewer.getTable().getColumns();
 		for (TableColumn tableColumn : columns) {
-			tableColumn.addControlListener(new ControlListener() {
+			tableColumn.addControlListener(new ControlAdapter() {
 				
 				@Override
 				public void controlResized(ControlEvent e) {
 					_columnMapping.saveColumn(colSetPref);		
-				}
-				
-				@Override 
-				public void controlMoved(ControlEvent e) {
-					//do nothing
 				}
 			});
 		}
@@ -730,6 +763,7 @@ public class ArchiveView extends ViewPart {
     /** {@inheritDoc} */
     @Override
     public final void dispose() {
+        _storedFilters.writeToPreferences();
     	_columnMapping.saveColumn(ArchiveViewPreferenceConstants.P_STRINGArch);
         super.dispose();
     }
