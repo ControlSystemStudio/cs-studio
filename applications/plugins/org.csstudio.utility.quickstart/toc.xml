@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#utility" label="Alarm Tree">
-	<topic label="Quickstart" href="html/en/index.html">
+	<topic label="Quickstart" href="html/index.html">
 	</topic>
 </toc>
