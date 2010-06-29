@@ -201,10 +201,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @CheckForNull
     private Timestamp getTimestamp() {
-        // TODO (jpenning) which source for the timestamp is ok?
-        //      final Timestamp timestamp = _anyData.getTimestamp();
-        final Timestamp timestamp = getProperty().getCondition().getTimestamp();
-        return timestamp;
+        return _anyData.getTimestamp();
     }
 
     @Nonnull
