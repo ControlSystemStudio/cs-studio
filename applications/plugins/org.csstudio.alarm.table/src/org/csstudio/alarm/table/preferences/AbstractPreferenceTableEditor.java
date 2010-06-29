@@ -297,18 +297,21 @@ public abstract class AbstractPreferenceTableEditor extends FieldEditor {
 			Assert.isTrue(selectedTableItems.length == 1);
 
 			final String[] tableItemBackup = createBackupOfTableItem(selectedTableItems[0]);
+			final boolean isCheckedBackup = selectedTableItems[0].getChecked();
+
 			_tableViewer.getTable().remove(index);
 
 			final int target = up ? index - 1 : index + 1;
-			createTableItemFromBackup(target, tableItemBackup);
+			createTableItemFromBackup(target, tableItemBackup, isCheckedBackup);
 
 			_tableViewer.getTable().setSelection(target);
 		}
 		selectionChanged();
 	}
 
-    private void createTableItemFromBackup(final int target, @Nonnull final String[] tableItemBackup) {
+    private void createTableItemFromBackup(final int target, @Nonnull final String[] tableItemBackup, final boolean isCheckedBackup) {
         final TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE, target);
+        item.setChecked(isCheckedBackup);
         item.setText(tableItemBackup);
     }
 
