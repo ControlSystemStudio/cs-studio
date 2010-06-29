@@ -31,7 +31,7 @@ public abstract class AbstractLanguageParser {
 	 */
 	public final Node parse(final CharSequence input, IResource sourceResource,
 			final IProgressMonitor progressMonitor) {
-		Contract.requireNotNull("input", input);
+		Contract.requireNotNull("input", input); //$NON-NLS-1$
 		this._sequenceToWorkOn = input;
 		return doParse(input, sourceResource, progressMonitor);
 	}

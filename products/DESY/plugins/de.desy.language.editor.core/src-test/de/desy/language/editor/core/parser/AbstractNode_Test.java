@@ -12,13 +12,13 @@ public abstract class AbstractNode_Test extends TestCase {
 	@Test
 	public void testChildren() {
 		// TODO
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 	
 	@Test
 	public void testOffsets() {
 		// TODO
-		fail("Not yet implemented");
+		fail("Not yet implemented"); //$NON-NLS-1$
 	}
 	
 	/**

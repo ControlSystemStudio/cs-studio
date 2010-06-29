@@ -5,12 +5,12 @@ public class RootNode extends Node {
 
 	@Override
 	public String humanReadableRepresentation() {
-		return "This is the root of the tree";
+		return Messages.RootNode_ReturnMessage_ThisIsTheRoot;
 	}
 
 	@Override
 	public String getNodeTypeName() {
-		return "Root";
+		return Messages.RootNode_ReturnMessage_Root;
 	}
 
 }

@@ -48,7 +48,7 @@ public abstract class Node {
 	 */
 	public final Collection<Node> getChildrenNodes()
 	{
-		Contract.require(hasChildren(), "hasChildren()");
+		Contract.require(hasChildren(), Messages.Node_Contract_Require_hasChildren);
 		
 		Collection<Node> result = Collections.unmodifiableCollection(this._children);
 		
@@ -73,11 +73,11 @@ public abstract class Node {
 	 * @return An index >= 0.
 	 */
 	public final int getStatementEndOffset() {
-		Contract.require(this.hasOffsets(), "hasOffsets()");
+		Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
 
 		final int result = this._statementEndOffset;
 
-		Contract.ensure(result >= 0, "�result >= 0");
+		Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
 		return result;
 	}
 
@@ -91,11 +91,11 @@ public abstract class Node {
 	 * @return An index >= 0.
 	 */
 	public final int getStatementStartOffset() {
-		Contract.require(this.hasOffsets(), "hasOffsets()");
+		Contract.require(this.hasOffsets(), Messages.Node_Contract_Require_this_hasOffsets);
 
 		final int result = this._statementStartOffset;
 
-		Contract.ensure(result >= 0, "�result >= 0");
+		Contract.ensure(result >= 0, Messages.Node_Contract_Ensure_result_ge_0_todoParam);
 		return result;
 	}
 
@@ -133,9 +133,9 @@ public abstract class Node {
 	 *            The end offset (>= 0, end > start)
 	 */
 	protected final void setStatementOffsets(final int start, final int end) {
-		Contract.require(start >= 0, "start >= 0");
-		Contract.require(end >= 0, "end >= 0");
-		Contract.require(end > start, "end > start");
+		Contract.require(start >= 0, Messages.Node_Contract_Ensure_start_ge_0_todoParam);
+		Contract.require(end >= 0, Messages.Node_Contract_Ensure_end_ge_0_todoParam);
+		Contract.require(end > start, Messages.Node_Contract_Ensure_end_ge_start_todoParam);
 
 		this._statementStartOffset = start;
 		this._statementEndOffset = end;
@@ -147,7 +147,7 @@ public abstract class Node {
 	 * done to avoid a hierarchical structure of the parser-process.
 	 */
 	public final void addChild(final Node child) {
-		Contract.requireNotNull("child", child);
+		Contract.requireNotNull(Messages.Node_Contract_RequireNotNull_child_todoParam, child);
 		this._children.add(child);
 	}
 
@@ -183,13 +183,13 @@ public abstract class Node {
 	 *            The not-null, non-empty error message to be added.
 	 */
 	public synchronized final void addError(final String errorMessage) {
-		Contract.requireNotNull("errorMessage", errorMessage);
+		Contract.requireNotNull(Messages.Node_Contract_requireNotNull_errorMessage_todoParam, errorMessage);
 		Contract.require(errorMessage.trim().length() > 0,
-				"errorMessage.trim().length() > 0");
+				Messages.Node_Contract_require_errorMessage_trim_length_ge_0_todoParam);
 
 		this._errorMessages.add(errorMessage);
 
-		Contract.ensure(this.containsErrors(), "this.containsErrors()");
+		Contract.ensure(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
 	}
 
 	/**
@@ -199,13 +199,13 @@ public abstract class Node {
 	 *            The not-null, non-empty warning message to be added.
 	 */
 	public synchronized final void addWarning(final String warningMessage) {
-		Contract.requireNotNull("warningMessage", warningMessage);
+		Contract.requireNotNull(Messages.Node_Contract_requireNotNull_warningMessage, warningMessage);
 		Contract.require(warningMessage.trim().length() > 0,
-				"warningMessage.trim().length() > 0");
+				Messages.Node_Contract_Ensure_this_containsWarnings_trim_length_ge_0);
 
 		this._warningMessages.add(warningMessage);
 
-		Contract.ensure(this.containsWarnings(), "this.containsWarnings()");
+		Contract.ensure(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
 	}
 
 	/**
@@ -261,7 +261,7 @@ public abstract class Node {
 	 * @return A not-null, possible empty Set of errors.
 	 */
 	public final Set<String> getErrorMessages() {
-		Contract.require(this.containsErrors(), "this.containsErrors()");
+		Contract.require(this.containsErrors(), Messages.Node_Contract_Ensure_this_containsErrors);
 
 		Set<String> result = Collections.unmodifiableSet(this._errorMessages);
 
@@ -276,7 +276,7 @@ public abstract class Node {
 	 * @return A not-null, possible empty Set of warnings.
 	 */
 	public final Set<String> getWarningMessages() {
-		Contract.require(this.containsWarnings(), "this.containsWarnings()");
+		Contract.require(this.containsWarnings(), Messages.Node_Contract_Ensure_this_containsWarnings);
 
 		Set<String> result = Collections.unmodifiableSet(this._warningMessages);
 

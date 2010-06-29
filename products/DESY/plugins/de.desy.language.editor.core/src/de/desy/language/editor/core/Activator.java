@@ -13,7 +13,7 @@ public final class Activator extends Plugin {
 	/**
 	 * The plug-in ID
 	 */
-	public static final String PLUGIN_ID = "de.desy.language.editor.core";
+	public static final String PLUGIN_ID = "de.desy.language.editor.core"; //$NON-NLS-1$
 
 	/**
 	 * The constructor
