@@ -52,6 +52,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
                                  @Nonnull final List<ColumnDescription> columnDescriptions) {
         _columnDescriptions = new ArrayList<ColumnDescription>(columnDescriptions);
         IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+        // TODO (jpenning) don't parse the string at construction time, we will see no updates
         parseTopicSetString(store.getString(topicSetPreferenceKey));
         parseColumnSetString(store.getString(columnSetPreferenceKey));
     }
@@ -70,11 +71,11 @@ public class TopicSetColumnService implements ITopicSetColumnService {
         for (String topicSetAsString : topicSetsAsString) {
             String[] topicSetItems = Arrays
                     .copyOf(topicSetAsString.split(INNER_ITEM_SEPARATOR_AS_REGEX), ColumnDescription.values().length);
-            // TODO (jpenning) Add initial state to topic set
+            // Here the order of the inner items of a preferences string is defined
             TopicSet topicSet = new TopicSet.Builder().setDefaultTopic(topicSetItems[0])
                     .setTopics(topicSetItems[1]).setName(topicSetItems[2])
                     .setPopUp(topicSetItems[3]).setStartUp(topicSetItems[4])
-                    .setFont(topicSetItems[5]).build();
+                    .setFont(topicSetItems[5]).setRetrieveInitialState(topicSetItems[6]).build();
 
             _topicSets.add(topicSet);
         }
@@ -159,10 +160,6 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     @Override
     public List<ColumnDescription> getColumnDescriptions() {
         return Collections.unmodifiableList(_columnDescriptions);
-    }
-
-    private int getColumnCount() {
-        return _columnDescriptions.size();
     }
 
 }

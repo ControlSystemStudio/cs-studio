@@ -38,7 +38,7 @@ import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (jpenning) :
+ * Executes action after mouse double click according to columns and MouseActionDescription.
  *
  * @author jpenning
  * @author $Author$
@@ -150,10 +150,9 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
     private void openFontDialogue(@Nonnull final TableItem item, final int column) {
         // read current font settings to initialize FontDialog
         final String[] fontDataString = item.getText(column).split(",");
-        FontDialog fontDialog;
         final FontData[] font = createFontFromPreferenceString(fontDataString);
         try {
-            fontDialog = new FontDialog(_table.getShell());
+            FontDialog fontDialog = new FontDialog(_table.getShell());
             fontDialog.setFontList(font);
             font[0] = fontDialog.open();
         } catch (final Exception e) {
@@ -207,7 +206,8 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 	 * @param fontDataString
 	 * @return
 	 */
-	private FontData[] createFontFromPreferenceString(final String[] fontDataString) {
+    @Nonnull
+	private FontData[] createFontFromPreferenceString(@Nonnull final String[] fontDataString) {
 		FontData[] font = new FontData[1];
 		try {
 			if ((fontDataString[0] != null) && (fontDataString[1] != null)
@@ -225,7 +225,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 		return font;
 	}
 
-	private int getColumnIndex(final Point pt, final TableItem item) {
+	private int getColumnIndex(@Nonnull final Point pt, @Nonnull final TableItem item) {
 		// Determine which column was selected
 		int column = -1;
 		for (int i = 0, n = _table.getColumnCount(); i < n; i++) {

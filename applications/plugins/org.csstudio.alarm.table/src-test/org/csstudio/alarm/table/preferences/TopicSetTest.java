@@ -126,5 +126,17 @@ public class TopicSetTest {
         assertEquals(1, topicSet.getFont().getFontData().length);
     }
 
+    @Test
+    public void testRetrieveInitialState() {
+        TopicSet topicSet = new TopicSet.Builder().build();
+        assertFalse(topicSet.isRetrieveInitialState());
+
+        topicSet = new TopicSet.Builder().setRetrieveInitialState("false").build();
+        assertFalse(topicSet.isRetrieveInitialState());
+
+        topicSet = new TopicSet.Builder().setRetrieveInitialState("true").build();
+        assertTrue(topicSet.isRetrieveInitialState());
+    }
+
 
 }

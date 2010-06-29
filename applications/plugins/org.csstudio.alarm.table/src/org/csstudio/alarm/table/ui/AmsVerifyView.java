@@ -73,7 +73,7 @@ public class AmsVerifyView extends LogView {
         // Read column names and JMS topic settings from preferences
         setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForVerifyViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews());
-        defineCurrentTopicSet();
+        defineCurrentTopicSetName();
 
         final GridLayout grid = new GridLayout();
         grid.numColumns = 1;
@@ -132,7 +132,7 @@ public class AmsVerifyView extends LogView {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSet());
+        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSetName());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
@@ -141,11 +141,11 @@ public class AmsVerifyView extends LogView {
 
         final MessageList messageList = getOrCreateCurrentMessageList(); // Uses LogMessageList
         _messageTable = new MessageTable(_tableViewer, getTopicSetColumnService()
-                                         .getColumnSet(getCurrentTopicSet()), messageList);
+                                         .getColumnSet(getCurrentTopicSetName()), messageList);
         _messageTable.makeContextMenu(getSite());
 
         _columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer,
-                                                                      getCurrentTopicSet());
+                                                                      getCurrentTopicSetName());
         setCurrentTimeToRunningSince(messageList.getStartTime());
         getSite().setSelectionProvider(_tableViewer);
         makeActions();

@@ -90,7 +90,7 @@ public class AlarmView extends LogView {
 
         setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews());
-        defineCurrentTopicSet();
+        defineCurrentTopicSetName();
 
         // Create UI
         final GridLayout grid = new GridLayout();
@@ -179,7 +179,7 @@ public class AlarmView extends LogView {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSet());
+        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSetName());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
@@ -187,7 +187,7 @@ public class AlarmView extends LogView {
         final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        final String[] columnSet = getTopicSetColumnService().getColumnSet(getCurrentTopicSet());
+        final String[] columnSet = getTopicSetColumnService().getColumnSet(getCurrentTopicSetName());
         final String[] columnSetWithAck = new String[columnSet.length + 1];
         columnSetWithAck[0] = "ACK,25";
         for (int i = 0; i < columnSet.length; i++) {
@@ -200,7 +200,7 @@ public class AlarmView extends LogView {
         setCurrentTimeToRunningSince(messageList.getStartTime());
 
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
-                                                                           getCurrentTopicSet());
+                                                                           getCurrentTopicSetName());
         addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRING_ALARM,
                                     AlarmViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);

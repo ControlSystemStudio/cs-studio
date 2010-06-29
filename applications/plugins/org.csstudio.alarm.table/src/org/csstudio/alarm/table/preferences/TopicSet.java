@@ -49,6 +49,8 @@ public final class TopicSet {
 
     private Font _font = null;
 
+    private boolean _retrieveInitialState = false;
+
     private TopicSet(@Nonnull final Builder topicSetBuilder) {
 
         _defaultTopic = topicSetBuilder._defaultTopic.equals("default");
@@ -70,14 +72,21 @@ public final class TopicSet {
             _startUp = Boolean.parseBoolean(topicSetBuilder._startUp);
         }
         if (topicSetBuilder._font != null) {
-            String[] fontItems = topicSetBuilder._font.split(",");
-            try {
-                _font = CustomMediaFactory.getInstance().getFont(fontItems[0],
-                                                                 Integer.parseInt(fontItems[2]),
-                                                                 Integer.parseInt(fontItems[1]));
-            } catch (Exception e) {
-                CentralLogger.getInstance().error(this, "error creating font");
-            }
+            defineFont(topicSetBuilder);
+        }
+        if (topicSetBuilder._retrieveInitialState != null) {
+            _retrieveInitialState  = Boolean.parseBoolean(topicSetBuilder._retrieveInitialState);
+        }
+    }
+
+    private void defineFont(@Nonnull final Builder topicSetBuilder) {
+        String[] fontItems = topicSetBuilder._font.split(",");
+        try {
+            _font = CustomMediaFactory.getInstance().getFont(fontItems[0],
+                                                             Integer.parseInt(fontItems[2]),
+                                                             Integer.parseInt(fontItems[1]));
+        } catch (Exception e) {
+            CentralLogger.getInstance().error(this, "error creating font");
         }
     }
 
@@ -103,10 +112,16 @@ public final class TopicSet {
         return _startUp;
     }
 
+    public boolean isRetrieveInitialState() {
+        return _retrieveInitialState;
+    }
+
     @CheckForNull
     public Font getFont() {
         return _font;
     }
+
+
 
     /**
      * Simple builder for the topic set
@@ -118,6 +133,7 @@ public final class TopicSet {
         private String _popUp;
         private String _startUp;
         private String _font;
+        private String _retrieveInitialState;
 
         public Builder() {
             _defaultTopic = "";
@@ -157,6 +173,12 @@ public final class TopicSet {
         @Nonnull
         public final Builder setFont(@Nonnull final String font) {
             _font = font;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setRetrieveInitialState(@Nonnull final String retrieveInitialState) {
+            _retrieveInitialState = retrieveInitialState;
             return this;
         }
 

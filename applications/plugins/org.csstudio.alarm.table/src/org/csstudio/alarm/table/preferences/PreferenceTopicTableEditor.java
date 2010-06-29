@@ -200,10 +200,10 @@ public class PreferenceTopicTableEditor extends AbstractPreferenceTableEditor {
             if (prefsPerItem.length > columnDescription.ordinal()) {
                 String pref = prefsPerItem[columnDescription.ordinal()];
 
-                // TODO (jpenning) this works only for booleans
+                // TODO (jpenning) this only works for booleans
                 // Insert default values for booleans here, because there is no guarantee that there a any values. Reasons:
                 // a: None will be written to the pref store when columns are not displayed in the editor
-                // b. If new ones were added, there will also be no values
+                // b. If new prefs were added, there will also be no values
                 if ((pref.length() == 0) && (MouseActionDescription.TOGGLE_BOOL == columnDescription.getMouseActionDescription())) {
                     pref = columnDescription.getDefaultValue();
                 }

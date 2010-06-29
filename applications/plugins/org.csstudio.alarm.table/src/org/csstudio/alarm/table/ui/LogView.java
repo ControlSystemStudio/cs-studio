@@ -101,10 +101,10 @@ public class LogView extends ViewPart {
     private ITopicsetService _topicsetService = null;
 
     /**
-     * Default topic set. Try to read state 1. From previous viewPart data 2. From default marker in
+     * Default topic set name. Try to read state 1. From previous viewPart data 2. From default marker in
      * preferences 3. Take first set from preferences
      */
-    private String _currentTopicSet = null;
+    private String _currentTopicSetName = null;
 
     /**
      * Mapping of column widths from table to preferences.
@@ -149,7 +149,7 @@ public class LogView extends ViewPart {
 
         setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForLogViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews());
-        defineCurrentTopicSet();
+        defineCurrentTopicSetName();
 
         // Create UI
         final GridLayout grid = new GridLayout();
@@ -210,7 +210,7 @@ public class LogView extends ViewPart {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        final Font font = _topicSetColumnService.getFont(_currentTopicSet);
+        final Font font = _topicSetColumnService.getFont(_currentTopicSetName);
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
@@ -219,12 +219,12 @@ public class LogView extends ViewPart {
 
         final MessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
-                .getColumnSet(_currentTopicSet), messageList);
+                .getColumnSet(_currentTopicSetName), messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
 
         _columnMapping = new ExchangeableColumnWidthPreferenceMapping(_tableViewer,
-                                                                      _currentTopicSet);
+                                                                      _currentTopicSetName);
         addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
                                     LogViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);
@@ -252,10 +252,10 @@ public class LogView extends ViewPart {
     /**
      * Ensures that there is a proper current topic set
      */
-    protected final void defineCurrentTopicSet() {
+    protected final void defineCurrentTopicSetName() {
         // is there already a topicSet from previous session?
-        if (_currentTopicSet == null) {
-            _currentTopicSet = _topicSetColumnService.getDefaultTopicSet();
+        if (_currentTopicSetName == null) {
+            _currentTopicSetName = _topicSetColumnService.getDefaultTopicSet();
         }
     }
 
@@ -264,8 +264,8 @@ public class LogView extends ViewPart {
      *
      * @return the current topic set
      */
-    protected String getCurrentTopicSet() {
-        return _currentTopicSet;
+    protected String getCurrentTopicSetName() {
+        return _currentTopicSetName;
     }
 
     /**
@@ -298,7 +298,7 @@ public class LogView extends ViewPart {
      */
     protected IAlarmTableListener getAlarmTableListener() {
         return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
-                .getJMSTopics(_currentTopicSet));
+                .getJMSTopics(_currentTopicSetName));
     }
 
     /**
@@ -310,8 +310,9 @@ public class LogView extends ViewPart {
      *
      * @return the message list
      */
+    @Nonnull
     protected final MessageList getOrCreateCurrentMessageList() {
-        final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSet);
+        final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
         if (!_topicsetService.hasTopicSet(topicSet)) {
             final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
@@ -319,7 +320,9 @@ public class LogView extends ViewPart {
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
-                retrieveInitialState(messageList);
+                if (topicSet.isRetrieveInitialState()) {
+                    retrieveInitialState(messageList);
+                }
                 _messageArea.hide();
             } catch (final AlarmConnectionException e) {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
@@ -426,7 +429,7 @@ public class LogView extends ViewPart {
 
         for (final TopicSet topicSet : _topicSetColumnService.getTopicSets()) {
             topicSetsCombo.add(topicSet.getName());
-            if (_currentTopicSet.equals(topicSet.getName())) {
+            if (_currentTopicSetName.equals(topicSet.getName())) {
                 topicSetsCombo.select(i);
             }
             i++;
@@ -435,10 +438,10 @@ public class LogView extends ViewPart {
             @Override
             public void widgetSelected(final SelectionEvent e) {
                 super.widgetSelected(e);
-                final String oldTopicSet = _currentTopicSet;
-                _currentTopicSet = _topicSetColumnService.getTopicSets().get(topicSetsCombo
+                final String oldTopicSet = _currentTopicSetName;
+                _currentTopicSetName = _topicSetColumnService.getTopicSets().get(topicSetsCombo
                         .getSelectionIndex()).getName();
-                if (!oldTopicSet.equals(_currentTopicSet)) {
+                if (!oldTopicSet.equals(_currentTopicSetName)) {
                     _messageTable.setMessageUpdatePause(false);
                     _pauseButton.setSelection(false);
                     initializeMessageTable();
@@ -568,11 +571,11 @@ public class LogView extends ViewPart {
         if (memento == null) {
             return;
         }
-        _currentTopicSet = memento.getString("previousTopicSet"); //$NON-NLS-1$
-        if (_currentTopicSet == null) {
+        _currentTopicSetName = memento.getString("previousTopicSet"); //$NON-NLS-1$
+        if (_currentTopicSetName == null) {
             LOG.debug("No topic set from previous session"); //$NON-NLS-1$
         } else {
-            LOG.debug("Get topic set from previous session: " + _currentTopicSet); //$NON-NLS-1$
+            LOG.debug("Get topic set from previous session: " + _currentTopicSetName); //$NON-NLS-1$
         }
     }
 
@@ -582,9 +585,9 @@ public class LogView extends ViewPart {
     @Override
     public void saveState(final IMemento memento) {
         super.saveState(memento);
-        if ( (memento != null) && (_currentTopicSet != null)) {
-            LOG.debug("Save latest topic set in IMemento: " + _currentTopicSet);
-            memento.putString("previousTopicSet", _currentTopicSet); //$NON-NLS-1$
+        if ( (memento != null) && (_currentTopicSetName != null)) {
+            LOG.debug("Save latest topic set in IMemento: " + _currentTopicSetName);
+            memento.putString("previousTopicSet", _currentTopicSetName); //$NON-NLS-1$
         }
     }
 

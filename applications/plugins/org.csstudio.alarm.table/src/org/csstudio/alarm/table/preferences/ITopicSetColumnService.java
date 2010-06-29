@@ -78,6 +78,7 @@ public interface ITopicSetColumnService {
     /**
      * @return the list with the column descriptions specific to the type of view
      */
+    @Nonnull
     List<ColumnDescription> getColumnDescriptions();
 
 }
