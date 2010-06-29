@@ -907,6 +907,8 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	public void setName(String name) {
 		this.name = name;
 		revalidate();
+		if(xyGraph != null)
+			xyGraph.repaint();
 	}
 
 	/**

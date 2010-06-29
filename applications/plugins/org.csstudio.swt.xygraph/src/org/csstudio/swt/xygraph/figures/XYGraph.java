@@ -27,6 +27,7 @@ import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.RGB;
 
 /**
  * XY-Graph Figure.
@@ -38,18 +39,27 @@ public class XYGraph extends Figure{
 	private static final int GAP = 2;
 	public final static Color WHITE_COLOR = ColorConstants.white;
 	public final static Color BLACK_COLOR = ColorConstants.black;
-	
-	public final static Color[] DEFAULT_TRACES_COLOR = new Color[]{
-		ColorConstants.red,
-		ColorConstants.blue,	
-		ColorConstants.darkGreen,
-		ColorConstants.orange,			
-		ColorConstants.darkBlue,
-		ColorConstants.cyan,
-		ColorConstants.green,
-		ColorConstants.yellow,
-		ColorConstants.black		
-	};
+
+    /** Default colors for newly added item, used over when reaching the end.
+     *  <p>
+     *  Very hard to find a long list of distinct colors.
+     *  This list is definitely too short...
+     */
+    final public static RGB[] DEFAULT_TRACES_COLOR =
+    {
+        new RGB( 21,  21, 196), // blue
+        new RGB(242,  26,  26), // red
+        new RGB( 33, 179,  33), // green
+        new RGB(  0,   0,   0), // black
+        new RGB(128,   0, 255), // violett
+        new RGB(255, 170,   0), // (darkish) yellow
+        new RGB(255,   0, 240), // pink
+        new RGB(243, 132, 132), // peachy
+        new RGB(  0, 255,  11), // neon green
+        new RGB(  0, 214, 255), // neon blue
+        new RGB(114,  40,   3), // brown
+        new RGB(219, 128,   4), // orange
+    };
 	
 	private int traceNum = 0;
 	private boolean transparent = false;
@@ -338,7 +348,8 @@ public class XYGraph extends Figure{
 	public void addTrace(Trace trace){
 		if (trace.getTraceColor() == null)
 		{   // Cycle through default colors
-		    trace.setTraceColor(DEFAULT_TRACES_COLOR[traceNum % DEFAULT_TRACES_COLOR.length]);
+		    trace.setTraceColor(XYGraphMediaFactory.getInstance().getColor(
+		    		DEFAULT_TRACES_COLOR[traceNum % DEFAULT_TRACES_COLOR.length]));
         	++traceNum;
 		}
 		if(legendMap.containsKey(trace.getYAxis()))
@@ -352,6 +363,7 @@ public class XYGraph extends Figure{
 		trace.setXYGraph(this);
 		trace.dataChanged(null);
 		revalidate();
+		repaint();
 	}
 	
 	/**Remove a trace.
@@ -366,6 +378,7 @@ public class XYGraph extends Figure{
 		}		
 		plotArea.removeTrace(trace);
 		revalidate();
+		repaint();
 	}
 	
 	/**Add an annotation
