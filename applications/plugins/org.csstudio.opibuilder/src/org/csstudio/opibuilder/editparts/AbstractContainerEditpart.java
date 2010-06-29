@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
+import org.csstudio.opibuilder.dnd.DropPVtoContainerEditPolicy;
+import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editpolicies.WidgetXYLayoutEditPolicy;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
@@ -69,6 +71,8 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 		
 		//the snap feedback effect
 		installEditPolicy("Snap Feedback", new SnapFeedbackPolicy()); //$NON-NLS-1$
+		if(getExecutionMode() == ExecutionMode.EDIT_MODE)
+			installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE, new DropPVtoContainerEditPolicy());
 	}
 	
 	/**Get a child of this container by name.

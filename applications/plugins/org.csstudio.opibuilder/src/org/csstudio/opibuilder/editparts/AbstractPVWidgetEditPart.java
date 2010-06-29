@@ -4,6 +4,7 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -241,6 +242,14 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			
 		}
 	};
+	
+	@Override
+	protected void createEditPolicies() {		
+		super.createEditPolicies();
+		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
+				new DropPVtoPVWidgetEditPolicy());
+	}
+	
 	@Override
 	public void activate() {
 		if(!isActive()){

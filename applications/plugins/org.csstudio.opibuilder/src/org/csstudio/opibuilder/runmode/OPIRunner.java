@@ -10,6 +10,8 @@ import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
+import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
+import org.csstudio.opibuilder.dnd.TextTransferDropPVTargetListener;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -185,6 +187,8 @@ public class OPIRunner extends EditorPart {
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
 		
+		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
+		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
 		
 		//this will make viewer as a selection provider
 		EditDomain editDomain = new DefaultEditDomain(this);

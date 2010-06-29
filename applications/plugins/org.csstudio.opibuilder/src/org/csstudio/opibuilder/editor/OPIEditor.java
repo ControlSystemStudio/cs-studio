@@ -45,6 +45,8 @@ import org.csstudio.opibuilder.actions.ShowMacrosAction;
 import org.csstudio.opibuilder.actions.ChangeOrderAction.OrderType;
 import org.csstudio.opibuilder.actions.DistributeWidgetsAction.DistributeType;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
+import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
+import org.csstudio.opibuilder.dnd.TextTransferDropPVTargetListener;
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -778,7 +780,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	
 		viewer.setContents(displayModel);
 		
-		viewer.addDropTargetListener(createTransferDropTargetListener());
+		viewer.addDropTargetListener(createTransferDropTargetListener());		
+		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
+		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
 		setPartName(getEditorInput().getName());
 
 	}

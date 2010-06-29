@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
+import org.csstudio.opibuilder.dnd.DropPVRequest;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
@@ -61,7 +62,8 @@ public class ContainerHighlightEditPolicy extends GraphicalEditPolicy {
 		if(request.getType().equals(RequestConstants.REQ_MOVE) ||
 			request.getType().equals(RequestConstants.REQ_ADD) ||
 			request.getType().equals(RequestConstants.REQ_CLONE) ||
-			request.getType().equals(RequestConstants.REQ_CREATE)
+			request.getType().equals(RequestConstants.REQ_CREATE) ||
+			request.getType().equals(DropPVRequest.REQ_DROP_PV)
 		)
 			showHighlight();
 	}

@@ -5,6 +5,7 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.dnd.DropPVtoPVWidgetEditPolicy;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
@@ -41,6 +42,15 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	public XYGraphModel getWidgetModel() {
 		return (XYGraphModel)getModel();
 	}
+	
+	@Override
+	protected void createEditPolicies() {
+		super.createEditPolicies();
+		removeEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE);
+		installEditPolicy(DropPVtoPVWidgetEditPolicy.DROP_PV_ROLE,
+				new DropPVtoXYGraphEditPolicy());
+	}
+	
 	@Override
 	protected IFigure doCreateFigure() {
 		final XYGraphModel model = getWidgetModel();

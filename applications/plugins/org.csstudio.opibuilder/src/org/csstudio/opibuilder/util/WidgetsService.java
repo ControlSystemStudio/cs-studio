@@ -46,7 +46,7 @@ public final class WidgetsService {
 
 	public WidgetsService() {
 		feedbackFactoriesMap = new HashMap<String, IGraphicalFeedbackFactory>();
-		allWidgetDescriptorsMap = new HashMap<String, WidgetDescriptor>();
+		allWidgetDescriptorsMap = new LinkedHashMap<String, WidgetDescriptor>();
 		allCategoriesMap = new LinkedHashMap<String, List<String>>();
 		for(MajorCategories mc : MajorCategories.values())
 			allCategoriesMap.put(mc.toString(), new ArrayList<String>());
@@ -128,6 +128,9 @@ public final class WidgetsService {
 		return allWidgetDescriptorsMap.get(typeId);
 	}
 	
+	public final String[] getAllWidgetTypeIDs(){
+		return allWidgetDescriptorsMap.keySet().toArray(new String[0]);
+	}
 	
 	public final IGraphicalFeedbackFactory getWidgetFeedbackFactory(String typeId){
 		return feedbackFactoriesMap.get(typeId);

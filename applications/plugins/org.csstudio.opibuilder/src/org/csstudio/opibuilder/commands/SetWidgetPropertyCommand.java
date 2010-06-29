@@ -63,6 +63,7 @@ public class SetWidgetPropertyCommand extends Command {
 		this.widgetModel = widget;
 		this.prop_id = prop_id;
 		this.newValue = newValue;
+		setLabel("Set " + prop_id);
 	}
 	
 	/**

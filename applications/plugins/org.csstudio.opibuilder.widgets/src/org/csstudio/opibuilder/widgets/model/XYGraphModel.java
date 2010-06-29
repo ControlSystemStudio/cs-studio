@@ -143,10 +143,6 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	/** The default color of the grid color property. */
 	private static final RGB DEFAULT_GRID_COLOR = new RGB(200,200,200);
 	
-	/** The default color of the trace color property. */
-	private static final RGB DEFAULT_TRACE_COLOR = new RGB(255,0,0);
-	
-	
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
 	
@@ -184,7 +180,6 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 	public XYGraphModel() {
 		setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
 		setForegroundColor(CustomMediaFactory.COLOR_BLUE);
-		setPropertyValue(PROP_PVNAME, "$(trace_0_y_pv)"); //$NON-NLS-1$
 		setTooltip("$(trace_0_y_pv)\n$(trace_0_y_pv_value)");
 		
 	}
@@ -214,7 +209,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Behavior, 1, 0, MAX_TRACES_AMOUNT));	
 		addAxisProperties();
 		addTraceProperties();
-		setPropertyVisible(PROP_PVNAME, false);
+		//setPropertyVisible(PROP_PVNAME, false);
 		
 	}
 	
@@ -304,7 +299,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		WidgetPropertyCategory category = new NameDefinedCategory("Trace " + traceIndex);
 		switch (traceProperty) {
 		case NAME:
-			addProperty(new StringProperty(propID, traceProperty.toString(), category, category.toString()));
+			addProperty(new StringProperty(propID, traceProperty.toString(), category,
+					"$(" + makeTracePropID(TraceProperty.YPV.propIDPre, traceIndex) + ")"));
 			break;
 		case ANTI_ALIAS:
 		case CHRONOLOGICAL:
@@ -335,8 +331,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 					0));
 			break;
 		case TRACE_COLOR:
-			addProperty(new ColorProperty(propID, traceProperty.toString(), category, traceIndex < XYGraph.DEFAULT_TRACES_COLOR.length?
-					XYGraph.DEFAULT_TRACES_COLOR[traceIndex].getRGB() : DEFAULT_TRACE_COLOR));
+			addProperty(new ColorProperty(propID, traceProperty.toString(), category, 
+					XYGraph.DEFAULT_TRACES_COLOR[traceIndex%XYGraph.DEFAULT_TRACES_COLOR.length]));
 			break;	
 		case TRACE_TYPE:
 			addProperty(new ComboProperty(propID, traceProperty.toString(), category, TraceType.stringValues(), 
@@ -360,7 +356,8 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 					new PVValueProperty(makeTracePropID(TraceProperty.XPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YPV:
-			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, ""), 
+			addPVProperty(new StringProperty(propID, traceProperty.toString(), category, 
+					traceIndex == 0 ? "$(" + PROP_PVNAME + ")" : ""), //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ 
 					new PVValueProperty(makeTracePropID(TraceProperty.YPV_VALUE.propIDPre, traceIndex), null));			
 			break;
 		case YAXIS_INDEX:
