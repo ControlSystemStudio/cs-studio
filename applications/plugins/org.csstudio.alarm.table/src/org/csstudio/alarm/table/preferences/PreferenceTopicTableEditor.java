@@ -44,6 +44,13 @@ import org.eclipse.swt.widgets.TableItem;
  * changes that now the items are not displayed in a 'List' but in a 'Table'. In
  * addition the items in the table are editable.
  *
+ * Here the preferences for the topic sets are managed. The preference store is accessed here
+ * 1. TableItem -> Preference
+ * 2. Preference -> TableItem
+ * but also while reading the TopicSet
+ * 3. Preference -> TopicItem
+ * Keep this in mind when changing the preference items.
+ *
  * @author jhatje
  *
  */
