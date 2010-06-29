@@ -97,7 +97,7 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 		}
 		updateTopicTitle(topicTitle);
 
-		final Table table = _tableViewer.getTable();
+		final Table table = getTableViewer().getTable();
 		// write current table content in the array of the previous selected
 		// topic row.
 		if (0 <= _row) {
@@ -120,12 +120,12 @@ public class ExchangeablePreferenceColumnTableEditor extends PreferenceColumnTab
 		}
 		TableItem item;
 		for (int i = 0; i < _currentColumnTableSet.size(); i++) {
-			item = new TableItem(_tableViewer.getTable(), SWT.NONE);
+			item = new TableItem(getTableViewer().getTable(), SWT.NONE);
 			final String[] tableRowFromPreferences = _currentColumnTableSet.get(i);
 			item.setText(tableRowFromPreferences);
 		}
 		// _topicSetName.redraw();
-		_tableViewer.getTable().redraw();
+		getTableViewer().getTable().redraw();
 	}
 
 

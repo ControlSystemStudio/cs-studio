@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.table.preferences.alarm;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -60,7 +60,7 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 	}
 
 	@Override
-    public void createFieldEditors() {
+	public void createFieldEditors() {
 		final Label l = new Label(getFieldEditorParent(), SWT.NONE);
 		final Font font = l.getFont();
 		final FontData fontData = font.getFontData()[0];
@@ -68,8 +68,8 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 		final Font font2 = CustomMediaFactory.getInstance().getFont(fontData);
 		l.setFont(font2);
 		l.setText("Die Einstellungen in den Spalten Popup Mode und Auto Start werden noch nicht ausgewertet.");
-		final PreferenceTopicTableEditor preferenceTopicTableEditor =
-		    new PreferenceTopicTableEditor(Arrays.asList(ColumnDescription.values()));
+
+		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(getColumnDescriptions());
 		preferenceTopicTableEditor.init(AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ", getFieldEditorParent());
 		addField(preferenceTopicTableEditor);
 		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
@@ -80,7 +80,12 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 		addField(preferenceColumnTableEditor);
 	}
 
-    public void init(@Nonnull final IWorkbench workbench) {
+	public void init(@Nonnull final IWorkbench workbench) {
         // Nothing to do
+    }
+
+    @Nonnull
+	private List<ColumnDescription> getColumnDescriptions() {
+        return JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews().getColumnDescriptions();
     }
 }

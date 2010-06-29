@@ -32,7 +32,6 @@ import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
@@ -89,10 +88,7 @@ public class AlarmView extends LogView {
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
-        // Read column names and JMS topic settings from preferences
-        _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
-
+        setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews());
         defineCurrentTopicSet();
 
@@ -114,8 +110,6 @@ public class AlarmView extends LogView {
         addAcknowledgeItems(canExecute, logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
-        _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
 
         initializeMessageTable();
         _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
@@ -163,8 +157,6 @@ public class AlarmView extends LogView {
                                       AlarmViewPreferenceConstants.TOPIC_SET);
             _columnMapping = null;
         }
-        _topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                           AlarmViewPreferenceConstants.P_STRING_ALARM);
         // is there already a MessageTable delete it and the message list.
         if (_messageTable != null) {
             _messageTable.disposeMessageTable();
@@ -187,7 +179,7 @@ public class AlarmView extends LogView {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        final Font font = _topicSetColumnService.getFont(getCurrentTopicSet());
+        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSet());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
@@ -195,7 +187,7 @@ public class AlarmView extends LogView {
         final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        final String[] columnSet = _topicSetColumnService.getColumnSet(getCurrentTopicSet());
+        final String[] columnSet = getTopicSetColumnService().getColumnSet(getCurrentTopicSet());
         final String[] columnSetWithAck = new String[columnSet.length + 1];
         columnSetWithAck[0] = "ACK,25";
         for (int i = 0; i < columnSet.length; i++) {

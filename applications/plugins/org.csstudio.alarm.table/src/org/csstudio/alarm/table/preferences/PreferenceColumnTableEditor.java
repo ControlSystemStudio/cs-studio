@@ -18,7 +18,6 @@
 package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -100,14 +99,14 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 	 */
 	void addPressed() {
 		setPresentsDefaultValue(false);
-		int[] selectionIndices = _tableViewer.getTable().getSelectionIndices();
+		int[] selectionIndices = getTableViewer().getTable().getSelectionIndices();
 		int newItemIndex;
 		if (selectionIndices.length == 0) {
-			newItemIndex = _tableViewer.getTable().getItemCount();
+			newItemIndex = getTableViewer().getTable().getItemCount();
 		} else {
 			newItemIndex = selectionIndices[0];
 		}
-		TableItem item = new TableItem(_tableViewer.getTable(), SWT.NONE,
+		TableItem item = new TableItem(getTableViewer().getTable(), SWT.NONE,
 				newItemIndex);
 		item.setText(0, "Name");
 		item.setText(1, "100");
@@ -169,7 +168,7 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 		}
 		TableItem item;
 		for (String[] column : columnSet) {
-			item = new TableItem(_tableViewer.getTable(), SWT.NONE);
+			item = new TableItem(getTableViewer().getTable(), SWT.NONE);
 			item.setText(column);
 		}
 	}
@@ -180,7 +179,7 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 	protected void doStore() {
 		// String s = createList(tableViewer.getTable().getItems());
 		// if (s != null) {
-		setTableSettingsToPreferenceString(_tableViewer.getTable());
+		setTableSettingsToPreferenceString(getTableViewer().getTable());
 		StringBuffer buffer = new StringBuffer();
 		for (List<String[]> columnSetting : _columnTableSettings) {
 			for (String[] strings : columnSetting) {
@@ -206,7 +205,7 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 	 */
 	@Override
     public TableViewer getTableControl(final Composite parent) {
-		if (_tableViewer == null) {
+		if (!hasTableViewer()) {
 			int style = SWT.SINGLE | SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL
 					| SWT.FULL_SELECTION | SWT.HIDE_SELECTION;
 			Table table = new Table(parent, style);
@@ -224,21 +223,21 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 			final TableEditor editor = new TableEditor(table);
 			editor.horizontalAlignment = SWT.LEFT;
 			editor.grabHorizontal = true;
-			_tableViewer = new TableViewer(table);
-			_tableViewer.getTable().setFont(parent.getFont());
-			_tableViewer.getTable().addSelectionListener(getSelectionListener());
-			_tableViewer.getTable().addDisposeListener(new DisposeListener() {
+			setTableViewer(new TableViewer(table));
+			getTableViewer().getTable().setFont(parent.getFont());
+			getTableViewer().getTable().addSelectionListener(getSelectionListener());
+			getTableViewer().getTable().addDisposeListener(new DisposeListener() {
 				public void widgetDisposed(final DisposeEvent event) {
-					_tableViewer = null;
+				    removeTableViewer();
 				}
 			});
 			_mouseListener = new ColumnTableEditorMouseListener(editor, this);
 			table.addMouseListener(_mouseListener);
 
 		} else {
-			checkParent(_tableViewer.getTable(), parent);
+			checkParent(getTableViewer().getTable(), parent);
 		}
-		return _tableViewer;
+		return getTableViewer();
 	}
 
 	/**
@@ -254,7 +253,7 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 		return null;
 	}
 
-	
+
 	/**
      * {@inheritDoc}
      */
@@ -294,7 +293,7 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 	void setTableSettingsToPreferenceString(@Nonnull final Table table) {
 		if (0 <= _row) {
 			_currentColumnTableSet = new ArrayList<String[]>(table.getItems().length);
-			
+
 			for (TableItem item : table.getItems()) {
 			    _currentColumnTableSet.add(new String[] {item.getText(0),
 			                                             item.getText(1)});
@@ -315,8 +314,8 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 
 	public void updateColumnSettings() {
 		_currentColumnTableSet = new ArrayList<String[]>();
-		Table table = _tableViewer.getTable();
-		
+		Table table = getTableViewer().getTable();
+
         for (TableItem item : table.getItems()) {
             _currentColumnTableSet.add(new String[]{item.getText(0),
                                                     item.getText(1)});
@@ -334,10 +333,10 @@ public class PreferenceColumnTableEditor extends AbstractPreferenceTableEditor {
 			_columnTableSettings.add(_currentColumnTableSet);
 		}
 	}
-	
+
 	@CheckForNull
 	public Table getTable() {
-		return _tableViewer.getTable();
+		return getTableViewer().getTable();
 	}
 
 }

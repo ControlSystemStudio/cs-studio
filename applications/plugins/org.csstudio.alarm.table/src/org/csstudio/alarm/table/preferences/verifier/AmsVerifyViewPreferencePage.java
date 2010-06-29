@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.table.preferences.verifier;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -64,7 +64,7 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 		l.setText("Die Einstellungen in den Spalten Popup Mode und Auto Start werden noch nicht ausgewertet.");
 
 		final PreferenceTopicTableEditor preferenceTopicTableEditor =
-		    new PreferenceTopicTableEditor(Arrays.asList(ColumnDescription.values()));
+		    new PreferenceTopicTableEditor(getColumnDescriptions());
         preferenceTopicTableEditor.init(AmsVerifyViewPreferenceConstants.TOPIC_SET,
                                         "&Topic Sets: ",
                                         getFieldEditorParent());
@@ -81,4 +81,11 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
     public void init(@Nonnull final IWorkbench workbench) {
         // Nothing to do
     }
+
+    @Nonnull
+    private List<ColumnDescription> getColumnDescriptions() {
+        return JmsLogsPlugin.getDefault().getTopicSetColumnServiceForVerifyViews().getColumnDescriptions();
+    }
+
+
 }

@@ -25,6 +25,7 @@ import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -55,27 +56,27 @@ public class TopicSetTest {
 
     @Test
     public void testDefault() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertFalse(topicSet.isDefaultTopic());
 
-        topicSet = new TopicSet("default", null, null, null, null, null);
+        topicSet = new TopicSet.Builder().setDefaultTopic("default").build();
         assertTrue(topicSet.isDefaultTopic());
     }
 
     @Test
     public void testListOfTopics() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertEquals(null, topicSet.getTopics());
 
-        topicSet = new TopicSet("", "", null, null, null, null);
+        topicSet = new TopicSet.Builder().setTopics("").build();
         assertEquals(1, topicSet.getTopics().size());
         assertEquals("", topicSet.getTopics().get(0));
 
-        topicSet = new TopicSet("", "t1", null, null, null, null);
+        topicSet = new TopicSet.Builder().setTopics("t1").build();
         assertEquals(1, topicSet.getTopics().size());
         assertEquals("t1", topicSet.getTopics().get(0));
 
-        topicSet = new TopicSet("", "t1,t2", null, null, null, null);
+        topicSet = new TopicSet.Builder().setTopics("t1,t2").build();
         assertEquals(2, topicSet.getTopics().size());
         assertEquals("t1", topicSet.getTopics().get(0));
         assertEquals("t2", topicSet.getTopics().get(1));
@@ -83,44 +84,45 @@ public class TopicSetTest {
 
     @Test
     public void testName() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertEquals("not set", topicSet.getName());
 
-        topicSet = new TopicSet("", null, "testname", null, null, null);
+        topicSet = new TopicSet.Builder().setName("testname").build();
         assertEquals("testname", topicSet.getName());
     }
 
 
     @Test
     public void testPopUp() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertFalse(topicSet.isPopUp());
 
-        topicSet = new TopicSet("", null, null, "false", null, null);
+        topicSet = new TopicSet.Builder().setPopUp("false").build();
         assertFalse(topicSet.isPopUp());
 
-        topicSet = new TopicSet("", null, null, "true", null, null);
+        topicSet = new TopicSet.Builder().setPopUp("true").build();
         assertTrue(topicSet.isPopUp());
     }
 
     @Test
     public void testStartUp() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertFalse(topicSet.isStartUp());
 
-        topicSet = new TopicSet("", null, null, null, "false", null);
+        topicSet = new TopicSet.Builder().setStartUp("false").build();
         assertFalse(topicSet.isStartUp());
 
-        topicSet = new TopicSet("", null, null, null, "true", null);
+        topicSet = new TopicSet.Builder().setStartUp("true").build();
         assertTrue(topicSet.isStartUp());
     }
 
     @Test
-    public void testCreate() {
-        TopicSet topicSet = new TopicSet("", null, null, null, null, null);
+    @Ignore("can only be run as plugin test")
+    public void testFont() {
+        TopicSet topicSet = new TopicSet.Builder().build();
         assertEquals(null, topicSet.getFont());
 
-        topicSet = new TopicSet("", null, null, null, null, "Tahoma,0,8");
+        topicSet = new TopicSet.Builder().setFont("Tahoma,0,8").build();
         assertEquals(1, topicSet.getFont().getFontData().length);
     }
 

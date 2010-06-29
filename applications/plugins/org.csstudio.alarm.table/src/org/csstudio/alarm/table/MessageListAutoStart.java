@@ -7,9 +7,8 @@ import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.jms.AlarmListener;
+import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
-import org.csstudio.alarm.table.preferences.TopicSetColumnService;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.platform.logging.CentralLogger;
@@ -60,8 +59,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
     }
 
     private void startLogLists() {
-        TopicSetColumnService topicSetColumnService = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
-                                                                                LogViewPreferenceConstants.P_STRING);
+        ITopicSetColumnService topicSetColumnService = JmsLogsPlugin.getDefault().getTopicSetColumnServiceForLogViews();
         List<TopicSet> topicSets = topicSetColumnService.getTopicSets();
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {
@@ -80,8 +78,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
     }
 
     private void startAlarmLists() {
-        TopicSetColumnService topicSetColumnService = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                                                AlarmViewPreferenceConstants.P_STRING_ALARM);
+        ITopicSetColumnService topicSetColumnService = JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews();
         List<TopicSet> topicSets = topicSetColumnService.getTopicSets();
         for (TopicSet topicSet : topicSets) {
             if (topicSet.isStartUp()) {

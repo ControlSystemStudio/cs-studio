@@ -19,7 +19,10 @@ package org.csstudio.alarm.table.preferences;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -35,112 +38,131 @@ import org.eclipse.swt.graphics.Font;
  * @author jhatje
  *
  */
-public class TopicSetColumnService {
+public class TopicSetColumnService implements ITopicSetColumnService {
+    public static final String ITEM_SEPARATOR = ";";
+    public static final String INNER_ITEM_SEPARATOR_AS_REGEX = "\\?";
+    public static final String INNER_ITEM_SEPARATOR = "?";
 
-	private final List<TopicSet> _topicSets = new ArrayList<TopicSet>();
-	private final List<String[]> _columnSets = new ArrayList<String[]>();
+    private final List<TopicSet> _topicSets = new ArrayList<TopicSet>();
+    private final List<String[]> _columnSets = new ArrayList<String[]>();
+    private final List<ColumnDescription> _columnDescriptions;
 
-	public TopicSetColumnService(final String topicSetPreferenceKey, final String columnSetPreferenceKey) {
-		IPreferenceStore store = JmsLogsPlugin.getDefault()
-		.getPreferenceStore();
-		parseTopicSetString(store.getString(topicSetPreferenceKey));
-		parseColumnSetString(store.getString(columnSetPreferenceKey));
-	}
+    public TopicSetColumnService(@Nonnull final String topicSetPreferenceKey,
+                                 @Nonnull final String columnSetPreferenceKey,
+                                 @Nonnull final List<ColumnDescription> columnDescriptions) {
+        _columnDescriptions = new ArrayList<ColumnDescription>(columnDescriptions);
+        IPreferenceStore store = JmsLogsPlugin.getDefault().getPreferenceStore();
+        parseTopicSetString(store.getString(topicSetPreferenceKey));
+        parseColumnSetString(store.getString(columnSetPreferenceKey));
+    }
 
-	private void parseColumnSetString(final String columnSetString) {
-//		CentralLogger.getInstance().debug(this, "Column Pref String: " + columnSetString);
-		String[] columnSets = columnSetString.split("\\?");
-		for (String columnSet : columnSets) {
-			String[] columnItems = columnSet.split(";");
-			_columnSets.add(columnItems);
-		}
-	}
+    private void parseColumnSetString(@Nonnull final String columnSetString) {
+        //		CentralLogger.getInstance().debug(this, "Column Pref String: " + columnSetString);
+        String[] columnSets = columnSetString.split(INNER_ITEM_SEPARATOR_AS_REGEX);
+        for (String columnSet : columnSets) {
+            String[] columnItems = columnSet.split(ITEM_SEPARATOR);
+            _columnSets.add(columnItems);
+        }
+    }
 
-	private void parseTopicSetString(final String topicSetString) {
-		String[] topicSetsAndNames = topicSetString.split(";"); //$NON-NLS-1$
-		for (String topicSet : topicSetsAndNames) {
-			String[] topicSetItems = Arrays.copyOf(topicSet.split("\\?"), 6);
-			_topicSets.add(new TopicSet(topicSetItems[0], topicSetItems[1], topicSetItems[2], topicSetItems[3], topicSetItems[4], topicSetItems[5]));
-		}
-	}
+    private void parseTopicSetString(@Nonnull final String topicSetString) {
+        String[] topicSetsAsString = topicSetString.split(ITEM_SEPARATOR); //$NON-NLS-1$
+        for (String topicSetAsString : topicSetsAsString) {
+            String[] topicSetItems = Arrays
+                    .copyOf(topicSetAsString.split(INNER_ITEM_SEPARATOR_AS_REGEX), ColumnDescription.values().length);
+            // TODO (jpenning) Add initial state to topic set
+            TopicSet topicSet = new TopicSet.Builder().setDefaultTopic(topicSetItems[0])
+                    .setTopics(topicSetItems[1]).setName(topicSetItems[2])
+                    .setPopUp(topicSetItems[3]).setStartUp(topicSetItems[4])
+                    .setFont(topicSetItems[5]).build();
 
-	/**
-	 * If there is no
-	 * default the first item is taken. The default tag from the preferences is
-	 * overwritten if there is a topic set from a previous session.
-	 *
-	 * @param topics
-	 *            raw topic string from preferences
-	 * @return set of topics for initialization
-	 */
-	public String getDefaultTopicSet() {
-		for (TopicSet topicSet : _topicSets) {
-			if(topicSet.isDefaultTopic()) {
-				return topicSet.getName();
-			}
-		}
-		if (_topicSets.size() > 0) {
-			return _topicSets.get(0).getName();
-		} else {
-			return "";
-		}
-	}
+            _topicSets.add(topicSet);
+        }
+    }
 
-	/**
-	 * Get the font for the given topic set name.
-	 */
-	public Font getFont(final String topicSetName) {
-		int i = getTopicSetIndex(topicSetName);
-		TopicSet topicSet = _topicSets.get(i);
-		return topicSet.getFont();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public String getDefaultTopicSet() {
+        for (TopicSet topicSet : _topicSets) {
+            if (topicSet.isDefaultTopic()) {
+                return topicSet.getName();
+            }
+        }
+        if (_topicSets.size() > 0) {
+            return _topicSets.get(0).getName();
+        } else {
+            return "";
+        }
+    }
 
-	/**
-	 * Get corresponding columnSet for the given topicSet
-	 *
-	 * @param defaultTopicSet
-	 * @return
-	 */
-	public String[] getColumnSet(final String topicSet) {
-		int i = getTopicSetIndex(topicSet);
-		String[] columns;
-		try {
-			columns = _columnSets.get(i);
-		} catch (IndexOutOfBoundsException e)	 {
-			//There are no corresponding column settings, get first column set
-			columns = _columnSets.get(0);
-		}
-		return columns;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public Font getFont(@Nonnull final String topicSetName) {
+        int i = getTopicSetIndex(topicSetName);
+        TopicSet topicSet = _topicSets.get(i);
+        return topicSet.getFont();
+    }
 
-	private int getTopicSetIndex(final String topicSet) {
-		//get index of given topic set
-		int i = 0;
-		for (TopicSet topicSetTmp : _topicSets) {
-			if (topicSetTmp.getName().equals(topicSet)) {
-				break;
-			}
-			i++;
-		}
-		return i;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public String[] getColumnSet(@Nonnull final String topicSet) {
+        int i = getTopicSetIndex(topicSet);
+        String[] columns;
+        try {
+            columns = _columnSets.get(i);
+        } catch (IndexOutOfBoundsException e) {
+            //There are no corresponding column settings, get first column set
+            columns = _columnSets.get(0);
+        }
+        return columns;
+    }
 
-	public List<TopicSet> getTopicSets() {
-		return _topicSets;
-	}
+    private int getTopicSetIndex(@Nonnull final String topicSet) {
+        //get index of given topic set
+        int i = 0;
+        for (TopicSet topicSetTmp : _topicSets) {
+            if (topicSetTmp.getName().equals(topicSet)) {
+                break;
+            }
+            i++;
+        }
+        return i;
+    }
 
-	/**
-	 * Read the JMS Topics for the given topicSetName.
-	 *
-	 * @param currentTopicSet
-	 * @return
-	 */
-	public TopicSet getJMSTopics(final String currentTopicSet) {
-		for (TopicSet topicSetTmp : _topicSets) {
-			if (topicSetTmp.getName().equals(currentTopicSet)) {
-				return topicSetTmp;
-			}
-		}
-		return _topicSets.get(0);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public List<TopicSet> getTopicSets() {
+        return _topicSets;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public TopicSet getJMSTopics(@Nonnull final String currentTopicSet) {
+        for (TopicSet topicSetTmp : _topicSets) {
+            if (topicSetTmp.getName().equals(currentTopicSet)) {
+                return topicSetTmp;
+            }
+        }
+        return _topicSets.get(0);
+    }
+
+    @Override
+    public List<ColumnDescription> getColumnDescriptions() {
+        return Collections.unmodifiableList(_columnDescriptions);
+    }
+
+    private int getColumnCount() {
+        return _columnDescriptions.size();
+    }
+
 }

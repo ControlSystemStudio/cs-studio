@@ -60,8 +60,7 @@ public class AlarmViewPreferenceInitializer extends AbstractPreferenceInitialize
 						"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
 						"DESTINATION" //$NON-NLS-1$
 		);
-		store
-		.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,
-				"?ALARM,ACK?MKS-2;?TEST_FOREWARD?test foreward filter;"); //$NON-NLS-1$
+		store.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,
+		                 "default?ALARM,ACK?Default?false?false?Tahoma,0,8?false;"); //$NON-NLS-1$
 	}
 }

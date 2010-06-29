@@ -27,7 +27,6 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
-import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
 import org.csstudio.platform.CSSPlatformInfo;
@@ -72,8 +71,7 @@ public class AmsVerifyView extends LogView {
         _parent = parent;
 
         // Read column names and JMS topic settings from preferences
-        _topicSetColumnService = new TopicSetColumnService(AmsVerifyViewPreferenceConstants.TOPIC_SET,
-                                                           AmsVerifyViewPreferenceConstants.P_STRING);
+        setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForVerifyViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews());
         defineCurrentTopicSet();
 
@@ -108,8 +106,7 @@ public class AmsVerifyView extends LogView {
             _columnMapping.saveColumn(AmsVerifyViewPreferenceConstants.P_STRING,
                                       AmsVerifyViewPreferenceConstants.TOPIC_SET);
         }
-        _topicSetColumnService = new TopicSetColumnService(AmsVerifyViewPreferenceConstants.TOPIC_SET,
-                                                           AmsVerifyViewPreferenceConstants.P_STRING);
+
         // is there already a MessageTable delete it and the message list.
         if (_messageTable != null) {
             _messageTable.disposeMessageTable();
@@ -135,7 +132,7 @@ public class AmsVerifyView extends LogView {
 
         // get the font for the selected topic set. If there was no font defined
         // in preferences set no font.
-        final Font font = _topicSetColumnService.getFont(getCurrentTopicSet());
+        final Font font = getTopicSetColumnService().getFont(getCurrentTopicSet());
         if (font != null) {
             _tableViewer.getTable().setFont(font);
         }
@@ -143,7 +140,7 @@ public class AmsVerifyView extends LogView {
         _tableViewer.getTable().setLayoutData(gridData2);
 
         final MessageList messageList = getOrCreateCurrentMessageList(); // Uses LogMessageList
-        _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
+        _messageTable = new MessageTable(_tableViewer, getTopicSetColumnService()
                                          .getColumnSet(getCurrentTopicSet()), messageList);
         _messageTable.makeContextMenu(getSite());
 

@@ -20,6 +20,7 @@ package org.csstudio.alarm.table.preferences;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.platform.logging.CentralLogger;
@@ -27,12 +28,14 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.graphics.Font;
 
 /**
+ * A topic set is an immutable object.
+ *
  * Data for one topicSet defined in the preferences.
  *
  * @author jhatje
  *
  */
-public class TopicSet {
+public final class TopicSet {
 
     private boolean _defaultTopic = false;
 
@@ -46,33 +49,28 @@ public class TopicSet {
 
     private Font _font = null;
 
-    public TopicSet(@Nonnull final String defTopic,
-                    final String listOfTopics,
-                    final String name,
-                    final String popUp,
-                    final String startUp,
-                    final String font) {
-        if (defTopic.equals("default")) {
-            _defaultTopic = true;
-        }
-        if (listOfTopics != null) {
+    private TopicSet(@Nonnull final Builder topicSetBuilder) {
+
+        _defaultTopic = topicSetBuilder._defaultTopic.equals("default");
+
+        if (topicSetBuilder._topics != null) {
             _topics = new ArrayList<String>();
-            String[] topics = listOfTopics.split(",");
+            String[] topics = topicSetBuilder._topics.split(",");
             for (String topic : topics) {
                 _topics.add(topic);
             }
         }
-        if (name != null) {
-            _name = name;
+
+        _name = topicSetBuilder._name;
+
+        if (topicSetBuilder._popUp != null) {
+            _popUp = Boolean.parseBoolean(topicSetBuilder._popUp);
         }
-        if (popUp != null) {
-            _popUp = Boolean.parseBoolean(popUp);
+        if (topicSetBuilder._startUp != null) {
+            _startUp = Boolean.parseBoolean(topicSetBuilder._startUp);
         }
-        if (startUp != null) {
-            _startUp = Boolean.parseBoolean(startUp);
-        }
-        if (font != null) {
-            String[] fontItems = font.split(",");
+        if (topicSetBuilder._font != null) {
+            String[] fontItems = topicSetBuilder._font.split(",");
             try {
                 _font = CustomMediaFactory.getInstance().getFont(fontItems[0],
                                                                  Integer.parseInt(fontItems[2]),
@@ -87,48 +85,85 @@ public class TopicSet {
         return _defaultTopic;
     }
 
-    public void setDefaultTopic(final boolean defaultTopic) {
-        this._defaultTopic = defaultTopic;
-    }
-
+    @Nonnull
     public String getName() {
         return _name;
     }
 
-    public void setName(final String name) {
-        this._name = name;
-    }
-
+    @CheckForNull
     public List<String> getTopics() {
         return _topics;
-    }
-
-    public void setTopics(final List<String> topics) {
-        this._topics = topics;
     }
 
     public boolean isPopUp() {
         return _popUp;
     }
 
-    public void setPopUp(final boolean popUp) {
-        this._popUp = popUp;
-    }
-
     public boolean isStartUp() {
         return _startUp;
     }
 
-    public void setStartUp(final boolean startUp) {
-        this._startUp = startUp;
-    }
-
+    @CheckForNull
     public Font getFont() {
         return _font;
     }
 
-    public void setFont(final Font font) {
-        this._font = font;
-    }
+    /**
+     * Simple builder for the topic set
+     */
+    public static class Builder {
+        private String _defaultTopic;
+        private String _name;
+        private String _topics;
+        private String _popUp;
+        private String _startUp;
+        private String _font;
 
+        public Builder() {
+            _defaultTopic = "";
+            _name = "not set";
+        }
+
+        @Nonnull
+        public final Builder setDefaultTopic(@Nonnull final String defaultTopic) {
+            _defaultTopic = defaultTopic;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setName(@Nonnull final String name) {
+            _name = name;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setTopics(@Nonnull final String topics) {
+            _topics = topics;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setPopUp(@Nonnull final String popUp) {
+            _popUp = popUp;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setStartUp(@Nonnull final String startUp) {
+            _startUp = startUp;
+            return this;
+        }
+
+        @Nonnull
+        public final Builder setFont(@Nonnull final String font) {
+            _font = font;
+            return this;
+        }
+
+        @Nonnull
+        public final TopicSet build() {
+            return new TopicSet(this);
+        }
+
+    }
 }

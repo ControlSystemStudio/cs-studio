@@ -58,7 +58,7 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
 	                                     @Nonnull final PreferenceTopicTableEditor preferenceTopicTableEditor) {
 		_editor = editor;
 		_preferenceTopicTableEditor = preferenceTopicTableEditor;
-		_table = preferenceTopicTableEditor._tableViewer.getTable();
+		_table = preferenceTopicTableEditor.getTableViewer().getTable();
 	}
 
 	/**
@@ -125,12 +125,13 @@ public class TopicTableEditorMouseListener extends MouseAdapter {
                     openFontDialogue(item, column);
                     break;
 
-//                case TOGGLE_BOOL:
-//                    toggleBool(item, column);
-//                    break;
-//                    default :
-//                LOG.error("Mouse action " + columnDescription.getMouseActionDescription()
-//                        + " not handled after double clicking column " + column);
+                case TOGGLE_BOOL:
+                    toggleBool(item, column);
+                    break;
+
+                default:
+                    LOG.error("Mouse action " + columnDescription.getMouseActionDescription()
+                            + " not handled after double clicking column " + column);
 
             }
 		}

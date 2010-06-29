@@ -17,7 +17,11 @@
 
 package org.csstudio.alarm.table;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
@@ -25,8 +29,14 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
+import org.csstudio.alarm.table.preferences.ColumnDescription;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
+import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
+import org.csstudio.alarm.table.preferences.TopicSetColumnService;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.service.AlarmSoundService;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.service.ITopicsetService;
@@ -50,7 +60,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
 
     // The shared instance.
-    private static JmsLogsPlugin plugin;
+    private static JmsLogsPlugin PLUGIN;
 
     private IMessageTypes _messageTypes;
 
@@ -68,39 +78,34 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
     private ISendMapMessage _sendMapMessage;
 
-    /**
-     * Stateful service shared by the log views
-     */
+    // Stateful services shared by the log views
     private ITopicsetService _topicsetServiceForLogViews;
+    private ITopicSetColumnService _topicSetColumnServiceForLogViews;
 
-    /**
-     * Stateful service shared by the alarm views
-     */
+    // Stateful services shared by the alarm views
     private ITopicsetService _topicsetServiceForAlarmViews;
+    private ITopicSetColumnService _topicSetColumnServiceForAlarmViews;
 
-    /**
-     * The alarm sound service
-     */
+    // Stateful services shared by the alarm views
+    private ITopicSetColumnService _topicSetColumnServiceForVerifyViews;
+
+    // The alarm sound service
     private IAlarmSoundService _alarmSoundService;
 
-    /**
-     * The alarm service
-     */
+    // The alarm service
     private IAlarmService _alarmService;
 
-    /**
-     * The alarm configuration service
-     */
+    // The alarm configuration service
     private IAlarmConfigurationService _alarmConfigurationService;
 
     /**
      * The constructor.
      */
     public JmsLogsPlugin() {
-        if (plugin != null) {
+        if (PLUGIN != null) {
             throw new IllegalStateException("Attempt to call plugin constructor more than once.");
         }
-        plugin = this;
+        PLUGIN = this;
     }
 
     @Override
@@ -119,6 +124,16 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         _topicsetServiceForLogViews = new TopicsetService("for log views");
         _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
         _alarmSoundService = new AlarmSoundService();
+        _topicSetColumnServiceForLogViews = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
+                                                                      LogViewPreferenceConstants.P_STRING,
+                                                                      getColumnDescriptionsForLogViews());
+        _topicSetColumnServiceForAlarmViews = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
+                                                                        AlarmViewPreferenceConstants.P_STRING_ALARM,
+                                                                        getColumnDescriptionsForAlarmViews());
+        _topicSetColumnServiceForVerifyViews = new TopicSetColumnService(AmsVerifyViewPreferenceConstants.TOPIC_SET,
+                                                                         AmsVerifyViewPreferenceConstants.P_STRING,
+                                                                         getColumnDescriptionsForVerifyViews());
+
 
         ISeverityMapping severityMapping = new SeverityMapping();
 
@@ -170,7 +185,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         context.ungetService(_serviceReferenceSendMapMessage);
         context.ungetService(_serviceReferenceSeverityMapping);
 
-        plugin = null;
+        PLUGIN = null;
     }
 
     private void safelyDisconnect(final ITopicsetService topicsetService) {
@@ -187,7 +202,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
      * Returns the shared instance.
      */
     public static JmsLogsPlugin getDefault() {
-        return plugin;
+        return PLUGIN;
     }
 
     /**
@@ -248,6 +263,18 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         return _topicsetServiceForLogViews;
     }
 
+    public ITopicSetColumnService getTopicSetColumnServiceForLogViews() {
+        return _topicSetColumnServiceForLogViews;
+    }
+
+    public ITopicSetColumnService getTopicSetColumnServiceForAlarmViews() {
+        return _topicSetColumnServiceForAlarmViews;
+    }
+
+    public ITopicSetColumnService getTopicSetColumnServiceForVerifyViews() {
+        return _topicSetColumnServiceForVerifyViews;
+    }
+
     /**
      * @return the topic set service to be shared by the alarm views (or null)
      */
@@ -279,5 +306,42 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     public IAlarmConfigurationService getAlarmConfigurationService() {
         return _alarmConfigurationService;
     }
+
+
+    @Nonnull
+    private List<ColumnDescription> getColumnDescriptionsForLogViews() {
+        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+        result.add(ColumnDescription.TOPIC_SET);
+        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+        result.add(ColumnDescription.AUTO_START);
+        result.add(ColumnDescription.FONT);
+        return result;
+    }
+
+    @Nonnull
+    private List<ColumnDescription> getColumnDescriptionsForAlarmViews() {
+        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+        result.add(ColumnDescription.TOPIC_SET);
+        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+        result.add(ColumnDescription.AUTO_START);
+        result.add(ColumnDescription.RETRIEVE_INITIAL_STATE);
+        result.add(ColumnDescription.FONT);
+        return result;
+    }
+
+    @Nonnull
+    private List<ColumnDescription> getColumnDescriptionsForVerifyViews() {
+
+        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+        result.add(ColumnDescription.TOPIC_SET);
+        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+        result.add(ColumnDescription.AUTO_START);
+        result.add(ColumnDescription.FONT);
+        return result;
+    }
+
 
 }

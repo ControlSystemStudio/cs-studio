@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.table.preferences.log;
 
-import java.util.Arrays;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -57,7 +57,7 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	}
 
 	@Override
-    public void createFieldEditors() {
+	public void createFieldEditors() {
 		final Label l = new Label(getFieldEditorParent(), SWT.NONE);
 		final Font font = l.getFont();
 		final FontData fontData = font.getFontData()[0];
@@ -66,8 +66,7 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 		l.setFont(font2);
 		l.setText("Die Einstellungen in den Spalten Popup Mode und Auto Start werden noch nicht ausgewertet.");
 
-		final PreferenceTopicTableEditor preferenceTopicTableEditor =
-		    new PreferenceTopicTableEditor(Arrays.asList(ColumnDescription.values()));
+        PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(getColumnDescriptions());
         preferenceTopicTableEditor.init(LogViewPreferenceConstants.TOPIC_SET,
                                         "&Topic Sets: ",
                                         getFieldEditorParent());
@@ -89,4 +88,11 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	public void init(@Nonnull final IWorkbench workbench) {
 	    // Nothing to do
 	}
+
+    @Nonnull
+    private List<ColumnDescription> getColumnDescriptions() {
+        return JmsLogsPlugin.getDefault().getTopicSetColumnServiceForLogViews().getColumnDescriptions();
+    }
+
+
 }

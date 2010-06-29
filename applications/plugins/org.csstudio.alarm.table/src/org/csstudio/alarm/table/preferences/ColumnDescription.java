@@ -30,7 +30,7 @@ public enum ColumnDescription {
 
     TOPIC_SET("Topics",
               150,
-              "Topics",
+              "Topic",
               MouseActionDescription.EDIT_STRING),
 
     NAME_FOR_TOPIC_SET("Name",
@@ -51,7 +51,12 @@ public enum ColumnDescription {
     FONT("Font",
          100,
          "Tahoma,0,8",
-         MouseActionDescription.OPEN_FONT_DIALOGUE);
+         MouseActionDescription.OPEN_FONT_DIALOGUE),
+
+    RETRIEVE_INITIAL_STATE("Initialize",
+               80,
+               "false",
+               MouseActionDescription.TOGGLE_BOOL);
 
 
     /**

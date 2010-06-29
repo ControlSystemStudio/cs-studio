@@ -31,8 +31,8 @@ import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
+import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
-import org.csstudio.alarm.table.preferences.TopicSetColumnService;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.messagetable.MessageTable;
@@ -95,8 +95,8 @@ public class LogView extends ViewPart {
     /**
      * Stateful service maintaining connections and message lists. There are two service
      * implementations available, one for the log views, one for the alarm views. Each is a
-     * singleton, all views belonging together share the state. You have to override
-     * defineTopicSetService accordingly.
+     * singleton, all views belonging together share the state.
+     * You have to register the appropriate service in createPartControl.
      */
     private ITopicsetService _topicsetService = null;
 
@@ -125,7 +125,12 @@ public class LogView extends ViewPart {
 
     Composite _tableComposite;
 
-    TopicSetColumnService _topicSetColumnService;
+    /**
+     * Stateful service maintaining the topic set preferences. There are different service
+     * implementations available. Each is a singleton, all views belonging together share the state.
+     * You have to register the appropriate service in createPartControl.
+     */
+    private ITopicSetColumnService _topicSetColumnService;
 
     private Label _runningSinceLabel;
 
@@ -142,9 +147,7 @@ public class LogView extends ViewPart {
     public void createPartControl(final Composite parent) {
         _parent = parent;
 
-        // Read column names and JMS topic settings from preferences
-        _topicSetColumnService = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
-                                                           LogViewPreferenceConstants.P_STRING);
+        setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForLogViews());
         setTopicSetService(JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews());
         defineCurrentTopicSet();
 
@@ -184,8 +187,6 @@ public class LogView extends ViewPart {
                                       LogViewPreferenceConstants.TOPIC_SET);
             _columnMapping = null;
         }
-        _topicSetColumnService = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
-                                                           LogViewPreferenceConstants.P_STRING);
         // is there already a MessageTable delete it and the message list.
         if (_messageTable != null) {
             _messageTable.disposeMessageTable();
@@ -233,10 +234,16 @@ public class LogView extends ViewPart {
     }
 
     /**
-     * The log view operates on a topic set service for log views. This method must be called to set
+     * A view operates on a topic set column service specific to the view. This method must be called to set
      * the appropriate one.
-     *
-     * @param topicSetService .
+     */
+    protected void setTopicSetColumnService(final ITopicSetColumnService topicSetColumnService) {
+        _topicSetColumnService = topicSetColumnService;
+    }
+
+    /**
+     * A view operates on a topic set service specific to the view. This method must be called to set
+     * the appropriate one.
      */
     protected void setTopicSetService(final ITopicsetService topicSetService) {
         _topicsetService = topicSetService;
@@ -326,6 +333,11 @@ public class LogView extends ViewPart {
             }
         }
         return _topicsetService.getMessageListForTopicSet(topicSet);
+    }
+
+    @Nonnull
+    protected ITopicSetColumnService getTopicSetColumnService() {
+        return _topicSetColumnService;
     }
 
     /**
