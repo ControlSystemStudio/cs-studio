@@ -37,43 +37,37 @@ import org.eclipse.swt.graphics.Font;
 public interface ITopicSetColumnService {
 
     /**
-     * If there is no
-     * default the first item is taken. The default tag from the preferences is
-     * overwritten if there is a topic set from a previous session.
+     * There should be a single topic set marked as default. If there is none, the first topic set is returned. If there is
+     * no topic set, an empty string is returned.
      *
-     * @param topics
-     *            raw topic string from preferences
-     * @return set of topics for initialization
+     * @return the topic set marked as default
      */
     @Nonnull
     String getDefaultTopicSet();
 
     /**
-     * Get the font for the given topic set name.
+     * Get the font for the given topicSetName.
      */
     @Nonnull
     Font getFont(@Nonnull final String topicSetName);
 
     /**
-     * Get corresponding columnSet for the given topicSet
-     *
-     * @param defaultTopicSet
-     * @return
+     * Get corresponding columnSet for the given topicSetName
      */
     @Nonnull
-    String[] getColumnSet(@Nonnull final String topicSet);
+    String[] getColumnSet(@Nonnull final String topicSetName);
 
+    /**
+     * @return all topics sets from the preference store
+     */
     @Nonnull
     List<TopicSet> getTopicSets();
 
     /**
      * Read the JMS Topics for the given topicSetName.
-     *
-     * @param currentTopicSet
-     * @return
      */
     @Nonnull
-    TopicSet getJMSTopics(@Nonnull final String currentTopicSet);
+    TopicSet getJMSTopics(@Nonnull final String topicSetName);
 
     /**
      * @return the list with the column descriptions specific to the type of view

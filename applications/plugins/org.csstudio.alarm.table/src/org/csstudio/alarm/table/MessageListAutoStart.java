@@ -69,8 +69,6 @@ public class MessageListAutoStart implements IStartupServiceListener {
      */
     @Override
     public void run() {
-        // TODO (jpenning) message list auto start currently disabled
-
         _topicsetForAlarmService = JmsLogsPlugin.getDefault().getTopicsetServiceForAlarmViews();
         _topicsetForLogService = JmsLogsPlugin.getDefault().getTopicsetServiceForLogViews();
 
