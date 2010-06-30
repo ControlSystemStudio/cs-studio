@@ -451,6 +451,14 @@
                menubarPath="xygraph"
                tooltip="Show/Hide XY-Graph Toolbar">
          </action>
+         <action
+               class="org.csstudio.opibuilder.widgets.actions.ClearXYGraphAction"
+               enablesFor="1"
+               id="org.csstudio.opibuilder.widgets.clearGraphAction"
+               label="Clear Graph"
+               menubarPath="xygraph"
+               tooltip="Clear Graph">
+         </action>
       </objectContribution>
       <objectContribution
             adaptable="false"

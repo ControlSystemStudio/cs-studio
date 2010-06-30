@@ -555,4 +555,13 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 	public Object getValue() {
 		return getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 	}	
+	
+	/**
+	 * Clear the graph by deleting buffered data.
+	 */
+	public void clearGraph(){
+		for(int i=0; i<getWidgetModel().getTracesAmount(); i++){
+			((CircularBufferDataProvider)traceList.get(i).getDataProvider()).clearTrace();
+		}
+	}
 }
