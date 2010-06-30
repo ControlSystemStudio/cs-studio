@@ -58,7 +58,7 @@ public final class WebBrowserEditPart extends AbstractBaseEditPart {
 	}
 	
 	public Browser getBrowser(){
-		return ((WebBrowserFigure)getFigure()).getSWTWidget();
+		return ((WebBrowserFigure)getFigure()).getBrowser();
 	}
 	
 }

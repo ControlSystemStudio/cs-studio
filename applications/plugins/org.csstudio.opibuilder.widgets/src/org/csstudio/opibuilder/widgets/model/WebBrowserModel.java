@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.eclipse.swt.graphics.RGB;
 
 /**The model for web browser widget.
  * @author Xihui Chen
@@ -16,7 +17,9 @@ public class WebBrowserModel extends AbstractWidgetModel {
 	public static final String PROP_URL = "url";//$NON-NLS-1$
 
 	public WebBrowserModel() {
-		setBorderStyle(BorderStyle.LOWERED);
+		setBorderStyle(BorderStyle.LINE);
+		setBorderColor(new RGB(192, 192, 192));
+		setSize(450, 300);
 	}
 
 	@Override

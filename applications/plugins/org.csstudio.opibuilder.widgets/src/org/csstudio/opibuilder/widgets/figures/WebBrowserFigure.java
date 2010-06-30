@@ -5,36 +5,70 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.ui.internal.browser.BrowserViewer;
 
 /**Figure for a web browser widget.
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("restriction")
 public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 
 	
 	private final static Color WHITE_COLOR = 
 		CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_WHITE);
 	
-
+	private BrowserViewer browserViewer;
 	private Browser browser;
+	
 	
 	public WebBrowserFigure(Composite composite, AbstractContainerModel parentModel, boolean runmode) {
 		super(composite, parentModel);
 		this.runmode = runmode;
 		if(runmode){
-			browser = new Browser(composite, SWT.NONE);
-			browser.setVisible(false);	
+			browserViewer = new BrowserViewer(composite, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR);
+			browser = browserViewer.getBrowser();
+//			toolbarArmedBrowser = new Composite(composite, SWT.None);
+//			toolbarArmedBrowser.setLayout(new GridLayout(3, false));
+//			ToolBar toolbar = new ToolBar(toolbarArmedBrowser, SWT.NONE);
+//			ToolItem itemBack = new ToolItem(toolbar, SWT.PUSH);
+//			itemBack.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
+//					Activator.PLUGIN_ID, "icons/nav_backward.gif"));
+//			ToolItem itemForward = new ToolItem(toolbar, SWT.PUSH);
+//			itemForward.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
+//					Activator.PLUGIN_ID, "icons/nav_forward.gif"));
+//			ToolItem itemStop = new ToolItem(toolbar, SWT.PUSH);
+//			itemStop.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
+//					Activator.PLUGIN_ID, "icons/nav_stop.gif"));
+//			ToolItem itemRefresh = new ToolItem(toolbar, SWT.PUSH);
+//			itemRefresh.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
+//					Activator.PLUGIN_ID, "icons/nav_refresh.gif"));
+//		
+//			
+//			GridData data = new GridData();
+//			toolbar.setLayoutData(data);
+//			
+//			final Text location = new Text(toolbarArmedBrowser, SWT.BORDER);
+//			data = new GridData();
+//			data.horizontalAlignment = GridData.FILL;
+//			data.grabExcessHorizontalSpace = true;
+//			location.setLayoutData(data);
+//			
+//			Button goButton = new Button(toolbarArmedBrowser, SWT.PUSH);
+//			goButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
+//					Activator.PLUGIN_ID, "icons/nav_go.gif"));
+//
+//			browser = new Browser(toolbarArmedBrowser, SWT.NONE);
+//			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		}
 	}
 
 	public void setUrl(String url){
 		if(runmode && url.trim().length() > 0)
-			browser.setUrl(url);
+			browserViewer.setURL(url);
 	}
 
 	@Override
@@ -48,8 +82,8 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 	}
 	
 	@Override
-	public Browser getSWTWidget() {
-		return browser;
+	public Composite getSWTWidget() {
+		return browserViewer;
 	}	
 	
 	@Override
@@ -60,12 +94,17 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 			//so that multiple browsers can be properly disposed.
 			UIBundlingThread.getInstance().addRunnable(new Runnable() {			
 				public void run() {				
-					browser.dispose();
+					browserViewer.dispose();
+					browserViewer = null;
 					browser = null;
 				}
 			});
 		}
 		
+	}
+
+	public Browser getBrowser() {
+		return browser;
 	}
 	
 }
