@@ -46,6 +46,8 @@ public abstract class AbstractDropPVTargetListener extends AbstractTransferDropT
 	@Override
 	protected void handleDrop() {
 		String[] pvNames = getPVNamesFromTransfer();
+		if(pvNames == null)
+			return;
 		((DropPVRequest)getTargetRequest()).setPvNames(pvNames);
 		super.handleDrop();
 	}

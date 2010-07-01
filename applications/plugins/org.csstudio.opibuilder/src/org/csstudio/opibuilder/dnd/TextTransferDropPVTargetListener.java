@@ -15,6 +15,8 @@ public class TextTransferDropPVTargetListener extends AbstractDropPVTargetListen
 
 	@Override
 	protected String[] getPVNamesFromTransfer() {
+		if(getCurrentEvent().data == null)
+			return null;
 		String text = (String)getCurrentEvent().data;
 		String[] pvNames = text.trim().split("\\s+"); //$NON-NLS-1$
 		return pvNames;

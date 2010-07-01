@@ -19,6 +19,8 @@ public class ProcessVariableNameTransferDropPVTargetListener extends AbstractDro
 
 	@Override
 	protected String[] getPVNamesFromTransfer() {
+		if(getCurrentEvent().data == null)
+			return null;
 		IProcessVariable[] pvArray = (IProcessVariable[])getCurrentEvent().data;
 		List<String> pvList = new ArrayList<String>();
 		for(IProcessVariable pv : pvArray){
