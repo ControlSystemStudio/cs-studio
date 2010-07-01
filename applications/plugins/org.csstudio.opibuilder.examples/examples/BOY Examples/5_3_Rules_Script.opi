@@ -551,59 +551,6 @@ $(pv_value)</tooltip>
       <color red="0" green="0" blue="255" />
     </foreground_color>
   </widget>
-  <widget typeId="org.csstudio.opibuilder.widgets.Ellipse" version="1.0">
-    <border_alarm_sensitive>true</border_alarm_sensitive>
-    <visible>true</visible>
-    <fill_level>0.0</fill_level>
-    <line_color>
-      <color red="128" green="0" blue="255" />
-    </line_color>
-    <scripts />
-    <height>51</height>
-    <anti_alias>true</anti_alias>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Ellipse_1</name>
-    <transparent>false</transparent>
-    <pv_name />
-    <background_color>
-      <color red="150" green="150" blue="150" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="255" />
-    </foreground_color>
-    <widget_type>Ellipse</widget_type>
-    <enabled>true</enabled>
-    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <line_style>0</line_style>
-    <width>51</width>
-    <border_style>0</border_style>
-    <rules>
-      <rule name="Blinking" prop_id="background_color" out_exp="false">
-        <exp bool_exp="pv0==0">
-          <value>
-            <color name="Red" />
-          </value>
-        </exp>
-        <exp bool_exp="pv0==1">
-          <value>
-            <color name="Yellow" />
-          </value>
-        </exp>
-        <pv trig="true">sim://ramp(0,1,1,0.5)</pv>
-      </rule>
-    </rules>
-    <border_width>1</border_width>
-    <line_width>0</line_width>
-    <horizontal_fill>true</horizontal_fill>
-    <border_color>
-      <color red="0" green="128" blue="255" />
-    </border_color>
-    <y>480</y>
-    <actions hook="false" />
-    <tooltip>$(pv_name)
-$(pv_value)</tooltip>
-    <x>685</x>
-  </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -626,11 +573,11 @@ $(pv_value)</tooltip>
     </border_color>
     <horizontal_alignment>1</horizontal_alignment>
     <transparent>false</transparent>
-    <y>455</y>
+    <y>381</y>
     <actions hook="false" />
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-    <x>638</x>
+    <x>568</x>
     <background_color>
       <color red="0" green="255" blue="128" />
     </background_color>
@@ -869,5 +816,107 @@ $(pv_value)</tooltip>
     <foreground_color>
       <color red="0" green="0" blue="203" />
     </foreground_color>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.TextUpdate" version="1.0">
+    <border_alarm_sensitive>true</border_alarm_sensitive>
+    <visible>true</visible>
+    <vertical_alignment>1</vertical_alignment>
+    <show_units>true</show_units>
+    <auto_size>false</auto_size>
+    <scripts />
+    <height>20</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Text Update</name>
+    <format_type>0</format_type>
+    <precision_from_pv>true</precision_from_pv>
+    <transparent>false</transparent>
+    <pv_name>loc://blinkingEnable</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Text Update</widget_type>
+    <enabled>true</enabled>
+    <text>######</text>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <precision>0</precision>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <rules>
+      <rule name="Blinking" prop_id="background_color" out_exp="false">
+        <exp bool_exp="pvStr2==&quot;Slow&quot; &amp;&amp; pv0==0">
+          <value>
+            <color red="255" green="0" blue="0" />
+          </value>
+        </exp>
+        <exp bool_exp="pvStr2==&quot;Slow&quot; &amp;&amp; pv0==1">
+          <value>
+            <color red="255" green="255" blue="0" />
+          </value>
+        </exp>
+        <exp bool_exp="pvStr2==&quot;Fast&quot; &amp;&amp; pv1==0">
+          <value>
+            <color red="128" green="0" blue="255" />
+          </value>
+        </exp>
+        <pv trig="true">sim://ramp(0,1,1,0.5)</pv>
+        <pv trig="true">sim://ramp(0,1,1,0.1)</pv>
+        <pv trig="true">loc://blinkingEnable</pv>
+      </rule>
+    </rules>
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <horizontal_alignment>1</horizontal_alignment>
+    <y>431</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>638</x>
+  </widget>
+  <widget typeId="org.csstudio.opibuilder.widgets.combo" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>23</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Combo Box</name>
+    <pv_name>loc://blinkingEnable</pv_name>
+    <background_color>
+      <color red="255" green="255" blue="255" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
+    <widget_type>Combo Box</widget_type>
+    <enabled>true</enabled>
+    <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
+    <font>
+      <fontdata fontName="Arial" height="9" style="0" />
+    </font>
+    <width>100</width>
+    <border_style>0</border_style>
+    <rules />
+    <items>
+      <s>Slow</s>
+      <s>Fast</s>
+      <s>No Blinking</s>
+    </items>
+    <border_width>1</border_width>
+    <items_from_pv>false</items_from_pv>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
+    <y>429</y>
+    <actions hook="false" />
+    <tooltip>$(pv_name)
+$(pv_value)</tooltip>
+    <x>528</x>
   </widget>
 </display>
