@@ -25,8 +25,8 @@ public class ChangeTimerangeCommand implements IUndoableCommand
      *  @param start
      *  @param end
      */
-    public ChangeTimerangeCommand(Model model, OperationsManager operationsManager,
-            boolean scroll, Calendar start, Calendar end)
+    public ChangeTimerangeCommand(final Model model, final OperationsManager operationsManager,
+            final boolean scroll, final Calendar start, final Calendar end)
     {
         this.model = model;
         this.old_scroll = model.isScrollEnabled();
