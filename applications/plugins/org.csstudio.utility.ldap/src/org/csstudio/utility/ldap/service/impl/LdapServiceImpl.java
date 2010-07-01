@@ -22,10 +22,10 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapNameUtils.removeRdns;
-import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -47,7 +47,6 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LDAPReader;
@@ -55,6 +54,7 @@ import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
@@ -106,15 +106,12 @@ public final class LdapServiceImpl implements ILdapService {
                                                               @Nonnull final String filter,
                                                               final int searchScope) {
 
-        final LdapSearchParams params = new LdapSearchParams(searchRoot, filter, searchScope);
         if(CONTEXT != null){
             final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(params.getScope());
+            ctrl.setSearchScope(searchScope);
             NamingEnumeration<SearchResult> answer = null;
             try {
-                answer = CONTEXT.search(params.getSearchRoot(),
-                                         params.getFilter(),
-                                         ctrl);
+                answer = CONTEXT.search(searchRoot, filter, ctrl);
 
                 final Set<SearchResult> answerSet = new HashSet<SearchResult>();
                 while(answer.hasMore()){
@@ -122,7 +119,8 @@ public final class LdapServiceImpl implements ILdapService {
                 }
 
                 final LdapSearchResult result = new LdapSearchResult();
-                result.setResult(params, answerSet);
+                result.setResult(new LdapSearchParams(searchRoot, filter, searchScope), answerSet);
+
                 return result;
 
             } catch (final NameNotFoundException nnfe){
@@ -204,6 +202,7 @@ public final class LdapServiceImpl implements ILdapService {
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
+        // FIXME (bknerr) : the reference to a specific name 'efan' does not belong here - the model has to work with the full name
         final LdapName nameInModel = removeRdns(component,
                                                        EFAN_FIELD_NAME,
                                                        Direction.FORWARD);
@@ -269,6 +268,7 @@ public final class LdapServiceImpl implements ILdapService {
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
+        // FIXME (bknerr) : the reference to a specific name 'efan' does not belong here - the model has to work with the full name
         final LdapName oldLdapNameInModel = removeRdns(oldLdapName,
                                                        EFAN_FIELD_NAME,
                                                        Direction.FORWARD);

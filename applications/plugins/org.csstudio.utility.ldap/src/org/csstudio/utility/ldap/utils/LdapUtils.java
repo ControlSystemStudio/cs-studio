@@ -19,22 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap;
+package org.csstudio.utility.ldap.utils;
 
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_SEPARATOR;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
@@ -58,6 +53,13 @@ import org.csstudio.platform.util.StringUtil;
 public final class LdapUtils {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUtils.class.getName());
+
+    /**
+     * Constructor.
+     */
+    private LdapUtils() {
+        // Dont instantiate
+    }
 
     /**
      * Returns a filter for 'any' match of the field name (e.g. '<fieldName>=*').
@@ -167,137 +169,4 @@ public final class LdapUtils {
         return controlSystem == ControlSystemEnum.EPICS;
         //              || controlSystem == ControlSystemEnum.DAL_EPICS;
     }
-
-    /**
-     * Query result parser for 'name in namespace' row.
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 09.04.2010
-     */
-    public static class LdapQueryResult {
-
-        private String _eren;
-        private String _econ;
-        private String _efan;
-
-        /**
-         * Constructor.
-         * @param efan .
-         * @param econ .
-         * @param eren .
-         */
-        public LdapQueryResult(@Nonnull final String efan,
-                               @Nonnull final String econ,
-                               @Nonnull final String eren) {
-            _efan = efan;
-            _econ = econ;
-            _eren = eren;
-        }
-
-        /**
-         * Constructor.
-         */
-        public LdapQueryResult() {
-            // Empty
-        }
-
-        /**
-         * Getter.
-         * @return eren
-         */
-        @CheckForNull
-        public final String getEren() {
-            return _eren;
-        }
-
-        /**
-         * Getter.
-         * @return econ
-         */
-        @CheckForNull
-        public final String getEcon() {
-            return _econ;
-        }
-
-        /**
-         * Getter.
-         * @return efan
-         */
-        @CheckForNull
-        public final String getEfan() {
-            return _efan;
-        }
-
-        /**
-         * Setter.
-         * @param econ .
-         */
-        public final void setEcon(@Nonnull final String econ) {
-            _econ = econ;
-        }
-
-        /**
-         * Setter.
-         * @param efan .
-         */
-        public final void setEfan(@Nonnull final String efan) {
-            _efan = efan;
-        }
-
-        /**
-         * Setter.
-         * @param eren .
-         */
-        public final void setEren(@Nonnull final String eren) {
-            _eren = eren;
-        }
-    }
-
-    /**
-     * Parses a string for fields :
-     * 'efan=<valefan>'
-     * 'econ=<valecon>'
-     * 'eren=<valeren>'
-     * and puts the results <valX> if present into the query result.
-     *
-     * @param ldapPath the line containing a row of a query result
-     * @return the query result object
-     */
-    @Deprecated
-    @Nonnull
-    public static LdapQueryResult parseLdapQueryResult(@Nonnull final String ldapPath) {
-
-        final String[] fields = ldapPath.split(FIELD_SEPARATOR);
-
-        final LdapQueryResult entry = new LdapQueryResult();
-
-        final String econPrefix = ECON_FIELD_NAME + FIELD_ASSIGNMENT;
-        final String efanPrefix = EFAN_FIELD_NAME + FIELD_ASSIGNMENT;
-        final String erenPrefix = EREN_FIELD_NAME + FIELD_ASSIGNMENT;
-
-        for (final String field : fields) {
-            final String trimmedString = field.trim();
-            if (trimmedString.startsWith(econPrefix)) {
-                final String econ = trimmedString.substring(econPrefix.length());
-                entry.setEcon(econ);
-            } else if (trimmedString.startsWith(efanPrefix)){
-                final String efan = trimmedString.substring(efanPrefix.length());
-                entry.setEfan(efan);
-            } else if (trimmedString.startsWith(erenPrefix)) {
-                final String eren = trimmedString.substring(erenPrefix.length());
-                entry.setEren(eren);
-            }
-        }
-        return entry;
-    }
-
-    /**
-     * Don't instantiate.
-     */
-    private LdapUtils() {
-        // Empty.
-    }
-
 }

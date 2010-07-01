@@ -21,9 +21,6 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-
 import java.util.Map;
 
 import javax.annotation.Nonnull;
@@ -34,6 +31,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
@@ -69,8 +67,8 @@ public class IocManagement implements IManagementCommand {
 
     private void commandDispatchAndExecute(@Nonnull final String command, @Nonnull final Map<String, String> map) {
 
-        final String iocName = map.get(ECON_FIELD_NAME);
-        final String facilityName = map.get(EFAN_FIELD_NAME);
+        final String iocName = map.get(LdapEpicsControlsConfiguration.IOC.getNodeTypeName());
+        final String facilityName = map.get(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName());
 
 
         try {

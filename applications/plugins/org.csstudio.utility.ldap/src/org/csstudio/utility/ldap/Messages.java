@@ -37,8 +37,7 @@ import javax.annotation.Nonnull;
 public final class Messages {
 	private static final String BUNDLE_NAME = "org.csstudio.utility.ldap.messages"; //$NON-NLS-1$
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle
-			.getBundle(BUNDLE_NAME);
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
 
 	/**
      * Constructor.

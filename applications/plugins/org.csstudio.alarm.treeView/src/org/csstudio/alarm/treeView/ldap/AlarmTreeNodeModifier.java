@@ -42,7 +42,7 @@ import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 
 
 /**

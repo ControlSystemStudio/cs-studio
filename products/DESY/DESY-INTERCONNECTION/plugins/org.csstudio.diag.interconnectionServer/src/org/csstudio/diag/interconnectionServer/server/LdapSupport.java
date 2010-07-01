@@ -25,8 +25,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 
 /**
  * Helper class for local LDAP support.

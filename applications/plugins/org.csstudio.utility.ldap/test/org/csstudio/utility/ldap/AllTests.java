@@ -36,7 +36,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( {
     LdapNameUtilsTest.class,
-    LdapContentModelBuilderTest.class,
+    LdapContentModelBuilderTest.class
 })
 
 /**

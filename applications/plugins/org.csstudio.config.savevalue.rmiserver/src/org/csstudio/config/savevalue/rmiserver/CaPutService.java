@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.savevalue.internal.changelog.ChangelogAppender;
 import org.csstudio.config.savevalue.service.ChangelogEntry;
 import org.csstudio.config.savevalue.service.SaveValueRequest;
@@ -57,7 +58,7 @@ public class CaPutService implements SaveValueService {
 	/**
 	 * The logger.
 	 */
-	private final CentralLogger _log = CentralLogger.getInstance();
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(CaPutService.class);
 
 	/**
 	 * The character used to separate channel and value in ca file entries.
@@ -76,17 +77,16 @@ public class CaPutService implements SaveValueService {
 	public final synchronized SaveValueResult saveValue(
 			final SaveValueRequest request) throws SaveValueServiceException,
 			RemoteException {
-		_log.info(this, "saveValue called with: " + request);
+		LOG.info("saveValue called with: " + request);
 		if (request.isValid()) {
-			IocFiles files = new IocFiles(request.getIocName());
+			final IocFiles files = new IocFiles(request.getIocName());
 			makeBackupCopy(files);
-			String replacedValue = updateValueInFile(files.getCafile(), request.getPvName(), request.getValue());
+			final String replacedValue = updateValueInFile(files.getCafile(), request.getPvName(), request.getValue());
 			writeChangelog(files.getChangelog(), request);
 			return new SaveValueResult(replacedValue);
-		} else {
-			_log.warn(this, "Invalid request.");
-			throw new SaveValueServiceException("Invalid request", null);
 		}
+        LOG.warn("Invalid request.");
+        throw new SaveValueServiceException("Invalid request", null);
 	}
 
 	/**
@@ -99,21 +99,25 @@ public class CaPutService implements SaveValueService {
 		ChangelogAppender appender = null;
 		try {
 			appender = new ChangelogAppender(new FileWriter(file, true));
-			ChangelogEntry entry = new ChangelogEntry(
+			String format;
+			synchronized (CHANGELOG_DATE_FORMAT) { // SimpleDateFormatter is not thread safe
+			    format = CHANGELOG_DATE_FORMAT.format(new Date());
+			}
+            final ChangelogEntry entry = new ChangelogEntry(
 					request.getPvName(),
 					request.getValue(),
 					request.getUsername(),
 					request.getHostname(),
-					CHANGELOG_DATE_FORMAT.format(new Date()));
+					format);
 			appender.append(entry);
-		} catch (IOException e) {
-			_log.warn(this, "Error writing to changelog file", e);
+		} catch (final IOException e) {
+			LOG.warn("Error writing to changelog file", e);
 		} finally {
 			if (appender != null) {
 				try {
 					appender.close();
-				} catch (IOException e) {
-					_log.error(this, "Error closing changelog file", e);
+				} catch (final IOException e) {
+					LOG.error("Error closing changelog file", e);
 				}
 			}
 		}
@@ -139,7 +143,7 @@ public class CaPutService implements SaveValueService {
 	private String updateValueInFile(final File file, final String pvName, final String newValue)
 			throws SaveValueServiceException {
 		String replacedValue = null;
-		Map<String, String> entries = parseFile(file);
+		final Map<String, String> entries = parseFile(file);
 		if (entries.containsKey(pvName)) {
 			replacedValue = entries.get(pvName);
 		}
@@ -164,19 +168,18 @@ public class CaPutService implements SaveValueService {
 	private void replaceFile(final File file, final Map<String, String> entries)
 			throws SaveValueServiceException {
 		try {
-			File directory = file.getAbsoluteFile().getParentFile();
+			final File directory = file.getAbsoluteFile().getParentFile();
 			// create a temporary file to write into
-			_log.info(this, "Trying to create temporary file with prefix \""
+			LOG.info("Trying to create temporary file with prefix \""
 					+ file.getName() + "\" in directory: " + directory);
-			File temp = File.createTempFile(file.getName(), null, directory);
-			_log.debug(this, "Writing to temporary file: " + temp);
+			final File temp = File.createTempFile(file.getName(), null, directory);
+			LOG.debug("Writing to temporary file: " + temp);
 			PrintWriter writer = null;
 			try {
 				// write the file
-				writer = new PrintWriter(new BufferedWriter(
-						new FileWriter(temp)));
-				for (String channel : entries.keySet()) {
-					String value = entries.get(channel);
+				writer = new PrintWriter(new BufferedWriter(new FileWriter(temp)));
+				for (final String channel : entries.keySet()) {
+					final String value = entries.get(channel);
 					writer.println(channel + CA_SEPARATOR + value);
 				}
 			} finally {
@@ -185,22 +188,22 @@ public class CaPutService implements SaveValueService {
 				}
 			}
 
-			_log.debug(this, "Renaming temporary file to " + file);
-			File target = file.getAbsoluteFile();
+			LOG.debug("Renaming temporary file to " + file);
+			final File target = file.getAbsoluteFile();
 			if (!temp.renameTo(target)) {
 				// On Windows, the rename fails if the target file exists. Try
 				// again, but this time, delete the target file first.
-				_log.warn(this, "Could not rename file, trying to delete target first");
+				LOG.warn("Could not rename file, trying to delete target first");
 				if (!(target.delete() && temp.renameTo(target))) {
 					// Failed again...
-					_log.error(this, "Could not rename file");
+					LOG.error("Could not rename file");
 					throw new SaveValueServiceException(
 							"Existing file could not be replaced.", null);
 				}
 			}
 
-		} catch (IOException e) {
-			_log.error(this, "Error creating temporary file for writing", e);
+		} catch (final IOException e) {
+			LOG.error("Error creating temporary file for writing", e);
 			throw new SaveValueServiceException(
 					"Could not create the replacement file", e);
 		}
@@ -222,18 +225,18 @@ public class CaPutService implements SaveValueService {
 				out = new FileOutputStream(files.getBackup()).getChannel();
 
 				// see http://forum.java.sun.com/thread.jspa?threadID=439695&messageID=2917510
-				int maxCount = (64 * 1024 * 1024) - (32 * 1024);
+				final int maxCount = (64 * 1024 * 1024) - (32 * 1024);
 
-				long size = in.size();
+				final long size = in.size();
 				long position = 0;
 				while (position < size) {
 					position += in.transferTo(position, maxCount, out);
 				}
-				_log.debug(this, "Created backup copy of " + files.getCafile());
-			} catch (FileNotFoundException e) {
-				_log.warn(this, "Backup failed with FileNotFoundException", e);
-			} catch (IOException e) {
-				_log.warn(this, "Backup failed with IOException", e);
+				LOG.debug("Created backup copy of " + files.getCafile());
+			} catch (final FileNotFoundException e) {
+				LOG.warn("Backup failed with FileNotFoundException", e);
+			} catch (final IOException e) {
+				LOG.warn("Backup failed with IOException", e);
 			} finally {
 			    tryToCloseFileChannel(in, "input file");
 			    tryToCloseFileChannel(out, "output file");
@@ -245,8 +248,8 @@ public class CaPutService implements SaveValueService {
         if (fileChannel != null) {
             try {
                 fileChannel.close();
-            } catch (IOException e) {
-                _log.warn(this, "Error closing " + channelName + ", backup may have failed", e);
+            } catch (final IOException e) {
+                LOG.warn("Error closing " + channelName + ", backup may have failed", e);
             }
         }
     }
@@ -264,7 +267,7 @@ public class CaPutService implements SaveValueService {
 	 */
 	private Map<String, String> parseFile(final File file)
 			throws SaveValueServiceException {
-		Map<String, String> entries = new HashMap<String, String>();
+		final Map<String, String> entries = new HashMap<String, String>();
 		if (file.exists()) {
 			BufferedReader reader = null;
 			try {
@@ -273,21 +276,20 @@ public class CaPutService implements SaveValueService {
 				while ((line = reader.readLine()) != null) {
 					parseLine(line, entries);
 				}
-			} catch (FileNotFoundException e) {
-				_log.error(this,
-						"File exists but could not be opened: " + file, e);
+			} catch (final FileNotFoundException e) {
+				LOG.error("File exists but could not be opened: " + file, e);
 				throw new SaveValueServiceException(
 						"Could not open existing ca file: " + file, e);
-			} catch (IOException e) {
-				_log.error(this, "Error reading from file: " + file, e);
+			} catch (final IOException e) {
+				LOG.error("Error reading from file: " + file, e);
 				throw new SaveValueServiceException(
 						"Error reading from existing ca file: " + file, e);
 			} finally {
 				if (reader != null) {
 					try {
 						reader.close();
-					} catch (IOException e) {
-						_log.warn(this, "Error closing input file", e);
+					} catch (final IOException e) {
+						LOG.warn("Error closing input file", e);
 					}
 				}
 			}
@@ -308,7 +310,7 @@ public class CaPutService implements SaveValueService {
 	 */
 	private void parseLine(final String line, final Map<String, String> entries)
 			throws SaveValueServiceException {
-		String[] tokens = line.split(CA_SEPARATOR, 2);
+		final String[] tokens = line.split(CA_SEPARATOR, 2);
 		if (tokens.length != 2) {
 			throw new SaveValueServiceException(
 					"Error parsing ca file, syntax error in the following line:\n"

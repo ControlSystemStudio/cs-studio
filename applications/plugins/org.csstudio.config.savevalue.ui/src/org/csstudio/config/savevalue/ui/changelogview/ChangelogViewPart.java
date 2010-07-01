@@ -21,10 +21,9 @@
  */
 
 package org.csstudio.config.savevalue.ui.changelogview;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.rmi.NotBoundException;
 import java.rmi.Remote;
@@ -46,11 +45,11 @@ import org.csstudio.config.savevalue.ui.Messages;
 import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -338,17 +337,17 @@ public class ChangelogViewPart extends ViewPart {
 						IProgressMonitor.UNKNOWN);
 				final ILdapService service = Activator.getDefault().getLdapService();
 				final LdapSearchResult result =
-				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-				                                              any(ECON_FIELD_NAME),
+				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+				                                              any(IOC.getNodeTypeName()),
 				                                              SearchControls.SUBTREE_SCOPE);
 
                 try {
-                    final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                        new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
+                    final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                        new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
                     builder.build();
-                    final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
+                    final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
-                    final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC));
+                    final List<String> iocNames = new ArrayList<String>(model.getSimpleNames(LdapEpicsControlsConfiguration.IOC));
 
                     Collections.sort(iocNames);
                     Display.getDefault().asyncExec(new Runnable() {

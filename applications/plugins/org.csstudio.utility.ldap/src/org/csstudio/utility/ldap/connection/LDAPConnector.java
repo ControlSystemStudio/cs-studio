@@ -77,7 +77,7 @@ public class LDAPConnector {
         }
     }
 
-    private void logError(final NamingException e) {
+    private void logError(@Nonnull final NamingException e) {
         LOG.error(e);
         LOG.error("The follow setting(s) are invalid: \r\n"
                   +"RemainingName: " + e.getRemainingName()+"\r\n"
@@ -122,7 +122,7 @@ public class LDAPConnector {
     @Nonnull
     private Map<PreferenceKey, String> getUIenv() {
 
-        IPreferencesService preferencesService = Platform.getPreferencesService();
+        final IPreferencesService preferencesService = Platform.getPreferencesService();
         final String url = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_URL.name(), "", null);
         final String proto = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_PROTOCOL.name(), "", null);
         final String auth = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_AUTHENTICATION.name(), "", null);

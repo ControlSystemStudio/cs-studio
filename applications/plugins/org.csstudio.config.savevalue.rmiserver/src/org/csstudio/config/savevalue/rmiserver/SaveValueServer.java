@@ -41,8 +41,8 @@ import org.remotercp.ecf.ECFConstants;
 import org.remotercp.login.connection.HeadlessConnection;
 
 /**
- * Server application for the save value services. 
- * 
+ * Server application for the save value services.
+ *
  * @author Joerg Rathlev
  */
 public class SaveValueServer implements IApplication {
@@ -51,21 +51,21 @@ public class SaveValueServer implements IApplication {
 	 * Whether this application should stop.
 	 */
 	private boolean _stopped = false;
-	
+
 	/**
 	 * The logger that is used by this class.
 	 */
-	private CentralLogger _log = CentralLogger.getInstance();
-	
+	private final CentralLogger _log = CentralLogger.getInstance();
+
 	/**
 	 * The running instance of this server.
 	 */
 	private static SaveValueServer INSTANCE;
-	
+
 	/**
 	 * Returns a reference to the currently running server instance. Note: it
 	 * would probably be better to use the OSGi Application Admin service.
-	 * 
+	 *
 	 * @return the running server.
 	 */
 	static SaveValueServer getRunningServer() {
@@ -76,25 +76,25 @@ public class SaveValueServer implements IApplication {
 	 * {@inheritDoc}
 	 */
 	public final Object start(final IApplicationContext context) throws Exception {
-		
+
 		INSTANCE = this;
-		
-	    connectToXmppServer();  
-		
-        for (IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
+
+	    connectToXmppServer();
+
+        for (final IStartupServiceListener s : StartupServiceEnumerator.getServices()) {
             _log.debug(this, "Running startup service: " + s.toString());
             s.run();
         }
- 		
+
 		try {
 			// Create the registry
-			Registry reg = LocateRegistry.createRegistry(1099);
-			
-			SocketFactory sf = new SocketFactory();
-			
+			final Registry reg = LocateRegistry.createRegistry(1099);
+
+			final SocketFactory sf = new SocketFactory();
+
 			// Create the services and publish them
-			
-			// EPICS Ora is not implemented yet			
+
+			// EPICS Ora is not implemented yet
 //			SaveValueService epicsOra = new EpicsOraService();
 //			SaveValueService eoStub = (SaveValueService) UnicastRemoteObject.exportObject(epicsOra, 0, sf, sf);
 //			reg.bind("SaveValue.EpicsOra", eoStub);
@@ -104,14 +104,14 @@ public class SaveValueServer implements IApplication {
 //			SaveValueService dbStub = (SaveValueService) UnicastRemoteObject.exportObject(db, 0, sf, sf);
 //			reg.bind("SaveValue.Database", dbStub);
 
-			SaveValueService caput = new CaPutService();
-			SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0, sf, sf);
+			final SaveValueService caput = new CaPutService();
+			final SaveValueService caputStub = (SaveValueService) UnicastRemoteObject.exportObject(caput, 0, sf, sf);
 			reg.bind("SaveValue.caput", caputStub);
-			
-			ChangelogService changelog = new ChangelogServiceImpl();
-			ChangelogService changelogStub = (ChangelogService) UnicastRemoteObject.exportObject(changelog, 0, sf, sf);
+
+			final ChangelogService changelog = new ChangelogServiceImpl();
+			final ChangelogService changelogStub = (ChangelogService) UnicastRemoteObject.exportObject(changelog, 0, sf, sf);
 			reg.bind("SaveValue.changelog", changelogStub);
-			
+
 			_log.info(this, "Server ready.");
 			context.applicationRunning();
 			synchronized (this) {
@@ -119,7 +119,7 @@ public class SaveValueServer implements IApplication {
 					wait();
 				}
 			}
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			_log.error(this, "Server error.", e);
 			e.printStackTrace();
 		}
@@ -130,19 +130,19 @@ public class SaveValueServer implements IApplication {
      * Connects to the XMPP server for remote management (ECF-based).
      */
     private void connectToXmppServer() throws Exception {
-        IPreferencesService prefs = Platform.getPreferencesService();
-        String username = prefs.getString(Activator.PLUGIN_ID,
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        final String username = prefs.getString(Activator.PLUGIN_ID,
                 PreferenceConstants.XMPP_USERNAME, "anonymous", null);
-        String password = prefs.getString(Activator.PLUGIN_ID,
+        final String password = prefs.getString(Activator.PLUGIN_ID,
                 PreferenceConstants.XMPP_PASSWORD, "anonymous", null);
-        String server = prefs.getString(Activator.PLUGIN_ID,
+        final String server = prefs.getString(Activator.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krykxmpp.desy.de", null);
-        
+
         HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
         ServiceLauncher.startRemoteServices();
     }
 
-	
+
 	/**
 	 * {@inheritDoc}
 	 */

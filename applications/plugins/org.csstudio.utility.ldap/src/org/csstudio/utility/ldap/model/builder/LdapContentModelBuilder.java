@@ -38,10 +38,10 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -150,6 +150,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
                                      @Nonnull final ISubtreeNodeComponent<T> root) throws InvalidNameException {
         ISubtreeNodeComponent<T> parent = root;
 
+        // FIXME (bknerr) : this reference to 'efan' does not belong here - the LDapNames have to go completely into the model
         final LdapName partialName = LdapNameUtils.removeRdns(fullName,
                                                               LdapFieldsAndAttributes.EFAN_FIELD_NAME,
                                                               Direction.FORWARD);

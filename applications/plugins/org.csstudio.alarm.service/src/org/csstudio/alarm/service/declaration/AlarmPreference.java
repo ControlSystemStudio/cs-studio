@@ -78,7 +78,11 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 1000);
 
 
-
+    /**
+     * Constructor.
+     * @param keyAsString
+     * @param defaultValue
+     */
     private AlarmPreference(@Nonnull final String keyAsString, @Nonnull final T defaultValue) {
         super(keyAsString, defaultValue);
     }
@@ -105,8 +109,8 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      */
     @Nonnull
     public static List<String> getTopicNames() {
-        String resultString = ALARMSERVICE_TOPICS.getValue();
-        String[] result = resultString.split(STRING_LIST_SEPARATOR);
+        final String resultString = ALARMSERVICE_TOPICS.getValue();
+        final String[] result = resultString.split(STRING_LIST_SEPARATOR);
         return Arrays.asList(result);
     }
 
@@ -148,13 +152,13 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      */
     @Nonnull
     public static String getConfigFilename() {
-        Bundle bundle = Platform.getBundle(AlarmServiceActivator.PLUGIN_ID);
-        Path path = new Path(ALARMSERVICE_CONFIG_FILENAME.getValue());
-        URL url = FileLocator.find(bundle, path, null);
+        final Bundle bundle = Platform.getBundle(AlarmServiceActivator.PLUGIN_ID);
+        final Path path = new Path(ALARMSERVICE_CONFIG_FILENAME.getValue());
+        final URL url = FileLocator.find(bundle, path, null);
         String result = null;
         try {
             result = FileLocator.toFileURL(url).getPath();
-        } catch (IOException e) {
+        } catch (final IOException e) {
             result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
             LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
         }

@@ -23,8 +23,6 @@
  */
 package org.csstudio.utility.treemodel;
 
-import java.util.Set;
-
 import javax.annotation.Nonnull;
 
 import com.google.common.collect.ImmutableSet;
@@ -66,18 +64,10 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
     String getRootTypeValue();
 
     /**
-
-     * Returns the TreeConfiguration types that a container entry nested within this an
-     * entry of this object class should have. If this object class is not a
-     * container class or if there is no recommended class for nested
-     * containers, this method returns <code>null</code>.
-     *
-     * @return the recommended object class for a container within a container
-     *         of this object class. <code>null</code> if there is no
-     *         recommended class.
+     * The tree items a tree item can contain.
      */
     @Nonnull
-    Set<T> getNestedContainerTypes();
+    ImmutableSet<T> getNestedContainerTypes();
 
     /**
      * Returns the object class of an LDAP rdn attribute (efan, eren, ...).

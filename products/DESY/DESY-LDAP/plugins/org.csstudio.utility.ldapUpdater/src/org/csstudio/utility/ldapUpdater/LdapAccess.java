@@ -21,16 +21,15 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
-import static org.csstudio.utility.ldap.LdapUtils.filterLDAPNames;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
@@ -51,12 +50,12 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.LdapNameUtils;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
@@ -85,7 +84,7 @@ public final class LdapAccess {
 
     static {
         try {
-            final Rdn ou = new Rdn(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+            final Rdn ou = new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final List<Rdn> list = new ArrayList<Rdn>();
             list.add(ou);
             NAME_SUFFIX = new LdapName(list);
@@ -172,19 +171,19 @@ public final class LdapAccess {
      * @throws InvalidNameException
      * @throws CreateContentModelException
      */
-    public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> contentModel,
+    public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> contentModel,
                                              @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException, CreateContentModelException{
 
-        final Set<Entry<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>>> childrenByTypeSet =
-            contentModel.getChildrenByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC).entrySet();
+        final Set<Entry<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>>> childrenByTypeSet =
+            contentModel.getChildrenByTypeAndSimpleName(IOC).entrySet();
 
-        for (final Entry<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> entry : childrenByTypeSet) {
+        for (final Entry<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> entry : childrenByTypeSet) {
 
-            final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iocFromLdap = entry.getValue();
+            final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap = entry.getValue();
 
             final String iocName = iocFromLdap.getName();
             final String facName =
-                LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), LdapEpicsControlsTreeConfiguration.FACILITY.getNodeTypeName());
+                LdapNameUtils.getValueOfRdnType(iocFromLdap.getLdapName(), FACILITY.getNodeTypeName());
 
             if (facName == null) {
                 LOG.warn("Facility name could not be retrieved for " + iocFromLdap.getLdapName().toString());
@@ -216,8 +215,8 @@ public final class LdapAccess {
     }
 
     @Nonnull
-    private static UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> model,
-                                             @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iocFromLDAP) throws NamingException {
+    private static UpdateIOCResult updateIOC(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                                             @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP) throws NamingException {
 
         final String iocName = iocFromLDAP.getName();
         int numOfRecsWritten = 0;
@@ -231,8 +230,8 @@ public final class LdapAccess {
         for (final Record record : recordsFromFile) {
             final String recordName = record.getName();
 
-            final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> recordComponent =
-                model.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.RECORD, recordName);
+            final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
+                model.getByTypeAndSimpleName(RECORD, recordName);
 
             if (recordComponent == null) { // does not yet exist
                 LOG.info("New Record: " + iocName + " " + recordName);
@@ -240,7 +239,7 @@ public final class LdapAccess {
                 if (!filterLDAPNames(recordName)) {
 
                     final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
-                    newLdapName.add(new Rdn(EREN_FIELD_NAME, recordName));
+                    newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
 
                     if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
                         LOG.error("Error while updating LDAP record for " + recordName +
@@ -257,8 +256,8 @@ public final class LdapAccess {
         sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
 
         // TODO (bknerr) : what to do with success variable ?
-        final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iLdapComponent =
-            model.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC, iocName);
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iLdapComponent =
+            model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
 
         int numOfChildren = -1;
         if (iLdapComponent != null) {
@@ -272,7 +271,7 @@ public final class LdapAccess {
 
 
 
-    private static void sendUnallowedCharsNotification(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iocFromLDAP,
+    private static void sendUnallowedCharsNotification(@Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
@@ -305,7 +304,7 @@ public final class LdapAccess {
      *            the contents of the history file
      * @throws InterruptedException
      */
-    public static void updateLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> model,
+    public static void updateLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
                                              @Nonnull final Map<String, IOC> iocMap,
                                              @Nonnull final HistoryFileContentModel historyFileModel) throws InterruptedException {
 
@@ -322,7 +321,7 @@ public final class LdapAccess {
             } // else means 'new IOC file in directory'
 
             try {
-                final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iocFromLdap =
+                final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
                     getOrCreateIocFromLdap(model,
                                            iocFromFS,
                                            iocName);
@@ -332,8 +331,8 @@ public final class LdapAccess {
                 final LdapSearchResult searchResult =
                     LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
                 if (searchResult != null) {
-                    final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                        new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(model);
+                    final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                        new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(model);
                     builder.setSearchResult(searchResult);
                     builder.build();
                 }
@@ -356,31 +355,33 @@ public final class LdapAccess {
     }
 
 
-    private static ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> model,
+    private static ISubtreeNodeComponent<LdapEpicsControlsConfiguration> getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
                                                                                               @Nonnull final Entry<String, IOC> iocFromFS,
                                                                                               @Nonnull final String iocName) throws InvalidNameException {
-        ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> iocFromLdap =
-            model.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC, iocName);
+        ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
+            model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
 
         LdapName iocFromLdapName;
         if (iocFromLdap == null) {
             LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
-            final LdapName middleName = createLdapQuery(ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                                        EFAN_FIELD_NAME, UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
+            final LdapName middleName = createLdapQuery(COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+                                                        FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
 
-            iocFromLdapName = (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(ECON_FIELD_NAME, iocName));
+            iocFromLdapName =
+                (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(IOC.getNodeTypeName(), iocName));
 
-            final LdapName fullLdapName = (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE));
+            final LdapName fullLdapName =
+                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
 
             LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
 
-            final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> parent = model.getChildByLdapName(middleName.toString());
+            final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> parent = model.getChildByLdapName(middleName.toString());
             if (parent != null) {
                 iocFromLdap =
-                    new TreeNodeComponent<LdapEpicsControlsTreeConfiguration>(
+                    new TreeNodeComponent<LdapEpicsControlsConfiguration>(
                             iocName,
-                            LdapEpicsControlsTreeConfiguration.IOC,
+                            LdapEpicsControlsConfiguration.IOC,
                             parent,
                             null,
                             iocFromLdapName);

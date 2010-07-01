@@ -24,8 +24,6 @@
 package org.csstudio.utility.treemodel.builder;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -35,6 +33,8 @@ import javax.annotation.Nonnull;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * Test enum configuring the test xml files.
@@ -70,13 +70,9 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
 
 
     private static final Map<String, TestTreeConfigurator> CACHE_BY_NAME =
-        new HashMap<String, TestTreeConfigurator>();
-
+        Maps.newHashMapWithExpectedSize(values().length);
 
     static {
-        // Initialize the _nestedClass attribute
-        RECORD._nestedClasses = Collections.emptySet();
-
         IOC._nestedClasses.add(RECORD);
 
         COMPONENT._nestedClasses.add(IOC);
@@ -104,11 +100,10 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
 
 
     /**
-     * The object class of a container nested within a container of this object
-     * class. <code>null</code> if this object class is not a container or if
-     * there is no standard nested class for this class.
+     * The tree items that are nested into a container of this class.
      */
-    private Set<TestTreeConfigurator> _nestedClasses = new HashSet<TestTreeConfigurator>();
+    private final Set<TestTreeConfigurator> _nestedClasses =
+        Sets.newEnumSet(Collections.<TestTreeConfigurator>emptySet(), TestTreeConfigurator.class);
 
     /**
      * Creates a new object class.
@@ -149,8 +144,8 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @CheckForNull
-    public Set<TestTreeConfigurator> getNestedContainerTypes() {
-        return _nestedClasses;
+    public ImmutableSet<TestTreeConfigurator> getNestedContainerTypes() {
+        return Sets.immutableEnumSet(_nestedClasses);
     }
 
     /**

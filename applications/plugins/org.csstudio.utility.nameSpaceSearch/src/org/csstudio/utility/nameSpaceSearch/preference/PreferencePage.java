@@ -24,6 +24,9 @@
  */
 package org.csstudio.utility.nameSpaceSearch.preference;
 
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
@@ -38,10 +41,10 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
  * @since 23.04.2007
  */
 
-public class PreferencePage extends FieldEditorPreferencePage 
+public class PreferencePage extends FieldEditorPreferencePage
 	implements IWorkbenchPreferencePage {
 
-	
+
 	public PreferencePage() {
 		super(FieldEditorPreferencePage.GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
@@ -52,24 +55,25 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
 	protected void createFieldEditors() {
-		addField(new StringFieldEditor(
-						PreferenceConstants.P_STRING_RECORD_ATTRIBUTE,
-						Messages.getString(Messages.PreferencePage_RECORD_ATTRIEBUT),
-						getFieldEditorParent()
-		));
-		StringFieldEditor searchRoot = new StringFieldEditor(
-				PreferenceConstants.P_STRING_SEARCH_ROOT,
-				Messages.getString(Messages.PreferencePage_SEARCH_ROOT)
-				, getFieldEditorParent());
+		addField(new StringFieldEditor(RECORD.getNodeTypeName(),
+		                               Messages.getString(Messages.PreferencePage_RECORD_ATTRIBUTE),
+		                               getFieldEditorParent()));
+		final StringFieldEditor searchRoot =
+		    new StringFieldEditor(ROOT.getNodeTypeName() + "=" + ROOT.getRootTypeValue(),
+		                          Messages.getString(Messages.PreferencePage_SEARCH_ROOT),
+		                          getFieldEditorParent());
+
 		searchRoot.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString(Messages.PreferencePage_SEARCH_ROOT_TOOL_TIP));
-		addField(searchRoot); 
+		addField(searchRoot);
 
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {	}
+	public void init(final IWorkbench workbench) {
+	    // EMPTY
+	}
 
 
 }

@@ -21,9 +21,8 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.ui;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
@@ -99,7 +98,7 @@ public class MainView extends ViewPart {
 		                nameSpaceLDAP,
 		                getSite(),
 		                defaultPVFilter,
-		                OU_FIELD_NAME + FIELD_ASSIGNMENT + EPICS_CTRL_FIELD_VALUE,
+		                ROOT.getNodeTypeName() + FIELD_ASSIGNMENT + ROOT.getRootTypeValue(),
 		                headlines,
 		                0,
 		                searchResult);

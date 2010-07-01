@@ -33,12 +33,16 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends AbstractCssPlugin {
 
-    // The plug-in ID
+    /**
+     *  The plug-in ID
+     */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
 
     private ILdapService _ldapService;
 
-    // The shared instance
+    /**
+     *  The shared instance
+     */
     private static Activator INSTANCE;
 
     /**

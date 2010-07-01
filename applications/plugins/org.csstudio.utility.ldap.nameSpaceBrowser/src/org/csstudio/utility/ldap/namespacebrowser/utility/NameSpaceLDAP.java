@@ -74,7 +74,9 @@ public class NameSpaceLDAP extends NameSpace {
                                                                        getFilter(),
                                                                        SearchControls.ONELEVEL_SCOPE);
                 }
-                updateResultList(result.getCSIResultList());
+                if (result != null) {
+                    updateResultList(result.getCSIResultList());
+                }
 
             } else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof LdapSearchResult' nicht stimmt.

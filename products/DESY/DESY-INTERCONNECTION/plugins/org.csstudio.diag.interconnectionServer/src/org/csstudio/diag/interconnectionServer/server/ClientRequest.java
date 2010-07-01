@@ -22,9 +22,9 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP;
 
 import java.net.DatagramSocket;
 import java.net.InetAddress;
@@ -52,8 +52,8 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 

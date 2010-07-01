@@ -23,19 +23,19 @@
  */
 package org.csstudio.utility.ldap.model;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 /**
  * The object class of an EPICS Controls item. The enumeration constants defined in this
@@ -47,7 +47,7 @@ import com.google.common.collect.ImmutableSet;
  * @version $Revision$
  * @since 03.05.2010
  */
-public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration<LdapEpicsControlsTreeConfiguration> {
+public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<LdapEpicsControlsConfiguration> {
 
     ROOT(LdapFieldsAndAttributes.OU_FIELD_NAME, "root"),
 
@@ -72,23 +72,21 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
     RECORD(LdapFieldsAndAttributes.EREN_FIELD_NAME, "record");
 
 
-    private static final Map<String, LdapEpicsControlsTreeConfiguration> CACHE_BY_NAME =
-        new HashMap<String, LdapEpicsControlsTreeConfiguration>();
-
+    private static final Map<String, LdapEpicsControlsConfiguration> CACHE_BY_NAME =
+        Maps.newHashMapWithExpectedSize(values().length);
 
     static {
-        // Initialize the _nestedClass attribute
-        RECORD._nestedClasses = Collections.emptySet();
+        RECORD._nestedClasses =  EnumSet.noneOf(LdapEpicsControlsConfiguration.class);
 
-        IOC._nestedClasses.add(RECORD);
+        IOC._nestedClasses = EnumSet.of(RECORD);
 
-        COMPONENT._nestedClasses.add(IOC);
+        COMPONENT._nestedClasses = EnumSet.of(IOC);
 
-        FACILITY._nestedClasses.add(COMPONENT);
+        FACILITY._nestedClasses = EnumSet.of(COMPONENT);
 
-        ROOT._nestedClasses.add(FACILITY);
+        ROOT._nestedClasses = EnumSet.of(FACILITY);
 
-        for (final LdapEpicsControlsTreeConfiguration oc : LdapEpicsControlsTreeConfiguration.values()) {
+        for (final LdapEpicsControlsConfiguration oc : LdapEpicsControlsConfiguration.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
@@ -107,24 +105,22 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
 
 
     /**
-     * The object class of a container nested within a container of this object
-     * class. <code>null</code> if this object class is not a container or if
-     * there is no standard nested class for this class.
+     * The tree items that are nested into a container of this class.
      */
-    private Set<LdapEpicsControlsTreeConfiguration> _nestedClasses = new HashSet<LdapEpicsControlsTreeConfiguration>();
+    private Set<LdapEpicsControlsConfiguration> _nestedClasses;
 
     /**
-     * Creates a new object class.
+     * Creates a new tree node type.
      *
      * @param nodeTypeName
      *            the name of the attribute to use for the RDN.
      * @param description
      *            the description of this tree component.
+     *
+     * CHECKSTYLE:Jsr305Annotations:OFF
      */
-    //CHECKSTYLE:OFF
-    private LdapEpicsControlsTreeConfiguration(final String nodeTypeName,
-                                         final String description) {
-    //CHECKSTYLE:ON
+    private LdapEpicsControlsConfiguration(final String nodeTypeName,
+                                           final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
     }
@@ -152,8 +148,8 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
      */
     @Override
     @Nonnull
-    public Set<LdapEpicsControlsTreeConfiguration> getNestedContainerTypes() {
-        return _nestedClasses;
+    public ImmutableSet<LdapEpicsControlsConfiguration> getNestedContainerTypes() {
+        return Sets.immutableEnumSet(_nestedClasses);
     }
 
     /**
@@ -161,12 +157,12 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
      */
     @Override
     @CheckForNull
-    public LdapEpicsControlsTreeConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public LdapEpicsControlsConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
     @CheckForNull
-    private static LdapEpicsControlsTreeConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static LdapEpicsControlsConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
         return CACHE_BY_NAME.get(name);
     }
 
@@ -182,6 +178,7 @@ public enum LdapEpicsControlsTreeConfiguration implements ITreeNodeConfiguration
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type

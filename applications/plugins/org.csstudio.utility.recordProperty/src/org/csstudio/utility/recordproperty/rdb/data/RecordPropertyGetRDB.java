@@ -1,9 +1,9 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -30,11 +30,10 @@ import org.csstudio.platform.simpledal.ConnectionException;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
 import org.csstudio.platform.simpledal.ValueType;
-import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.recordproperty.Activator;
 import org.csstudio.utility.recordproperty.Messages;
 import org.csstudio.utility.recordproperty.RecordPropertyEntry;
@@ -335,15 +334,15 @@ public class RecordPropertyGetRDB {
 		try {
 	        final ILdapService service = Activator.getDefault().getLdapService();
 
-	        final LdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-	                                                                                  EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
+	        final LdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+	                                                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
 	                                                                                  SearchControls.SUBTREE_SCOPE);
 	        if (!result.getAnswerSet().isEmpty()) {
 	            final SearchResult row = result.getAnswerSet().iterator().next();
 	            LdapName ldapName;
 	            try {
 	                ldapName = LdapNameUtils.parseSearchResult(row);
-	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsTreeConfiguration.IOC.getNodeTypeName());
+	                final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, IOC.getNodeTypeName());
 	                if (iocName == null) {
 	                    _log.error(this, "No IOC was found for PV: " + _record); //$NON-NLS-1$
 	                    _nameIOC = "";

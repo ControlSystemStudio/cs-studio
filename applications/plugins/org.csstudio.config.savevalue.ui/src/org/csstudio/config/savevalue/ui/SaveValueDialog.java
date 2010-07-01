@@ -21,10 +21,10 @@
  */
 package org.csstudio.config.savevalue.ui;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
@@ -47,11 +47,10 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
@@ -306,8 +305,8 @@ public class SaveValueDialog extends Dialog {
 		final ILdapService service = Activator.getDefault().getLdapService();
 
 	    final LdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-	                                                  EREN_FIELD_NAME + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
 	                                                  SearchControls.SUBTREE_SCOPE);
 
 	    if ((result == null) || result.getAnswerSet().isEmpty()) {
@@ -328,7 +327,7 @@ public class SaveValueDialog extends Dialog {
 	        final SearchResult row = result.getAnswerSet().iterator().next();
 	        final LdapName ldapName = LdapNameUtils.parseSearchResult(row);
 	        if (ldapName != null) {
-	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, LdapEpicsControlsTreeConfiguration.IOC.getNodeTypeName());
+	            final String iocName = LdapNameUtils.getValueOfRdnType(ldapName, IOC.getNodeTypeName());
 	            if (iocName != null) {
 	                _iocName = iocName;
 	                return null;

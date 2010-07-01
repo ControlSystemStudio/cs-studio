@@ -23,14 +23,13 @@
  */
 package org.csstudio.utility.ldap.model;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EREN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -59,31 +58,31 @@ import org.junit.Test;
  */
 public class LdapContentModelBuilderTest {
 
-    private static ContentModel<LdapEpicsControlsTreeConfiguration> MODEL_ONE;
+    private static ContentModel<LdapEpicsControlsConfiguration> MODEL_ONE;
 
-    private static ContentModel<LdapEpicsControlsTreeConfiguration> MODEL_TWO;
+    private static ContentModel<LdapEpicsControlsConfiguration> MODEL_TWO;
 
     private static final ILdapService SERVICE = LdapActivator.getDefault().getLdapService();
 
-    private static final Map<LdapEpicsControlsTreeConfiguration, Integer> RESULT_CHILDREN_BY_TYPE =
-        new EnumMap<LdapEpicsControlsTreeConfiguration, Integer>(LdapEpicsControlsTreeConfiguration.class);
+    private static final Map<LdapEpicsControlsConfiguration, Integer> RESULT_CHILDREN_BY_TYPE =
+        new EnumMap<LdapEpicsControlsConfiguration, Integer>(LdapEpicsControlsConfiguration.class);
     static {
-        RESULT_CHILDREN_BY_TYPE.put(LdapEpicsControlsTreeConfiguration.FACILITY, 3);
-        RESULT_CHILDREN_BY_TYPE.put(LdapEpicsControlsTreeConfiguration.COMPONENT, 4);
-        RESULT_CHILDREN_BY_TYPE.put(LdapEpicsControlsTreeConfiguration.IOC, 19);
+        RESULT_CHILDREN_BY_TYPE.put(FACILITY, 3);
+        RESULT_CHILDREN_BY_TYPE.put(COMPONENT, 4);
+        RESULT_CHILDREN_BY_TYPE.put(IOC, 19);
     }
 
     @BeforeClass
     public static void modelSetup() {
 
-        LdapSearchResult searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(EFAN_FIELD_NAME, "TEST",
-                                                                                                  OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                                                                  any(ECON_FIELD_NAME),
+        LdapSearchResult searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
+                                                                                                  ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                                                  any(IOC.getNodeTypeName()),
                                                                                                   SearchControls.SUBTREE_SCOPE);
         try {
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, searchResult);
+                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, searchResult);
 
                 builder.build();
                 MODEL_ONE = builder.getModel();
@@ -92,15 +91,15 @@ public class LdapContentModelBuilderTest {
                 Assert.fail("Model setup failed. Search result is null.");
             }
 
-            searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
-                                                                                     ECOM_FIELD_NAME, "EPICS-IOC",
-                                                                                     EFAN_FIELD_NAME, "TEST",
-                                                                                     OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                                                     any(EREN_FIELD_NAME),
+            searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+                                                                                     COMPONENT.getNodeTypeName(), "EPICS-IOC",
+                                                                                     FACILITY.getNodeTypeName(), "TEST",
+                                                                                     ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                                     any(RECORD.getNodeTypeName()),
                                                                                      SearchControls.SUBTREE_SCOPE);
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, searchResult);
+                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, searchResult);
 
                 builder.build();
                 MODEL_TWO = builder.getModel();
@@ -115,52 +114,52 @@ public class LdapContentModelBuilderTest {
     @Test
     public void testGetChildrenByLdapNameCache() {
 
-        Map<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> childrenByType =
-            MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.FACILITY);
-        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.FACILITY).intValue());
+        Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> childrenByType =
+            MODEL_ONE.getChildrenByTypeAndLdapName(FACILITY);
+        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(FACILITY).intValue());
 
-        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.COMPONENT);
-        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.COMPONENT).intValue());
+        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(COMPONENT);
+        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(COMPONENT).intValue());
 
-        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.IOC);
-        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.IOC).intValue());
+        childrenByType = MODEL_ONE.getChildrenByTypeAndLdapName(IOC);
+        Assert.assertEquals(childrenByType.size(), RESULT_CHILDREN_BY_TYPE.get(IOC).intValue());
     }
 
     @Test
     public void testGetChildrenByTypeOnRootComponent() {
-        int size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsTreeConfiguration.FACILITY).size();
-        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.FACILITY).intValue());
+        int size = MODEL_ONE.getRoot().getChildrenByType(FACILITY).size();
+        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(FACILITY).intValue());
 
-        size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsTreeConfiguration.COMPONENT).size();
-        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.COMPONENT).intValue());
+        size = MODEL_ONE.getRoot().getChildrenByType(COMPONENT).size();
+        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(COMPONENT).intValue());
 
-        size = MODEL_ONE.getRoot().getChildrenByType(LdapEpicsControlsTreeConfiguration.IOC).size();
-        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(LdapEpicsControlsTreeConfiguration.IOC).intValue());
+        size = MODEL_ONE.getRoot().getChildrenByType(IOC).size();
+        Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(IOC).intValue());
     }
 
     @Test
     public void testBothNameCaches() {
 
-        ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC, "testLDAP");
+        ISubtreeNodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "testLDAP");
 
-        Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
-                                            ECOM_FIELD_NAME, "EPICS-IOC",
-                                            EFAN_FIELD_NAME, "TEST"), comp.getLdapName());
+        Assert.assertEquals(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+                                            COMPONENT.getNodeTypeName(), "EPICS-IOC",
+                                            FACILITY.getNodeTypeName(), "TEST"), comp.getLdapName());
 
-        Assert.assertEquals(createLdapQuery(ECOM_FIELD_NAME, "EPICS-IOC",
-                                            EFAN_FIELD_NAME, "TEST"), comp.getParent().getLdapName());
+        Assert.assertEquals(createLdapQuery(COMPONENT.getNodeTypeName(), "EPICS-IOC",
+                                            FACILITY.getNodeTypeName(), "TEST"), comp.getParent().getLdapName());
 
 
-        comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.RECORD, "testLdap:alive");
+        comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.RECORD, "testLdap:alive");
 
-        Assert.assertEquals(createLdapQuery(EREN_FIELD_NAME, "testLdap:alive",
-                                            ECON_FIELD_NAME, "testLDAP",
-                                            ECOM_FIELD_NAME, "EPICS-IOC",
-                                            EFAN_FIELD_NAME, "TEST"), comp.getLdapName());
+        Assert.assertEquals(createLdapQuery(RECORD.getNodeTypeName(), "testLdap:alive",
+                                            IOC.getNodeTypeName(), "testLDAP",
+                                            COMPONENT.getNodeTypeName(), "EPICS-IOC",
+                                            FACILITY.getNodeTypeName(), "TEST"), comp.getLdapName());
 
-        Assert.assertEquals(createLdapQuery(ECON_FIELD_NAME, "testLDAP",
-                                            ECOM_FIELD_NAME, "EPICS-IOC",
-                                            EFAN_FIELD_NAME, "TEST"), comp.getParent().getLdapName());
+        Assert.assertEquals(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+                                            COMPONENT.getNodeTypeName(), "EPICS-IOC",
+                                            FACILITY.getNodeTypeName(), "TEST"), comp.getParent().getLdapName());
 
     }
 }

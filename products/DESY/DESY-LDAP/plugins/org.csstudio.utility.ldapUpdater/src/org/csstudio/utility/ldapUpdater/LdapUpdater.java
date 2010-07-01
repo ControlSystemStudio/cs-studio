@@ -29,10 +29,9 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
@@ -51,16 +50,17 @@ import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
+import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
 import org.csstudio.utility.ldapUpdater.files.IOCFilesDirTree;
@@ -174,28 +174,36 @@ public enum LdapUpdater {
 
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
+            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final String filter = any(IOC.getNodeTypeName());
             final LdapSearchResult result =
-                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                          any(ECON_FIELD_NAME),
+                service.retrieveSearchResultSynchronously(query,
+                                                          filter,
                                                           SearchControls.ONELEVEL_SCOPE);
-
-            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-            if (dumpPath != null) {
-                final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-                final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
-                builder.build();
-
-                LdapAccess.tidyUpLDAPFromIOCList(builder.getModel(),
-                                                 iocMapFromFS);
-            } else {
-                LOG.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
+            if (result == null) {
+                LOG.warn("LDAP search result is empty. No IOCs found for " + query + " and filter " + filter);
+                return;
             }
+            final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+            if (dumpPath == null) {
+                LOG.warn("No preference for IOC dump path could be found. Tidy up cancelled!");
+                return;
+            }
+            final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
+            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
+            builder.build();
 
+            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+            if (model == null) {
+                LOG.warn("Content model constructed from LDAP query is null.");
+                return;
+            }
+            LdapAccess.tidyUpLDAPFromIOCList(model, iocMapFromFS);
         } finally {
             setBusy(false);
+            logFooter(TIDYUP_ACTION_NAME, startTime);
         }
-        logFooter(TIDYUP_ACTION_NAME, startTime);
     }
 
     /**
@@ -217,15 +225,15 @@ public enum LdapUpdater {
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
             final LdapSearchResult searchResult =
-                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                          any(ECON_FIELD_NAME),
+                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                          any(IOC.getNodeTypeName()),
                                                           SearchControls.SUBTREE_SCOPE);
 
 
-            final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, searchResult);
+            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, searchResult);
             builder.build();
-            final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
+            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
@@ -241,18 +249,20 @@ public enum LdapUpdater {
             e.printStackTrace();
             Thread.currentThread().interrupt();
         } catch (final Exception e) {
+            // TODO (bknerr) : analyse and remove
+            LOG.error("UNKNOWN exception - printed for debugging purposes.");
             e.printStackTrace();
         } finally {
             setBusy(false);
+            logFooter(UPDATE_ACTION_NAME, startTime);
         }
-        logFooter(UPDATE_ACTION_NAME, startTime);
     }
 
 
-    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsTreeConfiguration> ldapModel,
+    private void validateHistoryFileEntriesVsLDAPEntries(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> ldapModel,
                                                          @Nonnull final HistoryFileContentModel historyFileModel) {
 
-        Set<String> iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC);
+        Set<String> iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsConfiguration.IOC);
 
         final Set<String> iocsFromHistFile = historyFileModel.getIOCNameKeys();
 
@@ -264,7 +274,7 @@ public enum LdapUpdater {
             for (final String iocNameKey : iocsFromLDAP) {
                 LOG.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-                final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsTreeConfiguration.IOC, iocNameKey);
+                final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocNameKey);
                 if (ioc != null) {
                     final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
                     String person = DEFAULT_RESPONSIBLE_PERSON;
@@ -291,7 +301,7 @@ public enum LdapUpdater {
         }
 
 
-        iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsTreeConfiguration.IOC);
+        iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsConfiguration.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");

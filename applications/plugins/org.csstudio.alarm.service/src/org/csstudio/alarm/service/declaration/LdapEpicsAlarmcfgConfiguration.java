@@ -26,11 +26,9 @@ import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EREN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.OU_FIELD_NAME;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -40,15 +38,17 @@ import javax.annotation.Nonnull;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Maps;
+import com.google.common.collect.Sets;
 
 
 /**
- * The object class of an alarm tree item. The enumeration constants defined in this
+ * The tree configuration of the alarm tree items. The enumeration constants defined in this
  * class store information about the name of the object class in the directory,
  * which attribute to use to construct the name of a directory entry, and the
  * value of the attributes in the directory.
  *
- * @author Joerg Rathlev
+ * @author Bastian Knerr
  */
 public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<LdapEpicsAlarmcfgConfiguration> {
 
@@ -91,28 +91,26 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
 
 
     private static final Map<String, LdapEpicsAlarmcfgConfiguration> CACHE_BY_NAME =
-        new HashMap<String, LdapEpicsAlarmcfgConfiguration>();
-
+        Maps.newHashMapWithExpectedSize(values().length);
 
     static {
-        // Initialize the _nestedClass attribute
-        RECORD._nestedClasses = Collections.emptySet();
+        RECORD._nestedClasses = EnumSet.noneOf(LdapEpicsAlarmcfgConfiguration.class);
 
         // FIXME (bknerr) : this structure is obsolete
-        IOC._nestedClasses.add(RECORD);
-        SUBCOMPONENT._nestedClasses.addAll(IOC._nestedClasses);
-        SUBCOMPONENT._nestedClasses.add(IOC);
-        SUBCOMPONENT._nestedClasses.add(SUBCOMPONENT);
-        SUBCOMPONENT._nestedClasses.add(COMPONENT);
+        IOC._nestedClasses = EnumSet.of(RECORD);
+        SUBCOMPONENT._nestedClasses = EnumSet.of(IOC, RECORD, SUBCOMPONENT, COMPONENT);
+        COMPONENT._nestedClasses = EnumSet.of(IOC, SUBCOMPONENT);
 
-        COMPONENT._nestedClasses.addAll(SUBCOMPONENT._nestedClasses);
+
+        COMPONENT._nestedClasses.add(RECORD);
         COMPONENT._nestedClasses.add(COMPONENT);
 
+        FACILITY._nestedClasses = EnumSet.noneOf(LdapEpicsAlarmcfgConfiguration.class);
         FACILITY._nestedClasses.addAll(COMPONENT._nestedClasses);
 
-        ROOT._nestedClasses.add(FACILITY);
+        ROOT._nestedClasses = EnumSet.of(FACILITY);
 
-        for (final LdapEpicsAlarmcfgConfiguration oc : LdapEpicsAlarmcfgConfiguration.values()) {
+        for (final LdapEpicsAlarmcfgConfiguration oc : values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
@@ -133,11 +131,10 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
 
 
     /**
-     * The object class of a container nested within a container of this object
-     * class. <code>null</code> if this object class is not a container or if
-     * there is no standard nested class for this class.
+     * The tree items that are nested into a container of this class.
      */
-    private Set<LdapEpicsAlarmcfgConfiguration> _nestedClasses = new HashSet<LdapEpicsAlarmcfgConfiguration>();
+    private Set<LdapEpicsAlarmcfgConfiguration> _nestedClasses;
+
 
 
     /**
@@ -149,12 +146,12 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      *            the name of the attribute to use for the RDN.
      * @param cssType
      *            the value for the epicsCssType attribute in the directory.
+     *
+     * CHECKSTYLE:Jsr305Annotations:OFF
      */
-    //CHECKSTYLE:OFF
     private LdapEpicsAlarmcfgConfiguration(final String description,
-                                         final String nodeName,
-                                         final ImmutableSet<String> attributes) {
-        //CHECKSTYLE:ON
+                                           final String nodeName,
+                                           final ImmutableSet<String> attributes) {
         _description = description;
         _nodeName = nodeName;
         _attributes = attributes;
@@ -183,8 +180,8 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      */
     @Override
     @Nonnull
-    public Set<LdapEpicsAlarmcfgConfiguration> getNestedContainerTypes() {
-        return _nestedClasses;
+    public ImmutableSet<LdapEpicsAlarmcfgConfiguration> getNestedContainerTypes() {
+        return Sets.immutableEnumSet(_nestedClasses);
     }
 
     /**
@@ -213,6 +210,8 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      * Getter.
      * @return the immutable set of permitted attributes.
      */
+    @Override
+    @Nonnull
     public ImmutableSet<String> getAttributes() {
         return _attributes;
     }

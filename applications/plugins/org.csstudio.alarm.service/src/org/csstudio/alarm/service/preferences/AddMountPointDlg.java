@@ -21,13 +21,12 @@
  */
  package org.csstudio.alarm.service.preferences;
 
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapNameUtils.removeQuotes;
-import static org.csstudio.utility.ldap.LdapNameUtils.simpleName;
-import static org.csstudio.utility.ldap.LdapUtils.any;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeQuotes;
+import static org.csstudio.utility.ldap.utils.LdapNameUtils.simpleName;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.util.ArrayList;
 
@@ -79,9 +78,10 @@ public class AddMountPointDlg extends Dialog {
 			ctrl.setSearchScope(SearchControls.ONELEVEL_SCOPE); //set to search the whole tree
 			//remove when you solve the size limit problem or TODO: workaround
 
-			final NamingEnumeration<SearchResult> enumr = _connection.search(createLdapQuery(OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-			                                                   any(ATTR_FIELD_OBJECT_CLASS),
-			                                                   ctrl);
+			final NamingEnumeration<SearchResult> enumr =
+			    _connection.search(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+			                       any(ATTR_FIELD_OBJECT_CLASS),
+			                       ctrl);
 			while (enumr.hasMore()){
 				final SearchResult result = enumr.next();
 				rname = result.getName();

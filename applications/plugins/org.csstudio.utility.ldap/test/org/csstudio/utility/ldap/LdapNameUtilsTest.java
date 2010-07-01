@@ -23,14 +23,13 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECOM_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.O_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.O_FIELD_NAME;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.InvalidNameException;
@@ -40,7 +39,8 @@ import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
 
-import org.csstudio.utility.ldap.LdapNameUtils.Direction;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -71,10 +71,10 @@ public class LdapNameUtilsTest {
                                    null,
                                    null);
 
-        QUERY = createLdapQuery(ECON_FIELD_NAME, ECON_FIELD_VALUE,
-                                ECOM_FIELD_NAME, ECOM_EPICS_IOC_FIELD_VALUE,
-                                EFAN_FIELD_NAME, EFAN_FIELD_VALUE,
-                                OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE,
+        QUERY = createLdapQuery(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
+                                COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+                                FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
+                                ROOT.getNodeTypeName(), ROOT.getRootTypeValue(),
                                 O_FIELD_NAME, O_FIELD_VALUE,
                                 COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
 
@@ -111,11 +111,11 @@ public class LdapNameUtilsTest {
 
     @Test
     public void testGetValue() {
-        String value = LdapNameUtils.getValueOfRdnType(QUERY, LdapFieldsAndAttributes.ECON_FIELD_NAME);
+        String value = LdapNameUtils.getValueOfRdnType(QUERY, IOC.getNodeTypeName());
         Assert.assertEquals(ECON_FIELD_VALUE, value);
 
 
-        value = LdapNameUtils.getValueOfRdnType(QUERY, LdapFieldsAndAttributes.EFAN_FIELD_NAME);
+        value = LdapNameUtils.getValueOfRdnType(QUERY, FACILITY.getNodeTypeName());
         Assert.assertEquals(EFAN_FIELD_VALUE, value);
 
         value = LdapNameUtils.getValueOfRdnType(QUERY, COUNTRY_FIELD_NAME);
@@ -136,16 +136,16 @@ public class LdapNameUtilsTest {
             modifiedFirst = LdapNameUtils.removeRdns(first, "IDoNotExist", Direction.BACKWARD);
             Assert.assertEquals(modifiedFirst.toString(), "");
 
-            modifiedFirst = LdapNameUtils.removeRdns(first, LdapFieldsAndAttributes.ECON_FIELD_NAME, Direction.FORWARD);
-            Assert.assertTrue(modifiedFirst.toString().startsWith(LdapFieldsAndAttributes.ECON_FIELD_NAME));
+            modifiedFirst = LdapNameUtils.removeRdns(first, IOC.getNodeTypeName(), Direction.FORWARD);
+            Assert.assertTrue(modifiedFirst.toString().startsWith(IOC.getNodeTypeName()));
             Assert.assertTrue(modifiedFirst.toString().endsWith(ECON_FIELD_VALUE));
 
-            modifiedFirst = LdapNameUtils.removeRdns(first, LdapFieldsAndAttributes.ECON_FIELD_NAME, Direction.BACKWARD);
-            Assert.assertTrue(modifiedFirst.toString().startsWith(LdapFieldsAndAttributes.ECON_FIELD_NAME));
+            modifiedFirst = LdapNameUtils.removeRdns(first, IOC.getNodeTypeName(), Direction.BACKWARD);
+            Assert.assertTrue(modifiedFirst.toString().startsWith(IOC.getNodeTypeName()));
             Assert.assertTrue(modifiedFirst.toString().endsWith(COUNTRY_FIELD_VALUE));
 
             modifiedFirst = LdapNameUtils.removeRdns(first, COUNTRY_FIELD_NAME, Direction.FORWARD);
-            Assert.assertTrue(modifiedFirst.toString().startsWith(LdapFieldsAndAttributes.ECON_FIELD_NAME));
+            Assert.assertTrue(modifiedFirst.toString().startsWith(IOC.getNodeTypeName()));
             Assert.assertTrue(modifiedFirst.toString().endsWith(COUNTRY_FIELD_VALUE));
 
             modifiedFirst = LdapNameUtils.removeRdns(first, COUNTRY_FIELD_NAME, Direction.BACKWARD);

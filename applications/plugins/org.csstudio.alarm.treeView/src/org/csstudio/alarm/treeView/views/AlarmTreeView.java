@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
@@ -45,7 +44,6 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
-import org.csstudio.alarm.treeView.views.actions.SaveInLdapAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.jobs.Job;
@@ -258,7 +256,7 @@ public class AlarmTreeView extends ViewPart {
 
     /**
      * Queue that stores all modifications that have to be applied to the LDAP store on
-     * {@link SaveInLdapAction}.
+     * {@link org.csstudio.alarm.treeView.views.actions.SaveInLdapAction}.
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems =
         new ConcurrentLinkedQueue<ITreeModificationItem>();
@@ -274,7 +272,7 @@ public class AlarmTreeView extends ViewPart {
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE,
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue(),
                                             LdapEpicsAlarmcfgConfiguration.ROOT,
                                             TreeNodeSource.ROOT).build();
     }

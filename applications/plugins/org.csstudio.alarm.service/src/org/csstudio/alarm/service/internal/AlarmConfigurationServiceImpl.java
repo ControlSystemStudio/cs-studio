@@ -23,9 +23,11 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.util.List;
 
@@ -37,7 +39,6 @@ import javax.naming.directory.SearchControls;
 
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
@@ -87,10 +88,10 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         for (final String facility : facilityNames) {
             final LdapSearchResult result =
-                _ldapService.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(EFAN_FIELD_NAME, facility,
-                                                                                         OU_FIELD_NAME, EPICS_ALARM_CFG_FIELD_VALUE),
-                                                                                         "(objectClass=*)",
-                                                                                         SearchControls.SUBTREE_SCOPE);
+                _ldapService.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), facility,
+                                                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                               any(ATTR_FIELD_OBJECT_CLASS),
+                                                                               SearchControls.SUBTREE_SCOPE);
             if (result != null) {
                 builder.setSearchResult(result);
                 builder.build();
@@ -111,7 +112,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         throws CreateContentModelException {
 
         final XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
-            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT, filePath);
+            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(ROOT, filePath);
         builder.build();
         return builder.getModel();
     }

@@ -31,8 +31,8 @@ import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.LdapActivator;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.Messages;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
@@ -93,7 +93,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
 
             }
 
-            if (cleanList.startsWith(LdapFieldsAndAttributes.EREN_FIELD_NAME)) {
+            if (cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
                 tmpList.add(new ProcessVariable(token[1], cleanList));
             } else {
                 tmpList.add(new ControlSystemItem(token[1], cleanList));

@@ -21,10 +21,11 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -46,7 +47,6 @@ import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
@@ -78,16 +78,16 @@ public final class AlarmTreeBuilder {
 
     private static void ensureTestFacilityExists() {
         try {
-            final LdapName testFacilityName = LdapUtils.createLdapQuery(EFAN_FIELD_NAME, "TEST",
-                                                                        OU_FIELD_NAME,EPICS_ALARM_CFG_FIELD_VALUE);
+            final LdapName testFacilityName = createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
+                                                              ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
 
             try {
                 LDAP_SERVICE.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
-                attrs.put(EFAN_FIELD_NAME, "TEST");
-                attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.FACILITY.getDescription());
+                attrs.put(FACILITY.getNodeTypeName(), "TEST");
+                attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getDescription());
                 LDAP_SERVICE.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
@@ -112,7 +112,7 @@ public final class AlarmTreeBuilder {
 
         final String simpleName = modelNode.getName();
 
-        if (LdapEpicsAlarmcfgConfiguration.RECORD.equals(modelNode.getType())) {
+        if (RECORD.equals(modelNode.getType())) {
             final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
 
             final Attributes attributes = modelNode.getAttributes();

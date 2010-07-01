@@ -21,11 +21,10 @@
  */
 package org.csstudio.utility.ldapUpdater.contextMenu;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ECON_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapUtils.any;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -42,12 +41,12 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
-import org.csstudio.utility.ldap.LdapNameUtils;
-import org.csstudio.utility.ldap.LdapUtils;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsTreeConfiguration;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapNameUtils;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -69,31 +68,40 @@ public class IocEnumeration implements IDynamicParameterValues {
 
         final ILdapService service = Activator.getDefault().getLdapService();
 
+        if (service == null) {
+            LOG.error("LDAP service is not available! Here a service tracker would have made sense.");
+            return new CommandParameterEnumValue[0];
+        }
+
         final LdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
-                                                      any(ECON_FIELD_NAME),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                      any(IOC.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
+        if (result == null) {
+            LOG.error("Search result was empty");
+            return new CommandParameterEnumValue[0];
+        }
 
         try {
-            final LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsTreeConfiguration>(LdapEpicsControlsTreeConfiguration.ROOT, result);
+            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
             builder.build();
-            final ContentModel<LdapEpicsControlsTreeConfiguration> model = builder.getModel();
+            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
-            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration>> iocs =
-                model.getChildrenByTypeAndLdapName(LdapEpicsControlsTreeConfiguration.IOC);
+            final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
+                model.getChildrenByTypeAndLdapName(IOC);
 
             final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
 
-            for (final ISubtreeNodeComponent<LdapEpicsControlsTreeConfiguration> ioc : iocs.values()) {
+            for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocs.values()) {
                 final LdapName ldapName = ioc.getLdapName();
                 final String efanName =
                     LdapNameUtils.getValueOfRdnType(ldapName,
-                                                    LdapEpicsControlsTreeConfiguration.FACILITY.getNodeTypeName());
+                                                    FACILITY.getNodeTypeName());
 
                 final HashMap<String, String> map = new HashMap<String, String>();
-                map.put(ECON_FIELD_NAME, ioc.getName());
-                map.put(EFAN_FIELD_NAME, efanName);
+                map.put(IOC.getNodeTypeName(), ioc.getName());
+                map.put(FACILITY.getNodeTypeName(), efanName);
                 params.add(new CommandParameterEnumValue(map, ioc.getName()));
             }
 

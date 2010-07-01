@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;

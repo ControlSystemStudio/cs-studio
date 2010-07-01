@@ -25,7 +25,6 @@ import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
 import org.csstudio.platform.logging.CentralLogger;
-//import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.osgi.util.NLS;
 
 public class Messages extends NLS {
@@ -42,11 +41,11 @@ public class Messages extends NLS {
 	public static String MainView_searchButton;
 
 	public static String MainView_SearchButtonFont;
-	
+
 	public static String MainView_ToolTip;
 
 	public static String MainView_ToolTip_Sort;
-	
+
 	public static String PreferencePage_DN;
 
 	public static String PreferencePage_LDAP;
@@ -54,11 +53,11 @@ public class Messages extends NLS {
 	public static String PreferencePage_PASS;
 
 	public static String PreferencePage_URL;
-	
-	public static String PreferencePage_RECORD_ATTRIEBUT;
-	
+
+	public static String PreferencePage_RECORD_ATTRIBUTE;
+
 	public static String PreferencePage_SEARCH_ROOT;
-	
+
 	public static String PreferencePage_SEARCH_ROOT_TOOL_TIP;
 
 	/**
@@ -73,11 +72,13 @@ public class Messages extends NLS {
 	}
 
 	private Messages() {
+	    // EMPTY
 	}
+
 	public static String getString(final String key) {
 		try {
 			return RESOURCE_BUNDLE.getString(key);
-		} catch (MissingResourceException e) {
+		} catch (final MissingResourceException e) {
 			CentralLogger.getInstance().error(Messages.class, e);
 			return '!' + key + '!';
 		}

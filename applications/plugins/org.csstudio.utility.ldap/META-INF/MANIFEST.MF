@@ -20,9 +20,8 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.preference,
  org.csstudio.utility.ldap.reader,
  org.csstudio.utility.ldap.service,
- org.csstudio.utility.ldap.service.impl
+ org.csstudio.utility.ldap.utils
 Import-Package: org.csstudio.utility.treemodel,
  org.eclipse.ecf.core.util
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ClassPath: lib/jdom.jar,
  .

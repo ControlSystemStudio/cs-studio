@@ -21,8 +21,14 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -32,7 +38,6 @@ import javax.naming.directory.SearchResult;
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
@@ -40,7 +45,6 @@ import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
-import org.csstudio.utility.nameSpaceSearch.preference.PreferenceConstants;
 import org.eclipse.core.runtime.Preferences;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -113,10 +117,6 @@ public class MainView extends ViewPart {
      */
     private Button _searchButton;
 
-    /**
-     * The Wildcard char.
-     */
-    private static final String WILDCARD  = "*"; //$NON-NLS-1$
 
     /**
      *
@@ -307,22 +307,23 @@ public class MainView extends ViewPart {
         _resultTableView.getTable().clearAll();
         _resultTableView.refresh();
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
-        search = search.replaceAll("\\*\\**", WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
-        String filter = _pluginPreferences.getString(PreferenceConstants.P_STRING_RECORD_ATTRIBUTE) +
-                        "=" +
-                        search; //$NON-NLS-1$
-        if(search.compareTo(WILDCARD)!=0) {
-            filter = filter.concat(WILDCARD); //$NON-NLS-1$
+        search = search.replaceAll("\\*\\**", FIELD_WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
+
+        String filter = RECORD.getNodeTypeName() +
+                        FIELD_ASSIGNMENT + search; //$NON-NLS-1$
+
+        if(search.compareTo(FIELD_WILDCARD)!=0) {
+            filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
         }
 
         if(_headline.isEmpty()){
-            _headline.put("efan", Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
-            _headline.put("ecom", Messages.MainView_ecom); //$NON-NLS-1$ //$NON-NLS-2$
-            _headline.put("econ", Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
-            _headline.put("eren", Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put(FACILITY.getNodeTypeName(), Messages.MainView_facility); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put(COMPONENT.getNodeTypeName(), Messages.MainView_ecom); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put(IOC.getNodeTypeName(), Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
+            _headline.put(RECORD.getNodeTypeName(), Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
 
-        final LdapSearchParams params = new LdapSearchParams(LdapUtils.createLdapQuery(OU_FIELD_NAME, EPICS_CTRL_FIELD_VALUE),
+        final LdapSearchParams params = new LdapSearchParams(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                              filter);
         final ILdapService service = Activator.getDefault().getLdapService();
         _ldapr = service.createLdapReaderJob(params,
@@ -502,7 +503,7 @@ public class MainView extends ViewPart {
     private Text makeSearchField(final Composite parent) {
             _searchText = new Text(parent,SWT.BORDER|SWT.SINGLE);
             _searchText.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false,1,1));
-            _searchText.setText(WILDCARD); //$NON-NLS-1$
+            _searchText.setText(FIELD_WILDCARD); //$NON-NLS-1$
             _searchText.setToolTipText(Messages.MainView_ToolTip);
 
             //   Eclipse
@@ -524,7 +525,9 @@ public class MainView extends ViewPart {
                      }
                  }
                }
-               public void dragOver(final DropTargetEvent event) {}
+               public void dragOver(final DropTargetEvent event) {
+                   // EMPTY
+               }
                public void dragOperationChanged(final DropTargetEvent event) {
                     if (event.detail == DND.DROP_DEFAULT) {
                         if ((event.operations & DND.DROP_COPY) != 0) {
@@ -534,8 +537,12 @@ public class MainView extends ViewPart {
                         }
                     }
                 }
-                public void dragLeave(final DropTargetEvent event) {      }
-                public void dropAccept(final DropTargetEvent event) {     }
+                public void dragLeave(final DropTargetEvent event) {
+                    // EMPTY
+                }
+                public void dropAccept(final DropTargetEvent event) {
+                    // EMPTY
+                }
                 public void drop(final DropTargetEvent event) {
                     if (textTransfer.isSupportedType(event.currentDataType)) {
                        _searchText.insert((String)event.data);

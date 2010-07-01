@@ -22,12 +22,15 @@
 
 package org.csstudio.alarm.treeView.ldap;
 
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Test;
 
 
@@ -38,16 +41,19 @@ public class LdapNameUtilsTest {
 
     @Test
     public void testObjectClassOfSingleRdnName() throws Exception {
-        final LdapName name = new LdapName("efan=foobar");
+        final LdapName name = createLdapQuery(FACILITY.getNodeTypeName(), "foobar");
         final Rdn rdn = name.getRdn(name.size() - 1);
-        assertEquals(LdapEpicsAlarmcfgConfiguration.FACILITY, LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
+        assertEquals(FACILITY, FACILITY.getNodeTypeByNodeTypeName(rdn.getType()));
     }
 
     @Test
     public void testObjectClassOfHierarchicalLdapName() throws Exception {
-        final LdapName name = new LdapName("eren=foobar,ou=Test,dc=example,dc=com");
+        final LdapName name = createLdapQuery(RECORD.getNodeTypeName(), "foobar",
+                                              ROOT.getNodeTypeName(), "Test",
+                                              "dc", "example",
+                                              "dc","com");
         final Rdn rdn = name.getRdn(name.size() - 1);
-        assertEquals(LdapEpicsAlarmcfgConfiguration.RECORD, LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
+        assertEquals(RECORD, RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
     }
 
 }

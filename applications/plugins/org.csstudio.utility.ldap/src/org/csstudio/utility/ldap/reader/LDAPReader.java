@@ -54,7 +54,7 @@ import org.eclipse.core.runtime.jobs.JobChangeAdapter;
  * @version $Revision$
  * @since 08.04.2010
  */
-public class LDAPReader extends Job {
+public final class LDAPReader extends Job {
 
     /**
      * Search specifier for an LDAP lookup
@@ -231,7 +231,7 @@ public class LDAPReader extends Job {
 
 
     @Override
-    protected final IStatus run(@Nonnull final IProgressMonitor monitor) {
+    protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
@@ -298,7 +298,7 @@ public class LDAPReader extends Job {
      * @return the search result
      */
     @CheckForNull
-    public static final LdapSearchResult getSearchResultSynchronously(@Nonnull final LdapSearchParams params) {
+    public static LdapSearchResult getSearchResultSynchronously(@Nonnull final LdapSearchParams params) {
 
         final DirContext ctx = Engine.getInstance().getLdapDirContext();
         if(ctx != null){

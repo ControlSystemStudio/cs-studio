@@ -29,7 +29,6 @@ import java.util.Vector;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -41,8 +40,6 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 10.05.2010
  */
 public class LdapReferences {
-
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapReferences.class);
 
     private Hashtable<String, Entry> _ldapEntries = new Hashtable<String, Entry>();
 

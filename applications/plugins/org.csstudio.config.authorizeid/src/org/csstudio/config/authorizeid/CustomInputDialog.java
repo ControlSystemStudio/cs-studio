@@ -10,6 +10,9 @@
  *******************************************************************************/
 package org.csstudio.config.authorizeid;
 
+import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.OU;
+import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.ROOT;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,12 +24,11 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
-import org.csstudio.utility.ldap.LdapUtils;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
@@ -107,8 +109,8 @@ public class CustomInputDialog extends Dialog {
     //TODO: Define at the Preference Page
     private final String _stringSearchRoot = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
 
-    private final LdapName _searchRoot = LdapUtils.createLdapQuery(LdapFieldsAndAttributes.OU_FIELD_NAME, "Css",
-                                                                   LdapFieldsAndAttributes.OU_FIELD_NAME, "EpicsAuthorize"); //$NON-NLS-1$
+    private final LdapName _searchRoot = LdapUtils.createLdapQuery(OU.getNodeTypeName(), "Css",
+                                                                   ROOT.getNodeTypeName(), ROOT.getRootTypeValue()); //$NON-NLS-1$
 
 
     /**

@@ -154,7 +154,9 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     @Nonnull
     public Map<String, ISubtreeNodeComponent<T>> getChildrenByTypeAndLdapName(@Nonnull final T type) {
-        return _cacheByTypeAndLdapName.get(type);
+
+        final Map<String, ISubtreeNodeComponent<T>> map = _cacheByTypeAndLdapName.get(type);
+        return map != null ? map : Collections.<String, ISubtreeNodeComponent<T>>emptyMap();
     }
 
     @Nonnull

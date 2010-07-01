@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
  */
-package org.csstudio.utility.ldap;
+package org.csstudio.utility.ldap.utils;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;

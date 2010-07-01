@@ -24,11 +24,10 @@ package org.csstudio.dct.treemodelexporter;
 import java.io.File;
 import java.io.IOException;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
+import org.apache.log4j.Logger;
 import org.csstudio.dct.export.IExporter;
 import org.csstudio.dct.model.IProject;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.ContentModelExporter;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
@@ -37,47 +36,45 @@ import org.osgi.framework.Bundle;
 
 /**
  * DCT Treemodel exporter called via extension point from DCT.
- * 
+ *
  * @author jhatje
  * @author $Author$
  * @version $Revision$
  * @since 22.06.2010
  */
 public class Exporter implements IExporter {
-    
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(Exporter.class);
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public String export(IProject project) {
+    public String export(final IProject project) {
 
-        String xmlFile = null;
-        
+
         final DctContentModelBuilder builder = new DctContentModelBuilder(project);
         try {
             builder.build();
-        } catch (CreateContentModelException e) {
-            CentralLogger.getInstance().error(this,
-                                              "Error building content model from DCT, "
-                                                      + e.getMessage());
+        } catch (final CreateContentModelException e) {
+            LOG.error("Error building content model from DCT, " + e.getMessage());
         }
-        
+
         final Bundle bundle = TreemodelExporterActivator.getDefault().getBundle();
         File loc = null;
         try {
             loc = FileLocator.getBundleFile(bundle);
-        } catch (IOException e) {
-            CentralLogger.getInstance().error(this,
-                                              "Cannot resolve bundle, " + e.getMessage());
+        } catch (final IOException e) {
+            LOG.error("Cannot resolve bundle, " + e.getMessage());
         }
-        final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();        
+        final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();
+        String xmlFile = null;
         try {
             xmlFile = ContentModelExporter.exportContentModelToXmlString(builder.getModel(), dtdFilePath);
-        } catch (ExportContentModelException e) {
-            CentralLogger.getInstance().error(this,
-                                              "Error exporting content model, " + e.getMessage());
+        } catch (final ExportContentModelException e) {
+            LOG.error("Error exporting content model, " + e.getMessage());
         }
-        
+
         return xmlFile;
     }
 }

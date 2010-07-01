@@ -21,13 +21,12 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapFieldsAndAttributes.OU_FIELD_NAME;
-import static org.csstudio.utility.ldap.LdapNameUtils.parseSearchResult;
-import static org.csstudio.utility.ldap.LdapNameUtils.removeRdns;
-import static org.csstudio.utility.ldap.LdapUtils.any;
-import static org.csstudio.utility.ldap.LdapUtils.createLdapQuery;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapNameUtils.parseSearchResult;
+import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
+import static org.csstudio.utility.ldap.utils.LdapUtils.any;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -46,9 +45,9 @@ import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
-import org.csstudio.utility.ldap.LdapNameUtils.Direction;
 import org.csstudio.utility.ldap.reader.LdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -152,7 +151,7 @@ public final class ImportXmlFileJob extends Job {
         existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
 
         final Map<String, ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>> facilityMap =
-            model.getByType(LdapEpicsAlarmcfgConfiguration.FACILITY);
+            model.getByType(FACILITY);
 
         existingFacilityNames.retainAll(facilityMap.keySet());
 
@@ -180,15 +179,14 @@ public final class ImportXmlFileJob extends Job {
         throws NamingException {
 
         final LdapSearchResult searchResult =
-            service.retrieveSearchResultSynchronously(createLdapQuery(OU_FIELD_NAME,
-                                                                      EPICS_ALARM_CFG_FIELD_VALUE),
-                                                      any(EFAN_FIELD_NAME),
+            service.retrieveSearchResultSynchronously(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                      any(FACILITY.getNodeTypeName()),
                                                       SearchControls.ONELEVEL_SCOPE);
         final Set<SearchResult> set = searchResult.getAnswerSet();
         final Set<String> facilityNamesInLdap = new HashSet<String>();
         for (final SearchResult row : set) {
             final LdapName fullLdapName= parseSearchResult(row);
-            final LdapName partLdapName = removeRdns(fullLdapName, OU_FIELD_NAME, Direction.FORWARD);
+            final LdapName partLdapName = removeRdns(fullLdapName, ROOT.getNodeTypeName(), Direction.FORWARD);
             facilityNamesInLdap.add(partLdapName.toString());
         }
         return facilityNamesInLdap;

@@ -49,9 +49,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
 import org.csstudio.utility.ldap.LdapActivator;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.preference.PreferenceKey;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -114,7 +114,7 @@ public final class Engine extends Job {
          * @param filter
          *            set the Filter for the Search.
          */
-        public void setFilter(final String filter) {
+        public void setFilter(@Nonnull final String filter) {
             _filter = filter;
         }
 
@@ -122,7 +122,7 @@ public final class Engine extends Job {
          * @param path
          *            set the path for the Search.
          */
-        public void setPath(final String path) {
+        public void setPath(@Nonnull final String path) {
             _path = path;
         }
 
@@ -130,6 +130,7 @@ public final class Engine extends Job {
          *
          * @return the SearchControls.
          */
+        @Nonnull
         public SearchControls getSearchControls() {
             return _ctrl;
         }
@@ -138,7 +139,7 @@ public final class Engine extends Job {
          * @param path
          *            get the path for the Search.
          */
-
+        @Nonnull
         public String getPath() {
             return _path;
         }
@@ -147,6 +148,7 @@ public final class Engine extends Job {
          * @param filter
          *            get the Filter for the Search.
          */
+        @Nonnull
         public String getFilter() {
             return _filter;
         }
@@ -677,7 +679,7 @@ public final class Engine extends Job {
                 // System.out.print("write: ");
                 // TODO this hard coded string must be removed to the
                 // preferences
-                changeValue(LdapFieldsAndAttributes.EREN_FIELD_NAME, currentChannel, modItems);
+                changeValue(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), currentChannel, modItems);
                 // System.out.println(" finished!!!");
                 modItems = new ArrayList<ModificationItem>(maxNumberOfWritesProcessed);
                 i = 0;
