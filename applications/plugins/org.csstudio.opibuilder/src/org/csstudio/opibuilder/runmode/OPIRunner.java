@@ -182,7 +182,7 @@ public class OPIRunner extends EditorPart {
 	public void createPartControl(Composite parent) {
 		viewer = new PatchedScrollingGraphicalViewer();
 		
-		ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
+		ScalableFreeformRootEditPart root = new PatchedScalableFreeformRootEditPart();
 		viewer.createControl(parent);
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
@@ -239,10 +239,9 @@ public class OPIRunner extends EditorPart {
 		double level = 0.1;
 		while (level < 1.0) {
 			zoomLevelList.add(level);
-			level = level + 0.05;
+			level = level + 0.1;
 		}
 
-		zoomLevelList.add(1.0);
 		zoomLevelList.add(1.1);
 		zoomLevelList.add(1.2);
 		zoomLevelList.add(1.3);
