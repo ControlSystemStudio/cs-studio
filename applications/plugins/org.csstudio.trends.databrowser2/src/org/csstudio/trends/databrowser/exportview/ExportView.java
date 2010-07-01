@@ -5,6 +5,7 @@ import java.io.File;
 import org.csstudio.apputil.time.RelativeTime;
 import org.csstudio.apputil.time.StartEndTimeParser;
 import org.csstudio.apputil.ui.swt.ScrolledContainerHelper;
+import org.csstudio.apputil.ui.time.StartEndDialog;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.IValue.Format;
@@ -62,6 +63,8 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
     private Button format_decimal;
     private Button format_expo;
     private Text format_digits;
+
+    private Button sel_times;
     
     /** {@inheritDoc} */
     @Override
@@ -102,10 +105,19 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         start.setText(new RelativeTime(- Preferences.getTimeSpan()).toString());
         start.setEnabled(false);
         
-        final Button sel_times = new Button(group, SWT.PUSH);
+        sel_times = new Button(group, SWT.PUSH);
         sel_times.setText(Messages.StartEndDialogBtn);
         sel_times.setToolTipText(Messages.StartEndDialogTT);
         sel_times.setLayoutData(new GridData());
+        sel_times.setEnabled(false);
+        sel_times.addSelectionListener(new SelectionAdapter()
+        {
+            @Override
+            public void widgetSelected(SelectionEvent e)
+            {
+                promptForTimerange();
+            }
+        });
         
         // End  :  ___end______________________________________________________ [x] Use start/end time of Plot
         l = new Label(group, 0);
@@ -342,6 +354,19 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         }
     }
 
+    /** Run start/end time dialog */
+    protected void promptForTimerange()
+    {
+        final String start_time = start.getText();
+        final String end_time = end.getText();
+        final StartEndDialog dlg = new StartEndDialog(start.getShell(),
+                start_time, end_time);
+        if (dlg.open() != StartEndDialog.OK)
+            return;
+        start.setText(dlg.getStartSpecification());
+        end.setText(dlg.getEndSpecification());
+    }
+
     /** Update the start/end time texts */
     private void updateStartEnd()
     {
@@ -349,6 +374,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         {   // Disable start/end time when using info from plot
             start.setEnabled(false);
             end.setEnabled(false);
+            sel_times.setEnabled(false);
             // Show plot's time range
             start.setText(model.getStartSpecification());
             end.setText(model.getEndSpecification());
@@ -357,6 +383,7 @@ public class ExportView extends DataBrowserAwareView implements ExportErrorHandl
         {   // Allow direct start/end entry
             start.setEnabled(true);
             end.setEnabled(true);
+            sel_times.setEnabled(true);
         }
     }
 
