@@ -36,6 +36,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 	public void propertyChange(final PropertyChangeEvent evt) {
 		Runnable runnable = new Runnable() {			
 			public void run() {
+				if(editpart == null || !editpart.isActive()){
+					return;
+				}
 				for(IWidgetPropertyChangeHandler h : handlers) {
 					IFigure figure = editpart.getFigure();
 					boolean repaint = h.handleChange(
