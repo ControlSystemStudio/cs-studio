@@ -25,7 +25,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.figures.BorderAdapter;
 import org.csstudio.sds.ui.figures.CrossedOutAdapter;
@@ -279,9 +278,7 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
             _min = (int) (_originalMin * _scrollbarPrecision);
             _max = (int) (_originalMax * _scrollbarPrecision);
             _scrollBar.setMinimum(_min);
-            CentralLogger.getInstance().debug(this, "Scrollbar minimum set to: " + _min);
             _scrollBar.setMaximum(_max + _sliderWide);
-            CentralLogger.getInstance().debug(this, "Scrollbar maximum set to: " + _max);
 
             _currentValue = (int) (_originalVal * _scrollbarPrecision);
 
@@ -298,7 +295,6 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
                 settedValue = _max;
             }
             _scrollBar.setValue(settedValue);
-            CentralLogger.getInstance().debug(this, "Scrollbar value set to: " + settedValue);
             _scrollBar.invalidate();
 //        }
     }
@@ -343,7 +339,6 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
      */
     private void setScrollbarPrecision(final int precision) {
 
-        CentralLogger.getInstance().debug(this, "precision set to " + precision);
 
         // double min = this.getDoubleFor(_min);
         // double max = this.getDoubleFor(_max);
@@ -423,7 +418,6 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
 
         // The value is constrained to 0..3 to prevent precisions that get too
         // large.
-        CentralLogger.getInstance().debug(this, "scale=" + scale);
         return Math.max(0, Math.min(scale, 3));
     }
 
