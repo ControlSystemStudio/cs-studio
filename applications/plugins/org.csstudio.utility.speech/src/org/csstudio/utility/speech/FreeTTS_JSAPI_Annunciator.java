@@ -24,12 +24,10 @@ import com.sun.speech.freetts.jsapi.FreeTTSEngineCentral;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class FreeTTS_JSAPI_Annunciator implements Annunciator
+class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
 {
     final private Synthesizer synthesizer;
-    
-    private Translation translations[] = null; 
-    
+        
     public FreeTTS_JSAPI_Annunciator() throws Exception
     {
         FreeTTSHacks.perform();
@@ -148,12 +146,6 @@ public class FreeTTS_JSAPI_Annunciator implements Annunciator
     }
 
     /** {@inheritDoc} */
-    public void setTranslations(final Translation[] translations)
-    {
-        this.translations = translations;
-    }
-
-    /** {@inheritDoc} */
     public void say(final String text)
     {
         try
@@ -166,16 +158,6 @@ public class FreeTTS_JSAPI_Annunciator implements Annunciator
             System.out.println("Annunciation error:");
             ex.printStackTrace();
         }
-    }
-
-    /** Apply all translations to input */
-    private String applyTranslations(String something)
-    {
-        if (translations == null)
-            return something;
-        for (Translation translation : translations)
-            something = translation.apply(something);
-        return something;
     }
 
     /** {@inheritDoc} */

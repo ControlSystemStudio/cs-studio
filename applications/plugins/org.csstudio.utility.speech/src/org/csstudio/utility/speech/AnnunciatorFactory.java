@@ -7,24 +7,13 @@
  ******************************************************************************/
 package org.csstudio.utility.speech;
 
-/** Interface to an annunciator
- *  @author Katia Danilova
+/** Annunciator factory
  *  @author Kay Kasemir
  */
-public interface Annunciator
+public class AnnunciatorFactory
 {
-	/** Define a list of translations to improve the sound
-	 *  of certain acronyms.
-	 *  @param translations
-	 */
-	public void setTranslations(Translation[] translations);
-	
-	/** Speak some text
-	 *  @param something Text to speak
-	 *  @throws Exception on error
-	 */
-	public void say(final String something) throws Exception;
-
-	/** Must be called when Annunciator no longer needed to release resources */
-	public void close();
+    public static Annunciator getAnnunciator()
+    {
+        return new ExternalAnnunciator();
+    }
 }

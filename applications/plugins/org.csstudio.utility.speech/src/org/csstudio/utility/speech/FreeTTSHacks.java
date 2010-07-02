@@ -11,7 +11,7 @@ package org.csstudio.utility.speech;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class FreeTTSHacks
+class FreeTTSHacks
 {
     /** Apply property settings for FreeTTS */
     public static void perform()

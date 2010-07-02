@@ -15,11 +15,9 @@ import com.sun.speech.freetts.VoiceManager;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class FreeTTSAnnunciator implements Annunciator
+class FreeTTSAnnunciator extends BaseAnnunciator
 {
 	final public static String DEFAULT_VOICE = "kevin16";
-
-	private Translation translations[] = null; 
 
 	final private Voice voice;
 
@@ -51,20 +49,6 @@ public class FreeTTSAnnunciator implements Annunciator
         voice.allocate();
     }
 	
-	/** Set volume
-	 *  @param volume Volume level 0...1
-	 */
-	public void setVolume(final float volume)
-	{
-	    voice.setVolume(volume);
-	}
-	
-	/** Define translations */
-	public void setTranslations(final Translation[] translations)
-	{
-		this.translations = translations;
-	}
-	
 	/** @return Array of voice names */
     public static String[] getVoiceNames()
     {
@@ -76,27 +60,13 @@ public class FreeTTSAnnunciator implements Annunciator
         return names;
     }
 
-    /* (non-Javadoc)
-	 * @see org.csstudio.utility.speech.Annunciator#say(java.lang.String)
-	 */
+    /** {@inheritDoc} */
     public void say(final String something)
     {
     	voice.speak(applyTranslations(something));
     }
-
-    /** Apply all translations to input */
-    private String applyTranslations(String something)
-    {
-    	if (translations == null)
-    		return something;
-    	for (Translation translation : translations)
-    		something = translation.apply(something);
-    	return something;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.csstudio.utility.speech.Annunciator#close()
-	 */
+    
+    /** {@inheritDoc} */
     public void close()
     {
         voice.deallocate();
