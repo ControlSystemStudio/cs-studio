@@ -75,7 +75,7 @@ protected void bringDown() {
 }
 
 protected CellEditor createCellEditorOn(Composite composite) {
-	return new TextCellEditor(composite, multiLine ? SWT.MULTI : SWT.SINGLE | SWT.WRAP);
+	return new TextCellEditor(composite, (multiLine ? SWT.MULTI : SWT.SINGLE) | SWT.WRAP);
 }
 
 private void disposeScaledFont() {
