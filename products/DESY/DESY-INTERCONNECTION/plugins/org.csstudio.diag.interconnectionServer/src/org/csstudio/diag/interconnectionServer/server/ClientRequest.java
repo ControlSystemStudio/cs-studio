@@ -22,10 +22,6 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP;
-
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
@@ -52,8 +48,8 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -1078,9 +1074,9 @@ public class ClientRequest implements Runnable
 			//
 			// send values to LDAP engine
 			//
-			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_SEVERITY, channel, severity);
-			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_STATUS, channel, status);
-			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_TIMESTAMP, channel, timeStamp);
+//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_SEVERITY, channel, severity);
+//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_STATUS, channel, status);
+//			Engine.getInstance().addLdapWriteRequest( ATTR_FIELD_ALARM_TIMESTAMP, channel, timeStamp);
 
 		}
 
