@@ -12,7 +12,7 @@ import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 /** Action that opens a web browser.
  *  <p>
  *  Used in ApplicationActionBarAdvisor.
- *  @author Kay Kasemir
+ *  @author Kay Kasemir, Xihui Chen
  */
 public class OpenWebBrowserAction extends Action
 {
@@ -43,12 +43,12 @@ public class OpenWebBrowserAction extends Action
             final IWebBrowser browser =
                 workbench.getBrowserSupport().createBrowser(
                 		IWorkbenchBrowserSupport.NAVIGATION_BAR | IWorkbenchBrowserSupport.LOCATION_BAR, 
-                		"CSS", null, null);
+                		Messages.Menu_CSS_CSS, null, null);
             browser.openURL(new URL(url));
         }
         catch (Exception ex)
         {
-            CentralLogger.getInstance().getLogger(this).error("No browser", ex);
+            CentralLogger.getInstance().getLogger(this).error("No browser", ex); //$NON-NLS-1$
         }
     }
 }
