@@ -24,6 +24,9 @@ public abstract class AbstractContainerModel extends AbstractWidgetModel {
 	
 	public static final String PROP_SELECTION = "selection";
 
+	/**
+	 * Macros of the container, which will be available to its children. 
+	 */
 	public static final String PROP_MACROS = "macros";
 	
 	private AbstractWidgetProperty childrenProperty;

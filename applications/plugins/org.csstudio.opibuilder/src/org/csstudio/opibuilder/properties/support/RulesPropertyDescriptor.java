@@ -4,7 +4,6 @@ package org.csstudio.opibuilder.properties.support;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.visualparts.RulesInputCellEditor;
-import org.csstudio.opibuilder.visualparts.ScriptsInputCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;

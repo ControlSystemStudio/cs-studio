@@ -1,5 +1,4 @@
 package org.csstudio.opibuilder.runmode;
-import org.csstudio.opibuilder.actions.AutoNavigateAction;
 import org.csstudio.opibuilder.actions.NavigateOPIsAction;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.ZoomComboContributionItem;

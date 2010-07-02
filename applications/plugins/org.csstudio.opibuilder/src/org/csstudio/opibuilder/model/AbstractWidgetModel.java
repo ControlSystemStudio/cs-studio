@@ -62,43 +62,103 @@ import org.eclipse.ui.views.properties.IPropertySource;
  *@author Alexander Will, Sven Wende, Stefan Hofer (similar class of SDS)
  * @author Xihui Chen
  */
+/**
+ * @author Xihui Chen
+ *
+ */
 public abstract class AbstractWidgetModel implements IAdaptable,
 		IPropertySource {
 	
 	public static final String VERSION = "1.0";
 	
+	/**
+	 * The Name of the widget.
+	 */
 	public static final String PROP_NAME = "name";//$NON-NLS-1$
 	
+	/**
+	 * Scripts attached to the widget.
+	 */
 	public static final String PROP_SCRIPTS = "scripts";//$NON-NLS-1$
 	
+	/**
+	 * Rules attached to the widget.
+	 */
 	public static final String PROP_RULES = "rules";//$NON-NLS-1$
 	
+	/**
+	 * X position of the widget.
+	 */
 	public static final String PROP_XPOS = "x";//$NON-NLS-1$
 	
+	/**
+	 * Y position of the widget.
+	 */
 	public static final String PROP_YPOS = "y";//$NON-NLS-1$
 	
+	/**
+	 * Width of the widget.
+	 */
 	public static final String PROP_WIDTH = "width";//$NON-NLS-1$
 	
+	/**
+	 * Height of the widget.
+	 */
 	public static final String PROP_HEIGHT = "height";//$NON-NLS-1$
 	
+	/**
+	 * Background color.
+	 */
 	public static final String PROP_COLOR_BACKGROUND = "background_color";//$NON-NLS-1$
 	
+	/**
+	 * Foreground color.
+	 */
 	public static final String PROP_COLOR_FOREGROUND = "foreground_color";//$NON-NLS-1$
 	
+	/**
+	 * Visibility of the widget.
+	 */
 	public static final String PROP_VISIBLE = "visible";//$NON-NLS-1$
 	
+	/**
+	 * Enable status. Only effective for control widgets which will make control widget
+	 * uncontrollable if this is false.
+	 */
 	public static final String PROP_ENABLED = "enabled";//$NON-NLS-1$
 	
+	/**
+	 * Actions attached to the widget, which can be accessed on runtime
+	 * via context menu <code>Actions</code>.
+	 */
 	public static final String PROP_ACTIONS = "actions";//$NON-NLS-1$
 	
+	/**
+	 * Tooltip of the widget, which will show up when mouse hover on the widget.
+	 * Macros are allowed and can be updated. 
+	 * The property macro $(pv_value) could be used to show the PV value which 
+	 * has timestamp, value, severity and status.
+	 */
 	public static final String PROP_TOOLTIP = "tooltip"; //$NON-NLS-1$
 	
+	/**
+	 * Color of border.
+	 */
 	public static final String PROP_BORDER_COLOR = "border_color"; //$NON-NLS-1$
 
+	/**
+	 * Width of border.
+	 */
 	public static final String PROP_BORDER_WIDTH = "border_width"; //$NON-NLS-1$
-
-	public static final String PROP_BORDER_STYLE = "border_style"; //$NON-NLS-1$
+	/**
+	 * Style of border.
+	 */
+	public static final String PROP_BORDER_STYLE = "border_style"; //$NON-NLS-1$	
 	
+	/**
+	 *The type of the widget. This is the only property that cannot be edited.
+	 *The name and type of the selected widget will also be displayed on the status bar. 
+	 */
 	public static final String PROP_WIDGET_TYPE= "widget_type"; //$NON-NLS-1$
 	
 	private Map<String, AbstractWidgetProperty> propertyMap;

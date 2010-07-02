@@ -19,10 +19,25 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String ID = "org.csstudio.opibuilder.Display"; //$NON-NLS-1$
 	
+	/**
+	 * Space of grid in pixels.
+	 */
 	public static final String PROP_GRID_SPACE = "grid_space"; //$NON-NLS-1$
+	/**
+	 * If the grid should be visible.
+	 */
 	public static final String PROP_SHOW_GRID = "show_grid"; //$NON-NLS-1$
+	/**
+	 * If the ruler should be visible.
+	 */
 	public static final String PROP_SHOW_RULER = "show_ruler"; //$NON-NLS-1$
+	/**
+	 * If the moving widgets will be snapped to the geometry of other widgets.
+	 */
 	public static final String PROP_SNAP_GEOMETRY = "snap_to_geometry"; //$NON-NLS-1$
+	/**
+	 * If the dash boundary line of the display should be visible.
+	 */
 	public static final String PROP_SHOW_EDIT_RANGE = "show_edit_range"; //$NON-NLS-1$
 	
 	private IPath opiFilePath;
