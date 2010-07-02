@@ -7,6 +7,7 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.ui.browser.IWorkbenchBrowserSupport;
 
 /** Action that opens a web browser.
  *  <p>
@@ -40,7 +41,9 @@ public class OpenWebBrowserAction extends Action
         try
         {
             final IWebBrowser browser =
-                workbench.getBrowserSupport().createBrowser("CSS");
+                workbench.getBrowserSupport().createBrowser(
+                		IWorkbenchBrowserSupport.NAVIGATION_BAR | IWorkbenchBrowserSupport.LOCATION_BAR, 
+                		"CSS", null, null);
             browser.openURL(new URL(url));
         }
         catch (Exception ex)
