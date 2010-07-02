@@ -26,12 +26,12 @@ import com.sun.speech.freetts.jsapi.FreeTTSEngineCentral;
 @SuppressWarnings("nls")
 class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
 {
+    final private static boolean debug = false;
     final private Synthesizer synthesizer;
         
     public FreeTTS_JSAPI_Annunciator() throws Exception
     {
         FreeTTSHacks.perform();
-        
         
         // Start the synthesizer
         synthesizer = createSynthesizer();
@@ -39,16 +39,18 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         synthesizer.resume();
         
         // List/set voice
-        listTTSVoices();
+        if (debug)
+            listTTSVoices();
         // "kevin" - default
         // "kevin16" - sounds clearer
         // "alan" -falls back to "kevin" ?
         final Voice voice = new Voice(
                 "kevin16", Voice.AGE_DONT_CARE,
                  Voice.GENDER_DONT_CARE, null);
-
         synthesizer.getSynthesizerProperties().setVoice(voice);
-        showVoice();
+
+        if (debug)
+            showVoice();
     }
 
     /** Print list of TTS voices */
@@ -137,11 +139,12 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         if (synthesizer == null)
             throw new Exception("Cannot create Synthesizer. Need \"speech.properties\"?");
         
-        // Dump description of actual Synthesizer
-        EngineModeDesc description = synthesizer.getEngineModeDesc();
-        System.out.println("Synthesizer: " + description.getEngineName() + ", " +
-                           description.getModeName() + ", " + description.getLocale());
-    
+        if (debug)
+        {   // Dump description of actual Synthesizer
+            EngineModeDesc description = synthesizer.getEngineModeDesc();
+            System.out.println("Synthesizer: " + description.getEngineName() + ", " +
+                               description.getModeName() + ", " + description.getLocale());
+        }    
         return synthesizer;
     }
 
