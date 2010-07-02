@@ -246,6 +246,14 @@ public enum LdapSupport {
         final String eventTime = sdf.format(currentDate);
 
 		final ArrayList<String> allRecordList = Engine.getInstance().getAllRecordsOfIOC(ldapIocName, severity, status, eventTime);
+		
+		//
+		// check for a valid record list
+		//
+		if (allRecordList == null) {
+			CentralLogger.getInstance().warn(this, "IOC OFFLINE - NO channels found in LDAP for : "+ldapIocName);
+			return;
+		}
 
         if(logicalIocName==null){
             return;

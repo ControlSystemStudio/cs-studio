@@ -97,6 +97,8 @@ public class InterconnectionServer
 	private IocControlMessageListener _iocControlMessageListener;
 	private IMessageListenerSession _iocControlListenerSession;
 	
+	private RedundantIocBeaconSender _redundantIocBeaconSender;
+	
 	/**
 	 * Creates the JMS connections.
 	 * 
@@ -180,6 +182,12 @@ public class InterconnectionServer
 				// ignore
 			}
     	}
+    	
+    	/*
+    	 * Stop the RedundantIocBeaconSender
+    	 * 
+    	 */
+    	_redundantIocBeaconSender.stopRedundanIocBeaconServer();
     	
     	/*
     	 * Exit the main loop. This is done by setting the 'quit' flag to true
@@ -301,6 +309,13 @@ public class InterconnectionServer
             
             return;
         }
+        
+        /*
+         * Start RedundantIocBeaconSender
+         */
+        
+        _redundantIocBeaconSender = new RedundantIocBeaconSender();
+        this.executor.execute( _redundantIocBeaconSender);
     
         CentralLogger.getInstance().info(this, "IC-Server starting to receive messages from Port: " + dataPortNum);
         while(!isQuit())

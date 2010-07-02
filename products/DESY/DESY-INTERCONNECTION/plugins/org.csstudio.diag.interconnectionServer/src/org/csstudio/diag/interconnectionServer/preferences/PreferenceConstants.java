@@ -31,6 +31,9 @@ public class PreferenceConstants {
 	public static final String XMPP_SERVER = "xmppServer";
 	public static final String DATA_PORT_NUMBER = "dataPortNumber";
 	public static final String COMMAND_PORT_NUMBER = "commandPortNumber";
+	public static final String IOC_BROADCAST_PORT_NUMBER = "iocBroadcastPortNumber";
+	public static final String IOC_BROADCAST_ADDRESS = "iocBroadcastAddress";
+	public static final String IOC_BROADCAST_CYCLE_TIME = "iocBroadcastCycleTime";
 	public static final String BEACON_TIMEOUT = "beaconTimeout";
 	public static final String SHOW_MESSAGE_INDICATOR = "showMessageIndicator";
 	public static final String SENT_START_ID = "sentStartID";
