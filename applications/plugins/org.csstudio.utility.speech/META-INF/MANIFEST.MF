@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Speech Plug-in
 Bundle-SymbolicName: org.csstudio.utility.speech
-Bundle-Version: 1.1.0.qualifier
+Bundle-Version: 1.1.1.qualifier
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4;bundle-version="4.3.1"
 Export-Package: org.csstudio.utility.speech
@@ -12,6 +12,7 @@ Bundle-ClassPath: lib/cmu_time_awb.jar,
  lib/cmulex.jar,
  lib/cmutimelex.jar,
  lib/en_us.jar,
+ lib/freetts-jsapi10.jar,
  lib/freetts.jar,
  lib/jsapi.jar,
  .

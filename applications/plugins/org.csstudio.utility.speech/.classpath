@@ -11,5 +11,6 @@
 	<classpathentry kind="lib" path="lib/cmu_time_awb.jar" sourcepath="lib/freetts-1.2.1"/>
 	<classpathentry kind="lib" path="lib/cmu_us_kal.jar"/>
 	<classpathentry kind="lib" path="lib/jsapi.jar"/>
+	<classpathentry kind="lib" path="lib/freetts-jsapi10.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

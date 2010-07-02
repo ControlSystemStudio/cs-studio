@@ -7,22 +7,42 @@ See AnnunciatorTest.java for usage.
 FreeTTS Detail
 --------------
 
+Sources:
+freetts-1.2.2-src.zip
+
+Extracted from that into /lib and added to classpath:
+cmu_time_awb.jar
+cmu_us_kal.jar
+cmudict04.jar
+cmulex.jar
+cmutimelex.jar
+en_us.jar
+freetts.jar
+jsapi.jar
+
+
 #
 # Run the original tests
 #
  cd lib
- unzip freetts-1.2.1-src.zip
+ unzip freetts-1.2.2-src.zip
  rm -rf META-INF
 
 # ^^^ these steps will also allow you to source-level debug
 # ^^^ the Annunciator code down into FreeTTS
 
- cd freetts-1.2.1
- cd lib
+ cd freetts-1.2.2/lib
  sh jsapi.sh
  cd ..
+# Build.xml is broken. Change the "src" path to ".":
+#     <property name="src_dir" value="." />
+  vi build.xml
  ant
  java -jar bin/HelloWorld.jar
+ java -jar bin/FreeTTSHelloWorld.jar
+# Will complain about missing speech.properties. Copy to home dir...
+ cp speech.properties ~
+# .. then try the *Hello*jar again
  
  
 #
