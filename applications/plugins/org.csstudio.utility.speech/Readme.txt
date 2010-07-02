@@ -1,7 +1,7 @@
 Speech Support
 ==============
 
-See AnnunciatorTest.java for usage.
+See AnnunciatorFactory, AnnunciatorTest.java for usage.
 
 
 FreeTTS Detail
