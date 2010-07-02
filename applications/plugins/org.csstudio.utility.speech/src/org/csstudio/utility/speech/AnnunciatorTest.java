@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.speech;
 
 import org.junit.Test;
@@ -6,9 +13,10 @@ import org.junit.Test;
  *  @author Katia Danilova
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AnnunciatorTest
 {
-	final private Translation translations[] = new Translation[]
+    final private Translation translations[] = new Translation[]
    	{
 			
    			new Translation("MEBT", ",mebbit"),
@@ -33,18 +41,26 @@ public class AnnunciatorTest
 	@Test
 	public void test() throws Exception
 	{		
-	    // Create FreeTTSAnnunciator, list voices
-		final FreeTTSAnnunciator tts = new FreeTTSAnnunciator("kevin16");
-		final String[] voices = tts.getVoiceNames();
-		for (String voice : voices)
-        {
-		    System.out.println("Voice '" + voice + "'");
-        }
+        final Annunciator talker;
 
+        if (false)
+        {
+            // Create FreeTTSAnnunciator, list voices
+    		final FreeTTSAnnunciator tts = new FreeTTSAnnunciator("kevin16");
+    		final String[] voices = FreeTTSAnnunciator.getVoiceNames();
+    		for (String voice : voices)
+            {
+    		    System.out.println("Voice '" + voice + "'");
+            }
+    		talker = tts;
+        }
+        else
+        {
+            // Create FreeTTS_JSAPI_Annunciator
+            talker = new FreeTTS_JSAPI_Annunciator();
+        }
 		// From now on, only use the Annunciator interface
-        final Annunciator talker = tts;
-		
-		talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
+        talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
 		talker.setTranslations(translations);
 		talker.say("SNS DTL MEBT Vac Diag RFQ Tgt Util Ctl PPS MPS Lin");
 

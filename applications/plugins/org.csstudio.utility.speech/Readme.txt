@@ -14,7 +14,7 @@ FreeTTS Detail
  unzip freetts-1.2.1-src.zip
  rm -rf META-INF
 
-# ^^^ these steps will also allow you to source-leveldebug
+# ^^^ these steps will also allow you to source-level debug
 # ^^^ the Annunciator code down into FreeTTS
 
  cd freetts-1.2.1
