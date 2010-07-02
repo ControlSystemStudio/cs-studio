@@ -43,9 +43,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	implements IProcessVariable{
 	
 	
-
-	private static RGB DISCONNECTED_COLOR = new RGB(255, 0, 255);
-	
 	private Map<String, PV> pvMap = new HashMap<String, PV>(); 
 	private Map<String, PVListener> pvListenerMap = new HashMap<String, PVListener>();
 	private Map<String, Boolean> pvConnectedStatusMap = new HashMap<String, Boolean>();
@@ -135,7 +132,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				preEnableState = figure.isEnabled();
 				figure.setEnabled(preEnableState && !allDisconnected);
 				figure.setBorder(BorderFactory.createBorder(
-						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
+						BorderStyle.TITLE_BAR, 1, AlarmColorScheme.getDisconnectedColor(), 
 						allDisconnected ? "Disconnected" : pvName + ": Disconnected"));
 				currentDisconnectPVName = pvName;
 				figure.repaint();
@@ -168,7 +165,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				}
 				else if(currentDisconnectPVName.equals(pvName) || currentDisconnectPVName.equals("")){ //$NON-NLS-1$
 					figure.setBorder(BorderFactory.createBorder(
-						BorderStyle.TITLE_BAR, 1, DISCONNECTED_COLOR, 
+						BorderStyle.TITLE_BAR, 1, AlarmColorScheme.getDisconnectedColor(), 
 						nextDisconnecteName + " : Disconnected"));
 					currentDisconnectPVName = nextDisconnecteName;
 				}

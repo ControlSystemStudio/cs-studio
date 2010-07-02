@@ -53,6 +53,18 @@ public final class MediaService {
 		loadColorFile();			
 		loadFontFile();
 	}
+
+	
+	private void loadPredefinedColors() {
+		colorMap.put(AlarmColorScheme.MAJOR, 
+				new OPIColor(AlarmColorScheme.MAJOR, CustomMediaFactory.COLOR_RED)); 
+		colorMap.put(AlarmColorScheme.MINOR, 
+				new OPIColor(AlarmColorScheme.MINOR, CustomMediaFactory.COLOR_ORANGE)); 
+		colorMap.put(AlarmColorScheme.INVALID, 
+				new OPIColor(AlarmColorScheme.INVALID, CustomMediaFactory.COLOR_PINK));
+		colorMap.put(AlarmColorScheme.DISCONNECTED, 
+				new OPIColor(AlarmColorScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK));
+	}
 	
 	/**
 	 * Reload predefined colors and fonts from color and font file.
@@ -65,8 +77,10 @@ public final class MediaService {
 	}
 
 	private void loadColorFile() {
+		loadPredefinedColors();
+
 		colorFilePath = PreferencesHelper.getColorFilePath();		
-		if(colorFilePath == null){
+		if(colorFilePath == null || colorFilePath.isEmpty()){
 			CentralLogger.getInstance().warn(this, "No color definition file was found.");
 			return;
 		}
