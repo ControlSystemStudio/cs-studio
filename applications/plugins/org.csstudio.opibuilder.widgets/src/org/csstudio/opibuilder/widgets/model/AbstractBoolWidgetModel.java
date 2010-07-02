@@ -21,36 +21,40 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	
 	
 	
-	/** The ID of the bit property. */
+	/** Bit of the PV to be read and controlled. Set to -1 will write value 0/1 to the PV. */
 	public static final String PROP_BIT = "bit"; //$NON-NLS-1$		
 	
-	/** The ID of the on label property. */
+	/** Label text when boolean widget is on. */
 	public static final String PROP_ON_LABEL = "on_label"; //$NON-NLS-1$
 	
-	/** The ID of the off label property. */
+	/** Label text when boolean widget is off. */
 	public static final String PROP_OFF_LABEL = "off_label"; //$NON-NLS-1$
 	
-	/** The ID of the on color property.*/
+	/** Widget color when boolean widget is on. */
 	public static final String PROP_ON_COLOR = "on_color"; //$NON-NLS-1$
 	
-	/** The ID of the off color property. */
+	/** Widget color when boolean widget is off. */
 	public static final String PROP_OFF_COLOR = "off_color"; //$NON-NLS-1$
 	
-	/** The ID of the off color property. */
+	/** True if the boolean label should be visible. */
 	public static final String PROP_SHOW_BOOL_LABEL = "show_boolean_label"; //$NON-NLS-1$
 	
-	/** The ID of the boolean value source property. */
+	/**Data type to be operated by this widget, could be Bit or Enum. If it is Bit, the widget
+	 * will write 0/1 to the corresponding bit of the PV. If it is ENUM, it will write On State/Off State 
+	 * property value to the PV.*/
 	public static final String PROP_DATA_TYPE = "data_type"; //$NON-NLS-1$
 	
-	/** The ID of the on state property. */
+	/**If data type is Enum, it is the string value which will be written 
+	 * to the PV when widget is on. */
 	public static final String PROP_ON_STATE = "on_state"; //$NON-NLS-1$
 	
-	/** The ID of the off state property. */
+	/**If data type is Enum, it is the string value which will be written 
+	 * to the PV when widget is off. */
 	public static final String PROP_OFF_STATE = "off_state"; //$NON-NLS-1$
 	
 	
 	/**
-	 * The ID of the font property.
+	 * Font of the widget.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 	

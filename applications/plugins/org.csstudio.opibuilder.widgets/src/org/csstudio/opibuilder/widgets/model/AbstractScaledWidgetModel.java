@@ -14,25 +14,25 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	
 	
-	/** The ID of the <i>transparent</i> property. */
+	/** True if the widget's background is transparent. */
 	public static final String PROP_TRANSPARENT = "transparent_background";	
 	
-	/** The ID of the minimum property. */
+	/** Lower limit of the widget. */
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
 	
-	/** The ID of the maximum property. */
+	/** Higher limit of the widget. */
 	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$		
 	
-	/** The ID of the major tick step hint property. */
+	/** The minimum distance (in pixels) between major ticks.*/
 	public static final String PROP_MAJOR_TICK_STEP_HINT = "major_tick_step_hint"; //$NON-NLS-1$		
 	
-	/** The ID of the show minor ticks property. */
+	/**Show minor ticks. */
 	public static final String PROP_SHOW_MINOR_TICKS = "show_minor_ticks"; //$NON-NLS-1$
 	
-	/** The ID of the show minor ticks property. */
+	/** Show scale. */
 	public static final String PROP_SHOW_SCALE = "show_scale"; //$NON-NLS-1$
 	
-	/** The ID of the log scale property. */
+	/** True if the scale is log scale. */
 	public static final String PROP_LOG_SCALE = "log_scale"; //$NON-NLS-1$	
 	
 	

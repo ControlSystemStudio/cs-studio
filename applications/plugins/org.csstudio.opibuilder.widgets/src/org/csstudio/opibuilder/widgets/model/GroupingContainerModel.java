@@ -15,11 +15,14 @@ public class GroupingContainerModel extends AbstractContainerModel {
 	 */
 	public static final String ID = "org.csstudio.opibuilder.widgets.groupingContainer"; //$NON-NLS-1$	
 	
-	/** The ID of the <i>transparent</i> property. */
+	/**True if the background color is transparent. */
 	public static final String PROP_TRANSPARENT = "transparent";	
 	
-	/** The ID of the <i>lockChildren</i> property. */
+	/** True if children widgets are not selectable.*/
 	public static final String PROP_LOCK_CHILDREN = "lock_children";
+	/**
+	 * True if scrollbar is visible when children widgets are out of range. 
+	 */
 	public static final String PROP_SHOW_SCROLLBAR = "show_scrollbar";
 
 	

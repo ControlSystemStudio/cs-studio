@@ -19,24 +19,24 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 	
 	
 	
-	/** The ID of the bit property. */
+	/** Bit of the PV to be read and writtend.*/
 	public static final String PROP_BIT = "bit"; //$NON-NLS-1$		
 	
-	/** The ID of the label property. */
+	/** Text of the label. */
 	public static final String PROP_LABEL = "label"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the font property.
+	 * Font of the label.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
-	/** The ID of the <i>Auto Size</i> property. */
+	/** True if the widget size can be automatically adjusted along with the text size. */
 	public static final String PROP_AUTOSIZE = "auto_size";	//$NON-NLS-1$
 	
 	/**
 	 * Unique identifier.
 	 */
-	public static final String ID = "org.csstudio.opibuilder.widgets.checkbox";
+	public static final String ID = "org.csstudio.opibuilder.widgets.checkbox"; //$NON-NLS-1$
 	
 	public CheckBoxModel() {
 		setSize(100, 20);

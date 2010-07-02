@@ -16,13 +16,15 @@ public class BoolButtonModel extends AbstractBoolControlModel {
 
 	
 	
-	/** The ID of the effect 3D property. */
+	/** True if the widget is drawn with advanced graphics. In some platforms,
+	 * advance graphics may not be available, in which case the widget will not be drawn 
+	 * with advanced graphics even this is set to true.*/
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
-	/** The ID of the square LED property. */
+	/** True if the widget is square button. */
 	public static final String PROP_SQUARE_BUTTON = "square_button"; //$NON-NLS-1$
 	
-	/** The ID of the show LED property. */
+	/** True if the LED indicator is visible.*/
 	public static final String PROP_SHOW_LED = "show_led"; //$NON-NLS-1$
 	
 	/** The default value of the height property. */	

@@ -13,24 +13,26 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class KnobModel extends AbstractMarkedWidgetModel{	
 	
-	/** The ID of the knob color property. */
+	/** Color of the knob. */
 	public static final String PROP_KNOB_COLOR = "knob_color"; //$NON-NLS-1$	
 	
-	/** The ID of the effect 3D property. */
+	/** True if the widget is drawn with advanced graphics. In some platforms,
+	 * advance graphics may not be available, in which case the widget will not be drawn 
+	 * with advanced graphics even this is set to true.*/
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 	
 	
-	/** The ID of the effect show value label property. */
+	/**Show value label. */
 	public static final String PROP_SHOW_VALUE_LABEL = "show_value_label"; //$NON-NLS-1$
 	
-	/** The ID of the thumb Color property. */
+	/** Color of the thumb. */
 	public static final String PROP_THUMB_COLOR = "thumb_color"; //$NON-NLS-1$
 	
-	/** The ID of the Ramp Gradient. */
+	/** True if ramp is gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the increment property.
+	 *The minimum increment step when dragging the thumb.
 	 */
 	public static final String PROP_INCREMENT = "increment"; //$NON-NLS-1$
 	

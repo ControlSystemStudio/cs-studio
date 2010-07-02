@@ -23,35 +23,37 @@ import org.eclipse.core.runtime.Path;
  */
 public final class ActionButtonModel extends AbstractPVWidgetModel {
 	/**
-	 * The ID of the label property.
+	 * Text on the button.
 	 */
 	public static final String PROP_TEXT = "text"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the label property.
+	 * Image on the button.
 	 */
 	public static final String PROP_IMAGE = "image"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the font property.
+	 * Font of widget.
 	 */
 	public static final String PROP_FONT = "font"; //$NON-NLS-1$
 
 	
 	/**
-	 * The ID of the ActionData property.
+	 * The index of the action to be executed when button is pushed. 
+	 * It is corresponding to the action sort index in actions property. 
 	 */
 	public static final String PROP_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
 	
 	
 	/**
-	 * The ID of the ActionData property.
+	 * The index of the action to be executed when released. 
+	 * It is corresponding to the action sort index in actions property. 
 	 */
 	public static final String PROP_RELEASED_ACTION_INDEX = "release_action_index"; //$NON-NLS-1$
 	
 	
 	/**
-	 * The ID of the ToggelButton property.
+	 * If yes, the button will not bounce up when clicked. 
 	 */
 	public static final String PROP_TOGGLE_BUTTON= "toggle_button"; //$NON-NLS-1$
 	

@@ -44,36 +44,36 @@ public final class ImageModel extends AbstractWidgetModel {
 	public static final String ID = "org.csstudio.opibuilder.widgets.Image";
 	
 	/**
-	 * The ID of the <i>filename</i> property.
+	 * File path of the image.
 	 */
 	public static final String PROP_IMAGE_FILE = "image_file";
 	/**
-	 * The ID of the <i>topcrop</i> property.
+	 * Crop part (in pixels) on top side of the image.
 	 */
 	public static final String PROP_TOPCROP = "crop_top";
 	/**
-	 * The ID of the <i>bottomcrop</i> property.
+	 * Crop part (in pixels) on bottom side of the image.
 	 */
 	public static final String PROP_BOTTOMCROP = "crop_bottom";
 	/**
-	 * The ID of the <i>leftcrop</i> property.
+	 * Crop part (in pixels) on left side of the image.
 	 */
 	public static final String PROP_LEFTCROP = "crop_left";
 	/**
-	 * The ID of the <i>rightcrop</i> property.
+	 * Crop part (in pixels) on right side of the image.
 	 */
 	public static final String PROP_RIGHTCROP = "crop_right";
 	/**
-	 * The ID of the <i>stretch</i> property.
+	 * True if the image should be stretched to the widget size.
 	 */
 	public static final String PROP_STRETCH = "stretch_to_fit";	
 	/**
-	 * The ID of the <i>autosize</i> property.
+	 * True if the widget size is automatically adjusted to the size of the image.
 	 */
 	public static final String PROP_AUTOSIZE= "auto_size";	
 	
 	/**
-	 * The ID of the <i>stop animation</i> property.
+	 * True if the widget doesn't show animation even it is a animated image file.
 	 */
 	public static final String PROP_NO_ANIMATION= "no_animation";	
 	

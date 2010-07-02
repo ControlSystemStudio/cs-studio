@@ -17,9 +17,22 @@ import org.eclipse.core.runtime.Path;
  */
 public class ImageBoolButtonModel extends AbstractBoolControlModel {
 
+	/**
+	 * Image on the button when it is on.
+	 */
 	public static final String PROP_ON_IMAGE = "on_image";
+	/**
+	 * Image on the button when it is off.
+	 */
 	public static final String PROP_OFF_IMAGE = "off_image";
+	
+	/**
+	 * True if the image should be stretched to the button size.
+	 */
 	public static final String PROP_STRETCH = "stretch_to_fit";
+	/**
+	 * True if the button size is automatically adjusted to the size of the image.
+	 */
 	public static final String PROP_AUTOSIZE= "auto_size";	
 	
 	

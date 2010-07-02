@@ -42,14 +42,12 @@ public abstract class AbstractPolyModel extends AbstractShapeModel {
 	
 
 	/**
-	 * The ID of the rotation property. Is only used if the widget is rotatable.
-	 * 
-	 * @see AbstractWidgetModel#isRotatable()
+	 * Rotation angle of the widget.
 	 */
 	public static final String PROP_ROTATION = "rotation_angle"; //$NON-NLS-1$
 	
 	/**
-	 * The ID of the points property.
+	 * Points of the widget.
 	 */
 	public static final String PROP_POINTS = "points"; //$NON-NLS-1$	
 	

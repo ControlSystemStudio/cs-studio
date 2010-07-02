@@ -21,15 +21,27 @@ import org.eclipse.swt.graphics.RGB;
 public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 
 	
+	/**
+	 * Items of the choice widget.
+	 */
 	public static final String PROP_ITEMS = "items";//$NON-NLS-1$
+	/**
+	 * Font of the widget.
+	 */
 	public static final String PROP_FONT = "font";//$NON-NLS-1$
+	/**
+	 * If this is true, items will be loaded from input Enum PV.
+	 */
 	public static final String PROP_ITEMS_FROM_PV = "items_from_pv";//$NON-NLS-1$
 	
+	/**
+	 * The color of the selected item.
+	 */
 	public static final String PROP_SELECTED_COLOR = "selected_color";//$NON-NLS-1$
 
 	public static final RGB DEFAULT_SELECTED_COLOR = CustomMediaFactory.COLOR_WHITE;
 	
-	/** The ID of the horizontal property. */
+	/** True if items should be horizontal arranged.*/
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 	
 	public static final String[] DEFAULT_ITEMS = new String[]{"Choice 1", "Choice 2", "Choice 3"};

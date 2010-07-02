@@ -15,47 +15,47 @@ import org.eclipse.swt.graphics.RGB;
  */
 public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetModel {
 	
-	/** The ID of the show minor ticks property. */
+	/** Show alarm markers(or ramp for round scale widgets).*/
 	public static final String PROP_SHOW_MARKERS = "show_markers"; //$NON-NLS-1$	
 
-	/** The ID of the lolo level property.*/
+	/** Low low level.*/
 	public static final String PROP_LOLO_LEVEL = "level_lolo"; //$NON-NLS-1$
 	
-	/** The ID of the lo level property. */
+	/** Low level. */
 	public static final String PROP_LO_LEVEL = "level_lo"; //$NON-NLS-1$
 	
-	/** The ID of the hi level property. */
+	/** High Level. */
 	public static final String PROP_HI_LEVEL = "level_hi"; //$NON-NLS-1$
 	
-	/** The ID of the hihi level property. */
+	/** High High Level */
 	public static final String PROP_HIHI_LEVEL = "level_hihi"; //$NON-NLS-1$		
 	
 	
-	/** The ID of the show lolo property.*/
+	/** Show low low marker.*/
 	public static final String PROP_SHOW_LOLO = "show_lolo"; //$NON-NLS-1$
 	
-	/** The ID of the show lo property. */
+	/** Show low marker. */
 	public static final String PROP_SHOW_LO = "show_lo"; //$NON-NLS-1$
 	
-	/** The ID of the show hi property. */
+	/** Show high marker. */
 	public static final String PROP_SHOW_HI = "show_hi"; //$NON-NLS-1$
 	
-	/** The ID of the show hihi property. */
+	/** Show high high marker. */
 	public static final String PROP_SHOW_HIHI = "show_hihi"; //$NON-NLS-1$		
 	
-	/** The ID of the lolo color property.*/
+	/** Color of low low marker. */
 	public static final String PROP_LOLO_COLOR = "color_lolo"; //$NON-NLS-1$
 	
-	/** The ID of the lo color property. */
+	/** Color of low marker. */
 	public static final String PROP_LO_COLOR = "color_lo"; //$NON-NLS-1$
 	
-	/** The ID of the hi color property. */
+	/** Color of high marker. */
 	public static final String PROP_HI_COLOR = "color_hi"; //$NON-NLS-1$
 	
-	/** The ID of the hihi color property. */
+	/** Color of high high marker. */
 	public static final String PROP_HIHI_COLOR = "color_hihi"; //$NON-NLS-1$		
 
-	/** The ID of the hihi color property. */
+	/** Load the Maximum, Minimum, HIHI, HI, LOLO, LO limits from PV. */
 	public static final String PROP_LIMITS_FROM_PV = "limits_from_pv"; //$NON-NLS-1$		
 	
 	/** The default value of the levels property. */

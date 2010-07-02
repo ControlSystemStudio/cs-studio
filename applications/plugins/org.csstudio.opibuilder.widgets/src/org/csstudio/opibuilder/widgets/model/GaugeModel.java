@@ -12,13 +12,15 @@ import org.eclipse.swt.graphics.RGB;
  */
 public class GaugeModel extends AbstractMarkedWidgetModel{	
 	
-	/** The ID of the fill color property. */
+	/** Needle color. */
 	public static final String PROP_NEEDLE_COLOR = "needle_color"; //$NON-NLS-1$	
 	
-	/** The ID of the effect 3D property. */
+	/** True if the widget is drawn with advanced graphics. In some platforms,
+	 * advance graphics may not be available, in which case the widget will not be drawn 
+	 * with advanced graphics even this is set to true.*/
 	public static final String PROP_EFFECT3D = "effect_3d"; //$NON-NLS-1$
 
-	/** The ID of the Ramp Gradient. */
+	/** True if the ramp is gradient. */
 	public static final String PROP_RAMP_GRADIENT = "ramp_gradient"; //$NON-NLS-1$
 
 	/** The default value of the default fill color property. */

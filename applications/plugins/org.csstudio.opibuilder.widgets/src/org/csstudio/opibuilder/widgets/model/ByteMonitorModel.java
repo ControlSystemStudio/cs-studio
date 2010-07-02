@@ -24,7 +24,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	/** The bit number to start displaying */
 	public static final String PROP_START_BIT = "startBit";
 
-	/** The ID of the horizontal property. */
+	/** True if the LEDs are horizontal arranged. */
 	public static final String PROP_HORIZONTAL = "horizontal"; //$NON-NLS-1$
 
 	/** Reverse the direction that bytes are displayed normal display is start bit on right or bottom*/
@@ -36,7 +36,7 @@ public class ByteMonitorModel extends AbstractPVWidgetModel {
 	/** Default color if the bit is off */
 	public static final String PROP_OFF_COLOR = "off_color";
 
-	/** The ID of the square LED property. */
+	/** True if the LEDs are square LED. */
 	public static final String PROP_SQUARE_LED = "square_led"; //$NON-NLS-1$
 	
 	/** The default color of the on color property. */

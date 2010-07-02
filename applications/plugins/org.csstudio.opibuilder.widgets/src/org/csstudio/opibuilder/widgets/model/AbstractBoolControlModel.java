@@ -14,32 +14,34 @@ public class AbstractBoolControlModel extends AbstractBoolWidgetModel {
 
 
 	/**
-	 * The ID of the ToggelButton property.
+	 * If the button should be a toggle button.
 	 */
 	public static final String PROP_TOGGLE_BUTTON= "toggle_button"; //$NON-NLS-1$
 	
-	/** The ID of the show confirm dialog property. */
+	/** If a confirm dialog should be shown before performing action. */
 	public static final String PROP_CONFIRM_DIALOG = "show_confirm_dialog"; //$NON-NLS-1$
 	
-	/** The ID of the password property. */
+	/** The password needed to perform action*/
 	public static final String PROP_PASSWORD = "password"; //$NON-NLS-1$
 	
-	/** The ID of the confirm tip property. */
+	/** The message which will be shown on confirm dialog. */
 	public static final String PROP_CONFIRM_TIP = "confirm_message"; //$NON-NLS-1$	
 
 	
 	public static final String DEFAULT_CONFIRM_TIP = "Are your sure you want to do this?";	
 	
 	/**
-	 * The ID of the ActionData property.
+	 * The action which will be executed when widget is pushed. It is the index the actions in 
+	 * actions property.
 	 */
 	public static final String PROP_PUSH_ACTION_INDEX = "push_action_index"; //$NON-NLS-1$
 	
 	
 	/**
-	 * The ID of the ActionData property.
+	 * The action which will be executed when widget is released. It is the index the action in 
+	 * actions property.
 	 */
-	public static final String PROP_RELEASED_ACTION_INDEX = "released__action_index"; //$NON-NLS-1$
+	public static final String PROP_RELEASED_ACTION_INDEX = "released_action_index"; //$NON-NLS-1$
 
 	private static final boolean DEFAULT_TOGGLE_BUTTON = true;
 	

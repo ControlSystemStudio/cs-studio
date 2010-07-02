@@ -51,34 +51,81 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		}
 	}	
 	
+	/**
+	 * The lower limit of the value in the input data array.
+	 */
 	public static final String PROP_MIN = "minimum"; //$NON-NLS-1$		
 	
+	/**
+	 * The upper limit of the value in the input data array.
+	 */
 	public static final String PROP_MAX = "maximum"; //$NON-NLS-1$		
 	
+	/**
+	 * Number of columns of the input data.
+	 */
 	public static final String PROP_DATA_WIDTH = "data_width"; //$NON-NLS-1$		
 	
+	/**
+	 * Number of rows of the input data.
+	 */
 	public static final String PROP_DATA_HEIGHT = "data_height"; //$NON-NLS-1$	
 	
+	/**
+	 *  Width of the intensity graph area.
+	 */
 	public static final String PROP_GRAPH_AREA_WIDTH = "graph_area_width"; //$NON-NLS-1$		
 	
+	/**
+	 *  Height of the intensity graph area.
+	 */
 	public static final String PROP_GRAPH_AREA_HEIGHT = "graph_area_height"; //$NON-NLS-1$	
 	
+	/**
+	 * Color map of the graph.
+	 */
 	public static final String PROP_COLOR_MAP = "color_map"; //$NON-NLS-1$		
 	
+	/**
+	 * Show Ramp.
+	 */
 	public static final String PROP_SHOW_RAMP = "show_ramp"; //$NON-NLS-1$		
 	
+	/**
+	 * Left cropped part of the source data.
+	 */
 	public static final String PROP_CROP_LEFT = "crop_left"; //$NON-NLS-1$	
+	/**
+	 * Right cropped part of the source data.
+	 */
 	public static final String PROP_CROP_RIGHT = "crop_right"; //$NON-NLS-1$	
+	/**
+	 * Top cropped part of the source data.
+	 */
 	public static final String PROP_CROP_TOP = "crop_top"; //$NON-NLS-1$	
+	/**
+	 * Bottom cropped part of the source data.
+	 */
 	public static final String PROP_CROP_BOTTOM = "crop_bottom"; //$NON-NLS-1$
 	
+	/**
+	 * The output PV to which the horizontal profile data on X axis will be written.
+	 */
 	public static final String PROP_HORIZON_PROFILE_X_PV_NAME = "horizon_profile_x_pv_name";
 	public static final String PROP_HORIZON_PROFILE_X_PV_VALUE = "horizon_profile_x_pv_value";
+	/**
+	 * The output PV to which the vertical profile data on X axis will be written.
+	 */
 	public static final String PROP_VERTICAL_PROFILE_X_PV_NAME = "vertical_profile_x_pv_name";
 	public static final String PROP_VERTICAL_PROFILE_X_PV_VALUE = "vertial_profile_x_pv_value";
-	
+	/**
+	 * The output PV to which the horizontal profile data on Y axis will be written.
+	 */
 	public static final String PROP_HORIZON_PROFILE_Y_PV_NAME = "horizon_profile_y_pv_name";
 	public static final String PROP_HORIZON_PROFILE_Y_PV_VALUE = "horizon_profile_y_pv_value";
+	/**
+	 * The output PV to which the vertical profile data on Y axis will be written.
+	 */
 	public static final String PROP_VERTICAL_PROFILE_Y_PV_NAME = "vertical_profile_y_pv_name";
 	public static final String PROP_VERTICAL_PROFILE_Y_PV_VALUE = "vertial_profile_y_pv_value";
 	

@@ -14,12 +14,19 @@ public class ArcModel extends AbstractShapeModel {
 	
 	
 	public final String ID = "org.csstudio.opibuilder.widgets.arc";
-	
+	/**
+	 * True if the arc should be filled.
+	 */
 	public static final String PROP_FILL = "fill";//$NON-NLS-1$
 
+	/**
+	 * Start angle (in degree) of the arc. 
+	 */
 	public static final String PROP_START_ANGLE = "start_angle";//$NON-NLS-1$
 	
-	
+	/**
+	 * Total angle (in degree) of the arc. 
+	 */
 	public static final String PROP_TOTAL_ANGLE = "total_angle";//$NON-NLS-1$
 	
 	

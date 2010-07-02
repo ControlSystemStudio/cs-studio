@@ -20,8 +20,17 @@ public class ComboModel extends AbstractPVWidgetModel {
 
 	
 	public final String ID = "org.csstudio.opibuilder.widgets.combo";//$NON-NLS-1$
+	/**
+	 * Items of the combo.
+	 */
 	public static final String PROP_ITEMS = "items";//$NON-NLS-1$
+	/**
+	 * Font of the widget.
+	 */
 	public static final String PROP_FONT = "font";//$NON-NLS-1$
+	/**
+	 * True if items are read from the input PV which must be an Enum PV.
+	 */
 	public static final String PROP_ITEMS_FROM_PV = "items_from_pv";//$NON-NLS-1$
 	
 	public ComboModel() {
