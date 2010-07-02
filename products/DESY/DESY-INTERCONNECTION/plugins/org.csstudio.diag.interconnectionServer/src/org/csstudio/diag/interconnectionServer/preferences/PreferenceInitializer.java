@@ -46,7 +46,7 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 		prefs.put(PreferenceConstants.IOC_BROADCAST_PORT_NUMBER, "18337");
 		prefs.put(PreferenceConstants.IOC_BROADCAST_ADDRESS, "255.255.255.255");
 //		prefs.put(PreferenceConstants.IOC_BROADCAST_ADDRESS, "131.169.112.163");	// Bernd's Test IOC
-		prefs.put(PreferenceConstants.IOC_BROADCAST_CYCLE_TIME, "5000");
+		prefs.put(PreferenceConstants.IOC_BROADCAST_CYCLE_TIME, "10000");
 		prefs.put(PreferenceConstants.BEACON_TIMEOUT, "20000");				//15sec -> 4.7.2008 => 20sec
 		prefs.put(PreferenceConstants.SHOW_MESSAGE_INDICATOR, "false");
 		prefs.put(PreferenceConstants.SENT_START_ID, "5000000");
