@@ -12,11 +12,10 @@ public class MessagePropertyTypeContentTest {
 		if (MessagePropertyTypeContent.getPropertyIDMapping() == null) {
 			MessagePropertyTypeContent.readMessageTypes();
 		}
-		Set<Entry<String, String>> msg_type = MessagePropertyTypeContent
+		final Set<Entry<String, String>> msg_type = MessagePropertyTypeContent
 				.getPropertyIDMapping().entrySet();
-		for (Entry<String, String> entry : msg_type) {
-			System.out.println("Key: " + entry.getKey() + ", Value: "
-					+ entry.getValue());
+		for (final Entry<String, String> entry : msg_type) {
+			// System.out.println("Key: " + entry.getKey() + ", Value: " + entry.getValue());
 		}
 	}
 }

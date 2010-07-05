@@ -1,5 +1,5 @@
 /**
- * 
+ *
  */
 package org.csstudio.dct.model.persistence.internal;
 
@@ -31,16 +31,16 @@ import org.junit.Test;
 
 /**
  * Test class for {@link ProjectToXml}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class ProjectToXmlTest {
 	private Project project;
 
 	/**
 	 * Setup.
-	 * 
+	 *
 	 * @throws java.lang.Exception
 	 */
 	@Before
@@ -49,31 +49,31 @@ public final class ProjectToXmlTest {
 
 		project = new Project("project", UUID.randomUUID());
 
-		IFolder f1 = new Folder("f1");
+		final IFolder f1 = new Folder("f1");
 		project.addMember(f1);
 		f1.setParentFolder(project);
 
-		IPrototype p1 = new Prototype("p1", UUID.randomUUID());
+		final IPrototype p1 = new Prototype("p1", UUID.randomUUID());
 		new AddPrototypeCommand(f1, p1).execute();
-		IRecord r1 = RecordFactory.createRecord(project, "ai", "r1", UUID.randomUUID());
+		final IRecord r1 = RecordFactory.createRecord(project, "ai", "r1", UUID.randomUUID());
 		new AddRecordCommand(p1, r1).execute();
 
-		IInstance i11 = new Instance(p1, UUID.randomUUID());
+		final IInstance i11 = new Instance(p1, UUID.randomUUID());
 		new AddInstanceCommand(f1, i11).execute();
 
-		IPrototype p2 = new Prototype("p2", UUID.randomUUID());
+		final IPrototype p2 = new Prototype("p2", UUID.randomUUID());
 		new AddPrototypeCommand(f1, p2).execute();
-		IRecord r2 = RecordFactory.createRecord(project, "ai", "r2", UUID.randomUUID());
+		final IRecord r2 = RecordFactory.createRecord(project, "ai", "r2", UUID.randomUUID());
 		new AddRecordCommand(p2, r2).execute();
 
-		IInstance i2 = new Instance(p2, UUID.randomUUID());
+		final IInstance i2 = new Instance(p2, UUID.randomUUID());
 		new AddInstanceCommand(p1, i2).execute();
 
-		IFolder f2 = new Folder("f2");
+		final IFolder f2 = new Folder("f2");
 		project.addMember(f2);
 		f2.setParentFolder(project);
 
-		IInstance i12 = new Instance(p1, UUID.randomUUID());
+		final IInstance i12 = new Instance(p1, UUID.randomUUID());
 		new AddInstanceCommand(f2, i12).execute();
 
 		System.err.println(p1.hashCode());
@@ -84,37 +84,37 @@ public final class ProjectToXmlTest {
 	 * Test method for
 	 * {@link org.csstudio.dct.model.persistence.internal.ProjectToXml#createDocument(org.csstudio.dct.model.internal.Project)}
 	 * .
-	 * 
+	 *
 	 * @throws IOException
 	 */
 	@Test
 	public void testCreateDocument() throws IOException {
-		ProjectToXml service = new ProjectToXml(project);
+		final ProjectToXml service = new ProjectToXml(project);
 
-		XMLOutputter outp = new XMLOutputter(Format.getPrettyFormat());
+		final XMLOutputter outp = new XMLOutputter(Format.getPrettyFormat());
 
 		// .. convert to XML document
-		Document document = service.createDocument();
+		final Document document = service.createDocument();
 
 		outp.output(document, System.out);
 
 		// .. convert back to model
-		XmlToProject xmlToProject = new XmlToProject(document);
-		Project newProject = xmlToProject.getProject();
+		final XmlToProject xmlToProject = new XmlToProject(document);
+		final Project newProject = xmlToProject.getProject();
 
 		counter = 0;
-		traverseElement((IFolder) project);
+		traverseElement(project);
 		System.out.println("-------------------");
 		counter = 0;
-		traverseElement((IFolder) newProject);
+		traverseElement(newProject);
 
 		// .. verify
 		assertEquals(project, newProject);
 
 	}
 
-	private static Element traverseElement(IElement element) {
-		Element result = null;
+	private static Element traverseElement(final IElement element) {
+		final Element result = null;
 
 		if (element instanceof IFolder) {
 			traverseElement((IFolder) element);
@@ -131,19 +131,19 @@ public final class ProjectToXmlTest {
 		return result;
 	}
 
-	private static void traverseElement(IFolder folder) {
-		for (IFolderMember m : folder.getMembers()) {
-			traverseElement((IElement) m);
+	private static void traverseElement(final IFolder folder) {
+		for (final IFolderMember m : folder.getMembers()) {
+			traverseElement(m);
 		}
 		printline("F-ID", folder.getId());
 		printline("F-Name", folder.getName());
 	}
 
-	private static void traverseElement(IPrototype prototype) {
-		for (IInstance i : prototype.getInstances()) {
+	private static void traverseElement(final IPrototype prototype) {
+		for (final IInstance i : prototype.getInstances()) {
 			traverseElement(i);
 		}
-		for (IRecord r : prototype.getRecords()) {
+		for (final IRecord r : prototype.getRecords()) {
 			traverseElement(r);
 		}
 
@@ -154,11 +154,11 @@ public final class ProjectToXmlTest {
 		printline("P-Folder", prototype.getParentFolder());
 	}
 
-	private static void traverseElement(IInstance instance) {
-		for (IInstance i : instance.getInstances()) {
+	private static void traverseElement(final IInstance instance) {
+		for (final IInstance i : instance.getInstances()) {
 			traverseElement(i);
 		}
-		for (IRecord r : instance.getRecords()) {
+		for (final IRecord r : instance.getRecords()) {
 			traverseElement(r);
 		}
 
@@ -170,7 +170,7 @@ public final class ProjectToXmlTest {
 		printline("I-Folder", instance.getParentFolder());
 	}
 
-	private static void traverseElement(IRecord record) {
+	private static void traverseElement(final IRecord record) {
 		printline("R-ID", record.getId());
 		printline("R-Parent", record.getParentRecord());
 		printline("R-Name", record.getName());
@@ -181,7 +181,7 @@ public final class ProjectToXmlTest {
 
 	private static int counter = 0;
 
-	private static void printline(String text, Object o) {
+	private static void printline(final String text, final Object o) {
 		System.out.println(counter + " :" + (o != null ? o.hashCode() : "null") + " (" + text + ")");
 		counter++;
 	}

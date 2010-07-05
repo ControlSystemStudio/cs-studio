@@ -21,21 +21,25 @@
  *
  * $Id$
  */
-package org.csstudio.utility.treemodel;
+package org.csstudio.alarm.treeView;
 
-import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderTest;
+import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
+import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
+import org.csstudio.alarm.treeView.model.AlarmTest;
+import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
-
 
 /**
  * TODO (bknerr) : Das muss anders gehen.
  * Test database.
  */
 @RunWith(Suite.class)
-@SuiteClasses({XmlFileContentModelBuilderTest.class,
-               ContentModelExporterTest.class})
+@SuiteClasses({LdapNameUtilsTest.class,
+               TreeBuilderTest.class,
+               AlarmTest.class,
+               ProcessVariableNodeTest.class})
 
 /**
  * TODO (bknerr) : Das muss anders gehen.

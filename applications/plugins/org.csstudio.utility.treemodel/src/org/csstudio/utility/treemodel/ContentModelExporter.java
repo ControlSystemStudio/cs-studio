@@ -33,16 +33,20 @@ import javax.annotation.Nullable;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.jdom.DocType;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.jdom.IllegalDataException;
+import org.jdom.IllegalNameException;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import com.google.common.collect.ImmutableSet;
 
 /**
- * TODO (bknerr) :
+ * Exports content model to different file formats.
  *
  * @author bknerr
  * @author $Author$
@@ -52,6 +56,8 @@ import com.google.common.collect.ImmutableSet;
 public final class ContentModelExporter {
 
     private static final String XML_ENCODING_FORMAT = "ISO-8859-1";
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(ContentModelExporter.class);
 
     /**
      * Constructor.
@@ -93,18 +99,18 @@ public final class ContentModelExporter {
     @CheckForNull
     public static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         String exportContentModelToXmlString(@Nonnull final ContentModel<T> model,
-                                     @Nullable final String dtdFilePath) throws ExportContentModelException {
-        
-            Format f = Format.getPrettyFormat();
+                                             @Nullable final String dtdFilePath) throws ExportContentModelException {
+
+            final Format f = Format.getPrettyFormat();
             f.setEncoding(XML_ENCODING_FORMAT);
             final XMLOutputter outputter = new XMLOutputter(f);
             final Document doc = createDOM(model, dtdFilePath);
             return outputter.outputString(doc);
     }
-    
+
     @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) {
+        Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) throws ExportContentModelException {
 
         final ISubtreeNodeComponent<T> modelRootNode = model.getRoot();
         final T rootType = modelRootNode.getType();
@@ -114,7 +120,7 @@ public final class ContentModelExporter {
         rootElem.setAttribute("name", rootType.getRootTypeValue());
 
         final Document doc = new Document(rootElem);
-        
+
 
         if (dtdFilePath != null) {
             final DocType docType = new DocType(rootElem.getName(), dtdFilePath);
@@ -131,12 +137,11 @@ public final class ContentModelExporter {
     @SuppressWarnings("unchecked")
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         void createDOMElement(@Nonnull final Element parentElem,
-                              @Nonnull final INodeComponent<T> modelNode) {
+                              @Nonnull final INodeComponent<T> modelNode) throws ExportContentModelException {
 
         // FIXME (bknerr) : once the deprecated esco, ioc components have vanished, the next lines can be removed
         String typeName = modelNode.getType().getNodeTypeName();
-        if ("econ".equals(typeName) ||
-            "esco".equals(typeName)) {
+        if ("esco".equals(typeName)) {
             typeName = "ecom";
         }
 
@@ -154,7 +159,7 @@ public final class ContentModelExporter {
     @Nonnull
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>> Element
         createElement(@Nonnull final INodeComponent<T> modelNode,
-                      @Nonnull final String typeName) {
+                      @Nonnull final String typeName) throws ExportContentModelException {
 
         final Element newNode = new Element(typeName);
 
@@ -169,13 +174,23 @@ public final class ContentModelExporter {
                     final String attributeVal = (String) attribute.get();
                     newNode.setAttribute(attributeField, attributeVal);
                 } catch (final NamingException e) {
-                    // Ignore
+                    final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
+                    " with name " + modelNode.getName();
+                    LOG.warn(message);
+                    throw new ExportContentModelException(message, e);
+                } catch (final IllegalNameException ne) {
+                    final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
+                    " with name " + modelNode.getName() + ": Illegal Name";
+                    LOG.warn(message);
+                    throw new ExportContentModelException(message, ne);
+                } catch (final IllegalDataException ne) {
+                    final String message = "Attribute creation failed for element of type " + type.getNodeTypeName() +
+                    " with name " + modelNode.getName() + ": Illegal Data";
+                    LOG.warn(message);
+                    throw new ExportContentModelException(message, ne);
                 }
             }
         }
-
-
-
         return newNode;
     }
 

@@ -37,7 +37,6 @@ import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.FileLocator;
 import org.jdom.input.JDOMParseException;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.osgi.framework.Bundle;
 /**
@@ -53,7 +52,7 @@ public class XmlFileContentModelBuilderTest {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(XmlFileContentModelBuilderTest.class);
 
-    private static final String TEST_VALID_XML = "Test_Valid.xml";
+    public static final String TEST_VALID_XML = "Test_Valid.xml";
     private static final String TEST_EMPTY_XML = "Test_Empty.xml";
     private static final String TEST_INVALID_XML = "Test_InvalidStructure.xml";
 
@@ -78,7 +77,7 @@ public class XmlFileContentModelBuilderTest {
     }
 
     @Test
-    @Ignore("due to problems with the path to the resource")
+    //@Ignore("due to problems with the path to the resource")
     public void testValid() {
         final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
             new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
@@ -106,7 +105,7 @@ public class XmlFileContentModelBuilderTest {
     }
 
     @Test
-    @Ignore("due to problems with the path to the resource")
+    //@Ignore("due to problems with the path to the resource")
     public void testEmpty() {
         final String xmlFilePath = new File(RES_PATH, TEST_EMPTY_XML).getAbsolutePath();
 
@@ -116,7 +115,6 @@ public class XmlFileContentModelBuilderTest {
         try {
             builder.build();
         } catch (final CreateContentModelException e) {
-            System.out.println(e.getMessage());
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File " + xmlFilePath + " contains parsing errors. Premature end of file.", e.getMessage());
             return;
@@ -127,7 +125,7 @@ public class XmlFileContentModelBuilderTest {
     }
 
     @Test
-    @Ignore("due to problems with the path to the resource")
+    //@Ignore("due to problems with the path to the resource")
     public void testInvalidXML() {
         final String xmlFilePath = new File(RES_PATH, TEST_INVALID_XML).getAbsolutePath();
 

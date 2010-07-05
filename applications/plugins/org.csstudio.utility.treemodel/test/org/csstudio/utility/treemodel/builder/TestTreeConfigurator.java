@@ -23,7 +23,7 @@
  */
 package org.csstudio.utility.treemodel.builder;
 
-import java.util.Collections;
+import java.util.EnumSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -73,13 +73,15 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
         Maps.newHashMapWithExpectedSize(values().length);
 
     static {
-        IOC._nestedClasses.add(RECORD);
+        RECORD._nestedClasses = EnumSet.noneOf(TestTreeConfigurator.class);
 
-        COMPONENT._nestedClasses.add(IOC);
+        IOC._nestedClasses = EnumSet.of(RECORD);
 
-        FACILITY._nestedClasses.add(COMPONENT);
+        COMPONENT._nestedClasses = EnumSet.of(IOC);
 
-        ROOT._nestedClasses.add(FACILITY);
+        FACILITY._nestedClasses = EnumSet.of(COMPONENT);
+
+        ROOT._nestedClasses = EnumSet.of(FACILITY);
 
         for (final TestTreeConfigurator oc : TestTreeConfigurator.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
@@ -102,8 +104,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
     /**
      * The tree items that are nested into a container of this class.
      */
-    private final Set<TestTreeConfigurator> _nestedClasses =
-        Sets.newEnumSet(Collections.<TestTreeConfigurator>emptySet(), TestTreeConfigurator.class);
+    private Set<TestTreeConfigurator> _nestedClasses;
 
     /**
      * Creates a new object class.
@@ -112,11 +113,11 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      *            the name of the attribute to use for the RDN.
      * @param description
      *            the description of this tree component.
+      *
+      * CHECKSTYLE:Jsr305Annotations:OFF
      */
-    //CHECKSTYLE:OFF
     private TestTreeConfigurator(final String nodeTypeName,
-                                         final String description) {
-    //CHECKSTYLE:ON
+                                 final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
     }
@@ -168,7 +169,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
     @Override
     @Nonnull
     public String getRootTypeValue() {
-        return ROOT.getNodeTypeName();
+        return "TestOu";
     }
 
     /**

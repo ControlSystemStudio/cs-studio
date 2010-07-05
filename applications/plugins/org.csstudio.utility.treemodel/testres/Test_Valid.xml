@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ou SYSTEM "test.dtd">
+<!DOCTYPE ou SYSTEM "../org.csstudio.utility.treemodel/testres/test.dtd">
 
-<ou name="EpicsControls">
+<ou name="TestOu">
   <efan name="EFAN_1">
     <ecom name="ECOM_1">
       <econ name="ECON_1">
