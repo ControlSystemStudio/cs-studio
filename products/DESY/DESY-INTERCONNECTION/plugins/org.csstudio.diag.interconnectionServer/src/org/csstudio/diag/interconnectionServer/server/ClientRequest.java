@@ -48,8 +48,8 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
