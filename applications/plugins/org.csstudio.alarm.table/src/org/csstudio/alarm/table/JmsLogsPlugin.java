@@ -123,7 +123,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
         // Might be registered as OSGI services
         _topicsetServiceForLogViews = new TopicsetService("for log views");
         _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
-        _alarmSoundService = new AlarmSoundService();
+        _alarmSoundService = AlarmSoundService.newAlarmSoundService();
         _topicSetColumnServiceForLogViews = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
                                                                       LogViewPreferenceConstants.P_STRING,
                                                                       getColumnDescriptionsForLogViews());
@@ -135,9 +135,10 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
                                                                          getColumnDescriptionsForVerifyViews());
 
 
-        ISeverityMapping severityMapping = new SeverityMapping();
+        final ISeverityMapping severityMapping = new SeverityMapping();
 
         @SuppressWarnings("unused")
+        final
         ServiceRegistration severityMappingRegistration = context
                 .registerService(ISeverityMapping.class.getName(), severityMapping, null);
 
@@ -148,9 +149,10 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
                     .getService(_serviceReferenceSeverityMapping);
         }
 
-        ISendMapMessage sendMapMessage = new SendMapMessage();
+        final ISendMapMessage sendMapMessage = new SendMapMessage();
 
         @SuppressWarnings("unused")
+        final
         ServiceRegistration sendMapMessageRegistration = context
                 .registerService(ISendMapMessage.class.getName(), sendMapMessage, null);
 
@@ -191,7 +193,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     private void safelyDisconnect(final ITopicsetService topicsetService) {
         try {
             topicsetService.disconnectAll();
-        } catch (RuntimeException e) {
+        } catch (final RuntimeException e) {
             CentralLogger.getInstance().error(this,
                                               "Error while disconnecting " + topicsetService,
                                               e);
@@ -310,7 +312,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
     @Nonnull
     private List<ColumnDescription> getColumnDescriptionsForLogViews() {
-        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
         result.add(ColumnDescription.IS_DEFAULT_ENTRY);
         result.add(ColumnDescription.TOPIC_SET);
         result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
@@ -321,7 +323,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
     @Nonnull
     private List<ColumnDescription> getColumnDescriptionsForAlarmViews() {
-        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
         result.add(ColumnDescription.IS_DEFAULT_ENTRY);
         result.add(ColumnDescription.TOPIC_SET);
         result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
@@ -334,7 +336,7 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
     @Nonnull
     private List<ColumnDescription> getColumnDescriptionsForVerifyViews() {
 
-        List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
         result.add(ColumnDescription.IS_DEFAULT_ENTRY);
         result.add(ColumnDescription.TOPIC_SET);
         result.add(ColumnDescription.NAME_FOR_TOPIC_SET);

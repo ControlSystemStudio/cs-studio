@@ -39,17 +39,16 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.osgi.framework.Bundle;
 
 /**
- * Implementation of the alarm sound service
+ * Implementation of the alarm sound service.
  *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 27.04.2010
  */
-public class AlarmSoundService implements IAlarmSoundService {
+public final class AlarmSoundService implements IAlarmSoundService {
 
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmSoundService.class);
@@ -62,10 +61,30 @@ public class AlarmSoundService implements IAlarmSoundService {
 
     private final Thread _playerThread;
 
-    public AlarmSoundService() {
+    private AlarmSoundService() {
         mapSeverityToSoundfile();
         _playerThread = new PlayerThread("AlarmSoundService");
+    }
+
+    // Helper for the construction
+    private void startPlayerThread() {
         _playerThread.start();
+    }
+
+
+    /**
+     * The alarm sound service is constructed via factory method. This is necessary to be able to start the player thread
+     * after full construction of the service.
+     *
+     * @return the alarm sound service
+     */
+    @Nonnull
+    public static AlarmSoundService newAlarmSoundService() {
+        // first fully construct the alarm sound service object
+        final AlarmSoundService result = new AlarmSoundService();
+        // then start the thread
+        result.startPlayerThread();
+        return result;
     }
 
     public void playAlarmSound(@Nonnull final Severity severity) {
@@ -152,9 +171,12 @@ public class AlarmSoundService implements IAlarmSoundService {
                     final String severity = _queue.take();
                     LOG.debug("player started");
 
-                    bufferedInputStream = new BufferedInputStream(getSoundStreamForSeverity(severity));
-                    mp3Player = new Player(bufferedInputStream);
-                    mp3Player.play();
+                    final InputStream soundStream = getSoundStreamForSeverity(severity);
+                    if (soundStream != null) {
+                        bufferedInputStream = new BufferedInputStream(soundStream);
+                        mp3Player = new Player(bufferedInputStream);
+                        mp3Player.play();
+                    }
                 } catch (final Exception e) {
                     LOG.warn("player stopped on error ", e);
                 } finally {
@@ -164,7 +186,8 @@ public class AlarmSoundService implements IAlarmSoundService {
             }
         }
 
-        private void tryToClose(@CheckForNull final Player mp3Player, @CheckForNull final BufferedInputStream bufferedInputStream) {
+        private void tryToClose(@CheckForNull final Player mp3Player,
+                                @CheckForNull final BufferedInputStream bufferedInputStream) {
             try {
                 if (bufferedInputStream != null) {
                     bufferedInputStream.close();
@@ -185,13 +208,20 @@ public class AlarmSoundService implements IAlarmSoundService {
          * @return
          * @throws IOException
          */
-        @Nonnull
+        @CheckForNull
         private InputStream getSoundStreamForSeverity(@Nonnull final String severity) throws IOException {
             final String mp3Path = getMp3Path(severity);
-            final Bundle bundle = Platform.getProduct().getDefiningBundle();
-            final URL url = FileLocator.find(bundle, new Path(mp3Path), null);
-            final InputStream stream = url.openStream();
-            return stream;
+            final URL url = getURLFromPath(mp3Path);
+            final InputStream result = url == null ? null : url.openStream();
+            return result;
+        }
+
+        @CheckForNull
+        private URL getURLFromPath(@Nonnull final String mp3Path) {
+            final URL url = FileLocator.find(Platform.getProduct().getDefiningBundle(),
+                                             new Path(mp3Path),
+                                             null);
+            return url;
         }
 
     }
