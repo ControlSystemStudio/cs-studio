@@ -39,25 +39,27 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  * @since 24.10.2007
  */
 public abstract class WidgetPart {
-    
+
     /**
      * The Widget that set the parameter from ADLWidget.
      */
     protected AbstractWidgetModel _widgetModel;
-    
+
 //    protected AbstractWidgetModel _parentWidgetModel;
 
     /**
      * The default constructor.
-     * 
-     * @param widgetPart An ADLWidget that correspond to the Child Widget Part. 
+     *
+     * @param widgetPart An ADLWidget that correspond to the Child Widget Part.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
-    public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel) throws WrongADLFormatException {
+    public WidgetPart(final ADLWidget widgetPart, final AbstractWidgetModel parentWidgetModel)
+        throws WrongADLFormatException {
+
         _widgetModel = parentWidgetModel;
-        if ((this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) &&!(parentWidgetModel instanceof PolygonModel || parentWidgetModel instanceof MenuButtonModel || parentWidgetModel instanceof RectangleModel)) {
-            WidgetInitializationService instance = WidgetInitializationService.getInstance();
+        if (((this instanceof ADLMonitor) || (this instanceof ADLDynamicAttribute) || (this instanceof ADLControl)) &&!((parentWidgetModel instanceof PolygonModel) || (parentWidgetModel instanceof MenuButtonModel) || (parentWidgetModel instanceof RectangleModel))) {
+            final WidgetInitializationService instance = WidgetInitializationService.getInstance();
             instance.initialize(parentWidgetModel);
         }
         init();
@@ -72,7 +74,7 @@ public abstract class WidgetPart {
 
     /**
      * Pars the {@link ADLWidget}.
-     * 
+     *
      * @param widgetPart the widget Part to pars.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -85,7 +87,7 @@ public abstract class WidgetPart {
      */
     abstract void generateElements();
 
-    public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
+    public final void setParentWidgetModel(final AbstractWidgetModel parentWidgetModel) {
         _widgetModel = parentWidgetModel;
     }
 

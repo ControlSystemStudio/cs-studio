@@ -37,7 +37,7 @@ import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
  * @version $Revision$
  * @since 04.09.2007
  */
-public class ADLObject extends WidgetPart{
+public class ADLObject extends WidgetPart {
 
     /** The x-coordinate of the Object.*/
     private int _x;
@@ -47,11 +47,11 @@ public class ADLObject extends WidgetPart{
     private int _width;
     /** The height of the Object.*/
     private int _height;
-    
+
     /**
      * The default constructor.
-     * 
-     * @param adlObject An ADLWidget that correspond a ADL Object. 
+     *
+     * @param adlObject An ADLWidget that correspond a ADL Object.
      * @param parentWidgetModel The Widget that set the parameter from ADLWidget.
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
@@ -66,23 +66,23 @@ public class ADLObject extends WidgetPart{
     void init() {
         /* Not to initialization*/
     }
-    
+
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
     final void parseWidgetPart(final ADLWidget adlObject) throws WrongADLFormatException {
         assert adlObject.isType("object") : Messages.ADLObject_AssertError_Begin+adlObject.getType()+Messages.ADLObject_AssertError_End+"\r\n"+adlObject; //$NON-NLS-1$
-        for (FileLine fileLine : adlObject.getBody()) {
-            String parameter = fileLine.getLine();
+        for (final FileLine fileLine : adlObject.getBody()) {
+            final String parameter = fileLine.getLine();
             if(parameter.trim().startsWith("//")){ //$NON-NLS-1$
                 continue;
             }
-            String[] row = parameter.split("="); //$NON-NLS-1$
+            final String[] row = parameter.split("="); //$NON-NLS-1$
             if(row.length!=2){
                 throw new WrongADLFormatException(Messages.ADLObject_WrongADLFormatException_Begin+parameter+Messages.ADLObject_WrongADLFormatException_End);
             }
-            row[1] = row[1].replaceAll("\"", "").trim(); 
+            row[1] = row[1].replaceAll("\"", "").trim();
             if(row[0].trim().toLowerCase().equals("x")){ //$NON-NLS-1$
                 if(row[1].startsWith("$")){
                     //TODO: ADLObject --> Dynamic x coordinate
@@ -119,7 +119,7 @@ public class ADLObject extends WidgetPart{
             setY(_y);
             setWidth(_width);
             setHeight(_height);
-        
+
     }
 
     /**

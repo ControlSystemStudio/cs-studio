@@ -33,7 +33,8 @@ import org.eclipse.osgi.util.NLS;
  * @since 05.03.2008
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.csstudio.utility.adlconverter.internationalization.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.utility.adlconverter.utility.messages"; //$NON-NLS-1$
+
     public static String RGBColorTest_10;
     public static String RGBColorTest_11;
     public static String RGBColorTest_12;
@@ -101,5 +102,6 @@ public class Messages extends NLS {
     }
 
     private Messages() {
+        // EMPTY
     }
 }

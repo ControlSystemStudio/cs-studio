@@ -131,7 +131,7 @@ public final class ADLHelper {
                                                   + fileLine));
                         }
                     }
-                    _rgbColor[i] = new RGBColor(r, g, b, inten);
+                    _rgbColor[i] = new RGBColor(r, g, b);
                     i++;
                 }
             }

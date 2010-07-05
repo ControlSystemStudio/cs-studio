@@ -26,8 +26,8 @@ package org.csstudio.utility.adlconverter.utility;
 
 import junit.framework.TestCase;
 
-import org.junit.Before;
 import org.junit.Test;
+
 
 /**
  * @author hrickens
@@ -38,13 +38,6 @@ import org.junit.Test;
 public class RGBColorTest extends TestCase {
 
     /**
-     * @throws java.lang.Exception
-     */
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    /**
      * Test method for {@link org.csstudio.utility.adlconverter.utility.RGBColor#RGBColor(java.lang.String)}.
      */
     @Test
@@ -52,8 +45,8 @@ public class RGBColorTest extends TestCase {
         RGBColor rgb = null;
         try {
            rgb = new RGBColor("010203"); //$NON-NLS-1$
-           assertNotNull(Messages.RGBColorTest_Rgb_Color_Null_Assert,rgb);
-        } catch (Exception e) {
+           assertNotNull(Messages.RGBColorTest_Rgb_Color_Null_Assert, rgb);
+        } catch (final Exception e) {
             e.printStackTrace();
             fail(Messages.RGBColorTest_Rgb_Color_Exception);
         }
@@ -62,7 +55,7 @@ public class RGBColorTest extends TestCase {
             rgb = new RGBColor("01203"); //$NON-NLS-1$
             fail(Messages.RGBColorTest_4);
             assertNotNull(Messages.RGBColorTest_5,rgb);
-         } catch (Exception e) {
+         } catch (final Exception e) {
              assertNull(Messages.RGBColorTest_6,rgb);
          }
          rgb = null;
@@ -70,7 +63,7 @@ public class RGBColorTest extends TestCase {
              rgb = new RGBColor(Messages.RGBColorTest_7);
              fail(Messages.RGBColorTest_8);
              assertNotNull(Messages.RGBColorTest_9,rgb);
-          } catch (Exception e) {
+          } catch (final Exception e) {
               assertNull(Messages.RGBColorTest_10,rgb);
           }
           rgb = null;
@@ -78,7 +71,7 @@ public class RGBColorTest extends TestCase {
               rgb = new RGBColor(Messages.RGBColorTest_11);
               fail(Messages.RGBColorTest_12);
               assertNotNull(Messages.RGBColorTest_13,rgb);
-           } catch (Exception e) {
+           } catch (final Exception e) {
                assertNull(Messages.RGBColorTest_14,rgb);
            }
 
@@ -93,20 +86,20 @@ public class RGBColorTest extends TestCase {
         try {
             RGBColor rgb = new RGBColor(Messages.RGBColorTest_15);
             assertNotNull(Messages.RGBColorTest_16,rgb);
-            assertEquals(Messages.RGBColorTest_17, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_17, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_18);
             assertNotNull(Messages.RGBColorTest_19,rgb);
-            assertEquals(Messages.RGBColorTest_20, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_20, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_21);
             assertNotNull(Messages.RGBColorTest_22,rgb);
-            assertEquals(Messages.RGBColorTest_23, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_23, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_24);
             assertNotNull(Messages.RGBColorTest_25,rgb);
-            assertEquals(Messages.RGBColorTest_26, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_26, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_27);
             assertNotNull(Messages.RGBColorTest_28,rgb);
-            assertEquals(Messages.RGBColorTest_29, rgb.getRed());
-         } catch (Exception e) {
+            assertEquals(Messages.RGBColorTest_29, String.valueOf(rgb.getRed()));
+         } catch (final Exception e) {
              e.printStackTrace();
              fail(Messages.RGBColorTest_30);
          }
@@ -121,20 +114,20 @@ public class RGBColorTest extends TestCase {
         try {
             RGBColor rgb = new RGBColor(Messages.RGBColorTest_31);
             assertNotNull(Messages.RGBColorTest_32,rgb);
-            assertEquals(Messages.RGBColorTest_33, rgb.getGreen());
+            assertEquals(Messages.RGBColorTest_33, String.valueOf(rgb.getGreen()));
             rgb = new RGBColor(Messages.RGBColorTest_34);
             assertNotNull(Messages.RGBColorTest_35,rgb);
-            assertEquals(Messages.RGBColorTest_36, rgb.getGreen());
+            assertEquals(Messages.RGBColorTest_36, String.valueOf(rgb.getGreen()));
             rgb = new RGBColor(Messages.RGBColorTest_37);
             assertNotNull(Messages.RGBColorTest_38,rgb);
-            assertEquals(Messages.RGBColorTest_39, rgb.getGreen());
+            assertEquals(Messages.RGBColorTest_39, String.valueOf(rgb.getGreen()));
             rgb = new RGBColor(Messages.RGBColorTest_40);
             assertNotNull(Messages.RGBColorTest_41,rgb);
-            assertEquals(Messages.RGBColorTest_42, rgb.getGreen());
+            assertEquals(Messages.RGBColorTest_42, String.valueOf(rgb.getGreen()));
             rgb = new RGBColor(Messages.RGBColorTest_43);
             assertNotNull(Messages.RGBColorTest_44,rgb);
-            assertEquals(Messages.RGBColorTest_45, rgb.getGreen());
-         } catch (Exception e) {
+            assertEquals(Messages.RGBColorTest_45, String.valueOf(rgb.getGreen()));
+         } catch (final Exception e) {
              e.printStackTrace();
              fail(Messages.RGBColorTest_46);
          }
@@ -149,20 +142,20 @@ public class RGBColorTest extends TestCase {
         try {
             RGBColor rgb = new RGBColor(Messages.RGBColorTest_47);
             assertNotNull(Messages.RGBColorTest_48,rgb);
-            assertEquals(Messages.RGBColorTest_49, rgb.getBlue());
+            assertEquals(Messages.RGBColorTest_49, String.valueOf(rgb.getBlue()));
             rgb = new RGBColor(Messages.RGBColorTest_50);
             assertNotNull(Messages.RGBColorTest_51,rgb);
-            assertEquals(Messages.RGBColorTest_52, rgb.getBlue());
+            assertEquals(Messages.RGBColorTest_52, String.valueOf(rgb.getBlue()));
             rgb = new RGBColor(Messages.RGBColorTest_53);
             assertNotNull(Messages.RGBColorTest_54,rgb);
-            assertEquals(Messages.RGBColorTest_55, rgb.getBlue());
+            assertEquals(Messages.RGBColorTest_55, String.valueOf(rgb.getBlue()));
             rgb = new RGBColor(Messages.RGBColorTest_56);
             assertNotNull(Messages.RGBColorTest_57,rgb);
-            assertEquals(Messages.RGBColorTest_58, rgb.getBlue());
+            assertEquals(Messages.RGBColorTest_58, String.valueOf(rgb.getBlue()));
             rgb = new RGBColor(Messages.RGBColorTest_59);
             assertNotNull(Messages.RGBColorTest_60,rgb);
-            assertEquals(Messages.RGBColorTest_61, rgb.getBlue());
-         } catch (Exception e) {
+            assertEquals(Messages.RGBColorTest_61, String.valueOf(rgb.getBlue()));
+         } catch (final Exception e) {
              e.printStackTrace();
              fail(Messages.RGBColorTest_62);
          }

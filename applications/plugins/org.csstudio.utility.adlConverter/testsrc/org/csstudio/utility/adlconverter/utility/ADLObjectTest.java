@@ -41,13 +41,13 @@ import org.junit.Test;
  */
 public class ADLObjectTest {
 
-    private ADLWidget _adlObejectString;
+    private ADLWidget _adlObjectString;
     /**
      * @throws java.lang.Exception
      */
     @Before
     public void setUp() throws Exception {
-        _adlObejectString = new ADLWidget("   object {"+"\r\n"+
+        _adlObjectString = new ADLWidget("   object {"+"\r\n"+
                             "x=10"+"\r\n"+
                             "y=60"+"\r\n"+
                             "width=1200"+"\r\n"+
@@ -62,7 +62,7 @@ public class ADLObjectTest {
     public void testADLObject() {
         ADLObject testObj = null;
         try {
-//            testObj = new ADLObject(_adlObejectString);
+            testObj = new ADLObject(_adlObjectString, null);
             // Positive
             assertNotNull("ADLObject is Null",testObj);
             // check x
@@ -82,7 +82,7 @@ public class ADLObjectTest {
 //            assertNull("Illegal index (-1) return is not Null",testObj.getAdlObjects(-1));
 //            assertNull("Illegal index (4) return is not Null",testObj.getAdlObjects(4));
 //            assertNull("Illegal index (Integer.MAX_VALUE) return is not Null",testObj.getAdlObjects(Integer.MAX_VALUE));
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             fail("ADLObject dislike the adlObjectString");
         }
@@ -90,21 +90,21 @@ public class ADLObjectTest {
             testObj = null;
 //            testObj = new ADLObject(new String[] {"objekt {","x=10"});
             fail("ADLObject acceppt the wrong adlObjectString");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertNull("ADLObject don't acceppt the adlObjectString but Object is not Null",testObj);
         }
         try{
             testObj = null;
 //            testObj = new ADLObject(new String[] {"object {","x:10"});
             fail("ADLObject acceppt the wrong adlObjectString");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertNull("ADLObject don't acceppt the adlObjectString but Object is not Null",testObj);
         }
         try{
             testObj = null;
 //            testObj = new ADLObject(new String[] {"object {","xy=10,11"});
             fail("ADLObject acceppt the wrong adlObjectString");
-        } catch (Exception e) {
+        } catch (final Exception e) {
             assertNull("ADLObject don't acceppt the adlObjectString but Object is not Null",testObj);
         }
 
@@ -147,7 +147,7 @@ public class ADLObjectTest {
 //            assertNull("Illegal index (-1) return is not Null",testObj.getAdlObjects(-1));
 //            assertNull("Illegal index (4) return is not Null",testObj.getAdlObjects(4));
 //            assertNull("Illegal index (Integer.MAX_VALUE) return is not Null",testObj.getAdlObjects(Integer.MAX_VALUE));
-//            
+//
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //            fail("ADLObject dislike the adlObjectString");
@@ -160,7 +160,7 @@ public class ADLObjectTest {
     @Test
     public void testGetAdlObjects() {
         try{
-            ADLObject testObj = null;
+            final ADLObject testObj = null;
 //            ADLObject testObj = new ADLObject(_adlObejectString);
             // Positive
             assertNotNull("ADLObject is Null",testObj);
@@ -190,7 +190,7 @@ public class ADLObjectTest {
 //            assertEquals("height isn't height--"+testObj.getAdlObject()[3].getAttributeValue("id"), "height", testObj.getAdlObject()[3].getAttributeValue("id"));
 //            assertEquals("Make wrong height value --"+testObj.getAdlObject()[3].getAttributeValue("value"), "880", testObj.getAdlObject()[3].getAttributeValue("value"));
 
-        } catch (Exception e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             fail("ADLObject dislike the adlObjectString");
         }

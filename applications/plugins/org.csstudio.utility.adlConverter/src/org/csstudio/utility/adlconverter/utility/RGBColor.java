@@ -26,7 +26,6 @@ package org.csstudio.utility.adlconverter.utility;
 
 import org.csstudio.sds.util.ColorAndFontUtil;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
-import org.eclipse.swt.graphics.RGB;
 
 /**
  * @author hrickens
@@ -47,7 +46,7 @@ public class RGBColor {
      * @throws WrongADLFormatException was thrown is the color String invalid.
      */
     public RGBColor(final String color) throws WrongADLFormatException{
-        if(color.length()==6){
+        if(color.length() == 6){
             setRed(color);
             setGreen(color);
             setBlue(color);
@@ -55,8 +54,9 @@ public class RGBColor {
             throw new WrongADLFormatException(Messages.RGBColor_WrongADLFormatException);
         }
     }
-    
-    public RGBColor(final int red, int green, int blue, int inten) throws WrongADLFormatException{
+
+    public RGBColor(final int red, final int green, final int blue) {
+
         setRed(red);
         setGreen(green);
         setBlue(blue);
@@ -64,7 +64,7 @@ public class RGBColor {
 
     /** @return the red value. */
     public final int getRed() {
-        return _red; 
+        return _red;
     }
     /** @return the green value. */
     public final int getGreen() {
@@ -78,50 +78,50 @@ public class RGBColor {
     public final String getHex() {
         return ColorAndFontUtil.toHex(_red,_green,_blue);
     }
-    
+
     /**
-     * @param clr The ADL Color was set and transform to RGB red. 
+     * @param clr The ADL Color was set and transform to RGB red.
      */
     private void setRed(final String clr) {
-        String temp = "#".concat(clr.substring(0,2)); //$NON-NLS-1$
+        final String temp = "#".concat(clr.substring(0,2)); //$NON-NLS-1$
         _red = Integer.decode(temp);
     }
     /**
      * @param red
      */
-    private void setRed(int red) {
+    private void setRed(final int red) {
         _red=red;
     }
 
     /**
      * @param green
      */
-    private void setGreen(int green) {
+    private void setGreen(final int green) {
         _green=green;
     }
 
     /**
-     * @param clr The ADL Color was set and transform to RGB green. 
+     * @param clr The ADL Color was set and transform to RGB green.
      */
     private void setGreen(final String clr) {
-        String temp = "#".concat(clr.substring(2,4)); //$NON-NLS-1$
+        final String temp = "#".concat(clr.substring(2,4)); //$NON-NLS-1$
         _green = Integer.decode(temp);
     }
-    
+
     /**
      * @param blue
      */
-    private void setBlue(int blue) {
+    private void setBlue(final int blue) {
         _blue=blue;
     }
 
     /**
-     * @param clr The ADL Color was set and transform to RGB blue. 
+     * @param clr The ADL Color was set and transform to RGB blue.
      */
     private void setBlue(final String clr) {
-        String temp = "#".concat(clr.substring(4,6)); //$NON-NLS-1$
+        final String temp = "#".concat(clr.substring(4,6)); //$NON-NLS-1$
         _blue = Integer.decode(temp);
     }
-    
+
 
 }
