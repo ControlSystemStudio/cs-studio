@@ -87,13 +87,13 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             // Convert our input stream to a dataInputStream
             final DataInputStream in = new DataInputStream(fstream);
 
-            final SAXBuilder builder = new SAXBuilder(true);
+            final SAXBuilder builder = new SAXBuilder(false);
             final Document doc = builder.build(in);
 
             return createContentModelFromFile(doc);
 
         } catch (final FileNotFoundException e) {
-            throw new CreateContentModelException(e.getMessage(), e);
+            throw new CreateContentModelException("File not found: "+ _filePath + " with exception " + e.getMessage(), e);
         } catch (final JDOMException e) {
             throw new CreateContentModelException("File " + _filePath + " contains parsing errors. " + e.getCause().getMessage(), e);
         } catch (final IOException e) {
