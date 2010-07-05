@@ -1,0 +1,9 @@
+record(calc,"DALPrecisionTest1") {
+        field(DESC,"DALPrecisionTest")
+        field(SCAN,"1 second")
+        field(INPA, "12.345678901")       
+        field(CALC, "A")
+        field(LOPR,"0")       
+        field(HOPR,"20")       
+        field(PREC,"4")
+}
