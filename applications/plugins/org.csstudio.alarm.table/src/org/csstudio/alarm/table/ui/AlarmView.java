@@ -22,6 +22,7 @@ import java.util.List;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
@@ -214,8 +215,8 @@ public class AlarmView extends LogView {
 
     @Override
     protected final void retrieveInitialState(@Nonnull final MessageList messageList) {
-        InitialStateRetriever retriever = new InitialStateRetriever(messageList);
-        Job job = retriever.newRetrieveInitialStateJob();
+        final InitialStateRetriever retriever = new InitialStateRetriever(messageList);
+        final Job job = retriever.newRetrieveInitialStateJob();
 
         // Start the job.
         final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
@@ -301,14 +302,15 @@ public class AlarmView extends LogView {
                         final AlarmMessage message = (AlarmMessage) ti.getData();
                         // ComboBox selection for all messages or for a special
                         // severity
-                        if (ackCombo.getItem(ackCombo.getSelectionIndex()).equals(message
-                                .getProperty("SEVERITY")) //$NON-NLS-1$
+                        final String sevProp = message.getProperty(AlarmMessageKey.SEVERITY.getDefiningName());
+                        if (ackCombo.getItem(ackCombo.getSelectionIndex()).equals(sevProp) //$NON-NLS-1$
                                 || (ackCombo.getItem(ackCombo.getSelectionIndex())
                                         .equals(Messages.AlarmView_acknowledgeAllDropDown))) {
                             // add the message only if it is not yet
                             // acknowledged.
                             if (!message.isAcknowledged()) {
-                                msgList.add(message.copy(new AlarmMessage()));
+                                final AlarmMessage copy = message.copy();
+                                msgList.add(copy);
                             }
                         }
 

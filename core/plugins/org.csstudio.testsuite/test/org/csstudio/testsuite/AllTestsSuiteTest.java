@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,39 +18,25 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
-/**
  *
+ * $Id$
  */
-package org.csstudio.alarm.table.ui.messagetable;
-import org.csstudio.alarm.service.declaration.AlarmMessageKey;
-import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
+package org.csstudio.testsuite;
+
+import org.junit.Test;
 
 /**
- * Sorter for log table viewer. Insert newest message at the top.
+ * Test for the subroutines of AllTestsSuite.
  *
- * @author jhatje
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 01.07.2010
  */
-public class MessageTableMessageSorter extends ViewerComparator {
+public class AllTestsSuiteTest {
 
-    private final TableViewer _tableViewer;
-
-    public MessageTableMessageSorter(final TableViewer tableViewer) {
-        super();
-        _tableViewer = tableViewer;
-    }
-
-    @Override
-    public int compare(final Viewer viewer, final Object o1, final Object o2) {
-
-        final BasicMessage jmsm1 = (BasicMessage) o1;
-        final BasicMessage jmsm2 = (BasicMessage) o2;
-        // FIXME (jhatje) : transform string to Date and compare with Date.before or Date.after
-        return (super.compare(_tableViewer,
-                              jmsm2.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName()),
-                              jmsm1.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName())));
+    @Test
+    public void testSuite() {
+        AllTestsSuite.suite();
     }
 }

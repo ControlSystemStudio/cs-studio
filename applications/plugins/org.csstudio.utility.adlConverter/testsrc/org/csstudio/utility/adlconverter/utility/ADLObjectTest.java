@@ -29,6 +29,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
+import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.utility.adlconverter.utility.widgetparts.ADLObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -62,18 +63,18 @@ public class ADLObjectTest {
     public void testADLObject() {
         ADLObject testObj = null;
         try {
-            testObj = new ADLObject(_adlObjectString, null);
+            testObj = new ADLObject(_adlObjectString, new DisplayModel());
             // Positive
             assertNotNull("ADLObject is Null",testObj);
             // check x
-            assertNotNull("ADLObject x is Null",testObj.getX());
-            assertEquals("x is not a Property --"+testObj.getX(), "10", testObj.getX());
+            assertNotNull("ADLObject x is Null", testObj.getX());
+            assertEquals("x is not a Property --" + testObj.getX(), "10", testObj.getX());
             // check y
-            assertNotNull("ADLObject y is Null",testObj.getY());
-            assertEquals("y is not a Property --"+testObj.getY(), "60", testObj.getY());
+            assertNotNull("ADLObject y is Null", testObj.getY());
+            assertEquals("y is not a Property --" + testObj.getY(), "60", testObj.getY());
             // check width
-            assertNotNull("ADLObject width is Null",testObj.getWidth());
-            assertEquals("y is not a Property --"+testObj.getWidth(), "1200", testObj.getWidth());
+            assertNotNull("ADLObject width is Null", testObj.getWidth());
+            assertEquals("y is not a Property --" + testObj.getWidth(), "1200", testObj.getWidth());
 
             // check height
             assertNotNull("ADLObject height is Null",testObj.getHeight());

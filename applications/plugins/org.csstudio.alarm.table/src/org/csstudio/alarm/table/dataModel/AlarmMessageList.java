@@ -1,72 +1,87 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.alarm.table.dataModel;
+
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.ACK;
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.EVENTTIME;
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.NAME;
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.SEVERITY;
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.STATUS;
+import static org.csstudio.alarm.service.declaration.AlarmMessageKey.TYPE;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
 import javax.jms.JMSException;
 
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * List of alarm messages for alarm table. The class includes also the logic in
  * which case a message should be deleted, highlighted etc.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class AlarmMessageList extends MessageList {
 
-    protected Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageList.class);
+
+    private final Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
 
     /** number of alarm status changes in the message with the same pv name. */
     private int alarmStatusChanges = 0;
 
-    private Vector<AlarmMessage> _messagesToRemove = new Vector<AlarmMessage>();
+    private final Vector<AlarmMessage> _messagesToRemove = new Vector<AlarmMessage>();
 
     /**
      * Add a new Message to the collection of Messages.
-     * 
+     *
      */
     @Override
-    public synchronized void addMessage(BasicMessage newBasicMessage) {
-        AlarmMessage newMessage = new AlarmMessage(newBasicMessage.getHashMap());
+    public synchronized void addMessage(@Nonnull final BasicMessage newBasicMessage) {
+
+        final AlarmMessage newMessage = new AlarmMessage(newBasicMessage.getHashMap());
         if (checkValidity(newMessage)) {
             // An acknowledge message was received.
-            if (newMessage.getProperty("ACK") != null && newMessage.getProperty("ACK").toUpperCase().equals("TRUE")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-                AlarmMessage jmsm = setAcknowledge(newMessage);
+            final String propAck = newMessage.getProperty(ACK.getDefiningName());
+            if ((propAck != null) && Boolean.valueOf(propAck)) {
+                final AlarmMessage jmsm = setAcknowledge(newMessage);
                 if (jmsm != null) {
                     super.updateMessage(jmsm);
                 }
                 return;
             }
-            boolean equalMessageInTable = equalMessageNameInTable(newMessage);
+            final boolean msgExists = existsMessageWithSameName(newMessage);
             // do not insert messages with type: 'status', unless there is a
             // previous message with the same NAME in the table.
-            if (newMessage.getProperty("TYPE").equalsIgnoreCase("status")) {
-                if (equalMessageInTable == true) {
+            final String propType = newMessage.getProperty(TYPE.getDefiningName());
+            if ((propType != null) && propType.equalsIgnoreCase("status")) {
+                if (msgExists) {
                     updateMessageInTableForDisconnected(newMessage);
                 }
                 return;
@@ -74,13 +89,16 @@ public class AlarmMessageList extends MessageList {
             // is there an old message from same pv
             // (deleteOrGrayOutEqualMessages == true) -> display new message
             // anyway is new message NOT from Type NO_ALARM -> display message
-            if ((deleteOrGrayOutEqualMessages(newMessage))
-                    || (newMessage.getProperty("SEVERITY").equalsIgnoreCase("NO_ALARM")) == false) { //$NON-NLS-1$
-                if (equalMessageInTable == false) {
+            final String propSev = newMessage.getProperty(SEVERITY.getDefiningName());
+            if (propSev == null) {
+                throw new IllegalStateException("Message without Severity found. Validity check failure!");
+            }
+            if (deleteOrGrayOutEqualMessages(newMessage) ||
+                !(propSev.equalsIgnoreCase(Severity.NO_ALARM.name()))) { //$NON-NLS-1$
+                if (!msgExists) {
                     newMessage.setProperty("COUNT", "0");
                 } else {
-                    newMessage.setProperty("COUNT", String
-                            .valueOf(alarmStatusChanges + 1));
+                    newMessage.setProperty("COUNT", String.valueOf(alarmStatusChanges + 1));
                 }
                 _messages.add(_messages.size(), newMessage);
                 super.addMessage(newMessage);
@@ -91,38 +109,36 @@ public class AlarmMessageList extends MessageList {
     /**
      * Updates the existing message in the table with new properties for new
      * status. If there are two existing messages in table delete the older one.
-     * 
+     *
      * @param newMessage
      * @throws JMSException
      */
-    private void updateMessageInTableForDisconnected(AlarmMessage newMessage) {
-        if (newMessage.getProperty("STATUS") == null) {
+    private void updateMessageInTableForDisconnected(final AlarmMessage newMessage) {
+        final String propStatus = newMessage.getProperty(STATUS.getDefiningName());
+        if (propStatus == null) {
             return;
         }
         BasicMessage messageToRemove = null;
-        for (AlarmMessage message : _messages) {
-            String currentInList = message.getProperty("NAME");
-            String currentMessage = newMessage.getProperty("NAME");
-            if (currentInList.equalsIgnoreCase(currentMessage) == true) {
+        for (final AlarmMessage message : _messages) {
+            final String currentInList = message.getProperty(NAME.getDefiningName());
+            final String currentMessage = newMessage.getProperty(NAME.getDefiningName());
+            if ((currentInList != null) && currentInList.equalsIgnoreCase(currentMessage)) {
                 // the new status is disconnected, set severity to "offline"
-                if (newMessage.getProperty("STATUS").equalsIgnoreCase(
-                        "DISCONNECTED")) {
+                if (propStatus.equalsIgnoreCase("DISCONNECTED")) {
                     // if this message in table is an old one delete it
                     if (message.isOutdated()) {
                         messageToRemove = message;
                     } else {
-                        message.setProperty("STATUS", "DISCONNECTED");
+                        message.setProperty(STATUS.getDefiningName(), "DISCONNECTED");
                         updateMessage(message);
                     }
                     // the new status is not disconnected update properties with
                     // values of the new message.
                 } else {
-                    message.setProperty("SEVERITY", newMessage
-                            .getProperty("SEVERITY"));
-                    message.setProperty("STATUS", newMessage
-                            .getProperty("STATUS"));
-                    message.setProperty("TIMESTAMP", newMessage
-                            .getProperty("TIMESTMAP"));
+                    message.setProperty(SEVERITY.getDefiningName(),
+                                        newMessage.getProperty(SEVERITY.getDefiningName()));
+                    message.setProperty(STATUS.getDefiningName(), propStatus);
+                    message.setProperty("TIMESTAMP", newMessage.getProperty("TIMESTMAP"));
                     updateMessage(message);
                 }
             }
@@ -135,7 +151,8 @@ public class AlarmMessageList extends MessageList {
     /**
      * Remove a message from the list.
      */
-    public void removeMessage(BasicMessage jmsm) {
+    @Override
+    public void removeMessage(final BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
@@ -143,79 +160,85 @@ public class AlarmMessageList extends MessageList {
     /**
      * Remove an array of messages from the list.
      */
-    public void removeMessageArray(BasicMessage[] jmsm) {
-        for (BasicMessage message : jmsm) {
+    @Override
+    public void removeMessageArray(final BasicMessage[] jmsm) {
+        for (final BasicMessage message : jmsm) {
             _messages.remove(message);
         }
         super.removeMessageArray(jmsm);
     }
 
+    @Override
     public Vector<? extends BasicMessage> getJMSMessageList() {
         return _messages;
     }
 
-    public void deleteAllMessages(BasicMessage[] messages) {
+    @Override
+    public void deleteAllMessages(final BasicMessage[] messages) {
         removeMessageArray(messages);
     }
 
     /**
      * Check if the new message is valid alarm message
-     * 
+     * NAME and SEVERITY have to exist
+     * TYPE may be omitted if there is prop ACK==TRUE
+     * (TODO (bknerr) : refactor to be a type value 'TYPE==ACK'
+     *
      * @param newMessage
      */
-    private boolean checkValidity(AlarmMessage newMessage) {
-        if (newMessage == null) {
+    private boolean checkValidity(@Nonnull final AlarmMessage newMessage) {
+        if (newMessage.getProperty(NAME.getDefiningName()) == null) {
             return false;
         }
-        if (newMessage.getProperty("TYPE") == null) {
-            if ((newMessage.getProperty("ACK") == null)
-                    || (!newMessage.getProperty("ACK").equals("TRUE"))) {
+
+        if (newMessage.getProperty(SEVERITY.getDefiningName()) == null) {
+            return false;
+        }
+        if (newMessage.getProperty(TYPE.getDefiningName()) == null) {
+            final String propAck = newMessage.getProperty(ACK.getDefiningName());
+            if ((propAck != null) && !Boolean.valueOf(propAck)) {
                 return false;
             }
-        }
-        if (newMessage.getProperty("SEVERITY") == null) {
-            return false;
         }
         return true;
     }
 
     /**
-     * 
+     *
      * @param newMessage
      * @throws JMSException
      * @throws JMSException
      */
-    protected AlarmMessage setAcknowledge(final AlarmMessage newMessage) {
+    protected AlarmMessage setAcknowledge(@Nonnull final AlarmMessage newMessage) {
 
-        CentralLogger.getInstance().debug(
-                this,
-                "AlarmView Ack message received, MsgName: "
-                        + newMessage.getProperty("NAME") + " MsgTime: "
-                        + newMessage.getProperty("EVENTTIME"));
-        for (AlarmMessage message : _messages) {
-            if (message.getName().equals(newMessage.getProperty("NAME"))
-                    && message.getProperty("SEVERITY").equals(
-                            newMessage.getProperty("SEVERITY"))) {
-                if ((message.isOutdated() == true)
-                        || (message.getProperty("SEVERITY_KEY")
-                                .equalsIgnoreCase("NO_ALARM"))
-                        || (message.getProperty("SEVERITY_KEY")
-                                .equalsIgnoreCase("INVALID"))) {
+        final String newNameProp = newMessage.getProperty(NAME.getDefiningName());
+        final String newTimeProp = newMessage.getProperty(EVENTTIME.getDefiningName());
+        LOG.debug("AlarmView Ack message received, MsgName: " +
+                  newNameProp + " MsgTime: " + newTimeProp);
+
+        for (final AlarmMessage message : _messages) {
+            final String sevProp = message.getProperty(SEVERITY.getDefiningName());
+            final String newSevProp = newMessage.getProperty(SEVERITY.getDefiningName());
+            final String nameProp = message.getName();
+            if ((nameProp != null) && nameProp.equals(newNameProp) && sevProp.equals(newSevProp)) {
+                final String sevKeyProp = message.getProperty("SEVERITY_KEY");
+                if ((sevKeyProp != null) &&
+                    (message.isOutdated() ||
+                    sevKeyProp.equalsIgnoreCase(Severity.NO_ALARM.name()) ||
+                    sevKeyProp.equalsIgnoreCase(Severity.INVALID.name()) )) {
+
                     _messagesToRemove.add(message);
-                    CentralLogger.getInstance().debug(
-                            this,
-                            "add message, removelist size: "
-                                    + _messagesToRemove.size());
+                    LOG.debug("add message, removelist size: " + _messagesToRemove.size());
                 } else {
-                    message.getHashMap().put("ACK_HIDDEN", "TRUE");
-                    message.setProperty("ACK", "TRUE");
+                    message.getHashMap().put("ACK_HIDDEN", Boolean.TRUE.toString());
+                    message.setProperty(ACK.getDefiningName(), Boolean.TRUE.toString());
                     message.setAcknowledged(true);
                     return message;
                 }
                 break;
             }
         }
-        for (BasicMessage message : _messagesToRemove) {
+        for (final BasicMessage message : _messagesToRemove) {
             removeMessage(message);
         }
         _messagesToRemove.clear();
@@ -224,24 +247,23 @@ public class AlarmMessageList extends MessageList {
 
     /**
      * Searching for a previous message in alarm table with the same NAME.
-     * 
+     *
      * @param mm
      * @return boolean Is there a previous message
      */
-    private boolean equalMessageNameInTable(AlarmMessage mm) {
+    private boolean existsMessageWithSameName(final AlarmMessage mm) {
         boolean messageInTable = false;
-        for (AlarmMessage message : _messages) {
-            String currentInList = message.getProperty("NAME");
-            String currentMessage = mm.getProperty("NAME");
-            if ((currentInList.equalsIgnoreCase(currentMessage) == true)
-                    && (message.isOutdated() == false)) {
-                String alarmChangeCount = message.getProperty("COUNT");
+        final String name = mm.getProperty(NAME.getDefiningName());
+        for (final AlarmMessage message : _messages) {
+            final String currentName = message.getProperty(NAME.getDefiningName());
+            if ((currentName != null) && currentName.equalsIgnoreCase(name) && !message.isOutdated()) {
+                messageInTable = true;
+                final String alarmChangeCount = message.getProperty("COUNT");
                 try {
                     alarmStatusChanges = Integer.parseInt(alarmChangeCount);
-                } catch (NumberFormatException e) {
+                } catch (final NumberFormatException e) {
                     alarmStatusChanges = 0;
                 }
-                messageInTable = true;
                 break;
             }
         }
@@ -255,29 +277,29 @@ public class AlarmMessageList extends MessageList {
      * message is really newer than an existing message. (It is important to use
      * the <code>removeMessage</code> method from <code>MessageList</code> that
      * the changeListeners on the model were updated.)
-     * 
+     *
      * @param mm
      *            The new MapMessage
      * @return Is there a previous message in the list with the same pv name
      */
-    private boolean deleteOrGrayOutEqualMessages(AlarmMessage mm) {
-        if (mm == null) {
-            return false;
-        }
-        boolean equalPreviousMessage = false;
-        Iterator<AlarmMessage> it = _messages.listIterator();
-        List<AlarmMessage> jmsMessagesToRemove = new ArrayList<AlarmMessage>();
-        List<AlarmMessage> jmsMessagesToRemoveAndAdd = new ArrayList<AlarmMessage>();
-        String newPVName = mm.getProperty("NAME"); //$NON-NLS-1$
-        String newSeverity = mm.getProperty("SEVERITY"); //$NON-NLS-1$
+    private boolean deleteOrGrayOutEqualMessages(@Nonnull final AlarmMessage mm) {
 
+        boolean equalPreviousMessage = false;
+        final List<AlarmMessage> jmsMessagesToRemove = new ArrayList<AlarmMessage>();
+        final List<AlarmMessage> jmsMessagesToRemoveAndAdd = new ArrayList<AlarmMessage>();
+        final String newPVName = mm.getProperty(NAME.getDefiningName());
+        final String newSeverity = mm.getProperty(SEVERITY.getDefiningName());
+
+
+
+        Iterator<AlarmMessage> it = _messages.listIterator();
         if ((newPVName != null) && (newSeverity != null)) {
             while (it.hasNext()) {
-                AlarmMessage jmsm = it.next();
-                String pvNameFromList = jmsm.getProperty("NAME"); //$NON-NLS-1$
+                final AlarmMessage jmsm = it.next();
+                final String pvNameFromList = jmsm.getProperty(NAME.getDefiningName());
                 // the 'real' severity in map message we get from the
                 // JMSMessage via SEVERITY_KEY
-                String severityFromList = jmsm.getProperty("SEVERITY_KEY"); //$NON-NLS-1$
+                final String severityFromList = jmsm.getProperty("SEVERITY_KEY"); //$NON-NLS-1$
                 if ((pvNameFromList != null) && (severityFromList != null)) {
 
                     // is there a previous alarm message from same pv?
@@ -287,8 +309,7 @@ public class AlarmMessageList extends MessageList {
                         // is old message gray, are both severities equal ->
                         // remove
                         if ((jmsm.isOutdated())
-                                || (newSeverity
-                                        .equalsIgnoreCase(severityFromList))) {
+                                || (newSeverity.equalsIgnoreCase(severityFromList))) {
                             jmsMessagesToRemove.add(jmsm);
 
                         } else {
@@ -296,10 +317,11 @@ public class AlarmMessageList extends MessageList {
                             // is old message not acknowledged or is
                             // severity from old message not NO_ALARM ->
                             // add message to list (not delete message)
-                            if (!jmsm
-                                    .getProperty("ACK_HIDDEN").toUpperCase().equals("TRUE") && //$NON-NLS-1$ //$NON-NLS-2$
-                                    severityFromList
-                                            .equalsIgnoreCase("NO_ALARM") == false) { //$NON-NLS-1$
+                            final String propAckHidden = jmsm.getProperty("ACK_HIDDEN");
+                            if ((propAckHidden != null) &&
+                                !Boolean.valueOf(propAckHidden) &&
+                                !severityFromList.equalsIgnoreCase(Severity.NO_ALARM.name())) {
+
                                 jmsm.setOutdated(true);
                                 jmsMessagesToRemoveAndAdd.add(jmsm);
                             }
@@ -315,7 +337,7 @@ public class AlarmMessageList extends MessageList {
 
         it = jmsMessagesToRemoveAndAdd.listIterator();
         while (it.hasNext()) {
-            AlarmMessage message = it.next();
+            final AlarmMessage message = it.next();
             _messages.add(message);
             super.addMessage(message);
         }
@@ -323,7 +345,7 @@ public class AlarmMessageList extends MessageList {
         jmsMessagesToRemoveAndAdd.clear();
         return equalPreviousMessage;
     }
-    
+
     @Override
     public Integer getSize() {
        return _messages.size();

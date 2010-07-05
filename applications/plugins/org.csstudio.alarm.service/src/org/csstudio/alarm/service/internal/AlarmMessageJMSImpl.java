@@ -77,7 +77,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
         String result = "";
         try {
             result = _mapMessage.getString(key);
-        } catch (JMSException e) {
+        } catch (final JMSException e) {
             LOG.error("Error analyzing JMS message", e);
             // result is already empty string
         }
@@ -96,15 +96,16 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     @Override
     public final Map<String, String> getMap() {
         // TODO (jpenning) performance: cache the result map
-        Map<String, String> result = new HashMap<String, String>();
+        final Map<String, String> result = new HashMap<String, String>();
         try {
             @SuppressWarnings("unchecked")
+            final
             Enumeration<String> mapNames = _mapMessage.getMapNames();
             while (mapNames.hasMoreElements()) {
-                String key = mapNames.nextElement();
+                final String key = mapNames.nextElement();
                 result.put(key.toUpperCase(), _mapMessage.getString(key));
             }
-        } catch (JMSException e) {
+        } catch (final JMSException e) {
             LOG.error("Error creating map from JMS message", e);
         }
         return result;
@@ -142,7 +143,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     @Override
     public boolean isAcknowledgement() {
         final String ack = getString(AlarmMessageKey.ACK);
-        return (ack != null) && ack.equals("TRUE");
+        return (ack != null) && Boolean.valueOf(ack);
     }
 
 }

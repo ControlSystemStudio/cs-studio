@@ -67,7 +67,7 @@ public class AlarmTreeViewTest {
         final IAlarmSubtreeNode node = VIEW.getRootNode();
         Assert.assertNotNull(node);
 
-        Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
+       // Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
 
     }
 

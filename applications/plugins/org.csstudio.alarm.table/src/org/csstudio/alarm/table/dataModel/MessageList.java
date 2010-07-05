@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -26,91 +26,96 @@ import java.util.Set;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import javax.annotation.Nonnull;
+
 /**
  * List of JMSMessages. The Viewers (LabelProviders) of the list registers as listeners.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 abstract public class MessageList {
-    
+
     /**
      * Listeners to update on changes.
      */
     private final Set<IMessageViewer> changeListeners = new HashSet<IMessageViewer>();
-    
+
     /**
      * Time when the list is started.
      */
     private final Date _startTime;
-    
+
     public MessageList() {
         _startTime = (new GregorianCalendar(TimeZone.getTimeZone("ECT"))).getTime();
     }
-    
+
     /**
-     * Add a new Message to the collection of Messages
+     * Add a new Message to the collection of change listeners
      */
-    public void addMessage(final BasicMessage jmsm) {
-        Iterator<IMessageViewer> iterator = changeListeners.iterator();
+    public void addMessage(@Nonnull final BasicMessage jmsm) {
+        final Iterator<IMessageViewer> iterator = changeListeners.iterator();
         while (iterator.hasNext()) {
             (iterator.next()).addJMSMessage(jmsm);
         }
     }
-    
+
     /**
-     * Add a new MessageList<HashMap> to the collection of Messages
+     * Add a new MessageList<HashMap> to the collection of change listeners
      */
     public void addMessageList(final BasicMessage[] messageList) {
-        Iterator<IMessageViewer> iterator = changeListeners.iterator();
+        final Iterator<IMessageViewer> iterator = changeListeners.iterator();
         while (iterator.hasNext()) {
             (iterator.next()).addJMSMessages(messageList);
         }
     }
-    
+
     /**
      * Call listeners to update the message.
      */
     public void updateMessage(final BasicMessage jmsm) {
-        Iterator<IMessageViewer> iterator = changeListeners.iterator();
-        while (iterator.hasNext())
+        final Iterator<IMessageViewer> iterator = changeListeners.iterator();
+        while (iterator.hasNext()) {
             (iterator.next()).updateJMSMessage(jmsm);
+        }
     }
-    
+
     /**
      * Remove a message from the list.
      */
     public void removeMessage(final BasicMessage jmsm) {
-        Iterator<IMessageViewer> iterator = changeListeners.iterator();
-        while (iterator.hasNext())
+        final Iterator<IMessageViewer> iterator = changeListeners.iterator();
+        while (iterator.hasNext()) {
             (iterator.next()).removeJMSMessage(jmsm);
+        }
     }
-    
+
     /**
      * Remove an array of messages from the list.
      */
     public void removeMessageArray(final BasicMessage[] jmsm) {
-        Iterator<IMessageViewer> iterator = changeListeners.iterator();
-        while (iterator.hasNext())
+        final Iterator<IMessageViewer> iterator = changeListeners.iterator();
+        while (iterator.hasNext()) {
             (iterator.next()).removeJMSMessage(jmsm);
+        }
     }
-    
+
     public void removeChangeListener(final IMessageViewer viewer) {
         changeListeners.remove(viewer);
     }
-    
+
     public void addChangeListener(final IMessageViewer viewer) {
         changeListeners.add(viewer);
     }
-    
+
     abstract public void deleteAllMessages(BasicMessage[] messages);
-    
+
     abstract public Vector<? extends BasicMessage> getJMSMessageList();
-    
+
     abstract public Integer getSize();
-    
+
     public Date getStartTime() {
         return _startTime;
     }
-    
+
 }

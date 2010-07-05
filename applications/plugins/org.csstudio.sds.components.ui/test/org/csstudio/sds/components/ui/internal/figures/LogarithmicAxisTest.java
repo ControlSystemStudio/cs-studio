@@ -37,9 +37,9 @@ import org.junit.Test;
  *
  */
 public class LogarithmicAxisTest {
-	
+
 	private IAxis _axis;
-	
+
 	@Before
 	public void setUp() {
 		// axis:
@@ -55,7 +55,7 @@ public class LogarithmicAxisTest {
 		// 1.79..E308 = Double.MAX_VALUE
 		_axis = new LogarithmicAxis(0.1, 100.0, 10);
 	}
-	
+
 	@Test
 	public void testValueToCoordinate() throws Exception {
 		assertEquals(0, _axis.valueToCoordinate(0.1));
@@ -63,53 +63,53 @@ public class LogarithmicAxisTest {
 		assertEquals(6, _axis.valueToCoordinate(10.0));
 		assertEquals(9, _axis.valueToCoordinate(100.0));
 	}
-	
+
 	@Test
 	public void invalidDataRange() throws Exception {
 		// Make sure that the axis can be created with or set to an invalid
 		// data range.
-		IAxis axis = new LogarithmicAxis(10.0, 1.0, 10);
+		final IAxis axis = new LogarithmicAxis(10.0, 1.0, 10);
 		axis.setDataRange(20.0, 5.0);
-		
+
 		// For logarithmic axis, any range that includes zero is invalid, too!
 		axis.setDataRange(0.0, 10.0);
 		axis.setDataRange(-10.0, 10.0);
 	}
-	
+
 	@Test
 	public void testSetDataRange() throws Exception {
 		assertEquals(9, _axis.valueToCoordinate(100.0));
 		_axis.setDataRange(1.0, 1e9);
 		assertEquals(2, _axis.valueToCoordinate(100.0));
 	}
-	
+
 	@Test
 	public void testSetDisplaySize() throws Exception {
 		assertEquals(3, _axis.valueToCoordinate(1.0));
 		_axis.setDisplaySize(100);
 		assertEquals(33, _axis.valueToCoordinate(1.0));
 	}
-	
+
 	@Test
 	public void valuesOutsideRange() throws Exception {
 		assertEquals(12, _axis.valueToCoordinate(1000.0));
 		assertEquals(-3, _axis.valueToCoordinate(0.01));
 	}
-	
+
 	@Test
 	public void testExtrema() throws Exception {
 		assertEquals(-966, _axis.valueToCoordinate(1e-323));
 		assertEquals(927, _axis.valueToCoordinate(1e308));
 		assertEquals(Integer.MAX_VALUE, _axis.valueToCoordinate(Double.POSITIVE_INFINITY));
 	}
-	
+
 	@Test
 	public void testLegalValues() throws Exception {
 		// All values > 0 should be legal
 		assertTrue(_axis.isLegalValue(Double.POSITIVE_INFINITY));
 		assertTrue(_axis.isLegalValue(Double.MAX_VALUE));
 		assertTrue(_axis.isLegalValue(Double.MIN_VALUE));
-		
+
 		assertFalse(_axis.isLegalValue(Double.NaN));
 		assertFalse(_axis.isLegalValue(0.0));
 		assertFalse(_axis.isLegalValue(-Double.MIN_VALUE));
@@ -117,14 +117,14 @@ public class LogarithmicAxisTest {
 		assertFalse(_axis.isLegalValue(-Double.MAX_VALUE));
 		assertFalse(_axis.isLegalValue(Double.NEGATIVE_INFINITY));
 	}
-	
+
 	@Test
 	public void testCalculateTicks() throws Exception {
-		IAxis axis = new LogarithmicAxis(1e0, 1e9, 1000);
+		final IAxis axis = new LogarithmicAxis(1e0, 1e9, 1000);
 		// major ticks only
-		List<Tick> ticks = axis.calculateTicks(100, -1);
+		final List<Tick> ticks = axis.calculateTicks(100, -1);
 		// expected: 10 ticks at 1e0, 1e1, ..., 1e9
-		System.out.println(ticks);
+		//System.out.println(ticks);
 		assertEquals(10, ticks.size());
 		for (int i = 0; i < 10; i++) {
 			assertEquals(Math.pow(10, i), ticks.get(i).value(), 0.001);

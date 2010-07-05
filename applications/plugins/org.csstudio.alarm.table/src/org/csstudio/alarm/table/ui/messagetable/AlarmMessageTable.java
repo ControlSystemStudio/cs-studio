@@ -3,6 +3,7 @@ package org.csstudio.alarm.table.ui.messagetable;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
@@ -32,33 +33,33 @@ import org.eclipse.ui.preferences.ScopedPreferenceStore;
 /**
  * Difference to {@link MessageTable} for log messages is the listener for acknowledges by the user
  * and the {@link AlarmMessageTableMessageSorter} sorter for the table.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class AlarmMessageTable extends MessageTable {
 
     private static final String SECURITY_ID = "operating";
 
-    public AlarmMessageTable(TableViewer viewer, String[] colNames, MessageList j) {
+    public AlarmMessageTable(final TableViewer viewer, final String[] colNames, final MessageList j) {
         super(viewer, colNames, j);
     }
 
     @Override
-    void initializeMessageTable(String[] pureColumnNames) {
+    void initializeMessageTable(final String[] pureColumnNames) {
 
         _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(pureColumnNames));
 
         _tableViewer.setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
 
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
+        final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
                 JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
         prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
 
             @Override
-            public void propertyChange(PropertyChangeEvent event) {
+            public void propertyChange(final PropertyChangeEvent event) {
                 if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_ALARM_FONT)) {
-                    Font font = CustomMediaFactory.getInstance().getFont(
+                    final Font font = CustomMediaFactory.getInstance().getFont(
                             new FontData(event.getNewValue().toString()));
                     _tableViewer.getTable().setFont(font);
                     _tableViewer.getTable().layout(true);
@@ -69,12 +70,13 @@ public class AlarmMessageTable extends MessageTable {
 
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 
-        TableColumn[] columns = _table.getColumns();
+        final TableColumn[] columns = _table.getColumns();
         for (final TableColumn tableColumn : columns) {
             if (tableColumn.getText().equals("SEVERITY")) {
                 tableColumn.removeSelectionListener(_selectionListenerMap.get("SEVERITY"));
                 tableColumn.addSelectionListener(new SelectionAdapter() {
-                    public void widgetSelected(SelectionEvent e) {
+                    @Override
+                    public void widgetSelected(final SelectionEvent e) {
                         _table.setSortColumn(tableColumn);
                         _tableViewer
                                 .setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
@@ -90,19 +92,19 @@ public class AlarmMessageTable extends MessageTable {
         }
 
         _table.addListener(SWT.Selection, new Listener() {
-            public void handleEvent(Event event) {
+            public void handleEvent(final Event event) {
             	if (_contentProvider.getMessageUpdatePause()) {
             		return;
             	}
-                if (event.item instanceof TableItem && event.button == 0 && event.detail == 32) {
-                    TableItem ti = (TableItem) event.item;
+                if ((event.item instanceof TableItem) && (event.button == 0) && (event.detail == 32)) {
+                    final TableItem ti = (TableItem) event.item;
                     if (canExecute) {
                         if (ti.getChecked()) {
                             if (ti.getData() instanceof BasicMessage) {
-                                List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
-                                msgList.add(((AlarmMessage) event.item.getData())
-                                        .copy(new AlarmMessage()));
-                                SendAcknowledge sendAck = SendAcknowledge
+                                final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
+                                final AlarmMessage copy = ((AlarmMessage) event.item.getData()).copy();
+                                msgList.add(copy);
+                                final SendAcknowledge sendAck = SendAcknowledge
                                         .newFromJMSMessage(msgList);
                                 sendAck.schedule();
                             } else {
@@ -113,18 +115,18 @@ public class AlarmMessageTable extends MessageTable {
                         }
                     } else {
                         ti.setChecked(false);
-                        Shell activeShell = Display.getCurrent().getActiveShell();
-                        MessageDialog md = new MessageDialog(activeShell, "Authorization", null,
+                        final Shell activeShell = Display.getCurrent().getActiveShell();
+                        final MessageDialog md = new MessageDialog(activeShell, "Authorization", null,
                                 "Not Acknowledged!\n\rPermission denied.", MessageDialog.WARNING,
                                 new String[] { "Ok" }, 0);
                         md.open();
                     }
                     // Click on other columns but ack should not check or
                     // uncheck the ack box
-                } else if (event.item instanceof TableItem && event.button == 0
-                        && event.detail == 0) {
-                    TableItem ti = (TableItem) event.item;
-                    if (ti.getChecked() == false) {
+                } else if ((event.item instanceof TableItem) && (event.button == 0)
+                        && (event.detail == 0)) {
+                    final TableItem ti = (TableItem) event.item;
+                    if (!ti.getChecked()) {
                         ti.setChecked(false);
                     }
                 }
@@ -132,13 +134,15 @@ public class AlarmMessageTable extends MessageTable {
         });
     }
 
+    @Override
     protected void resetCheckedStatus() {
-        TableItem[] tableItems = _table.getItems();
-        for (TableItem tableItem : tableItems) {
-            Object item = tableItem.getData();
+        final TableItem[] tableItems = _table.getItems();
+        for (final TableItem tableItem : tableItems) {
+            final Object item = tableItem.getData();
             if (item instanceof BasicMessage) {
-                BasicMessage messageItem = (BasicMessage) item;
-                if (messageItem.getProperty("ACK").equalsIgnoreCase("TRUE")) {
+                final BasicMessage messageItem = (BasicMessage) item;
+                final String ackProp = messageItem.getProperty(AlarmMessageKey.ACK.getDefiningName());
+                if ((ackProp != null) && Boolean.valueOf(ackProp)) {
                     tableItem.setChecked(true);
                 }
             }

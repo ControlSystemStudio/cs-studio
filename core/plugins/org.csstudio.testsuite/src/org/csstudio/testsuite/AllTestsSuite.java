@@ -36,8 +36,10 @@ public class AllTestsSuite {
 	public static Test suite() {
 		final TestSuite suite = new TestSuite(TEST_SUITE_NAME);
 		for (final Bundle bundle : Activator.getBundles()) {
+		    System.out.print(bundle.getSymbolicName());
 			// check fragment & bundleRoot conditions
 			if (checkFragment(bundle) && checkBundleRoot(bundle) ) {
+			    System.out.println("\t\t\t is in!");
 				final List<Class<?>> testClasses = getTestClassesInBundle(bundle);
 				for (final Class<?> clazz : testClasses) {
 					suite.addTest(new JUnit4TestAdapter(clazz));
@@ -94,7 +96,7 @@ public class AllTestsSuite {
 				}
 
 				String testClassName = testClassPath
-						.substring(packageRootStart);
+						.substring(packageRootStart); // de.desy.language.snl.AllTests.class
 				testClassName = testClassName.substring(0, testClassName.length() - ".class".length());
 
 				if(bundle.getSymbolicName().equals("org.csstudio.nams.service.logging")) {
@@ -124,7 +126,7 @@ public class AllTestsSuite {
 				 */
 				if(testClass != null) {
 					if (!Modifier.isAbstract(testClass.getModifiers())) {
-						testClassesInBundle.add(testClass);
+						testClassesInBundle.add(testClass); // add de.desy.language.snl.AllTests
 					}
 				}
 			}

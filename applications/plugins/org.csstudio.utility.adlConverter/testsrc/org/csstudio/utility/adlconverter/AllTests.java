@@ -16,4 +16,5 @@ import org.junit.runners.Suite.SuiteClasses;
 	ADLObjectTest.class,
 	RGBColorTest.class})
 public class AllTests {
+    // EMPTY
 }

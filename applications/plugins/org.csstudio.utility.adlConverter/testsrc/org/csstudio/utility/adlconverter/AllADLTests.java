@@ -24,9 +24,6 @@
  */
 package org.csstudio.utility.adlconverter;
 
-import org.csstudio.utility.adlconverter.utility.RGBColorTest;
-
-import junit.framework.Test;
 import junit.framework.TestSuite;
 
 /**
@@ -37,17 +34,17 @@ import junit.framework.TestSuite;
  */
 public class AllADLTests extends TestSuite{
 
-    public static Test suite() {
-        TestSuite suite = new TestSuite(
-                "Test for org.csstudio.utility.adlconverter"); //$NON-NLS-1$
-        //$JUnit-BEGIN$
-        suite.addTest(new RGBColorTest());
-        
-//        TestResult tr = new TestResult();
-//        suite.run(tr);
-        
-        //$JUnit-END$
-        return suite;
-    }
+//    public static Test suite() {
+//        TestSuite suite = new TestSuite(
+//                "Test for org.csstudio.utility.adlconverter"); //$NON-NLS-1$
+//        //$JUnit-BEGIN$
+//        suite.addTest(new RGBColorTest());
+//
+////        TestResult tr = new TestResult();
+////        suite.run(tr);
+//
+//        //$JUnit-END$
+//        return suite;
+//    }
 
 }

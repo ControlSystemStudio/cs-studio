@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -20,138 +20,132 @@ package org.csstudio.alarm.table.dataModel;
 
 import java.util.Vector;
 
-import org.csstudio.platform.logging.CentralLogger;
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 
 public class LogMessageList extends MessageList {
-    
+
+    private static final Logger LOG = Logger.getLogger(LogMessageList.class);
+
     protected Vector<BasicMessage> _messages = new Vector<BasicMessage>();
-    
+
     private final Integer _maximumNumberOfMessages;
-    
+
     public LogMessageList(final Integer maximumNumberOfMessages) {
         _maximumNumberOfMessages = maximumNumberOfMessages;
     }
-    
+
     /**
      * Add a new Message to the collection of Messages
-     * 
+     *
      */
-    synchronized public void addMessage(final BasicMessage newMessage) {
-        
+    @Override
+    synchronized public void addMessage(@Nonnull final BasicMessage newMessage) {
+
         // for debugging
         BasicMessage tempMsg = null;
+        final String newAckProp = newMessage.getProperty(AlarmMessageKey.ACK.getDefiningName());
+        final String newNameProp = newMessage.getProperty(AlarmMessageKey.NAME.getDefiningName());
+        final String newTimeProp = newMessage.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
         try {
-            if (newMessage != null) {
-                if (newMessage.getProperty("ACK") != null
-                        && newMessage.getProperty("ACK").toUpperCase().equals("TRUE")) {
-                    CentralLogger.getInstance().debug(this, "received acknowledge message");
-                    for (BasicMessage message : _messages) {
-                        // for debugging
-                        tempMsg = message;
-                        if (message.getName().equals(newMessage.getProperty("NAME"))
-                                && message.getProperty("EVENTTIME").equals(newMessage
-                                        .getProperty("EVENTTIME"))) {
-                            message.getHashMap().put("ACK", "TRUE"); //$NON-NLS-1$ //$NON-NLS-2$
-                            super.updateMessage(newMessage);
-                            break;
-                        }
+            if ((newAckProp != null) && Boolean.valueOf(newAckProp)) {
+                LOG.debug("received acknowledge message");
+                for (final BasicMessage message : _messages) {
+                    // for debugging
+                    tempMsg = message;
+                    final String timeProp = message.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
+                    final String nameProp = message.getName();
+                    if ((nameProp != null) && nameProp.equals(newNameProp) &&
+                        timeProp.equals(newTimeProp)) {
+
+                        message.getHashMap().put(AlarmMessageKey.ACK.getDefiningName(), Boolean.TRUE.toString());
+                        super.updateMessage(newMessage);
+                        break;
                     }
-                } else {
-                    limitMessageListSize();
-                    _messages.add(_messages.size(), newMessage);
-                    super.addMessage(newMessage);
-                }
-            }
-        } catch (NullPointerException e) {
-            CentralLogger.getInstance().debug(this,
-                                              "Null Pointer Excetion in add message "
-                                                      + e.getMessage());
-            if (newMessage != null) {
-                if (newMessage.getProperty("ACK") != null) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "ACK property of new received message: "
-                                                              + newMessage.getProperty("ACK"));
-                } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "ACK property of new received message is not set");
-                }
-                if (newMessage.getProperty("NAME") != null) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "NAME property of new received message: "
-                                                              + newMessage.getProperty("NAME"));
-                } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "NAME property of new received message is not set");
-                }
-                if (newMessage.getProperty("EVENTTIME") != null) {
-                    CentralLogger.getInstance()
-                            .debug(this,
-                                   "EVENTTIME property of new received message: "
-                                           + newMessage.getProperty("EVENTTIME"));
-                } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "EVENTTIME property of new received message is not set");
                 }
             } else {
-                CentralLogger.getInstance().debug(this, "New received message is NULL");
+                limitMessageListSize();
+                _messages.add(_messages.size(), newMessage);
+                super.addMessage(newMessage);
+            }
+        } catch (final NullPointerException e) {
+            LOG.debug("Null Pointer Excetion in add message "
+                                                      + e.getMessage());
+            if (newAckProp != null) {
+                LOG.debug("ACK property of new received message: "
+                          + newAckProp);
+            } else {
+                LOG.debug("ACK property of new received message is not set");
+            }
+            if (newNameProp != null) {
+                LOG.debug("NAME property of new received message: "
+                          + newNameProp);
+            } else {
+                LOG.debug("NAME property of new received message is not set");
+            }
+            if (newTimeProp != null) {
+                LOG.debug("EVENTTIME property of new received message: "
+                          + newTimeProp);
+            } else {
+                LOG.debug("EVENTTIME property of new received message is not set");
             }
             if (tempMsg != null) {
-                if (tempMsg.getProperty("ACK") != null) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "ACK property of current table message: "
-                                                              + tempMsg.getProperty("ACK"));
+                if (tempMsg.getProperty(AlarmMessageKey.ACK.getDefiningName()) != null) {
+                    LOG.debug("ACK property of current table message: "
+                                                              + tempMsg.getProperty(AlarmMessageKey.ACK.getDefiningName()));
                 } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "ACK property of current table message is not set");
+                    LOG.debug("ACK property of current table message is not set");
                 }
-                if (tempMsg.getProperty("NAME") != null) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "NAME property of current table message: "
-                                                              + tempMsg.getProperty("NAME"));
+                if (tempMsg.getProperty(AlarmMessageKey.NAME.getDefiningName()) != null) {
+                    LOG.debug("NAME property of current table message: "
+                                                              + tempMsg.getProperty(AlarmMessageKey.NAME.getDefiningName()));
                 } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "NAME property of current table message is not set");
+                    LOG.debug("NAME property of current table message is not set");
                 }
-                if (tempMsg.getProperty("EVENTTIME") != null) {
-                    CentralLogger.getInstance().debug(this,
-                                                      "EVENTTIME property of current table message: "
-                                                              + tempMsg.getProperty("EVENTTIME"));
+                if (tempMsg.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName()) != null) {
+                    LOG.debug("EVENTTIME property of current table message: "
+                                                              + tempMsg.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName()));
                 } else {
-                    CentralLogger.getInstance()
-                            .debug(this, "EVENTTIME property of current table message is not set");
+                    LOG.debug("EVENTTIME property of current table message is not set");
                 }
             } else {
-                CentralLogger.getInstance().debug(this, "current table message is NULL");
+                LOG.debug("current table message is NULL");
             }
         }
     }
-    
+
     /**
      * Remove a message from the list.
      */
+    @Override
     public void removeMessage(final BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
-    
+
     /**
      * Remove an array of messages from the list.
      */
+    @Override
     public void removeMessageArray(final BasicMessage[] jmsm) {
-        for (BasicMessage message : jmsm) {
+        for (final BasicMessage message : jmsm) {
             _messages.remove(message);
         }
         super.removeMessageArray(jmsm);
     }
-    
+
+    @Override
     public Vector<? extends BasicMessage> getJMSMessageList() {
         return _messages;
     }
-    
+
+    @Override
     public void deleteAllMessages(final BasicMessage[] messages) {
         removeMessageArray(messages);
     }
-    
+
     /**
      * If message list size is bigger than in the preferences defined delete oldest messages
      */
@@ -162,7 +156,7 @@ public class LogMessageList extends MessageList {
             }
         }
     }
-    
+
     @Override
     public Integer getSize() {
         return _messages.size();
