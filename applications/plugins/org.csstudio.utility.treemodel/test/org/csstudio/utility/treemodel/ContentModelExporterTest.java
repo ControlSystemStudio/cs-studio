@@ -139,7 +139,7 @@ public class ContentModelExporterTest {
             Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
         }
 
-
+        // Compare the input file and the output file
         try {
             final String impStr = _outputter.outputString(IMPORTED_DOC.getRootElement());
             final String expStr = _outputter.outputString(_exportedDoc.getRootElement());

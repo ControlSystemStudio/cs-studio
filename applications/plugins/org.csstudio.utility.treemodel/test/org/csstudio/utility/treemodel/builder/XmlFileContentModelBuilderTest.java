@@ -60,7 +60,6 @@ public class XmlFileContentModelBuilderTest {
 
     private ContentModel<TestTreeConfigurator> _model;
 
-
     @BeforeClass
     public static final void buildResourcePath() {
         try {
@@ -79,10 +78,10 @@ public class XmlFileContentModelBuilderTest {
     @Test
     //@Ignore("due to problems with the path to the resource")
     public void testValid() {
-        final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
-            new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
-                    new File(RES_PATH, TEST_VALID_XML).getAbsolutePath());
         try {
+            final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
+                new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
+                        new File(RES_PATH, TEST_VALID_XML).getAbsolutePath());
             builder.build();
             _model = builder.getModel();
         } catch (final Exception e) {
