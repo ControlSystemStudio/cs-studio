@@ -41,6 +41,7 @@ import static org.csstudio.sds.model.AbstractWidgetModel.PROP_PRIMARY_PV;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.Locale;
 
 import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.TextTypeEnum;
@@ -74,7 +75,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
      */
     protected static final int INPUT_FIELD_BRIGHTNESS = 10;
 
-    private final NumberFormat numberFormat = NumberFormat.getInstance();
+    private final NumberFormat numberFormat = NumberFormat.getInstance(Locale.US);
 
 
     /**
