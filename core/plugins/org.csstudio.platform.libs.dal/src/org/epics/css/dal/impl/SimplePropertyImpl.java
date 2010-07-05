@@ -513,7 +513,11 @@ public abstract class SimplePropertyImpl<T> extends DataAccessImpl<T>
 		
 	private ChannelListenerNotifier getChListeners() {
 		if (chListeners == null) {
-			chListeners = new ChannelListenerNotifier(this);
+			synchronized (this) {
+				if (chListeners == null) {
+					chListeners = new ChannelListenerNotifier(this);
+				}
+			}
 		}
 		return chListeners;
 	}

@@ -5,6 +5,7 @@ import java.util.Iterator;
 
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DynamicValueAdapter;
+import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.DynamicValueProperty;
@@ -19,6 +20,11 @@ public class ChannelListenerNotifier {
 	
 	private ListenerList listeners = new ListenerList(ChannelListener.class);
 	private AnyDataChannel channel;
+	
+	private DynamicValueCondition lastCondition = null;
+	private boolean initialConditionChangeUpdate = false;
+	private boolean initialValueChangedUpdate = false;
+	
 	private LinkListener<DynamicValueProperty<?>> linkListener = new LinkListener<DynamicValueProperty<?>>() {
 		public void connected(ConnectionEvent<DynamicValueProperty<?>> e) {
 			fireChannelStateUpdate();
@@ -49,7 +55,19 @@ public class ChannelListenerNotifier {
 		}
 	};
 	private DynamicValueListener dvListener = new DynamicValueAdapter() {
+		
+		public void conditionChange(DynamicValueEvent event) {
+			DynamicValueCondition cond = event.getCondition();
+			if (cond != null && lastCondition != null && lastCondition.areStatesEqual(cond)) {
+				return;
+			}
+			lastCondition = cond;
+			initialConditionChangeUpdate = true;
+			fireChannelStateUpdate();
+		}
+
 		public void valueChanged(DynamicValueEvent event) {
+			initialValueChangedUpdate = true;
 			fireChannelDataUpdate();
 		}
 	};
@@ -67,6 +85,9 @@ public class ChannelListenerNotifier {
 	public synchronized void addChannelListener(ChannelListener listener) {
 		listeners.add(listener);
 		if (listeners.size() == 1) subscribe(channel);
+		
+		if (initialConditionChangeUpdate) fireChannelStateUpdate();
+		if (initialValueChangedUpdate) fireChannelDataUpdate();
 	}
 	
 	public synchronized void removeChannelListener(ChannelListener listener) {
@@ -92,6 +113,8 @@ public class ChannelListenerNotifier {
 		channel.getProperty().removePropertyChangeListener(pcListener);
 		channel.getProperty().removeDynamicValueListener(dvListener);
 		channel.getProperty().removeLinkListener(linkListener);
+		initialConditionChangeUpdate = false;
+		initialValueChangedUpdate = false;
 	}
 	
 	private void fireChannelStateUpdate() {
