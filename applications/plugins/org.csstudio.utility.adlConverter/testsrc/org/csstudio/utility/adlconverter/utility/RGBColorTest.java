@@ -37,11 +37,6 @@ import org.junit.Test;
  */
 public class RGBColorTest extends TestCase {
 
-
-
-
-    private static final String NEW_RGB_COLOR_IS_NULL = "new RGBColor is Null";
-
     /**
      * Test method for {@link org.csstudio.utility.adlconverter.utility.RGBColor#RGBColor(java.lang.String)}.
      */
@@ -50,34 +45,34 @@ public class RGBColorTest extends TestCase {
         RGBColor rgb = null;
         try {
            rgb = new RGBColor("010203"); //$NON-NLS-1$
-           assertNotNull(NEW_RGB_COLOR_IS_NULL, rgb);
+           assertNotNull(Messages.RGBColorTest_Rgb_Color_Null_Assert, rgb);
         } catch (final Exception e) {
             e.printStackTrace();
-            fail("unexpected Color String");
+            fail(Messages.RGBColorTest_Rgb_Color_Exception);
         }
         rgb = null;
         try {
             rgb = new RGBColor("01203"); //$NON-NLS-1$
-            fail("accept worng colorString");
-            assertNotNull(NEW_RGB_COLOR_IS_NULL,rgb);
+            fail(Messages.RGBColorTest_4);
+            assertNotNull(Messages.RGBColorTest_5,rgb);
          } catch (final Exception e) {
-             assertNull("rgb is not null and is generate with wrong color string", rgb);
+             assertNull(Messages.RGBColorTest_6,rgb);
          }
          rgb = null;
          try {
-             rgb = new RGBColor("0120321");
-             fail("accept worng colorString");
-             assertNotNull(NEW_RGB_COLOR_IS_NULL,rgb);
+             rgb = new RGBColor(Messages.RGBColorTest_7);
+             fail(Messages.RGBColorTest_8);
+             assertNotNull(Messages.RGBColorTest_9,rgb);
           } catch (final Exception e) {
-              assertNull("rgb is not null and is generate with wrong color string",rgb);
+              assertNull(Messages.RGBColorTest_10,rgb);
           }
           rgb = null;
           try {
-              rgb = new RGBColor("HelgeR");
-              fail("accept worng colorString");
-              assertNotNull(NEW_RGB_COLOR_IS_NULL,rgb);
+              rgb = new RGBColor(Messages.RGBColorTest_11);
+              fail(Messages.RGBColorTest_12);
+              assertNotNull(Messages.RGBColorTest_13,rgb);
            } catch (final Exception e) {
-               assertNull("rgb is not null and is generate with wrong color string",rgb);
+               assertNull(Messages.RGBColorTest_14,rgb);
            }
 
 
@@ -89,15 +84,15 @@ public class RGBColorTest extends TestCase {
     @Test
     public void testGetRed() {
         try {
-            RGBColor rgb = new RGBColor("010203");
-            assertNotNull(NEW_RGB_COLOR_IS_NULL,rgb);
-            assertEquals(1, rgb.getRed());
+            RGBColor rgb = new RGBColor(Messages.RGBColorTest_15);
+            assertNotNull(Messages.RGBColorTest_16,rgb);
+            assertEquals(Messages.RGBColorTest_17, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_18);
             assertNotNull(Messages.RGBColorTest_19,rgb);
-            assertEquals(153, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_20, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_21);
             assertNotNull(Messages.RGBColorTest_22,rgb);
-            assertEquals(107, rgb.getRed());
+            assertEquals(Messages.RGBColorTest_23, String.valueOf(rgb.getRed()));
             rgb = new RGBColor(Messages.RGBColorTest_24);
             assertNotNull(Messages.RGBColorTest_25,rgb);
             assertEquals(Messages.RGBColorTest_26, String.valueOf(rgb.getRed()));
