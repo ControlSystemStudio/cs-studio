@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -18,33 +18,28 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- */
-/*
+ *
  * $Id$
  */
-package org.csstudio.utility.adlconverter;
+package org.csstudio.email;
 
-import junit.framework.TestSuite;
+import org.junit.runner.RunWith;
+import org.junit.runners.Suite;
+import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * @author hrickens
+ * TODO (bknerr) :
+ *
+ * @author bknerr
  * @author $Author$
  * @version $Revision$
- * @since 10.09.2007
+ * @since 06.07.2010
  */
-public class AllADLTests extends TestSuite{
-
-//    public static Test suite() {
-//        TestSuite suite = new TestSuite(
-//                "Test for org.csstudio.utility.adlconverter"); //$NON-NLS-1$
-//        //$JUnit-BEGIN$
-//        suite.addTest(new RGBColorTest());
-//
-////        TestResult tr = new TestResult();
-////        suite.run(tr);
-//
-//        //$JUnit-END$
-//        return suite;
-//    }
-
+@RunWith(Suite.class)
+@SuiteClasses( {
+    EMailSenderTest.class,
+    EmailUtilsTest.class
+})
+public class AllTests {
+    // EMPTY
 }

@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public final class AddRecordCommandTest extends AbstractCommandTest {
+public final class AddRecordCommandTest extends AbstractTestCommand {
 	private IPrototype prototype;
 	private IInstance instance;
 	private IRecord record;

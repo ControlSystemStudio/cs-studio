@@ -18,13 +18,14 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { BargraphModeltFactoryTest.class,
+@SuiteClasses( {
+        BargraphModeltFactoryTest.class,
 		EllipseModelFactoryTest.class,
 		LabelModelFactoryTest.class,
 		PolygonModelFactoryTest.class,
 		PolylineModelFactoryTest.class,
 		RectangleModeltFactoryTest.class,
-		
+
 		BargraphElementTest.class,
 		EllipseElementTest.class,
 		LabelElementTest.class,
@@ -32,15 +33,6 @@ import org.junit.runners.Suite.SuiteClasses;
 		PolylineElementTest.class,
 		RectangleElementTest.class})
 public class AllTests {
+    // EMPTY
 }
-//public class AllTests {
-//
-//	public static Test suite() {
-//		TestSuite suite = new TestSuite("Test for de.desy.language.libraries");
-//		//$JUnit-BEGIN$
-//		suite.addTestSuite(Contract_Test.class);
-//		//$JUnit-END$
-//		return suite;
-//	}
-//
-//}
+

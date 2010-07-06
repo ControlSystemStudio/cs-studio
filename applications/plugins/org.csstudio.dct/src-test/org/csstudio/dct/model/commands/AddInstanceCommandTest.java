@@ -23,7 +23,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public final class AddInstanceCommandTest extends AbstractCommandTest {
+public final class AddInstanceCommandTest extends AbstractTestCommand {
 	private IPrototype prototypeA;
 	private IInstance instanceA;
 	private IPrototype prototypeB;

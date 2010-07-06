@@ -6,7 +6,7 @@ import java.util.regex.Pattern;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-public class FindWithRegExInStringExperiment_Text extends TestCase {
+public class FindWithRegExInStringExperiment_Test extends TestCase {
 	private final String _source = "program sncExample;" + "double v;"
 			+ "assign v to \"{user}:aiExample\";" + "monitor v;" + "ss ss1 {"
 			+ "    state init {" + "	when (delay(0.1)) {"

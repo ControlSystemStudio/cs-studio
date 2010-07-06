@@ -32,12 +32,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 @RunWith(Suite.class)
-@SuiteClasses( { ChoiceTest.class, 
+@SuiteClasses({
+    ChoiceTest.class,
 	DatabaseDefinitionTest.class,
 	FieldDefinitionTest.class,
 	MenuDefinitionTest.class,
 	RecordDefinitionTest.class,
-	
+
 	AddInstanceCommandTest.class,
 	AddPrototypeCommandTest.class,
 	AddRecordCommandTest.class,
@@ -47,7 +48,7 @@ import org.junit.runners.Suite.SuiteClasses;
 	InitInstanceCommandTest.class,
 	RemoveInstanceCommandTest.class,
 	RemoveRecordCommandTest.class,
-	
+
 	AbstractElementTest.class,
 	AbstractPropertyContainerTest.class,
 	FolderTest.class,
@@ -55,16 +56,17 @@ import org.junit.runners.Suite.SuiteClasses;
 	ParameterTest.class,
 	PrototypeTest.class,
 	RecordTest.class,
-	
+
 	ProjectToXmlTest.class,
-	
-	RecordFinderTest.class,
 
 	FieldFunctionServiceTest.class,
-	
+
+	RecordFinderTest.class,
+
 	AliasResolutionUtilTest.class,
-	CompareUtilTest.class, 
-	ModelValidationUtilTest.class})
+	CompareUtilTest.class,
+	ModelValidationUtilTest.class
+})
 public class AllTests {
 }
 

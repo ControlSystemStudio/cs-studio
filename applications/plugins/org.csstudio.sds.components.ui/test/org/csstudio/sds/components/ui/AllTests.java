@@ -22,7 +22,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { AdvancedSliderEditPartTest.class,
+@SuiteClasses( {
+    AdvancedSliderEditPartTest.class,
 	BargraphEditPartTest.class,
 	EllipseEditPartTest.class,
 	LabelEditPartTest.class,
@@ -32,24 +33,15 @@ import org.junit.runners.Suite.SuiteClasses;
 	SimpleSliderEditPartTest.class,
 	TextInputEditPartTest.class,
 	WaveformEditPartTest.class,
-	
+
 	PointListHelperTest.class,
-	
+
 	LinearAxisTest.class,
 	LogarithmicAxisTest.class,
 	TickCalculatorTest.class,
-	TickTest.class
+	TickTest.class,
+	WidgetFigureTest.class
 } )
 public class AllTests {
+    // EMPTY
 }
-//public class AllTests {
-//
-//	public static Test suite() {
-//		TestSuite suite = new TestSuite("Test for de.desy.language.libraries");
-//		//$JUnit-BEGIN$
-//		suite.addTestSuite(Contract_Test.class);
-//		//$JUnit-END$
-//		return suite;
-//	}
-//
-//}

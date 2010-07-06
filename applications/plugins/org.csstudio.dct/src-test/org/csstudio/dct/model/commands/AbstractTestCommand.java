@@ -13,7 +13,7 @@ import org.junit.Before;
  * @author Sven Wende
  * 
  */
-public abstract class AbstractCommandTest {
+public abstract class AbstractTestCommand {
 	private Project project;
 	private IPersistenceService persistenceService;
 	/**

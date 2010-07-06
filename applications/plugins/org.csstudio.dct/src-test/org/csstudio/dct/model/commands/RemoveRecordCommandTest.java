@@ -24,7 +24,7 @@ import org.junit.Test;
  * @author Sven Wende
  *
  */
-public final class RemoveRecordCommandTest extends AbstractCommandTest {
+public final class RemoveRecordCommandTest extends AbstractTestCommand {
 	private IPrototype prototype;
 	private IInstance instance;
 	private IRecord record;

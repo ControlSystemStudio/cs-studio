@@ -18,7 +18,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public final class ChangeFieldValueCommandTest extends AbstractCommandTest{
+public final class ChangeFieldValueCommandTest extends AbstractTestCommand{
 	private IRecord record;
 
 	/**	

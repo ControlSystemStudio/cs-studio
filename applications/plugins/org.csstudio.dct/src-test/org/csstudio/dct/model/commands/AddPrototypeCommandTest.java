@@ -20,7 +20,7 @@ import org.junit.Test;
  * @author Sven Wende
  * 
  */
-public final class AddPrototypeCommandTest extends AbstractCommandTest {
+public final class AddPrototypeCommandTest extends AbstractTestCommand {
 	private IPrototype prototype;
 	private IFolder folder;
 

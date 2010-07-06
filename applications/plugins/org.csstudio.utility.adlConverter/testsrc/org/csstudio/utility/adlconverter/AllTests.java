@@ -11,10 +11,12 @@ import org.junit.runners.Suite.SuiteClasses;
 
 
 @RunWith(Suite.class)
-@SuiteClasses( { ADLBasicAttributeTest.class,
+@SuiteClasses({
+    ADLBasicAttributeTest.class,
 	ADLHelperTest.class,
 	ADLObjectTest.class,
-	RGBColorTest.class})
+	RGBColorTest.class
+})
 public class AllTests {
     // EMPTY
 }
