@@ -30,7 +30,7 @@ import com.cosylab.util.CommonException;
  * @author Sven Wende
  * 
  */
-public class DataAccessLayerTest1 extends Base {
+public class DataAccessLayerTest1 extends AbstractTestBase {
 	private static final RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
 	public void testSynchronousAccess() throws InstantiationException, CommonException {

@@ -1,5 +1,22 @@
 package org.csstudio.config.ioconfig.view;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
+import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Text;
+import org.junit.Ignore;
+import org.junit.Test;
+
 /*
  * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -33,68 +50,69 @@ package org.csstudio.config.ioconfig.view;
  */
 public class ProfibusHelper_Test {
 
-    
-//    @Test
-//    public void testGetTextField1(){
-//        Composite composite = new Composite(new Shell(),SWT.NULL);
-//        
-//        // Test null Parent
-//        assertTrue(ProfibusHelper.getTextField(null, null)==null);
-//        assertTrue(ProfibusHelper.getTextField(null, "value")==null);
-//        
-//        Text textField = ProfibusHelper.getTextField(composite, null);
-//
-//        assertNotNull(textField);
-//        assertFalse(textField.getEditable());
-//        assertNotNull(textField.getText());
-//        assertNull(textField.getData());
-//        
-//        textField = ProfibusHelper.getTextField(composite, "value");
-//        assertNotNull(textField);
-//        assertFalse(textField.getEditable());
-//        assertEquals(textField.getText(), "value");
-//        assertEquals(textField.getData(), "value");
-//        assertEquals(textField.getText(), textField.getData());
-//        
-//    }
-//
-//    @Test
-//    public void testGetTextField2(){
-//        Composite composite = new Composite(new Shell(),SWT.NULL);
-//        
-//        // Test null Parent
-//        assertNull(ProfibusHelper.getTextField(null,false, null, null, -1));
-//        assertNull(ProfibusHelper.getTextField(null,true,"value",new Value(0,100,50),-1));
-//        
-//        Text textField = ProfibusHelper.getTextField(composite,false, null, null, -1);
-//
-//        assertNotNull(textField);
-//        assertFalse(textField.getEditable());
-//        assertNotNull(textField.getText());
-//        assertNull(textField.getData());
-//        assertTrue(textField.getListeners(SWT.Verify).length<1);
-//        
-//        textField = ProfibusHelper.getTextField(composite,false, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-//        assertTrue(textField!=null);
-//        assertFalse(textField.getEditable());
-//        assertEquals(textField.getText(), "value");
-//        assertEquals(textField.getData(), "value");
-//        assertEquals(textField.getText(), textField.getData());
-//        assertTrue(textField.getListeners(SWT.Verify).length<1);
-//        
-//        textField = ProfibusHelper.getTextField(composite,true, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
-//        assertTrue(textField!=null);
-//        assertTrue(textField.getEditable());
-//        assertEquals(textField.getText(), "value");
-//        assertEquals(textField.getData(), "value");
-//        assertEquals(textField.getText(), textField.getData());
-//        assertTrue(textField.getListeners(SWT.Verify).length>0);
-//    }
-//    
-//    @Test
-//    public void textabc() {
-//        GsdModuleModel module = new GsdModuleModel("\"name\"2", new GsdSlaveModel());
-//        SlaveCfgData[] makeSlaveCfgData = ProfibusHelper.makeSlaveCfgData(module);
+
+    @Test
+    public void testGetTextField1(){
+        final Composite composite = new Composite(new Shell(),SWT.NULL);
+
+        // Test null Parent
+        assertTrue(ProfibusHelper.getTextField(null, null)==null);
+        assertTrue(ProfibusHelper.getTextField(null, "value")==null);
+
+        Text textField = ProfibusHelper.getTextField(composite, null);
+
+        assertNotNull(textField);
+        assertFalse(textField.getEditable());
+        assertNotNull(textField.getText());
+        assertNull(textField.getData());
+
+        textField = ProfibusHelper.getTextField(composite, "value");
+        assertNotNull(textField);
+        assertFalse(textField.getEditable());
+        assertEquals(textField.getText(), "value");
+        assertEquals(textField.getData(), "value");
+        assertEquals(textField.getText(), textField.getData());
+
+    }
+
+    @Test
+    public void testGetTextField2(){
+        final Composite composite = new Composite(new Shell(),SWT.NULL);
+
+        // Test null Parent
+        assertNull(ProfibusHelper.getTextField(null,false, null, null, -1));
+        assertNull(ProfibusHelper.getTextField(null,true,"value",new Value(0,100,50),-1));
+
+        Text textField = ProfibusHelper.getTextField(composite,false, null, null, -1);
+
+        assertNotNull(textField);
+        assertFalse(textField.getEditable());
+        assertNotNull(textField.getText());
+        assertNull(textField.getData());
+        assertTrue(textField.getListeners(SWT.Verify).length<1);
+
+        textField = ProfibusHelper.getTextField(composite,false, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
+        assertTrue(textField!=null);
+        assertFalse(textField.getEditable());
+        assertEquals(textField.getText(), "value");
+        assertEquals(textField.getData(), "value");
+        assertEquals(textField.getText(), textField.getData());
+        assertTrue(textField.getListeners(SWT.Verify).length<1);
+
+        textField = ProfibusHelper.getTextField(composite,true, "value", new Value(0,100,50), ProfibusHelper.VL_TYP_U08);
+        assertTrue(textField!=null);
+        assertTrue(textField.getEditable());
+        assertEquals(textField.getText(), "value");
+        assertEquals(textField.getData(), "value");
+        assertEquals(textField.getText(), textField.getData());
+        assertTrue(textField.getListeners(SWT.Verify).length>0);
+    }
+
+    @Test
+    @Ignore("Does not compile!")
+    public void textabc() {
+        final GsdModuleModel module = new GsdModuleModel("\"name\"2", new GsdSlaveModel());
+//        final SlaveCfgData[] makeSlaveCfgData = ProfibusHelper.makeSlaveCfgData(module);
 //        assertEquals(0, makeSlaveCfgData[0].getNumber());
 //        assertEquals(17, makeSlaveCfgData[0].getSize());
 //        assertEquals(8, makeSlaveCfgData[0].getWordSize());
@@ -102,6 +120,6 @@ public class ProfibusHelper_Test {
 //        assertEquals(false, makeSlaveCfgData[0].isInput());
 //        assertEquals(false, makeSlaveCfgData[0].isOutput());
 //        assertEquals(false, makeSlaveCfgData[0].isWordSize());
-//    }
-//
+    }
+
 }

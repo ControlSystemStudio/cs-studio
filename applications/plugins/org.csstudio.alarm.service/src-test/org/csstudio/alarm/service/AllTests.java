@@ -17,7 +17,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( {
     SeverityTest.class,
-    EventtimeUtilTest.class })
+    EventtimeUtilTest.class
+})
 public class AllTests {
     // This is a suite which should not contain code.
 }

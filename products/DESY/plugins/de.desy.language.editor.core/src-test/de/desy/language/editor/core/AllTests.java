@@ -21,28 +21,24 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView;
+package de.desy.language.editor.core;
 
-import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
-import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
-import org.csstudio.alarm.treeView.model.AlarmTest;
-import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
-import org.csstudio.alarm.treeView.views.AlarmTreeViewTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import de.desy.language.editor.core.parser.AbstractNode_Test;
+
 /**
- * TODO (bknerr) : Das muss anders gehen.
- * Test database.
+ * TODO (bknerr) : Das muss geaendert werden.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 14.06.2010
  */
 @RunWith(Suite.class)
-@SuiteClasses({LdapNameUtilsTest.class,
-               TreeBuilderTest.class,
-               AlarmTest.class,
-               ProcessVariableNodeTest.class,
-               AlarmTreeViewTest.class
-})
+@SuiteClasses(AbstractNode_Test.class)
 public class AllTests {
-    // public? well, should be refactored anyway
+    // EMPTY
 }

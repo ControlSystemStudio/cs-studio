@@ -37,7 +37,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
  * @author Sven Wende
  * 
  */
-public class DataAccessLayerTest3 extends Base {
+public class DataAccessLayerTest3 extends AbstractTestBase {
 	private RemoteInfo ri = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS", PV, null, null);
 
 	public void testAnyData() throws Exception {

@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.config.ioconfig.model,
  org.eclipse.ui.console,
- org.csstudio.dct;bundle-version="1.0.0"
+ org.csstudio.dct;bundle-version="1.0.0",
+ org.junit4;bundle-version="4.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: bin/,
  .

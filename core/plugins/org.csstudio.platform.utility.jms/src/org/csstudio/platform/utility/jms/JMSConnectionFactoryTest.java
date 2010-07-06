@@ -1,6 +1,6 @@
 package org.csstudio.platform.utility.jms;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import javax.jms.Connection;
 import javax.jms.DeliveryMode;
@@ -20,10 +20,10 @@ public class JMSConnectionFactoryTest implements JMSConnectionListener
 {
     /** JMS server URL. <B>Adjust for your site!</B> */
     final private static String URL = "tcp://ics-srv02.sns.ornl.gov:61616";
-    
+
     /** JMS topic that should be available at CSS sites. */
     final private static String TOPIC = "LOG";
-    
+
     private boolean connected = false;
 
     public void linkDown()
@@ -42,14 +42,14 @@ public class JMSConnectionFactoryTest implements JMSConnectionListener
     public void testJMSConnection() throws Exception
     {
         // Connect
-        System.out.println("Trying to connect to JMS");
-        System.out.println("Server     : " + URL);
-        System.out.println("Topic      : " + TOPIC);
+//        System.out.println("Trying to connect to JMS");
+//        System.out.println("Server     : " + URL);
+//        System.out.println("Topic      : " + TOPIC);
         final Connection connection = JMSConnectionFactory.connect(URL);
         JMSConnectionFactory.addListener(connection, this);
         connection.start();
-        
-        System.out.println("Connected  : " + connection.getClientID());
+
+//        System.out.println("Connected  : " + connection.getClientID());
 
         // Create (unused) producer and consumer
         final Session session = connection.createSession(
@@ -57,17 +57,17 @@ public class JMSConnectionFactoryTest implements JMSConnectionListener
         final Topic topic = session.createTopic(TOPIC);
         final MessageProducer producer = session.createProducer(topic);
         producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
-        
+
         final MessageConsumer consumer = session.createConsumer(topic);
-        
+
         // Unclear what to check other than "no exception"
         // Don't want to read/write in here, it's only a connection test
         // that should otherwise have no side effect.
         assertTrue(connected);
-        System.out.println("Destination: " + producer.getDestination());
+//        System.out.println("Destination: " + producer.getDestination());
         assertTrue("LOG used in destination",
                 producer.getDestination().toString().indexOf("LOG") >= 0);
-        
+
         // Shutdown
         consumer.close();
         producer.close();

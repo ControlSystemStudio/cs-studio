@@ -21,28 +21,23 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView;
+package org.epics.css.dal.tango.test;
 
-import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
-import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
-import org.csstudio.alarm.treeView.model.AlarmTest;
-import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
-import org.csstudio.alarm.treeView.views.AlarmTreeViewTest;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 /**
- * TODO (bknerr) : Das muss anders gehen.
- * Test database.
+ * TODO (bknerr) :
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 06.07.2010
  */
 @RunWith(Suite.class)
-@SuiteClasses({LdapNameUtilsTest.class,
-               TreeBuilderTest.class,
-               AlarmTest.class,
-               ProcessVariableNodeTest.class,
-               AlarmTreeViewTest.class
-})
+@SuiteClasses(PropertyTest.class)
 public class AllTests {
-    // public? well, should be refactored anyway
+    // EMPTY
 }
+

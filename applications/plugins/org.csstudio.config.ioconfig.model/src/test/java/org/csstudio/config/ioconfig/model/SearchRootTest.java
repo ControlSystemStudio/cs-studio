@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 
-public class serachRootTest {
+public class SearchRootTest {
     
     @Test
     public void testGetRootPath() throws Exception {

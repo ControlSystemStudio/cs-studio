@@ -42,7 +42,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
  * @author Sven Wende
  * 
  */
-public class Base extends TestCase {
+public abstract class AbstractTestBase extends TestCase {
 	protected static final String PV = "Chiller:Pressure:1";
 
 	protected SimpleDALBroker broker;

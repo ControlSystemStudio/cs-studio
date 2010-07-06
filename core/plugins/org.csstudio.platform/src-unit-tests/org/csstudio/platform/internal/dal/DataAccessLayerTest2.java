@@ -37,7 +37,7 @@ import org.epics.css.dal.simple.SimpleDALBroker;
  * @author Sven Wende
  * 
  */
-public class DataAccessLayerTest2 extends Base {
+public class DataAccessLayerTest2 extends AbstractTestBase {
 
 	public void testReceiveCharacteristics() throws Exception {
 		doTestSyncChararacteristic(CharacteristicInfo.C_GRAPH_MIN, RECORD_LOPR);
