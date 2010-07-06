@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE ou SYSTEM "../org.csstudio.utility.treemodel/testres/test.dtd">
-
+<!DOCTYPE ou [
+    <!ELEMENT ou (efan)*>
+    <!ELEMENT efan (ecom)*>
+    <!ELEMENT ecom (econ)*>
+    <!ELEMENT econ (eren)*>
+    <!ELEMENT eren (#PCDATA)>
+    
+    <!ATTLIST ou name CDATA #REQUIRED>
+    <!ATTLIST efan name CDATA #REQUIRED>
+    <!ATTLIST ecom name CDATA #REQUIRED>
+    <!ATTLIST econ name CDATA #REQUIRED>
+    <!ATTLIST eren name CDATA #REQUIRED>
+]>
 <ou name="TestOu">
   <efan name="EFAN_1">
     <ecom name="ECOM_1">
