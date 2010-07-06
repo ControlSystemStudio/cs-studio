@@ -87,7 +87,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             // Convert our input stream to a dataInputStream
             final DataInputStream in = new DataInputStream(fstream);
 
-            final SAXBuilder builder = new SAXBuilder(false);
+            final SAXBuilder builder = new SAXBuilder(true);
             final Document doc = builder.build(in);
 
             return createContentModelFromFile(doc);
