@@ -1,18 +1,18 @@
-package org.csstudio.nams.service.regelwerkbuilder;
+package org.csstudio.nams.service.preferenceservice;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class RegelwerksbuilderAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
 		final TestSuite suite = new TestSuite("PreferenceServiceAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(RegelwerksbuilderAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
 
 		// $JUnit-END$
 		return suite;

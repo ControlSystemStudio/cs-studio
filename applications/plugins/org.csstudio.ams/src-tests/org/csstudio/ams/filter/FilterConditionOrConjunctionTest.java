@@ -26,7 +26,7 @@ import static junit.framework.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class FilterConditionOrConjunction_Test extends AbstractConjunctionFilterConditionTestCase {
+public class FilterConditionOrConjunctionTest extends AbstractConjunctionFilterConditionTest {
 
 	private FilterConditionOrConjunction _filterConditionOrConjunction;
 	private FilterConditionMock _firstOperand;

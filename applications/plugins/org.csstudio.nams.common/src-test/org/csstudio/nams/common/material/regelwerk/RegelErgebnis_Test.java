@@ -2,10 +2,10 @@ package org.csstudio.nams.common.material.regelwerk;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
-public class RegelErgebnis_Test extends AbstractObject_TestCase<RegelErgebnis>/*
+public class RegelErgebnis_Test extends AbstractTestObject<RegelErgebnis>/*
  * TODO
  * TestCase
  * fuer

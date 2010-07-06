@@ -2,14 +2,14 @@ package org.csstudio.nams.common.material;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
 /**
  * CUT: {@link AlarmNachricht}.
  */
 public class AlarmNachricht_Test extends
-		AbstractObject_TestCase<AlarmNachricht> {
+		AbstractTestObject<AlarmNachricht> {
 
 	@Test
 	public void testInitialize() {

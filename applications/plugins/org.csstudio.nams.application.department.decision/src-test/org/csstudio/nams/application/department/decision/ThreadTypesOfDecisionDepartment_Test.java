@@ -2,10 +2,10 @@ package org.csstudio.nams.application.department.decision;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 
 public class ThreadTypesOfDecisionDepartment_Test extends
-		AbstractObject_TestCase<ThreadTypesOfDecisionDepartment> {
+		AbstractTestObject<ThreadTypesOfDecisionDepartment> {
 
 	public void testNumberOfElements() {
 		Assert.assertEquals(4, ThreadTypesOfDecisionDepartment.values().length);

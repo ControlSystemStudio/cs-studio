@@ -8,10 +8,10 @@ import junit.framework.Assert;
 
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
-import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestValue;
 import org.junit.Test;
 
-public class Terminnotiz_Test extends AbstractValue_TestCase<Terminnotiz> {
+public class Terminnotiz_Test extends AbstractTestValue<Terminnotiz> {
 
 	@Test
 	public void testCheckContract() throws Throwable {

@@ -44,7 +44,7 @@ import org.junit.Test;
  * 
  * @author gs, mz
  */
-public class ConfigurationServiceFactoryImpl_DatabaseIntegrationTest_RequiresHSQL
+public class ConfigurationServiceFactoryImpl_DatabaseIntegrationRequiresHSQL_Test
 		extends TestCase {
 
 	LocalStoreConfigurationService service;

@@ -6,11 +6,11 @@ import java.util.Date;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestValue;
 import org.junit.Test;
 
 public class Vorgangsmappenkennung_Test extends
-		AbstractValue_TestCase<Vorgangsmappenkennung> {
+		AbstractTestValue<Vorgangsmappenkennung> {
 
 	@Test
 	public void testContractValueOf() throws Throwable {

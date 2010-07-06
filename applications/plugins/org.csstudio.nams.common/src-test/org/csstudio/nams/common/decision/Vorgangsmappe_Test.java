@@ -10,10 +10,10 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
 import org.csstudio.nams.common.material.regelwerk.Pruefliste;
 import org.csstudio.nams.common.material.regelwerk.StandardRegelwerk;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
-public class Vorgangsmappe_Test extends AbstractObject_TestCase<Vorgangsmappe> {
+public class Vorgangsmappe_Test extends AbstractTestObject<Vorgangsmappe> {
 
 	@Test
 	public void testAbgeschlossenDurch() throws UnknownHostException {

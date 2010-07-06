@@ -6,14 +6,14 @@ import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.SyncronisationsAufforderungsSystemNachchricht;
 import org.csstudio.nams.common.material.SyncronisationsBestaetigungSystemNachricht;
 import org.csstudio.nams.common.material.SystemNachricht;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage.AcknowledgeHandler;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class DefaultNAMSMessage_Test extends
-		AbstractObject_TestCase<NAMSMessage> {
+		AbstractTestObject<NAMSMessage> {
 
 	protected boolean acknowledged;
 

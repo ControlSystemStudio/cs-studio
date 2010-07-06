@@ -40,7 +40,7 @@ import org.junit.Test;
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 2008-03-28
  */
-public abstract class AbstractObject_TestCase<T> extends TestCase {
+public abstract class AbstractTestObject<T> extends TestCase {
 	@SuppressWarnings("unchecked")
 	@Test
 	public final void testClone() {

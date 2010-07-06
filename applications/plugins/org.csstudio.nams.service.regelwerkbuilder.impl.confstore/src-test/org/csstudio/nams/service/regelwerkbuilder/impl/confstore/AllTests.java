@@ -1,21 +1,18 @@
-package org.csstudio.nams.service.messaging.impl.jms;
+package org.csstudio.nams.service.regelwerkbuilder.impl.confstore;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class MessagingServiceJMSImplAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
-		final TestSuite suite = new TestSuite(
-				"MessagingServiceJMSImplAllTestsSuite");
+		final TestSuite suite = new TestSuite("PreferenceServiceAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(MessagingServiceJMSImplAllTestsSuite.class);
-
-		suite.addTestSuite(MessageKeyKonverter_Test.class);
+		suite.addTestSuite(AllTests.class);
 
 		// $JUnit-END$
 		return suite;

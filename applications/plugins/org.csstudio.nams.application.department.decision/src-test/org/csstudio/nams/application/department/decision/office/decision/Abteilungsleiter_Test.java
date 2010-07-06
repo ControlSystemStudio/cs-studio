@@ -35,13 +35,13 @@ import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappe;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.material.AlarmNachricht;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.easymock.EasyMock;
 import org.easymock.IAnswer;
 import org.junit.Test;
 
 public class Abteilungsleiter_Test extends
-		AbstractObject_TestCase<Abteilungsleiter> {
+		AbstractTestObject<Abteilungsleiter> {
 
 	protected volatile int anzahlDerSachbearbeiterDieEineMappeErhaltenHaben;
 	protected Throwable testFailed;

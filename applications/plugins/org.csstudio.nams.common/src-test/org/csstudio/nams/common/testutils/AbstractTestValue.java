@@ -44,7 +44,7 @@ import org.junit.Test;
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @version 0.1, 2008-03-30
  */
-public abstract class AbstractValue_TestCase<T> extends TestCase {
+public abstract class AbstractTestValue<T> extends TestCase {
 	private static final String NAME_OF_VALUEOF_METHOD = "valueOf";
 
 	@Test
@@ -378,7 +378,7 @@ public abstract class AbstractValue_TestCase<T> extends TestCase {
 					&& (!Modifier.isPrivate(modifiers))
 					&& method.getReturnType().equals(type)
 					&& method.getName().equals(
-							AbstractValue_TestCase.NAME_OF_VALUEOF_METHOD)) {
+							AbstractTestValue.NAME_OF_VALUEOF_METHOD)) {
 				atLeastOneValueOfFound = true;
 				break;
 			}

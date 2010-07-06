@@ -1,20 +1,24 @@
-package org.csstudio.nams.service.history;
+package org.csstudio.nams.service.logging;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class HistoryServiceAllTestsSuite extends TestCase {
+import org.csstudio.nams.service.logging.declaration.LoggerMock_Test;
+
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
-		final TestSuite suite = new TestSuite("HistoryServiceAllTestsSuite");
+		final TestSuite suite = new TestSuite("LoggingServiceAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(HistoryServiceAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
 
-		suite.addTestSuite(HistoryActivator_Test.class);
+		suite.addTestSuite(LoggingServiceActivator_Test.class);
+
+		suite.addTestSuite(LoggerMock_Test.class);
 
 		// $JUnit-END$
 		return suite;

@@ -3,9 +3,9 @@ package org.csstudio.nams.common.material.regelwerk;
 import junit.framework.Assert;
 
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 
-public class Pruefliste_Test extends AbstractObject_TestCase<Pruefliste> {
+public class Pruefliste_Test extends AbstractTestObject<Pruefliste> {
 	public void testPruefliste() {
 		final Pruefliste pruefliste = new Pruefliste(Regelwerkskennung
 				.valueOf(), null);

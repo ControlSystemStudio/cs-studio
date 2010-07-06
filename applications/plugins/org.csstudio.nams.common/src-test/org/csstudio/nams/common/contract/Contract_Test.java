@@ -3,11 +3,11 @@ package org.csstudio.nams.common.contract;
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
 /**
- * Dies ist kein {@link AbstractObject_TestCase}, da Exemplare nicht möglich
+ * Dies ist kein {@link AbstractTestObject}, da Exemplare nicht möglich
  * sind!
  */
 public class Contract_Test extends TestCase {

@@ -1,18 +1,19 @@
-package org.csstudio.nams.service.preferenceservice;
+package org.csstudio.nams.service.history.impl.confstore;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class PreferenceServiceAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
-		final TestSuite suite = new TestSuite("PreferenceServiceAllTestsSuite");
+		final TestSuite suite = new TestSuite(
+				"HistoryServiceConfStroeImplAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(PreferenceServiceAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
 
 		// $JUnit-END$
 		return suite;

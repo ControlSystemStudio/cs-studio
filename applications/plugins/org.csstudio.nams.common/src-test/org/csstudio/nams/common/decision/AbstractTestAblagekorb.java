@@ -2,11 +2,11 @@ package org.csstudio.nams.common.decision;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
-abstract public class AbstractAblagekorb_TestCase<T extends Ablagefaehig, KT>
-		extends AbstractObject_TestCase<KT> {
+abstract public class AbstractTestAblagekorb<T extends Ablagefaehig, KT>
+		extends AbstractTestObject<KT> {
 	@Test(timeout = 2000)
 	public void testAblegen() throws InterruptedException {
 		final Ablagekorb<T> eingangskorb = this.gibNeuesExemplar();

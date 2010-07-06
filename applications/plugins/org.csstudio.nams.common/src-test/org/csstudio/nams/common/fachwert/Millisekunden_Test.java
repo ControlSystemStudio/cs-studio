@@ -2,10 +2,10 @@ package org.csstudio.nams.common.fachwert;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestValue;
 import org.junit.Test;
 
-public class Millisekunden_Test extends AbstractValue_TestCase<Millisekunden> {
+public class Millisekunden_Test extends AbstractTestValue<Millisekunden> {
 	@Test
 	public void testDifferenz() {
 		final Millisekunden millisekunden = Millisekunden.valueOf(2000);

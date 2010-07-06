@@ -31,7 +31,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-abstract public class AbstractConjunctionFilterConditionTestCase {
+abstract public class AbstractConjunctionFilterConditionTest {
 
 	private AbstractConjunctionFilterCondition _filterCondition;
 	private IFilterCondition _currentFirstOperandInstance;

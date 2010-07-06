@@ -1,19 +1,20 @@
-package org.csstudio.nams.service.history.impl.confstore;
+package org.csstudio.nams.service.history;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-public class HistoryServiceConfStroeImplAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
-		final TestSuite suite = new TestSuite(
-				"HistoryServiceConfStroeImplAllTestsSuite");
+		final TestSuite suite = new TestSuite("HistoryServiceAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(HistoryServiceConfStroeImplAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
+
+		suite.addTestSuite(HistoryActivator_Test.class);
 
 		// $JUnit-END$
 		return suite;

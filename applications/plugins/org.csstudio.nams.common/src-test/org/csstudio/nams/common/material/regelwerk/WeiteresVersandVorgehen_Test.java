@@ -2,10 +2,10 @@ package org.csstudio.nams.common.material.regelwerk;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 
 public class WeiteresVersandVorgehen_Test extends
-		AbstractObject_TestCase<WeiteresVersandVorgehen> /*
+		AbstractTestObject<WeiteresVersandVorgehen> /*
  * TODO TestCase
  * fuer Enums
  * erstellen!

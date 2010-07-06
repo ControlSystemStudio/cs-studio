@@ -8,7 +8,7 @@ import org.junit.Test;
 
 public class StandardAblagekorb_Test
 		extends
-		AbstractAblagekorb_TestCase<AblagefaehigesObject, StandardAblagekorb<AblagefaehigesObject>> {
+		AbstractTestAblagekorb<AblagefaehigesObject, StandardAblagekorb<AblagefaehigesObject>> {
 
 	volatile int fertigeConsumer = 0;
 	volatile private StandardAblagekorb<Ablagefaehig> korb;

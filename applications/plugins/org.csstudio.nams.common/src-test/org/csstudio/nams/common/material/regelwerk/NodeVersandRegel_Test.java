@@ -45,7 +45,7 @@ import org.junit.Test;
  * @version 0.1, 09.04.2008
  */
 
-public class AbstractNodeVersandRegel_Test extends TestCase {
+public class NodeVersandRegel_Test extends TestCase {
 
 	/**
 	 * Test method for

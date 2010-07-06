@@ -2,10 +2,10 @@ package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs.fi
 
 import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 
 public class StringFilterConditionDTO_Test extends
-		AbstractObject_TestCase<StringFilterConditionDTO> {
+		AbstractTestObject<StringFilterConditionDTO> {
 
 	@Override
 	protected StringFilterConditionDTO getNewInstanceOfClassUnderTest() {

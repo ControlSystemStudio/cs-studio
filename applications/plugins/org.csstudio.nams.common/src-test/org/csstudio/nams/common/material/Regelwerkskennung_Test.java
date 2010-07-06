@@ -1,10 +1,10 @@
 package org.csstudio.nams.common.material;
 
-import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestValue;
 import org.junit.Test;
 
 public class Regelwerkskennung_Test extends
-		AbstractValue_TestCase<Regelwerkskennung> {
+		AbstractTestValue<Regelwerkskennung> {
 	@Test
 	public void testErzeugen() {
 		Regelwerkskennung.valueOf();

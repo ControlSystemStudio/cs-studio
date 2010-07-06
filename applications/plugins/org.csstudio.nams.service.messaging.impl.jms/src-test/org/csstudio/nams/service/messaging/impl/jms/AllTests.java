@@ -1,24 +1,21 @@
-package org.csstudio.nams.service.logging;
+package org.csstudio.nams.service.messaging.impl.jms;
 
 import junit.framework.Assert;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
 
-import org.csstudio.nams.service.logging.declaration.LoggerMock_Test;
-
-public class LoggingServiceAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
-		final TestSuite suite = new TestSuite("LoggingServiceAllTestsSuite");
+		final TestSuite suite = new TestSuite(
+				"MessagingServiceJMSImplAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(LoggingServiceAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
 
-		suite.addTestSuite(LoggingServiceActivator_Test.class);
-
-		suite.addTestSuite(LoggerMock_Test.class);
+		suite.addTestSuite(MessageKeyKonverter_Test.class);
 
 		// $JUnit-END$
 		return suite;

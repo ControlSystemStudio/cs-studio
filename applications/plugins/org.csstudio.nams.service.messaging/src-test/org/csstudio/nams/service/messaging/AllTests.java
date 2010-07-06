@@ -8,14 +8,14 @@ import junit.framework.TestSuite;
 import org.csstudio.nams.common.material.AlarmNachricht_Test;
 import org.csstudio.nams.service.messaging.declaration.DefaultNAMSMessage_Test;
 
-public class MessagingServiceAllTestsSuite extends TestCase {
+public class AllTests extends TestCase {
 
 	public static Test suite() throws Throwable {
 
 		final TestSuite suite = new TestSuite("MessagingServiceAllTestsSuite");
 		// $JUnit-BEGIN$
 
-		suite.addTestSuite(MessagingServiceAllTestsSuite.class);
+		suite.addTestSuite(AllTests.class);
 
 		suite.addTestSuite(AlarmNachricht_Test.class);
 

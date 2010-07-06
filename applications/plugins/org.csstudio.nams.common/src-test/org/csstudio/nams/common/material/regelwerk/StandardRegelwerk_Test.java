@@ -6,12 +6,12 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.fachwert.Millisekunden;
 import org.csstudio.nams.common.material.AlarmNachricht;
 import org.csstudio.nams.common.material.Regelwerkskennung;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Ignore;
 import org.junit.Test;
 
 public class StandardRegelwerk_Test extends
-		AbstractObject_TestCase<StandardRegelwerk> {
+		AbstractTestObject<StandardRegelwerk> {
 
 	@Test
 	@Ignore("Not finished yet!")

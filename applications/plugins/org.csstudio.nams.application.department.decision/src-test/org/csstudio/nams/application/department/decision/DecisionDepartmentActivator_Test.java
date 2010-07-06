@@ -43,6 +43,7 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.regelwerkbuilder.declaration.RegelwerkBuilderService;
 import org.easymock.EasyMock;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class DecisionDepartmentActivator_Test extends TestCase {
@@ -60,16 +61,18 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 	private ProducerMock amsToDistributorProducerMock;
 
 	private ConsumerMock amsCommandConsumerMock;
-	private final ThreadGroup catchingThreadGroup = new ThreadGroup(Thread
-			.currentThread().getThreadGroup(), "DDA") {
+
+	private final ThreadGroup catchingThreadGroup =
+	    new ThreadGroup(Thread.currentThread().getThreadGroup(), "DDA") {
 		@Override
-		public void uncaughtException(Thread t, Throwable e) {
+		public void uncaughtException(final Thread t, final Throwable e) {
 			DecisionDepartmentActivator_Test.this.occuredThrowable = e;
 		}
 	};
 
 	// FIXME mz 2008-07-18: This Test has to be fixed and conitnued
 	@Test
+	@Ignore("This test does not seem to be current in any reasonable way.")
 	public void testBundleAndApplicationLifecycle() throws Throwable {
 
 		if (1 == 1) {
@@ -124,7 +127,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 					Assert
 							.assertTrue(DecisionDepartmentActivator_Test.this.syncronisationBestaetigungAcknowledged);
 
-				} catch (Throwable e) {
+				} catch (final Throwable e) {
 					DecisionDepartmentActivator_Test.this.occuredThrowable = e;
 				}
 			}
@@ -193,7 +196,7 @@ public class DecisionDepartmentActivator_Test extends TestCase {
 		// TODO Maps befüllen
 		// P_JMS_AMS_PROVIDER_URL_1
 		// P_JMS_AMS_PROVIDER_URL_2
-		// 
+		//
 		final Map<String, PostfachArt> expectedPostfachArtenForSources = new HashMap<String, PostfachArt>();
 		final Map<String, Consumer> consumerForSources = new HashMap<String, Consumer>();
 		final Map<String, PostfachArt> expectedPostfachArtenForDestination = new HashMap<String, PostfachArt>();

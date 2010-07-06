@@ -1,11 +1,11 @@
 package org.csstudio.nams.common.fachwert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Assert;
 import org.junit.Test;
 
 public class MessageKeyEnum_Test extends
-		AbstractObject_TestCase<MessageKeyEnum> {
+		AbstractTestObject<MessageKeyEnum> {
 	@Test
 	public void testGetEnumForKey() {
 

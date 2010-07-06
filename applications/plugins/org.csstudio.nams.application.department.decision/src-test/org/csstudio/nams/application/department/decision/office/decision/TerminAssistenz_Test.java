@@ -14,11 +14,11 @@ import org.csstudio.nams.common.decision.Eingangskorb;
 import org.csstudio.nams.common.decision.StandardAblagekorb;
 import org.csstudio.nams.common.decision.Vorgangsmappenkennung;
 import org.csstudio.nams.common.fachwert.Millisekunden;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.junit.Test;
 
 public class TerminAssistenz_Test extends
-		AbstractObject_TestCase<TerminAssistenz> {
+		AbstractTestObject<TerminAssistenz> {
 
 	@Test
 	public void testArbeit() throws InterruptedException {

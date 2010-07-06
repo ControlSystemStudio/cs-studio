@@ -36,7 +36,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class FilterConditionProcessVariable_IntegrationTestWithDAL {
+public class FilterConditionProcessVariableIntegrationWithDALTest {
 
 	private static final String TEST_CHANNEL_NAME = "epics://krykWeather:Temp_ai.VAL";
 	private static final int FILTER_CONDITION_ID = 42;

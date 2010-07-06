@@ -1,9 +1,9 @@
 package org.csstudio.nams.service.configurationaccess.localstore.internalDTOs;
 
-import org.csstudio.nams.common.testutils.AbstractValue_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestValue;
 
 public class TopicConfigurationId_Test extends
-		AbstractValue_TestCase<TopicConfigurationId> {
+		AbstractTestValue<TopicConfigurationId> {
 
 	@Override
 	protected TopicConfigurationId doGetAValueOfTypeUnderTest() {
