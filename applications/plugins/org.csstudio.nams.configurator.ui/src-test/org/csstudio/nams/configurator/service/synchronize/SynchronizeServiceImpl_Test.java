@@ -3,7 +3,7 @@ package org.csstudio.nams.configurator.service.synchronize;
 import junit.framework.Assert;
 
 import org.csstudio.nams.common.service.ExecutionServiceMock;
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.ConfigurationServiceFactory;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.DatabaseType;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
@@ -18,7 +18,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class SynchronizeServiceImpl_Test extends
-		AbstractObject_TestCase<SynchronizeService> {
+		AbstractTestObject<SynchronizeService> {
 
 	protected boolean synAbgebrochenGerufen;
 	private LocalStoreConfigurationService localStoreConfigurationServiceMock;
@@ -136,7 +136,7 @@ public class SynchronizeServiceImpl_Test extends
 //
 //		/*-
 //		 * FIXME mz 2008-07-10: TODOS Hier und im der Impl!:
-//		 * - Neue SystemNachricht 
+//		 * - Neue SystemNachricht
 //		 * - ProducerMock mit eq für die Sys-Nachricht, alles andere verboten
 //		 * - Consumer für die Antwort, neue Systemnachricht
 //		 * - TESTFAELLE:
