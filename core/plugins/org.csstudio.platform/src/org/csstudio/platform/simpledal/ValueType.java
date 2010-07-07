@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.platform.simpledal;
@@ -38,11 +38,11 @@ import org.epics.css.dal.StringSeqProperty;
 /**
  * Enumeration of all value types that can be queried via control system
  * channels
- * 
+ *
  * @author Sven Wende
- * 
+ *
  * @version $Revision$
- * 
+ *
  */
 public enum ValueType {
 
@@ -103,17 +103,16 @@ public enum ValueType {
 
 	private String _description;
 
-	private Class _javaType;
+	private Class<?> _javaType;
 
 	/**
 	 * A hint for the necessary DAL property type.
 	 */
-	@SuppressWarnings("unchecked")
-	private Class<? extends DynamicValueProperty> _dalType;
+	private Class<? extends DynamicValueProperty<?>> _dalType;
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param id
 	 *            The ID. Will be used as portable representation of the created
 	 *            instance.
@@ -122,9 +121,8 @@ public enum ValueType {
 	 * @param dalType
 	 *            a hint for the necessary DAL property type
 	 */
-	@SuppressWarnings("unchecked")
-	private ValueType(final String id, String description,
-			final Class<? extends DynamicValueProperty> dalType, Class javaType) {
+	private ValueType(final String id, final String description,
+			final Class<? extends DynamicValueProperty<?>> dalType, final Class<?> javaType) {
 		assert id != null;
 		assert description != null;
 		assert dalType != null;
@@ -155,16 +153,16 @@ public enum ValueType {
 	 * Returns the corresponding DAL property type. Note: This is package
 	 * private because we want to abstract from DAL totally.
 	 */
-	public Class<? extends DynamicValueProperty> getDalType() {
+	public Class<? extends DynamicValueProperty<?>> getDalType() {
 		return _dalType;
 	}
 
 	/**
 	 * Returns the expected Java type for values of this type.
-	 * 
+	 *
 	 * @return the expected Java type for values of this type
 	 */
-	public Class getJavaType() {
+	public Class<?> getJavaType() {
 		return _javaType;
 	}
 
@@ -176,14 +174,14 @@ public enum ValueType {
 	static {
 		_mapping = new HashMap<String, ValueType>();
 
-		for (ValueType type : ValueType.values()) {
+		for (final ValueType type : ValueType.values()) {
 			_mapping.put(type.toPortableString(), type);
 		}
 	}
 
 	/**
 	 * Creates an instance of this class from a string representation.
-	 * 
+	 *
 	 * @param portableString
 	 *            Required.
 	 * @return The instance that is represented by the string or null
