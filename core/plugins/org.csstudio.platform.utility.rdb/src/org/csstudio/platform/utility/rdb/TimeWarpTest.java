@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.platform.utility.rdb;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -35,20 +35,20 @@ public class TimeWarpTest
 
         // Convert CSS time to SQL Time
         final Timestamp sql = TimeWarp.getSQLTimestamp(now);
-        
+
         final Calendar css_cal = now.toCalendar();
         final Calendar sql_cal = Calendar.getInstance();
         sql_cal.setTime(new Date(sql.getTime()));
-        
-        System.out.println("CSS: " + css_cal);
-        System.out.println("SQL: " + sql_cal);
+
+        //System.out.println("CSS: " + css_cal);
+        //System.out.println("SQL: " + sql_cal);
         assertEquals(css_cal, sql_cal);
 
         // Convert SQL time to CSS Time
         final ITimestamp css = TimeWarp.getCSSTimestamp(sql);
-        
-        System.out.println("Orig           : " + now);
-        System.out.println("To SQL and back: "  + css);
+
+        //System.out.println("Orig           : " + now);
+        //System.out.println("To SQL and back: "  + css);
         assertEquals(now, css);
     }
 

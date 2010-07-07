@@ -22,72 +22,66 @@
 
 package de.desy.css.dal.tine;
 
-import java.util.Arrays;
-
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.spi.DefaultPropertyFactoryService;
 import org.epics.css.dal.spi.PropertyFactory;
 
-import de.desy.css.dal.tine.TINEApplicationContext;
-import de.desy.tine.definitions.TArrayType;
-import de.desy.tine.definitions.TFormat;
-
 public class TinePropertyTester {
 
 	AbstractApplicationContext ctx;
 	PropertyFactory f;
-	
-	
+
+
 	public TinePropertyTester() {
-		
+
 		this.ctx= new TINEApplicationContext("TinePropertyTester");
 		this.f = DefaultPropertyFactoryService.getPropertyFactoryService().getPropertyFactory(this.ctx, null);
-		
+
 	}
-	
+
 	public void shutdown() {
 		this.ctx.destroy();
 	}
-	
-	
-	public void testProperty(String name) throws RemoteException, InstantiationException {
-		DynamicValueProperty p= this.f.getProperty(name);
-		
-		System.out.print(p.getUniqueName());
-		System.out.print("; ");
-		System.out.print(p.getDataType().getSimpleName());
-		System.out.print("; ");
-		System.out.print(((TFormat)p.getCharacteristic("dataFormat")).toString());
-		System.out.print("; ");
-		System.out.print(((TArrayType)p.getCharacteristic("arrayType")).toString());
-		System.out.print("; \'");
-		Object o= p.getValue();
+
+
+	public void testProperty(final String name) throws RemoteException, InstantiationException {
+		final DynamicValueProperty<?> p= this.f.getProperty(name);
+
+		//System.out.print(p.getUniqueName());
+		//System.out.print("; ");
+		//System.out.print(p.getDataType().getSimpleName());
+		//System.out.print("; ");
+		//System.out.print(((TFormat)p.getCharacteristic("dataFormat")).toString());
+		//System.out.print("; ");
+		//System.out.print(((TArrayType)p.getCharacteristic("arrayType")).toString());
+		//System.out.print("; \'");
+		final Object o= p.getValue();
 		if (o.getClass().isArray()) {
 			if (o.getClass().getComponentType().isPrimitive()){
 				if (o.getClass().getComponentType().equals(double.class)) {
-					System.out.print(Arrays.toString((double[])o));
+					//System.out.print(Arrays.toString((double[])o));
 				} else if (o.getClass().getComponentType().equals(long.class)) {
-					System.out.print(Arrays.toString((long[])o));
+					//System.out.print(Arrays.toString((long[])o));
 				}
 			} else {
-				System.out.print(Arrays.toString((Object[])o));
+				//System.out.print(Arrays.toString((Object[])o));
 			}
 		} else {
-			System.out.print(o);
+			//System.out.print(o);
 		}
-		System.out.print("'");
-		System.out.println();
-		System.out.flush();
-		
+		//System.out.print("'");
+		//System.out.println();
+		//System.out.flush();
+
 		this.f.getPropertyFamily().destroy(p);
 	}
-	
+
 	/**
 	 * @param args
 	 */
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 
 		/*String[] names = {
 				"TINE/DORIS/DORISDATA/V2 Rlf/DoArcTemp",
@@ -101,30 +95,30 @@ public class TinePropertyTester {
 				"TINE/DESY2/CTStrahlung/Platz-281/CTPlatzDesc",
 				"TINE/PETRA/ELWISCavitysvr/Cavity/Report",
 				"TINE/HERA/APC/#0/ANNOTATE",
-				"TINE/PETRA/PETRASTATE/ppstandby/ARCHSTATE", 
-				
-				
+				"TINE/PETRA/PETRASTATE/ppstandby/ARCHSTATE",
+
+
 		};*/
-		
-		String[] names = {
+
+		final String[] names = {
 				"TINE/DEFAULT/JavaIOC-EQM/counter/counter",
 				"TINE/DEFAULT/JavaIOC-EQM/valueOnly/valueOnly"
 		};
 
-		TinePropertyTester t= new TinePropertyTester();
-		
-		for (int i = 0; i < names.length; i++) {
+		final TinePropertyTester t= new TinePropertyTester();
+
+		for (final String name : names) {
 			try {
-				t.testProperty(names[i]);
-			} catch (Exception e) {
+				t.testProperty(name);
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
 		}
-		
-		System.out.println("DONE");
+
+		//System.out.println("DONE");
 		t.shutdown();
 		System.exit(0);
-		
+
 	}
 
 }

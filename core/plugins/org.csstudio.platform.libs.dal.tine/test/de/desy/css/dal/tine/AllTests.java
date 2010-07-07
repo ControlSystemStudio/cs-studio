@@ -25,7 +25,6 @@ package de.desy.css.dal.tine;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
 
 /**
  * TODO (bknerr) :
@@ -36,7 +35,6 @@ import org.junit.runners.Suite.SuiteClasses;
  * @since 06.07.2010
  */
 @RunWith(Suite.class)
-@SuiteClasses(TINEPlugTest.class)
 public class AllTests {
     // EMPTY
 }

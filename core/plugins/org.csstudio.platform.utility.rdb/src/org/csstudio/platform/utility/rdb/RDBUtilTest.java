@@ -24,7 +24,7 @@ public class RDBUtilTest
 //    private static final String PASSWORD = "$alarm";
 
     @SuppressWarnings("unused")
-    private static final String URL1 = 
+    private static final String URL1 =
         "jdbc:oracle:thin:@" +
         "(DESCRIPTION=" +
         " (ADDRESS_LIST=(LOAD_BALANCE=OFF)" +
@@ -34,8 +34,8 @@ public class RDBUtilTest
         " )" +
         " (CONNECT_DATA=(SERVICE_NAME=ics_prod_lba))" +
         ")";
-    
-    private static final String URL = 
+
+    private static final String URL =
         "jdbc:oracle:thin:@" +
         "(DESCRIPTION=(SOURCE_ROUTE=YES)" +
         " (ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)" +
@@ -53,17 +53,17 @@ public class RDBUtilTest
     private static final String USER = "sns_reports";
     private static final String PASSWORD = "sns";
 
-    
+
     /** Basic connection */
     @Test
     public void testConnection() throws Exception
     {
         final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
         final Connection connection = rdb.getConnection();
-        System.out.println("Connection: " + connection);
+        //System.out.println("Connection: " + connection);
     }
 
-    
+
     /** Check re-connect
      *  Not really a test because it has no way to force a connection error.
      *  While running this test, one needs to stop the RDB or disconnect
@@ -82,11 +82,11 @@ public class RDBUtilTest
             try
             {
                 final Connection connection = rdb.getConnection();
-                System.out.println("Connection: " + connection);
+                //System.out.println("Connection: " + connection);
             }
-            catch (Exception e)
+            catch (final Exception e)
             {
-                System.out.println("Error: " + e.getMessage());
+                //System.out.println("Error: " + e.getMessage());
             }
             Thread.sleep(5000);
         }

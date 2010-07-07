@@ -122,7 +122,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			final Class<P> type, final LinkListener<?> l) throws InstantiationException,
 			RemoteException {
 		return getProperty(
-				RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
+				RemoteInfo.fromString(uniqueName, RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
 				type,
 				l);
 	}

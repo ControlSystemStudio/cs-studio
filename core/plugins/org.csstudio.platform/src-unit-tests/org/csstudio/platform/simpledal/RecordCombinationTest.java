@@ -1,17 +1,10 @@
 package org.csstudio.platform.simpledal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
-import java.util.concurrent.Semaphore;
-
-import org.csstudio.platform.internal.simpledal.dal.DalConnector;
 import org.csstudio.platform.model.pvs.ControlSystemEnum;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.Timestamp;
@@ -22,18 +15,18 @@ import org.junit.Test;
 public class RecordCombinationTest {
 
     private final class ObjectValueListener implements IProcessVariableValueListener<Object> {
-        public void connectionStateChanged(ConnectionState connectionState) {
+        public void connectionStateChanged(final ConnectionState connectionState) {
             // TODO Auto-generated method stub
-            
+
         }
-        
-        public void errorOccured(String error) {
-            System.out.println("Error: " + error);
-            
+
+        public void errorOccured(final String error) {
+            //System.out.println("Error: " + error);
+
         }
-        
-        public void valueChanged(Object value, Timestamp timestamp) {
-            System.out.println("Object Value change: " + value + " on " + timestamp);
+
+        public void valueChanged(final Object value, final Timestamp timestamp) {
+            //System.out.println("Object Value change: " + value + " on " + timestamp);
             assertNotNull(value);
         }
     }
@@ -47,13 +40,13 @@ public class RecordCombinationTest {
 //
 //        @Override
 //        public void errorOccured(String error) {
-//            System.out.println("Error: " + error);
+//            //System.out.println("Error: " + error);
 //
 //        }
 //
 //        @Override
 //        public void valueChanged(Double value, Timestamp timestamp) {
-//            System.out.println("Double Value change: " + value + " on " + timestamp);
+//            //System.out.println("Double Value change: " + value + " on " + timestamp);
 //            assertNotNull(value);
 //        }
 //    }
@@ -67,13 +60,13 @@ public class RecordCombinationTest {
 //
 //        @Override
 //        public void errorOccured(String error) {
-//            System.out.println("Error: " + error);
+//            //System.out.println("Error: " + error);
 //
 //        }
 //
 //        @Override
 //        public void valueChanged(Enum value, Timestamp timestamp) {
-//            System.out.println("Enum Value change: " + value + " on " + timestamp);
+//            //System.out.println("Enum Value change: " + value + " on " + timestamp);
 //            assertNotNull(value);
 //        }
 //    }
@@ -97,30 +90,30 @@ public class RecordCombinationTest {
 
     @Test
     public void testname() throws Exception {
-        CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
+        final CharacteristicInfo[] infos= CharacteristicInfo.getDefaultCharacteristics(DoubleProperty.class, null);
         // String rawName= ControlSystemEnum.DAL_SIMULATOR.getPrefix()+"://D1:P1";
-        String rawName = ControlSystemEnum.EPICS.getPrefix() + "://krykWetter:fdUsed_ai";
+        final String rawName = ControlSystemEnum.EPICS.getPrefix() + "://krykWetter:fdUsed_ai";
         for (int i = infos.length-1; i >= 0; i--) {
-            
-        String rawNameHHSV = ControlSystemEnum.EPICS.getPrefix() + "://krykWetter:fdUsed_ai["+infos[i].getName()+"]";
+
+        final String rawNameHHSV = ControlSystemEnum.EPICS.getPrefix() + "://krykWetter:fdUsed_ai["+infos[i].getName()+"]";
 //        String rawNameHHSV = ControlSystemEnum.EPICS.getPrefix() + "://krykWetter:fdUsed_ai";
         // String rawName= ControlSystemEnum.EPICS.getPrefix()+"://krykWetter:fdUsed_ai";
         // String rawName= ControlSystemEnum.EPICS.getPrefix()+"://krykWetter:fdUsed_ai";
 
-        System.out.println(rawName);
+        //System.out.println(rawName);
 
 //        IProcessVariableAddress record = _addressFactory.createProcessVariableAdress(rawName);
-        IProcessVariableAddress hhsv = _addressFactory.createProcessVariableAdress(rawNameHHSV);
-        System.out.println("Characteristic: "+hhsv.getFullName());
-        System.out.println("Characteristic: "+hhsv.getCharacteristic());
+        final IProcessVariableAddress hhsv = _addressFactory.createProcessVariableAdress(rawNameHHSV);
+        //System.out.println("Characteristic: "+hhsv.getFullName());
+        //System.out.println("Characteristic: "+hhsv.getCharacteristic());
 
-//        System.out.println(record.toString());
-//        System.out.println(record.toDalRemoteInfo().toString());
+//        //System.out.println(record.toString());
+//        //System.out.println(record.toDalRemoteInfo().toString());
 
 //        _connectionService.readValueAsynchronously(hhsv, ValueType.OBJECT, new ObjectValueListener());
-        Object readValueSynchronously = _connectionService.readValueSynchronously(hhsv, ValueType.OBJECT);
-        System.out.println("Value: " + readValueSynchronously);
-        System.out.println("----------)");
+        final Object readValueSynchronously = _connectionService.readValueSynchronously(hhsv, ValueType.OBJECT);
+        //System.out.println("Value: " + readValueSynchronously);
+        //System.out.println("----------)");
         }
 //        _connectionService.readValueAsynchronously(record, ValueType.DOUBLE,
 //                new DoubleValueListener());
