@@ -21,7 +21,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CrawlTests
+public class CrawlTest
 {
     // The main SNS data server.
     final static String URL =
