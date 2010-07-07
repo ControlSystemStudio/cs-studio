@@ -18,14 +18,20 @@ import org.junit.Test;
  *  <p>
  *  </pre>
  *  @author Kay Kasemir
+ *
+ *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_Connection_Test implements PVListener
 {
+
+    private volatile int _timeout = 1000;
+    private static int _interval = 100;
+
     /** Get a PV.
-     *  
+     *
      *  <b>This is where the implementation is hard-coded!</b>
-     *  
+     *
      *  @return PV
      */
     static private PV getPV(final String name)
@@ -36,17 +42,17 @@ public class EPICS_V3_Connection_Test implements PVListener
         //                   "gov.aps.jca.event.QueuedEventDispatcher");
         return new EPICS_V3_PV(name);
     }
-    
+
     public void pvValueUpdate(final PV pv)
     {
-        IValue v = pv.getValue();
-        System.out.println(pv.getName() + ": " + v);
+        final IValue v = pv.getValue();
+        //System.out.println(pv.getName() + ": " + v);
         assertEquals(true, pv.isConnected());
     }
 
     public void pvDisconnected(final PV pv)
     {
-        System.out.println(pv.getName() + " disconnected");
+        //System.out.println(pv.getName() + " disconnected");
         assertEquals(false, pv.isConnected());
     }
 
@@ -55,14 +61,15 @@ public class EPICS_V3_Connection_Test implements PVListener
     {
         Logger.getRootLogger().setLevel(Level.WARN);
         boolean connected = false;
-        
+
         final PV pv = getPV("fred");
         assertEquals(connected, pv.isConnected());
         pv.addListener(this);
         pv.start();
 
-        System.out.println("Monitoring " + pv.getName() + ", polling isConnected()");
-        System.out.println("Stop & restart the IOC and see what happens!");
+        //System.out.println("Monitoring " + pv.getName() + ", polling isConnected()");
+        //System.out.println("Stop & restart the IOC and see what happens!");
+        int duration = 0;
         while (true)
         {
             assertEquals(true, pv.isRunning());
@@ -70,9 +77,13 @@ public class EPICS_V3_Connection_Test implements PVListener
             if (state != connected)
             {
                 connected = state;
-                System.out.println("PV isConnected() changed to " + connected);
+                //System.out.println("PV isConnected() changed to " + connected);
             }
-            Thread.sleep(100);
+            duration += _interval;
+            if (duration >= _timeout) {
+                break;
+            }
+            Thread.sleep(_interval);
         }
     }
 }

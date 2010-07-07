@@ -33,14 +33,16 @@ import org.junit.Test;
  *  CAJ                            OK        10..140 sec     11.7 MB
  *  </pre>
  *  @author Kay Kasemir
+ *
+ *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test
 {
     /** Get a PV.
-     *  
+     *
      *  <b>This is where the implementation is hard-coded!</b>
-     *  
+     *
      *  @return PV
      */
     static private PV getPV(final String name)
@@ -51,58 +53,55 @@ public class EPICS_V3_PV_Test
         //                   "gov.aps.jca.event.QueuedEventDispatcher");
         return new EPICS_V3_PV(name);
     }
-    
+
     /** Update counter for TestListener */
-    private AtomicInteger updates = new AtomicInteger();
-    
+    private final AtomicInteger updates = new AtomicInteger();
+
     /** Listener that dumps info and counts updates */
     class TestListener implements PVListener
     {
-        private String name;
-        
-        TestListener(String name)
+        private final String name;
+
+        TestListener(final String name)
         {
             this.name = name;
         }
-        
-        public void pvValueUpdate(PV pv)
+
+        public void pvValueUpdate(final PV pv)
         {
             updates.addAndGet(1);
-            IValue v = pv.getValue();
-            System.out.println(name + ": "
-                    + pv.getName() + ", "
-                    + v.getTime() + " "
-                    + v);
+            final IValue v = pv.getValue();
+            ////System.out.println(name + ": " + pv.getName() + ", " + v.getTime() + " " + v);
         }
 
-        public void pvDisconnected(PV pv)
+        public void pvDisconnected(final PV pv)
         {
-            System.out.println(name + ": "
-                    + pv.getName() + " disconnected");
+            ////System.out.println(name + ": " + pv.getName() + " disconnected");
         }
     }
 
     @Test
     public void testSinglePVStartStop() throws Exception
     {
-        PV pv = getPV("fred");
+        final PV pv = getPV("fred");
         pv.addListener(new TestListener("A"));
 
-        System.out.println("Checking monitors from single PV...");
+        ////System.out.println("Checking monitors from single PV...");
         pv.start();
         int wait = 10;
         while (wait > 0)
         {
-            if (updates.get() > 2)
+            if (updates.get() > 2) {
                 break;
+            }
             Thread.sleep(1000);
             --wait;
         }
         // Did we get anything?
         assertTrue(updates.get() > 2);
         pv.stop();
-        System.out.println("Asserting that monitors stop...");
-        int old = updates.get();
+        ////System.out.println("Asserting that monitors stop...");
+        final int old = updates.get();
         wait = 10;
         while (wait > 0)
         {
@@ -115,7 +114,7 @@ public class EPICS_V3_PV_Test
     @Test
     public void testMetaData() throws Exception
     {
-        PV pv = getPV("fred");
+        final PV pv = getPV("fred");
         pv.addListener(new TestListener("A"));
         pv.start();
         try
@@ -123,15 +122,16 @@ public class EPICS_V3_PV_Test
             int wait = 10;
             while (wait > 0)
             {
-                if (updates.get() > 2)
+                if (updates.get() > 2) {
                     break;
+                }
                 Thread.sleep(1000);
                 --wait;
             }
             // Did we get anything?
             assertTrue(updates.get() > 2);
             // Meta info as expected?
-            INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
+            final INumericMetaData meta = (INumericMetaData)pv.getValue().getMetaData();
             assertEquals("furlong", meta.getUnits());
             assertEquals(4, meta.getPrecision());
         }
@@ -141,29 +141,30 @@ public class EPICS_V3_PV_Test
         }
     }
 
-    
+
     @Test
     public void testLong() throws Exception
     {
-        PV pva = getPV("long_fred");
-        
+        final PV pva = getPV("long_fred");
+
         pva.start();
-        while (!pva.isConnected())
+        while (!pva.isConnected()) {
             Thread.sleep(100);
+        }
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
-        System.out.println("'long' PV value: " + value);
+        ////System.out.println("'long' PV value: " + value);
         assertTrue(value instanceof ILongValue);
-        
+
         pva.stop();
     }
 
     @Test
     public void testMultiplePVs() throws Exception
     {
-        PV pva = getPV("fred");
-        PV pvb = getPV("janet");
-        
+        final PV pva = getPV("fred");
+        final PV pvb = getPV("janet");
+
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
 
@@ -173,8 +174,9 @@ public class EPICS_V3_PV_Test
         int wait = 10;
         while (wait > 0)
         {
-            if (updates.get() > 4)
+            if (updates.get() > 4) {
                 break;
+            }
             Thread.sleep(1000);
             --wait;
         }
@@ -186,9 +188,9 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDuplicatePVs() throws Exception
     {
-        PV pva = getPV("fred");
-        PV pvb = getPV("fred");
-        
+        final PV pva = getPV("fred");
+        final PV pvb = getPV("fred");
+
         pva.addListener(new TestListener("A"));
         pvb.addListener(new TestListener("B"));
 
@@ -198,8 +200,9 @@ public class EPICS_V3_PV_Test
         int wait = 10;
         while (wait > 0)
         {
-            if (updates.get() > 4)
+            if (updates.get() > 4) {
                 break;
+            }
             Thread.sleep(1000);
             --wait;
         }
@@ -213,33 +216,35 @@ public class EPICS_V3_PV_Test
     public void testEnum() throws Exception
     {
         PV pva = getPV("fred.SCAN");
-        
+
         pva.start();
-        while (!pva.isConnected())
+        while (!pva.isConnected()) {
             Thread.sleep(100);
+        }
         assertTrue(pva.isConnected());
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         IEnumeratedValue e = (IEnumeratedValue) pva.getValue();
         assertEquals(6, e.getValue());
         assertEquals("1 second (6)", e.format());
-        
+
         pva.stop();
 
         pva = getPV("enum");
-        
+
         pva.start();
-        while (!pva.isConnected())
+        while (!pva.isConnected()) {
             Thread.sleep(100);
+        }
         assertTrue(pva.isConnected());
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         e = (IEnumeratedValue) pva.getValue();
         assertEquals(1, e.getValue());
         assertEquals("one (1)", e.format());
         assertTrue(e.getMetaData() instanceof IEnumeratedMetaData);
-        IEnumeratedMetaData meta = (IEnumeratedMetaData) e.getMetaData();
+        final IEnumeratedMetaData meta = (IEnumeratedMetaData) e.getMetaData();
         assertEquals(4, meta.getStates().length);
         assertEquals("zero", meta.getStates()[0]);
-        
+
         pva.stop();
     }
 
@@ -247,54 +252,58 @@ public class EPICS_V3_PV_Test
     @Test
     public void testDblWaveform() throws Exception
     {
-        PV pva = getPV("hist");
-        
+        final PV pva = getPV("hist");
+
         pva.start();
-        while (!pva.isConnected())
+        while (!pva.isConnected()) {
             Thread.sleep(100);
+        }
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
         assertTrue(value instanceof IDoubleValue);
-        double dbl[] = ((IDoubleValue) value).getValues();
+        final double dbl[] = ((IDoubleValue) value).getValues();
         assertEquals(50, dbl.length);
-        System.out.println(value);
-        
+        ////System.out.println(value);
+
         pva.stop();
     }
 
     @Test
     public void testLongWaveform() throws Exception
     {
-        PV pva = getPV("longs");
-        
+        final PV pva = getPV("longs");
+
         pva.start();
-        while (!pva.isConnected())
+        while (!pva.isConnected()) {
             Thread.sleep(100);
+        }
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
         assertTrue(value instanceof ILongValue);
-        long longs[] = ((ILongValue) value).getValues();
+        final long longs[] = ((ILongValue) value).getValues();
         assertEquals(50, longs.length);
-        System.out.println(value);
-        
+        ////System.out.println(value);
+
         pva.stop();
     }
-    
+
     @Ignore
     @Test
     public void testManyConnections() throws Exception
     {
         final int PV_Count = 10000;
-        
-        System.out.println("Creating " + PV_Count + " PVs...");
-        PV pvs[] = new PV[PV_Count];
-        for (int i=0; i<PV_Count; ++i)
-            pvs[i] = getPV("ramp" + (i+1));
 
-        System.out.println("Starting " + PV_Count + " PVs...");
-        long start = System.currentTimeMillis();
-        for (int i=0; i<PV_Count; ++i)
+        ////System.out.println("Creating " + PV_Count + " PVs...");
+        final PV pvs[] = new PV[PV_Count];
+        for (int i=0; i<PV_Count; ++i) {
+            pvs[i] = getPV("ramp" + (i+1));
+        }
+
+        ////System.out.println("Starting " + PV_Count + " PVs...");
+        final long start = System.currentTimeMillis();
+        for (int i=0; i<PV_Count; ++i) {
             pvs[i].start();
+        }
         int test = 0;
         while (true)
         {
@@ -302,50 +311,50 @@ public class EPICS_V3_PV_Test
             int disconnected = 0;
             for (int i=0; i<PV_Count; ++i)
             {
-                if (pvs[i].isConnected())
+                if (pvs[i].isConnected()) {
                     ++connected;
-                else
+                } else {
                     ++disconnected;
+                }
             }
             ++test;
             if (test >= 10)
             {
-                System.out.format("%d out of %d disconnected\n",
-                                disconnected, PV_Count);
+                ////System.out.format("%d out of %d disconnected\n", disconnected, PV_Count);
                 test = 0;
             }
-            if (disconnected > 0)
+            if (disconnected > 0) {
                 Thread.sleep(100);
-            else
+            } else {
                 break;
+            }
         }
         // Time and ...
-        long time = System.currentTimeMillis() - start;
-        System.out.println("Time to connect " + PV_Count + " channels: "
-                        + time/1000.0 +  " sec");
+        final long time = System.currentTimeMillis() - start;
+        ////System.out.println("Time to connect " + PV_Count + " channels: " + time/1000.0 +  " sec");
         // Memory Info
         final double MB = 1024.0*1024.0;
         final Runtime runtime = Runtime.getRuntime();
         final double freeMB = runtime.freeMemory()/MB;
         final double totalMB = runtime.totalMemory()/MB;
-        System.out.format("Memory: %.2f of %.2f MB = %.0f %% free\n",
-                          freeMB, totalMB, freeMB/totalMB*100.0);        
-        System.out.println("Stopping " + PV_Count + " PVs...");
+        ////System.out.format("Memory: %.2f of %.2f MB = %.0f %% free\n", freeMB, totalMB, freeMB/totalMB*100.0);
+        ////System.out.println("Stopping " + PV_Count + " PVs...");
         for (int i=0; i<PV_Count; ++i)
         {
             pvs[i].stop();
             pvs[i] = null;
         }
-        System.out.println("Done.");
+        ////System.out.println("Done.");
     }
 
     @Test
     public void testMultipleRuns() throws Exception
     {
         // Disable INFO and DEBUG messages
-        Logger logger = Logger.getRootLogger();
+        final Logger logger = Logger.getRootLogger();
         logger.setLevel(Level.ERROR);
-    	for (int run=0; run<10; ++run)
-    		testManyConnections();
+    	for (int run=0; run<10; ++run) {
+            testManyConnections();
+        }
 	}
 }

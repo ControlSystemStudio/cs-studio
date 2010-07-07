@@ -8,8 +8,10 @@ import org.junit.Test;
 /** (Headless) JUnit Plug-inTest for the PVModelItem
  *  <p>
  *  Requires test database or 'excas' to run.
- *  
+ *
  *  @author Kay Kasemir
+ *
+ *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class PVModelItemTest
@@ -28,23 +30,25 @@ public class PVModelItemTest
         for (int i = 0; i < num; ++i)
         {
             Thread.sleep(1000);
-            System.out.format("scan %3d / %s\n", i+1, num);
-            ITimestamp now = TimestampFactory.now();
+            //System.out.format("scan %3d / %s\n", i+1, num);
+            final ITimestamp now = TimestampFactory.now();
             item.addCurrentValueToSamples(now);
-            if (item.getSamples().size() >= 5)
+            if (item.getSamples().size() >= 5) {
                 break;
+            }
         }
         item.stop();
 
         final IModelSamples samples = item.getSamples();
         final int N = samples.size();
-        if (N < 5)
+        if (N < 5) {
             throw new Exception("Only " + N + " values?");
-            
+        }
+
         for (int i=0; i<N; ++i)
         {
-            ModelSample sample = samples.get(i);
-            System.out.println(sample.toString());
+            final ModelSample sample = samples.get(i);
+            //System.out.println(sample.toString());
         }
     }
 }

@@ -13,14 +13,16 @@ import org.junit.Test;
  *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
  *
  *  @author Kay Kasemir
+ *
+ *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_SyncTest
 {
     /** Get a PV.
-     *  
+     *
      *  <b>This is where the implementation is hard-coded!</b>
-     *  
+     *
      *  @return PV
      */
     static private PV getPV(final String name)
@@ -33,8 +35,8 @@ public class EPICS_V3_PV_SyncTest
     public void testSyncGet() throws Exception
     {
         final PV fred = getPV("fred");
-        IValue value = fred.getValue(50000.0);
-        System.out.println(value);
+        final IValue value = fred.getValue(10.0); // 50,000.0 seconds seems a bit high
+        //System.out.println(value);
         fred.stop();
     }
 
@@ -46,10 +48,10 @@ public class EPICS_V3_PV_SyncTest
         final int timeout_secs = 5;
         try
         {
-            IValue value = none.getValue(timeout_secs);
+            final IValue value = none.getValue(timeout_secs);
             fail("Expected a timeout, but got " + value);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             assertEquals("PV does_not_exist connection timeout",
                          ex.getMessage());
@@ -74,13 +76,13 @@ public class EPICS_V3_PV_SyncTest
         final PV fred = getPV("fred");
         final PV janet = getPV("janet");
         final PV longs = getPV("longs");
-        
+
         final double timeout_secs = 5.0;
-        System.out.println(fred.getValue(timeout_secs));
-        System.out.println(janet.getValue(timeout_secs));
-        System.out.println(longs.getValue(timeout_secs));
-        System.out.println(fred.getValue(timeout_secs));
-        
+        //System.out.println(fred.getValue(timeout_secs));
+        //System.out.println(janet.getValue(timeout_secs));
+        //System.out.println(longs.getValue(timeout_secs));
+        //System.out.println(fred.getValue(timeout_secs));
+
         longs.stop();
         fred.stop();
         janet.stop();

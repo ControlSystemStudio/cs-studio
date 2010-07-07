@@ -24,7 +24,7 @@ import org.csstudio.utility.pv.PVListener;
 import org.eclipse.core.runtime.PlatformObject;
 
 /** EPICS ChannelAccess implementation of the PV interface.
- *  
+ *
  *  @see PV
  *  @author Kay Kasemir
  */
@@ -37,10 +37,10 @@ public class EPICS_V3_PV
      *  @see #EPICS_V3_PV(String, boolean)
      */
     final private boolean plain;
-    
+
     /** Channel name. */
     final private String name;
-    
+
     private enum State
     {
         /** Nothing happened, yet */
@@ -63,9 +63,9 @@ public class EPICS_V3_PV
         /** Got disconnected */
         Disconnected
     }
-    
+
     private State state = State.Idle;
-    
+
     /** PVListeners of this PV */
     final private CopyOnWriteArrayList<PVListener> listeners
                                     = new CopyOnWriteArrayList<PVListener>();
@@ -76,7 +76,7 @@ public class EPICS_V3_PV
     /** Either <code>null</code>, or the subscription identifier.
      *  LOCK <code>this</code> on change */
     private Monitor subscription = null;
-    
+
     /** isConnected?
      *  <code>true</code> if we are currently connected
      *  (based on the most recent connection callback).
@@ -91,16 +91,16 @@ public class EPICS_V3_PV
 
     /** Most recent 'live' value. */
     private IValue value = null;
-    
+
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
      */
-    private boolean running = false;
+    private boolean running = false; // FIXME : not volatile?!
 
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
-        public void getCompleted(GetEvent event)
+        public void getCompleted(final GetEvent event)
         {   // This runs in a CA thread
             if (event.getStatus().isSuccessful())
             {
@@ -108,10 +108,10 @@ public class EPICS_V3_PV
                 final DBR dbr = event.getDBR();
                 meta = DBR_Helper.decodeMetaData(dbr);
                 Activator.getLogger().debug(name + " meta: " + meta);
-            }
-            else
+            } else {
                 System.out.println(name + " meta data get error: "
                                         + event.getStatus().getMessage());
+            }
             // Subscribe, but outside of callback (JCA deadlocks)
             PVContext.scheduleCommand(new Runnable()
             {
@@ -122,28 +122,28 @@ public class EPICS_V3_PV
             });
         }
     };
-    
+
     /** Listener to a get-callback for data. */
     private class GetCallbackListener implements GetListener
     {
         /** The received meta data/ */
         IMetaData meta = null;
-        
+
         /** The received value. */
         IValue value = null;
-        
+
         /** After updating <code>meta</code> and <code>value</code>,
          *  this flag is set, and then <code>notify</code> is invoked
          *  on <code>this</code>.
-         */ 
+         */
         boolean got_response = false;
-        
+
         public void reset()
         {
             got_response = false;
         }
-        
-        public void getCompleted(GetEvent event)
+
+        public void getCompleted(final GetEvent event)
         {   // This runs in a CA thread
             if (event.getStatus().isSuccessful())
             {
@@ -154,7 +154,7 @@ public class EPICS_V3_PV
                 {
                     value = DBR_Helper.decodeValue(plain, meta, dbr);
                 }
-                catch (Exception ex)
+                catch (final Exception ex)
                 {
                     Activator.getLogger().error("PV " + name, ex);
                     value = null;
@@ -174,7 +174,7 @@ public class EPICS_V3_PV
         }
     }
     private final GetCallbackListener get_callback = new GetCallbackListener();
-    
+
     /** Generate an EPICS PV.
      *  @param name The PV name.
      */
@@ -195,7 +195,7 @@ public class EPICS_V3_PV
         this.plain = plain;
         Activator.getLogger().debug(name + " created as EPICS_V3_PV");
     }
-    
+
     /** Use finalize as last resort for cleanup, but give warnings. */
     @Override
     protected void finalize() throws Throwable
@@ -208,7 +208,7 @@ public class EPICS_V3_PV
             {
                 stop();
             }
-            catch (Throwable ex)
+            catch (final Throwable ex)
             {
                 Activator.getLogger().error(name + " finalize error", ex);
             }
@@ -221,7 +221,7 @@ public class EPICS_V3_PV
     {
         return EPICSPVFactory.PREFIX + "://" + name;
     }
-    
+
     /** @return CSS type ID for IProcessVariable */
     public String getTypeId()
     {
@@ -239,8 +239,9 @@ public class EPICS_V3_PV
         while (! connected)
         {   // Wait...
             final long remain = end_time - System.currentTimeMillis();
-            if (remain <= 0)
+            if (remain <= 0) {
                 throw new Exception("PV " + name + " connection timeout");
+            }
             synchronized (this)
             {
             	this.wait(remain);
@@ -261,15 +262,16 @@ public class EPICS_V3_PV
             while (! get_callback.got_response)
             {   // Wait...
                 final long remain = end_time - System.currentTimeMillis();
-                if (remain <= 0)
+                if (remain <= 0) {
                     throw new Exception("PV " + name + " value timeout");
+                }
                 get_callback.wait(remain);
             }
         }
         value = get_callback.value;
         return get_callback.value;
     }
-    
+
     /** {@inheritDoc} */
     public IValue getValue()
     {
@@ -277,16 +279,16 @@ public class EPICS_V3_PV
     }
 
     /** {@inheritDoc} */
-    public void addListener(PVListener listener)    
-    {   
-    	listeners.add(listener);  
+    public void addListener(final PVListener listener)
+    {
+    	listeners.add(listener);
     	 if(running && isConnected()){
-    		listener.pvValueUpdate(this);    		
-    	}   		
+    		listener.pvValueUpdate(this);
+    	}
     }
 
     /** {@inheritDoc} */
-    public void removeListener(PVListener listener)
+    public void removeListener(final PVListener listener)
     {   listeners.remove(listener);   }
 
     /** Try to connect to the PV.
@@ -298,8 +300,9 @@ public class EPICS_V3_PV
         // Already attempted a connection?
         synchronized (this)
         {
-            if (channel_ref == null)
+            if (channel_ref == null) {
                 channel_ref = PVContext.getChannel(name, EPICS_V3_PV.this);
+            }
 		}
         if (channel_ref.getChannel().getConnectionState()
             == ConnectionState.CONNECTED)
@@ -308,7 +311,7 @@ public class EPICS_V3_PV
             handleConnected(channel_ref.getChannel());
         }
     }
-    
+
     /** Disconnect from the PV.
      *  OK to call more than once.
      */
@@ -317,13 +320,14 @@ public class EPICS_V3_PV
     	synchronized (this)
     	{
 	        // Never attempted a connection?
-	 		if (channel_ref == null)
-	            return;
+	 		if (channel_ref == null) {
+                return;
+            }
 	        try
 	        {
 	            PVContext.releaseChannel(channel_ref, this);
 	        }
-	        catch (Throwable e)
+	        catch (final Throwable e)
 	        {
 	            e.printStackTrace();
 	        }
@@ -331,19 +335,21 @@ public class EPICS_V3_PV
 		}
         fireDisconnected();
     }
-    
+
     /** Subscribe for value updates. */
     private void subscribe()
     {
     	synchronized (this)
     	{
             // Prevent multiple subscriptions.
-            if (subscription != null)
+            if (subscription != null) {
                 return;
+            }
             // Late callback, channel already closed?
             final RefCountedChannel ch_ref = channel_ref;
-            if (ch_ref == null)
-            	return;
+            if (ch_ref == null) {
+                return;
+            }
     		final Channel channel = ch_ref.getChannel();
             final Logger logger = Activator.getLogger();
             try
@@ -351,21 +357,22 @@ public class EPICS_V3_PV
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;
-                if (logger.isDebugEnabled())
+                if (logger.isDebugEnabled()) {
                     logger.debug(name + " subscribed as " + type.getName()
                             + " (" + mask + ")");
+                }
                 state = State.Subscribing;
                 subscription = channel.addMonitor(type,
                        channel.getElementCount(),
                        mask.getMask(), this);
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
                 logger.error(name + " subscribe error", ex);
             }
 		}
     }
-    
+
     /** Unsubscribe from value updates. */
     private void unsubscribe()
     {
@@ -376,13 +383,14 @@ public class EPICS_V3_PV
     		sub_copy = subscription;
     		subscription = null;
 		}
-		if (sub_copy == null)
+		if (sub_copy == null) {
             return;
+        }
         try
         {
         	sub_copy.clear();
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Activator.getLogger().error(name + " unsubscribe error", ex);
         }
@@ -391,8 +399,9 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public void start() throws Exception
     {
-        if (running)
+        if (running) {
             return;
+        }
         running = true;
         connect();
     }
@@ -412,8 +421,8 @@ public class EPICS_V3_PV
     {
         return connected && channel_ref.getChannel().getWriteAccess();
     }
-    
-    /** {@inheritDoc} */ 
+
+    /** {@inheritDoc} */
     public String getStateInfo()
     {
         return state.toString();
@@ -430,12 +439,13 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public void setValue(final Object new_value) throws Exception
     {
-        if (!isConnected())
+        if (!isConnected()) {
             throw new Exception(name + " is not connected");
+        }
         // Send strings as strings..
-        if (new_value instanceof String)
+        if (new_value instanceof String) {
             channel_ref.getChannel().put((String)new_value);
-        else
+        } else
         {   // other types as double.
             if (new_value instanceof Double)
             {
@@ -446,8 +456,9 @@ public class EPICS_V3_PV
             {
                 final Double dbl[] = (Double [])new_value;
                 final double val[] = new double[dbl.length];
-                for (int i=0; i<val.length; ++i)
+                for (int i=0; i<val.length; ++i) {
                     val[i] = dbl[i].doubleValue();
+                }
                 channel_ref.getChannel().put(val);
             }
             else if (new_value instanceof Integer)
@@ -459,12 +470,14 @@ public class EPICS_V3_PV
             {
                 final Integer ival[] = (Integer [])new_value;
                 final int val[] = new int[ival.length];
-                for (int i=0; i<val.length; ++i)
+                for (int i=0; i<val.length; ++i) {
                     val[i] = ival[i].intValue();
+                }
                 channel_ref.getChannel().put(val);
+            } else {
+                throw new Exception("Cannot handle type "
+                                    + new_value.getClass().getName());
             }
-           else throw new Exception("Cannot handle type "
-                            + new_value.getClass().getName());
         }
     }
 
@@ -508,10 +521,11 @@ public class EPICS_V3_PV
     private void handleConnected(final Channel channel)
     {
         Activator.getLogger().debug(name + " connected (" + state.name() + ")");
-    	if (state == State.Connected)
-    		return;
+    	if (state == State.Connected) {
+            return;
+        }
         state = State.Connected;
-        
+
         // If we're "running", we need to get the meta data and
         // then subscribe.
         // Otherwise, we're done.
@@ -534,17 +548,18 @@ public class EPICS_V3_PV
                 state = State.GettingMetadata;
                 Activator.getLogger().debug("Getting meta info for type "
                                     + type.getName());
-                if (type.isDOUBLE()  ||  type.isFLOAT())
+                if (type.isDOUBLE()  ||  type.isFLOAT()) {
                     type = DBRType.CTRL_DOUBLE;
-                else if (type.isENUM())
+                } else if (type.isENUM()) {
                     type = DBRType.LABELS_ENUM;
-                else
+                } else {
                     type = DBRType.CTRL_SHORT;
+                }
                 channel.get(type, 1, meta_get_listener);
                 return;
             }
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             Activator.getLogger().error(name + " connection handling error", ex);
             return;
@@ -568,7 +583,7 @@ public class EPICS_V3_PV
             log.debug(name + " monitor while not running (" + state.name() + ")");
             return;
         }
-        
+
         if (subscription == null)
         {
             log.debug(name + " monitor while not subscribed (" + state.name() + ")");
@@ -580,21 +595,23 @@ public class EPICS_V3_PV
             log.error(name + " monitor error :" + ev.getStatus().getMessage());
             return;
         }
-    
+
         state = State.GotMonitor;
         try
         {
             value =
                 DBR_Helper.decodeValue(plain, meta, ev.getDBR());
-            if (!connected)
+            if (!connected) {
                 connected = true;
+            }
             // Logging every received value is expensive and chatty.
             // Use TRACE Level? But CSS GUI doesn't support this...
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug(name + " monitor: " + value + " (" + value.getClass().getName() + ")");
+            }
             fireValueUpdate();
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             log.error(name + " monitor value error", ex);
         }
@@ -603,15 +620,17 @@ public class EPICS_V3_PV
     /** Notify all listeners. */
     private void fireValueUpdate()
     {
-        for (PVListener listener : listeners)
+        for (final PVListener listener : listeners) {
             listener.pvValueUpdate(this);
+        }
     }
 
     /** Notify all listeners. */
     private void fireDisconnected()
     {
-        for (PVListener listener : listeners)
+        for (final PVListener listener : listeners) {
             listener.pvDisconnected(this);
+        }
     }
 
     @Override
