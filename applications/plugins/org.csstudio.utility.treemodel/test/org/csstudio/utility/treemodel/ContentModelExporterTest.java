@@ -117,7 +117,8 @@ public class ContentModelExporterTest {
     @Test
     public void testExportContentModelToFile() {
 
-        final String exportFilePath = new File(RES_PATH, TEST_EXPORT_XML).getAbsolutePath();
+        final File expFile = new File(RES_PATH, TEST_EXPORT_XML);
+        final String exportFilePath = expFile.getAbsolutePath();
         try {
             ContentModelExporter.exportContentModelToXmlFile(exportFilePath, MODEL, "../org.csstudio.utility.treemodel/testres/test.dtd");
         } catch (final ExportContentModelException e) {
@@ -148,6 +149,9 @@ public class ContentModelExporterTest {
             diff.overrideElementQualifier(new ElementNameAndAttributeQualifier());
 
             Assert.assertTrue(diff.similar());
+
+            Assert.assertTrue("Deletion of exported file failed.", expFile.delete());
+
         } catch (final SAXException e) {
             Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
         } catch (final IOException e) {

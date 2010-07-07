@@ -5,6 +5,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import junit.framework.Assert;
+
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.data.IDoubleValue;
@@ -39,6 +41,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test
 {
+
     /** Get a PV.
      *
      *  <b>This is where the implementation is hard-coded!</b>
@@ -148,9 +151,9 @@ public class EPICS_V3_PV_Test
         final PV pva = getPV("long_fred");
 
         pva.start();
-        while (!pva.isConnected()) {
-            Thread.sleep(100);
-        }
+
+        threadSleepWithMaxTimeOut(pva);
+
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
         ////System.out.println("'long' PV value: " + value);
@@ -218,9 +221,9 @@ public class EPICS_V3_PV_Test
         PV pva = getPV("fred.SCAN");
 
         pva.start();
-        while (!pva.isConnected()) {
-            Thread.sleep(100);
-        }
+
+        threadSleepWithMaxTimeOut(pva);
+
         assertTrue(pva.isConnected());
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         IEnumeratedValue e = (IEnumeratedValue) pva.getValue();
@@ -232,9 +235,9 @@ public class EPICS_V3_PV_Test
         pva = getPV("enum");
 
         pva.start();
-        while (!pva.isConnected()) {
-            Thread.sleep(100);
-        }
+
+        threadSleepWithMaxTimeOut(pva);
+
         assertTrue(pva.isConnected());
         assertTrue(pva.getValue() instanceof IEnumeratedValue);
         e = (IEnumeratedValue) pva.getValue();
@@ -255,9 +258,8 @@ public class EPICS_V3_PV_Test
         final PV pva = getPV("hist");
 
         pva.start();
-        while (!pva.isConnected()) {
-            Thread.sleep(100);
-        }
+
+        threadSleepWithMaxTimeOut(pva);
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
         assertTrue(value instanceof IDoubleValue);
@@ -274,9 +276,7 @@ public class EPICS_V3_PV_Test
         final PV pva = getPV("longs");
 
         pva.start();
-        while (!pva.isConnected()) {
-            Thread.sleep(100);
-        }
+        threadSleepWithMaxTimeOut(pva);
         assertTrue(pva.isConnected());
         final IValue value = pva.getValue();
         assertTrue(value instanceof ILongValue);
@@ -285,6 +285,26 @@ public class EPICS_V3_PV_Test
         ////System.out.println(value);
 
         pva.stop();
+    }
+
+    /**
+     * @param pva
+     * @throws InterruptedException
+     */
+    private void threadSleepWithMaxTimeOut(final PV pva) throws InterruptedException {
+        final int maxTime = 1000;
+        int duration = 0;
+        final int interval = 100;
+
+        while (!pva.isConnected()) {
+            Thread.sleep(interval);
+
+            duration += interval;
+            if (duration >= maxTime) {
+                Assert.fail("PVA is not connected after " + duration + " millis!");
+                break;
+            }
+        }
     }
 
     @Ignore
@@ -305,11 +325,14 @@ public class EPICS_V3_PV_Test
             pvs[i].start();
         }
         int test = 0;
+        int duration = 0;
+        final int interval = 100;
+        final int maxTime = 2000;
         while (true)
         {
             int connected = 0;
             int disconnected = 0;
-            for (int i=0; i<PV_Count; ++i)
+            for (int i=0; i < PV_Count; ++i)
             {
                 if (pvs[i].isConnected()) {
                     ++connected;
@@ -323,9 +346,12 @@ public class EPICS_V3_PV_Test
                 ////System.out.format("%d out of %d disconnected\n", disconnected, PV_Count);
                 test = 0;
             }
-            if (disconnected > 0) {
-                Thread.sleep(100);
+            if ((disconnected > 0) && (duration < maxTime)) {
+                duration += interval;
+                Thread.sleep(interval);
             } else {
+                Assert.fail("Either max time is reached (duration >= " + maxTime +
+                            ") or disconnected is greater 0.");
                 break;
             }
         }
@@ -353,7 +379,7 @@ public class EPICS_V3_PV_Test
         // Disable INFO and DEBUG messages
         final Logger logger = Logger.getRootLogger();
         logger.setLevel(Level.ERROR);
-    	for (int run=0; run<10; ++run) {
+    	for (int run=0; run < 10; ++run) {
             testManyConnections();
         }
 	}

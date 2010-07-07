@@ -14,23 +14,23 @@ public class SeverityUtilTest extends TestCase
     @SuppressWarnings("nls")
     public void testSeverityUtil() throws Exception
     {
-        ISeverity ok = SeverityUtil.forCode(0);
+        final ISeverity ok = SeverityUtil.forCode(0);
         assertEquals("OK", ok.toString());
         assertEquals(true, ok.isOK());
-        System.out.println(ok);
-        
+        //System.out.println(ok);
+
         // Get cached instance?
-        ISeverity ok2 = SeverityUtil.forCode(0);
+        final ISeverity ok2 = SeverityUtil.forCode(0);
         assertTrue(ok == ok2);
-        
-        ISeverity inv = SeverityUtil.forCode(3);
+
+        final ISeverity inv = SeverityUtil.forCode(3);
         assertEquals("INVALID", inv.toString());
         assertEquals(false, inv.isOK());
         assertEquals(true, inv.isInvalid());
-        System.out.println(inv);
-        
+        //System.out.println(inv);
+
         // Get cached instance?
-        ISeverity inv2 = SeverityUtil.forCode(3);
+        final ISeverity inv2 = SeverityUtil.forCode(3);
         assertTrue(inv == inv2);
     }
 }
