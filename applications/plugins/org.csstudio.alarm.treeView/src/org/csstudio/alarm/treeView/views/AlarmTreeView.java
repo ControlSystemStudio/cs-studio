@@ -502,7 +502,9 @@ public class AlarmTreeView extends ViewPart {
      */
     @Override
     public final void dispose() {
-        _connection.disconnect();
+        if (_connection != null) {
+            _connection.disconnect();
+        }
         super.dispose();
     }
 

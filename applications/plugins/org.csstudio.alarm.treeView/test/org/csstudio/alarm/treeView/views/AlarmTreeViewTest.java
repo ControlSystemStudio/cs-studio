@@ -25,13 +25,12 @@ package org.csstudio.alarm.treeView.views;
 
 import junit.framework.Assert;
 
-import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -44,22 +43,24 @@ import org.junit.Test;
  * @since 24.06.2010
  */
 public class AlarmTreeViewTest {
-    private static final String TEST_FACILITY = AlarmPreference.ALARMSERVICE_FACILITIES.getDefaultAsString();
     private static AlarmTreeView VIEW;
+    private static IWorkbenchPage ACTIVE_PAGE;
 
     @BeforeClass
     public static void openView() throws PartInitException {
 
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        final IWorkbenchPage activePage = window.getActivePage();
+        ACTIVE_PAGE = window.getActivePage();
 
-        Assert.assertNotNull(activePage);
+        Assert.assertNotNull(ACTIVE_PAGE);
 
-        activePage.showView(AlarmTreeView.getID());
-        final IViewPart view = activePage.findView(AlarmTreeView.getID());
+        VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
 
-        Assert.assertTrue(view instanceof AlarmTreeView);
-        VIEW = (AlarmTreeView) view;
+    }
+
+    @AfterClass
+    public static void closeView() {
+        ACTIVE_PAGE.hideView(VIEW);
     }
 
     @Test
