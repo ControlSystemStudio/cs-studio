@@ -192,6 +192,7 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
             }
         };
         setPropertyChangeHandler(LabelModel.PROP_TEXTVALUE, labelHandler);
+        setPropertyChangeHandler(LabelModel.PROP_TEXT_UNIT, labelHandler);
     }
 
     /**
@@ -279,5 +280,20 @@ public final class LabelEditPart extends AbstractTextTypeWidgetEditPart {
         cellEditor.getControl().setBounds(rect.x, rect.y, rect.width, rect.height);
         cellEditor.getControl().setLayoutData(new GridData(SWT.CENTER));
         cellEditor.getControl().setVisible(true);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected String determineLabel(final String updatedPropertyId) {
+        String determineLabel = super.determineLabel(updatedPropertyId);
+        LabelModel model = getCastedModel();
+        String egu = handleText(updatedPropertyId, model, model.getStringProperty(LabelModel.PROP_TEXT_UNIT), "");
+
+        if((determineLabel!=null)&&!determineLabel.isEmpty()&&(egu!=null)&&!egu.isEmpty()) {
+            return determineLabel+" "+egu;
+        }
+        return determineLabel+egu;
     }
 }

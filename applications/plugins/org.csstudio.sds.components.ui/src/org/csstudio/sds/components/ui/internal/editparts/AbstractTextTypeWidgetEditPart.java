@@ -139,7 +139,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
      * @param updatedPropertyId the Property that was updated
      * @return the new string value
      */
-    protected final String determineLabel(final String updatedPropertyId) {
+    protected String determineLabel(final String updatedPropertyId) {
         AbstractTextTypeWidgetModel model = (AbstractTextTypeWidgetModel) getCastedModel();
 
         TextTypeEnum type = model.getValueType();
@@ -176,7 +176,7 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
      * @param toprint
      * @return
      */
-    private String handleText(final String updatedPropertyId,
+    protected String handleText(final String updatedPropertyId,
                               final AbstractTextTypeWidgetModel model,
                               final String text,
                               final String toprint) {
