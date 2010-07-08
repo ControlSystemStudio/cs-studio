@@ -189,19 +189,19 @@ public class SQL
             sample_sel_array_vals = "SELECT float_val FROM " + prefix + array_val +
             " WHERE channel_id=? AND smpl_time=? ORDER BY seq_nbr";
             sample_insert_double =
-                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                "INSERT INTO " + prefix + sample +
                 " (channel_id, smpl_time, severity_id, status_id, float_val)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_double_array_element =
-                "INSERT /*+APPEND */ INTO " + prefix + array_val +
+                "INSERT INTO " + prefix + array_val +
                 " (channel_id, smpl_time, seq_nbr, float_val)" +
                 " VALUES (?,?,?,?)";
             sample_insert_int =
-                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                "INSERT INTO " + prefix + sample +
                 " (channel_id, smpl_time, severity_id, status_id, num_val)" +
                 " VALUES (?,?,?,?,?)";
             sample_insert_string =
-                "INSERT /*+APPEND */ INTO " + prefix + sample +
+                "INSERT INTO " + prefix + sample +
                 " (channel_id, smpl_time, severity_id, status_id, str_val)" +
                 " VALUES (?,?,?,?,?)";
 		}
