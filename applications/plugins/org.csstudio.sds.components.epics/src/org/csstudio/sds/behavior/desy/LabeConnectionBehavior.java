@@ -41,7 +41,7 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
      */
     public LabeConnectionBehavior() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
-        addInvisiblePropertyId(LabelModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
     }
 
@@ -57,8 +57,8 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     }
 
     @Override
-    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
-        // do noting
+    protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
+        model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
     }
 
 }

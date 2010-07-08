@@ -45,7 +45,7 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
      */
     public LabelAlarmBehavior() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
-        addInvisiblePropertyId(LabelModel.PROP_ACTIONDATA);
+        addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
     }
 
@@ -61,8 +61,8 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
     }
 
     @Override
-    protected void doProcessMetaDataChange(final LabelModel widget, final MetaData metaData) {
-        // do nothing
+    protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
+        model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
     }
 
   }
