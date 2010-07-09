@@ -54,4 +54,10 @@ public final class DoubleSeqAnyDataImpl extends AbstractAnyDataImpl<double[]> {
 		return Arrays.toString(response.getValue());
 	}
 
+	@Override
+	protected double[] confirmValue(double[] value) {
+		if (value != null) return value;
+		return new double[]{Double.NaN};
+	}
+
 }

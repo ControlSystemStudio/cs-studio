@@ -50,5 +50,10 @@ public final class LongAnyDataImpl extends AbstractAnyDataImpl<Long> {
 	public String stringValue() {
 		return response.getNumber().toString();
 	}
+	@Override
+	protected Long confirmValue(Long value) {
+		if (value != null) return value;
+		return Long.MIN_VALUE;
+	}
 
 }

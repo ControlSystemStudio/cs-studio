@@ -60,5 +60,10 @@ public final class StringSeqAnyDataImpl extends AbstractAnyDataImpl<String[]> {
 	public String stringValue() {
 		return Arrays.toString(response.getValue());
 	}
+	@Override
+	protected String[] confirmValue(String[] value) {
+		if (value != null) return value;
+		return new String[]{""};
+	}
 
 }

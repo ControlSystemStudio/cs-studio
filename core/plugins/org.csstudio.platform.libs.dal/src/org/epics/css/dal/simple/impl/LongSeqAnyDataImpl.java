@@ -52,5 +52,10 @@ public final class LongSeqAnyDataImpl extends AbstractAnyDataImpl<long[]> {
 	public String stringValue() {
 		return Arrays.toString(response.getValue());
 	}
+	@Override
+	protected long[] confirmValue(long[] value) {
+		if (value != null) return value;
+		return new long[]{Long.MIN_VALUE};
+	}
 
 }

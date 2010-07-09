@@ -118,4 +118,12 @@ public interface AnyDataChannel
      * @return the <code>DynamicValueProperty</code>
      */
     public DynamicValueProperty<?> getProperty();
+    
+    /**
+     * Returns <code>true</code> if meta data has been initialized and
+     * <code>false</code> otherwise
+     * @return <code>true</code> if meta data has been initialized and
+     * <code>false</code> otherwise
+     */
+    public boolean isMetadataInitialized();
 }

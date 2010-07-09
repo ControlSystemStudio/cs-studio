@@ -28,7 +28,7 @@ import org.epics.css.dal.simple.Severity;
 
 
 /**
- * Condition ov remote dynamic value. Contains set of states, timestam when condition first occured and description.
+ * Condition of remote dynamic value. Contains set of states, timestamp when condition first occurred and description.
  *
  * @author ikriznar
  */
@@ -265,9 +265,7 @@ public class DynamicValueCondition implements Severity
 	}
 
 	public boolean hasValue() {
-		// TODO is this OK?
-	    // 2010-05-19 (jp DESY) changed from containsStates to containsAnyOfStates
-		return !containsAnyOfStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.TIMELAG, DynamicValueState.TIMEOUT});
+		return !containsAnyOfStates(new DynamicValueState[]{DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.NO_VALUE, DynamicValueState.TIMEOUT, DynamicValueState.ERROR});
 	}
 
 	public boolean isInvalid() {

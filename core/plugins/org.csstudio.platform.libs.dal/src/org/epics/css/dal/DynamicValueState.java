@@ -39,6 +39,10 @@ package org.epics.css.dal;
  */
 public enum DynamicValueState {
 	/**
+	 * No value received from remote object up to this point.
+	 */
+	NO_VALUE,
+	/**
 	 * Normal state, no errors or alarms, connection to remote object functions
 	 * without problems.
 	 */

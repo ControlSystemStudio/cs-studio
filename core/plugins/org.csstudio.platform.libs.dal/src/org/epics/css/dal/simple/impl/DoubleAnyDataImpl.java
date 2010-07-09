@@ -50,5 +50,11 @@ public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
 	public String stringValue() {
 		return response.getNumber().toString();
 	}
+	
+	@Override
+	protected Double confirmValue(Double value) {
+		if (value != null) return value;
+		return Double.NaN;
+	}
 
 }

@@ -22,8 +22,8 @@ public class ChannelListenerNotifier {
 	private AnyDataChannel channel;
 	
 	private DynamicValueCondition lastCondition = null;
-	private boolean initialConditionChangeUpdate = false;
-	private boolean initialValueChangedUpdate = false;
+	private boolean initialStateUpdate = false;
+	private boolean initialDataUpdate = false;
 	
 	private LinkListener<DynamicValueProperty<?>> linkListener = new LinkListener<DynamicValueProperty<?>>() {
 		public void connected(ConnectionEvent<DynamicValueProperty<?>> e) {
@@ -62,12 +62,12 @@ public class ChannelListenerNotifier {
 				return;
 			}
 			lastCondition = cond;
-			initialConditionChangeUpdate = true;
+			initialStateUpdate = true;
 			fireChannelStateUpdate();
 		}
 
 		public void valueChanged(DynamicValueEvent event) {
-			initialValueChangedUpdate = true;
+			initialDataUpdate = true;
 			fireChannelDataUpdate();
 		}
 	};
@@ -86,8 +86,8 @@ public class ChannelListenerNotifier {
 		listeners.add(listener);
 		if (listeners.size() == 1) subscribe(channel);
 		
-		if (initialConditionChangeUpdate) fireChannelStateUpdate();
-		if (initialValueChangedUpdate) fireChannelDataUpdate();
+		if (initialStateUpdate) listener.channelStateUpdate(channel);
+		if (initialDataUpdate) listener.channelDataUpdate(channel);
 	}
 	
 	public synchronized void removeChannelListener(ChannelListener listener) {
@@ -113,8 +113,8 @@ public class ChannelListenerNotifier {
 		channel.getProperty().removePropertyChangeListener(pcListener);
 		channel.getProperty().removeDynamicValueListener(dvListener);
 		channel.getProperty().removeLinkListener(linkListener);
-		initialConditionChangeUpdate = false;
-		initialValueChangedUpdate = false;
+		initialStateUpdate = false;
+		initialDataUpdate = false;
 	}
 	
 	private void fireChannelStateUpdate() {

@@ -67,5 +67,10 @@ public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	public String stringValue() {
 		return response.getValue();
 	}
+	@Override
+	protected String confirmValue(String value) {
+		if (value != null) return value;
+		return "";
+	}
 
 }

@@ -26,6 +26,7 @@ import java.beans.PropertyChangeEvent;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
@@ -54,6 +55,7 @@ import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.ChannelListener;
+import org.epics.css.dal.simple.MetaData;
 import org.epics.css.dal.simple.impl.ChannelListenerNotifier;
 import org.epics.css.dal.simple.impl.DataUtil;
 
@@ -116,9 +118,22 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 			checkAndFireConditionEvents(oldCond, condition);
 		}
 		public void characteristicsChange(PropertyChangeEvent e) {
+			if (e.getPropertyName().equals(CharacteristicInfo.C_META_DATA.getName())) {
+				if (e.getNewValue() != null && e.getNewValue() instanceof MetaData) {
+					metadataInitialized = true;
+				}
+				else {
+					metadataInitialized = false;
+				}
+			}
 			firePropertyChangeEvent(e);
 		}
 	};
+	private boolean metadataInitialized = false;
+	
+	public boolean isMetadataInitialized() {
+		return metadataInitialized;
+	}
 	
 	protected Request<?> lastRequest = null;
 	protected Request<T> lastValueRequest = null;

@@ -64,7 +64,7 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 	 * @see org.epics.css.dal.simple.impl.AbstractAnyDataImpl#getStatus()
 	 */
 	@Override
-	public String getStatus() {
+	public String getStatusInfo() {
 		return "Uninitialized";
 	}
 
@@ -106,6 +106,11 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 
 	public String stringValue() {
 		return null;
+	}
+	
+	@Override
+	protected T confirmValue(T value) { 
+		return value;
 	}
 
 }

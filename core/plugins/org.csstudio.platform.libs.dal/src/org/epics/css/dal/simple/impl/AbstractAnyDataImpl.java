@@ -22,13 +22,24 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		this.property = property;
 		Response<T> r= property.getLatestValueResponse();
 		if (r==null) {
-			response= new ResponseImpl<T>(property, null, this.property.getLatestReceivedValue(), "value", false, null, property.getCondition(), null, true);
+			response= new ResponseImpl<T>(property, null, confirmValue(this.property.getLatestReceivedValue()), "value", false, null, property.getCondition(), null, true);
 		} else {
 			this.response = r; 
 		}
-		metaData = extractMetaData();
+		if (property.isMetadataInitialized()) {
+			metaData = extractMetaData();
+		} else {
+			metaData = null;
+			(new Thread(new Runnable() {
+				public void run() {
+					extractMetaData();
+				}})).start();
+		}
+		
 		this.beamID=beamID;
 	}
+	
+	protected abstract T confirmValue(T value);
 	
 	public long getBeamID() {
 		return beamID;
@@ -57,13 +68,17 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 	public Severity getSeverity() {
 		return response.getCondition();
 	}
-
-	public String getStatus() {
-		return getSeverity().toString();
+	
+	public String getSeverityInfo() {
+		return DynamicValueConditionConverterUtil.extractSeverityInfo(response.getCondition());
 	}
 
-	public Timestamp getTimestamp() {
-		return property.getLatestValueUpdateTimestamp();
+	public String getStatusInfo() {
+		return DynamicValueConditionConverterUtil.extractStatusInfo(response.getCondition());
+	}
+
+	public Timestamp getTimestampInfo() {
+		return DynamicValueConditionConverterUtil.extractTimestampInfo(response.getCondition());
 	}
 	
 	public boolean isValid() {
