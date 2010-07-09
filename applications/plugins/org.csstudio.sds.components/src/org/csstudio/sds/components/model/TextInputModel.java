@@ -18,6 +18,7 @@ package org.csstudio.sds.components.model;
 
 import org.csstudio.sds.model.AbstractTextTypeWidgetModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.sds.model.CursorStyleEnum;
 import org.csstudio.sds.model.TextAlignmentEnum;
 import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.sds.model.WidgetPropertyCategory;
@@ -73,6 +74,7 @@ public final class TextInputModel extends AbstractTextTypeWidgetModel {
      */
     public TextInputModel() {
         setSize(DEFAULT_WIDTH, DEFAULT_HEIGHT);
+        setCursorId(CursorStyleEnum.IBEAM.name());
     }
 
     /**
