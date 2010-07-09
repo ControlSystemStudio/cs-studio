@@ -248,5 +248,14 @@
                name="Severity">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.IsInvalidRule"
+            compatibleProperties="sds.boolean"
+            name="Is Invalid"
+            ruleId="org.csstudio.rule.boolean.isInvalid">
+         <parameterDescription
+               name="Severity">
+         </parameterDescription>
+      </rule>
    </extension>
 </plugin>
