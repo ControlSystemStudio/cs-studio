@@ -313,9 +313,11 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 			return;
 		}
 		
-		if (dbr.isSTS()) {
-			proxy.updateConditionWithDBRStatus((STS) dbr);
-		}
+		proxy.updateWithDBR(dbr);
+		// this has been moved to PropertyProxyImpl.updateWithDBR(DBR)
+//		if (dbr.isSTS()) {
+//			proxy.updateConditionWithDBRStatus((STS) dbr);
+//		}
 
 		response= new ResponseImpl<T> (
 				proxy, 

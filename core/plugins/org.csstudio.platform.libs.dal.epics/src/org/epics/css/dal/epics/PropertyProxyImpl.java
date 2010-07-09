@@ -45,11 +45,14 @@ import gov.aps.jca.event.GetListener;
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -81,6 +84,7 @@ import org.epics.css.dal.proxy.ProxyEvent;
 import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
 import org.epics.css.dal.simple.impl.DataUtil;
+import org.epics.css.dal.simple.impl.DynamicValueConditionConverterUtil;
 
 import com.cosylab.epics.caj.CAJChannel;
 import com.cosylab.util.BitCondition;
@@ -152,6 +156,28 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	
 	private ThreadPoolExecutor executor;
 	
+	private boolean containsValue = false;
+	
+	/**
+	 * This value defines the time, when a channel that still has <code>ConnectionState</code>
+	 * equal to INITIAL should be declared a CONNECTION_FAILED.
+	 */
+	private static final int ABORT_CONNECTION_TIMEOUT = 3000;
+	
+	// This task changes channel with INITIAL state to CONNECTION_FAILED.
+	private class AbortConnectionTimerTask extends TimerTask {
+		@Override
+		public void run() {
+			ConnectionState cs = getConnectionState();
+			if (cs == ConnectionState.INITIAL) {
+				abortConnection = true;
+				setConnectionState(ConnectionState.CONNECTION_FAILED);
+			}
+		}
+	}
+	private Timer abortConnectionTimer = new Timer();
+	private boolean abortConnection = false;
+	
 	private class CharacteristicsMap extends HashMap<String,Object>
 	{
 		private static final long serialVersionUID = 4768445313261300685L;
@@ -188,13 +214,14 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		synchronized (this) {
 			this.type = type;
 			this.dataType = dataType;
-			condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE), 0, null);
+			condition = new DynamicValueCondition(EnumSet.of(DynamicValueState.LINK_NOT_AVAILABLE, DynamicValueState.NO_VALUE), 0, null);
 			// create channel
 			try {
 				this.channel = plug.getContext().createChannel(name, this);
 			} catch (Throwable th) {
 				throw new RemoteException(this, "Failed create CA channel", th);
 			}
+			abortConnectionTimer.schedule(new AbortConnectionTimerTask(), ABORT_CONNECTION_TIMEOUT);
 		}
 
 		
@@ -423,11 +450,31 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @param s new condition state.
 	 */
 	protected void setCondition(DynamicValueCondition s) {
+		if (containsValue) {
+			s = s.deriveConditionWithoutStates(DynamicValueState.NO_VALUE);
+		}
+		else {
+			s = s.deriveConditionWithStates(DynamicValueState.NO_VALUE);
+		}
+		
 		condition = s;
-		String name = CharacteristicInfo.C_SEVERITY_INFO.getName();
+		String name = CharacteristicInfo.C_SEVERITY.getName();
 		if (characteristics.get(name) != null) {
 			characteristics.put(name, s);
 		}
+		name = CharacteristicInfo.C_SEVERITY_INFO.getName();
+		if (characteristics.get(name) != null) {
+			characteristics.put(name, DynamicValueConditionConverterUtil.extractSeverityInfo(s));
+		}
+		name = CharacteristicInfo.C_STATUS_INFO.getName();
+		if (characteristics.get(name) != null) {
+			characteristics.put(name, DynamicValueConditionConverterUtil.extractStatusInfo(s));
+		}
+		name = CharacteristicInfo.C_TIMESTAMP_INFO.getName();
+		if (characteristics.get(name) != null) {
+			characteristics.put(name, DynamicValueConditionConverterUtil.extractTimestampInfo(s));
+		}
+		
 		fireCondition();
 	}
 
@@ -574,6 +621,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 */
 	protected void createCharacteristics(DBR dbr)
 	{
+		containsValue = (dbr.getValue() != null);
+		
 		synchronized (characteristics) {
 			createDefaultCharacteristics(false);
 	
@@ -671,12 +720,18 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			characteristics.put(PropertyCharacteristics.C_HOSTNAME,channel != null ? channel.getHostName() : "unknown");
 			characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel != null ? channel.getElementCount() : 1);
 			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(dbr.getType()));
+			
+			DynamicValueCondition condition;
 			if(dbr.isSTS()) {
-				DynamicValueCondition condition = createCondition((STS)dbr,false);
-				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), condition);
+				condition = createCondition((STS)dbr,false);			
 			} else {
-				characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), getCondition());
+				condition = getCondition();
 			}
+			characteristics.put(CharacteristicInfo.C_SEVERITY.getName(), condition);
+			characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), DynamicValueConditionConverterUtil.extractSeverityInfo(condition));
+			characteristics.put(CharacteristicInfo.C_STATUS_INFO.getName(), DynamicValueConditionConverterUtil.extractStatusInfo(condition));
+			characteristics.put(CharacteristicInfo.C_TIMESTAMP_INFO.getName(), DynamicValueConditionConverterUtil.extractTimestampInfo(condition));
+			
 			createSpecificCharacteristics(dbr);
 
 			characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
@@ -686,7 +741,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	}
 	
 	protected void createSpecificCharacteristics(DBR dbr) {
-		// specific prosy implementation may override this and provide own characteristic initialization
+		// specific proxy implementation may override this and provide own characteristic initialization
 	}
 
 	/**
@@ -720,7 +775,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	public String[] getCharacteristicNames() throws DataExchangeException {
 		synchronized (characteristics)
 		{
-			// characteristics not iniialized yet... wait
+			// characteristics not initialized yet... wait
 			if (characteristics.size() == 0)
 			{
 				initializeCharacteristics();
@@ -881,10 +936,21 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	}
 	
 	/**
+	 * Update DBR.
+	 * @param dbr DBR.
+	 */
+	public void updateWithDBR(DBR dbr) {
+		containsValue = (dbr.getValue() != null);
+		if (dbr.isSTS()) {
+			updateConditionWithDBRStatus((STS) dbr);
+		}
+	}
+	
+	/**
 	 * Update conditions.
 	 * @param dbr status DBR.
 	 */
-	void updateConditionWithDBRStatus(STS dbr) {
+	private void updateConditionWithDBRStatus(STS dbr) {
 		createCondition(dbr, true);
 	}
 
@@ -931,6 +997,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
 	 */
 	public synchronized void connectionChanged(ConnectionEvent event) {
+		abortConnectionTimer.cancel();
+		if (abortConnection) return;
+		
 		Runnable connChangedRunnable = new Runnable () {
 
 			public void run() {
@@ -980,6 +1049,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			checkStates(dbrState, connState, null);
 		} else if (s == ConnectionState.CONNECTION_LOST) {
 			connState = DynamicValueState.LINK_NOT_AVAILABLE;
+			checkStates(dbrState, connState, null);
+		} else if (s == ConnectionState.CONNECTION_FAILED) {
+			connState = DynamicValueState.ERROR;
 			checkStates(dbrState, connState, null);
 		} else if (s == ConnectionState.DESTROYED) {
 			connState = DynamicValueState.LINK_NOT_AVAILABLE;
