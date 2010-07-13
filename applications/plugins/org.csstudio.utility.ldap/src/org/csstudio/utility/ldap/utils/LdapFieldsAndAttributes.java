@@ -74,13 +74,18 @@ public final class LdapFieldsAndAttributes {
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
 
-
+    /**
+     * See http://www.ietf.org/rfc/rfc2253.txt
+     */
     static {
+        FORBIDDEN_SUBSTRINGS.add(",");
+        FORBIDDEN_SUBSTRINGS.add("+");
+        FORBIDDEN_SUBSTRINGS.add("\"");
         FORBIDDEN_SUBSTRINGS.add("/");
         FORBIDDEN_SUBSTRINGS.add("\\");
-        FORBIDDEN_SUBSTRINGS.add("+");
-        FORBIDDEN_SUBSTRINGS.add("@");
-        FORBIDDEN_SUBSTRINGS.add("$");
+        FORBIDDEN_SUBSTRINGS.add("<");
+        FORBIDDEN_SUBSTRINGS.add(">");
+        FORBIDDEN_SUBSTRINGS.add(";");
     }
 
     /**

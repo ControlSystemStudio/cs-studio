@@ -161,7 +161,8 @@ public final class LdapNameUtils {
         if (ParserHolder.PARSER == null) {
             return null;
         }
-        return (LdapName) ParserHolder.PARSER.parse(row.getNameInNamespace());
+        final String nameInNamespace = row.getNameInNamespace();
+        return (LdapName) ParserHolder.PARSER.parse(nameInNamespace);
     }
 
 

@@ -125,7 +125,6 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             final Set<SearchResult> answerSet = searchResult.getAnswerSet();
             try {
                 for (final SearchResult row : answerSet) {
-
                     final Attributes attributes = row.getAttributes();
                     createLdapComponent(model,
                                         attributes == null ? new BasicAttributes() : attributes,
