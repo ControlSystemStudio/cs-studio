@@ -1,0 +1,14 @@
+# Example for hierarchical configuration
+
+$BEEPSEVERITY  MAJOR
+GROUP    NULL    MAIN                       
+$COMMAND  xload
+$GUIDANCE
+Guidance for main group
+of alarms.
+$END
+
+GROUP MAIN RFQ
+CHANNEL  RFQ  RFQ_Vac:Pump1:Pressure
+CHANNEL  RFQ  RFQ_Vac:Pump2:Pressure
+

@@ -1,0 +1,37 @@
+# softIoc -s -d test.db
+
+record(ai, "RFQ_Vac:Pump1:Pressure")
+{
+    field(DESC, "Demo Record")
+    field(LOLO, "1")
+    field(LOW,  "2")
+    field(HIGH, "5")
+    field(HIHI, "9")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(LLSV, "MAJOR")
+    field(LSV , "MINOR")
+    field(HSV , "MINOR")
+    field(HHSV, "MAJOR")
+    field(PREC, "1")
+    field(ADEL, "2")
+    field(PINI, "YES")
+    field(INP,  "4")
+}
+
+
+record(calc, "RFQ_Vac:Pump2:Pressure")
+{
+    field(DESC, "Demo Record")
+    field(SCAN, "2 second")
+    field(INPA, "RFQ_Vac:Pump2:Pressure")
+    field(CALC, "A<10?A+1:0")
+    field(HIGH, "5")
+    field(HIHI, "9")
+    field(HSV , "MINOR")
+    field(HHSV, "MAJOR")
+    field(LOPR, "0")
+    field(HOPR, "10")
+    field(PREC, "1")
+}
+
