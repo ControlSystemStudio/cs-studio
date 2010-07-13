@@ -40,6 +40,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
@@ -80,7 +81,7 @@ import org.csstudio.utility.treemodel.TreeNodeComponent;
 public final class LdapAccess {
 
     public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
-    public static LdapName NAME_SUFFIX = null;
+    private static LdapName NAME_SUFFIX;
 
     static {
         try {
@@ -92,6 +93,11 @@ public final class LdapAccess {
             LOG.warn("Name suffix for EpicsControls could not be created.");
             e.printStackTrace();
         }
+    }
+
+    @Nonnull
+    public static LdapName getNameSuffix() {
+        return NAME_SUFFIX;
     }
 
 
@@ -228,30 +234,12 @@ public final class LdapAccess {
 
         LOG.info( "Process IOC " + iocName + "\t\t #records " +  recordsFromFile.size());
         for (final Record record : recordsFromFile) {
-            final String recordName = record.getName();
-
-            final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
-                model.getByTypeAndSimpleName(RECORD, recordName);
-
-            if (recordComponent == null) { // does not yet exist
-                LOG.info("New Record: " + iocName + " " + recordName);
-
-                if (!filterLDAPNames(recordName)) {
-
-                    final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
-                    newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
-
-                    if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
-                        LOG.error("Error while updating LDAP record for " + recordName +
-                        "\nProceed with next record.");
-                    } else {
-                        numOfRecsWritten++;
-                    }
-                } else {
-                    LOG.warn("Record " + recordName + " could not be written. Unallowed characters!");
-                    forbiddenRecords.append(recordName + "\n");
-                }
-            }
+            numOfRecsWritten = processRecordEntry(model,
+                                                  iocFromLDAP,
+                                                  iocName,
+                                                  numOfRecsWritten,
+                                                  forbiddenRecords,
+                                                  record);
         }
         sendUnallowedCharsNotification(iocFromLDAP, iocName, forbiddenRecords);
 
@@ -267,6 +255,40 @@ public final class LdapAccess {
         return new UpdateIOCResult(recordsFromFile.size(),
                                    numOfRecsWritten,
                                    numOfChildren, true);
+    }
+
+
+    private static int processRecordEntry(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                                          @Nonnull final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLDAP,
+                                          @Nonnull final String iocName,
+                                          final int numOfRecsWritten,
+                                          @Nonnull final StringBuilder forbiddenRecords,
+                                          @Nonnull final Record record) throws InvalidNameException {
+        final String recordName = record.getName();
+        int number = numOfRecsWritten;
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
+            model.getByTypeAndSimpleName(RECORD, recordName);
+
+        if (recordComponent == null) { // does not yet exist
+            LOG.info("New Record: " + iocName + " " + recordName);
+
+            if (!filterLDAPNames(recordName)) {
+
+                final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
+                newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
+
+                if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
+                    LOG.error("Error while updating LDAP record for " + recordName +
+                    "\nProceed with next record.");
+                } else {
+                    number++;
+                }
+            } else {
+                LOG.warn("Record " + recordName + " could not be written. Unallowed characters!");
+                forbiddenRecords.append(recordName + "\n");
+            }
+        }
+        return number;
     }
 
 
@@ -321,29 +343,7 @@ public final class LdapAccess {
             } // else means 'new IOC file in directory'
 
             try {
-                final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
-                    getOrCreateIocFromLdap(model,
-                                           iocFromFS,
-                                           iocName);
-
-                final LdapName iocFromLdapName = iocFromLdap.getLdapName();
-
-                final LdapSearchResult searchResult =
-                    LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
-                if (searchResult != null) {
-                    final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                        new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(model);
-                    builder.setSearchResult(searchResult);
-                    builder.build();
-                }
-                final UpdateIOCResult updateResult = updateIOC(model, iocFromLdap);
-                // TODO (bknerr) : does only make sense when the update process has been stopped
-                if (updateResult.hasNoError()) {
-                    HistoryFileAccess.appendLineToHistfile(iocName,
-                                                           updateResult.getNumOfRecsWritten(),
-                                                           updateResult.getNumOfRecsInFile(),
-                                                           updateResult.getNumOfRecsInLDAP() );
-                }
+                createIocAndUpdate(model, iocFromFS, iocName);
             } catch (final InvalidNameException e1) {
                 LOG.error("Invalid LDAP name.", e1);
             } catch (final NamingException e) {
@@ -354,10 +354,39 @@ public final class LdapAccess {
         }
     }
 
+    private static void createIocAndUpdate(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                                           @Nonnull final Entry<String, IOC> iocFromFS,
+                                           @Nonnull final String iocName) throws InterruptedException, NamingException, CreateContentModelException {
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
+            getOrCreateIocFromLdap(model,
+                                   iocFromFS,
+                                   iocName);
+        if (iocFromLdap != null) {
+            final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
+            final LdapSearchResult searchResult =
+                LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
+            if (searchResult != null) {
+                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(model);
+                builder.setSearchResult(searchResult);
+                builder.build();
+            }
+            final UpdateIOCResult updateResult = updateIOC(model, iocFromLdap);
+            // TODO (bknerr) : does only make sense when the update process has been stopped
+            if (updateResult.hasNoError()) {
+                HistoryFileAccess.appendLineToHistfile(iocName,
+                                                       updateResult.getNumOfRecsWritten(),
+                                                       updateResult.getNumOfRecsInFile(),
+                                                       updateResult.getNumOfRecsInLDAP() );
+            }
+        }
+    }
+
+    @CheckForNull
     private static ISubtreeNodeComponent<LdapEpicsControlsConfiguration> getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
-                                                                                              @Nonnull final Entry<String, IOC> iocFromFS,
-                                                                                              @Nonnull final String iocName) throws InvalidNameException {
+                                                                                                @Nonnull final Entry<String, IOC> iocFromFS,
+                                                                                                @Nonnull final String iocName) throws InvalidNameException {
         ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
             model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
 

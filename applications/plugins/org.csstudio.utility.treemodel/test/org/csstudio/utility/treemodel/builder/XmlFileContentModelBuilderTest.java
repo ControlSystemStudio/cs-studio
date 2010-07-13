@@ -23,22 +23,20 @@
  */
 package org.csstudio.utility.treemodel.builder;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.Set;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.treemodel.Activator;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.eclipse.core.runtime.FileLocator;
+import org.csstudio.utility.treemodel.TreeModelTestUtils;
 import org.jdom.input.JDOMParseException;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
 /**
  * Test content model class and builder from XML.
  *
@@ -49,43 +47,37 @@ import org.osgi.framework.Bundle;
  */
 public class XmlFileContentModelBuilderTest {
 
+    @SuppressWarnings("unused")
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(XmlFileContentModelBuilderTest.class);
 
-    public static final String TEST_VALID_XML = "Test_Valid.xml";
-    private static final String TEST_EMPTY_XML = "Test_Empty.xml";
-    private static final String TEST_INVALID_XML = "Test_InvalidStructure.xml";
-
-    private static File RES_PATH;
+    private static URL RESOURCE_VALID;
+    private static URL RESOURCE_INVALID;
+    private static URL RESOURCE_EMPTY;
+    public static final String TEST_VALID_XML = "testres/Test_Valid.xml";
+    private static final String TEST_EMPTY_XML = "testres/Test_Empty.xml";
+    private static final String TEST_INVALID_XML = "testres/Test_InvalidStructure.xml";
 
     private ContentModel<TestTreeConfigurator> _model;
 
     @BeforeClass
-    public static final void buildResourcePath() {
-        try {
-            final Bundle bundle = Activator.getDefault().getBundle();
-            final File loc = FileLocator.getBundleFile(bundle);
-
-            RES_PATH = new File(loc, "testres");
-
-            LOG.error("Resource path: " + RES_PATH.toString());
-
-        } catch (final IOException e1) {
-            Assert.fail("File locator could not deliver bundle file path.");
-        }
+    public static void buildResourcePath() {
+        RESOURCE_VALID = TreeModelTestUtils.findResource(TEST_VALID_XML);
+        Assert.assertNotNull(RESOURCE_VALID);
+        RESOURCE_INVALID = TreeModelTestUtils.findResource(TEST_INVALID_XML);
+        Assert.assertNotNull(RESOURCE_INVALID);
+        RESOURCE_EMPTY = TreeModelTestUtils.findResource(TEST_EMPTY_XML);
+        Assert.assertNotNull(RESOURCE_EMPTY);
     }
 
     @Test
-    //@Ignore("due to problems with the path to the resource")
     public void testValid() {
         try {
-            final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
-                new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
-                        new File(RES_PATH, TEST_VALID_XML).getAbsolutePath());
-            builder.build();
-            _model = builder.getModel();
-        } catch (final Exception e) {
-            Assert.fail(e.getMessage() + "\n" + e.getCause());
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfigurator.ROOT);
+        } catch (final CreateContentModelException e) {
+            Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
+        } catch (final IOException e) {
+            Assert.fail("Resource could not be opened. " + e.getLocalizedMessage());
         }
 
         testSimpleNamesCache();
@@ -104,18 +96,12 @@ public class XmlFileContentModelBuilderTest {
     }
 
     @Test
-    //@Ignore("due to problems with the path to the resource")
     public void testEmpty() {
-        final String xmlFilePath = new File(RES_PATH, TEST_EMPTY_XML).getAbsolutePath();
-
-        final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
-            new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
-                    xmlFilePath);
         try {
-            builder.build();
+            TreeModelTestUtils.buildContentModel(RESOURCE_EMPTY, TestTreeConfigurator.ROOT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
-            Assert.assertEquals("File " + xmlFilePath + " contains parsing errors. Premature end of file.", e.getMessage());
+            Assert.assertEquals("File contains parsing errors. Premature end of file.", e.getMessage());
             return;
         } catch (final Exception e) {
             Assert.fail("Wrong exception. " + e.getMessage() + "\n" + e.getCause());
@@ -124,18 +110,12 @@ public class XmlFileContentModelBuilderTest {
     }
 
     @Test
-    //@Ignore("due to problems with the path to the resource")
     public void testInvalidXML() {
-        final String xmlFilePath = new File(RES_PATH, TEST_INVALID_XML).getAbsolutePath();
-
-        final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
-            new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT,
-                    xmlFilePath);
         try {
-            builder.build();
+            TreeModelTestUtils.buildContentModel(RESOURCE_INVALID, TestTreeConfigurator.ROOT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
-            Assert.assertEquals("File " + xmlFilePath + " contains parsing errors. Element type \"ecock\" must be declared.", e.getMessage());
+            Assert.assertEquals("File contains parsing errors. Element type \"ecock\" must be declared.", e.getMessage());
             return;
         } catch (final Exception e) {
             Assert.fail("Wrong exception. " + e.getMessage() + "\n" + e.getCause());

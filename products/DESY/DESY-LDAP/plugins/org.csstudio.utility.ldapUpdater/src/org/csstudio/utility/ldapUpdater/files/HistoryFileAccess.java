@@ -76,25 +76,7 @@ public class HistoryFileAccess {
         try {
             fr = new BufferedReader(new FileReader(path + HISTORY_DAT_FILE ));
 
-            String line;
-            while ((line = fr.readLine()) != null) {
-                if (line.length() > 0) {
-                    final Pattern comment = Pattern.compile("\\s*#.*");
-                    final Matcher commentMatcher = comment.matcher(line);
-                    if (commentMatcher.matches()) {
-                        continue;
-                    }
-                    final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*");
-                    // matches any rows with at least 3 columns separated by spaces
-                    final Matcher m = p.matcher(line);
-                    if(!m.matches()) {
-                        final String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"" ;
-                        LOG.error(emsg);
-                        throw new RuntimeException(emsg);
-                    }
-                    model = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
-                }
-            }
+            model = processLineByLine(model, fr);
             fr.close();
         } catch (final FileNotFoundException e) {
             LOG.error ("Error : File not Found(r) : " + getValueFromPreferences(LDAP_HIST_PATH) + HISTORY_DAT_FILE );
@@ -113,6 +95,32 @@ public class HistoryFileAccess {
 
         return model;
 
+    }
+
+    @Nonnull
+    private HistoryFileContentModel processLineByLine(@Nonnull final HistoryFileContentModel model,
+                                                      @Nonnull final BufferedReader fr) throws IOException {
+        String line;
+        HistoryFileContentModel newModel = model;
+        while ((line = fr.readLine()) != null) {
+            if (line.length() > 0) {
+                final Pattern comment = Pattern.compile("\\s*#.*");
+                final Matcher commentMatcher = comment.matcher(line);
+                if (commentMatcher.matches()) {
+                    continue;
+                }
+                final Pattern p = Pattern.compile("(\\S+)\\s+(\\S+)\\s+(\\S+).*");
+                // matches any rows with at least 3 columns separated by spaces
+                final Matcher m = p.matcher(line);
+                if(!m.matches()) {
+                    final String emsg = "Error during file parsing in " + HISTORY_DAT_FILE + ", row: " + "\"" + line + "\"";
+                    LOG.error(emsg);
+                    throw new RuntimeException(emsg);
+                }
+                newModel = storeRecentRecordEntry(m.group(1), Long.parseLong(m.group(3)), model);
+            }
+        }
+        return newModel;
     }
 
     @Nonnull

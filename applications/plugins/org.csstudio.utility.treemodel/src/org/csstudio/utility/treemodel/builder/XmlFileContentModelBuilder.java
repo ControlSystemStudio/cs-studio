@@ -24,9 +24,9 @@
 package org.csstudio.utility.treemodel.builder;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,16 +64,16 @@ import com.google.common.collect.ImmutableSet;
 public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T> {
 
     private final T _configurationRoot;
-    private final String _filePath;
+    private final InputStream _inStream;
 
 
     /**
      * Constructor.
      */
     public XmlFileContentModelBuilder(@Nonnull final T configurationRoot,
-                                      @Nonnull final String filePath) {
+                                      @Nonnull final InputStream stream) {
         _configurationRoot = configurationRoot;
-        _filePath = filePath;
+        _inStream = stream;
     }
 
     /**
@@ -83,9 +83,9 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     @CheckForNull
     protected final ContentModel<T> createContentModel() throws CreateContentModelException {
         try {
-            final FileInputStream fstream = new FileInputStream(_filePath);
+            //final FileInputStream fstream = new FileInputStream(_filePath);
             // Convert our input stream to a dataInputStream
-            final DataInputStream in = new DataInputStream(fstream);
+            final DataInputStream in = new DataInputStream(_inStream);
 
             final SAXBuilder builder = new SAXBuilder(true);
             final Document doc = builder.build(in);
@@ -93,11 +93,11 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             return createContentModelFromFile(doc);
 
         } catch (final FileNotFoundException e) {
-            throw new CreateContentModelException("File not found: "+ _filePath + " with exception " + e.getMessage(), e);
+            throw new CreateContentModelException("File not found with exception " + e.getMessage(), e);
         } catch (final JDOMException e) {
-            throw new CreateContentModelException("File " + _filePath + " contains parsing errors. " + e.getCause().getMessage(), e);
+            throw new CreateContentModelException("File contains parsing errors. " + e.getCause().getMessage(), e);
         } catch (final IOException e) {
-            throw new CreateContentModelException("File " + _filePath + " could not be parsed due to I/O error.", e);
+            throw new CreateContentModelException("File could not be parsed due to I/O error.", e);
         }
     }
     /**

@@ -25,20 +25,21 @@ package org.csstudio.utility.treemodel;
 
 import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 
 import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.builder.TestTreeConfigurator;
-import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilder;
 import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderTest;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.ElementNameAndAttributeQualifier;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.jdom.Document;
 import org.jdom.JDOMException;
 import org.jdom.input.SAXBuilder;
@@ -46,7 +47,6 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
@@ -58,87 +58,83 @@ import org.xml.sax.SAXException;
  * @since 05.07.2010
  */
 public class ContentModelExporterTest {
-
+    @SuppressWarnings("unused")
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ContentModelExporterTest.class);
 
-    private static final String TEST_EXPORT_XML = "Test_Export.xml";
+    private static final String TEST_EXPORT_XML = "testres/Test_Export.xml";
+    private static final String TEST_DTD = "testres/test.dtd";
 
     private static ContentModel<TestTreeConfigurator> MODEL;
-    private static File RES_PATH;
-    private static String VALID_XML;
     private static Document IMPORTED_DOC;
     private Document _exportedDoc;
 
     private final Format f = Format.getPrettyFormat();
     private final XMLOutputter _outputter = new XMLOutputter(f);
 
+
     @BeforeClass
     public static final void buildResourcePath() {
+
+        final URL resource = TreeModelTestUtils.findResource(XmlFileContentModelBuilderTest.TEST_VALID_XML);
+        Assert.assertNotNull(resource);
+
         try {
-            final Bundle bundle = Activator.getDefault().getBundle();
-            final File loc = FileLocator.getBundleFile(bundle);
-
-            RES_PATH = new File(loc, "testres");
-
-            LOG.error("Resource path: " + RES_PATH.toString());
-
-        } catch (final IOException e1) {
-            Assert.fail("File locator could not deliver bundle file path.");
+            MODEL = TreeModelTestUtils.buildContentModel(resource, TestTreeConfigurator.ROOT);
+        } catch (final CreateContentModelException e) {
+            Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
+        } catch (final IOException e) {
+            Assert.fail("Resource could not be opened. " + e.getLocalizedMessage());
         }
 
-        VALID_XML = new File(RES_PATH, XmlFileContentModelBuilderTest.TEST_VALID_XML).getAbsolutePath();
-        final XmlFileContentModelBuilder<TestTreeConfigurator> builder =
-            new XmlFileContentModelBuilder<TestTreeConfigurator>(TestTreeConfigurator.ROOT, VALID_XML);
-        try {
-            builder.build();
-            MODEL = builder.getModel();
-        } catch (final Exception e) {
-            Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
-        }
+        IMPORTED_DOC = getDomTreeOfResource(resource);
+    }
 
+    private static Document getDomTreeOfResource(final URL resource) {
+        InputStream stream = null;
+        Document doc = null;
         // Get DOM tree of imported test file via JDOM
-        FileInputStream fstream;
         try {
-            fstream = new FileInputStream(VALID_XML);
-            final DataInputStream in = new DataInputStream(fstream);
+            stream = resource.openStream();
+            final DataInputStream in = new DataInputStream(stream);
             final SAXBuilder saxBuilder = new SAXBuilder(true);
-            IMPORTED_DOC = saxBuilder.build(in);
+            doc = saxBuilder.build(in);
         } catch (final FileNotFoundException e) {
             Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
         } catch (final JDOMException e) {
             Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
         } catch (final IOException e) {
             Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
+        } finally {
+            try {
+                if (stream != null) {
+                    stream.close();
+                }
+            } catch (final IOException e) {
+                Assert.fail("Unexpected exception closing input stream: " + e.getMessage() + "\n" + e.getCause());
+            }
         }
+        return doc;
     }
 
 
     @Test
-    public void testExportContentModelToFile() {
+    public void testExportContentModelToFile() throws IOException {
 
-        final File expFile = new File(RES_PATH, TEST_EXPORT_XML);
-        final String exportFilePath = expFile.getAbsolutePath();
+        final URL entry = Platform.getBundle(Activator.PLUGIN_ID).getEntry(".");
+        final String path = FileLocator.toFileURL(entry).getPath();
+
         try {
-            ContentModelExporter.exportContentModelToXmlFile(exportFilePath, MODEL, "../org.csstudio.utility.treemodel/testres/test.dtd");
+            ContentModelExporter.exportContentModelToXmlFile(path +  TEST_EXPORT_XML, MODEL, path +  TEST_DTD);
         } catch (final ExportContentModelException e) {
             Assert.fail("XML file export exception: " + e.getMessage());
         }
 
-        // Get DOM tree of exported test file via JDOM
-        FileInputStream fstream;
-        try {
-            fstream = new FileInputStream(exportFilePath);
-            final DataInputStream in = new DataInputStream(fstream);
-            final SAXBuilder saxBuilder = new SAXBuilder(true);
-            _exportedDoc = saxBuilder.build(in);
-        } catch (final FileNotFoundException e) {
-            Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
-        } catch (final JDOMException e) {
-            Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
-        } catch (final IOException e) {
-            Assert.fail("Unexpected exception: " + e.getMessage() + "\n" + e.getCause());
-        }
+        final File expFile = new File(path, TEST_EXPORT_XML);
+        Assert.assertTrue(expFile.exists());
+
+        final URL resource = TreeModelTestUtils.findResource(TEST_EXPORT_XML);
+        _exportedDoc = getDomTreeOfResource(resource);
 
         // Compare the input file and the output file
         try {

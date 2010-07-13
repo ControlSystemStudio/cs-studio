@@ -28,6 +28,7 @@ import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -118,6 +119,10 @@ public final class ImportXmlFileJob extends Job {
             return new Status(IStatus.ERROR,
                               AlarmTreePlugin.PLUGIN_ID,
                               "Could not properly build the full alarm tree: " + e.getMessage(), e);
+        } catch (final FileNotFoundException e) {
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                              "Could not properly open the input file stream: " + e.getMessage(), e);
         } finally {
             monitor.done();
         }

@@ -88,22 +88,14 @@ public class IocEnumeration implements IDynamicParameterValues {
             builder.build();
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
+            if (model == null) {
+                return new CommandParameterEnumValue[0];
+            }
+
             final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs =
                 model.getChildrenByTypeAndLdapName(IOC);
 
-            final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
-
-            for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocs.values()) {
-                final LdapName ldapName = ioc.getLdapName();
-                final String efanName =
-                    LdapNameUtils.getValueOfRdnType(ldapName,
-                                                    FACILITY.getNodeTypeName());
-
-                final HashMap<String, String> map = new HashMap<String, String>();
-                map.put(IOC.getNodeTypeName(), ioc.getName());
-                map.put(FACILITY.getNodeTypeName(), efanName);
-                params.add(new CommandParameterEnumValue(map, ioc.getName()));
-            }
+            final List<CommandParameterEnumValue> params = generateCommandParamList(iocs);
 
             Collections.sort(params, new Comparator<CommandParameterEnumValue>() {
                 @Override
@@ -119,6 +111,24 @@ public class IocEnumeration implements IDynamicParameterValues {
             return new CommandParameterEnumValue[0];
         }
 
+    }
+
+    @Nonnull
+    private List<CommandParameterEnumValue> generateCommandParamList(@Nonnull final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> iocs) {
+        final List<CommandParameterEnumValue> params = new ArrayList<CommandParameterEnumValue>(iocs.size());
+
+        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc : iocs.values()) {
+            final LdapName ldapName = ioc.getLdapName();
+            final String efanName =
+                LdapNameUtils.getValueOfRdnType(ldapName,
+                                                FACILITY.getNodeTypeName());
+
+            final HashMap<String, String> map = new HashMap<String, String>();
+            map.put(IOC.getNodeTypeName(), ioc.getName());
+            map.put(FACILITY.getNodeTypeName(), efanName);
+            params.add(new CommandParameterEnumValue(map, ioc.getName()));
+        }
+        return params;
     }
 
 }

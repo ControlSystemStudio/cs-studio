@@ -23,6 +23,7 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.annotation.Nonnull;
@@ -61,10 +62,11 @@ public interface IAlarmConfigurationService {
      * @param the filePath to the xml file
      * @return the content model
      * @throws CreateContentModelException  occurs on file not found, io error, or parsing error
+     * @throws FileNotFoundException
      */
     @Nonnull
     ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
-        throws CreateContentModelException;
+        throws CreateContentModelException, FileNotFoundException;
 
 
     /**

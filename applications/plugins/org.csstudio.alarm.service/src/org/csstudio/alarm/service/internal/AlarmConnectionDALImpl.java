@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.service.internal;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -117,8 +118,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
                 model = _alarmConfigService.retrieveInitialContentModel(resource.getFacilities());
             } else {
-                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource
-                        .getFilepath());
+                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource.getFilepath());
             }
 
             for (final String recordName : model
@@ -132,6 +132,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         } catch (final CreateContentModelException e) {
             LOG.error(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
             throw new AlarmConnectionException(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
+        } catch (final FileNotFoundException e) {
+            LOG.error("Resource " + resource.getFilepath() + " could not be found.", e);
+            throw new AlarmConnectionException("Resource " + resource.getFilepath() + " could not be found.", e);
         }
 
     }

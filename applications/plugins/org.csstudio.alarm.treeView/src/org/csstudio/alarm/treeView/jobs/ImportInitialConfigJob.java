@@ -21,6 +21,8 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import java.io.FileNotFoundException;
+
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 
@@ -108,6 +110,10 @@ public final class ImportInitialConfigJob extends Job {
             MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
                                       "Building Tree",
                                       "Could not properly build the full tree: " + e.getMessage());
+        } catch (final FileNotFoundException e) {
+            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
+                                      "Opening File",
+                                      "Could not properly open the input file stream: " + e.getMessage());
         } finally {
             monitor.done();
         }

@@ -178,13 +178,17 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 e.printStackTrace();
             }
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+            if (model == null) {
+                LOG.warn("LDAP Content model could not be filled by search result. Removing cancelled.");
+                return;
+            }
 
             final Collection<ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> records =
                 model.getChildrenByTypeAndLdapName(RECORD).values();
 
             for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : records) {
                 final LdapName ldapName = record.getLdapName();
-                ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
+                ldapName.addAll(0, LdapAccess.getNameSuffix());
 
                 _ldapService.removeLeafComponent(ldapName);
 
@@ -214,19 +218,12 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
-                final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
-                    model.getChildrenByTypeAndSimpleName(RECORD);
-
-                for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
-                    if (!validRecords.contains(new Record(record.getName()))) {
-
-                        final LdapName ldapName = record.getLdapName();
-                        ldapName.addAll(0, LdapAccess.NAME_SUFFIX);
-
-                        _ldapService.removeLeafComponent(ldapName);
-                        LOG.info("Tidying: Record " + record.getName() + " removed.");
-                    }
+                if (model == null) {
+                    LOG.info("Empty content model for this searchRestult - no tidying possible.");
+                    return;
                 }
+
+                removeLeafComponents(validRecords, model);
             }
         } catch (final InterruptedException e) {
             LOG.error("Interrupted.", e);
@@ -237,5 +234,22 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
             LOG.error("Invalid name exception while adding name suffix on removal query.", e);
         }
 
+    }
+
+    private void removeLeafComponents(@Nonnull final Set<Record> validRecords,
+                                      @Nonnull final ContentModel<LdapEpicsControlsConfiguration> model) throws InvalidNameException {
+        final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
+            model.getChildrenByTypeAndSimpleName(RECORD);
+
+        for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
+            if (!validRecords.contains(new Record(record.getName()))) {
+
+                final LdapName ldapName = record.getLdapName();
+                ldapName.addAll(0, LdapAccess.getNameSuffix());
+
+                _ldapService.removeLeafComponent(ldapName);
+                LOG.info("Tidying: Record " + record.getName() + " removed.");
+            }
+        }
     }
 }

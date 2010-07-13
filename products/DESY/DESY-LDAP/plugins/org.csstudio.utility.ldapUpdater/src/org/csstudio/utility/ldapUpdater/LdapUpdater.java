@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
@@ -86,7 +87,6 @@ public enum LdapUpdater {
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
-
 
     /**
      * Converts milli seconds to a formatted date time string.
@@ -157,6 +157,7 @@ public enum LdapUpdater {
     }
 
 
+
     /**
      * Scans the IOC file directory on /applic and the contents of the IOC files.
      * Removes any record from LDAP that is not found in any of the IOC files.
@@ -174,6 +175,10 @@ public enum LdapUpdater {
 
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
+            if (service == null) {
+                LOG.warn("NO LDAP service available. Tidying cancelled.");
+                return;
+            }
             final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final String filter = any(IOC.getNodeTypeName());
             final LdapSearchResult result =
@@ -224,17 +229,45 @@ public enum LdapUpdater {
 
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
+            if (service == null) {
+                LOG.info("No LDAP service present");
+                return;
+            }
+
+            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final LdapSearchResult searchResult =
-                service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),
                                                           SearchControls.SUBTREE_SCOPE);
+            if (searchResult == null) {
+                LOG.info("No LDAP search result for query " + query + " and filter " + any(IOC.getNodeTypeName()));
+                return;
+            }
 
+            createModelAndUpdateLdap(historyFileModel, searchResult);
 
-            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, searchResult);
-            builder.build();
-            final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+        } catch (final InterruptedException e) {
+            e.printStackTrace();
+            Thread.currentThread().interrupt();
+        } catch (final CreateContentModelException e) {
+            LOG.error("Content model for search result (econ=*) could not be created. LDAP update cancelled.");
 
+        } finally {
+            setBusy(false);
+            logFooter(UPDATE_ACTION_NAME, startTime);
+        }
+    }
+
+    private void createModelAndUpdateLdap(@Nonnull final HistoryFileContentModel historyFileModel,
+                                          @Nonnull final LdapSearchResult searchResult)
+    throws CreateContentModelException, InterruptedException {
+
+        final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
+            new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, searchResult);
+        builder.build();
+        final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
+
+        if (model != null) {
             validateHistoryFileEntriesVsLDAPEntries(model, historyFileModel);
 
             final String dumpPath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
@@ -244,17 +277,6 @@ public enum LdapUpdater {
             } else {
                 LOG.warn("No preference for IOC dump path could be found. Update cancelled!");
             }
-
-        } catch (final InterruptedException e) {
-            e.printStackTrace();
-            Thread.currentThread().interrupt();
-        } catch (final Exception e) {
-            // TODO (bknerr) : analyse and remove
-            LOG.error("UNKNOWN exception - printed for debugging purposes.");
-            e.printStackTrace();
-        } finally {
-            setBusy(false);
-            logFooter(UPDATE_ACTION_NAME, startTime);
         }
     }
 
@@ -270,41 +292,53 @@ public enum LdapUpdater {
 
         final Map<String, List<String>> missingIOCsPerPerson = new HashMap<String, List<String>>();
 
-        try {
-            for (final String iocNameKey : iocsFromLDAP) {
-                LOG.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
+        for (final String iocNameKey : iocsFromLDAP) {
+            LOG.warn("IOC " + iocNameKey + " from LDAP is not present in history file!");
 
-                final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocNameKey);
-                if (ioc != null) {
-                    final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
-                    String person = DEFAULT_RESPONSIBLE_PERSON;
-                    if ((personAttr != null) && (personAttr.get() != null)) {
-                        person = (String) personAttr.get();
-                    }
-                    if (!missingIOCsPerPerson.containsKey(person)) {
-                        missingIOCsPerPerson.put(person, new ArrayList<String>());
-                    }
-                    missingIOCsPerPerson.get(person).add(ioc.getName());
-                }
-            }
-        } catch (final NamingException e) {
-            // TODO (bknerr)
-            e.printStackTrace();
+            findMissingIocs(ldapModel, missingIOCsPerPerson, iocNameKey);
         }
 
-        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
-        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
-            NotificationMail.sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
-                                      entry.getKey(),
-                                      "\n(in directory " + iocFilePath + ")" +
-                                      "\n\n" + entry.getValue());
-        }
+        sendNotificationMails(missingIOCsPerPerson);
 
 
         iocsFromLDAP = ldapModel.getSimpleNames(LdapEpicsControlsConfiguration.IOC);
         iocsFromHistFile.removeAll(iocsFromLDAP);
         for (final String ioc : iocsFromHistFile) {
             LOG.warn("IOC " + ioc + " found in history file is not present in LDAP!");
+        }
+    }
+
+    @CheckForNull
+    private Map<String, List<String>> findMissingIocs(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> ldapModel,
+                                                      @Nonnull final Map<String, List<String>> missingIOCsPerPerson,
+                                                      @Nonnull final String iocNameKey) {
+        final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocNameKey);
+        if (ioc != null) {
+            final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+            String person = DEFAULT_RESPONSIBLE_PERSON;
+            try {
+                if ((personAttr != null) && (personAttr.get() != null)) {
+                    person = (String) personAttr.get();
+                }
+                if (!missingIOCsPerPerson.containsKey(person)) {
+                    missingIOCsPerPerson.put(person, new ArrayList<String>());
+                }
+                missingIOCsPerPerson.get(person).add(ioc.getName());
+            } catch (final NamingException e) {
+                LOG.error("Attribute for " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
+                          " in IOC " + ioc.getName() + "could not be retrieved.");
+            }
+        }
+        return missingIOCsPerPerson;
+    }
+
+    private void sendNotificationMails(@Nonnull final Map<String, List<String>> missingIOCsPerPerson) {
+        final String iocFilePath = getValueFromPreferences(IOC_DBL_DUMP_PATH);
+        for (final Entry<String, List<String>> entry : missingIOCsPerPerson.entrySet()) {
+            NotificationMail.sendMail(NotificationType.UNKNOWN_IOCS_IN_LDAP,
+                                      entry.getKey(),
+                                      "\n(in directory " + iocFilePath + ")" +
+                                      "\n\n" + entry.getValue());
         }
     }
 

@@ -29,6 +29,8 @@ import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -104,15 +106,16 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
     /**
      * {@inheritDoc}
      * @throws CreateContentModelException occurs on file not found, io error, or parsing error.
+     * @throws FileNotFoundException
      * @throws InvalidNameException
      */
     @Override
     @CheckForNull
     public ContentModel<LdapEpicsAlarmcfgConfiguration> retrieveInitialContentModelFromFile(@Nonnull final String filePath)
-        throws CreateContentModelException {
+        throws CreateContentModelException, FileNotFoundException {
 
         final XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
-            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(ROOT, filePath);
+            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(ROOT, new FileInputStream(filePath));
         builder.build();
         return builder.getModel();
     }

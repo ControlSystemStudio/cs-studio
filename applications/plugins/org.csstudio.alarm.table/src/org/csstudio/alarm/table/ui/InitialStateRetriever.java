@@ -23,6 +23,7 @@
  */
 package org.csstudio.alarm.table.ui;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -97,6 +98,10 @@ public class InitialStateRetriever {
         } catch (final CreateContentModelException e) {
             LOG.error("Could not retrieve content model from ConfigService", e);
             throw e;
+        }catch (final FileNotFoundException e) {
+            final String message = "Resource " + AlarmPreference.getConfigFilename() + " could not be found.";
+            LOG.error(message, e);
+            throw new CreateContentModelException(message, e);
         }
     }
 
@@ -112,8 +117,8 @@ public class InitialStateRetriever {
                 IStatus result = Status.OK_STATUS;
                 try {
                     retrieveInitialState();
-                } catch (CreateContentModelException e) {
-                    result = new Status(Status.ERROR, JmsLogsPlugin.PLUGIN_ID,
+                } catch (final CreateContentModelException e) {
+                    result = new Status(IStatus.ERROR, JmsLogsPlugin.PLUGIN_ID,
                                         "Could not fetch PVs to initialize.\nCause: "
                                         + e.getMessage(), e);
                 } finally {

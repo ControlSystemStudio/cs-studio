@@ -109,7 +109,8 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     }
 
 
-    public void addChild(@Nonnull final ISubtreeNodeComponent<T> parent, @Nonnull final ISubtreeNodeComponent<T> newChild) {
+    public void addChild(@Nonnull final ISubtreeNodeComponent<T> parent,
+                         @Nonnull final ISubtreeNodeComponent<T> newChild) {
 
         parent.addChild(newChild);
 
