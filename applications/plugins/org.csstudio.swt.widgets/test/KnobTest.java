@@ -21,9 +21,13 @@ public class KnobTest extends AbstractRoundRampedWidgetTest{
 
 	
 	@Override
-	public Object generateTestData(PropertyDescriptor pd, Object seed) {		
-		if(pd.getName().equals("increment"))
-			return 1;	
+	public Object generateTestData(PropertyDescriptor pd, Object seed) {	
+		if(seed !=null && seed instanceof Integer){
+			if(pd.getName().equals("increment"))
+				return (Integer)seed%10;
+			if(pd.getName().equals("logScale"))
+				return super.generateTestData(pd, (Integer)seed  +1);
+		}
 				return super.generateTestData(pd, seed);
 	}
 	

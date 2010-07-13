@@ -41,6 +41,8 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 			new RGB(100, 100, 100)); 
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_GRAY); 
+	private final static Color DEFAULT_NEEDLE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_RED);
 	private final static Font DEFAULT_LABEL_FONT = CustomMediaFactory.getInstance().getFont(
 			new FontData("Arial", 12, SWT.BOLD));
 	private final static int BORDER_WIDTH = 2;
@@ -202,6 +204,9 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	}
 	
 	class Needle extends Polygon {
+		public Needle() {
+			setBackgroundColor(DEFAULT_NEEDLE_COLOR);
+		}
 		@Override
 		protected void fillShape(Graphics g) {
 			g.setAntialias(SWT.ON);
