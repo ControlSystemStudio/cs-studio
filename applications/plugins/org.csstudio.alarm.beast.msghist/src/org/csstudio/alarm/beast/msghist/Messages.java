@@ -15,7 +15,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.sns.msghist.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.msghist.messages"; //$NON-NLS-1$
 
     public static String Error;
     public static String Export;
@@ -30,18 +30,12 @@ public class Messages extends NLS
     public static String Filter_ValuePatternHelp;
     public static String Filter_ValueTT;
     public static String MessageDetail;
-
     public static String MessageHistory;
     public static String Pref_Password;
-
     public static String Pref_Schema;
-
     public static String Pref_Starttime;
-
     public static String Pref_URL;
-
     public static String Pref_User;
-
     public static String Property;
     public static String ShowDetail;
     public static String Value;
