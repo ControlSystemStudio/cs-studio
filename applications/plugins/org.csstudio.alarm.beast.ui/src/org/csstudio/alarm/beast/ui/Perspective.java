@@ -19,7 +19,7 @@ import org.eclipse.ui.console.IConsoleConstants;
 public class Perspective implements IPerspectiveFactory
 {
     /** ID of this perspective, registered in plugin.xml */
-    final public static String ID = "org.csstudio.alarm.ui.perspective";
+    final public static String ID = "org.csstudio.alarm.beast.ui.perspective";
     
     final private static String ID_SNS_PV_UTIL = 
         "org.csstudio.sns.pvutil.view.PVUtilView";
