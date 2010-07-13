@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Alarm Tree UI
+Bundle-SymbolicName: org.csstudio.alarm.beast.ui.alarmtree;singleton:=true
+Bundle-Version: 2.1.0.qualifier
+Bundle-Localization: plugin
+Bundle-Vendor: Kay Kasemir
+Require-Bundle: org.junit4,
+ org.eclipse.jface,
+ org.eclipse.core.runtime,
+ org.eclipse.ui,
+ org.eclipse.ui.workbench,
+ org.eclipse.ui.views.properties.tabbed,
+ org.csstudio.apputil,
+ org.csstudio.apputil.ui;bundle-version="1.0.7",
+ org.csstudio.platform.ui,
+ org.csstudio.alarm.beast;bundle-version="1.0.3",
+ org.csstudio.alarm.beast.ui;bundle-version="1.0.4"
