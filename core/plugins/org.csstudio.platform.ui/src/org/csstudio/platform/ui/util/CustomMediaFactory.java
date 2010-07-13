@@ -80,14 +80,15 @@ public final class CustomMediaFactory {
 	 * Private constructor to avoid instantiation.
 	 */
 	private CustomMediaFactory() {
-		_colorRegistry = new ColorRegistry();
-		_imageRegistry = new ImageRegistry();
-		_fontRegistry = new FontRegistry();
+		Display display = Display.getDefault();
+		_colorRegistry = new ColorRegistry(display);
+		_imageRegistry = new ImageRegistry(display);
+		_fontRegistry = new FontRegistry(display);
 
 		_imageCache = new HashMap<String, Image>();
 
 		// dispose all images from the image cache, when the display is disposed
-		Display.getCurrent().addListener(SWT.Dispose, new Listener() {
+		display.addListener(SWT.Dispose, new Listener() {
 			public void handleEvent(final Event event) {
 				for (Image img : _imageCache.values()) {
 					img.dispose();
