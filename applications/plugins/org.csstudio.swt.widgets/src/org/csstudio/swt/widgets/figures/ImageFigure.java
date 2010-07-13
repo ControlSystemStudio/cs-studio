@@ -29,9 +29,9 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.util.ResourceUtil;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.csstudio.swt.widgets.util.TextPainter;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
