@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# Run JMS2speech with unique workspace
+# Would be nice to remove that workspace afterwards...
+#
+# kasemirk@ornl.gov
+
+export JAVA_HOME=/usr/local/java/jdk1.5.0_17
+DIR=/usr/local/css/JMS2SPEECH
+PROGRAM=JMS2SPEECH
+WS=/tmp/Annunciator.$$
+
+cd $DIR
+./JMS2SPEECH -data $WS

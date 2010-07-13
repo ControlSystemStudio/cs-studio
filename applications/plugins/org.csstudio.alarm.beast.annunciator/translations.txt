@@ -1,0 +1,17 @@
+# File of translations
+# Format:
+#       some_regular_expression_pattern = translation
+
+INVALID=in valid
+
+RFQ=Arr Ehff Queue
+MEBT=mebbit
+HEBT=hebbit
+LEBT=lebbit
+Vac=vacuum
+Diag=diagnostics
+Tgt=target
+Util=utility
+Ctl=controls
+
+

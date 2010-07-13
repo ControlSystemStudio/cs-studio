@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<uml:Package xmi:version="2.1" xmlns:xmi="http://schema.omg.org/spec/XMI/2.1" xmlns:uml="http://www.eclipse.org/uml2/3.0.0/UML" xmi:id="_zTbesCFbEd-dzq3Ji40uag" name="annunciator">
+  <elementImport xmi:id="_zXZ_wCFbEd-dzq3Ji40uag">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Boolean"/>
+  </elementImport>
+  <elementImport xmi:id="_zXm0ECFbEd-dzq3Ji40uag">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#String"/>
+  </elementImport>
+  <elementImport xmi:id="_zXm0ESFbEd-dzq3Ji40uag">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#UnlimitedNatural"/>
+  </elementImport>
+  <elementImport xmi:id="_zXm0EiFbEd-dzq3Ji40uag">
+    <importedElement xmi:type="uml:PrimitiveType" href="pathmap://UML_LIBRARIES/UMLPrimitiveTypes.library.uml#Integer"/>
+  </elementImport>
+  <packagedElement xmi:type="uml:Class" xmi:id="_37SaoCFbEd-dzq3Ji40uag" name="JMSAnnunciator" clientDependency="_XkQXACFdEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_4vF2ICFbEd-dzq3Ji40uag" name="MessageConsumer" clientDependency="_QPN4kCFcEd-dzq3Ji40uag">
+    <ownedAttribute xmi:id="_7_lWgCFbEd-dzq3Ji40uag" name="JMS_Connection" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_EHw-kCFcEd-dzq3Ji40uag" name="consumers" memberEnd="_EHxloCFcEd-dzq3Ji40uag _EHyMsiFcEd-dzq3Ji40uag">
+    <ownedEnd xmi:id="_EHxloCFcEd-dzq3Ji40uag" name="src" type="_37SaoCFbEd-dzq3Ji40uag" association="_EHw-kCFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_EHyMsSFcEd-dzq3Ji40uag" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_EHyMsCFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_EHyMsiFcEd-dzq3Ji40uag" name="dst" type="_4vF2ICFbEd-dzq3Ji40uag" association="_EHw-kCFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_EHyMtCFcEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_EHyMsyFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_QPN4kCFcEd-dzq3Ji40uag" name="onMessage()" supplier="_37SaoCFbEd-dzq3Ji40uag" client="_4vF2ICFbEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_VTOlACFcEd-dzq3Ji40uag" name="QueueManager" clientDependency="_5ZKRYCFcEd-dzq3Ji40uag _hIuW4CFdEd-dzq3Ji40uag">
+    <ownedAttribute xmi:id="_HUT9oCFdEd-dzq3Ji40uag" name="thread" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_W7F6sCFcEd-dzq3Ji40uag" memberEnd="_W7F6sSFcEd-dzq3Ji40uag _W7GhwiFcEd-dzq3Ji40uag">
+    <ownedEnd xmi:id="_W7F6sSFcEd-dzq3Ji40uag" name="src" type="_37SaoCFbEd-dzq3Ji40uag" association="_W7F6sCFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_W7GhwSFcEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_W7GhwCFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_W7GhwiFcEd-dzq3Ji40uag" name="dst" type="_VTOlACFcEd-dzq3Ji40uag" association="_W7F6sCFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_W7GhxCFcEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_W7GhwyFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_Zo_rYCFcEd-dzq3Ji40uag" name="SpeechLibrary"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_h7P1cCFcEd-dzq3Ji40uag" name="SpeechPriorityQueue"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_jidq4CFcEd-dzq3Ji40uag" name="queue" memberEnd="_jidq4SFcEd-dzq3Ji40uag _jieR8iFcEd-dzq3Ji40uag">
+    <ownedEnd xmi:id="_jidq4SFcEd-dzq3Ji40uag" name="src" type="_37SaoCFbEd-dzq3Ji40uag" association="_jidq4CFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jieR8SFcEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jieR8CFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_jieR8iFcEd-dzq3Ji40uag" name="dst" type="_h7P1cCFcEd-dzq3Ji40uag" association="_jidq4CFcEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_jieR9CFcEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_jieR8yFcEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_5ZKRYCFcEd-dzq3Ji40uag" name="check new messages" supplier="_h7P1cCFcEd-dzq3Ji40uag" client="_VTOlACFcEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Association" xmi:id="_FDvpMCFdEd-dzq3Ji40uag" name="speech" memberEnd="_FDvpMSFdEd-dzq3Ji40uag _FDvpNCFdEd-dzq3Ji40uag">
+    <ownedEnd xmi:id="_FDvpMSFdEd-dzq3Ji40uag" name="src" type="_VTOlACFcEd-dzq3Ji40uag" association="_FDvpMCFdEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_FDvpMyFdEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_FDvpMiFdEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_FDvpNCFdEd-dzq3Ji40uag" name="dst" type="_Zo_rYCFcEd-dzq3Ji40uag" association="_FDvpMCFdEd-dzq3Ji40uag">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_FDwQQSFdEd-dzq3Ji40uag" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_FDwQQCFdEd-dzq3Ji40uag" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_XkQXACFdEd-dzq3Ji40uag" name="add" supplier="_h7P1cCFcEd-dzq3Ji40uag" client="_37SaoCFbEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_hIuW4CFdEd-dzq3Ji40uag" name="talk" supplier="_Zo_rYCFcEd-dzq3Ji40uag" client="_VTOlACFcEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_nKjgACFpEd-dzq3Ji40uag" name="Application" clientDependency="_N_JasCIdEd-7UP9Kk9PHkg">
+    <generalization xmi:id="_xMqGwCIcEd-7UP9Kk9PHkg" general="_bS0FoCIcEd-7UP9Kk9PHkg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_oiSvACFpEd-dzq3Ji40uag" name="AnnunciatorView" clientDependency="_Sgxy0CIdEd-7UP9Kk9PHkg">
+    <generalization xmi:id="_uWWoACIcEd-7UP9Kk9PHkg" general="_bS0FoCIcEd-7UP9Kk9PHkg"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Class" xmi:id="_bS0FoCIcEd-7UP9Kk9PHkg" name="JMSAnnunciatorListener">
+    <ownedOperation xmi:id="_lSYtICIcEd-7UP9Kk9PHkg" name="performedAnnunc">
+      <ownedParameter xmi:id="_qxR-wCIcEd-7UP9Kk9PHkg" direction="return"/>
+    </ownedOperation>
+    <ownedOperation xmi:id="_rY28ICIcEd-7UP9Kk9PHkg" name="error">
+      <ownedParameter xmi:id="_sfDvMCIcEd-7UP9Kk9PHkg" direction="return"/>
+    </ownedOperation>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_E2QjkCIdEd-7UP9Kk9PHkg" name="listener" memberEnd="_E2QjkSIdEd-7UP9Kk9PHkg _E2RKoiIdEd-7UP9Kk9PHkg">
+    <ownedEnd xmi:id="_E2QjkSIdEd-7UP9Kk9PHkg" name="src" type="_37SaoCFbEd-dzq3Ji40uag" association="_E2QjkCIdEd-7UP9Kk9PHkg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_E2RKoSIdEd-7UP9Kk9PHkg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_E2RKoCIdEd-7UP9Kk9PHkg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_E2RKoiIdEd-7UP9Kk9PHkg" name="dst" type="_bS0FoCIcEd-7UP9Kk9PHkg" association="_E2QjkCIdEd-7UP9Kk9PHkg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_E2RKpCIdEd-7UP9Kk9PHkg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_E2RKoyIdEd-7UP9Kk9PHkg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_N_JasCIdEd-7UP9Kk9PHkg" name="create" supplier="_37SaoCFbEd-dzq3Ji40uag" client="_nKjgACFpEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Dependency" xmi:id="_Sgxy0CIdEd-7UP9Kk9PHkg" name="create" supplier="_37SaoCFbEd-dzq3Ji40uag" client="_oiSvACFpEd-dzq3Ji40uag"/>
+  <packagedElement xmi:type="uml:Class" xmi:id="_YuFpoCIdEd-7UP9Kk9PHkg" name="AnnunciationMessage">
+    <ownedAttribute xmi:id="_jFKLICIdEd-7UP9Kk9PHkg" name="time" aggregation="composite"/>
+    <ownedAttribute xmi:id="_jyGJoCIdEd-7UP9Kk9PHkg" name="severity" aggregation="composite"/>
+    <ownedAttribute xmi:id="_kiKUoCIdEd-7UP9Kk9PHkg" name="message" aggregation="composite"/>
+  </packagedElement>
+  <packagedElement xmi:type="uml:Association" xmi:id="_cPRRYCIdEd-7UP9Kk9PHkg" name="messages" memberEnd="_cPRRYSIdEd-7UP9Kk9PHkg _cPR4ciIdEd-7UP9Kk9PHkg">
+    <ownedEnd xmi:id="_cPRRYSIdEd-7UP9Kk9PHkg" name="src" type="_h7P1cCFcEd-dzq3Ji40uag" association="_cPRRYCIdEd-7UP9Kk9PHkg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cPR4cSIdEd-7UP9Kk9PHkg" value="1"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cPR4cCIdEd-7UP9Kk9PHkg" value="1"/>
+    </ownedEnd>
+    <ownedEnd xmi:id="_cPR4ciIdEd-7UP9Kk9PHkg" name="dst" type="_YuFpoCIdEd-7UP9Kk9PHkg" association="_cPRRYCIdEd-7UP9Kk9PHkg">
+      <upperValue xmi:type="uml:LiteralUnlimitedNatural" xmi:id="_cPR4dCIdEd-7UP9Kk9PHkg" value="*"/>
+      <lowerValue xmi:type="uml:LiteralInteger" xmi:id="_cPR4cyIdEd-7UP9Kk9PHkg" value="1"/>
+    </ownedEnd>
+  </packagedElement>
+</uml:Package>

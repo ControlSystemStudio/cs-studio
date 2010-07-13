@@ -1,0 +1,77 @@
+<html>
+<head>
+    <title>Annunciator</title>
+</head>
+<body>
+
+<h1>Annunciator</h1>
+<p>
+A voice annunciator for the alarm system.
+Can also serve as an enunciator, announcer, computer speech generator
+or electronic chatterbox.
+</p>
+
+<h2>Operation</h2>
+Start from the menu CSS/Alarm/Annunciator or as a JMS2SPEECH
+application from the command-line.
+
+<h2>Functional Details</h2>
+<p>
+Technically, a JMS listener.
+It subscribes to MapMessages from a configurable list of JMS Topics,
+typically the TALK topics used by Alarm Servers for voice annunciations.
+One Annunciator can listen to multiple Alarm Servers, or even to topics
+from JMS senders outside the alarm system.
+</p>
+
+<p>
+The 'TEXT' property of received messages is annunciated.
+When multiple messages arrive, they are queued up until they can be sent to
+a voice annunciator.
+If messages contain a 'SEVERITY' property, it is used to prioritize their order
+in the queue.
+</p>
+
+<p>
+When too many messages arrive, especially from the alarm system, there is usually
+little use in annunciating them because the bigger message is: There are MANY
+messages, do something about it!
+If the queue length exceeds a configurable threshold, the queue is therefore
+cleared and only a single "There are ... more messages" is announced
+except for messages that start with a special prefix to make
+them stand out ("!"): They won't be suppressed.
+</p>
+
+<div>
+<img src="blockdiag.png"/>
+</div>
+
+<h2>Preference Settings</h2>
+<ul>
+<li>URL: JMS server URL. Usually has to match the URL used by the Alarm Server
+    and client GUI, but allows use of the Annunciator in other setups, for example
+    by pointing to the URL of a JMS mirror for multiple alarm server setups.
+<li>Topics: Comma-separated list of JMS TOPICS. Typically those used by Alarm
+    Servers.
+<li>Translation File: The computer speech library is imperfect. Especially 
+    abbreviations are better spelled out ("Mebbit" instead of "MEBT").
+    A translations file can include such translations which are automatically
+    applied to all received TEXT before it is annunciated.<br>
+    Specify the full path to a file that contains this:
+    <pre>
+# File of translations
+# Format:
+#       some_regular_expression_pattern = translation
+
+INVALID=in valid
+MEBT=mebbit
+    </pre>
+    To avoid confusion, though, it's usually better to <u>not</u> use
+    translations and instead change the annunication text in the Alarm Server
+    configuration.
+<li>Severities: Comma-separated list of recognized severities, highest priority first.
+<li>Threshold: Number of queued messages beyond which messages are cleared.
+<li>Message History: Number of past messages shown in the annunciator history.
+</ul>
+
+</body>
