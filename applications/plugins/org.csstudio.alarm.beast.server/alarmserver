@@ -1,0 +1,57 @@
+# alarmserver:  Controls the CSS AlarmServer
+#
+# This is meant to be run by the appropriate user.
+# See init_d_... for a wrapper that switches to
+# the correct user
+#
+# kasemirk@ornl.gov
+
+export JAVA_HOME=/usr/local/java/jdk1.5.0_09
+DIR=/usr/local/css/AlarmServer
+PROGRAM=AlarmServer
+
+#LOGFILE=$DIR/$PROGRAM.log
+LOGFILE=$DIR/$PROGRAM`date +'_%Y-%m-%d_%H:%M:%S'`.log
+PIDFILE=$DIR/$PROGRAM.pid
+DATA=/tmp/$PROGRAM.$$
+
+# Could include this to allow telnet access to the console:   -console 4813
+OPT="-data $DATA -consoleLog -vmargs -Djava.awt.headless=true -Xms64m -Xmx256m"
+unset DISPLAY
+
+export PATH=$JAVA_HOME/bin:$PATH
+
+case $1 in
+start)
+    cd $DIR
+    nohup ./$PROGRAM $OPT >$LOGFILE 2>&1 &
+    echo $! > $PIDFILE
+    ;;
+stop)
+    if [ ! -f $PIDFILE ]
+    then
+       exit
+    fi
+    PID=`cat $PIDFILE`
+    FOUND=`ps aux | fgrep $PID | grep -v grep | grep --count $PROGRAM`
+    if [ $FOUND -eq 1 ]
+    then
+        kill $PID
+        rm $PIDFILE
+    else
+        echo "Cannot locate $PROGRAM under pid $PID"
+    fi
+    ;;
+status)
+    if [ ! -f $PIDFILE ]
+    then
+       echo "No pid"
+       exit
+    fi
+    PID=`cat $PIDFILE`
+    ps aux | fgrep $PID | grep -v grep
+    ;;
+*)
+    echo $0 "start | stop | status"
+esac
+

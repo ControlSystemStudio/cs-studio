@@ -1,0 +1,15 @@
+<!-- Demo configuration with root element "Annunciator" -->
+<config name="Annunciator">
+    <component name="System1">
+        <component name="Subsys1">
+            <guidance>
+                <title>Demo</title>
+                <details>Trouble in subsystem 1. Do something about it!</details>
+            </guidance>
+            <pv name="test_pv">
+                <description>Test PV alarm</description>
+                <annunciating>true</annunciating>
+            </pv>
+        </component>
+    </component>
+</config>

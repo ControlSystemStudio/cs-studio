@@ -1,0 +1,640 @@
+GROUP NULL Annunciator
+  GROUP Annunciator CCL_Cooling
+    CHANNEL CCL_Cooling CCL_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo CCL D I Water Systems | festival --tts
+    CHANNEL CCL_Cooling CCL_RCCS:Summary_Skid1:Alarm
+      $SEVRCOMMAND UP_ANY echo CCL RCCS 1 D I Water Systems | festival --tts
+    CHANNEL CCL_Cooling CCL_RCCS:Summary_Skid2:Alarm
+      $SEVRCOMMAND UP_ANY echo CCL RCCS 2 D I Water Systems | festival --tts
+    CHANNEL CCL_Cooling CCL_RCCS:Summary_Skid3:Alarm
+      $SEVRCOMMAND UP_ANY echo CCL RCCS 3 D I Water Systems | festival --tts
+    CHANNEL CCL_Cooling CCL_RCCS:Summary_Skid4:Alarm
+      $SEVRCOMMAND UP_ANY echo CCL RCCS 4 D I Water Systems | festival --tts
+  
+  GROUP Annunciator DTL_Cooling
+    CHANNEL DTL_Cooling DTL_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_Gly:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL Glycol Cooling Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid1:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 1 D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid2:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 2 D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid3:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 3 D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid4:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 4 D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid5:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 5 D I Water Systems | festival --tts
+    CHANNEL DTL_Cooling DTL_RCCS:Summary_Skid6:Alarm
+      $SEVRCOMMAND UP_ANY echo DTL RCCS 6 D I Water Systems | festival --tts 
+  
+  GROUP Annunciator HEBT_Cooling
+    CHANNEL HEBT_Cooling HEBT_Coll:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo HEBT Collimator Cooling Skid | festival --tts
+    CHANNEL HEBT_Cooling HEBT_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo HEBT D I Water Systems | festival --tts
+    CHANNEL HEBT_Cooling HEBT_MDmp:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo Momentum Dump Cooling Skid | festival --tts
+  
+  GROUP Annunciator Ring_Cooling
+    CHANNEL Ring_Cooling ID_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo Injection Dump D I Water Systems | festival --tts
+    CHANNEL Ring_Cooling Ring_DIWS:Summary_Mag:Alarm
+      $SEVRCOMMAND UP_ANY echo Ring Magnets D I Water Systems | festival --tts
+    CHANNEL Ring_Cooling Ring_DIWS:Summary_PS:Alarm
+      $SEVRCOMMAND UP_ANY echo Ring Power Supply D I Water Systems | festival --tts
+    CHANNEL Ring_Cooling Ring_DIWS:Summary_RF:Alarm
+      $SEVRCOMMAND UP_ANY echo Ring RF D I Water Systems | festival --tts
+    CHANNEL Ring_Cooling Ring_Coll:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo Ring Collimator Cooling Skid | festival --tts
+  
+  GROUP Annunciator Ring_Util_Temp
+    CHANNEL Ring_Util_Temp Ring_Diag:Util_BLM1:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring Diagnostics Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_Diag:Util_BLM2:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring Diagnostics Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_Diag:Util_BLM3:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring Diagnostics Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_Diag:Util_BLM4:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring Diagnostics Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_HPRF:Util1:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring HPRF Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_LLRF:Util1:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring HPRF Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_LLRF:Util2:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring HPRF Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_LLRF:Util3:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring HPRF Control Room Temp | festival --tts
+    CHANNEL Ring_Util_Temp Ring_LLRF:Util4:Temperature
+      $SEVRCOMMAND UP_ANY echo Ring HPRF Control Room Temp | festival --tts
+  
+  GROUP Annunciator RTBT_Cooling
+    CHANNEL RTBT_Cooling RTBT_Coll:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo RTBT Collimator Cooling Skid | festival --tts
+    CHANNEL RTBT_Cooling RTBT_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo RTBT D I Water Systems | festival --tts
+  
+  GROUP Annunciator SCL_Cooling
+    CHANNEL SCL_Cooling SCL_DIWS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo SCL D I Water Systems | festival --tts
+    CHANNEL SCL_Cooling SCL_QMCS:Summary:Alarm
+      $SEVRCOMMAND UP_ANY echo QMCS D I Water Systems | festival --tts
+  
+  GROUP Annunciator RID_Guard_Temps
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508A:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp A | festival --tts
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508B:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp B | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508C:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp C | festival --tts
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508D:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp D | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508E:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp E | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508F:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp F | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508G:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp G | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508H:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp H | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508I:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp I | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508J:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp J | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508K:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp K | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508L:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp L | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508M:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp M | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508N:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp N | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508O:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp O | festival --tts 
+    CHANNEL RID_Guard_Temps TGT_IDMP:TP_TE9508P:T
+      $SEVRCOMMAND UP_ANY echo Ring Guard Temp P | festival --tts 
+  
+  GROUP Annunciator Water_Pump
+    CHANNEL Water_Pump CF_KL:DIWS_IP4306A:IP
+      $SEVRCOMMAND UP_ANY echo Kly Circ 4 Water Pump | festival --tts
+    CHANNEL Water_Pump CF_KL:DIWS_IP4300A:IP
+      $SEVRCOMMAND UP_ANY echo Kly Circ 1 Water Pump | festival --tts
+    CHANNEL Water_Pump CF_KL:DIWS_IP4302A:IP
+      $SEVRCOMMAND UP_ANY echo Kly Circ 3 Water Pump | festival --tts
+    CHANNEL Water_Pump CF_KL:DIWS_IP4303A:IP
+      $SEVRCOMMAND UP_ANY echo Kly Circ 2 Water Pump | festival --tts
+    CHANNEL Water_Pump CF_HS:DIWS_IP4400A:IP
+      $SEVRCOMMAND UP_ANY echo HEBT Water Pump | festival --tts
+    CHANNEL Water_Pump CF_RS:DIWS_IP4800A:IP
+      $SEVRCOMMAND UP_ANY echo RTBT Water Pump | festival --tts
+    CHANNEL Water_Pump CF_ID:DIWS_IP4700A:IP
+      $SEVRCOMMAND UP_ANY echo Inj Dump Water Pump | festival --tts
+    CHANNEL Water_Pump CF_RN:DIWS_IP4601A:IP
+      $SEVRCOMMAND UP_ANY echo RSB Magnet Water Pump | festival --tts
+    CHANNEL Water_Pump CF_RN:DIWS_IP4600A:IP
+      $SEVRCOMMAND UP_ANY echo RSB RF Loop Water Pump | festival --tts
+    CHANNEL Water_Pump CF_RN:DIWS_IP4602A:IP
+      $SEVRCOMMAND UP_ANY echo RSB Power Supply Water Pump | festival --tts
+    CHANNEL Water_Pump CF_TA:DIWS_XXIP5000AR:IP
+      $SEVRCOMMAND UP_ANY echo Target LWS2/D2O Water Pump | festival --tts
+    CHANNEL Water_Pump CF_TA:DIWS_XXIP5001AR:IP
+      $SEVRCOMMAND UP_ANY echo Target LWS3 Water Pump | festival --tts
+
+  GROUP Annunciator PBW_Halo_Temps
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710A:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo top upper left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710B:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo top upper right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710C:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo left lower left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710D:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo left lower right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710E:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo bottom lower left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710F:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo bottom lower right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710G:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo right upper left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710H:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo right upper right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710I:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo top lower left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710J:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo top lower right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710K:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo left upper left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710L:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo left upper right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710M:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo bottom upper left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710N:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo bottom upper right temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710O:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo right lower left temperature | festival --tts
+    CHANNEL PBW_Halo_Temps TGT_LWS2:Tnk_TE1710P:T
+      $SEVRCOMMAND UP_ANY echo Proton beam window halo right lower right temperature | festival --tts
+    
+    
+  
+  GROUP Annunciator Target
+    CHANNEL Target CF_ST:EXH_FT2703:Flw
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Target building primary exhaust air flow | festival --tts
+    CHANNEL Target CF_ST:EXH_FT2704:Flw
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Target building hot off-gas exhaust air flow | festival --tts 
+    CHANNEL Target CF_ST:EXH_FT2705:Flw
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Target building secondary exhaust air flow | festival --tts
+      
+    CHANNEL Target CF_TA:PW_LT9000:Lvl
+      $SEVRCOMMAND UP_ANY echo Process waste holding tank water level alarm | festival --tts
+      
+    CHANNEL Target D2O:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Heavy Water System MPS Trip | festival --tts
+    CHANNEL Target D2O:Summary_Ovr:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Heavy Water System Alarm | festival --tts 
+    CHANNEL Target Hg:Summary_HgMain:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Mercury System Alarm | festival --tts 
+    CHANNEL Target Hg:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Mercury System MPS Trip | festival --tts
+    CHANNEL Target Lws1:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 1 MPS Trip | festival --tts 
+    CHANNEL Target Lws1:Summary_Ovr:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 1 Alarm | festival --tts 
+    CHANNEL Target Lws2:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 2 MPS Trip | festival --tts 
+    CHANNEL Target Lws2:Summary_Ovr:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 2 Alarm | festival --tts
+    CHANNEL Target Lws3:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 3 MPS Trip | festival --tts
+    CHANNEL Target Lws3:Summary_Ovr:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Light Water System 3 Alarm | festival --tts
+    CHANNEL Target TGT_CTL:SS_XXEvacAlarm:Sts
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Target Service Bay Evacuation Alarm | festival --tts 
+  
+  GROUP Annunciator CMS
+    CHANNEL CMS TGT_He:IOC1:TI_6501_ALM:Hi_Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo CMS He Temp Hi | festival --tts
+    CHANNEL CMS TGT_He:IOC1:TI_6501_ALM:HiHi_Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo CMS He Temp HiHi  | festival --tts
+    CHANNEL CMS TGT_LWS1:Tnk_XXPY1163:DP
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo LWS1 Tower Water Diff Pressure LOLO  | festival --tts
+    CHANNEL CMS Tgt_Shld:Shtr_Sum:OpSts
+      $SEVRCOMMAND UP_ANY echo Shutter System Alarm | festival --tts
+    CHANNEL CMS TMod:Summary_MPS:Alarm
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Moderator System MPS Trip  | festival --tts
+  
+  GROUP Annunciator Cooling_Tower
+    CHANNEL Cooling_Tower CF_CU:TWR_XXP4006_DIS:Sts
+      $SEVRCOMMAND UP_ANY echo Cooling tower water pump 6 has failed | festival --tts 
+    CHANNEL Cooling_Tower CF_CU:TWR_XXP4007_DIS:Sts
+      $SEVRCOMMAND UP_ANY echo Cooling tower water pump 7 has failed | festival --tts 
+    CHANNEL Cooling_Tower CF_CU:TWR_XXP4008_DIS:Sts
+      $SEVRCOMMAND UP_ANY echo Cooling tower water pump 8 has failed | festival --tts 
+  
+  GROUP Annunciator PPS
+    CHANNEL PPS CF_ST:SFM_Rad:Fail
+      $SEVRCOMMAND UP_ANY echo CEF Stack Monitor Failure | festival --tts 
+    CHANNEL PPS CF_ST:SFM_Rad_H:Alarm
+      $SEVRCOMMAND UP_ANY echo CEF Stack Monitor Alarm | festival --tts
+    CHANNEL PPS CF_ST:SFM_Rad_H:Alert
+      $SEVRCOMMAND UP_ANY echo CEF Stack Monitor Alert | festival --tts
+    CHANNEL PPS CHL_ODH:AIT1_Sys:Alarm
+      $SEVRCOMMAND UP_ANY echo CHL ODH System Alarm | festival --tts
+    CHANNEL PPS CHL_ODH:AIT1_Sys:Flt
+      $SEVRCOMMAND UP_ANY echo CHL ODH System Fault | festival --tts
+    CHANNEL PPS Lin_ODH:SYSTEM:FAULT
+      $SEVRCOMMAND UP_ANY echo Linac ODH System Fault | festival --tts
+      
+    CHANNEL PPS PPS_HEBT:PLC_C:ChmkRAvg_FlatAlrmSum1
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo HEBT Chipmunk has Flatlined | festival --tts
+    CHANNEL PPS PPS_Lin:PLC_C:ChmkRAvg_FlatAlrmSum1
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Linac Chipmunk has Flatlined | festival --tts
+    CHANNEL PPS PPS_Ring:PLC_C:ChmkRAvg_FlatAlrmSum1
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Ring Chipmunk has Flatlined | festival --tts
+    CHANNEL PPS PPS_RTBT:PLC_C:ChmkRAvg_FlatAlrmSum1
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo RTBT Chipmunk has Flatlined | festival --tts
+    CHANNEL PPS PPS_Tgt:PLC_C:ChmkRAvg_FlatAlrmSum1
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Target Chipmunk has Flatlined | festival --tts
+    
+    CHANNEL PPS PPS_Tgt:Stack_Mon1:Rad
+      $SEVRCOMMAND UP_ANY echo CEF Stack Monitor High Radiation | festival --tts
+    CHANNEL PPS PPS_Tgt:Stack_Mon1:RCH2_MRH
+      $SEVRCOMMAND UP_ANY echo CEF High Background Radiation | festival --tts
+    CHANNEL PPS PPS_Lin:PLC_A_MajMagFlt_Alarms:Calc
+      $SEVRCOMMAND UP_ANY echo PPS Linac Magnet Fault | festival --tts
+    CHANNEL PPS PPS_Lin:PLC_A_Faults_A_Alarms:Calc
+      $SEVRCOMMAND UP_ANY echo PPS Linac PLC A Fault | festival --tts
+    CHANNEL PPS PPS_Lin:PLC_B_Faults_B_Alarms:Calc
+      $SEVRCOMMAND UP_ANY echo PPS Linac PLC B Fault | festival --tts
+    CHANNEL PPS PPS_HEBT:PLC_A:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS HEBT Magnet Fault | festival --tts
+    CHANNEL PPS PPS_HEBT:PLC_B:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS HEBT Magnet Fault | festival --tts
+    CHANNEL PPS PPS_HEBT:PLC_A_Faults_A_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS HEBT PLC A Fault | festival --tts
+    CHANNEL PPS PPS_HEBT:PLC_B_Faults_B_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS HEBT PLC B Fault | festival --tts
+    CHANNEL PPS PPS_Ring:PLC_A:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS Ring Magnet Fault | festival --tts
+    CHANNEL PPS PPS_Ring:PLC_B:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS Ring Magnet Fault | festival --tts
+    CHANNEL PPS PPS_Ring:PLC_A_Faults_A_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS Ring PLC A Fault | festival --tts
+    CHANNEL PPS PPS_Ring:PLC_B_Faults_B_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS Ring PLC B Fault | festival --tts
+    CHANNEL PPS PPS_RTBT:PLC_A:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS RTBT Magnet Fault | festival --tts
+    CHANNEL PPS PPS_RTBT:PLC_B:MajMagFlt_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS RTBT Magnet Fault | festival --tts
+    CHANNEL PPS PPS_RTBT:PLC_A_Faults_A_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS RTBT PLC A Fault | festival --tts
+    CHANNEL PPS PPS_RTBT:PLC_B_Faults_B_Alarms
+      $SEVRCOMMAND UP_ANY echo PPS RTBT PLC B Fault | festival --tts
+  
+  
+  GROUP Annunciator Beam_Permit
+    CHANNEL Beam_Permit ICS_Tim:Gate_BeamOn:Switch
+      $SEVRCOMMAND UP_ANY echo Beam off | festival --tts
+    CHANNEL Beam_Permit FE_MPS:MIOC1A:status_sum
+      $ALARMCOUNTFILTER 5 2
+      $SEVRCOMMAND UP_ANY echo MPS Beam permit | festival --tts
+  
+  
+  GROUP Annunciator Klystron_Gallery_Temp
+    CHANNEL Klystron_Gallery_Temp CF_KL:AHU_TT2150A:T
+      $SEVRCOMMAND UP_ANY echo Please check DTL Kly Gallery temp | festival --tts
+    CHANNEL Klystron_Gallery_Temp CF_KL:AHU_TT2151A:T
+      $SEVRCOMMAND UP_ANY echo Please check CCL Kly Gallery temp | festival --tts
+    CHANNEL Klystron_Gallery_Temp CF_KL:AHU_TT2152A:T
+      $SEVRCOMMAND UP_ANY echo Please check SCL1 Kly Gallery temp | festival --tts
+    CHANNEL Klystron_Gallery_Temp CF_KL:AHU_TT2153A:T
+      $SEVRCOMMAND UP_ANY echo Please check SCL2 Kly Gallery temp | festival --tts
+    CHANNEL Klystron_Gallery_Temp CF_KL:AHU_TT2154A:T
+      $SEVRCOMMAND UP_ANY echo Please check SCL3 Kly Gallery temp | festival --tts
+  
+  GROUP Annunciator HP_Mod_Smoke
+    CHANNEL HP_Mod_Smoke RFQ_HPRF:IGBT1:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset RFQ HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo RFQ HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke DTL_HPRF:IGBT3:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset DTL3 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo DTL3 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke DTL_HPRF:IGBT5:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset DTL5 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo DTL5 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke CCL_HPRF:IGBT1:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset CCL1 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo CCL1 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke CCL_HPRF:IGBT2:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset CCL2 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo CCL2 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke CCL_HPRF:IGBT3:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset CCL3 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo CCL3 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke CCL_HPRF:IGBT4:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset CCL4 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo CCL4 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT01:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL1 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL1 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT05:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL5 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL5 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT09:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL9 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL9 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT12:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL12 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL12 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT15:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL15 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL15 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT18:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL18 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL18 HP Mod Smoke Alarm | festival --tts
+    CHANNEL HP_Mod_Smoke SCL_HPRF:IGBT21:PPS_WP_SPR2_Flt
+#      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND DOWN_ANY echo Reset SCL21 HP Mod Smoke Alarm | festival --tts
+      $SEVRCOMMAND UP_ANY echo SCL21 HP Mod Smoke Alarm | festival --tts
+  
+  GROUP Annunciator HPRF_PLC_Check
+    CHANNEL HPRF_PLC_Check RFQ_HPRF:Xmtr1:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check RFQ Xmtr PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check RFQ Xmtr PLC parameters | festival --tts
+      
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr1:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr1 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr1 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr2:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr2 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr2 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr3:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr3 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr3 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr4:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr4 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr4 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr5:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr5 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr5 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check DTL_HPRF:Xmtr6:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr6 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check DTL Xmtr6 PLC parameters | festival --tts
+      
+    CHANNEL HPRF_PLC_Check CCL_HPRF:Xmtr1:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr1 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr1 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check CCL_HPRF:Xmtr2:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr2 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr2 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check CCL_HPRF:Xmtr3:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr3 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr3 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check CCL_HPRF:Xmtr4:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr4 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check CCL Xmtr4 PLC parameters | festival --tts
+      
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr01:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr01 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr01 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr03:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr03 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr03 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr05:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr05 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr05 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr07:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr07 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr07 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr09:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr09 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr09 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr11:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr11 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr11 PLC parameters | festival --tts
+      
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr12:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr12 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr12 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr14:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr14 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr14 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr15:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr15 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr15 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr17:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr17 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr17 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr18:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr18 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr18 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr20:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr20 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr20 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr21:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr21 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr21 PLC parameters | festival --tts
+    CHANNEL HPRF_PLC_Check SCL_HPRF:Xmtr22:PLC_CompareDiffCt
+      $ALARMCOUNTFILTER 1 10
+      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr22 PLC parameters | festival --tts
+#      $SEVRCOMMAND UP_ANY echo Check SCL Xmtr22 PLC parameters | festival --tts
+  
+  
+  GROUP Annunciator Front_End
+    GROUP Front_End Source
+      CHANNEL Source Src:RF:Sts_HV
+        $SEVRCOMMAND UP_ANY echo Please check 2 MHz RF High Voltage | festival --tts
+      CHANNEL Source Src:Accel:Sts
+        $SEVRCOMMAND UP_ANY echo Please check 65 kV High Voltage | festival --tts
+      CHANNEL Source Src:Accel:V_Set
+	$SEVRCOMMAND UP_ANY echo Check ion source 65 kilovolt voltage | festival --tts
+      CHANNEL Source Src:H2:Sts_OK
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check Hydrogen Gas Flow | festival --tts
+      
+    GROUP Front_End  LEBT
+      CHANNEL LEBT LEBT:Steer_A:Sts_OK
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Steerer A | festival --tts
+      CHANNEL LEBT LEBT:Steer_B:Sts_OK
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Steerer B | festival --tts
+      CHANNEL LEBT LEBT:Steer_C:Sts_OK
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Steerer C | festival --tts
+      CHANNEL LEBT LEBT:Steer_D:Sts_OK
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Steerer D | festival --tts
+      CHANNEL LEBT LEBT:Focus_1:Sts_OK <-D--->
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Focus 1 | festival --tts
+      CHANNEL LEBT LEBT:Focus_2:Sts_OK <-D--->
+        $ALARMCOUNTFILTER 1 10
+        $SEVRCOMMAND UP_ANY echo Please check LEBT Focus 2 | festival --tts
+	
+    GROUP Front_End RGA
+      CHANNEL RGA LEBT_Diag:RGA01:PP_H2O
+        $SEVRCOMMAND UP_ANY echo LEBT water pressure high. Call ion source group | festival --tts
+	
+    GROUP Front_End RFQ
+      CHANNEL RFQ RFQ_LLRF:ResCtrl1:ResErr_Avg
+        $SEVRCOMMAND UP_ANY echo R F Q low level R F resonance error limit exceeded | festival --tts
+	
+    GROUP Front_End RFQ_Vac
+      CHANNEL RFQ_Vac RFQ_Vac:GV_1A:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 1 A closed | festival --tts
+      CHANNEL RFQ_Vac RFQ_Vac:GV_1B:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 1 B closed | festival --tts
+      CHANNEL RFQ_Vac RFQ_Vac:GV_2:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 2 closed | festival --tts
+      CHANNEL RFQ_Vac RFQ_Vac:GV_3A:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 3 A closed | festival --tts
+      CHANNEL RFQ_Vac RFQ_Vac:GV_3B:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 3 B closed | festival --tts
+      CHANNEL RFQ_Vac RFQ_Vac:GV_4:Sts
+	$SEVRCOMMAND UP_ANY echo R F Q vacuum valve 4 closed | festival --tts
+	
+    GROUP Front_End MEBT
+      CHANNEL MEBT MEBT_RF:Bnch01:V_Fil_PA
+        $SEVRCOMMAND UP_ANY echo MEBT one power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch01:V_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT one power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch01:I_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT one power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+
+      CHANNEL MEBT MEBT_RF:Bnch02:V_Fil_PA
+        $SEVRCOMMAND UP_ANY echo MEBT two power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch02:V_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT two power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch02:I_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT two power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      
+      CHANNEL MEBT MEBT_RF:Bnch03:V_Fil_PA
+        $SEVRCOMMAND UP_ANY echo MEBT three power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch03:V_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT three power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch03:I_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT three power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      
+      CHANNEL MEBT MEBT_RF:Bnch04:V_Fil_PA
+        $SEVRCOMMAND UP_ANY echo MEBT four power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+      CHANNEL MEBT MEBT_RF:Bnch04:V_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT four power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 30 10
+      CHANNEL MEBT MEBT_RF:Bnch04:I_Plt_PA
+        $SEVRCOMMAND UP_ANY echo MEBT four power amplifier trip | festival --tts
+	$ALARMCOUNTFILTER 3
+        
+  GROUP Annunciator RCCS
+    GROUP RCCS DTL
+      CHANNEL DTL DTL_RCCS:CV101:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL DTL DTL_RCCS:CV201:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL DTL DTL_RCCS:CV301:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL DTL DTL_RCCS:CV401:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL DTL DTL_RCCS:CV501:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL DTL DTL_RCCS:CV601:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      
+    GROUP RCCS CCL      
+      CHANNEL CCL CCL_RCCS:CV101:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL CCL CCL_RCCS:CV201:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL CCL CCL_RCCS:CV301:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+      CHANNEL CCL CCL_RCCS:CV401:Psn_Rdbk
+        $SEVRCOMMAND UP_ANY echo RCCS CV one valve open limit is exceeded | festival --tts
+
+  GROUP Annunciator Tunnel
+    GROUP Tunnel Linac_fans
+      CHANNEL Linac_fans CF_LN:AHU_PDS2100:Sts
+        $ALIAS AHU_PDS2100 - Fan operation status
+	$SEVRCOMMAND UP_ANY echo Linac tunnel fan one is off | festival --tts
+      CHANNEL Linac_fans CF_LN:AHU_PDS2101:Sts
+        $ALIAS AHU_PDS2101 - Fan operation status
+	$SEVRCOMMAND UP_ANY echo Linac tunnel fan two is off | festival --tts
+      CHANNEL Linac_fans CF_LN:AHU_PDS2102:Sts
+        $ALIAS AHU_PDS2102 - Fan operation status
+	$SEVRCOMMAND UP_ANY echo Linac tunnel fan three is off | festival --tts
+      CHANNEL Linac_fans CF_LN:AHU_PDS2103:Sts
+        $ALIAS AHU_PDS2103 - Fan operation status
+	$SEVRCOMMAND UP_ANY echo Linac tunnel fan four is off | festival --tts
+
+
+
+

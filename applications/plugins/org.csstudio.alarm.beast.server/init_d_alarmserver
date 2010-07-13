@@ -1,0 +1,28 @@
+# /etc/rc.d/init.d/alarmserver:  Controls the Alarm Server
+#
+# Version: AlarmServer 1.0
+#
+# chkconfig: - 99 01
+# description: Control the Alarm Server
+#
+# kasemirk@ornl.gov
+
+AS_USER=alarms
+AS=/usr/local/css/AlarmServer/alarmserver
+
+
+case $1 in
+start)
+    su - $AS_USER -c "$AS start"
+    ;;
+stop)
+    su - $AS_USER -c "$AS stop"
+    ;;
+status)
+    su - $AS_USER -c "$AS status"
+    ;;
+*)
+    echo $0 "start | stop | status"
+esac
+
+    
