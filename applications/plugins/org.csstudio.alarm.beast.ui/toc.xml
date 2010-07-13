@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?NLS TYPE="org.eclipse.help.toc"?>
+
+<toc link_to="../org.csstudio.platform.ui/tocApps.xml#alarm" label="Alarm System">
+  <topic label="Alarm System"  href="html/alarm_system.html">
+    <topic href="html/alarm_principle.html" label="General Alarm Principles"></topic>
+    <topic href="html/alarm_perspective.html" label="Open Alarm Perspective"></topic>
+    <topic href="html/preferences.html" label="Preferences Configuration"></topic>
+    <anchor id="alarmtree"/>
+    <anchor id="alarmtable"/>
+    <topic href="html/pv_config.html" label="Alarm PV Configuration"></topic>
+    <topic href="html/annunciation.html" label="Voice Annunciation"></topic>
+  </topic>
+</toc>

@@ -1,0 +1,1041 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<LINK href="alarm.css" rel="stylesheet" type="text/css">
+<title>Alarm System</title>
+</head>
+
+<body>
+<h1>Alarm System</h1>
+
+<span class="index">
+- <a href="#overview">Overview</a>
+- <a href="#principles">Principles</a>
+- <a href="#perspective">Perspective</a>
+- <a href="#tree">Alarm Tree</a>
+- <a href="#table">Alarm Table</a>
+- <a href="#preferences">Preferences</a>
+- <a href="#edit">Editing Configuration</a>
+- <a href="#pv_config">Alarm PV Configuration</a>
+- <a href="#annunciation">Annunciation</a>
+-
+</span>
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=overview>Overview</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<img class="float" alt="Alarm System" src="AlarmSystem.png" />  
+<p>
+The Alarm System allow users to view and handle the alarms triggered by
+Process Variables (PVs) on front-end computers (IOCs).
+</p>
+<p>
+The whole alarm system consists of several elements:
+</p>
+<ul>
+<li>IOCs:<br>
+    Control System IOCs provide the Alarm Trigger PVs which indicate
+    alarm conditions.
+    In principle, one can display those PVs on generic operator screens,
+    where they would for example show up as yellow or red.
+    <br>
+    Benefits of the alarm system over a basic operator screen:
+    <ul>
+    <li>Alarm can be annunciated.</li>
+    <li>Alarm can latch to indicate the time of the original alarm.</li>
+    <li>Additional guidance and links to related displays are accessible
+        right from the alarm.</li>
+    <li>When multiple alarms coincide, they can be sorted by for example
+        severity or time.</li>
+    </ul>
+    </li>    
+<li>Alarm Server:<br>
+    The Alarm Server receives alarms from IOCs via Channel Access and send
+    alarm messages to a JMS Server.
+    It also receives the acknowledgement information from Alarm System GUIs.
+    Most of the alarm logic is performed by alarm server.
+    </li>
+<li>Alarm System GUI:<br>
+    The Alarm System GUI, basically a table and tree view of current alarms
+    in CSS, allows users to view current alarms, acknowledge them,
+    invoke operator displays related to the alarm, browse the alarm history,
+    or change the alarm configuration.
+    </li>
+<li>Annunciator, JMS2Speech:<br>
+    The Annunciator included in the CSS alarm GUI or an alternate stand-alone
+    JMS2Speech tool annunciate new alarms.
+    Whenever a PV's severity changed to a <font color="#ff0000">higher severity</font>,
+    the PV's description will be annunciated <font color="#ff0000">once</font>.
+    </li>
+<li>JMS Server:<br>
+    The JMS Server is the message bus that allows the Alarm Server, GUI, JMS2Speech
+    to communicate.
+    </li>
+<li>JMS2RDB:<br>
+    This tool can write all JMS traffic to a Relational Database (RDB), allowing
+    analysis of the most frequent alarms, reconstruction of the time line of
+    a specific alarm, and more.
+    </li>
+</ul>
+    
+<p>
+In this manual, we will focus on how to use Alarm System GUI.
+</p>
+
+<div class="clear"/>
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=principles>General Alarm Principles</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<p>
+To understand the behavior of alarms in the alarm system,
+please take a few minutes to read about its general principles.
+</p>
+
+<h3>Purpose</h3>
+<p>
+Alarms are supposed to
+<ul>
+<li>effectively help operators take the correct action
+    at the correct time,</li>
+<li>notify operators about a problem</li>
+<li>provide guidance for handling it</li>
+<li>be presented at a manageable rate.</li>
+</ul>
+</p>
+<p>
+Alarms are <u>not</u> another interlock or protection system. Interlocks
+trigger an automated response to handle a well understood situation.
+Alarms on the other hand inform operators of a problem that can have
+multiple reasons, too complex to be handled automatically,
+and instead <i>relying on a qualified operator
+to find a solution based on experience and skill.</i>
+</p>
+
+<h3>General response to an alarm</h3>
+<p>
+Operators are expected to acknowledge each active alarm, because the
+alarm system has no other way of knowing if operators are aware
+of an alarm. Annunciations for new occurrences of the same alarm are
+suppressed until the initial alarm is acknowledged, assuming that
+operators are still handling the first, un-acknowledged alarm instance.
+</p>
+<p>
+Before acknowledging an alarm, operators can use the alarm GUI to 
+<ul>
+<li>access guidance on how to handle the alarm</li>
+<li>access operator screens that show the actual alarm PV, the reason why it went into alarm</li>
+<li>use the Data Browser or other tools to inspect the alarm or related PVs</li>
+<li>access operator screens that allow them to handle the alarm</li>
+<li>make an E-Log entry</li>
+</ul>
+</p>
+
+
+<h3>Where are alarms generated?</h3>
+<p>
+Alarms are triggered by Process Variables (PVs) on the front-end computers (IOCs).
+Adding these <u>Trigger PVs</u> to the alarm server configuration generates
+the actual alarms with an alarm description, guidance information,
+and links to related operator displays or web pages. 
+</p>
+
+<h3>Alarm Severity and Status Message</h3>
+<p>
+Levels of severity can help users to prioritize their work,
+especially if the displays many alarms at the same time.
+</p>
+<p>
+There are four levels of severity for an alarm:
+<ul>
+<li><font color="#00FF00">OK</font>
+<li><font color="#A0A000">MINOR</font>
+<li><font color="#FF0000">MAJOR</font>
+<li><font color="#FF00FF">INVALID</font>
+</ul>
+in which "INVALID" has the highest priority and "OK" has the lowest.
+</p>
+
+<p>
+The control system Trigger PV provides the alarm severity, it needs to be
+configured to send an alarm severity that is suitable to the respecive
+alarm.
+</p>
+<p>
+In addition, each Trigger PV provides an alarm message (status) for each alarm.
+This message can indicate if the alarm is caused by some value being too high
+or too low, but it cannot replace the more elaborate guidance information that
+needs to be configured within the alarm system user interface.
+</p>
+
+
+<h3>Alarm Severity/Status vs. Current Severity/Status</h3>
+<p>
+There are two types of severity and status for each alarm trigger:
+</p>
+<ul>
+<li>"Current Severity" and "Current Status" are directly read from the alarm trigger PV,
+     representing its current severity and status that you would also see
+     on other operator screens that happen to display this PV.
+<li>"Alarm Severity" and the "Alarm Status" are the severity and status of the
+     most severe event that the alarm server observed for the PV.
+     When the alarm is configured to "latch", the alarm server remembers the
+     highest alarm severity of the PV until it is manually acknowledged.
+</ul>
+<p>
+The "Alarm Severity" can differ from the "Current Severity" when the underlying alarm PV
+already recovered but the alarm server was configured to "latch" the alarm
+until operator acknowledgement.
+</p>
+
+<a name=AlarmState>
+<h3>Alarm State Diagram</h3>
+</a>
+<p>
+The general idea: When an alarm triggers, something happened which requires
+operator action. The alarm guidance and related displays might help the operator
+to handle the alarm, and finally the operator will acknowledge the alarm.
+</p>
+<p>
+Alarms configured for annunciation are annunciated once.
+If the alarm clears, it is still displayed until operators acknowledge
+the situation.
+If the alarm re-occurs while the original alarm is still not acknowledged,
+it is not annunciated again because we assume that operators are still
+investigating the initial alarm, or just too busy to look at any alarms
+right now. In either case, another annunciation would only cause noise.
+</p>
+<p>
+When a MINOR alarm is followed by a MAJOR alarm, or generally a higher level
+alarm, that causes another annunciation because it is considered a different,
+more important situation.
+On the other hand, if an INVALID alarm relaxes to MAJOR or generally a lower
+severity, the display will update to reflect the 'current' severity but
+the alarm severity remains latched to the highest alarm level.
+</p>
+<p>
+An alarm will fully 'clear', i.e. disappear from the alarm table when
+the alarm trigger PV returns to OK <u>and</u> the alarm is acknowledged.
+</p>
+
+
+<h3>Alarm State Diagram for Latched PV</h3>
+<img class="float" alt="Alarm State Diagram for Latched PV" src="AlarmStateDiagram_Latched.png" />  
+<p>
+This Alarm State Diagram describes this 'latching' alarm behavior,
+how alarm severity jumps between different states when an specified action is triggered. The oval represents a state, in which the upper line indicates "Current Severity" and the lower indicates "Severity".For any unacknowledged alarm (if its current severity is not "OK"), it could be represented by the center orange one. The arrow represents an action.
+</p>
+<p>
+Alarms in one of the states over the upper dotted line will be displayed in the table of
+<a href="#current_alarm">Current Alarms</a>.
+Alarms in one of the states between dotted lines will be displayed in the table of
+<a href="#current_alarm">Acknowledged Alarms</a>.
+The state of "OK/OK" will not be displayed in the
+<a href="#table">Alarm Table</a>
+</p>
+<p>
+The actions in red mean an annunciation will be generated in case of the related PV
+is <a href="#pv_config">configured</a> with "Annunciating".
+</p>
+
+<div class="clear"/>
+
+
+<h3>Alarm State Diagram for Un-Latched PV</h3>
+<img class="float" alt="Alarm State Diagram for Un-Latched PV" src="AlarmStateDiagram_UnLatched.png" />  
+<p>
+This picture shows the alarm state diagram for the PV configured as "Un-Latched".
+</p>
+<p>
+Fundamentally, un-latched alarms do not require acknowledgement.
+They may be acknowledged to remove them from the list of 'active' alarms,
+but they clear automatically once the trigger PV relaxes to "OK"
+without requiring a manual alarm acknowledgement.
+
+<div class="clear"/>
+
+
+<h3>Annunciation</h3>
+<p>
+For alarms configured to annunciate, whenever a new alarm or a higher severity
+alarm triggers, the severity and description of the alarm will be
+<a href="#annunciation">annunciated</a>.
+</p>
+
+
+<h3>'Maintenance' Mode</h3>
+<p>
+During machine maintenance, devices are turned off on purpose, but related
+alarms were not disabled, resulting in numerous nuisance alarms.
+</p>
+<p>
+It is impossible for the computer to decide if an alarm should be disabled
+automatically. IOC engineers can add logic to automatically suppress alarms,
+but this is a rather complex and time consuming task.
+</p>
+<p>
+Alarms can be disabled manually in the 
+<a href="#pv_config">Alarm PV Configuration</a>.
+Reports of disabled alarms can help to review which
+alarms were disabled at what time, to avoid leaving
+alarms disabled by accident.
+But this process is again tedious.
+</p>
+<p>
+While nuisance alarms during maintenance periods are hard to avoid,
+one common source of alarms are INVALID alarms caused by IOCs,
+PLCs or network equipment being turned off.
+The 'Maintenance' Mode of the alarm server can help handle the
+flurry of INVALID alarms as follows:
+</p>
+<ol>
+<li>INVALID alarms are not annunciated
+    (except <a href="#priority">'priority' annunciations</a>).
+<li>INVALID alarms are automatically acknowledged (same 'priority' exception).
+<li>When trigger PVs leave the INVALID state, for example go into MINOR,
+    that is considered a new alarm.
+</ol>
+
+<p>
+The (acknowledged) INVALID alarms are still displayed, but the missing annunciation 
+reduces chatter in the control room.<br>
+The automatic acknowledgement moves them off the list of active alarms,
+reducing visual clutter.<br>
+The third point asserts that possibly valid alarms after a device
+is again accessible are not forgotten:
+In 'normal' mode, a transition from INVALID(-acknowledged) to MAJOR alarm
+would not cause an annunciation because there was already a more severe alarm level,
+INVALID, and the device situation actually improved from INVALID to MAJOR.<br>
+In 'maintenance' mode, the INVALID was automatically acknowledged,
+and a MAJOR alarm is now considered a new situation that the operator
+should review and manually acknowledge.
+</p>
+<p>
+Maintenance mode is enabled or disabled via this icon in the
+alarm tree and table GUI, which also indicates the current mode:
+</p>
+<ul>
+<li><img src=icons/operate.gif> Normal Operating Mode, press to enable Maintenance Mode
+<li><img src=icons/maintenance_act.gif> Maintenance Mode, press to return to normal operating mode
+</ul>
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=perspective>Alarm Perspective</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<img class="float" src=AlarmPerspective.png alt="Alarm Perspective">
+<p>
+Especially for first-time users it might be advisable to switch to the designated Alarm
+Perspective, which results in a predefined arrangement of the Alarm Tree and
+Alarm Table.
+
+<h3>Activate or Reset</h3>
+After opening an Alarm Table or Tree from the <code>CSS/Alarm</code> menu,
+access the Alarm Perspective by right-clicking in the Alarm Table or Tree
+and selecting <code>Alarm Perspective</code>. This action will switch to the
+Alarm Perspective, or - if it was already active - allow you to reset it to
+its original state, in case windows have been rearranged.
+</p>
+
+
+<h3>Rearranging the Perspective</h3>
+<p>
+You can simply close, minimize or maximize an Alarm Table or Alarm Tree window via
+the usual icon in the window title bar or the context menu of the window title
+bar. You can also adjust the size of each window.
+</p>
+
+<div class="clear"/>
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=tree>Alarm Tree</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<img class="float" src="AlarmTree.png" alt="Alarm Tree" width="598" height="793"/>
+<p>
+The Alarm Tree provides an approach to browse the alarm configuration components
+and their related alarm status in a tree-like structure, which by default includes
+all configured alarms, active or not.
+You can open it via the menu <code>CSS/Alarm/Alarm Tree</code>.
+</p>
+<p>
+The Alarm Tree is synchronized with the configuration in the RDB.
+When you change the configuration from within the Alarm Tree user interface,
+the configuration in RDB will be updated, and vice versa.
+</p>
+<p>
+The Alarm Tree configuration is hierarchically arranged by 
+</p>
+<ol>
+<li>Area: Front end, DTL, CCL, SCL, Ring, ... </li>
+<li>System: ICS, Cooling, Vacuum, RF, ... </li>
+<li>Optionally sub-system: ICS/IOCs, RF/LLRF, RF/HPRF, ... </li>
+<li>Alarm Trigger PVs on the final level.</li>
+</ol>
+
+<h3>Alarm State Display</h3>
+<p>
+In addition to displaying the alarm configuration hierarchy, the alarm tree
+also shows the current state of each item in several ways.
+</p>
+<p>
+The image shows an example where a MINOR/HIGH alarm occured and has in fact
+already been acknowledged ("minor-ack'ed/HIGH_ALARM"), but the trigger PV 
+still exhibits the same MINOR/HIGH_ALARM, so the underlying issue has obviously
+not been fixed to fully clear the alarm. 
+</p>
+<p>
+In addition, a MAJOR/LINK_ALARM occurred, has not been acknowledged, and is still
+active. A MAJOR/LOLO_ALARM occurred, but the alarm trigger PV has already cleared.
+</p>
+
+<h4>Alarm State Annotation</h4>
+<p>
+For each item in alarm, an annotation shows the severity and status of the
+alarm state, i.e. the most severe alarm that has happened and not fully cleared.
+For area, system and sub-system items this represents the state of the hierarchical
+sub-entries with the highest alarm severity.
+<pre>(Alarm Severity/Alarm Status)</pre>
+</p>
+<p>
+For alarm trigger PVs, this includes the current state of the PV:
+<pre>(Alarm Severity/Alarm Status, Current PV Severity/Current Status)</pre>
+</p>
+
+<h4>Alarm State Indicator, Colors</h4>
+<p>
+Besides the annotation there is also an alarm state indicator to the left of each item,
+a color-coded representation of the severities.
+The color of the left half of the indicator indicates the alarm severity,
+while the right half indicates the current severity.
+</p>
+<p>
+Acknowledged alarm severities are slightly darker than un-acknowledged severities.
+</p>
+
+<h4>Tool Tips</h4>
+<p>
+Finally, a tool-tip that appears when resting the mouse pointer over an alarm
+gives a multiple-line textual description of the alarm.
+</p>
+
+
+<h3>Alarm Tree Toolbar</h3>
+<p>
+The toolbar on top of Alarm Tree provides basic functions for the tree and selected items.
+</p>
+<ul>
+<li>"Send debug trigger to alarm server", <img src= icons/debug.gif>:<br>
+    Trigger debug on alarm server
+</li>
+<li>"Configure Item", <img src= icons/configure.gif>:<br>
+    For a PV item, you have several properties to configure:
+    <a href="#pv_config">Alarm PV Configuration<a>.
+    For the non-PV component, you can configure its guidance, displays and commands.
+    Tree elements also "inherit" guidance, display and command information
+    from its parent entries.
+</li>
+<li>"Acknowledge/Un-Acknowledge", <img src= icons/acknowledge.gif>/<img src = icons/unacknowledge.gif>:<br>
+    You can acknowledge/un-acknowledge one or multiple item(s) you selected in the tree
+    (Press "Ctrl" or "Shift" to select multiple items).
+    For the non-PV component, all of its child items will be acknowledged/un-acknowledged.
+</li>
+<li>"Collapse alarm hierarchy", <img src= icons/collapse.gif>:<br>
+    Make the alarm hierarchy appear in a collapsed state.
+</li>
+<li>"Show only alarms or whole configuration?", <img src= icons/expand.gif>:<br>
+    Show only alarms in the tree or the whole configuration.
+    The tree will switch between the two modes when you click this button.
+</li>
+</ul>
+
+
+<h3>Context Menu Options</h3>
+<p>
+The common context menu options for all types of component in the tree are:
+</p>
+<ul>
+<li><img src=icons/clock.png> Time since event:<br>
+    The elapsed time since the alarm happened.
+</li>
+<li><img src=icons/info.gif> Guidance messages:<br>
+    If there are guidance messages configured for the item, it will be displayed here one by one.
+</li>
+<li><img src=icons/related_display.gif> Related displays:<br>
+    If there are related displays configured for the item, it will be displayed
+    here one by one. When you click one of them, the related display will be launched.
+</li>
+<li><img src=icons/command.gif> Commands:<br>
+    If there are related commands configured for the item, it will be displayed
+    here one by one. When you click one of them, the related command will be executed.
+</li>
+<li><img src=icons/acknowledge.gif>/<img src=icons/unacknowledge.gif> Acknowledge/Un-Acknowledge:<br>
+    This option will be displayed only when the item is not in an "OK/OK/OK" state.
+    If this is an un-acknowledged item, the option would be "Acknowledge" so
+    that you can acknowledge it, and vice versa.
+</li>
+<li><img src=icons/configure.gif> Configure Item:<br>
+    For a PV item, you have several properties to configure:
+    <a href="#pv_config">Alarm PV Configuration<a>.
+    For the non-PV component, you can configure its guidance, displays and commands.
+    Tree elements also "inherits" guidance, display and commands from its parent entries.
+</li>
+<li><img src=icons/rename.gif> Rename Item:<br>
+    Rename the selected item.
+</li>
+<li><img src=icons/move.gif> Duplicate PV:<br>
+    Create a new PV which has the same settings
+    as the selected PV.
+    This is a convenient way to create similar alarm
+    PVs by configuring the first PV,
+    then duplicating it.
+    You can of course later configure the newly
+    created duplicate.
+</li>
+<li><img src=icons/move.gif> Move Item:<br>
+    Move the selected items to another path in the tree.
+</li>
+<li><img src=icons/delete.gif> Remove Selected Items:<br>
+    Delete the selected items from the tree and hence from the configuration.
+</li>
+</ul>
+
+<p>
+For non-PV items, an additional menu option is available:
+</p>
+<ul>
+<li><img src=icons/add.gif> Add Component:<br>
+    Add a new component to the configuration. You can add a child component
+    under the item you selected, or add a new area regardless the selected item.
+</li>
+</ul>
+
+<p>
+For PV items, two additional menu options are available:
+</p>
+<ul>
+<li><img src=icons/elog.gif> LogBook...: <br>Open a logbook entry dialog editor
+   for you to create an electronic logbook entry in logbook.
+   This option will be available only when the item is actually in alarm,
+   not when it is in an "OK" state.
+</li>
+<li><img src=icons/editcopy.png> Copy Pv Name to Clipboard
+</li>
+<li><code>CSS</code>: From this menu, you can access general CSS functions for the selected PVs.
+</li>
+</ul>
+
+
+<h3>'Drag' Support</h3>
+<p>
+Selected alarms can be 'dragged' out of the alarm tree into another
+program that accepts string drops.
+For example, one can drag alarms into most email tools or
+the web interface to an elog system. The dragged text will include
+the alarm PV, description, and its current state.
+</p>
+
+
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=table>Alarm Table</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<p>
+The Alarm Table provides a tabular view of currently active alarms.
+It only shows alarms that actually triggered.
+You can open it via the menu: <code> CSS/Alarm/Alarm Tree </code>
+</p>
+<img class="float" src="AlarmTable.png" alt="Alarm Table" width="731" height="695"></img>
+
+<h3>Alarm Properties</h3>
+<p>
+Each active alarm has several properties:
+</p>
+<ul>
+<li><b>PV</b>: name of the PV that triggered the alarm.</li> 
+<li><b>Description</b>: the details of the PV. It would give more information and more human-readable than the raw PV name. It is also used for annunciation.</li>
+<li><b>Time</b>: time when the alarm happened.</li> 
+<li><b>Current Severity</b>: The current severity of the PV, like OK, MINOR, MAJOR or Invalid.</li>
+<li><b>Severity</b>: The severity of the PV remembered by alarm server. When the PV is configured to "latch", the alarm server remembers the highest alarm severity of the PV until it is manually acknowledged. Current severity of the PV might differ from alarm severity when the underlying alarm PV already recovered but the alarm server was configured to "latch" the alarm until operator acknowledgement.</li>
+<li><b>Status</b>: alarm status message like HIGH_ALARM or STATE_ALARM.</li> 
+<li><b>Value</b>: Value of the PV that triggered this alarm.</li>
+</ul>
+<p>
+The CSS Alarm Table allows sorting by any of the above properties by clicking
+the corresponded property name on the column header.
+</p>
+
+<a name=#current_alarm>
+<h3>Current Alarms and Acknowledged Alarms</h3>
+</a>
+<p>
+The Alarm Table is split into two parts for displaying current alarms
+(unacknowledged alarms) and acknowledged alarms respectively. 
+</p>
+<ul>
+<li>For PV configured to "latch", even if its current severity has changed to "OK", the alarm will still be displayed as "Current Alarm" until it is manually acknowledged. </li>
+<li>For PV not configured to "latch", it will disappear from the table of "Current Alarms" once its current severity changed to "OK".</li>
+<li>For acknowledged alarm, regardless the PV is configured to "latch" or "not latch", if current severity of the PV is still not "OK", it will be displayed in the table of "Acknowledged Alarms" until its current severity changes to "OK".</li>
+</ul>
+<p>
+For the details about how alarm severity jumps between different states,
+please refer to the <a href="#AlarmState">Alarm Severity States Diagram</a>
+</p>
+
+
+<h3>Alarm Table Toolbar</h3>
+<p>
+The toolbar on top of Alarm Table provides the functions of
+"Acknowledge" <img src= icons/acknowledge.gif> and
+"Un-Acknowledge" <img src= icons/unacknowledge.gif>
+for the selected items in the table.
+</p>
+
+<h3>Select PVs based on name or description</h3>
+<p>
+You can enter a PV name or part of an alarm description to select
+all matching PVs in the alarm table.
+</p>
+<p>
+The filter expression can contain these wild-cards:
+</p>
+<ul>
+<li>'?' matches any single character
+<li>'*' matches zero or more arbitrary characters
+</ul>
+<p>
+The filter expression is not case-sensitive.
+</p>
+<p>
+Example Filter Expressions:
+</p>
+<ul>
+<li>'vac': Selects PVs where name or description contain 'vac', 'vacuum', ...
+<li>'amp*trip': Would for example select PVs whose description contains 'Amplifier Trip'
+</ul>
+
+<h3>Context Menu Options</h3>
+<p>
+Most of the context menu options are also applicable for multiple items.
+In this case, the "Guidance messages", "Related display" and "Command" for
+the selected items will be merged.
+You can select multiple items by holding Ctrl or Shift key.
+</p>
+<ul>
+<li><img src=icons/clock.png> Time since event:<br>The elapsed time since the alarm happened.</li>
+<li><img src=icons/info.gif> Guidance messages:<br> If there are guidance messages configured for the selected items, it will be displayed here one by one.</li>
+<li><img src=icons/related_display.gif> Related displays:<br>If there are related displays configured for the selected items, it will be displayed here one by one. When you click one of them, the related display will be launched.</li>
+<li><img src=icons/command.gif> Commands:<br> If there are related commands configured for the selected items, it will be displayed here one by one. When you click one of them, the related command will be executed.</li>
+<li><img src=icons/elog.gif> LogBook...: <br>Open a logbook entry dialog editor for you to create an electronic logbook entry for the selected items in logbook.</li>
+<li><img src=icons/acknowledge.gif>/<img src=icons/unacknowledge.gif> Acknowledge/Un-Acknowledge:<br> For items in the table of "Current Alarms", this should be "Acknowledge", so you can acknowledge the selected alarms. For itmes in "Acknowledged Alarms" table, this should be "Un-Acknowledge".</li>
+<li><img src=icons/configure.gif> Configure Item:<br> You can configure properties of the selected PVs:
+     <a href="#pv_config">Alarm PV Configuration<a>.
+</li>
+<li><img src=icons/editcopy.png> Copy Pv Name to Clipboard</li>
+<li><code>CSS</code>: From this menu, you can access general CSS functions for the selected PVs.</li>
+</ul>
+
+
+<h3>'Drag' Support</h3>
+<p>
+Selected alarms can be 'dragged' out of the alarm table into another
+program that accepts string drops.
+For example, one can drag alarms into most email tools or
+the web interface to an elog system. The dragged text will include
+the alarm PV, description, and its current state.
+</p>
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=preferences>Preference Settings</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<img class="float" src=AlarmPreferences.png alt="Alarm Preferences Configuration">
+<p>
+The Alarm System has numerous preferences which can be set for the GUI
+client via the menu <code>CSS/Preferences...</code>, then navigating
+to <code>CSS Applications/Alarm/Alarm System</code>:
+</p>
+<p>
+For proper operation of the alarm system these settings must match
+corresponding settings of the alarm server.
+They should probably <u>not</u> be configured by end users via the preference panel
+but instead set by the system administrator via appropriate
+"Default Settings", see below.
+</p>
+
+<h3>Preferences</h3>
+<ul>
+<li>Configuration Name<br>
+The overall configuration name is used to select the alarm tree root component.
+
+<li>JMS Alarm Server, Client, Talk Topics<br>
+These are used to communicate with the alarm server and have to match
+the alarm server configuration.
+
+<li>RDB Server<br>
+RDB that holds alarm PVs configuration and snapshot of state.
+
+<li>JMS Server<br>
+JMS Server for alarm messages service, such as new alarms, acknowledge, ...
+
+<li>JMS Idle Timeout<br>
+Timeout in seconds at which server sends idle messages in absence of
+"real" traffic on alarm topic
+
+<li>Command Directory<br>
+Directory used for executing commands.
+May use Java system properties like this: $(prop_name)
+
+<li>Colors for alarm severities<br>
+Configures the colors used in the alarm table and tree to represent alarms.
+</ul>
+
+<h3>Default Settings</h3>
+While each user may specify custom settings, administrators should provide
+default settings suitable for the respective site.
+
+These original settings reside in the "preferences.ini" file inside the
+org.csstudio.alarm plugin directory.
+These settings are usually adapted to a specific site in a 
+"plugin_customization.ini" file which is located in the root of the "Product"
+plugin directory or jar file.
+Further customization is possible when starting CSS (or any Eclipse product)
+via a customization file with the same format provided via the
+<code>-pluginCustomization</code> command line option.
+Finally, each end user can use the CSS/Preferences menu item to
+interactively adjust most settings. Those changes are stored in the
+workspace directory under 
+{Workspace}/.metadata/.plugins/org.eclipse.core.runtime/.settings
+
+<div class="clear"/>
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=edit>Editing the Alarm Configuration</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<p>
+To edit the overall alarm configuration, that is to add components to the
+hierarchical alarm tree, including Alarm Trigger PVs, or to rearrange
+the alarm tree layout, use the context menu of the <a href="#tree">Alarm Tree</a>.
+</p>
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=pv_config>Alarm Trigger PV Configuration</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<p>
+The context menu of alarm trigger PVs contains a "Configure item" entry
+that opens a dialog box similar to the one shown on the right.
+The following explains its components.
+</p>
+
+<img class="float" src="pv_config.png" width="639" height="722"/>
+<h3>Item</h3>
+The item name displayed at the top of the dialog is the hierarchical path to the
+alarm trigger PV.
+This must be a PV name understood by the control system.
+The PV name is set when adding the PV to the alarm configuration.
+The PV name cannot be modified within this dialog, but there are
+are options in the context menu of the alarm tree to rename
+the PV or to move it to another location in the alarm tree.
+
+
+<h3>Description</h3>
+The PV's description should be more human-readable than
+the raw PV name. It is displayed with the alarm
+and also used for <a href="#annunciation">annunciation.</a>
+
+<h3>Enabling Alarms</h3>
+Per default all alarms are enabled. By de-selecting the "enabled"
+check-box the alarm server can be configured to ignore alarms
+from this PV.
+<p>
+<em>
+This is meant as a temporary fix, for example to handle a broken
+sensor that causes erroneous alarms.
+Disabled alarms should be reviewed periodically and then either
+removed from the alarm configuration or fixed so that they
+can be re-enabled. 
+</em>
+
+ 
+<h3>Latching Alarm Behavior</h3>
+The latching behavior defines how the alarm server handles
+a PV that goes into an alarm state, and then recovers.
+When configured to "latch", the alarm server remembers the
+highest alarm severity of the PV until it is manually
+acknowledged.
+
+
+<h3>Alarm Annunciation</h3>
+When a PV is configured to "annunciate", the alarm server
+will send the PV's description to the
+<a href="#annunciation">annunciation system</a>
+whenever the PV reaches a non-OK severity. 
+
+
+<h3>Alarm Delay and Count Filter</h3>
+Per default, the alarm server will react as soon as it
+notices a non-OK alarm severity.
+When adding a delay greater than zero, specified in seconds,
+it will only react when the alarm severity remains for at
+least this time.
+When an additional alarm count greater than zero is specified,
+it will react to alarms that either outlast the delay,
+or happen at least "count" times within the delay.
+<p>    
+Both these options can reduce the amount of "nuisance" alarms
+from noisy PVs, but in practice it is always best to cure the
+problem at the source through adequate dead-bands or smoothing.
+
+
+
+<h3>Filter</h3>
+<p>
+A filter expression can be used to enable or disable alarms
+automatically. When entering a filter expression, the previously
+described "enable" field is ignored.
+</p>
+<p>
+The filter expression can be something like
+</p>
+<p>
+<code>some_other_pv > 5</code>
+</p>
+<p>
+to only enable the alarm when the other PV has a value above 5.
+</p>
+<p>
+This feature was added to ease the transition from other alarm handling
+systems.
+Ideally, state-based alarms are <em>handled on the front-end computer
+by adding logic that prevents the alarm from being generated,</em>
+instead of generating an alarm but then disabling it in the
+alarm server.
+</p>
+<p>
+Also note a shortcoming of the current implementation:
+The Alarm Server only subscribes to PV value updates for alarm
+changes, and this includes the PVs used to compute the filter
+expression.
+An alarm expression like <code>some_other_pv &gt; 5</code> will <u>not</u>
+be evaluated for each change in the value of <code>some_other_pv</code>;
+it <em>will only be evaluated for changes in the alarm state</em>
+of <code>some_other_pv</code>, so the value changes used in the filter
+expression must also be alarm state changes of <code>some_other_pv</code>!
+</p>
+
+
+<h3>Guidance</h3>
+<p>
+A list of guidance messages for this PV. Note
+that the PV also "inherits" all guidance messages
+of the components (System, Subsystem, ...) under which
+it is listed, i.e. it's "parent" components from
+the alarm configuration hierarchy.
+</p>
+<p>
+Each guidance is separated into two parts:
+<ul>
+<li>Title: The title to be displayed as a context menu item and in the
+    title of the guidance information dialog. 
+    The max length of title is 30 characters.
+<li>Details: Details of the guidance to be displayed in the guidance
+    information dialog. May span multiple lines.
+</ul>
+</p>
+<p>
+<b>Tip:</b> If the guidance is very short and fits into the title, it
+is sufficient to only enter the title. Whenever you only configure the title and leave
+the details empty, or only configure the details and leave the title empty,
+this implies that the respective other part is the same as the part you configured.
+</p>
+
+
+<h3>Related Displays</h3>
+<p>
+A list of related displays. Supported formats:
+</p>
+<ol>
+<li>Web Pages<br>
+    A related display can be entered as a web URL<br>
+    <code>http://some.web.page/foo.html</code><br>
+    Any related display strings starting in "http" and "https"
+    are recognized as web pages, and a web browser will be
+    launched when the user selects this related display.
+<li>Workspace Files<br>
+    Other files in the workspace, for example a Data Browser configuration file,
+    can be opened via a URL
+    <code>file: /Path/to/the_file.extension</code>.
+<li>External Programs<br>
+    To start EDM or MEDM or any other program that is available
+    on your computer, enter a suitable command-line like<br>
+    <code>startedm -m macro=value some_screen</code><br>
+    Related displays are executed exactly as described under "Commands",
+    see below.
+    The main reason for listing EDM etc. as related displays and
+    not commands is the different way they appear to the end user.
+</ol>
+<p>
+As with guidance, each display item is separated into "Title"
+and the "Command" which in this case is the actual related display link.
+</p>
+
+
+<h3>Commands</h3>
+<p>
+A list of commands that the user might want to invoke.
+Enter a suitable command-line for executing the command,
+for example
+</p>
+<p>
+<code>/usr/local/bin/do_something MyPVName "another parameter"</code>
+</p>
+<p>
+The command itself must either be on the operating system
+path ($PATH in Unix) as it was set when CSS was started,
+or the command name is listed
+with its full path as shown in the example above.
+</p>
+<p>
+Quotes (") can be used to include spaces inside an argument.
+</p>
+<p>
+The command will be executed with the "current directory"
+set to the "Command Directory" that is configured
+in the alarm system preferences.
+</p>
+<p>
+A suggested setup would probably place all alarm system related
+commands in a directory like <code>/usr/local/css/alarm_scripts</code>,
+include that in the operating system path and also set the
+"Command Directory" to it.
+</p>
+<p>
+If the command fails to execute, this will be displayed in a dialog box.
+Otherwise the program is allowed to run unattended,
+i.e. the alarm GUI does not wait for the command to finish.
+</p>
+
+<p>
+As with guidance and related displays, each command item is separated
+into "Title" and the "Command" which in this case is the actual
+command to invoke.
+</p>
+
+
+
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=annunciation>Voice Annunciation</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+<p>
+For alarms that are <a href="#pv_config">configured to be annunciated</a>,
+the alarm server sends an annunciation request to the annunciator.
+</p>
+<p>
+The annunciation is performed by is either the Annunciator tool included
+in the CSS alarm user interface, or the standalone JMS2Speech tool.
+In the control room, at least one instance of these annunciation tools should
+be running on a designated alarm OPI at all times.
+</p>
+
+<h3>Annunciator</h3>
+<p>
+The CSS Annunciator included in CSS is started via the menu
+<code>CSS/Alarm/Annunciator</code> and has to remain visible to function.
+</p>
+
+<h3>Annunciator</h3>
+<p>
+JMS2Speech is a standalone tool. While it has to be launched from the command-line,
+separate from the CSS GUI, its advantage lies in the fact that it continues to
+annunciate even when the CSS GUI is closed.
+It will annunciate independently from alarm table or -tree displays.
+</p>
+<p>
+It is usually launched by a shell command
+<pre>
+  annunciator
+</pre>
+which ends up starting the JMS2SPEECH tool.
+</p>
+
+<h3>Annunciation Text</h3>
+<p>
+By default, the alarm server will use the "Description" of
+an alarm for annunciation, prefixed by the alarm severity.
+</p>
+<p>
+For example, a MAJOR alarm on a PV with Description "Low Water Pressure"
+will result in an annunciation
+<pre>
+  "MAJOR alarm: Low Water Pressure"
+</pre>
+</p>
+<p>
+When prefixed with a '*', the alarm server will suppress the
+alarm severity, so a PV with Description "*Low Water Pressure"
+results in just announcing
+<pre>
+  "Low Water Pressure"
+</pre>
+</p>
+
+<h3>Annunciation Order</h3>
+<p>
+Fundamentally, messages are annunciated in the order of arrival.
+When several messages arrive at almost the same time, or more messages
+arrive while the first message is annunciated,
+those are ordered by severity, most severe first.
+</p>
+
+<h3>Annunciation Throttle</h3>
+<p>
+When many alarms occur at the same time, this could result in a long
+stream of voice annunciation.
+Operators, on the other hand, probably don't need to hear every single
+alarm annunciated as much as they need to be alerted to the fact that
+many alarms happened, so they can use their judgment to determine
+which one is most important.
+</p>
+<p>
+The annunciator therefore has a message count threshold (default 3):
+Assuming that 10 more messages arrive after annunciating the first message,
+exceeding the threshold of 3, the tool will annunciate
+<pre>
+  "There are ten more messages"
+</pre>
+instead of annunciating each individual message.
+</p>
+
+<a name='priority'>
+<h3>Priority Annunciations, Circumventing the Annunciation Throttle</h3>
+</a>
+<p>
+For alarms deemed too important to be suppressed by the annunciation
+throttle, the Description can be prefixed with a "!":
+<pre>
+  !The sky is falling
+</pre>
+</p>
+
+<p>
+In case the alarm severity should not be included in the annunciation,
+but the annunciation should always happen and not be filtered by the
+annunciation throttle, use this format:
+<pre>
+  *!The sky is falling
+</pre>
+</p>
+<p>
+Note the required order of '*' first, then '!':
+The initial '*' tells the alarm server to suppress the alarm severity,
+the following '!' instructs the annunciator to exclude this message
+from the message throttle.
+</p>
+
+
+
+</body>
+</html>
+

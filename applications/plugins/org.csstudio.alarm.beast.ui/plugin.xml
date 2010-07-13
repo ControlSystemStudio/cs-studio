@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.alarm.beast.ui.Perspective"
+            icon="icons/alarm.gif"
+            id="org.csstudio.alarm.beast.ui.perspective"
+            name="%Alarm">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
+            class="org.csstudio.alarm.beast.ui.PreferencePage"
+            id="org.csstudio.alarm.beast.ui.preferences"
+            name="%AlarmPrefPage">
+      </page>
+   </extension>
+</plugin>
