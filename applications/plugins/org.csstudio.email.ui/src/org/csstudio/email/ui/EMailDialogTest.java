@@ -1,7 +1,6 @@
 package org.csstudio.email.ui;
 
 import org.eclipse.jface.dialogs.Dialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
@@ -17,15 +16,45 @@ public class EMailDialogTest
     final private static String to = from;
 
     @Test
-    public void testEMailDialog()
+    public void testEMailDialogWithImage()
     {
         final Shell shell = new Shell();
-        final String image_filename =
-            MessageDialog.openQuestion(shell, "With image?", "Include image?")
-            ? "icons/email_image.png"
-            : null;
-        Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
-                "This is a test", image_filename);
-        dlg.open();
+
+
+        final Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
+                                                 "This is a test", "icons/email_image.png");
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.open();
+            }
+        });
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.close();
+            }
+        });
+    }
+    @Test
+    public void testEMailDialogWithOutImage()
+    {
+        final Shell shell = new Shell();
+
+
+        final Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
+                                                 "This is a test", null);
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.open();
+            }
+        });
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.close();
+            }
+        });
     }
 }

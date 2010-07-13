@@ -26,6 +26,7 @@ import org.junit.Test;
 
 /** [Headless] JUnit Plug-In test of the FormulaItem
  *  @author Kay Kasemir
+ *  FIXME (bknerr) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
 public class FormulaItemTest
@@ -40,115 +41,117 @@ public class FormulaItemTest
         {
             PVFactory.getSupportedPrefixes();
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ex.printStackTrace();
             fail("Must run as JUnit *Plug-In* test to use PVFactory");
         }
     }
-    
+
     /** Check trivial Formula */
     @Test
     public void testSimpleFormula() throws Exception
     {
-        System.out.println("*** Trivial Example");
+        //System.out.println("*** Trivial Example");
 
         // Create a (local) PV that we can change as needed
         final PV pv = PVFactory.createPV("loc://num");
         pv.start();
         pv.setValue(new Double(21.0));
-        
+
         // Now create model item for the same PV
         final Timer scan_timer = new Timer();
         final PVItem pv_item = new PVItem("loc://num", 0);
         pv_item.start(scan_timer);
         IDataProvider samples = pv_item.getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         // Should be the initial value and 'continuation' sample
         assertEquals(2, samples.getSize());
-        
+
         // Perform computation on inputs in formula
         final FormulaInput inputs[] = new FormulaInput[]
         {
             new FormulaInput(pv_item, "pv"),
         };
-        
+
         final FormulaItem formula = new FormulaItem("test", "pv * 2", inputs);
-        System.out.println("\nFormula: " + formula.getName());
+        //System.out.println("\nFormula: " + formula.getName());
         samples = formula.getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         // Should be pv * 2
         assertEquals(2, samples.getSize());
         assertEquals(42.0, samples.getSample(0).getYValue(), 0.001);
         assertEquals(42.0, samples.getSample(1).getYValue(), 0.001);
-        
+
         // Formula does not re-evaluate...
         pv_item.getSamples().testAndClearNewSamplesFlag();
         assertFalse(formula.reevaluate());
         // ..until an input changes
-        System.out.println("Input changes:");
+        //System.out.println("Input changes:");
         pv.setValue(new Double(3.14/2));
         assertTrue(formula.reevaluate());
         samples = formula.getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         assertEquals(3, samples.getSize());
         assertEquals(3.14, samples.getSample(2).getYValue(), 0.001);
     }
-    
+
     /** Check if Formula handles 'real' inputs */
     @Test
     public void testPVFormula() throws Exception
     {
-        System.out.println("\n\n*** Scanned samples: (" + RUNTIME_SECS + " secs)");
+        //System.out.println("\n\n*** Scanned samples: (" + RUNTIME_SECS + " secs)");
         final Timer scan_timer = new Timer();
         final PVItem pvs[] = new PVItem[]
         {
             new PVItem("sim://ramp(0,10,1,1)", 0.0),
             new PVItem("sim://ramp(0,10,1,2)", 0.0)
         };
-        for (PVItem pv : pvs)
+        for (final PVItem pv : pvs) {
             pv.start(scan_timer);
+        }
         Thread.sleep((long) (RUNTIME_SECS * 1000));
-        for (PVItem pv : pvs)
+        for (final PVItem pv : pvs) {
             pv.stop();
+        }
         // Should have about 1 sample per second
         IDataProvider samples = pvs[0].getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         assertEquals(RUNTIME_SECS, samples.getSize(), 2.0);
         samples = pvs[1].getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         // Second input should have about half that
         assertEquals(RUNTIME_SECS/2, samples.getSize(), 2.0);
-        
+
         // Perform computation on inputs in formula
         final FormulaInput inputs[] = new FormulaInput[]
         {
             new FormulaInput(pvs[0], "volt"),
             new FormulaInput(pvs[1], "curr"),
         };
-        
+
         // Test the input's iterator
-        System.out.println("\nFirst channel samples via FormulaInput:");
+        //System.out.println("\nFirst channel samples via FormulaInput:");
         IValue next = inputs[0].first();
         while (next != null)
         {
-            System.out.println(next);
+            //System.out.println(next);
             next = inputs[0].next();
         }
-        
+
         final FormulaItem formula = new FormulaItem("test", "volt * 1000 + curr", inputs);
-        System.out.println("\nFormula: " + formula.getName());
-        System.out.println(formula.getSamples());
+        //System.out.println("\nFormula: " + formula.getName());
+        //System.out.println(formula.getSamples());
         // Formula should produce about one sample for the first input
         assertEquals(RUNTIME_SECS, formula.getSamples().getSize(), 5.0);
         // Unclear how to check if each sample is computed correctly
     }
-    
+
     /** Check if Formula handles samples with min/max/average */
     @Test
     public void testMinMax() throws Exception
     {
-        System.out.println("\n\n*** Min/Max Values");
+        //System.out.println("\n\n*** Min/Max Values");
         final PVItem pvs[] = new PVItem[]
         {
             new PVItem("const://a(1)", 0.0),
@@ -166,21 +169,21 @@ public class FormulaItemTest
                         new double[] { i }, i-1, i+1));
         }
         pvs[0].mergeArchivedSamples("Test", data);
-        
-        
+
+
         PlotSamples samples = pvs[0].getSamples();
-        System.out.println(samples);
-        
+        //System.out.println(samples);
+
         // Perform computation on inputs in formula
         final FormulaInput inputs[] = new FormulaInput[]
         {
             new FormulaInput(pvs[0], "a"),
         };
-        
+
         final FormulaItem formula = new FormulaItem("test", "a*2", inputs);
-        System.out.println("\nFormula: " + formula.getName());
+        //System.out.println("\nFormula: " + formula.getName());
         samples = formula.getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         assertEquals(data.size() + 1, samples.getSize());
         assertTrue("Min/Max data", samples.getSample(0).getValue() instanceof IMinMaxDoubleValue);
     }

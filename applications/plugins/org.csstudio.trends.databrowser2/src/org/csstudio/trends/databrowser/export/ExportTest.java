@@ -11,16 +11,19 @@ import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.PVItem;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of the export functionality
  *  <p>
  *  RDB URL, KEY, PVItem names, time range all need to be adjusted
  *  for the site where this test should run.
- *  
+ *
  *  @author Kay Kasemir
+ *  FIXME (bknerr) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
+@Ignore("See FIXME")
 public class ExportTest implements ExportErrorHandler
 {
     private static final String URL = "jdbc:oracle:thin:sns_reports/sns@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
@@ -45,7 +48,7 @@ public class ExportTest implements ExportErrorHandler
 //        });
         return model;
     }
-    
+
     /** @return PV with some archive data source */
     private PVItem createPVItem(final String name) throws Exception
     {
@@ -53,8 +56,8 @@ public class ExportTest implements ExportErrorHandler
         item.addArchiveDataSource(new ArchiveDataSource(URL, KEY, "test"));
         return item;
     }
-    
-    /** Export channels one-by-one 
+
+    /** Export channels one-by-one
      *  @throws Exception on error
      */
     @Test
@@ -69,7 +72,7 @@ public class ExportTest implements ExportErrorHandler
         export.run(new SysoutProgressMonitor());
     }
 
-    /** Export channels in a spreadsheet 
+    /** Export channels in a spreadsheet
      *  @throws Exception on error
      */
     @Test

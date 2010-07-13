@@ -14,13 +14,17 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.csstudio.trends.databrowser.model.PVItem;
 import org.csstudio.trends.databrowser.model.PlotSamples;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of ArchiveFetchJob
- * 
+ *
  *  @author Kay Kasemir
+ *
+ *  FIXME (bknerr) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
+@Ignore("See FIXME")
 public class ArchiveFetchJobTest implements ArchiveFetchJobListener
 {
     private PVItem item;
@@ -38,18 +42,18 @@ public class ArchiveFetchJobTest implements ArchiveFetchJobListener
         final ITimestamp start = TimestampFactory.fromDouble(end.toDouble() - 10.0*60.0);
         final ArchiveFetchJob job = new ArchiveFetchJob(item, start, end, this);
         assertTrue(got_anything == false);
-        System.out.println("Starting the job");
+        //System.out.println("Starting the job");
         job.schedule();
         job.join();
-        System.out.println("Job exited");
+        //System.out.println("Job exited");
         assertTrue(got_anything);
     }
 
     public void fetchCompleted(final ArchiveFetchJob job)
     {
-        System.out.println("Completed " + job);
+        //System.out.println("Completed " + job);
         final PlotSamples samples = item.getSamples();
-        System.out.println(samples);
+        //System.out.println(samples);
         assertTrue(samples.getSize() > 0);
         got_anything = true;
     }
