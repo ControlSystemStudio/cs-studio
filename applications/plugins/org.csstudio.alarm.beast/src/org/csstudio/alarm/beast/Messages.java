@@ -14,7 +14,7 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS
 {
-    private static final String BUNDLE_NAME = "org.csstudio.alarm.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.alarm.beast.messages"; //$NON-NLS-1$
 
     public static String Alarm_TT;
     public static String AlarmPV_TT;
