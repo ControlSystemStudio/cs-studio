@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Message History
 Bundle-SymbolicName: org.csstudio.alarm.beast.msghist;singleton:=true
-Bundle-Version: 1.0.4.qualifier
+Bundle-Version: 2.1.0.qualifier
 Bundle-Vendor: Kay Kasemir
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
