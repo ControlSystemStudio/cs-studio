@@ -84,7 +84,6 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
 		ScriptService.getInstance().exit();
-		ResourceUtil.disposeResources();
 		getPluginPreferences().removePropertyChangeListener(preferenceLisener);
 	}
 

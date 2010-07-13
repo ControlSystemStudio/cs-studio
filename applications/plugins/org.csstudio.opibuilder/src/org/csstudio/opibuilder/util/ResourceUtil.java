@@ -37,10 +37,7 @@ import org.eclipse.ui.part.FileEditorInput;
  */
 public class ResourceUtil {
 
-	
-	public static void disposeResources(){
-	
-	}
+
 	
 	/**
 	 * Return the {@link InputStream} of the file that is available on the
