@@ -1,0 +1,136 @@
+<html>
+<head>
+    <title>Message History</title>
+</head>
+
+<body>
+
+<h1>Message History</h1>
+
+<ol>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#properties">Properties</a></li>
+<li><a href="#setting">Setting Start/End Time and Filter</a></li>
+<li><a href="#preference">Preferences Configuration</a></li>
+</ol>
+
+<a name="#overview">
+<h2>Overview</h2>
+</a>
+The Message History provides a tabular view of the CSS message log.
+It lists events from the alarm system as well as other CSS applications,
+identified by a Message TYPE.
+<ul>
+<li>TYPE="alarm": 
+	<ul>	
+	<li>A new alarm triggered</li>
+	<li>The state of an alarm changed</li>
+	<li>Operator acknowledged/un-acknowledged an alarm</li>
+	<li>Alarm system related operation, for example: set the PV configuration</li>
+	</ul>
+</li>
+
+<li>TYPE="talk": 
+	<ul>	
+	<li>An annunciation was generated</li>
+	</ul>
+</li>
+
+<li>TYPE="log": 
+	<ul>	
+	<li>Informational messages: Application started, ...</li>
+	<li>Application Error messages</li>
+	</ul>
+</li>
+</ul>
+You can open the Message History View via the menu item
+<pre>CSS/Alarm/Message History</pre></p>
+
+<img alt="Message History" src="msghist.png" />
+
+
+<a name="#properties">
+<h2>Properties</h2>
+</a>
+Each Message has several Properties, depending on the message type.
+<p>
+Per default, messages are listed by time, but you can sort on any Property
+by clicking the corresponding column header.
+Click again to sort in the "other" direction (ascending, descending).
+<p>
+If you double-click a Message, the "Properties" View will display all
+the Properties of a Message,
+including those that might not be listed in the table.
+<p>
+Explanation of most Properties:
+<ul>
+<li><b>ID</b>: Message identifier in the database.</li>
+<li><b>TIME</b>: Time when the event was logged to the database.</li>
+<li><b>DELTA</b>: Elapsed time from one event to next event.</li>
+<li><b>TYPE</b>: Type of the event.</li>
+<li><b>TEXT</b>: Informational text that describes the event.</li>
+<li><b>NAME</b>: For an event related to a PV, this is the name of the PV. For error messages, this is the source code function which detected the error.</li>
+<li><b>SEVERITY</b>: Severity of the alarm (OK, MINOR, MAJOR, INVALID) or error message (DEBUG, WARN, INFO, ERROR, FATAL).</li>
+<li><b>STATUS</b>: Alarm status message.</li>
+<li><b>CURRENT_SEVERITY</b>: Current Severity of the PV which triggered an alarm. </li>
+<li><b>VALUE</b>:Value of the PV triggered the alarm. </li>
+<li><b>CREATETIME</b>: When the event was created.</li>
+<li><b>EVENTTIME</b>: For an alarm event, this is the time when the alarm in this severity was generated. ACK or Un-ACK will be ignored in this case.</li>
+<li><b>USER</b>: The user who was running the application that produced the event.</li>
+<li><b>HOST</b>: The host machine on which the application that produced the event was running.</li>
+<li><b>APPLICATION-ID</b>: The name of the application which produced the event.</li>
+<li><b>CLASS & FILENAME</b>: the class name and source file name from where the event was generated. These two properties are used for debug purpose.</li>
+</ul>
+
+<a name="#setting">
+<h2>Setting Start/End Time and Filter</h2>
+</a>
+By clicking the "Times" button, a dialog will allow you to specify the
+start and end time of the displayed message history.
+<p>
+Note that there is an internal limit to the amount of messages
+retrieved from the database to prevent excessive memory consumption:
+There might be more messages between the last displayed message
+and the selected "end" time!
+<p>
+By clicking the "Filter" button, you can set the rule in filtering the messages
+you are interested in.
+You can select the property and set its desired value.
+There are up to five properties you can set.
+The value patterns support SQL wildcards '%, '_'.
+<p>
+For example, filtering on
+TYPE="alarm" and NAME="%Vac%" will show only alarm messages
+for PVs with "Vac" in their name for the selected time range.
+
+
+<a name="#preference">
+<h2>Preference Settings</h2>
+</a>
+Preference settings determine where the message history is obtained and
+how it is displayed.
+The preferences configuration panel can be opened via the menu
+<pre>CSS/Preferences...,</pre>
+then navigating to 
+<pre>CSS Applications/Alarm/Message History.</pre>
+</p>
+<img src=msghist_preferences.png alt="Message History Preferences Configuration">
+
+
+<ul>
+<li>RDB URL: Database which holds the message log.</li>
+
+<li>User: User name to access the database.</li>
+
+<li>Password: Password for the user.</li>
+
+<li>Schema: Schema name in the database.</li>
+
+<li>Message Property Columns: List of displayed Table Columns
+                              (Message Property, widths, weight).</li>
+</ul>
+
+
+</body>
+</html>
+

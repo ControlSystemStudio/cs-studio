@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            name="%MsgHist"
+            icon="icons/msg_hist.gif"
+            category="org.csstudio"
+            class="org.csstudio.alarm.beast.msghist.MessageHistoryView"
+            id="org.csstudio.alarm.beast.msghist.MessageHistoryView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.sns.msghist.cssmenu"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.alarm.beast.msghist.ShowMessageHistoryAction"
+               icon="icons/msg_hist.gif"
+               id="org.csstudio.alarm.beast.msghist.ShowMessageHistoryAction"
+               label="%MsgHist"
+               menubarPath="css/alarm/"
+               style="push"
+               tooltip="%MsgHist"/>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            category="org.csstudio.platform.ui.css.applications.alarm"
+            class="org.csstudio.alarm.beast.msghist.PreferencePage"
+            id="org.csstudio.alarm.beast.msghist.PreferencePage"
+            name="%MsgHist">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml">
+      </toc>
+   </extension>
+</plugin>
