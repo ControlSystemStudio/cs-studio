@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+      <view
+            allowMultiple="false"
+            category="org.csstudio"
+            class="org.csstudio.alarm.beast.ui.alarmtable.AlarmTableView"
+            icon="icons/alarmtable.gif"
+            id="org.csstudio.alarm.beast.ui.alarmtable.view"
+            name="%AlarmTable">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            description="Global CSS menu actions"
+            id="org.csstudio.alarm.beast.ui.alarmtable.cssmenu"
+            label="CSS Action Set"
+            visible="true">
+         <action
+               class="org.csstudio.alarm.beast.ui.alarmtable.ShowAlarmTableAction"
+               icon="icons/alarmtable.gif"
+               id="org.csstudio.alarm.ui.alarmtable.ShowAlarmTableAction"
+               label="%AlarmTable"
+               menubarPath="css/alarm/"
+               style="push"
+               tooltip="%AlarmTable"/>
+      </actionSet>
+   </extension>
+</plugin>
