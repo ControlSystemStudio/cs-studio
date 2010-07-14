@@ -36,7 +36,7 @@ import org.junit.Test;
  *  </pre>
  *  @author Kay Kasemir
  *
- *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
+ *  FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class EPICS_V3_PV_Test

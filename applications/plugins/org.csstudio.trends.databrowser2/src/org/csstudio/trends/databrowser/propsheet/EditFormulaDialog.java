@@ -18,14 +18,15 @@ import org.csstudio.trends.databrowser.model.FormulaInput;
 import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 
 /** Editor for editing a {@link FormulaItem}
- * 
+ *
  *  Technically this is not a Dialog, but code that calls the
  *  FormulaDialog with information from a FormulaItem,
  *  updating the item on success.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class EditFormulaDialog
@@ -33,6 +34,7 @@ public class EditFormulaDialog
     final OperationsManager operations_manager;
     final private Shell shell;
     final private FormulaItem formula;
+    private FormulaDialog dialog;
 
     /** Create action
      *  @param operations_manager Manager used to 'undo' changes. May be <code>null</code>.
@@ -56,19 +58,21 @@ public class EditFormulaDialog
         try
         {
             // Edit
-            final FormulaDialog dialog = new FormulaDialog(shell,
+            dialog = new FormulaDialog(shell,
                                     formula.getExpression(), determineInputs());
-            if (dialog.open() != FormulaDialog.OK)
+            if (dialog.open() != Window.OK) {
                 return false;
+            }
 
             // Update model item with new formula from dialog
             final Model model = formula.getModel();
             final ArrayList<FormulaInput> new_inputs = new ArrayList<FormulaInput>();
-            for (InputItem input : dialog.getInputs())
+            for (final InputItem input : dialog.getInputs())
             {
                 final ModelItem item = model.getItem(input.getInputName());
-                if (item == null)
+                if (item == null) {
                     throw new Exception("Cannot locate formula input " + input.getInputName()); //$NON-NLS-1$
+                }
                 new_inputs.add(new FormulaInput(item, input.getVariableName()));
             }
             // Update formula via undo-able command
@@ -76,14 +80,20 @@ public class EditFormulaDialog
                     dialog.getFormula(),
                     new_inputs.toArray(new FormulaInput[new_inputs.size()]));
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             ErrorDialog.open(shell, Messages.Error, ex.getMessage());
             return false;
         }
         return true;
     }
-    
+
+    public void close() {
+        if (dialog != null) {
+            dialog.close();
+        }
+    }
+
     /** @return List of inputs for formula: Each model item is a possible input,
      *          mapped to a variable name that's either already used in the
      *          formula for that model item, or a simple "x1", "x2", ... when
@@ -100,12 +110,13 @@ public class EditFormulaDialog
         {
             final ModelItem model_item = model.getItem(i);
             // Formula cannot be an input to itself
-            if (model_item == formula)
+            if (model_item == formula) {
                 continue;
+            }
             // Create InputItem for that ModelItem
             InputItem input = null;
             // See if model item is already used in the formula
-            for (FormulaInput existing_input : formula.getInputs())
+            for (final FormulaInput existing_input : formula.getInputs())
             {
                 if (existing_input.getItem() == model_item)
                 {   // Yes, use the existing variable name
@@ -124,10 +135,10 @@ public class EditFormulaDialog
                 {
                     name_in_use = false;
                     var_name = "x" + var_name;
-                    for (FormulaInput existing_input : formula.getInputs())
+                    for (final FormulaInput existing_input : formula.getInputs())
                     {
                         if (existing_input.getVariableName().equals(var_name))
-                        { 
+                        {
                             name_in_use = true;
                             break;
                         }

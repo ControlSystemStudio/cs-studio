@@ -2,7 +2,7 @@ package org.csstudio.swt.chart.axes;
 
 import junit.framework.TestCase;
 
-// FIXME (bknerr) : Another test with syso - use assertions!
+// FIXME (kasemir) : Another test with syso - use assertions!
 public class LogTicksTest extends TestCase
 {
     @SuppressWarnings("nls")

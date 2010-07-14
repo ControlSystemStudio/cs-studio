@@ -11,7 +11,7 @@ import org.junit.Test;
  *
  *  @author Kay Kasemir
  *
- *  FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
+ *  FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
 public class PVModelItemTest

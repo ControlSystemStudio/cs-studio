@@ -56,6 +56,7 @@ public class RDBUtilTest
 
     /** Basic connection */
     @Test
+    @Ignore("Test with syso?")
     public void testConnection() throws Exception
     {
         final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
@@ -72,7 +73,7 @@ public class RDBUtilTest
      *  Then see if reconnection succeeds when the network cable or RDB are restored.
      */
     @Test
-    @Ignore
+    @Ignore("Test with syso?")
     public void testReconnect() throws Exception
     {
         final RDBUtil rdb = RDBUtil.connect(URL, USER, PASSWORD, true);
@@ -88,7 +89,7 @@ public class RDBUtilTest
             {
                 //System.out.println("Error: " + e.getMessage());
             }
-            Thread.sleep(5000);
+            //Thread.sleep(5000);
         }
     }
 }

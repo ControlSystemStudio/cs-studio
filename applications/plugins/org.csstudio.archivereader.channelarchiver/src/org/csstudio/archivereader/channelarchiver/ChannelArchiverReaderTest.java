@@ -18,7 +18,7 @@ import org.junit.Test;
 public class ChannelArchiverReaderTest
 {
 
-    // FIXME (bknerr) : remove syso, use assertions, parameterize URL and Channel
+    // FIXME (kasemir) : remove syso, use assertions, parameterize URL and Channel
     final private static String URL =
         "xnds://ics-srv-web2.sns.ornl.gov/archive/cgi/ArchiveDataServer.cgi";
     @Test

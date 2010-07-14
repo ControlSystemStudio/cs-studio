@@ -20,7 +20,7 @@ import org.junit.Test;
  *  for the site where this test should run.
  *
  *  @author Kay Kasemir
- *  FIXME (bknerr) : remove sysos, use assertions, parameterize DB and PV
+ *  FIXME (kasemir) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
 @Ignore("See FIXME")

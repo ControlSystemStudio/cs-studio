@@ -9,7 +9,7 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.junit.Test;
 
-// FIXME (bknerr) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
+// FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
 @SuppressWarnings("nls")
 public class ModelSampleRingTest extends TestCase
 {

@@ -16,7 +16,7 @@ import org.junit.Test;
 /** [Headless] JUnit Plug-in test of the ModelListener
  *  @author Kay Kasemir
  *
- *  FIXME (bknerr) : remove sysos, use assertions
+ *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
 public class ModelListenerTest

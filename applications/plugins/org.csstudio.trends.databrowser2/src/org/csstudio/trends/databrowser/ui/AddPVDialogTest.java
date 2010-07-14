@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.ui;
 
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
@@ -19,28 +20,54 @@ public class AddPVDialogTest
     final String names[] = new String[] { "Fred", "Jane" };
     final String axes[] = new String[] { "Value", "Value 2" };
 
+    // FIXME (kasemir) : remove sysos - use assertions
     @Test
     public void pvTest()
     {
         final Shell shell = new Shell();
         final AddPVDialog dlg = new AddPVDialog(shell, names, axes, false);
-        if (dlg.open() == AddPVDialog.OK)
-        {
-            System.out.println("Name  : " + dlg.getName());
-            System.out.println("Period: " + dlg.getScanPeriod());
-            System.out.println("Axis  : " + dlg.getAxisIndex());
-        }
+
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                if (dlg.open() == Window.OK)
+                {
+//                    System.out.println("Name  : " + dlg.getName());
+//                    System.out.println("Period: " + dlg.getScanPeriod());
+//                    System.out.println("Axis  : " + dlg.getAxisIndex());
+                }
+
+            }
+        });
+        // FIXME (kasemir) : check what is necessary and close the shell afterwards
+        closeDialog(shell, dlg);
     }
+
 
     @Test
     public void formulaTest()
     {
         final Shell shell = new Shell();
         final AddPVDialog dlg = new AddPVDialog(shell, names, axes, true);
-        if (dlg.open() == AddPVDialog.OK)
-        {
-            System.out.println("Name  : " + dlg.getName());
-            System.out.println("Axis  : " + dlg.getAxisIndex());
-        }
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                if (dlg.open() == Window.OK) {
+//            System.out.println("Name  : " + dlg.getName());
+//            System.out.println("Axis  : " + dlg.getAxisIndex());
+                }
+            }
+        });
+        // FIXME (kasemir) : check what is necessary and close the shell afterwards
+        closeDialog(shell, dlg);
+    }
+
+    private void closeDialog(final Shell shell, final AddPVDialog dlg) {
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.close();
+            }
+        });
     }
 }

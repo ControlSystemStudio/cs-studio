@@ -19,7 +19,7 @@ import org.junit.Test;
 /** JUnit test of HistoricSamples
  *  @author Kay Kasemir
  *
- *  FIXME (bknerr) : remove sysos, use assertions
+ *  FIXME (kasemir) : remove sysos, use assertions
  */
 @SuppressWarnings("nls")
 public class HistoricSamplesTest

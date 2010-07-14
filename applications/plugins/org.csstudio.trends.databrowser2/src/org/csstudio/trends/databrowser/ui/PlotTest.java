@@ -30,56 +30,58 @@ import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
 /** (Headless) JUnit Plug-in demo of Plot
- *  
+ *
  *  Simply displays the plot. Static data, no controller.
- *  
+ *
  *  Must run as plug-in test to load XY Graph icons etc.
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class PlotTest
 {
+    // FIXME (kasemir) : remove sysos - use assertions
+
     private boolean run = true;
-    
+
     final private PlotListener listener = new PlotListener()
     {
         public void scrollRequested(final boolean enable_scrolling)
         {
-            System.out.println("Scroll enabled: " + enable_scrolling);
-            
+            //System.outprintln("Scroll enabled: " + enable_scrolling);
+
         }
-        
+
         public void timeConfigRequested()
         {
-            System.out.println("Time Config requested");
+            //System.outprintln("Time Config requested");
         }
-    
+
         public void timeAxisChanged(final long start_ms, final long end_ms)
         {
-            System.out.println("Time axis: " + start_ms + " ... " + end_ms);
+            //System.outprintln("Time axis: " + start_ms + " ... " + end_ms);
         }
-        
-        public void valueAxisChanged(int index, double lower, double upper)
+
+        public void valueAxisChanged(final int index, final double lower, final double upper)
         {
-            System.out.println("Value axis " + index + ": " + lower + " ... " + upper);
+            //System.outprintln("Value axis " + index + ": " + lower + " ... " + upper);
         }
-    
+
         public void droppedName(final String name)
         {
-            System.out.println("Name dropped: " + name);
+            //System.outprintln("Name dropped: " + name);
         }
-        
+
         public void droppedPVName(final String name, final IArchiveDataSource archive)
         {
-            System.out.println("PV Name dropped: " + name);
+            //System.outprintln("PV Name dropped: " + name);
         }
     };
-    
+
     private void createGUI(final Composite parent)
     {
         final GridLayout layout = new GridLayout(1, false);
         parent.setLayout(layout);
-        
+
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(parent, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
@@ -91,7 +93,7 @@ public class PlotTest
         ok.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 run = false;
             }
@@ -102,21 +104,23 @@ public class PlotTest
 
         // Create demo samples
         final ArrayList<IValue> values = new ArrayList<IValue>();
-        for (int i=1; i<10; ++i)
+        for (int i=1; i<10; ++i) {
             values.add(TestSampleBuilder.makeValue(i));
+        }
         values.add(TestSampleBuilder.makeError(15, "Disconnected"));
         // Single value. Line should continue until the following 'disconnect'.
         values.add(TestSampleBuilder.makeValue(17));
         values.add(TestSampleBuilder.makeError(18, "Disconnected"));
-        
-        for (int i=20; i<30; ++i)
+
+        for (int i=20; i<30; ++i) {
             values.add(TestSampleBuilder.makeValue(i));
+        }
 
         final PlotSampleArray samples = new PlotSampleArray();
         samples.set("Demo", values);
-        
+
         // Add item with demo samples
-        ModelItem item = new ModelItem("Demo")
+        final ModelItem item = new ModelItem("Demo")
         {
             @Override
             public PlotSamples getSamples()
@@ -125,15 +129,15 @@ public class PlotTest
             }
 
             @Override
-            public void write(PrintWriter writer)
+            public void write(final PrintWriter writer)
             {
             }
         };
         item.setColor(new RGB(0, 0, 255));
         plot.addTrace(item);
-        
+
         plot.setTimeRange(samples.getSample(0).getValue().getTime(),
-                samples.getSample(samples.getSize()-1).getValue().getTime());
+                          samples.getSample(samples.getSize()-1).getValue().getTime());
     }
 
     @Test
@@ -144,12 +148,16 @@ public class PlotTest
 
         createGUI(shell);
         shell.open();
-        
+
         final Display display = Display.getDefault();
-        while (run  &&  !shell.isDisposed())
-        {
-          if (!display.readAndDispatch())
-            display.sleep();
-        }    
+//        while (run  &&  !shell.isDisposed())
+//        {
+//            if (!display.readAndDispatch()) {
+//                display.sleep();
+//            }
+//        }
+
+        // FIXME (kasemir) : please shell dialog contents with assertions and close shell again
+        shell.close();
     }
 }

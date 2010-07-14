@@ -20,7 +20,7 @@ import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the ConnectJob
  *  @author Kay Kasemir
- *  FIXME (bknerr) : remove sysos, use assertions, parameterize DB and PV
+ *  FIXME (kasemir) : remove sysos, use assertions, parameterize DB and PV
  */
 @SuppressWarnings("nls")
 @Ignore("See FIXME")

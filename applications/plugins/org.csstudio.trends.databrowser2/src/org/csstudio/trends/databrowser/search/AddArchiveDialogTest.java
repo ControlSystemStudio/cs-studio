@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.trends.databrowser.search;
 
-import org.csstudio.trends.databrowser.model.ArchiveDataSource;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Test;
 
@@ -20,10 +19,26 @@ public class AddArchiveDialogTest
     public void testArchiveGUI() throws Exception
     {
         final Shell shell = new Shell();
-        
+
         final AddArchiveDialog dlg = new AddArchiveDialog(shell);
-        if (dlg.open() == AddArchiveDialog.OK)
-            for (ArchiveDataSource arch : dlg.getArchives())
-                System.out.println(arch);
+
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.open();
+             // FIXME (kasemir) : check with assertions and close the dialog afterwards!
+
+//                if (dlg.open() == AddArchiveDialog.OK)
+//                    for (ArchiveDataSource arch : dlg.getArchives())
+//                        System.out.println(arch);
+
+            }
+        });
+        shell.getDisplay().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                dlg.close();
+            }
+        });
     }
 }

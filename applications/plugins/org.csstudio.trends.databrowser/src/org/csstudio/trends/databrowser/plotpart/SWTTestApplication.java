@@ -8,7 +8,7 @@ import org.eclipse.swt.widgets.Shell;
 /** SWT app for testing the controller.
  *  @author Kay Kasemir
  */
-public class SWTTest
+public class SWTTestApplication
 {
     public static void main(String[] args)
     {
