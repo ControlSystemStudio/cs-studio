@@ -54,6 +54,7 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource;
@@ -298,7 +299,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 	public RGB getRGBFromColorProperty(String propID){
 		return ((OPIColor)getCastedPropertyValue(propID)).getRGBValue();
 	}
-
+	
+	public Color getSWTColorFromColorProperty(String propID){
+		return ((OPIColor)getCastedPropertyValue(propID)).getSWTColor();
+	}
 	/**
 	 * Return the casted value of a property of this widget model.
 	 * 

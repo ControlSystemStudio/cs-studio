@@ -68,7 +68,7 @@ public abstract class AbstractWidgetTest {
 	    shell.setLayout(new GridLayout(1, false));
 	    Canvas canvas = new Canvas(shell, SWT.None);
 	    canvas.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,true));
-	    canvas.setBackground(CustomMediaFactory.getInstance().getColor(255,255,255));
+	    //canvas.setBackground(CustomMediaFactory.getInstance().getColor(255,255,255));
 	    final Text text = new Text(shell, SWT.READ_ONLY);
 	    text.setFont(CustomMediaFactory.getInstance().getFont("default", 18, SWT.BOLD));
 	    text.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false));
@@ -184,7 +184,7 @@ public abstract class AbstractWidgetTest {
 			return CustomMediaFactory.getInstance().getColor(
 									new RGB((int) (Math.random()*255),(int) (Math.random()*255),(int) (Math.random()*255)));
 		else if(propType == double.class)							
-			return Math.random() *1000;
+			return Math.random() *100;
 								
 		else if(propType == int.class)
 			return (int)(Math.random()*100);

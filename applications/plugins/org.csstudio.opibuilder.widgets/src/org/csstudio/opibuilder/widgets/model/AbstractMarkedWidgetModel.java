@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -150,27 +151,27 @@ public abstract class AbstractMarkedWidgetModel extends AbstractScaledWidgetMode
 	/**
 	 * @return the lolo color
 	 */
-	public RGB getLoloColor() {
-		return getRGBFromColorProperty(PROP_LOLO_COLOR);
+	public Color getLoloColor() {
+		return getSWTColorFromColorProperty(PROP_LOLO_COLOR);
 	}	
 	
 	/**
 	 * @return the lo color
 	 */
-	public RGB getLoColor() {
-		return getRGBFromColorProperty(PROP_LO_COLOR);
+	public Color getLoColor() {
+		return getSWTColorFromColorProperty(PROP_LO_COLOR);
 	}	
 	/**
 	 * @return the hi color
 	 */
-	public RGB getHiColor() {
-		return getRGBFromColorProperty(PROP_HI_COLOR);
+	public Color getHiColor() {
+		return getSWTColorFromColorProperty(PROP_HI_COLOR);
 	}	
 	/**
 	 * @return the hihi color
 	 */
-	public RGB getHihiColor() {
-		return getRGBFromColorProperty(PROP_HIHI_COLOR);
+	public Color getHihiColor() {
+		return getSWTColorFromColorProperty(PROP_HIHI_COLOR);
 	}	
 
 	

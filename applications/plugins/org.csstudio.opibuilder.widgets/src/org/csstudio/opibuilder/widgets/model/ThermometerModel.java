@@ -5,7 +5,8 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.widgets.figures.ThermometerFigure.TemperatureUnit;
+import org.csstudio.swt.widgets.figures.ThermometerFigure.TemperatureUnit;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -90,8 +91,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the fill color
 	 */
-	public RGB getFillColor() {
-		return getRGBFromColorProperty(PROP_FILL_COLOR);
+	public Color getFillColor() {
+		return getSWTColorFromColorProperty(PROP_FILL_COLOR);
 	}	
 	
 	/**
@@ -119,8 +120,8 @@ public class ThermometerModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for fillbackground.
 	 * @return The fillbackground color
 	 */
-	public RGB getFillbackgroundColor() {
-		return getRGBFromColorProperty(PROP_FILLBACKGROUND_COLOR);
+	public Color getFillbackgroundColor() {
+		return getSWTColorFromColorProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 	
 }

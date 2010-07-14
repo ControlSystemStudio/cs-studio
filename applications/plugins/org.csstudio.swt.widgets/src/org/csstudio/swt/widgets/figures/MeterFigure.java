@@ -1,9 +1,13 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.figureparts.RoundScale;
-import org.csstudio.opibuilder.widgets.figureparts.RoundScaledRamp;
-import org.csstudio.opibuilder.widgets.util.RotationUtil;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figureparts.RoundScale;
+import org.csstudio.swt.widgets.figureparts.RoundScaledRamp;
+import org.csstudio.swt.widgets.introspection.MeterIntrospector;
+import org.csstudio.swt.widgets.util.RotationUtil;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.FigureListener;
@@ -18,9 +22,9 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.graphics.RGB;
 
 
 /**
@@ -48,14 +52,14 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 	
 	public MeterFigure() {
 		super();
-		transparent = true;
+		setTransparent(false);
 		scale.setScaleLineVisible(false);
 		
 		((RoundScale)scale).setStartAngle(180-SPACE_ANGLE);
 		((RoundScale)scale).setEndAngle(SPACE_ANGLE);
 		ramp.setRampWidth(12);
-		setLoColor(CustomMediaFactory.COLOR_YELLOW);
-		setHiColor(CustomMediaFactory.COLOR_YELLOW);
+		setLoColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
+		setHiColor(CustomMediaFactory.getInstance().getColor(CustomMediaFactory.COLOR_YELLOW));
 		
 		valueLabel = new Label();		
 		valueLabel.setFont(DEFAULT_LABEL_FONT);
@@ -97,11 +101,27 @@ public class MeterFigure extends AbstractRoundRampedFigure {
 	/**
 	 * @param needleColor the needleColor to set
 	 */
-	public void setNeedleColor(RGB needleColor) {
-		needle.setBackgroundColor(CustomMediaFactory.getInstance().getColor(needleColor));
+	public void setNeedleColor(Color needleColor) {
+		needle.setBackgroundColor(needleColor);
 	}
 
+	/**
+	 * @return color of the needle.
+	 */
+	public Color getNeedleColor(){
+		return needle.getBackgroundColor();
+	}
+	
+	@Override
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new MeterIntrospector().getBeanInfo(this.getClass());
+	}
+	
 	class Needle extends Polygon {
+		public Needle() {
+			setBackgroundColor(CustomMediaFactory.getInstance().getColor(
+					CustomMediaFactory.COLOR_RED));
+		}
 		@Override
 		protected void fillShape(Graphics g) {
 			g.setAntialias(SWT.ON);

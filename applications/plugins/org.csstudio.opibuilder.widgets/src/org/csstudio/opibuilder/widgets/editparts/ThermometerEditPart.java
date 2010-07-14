@@ -2,9 +2,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.ThermometerFigure;
-import org.csstudio.opibuilder.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.csstudio.opibuilder.widgets.model.ThermometerModel;
+import org.csstudio.swt.widgets.figures.ThermometerFigure;
+import org.csstudio.swt.widgets.figures.ThermometerFigure.TemperatureUnit;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -27,7 +27,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 		
 		initializeCommonFigureProperties(thermometer, model);		
 		thermometer.setFillColor(model.getFillColor());
-		thermometer.setUnit(model.getUnit());
+		thermometer.setTemperatureUnit(model.getUnit());
 		thermometer.setShowBulb(model.isShowBulb());	
 		thermometer.setFillBackgroundColor(model.getFillbackgroundColor());
 		thermometer.setEffect3D(model.isEffect3D());
@@ -53,8 +53,8 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
-				thermometer.setFillColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				thermometer.setFillColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_FILL_COLOR, fillColorHandler);	
@@ -65,8 +65,8 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
-				thermometer.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				thermometer.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
@@ -78,7 +78,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
 				thermometer.setShowBulb((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_SHOW_BULB, showBulbHandler);	
@@ -89,8 +89,8 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermometer = (ThermometerFigure) refreshableFigure;
-				thermometer.setUnit(TemperatureUnit.values()[(Integer)newValue]);
-				return true;
+				thermometer.setTemperatureUnit(TemperatureUnit.values()[(Integer)newValue]);
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_UNIT, fahrenheitHandler);
@@ -102,7 +102,7 @@ public final class ThermometerEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ThermometerFigure thermo = (ThermometerFigure) refreshableFigure;
 				thermo.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ThermometerModel.PROP_EFFECT3D, effect3DHandler);	

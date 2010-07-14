@@ -2,8 +2,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.TankFigure;
 import org.csstudio.opibuilder.widgets.model.TankModel;
+import org.csstudio.swt.widgets.figures.TankFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -50,8 +50,8 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				TankFigure tank = (TankFigure) refreshableFigure;
-				tank.setFillColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				tank.setFillColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(TankModel.PROP_FILL_COLOR, fillColorHandler);	
@@ -62,8 +62,8 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				TankFigure tank = (TankFigure) refreshableFigure;
-				tank.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				tank.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(TankModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
@@ -75,7 +75,7 @@ public final class TankEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				TankFigure tank = (TankFigure) refreshableFigure;
 				tank.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(TankModel.PROP_EFFECT3D, effect3DHandler);	

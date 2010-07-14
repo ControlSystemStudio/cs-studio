@@ -8,7 +8,6 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.widgets.figures.BoolButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
 import org.csstudio.opibuilder.widgets.figures.ChoiceButtonFigure;
-import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
 import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
 import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.figures.LabelFigure;
@@ -242,58 +241,6 @@ class IntensityGraphFigureTest extends Figure {
 	
 	
 }
-
-class GaugeFigureTest extends Figure {
-	
-	private GaugeFigure gaugeFigure;
-	private double[] datas;
-	int count;
-	double phase;
-	public GaugeFigureTest() {
-		gaugeFigure = new GaugeFigure();
-		gaugeFigure.setNeedleColor(new RGB(255,0,0));
-		add(gaugeFigure);	
-		final Runnable task = new Runnable(){
-			public void run() {
-				phase = Math.random()*10;
-				
-				gaugeFigure.setValue(phase);
-				gaugeFigure.repaint();
-				count++;
-				for(int i=0; i<100000; i++){
-					int j =0;
-					
-					j++;
-				}
-				Display.getCurrent().timerExec(1, new Runnable() {
-					
-					public void run() {
-						gaugeFigure.repaint();
-					}
-				});
-				
-				gaugeFigure.repaint();						
-				gaugeFigure.repaint();
-				
-				System.out.println("setValueCount =" + count);
-				Display.getCurrent().timerExec(1, this);
-			}
-		};
-		Display.getCurrent().timerExec(10, task);
-		
-	}
-	@Override
-	protected void layout() {
-		gaugeFigure.setBounds(bounds.getCopy().shrink(20, 20));
-		super.layout();
-	}
-	
-	
-	
-	
-}
-
-
 
 class ChoiceButtonFigureTest extends Figure {
 		

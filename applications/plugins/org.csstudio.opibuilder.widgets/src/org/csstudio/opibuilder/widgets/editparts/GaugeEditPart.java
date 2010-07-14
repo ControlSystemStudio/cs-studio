@@ -6,8 +6,9 @@ import java.beans.PropertyChangeListener;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.GaugeFigure;
 import org.csstudio.opibuilder.widgets.model.GaugeModel;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.GaugeFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -29,7 +30,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 		GaugeFigure gauge = new GaugeFigure();
 		
 		initializeCommonFigureProperties(gauge, model);		
-		gauge.setNeedleColor((model.getNeedleColor()));
+		gauge.setNeedleColor(CustomMediaFactory.getInstance().getColor((model.getNeedleColor())));
 		gauge.setEffect3D(model.isEffect3D());	
 		gauge.setGradient(model.isRampGradient());
 		
@@ -55,8 +56,8 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
-				gauge.setNeedleColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				gauge.setNeedleColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(GaugeModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
@@ -69,7 +70,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
 				gauge.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(GaugeModel.PROP_EFFECT3D, effect3DHandler);	
@@ -81,7 +82,7 @@ public final class GaugeEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				GaugeFigure gauge = (GaugeFigure) refreshableFigure;
 				gauge.setGradient((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(GaugeModel.PROP_RAMP_GRADIENT, gradientHandler);	

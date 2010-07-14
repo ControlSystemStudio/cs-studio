@@ -425,6 +425,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	}
 	
 	public void setAnimationDisabled(final boolean stop){
+		if(animationDisabled == stop)
+			return;
 		animationDisabled = stop;
 		if(stop){
 			stopAnimation();
@@ -447,6 +449,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setBottomCrop(final int newval) {
+		if(bottomCrop == newval)
+			return;
 		bottomCrop=newval;
 		resizeImage();
 	}
@@ -456,6 +460,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The path to the image
 	 */
 	public void setFilePath(final IPath newval) {
+		if(this.filePath != null && this.filePath.equals(newval))
+			return;
 		if(animated){
 			stopAnimation();		
 			animationIndex = 0;
@@ -477,6 +483,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setLeftCrop(final int newval) {
+		if(leftCrop == newval)
+			return;
 		leftCrop=newval;
 		resizeImage();
 	}
@@ -486,6 +494,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setRightCrop(final int newval) {
+		if(rightCrop == newval)
+			return;
 		rightCrop=newval;
 		resizeImage();
 	}
@@ -496,7 +506,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param showIndex the showIndex to set
 	 */
 	protected void setShowIndex(int showIndex) {
-		if(showIndex >= imageDataArray.length)
+		if(showIndex >= imageDataArray.length || this.showIndex == showIndex)
 			return;
 		this.showIndex = showIndex;
 		repaint();
@@ -508,7 +518,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The new state (true, if it should be stretched, false otherwise)
 	 */
 	public void setStretch(final boolean newval) {
-		
+		if(stretch == newval)
+			return;
 		stretch=newval;
 		if (staticImage!=null  && !staticImage.isDisposed()) {
 			staticImage.dispose();
@@ -536,6 +547,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setTopCrop(final int newval) {
+		if(topCrop == newval)
+			return;
 		topCrop=newval;
 		resizeImage();
 	}

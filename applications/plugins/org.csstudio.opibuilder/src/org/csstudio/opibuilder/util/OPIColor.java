@@ -71,6 +71,13 @@ public class OPIColor implements IAdaptable {
 	}
 	
 	/**
+	 * @return the swt color. No dispose is needed, the system will handle the dispose.
+	 */
+	public Color getSWTColor(){
+		return CustomMediaFactory.getInstance().getColor(colorValue);
+	}
+	
+	/**
 	 * @return true if this color is predefined in color file, false otherwise.
 	 */
 	public boolean isPreDefined() {

@@ -2,8 +2,8 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.MeterFigure;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
+import org.csstudio.swt.widgets.figures.MeterFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -50,8 +50,8 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				MeterFigure xMeter = (MeterFigure) refreshableFigure;
-				xMeter.setNeedleColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				xMeter.setNeedleColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(XMeterModel.PROP_NEEDLE_COLOR, needleColorColorHandler);	
@@ -65,7 +65,7 @@ public final class XMeterEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				MeterFigure xMeter = (MeterFigure) refreshableFigure;
 				xMeter.setGradient((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(XMeterModel.PROP_RAMP_GRADIENT, gradientHandler);	

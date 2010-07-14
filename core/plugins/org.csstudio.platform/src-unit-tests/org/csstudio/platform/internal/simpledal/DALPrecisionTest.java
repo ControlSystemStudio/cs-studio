@@ -57,12 +57,10 @@ public class DALPrecisionTest {
             _updated = false;
         }
 
-        @Override
         public void channelStateUpdate(final AnyDataChannel channel) {
             LOG.info(_name+":\t********** channelStateUpdate " + channel.getUniqueName());
         }
 
-        @Override
         public void channelDataUpdate(final AnyDataChannel channel) {
             LOG.info("********** channelDataUpdate  " + channel.getUniqueName());
             LOG

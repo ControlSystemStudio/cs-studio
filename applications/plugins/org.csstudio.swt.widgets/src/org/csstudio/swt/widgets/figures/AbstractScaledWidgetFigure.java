@@ -22,9 +22,9 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 
 	protected AbstractScale scale;
 	
-	protected boolean transparent;
+	protected boolean transparent = true;
 	
-	protected double value;
+	protected double value = 50;
 	
 	protected double minimum = 0;	
 	
@@ -126,6 +126,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param logScale the logScale to set
 	 */
 	public void setLogScale(final boolean logScale) {
+		if(this.logScale == logScale)
+			return;
 		this.logScale = logScale;
 		scale.setLogScale(logScale);
 		scale.setRange(new Range(minimum, maximum));
@@ -135,6 +137,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set
 	 */
 	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {
+		if(this.majorTickMarkStepHint == majorTickMarkStepHint || majorTickMarkStepHint <=0)
+			return;
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
 		scale.setMajorTickMarkStepHint(majorTickMarkStepHint);
 		repaint();
@@ -143,7 +147,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param maximum the maximum to set
 	 */
 	public void setMaximum(double maximum) {
-		if(maximum < minimum)
+		if(this.maximum == maximum || maximum < minimum)
 			return;
 		this.maximum = maximum;
 		scale.setRange(new Range(minimum, maximum));
@@ -153,7 +157,7 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param minimum the minimum to set
 	 */
 	public void setMinimum(double minimum) {
-		if(minimum > maximum)
+		if(this.minimum == minimum || minimum > maximum)
 			return;
 		this.minimum = minimum;
 		scale.setRange(new Range(minimum, maximum));
@@ -179,6 +183,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param showMinorTicks the showMinorTicks to set
 	 */
 	public void setShowMinorTicks(final boolean showMinorTicks) {
+		if(this.showMinorTicks == showMinorTicks)
+			return;
 		this.showMinorTicks = showMinorTicks;
 		scale.setMinorTicksVisible(showMinorTicks);
 		repaint();
@@ -187,6 +193,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param showScale the showScale to set
 	 */
 	public void setShowScale(final boolean showScale) {
+		if(this.showScale == showScale)
+			return;
 		this.showScale = showScale;
 		scale.setVisible(showScale);
 		repaint();
@@ -197,6 +205,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * 				The new value for the transparent property
 	 */
 	public void setTransparent(final boolean transparent) {
+		if(this.transparent == transparent)
+			return;
 		this.transparent = transparent;
 		repaint();
 	}	

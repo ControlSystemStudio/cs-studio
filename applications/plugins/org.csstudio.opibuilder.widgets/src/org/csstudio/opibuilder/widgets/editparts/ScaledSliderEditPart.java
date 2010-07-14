@@ -5,8 +5,9 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.ScaledSliderFigure;
 import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.ScaledSliderFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -33,13 +34,13 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 		slider.setFillBackgroundColor(model.getFillbackgroundColor());
 		slider.setThumbColor(model.getThumbColor());
 		slider.setHorizontal(model.isHorizontal());
-		slider.setIncrement(model.getStepIncrement());
+		slider.setStepIncrement(model.getStepIncrement());
 		slider.setPageIncrement(model.getPageIncrement());
-		slider.addSliderListener(new ScaledSliderFigure.IScaledSliderListener() {
-			public void sliderValueChanged(final double newValue) {
+		slider.addManualValueChangeListener(new IManualValueChangeListener() {
+			
+			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(ScaledSliderModel.PROP_PVNAME, newValue);				
-				
+					setPVValue(ScaledSliderModel.PROP_PVNAME, newValue);					
 			}
 		});	
 		
@@ -66,8 +67,8 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				slider.setFillColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_FILL_COLOR, fillColorHandler);	
@@ -78,8 +79,8 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				slider.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
@@ -90,8 +91,8 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setThumbColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				slider.setThumbColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_THUMB_COLOR, thumbColorHandler);		
@@ -103,7 +104,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
 				slider.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_EFFECT3D, effect3DHandler);	
@@ -127,7 +128,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 				
 				model.setSize(model.getSize().height, model.getSize().width);
 				
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_HORIZONTAL, horizontalHandler);	
@@ -141,7 +142,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;				
 				slider.setEnabled((Boolean) newValue);				
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_ENABLED, enableHandler);	
@@ -152,8 +153,8 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
-				slider.setIncrement((Double)newValue);
-				return true;
+				slider.setStepIncrement((Double)newValue);
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_STEP_INCREMENT, incrementHandler);
@@ -164,7 +165,7 @@ public final class ScaledSliderEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ScaledSliderFigure slider = (ScaledSliderFigure) refreshableFigure;
 				slider.setPageIncrement((Double)newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ScaledSliderModel.PROP_PAGE_INCREMENT, pageIncrementHandler);

@@ -5,6 +5,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -57,6 +58,7 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 		
 		setPropertyDescription(PROP_SHOW_MARKERS, "Show Ramp");		
 		setPropertyValue(PROP_TRANSPARENT, false);
+		removeProperty(PROP_TRANSPARENT);
 	}	
 
 	@Override
@@ -67,8 +69,8 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the needle color
 	 */
-	public RGB getNeedleColor() {
-		return getRGBFromColorProperty(PROP_NEEDLE_COLOR);
+	public Color getNeedleColor() {
+		return getSWTColorFromColorProperty(PROP_NEEDLE_COLOR);
 	}	
 	
 	/**
@@ -78,5 +80,9 @@ public class XMeterModel extends AbstractMarkedWidgetModel{
 		return (Boolean) getProperty(PROP_RAMP_GRADIENT).getPropertyValue();
 	}
 	
+	@Override
+	public boolean isTransparent() {
+		return false;
+	}
 	
 }

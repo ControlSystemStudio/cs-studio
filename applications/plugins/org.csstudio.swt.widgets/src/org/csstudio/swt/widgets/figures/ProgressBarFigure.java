@@ -1,9 +1,9 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
 
 
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
@@ -23,7 +23,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Pattern;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -33,36 +32,36 @@ import org.eclipse.swt.widgets.Display;
  */
 public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 	
-	private Color fillColor;
-	private Color fillBackgroundColor;
-
-	private Color outlineColor;
-	private boolean effect3D;
-	private boolean horizontal;
-	private boolean indicatorMode;
+	private Color fillColor = BLUE_COLOR;
+	private Color fillBackgroundColor = GRAY_COLOR;
+	
+	private boolean effect3D = true;
+	private boolean horizontal; 
+	
+	private boolean indicatorMode;	
 	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
 	//border color for track and thumb
 	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_GRAY); 
-	
-	/** The alpha (0 is transparency and 255 is opaque) for disabled paint */
-	private static final int DISABLED_ALPHA = 100;	
-	
+			CustomMediaFactory.COLOR_GRAY);
+	private final static Color BLUE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_BLUE);
+
+
 	private Track track;
 	private Label label;
+	
 	private Thumb thumb;
 
-
-	private double origin = 0; //the start point of the bar.
+	private double origin = 0; //the start point of the bar.	
+	
 	private boolean originIgnored;
 	
 	public ProgressBarFigure() {
 		
 		super();
 		scale.setScaleLineVisible(false);
-		scale.setForegroundColor(outlineColor);
 		scale.setTickLableSide(LabelSide.Secondary);
 		
 		if(horizontal) {
@@ -96,12 +95,74 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 			}
 		});	
 	}
+	
+	
+
+	/**
+	 * @return the fillBackgroundColor
+	 */
+	public Color getFillBackgroundColor() {
+		return fillBackgroundColor;
+	}
+	
+	/**
+	 * @return the fillColor
+	 */
+	public Color getFillColor() {
+		return fillColor;
+	}
+	
+	/**
+	 * @return the origin
+	 */
+	public double getOrigin() {
+		return origin;
+	}
+	
+	/**
+	 * @return the effect3D
+	 */
+	public boolean isEffect3D() {
+		return effect3D;
+	}
+
+	/**
+	 * @return the horizontal
+	 */
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+
+	/**
+	 * @return the indicatorMode
+	 */
+	public boolean isIndicatorMode() {
+		return indicatorMode;
+	}
 
 	@Override
 	public boolean isOpaque() {
 		return false;
-	}	
+	}
+
+	/**
+	 * @return the originIgnored
+	 */
+	public boolean isOriginIgnored() {
+		return originIgnored;
+	}
+
 	
+	/**
+	 * @param effect3D the effect3D to set
+	 */
+	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
+		this.effect3D = effect3D;
+		repaint();
+	}
+
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
@@ -109,90 +170,29 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 		
 	}
 	
-	public void setShowLabel(boolean visible){
-		label.setVisible(visible);
-		repaint();
-	}
-	
-	
 
-	@Override
-	protected void paintClientArea(Graphics graphics) {
-		super.paintClientArea(graphics);
-		if(!isEnabled()) {
-			graphics.setAlpha(DISABLED_ALPHA);
-			graphics.setBackgroundColor(GRAY_COLOR);
-			graphics.fillRectangle(bounds);
-		}
-	}
-	
-	@Override
-	public void setForegroundColor(Color fg) {
-		super.setForegroundColor(fg);
-		outlineColor = fg;
+
+	/**
+	 * @param fillBackgroundColor the fillBackgroundColor to set
+	 */
+	public void setFillBackgroundColor(Color fillBackgroundColor) {
+		if(this.fillBackgroundColor != null && this.fillBackgroundColor.equals(fillBackgroundColor))
+			return;
+		this.fillBackgroundColor = fillBackgroundColor;
+		repaint();
 	}
 	
 	/**
 	 * @param fillColor the fillColor to set
 	 */
-	public void setFillColor(RGB fillColor) {
-		this.fillColor = CustomMediaFactory.getInstance().getColor(fillColor);
-	}
-	
-	/**
-	 * @param fillBackgroundColor the fillBackgroundColor to set
-	 */
-	public void setFillBackgroundColor(RGB fillBackgroundColor) {
-		this.fillBackgroundColor = CustomMediaFactory.getInstance().getColor(
-				fillBackgroundColor);
-	}
-	
-
-
-	/**
-	 * @param effect3D the effect3D to set
-	 */
-	public void setEffect3D(boolean effect3D) {
-		this.effect3D = effect3D;
-	}
-	
-	public void setIndicatorMode(boolean indicatorMode) {
-		this.indicatorMode = indicatorMode;
-		thumb.setVisible(indicatorMode);
-		revalidate();
+	public void setFillColor(Color fillColor) {
+		if(this.fillColor != null && this.fillColor.equals(fillColor))
+			return;
+		this.fillColor = fillColor;
 		repaint();
 	}
 
-	@Override
-	public void setValue(double value) {
-		super.setValue(value);
-		updateLabelText();
-		revalidate();
-	}
 	
-	public void setOrigin(double origin) {		
-		this.origin = origin;
-	}
-	
-	public void setOriginIgnored(boolean originIgnored) {
-		this.originIgnored = originIgnored;
-	}
-
-	@Override
-	public void setRange(double min, double max) {
-		super.setRange(min, max);
-		updateLabelText();
-	}
-	
-	
-	
-	/**
-	 * Update the text of the label.
-	 */
-	private void updateLabelText() {
-		label.setText(scale.format(getValue()));
-	}
-
 	
 	/**
 	 * @param horizontal the horizontal to set
@@ -212,8 +212,109 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 		}		
 		revalidate();
 	}
+	
+	public void setIndicatorMode(boolean indicatorMode) {
+		if(this.indicatorMode == indicatorMode)
+			return;
+		this.indicatorMode = indicatorMode;
+		thumb.setVisible(indicatorMode);
+		revalidate();
+		repaint();
+	}
+
+	public void setOrigin(double origin) {	
+		if(this.origin == origin)
+			return;
+		this.origin = origin;
+		repaint();
+	}
+	
+	
+	
+	public void setOriginIgnored(boolean originIgnored) {
+		if(this.originIgnored == originIgnored)
+			return;
+		this.originIgnored = originIgnored;
+		repaint();
+	}
 
 	
+	@Override
+	public void setRange(double min, double max) {
+		super.setRange(min, max);
+		updateLabelText();
+	}
+
+	
+	public void setShowLabel(boolean visible){
+		label.setVisible(visible);
+		repaint();
+	}
+	
+	@Override
+	public void setValue(double value) {
+		super.setValue(value);
+		updateLabelText();
+		revalidate();
+	}
+		
+	
+	/**
+	 * Update the text of the label.
+	 */
+	private void updateLabelText() {
+		label.setText(scale.format(getValue()));
+	}
+	
+	class Thumb extends Polygon {
+		public static final  int LENGTH = 20;
+		public static final int BREADTH = 13;
+		public final PointList  horizontalThumbPointList = new PointList(new int[] {
+				0,0,  0, BREADTH,  LENGTH*4/5, BREADTH,  LENGTH, BREADTH/2,
+				LENGTH*4/5, 0}) ;
+		public final PointList verticalThumbPointList = new PointList(new int[] {
+				0,0,  0, LENGTH*4/5, BREADTH/2, LENGTH, BREADTH, LENGTH*4/5, BREADTH,  
+				0}) ;
+			
+		public Thumb() {
+			super();
+			//setOutline(true);
+			setFill(true);
+			setForegroundColor(GRAY_COLOR);
+			setLineWidth(1);		
+		}
+		
+		@Override
+		protected void fillShape(Graphics g) {	
+			g.setAntialias(SWT.ON);
+			g.setClip(new Rectangle(getBounds().x, getBounds().y, getBounds().width, getBounds().height));
+			g.setBackgroundColor(WHITE_COLOR);
+			super.fillShape(g);
+			Point leftPoint = getPoints().getPoint(0);
+			Point rightPoint;
+			//if(horizontal) 
+				rightPoint = getPoints().getPoint(2);
+			//else
+			//	rightPoint = getPoints().getPoint(1);//.translate(0, -BREADTH/2);
+			Pattern thumbPattern = null;
+			boolean support3D = GraphicsUtil.testPatternSupported(g);
+			setOutline(effect3D && support3D);
+			if(effect3D && support3D) {
+				thumbPattern = new Pattern(Display.getCurrent(),
+					leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0, 
+					fillColor, 255);
+				g.setBackgroundPattern(thumbPattern);		
+			}else
+				g.setBackgroundColor(fillColor);
+				
+			g.fillPolygon(getPoints());
+			
+			if(effect3D && support3D)
+				thumbPattern.dispose();
+					
+		}
+	}
+
 	class Track extends RectangleFigure {		
 		public Track() {
 			super();
@@ -327,60 +428,10 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 			}			
 		}		
 	}
-	
-	class Thumb extends Polygon {
-		public static final  int LENGTH = 20;
-		public static final int BREADTH = 13;
-		public final PointList  horizontalThumbPointList = new PointList(new int[] {
-				0,0,  0, BREADTH,  LENGTH*4/5, BREADTH,  LENGTH, BREADTH/2,
-				LENGTH*4/5, 0}) ;
-		public final PointList verticalThumbPointList = new PointList(new int[] {
-				0,0,  0, LENGTH*4/5, BREADTH/2, LENGTH, BREADTH, LENGTH*4/5, BREADTH,  
-				0}) ;
-			
-		public Thumb() {
-			super();
-			//setOutline(true);
-			setFill(true);
-			setForegroundColor(GRAY_COLOR);
-			setLineWidth(1);		
-		}
-		
-		@Override
-		protected void fillShape(Graphics g) {	
-			g.setAntialias(SWT.ON);
-			g.setClip(new Rectangle(getBounds().x, getBounds().y, getBounds().width, getBounds().height));
-			g.setBackgroundColor(WHITE_COLOR);
-			super.fillShape(g);
-			Point leftPoint = getPoints().getPoint(0);
-			Point rightPoint;
-			//if(horizontal) 
-				rightPoint = getPoints().getPoint(2);
-			//else
-			//	rightPoint = getPoints().getPoint(1);//.translate(0, -BREADTH/2);
-			Pattern thumbPattern = null;
-			boolean support3D = GraphicsUtil.testPatternSupported(g);
-			setOutline(effect3D && support3D);
-			if(effect3D && support3D) {
-				thumbPattern = new Pattern(Display.getCurrent(),
-					leftPoint.x, leftPoint.y, rightPoint.x, rightPoint.y, WHITE_COLOR, 0, 
-					fillColor, 255);
-				g.setBackgroundPattern(thumbPattern);		
-			}else
-				g.setBackgroundColor(fillColor);
-				
-			g.fillPolygon(getPoints());
-			
-			if(effect3D && support3D)
-				thumbPattern.dispose();
-					
-		}
-	}
-		
-	
+
 	class ProgressBarLayout extends AbstractLayout {
 		
-
+	
 		private static final int ADDITIONAL_MARGIN = 1;
 		
 		/** Used as a constraint for the scale. */
@@ -393,27 +444,13 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 		public static final String THUMB = "thumb";      //$NON-NLS-1$
 		/** Used as a constraint for the label */
 		public static final String LABEL = "label";      //$NON-NLS-1$
-
+	
 		private LinearScale scale;
 		private LinearScaledMarker marker;
 		private Track track;
 		private Label label;
 		private Thumb thumb;
-
-		
-		@Override
-		public void setConstraint(IFigure child, Object constraint) {
-			if(constraint.equals(SCALE))
-				scale = (LinearScale)child;
-			else if (constraint.equals(MARKERS))
-				marker = (LinearScaledMarker) child;
-			else if (constraint.equals(TRACK))
-				track = (Track) child;
-			else if (constraint.equals(THUMB))
-				thumb = (Thumb)child;
-			else if (constraint.equals(LABEL))
-				label = (Label) child;
-		}
+	
 		
 		@Override
 		protected Dimension calculatePreferredSize(IFigure container, int w,
@@ -423,14 +460,6 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 			d.expand(insets.getWidth(), insets.getHeight());
 			return d;
 		}
-	
-		public void layout(IFigure container) {
-			if(horizontal)
-				horizontalLayout(container);
-			else
-				verticalLayout(container);
-		}
-		
 		
 		private void horizontalLayout(IFigure container) {
 			Rectangle area = container.getClientArea().getCopy();		
@@ -490,7 +519,29 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 						labelSize.width, labelSize.height));
 			}
 		}
-
+	
+		public void layout(IFigure container) {
+			if(horizontal)
+				horizontalLayout(container);
+			else
+				verticalLayout(container);
+		}
+		
+		
+		@Override
+		public void setConstraint(IFigure child, Object constraint) {
+			if(constraint.equals(SCALE))
+				scale = (LinearScale)child;
+			else if (constraint.equals(MARKERS))
+				marker = (LinearScaledMarker) child;
+			else if (constraint.equals(TRACK))
+				track = (Track) child;
+			else if (constraint.equals(THUMB))
+				thumb = (Thumb)child;
+			else if (constraint.equals(LABEL))
+				label = (Label) child;
+		}
+	
 		private void verticalLayout(IFigure container) {
 			Rectangle area = container.getClientArea().getCopy();		
 			area.y += ADDITIONAL_MARGIN;

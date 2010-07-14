@@ -6,6 +6,7 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -98,8 +99,8 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the fill color
 	 */
-	public RGB getFillColor() {
-		return getRGBFromColorProperty(PROP_FILL_COLOR);
+	public Color getFillColor() {
+		return getSWTColorFromColorProperty(PROP_FILL_COLOR);
 	}	
 	
 	/**
@@ -123,8 +124,8 @@ public class ProgressBarModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for fillbackground.
 	 * @return The fillbackground color
 	 */
-	public RGB getFillbackgroundColor() {
-		return getRGBFromColorProperty(PROP_FILLBACKGROUND_COLOR);
+	public Color getFillbackgroundColor() {
+		return getSWTColorFromColorProperty(PROP_FILLBACKGROUND_COLOR);
 	}
 
 	public double getOrigin() {

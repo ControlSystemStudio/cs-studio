@@ -87,7 +87,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setTopCrop((Integer)newValue);				
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_TOPCROP, handle);
@@ -99,7 +99,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setBottomCrop((Integer)newValue);			
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_BOTTOMCROP, handle);
@@ -111,7 +111,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setLeftCrop((Integer)newValue);
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_LEFTCROP, handle);
@@ -123,7 +123,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setRightCrop((Integer)newValue);	
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_RIGHTCROP, handle);
@@ -145,7 +145,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 							getWidgetModel(), absolutePath);
 				imageFigure.setFilePath(absolutePath);
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 
 			
@@ -159,7 +159,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setStretch((Boolean)newValue);
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_STRETCH, handle);
@@ -174,7 +174,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				Dimension d = imageFigure.getAutoSizedDimension();
 				if((Boolean) newValue && !model.getStretch() && d != null) 
 					model.setSize(d.width, d.height);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_AUTOSIZE, handle);
@@ -186,7 +186,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 					final IFigure figure) {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.setStopAnimation((Boolean)newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_NO_ANIMATION, handle);
@@ -198,7 +198,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.resizeImage();
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_BORDER_WIDTH, handle);
@@ -211,7 +211,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 				ImageFigure imageFigure = (ImageFigure) figure;
 				imageFigure.resizeImage();
 				autoSizeWidget(imageFigure);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ImageModel.PROP_HEIGHT, handle);

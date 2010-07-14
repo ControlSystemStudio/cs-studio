@@ -188,6 +188,8 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	 * @param effect3D the effect3D to set
 	 */
 	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
 		this.effect3D = effect3D;
 		repaint();
 	}
@@ -197,10 +199,6 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 	 */
 	public boolean isEffect3D() {
 		return effect3D;
-	}
-
-	public void setTestColor(RGB test){
-		setForegroundColor(CustomMediaFactory.getInstance().getColor(test));
 	}
 	
 	class Needle extends Polygon {

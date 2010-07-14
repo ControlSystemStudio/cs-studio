@@ -8,8 +8,9 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.KnobFigure;
 import org.csstudio.opibuilder.widgets.model.KnobModel;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.KnobFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -39,14 +40,14 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 		knob.setGradient(model.isRampGradient());
 		knob.setIncrement(model.getIncrement());
 		
-		knob.addKnobListener(new KnobFigure.IKnobListener() {
-			public void knobValueChanged(final double newValue) {
+		knob.addManualValueChangeListener(new IManualValueChangeListener() {
+			
+			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE){
 					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
-				}
-									
+				}				
 			}
-		});		
+		});
 		
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		
@@ -67,8 +68,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setBulbColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				knob.setBulbColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_KNOB_COLOR, knobColorHandler);	
@@ -80,8 +81,8 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
-				knob.setThumbColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				knob.setThumbColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_THUMB_COLOR, thumbColorHandler);		
@@ -93,7 +94,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
 				knob.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_EFFECT3D, effect3DHandler);
@@ -106,7 +107,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
 				knob.setValueLabelVisibility((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_SHOW_VALUE_LABEL, valueLabelHandler);
@@ -118,7 +119,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
 				knob.setGradient((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_RAMP_GRADIENT, gradientHandler);	
@@ -133,7 +134,7 @@ public final class KnobEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				KnobFigure knob = (KnobFigure) refreshableFigure;
 				knob.setIncrement((Double)newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(KnobModel.PROP_INCREMENT, incrementHandler);

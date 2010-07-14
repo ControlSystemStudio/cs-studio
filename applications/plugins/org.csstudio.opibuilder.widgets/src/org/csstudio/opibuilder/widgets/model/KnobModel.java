@@ -4,6 +4,7 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 
@@ -100,8 +101,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	/**
 	 * @return the knob color
 	 */
-	public RGB getKnobColor() {
-		return getRGBFromColorProperty(PROP_KNOB_COLOR);
+	public Color getKnobColor() {
+		return getSWTColorFromColorProperty(PROP_KNOB_COLOR);
 	}	
 	
 	/**
@@ -122,8 +123,8 @@ public class KnobModel extends AbstractMarkedWidgetModel{
 	 * Gets the RGB for thumb.
 	 * @return The thumb color
 	 */
-	public RGB getThumbColor() {
-		return getRGBFromColorProperty(PROP_THUMB_COLOR);
+	public Color getThumbColor() {
+		return getSWTColorFromColorProperty(PROP_THUMB_COLOR);
 	}
 	
 	/**

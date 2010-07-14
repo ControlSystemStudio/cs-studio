@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.widgets.feedback;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.widgets.figures.MeterFigure;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
+import org.csstudio.swt.widgets.figures.MeterFigure;
 
 /**Feedback Factory for LED.
  * @author Xihui Chen

@@ -3,10 +3,10 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.AbstractScaledWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.swt.widgets.figures.AbstractScaledWidgetFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -59,7 +59,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					return false;
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setValue(ValueUtil.getDouble((IValue)newValue));
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractPVWidgetModel.PROP_PVVALUE, valueHandler);
@@ -71,7 +71,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setRange((Double) newValue, ((AbstractScaledWidgetModel)getModel()).getMaximum());
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MIN, minimumHandler);
@@ -83,7 +83,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setRange(((AbstractScaledWidgetModel)getModel()).getMinimum(), (Double) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAX, maximumHandler);
@@ -95,7 +95,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setMajorTickMarkStepHint((Integer) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_MAJOR_TICK_STEP_HINT, majorTickHandler);
@@ -109,7 +109,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setLogScale((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_LOG_SCALE, logScaleHandler);
@@ -121,7 +121,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setShowScale((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_SCALE, showScaleHandler);
@@ -134,7 +134,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setShowMinorTicks((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SHOW_MINOR_TICKS, showMinorTicksHandler);
@@ -146,7 +146,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 					final IFigure refreshableFigure) {
 				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
 				figure.setTransparent((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);

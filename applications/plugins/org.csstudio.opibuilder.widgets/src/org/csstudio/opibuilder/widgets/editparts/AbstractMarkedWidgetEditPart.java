@@ -5,11 +5,11 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.AbstractMarkedWidgetFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.swt.widgets.figures.AbstractMarkedWidgetFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -140,7 +140,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
 				figure.setShowMarkers((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, showMarkersHandler);
@@ -225,7 +225,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
 				figure.setShowHi((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HI, showHiHandler);
@@ -237,7 +237,7 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
 				figure.setShowHihi((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, showHihiHandler);		
@@ -249,8 +249,8 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoloColor(((OPIColor)newValue).getRGBValue());
-				return true;
+				figure.setLoloColor(((OPIColor)newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LOLO_COLOR, LoloColorHandler);
@@ -261,8 +261,8 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setLoColor(((OPIColor)newValue).getRGBValue());
-				return true;
+				figure.setLoColor(((OPIColor)newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_LO_COLOR, LoColorHandler);		
@@ -273,8 +273,8 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHiColor(((OPIColor)newValue).getRGBValue());
-				return true;
+				figure.setHiColor(((OPIColor)newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HI_COLOR, HiColorHandler);
@@ -285,8 +285,8 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractMarkedWidgetFigure figure = (AbstractMarkedWidgetFigure) refreshableFigure;
-				figure.setHihiColor(((OPIColor)newValue).getRGBValue());
-				return true;
+				figure.setHihiColor(((OPIColor)newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(AbstractMarkedWidgetModel.PROP_HIHI_COLOR, HihiColorHandler);	

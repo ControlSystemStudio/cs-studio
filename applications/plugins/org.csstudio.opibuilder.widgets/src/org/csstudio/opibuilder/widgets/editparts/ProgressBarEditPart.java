@@ -3,10 +3,10 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.ProgressBarFigure;
-import org.csstudio.opibuilder.widgets.figures.ScaledSliderFigure;
 import org.csstudio.opibuilder.widgets.model.ProgressBarModel;
 import org.csstudio.opibuilder.widgets.model.ScaledSliderModel;
+import org.csstudio.swt.widgets.figures.ProgressBarFigure;
+import org.csstudio.swt.widgets.figures.ScaledSliderFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -56,7 +56,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((ProgressBarFigure)figure).setOrigin((Double)newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_ORIGIN, originHandler);
@@ -65,7 +65,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
 				((ProgressBarFigure)figure).setOriginIgnored((Boolean)newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_ORIGIN_IGNORED, originIgnoredHandler);
@@ -76,8 +76,8 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
-				slider.setFillColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				slider.setFillColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_FILL_COLOR, fillColorHandler);	
@@ -88,8 +88,8 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
-				slider.setFillBackgroundColor(((OPIColor) newValue).getRGBValue());
-				return true;
+				slider.setFillBackgroundColor(((OPIColor) newValue).getSWTColor());
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_FILLBACKGROUND_COLOR, fillBackColorHandler);	
@@ -103,7 +103,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
 				slider.setEffect3D((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_EFFECT3D, effect3DHandler);	
@@ -115,7 +115,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;
 				slider.setShowLabel((Boolean) newValue);
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_SHOW_LABEL, showLabelHandler);	
@@ -149,7 +149,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 				
 				model.setSize(model.getSize().height, model.getSize().width);
 				
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_HORIZONTAL, horizontalHandler);	
@@ -163,7 +163,7 @@ public final class ProgressBarEditPart extends AbstractMarkedWidgetEditPart {
 					final IFigure refreshableFigure) {
 				ProgressBarFigure slider = (ProgressBarFigure) refreshableFigure;				
 				slider.setEnabled((Boolean) newValue);				
-				return true;
+				return false;
 			}
 		};
 		setPropertyChangeHandler(ProgressBarModel.PROP_ENABLED, enableHandler);	

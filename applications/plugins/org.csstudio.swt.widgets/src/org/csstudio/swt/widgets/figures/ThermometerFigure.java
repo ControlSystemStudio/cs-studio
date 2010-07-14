@@ -1,9 +1,9 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
 import java.text.NumberFormat;
 
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.LinearScaledMarker;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;
@@ -40,20 +40,6 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		FAHRENHEIT("Fahrenheit", "\u2109"), //$NON-NLS-2$
 		KELVIN("Kelvin", "K"); //$NON-NLS-2$
 		
-		private String name, unitString;
-		private TemperatureUnit(String name, String unitString) {
-			this.name = name;
-			this.unitString = unitString;
-		}
-		@Override
-		public String toString() {
-			return name;
-		}
-		
-		public String getUnitString(){
-			return unitString;
-		}
-		
 		public static String[] stringValues(){
 			String[] result = new String[values().length];
 			int i=0;
@@ -62,40 +48,59 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			}
 			return result;
 		}
+		private String name, unitString;
+		private TemperatureUnit(String name, String unitString) {
+			this.name = name;
+			this.unitString = unitString;
+		}
+		
+		public String getUnitString(){
+			return unitString;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
 	}
-
 	private Color fillColor;
-	private Color fillBackgroundColor;
-	private Color contrastFillColor;	
-	private Color outlineColor;
+	
+	private Color fillBackgroundColor = GRAY_COLOR;
+	private Color contrastFillColor;
+	private TemperatureUnit temperatureUnit;
 	
 	private Pipe pipe;
+	
 	private Bulb bulb;
+	
 	private Label unit;
 	
 	private boolean effect3D = true;
 	
+	private final static Color RED_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_RED);
+	
+	
+
+	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_GRAY);
+	
 	/**
 	 * the value be set before coerced, which is used for displaying on bulb
 	 */
-	private double rawValue = 20;
+	private double rawValue = 20;	
 	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);
 	
-	
-
 	public ThermometerFigure() {
 		
 		super();
 		((LinearScale) scale).setOrientation(Orientation.VERTICAL);
 		scale.setScaleLineVisible(false);
-		scale.setForegroundColor(outlineColor);
-		
 		pipe = new Pipe();
 		bulb = new Bulb();
 		unit = new Label();	
-		unit.setForegroundColor(outlineColor);
 		
 		setLayoutManager(new ThermoLayout());
 		
@@ -104,32 +109,85 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		add(pipe, ThermoLayout.PIPE);
 		add(unit, ThermoLayout.UNIT);
 		add(bulb, ThermoLayout.BULB);
-	  
+	  	setFillColor(RED_COLOR);
+		setTemperatureUnit(TemperatureUnit.CELSIUS);
+
 	}
 	
+	
+	/**
+	 * @return the fillBackgroundColor
+	 */
+	public Color getFillBackgroundColor() {
+		return fillBackgroundColor;
+	}
+
+	
+	/**
+	 * @return the fillColor
+	 */
+	public Color getFillColor() {
+		return fillColor;
+	}
+
+	/**
+	 * @return the temperatureUnit
+	 */
+	public TemperatureUnit getTemperatureUnit() {
+		return temperatureUnit;
+	}
+
+	/**
+	 * @return the effect3D
+	 */
+	public boolean isEffect3D() {
+		return effect3D;
+	}
+
 	@Override
 	public boolean isOpaque() {
 		return false;
-	}	
+	}
+
+	/**
+	 * @param effect3D the effect3D to set
+	 */
+	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
+		this.effect3D = effect3D;
+		repaint();
+	}
+
+	/**
+	 * @param fillBackgroundColor the fillBackgroundColor to set
+	 */
+	public void setFillBackgroundColor(Color fillBackgroundColor) {
+		if(this.fillBackgroundColor != null && this.fillBackgroundColor.equals(fillBackgroundColor))
+			return;
+		this.fillBackgroundColor = fillBackgroundColor;
+		repaint();
+	}
+
+	/**
+	 * @param fillColor the fillColor to set
+	 */
+	public void setFillColor(Color fillColor) {
+		if(this.fillColor != null && this.fillColor.equals(fillColor))
+			return;
+		this.fillColor = fillColor;		
+		int blue = 255 - fillColor.getBlue();
+		int green = 255 - fillColor.getGreen();
+		int red = fillColor.getRed();
+		this.contrastFillColor = CustomMediaFactory.getInstance().getColor(
+				new RGB(red, green, blue));
+		repaint();
+	}
 	
 	@Override
 	public void setForegroundColor(Color fg) {
 		super.setForegroundColor(fg);
-		outlineColor = fg;
 	}
-	
-	/**
-	 * @param fillColor the fillColor to set
-	 */
-	public void setFillColor(RGB fillColor) {
-		this.fillColor = CustomMediaFactory.getInstance().getColor(fillColor);
-		int blue = 255 - fillColor.blue;
-		int green = 255 - fillColor.green;
-		int red = fillColor.red;
-		this.contrastFillColor = CustomMediaFactory.getInstance().getColor(
-				new RGB(red, green, blue));
-	}
-	
 	
 	/**
 	 * @param showBulb the showBulb to set
@@ -138,37 +196,114 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		bulb.setVisible(showBulb);
 		revalidate();
 	}
-
 	
 	/**
 	 * @param temperatureUnit the unit to set.
 	 */
-	public void setUnit(TemperatureUnit temperatureUnit) {		
-			unit.setText(temperatureUnit.getUnitString());
+	public void setTemperatureUnit(TemperatureUnit temperatureUnit) {
+		if(this.temperatureUnit == temperatureUnit)
+			return;
+		this.temperatureUnit = temperatureUnit;
+		unit.setText(temperatureUnit.getUnitString());
 		
 	}
-
-	/**
-	 * @param fillBackgroundColor the fillBackgroundColor to set
-	 */
-	public void setFillBackgroundColor(RGB fillBackgroundColor) {
-		this.fillBackgroundColor = CustomMediaFactory.getInstance().getColor(
-				fillBackgroundColor);
-	}
-
-	/**
-	 * @param effect3D the effect3D to set
-	 */
-	public void setEffect3D(boolean effect3D) {
-		this.effect3D = effect3D;
-	}
 	
+		
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
 		rawValue = value;
 	}
+
+
+	class Bulb extends Ellipse {
+		
+		public final static int MAX_DIAMETER = 40;
+		private final Color EFFECT3D_BULB_COLOR = CustomMediaFactory.getInstance().getColor(
+				new RGB(140, 140, 140));
+		public Bulb() {
+			super();
+			setOutline(true);
+		}
+		
+		@Override
+		protected void fillShape(Graphics graphics) {
+			graphics.setAntialias(SWT.ON);
+			boolean support3D = false;
+			if(effect3D)
+				 support3D = GraphicsUtil.testPatternSupported(graphics);
+			
+			if(effect3D && support3D){
+				graphics.setBackgroundColor(fillColor);
+				super.fillShape(graphics);
+				//int l = (int) ((bounds.width - lineWidth)*0.293/2);
+				Pattern backPattern = null;
+				
+				 backPattern = new Pattern(Display.getCurrent(), 
+					bounds.x + lineWidth, bounds.y + lineWidth, 
+					bounds.x+bounds.width-lineWidth, bounds.y+bounds.height-lineWidth,
+					WHITE_COLOR,255, fillColor, 0);			
+				graphics.setBackgroundPattern(backPattern);
+				super.fillShape(graphics);
+				backPattern.dispose();
+				
+			}else{
+				graphics.setBackgroundColor(fillColor);				
+				super.fillShape(graphics);
+			}			
 	
+			NumberFormat format = NumberFormat.getInstance();
+			format.setMaximumFractionDigits(2);
+			String valueString = format.format(rawValue);
+			Dimension valueSize = 
+				FigureUtilities.getTextExtents(valueString, getFont());
+			if(valueSize.width < bounds.width) {				
+				graphics.setForegroundColor(contrastFillColor);
+				graphics.drawText(valueString, new Point(
+						bounds.x + bounds.width/2 - valueSize.width/2,
+						bounds.y + bounds.height/2 - valueSize.height/2));				
+			}			
+		}
+		
+		@Override
+		protected void outlineShape(Graphics graphics) {
+			boolean support3D = false;
+			if(effect3D)
+				 support3D = GraphicsUtil.testPatternSupported(graphics);
+			
+			if(effect3D && support3D)
+				graphics.setForegroundColor(EFFECT3D_BULB_COLOR);
+			super.outlineShape(graphics);			
+			//draw a small rectangle to hide the joint  
+			
+			
+			if(effect3D && support3D) {
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
+					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
+				Pattern backPattern = new Pattern(Display.getCurrent(), 
+					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
+					pipe.getBounds().x + Pipe.PIPE_WIDTH,
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
+					WHITE_COLOR,255, fillColor, 0);					
+				graphics.setBackgroundPattern(backPattern);
+				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
+					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
+				backPattern.dispose();
+		
+			}else{
+				graphics.setBackgroundColor(fillColor);
+				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
+						((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
+						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),
+						Pipe.FILL_CORNER, Pipe.FILL_CORNER);			
+			}
+				
+		}
+	}
+
 	class Pipe extends RoundedRectangle {		
 		
 		
@@ -184,7 +319,6 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		protected void fillShape(Graphics graphics) {
 			corner.height =PIPE_WIDTH/2;
 			corner.width = PIPE_WIDTH/2;
-			graphics.setForegroundColor(outlineColor);
 			graphics.setBackgroundColor(fillBackgroundColor);
 			
 			int valuePosition = ((LinearScale) scale).getValuePosition(getCoercedValue(), false);
@@ -238,108 +372,17 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			
 		}
 		
+		public Dimension getCorner() {
+			return corner;
+		}
+		
 		@Override
 		public Dimension getPreferredSize(int wHint, int hHint) {
 			return new Dimension(PIPE_WIDTH , hHint+2*corner.height); 
 		}
-		
-		public Dimension getCorner() {
-			return corner;
-		}
 	
 	}
-	
-	class Bulb extends Ellipse {
-		
-		public final static int MAX_DIAMETER = 40;
-		private final Color EFFECT3D_BULB_COLOR = CustomMediaFactory.getInstance().getColor(
-				new RGB(140, 140, 140));
-		public Bulb() {
-			super();
-			setOutline(true);
-		}
-		
-		@Override
-		protected void fillShape(Graphics graphics) {
-			graphics.setAntialias(SWT.ON);
-			boolean support3D = false;
-			if(effect3D)
-				 support3D = GraphicsUtil.testPatternSupported(graphics);
-			
-			if(effect3D && support3D){
-				graphics.setBackgroundColor(fillColor);
-				super.fillShape(graphics);
-				//int l = (int) ((bounds.width - lineWidth)*0.293/2);
-				Pattern backPattern = null;
-				
-				 backPattern = new Pattern(Display.getCurrent(), 
-					bounds.x + lineWidth, bounds.y + lineWidth, 
-					bounds.x+bounds.width-lineWidth, bounds.y+bounds.height-lineWidth,
-					WHITE_COLOR,255, fillColor, 0);			
-				graphics.setBackgroundPattern(backPattern);
-				super.fillShape(graphics);
-				backPattern.dispose();
-				
-			}else{
-				graphics.setBackgroundColor(fillColor);				
-				super.fillShape(graphics);
-			}			
 
-			NumberFormat format = NumberFormat.getInstance();
-			format.setMaximumFractionDigits(2);
-			String valueString = format.format(rawValue);
-			Dimension valueSize = 
-				FigureUtilities.getTextExtents(valueString, getFont());
-			if(valueSize.width < bounds.width) {				
-				graphics.setForegroundColor(contrastFillColor);
-				graphics.drawText(valueString, new Point(
-						bounds.x + bounds.width/2 - valueSize.width/2,
-						bounds.y + bounds.height/2 - valueSize.height/2));				
-			}			
-		}
-		
-		@Override
-		protected void outlineShape(Graphics graphics) {
-			boolean support3D = false;
-			if(effect3D)
-				 support3D = GraphicsUtil.testPatternSupported(graphics);
-			
-			if(effect3D && support3D)
-				graphics.setForegroundColor(EFFECT3D_BULB_COLOR);
-			else
-				graphics.setForegroundColor(outlineColor);
-			super.outlineShape(graphics);			
-			//draw a small rectangle to hide the joint  
-			
-			
-			if(effect3D && support3D) {
-				graphics.setBackgroundColor(fillColor);
-				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
-					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
-				Pattern backPattern = new Pattern(Display.getCurrent(), 
-					pipe.getBounds().x, ((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
-					pipe.getBounds().x + Pipe.PIPE_WIDTH,
-					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
-					WHITE_COLOR,255, fillColor, 0);					
-				graphics.setBackgroundPattern(backPattern);
-				graphics.fillRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-					((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
-					Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, 2));
-				backPattern.dispose();
-		
-			}else{
-				graphics.setBackgroundColor(fillColor);
-				graphics.fillRoundRectangle(new Rectangle(pipe.getBounds().x + pipe.getLineWidth(),
-						((LinearScale) scale).getValuePosition(scale.getRange().getLower(), false),
-						Pipe.PIPE_WIDTH- pipe.getLineWidth() *2, ((LinearScale) scale).getMargin()),
-						Pipe.FILL_CORNER, Pipe.FILL_CORNER);			
-			}
-				
-		}
-	}
-	
-		
 	class ThermoLayout extends AbstractLayout {
 		
 		/** Used as a constraint for the scale. */
@@ -358,20 +401,6 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 		private IFigure bulb, unit;	
 		
 		@Override
-		public void setConstraint(IFigure child, Object constraint) {
-			if(constraint.equals(SCALE))
-				scale = (LinearScale)child;
-			else if (constraint.equals(MARKERS))
-				marker = (LinearScaledMarker) child;
-			else if (constraint.equals(PIPE))
-				pipe = (Pipe) child;
-			else if (constraint.equals(BULB))
-				bulb = child;
-			else if (constraint.equals(UNIT))
-				unit = child;
-		}
-		
-		@Override
 		protected Dimension calculatePreferredSize(IFigure container, int w,
 				int h) {
 			Insets insets = container.getInsets();
@@ -379,7 +408,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 			d.expand(insets.getWidth(), insets.getHeight());
 			return d;
 		}
-	
+		
 		public void layout(IFigure container) {
 			Rectangle area = container.getClientArea();		
 			if(bulb != null && bulb.isVisible()) {
@@ -426,6 +455,20 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 						pipeSize.width,
 						pipeSize.height));
 			}	
+		}
+	
+		@Override
+		public void setConstraint(IFigure child, Object constraint) {
+			if(constraint.equals(SCALE))
+				scale = (LinearScale)child;
+			else if (constraint.equals(MARKERS))
+				marker = (LinearScaledMarker) child;
+			else if (constraint.equals(PIPE))
+				pipe = (Pipe) child;
+			else if (constraint.equals(BULB))
+				bulb = child;
+			else if (constraint.equals(UNIT))
+				unit = child;
 		}
 	
 	}
