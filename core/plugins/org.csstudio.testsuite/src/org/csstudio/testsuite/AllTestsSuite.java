@@ -39,7 +39,6 @@ import junit.framework.TestSuite;
 public class AllTestsSuite {
 
 	//Comma separated list, if list is empty, every root will be chosen
-	//private static final String bundleRoot = "org.csstudio";
 	private static final String BUNDLE_ROOT = "org.,de.desy.";
 
 

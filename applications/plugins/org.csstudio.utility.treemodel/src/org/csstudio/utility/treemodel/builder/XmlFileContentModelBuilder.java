@@ -83,7 +83,6 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     @CheckForNull
     protected final ContentModel<T> createContentModel() throws CreateContentModelException {
         try {
-            //final FileInputStream fstream = new FileInputStream(_filePath);
             // Convert our input stream to a dataInputStream
             final DataInputStream in = new DataInputStream(_inStream);
 
