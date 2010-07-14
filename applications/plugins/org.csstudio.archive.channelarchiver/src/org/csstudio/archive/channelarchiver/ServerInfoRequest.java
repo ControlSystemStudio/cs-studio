@@ -1,10 +1,12 @@
 package org.csstudio.archive.channelarchiver;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.csstudio.archive.ArchiveAccessException;
 
 /** Handles the "archiver.info" request and its results.
  *  @author Kay Kasemir
@@ -22,9 +24,10 @@ final class ServerInfoRequest
 	private String status_strings[];
 	private Hashtable<Integer, SeverityImpl> severities;
 
-	/** Read info from data server */
+	/** Read info from data server
+	 * @throws ArchiveAccessException */
     @SuppressWarnings("unchecked")
-    public void read(final XmlRpcClient xmlrpc) throws Exception
+    public void read(final XmlRpcClient xmlrpc) throws ArchiveAccessException
 	{
 		Hashtable<String, Object> result;
 		try
@@ -33,10 +36,12 @@ final class ServerInfoRequest
 			result = (Hashtable<String, Object>)
 			    xmlrpc.execute("archiver.info", params);
 		}
-		catch (XmlRpcException e)
+		catch (final XmlRpcException e)
 		{
-			throw new Exception("archiver.info call failed", e);
-		}
+			throw new ArchiveAccessException("archiver.info call failed", e);
+		} catch (final IOException e) {
+		    throw new ArchiveAccessException("archiver.info call failed", e);
+        }
 
 		//	{ int32             ver,
 		//	  string            desc,
@@ -53,8 +58,9 @@ final class ServerInfoRequest
 		// Get 'how'. Silly code to copy that into a type-safe vector.
 		Vector tmp =  (Vector) result.get("how");
 		how_strings = new String[tmp.size()];
-		for (int i=0; i<tmp.size(); ++i)
-			how_strings[i] = (String)tmp.get(i);
+		for (int i=0; i<tmp.size(); ++i) {
+            how_strings[i] = (String)tmp.get(i);
+        }
 		// Same silly code for the status strings. Better way?
 		tmp = (Vector) result.get("stat");
 		status_strings = new String[tmp.size()];
@@ -62,20 +68,22 @@ final class ServerInfoRequest
         {
             status_strings[i] = (String)tmp.get(i);
             // Patch "NO ALARM" into "OK"
-            if (status_strings[i].equals("NO_ALARM"))
+            if (status_strings[i].equals("NO_ALARM")) {
                 status_strings[i] = NO_ALARM;
+            }
         }
         // Same silly code for the severity strings.
 		final Vector sevr_info = (Vector) result.get("sevr");
 		severities = new Hashtable<Integer, SeverityImpl>();
-		for (Object sio : sevr_info)
+		for (final Object sio : sevr_info)
 		{
 		    final Hashtable si = (Hashtable) sio;
-			
+
 			String sevr_txt = (String)si.get("sevr");
             // Patch "NO ALARM" into "OK"
-            if (sevr_txt.equals("NO_ALARM"))
+            if (sevr_txt.equals("NO_ALARM")) {
                 sevr_txt = NO_ALARM;
+            }
 			severities.put((Integer) si.get("num"),
 					      new SeverityImpl(sevr_txt,
 							              (Boolean)si.get("has_value"),
@@ -89,31 +97,32 @@ final class ServerInfoRequest
 	{
 		return version;
 	}
-	
+
 	/** @return Returns the description. */
 	public String getDescription()
 	{
 		return description;
 	}
-    
+
     /** @return Returns the list of supported request types. */
     public String[] getRequestTypes()
     {
         return how_strings;
     }
-	
+
 	/** @return Returns the status strings. */
 	public String[] getStatusStrings()
 	{
 		return status_strings;
 	}
-	
+
     /** @return Returns the severity infos. */
-	public SeverityImpl getSeverity(int severity)
+	public SeverityImpl getSeverity(final int severity)
 	{
         final SeverityImpl sev = severities.get(new Integer(severity));
-        if (sev != null)
+        if (sev != null) {
             return sev;
+        }
         return new SeverityImpl(
                         "<Severity " + severity + "?>",
                         false, false);
@@ -126,8 +135,9 @@ final class ServerInfoRequest
 		result.append(String.format("Server version : %d\n", version));
 		result.append(String.format("Description    :\n%s", description));
 		result.append("Available request methods:\n");
-		for (int i=0; i<how_strings.length; ++i)
-			result.append(String.format("%d = '%s'\n", i, how_strings[i]));
+		for (int i=0; i<how_strings.length; ++i) {
+            result.append(String.format("%d = '%s'\n", i, how_strings[i]));
+        }
 		return result.toString();
 	}
 }

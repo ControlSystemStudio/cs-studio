@@ -1,27 +1,31 @@
 package org.csstudio.archive.channelarchiver;
 
+import java.io.IOException;
 import java.util.Hashtable;
 import java.util.Vector;
 
 import org.apache.xmlrpc.XmlRpcClient;
 import org.apache.xmlrpc.XmlRpcException;
+import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.Messages;
 import org.csstudio.archive.NameInfo;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 
-/** Handles the "archiver.names" request and its results. */
+/**
+ * Handles the "archiver.names" request and its results.
+ */
 @SuppressWarnings("nls")
 public class NamesRequest
 {
 	final private int key;
 	final private String pattern;
 	private NameInfo names[];
-	
+
 	/** Create a name lookup.
 	 *   @param pattern Regular expression pattern for the name.
 	 */
-	public NamesRequest(int key, String pattern)
+	public NamesRequest(final int key, final String pattern)
 	{
 		this.key = key;
 		this.pattern = pattern;
@@ -29,7 +33,7 @@ public class NamesRequest
 
 	/** Read info from data server */
 	@SuppressWarnings("unchecked")
-    public void read(XmlRpcClient xmlrpc) throws Exception
+    public void read(final XmlRpcClient xmlrpc) throws ArchiveAccessException
 	{
 		Vector<?> result;
 		try
@@ -39,9 +43,11 @@ public class NamesRequest
 			params.add(pattern);
 			result = (Vector<?>) xmlrpc.execute("archiver.names", params);
 		}
-		catch (XmlRpcException e)
-		{
-			throw new Exception("archiver.names call failed", e);
+		catch (final XmlRpcException e) {
+			throw new ArchiveAccessException("archiver.names execute call failed", e);
+		}
+		catch (final IOException e) {
+		    throw new ArchiveAccessException("archiver.names execute call failed", e);
 		}
 
 		//	{ string name,
@@ -53,10 +59,10 @@ public class NamesRequest
 		{
 			final Hashtable<String, Object> entry =
 			    (Hashtable<String, Object>) result.get(i);
-            ITimestamp start = TimestampFactory.createTimestamp(
+            final ITimestamp start = TimestampFactory.createTimestamp(
                             (Integer) entry.get("start_sec"),
                             (Integer) entry.get("start_nano"));
-            ITimestamp end = TimestampFactory.createTimestamp(
+            final ITimestamp end = TimestampFactory.createTimestamp(
                             (Integer) entry.get("end_sec"),
                             (Integer) entry.get("end_nano"));
 			names[i] = new NameInfo(
@@ -69,17 +75,18 @@ public class NamesRequest
 	{
 		return names;
 	}
-	
+
 	/** @return Returns a more or less useful string. */
     @Override public String toString()
 	{
-		StringBuffer result = new StringBuffer();
+		final StringBuffer result = new StringBuffer();
 		result.append(String.format("Names with key %d matching '%s':\n",
 				key, pattern));
 		for (int i=0; i<names.length; ++i)
 		{
-			if (i>0)
-				result.append(Messages.ArrayElementSeparator);
+			if (i>0) {
+                result.append(Messages.ArrayElementSeparator);
+            }
 			result.append('\'');
 			result.append(names[i].getName());
 			result.append('\'');

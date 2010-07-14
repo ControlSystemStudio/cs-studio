@@ -6,6 +6,7 @@ import java.util.Vector;
 
 import org.apache.xmlrpc.AsyncCallback;
 import org.apache.xmlrpc.XmlRpcClient;
+import org.csstudio.archive.ArchiveAccessException;
 import org.csstudio.archive.ArchiveValues;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IMetaData;
@@ -32,10 +33,10 @@ public class ValuesRequest implements AsyncCallback
     final private IValue.Quality quality;
 
 	/** Determine quality automatically based on received sample?
-     *  With min/max: interpolated? 
+     *  With min/max: interpolated?
      */
     private boolean automatic_quality = false;
-    
+
     // Possible 'type' IDs for the received values.
 	final private static int TYPE_STRING = 0;
     final private static int TYPE_ENUM = 1;
@@ -51,30 +52,32 @@ public class ValuesRequest implements AsyncCallback
 	 *  <p>
 	 *  Details regarding the meaning of 'count' for the different 'how'
 	 *  values are in the XML-RPC description in the ChannelArchiver manual.
-	 *  
+	 *
 	 *  @param key Archive key
 	 *  @param channels Vector of channel names
 	 *  @param start Start time for retrieval
 	 *  @param end  End time for retrieval
      *  @param how How to retrieve
 	 *  @param parms Detailed parameters.
+	 *  @throws ArchiveAccessException on accessing archive or computing averages failures
 	 */
-	public ValuesRequest(ArchiveServer server,
-			int key, String channels[],
-			ITimestamp start, ITimestamp end, int how, Object parms[])
-	        throws Exception
+	public ValuesRequest(final ArchiveServer server,
+			final int key, final String channels[],
+			final ITimestamp start, final ITimestamp end, int how, Object parms[])
+	        throws ArchiveAccessException
 	{
         final String req_type = server.getRequestTypes()[how];
-        
+
         // Check parms
-        if (req_type.equals(ArchiveServer.GET_AVERAGE))
+        if (req_type.equals(org.csstudio.archive.ArchiveServer.GET_AVERAGE))
         {
             quality = IValue.Quality.Interpolated;
             if (server.getVersion() < 1)
             {
                 // GET_AVERAGE for old server: Plot-binning
-                if (! (parms.length == 1  &&  parms[0] instanceof Double))
-                    throw new Exception("Expected 'count' for " + req_type);
+                if (! ((parms.length == 1)  &&  (parms[0] instanceof Double))) {
+                    throw new ArchiveAccessException("Expected 'count' for " + req_type);
+                }
                 how = server.getRequestCode("plot-binning");
                 // Uses bin count, so convert average interval back into bins
                 final double interval = ((Double)parms[0]).doubleValue();
@@ -84,8 +87,9 @@ public class ValuesRequest implements AsyncCallback
             else
             {
                 // GET_AVERAGE for new server: Min/max/average
-                if (! (parms.length == 1  &&  parms[0] instanceof Double))
-                    throw new Exception("Expected 'Double delta' for GET_AVERAGE");
+                if (! ((parms.length == 1)  &&  (parms[0] instanceof Double))) {
+                    throw new ArchiveAccessException("Expected 'Double delta' for GET_AVERAGE");
+                }
                 // We got the Double interval as per javadoc for the request type,
                 // but the server actually only handles int...
                 final double secs = ((Double)parms[0]).doubleValue();
@@ -95,16 +99,18 @@ public class ValuesRequest implements AsyncCallback
         }
         else
         {   // All others use 'Integer count'
-            if (! (parms.length == 1  &&  parms[0] instanceof Integer))
-                throw new Exception("Expected 'Integer count' for " + req_type);
+            if (! ((parms.length == 1)  &&  (parms[0] instanceof Integer))) {
+                throw new ArchiveAccessException("Expected 'Integer count' for " + req_type);
+            }
 
             // Raw == Original, all else is somehow interpolated
-            if (req_type.equals(ArchiveServer.GET_RAW))
+            if (req_type.equals(org.csstudio.archive.ArchiveServer.GET_RAW)) {
                 quality = IValue.Quality.Original;
-            else
+            } else {
                 quality = IValue.Quality.Interpolated;
+            }
         }
-        
+
 		this.server = server;
 		this.key = key;
 		this.channels = channels;
@@ -114,9 +120,13 @@ public class ValuesRequest implements AsyncCallback
         this.parms = parms;
 	}
 
-	/** @see org.csstudio.archive.channelarchiver.ClientRequest#read() */
+
+	/**
+	 * @param xmlrpc the client
+	 * @throws ArchiveAccessException
+	 */
     @SuppressWarnings("unchecked")
-    public void read(XmlRpcClient xmlrpc) throws Exception
+    public void read(final XmlRpcClient xmlrpc) throws ArchiveAccessException
 	{
         xml_rpc_result = null;
         xml_rpc_exception = null;
@@ -134,20 +144,27 @@ public class ValuesRequest implements AsyncCallback
 		// Wait for AsynCallback to set the xml_rpc_result or .._exception
 		synchronized (this)
         {
-		    wait();
+		    try {
+                wait();
+            } catch (final InterruptedException e) {
+                Thread.currentThread().interrupt();
+                throw new ArchiveAccessException("Wait during read has been interrupted.", e);
+            }
         }
-		if (xml_rpc_exception != null)
-		    throw new Exception("archiver.values call failed: " + xml_rpc_exception.getMessage());
+		if (xml_rpc_exception != null) {
+            throw new ArchiveAccessException("archiver.values call failed: " + xml_rpc_exception.getMessage());
+        }
 		// Cancelled?
 		if (xml_rpc_result == null)
 		{
 		    archived_samples = new ArchiveValues[channels.length];
-	        for (int i=0; i<archived_samples.length; ++i)
-	            archived_samples[i] =
+	        for (int i=0; i<archived_samples.length; ++i) {
+                archived_samples[i] =
 	                new ArchiveValues(server, channels[i], new IValue[0]);
+            }
 		    return;
 		}
-		
+
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
 		final int num_returned_channels = xml_rpc_result.size();
@@ -167,16 +184,16 @@ public class ValuesRequest implements AsyncCallback
 				samples = decodeValues(type, count, meta,
 						(Vector)channel_data.get("values"));
 			}
-			catch (Exception e)
+			catch (final Exception e)
 			{
-				throw new Exception("Error while decoding values for channel '"
+				throw new ArchiveAccessException("Error while decoding values for channel '"
 						+ name + "': " + e.getMessage(), e);
 			}
 			archived_samples[channel_idx] =
 				new ArchiveValues(server, name, samples);
 		}
 	}
-    
+
     /** Cancel an ongoing read.
      *  <p>
      *  Somewhat fake, because there is no way to stop the underlying
@@ -194,7 +211,7 @@ public class ValuesRequest implements AsyncCallback
     }
 
 	/** @see AsyncCallback */
-    public void handleError(Exception error, URL arg1, String arg2)
+    public void handleError(final Exception error, final URL arg1, final String arg2)
     {
         synchronized (this)
         {
@@ -205,7 +222,7 @@ public class ValuesRequest implements AsyncCallback
 
     /** @see AsyncCallback */
     @SuppressWarnings("unchecked")
-    public void handleResult(Object result, URL arg1, String arg2)
+    public void handleResult(final Object result, final URL arg1, final String arg2)
     {
         synchronized (this)
         {
@@ -214,14 +231,14 @@ public class ValuesRequest implements AsyncCallback
         }
     }
 
-    /** Parse the MetaData from the received XML-RPC response. 
+    /** Parse the MetaData from the received XML-RPC response.
 	 * @param name */
 	@SuppressWarnings("unchecked")
-    private IMetaData decodeMetaData(final String name, int value_type, Hashtable meta_hash)
+    private IMetaData decodeMetaData(final String name, final int value_type, final Hashtable meta_hash)
 		throws Exception
 	{
-		// meta := { int32 type;  
-		//		     type==0: string states[], 
+		// meta := { int32 type;
+		//		     type==0: string states[],
 		//		     type==1: double disp_high,
 		//		              double disp_low,
 		//		              double alarm_high,
@@ -231,8 +248,9 @@ public class ValuesRequest implements AsyncCallback
 		//		              int prec,  string units
 		//         }
 		final int meta_type = (Integer) meta_hash.get("type");
-		if (meta_type < 0 || meta_type > 1)
-			throw new Exception("Invalid 'meta' type " + meta_type);
+		if ((meta_type < 0) || (meta_type > 1)) {
+            throw new Exception("Invalid 'meta' type " + meta_type);
+        }
 		if (meta_type == 1)
 		{
             // The 2.8.1 server will give 'ENUM' type values
@@ -249,23 +267,25 @@ public class ValuesRequest implements AsyncCallback
 					(String) meta_hash.get("units"));
 		}
         //  else
-		if (! (value_type == TYPE_ENUM  ||  value_type == TYPE_STRING))
-			throw new Exception(
+		if (! ((value_type == TYPE_ENUM)  ||  (value_type == TYPE_STRING))) {
+            throw new Exception(
 					"Received enumerated meta information for value type "
 					+ value_type);
+        }
 		final Vector state_vec = (Vector) meta_hash.get("states");
 		final int N = state_vec.size();
 		final String states[] = new String[N];
 		// Silly loop because of type warnings from state_vec.toArray(states)
-		for (int i=0; i<N; ++i)
-			states[i] = (String) state_vec.get(i);
+		for (int i=0; i<N; ++i) {
+            states[i] = (String) state_vec.get(i);
+        }
 		return ValueFactory.createEnumeratedMetaData(states);
 	}
 
 	/** Parse the values from the received XML-RPC response. */
 	@SuppressWarnings("unchecked")
-    private IValue [] decodeValues(int type, int count, IMetaData meta,
-			                      Vector value_vec) throws Exception
+    private IValue [] decodeValues(final int type, final int count, final IMetaData meta,
+			                      final Vector value_vec) throws Exception
 	{
         // values := { int32 stat,  int32 sevr,
 	    //             int32 secs,  int32 nano,
@@ -285,12 +305,13 @@ public class ValuesRequest implements AsyncCallback
             final SeverityImpl sevr = server.getSeverity(sevr_code);
             final String stat = server.getStatus(sevr, stat_code);
 			final Vector vv = (Vector)sample_hash.get("value");
-            
+
 			if (type == TYPE_DOUBLE)
 			{
 				final double values[] = new double[count];
-				for (int vi=0; vi<count; ++vi)
-					values[vi] = (Double)vv.get(vi);
+				for (int vi=0; vi<count; ++vi) {
+                    values[vi] = (Double)vv.get(vi);
+                }
                 // Check for "min", "max".
                 // Only handles min/max for double, but that's OK
                 // since for now that's all that the server does as well.
@@ -323,16 +344,18 @@ public class ValuesRequest implements AsyncCallback
 				if (meta instanceof INumericMetaData)
 				{
 	                final long values[] = new long[count];
-	                for (int vi=0; vi<count; ++vi)
-	                    values[vi] = (long) ((Integer)vv.get(vi));
+	                for (int vi=0; vi<count; ++vi) {
+                        values[vi] = ((Integer)vv.get(vi));
+                    }
 	                samples[si] = ValueFactory.createLongValue(time, sevr, stat,
 	                                (INumericMetaData)meta, quality, values);
 				}
 				else
 				{
 	                final int values[] = new int[count];
-	                for (int vi=0; vi<count; ++vi)
-	                    values[vi] = (Integer)vv.get(vi);
+	                for (int vi=0; vi<count; ++vi) {
+                        values[vi] = (Integer)vv.get(vi);
+                    }
 	                samples[si] = ValueFactory.createEnumeratedValue(time, sevr, stat,
                                 (IEnumeratedMetaData)meta, quality, values);
 				}
@@ -346,13 +369,14 @@ public class ValuesRequest implements AsyncCallback
 			else if (type == TYPE_INT)
 			{
 				final long values[] = new long[count];
-				for (int vi=0; vi<count; ++vi)
-					values[vi] = (long) ((Integer)vv.get(vi));
+				for (int vi=0; vi<count; ++vi) {
+                    values[vi] = ((Integer)vv.get(vi));
+                }
                 samples[si] = ValueFactory.createLongValue(time, sevr, stat,
                                 (INumericMetaData)meta, quality, values);
-			}
-			else 
-				throw new Exception("Unknown value type " + type);
+			} else {
+                throw new Exception("Unknown value type " + type);
+            }
 		}
 		return samples;
 	}
@@ -361,5 +385,5 @@ public class ValuesRequest implements AsyncCallback
 	public ArchiveValues[] getArchivedSamples()
 	{
 		return archived_samples;
-	}	
+	}
 }
