@@ -13,7 +13,7 @@ public class ArchiveRepositoryTest
     @Test
     public void testArchiveRepository() throws Exception
     {
-        // FIXME (bknerr) : Test with sysos?! Use assertions for expected prefixes
+        // FIXME (kasemir) : Test with sysos?! Use assertions for expected prefixes
         final ArchiveRepository archives = ArchiveRepository.getInstance();
         //System.out.println("Located support for these archive URL prefixes:");
         final String prefixes[] = archives.getSupportedPrefixes();

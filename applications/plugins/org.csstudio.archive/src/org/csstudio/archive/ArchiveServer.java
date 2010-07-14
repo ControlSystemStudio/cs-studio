@@ -17,9 +17,9 @@ import org.csstudio.platform.data.ITimestamp;
  *  Much of this code is based on the java archive viewer's
  *  data library, primarily written by Craig McChesney and Sergei Chevtsov,
  *  with contributions by Peregrine McGehee, all at LANL at the time.
- *  
+ *
  *  @see ArchiveImplementationRegistry
- *  
+ *
  *  @author Kay Kasemir
  *  @author Jan Hatje
  *  @author Albert Kagarmanov
@@ -30,7 +30,7 @@ import org.csstudio.platform.data.ITimestamp;
  */
 @SuppressWarnings("nls")
 public abstract class ArchiveServer
-{     	
+{
     /** Server name information.
      *  <p>
      *  Unique name of this ArchiveServer implementation.
@@ -42,25 +42,25 @@ public abstract class ArchiveServer
      *  @return Name of the server.
      */
     abstract public String getServerName();
-    
+
     /** URL for this ArchiveServer.
      *  @return URL as a string.
      */
     abstract public String getURL();
-    
+
     /** Arbitrary description string, may span multiple lines,
      *  with details left to the implementation.
      *  @return Description string.
      */
     abstract public String getDescription();
-    
+
     /** Version information.
      *  <p>
      *  The meaning of this version number is up to the implementation.
      *  @return A version number.
      */
     abstract public int getVersion();
-    
+
     /** Request type for getting raw samples.
      *  <p>
      *  Every archive server should support this request type.
@@ -94,7 +94,7 @@ public abstract class ArchiveServer
      *      The server computes the average over samples within the given
      *      time period in seconds. The resulting sample count should be
      *      close to <code>(end - start) / delta</code>.
-     *      
+     *
      *      The server might add additional contraints, especially when it
      *      comes to non-numeric values.
      *      It might return samples that indicate a network disconnect as such,
@@ -108,7 +108,7 @@ public abstract class ArchiveServer
      *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     public static final String GET_AVERAGE = "average";
-    
+
     /** Request type for getting linearly interpolated samples.
      *  <p>
      *  If supported, this request type uses linear interpolation onto
@@ -126,16 +126,16 @@ public abstract class ArchiveServer
      *  <p>
      *  The returned list should at least include GET_RAW
      *  and GET_AVERAGE, so that clients
-     *  can deal with known request methods. 
+     *  can deal with known request methods.
      *  <p>
      *  The implementation is free to support additional request
      *  types and return their names in here, but of course only
-     *  certain clients will know how to handle those. 
+     *  certain clients will know how to handle those.
      *  @return List of supported request types.
      *  @see #getSamples(int, String[], ITimestamp, ITimestamp, String, Object[])
      */
     abstract public String [] getRequestTypes();
-    
+
     /** Obtain a list of archives handled by this server.
      *  @return The available archives.
      */
@@ -149,17 +149,19 @@ public abstract class ArchiveServer
      *
      *  @param name The archive to locate.
      *  @return The key for that archive.
-     *  @throws Exception on error (archive not found).
-     */ 
-    public int getArchiveKey(String name) throws Exception
+     *  @throws ArchiveAccessException on error (archive not found).
+     */
+    public int getArchiveKey(final String name) throws ArchiveAccessException
     {
         final ArchiveInfo[] archives = getArchiveInfos();
-        for (int i = 0; i < archives.length; i++)
-            if (archives[i].getName().equals(name))
-                return archives[i].getKey();
-        throw new Exception("Unknown archive '" + name + "'");
+        for (final ArchiveInfo archive : archives) {
+            if (archive.getName().equals(name)) {
+                return archive.getKey();
+            }
+        }
+        throw new ArchiveAccessException("Unknown archive '" + name + "'");
     }
-    	
+
     /** Helper for searching the ArchiveInfos for a given archive.
      *  <p>
      *  Implementations of the <code>ArchiveServer</code> are welcome
@@ -168,34 +170,36 @@ public abstract class ArchiveServer
      *
      *  @param key The archive keyto locate.
      *  @return The archive name for given key.
-     *  @throws Exception on error (invalid key).
-     */ 
-    public String getArchiveName(int key) throws Exception
+     *  @throws ArchiveAccessException on error (invalid key).
+     */
+    public String getArchiveName(final int key) throws ArchiveAccessException
     {
         final ArchiveInfo[] archives = getArchiveInfos();
-        for (int i = 0; i < archives.length; i++)
-            if (archives[i].getKey() == key)
-                return archives[i].getName();
-        throw new Exception("Unknown archive key " + key);
+        for (final ArchiveInfo archive : archives) {
+            if (archive.getKey() == key) {
+                return archive.getName();
+            }
+        }
+        throw new ArchiveAccessException("Unknown archive key " + key);
     }
-    
+
     /** Find channel in given sub-archive.
      *  <p>
      *  <i>This method might not return immediately.</i>
-     *  
+     *
 	 * @param key Key of archive to search.
 	 * @param pattern Regular Expression for channel name.
 	 * @return One <code>ChannelInfo</code> for each matching channel.
 	 *         Might be empty.
-	 * @throws Exception on wrong key or internal error.
+	 * @throws ArchiveAccessException on wrong key or internal error.
 	 */
     abstract public NameInfo[] getNames(int key, String pattern)
-        throws Exception;
+        throws ArchiveAccessException;
 
 	/** Read samples from the archive.
      *  <p>
      *  <i>This method might not return immediately.</i>
-     *  
+     *
 	 *  @param key Key of the archive to use for retrieval.
 	 *  @param channels The list of channel names.
 	 *  @param start Start time.
@@ -206,14 +210,17 @@ public abstract class ArchiveServer
 	 *  @return One <code>ArchivedSamples</code> per channel as returned
 	 *          by the data server. The order and count need not match
 	 *          the <code>channels</code> put into the request!
-	 *  @throws Exception on error
+	 *  @throws ArchiveAccessException on error
      *  @see #getRequestTypes()
 	 */
-    abstract public ArchiveValues[] getSamples(int key, String names[],
-			ITimestamp start, ITimestamp end,
-            String request_type, Object request_parms[])
-        throws Exception;
-    
+    abstract public ArchiveValues[] getSamples(int key,
+                                               String names[],
+                                               ITimestamp start,
+                                               ITimestamp end,
+                                               String request_type,
+                                               Object request_parms[])
+        throws ArchiveAccessException;
+
     /** Cancel an ongoing archive query.
      *  It's up to the implementation to support this for all queries,
      *  or only 'getSamples', or not at all.
