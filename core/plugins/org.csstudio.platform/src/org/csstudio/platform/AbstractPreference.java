@@ -119,6 +119,12 @@ public abstract class AbstractPreference<T> {
         return _defaultValue;
     }
 
+    /**
+     * Collects all preferences that are defined in the derived class.
+     * Accessible via any preference field in this derived class (cannot be static unfortunately).
+     *
+     * @return a list of all preferences
+     */
     @SuppressWarnings("unchecked")
     public List<AbstractPreference<?>> getAllPreferences() {
 
