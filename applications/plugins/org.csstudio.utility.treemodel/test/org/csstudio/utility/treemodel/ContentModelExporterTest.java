@@ -29,6 +29,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Enumeration;
 
 import junit.framework.Assert;
 
@@ -122,6 +123,11 @@ public class ContentModelExporterTest {
     public void testExportContentModelToFile() throws IOException {
 
         final URL entry = Platform.getBundle(Activator.PLUGIN_ID).getEntry(".");
+        if (entry == null) {
+            final Enumeration entries = Platform.getBundle(Activator.PLUGIN_ID).findEntries("/", "*.xml", true);
+            Assert.assertTrue("entries is empty", entries.hasMoreElements());
+            Assert.fail("URL of root entry '.' of bundle is null");
+        }
         final String path = FileLocator.toFileURL(entry).getPath();
 
         try {
