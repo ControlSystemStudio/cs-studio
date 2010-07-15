@@ -1,9 +1,7 @@
 package org.epics.css.dal.simple.impl;
 
-import java.beans.PropertyChangeListener;
 import java.util.Iterator;
 
-import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueEvent;
@@ -58,7 +56,7 @@ public class ChannelListenerNotifier {
 		
 		public void conditionChange(DynamicValueEvent event) {
 			DynamicValueCondition cond = event.getCondition();
-			if (cond != null && lastCondition != null && lastCondition.areStatesEqual(cond)) {
+			if (initialStateUpdate && cond != null && lastCondition != null && lastCondition.areStatesEqual(cond)) {
 				return;
 			}
 			lastCondition = cond;
@@ -71,12 +69,12 @@ public class ChannelListenerNotifier {
 			fireChannelDataUpdate();
 		}
 	};
-	private PropertyChangeListener pcListener = new PropertyChangeListener() {
-		public void propertyChange(java.beans.PropertyChangeEvent evt) {
-			if (evt.getPropertyName().equals(CharacteristicInfo.C_META_DATA.getName()))
-				fireChannelDataUpdate();
-		};
-	};
+//	private PropertyChangeListener pcListener = new PropertyChangeListener() {
+//		public void propertyChange(java.beans.PropertyChangeEvent evt) {
+//			if (evt.getPropertyName().equals(CharacteristicInfo.C_META_DATA.getName()))
+//				fireChannelDataUpdate();
+//		};
+//	};
 	
 	public ChannelListenerNotifier(AnyDataChannel channel) {
 		this.channel = channel;
@@ -84,10 +82,11 @@ public class ChannelListenerNotifier {
 	
 	public synchronized void addChannelListener(ChannelListener listener) {
 		listeners.add(listener);
-		if (listeners.size() == 1) subscribe(channel);
 		
 		if (initialStateUpdate) listener.channelStateUpdate(channel);
 		if (initialDataUpdate) listener.channelDataUpdate(channel);
+		
+		if (listeners.size() == 1) subscribe(channel);
 	}
 	
 	public synchronized void removeChannelListener(ChannelListener listener) {
@@ -105,12 +104,12 @@ public class ChannelListenerNotifier {
 		if (channel == null) return;
 		channel.getProperty().addLinkListener(linkListener);
 		channel.getProperty().addDynamicValueListener(dvListener);
-		channel.getProperty().addPropertyChangeListener(pcListener);
+//		channel.getProperty().addPropertyChangeListener(pcListener);
 	}
 	
 	public void unsubscribe() {
 		if (channel == null) return;
-		channel.getProperty().removePropertyChangeListener(pcListener);
+//		channel.getProperty().removePropertyChangeListener(pcListener);
 		channel.getProperty().removeDynamicValueListener(dvListener);
 		channel.getProperty().removeLinkListener(linkListener);
 		initialStateUpdate = false;

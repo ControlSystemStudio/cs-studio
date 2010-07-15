@@ -110,6 +110,10 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 	protected ListenerList linkListeners = new ListenerList(LinkListener.class);
 	protected ProxyListener<T> proxyListener = new ProxyListener<T>() {
 		public void connectionStateChange(ProxyEvent<Proxy> e) {
+			ConnectionState cs = e.getConnectionState();
+			if (cs == ConnectionState.DISCONNECTED || cs == ConnectionState.DESTROYED) {
+				metaDataInitialized = false;
+			}
 			setConnectionState(e.getConnectionState());
 		}
 		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e) {
@@ -120,19 +124,19 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		public void characteristicsChange(PropertyChangeEvent e) {
 			if (e.getPropertyName().equals(CharacteristicInfo.C_META_DATA.getName())) {
 				if (e.getNewValue() != null && e.getNewValue() instanceof MetaData) {
-					metadataInitialized = true;
+					metaDataInitialized = true;
 				}
 				else {
-					metadataInitialized = false;
+					metaDataInitialized = false;
 				}
 			}
 			firePropertyChangeEvent(e);
 		}
 	};
-	private boolean metadataInitialized = false;
+	private boolean metaDataInitialized = false;
 	
-	public boolean isMetadataInitialized() {
-		return metadataInitialized;
+	public boolean isMetaDataInitialized() {
+		return metaDataInitialized;
 	}
 	
 	protected Request<?> lastRequest = null;

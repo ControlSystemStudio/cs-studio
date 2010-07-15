@@ -50,7 +50,7 @@
 public interface Severity
 {
     /** @return Returns the textual representation for this severity. */
-    public String toString();
+    public String getSeverityInfo();
 
     /** @return Returns the textual representation of the description. */
     public String descriptionToString();

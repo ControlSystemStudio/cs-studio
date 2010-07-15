@@ -6,6 +6,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class DoubleSeqAnyDataImpl extends AbstractAnyDataImpl<double[]> {
 	
+	public static final double[] UNINITIALIZED_VALUE = new double[] {Double.NaN};
+	
 	public DoubleSeqAnyDataImpl(DynamicValueProperty<double[]> property, long beamID) {
 		super(property,beamID);
 	}
@@ -57,7 +59,7 @@ public final class DoubleSeqAnyDataImpl extends AbstractAnyDataImpl<double[]> {
 	@Override
 	protected double[] confirmValue(double[] value) {
 		if (value != null) return value;
-		return new double[]{Double.NaN};
+		return UNINITIALIZED_VALUE;
 	}
 
 }

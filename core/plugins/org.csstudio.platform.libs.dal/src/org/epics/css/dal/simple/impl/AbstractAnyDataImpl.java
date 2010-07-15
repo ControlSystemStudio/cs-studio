@@ -26,14 +26,10 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		} else {
 			this.response = r; 
 		}
-		if (property.isMetadataInitialized()) {
+		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();
 		} else {
-			metaData = null;
-			(new Thread(new Runnable() {
-				public void run() {
-					extractMetaData();
-				}})).start();
+			metaData = MetaDataImpl.createUninitializedMetaData();
 		}
 		
 		this.beamID=beamID;
@@ -68,16 +64,12 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 	public Severity getSeverity() {
 		return response.getCondition();
 	}
-	
-	public String getSeverityInfo() {
-		return DynamicValueConditionConverterUtil.extractSeverityInfo(response.getCondition());
-	}
 
-	public String getStatusInfo() {
+	public String getStatus() {
 		return DynamicValueConditionConverterUtil.extractStatusInfo(response.getCondition());
 	}
 
-	public Timestamp getTimestampInfo() {
+	public Timestamp getTimestamp() {
 		return DynamicValueConditionConverterUtil.extractTimestampInfo(response.getCondition());
 	}
 	

@@ -6,6 +6,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class StringSeqAnyDataImpl extends AbstractAnyDataImpl<String[]> {
 	
+	public static final String[] UNINITIALIZED_VALUE = new String[]{""};
+	
 	public StringSeqAnyDataImpl(DynamicValueProperty<String[]> property, long beamID) {
 		super(property, beamID);
 	}
@@ -63,7 +65,7 @@ public final class StringSeqAnyDataImpl extends AbstractAnyDataImpl<String[]> {
 	@Override
 	protected String[] confirmValue(String[] value) {
 		if (value != null) return value;
-		return new String[]{""};
+		return UNINITIALIZED_VALUE;
 	}
 
 }

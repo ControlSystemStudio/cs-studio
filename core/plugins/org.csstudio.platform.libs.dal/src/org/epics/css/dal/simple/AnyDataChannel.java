@@ -125,5 +125,5 @@ public interface AnyDataChannel
      * @return <code>true</code> if meta data has been initialized and
      * <code>false</code> otherwise
      */
-    public boolean isMetadataInitialized();
+    public boolean isMetaDataInitialized();
 }

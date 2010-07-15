@@ -57,6 +57,12 @@ public final class Plugs
 	 * what is expected timeout for remote operations in milliseconds.
 	 */
 	public static final String CONNECTION_TIMEOUT = "dal.connectionTimeout";
+	
+	/**
+	 * Optional system configuration property, which defines the timeout for
+	 * establishing or initializing the connections in milliseconds.
+	 */
+	public static final String INITIAL_CONNECTION_TIMEOUT = "dal.initialConnectionTimeout";
 
 	/**
 	 * System configuration property which tells to property factory implementations
@@ -68,6 +74,11 @@ public final class Plugs
 	 * DAL default connection timeout value in milliseconds. Used if CONNECTION_TIMEOUT is not defined.
 	 */
 	public static final long DEFAULT_CONNECTION_TIMEOUT = 30000;
+	
+	/**
+	 * DAL default initial connection timeout value in milliseconds. Used if INITIAL_CONNECTION_TIMEOUT is not defined.
+	 */
+	public static final long DEFAULT_INITIAL_CONNECTION_TIMEOUT = 1000;
 
 	private static Plugs plugs;
 	private Properties properties;
@@ -416,6 +427,47 @@ public final class Plugs
 	
 	public long getConnectionTimeout() {
 		return getConnectionTimeout(properties);
+	}
+	
+	/**
+	 * Convenience method which tries to get initial connection timeout first from provided properties,
+	 * then from system properties and if both fails returns provided default value.
+	 * @param p properties, may be null
+	 * @param def default fallback values
+	 * @return connection timeout property value
+	 */
+	public static final long getInitialConnectionTimeout(Properties p, long def)
+	{
+		String s = null;
+
+		if (p != null) {
+			s = p.getProperty(INITIAL_CONNECTION_TIMEOUT);
+
+			if (s != null) {
+				try {
+					return Long.parseLong(s);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		}
+
+		return Long.getLong(CONNECTION_TIMEOUT, def);
+	}
+	/**
+	 * Convenience method which tries to get initial connection timeout first from provided properties,
+	 * then from system properties and if both fails returns DAL default value.
+	 * @param p properties, may be null
+	 * @param def default fallback values
+	 * @return initial connection timeout property value
+	 */
+	public static final long getInitialConnectionTimeout(Properties p)
+	{
+		return getInitialConnectionTimeout(p, DEFAULT_INITIAL_CONNECTION_TIMEOUT);
+	}
+	
+	public long getInitialConnectionTimeout() {
+		return getInitialConnectionTimeout(properties);
 	}
 	
 	public Class getDefaultDeviceFacotry() throws ClassNotFoundException {

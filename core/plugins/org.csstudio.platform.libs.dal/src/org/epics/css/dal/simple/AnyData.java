@@ -55,27 +55,20 @@ public interface AnyData
     /** Get the time stamp.
      *  @return The time stamp.
      */
-    public Timestamp getTimestampInfo();
+    public Timestamp getTimestamp();
 
     /** Get the <code>Severity</code> object.
      *  @see Severity
-     *  @see #getStatusInfo()
+     *  @see #getStatus()
      *  @return The <code>Severity</code> object.
      */
     public Severity getSeverity();
-    
-    /** Get the severity info.
-     *  @see Severity
-     *  @see #getStatusInfo()
-     *  @return The severity info.
-     */
-    public String getSeverityInfo();
 
     /** Get the status text that might describe the severity.
      *  @see #getSeverity()
      *  @return The status string.
      */
-    public String getStatusInfo();
+    public String getStatus();
 
     /** Describe the data quality. 
      *  <p>

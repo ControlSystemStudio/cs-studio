@@ -24,7 +24,6 @@
 import org.eclipse.core.runtime.Plugin;
 import org.epics.css.dal.CharacteristicInfo;
 import org.epics.css.dal.context.AbstractApplicationContext;
-import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.simple.SimpleDALBroker;
 import org.osgi.framework.BundleContext;
 
@@ -34,9 +33,9 @@ import org.osgi.framework.BundleContext;
 public class DalPlugin extends Plugin {
 	
 	{
-		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_SEVERITY_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_TIMESTAMP_INFO);
-		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_STATUS_INFO);
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_SEVERITY);
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_TIMESTAMP);
+		CharacteristicInfo.registerCharacteristicInfo(CharacteristicInfo.C_STATUS);
 	}
 
 	/**

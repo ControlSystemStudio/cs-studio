@@ -6,6 +6,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class LongSeqAnyDataImpl extends AbstractAnyDataImpl<long[]> {
 	
+	public static final long[] UNINITIALIZED_VALUE = new long[]{Long.MIN_VALUE};
+	
 	public LongSeqAnyDataImpl(DynamicValueProperty<long[]> property, long beamID) {
 		super(property,beamID);
 	}
@@ -55,7 +57,7 @@ public final class LongSeqAnyDataImpl extends AbstractAnyDataImpl<long[]> {
 	@Override
 	protected long[] confirmValue(long[] value) {
 		if (value != null) return value;
-		return new long[]{Long.MIN_VALUE};
+		return UNINITIALIZED_VALUE;
 	}
 
 }

@@ -29,7 +29,11 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 
         public String descriptionToString() {
             return null;
-        }};
+        }
+
+		public String getSeverityInfo() {
+			return "UNKNOWN";
+		}};
 
 	public UninitializedAnyDataImpl(DynamicValueProperty<T> property) {
 		super(property,Long.MIN_VALUE);
@@ -64,7 +68,7 @@ public class UninitializedAnyDataImpl<T> extends AbstractAnyDataImpl<T> {
 	 * @see org.epics.css.dal.simple.impl.AbstractAnyDataImpl#getStatus()
 	 */
 	@Override
-	public String getStatusInfo() {
+	public String getStatus() {
 		return "Uninitialized";
 	}
 

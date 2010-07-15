@@ -4,6 +4,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	
+	public static final String UNINITIALIZED_VALUE = "";
+	
 	public StringAnyDataImpl(DynamicValueProperty<String> property, long beamID) {
 		super(property,beamID);
 	}
@@ -70,7 +72,7 @@ public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	@Override
 	protected String confirmValue(String value) {
 		if (value != null) return value;
-		return "";
+		return UNINITIALIZED_VALUE;
 	}
 
 }

@@ -215,4 +215,9 @@ public class MetaDataImpl implements MetaData {
 	public int getSequenceLength() {
 		return sequenceLength;
 	}
+	
+	public static MetaData createUninitializedMetaData() {
+		return new MetaDataImpl(null, null, null, null, null, null, null, null, 
+				null, null,	null, null, null, null, null, null, null);
+	}
 }

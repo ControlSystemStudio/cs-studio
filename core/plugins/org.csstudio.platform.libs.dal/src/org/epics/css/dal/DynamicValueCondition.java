@@ -25,6 +25,7 @@ package org.epics.css.dal;
 import java.util.EnumSet;
 
 import org.epics.css.dal.simple.Severity;
+import org.epics.css.dal.simple.impl.DynamicValueConditionConverterUtil;
 
 
 /**
@@ -231,7 +232,11 @@ public class DynamicValueCondition implements Severity
 			return false;
 		}
 	}
-
+	
+	public String getSeverityInfo() {
+		return DynamicValueConditionConverterUtil.extractSeverityInfo(this);
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder sb= new StringBuilder(256);

@@ -4,6 +4,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class LongAnyDataImpl extends AbstractAnyDataImpl<Long> {
 	
+	public static final Long UNINITIALIZED_VALUE = Long.MIN_VALUE;
+	
 	public LongAnyDataImpl(DynamicValueProperty<Long> property, long beamID) {
 		super(property,beamID);
 	}
@@ -53,7 +55,7 @@ public final class LongAnyDataImpl extends AbstractAnyDataImpl<Long> {
 	@Override
 	protected Long confirmValue(Long value) {
 		if (value != null) return value;
-		return Long.MIN_VALUE;
+		return UNINITIALIZED_VALUE;
 	}
 
 }

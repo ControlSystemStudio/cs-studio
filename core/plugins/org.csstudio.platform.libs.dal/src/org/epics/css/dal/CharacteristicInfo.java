@@ -233,22 +233,17 @@ public class CharacteristicInfo {
 	 * Meta characteristic for last received EPICS style timestamp.
 	 * Returned value type is <code>Timestamp</code>.
 	 */
-	public static final CharacteristicInfo C_TIMESTAMP_INFO = new CharacteristicInfo("timestampInfo", Timestamp.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style timestamp.", null, true);
+	public static final CharacteristicInfo C_TIMESTAMP = new CharacteristicInfo("timestampInfo", Timestamp.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style timestamp.", null, true);
 	/**
 	 * Meta characteristic for last received severity.
 	 * Returned value type is <code>Severity</code>.
 	 */
 	public static final CharacteristicInfo C_SEVERITY = new CharacteristicInfo("severity", Severity.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received severity.", null, true);
 	/**
-	 * Meta characteristic for last received EPICS style severity.
-	 * Returned value type is <code>String</code>.
-	 */
-	public static final CharacteristicInfo C_SEVERITY_INFO = new CharacteristicInfo("severityInfo", String.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style severity.", null, true);
-	/**
 	 * Meta characteristic for last received EPICS style status.
 	 * Returned value type is <code>String</code>.
 	 */
-	public static final CharacteristicInfo C_STATUS_INFO = new CharacteristicInfo("statusInfo", String.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style status.", null, true);
+	public static final CharacteristicInfo C_STATUS = new CharacteristicInfo("statusInfo", String.class, new Class[] { DynamicValueProperty.class }, "Meta characteristic for last received EPICS style status.", null, true);
 	/**
 	 * MetaData characteristic similar to that used by simple DAL.
 	 * Returned value type is <code>MetaData</code>.
