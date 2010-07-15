@@ -24,13 +24,11 @@ public class EMailDialogTest
         final Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
                                                  "This is a test", "icons/email_image.png");
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.open();
             }
         });
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.close();
             }
@@ -45,13 +43,11 @@ public class EMailDialogTest
         final Dialog dlg = new EMailSenderDialog(shell, host, from, to, "Test",
                                                  "This is a test", null);
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.open();
             }
         });
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.close();
             }
