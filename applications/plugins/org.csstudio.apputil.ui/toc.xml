@@ -2,6 +2,6 @@
 <?NLS TYPE="org.eclipse.help.toc"?>
 
 <toc link_to="../org.csstudio.platform.ui/tocApps.xml#other" label="Formula">
-	<topic label="Formula"  href="doc/formula.html">
+	<topic label="Formula"  href="html/formula.html">
 	</topic>
 </toc>
