@@ -51,7 +51,6 @@ public class EditFormulaDialogTest
 
         // FIXME (kasemir) : check with assertions whatever you like, but close the dialog afterwards!
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 if (edit.open()) {
 //            System.out.println("After editing:");
@@ -63,7 +62,6 @@ public class EditFormulaDialogTest
 
         });
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 edit.close();
             }

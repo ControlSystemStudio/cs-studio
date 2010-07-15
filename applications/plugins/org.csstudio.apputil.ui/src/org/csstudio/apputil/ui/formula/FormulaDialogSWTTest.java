@@ -31,7 +31,6 @@ public class FormulaDialogSWTTest {
 
         final Display display = shell.getDisplay();
         display.asyncExec(new Runnable() {
-            @Override
             public void run() {
                 if (dialog.open() == Window.OK) {
                     for (final InputItem input : dialog.getInputs()) {
@@ -48,7 +47,6 @@ public class FormulaDialogSWTTest {
 
     private void closeDialog(final Shell shell, final Dialog dlg) {
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.close();
             }

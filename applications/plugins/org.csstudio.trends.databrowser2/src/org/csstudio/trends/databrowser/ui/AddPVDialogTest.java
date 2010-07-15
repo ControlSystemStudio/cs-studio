@@ -28,7 +28,6 @@ public class AddPVDialogTest
         final AddPVDialog dlg = new AddPVDialog(shell, names, axes, false);
 
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 if (dlg.open() == Window.OK)
                 {
@@ -50,7 +49,6 @@ public class AddPVDialogTest
         final Shell shell = new Shell();
         final AddPVDialog dlg = new AddPVDialog(shell, names, axes, true);
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 if (dlg.open() == Window.OK) {
 //            System.out.println("Name  : " + dlg.getName());
@@ -64,7 +62,6 @@ public class AddPVDialogTest
 
     private void closeDialog(final Shell shell, final AddPVDialog dlg) {
         shell.getDisplay().asyncExec(new Runnable() {
-            @Override
             public void run() {
                 dlg.close();
             }
