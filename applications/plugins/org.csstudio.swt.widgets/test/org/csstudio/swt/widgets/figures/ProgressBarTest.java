@@ -1,14 +1,15 @@
+package org.csstudio.swt.widgets.figures;
 import java.beans.PropertyDescriptor;
 
-import org.csstudio.swt.widgets.figures.TankFigure;
+import org.csstudio.swt.widgets.figures.ProgressBarFigure;
 import org.eclipse.draw2d.Figure;
 
 
-public class TankTest extends AbstractMarkedWidgetTest{
+public class ProgressBarTest extends AbstractMarkedWidgetTest{
 
 	@Override
-	public Figure createTestWidget() {		
-		return new TankFigure();
+	public Figure createTestWidget() {
+		return new ProgressBarFigure();
 	}
 	
 	
@@ -18,7 +19,11 @@ public class TankTest extends AbstractMarkedWidgetTest{
 		String[] myProps = new String[]{
 				"fillColor",
 				"fillBackgroundColor",
-				"effect3D"
+				"effect3D",
+				"horizontal",
+				"indicatorMode",
+				"origin",
+				"originIgnored"
 		};
 		
 		return concatenateStringArrays(superProps, myProps);
@@ -32,7 +37,7 @@ public class TankTest extends AbstractMarkedWidgetTest{
 	@Override
 	public Object generateTestData(PropertyDescriptor pd, Object seed) {	
 		if(seed !=null && seed instanceof Integer){			
-			if(pd.getName().equals("logScale") )
+			if(pd.getName().equals("logScale") || pd.getName().equals("indicatorMode"))
 				return super.generateTestData(pd, (Integer)seed  +1);
 		}
 				return super.generateTestData(pd, seed);

@@ -1,3 +1,4 @@
+package org.csstudio.swt.widgets.figures;
 import java.util.ArrayList;
 import java.util.List;
 

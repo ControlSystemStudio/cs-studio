@@ -1,26 +1,33 @@
+package org.csstudio.swt.widgets.figures;
 import java.beans.PropertyDescriptor;
+import java.util.ArrayList;
+import java.util.List;
 
-import org.csstudio.swt.widgets.figures.GaugeFigure;
+import org.csstudio.swt.widgets.figures.MeterFigure;
 import org.eclipse.draw2d.Figure;
 
 
-public class GaugeTest extends AbstractRoundRampedWidgetTest{
+public class MeterTest extends AbstractRoundRampedWidgetTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new GaugeFigure();
+		return new MeterFigure();
 	}
 	
 	
 	@Override
 	public String[] getPropertyNames() {
 		String[] superProps =  super.getPropertyNames();
+		List<String> superPropList = new ArrayList<String>();
+		for(String p : superProps){
+			if(!p.equals("transparent"))
+				superPropList.add(p);
+		}
 		String[] myProps = new String[]{
-				"effect3D",
 				"needleColor"
 		};
 		
-		return concatenateStringArrays(superProps, myProps);
+		return concatenateStringArrays(superPropList.toArray(new String[]{}), myProps);
 	}
 	
 	@Override

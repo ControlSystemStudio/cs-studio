@@ -1,3 +1,4 @@
+package org.csstudio.swt.widgets.figures;
 
 
 public abstract class AbstractMarkedWidgetTest extends AbstractScaledWidgetTest {

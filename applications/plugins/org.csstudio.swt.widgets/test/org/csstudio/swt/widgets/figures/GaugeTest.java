@@ -1,14 +1,15 @@
+package org.csstudio.swt.widgets.figures;
 import java.beans.PropertyDescriptor;
 
-import org.csstudio.swt.widgets.figures.ProgressBarFigure;
+import org.csstudio.swt.widgets.figures.GaugeFigure;
 import org.eclipse.draw2d.Figure;
 
 
-public class ProgressBarTest extends AbstractMarkedWidgetTest{
+public class GaugeTest extends AbstractRoundRampedWidgetTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new ProgressBarFigure();
+		return new GaugeFigure();
 	}
 	
 	
@@ -16,13 +17,8 @@ public class ProgressBarTest extends AbstractMarkedWidgetTest{
 	public String[] getPropertyNames() {
 		String[] superProps =  super.getPropertyNames();
 		String[] myProps = new String[]{
-				"fillColor",
-				"fillBackgroundColor",
 				"effect3D",
-				"horizontal",
-				"indicatorMode",
-				"origin",
-				"originIgnored"
+				"needleColor"
 		};
 		
 		return concatenateStringArrays(superProps, myProps);
@@ -36,7 +32,7 @@ public class ProgressBarTest extends AbstractMarkedWidgetTest{
 	@Override
 	public Object generateTestData(PropertyDescriptor pd, Object seed) {	
 		if(seed !=null && seed instanceof Integer){			
-			if(pd.getName().equals("logScale") || pd.getName().equals("indicatorMode"))
+			if(pd.getName().equals("logScale"))
 				return super.generateTestData(pd, (Integer)seed  +1);
 		}
 				return super.generateTestData(pd, seed);
