@@ -161,6 +161,17 @@ public class EPICSPlug extends AbstractPlug
 	public static final String JNI_FLUSH_TIMER_DELAY = "EPICSPlug.jni_flush_timer_delay";
 	
 	/**
+	 * Property name for initialization of characteristics on connect.
+	 * The default value is true and it is overridden if provided in the configuration.
+	 */
+	public static final String INITIALIZE_CHARACTERISTICS_ON_CONNECT = "EPICSPlug.initialize_characteristics_on_connect";
+	
+	/**
+	 * Defines if characteristics should be initialized on connect event.
+	 */
+	private boolean initializeCharacteristicsOnConnect;
+	
+	/**
 	 * Defines if a common <code>Executor</code> from this <code>EPICSPlug</code> should be used instead of
 	 * individual <code>Executor<code>s in <code>PropertyProxyImpl</code>s.
 	 * 
@@ -295,6 +306,13 @@ public class EPICSPlug extends AbstractPlug
 	 * @throws RemoteException 
 	 */
 	private void initialize() throws RemoteException {
+		initializeCharacteristicsOnConnect = true;
+		if (System.getProperties().containsKey(INITIALIZE_CHARACTERISTICS_ON_CONNECT)) {
+			initializeCharacteristicsOnConnect = new Boolean(System.getProperty(INITIALIZE_CHARACTERISTICS_ON_CONNECT, "true"));
+		} else {
+			initializeCharacteristicsOnConnect = new Boolean(getConfiguration().getProperty(INITIALIZE_CHARACTERISTICS_ON_CONNECT, "true"));
+		}
+		
 		useCommonExecutor = false;
 		if (System.getProperties().containsKey(PROPERTY_USE_COMMON_EXECUTOR)) {
 			useCommonExecutor = new Boolean(System.getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
@@ -650,6 +668,14 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	public int getDefaultMonitorMask() {
 		return defaultMonitorMask;
+	}
+	
+	/**
+	 * Gets the {@link #initializeCharacteristicsOnConnect} property.
+	 * @return <code>true</code> if characteristics should be initialized on connect and <code>false</code> otherwise.
+	 */
+	public boolean isInitializeCharacteristicsOnConnect() {
+		return initializeCharacteristicsOnConnect;
 	}
 	
 	/**

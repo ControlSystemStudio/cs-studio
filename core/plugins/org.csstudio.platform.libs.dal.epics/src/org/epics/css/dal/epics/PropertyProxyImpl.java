@@ -45,13 +45,11 @@ import gov.aps.jca.event.GetListener;
 import java.beans.PropertyChangeEvent;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -85,6 +83,7 @@ import org.epics.css.dal.proxy.ProxyListener;
 import org.epics.css.dal.proxy.SyncPropertyProxy;
 import org.epics.css.dal.simple.impl.DataUtil;
 import org.epics.css.dal.simple.impl.DynamicValueConditionConverterUtil;
+import org.epics.css.dal.spi.Plugs;
 
 import com.cosylab.epics.caj.CAJChannel;
 import com.cosylab.util.BitCondition;
@@ -158,15 +157,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	
 	private boolean containsValue = false;
 	
-	/**
-	 * This value defines the time, when a channel that still has <code>ConnectionState</code>
-	 * equal to INITIAL should be declared a CONNECTION_FAILED.
-	 */
-	private static final int ABORT_CONNECTION_TIMEOUT = 3000;
-	
 	// This task changes channel with INITIAL state to CONNECTION_FAILED.
-	private class AbortConnectionTimerTask extends TimerTask {
-		@Override
+	private class AbortConnectionRunnable implements Runnable {
 		public void run() {
 			ConnectionState cs = getConnectionState();
 			if (cs == ConnectionState.INITIAL) {
@@ -175,7 +167,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			}
 		}
 	}
-	private Timer abortConnectionTimer = new Timer();
+	private TimerTask abortConnectionTask = null;
 	private boolean abortConnection = false;
 	
 	private class CharacteristicsMap extends HashMap<String,Object>
@@ -221,7 +213,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			} catch (Throwable th) {
 				throw new RemoteException(this, "Failed create CA channel", th);
 			}
-			abortConnectionTimer.schedule(new AbortConnectionTimerTask(), ABORT_CONNECTION_TIMEOUT);
+			abortConnectionTask = plug.schedule(new AbortConnectionRunnable(), Plugs.getInitialConnectionTimeout(plug.getConfiguration()), 0);
 		}
 
 		
@@ -462,15 +454,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		if (characteristics.get(name) != null) {
 			characteristics.put(name, s);
 		}
-		name = CharacteristicInfo.C_SEVERITY_INFO.getName();
-		if (characteristics.get(name) != null) {
-			characteristics.put(name, DynamicValueConditionConverterUtil.extractSeverityInfo(s));
-		}
-		name = CharacteristicInfo.C_STATUS_INFO.getName();
+		name = CharacteristicInfo.C_STATUS.getName();
 		if (characteristics.get(name) != null) {
 			characteristics.put(name, DynamicValueConditionConverterUtil.extractStatusInfo(s));
 		}
-		name = CharacteristicInfo.C_TIMESTAMP_INFO.getName();
+		name = CharacteristicInfo.C_TIMESTAMP.getName();
 		if (characteristics.get(name) != null) {
 			characteristics.put(name, DynamicValueConditionConverterUtil.extractTimestampInfo(s));
 		}
@@ -728,9 +716,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				condition = getCondition();
 			}
 			characteristics.put(CharacteristicInfo.C_SEVERITY.getName(), condition);
-			characteristics.put(CharacteristicInfo.C_SEVERITY_INFO.getName(), DynamicValueConditionConverterUtil.extractSeverityInfo(condition));
-			characteristics.put(CharacteristicInfo.C_STATUS_INFO.getName(), DynamicValueConditionConverterUtil.extractStatusInfo(condition));
-			characteristics.put(CharacteristicInfo.C_TIMESTAMP_INFO.getName(), DynamicValueConditionConverterUtil.extractTimestampInfo(condition));
+			characteristics.put(CharacteristicInfo.C_STATUS.getName(), DynamicValueConditionConverterUtil.extractStatusInfo(condition));
+			characteristics.put(CharacteristicInfo.C_TIMESTAMP.getName(), DynamicValueConditionConverterUtil.extractTimestampInfo(condition));
 			
 			createSpecificCharacteristics(dbr);
 
@@ -997,7 +984,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @see gov.aps.jca.event.ConnectionListener#connectionChanged(gov.aps.jca.event.ConnectionEvent)
 	 */
 	public synchronized void connectionChanged(ConnectionEvent event) {
-		abortConnectionTimer.cancel();
+		if (abortConnectionTask != null) abortConnectionTask.cancel();
 		if (abortConnection) return;
 		
 		Runnable connChangedRunnable = new Runnable () {
@@ -1012,9 +999,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				if (c == gov.aps.jca.Channel.ConnectionState.CLOSED) {
 					setConnectionState(ConnectionState.DESTROYED);
 				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
-					boolean init= getConnectionState()==ConnectionState.CONNECTION_LOST;
 					setConnectionState(ConnectionState.CONNECTED);
-					if (init) {
+					if (plug.isInitializeCharacteristicsOnConnect()) {
 						initializeCharacteristics();
 					}
 				} else if (c == gov.aps.jca.Channel.ConnectionState.DISCONNECTED) {
