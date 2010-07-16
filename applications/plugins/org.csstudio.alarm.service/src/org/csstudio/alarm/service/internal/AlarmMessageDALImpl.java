@@ -201,7 +201,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
     @CheckForNull
     private Timestamp getTimestamp() {
-        return _anyData.getTimestampInfo();
+        return _anyData.getTimestamp();
     }
 
     @Nonnull

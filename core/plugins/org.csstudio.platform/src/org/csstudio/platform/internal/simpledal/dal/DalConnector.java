@@ -111,13 +111,13 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 	private void processConditionChange(DynamicValueCondition condition, Timestamp timestamp) {
 		if (condition != null) {
 			// ... characteristic "timestamp"
-			doForwardCharacteristic(condition.getTimestamp(), timestamp, CharacteristicInfo.C_TIMESTAMP_INFO.getName());
+			doForwardCharacteristic(condition.getTimestamp(), timestamp, CharacteristicInfo.C_TIMESTAMP.getName());
 
 			// ... characteristic "status"
-			doForwardCharacteristic(EpicsUtil.extratStatus(condition), timestamp, CharacteristicInfo.C_STATUS_INFO.getName());
+			doForwardCharacteristic(EpicsUtil.extratStatus(condition), timestamp, CharacteristicInfo.C_STATUS.getName());
 
 			// ... characteristic "severity"
-			doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), timestamp, CharacteristicInfo.C_SEVERITY_INFO.getName());
+			doForwardCharacteristic(EpicsUtil.toEPICSFlavorSeverity(condition), timestamp, CharacteristicInfo.C_SEVERITY.getName());
 		}
 	}
 
@@ -413,7 +413,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 				//If connection is made as pv[severity] or just pv, than ignore everything
 				//and go to default. In all other cases (e.g. pv[graphMin}, string), create
 				//a default property.
-				if (characteristic != null && !CharacteristicInfo.C_SEVERITY_INFO.getName().equals(characteristic)) {
+				if (characteristic != null && !CharacteristicInfo.C_SEVERITY.getName().equals(characteristic)) {
 					property = factory.getProperty(ri);
 					break;
 				}
@@ -560,11 +560,11 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 
 		// ... try to read the value
 		if (waitTillConnected(CONNECTION_TIMEOUT)) {
-			if (characteristicId.equals(CharacteristicInfo.C_SEVERITY_INFO.getName())) {
+			if (characteristicId.equals(CharacteristicInfo.C_SEVERITY.getName())) {
 				result = EpicsUtil.toEPICSFlavorSeverity(_dalProperty.getCondition());
-			} else if (characteristicId.equals(CharacteristicInfo.C_STATUS_INFO.getName())) {
+			} else if (characteristicId.equals(CharacteristicInfo.C_STATUS.getName())) {
 				result = EpicsUtil.extratStatus(_dalProperty.getCondition());
-			} else if (characteristicId.equals(CharacteristicInfo.C_TIMESTAMP_INFO.getName())) {
+			} else if (characteristicId.equals(CharacteristicInfo.C_TIMESTAMP.getName())) {
 				result = _dalProperty.getCondition().getTimestamp();
 			} else {
 				Object tmp = _dalProperty.getCharacteristic(characteristicId);
@@ -624,7 +624,7 @@ public final class DalConnector extends AbstractConnector implements DynamicValu
 		doForwardValue(event.getValue(), event.getTimestamp());
 
 		// ... forward an additional "timestamp" characteristic
-		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP_INFO.getName());
+		doForwardCharacteristic(event.getTimestamp(), event.getTimestamp(), CharacteristicInfo.C_TIMESTAMP.getName());
 	}
 
 }
