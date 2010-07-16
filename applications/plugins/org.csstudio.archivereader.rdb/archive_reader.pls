@@ -1,5 +1,4 @@
-create or replace
-PACKAGE archive_reader_pkg
+CREATE OR REPLACE PACKAGE               archive_reader_pkg
 AS
    /******************************************************************************
       NAME:       archive_reader
@@ -77,8 +76,8 @@ AS
 END archive_reader_pkg;
 /
 
-create or replace
-PACKAGE BODY archive_reader_pkg
+
+CREATE OR REPLACE PACKAGE BODY archive_reader_pkg
 AS
    /******************************************************************************
       NAME:       archive_reader_pkg
@@ -885,3 +884,4 @@ ORDER BY smpl_time';
       END IF;
    END is_sample_array;
 END archive_reader_pkg;
+/
