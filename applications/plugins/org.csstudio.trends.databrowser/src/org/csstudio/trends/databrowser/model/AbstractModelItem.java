@@ -453,8 +453,8 @@ public abstract class AbstractModelItem
     @SuppressWarnings("nls")
     protected void addCommonXMLConfig(final StringBuilder b)
     {
-        XMLHelper.XML(b, 3, TAG_NAME, name);
-        XMLHelper.XML(b, 3, TAG_DISPLAY_NAME, display_name);
+        XMLHelper.XML(b, 3, TAG_NAME, XMLHelper.escapeXMLstring(name));
+        XMLHelper.XML(b, 3, TAG_DISPLAY_NAME, XMLHelper.escapeXMLstring(display_name));
         XMLHelper.XML(b, 3, TAG_AXIS, Integer.toString(axis_index));
         XMLHelper.XML(b, 3, TAG_LINEWIDTH, Integer.toString(line_width));
         XMLHelper.XML(b, 3, TAG_MIN, Double.toString(axis_low));

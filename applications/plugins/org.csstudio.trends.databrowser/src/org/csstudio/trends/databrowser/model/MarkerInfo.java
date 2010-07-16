@@ -1,6 +1,7 @@
 package org.csstudio.trends.databrowser.model;
 
 import org.csstudio.apputil.xml.DOMHelper;
+import org.csstudio.apputil.xml.XMLHelper;
 import org.csstudio.swt.chart.axes.Marker;
 import org.w3c.dom.Element;
 
@@ -49,7 +50,7 @@ public class MarkerInfo
     {
         return "<marker><position>" + position + "</position>" +
                "<value>" + value + "</value>" +
-               "<text>" + text + "</text>" + 
+               "<text>" + XMLHelper.escapeXMLstring(text) + "</text>" + 
                "</marker>"; 
     }
 
