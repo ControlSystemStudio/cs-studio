@@ -41,8 +41,6 @@ public class ADLTreeView extends ViewPart {
 		treeViewer.setInput(new ADLWidget("default", null, 0));
 		
 		treeViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
 			public void selectionChanged(SelectionChangedEvent event) {
 				// TODO Auto-generated method stub
 				
@@ -59,8 +57,6 @@ public class ADLTreeView extends ViewPart {
 	}
 	private void hookPageSelection() { 
 		pageSelectionListener = new ISelectionListener() {
-
-			@Override
 			public void selectionChanged(IWorkbenchPart part,
 					ISelection selection) {
 				pageSelectionChanged(part, selection);
