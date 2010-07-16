@@ -647,6 +647,7 @@ public class Model
     {
         final PrintWriter writer = new PrintWriter(out);
         
+        XMLWriter.header(writer);
         XMLWriter.start(writer, 0, TAG_DATABROWSER);
         writer.println();
         // Time axis

@@ -9,6 +9,8 @@ package org.csstudio.alarm.beast;
 
 import java.io.PrintWriter;
 
+import org.csstudio.apputil.xml.XMLWriter;
+
 /** Root of the alarm configuration tree.
  *  @author Kay Kasemir, Xihui Chen
  */
@@ -69,6 +71,7 @@ public class AlarmTreeRoot extends AlarmTree
     @SuppressWarnings("nls")
     final public void writeXML(final PrintWriter out)  throws Exception
     {
+        XMLWriter.header(out);
         out.append("<config name=\"" + getName() +"\">\n");
         for (int i=0; i<getChildCount(); ++i)
         {
