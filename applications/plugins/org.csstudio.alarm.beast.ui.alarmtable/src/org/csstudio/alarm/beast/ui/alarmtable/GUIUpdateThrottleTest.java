@@ -68,7 +68,12 @@ public class GUIUpdateThrottleTest
         // Cleanup
         System.out.println("Done?");
         throttle.dispose();
-        System.out.println("Done.");
+        // Wait for exit
+        for (int i=1; throttle.isAlive() && i<10; ++i)
+        {
+            Thread.sleep(100);
+        }
         assertEquals(false, throttle.isAlive());
+        System.out.println("Done.");
     }
 }
