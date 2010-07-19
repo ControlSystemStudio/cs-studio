@@ -69,10 +69,7 @@ public class GUIUpdateThrottleTest
         System.out.println("Done?");
         throttle.dispose();
         // Wait for exit
-        for (int i=1; throttle.isAlive() && i<10; ++i)
-        {
-            Thread.sleep(100);
-        }
+        throttle.join(5000);
         assertEquals(false, throttle.isAlive());
         System.out.println("Done.");
     }
