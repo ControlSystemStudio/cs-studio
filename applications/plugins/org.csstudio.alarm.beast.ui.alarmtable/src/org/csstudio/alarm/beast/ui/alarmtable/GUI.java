@@ -106,6 +106,8 @@ public class GUI implements AlarmClientModelListener
                     final Table act_table = active_table_viewer.getTable();
                     if (act_table.isDisposed())
                         return;
+                    // TODO Don't use setInput(), it causes flicker on Linux!
+                    // Use setItemCount(), refresh()
                     active_table_viewer.setInput(model.getActiveAlarms());
                     acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
                 }
