@@ -84,7 +84,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
     
     /** @return Tooltip text for an alarm */
     @Override
-    public String getToolTipText(Object element)
+    public String getToolTipText(final Object element)
     {
         final AlarmTreePV alarm = (AlarmTreePV) element;
         return alarm.getToolTipText();
@@ -92,7 +92,7 @@ public class AlarmTableLabelProvider extends CellLabelProvider
 
     /** Update one cell of the table */
     @Override
-    public void update(ViewerCell cell)
+    public void update(final ViewerCell cell)
     {
         // AlarmTableProvider should always provide "AlarmTreePV" elements
         final AlarmTreePV alarm = (AlarmTreePV) cell.getElement();

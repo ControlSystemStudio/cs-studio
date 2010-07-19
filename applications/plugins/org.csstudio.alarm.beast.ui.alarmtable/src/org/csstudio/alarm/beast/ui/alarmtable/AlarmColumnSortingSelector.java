@@ -57,6 +57,7 @@ public class AlarmColumnSortingSelector extends SelectionAdapter
         table.setSortDirection(up ? SWT.UP : SWT.DOWN);
         table.setSortColumn(column);
         
-        table_viewer.setComparator(new AlarmComparator(col_info, up));
+        ((AlarmTableContentProvider)table_viewer.getContentProvider())
+            .setComparator(new AlarmComparator(col_info, up));
     }
 }

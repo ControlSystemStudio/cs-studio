@@ -7,15 +7,15 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.util.Comparator;
+
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 
 /** ViewerComparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
  */
-public class AlarmComparator extends ViewerComparator
+public class AlarmComparator implements Comparator<AlarmTreePV>
 {
     final private ColumnInfo col_info;
     final private boolean up;
@@ -31,11 +31,8 @@ public class AlarmComparator extends ViewerComparator
     }
 
     /** {@inhericDoc} */
-    @Override
-    public int compare(final Viewer viewer, final Object e1, final Object e2)
+    public int compare(final AlarmTreePV pv1, final AlarmTreePV pv2)
     {
-        final AlarmTreePV pv1 = (AlarmTreePV) e1;
-        final AlarmTreePV pv2 = (AlarmTreePV) e2;
         switch (col_info)
         {
         case CURRENT_SEVERITY:

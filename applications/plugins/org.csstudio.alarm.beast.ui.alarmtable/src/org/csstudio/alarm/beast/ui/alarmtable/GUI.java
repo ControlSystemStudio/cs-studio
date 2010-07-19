@@ -106,12 +106,17 @@ public class GUI implements AlarmClientModelListener
                     final Table act_table = active_table_viewer.getTable();
                     if (act_table.isDisposed())
                         return;
-                    // TODO Don't use setInput(), it causes flicker on Linux!
-                    // For VIRTUAL table, could use setItemCount(), refresh().
-                    // But this is a plain table with sorting, so only
-                    // setInput causes a full update?!
-                    active_table_viewer.setInput(model.getActiveAlarms());
-                    acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
+                    // Don't use TableViewer.setInput(), it causes flicker on Linux!
+                    // active_table_viewer.setInput(model.getActiveAlarms());
+                    // acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
+                    //
+                    // Instead, tell ModelInstanceProvider about the data,
+                    // which then updates the table with setItemCount(), refresh(),
+                    // as that happens to not flicker.
+                    ((AlarmTableContentProvider)
+                        active_table_viewer.getContentProvider()).setAlarms(model.getActiveAlarms());
+                    ((AlarmTableContentProvider)
+                        acknowledged_table_viewer.getContentProvider()).setAlarms(model.getAcknowledgedAlarms());
                 }
             });
         }
@@ -246,7 +251,9 @@ public class GUI implements AlarmClientModelListener
         
         // Table w/ active alarms
         active_table_viewer = createAlarmTable(box);
-        active_table_viewer.setInput(model.getActiveAlarms());
+        active_table_viewer.setInput(null);
+        ((AlarmTableContentProvider)
+            active_table_viewer.getContentProvider()).setAlarms(model.getActiveAlarms());
     }
     
     /** Add the sash element for acknowledged alarms
@@ -264,7 +271,9 @@ public class GUI implements AlarmClientModelListener
 
         // Table w/ ack'ed alarms
         acknowledged_table_viewer = createAlarmTable(box);
-        acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
+        acknowledged_table_viewer.setInput(null);
+        ((AlarmTableContentProvider)
+            acknowledged_table_viewer.getContentProvider()).setAlarms(model.getAcknowledgedAlarms());
     }
 
     /** Select PVs in table that match filter expression
@@ -298,7 +307,7 @@ public class GUI implements AlarmClientModelListener
     {
         final GridLayout layout = (GridLayout) parent.getLayout();
         final TableViewer table_viewer = new TableViewer(parent,
-                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION);
+                SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
         
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
@@ -328,6 +337,7 @@ public class GUI implements AlarmClientModelListener
             view_col.setLabelProvider(new AlarmTableLabelProvider(table,
                                                    color_provider, col_info));
             final TableColumn table_col = view_col.getColumn();
+            
             final AlarmColumnSortingSelector sel_listener =
                 new AlarmColumnSortingSelector(table_viewer, table_col, col_info);
             table_col.addSelectionListener(sel_listener);
