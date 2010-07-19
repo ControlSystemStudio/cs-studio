@@ -39,10 +39,10 @@ import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
 
@@ -149,9 +149,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                                      null);
 
         final ListenerItem item = new ListenerItem();
-        // TODO (jpenning) Review: hard coded Double.class in connection parameter
-        item._connectionParameters = new ConnectionParameters(remoteInfo, Double.class);
-        item._dynamicValueAdapter = new DynamicValueListenerAdapter<Double, DoubleProperty>(listener,
+        // REVIEW (jpenning): hard coded type in connection parameter
+        item._connectionParameters = new ConnectionParameters(remoteInfo, String.class);
+        item._dynamicValueAdapter = new DynamicValueListenerAdapter<String, StringProperty>(listener,
                                                                                             connectionMonitor);
         // TODO (jpenning) use constants for parameterization of expert mode
         item._parameters = new HashMap<String, Object>();
@@ -199,8 +199,8 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         @Override
         public void valueChanged(@CheckForNull final DynamicValueEvent<T, P> event) {
             if (event != null) {
-                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
-                        + event.getProperty().getUniqueName());
+//                LOG_INNER.debug("valueChanged received " + event.getCondition() + " for "
+//                        + event.getProperty().getUniqueName());
                 if (AlarmMessageDALImpl.canCreateAlarmMessageFrom(event.getProperty(), event
                         .getData())) {
                     _alarmListener.onMessage(AlarmMessageDALImpl.newAlarmMessage(event

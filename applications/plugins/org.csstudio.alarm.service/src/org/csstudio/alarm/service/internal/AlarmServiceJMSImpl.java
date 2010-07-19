@@ -34,11 +34,11 @@ import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
-import org.epics.css.dal.DoubleProperty;
 import org.epics.css.dal.DynamicValueAdapter;
 import org.epics.css.dal.DynamicValueEvent;
 import org.epics.css.dal.DynamicValueListener;
 import org.epics.css.dal.SimpleProperty;
+import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
 
@@ -120,8 +120,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         try {
             final Element pvUnderWay = new Element();
             pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
-            // TODO (jpenning) Review: hard coded Double.class in connection parameter
-            pvUnderWay._listener = new DynamicValueListenerForInit<Double, DoubleProperty>(initItem);
+            // REVIEW (jpenning): hard coded type in connection parameter
+            pvUnderWay._listener = new DynamicValueListenerForInit<String, StringProperty>(initItem);
             DalPlugin.getDefault().getSimpleDALBroker()
                     .registerListener(pvUnderWay._connectionParameters,
                                       pvUnderWay._listener);
@@ -155,8 +155,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     @Nonnull
     private ConnectionParameters newConnectionParameters(@Nonnull final String pvName) {
-        // TODO (jpenning) what about Double.class?
-        return new ConnectionParameters(newRemoteInfo(pvName), Double.class);
+        // REVIEW (jpenning): hard coded type in connection parameter
+        return new ConnectionParameters(newRemoteInfo(pvName), String.class);
     }
 
     @Nonnull
