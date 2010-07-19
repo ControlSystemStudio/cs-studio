@@ -28,91 +28,29 @@
 <p>
 The Alarm System allow users to view and handle the alarms triggered by
 Process Variables (PVs) on front-end computers (IOCs).
-</p>
-<p>
-The whole alarm system consists of several elements:
-</p>
-<ul>
-<li>IOCs:<br>
-    Control System IOCs provide the Alarm Trigger PVs which indicate
-    alarm conditions.
-    In principle, one can display those PVs on generic operator screens,
-    where they would for example show up as yellow or red.
-    <br>
-    Benefits of the alarm system over a basic operator screen:
-    <ul>
-    <li>Alarm can be annunciated.</li>
-    <li>Alarm can latch to indicate the time of the original alarm.</li>
-    <li>Additional guidance and links to related displays are accessible
-        right from the alarm.</li>
-    <li>When multiple alarms coincide, they can be sorted by for example
-        severity or time.</li>
-    </ul>
-    </li>    
-<li>Alarm Server:<br>
-    The Alarm Server receives alarms from IOCs via Channel Access and send
-    alarm messages to a JMS Server.
-    It also receives the acknowledgement information from Alarm System GUIs.
-    Most of the alarm logic is performed by alarm server.
-    </li>
-<li>Alarm System GUI:<br>
-    The Alarm System GUI, basically a table and tree view of current alarms
-    in CSS, allows users to view current alarms, acknowledge them,
-    invoke operator displays related to the alarm, browse the alarm history,
-    or change the alarm configuration.
-    </li>
-<li>Annunciator, JMS2Speech:<br>
-    The Annunciator included in the CSS alarm GUI or an alternate stand-alone
-    JMS2Speech tool annunciate new alarms.
-    Whenever a PV's severity changed to a <font color="#ff0000">higher severity</font>,
-    the PV's description will be annunciated <font color="#ff0000">once</font>.
-    </li>
-<li>JMS Server:<br>
-    The JMS Server is the message bus that allows the Alarm Server, GUI, JMS2Speech
-    to communicate.
-    </li>
-<li>JMS2RDB:<br>
-    This tool can write all JMS traffic to a Relational Database (RDB), allowing
-    analysis of the most frequent alarms, reconstruction of the time line of
-    a specific alarm, and more.
-    </li>
-</ul>
-    
-<p>
-In this manual, we will focus on how to use Alarm System GUI.
-</p>
-
-<div class="clear"/>
-
-<!-- ----------------------------------------------------------------------- -->
-<h2><a name=principles>General Alarm Principles</a></h2> 
-<!-- ----------------------------------------------------------------------- -->
-<p>
 To understand the behavior of alarms in the alarm system,
 please take a few minutes to read about its general principles.
 </p>
 
 <h3>Purpose</h3>
 <p>
+Alarms are <u>not</u> another interlock or protection system. Unlike interlocks,
+alarms do not trigger an automated response to handle a well understood situation.
+Instead, alarms inform operators of a problem that can have multiple reasons,
+a problem that is too complex to be handled automatically,
+an issue that <u>relies on a qualified operator</u>
+to find a solution based on experience and skill.
+</p>
+<p>
 Alarms are supposed to
 <ul>
+<li>notify operators about a problem</li>
 <li>effectively help operators take the correct action
     at the correct time,</li>
-<li>notify operators about a problem</li>
 <li>provide guidance for handling it</li>
 <li>be presented at a manageable rate.</li>
 </ul>
 </p>
-<p>
-Alarms are <u>not</u> another interlock or protection system. Interlocks
-trigger an automated response to handle a well understood situation.
-Alarms on the other hand inform operators of a problem that can have
-multiple reasons, too complex to be handled automatically,
-and instead <i>relying on a qualified operator
-to find a solution based on experience and skill.</i>
-</p>
-
-<h3>General response to an alarm</h3>
 <p>
 Operators are expected to acknowledge each active alarm, because the
 alarm system has no other way of knowing if operators are aware
@@ -132,6 +70,10 @@ Before acknowledging an alarm, operators can use the alarm GUI to
 </p>
 
 
+<!-- ----------------------------------------------------------------------- -->
+<h2><a name=principles>General Alarm Principles</a></h2> 
+<!-- ----------------------------------------------------------------------- -->
+
 <h3>Where are alarms generated?</h3>
 <p>
 Alarms are triggered by Process Variables (PVs) on the front-end computers (IOCs).
@@ -143,23 +85,26 @@ and links to related operator displays or web pages.
 <h3>Alarm Severity and Status Message</h3>
 <p>
 Levels of severity can help users to prioritize their work,
-especially if the displays many alarms at the same time.
+especially when many alarms occur at the same time.
 </p>
 <p>
-There are four levels of severity for an alarm:
+There are four alarm severity levels:
 <ul>
-<li><font color="#00FF00">OK</font>
-<li><font color="#A0A000">MINOR</font>
-<li><font color="#FF0000">MAJOR</font>
-<li><font color="#FF00FF">INVALID</font>
+<li><font color="#00FF00">OK</font> - actually meaning that there is no alarm</li>
+<li><font color="#A0A000">MINOR</font> - low severity</li>
+<li><font color="#FF0000">MAJOR</font> - higher severity</li>
+<li><font color="#FF00FF">INVALID</font> - highest severity</li>
 </ul>
-in which "INVALID" has the highest priority and "OK" has the lowest.
+The INVALID severity indicates a control system problem: The PV has no known value.
+On an operational machine, not knowing the true state of the system can be
+very bad, hence the highest alarm severity. On maintenance days, INVALID alarms
+can be the result of equipment simply being turned off, i.e. not a severe
+problem. The maintenance mode described below can help with that situation.
 </p>
 
 <p>
-The control system Trigger PV provides the alarm severity, it needs to be
-configured to send an alarm severity that is suitable to the respecive
-alarm.
+The severity of an alarm is provided by the control system trigger PV.
+It needs to be configured by the IOC engineer.
 </p>
 <p>
 In addition, each Trigger PV provides an alarm message (status) for each alarm.
@@ -189,21 +134,67 @@ until operator acknowledgement.
 </p>
 
 <a name=AlarmState>
-<h3>Alarm State Diagram</h3>
+<h3>Alarm States</h3>
 </a>
+<img class="float" alt="Alarm State Diagram for Latched PV" src="latched.png" />
+<img class="float" alt="Alarm State Diagram for Un-Latched PV" src="unlatched.png" />
 <p>
-The general idea: When an alarm triggers, something happened which requires
-operator action. The alarm guidance and related displays might help the operator
-to handle the alarm, and finally the operator will acknowledge the alarm.
+Fundamentally, an alarm can have 3 states:
+<ul>
+<li><font color="#00FF00">OK</font><br>
+    There is no alarm. The trigger PV's severity is and has been OK.
+</li>
+<li><font color="#FF0000">Active Alarm</font><br>
+    The trigger PV's severity changed to not-OK.
+    The alarm is displayed in the alarm system user interface, showing the time
+    and value of the original occurrence, waiting for an operator to analyze
+    and fix the problem. 
+</li>
+<li><font color="#FF8080">Acknowledged Alarm</font><br>
+    An operator has acknowledged the alarm.
+    While the PV's severity might still be not-OK, the alarm system user interface
+    shows that the alarm is being handled.
+    Once the trigger PV returns to OK, the alarm reverts to the "OK" state.
+</li>
+</ul>
 </p>
 <p>
-Alarms configured for annunciation are annunciated once.
-If the alarm clears, it is still displayed until operators acknowledge
-the situation.
+In reality, alarms are more complicated because of their very nature.
+If the reason for an alarm was known, it could have been fixed long ago, or
+automated countermeasures would have been implemented.
+But an alarm is an alarm because it requires human intelligence to analyze
+and handle it.
+Therefore alarm trigger PVs will sometimes go in and out of alarm for some time,
+or only show a brief alarm which seems to recover on its own.
+One purpose of the alarm system is to catch even brief alarms, and to reduce
+the noise from alarms that cycle between OK and some alarm state.
+</p>
+<p>
+Alarm are typically configured to "latch" and behave as shown in the first
+state diagram.
+Assume that the alarm is initially OK.
+As soon as an alarm trigger PV sends for example a MINOR alarm severity,
+the alarm system will latch the time and value of that occurrence and display
+the alarm in the user interface.
+If the alarm was configured for annunciation, the alarm description will be
+annunciated.
+</p>
+<p>
+Ideally, an operator investigates the alarm, fixes the underlying reason,
+acknowledges the alarm, the PV returns to OK and the alarm clears.
+In reality, other things can happen.
+The PV might only cause a brief nuisance trip, then quickly return to OK on its own.
+Or the PV might goes in and out of alarm.
+Either case really indicates a problem in the alarm trigger PV. Still, the alarm
+system latches the alarm at the original occurrence and annunciates only once
+to reduce 'chatter'.
 If the alarm re-occurs while the original alarm is still not acknowledged,
 it is not annunciated again because we assume that operators are still
 investigating the initial alarm, or just too busy to look at any alarms
 right now. In either case, another annunciation would only cause noise.
+The alarm system can also be configured with delays to only alarm if the
+trigger PV persists for a certain time, which
+can be used as a workaround for less than perfect alarm trigger PVs.
 </p>
 <p>
 When a MINOR alarm is followed by a MAJOR alarm, or generally a higher level
@@ -214,45 +205,69 @@ severity, the display will update to reflect the 'current' severity but
 the alarm severity remains latched to the highest alarm level.
 </p>
 <p>
-An alarm will fully 'clear', i.e. disappear from the alarm table when
+Acknowledging an alarm means to acknowledge the current alarm severity.
+</p>
+<p>
+Acknowledge Example 1: A trigger PV goes MAJOR, alarm system goes into MAJOR alarm.
+When acknowledged, the alarm is MAJOR-acknowledged.
+Should the PV relax to MINOR, the current state of the alarm will be MINOR, but
+the overall alarm state stays at MAJOR-acknowledged. If the PV actually cycles
+between MINOR and MAJOR, there will be no new annuncuations because the operator
+already acknowledged the MAJOR alarm.
+Finally, once the PV clears to OK, all will be OK.
+</p>
+<p>
+Acknowledge Example 2: A trigger PV goes MAJOR, alarm system goes into MAJOR alarm.
+Operator looks at the problem, improves the situation but can't fully fix it, yet, so
+the PV stays in MINOR alarm.
+The alarm system will show that there was a MAJOR alarm, and right now the PV
+is still in MINOR alarm.
+When acknowledged, the alarm system state changes to MINOR-acknowledged.
+If the PV clears to OK, all will be OK.
+On the other hand, should the PV go back into MAJOR alarm, this would cause
+a new annunciation because we only acknowledged when the PV was at a MINOR severity level.
+</p>
+<p>
+Acknowledged alarms are less visible in the alarm system user interface
+so that new, not-yet-acknowledged alarms are more obvious.
+Operators can manually un-acknowledged alarms, which might be useful to
+make them more visible again when trying to decide how to handle several
+alarms.
+</p>
+<p>
+In summary, acknowledging an alarm means to acknowledge the current severity
+of the PV, and an alarm will fully 'clear', i.e. disappear from the alarm table when
 the alarm trigger PV returns to OK <u>and</u> the alarm is acknowledged.
 </p>
 
 
-<h3>Alarm State Diagram for Latched PV</h3>
-<img class="float" alt="Alarm State Diagram for Latched PV" src="AlarmStateDiagram_Latched.png" />  
-<p>
-This Alarm State Diagram describes this 'latching' alarm behavior,
-how alarm severity jumps between different states when an specified action is triggered. The oval represents a state, in which the upper line indicates "Current Severity" and the lower indicates "Severity".For any unacknowledged alarm (if its current severity is not "OK"), it could be represented by the center orange one. The arrow represents an action.
-</p>
-<p>
-Alarms in one of the states over the upper dotted line will be displayed in the table of
-<a href="#current_alarm">Current Alarms</a>.
-Alarms in one of the states between dotted lines will be displayed in the table of
-<a href="#current_alarm">Acknowledged Alarms</a>.
-The state of "OK/OK" will not be displayed in the
-<a href="#table">Alarm Table</a>
-</p>
-<p>
-The actions in red mean an annunciation will be generated in case of the related PV
-is <a href="#pv_config">configured</a> with "Annunciating".
-</p>
 
-<div class="clear"/>
-
-
-<h3>Alarm State Diagram for Un-Latched PV</h3>
-<img class="float" alt="Alarm State Diagram for Un-Latched PV" src="AlarmStateDiagram_UnLatched.png" />  
+<h3>Non-Latching Alarms</h3>
 <p>
-This picture shows the alarm state diagram for the PV configured as "Un-Latched".
-</p>
-<p>
-Fundamentally, un-latched alarms do not require acknowledgement.
+The second diagram shows the behavior of alarms that are <u>not</u> configured
+to latch. You will notice that it is very similar to the latched alarm
+behavior except that non-latching alarms do not require acknowledgement.
 They may be acknowledged to remove them from the list of 'active' alarms,
 but they clear automatically once the trigger PV relaxes to "OK"
 without requiring a manual alarm acknowledgement.
-
-<div class="clear"/>
+</p>
+<p>
+Typical use cases for non-latching alarms:
+<ul>
+<li>Something else in the control system already latches the alarm trigger PV.
+    For example, the alarm trigger PV could be an "overtemperature" indicator
+    of a power supply where the power supply already latches this indicator
+    until it is reset at the power supply.
+</li>
+<li>A trigger PV is known to cause frequent brief alarms, and it would be
+    too much work for operators to acknowledge each occurrence.
+    In this case, configuring the alarm not to latch is a workaround, but
+    in an ideal world you would fix the root cause:
+    Remove noise from the alarm trigger PV, or configure the alarm system
+    with a delay.
+</li>
+</ul>
+</p>
 
 
 <h3>Annunciation</h3>
@@ -318,6 +333,68 @@ alarm tree and table GUI, which also indicates the current mode:
 <li><img src=icons/operate.gif> Normal Operating Mode, press to enable Maintenance Mode
 <li><img src=icons/maintenance_act.gif> Maintenance Mode, press to return to normal operating mode
 </ul>
+
+
+
+<div class="clear"/>
+
+
+<h3>Architecture</h3>
+<p>
+Technically, the alarm system consists of several elements:
+</p>
+<ul>
+<li>IOCs:<br>
+    Control System IOCs provide the Alarm Trigger PVs which indicate
+    alarm conditions.
+    In principle, one can display those PVs on generic operator screens,
+    where they would for example show up as yellow or red.
+    <br>
+    Benefits of the alarm system over a basic operator screen:
+    <ul>
+    <li>Alarm can be annunciated.</li>
+    <li>Alarm can latch to indicate the time of the original alarm.</li>
+    <li>Additional guidance and links to related displays are accessible
+        right from the alarm.</li>
+    <li>When multiple alarms coincide, they can be sorted by for example
+        severity or time.</li>
+    </ul>
+    </li>    
+<li>Alarm Server:<br>
+    The Alarm Server receives alarms from IOCs via Channel Access and sends
+    alarm messages to a JMS Server.
+    It also receives the acknowledgements from Alarm System GUIs.
+    Most of the alarm logic is performed by the alarm server.
+    </li>
+<li>Alarm System GUI:<br>
+    The Alarm System GUI, basically a table and tree view of current alarms
+    in CSS, allows users to view current alarms, acknowledge them,
+    invoke operator displays related to the alarm, browse the alarm history,
+    or change the alarm configuration.
+    </li>
+<li>Annunciator, JMS2Speech:<br>
+    The Annunciator included in the CSS alarm GUI or an alternate stand-alone
+    JMS2Speech tool annunciate new alarms.
+    Whenever a PV's severity changed to a <font color="#ff0000">higher severity</font>,
+    the PV's description will be annunciated <font color="#ff0000">once</font>.
+    </li>
+<li>JMS Server:<br>
+    The JMS Server is the message bus that allows the Alarm Server, GUI, JMS2Speech
+    to communicate.
+    </li>
+<li>JMS2RDB:<br>
+    This tool can write all JMS traffic to a Relational Database (RDB), allowing
+    analysis of the most frequent alarms, reconstruction of the time line of
+    a specific alarm, and more.
+    </li>
+</ul>
+    
+<p>
+This manual focuses on how to use Alarm System GUI, not on the setup of
+the alarm server.
+</p>
+
+<div class="clear"/>
 
 
 <!-- ----------------------------------------------------------------------- -->
