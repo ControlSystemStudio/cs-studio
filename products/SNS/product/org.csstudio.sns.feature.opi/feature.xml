@@ -48,21 +48,22 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="compatible"/>
+      <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.apputil.ui" version="1.1.4" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
-      <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.apputil.ui" version="1.1.4" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.logbook" version="1.0.2" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.resources" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.adlParser" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder.widgets" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.5.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.0.5" match="greaterOrEqual"/>
    </requires>
 
    <plugin
@@ -108,6 +109,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.utility.adlParser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.swt.widgets"
          download-size="0"
          install-size="0"
          version="0.0.0"
