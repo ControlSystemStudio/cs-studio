@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -49,6 +50,9 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
             .getLogger(AlarmMessageJMSImpl.class);
 
     private final MapMessage _mapMessage;
+
+    @GuardedBy("this")
+    private Map<String, String> _map;
 
     /**
      * Constructor.
@@ -94,34 +98,32 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     }
 
     @Override
-    public final Map<String, String> getMap() {
-        // TODO (jpenning) performance: cache the result map
-        final Map<String, String> result = new HashMap<String, String>();
-        try {
-            @SuppressWarnings("unchecked")
-            final
-            Enumeration<String> mapNames = _mapMessage.getMapNames();
-            while (mapNames.hasMoreElements()) {
-                final String key = mapNames.nextElement();
-                result.put(key.toUpperCase(), _mapMessage.getString(key));
+    public final synchronized Map<String, String> getMap() {
+        if (_map == null) {
+            _map = new HashMap<String, String>();
+            try {
+                @SuppressWarnings("unchecked")
+                final Enumeration<String> mapNames = _mapMessage.getMapNames();
+                while (mapNames.hasMoreElements()) {
+                    final String key = mapNames.nextElement();
+                    _map.put(key.toUpperCase(), _mapMessage.getString(key));
+                }
+            } catch (final JMSException e) {
+                LOG.error("Error creating map from JMS message", e);
             }
-        } catch (final JMSException e) {
-            LOG.error("Error creating map from JMS message", e);
         }
-        return result;
+        return _map;
     }
 
     @Override
     public final String toString() {
-        return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) +
-               " for " + getString(AlarmMessageKey.NAME) +
-               ", Severity " + getSeverity() +
-               ", Status " + getString(AlarmMessageKey.STATUS);
+        return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) + " for "
+                + getString(AlarmMessageKey.NAME) + ", Severity " + getSeverity() + ", Status "
+                + getString(AlarmMessageKey.STATUS);
     }
 
     @Nonnull
-    public Severity getSeverity()
-    {
+    public Severity getSeverity() {
         return Severity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
     }
 

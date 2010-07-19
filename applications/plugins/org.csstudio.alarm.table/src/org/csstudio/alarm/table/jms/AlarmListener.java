@@ -69,7 +69,7 @@ public class AlarmListener implements IAlarmTableListener {
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
     public void onMessage(@CheckForNull final IAlarmMessage message) {
-        LOG.debug("received: " + message);
+//        LOG.debug("received: " + message);
         if (message == null) {
             LOG.error("Error processing message (was null)");
         } else {
