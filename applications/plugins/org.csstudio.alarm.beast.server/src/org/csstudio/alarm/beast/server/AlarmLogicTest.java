@@ -68,26 +68,6 @@ public class AlarmLogicTest
             annunciated = true;
         }
 
-        /** @deprecated This one doesn't check the current message */
-        @Deprecated
-        void check(final boolean update, final boolean annunciate,
-                final SeverityLevel current,
-                final SeverityLevel sevr, final String msg)
-        {
-            System.out.println(
-                (fired_update ? "new, " : "old, ") +
-                (annunciated ? "annunciate : " : "silent     : ") +
-                        toString());
-            assertEquals("Update", update, fired_update);
-            assertEquals("Annunciation", annunciate, annunciated);
-            assertEquals("Current severity", current, getCurrentState().getSeverity());
-            assertEquals("Alarm severity", sevr, getAlarmState().getSeverity());
-            assertEquals("Alarm message", msg, getAlarmState().getMessage());
-            // Reset
-            fired_update = false;
-            annunciated = false;
-        }
-
         void check(final boolean update, final boolean annunciate,
                 final SeverityLevel current_sevr, final String current_msg,
                 final SeverityLevel sevr, final String msg)
@@ -222,7 +202,47 @@ public class AlarmLogicTest
         
         // OK
         logic.computeNewState("e", SeverityLevel.OK, OK);
-        logic.check(true, false, SeverityLevel.OK, SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+    }
+
+    @Test
+    public void testLatchedAnnunciatedAckToLowerSeverity()
+    {
+        System.out.println("* Latched, annunciated: Major, Minor, Ack, Major, Ack, Minor, OK.");
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
+        logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+        
+        // Follow into MAJOR alarm
+        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
+        logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
+    
+        // MINOR, but latched to MAJOR alarm (not annunciated)
+        logic.computeNewState("b", SeverityLevel.MINOR, "just high");
+        logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR, "very high");
+
+        // Ack': Forget the MAJOR alarm, ack that it's now MINOR
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MINOR_ACK, "just high");
+        assertEquals("b", logic.getAlarmState().getValue());
+
+        // Back into MAJOR alarm: Annunciated, since we ack'ed MINOR
+        logic.computeNewState("c", SeverityLevel.MAJOR, "very high");
+        logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
+        assertEquals("c", logic.getAlarmState().getValue());
+
+        // MINOR: Still latched to MAJOR alarm
+        logic.computeNewState("d", SeverityLevel.MINOR, "just high");
+        logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR, "very high");
+        assertEquals("c", logic.getAlarmState().getValue());
+
+        // Ack': Forget the MAJOR alarm, ack that it's now MINOR
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MINOR_ACK, "just high");
+        assertEquals("d", logic.getAlarmState().getValue());
+        
+        // OK
+        logic.computeNewState("e", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
     }
 
     @Test

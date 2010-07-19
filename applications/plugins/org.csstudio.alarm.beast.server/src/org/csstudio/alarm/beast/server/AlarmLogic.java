@@ -38,45 +38,6 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public abstract class AlarmLogic
 {
-    // ---- It might be easier to code the alarm logic based on 
-    // ---- transition tables like the following:
-    // ---- Assume we're in a MINOR_ACK state, and we receive a MAJOR value,
-    // ---- so we need to transition to MAJOR etc.
-    /** Matrix for normal, latched behavior */
-    @SuppressWarnings("unused")
-    final private static SeverityLevel latched_transitions[][] =
-        new SeverityLevel[][]
-    {  //                Received Value
-       // Current state           OK                    MINOR                            MAJOR                INVALID
-       /* OK */          { SeverityLevel.OK,          SeverityLevel.MINOR,       SeverityLevel.MAJOR,       SeverityLevel.INVALID     }, 
-       /* MINOR */       { SeverityLevel.MINOR,       SeverityLevel.MINOR,       SeverityLevel.MAJOR,       SeverityLevel.INVALID     }, 
-       /* MINOR_ACK */   { SeverityLevel.MINOR_ACK,   SeverityLevel.MINOR_ACK,   SeverityLevel.MAJOR,       SeverityLevel.INVALID     }, 
-       /* MAJOR */       { SeverityLevel.MAJOR,       SeverityLevel.MAJOR,       SeverityLevel.MAJOR,       SeverityLevel.INVALID     }, 
-       /* MAJOR_ACK */   { SeverityLevel.MAJOR_ACK,   SeverityLevel.MAJOR_ACK,   SeverityLevel.MAJOR_ACK,   SeverityLevel.INVALID     }, 
-       /* INVALID */     { SeverityLevel.INVALID,     SeverityLevel.INVALID,     SeverityLevel.INVALID,     SeverityLevel.INVALID     }, 
-       /* INVALID_ACK */ { SeverityLevel.INVALID_ACK, SeverityLevel.INVALID_ACK, SeverityLevel.INVALID_ACK, SeverityLevel.INVALID_ACK }
-    };
-    
-    /** Matrix for normal, non-latched behavior */
-    @SuppressWarnings("unused")
-    final private static SeverityLevel nonlatched_transitions[][] =
-        new SeverityLevel[][]
-    {  //                Received Value
-       // Current state           OK                  MINOR              MAJOR                  INVALID
-       /* OK */          { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR,     SeverityLevel.INVALID     }, 
-       /* MINOR */       { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR,     SeverityLevel.INVALID     }, 
-       /* MINOR_ACK */   { SeverityLevel.OK, SeverityLevel.MINOR_ACK, SeverityLevel.MAJOR,     SeverityLevel.INVALID     }, 
-       /* MAJOR */       { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR,     SeverityLevel.INVALID     }, 
-       /* MAJOR_ACK */   { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR_ACK, SeverityLevel.INVALID     }, 
-       /* INVALID */     { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR,     SeverityLevel.INVALID     }, 
-       /* INVALID_ACK */ { SeverityLevel.OK, SeverityLevel.MINOR,     SeverityLevel.MAJOR,     SeverityLevel.INVALID_ACK }
-    };
-    /** Matrix for maintenance mode, ... */
-    // ---- For now, the logic uses the severities' ordinals
-    // ---- to see which severity is 'higher' to determine what to do.
-    // ---- After changes, the AlarmLogicTest should help detect issues.
-    
-    
     /** Timer for handling delayed alarms */
     private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
     
@@ -393,8 +354,10 @@ public abstract class AlarmLogic
     
     /** Compute the new alarm state based on current state and new data from
      *  control system.
+     *  
      *  @param received_state Severity/Status received from control system,
-     *                        or the delayed new state from DelayedAlarmCheck
+     *                                         or
+     *                        the delayed new state from DelayedAlarmCheck
      *  @param with_delay Use delay when raising the alarm severity?
      */
     private void updateState(final AlarmState received_state,
@@ -445,7 +408,7 @@ public abstract class AlarmLogic
             !isPriorityAlarm() &&
             alarm_state.getSeverity() == SeverityLevel.INVALID)
         {
-            alarm_state = alarm_state.createAcknowledged();
+            alarm_state = alarm_state.createAcknowledged(alarm_state);
             annunc_level = null;
         }
         fireStateUpdates();
@@ -509,7 +472,7 @@ public abstract class AlarmLogic
                 if (current_state.getSeverity() == SeverityLevel.OK)
                     alarm_state = AlarmState.createClearState();
                 else
-                    alarm_state = alarm_state.createAcknowledged();
+                    alarm_state = alarm_state.createAcknowledged(current_state);
             }
             else
                 alarm_state = alarm_state.createUnacknowledged();

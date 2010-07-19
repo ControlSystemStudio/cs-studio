@@ -63,9 +63,30 @@ public class AlarmState
         return new AlarmState(new_severity, message, value, time);
     }
 
-    /** Change 'active' alarm severity into acknowledged type */
-    public AlarmState createAcknowledged()
+    /** Change 'active' alarm severity into 'acknowledged' type, relaxing
+     *  to the severity of the current state in case that's already lower
+     *  than the original alarm state. 
+     *  @param current_state
+     */
+    public AlarmState createAcknowledged(final AlarmState current_state)
     {
+        if (current_state != null  &&
+            current_state.getSeverity().ordinal() < severity.ordinal())
+        {
+            switch (current_state.getSeverity())
+            {
+            case INVALID:
+                return new AlarmState(SeverityLevel.INVALID_ACK, current_state.getMessage(), current_state.getValue(), current_state.getTime());
+            case MAJOR:
+                return new AlarmState(SeverityLevel.MAJOR_ACK, current_state.getMessage(), current_state.getValue(), current_state.getTime());
+            case MINOR:
+                return new AlarmState(SeverityLevel.MINOR_ACK, current_state.getMessage(), current_state.getValue(), current_state.getTime());
+            default:
+                // other severities stay as they are
+                return current_state;
+            }
+        }
+        // Else: Use the alarm severity as the one to ack'
         switch (severity)
         {
         case INVALID:
