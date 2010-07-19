@@ -107,7 +107,9 @@ public class GUI implements AlarmClientModelListener
                     if (act_table.isDisposed())
                         return;
                     // TODO Don't use setInput(), it causes flicker on Linux!
-                    // Use setItemCount(), refresh()
+                    // For VIRTUAL table, could use setItemCount(), refresh().
+                    // But this is a plain table with sorting, so only
+                    // setInput causes a full update?!
                     active_table_viewer.setInput(model.getActiveAlarms());
                     acknowledged_table_viewer.setInput(model.getAcknowledgedAlarms());
                 }
