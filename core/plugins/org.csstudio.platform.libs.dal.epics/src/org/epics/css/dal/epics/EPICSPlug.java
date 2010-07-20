@@ -203,8 +203,12 @@ public class EPICSPlug extends AbstractPlug
 	/**
 	 * PendIO timeout.
 	 * TODO to be configurable
+	 * MCL 2010-07-20
+	 * configurable would be a great idea!
+	 * 5 seconds is too much ANY ioc will respond within 1 sec at most!
+	 * Changed from 5 to 1 sec
 	 */
-	private double timeout = 5.0;
+	private double timeout = 1.0;
 
 	/**
 	 * Context.
