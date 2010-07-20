@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="2.0.2.qualifier"
+      version="2.1.0.qualifier"
       provider-name="SNS, Kay Kasemir"
       plugin="org.csstudio.sns.product">
 
