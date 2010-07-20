@@ -402,7 +402,7 @@ public class AlarmView extends LogView {
 
                     @Override
                     public void onMessage(@Nonnull final IAlarmMessage message) {
-                        _alarmSoundService.playAlarmSound(message.getSeverity());
+                        _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
                     }
                 };
             }

@@ -93,7 +93,7 @@ final class AlarmHandler {
 
             @Override
             public void onMessage(@Nonnull final IAlarmMessage message) {
-                LOG.debug(message.getMap().toString());
+//                LOG.debug(message.getMap().toString());
                 jmsMessageService.sendAlarmMessage(message);
             }
 

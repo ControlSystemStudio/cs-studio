@@ -18,8 +18,10 @@
 package org.csstudio.alarm.table.service;
 
 import java.io.BufferedInputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
@@ -31,14 +33,14 @@ import javax.annotation.Nonnull;
 import javazoom.jl.player.Player;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
 import org.csstudio.alarm.table.preferences.JmsLogPreferencePage;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.osgi.framework.Bundle;
 
 /**
  * Implementation of the alarm sound service.
@@ -53,10 +55,9 @@ public final class AlarmSoundService implements IAlarmSoundService {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmSoundService.class);
 
-    // TODO (jpenning) refactor to enum map to {@link org.csstudio.alarm.treeView.model.Severity}
     private Map<String, String> _severityToSoundfile;
 
-    // Buffer for one sound
+    // Buffer for one sound. The String denotes the path, relative (contained in bundle) or absolute, to the sound resource.
     private final ArrayBlockingQueue<String> _queue = new ArrayBlockingQueue<String>(1);
 
     private final Thread _playerThread;
@@ -70,7 +71,6 @@ public final class AlarmSoundService implements IAlarmSoundService {
     private void startPlayerThread() {
         _playerThread.start();
     }
-
 
     /**
      * The alarm sound service is constructed via factory method. This is necessary to be able to start the player thread
@@ -87,21 +87,47 @@ public final class AlarmSoundService implements IAlarmSoundService {
         return result;
     }
 
-    public void playAlarmSound(@Nonnull final Severity severity) {
-        LOG.debug("playAlarmSound for severity " + severity);
+    public void playAlarmSound(@Nonnull final String severityAsString) {
+        LOG.debug("playAlarmSound for severity " + severityAsString);
 
         // Guard
-        if (!isMappingDefinedForSeverity(severity.name())) {
-            LOG.debug("No mapping defined for severity " + severity);
+        if (!isMappingDefinedForSeverity(severityAsString)) {
+            LOG.debug("No mapping defined for severity " + severityAsString);
             return;
         }
 
-        if (_queue.offer(severity.name())) {
-            LOG.debug("sound for severity " + severity + " has been queued");
+        if (_queue.offer(getMp3Path(severityAsString))) {
+            LOG.debug("sound for severity " + severityAsString + " has been queued");
         } else {
-            LOG.debug("sound for severity " + severity + " has been ignored");
+            LOG.debug("sound for severity " + severityAsString + " has been ignored");
         }
     }
+
+
+    public void playAlarmSoundFromResource(@Nonnull String path) {
+        if (_queue.offer(path)) {
+            LOG.debug("sound from " + path + " has been queued");
+        } else {
+            LOG.debug("sound from " + path + " has been ignored");
+        }
+    }
+
+    public boolean existsResource(@Nonnull final String text) {
+        boolean result = !text.isEmpty();
+        if (result) {
+            final Path path = new Path(text);
+            if (path.isAbsolute()) {
+                File file = new File(text);
+                result = file.exists();
+            } else {
+                Bundle bundle = JmsLogsPlugin.getDefault().getBundle();
+                result = bundle.getResource(text) != null;
+            }
+        }
+        return result;
+    }
+
+
 
     @Nonnull
     private String getMp3Path(@Nonnull final String severity) {
@@ -118,7 +144,7 @@ public final class AlarmSoundService implements IAlarmSoundService {
     }
 
     /**
-     * Read mapping of severities to colors from preferences and put mapping in a local HashMap.
+     * Read mapping of severities to sounds from preferences and put mapping in a local HashMap.
      * (Performance)
      */
     private void mapSeverityToSoundfile() {
@@ -168,10 +194,10 @@ public final class AlarmSoundService implements IAlarmSoundService {
                     _queue.clear();
 
                     // Wait for entry
-                    final String severity = _queue.take();
+                    final String path = _queue.take();
                     LOG.debug("player started");
 
-                    final InputStream soundStream = getSoundStreamForSeverity(severity);
+                    final InputStream soundStream = getSoundStreamForPath(path);
                     if (soundStream != null) {
                         bufferedInputStream = new BufferedInputStream(soundStream);
                         mp3Player = new Player(bufferedInputStream);
@@ -202,15 +228,12 @@ public final class AlarmSoundService implements IAlarmSoundService {
         }
 
         /**
-         * The sound resource is located in the product bundle.
-         *
-         * @param severity
-         * @return
+         * @param relative or absolute path to sound resource
+         * @return the stream
          * @throws IOException
          */
         @CheckForNull
-        private InputStream getSoundStreamForSeverity(@Nonnull final String severity) throws IOException {
-            final String mp3Path = getMp3Path(severity);
+        private InputStream getSoundStreamForPath(@Nonnull final String mp3Path) throws IOException {
             final URL url = getURLFromPath(mp3Path);
             final InputStream result = url == null ? null : url.openStream();
             return result;
@@ -218,10 +241,25 @@ public final class AlarmSoundService implements IAlarmSoundService {
 
         @CheckForNull
         private URL getURLFromPath(@Nonnull final String mp3Path) {
-            final URL url = FileLocator.find(Platform.getProduct().getDefiningBundle(),
-                                             new Path(mp3Path),
-                                             null);
-            return url;
+            URL result = null;
+            Path path = new Path(mp3Path);
+            if (path.isAbsolute()) {
+                result = getUrlForAbsolutePath(mp3Path);
+            } else {
+                result = FileLocator.find(JmsLogsPlugin.getDefault().getBundle(), path, null);
+            }
+            return result;
+        }
+
+        @CheckForNull
+        private URL getUrlForAbsolutePath(@Nonnull final String mp3Path) {
+            URL result = null;
+            try {
+                result = new File(mp3Path).toURI().toURL();
+            } catch (MalformedURLException e) {
+                result = null;
+            }
+            return result;
         }
 
     }

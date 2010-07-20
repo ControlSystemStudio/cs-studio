@@ -22,8 +22,6 @@ package org.csstudio.alarm.table.service;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.Severity;
-
 /**
  * Service for playing alarm sounds based on severity of alarms.
  *
@@ -35,9 +33,26 @@ import org.csstudio.alarm.service.declaration.Severity;
 public interface IAlarmSoundService {
 
     /**
-     * Play a sound dependent on the severity
+     * Play a sound dependent on the severity given as string.
+     * Internally the preferences for the severities and sounds are used to find the corresponding resource.
      *
-     * @param severity
+     * @param severityAsString
      */
-    void playAlarmSound(@Nonnull Severity severity);
+    void playAlarmSound(@Nonnull String severityAsString);
+
+    /**
+     * Play a sound from the given resource.
+     * @param path
+     */
+    void playAlarmSoundFromResource(@Nonnull String path);
+
+    /**
+     * Check if resource exists under the given path.
+     * If a relative path is given, the resource is expected to be contained in this bundle.
+     * If an absolute path is given, the resource may be anywhere on the file system.
+     *
+     * @param path
+     * @return true if path denotes a resource, false if no resource can be found
+     */
+    boolean existsResource(@Nonnull String path);
 }

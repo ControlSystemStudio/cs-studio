@@ -54,14 +54,14 @@ public enum AlarmMessageKey {
     private final String _definingName; // May be null
 
     /**
-     * Use this constructor of the defining name of the key is equal to the name.
+     * Use this constructor if the defining name of the key is equal to the name.
      */
     private AlarmMessageKey() {
         this(null);
     }
 
     /**
-     * Use this constructor of the defining name of the key is different to the name.
+     * Use this constructor if the defining name of the key is different to the name.
      *
      * @param definingName
      * CHECKSTYLE:Jsr305Annotations:OFF (no annotations in enum constructors due to eclipse bug)
