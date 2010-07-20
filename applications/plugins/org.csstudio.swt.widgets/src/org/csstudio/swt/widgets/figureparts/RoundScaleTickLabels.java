@@ -124,7 +124,25 @@ public class RoundScaleTickLabels extends Figure {
         }
         
         for (int i = digitMin; i <= digitMax; i++) {
-            for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
+        	if(digitMax - digitMin > 20){//if the range is too big, skip minor ticks.
+	       		 BigDecimal v = pow(10,i);
+	       		 if(v.doubleValue() > max)
+	       			 break;
+	       		 if (scale.isDateEnabled()) {
+	                 Date date = new Date((long) v.doubleValue());
+	                 tickLabels.add(scale.format(date));
+	             } else {
+	                 tickLabels.add(scale.format(v.doubleValue()));
+	             }
+	             tickLabelValues.add(v.doubleValue());
+	
+	             double tickLabelPosition = scale.getStartAngle() - ((Math.log10(v.doubleValue()) - Math
+	                     .log10(min))
+	                     / (Math.log10(max) - Math.log10(min)) * lengthInDegrees);
+	             tickLabelPosition = tickLabelPosition * Math.PI/180;
+	             tickLabelPositions.add(tickLabelPosition);
+       	 }else{
+       		 for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
                     .doubleValue(); j = j.add(tickStep)) {
                 if (j.doubleValue() > max) {
                     break;
@@ -146,6 +164,8 @@ public class RoundScaleTickLabels extends Figure {
             }
             tickStep = tickStep.multiply(pow(10, 1));
             firstPosition = tickStep.add(pow(10, i));
+       	 }
+            
         }
         
         //add max
@@ -419,8 +439,11 @@ public class RoundScaleTickLabels extends Figure {
         }
 
         double length = Math.abs(max - min);
+        double markStepHint = scale.getMajorTickMarkStepHint();
+        if(markStepHint > lengthInPixels)
+        	markStepHint = lengthInPixels;
         double gridStepHint = length / lengthInPixels
-                * scale.getMajorTickMarkStepHint();       	
+                * markStepHint;       	
         
         if(scale.isDateEnabled()) {
         	//by default, make the least step to be minutes
@@ -447,9 +470,11 @@ public class RoundScaleTickLabels extends Figure {
         double mantissa = gridStepHint;
         int exponent = 0;
         if (mantissa < 1) {
-            while (mantissa < 1) {
-                mantissa *= 10.0;
-                exponent--;
+        	if(mantissa != 0){
+	            while (mantissa < 1) {
+	                mantissa *= 10.0;
+	                exponent--;
+	            }
             }
         } else {
             while (mantissa >= 10) {

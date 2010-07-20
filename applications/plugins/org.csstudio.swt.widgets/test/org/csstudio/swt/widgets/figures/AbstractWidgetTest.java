@@ -97,7 +97,7 @@ public abstract class AbstractWidgetTest {
 							return;
 						}
 						final PropertyDescriptor pd = pds[(pdIndex)%pds.length];
-						if(runIndex%6 ==0){
+						if(runIndex%getRepeatCountOnEachProperty() ==0){
 							pdIndex++;
 						}
 						final Method writeMethod = pd.getWriteMethod();
@@ -108,7 +108,7 @@ public abstract class AbstractWidgetTest {
                                     	text.setText(pd.getName() + " : " + testData);
                                     	System.out.println(pd.getName() + " : " + testData);
                                     	writeMethod.invoke(widget,testData);
-                                    	nextRunTime = 500;
+                                    	nextRunTime = 50;
                                     } catch (final Exception e) {
                                     	e.printStackTrace();
                                     }
@@ -177,10 +177,12 @@ public abstract class AbstractWidgetTest {
 
 	/**Generate test data.
 	 * @param pd the property descriptor of the property under test.
-	 * @param seed the seed that could be used as a reference in generating test data.
+	 * @param seed the seed that could be used as a reference in generating test data. 
+	 * It is the runIndex integer number by default.
 	 * @return
 	 */
 	public Object generateTestData(final PropertyDescriptor pd, final Object seed){
+		final int REPEAT_COUNT = getRepeatCountOnEachProperty(); 
 		final Class<?> propType = pd.getPropertyType();
 		if(propType == boolean.class) {
             if((seed != null) && (seed instanceof Integer)) {
@@ -192,13 +194,38 @@ public abstract class AbstractWidgetTest {
             return CustomMediaFactory.getInstance().getColor(
 									new RGB((int) (Math.random()*255),(int) (Math.random()*255),(int) (Math.random()*255)));
         } else if(propType == double.class) {
+        	if(seed != null && seed instanceof Integer)
+        		if(((Integer)seed)%REPEAT_COUNT==1)
+        			return Double.NaN;
+        		else if(((Integer)seed)%REPEAT_COUNT==2)
+        			return Double.NEGATIVE_INFINITY;
+        		else if(((Integer)seed)%REPEAT_COUNT==3)
+        			return Double.POSITIVE_INFINITY;
+        		else if(((Integer)seed)%REPEAT_COUNT==4)
+        			return Double.MAX_VALUE;
+        		else if(((Integer)seed)%REPEAT_COUNT==5)
+        			return Double.MIN_VALUE;
+        		else if(((Integer)seed)%REPEAT_COUNT==5)
+        			return 0;
             return Math.random() *100;
         } else if(propType == int.class) {
-            return (int)(Math.random()*100);
+        	if(seed != null && seed instanceof Integer){
+        		if(((Integer)seed)%REPEAT_COUNT==1)
+        			return Integer.MAX_VALUE;
+        		else if(((Integer)seed)%REPEAT_COUNT==2)
+        			return Integer.MIN_VALUE;        		
+        		else if(((Integer)seed)%REPEAT_COUNT==3)
+        			return 0;
+        	}else
+        		return (int)(Math.random()*100);
         }
 
 		return null;
 
+	}
+	
+	protected int getRepeatCountOnEachProperty(){
+		return 8;
 	}
 
 	/**

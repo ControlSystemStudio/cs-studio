@@ -289,9 +289,9 @@ public abstract class AbstractScale extends Figure{
     }
 
 	/**
-	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set
+	 * @param majorTickMarkStepHint the majorTickMarkStepHint to set, should be less than 1000.
 	 */
-	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {
+	public void setMajorTickMarkStepHint(int majorTickMarkStepHint) {		
 		this.majorTickMarkStepHint = majorTickMarkStepHint;
 		setDirty(true);
 		revalidate();
@@ -316,7 +316,9 @@ public abstract class AbstractScale extends Figure{
 
     /** set the scale range */
     public void setRange(double lower, double upper){
-        if (Double.isNaN(lower) || Double.isNaN(upper)) {
+        if (Double.isNaN(lower) || Double.isNaN(upper) 
+        		|| Double.isInfinite(lower) || Double.isInfinite(upper) 
+        		|| lower == upper) {
             throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
         

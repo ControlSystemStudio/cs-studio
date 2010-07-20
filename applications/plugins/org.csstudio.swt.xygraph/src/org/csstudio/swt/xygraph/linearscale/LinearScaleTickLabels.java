@@ -128,30 +128,48 @@ public class LinearScaleTickLabels extends Figure {
         	tickLabelPositions.add(scale.getMargin());        	
         }
        
-        for (int i = digitMin; i <= digitMax; i++) {
-            for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
-                    .doubleValue(); j = j.add(tickStep)) {
-                if (j.doubleValue() > max) {
-                    break;
-                }
-
-                if (scale.isDateEnabled()) {
-                    Date date = new Date((long) j.doubleValue());
-                    tickLabels.add(scale.format(date));
-                } else {
-                    tickLabels.add(scale.format(j.doubleValue()));
-                }
-                tickLabelValues.add(j.doubleValue());
-
-                int tickLabelPosition = (int) ((Math.log10(j.doubleValue()) - Math
-                        .log10(min))
-                        / (Math.log10(max) - Math.log10(min)) * length)
-                        + scale.getMargin();
-                tickLabelPositions.add(tickLabelPosition);               
-            }
-            tickStep = tickStep.multiply(pow(10, 1));
-            firstPosition = tickStep.add(pow(10, i));
-            
+        for (int i = digitMin; i <= digitMax; i++) {        	
+        	 if(digitMax - digitMin > 20){//if the range is too big, skip minor ticks.
+        		 BigDecimal v = pow(10,i);
+        		 if(v.doubleValue() > max)
+        			 break;
+        		 if (scale.isDateEnabled()) {
+	                    Date date = new Date((long) v.doubleValue());
+	                    tickLabels.add(scale.format(date));
+	                } else {
+	                    tickLabels.add(scale.format(v.doubleValue()));
+	                }
+	                tickLabelValues.add(v.doubleValue());
+	
+	                int tickLabelPosition = (int) ((Math.log10(v.doubleValue()) - Math
+	                        .log10(min))
+	                        / (Math.log10(max) - Math.log10(min)) * length)
+	                        + scale.getMargin();
+	                tickLabelPositions.add(tickLabelPosition);     
+        	 }else{
+	         	for (BigDecimal j = firstPosition; j.doubleValue() <= pow(10, i)
+	                    .doubleValue(); j = j.add(tickStep)) {
+	                if (j.doubleValue() > max) {
+	                    break;
+	                }
+	
+	                if (scale.isDateEnabled()) {
+	                    Date date = new Date((long) j.doubleValue());
+	                    tickLabels.add(scale.format(date));
+	                } else {
+	                    tickLabels.add(scale.format(j.doubleValue()));
+	                }
+	                tickLabelValues.add(j.doubleValue());
+	
+	                int tickLabelPosition = (int) ((Math.log10(j.doubleValue()) - Math
+	                        .log10(min))
+	                        / (Math.log10(max) - Math.log10(min)) * length)
+	                        + scale.getMargin();
+	                tickLabelPositions.add(tickLabelPosition);               
+	            }
+	           	tickStep = tickStep.multiply(pow(10, 1));
+	            firstPosition = tickStep.add(pow(10, i));
+         	}           
         }
         
         //add max
@@ -433,8 +451,11 @@ public class LinearScaleTickLabels extends Figure {
         }
 
         double length = Math.abs(max - min);
+        double majorTickMarkStepHint = scale.getMajorTickMarkStepHint();
+        if(majorTickMarkStepHint > lengthInPixels)
+        	majorTickMarkStepHint = lengthInPixels;
         double gridStepHint = length / lengthInPixels
-                * scale.getMajorTickMarkStepHint();
+                * majorTickMarkStepHint;
         
         
         if(scale.isDateEnabled()) {
@@ -473,10 +494,11 @@ public class LinearScaleTickLabels extends Figure {
         double mantissa = gridStepHint;
         int exponent = 0;
         if (mantissa < 1) {
-            while (mantissa < 1) {
-                mantissa *= 10.0;
-                exponent--;
-            }
+        	if(mantissa != 0)
+	            while (mantissa < 1) {
+	                mantissa *= 10.0;
+	                exponent--;
+	            }
         } else {
             while (mantissa >= 10) {
                 mantissa /= 10.0;

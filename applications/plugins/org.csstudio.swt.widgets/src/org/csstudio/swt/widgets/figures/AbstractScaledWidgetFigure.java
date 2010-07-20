@@ -148,9 +148,9 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 */
 	public void setMaximum(double maximum) {
 		if(this.maximum == maximum || maximum < minimum)
-			return;
-		this.maximum = maximum;
-		scale.setRange(new Range(minimum, maximum));
+			return;		
+		scale.setRange(minimum, maximum);
+		this.maximum = scale.getRange().getUpper();
 		repaint();
 	}
 	/**
@@ -158,9 +158,9 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 */
 	public void setMinimum(double minimum) {
 		if(this.minimum == minimum || minimum > maximum)
-			return;
-		this.minimum = minimum;
-		scale.setRange(new Range(minimum, maximum));
+			return;		
+		scale.setRange(minimum, maximum);
+		this.minimum = scale.getRange().getLower();
 		repaint();
 	}
 	/**
@@ -169,9 +169,8 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	 * @param max
 	 */
 	public void setRange(final double min, final double max) {
-		this.minimum = min;
-		this.maximum = max;
-		scale.setRange(new Range(min, max));
+		setMaximum(max);
+		setMinimum(min);
 	}
 	/**
 	 * @param scale the scale to set
