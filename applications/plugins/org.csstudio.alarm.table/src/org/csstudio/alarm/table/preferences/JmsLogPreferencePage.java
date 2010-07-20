@@ -21,7 +21,6 @@
  */
  package org.csstudio.alarm.table.preferences;
 
-import java.io.File;
 import java.util.StringTokenizer;
 
 import javax.annotation.Nonnull;
@@ -29,9 +28,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
-import org.csstudio.alarm.table.utility.Functions;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.preference.ColorFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.FileFieldEditor;
@@ -51,7 +48,6 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.osgi.framework.Bundle;
 
 
 /**
@@ -239,8 +235,6 @@ public class JmsLogPreferencePage extends FieldEditorPreferencePage implements
                 if (alarmSoundService.existsResource(fileEditor.getStringValue())) {
                     alarmSoundService.playAlarmSoundFromResource(fileEditor.getStringValue());
                 }
-                // TODO (jpenning) remove Functions
-//                Functions.playMp3(fileEditor.getStringValue());
             }
         });
     }
