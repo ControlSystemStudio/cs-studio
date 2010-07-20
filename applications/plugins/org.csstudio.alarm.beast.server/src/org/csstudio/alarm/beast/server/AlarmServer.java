@@ -525,6 +525,11 @@ public class AlarmServer
                 }
                 catch (Exception ex)
                 {
+                    // TODO Add a delay?
+                    // This method can be called a lot.
+                    // In case of database errors, each call will run into the same error.
+                    // Is that a problem? Should there be a delay in here?
+                    // But then the work_queue would grow out of bounds...
                     CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
                 }
             }
