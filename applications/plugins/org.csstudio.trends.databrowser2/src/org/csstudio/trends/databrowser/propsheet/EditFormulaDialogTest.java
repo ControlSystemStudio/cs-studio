@@ -51,6 +51,9 @@ public class EditFormulaDialogTest
 
         // FIXME (kasemir) : check with assertions whatever you like, but close the dialog afterwards!
         shell.getDisplay().asyncExec(new Runnable() {
+            /**
+             * {@inheritDoc}
+             */
             public void run() {
                 if (edit.open()) {
 //            System.out.println("After editing:");
@@ -62,6 +65,9 @@ public class EditFormulaDialogTest
 
         });
         shell.getDisplay().asyncExec(new Runnable() {
+            /**
+             * {@inheritDoc}
+             */
             public void run() {
                 edit.close();
             }

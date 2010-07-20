@@ -23,6 +23,9 @@ public class AddArchiveDialogTest
         final AddArchiveDialog dlg = new AddArchiveDialog(shell);
 
         shell.getDisplay().asyncExec(new Runnable() {
+            /**
+             * {@inheritDoc}
+             */
             public void run() {
                 dlg.open();
              // FIXME (kasemir) : check with assertions and close the dialog afterwards!
@@ -34,6 +37,9 @@ public class AddArchiveDialogTest
             }
         });
         shell.getDisplay().asyncExec(new Runnable() {
+            /**
+             * {@inheritDoc}
+             */
             public void run() {
                 dlg.close();
             }
