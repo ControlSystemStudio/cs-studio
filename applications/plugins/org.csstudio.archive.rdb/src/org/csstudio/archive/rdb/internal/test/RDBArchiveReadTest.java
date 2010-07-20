@@ -23,7 +23,7 @@ import org.junit.Test;
  *  <p>
  *  Outcome depends on what's in the data base,
  *  so unclear how to check if all works.
- *  
+ *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
@@ -36,13 +36,13 @@ public class RDBArchiveReadTest
 	{
 		archive = RDBArchive.connect(TestSetup.URL, TestSetup.USER, TestSetup.PASSWORD);
 	}
-	
+
 	@AfterClass
 	public static void disconnect()
 	{
 		archive.close();
 	}
-	
+
 	@Test
 	public void getChannel() throws Exception
 	{
@@ -50,27 +50,28 @@ public class RDBArchiveReadTest
 		assertEquals(TestType.DOUBLE.getPvName(), channel.getName());
 		System.out.println(channel);
 	}
-	
+
 	@Test
 	public void findChannelsWithTimerange() throws Exception
 	{
 		final ChannelConfig channels[] = archive.findChannels("fr.d");
 		assertNotNull(channels);
-		for (ChannelConfig channel : channels)
+		for (final ChannelConfig channel : channels)
 		{
 			// This should now be a cached lookup.
 			final ChannelConfig same_channel = archive.getChannel(channel.getName());
 			assertSame(channel, same_channel);
-			
+
 			final ITimestamp last = channel.getLastTimestamp();
-			if (last != null)
-				System.out.println(channel.getName() + ": ... " + last);
-			else
-				System.out.println(channel.getName() + ": no samples");
+			if (last != null) {
+                System.out.println(channel.getName() + ": ... " + last);
+            } else {
+                System.out.println(channel.getName() + ": no samples");
+            }
 		}
 	}
 
-	/** @param pv_name 
+	/** @param pv_name
 	 *  @return Raw data SampleIterator
 	 */
     private SampleIterator getRawSampleIterator(final String pv_name) throws Exception
@@ -94,16 +95,18 @@ public class RDBArchiveReadTest
 		while (samples.hasNext())
 		{
 			final IValue sample = samples.next();
-			if (!sample.getSeverity().hasValue())
-				System.out.println("Strictly speaking, this sample has no 'value':");
+			if (!sample.getSeverity().hasValue()) {
+                System.out.println("Strictly speaking, this sample has no 'value':");
+            }
 			System.out.println(sample + " (" + sample.getClass().getName() + ")");
 			++count;
-			if (count > 20)
-			    break;
+			if (count > 20) {
+                break;
+            }
 		}
 		assertTrue("Some Samples", count > 0);
 	}
-		
+
 	@Test
     public void testReconnect() throws Exception
     {
@@ -113,7 +116,7 @@ public class RDBArchiveReadTest
         findChannelsWithTimerange();
         getRawSamples();
     }
-	
+
 	@Test
     public void testArrays() throws Exception
     {
@@ -128,30 +131,32 @@ public class RDBArchiveReadTest
         {
             System.out.println(samples.next());
             ++count;
-            if (count > 10)
+            if (count > 10) {
                 break;
+            }
         }
     }
-	
+
 	@Test
     public void benchmark() throws Exception
     {
         // Write a little of everything
-        for (TestType type : TestType.values())
+        for (final TestType type : TestType.values()) {
             benchmark(type, 5);
+        }
     }
-	
+
 	/** @param type Test PV to use
 	 *  @param runtime Test run time in seconds
 	 *  @throws Exception on error
 	 */
-	private void benchmark(TestType type, int runtime) throws Exception
+	private void benchmark(final TestType type, final int runtime) throws Exception
     {
 	    final long start = System.currentTimeMillis();
-        final long end = start + (long) (1000 * runtime);
+        final long end = start + (1000 * runtime);
         final SampleIterator samples = getRawSampleIterator(type.getPvName());
         long count = 0;
-        while (samples.hasNext() && System.currentTimeMillis() < end)
+        while (samples.hasNext() && (System.currentTimeMillis() < end))
         {
             final IValue sample = samples.next();
             assertNotNull(sample);
