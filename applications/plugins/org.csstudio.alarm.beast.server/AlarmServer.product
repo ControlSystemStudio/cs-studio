@@ -24,8 +24,8 @@
    </vm>
 
    <plugins>
-      <plugin id="org.csstudio.alarm" fragment=""/>
-      <plugin id="org.csstudio.alarm.server" fragment=""/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.server"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
