@@ -28,7 +28,6 @@ package org.epics.css.dal.epics;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
-import gov.aps.jca.dbr.STS;
 import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
@@ -36,6 +35,7 @@ import gov.aps.jca.event.MonitorListener;
 import java.util.Map;
 import java.util.TimerTask;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DataExchangeException;
 import org.epics.css.dal.ExpertMonitor;
 import org.epics.css.dal.RemoteException;
@@ -49,7 +49,7 @@ import org.epics.css.dal.proxy.MonitorProxy;
 
 /**
  * Simulation implementation of MonitorProxy.
- * 
+ *
  * @author Igor Kriznar (igor.kriznarATcosylab.com)
  */
 public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
@@ -99,7 +99,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * EPICS plug.
 	 */
 	protected EPICSPlug plug;
-	
+
 	/**
 	 * Special parameters for expert monitor
 	 */
@@ -107,7 +107,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 
 	/**
 	 * Creates new instance.
-	 * 
+	 *
 	 * @param proxy parent proxy object
 	 * @param l listener for notifications
 	 */
@@ -117,13 +117,13 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		this.proxy = proxy;
 		this.plug = plug;
 		this.parameters=param;
-		
+
 		int mask= plug.getDefaultMonitorMask();
-		
+
 		if (param!=null && param.get(EPICSPlug.PARAMETER_MONITOR_MASK) instanceof Integer) {
 			mask= (Integer)param.get(EPICSPlug.PARAMETER_MONITOR_MASK);
 		}
-		
+
 		monitor = proxy.getChannel().addMonitor(
 				PlugUtilities.toTimeDBRType(proxy.getType()),
 				proxy.getChannel().getElementCount(),
@@ -131,7 +131,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		plug.flushIO();
 
 		proxy.addMonitor(this);
-		
+
 		resetTimer();
 	}
 
@@ -154,7 +154,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 */
 	public void setTimerTrigger(long trigger) throws DataExchangeException,
 			UnsupportedOperationException {
-		
+
 		// valid trigger check
 		if (trigger <= 0)
 			throw new IllegalArgumentException("trigger < 0");
@@ -162,7 +162,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 		// noop check
 		if (trigger == timerTrigger)
 			return;
-		
+
 		timerTrigger = trigger;
 		resetTimer();
 	}
@@ -172,7 +172,7 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 */
 	public void setHeartbeat(boolean heartbeat) throws DataExchangeException,
 			UnsupportedOperationException {
-		
+
 		// noop check
 		if (heartbeat == this.heartbeat)
 			return;
@@ -206,13 +206,13 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * Fire value event.
 	 */
 	private void fireValueEvent() {
-		
+
 		// noop check
 		if (destroyed || proxy == null || response == null || response.getValue() == null
 				|| proxy.getConnectionState() != ConnectionState.CONNECTED) {
 			return;
 		}
-		
+
 		final ResponseImpl<T> r= response;
 		proxy.getExecutor().execute(new Runnable() {
 			public void run() {
@@ -241,10 +241,10 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * Reset timer.
 	 */
 	private synchronized void resetTimer() {
-		
+
 		if (destroyed)
 			throw new IllegalStateException("monitor destroyed");
-		
+
 		if (task != null) {
 			task.cancel();
 		}
@@ -258,16 +258,16 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * @see org.epics.css.dal.SimpleMonitor#destroy()
 	 */
 	public synchronized void destroy() {
-		
+
 		if (destroyed)
 			return;
-		
+
 		if (task != null) {
 			task.cancel();
 		}
-		
+
 		proxy.removeMonitor(this);
-		
+
 		// destroy remote instance
 		if (monitor != null) {
 			try {
@@ -296,11 +296,27 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	 * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
 	 */
 	public void monitorChanged(MonitorEvent ev) {
+	    // jpenning: the monitorChanged method is encapsulated to allow for logging of runtime exceptions
+	    // the exception is rethrown so the semantic stays the same
+	    // CentralLogger was already available from org.csstudio.platform
+	    try {
+	        monitorChangedLocal(ev);
+        } catch (RuntimeException e) {
+            String name = proxy != null ? proxy.getUniqueName() : "<no proxy>";
+            CentralLogger.getInstance().error(this, "Error while processing monitor event for channel " + name, e);
+            throw e;
+        }
+	}
+
+    /*
+     * @see gov.aps.jca.event.MonitorListener#monitorChanged(gov.aps.jca.event.MonitorEvent)
+     */
+    private void monitorChangedLocal(MonitorEvent ev) {
 
 		DBR dbr = ev.getDBR();
-		
+
 		if(dbr==null || dbr.getValue()==null) {
-			
+
 			final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, null,
 				        "value", false, new NullPointerException("Invalid value."), proxy.getCondition(), new Timestamp(), false);
 
@@ -309,10 +325,10 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 					addResponse(r);
 				}
 			});
-			
+
 			return;
 		}
-		
+
 		proxy.updateWithDBR(dbr);
 		// this has been moved to PropertyProxyImpl.updateWithDBR(DBR)
 //		if (dbr.isSTS()) {
@@ -320,19 +336,19 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 //		}
 
 		response= new ResponseImpl<T> (
-				proxy, 
-				this, 
-				proxy.toJavaValue(dbr), 
-				"value", 
-				true, 
-				null, 
-				proxy.getCondition(), 
-				(dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) ? 
-						PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()): 
+				proxy,
+				this,
+				proxy.toJavaValue(dbr),
+				"value",
+				true,
+				null,
+				proxy.getCondition(),
+				(dbr.isTIME() && ((TIME) dbr).getTimeStamp() != null) ?
+						PlugUtilities.convertTimestamp(((TIME) dbr).getTimeStamp()):
 							new Timestamp(),
 				false);
-		
-		// notify 
+
+		// notify
 		fireValueChange();
 	}
 
@@ -342,11 +358,11 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	public void refresh() {
 		// noop
 	}
-	
+
 	public Map<String, Object> getParameters() {
 		return parameters;
 	}
-	
+
 	public void setParameters(Map<String, Object> param) throws RemoteException {
 		// not really supported, can we change parameters of existing monitor?
 	}
