@@ -2,11 +2,9 @@ package org.csstudio.opibuilder.widgets.util;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.opibuilder.widgets.figureparts.PolarPoint;
-import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.PointList;
-import org.eclipse.draw2d.geometry.Rectangle;
 
 /**The utility class contains functions that all related with graphics.
  * @author Xihui Chen
@@ -64,17 +62,6 @@ public class GraphicsUtil {
 		
 	}
 	
-	public static Rectangle getPointsBoundsWithArrows(PointList points, ArrowType arrowType, int arrowLength, double arrowAngle){
-		PointList copy = points.getCopy();
-		if(points.size() >=2){		
-			if(arrowType == ArrowType.To || arrowType == ArrowType.Both)
-				copy.addAll(calcArrowPoints(points.getPoint(points.size()-2),
-					points.getLastPoint(), arrowLength, arrowAngle));
-			if(arrowType == ArrowType.From || arrowType == ArrowType.Both)
-				copy.addAll(calcArrowPoints(points.getPoint(1),
-					points.getFirstPoint(), arrowLength, arrowAngle));				
-		}
-		return copy.getBounds();
-	}
+	
 	
 }

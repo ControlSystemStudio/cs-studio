@@ -11,6 +11,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -195,8 +196,8 @@ public abstract class AbstractShapeModel extends AbstractPVWidgetModel {
 		                          getPropertyValue()].getStyle();
 	}
 	
-	public RGB getLineColor(){
-		return ((OPIColor)getPropertyValue(PROP_LINE_COLOR)).getRGBValue();
+	public Color getLineColor(){
+		return ((OPIColor)getPropertyValue(PROP_LINE_COLOR)).getSWTColor();
 	}
 	
 	/**

@@ -24,10 +24,10 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.PolygonFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.PolygonModel;
+import org.csstudio.swt.widgets.figures.PolygonFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -49,7 +49,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 		polygon.setPoints(model.getPoints());
 		polygon.setFill(model.getFillLevel());
 		polygon.setAntiAlias(model.isAntiAlias());
-		polygon.setOrientation(model.isHorizontalFill());
+		polygon.setHorizontalFill(model.isHorizontalFill());
 		polygon.setTransparent(model.isTransparent());
 		polygon.setLineColor(model.getLineColor());
 		return polygon;
@@ -97,7 +97,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				PolygonFigure figure = (PolygonFigure) refreshableFigure;
-				figure.setOrientation((Boolean) newValue);
+				figure.setHorizontalFill((Boolean) newValue);
 				return true;
 			}
 		};
@@ -121,7 +121,7 @@ public final class PolygonEditPart extends AbstractPolyEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				((PolygonFigure)refreshableFigure).setLineColor(
-						((OPIColor)newValue).getRGBValue());
+						((OPIColor)newValue).getSWTColor());
 				return true;
 			}
 		};

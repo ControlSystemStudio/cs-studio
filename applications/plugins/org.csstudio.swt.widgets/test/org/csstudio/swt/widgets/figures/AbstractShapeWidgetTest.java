@@ -41,6 +41,10 @@ public abstract class AbstractShapeWidgetTest extends AbstractWidgetTest {
 				return (Integer)seed%5+1;		
 			}else
 				return SWT.LINE_SOLID;
+		}else if(pd.getName().equals("lineWidth")){
+			if(seed !=null && seed instanceof Integer){	
+				return (Integer)seed%20;		
+			}
 		}
 		
 		return super.generateTestData(pd, seed);

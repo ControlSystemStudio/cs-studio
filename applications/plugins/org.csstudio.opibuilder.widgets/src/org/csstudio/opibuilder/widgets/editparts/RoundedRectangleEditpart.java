@@ -3,9 +3,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.RoundedRectangleFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RoundedRectangleModel;
+import org.csstudio.swt.widgets.figures.RoundedRectangleFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
 
@@ -22,7 +22,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 		RoundedRectangleFigure figure = new RoundedRectangleFigure();
 		RoundedRectangleModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
-		figure.setOrientation(model.isHorizontalFill());
+		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setAntiAlias(model.isAntiAlias());
 		figure.setCornerDimensions(new Dimension(model.getCornerWidth(), model.getCornerHeight()));
@@ -57,7 +57,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				RoundedRectangleFigure figure = (RoundedRectangleFigure) refreshableFigure;
-				figure.setOrientation((Boolean) newValue);
+				figure.setHorizontalFill((Boolean) newValue);
 				return true;
 			}
 		};
@@ -93,7 +93,7 @@ public class RoundedRectangleEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				((RoundedRectangleFigure)refreshableFigure).setLineColor(
-						((OPIColor)newValue).getRGBValue());
+						((OPIColor)newValue).getSWTColor());
 				return true;
 			}
 		};

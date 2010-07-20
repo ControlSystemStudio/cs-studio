@@ -234,7 +234,7 @@ public abstract class AbstractWidgetTest {
 	}
 
 	protected int getAutoTestSpeedInterval(){
-		return 500;
+		return 50;
 	}
 	
 	/**

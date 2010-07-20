@@ -19,16 +19,21 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.Polygon;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.handles.HandleBounds;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * A polygon figure.
@@ -36,20 +41,21 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende, Stefan Hofer, Xihui chen (since import from SDS 2009/10) 
  * 
  */
-public final class PolygonFigure extends Polygon implements HandleBounds {
+public final class PolygonFigure extends Polygon implements HandleBounds, Introspectable {
 
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fill = 100.0;
+	private double fill = 100.0;
 	
 	private boolean antiAlias = true;
 
 	private boolean horizontalFill;
 
-	private boolean _transparent;
+	private boolean transparent;
 
-	private RGB lineColor = CustomMediaFactory.COLOR_BLUE;
+	private Color lineColor = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_BLUE);
 	
 	
 	/**
@@ -60,10 +66,6 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 		setBackgroundColor(ColorConstants.darkGreen);
 	}
 	
-	public void setAntiAlias(boolean antiAlias) {
-		this.antiAlias = antiAlias;
-	}
-	
 	/**
 	 * {@inheritDoc}
 	 */
@@ -72,7 +74,7 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		graphics.pushState();	
 		Rectangle figureBounds = getBounds();
-		if(!_transparent){
+		if(!transparent){
 			graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillPolygon(getPoints());
 		}
@@ -94,14 +96,69 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 		graphics.popState();
 	}
 	
+	/**
+	 * Gets the fill grade.
+	 * 
+	 * @return the fill grade
+	 */
+	public double getFill() {
+		return fill;
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	public Rectangle getHandleBounds() {
+		return getPoints().getBounds();
+	}
+
+	/**
+	 * @return the lineColor
+	 */
+	public Color getLineColor() {
+		return lineColor;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return transparent;
+	}
+
+	/**
+	 * @return the antiAlias
+	 */
+	public boolean isAntiAlias() {
+		return antiAlias;
+	}
+
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean The orientation
+	 */
+	public boolean isHorizontalFill() {
+		return horizontalFill;
+	}
+
 	@Override
 	protected void outlineShape(Graphics g) {
 		g.pushState();
-		g.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		g.setForegroundColor(lineColor);
 		super.outlineShape(g);
 		g.popState();
 	}
 
+	public void setAntiAlias(boolean antiAlias) {
+		if(this.antiAlias == antiAlias)
+			return;
+		this.antiAlias = antiAlias;
+		repaint();
+	}
+	
 	/**
 	 * Overridden, to ensure that the bounds rectangle gets repainted each time,
 	 * the _points of the polygon change. {@inheritDoc}
@@ -114,48 +171,36 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 	}
 
 	/**
-	 * {@inheritDoc}
-	 */
-	public Rectangle getHandleBounds() {
-		return getPoints().getBounds();
-	}
-
-	/**
 	 * Sets the fill grade.
 	 * 
 	 * @param fill
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fill = fill;
+		if(this.fill == fill)
+			return;
+		this.fill = fill;
+		repaint();
 	}
 
-	/**
-	 * Gets the fill grade.
-	 * 
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return _fill;
-	}
-	
 	/**
 	 * Sets the orientation (horizontal==true | vertical==false).
 	 * 
 	 * @param horizontal
 	 *            The orientation.
 	 */
-	public void setOrientation(final boolean horizontal) {
+	public void setHorizontalFill(final boolean horizontal) {
+		if(this.horizontalFill == horizontal)
+			return;
 		horizontalFill = horizontal;
+		repaint();
 	}
 
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @return boolean The orientation
-	 */
-	public boolean getOrientation() {
-		return horizontalFill;
+	public void setLineColor(Color lineColor) {
+		if(this.lineColor != null && this.lineColor.equals(lineColor))
+			return;
+		this.lineColor = lineColor;
+		repaint();
 	}
 
 	/**
@@ -165,21 +210,13 @@ public final class PolygonFigure extends Polygon implements HandleBounds {
 	 *            the transparent state.
 	 */
 	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
+		if(this.transparent == transparent)
+			return;
+		this.transparent = transparent;
+		repaint();
 	}
 
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new PolyWidgetIntrospector().getBeanInfo(this.getClass());
 	}
-
-	public void setLineColor(RGB lineColor) {
-		this.lineColor = lineColor;
-	}
-
-	
 }

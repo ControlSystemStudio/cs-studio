@@ -20,16 +20,21 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.RoundedRectangle;
 import org.eclipse.draw2d.Shape;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * An rounded rectangle figure.
@@ -37,24 +42,24 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende, Alexander Will, Xihui Chen
  * 
  */
-public final class RoundedRectangleFigure extends RoundedRectangle {
+public final class RoundedRectangleFigure extends RoundedRectangle implements Introspectable{
 
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fill = 100.0;
+	private double fill = 100.0;
 
 	/**
 	 * The orientation (horizontal==true | vertical==false).
 	 */
-	private boolean _orientationHorizontal = true;
+	private boolean horizontalFill = true;
 
 	/**
 	 * The transparent state of the background.
 	 */
-	private boolean _transparent = false;
+	private boolean transparent = false;
 	
-	private RGB lineColor = CustomMediaFactory.COLOR_PURPLE;
+	private Color lineColor = ColorConstants.blue;
 
 	
 	/**
@@ -70,7 +75,7 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		
 		Rectangle figureBounds = getClientArea();
-		if (!_transparent) {
+		if (!transparent) {
 			graphics.pushState();
 			graphics.setBackgroundColor(getBackgroundColor());
 			graphics.fillRoundRectangle(figureBounds, corner.width, corner.height);
@@ -79,7 +84,7 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 		
 		if(getFill() > 0){	
 			Rectangle fillRectangle;
-			if (_orientationHorizontal) {
+			if (horizontalFill) {
 				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
 						figureBounds.height);
@@ -100,6 +105,64 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 	}
 
 	
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+
+
+	public int getCornerHeight(){
+		return corner.height;
+	}
+
+
+	public int getCornerWidth(){
+		return corner.width;
+	}
+
+	
+	
+	
+	/**
+	 * Gets the fill grade.
+	 * 
+	 * @return the fill grade
+	 */
+	public double getFill() {
+		return fill;
+	}
+
+	/**
+	 * @return the lineColor
+	 */
+	public Color getLineColor() {
+		return lineColor;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return transparent;
+	}
+
+	/**
+	 * @return the antiAlias
+	 */
+	public boolean isAntiAlias() {
+		return antiAlias;
+	}
+
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean The orientation
+	 */
+	public boolean isHorizontalFill() {
+		return horizontalFill;
+	}
+
 	/**
 	 * @see Shape#outlineShape(Graphics)
 	 */
@@ -114,13 +177,25 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
 	    graphics.pushState();
-		graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		graphics.setForegroundColor(lineColor);
 		graphics.drawRoundRectangle(r, Math.max(0, corner.width - (int)lineInset), Math.max(0, corner.height - (int)lineInset));
 		graphics.popState();
 	}
+	
+	public void setAntiAlias(boolean antiAlias) {
+		if(this.antiAlias == antiAlias)
+			return;
+		this.antiAlias = antiAlias;
+		repaint();
+	}
+	
+	public void setCornerHeight(int value){	
+		setCornerDimensions(new Dimension(corner.width, value));
+	}
 
-	
-	
+	public void setCornerWidth(int value){
+		setCornerDimensions(new Dimension(value, corner.height));
+	}
 	
 	/**
 	 * Sets the fill grade.
@@ -129,17 +204,25 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fill = fill;
+		this.fill = fill;
 	}
+	
 
 	/**
-	 * Gets the fill grade.
+	 * Sets the orientation (horizontal==true | vertical==false).
 	 * 
-	 * @return the fill grade
+	 * @param horizontal
+	 *            The orientation.
 	 */
-	public double getFill() {
-		return _fill;
+	public void setHorizontalFill(final boolean horizontal) {
+		this.horizontalFill = horizontal;
 	}
+
+
+	public void setLineColor(Color lineColor) {
+		this.lineColor = lineColor;
+	}
+
 
 	/**
 	 * Sets the transparent state of the background.
@@ -148,53 +231,7 @@ public final class RoundedRectangleFigure extends RoundedRectangle {
 	 *            the transparent state.
 	 */
 	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
-	}
-
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
-
-	/**
-	 * Sets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @param horizontal
-	 *            The orientation.
-	 */
-	public void setOrientation(final boolean horizontal) {
-		_orientationHorizontal = horizontal;
-	}
-
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @return boolean The orientation
-	 */
-	public boolean getOrientation() {
-		return _orientationHorizontal;
-	}
-
-	public void setAntiAlias(boolean antiAlias) {
-		this.antiAlias = antiAlias;
-	}
-	
-	public void setCornerWidth(int value){
-		setCornerDimensions(new Dimension(value, corner.height));
-	}
-	
-
-	public void setCornerHeight(int value){
-		setCornerDimensions(new Dimension(corner.width, value));
-	}
-
-
-	public void setLineColor(RGB lineColor) {
-		this.lineColor = lineColor;
+		this.transparent = transparent;
 	}
 
 

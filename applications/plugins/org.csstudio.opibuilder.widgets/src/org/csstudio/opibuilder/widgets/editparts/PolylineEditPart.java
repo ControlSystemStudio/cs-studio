@@ -23,11 +23,11 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.PolylineFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.PolyLineModel;
-import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
+import org.csstudio.swt.widgets.figures.PolylineFigure;
+import org.csstudio.swt.widgets.figures.PolylineFigure.ArrowType;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -49,7 +49,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 		polyline.setPoints(model.getPoints());
 		polyline.setFill(model.getFillLevel());
 		polyline.setAntiAlias(model.isAntiAlias());
-		polyline.setOrientation(model.isHorizontalFill());
+		polyline.setHorizontalFill(model.isHorizontalFill());
 		polyline.setTransparent(model.isTransparent());
 		polyline.setArrowLineLength(model.getArrowLength());
 		polyline.setArrowType(ArrowType.values()[model.getArrowType()]);
@@ -102,7 +102,7 @@ public final class PolylineEditPart extends AbstractPolyEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				PolylineFigure figure = (PolylineFigure) refreshableFigure;
-				figure.setOrientation((Boolean) newValue);
+				figure.setHorizontalFill((Boolean) newValue);
 				return true;
 			}
 		};

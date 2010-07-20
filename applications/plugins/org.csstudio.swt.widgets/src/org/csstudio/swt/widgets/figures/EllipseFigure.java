@@ -19,14 +19,19 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
+
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.introspection.ShapeWidgetIntrospector;
 import org.eclipse.draw2d.Ellipse;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 
 /**
  * An ellipse figure.
@@ -34,22 +39,22 @@ import org.eclipse.swt.graphics.RGB;
  * @author Sven Wende, Alexander Will, Xihui Chen (since import from SDS 2009/10) 
  * 
  */
-public final class EllipseFigure extends Ellipse {
+public final class EllipseFigure extends Ellipse implements Introspectable {
 
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fill = 100.0;
+	private double fill = 100.0;
 
 	/**
 	 * The orientation (horizontal==true | vertical==false).
 	 */
-	private boolean _orientationHorizontal = true;
+	private boolean horizontalFill = true;
 
 	/**
 	 * The transparent state of the background.
 	 */
-	private boolean _transparent = false;
+	private boolean transparent = false;
 
 	
 	/**
@@ -57,7 +62,8 @@ public final class EllipseFigure extends Ellipse {
 	 */
 	private boolean antiAlias = true;
 	
-	private RGB lineColor = CustomMediaFactory.COLOR_PURPLE;
+	private Color lineColor = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_PURPLE);
 
 
 	/**
@@ -68,7 +74,7 @@ public final class EllipseFigure extends Ellipse {
 		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);
 		
 		Rectangle figureBounds = getClientArea();
-		if (!_transparent) {
+		if (!transparent) {
 				graphics.pushState();
 				graphics.setBackgroundColor(getBackgroundColor());
 				graphics.fillOval(figureBounds);
@@ -76,7 +82,7 @@ public final class EllipseFigure extends Ellipse {
 		}
 		if(getFill() > 0){
 			Rectangle fillRectangle;
-			if (_orientationHorizontal) {
+			if (horizontalFill) {
 				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
 				fillRectangle = new Rectangle(figureBounds.x, figureBounds.y, newW,
 						figureBounds.height);
@@ -97,6 +103,52 @@ public final class EllipseFigure extends Ellipse {
 		}
 	}
 
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new ShapeWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+	
+	
+	/**
+	 * Gets the fill grade.
+	 * 
+	 * @return the fill grade
+	 */
+	public double getFill() {
+		return fill;
+	}
+
+	/**
+	 * @return the lineColor
+	 */
+	public Color getLineColor() {
+		return lineColor;
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return transparent;
+	}
+
+	/**
+	 * @return the antiAlias
+	 */
+	public boolean isAntiAlias() {
+		return antiAlias;
+	}
+
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean The orientation
+	 */
+	public boolean isHorizontalFill() {
+		return horizontalFill;
+	}
+
 	/**
 	 * Outlines the ellipse.
 	 * @see org.eclipse.draw2d.Shape#outlineShape(org.eclipse.draw2d.Graphics)
@@ -112,12 +164,19 @@ public final class EllipseFigure extends Ellipse {
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
 		graphics.pushState();
-		graphics.setForegroundColor(CustomMediaFactory.getInstance().getColor(lineColor));
+		graphics.setForegroundColor(lineColor);
 		graphics.drawOval(r);
 		graphics.popState();
 	}
-	
-	
+
+	public void setAntiAlias(boolean antiAlias) {
+		if(this.antiAlias == antiAlias)
+			return;
+		this.antiAlias = antiAlias;
+		repaint();
+	}
+
+
 	/**
 	 * Sets the fill grade.
 	 * 
@@ -125,16 +184,30 @@ public final class EllipseFigure extends Ellipse {
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fill = fill;
+		if(this.fill == fill)
+			return;
+		this.fill = fill;
+		repaint();
 	}
 
 	/**
-	 * Gets the fill grade.
+	 * Sets the orientation (horizontal==true | vertical==false).
 	 * 
-	 * @return the fill grade
+	 * @param horizontal
+	 *            The orientation.
 	 */
-	public double getFill() {
-		return _fill;
+	public void setHorizontalFill(final boolean horizontal) {
+		if(this.horizontalFill == horizontal)
+			return;
+		this.horizontalFill = horizontal;
+		repaint();
+	}
+
+	public void setLineColor(Color lineColor) {
+		if(this.lineColor != null && this.lineColor.equals(lineColor))
+			return;
+		this.lineColor = lineColor;
+		repaint();
 	}
 
 	/**
@@ -144,44 +217,10 @@ public final class EllipseFigure extends Ellipse {
 	 *            the transparent state.
 	 */
 	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
-	}
-
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
-
-	/**
-	 * Sets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @param horizontal
-	 *            The orientation.
-	 */
-	public void setOrientation(final boolean horizontal) {
-		_orientationHorizontal = horizontal;
-	}
-
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @return boolean The orientation
-	 */
-	public boolean getOrientation() {
-		return _orientationHorizontal;
-	}
-
-	public void setAntiAlias(boolean antiAlias) {
-		this.antiAlias = antiAlias;
-	}
-
-
-	public void setLineColor(RGB lineColor) {
-		this.lineColor = lineColor;
+		if(this.transparent == transparent)
+			return;
+		this.transparent = transparent;
+		repaint();
 	}
 
 	

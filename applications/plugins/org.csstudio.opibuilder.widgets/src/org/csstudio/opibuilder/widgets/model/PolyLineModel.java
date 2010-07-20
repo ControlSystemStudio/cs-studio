@@ -4,8 +4,8 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.ComboProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
-import org.csstudio.opibuilder.widgets.figures.PolylineFigure;
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
+import org.csstudio.swt.widgets.figures.PolylineFigure;
+import org.csstudio.swt.widgets.figures.PolylineFigure.ArrowType;
 import org.eclipse.draw2d.geometry.PointList;
 import org.eclipse.draw2d.geometry.Rectangle;
 
@@ -19,20 +19,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 public class PolyLineModel extends AbstractPolyModel {
 
 	
-	public enum ArrowType{
-		None,
-		From,
-		To,
-		Both;
-		
-		public static String[] stringValues(){
-			String[] sv = new String[values().length];
-			int i=0;
-			for(ArrowType p : values())
-				sv[i++] = p.toString();
-			return sv;
-		}
-	}
+	
 	
 	
 	/**
@@ -116,7 +103,7 @@ public class PolyLineModel extends AbstractPolyModel {
 	 * Update the figure bounds based on points and arrows.
 	 */
 	public void updateBounds() {
-		Rectangle bounds = GraphicsUtil.getPointsBoundsWithArrows(getPoints(),
+		Rectangle bounds = PolylineFigure.getPointsBoundsWithArrows(getPoints(),
 				ArrowType.values()[getArrowType()], getArrowLength(), PolylineFigure.ARROW_ANGLE);
 		getProperty(PROP_XPOS).setPropertyValue(bounds.x);
 		getProperty(PROP_YPOS).setPropertyValue(bounds.y);

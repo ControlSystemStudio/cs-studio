@@ -24,9 +24,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.EllipseFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.EllipseModel;
+import org.csstudio.swt.widgets.figures.EllipseFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**The controller for ellipse widget.
@@ -42,7 +42,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 		EllipseFigure figure = new EllipseFigure();
 		EllipseModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
-		figure.setOrientation(model.isHorizontalFill());
+		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
@@ -76,7 +76,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				EllipseFigure ellipseFigure = (EllipseFigure) refreshableFigure;
-				ellipseFigure.setOrientation((Boolean) newValue);
+				ellipseFigure.setHorizontalFill((Boolean) newValue);
 				return true;
 			}
 		};
@@ -112,7 +112,7 @@ public class EllipseEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				((EllipseFigure)refreshableFigure).setLineColor(
-						((OPIColor)newValue).getRGBValue());
+						((OPIColor)newValue).getSWTColor());
 				return true;
 			}
 		};

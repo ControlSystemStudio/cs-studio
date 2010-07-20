@@ -24,9 +24,9 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.OPIRectangleFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
+import org.csstudio.swt.widgets.figures.OPIRectangleFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**The editpart of a rectangle widget.
@@ -43,7 +43,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 		OPIRectangleFigure figure = new OPIRectangleFigure();
 		RectangleModel model = getWidgetModel();
 		figure.setFill(model.getFillLevel());
-		figure.setOrientation(model.isHorizontalFill());
+		figure.setHorizontalFill(model.isHorizontalFill());
 		figure.setTransparent(model.isTransparent());
 		figure.setAntiAlias(model.isAntiAlias());
 		figure.setLineColor(model.getLineColor());
@@ -77,7 +77,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				OPIRectangleFigure figure = (OPIRectangleFigure) refreshableFigure;
-				figure.setOrientation((Boolean) newValue);
+				figure.setHorizontalFill((Boolean) newValue);
 				return true;
 			}
 		};
@@ -113,7 +113,7 @@ public class RectangleEditpart extends AbstractShapeEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				((OPIRectangleFigure)refreshableFigure).setLineColor(
-						((OPIColor)newValue).getRGBValue());
+						((OPIColor)newValue).getSWTColor());
 				return true;
 			}
 		};

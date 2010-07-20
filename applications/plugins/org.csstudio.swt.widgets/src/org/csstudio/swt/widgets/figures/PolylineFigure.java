@@ -20,10 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.model.PolyLineModel.ArrowType;
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
+import org.csstudio.swt.widgets.figureparts.PolarPoint;
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.introspection.PolyWidgetIntrospector;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.IFigure;
@@ -40,24 +44,87 @@ import org.eclipse.swt.SWT;
  * @author Xihui Chen (imported from SDS since 2009/9)
  * 
  */
-public final class PolylineFigure extends Polyline implements HandleBounds {
+public final class PolylineFigure extends Polyline implements HandleBounds, Introspectable {
+	
+	public enum ArrowType{
+		None,
+		From,
+		To,
+		Both;
+		
+		public static String[] stringValues(){
+			String[] sv = new String[values().length];
+			int i=0;
+			for(ArrowType p : values())
+				sv[i++] = p.toString();
+			return sv;
+		}
+	}
 
 	public static final double ARROW_ANGLE = Math.PI/10;
+	/**Calculate the three points for an arrow.
+	 * @param startPoint the start point of the line
+	 * @param endPoint the end point of the line
+	 * @param l the length of the arrow line
+	 * @param angle the radians angle between the line and the arrow line.
+	 * @return A point list which includes the three points:
+	 * <br>0: Right arrow point;
+	 * <br>1: Left arrow point;
+	 * <br>2: Intersection point.
+	 */
+	public static PointList calcArrowPoints(Point startPoint, Point endPoint,
+			int l, double angle){
+
+		PointList result = new PointList();
+		
+		PolarPoint ppE = PolarPoint.point2PolarPoint(endPoint, startPoint);
+		
+		PolarPoint ppR = new PolarPoint(l, ppE.theta - angle);
+		PolarPoint ppL = new PolarPoint(l, ppE.theta + angle);
+		
+		//the intersection point bettwen arrow and line.
+		PolarPoint ppI = new PolarPoint((int) (l * Math.cos(angle)), ppE.theta); 
+		
+		Point pR = ppR.toPoint().translate(endPoint);
+		Point pL = ppL.toPoint().translate(endPoint);
+		Point pI = ppI.toPoint().translate(endPoint);
+	
+		result.addPoint(pR);
+		result.addPoint(pL);
+		result.addPoint(pI);
+		
+		return result;
+		
+	}
+	public static Rectangle getPointsBoundsWithArrows(PointList points, ArrowType arrowType, int arrowLength, double arrowAngle){
+		PointList copy = points.getCopy();
+		if(points.size() >=2){		
+			if(arrowType == ArrowType.To || arrowType == ArrowType.Both)
+				copy.addAll(calcArrowPoints(points.getPoint(points.size()-2),
+					points.getLastPoint(), arrowLength, arrowAngle));
+			if(arrowType == ArrowType.From || arrowType == ArrowType.Both)
+				copy.addAll(calcArrowPoints(points.getPoint(1),
+					points.getFirstPoint(), arrowLength, arrowAngle));				
+		}
+		return copy.getBounds();
+	}
 	/**
 	 * The fill grade (0 - 100%).
 	 */
-	private double _fill = 100.0;
+	private double fill = 100.0;
 	private boolean antiAlias;
+
 	private boolean horizontalFill;
-	private boolean _transparent;
+	
+	private boolean transparent;
 
 	private boolean fillArrow = true;
 	
+
+
 	private ArrowType arrowType;
-
-	private int arrowLineLength = 30;
 	
-
+	private int arrowLineLength = 30;
 
 	/**
 	 * Constructor.
@@ -65,47 +132,6 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	public PolylineFigure() {
 		setFill(true);
 		setBackgroundColor(ColorConstants.darkGreen);
-	}
-	
-	public void setAntiAlias(boolean antiAlias) {
-		this.antiAlias = antiAlias;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void outlineShape(final Graphics graphics) {
-
-		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);	
-		
-		Rectangle figureBounds = getBounds();
-
-		graphics.pushState();
-		if(!_transparent){
-			graphics.setForegroundColor(getBackgroundColor());
-			drawPolyLineWithArrow(graphics);
-		}
-		if(getFill() > 0){			
-			//set clip by fill level
-			if(horizontalFill){
-				
-				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
-				
-				graphics
-					.clipRect(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
-			}else{
-				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));			
-				graphics
-					.clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
-							figureBounds.width, newH));
-			}
-	
-			graphics.setForegroundColor(getForegroundColor());
-			drawPolyLineWithArrow(graphics);
-		}
-		graphics.popState();
-				
 	}
 
 	private void drawPolyLineWithArrow(Graphics graphics){
@@ -118,7 +144,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 			Point firstPoint = points.getFirstPoint();
 			if(arrowType == ArrowType.To || arrowType == ArrowType.Both){
 				//draw end arrow
-				PointList arrowPoints = GraphicsUtil.calcArrowPoints(points.getPoint(points.size()-2),
+				PointList arrowPoints = calcArrowPoints(points.getPoint(points.size()-2),
 							endPoint, arrowLineLength, ARROW_ANGLE);	
 				if(fillArrow)
 					points.setPoint(arrowPoints.getLastPoint(), points.size()-1);
@@ -134,7 +160,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 			}
 			if(arrowType == ArrowType.From || arrowType == ArrowType.Both){
 				//draw start arrow			
-				PointList arrowPoints = GraphicsUtil.calcArrowPoints(points.getPoint(1),
+				PointList arrowPoints = calcArrowPoints(points.getPoint(1),
 						firstPoint, arrowLineLength, ARROW_ANGLE);
 				if(fillArrow)
 					points.setPoint(arrowPoints.getLastPoint(), 0);
@@ -151,6 +177,22 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 		graphics.drawPolyline(points);
 		graphics.popState();	
 	}
+	
+	/**
+	 * @return the arrowLineLength
+	 */
+	public int getArrowLineLength() {
+		return arrowLineLength;
+	}
+	
+	
+	/**
+	 * @return the arrowType
+	 */
+	public ArrowType getArrowType() {
+		return arrowType;
+	}
+	
 	
 	/**
 	 * Overridden, to ensure that the bounds rectangle gets repainted each time,
@@ -184,7 +226,7 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	@Override
 	public Rectangle getBounds() {
 		if (bounds == null) {
-			bounds = GraphicsUtil.getPointsBoundsWithArrows(
+			bounds = getPointsBoundsWithArrows(
 					getPoints(), arrowType, arrowLineLength, ARROW_ANGLE);
 			if(lineWidth <= 1){
 				bounds = bounds.getExpanded(1,1); //expand 1 for container scrollbar bug
@@ -194,7 +236,92 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 		return bounds;
 	}
 	
+	/**
+	 * Gets the fill grade.
+	 * 
+	 * @return the fill grade
+	 */
+	public double getFill() {
+		return fill;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public Rectangle getHandleBounds() {
+		return getBounds();
+	}
+
+	/**
+	 * Gets the transparent state of the background.
+	 * 
+	 * @return the transparent state of the background
+	 */
+	public boolean getTransparent() {
+		return transparent;
+	}
 	
+	/**
+	 * @return the antiAlias
+	 */
+	public boolean isAntiAlias() {
+		return antiAlias;
+	}
+
+	/**
+	 * @return the fillArrow
+	 */
+	public boolean isFillArrow() {
+		return fillArrow;
+	}
+
+	
+	/**
+	 * Gets the orientation (horizontal==true | vertical==false).
+	 * 
+	 * @return boolean The orientation
+	 */
+	public boolean isHorizontalFill() {
+		return horizontalFill;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void outlineShape(final Graphics graphics) {
+
+		graphics.setAntialias(antiAlias ? SWT.ON : SWT.OFF);	
+		
+		Rectangle figureBounds = getBounds();
+
+		graphics.pushState();
+		if(!transparent){
+			graphics.setForegroundColor(getBackgroundColor());
+			drawPolyLineWithArrow(graphics);
+		}
+		if(getFill() > 0){			
+			//set clip by fill level
+			if(horizontalFill){
+				
+				int newW = (int) Math.round(figureBounds.width * (getFill() / 100));
+				
+				graphics
+					.clipRect(new Rectangle(figureBounds.x, figureBounds.y, newW, figureBounds.height));
+			}else{
+				int newH = (int) Math.round(figureBounds.height * (getFill() / 100));			
+				graphics
+					.clipRect(new Rectangle(figureBounds.x, figureBounds.y + figureBounds.height - newH, 
+							figureBounds.width, newH));
+			}
+	
+			graphics.setForegroundColor(getForegroundColor());
+			drawPolyLineWithArrow(graphics);
+		}
+		graphics.popState();
+				
+	}
+
 	/**
 	 * Translates this Figure's bounds, without firing a move.
 	 * @param dx The amount to translate horizontally
@@ -212,6 +339,27 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 		for (int i = 0; i < getChildren().size(); i++)
 			((IFigure)getChildren().get(i)).translate(dx, dy);
 	}
+
+	public void setAntiAlias(boolean antiAlias) {
+		if(this.antiAlias == antiAlias)
+			return;
+		this.antiAlias = antiAlias;
+		repaint();
+	}
+
+	public void setArrowLineLength(int arrowLineLength) {
+		if(this.arrowLineLength == arrowLineLength)
+			return;
+		this.arrowLineLength = arrowLineLength;
+		repaint();
+	}
+
+	public void setArrowType(ArrowType arrowType) {
+		if(this.arrowType == arrowType)
+			return;
+		this.arrowType = arrowType;
+		repaint();
+	}
 	
 	
 	@Override
@@ -221,29 +369,23 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	}
 	
 	/**
-	 * {@inheritDoc}
-	 */
-	public Rectangle getHandleBounds() {
-		return getBounds();
-	}
-
-	/**
 	 * Sets the fill grade.
 	 * 
 	 * @param fill
 	 *            the fill grade.
 	 */
 	public void setFill(final double fill) {
-		_fill = fill;
+		if(this.fill == fill)
+			return;
+		this.fill = fill;
+		repaint();
 	}
-
-	/**
-	 * Gets the fill grade.
-	 * 
-	 * @return the fill grade
-	 */
-	public double getFill() {
-		return _fill;
+	
+	public void setFillArrow(boolean fillArrow) {
+		if(this.fillArrow == fillArrow)
+			return;
+		this.fillArrow = fillArrow;
+		repaint();
 	}
 	
 	/**
@@ -252,19 +394,12 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	 * @param horizontal
 	 *            The orientation.
 	 */
-	public void setOrientation(final boolean horizontal) {
+	public void setHorizontalFill(final boolean horizontal) {
+		if(this.horizontalFill == horizontal)
+			return;
 		horizontalFill = horizontal;
+		repaint();
 	}
-
-	/**
-	 * Gets the orientation (horizontal==true | vertical==false).
-	 * 
-	 * @return boolean The orientation
-	 */
-	public boolean getOrientation() {
-		return horizontalFill;
-	}
-
 	
 	/**
 	 * Sets the transparent state of the background.
@@ -273,28 +408,12 @@ public final class PolylineFigure extends Polyline implements HandleBounds {
 	 *            the transparent state.
 	 */
 	public void setTransparent(final boolean transparent) {
-		_transparent = transparent;
+		if(this.transparent == transparent)
+			return;
+		this.transparent = transparent;
+		repaint();
 	}
-
-	/**
-	 * Gets the transparent state of the background.
-	 * 
-	 * @return the transparent state of the background
-	 */
-	public boolean getTransparent() {
-		return _transparent;
-	}
-	
-	
-	public void setFillArrow(boolean fillArrow) {
-		this.fillArrow = fillArrow;
-	}
-	
-	public void setArrowType(ArrowType arrowType) {
-		this.arrowType = arrowType;
-	}
-	
-	public void setArrowLineLength(int arrowLineLength) {
-		this.arrowLineLength = arrowLineLength;
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new PolyWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 }
