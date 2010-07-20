@@ -1,14 +1,17 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
-import org.csstudio.opibuilder.editparts.ExecutionMode;
-import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.introspection.ActionButtonIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Cursors;
@@ -39,7 +42,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Xihui Chen
  *
  */
-public class ActionButtonFigure extends Figure {
+public class ActionButtonFigure extends Figure implements Introspectable{
 
 	/**
 	 * When it was set as armed, action will be fired when mouse released.
@@ -51,6 +54,7 @@ public class ActionButtonFigure extends Figure {
 	 */
 	private boolean mousePressed;
 	
+	
 	/**
 	 * Default label font.
 	 */
@@ -61,28 +65,31 @@ public class ActionButtonFigure extends Figure {
 	 * The Label for the Button.
 	 */
 	private Label label;
-	
-	private boolean toggleStyle; 
-	
+
+	private boolean toggleStyle;
+
 	private boolean selected;
 	
 	private boolean toggled;
-	
+
 	/**
 	 * An Array, which contains the PositionConstants for Center, Top, Bottom, Left, Right.
 	 */
 	private final int[] alignments = new int[] {PositionConstants.CENTER, PositionConstants.TOP, PositionConstants.BOTTOM, PositionConstants.LEFT, PositionConstants.RIGHT};
 	
-	
-	private ExecutionMode executionMode = ExecutionMode.RUN_MODE;
-	
+	private boolean runMode = false;
+
 	private List<ButtonActionListener> listeners;
 	
 	private Image image, grayImage;
 	
-	public ActionButtonFigure(ExecutionMode executionMode) {
+	
+	private IPath imagePath;
+	
+	private int textAlignment;
+	public ActionButtonFigure(boolean runMode) {
 		setEnabled(false);
-		this.executionMode = executionMode;
+		this.runMode = runMode;
 		armed = false;
 		mousePressed = false;		
 		listeners = new ArrayList<ButtonActionListener>();
@@ -94,6 +101,11 @@ public class ActionButtonFigure extends Figure {
 		
 		
 		label = new Label(){
+			@Override
+			public boolean isOpaque() {
+				return true;
+			}
+			
 			/**
 			 * If this button has focus, this method paints a focus rectangle.
 			 * 
@@ -110,21 +122,70 @@ public class ActionButtonFigure extends Figure {
 					
 				}
 			}
-			
-			@Override
-			public boolean isOpaque() {
-				return true;
-			}
 
 			
 		};
 		label.setBorder(new ButtonBorder());
 		add(label);
 		
-		if(executionMode == ExecutionMode.RUN_MODE){
+		if(runMode){
 			hookEventHandler(new ButtonEventHandler());
 			label.setCursor(Cursors.HAND);
 		}
+	}
+	
+	public ActionButtonFigure() {
+		this(true);
+	}
+
+	/**
+	 * Registers the given listener as an {@link ButtonActionListener}.
+	 * 
+	 * @param listener The {@link ButtonActionListener} to add
+	 */
+	public void addActionListener(ButtonActionListener listener) {
+		if (listener == null)
+			throw new IllegalArgumentException();
+		listeners.add(listener);
+	}
+	
+	/**
+	 * Dispose the resources on this figure.
+	 */
+	public void dispose() {
+	
+		if(image != null){
+			image.dispose();
+			image = null;
+		}
+		if(grayImage != null){
+			grayImage.dispose();
+			grayImage = null;
+		}
+	}
+
+	/**
+	 * Notifies any {@link ButtonActionListener} on this button
+	 * that an action has been performed.
+	 * 
+	 */
+	protected void fireActionPerformed(int i) {
+		for(ButtonActionListener listener : listeners)
+			listener.actionPerformed(i);
+	}
+	
+	/**
+	 * @return the imagePath
+	 */
+	public IPath getImagePath() {
+		return imagePath;
+	}
+	
+	/**
+	 * @return the textAlignment
+	 */
+	public int getTextAlignment() {
+		return textAlignment;
 	}
 	
 	/**
@@ -144,7 +205,46 @@ public class ActionButtonFigure extends Figure {
 		addFocusListener(handler);
 	}
 	
+	protected boolean isArmed() {
+		return armed;
+	}
 	
+	protected boolean isMousePressed() {
+		return mousePressed;
+	}
+	
+	@Override
+	public boolean isOpaque() {
+		return false;
+	}
+	
+
+
+	/**
+	 * @return the runMode
+	 */
+	public boolean isRunMode() {
+		return runMode;
+	}
+
+	/**
+	 * @return true if the button is pushed down. false otherwise.
+	 */
+	public boolean isSelected() {
+		return selected;
+	}
+
+	/**
+	 * @return true if the button is toggled. false otherwise.
+	 */
+	public boolean isToggled() {
+		return toggled;
+	}
+
+	public boolean isToggleStyle() {
+		return toggleStyle;
+	}
+
 	/**
 	 * Paints the area of this figure excluded by the borders. Induces a (1,1) pixel shift in
 	 * the painting if the  mouse is armed, giving it the pressed appearance. 
@@ -162,43 +262,24 @@ public class ActionButtonFigure extends Figure {
 		} else 
 			super.paintClientArea(graphics);
 	}
+
+	public void removeActionListener(ButtonActionListener listener){
+		if(listener != null && listeners.contains(listener))
+			listeners.remove(listener);
+	}
 	
+	/**Set the armed status of the button.
+	 * @param armed
+	 */
+	protected void setArmed(boolean armed) {
+		this.armed = armed;
+	}
+
+
 	@Override
 	public void setCursor(Cursor cursor) {
 		label.setCursor(cursor);
 		super.setCursor(cursor);
-	}
-	/**
-	 * Sets the text for the Button.
-	 * @param s
-	 * 			The text for the button
-	 */
-	public void setText(final String s) {
-		label.setText(s);
-	}
-	
-	public void setImagePath(final IPath path){		
-		dispose();	
-		if(path != null && !path.isEmpty()){
-			try {
-				InputStream stream = ResourceUtil.pathToInputStream(path);
-				image = new Image(null, stream);
-				stream.close();
-			} catch (Exception e) {
-				image = null;
-				String message = "Failed to load image from path" + path + "\n" + e;
-				CentralLogger.getInstance().error(this, message, e);
-				ConsoleService.getInstance().writeError(message);
-			} 
-		}
-		
-		if(label.isEnabled())
-			label.setIcon(image);
-		else{
-			if(grayImage == null && image != null)
-				grayImage = new Image(null, image, SWT.IMAGE_GRAY);
-			label.setIcon(grayImage);
-		}
 	}
 	
 	@Override
@@ -216,10 +297,81 @@ public class ActionButtonFigure extends Figure {
 				}
 			}	
 		}			
-		if(executionMode == ExecutionMode.RUN_MODE)			
+		if(runMode)			
 			super.setEnabled(value);
 	}
 	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		label.revalidate();
+	}
+	
+	public void setImagePath(final IPath path){		
+		dispose();	
+		if(path != null && !path.isEmpty()){
+			this.imagePath = path;
+			try {
+				InputStream stream = ResourceUtil.pathToInputStream(path);
+				image = new Image(null, stream);
+				stream.close();
+			} catch (Exception e) {
+				image = null;
+				String message = "Failed to load image from path" + path + "\n" + e;
+				CentralLogger.getInstance().error(this, message, e);
+			} 
+		}
+		
+		if(label.isEnabled())
+			label.setIcon(image);
+		else{
+			if(grayImage == null && image != null)
+				grayImage = new Image(null, image, SWT.IMAGE_GRAY);
+			label.setIcon(grayImage);
+		}
+	}
+	
+	protected void setMousePressed(boolean mousePressed) {
+			this.mousePressed = mousePressed;
+	}
+	
+	
+	/**
+	 * @param runMode the runMode to set
+	 */
+	public void setRunMode(boolean runMode) {
+		this.runMode = runMode;
+	}
+
+
+	public void setSelected(boolean selected) {
+		if(this.selected == selected)
+			return;
+		this.selected = selected;
+		repaint();
+	}
+	
+	
+	
+
+	/**
+	 * Sets the text for the Button.
+	 * @param s
+	 * 			The text for the button
+	 */
+	public void setText(final String s) {
+		label.setText(s);
+	}
+
+
+	/**
+	 * @return the label text.
+	 */
+	public String getText(){
+		return label.getText();
+	}
+
+
 	/**
 	 * Sets the alignment of the buttons text.
 	 * The parameter is a {@link PositionConstants} (LEFT, RIGHT, TOP, CENTER, BOTTOM)
@@ -227,6 +379,7 @@ public class ActionButtonFigure extends Figure {
 	 * 			The alignment for the text 
 	 */
 	public void setTextAlignment(final int alignment) {
+		this.textAlignment = alignment;
 		if (alignment>=0 && alignment<alignments.length) {
 			if (alignments[alignment]==PositionConstants.LEFT || alignments[alignment]==PositionConstants.RIGHT) {
 				label.setTextPlacement(PositionConstants.NORTH);
@@ -236,57 +389,6 @@ public class ActionButtonFigure extends Figure {
 			label.setTextAlignment(alignments[alignment]);
 		}
 	}
-	
-	@Override
-	public boolean isOpaque() {
-		return false;
-	}
-	
-	@Override
-	public void setFont(Font f) {
-		super.setFont(f);
-		label.revalidate();
-	}
-	
-	/**
-	 * Set the style of the Button.
-	 * @param style false = Push, true=Toggle.
-	 */
-	public void setStyle(final boolean style){
-		  toggleStyle = style;
-	        
-	}
-	
-	/**Set the armed status of the button.
-	 * @param armed
-	 */
-	protected void setArmed(boolean armed) {
-		this.armed = armed;
-	}
-	
-	protected boolean isArmed() {
-		return armed;
-	}
-	
-
-
-	protected boolean isToggleStyle() {
-		return toggleStyle;
-	}
-
-	public void setSelected(boolean selected) {
-		if(this.selected == selected)
-			return;
-		this.selected = selected;
-		repaint();
-	}
-
-	/**
-	 * @return true if the button is pushed down. false otherwise.
-	 */
-	public boolean isSelected() {
-		return selected;
-	}
 
 	public void setToggled(boolean toggled) {
 		this.toggled = toggled;
@@ -294,152 +396,21 @@ public class ActionButtonFigure extends Figure {
 	}
 
 	/**
-	 * @return true if the button is toggled. false otherwise.
+	 * Set the style of the Button.
+	 * @param style false = Push, true=Toggle.
 	 */
-	public boolean isToggled() {
-		return toggled;
+	public void setToggleStyle(final boolean style){
+		  toggleStyle = style;
+	        
 	}
 
-	protected void setMousePressed(boolean mousePressed) {
-			this.mousePressed = mousePressed;
-	}
-	
-	protected boolean isMousePressed() {
-		return mousePressed;
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new ActionButtonIntrospector().getBeanInfo(this.getClass());
 	}
 
-
-	/**
-	 * Registers the given listener as an {@link ButtonActionListener}.
-	 * 
-	 * @param listener The {@link ButtonActionListener} to add
-	 */
-	public void addActionListener(ButtonActionListener listener) {
-		if (listener == null)
-			throw new IllegalArgumentException();
-		listeners.add(listener);
-	}
-	
-	/**
-	 * Notifies any {@link ButtonActionListener} on this button
-	 * that an action has been performed.
-	 * 
-	 */
-	protected void fireActionPerformed(int i) {
-		for(ButtonActionListener listener : listeners)
-			listener.actionPerformed(i);
-	}
-	
-	/**
-	 * Dispose the resources on this figure.
-	 */
-	public void dispose() {
-	
-		if(image != null){
-			image.dispose();
-			image = null;
-		}
-		if(grayImage != null){
-			grayImage.dispose();
-			grayImage = null;
-		}
-	}
-	
-	public interface ButtonActionListener{
+	public interface ButtonActionListener extends EventListener{
 		public void actionPerformed(int i);
 	}
-	
-	
-	class ButtonEventHandler extends MouseMotionListener.Stub
-		implements
-			MouseListener,
-			KeyListener,
-			FocusListener
-	{
-
-		private int mouseState;
-		public void mouseDoubleClicked(MouseEvent me) {}
-
-		public void mousePressed(MouseEvent me) {
-			if (me.button != 1)
-				return;
-			mouseState = me.getState();
-			requestFocus();
-			setArmed(true);
-			setMousePressed(true);
-			setSelected(true);
-			me.consume();
-		}
-
-		public void mouseReleased(MouseEvent me) {
-			if (me.button != 1)
-				return;
-			if(isArmed()){
-				if(isToggleStyle()){
-					setToggled(!isToggled());
-				}
-				else
-					setSelected(false);
-				fireActionPerformed(mouseState);
-			}
-			setArmed(false);
-			setMousePressed(false);
-			
-			me.consume();
-		}
-		
-		public void mouseDragged(MouseEvent me) {		
-			if (isArmed()) {
-				if(!containsPoint(me.getLocation())){
-					setArmed(false);
-					if(!isToggled())
-						setSelected(false);
-				}
-			}else if(containsPoint(me.getLocation())){
-				setArmed(true);				
-				setSelected(true);
-			}
-		}
-
-		public void keyPressed(KeyEvent ke) {
-			if (ke.character == ' ' || ke.character == '\r') {
-				setArmed(true);
-				setSelected(true);
-			}
-		}
-
-		public void keyReleased(KeyEvent ke) {
-			if (ke.character == ' ' || ke.character == '\r') {
-				if(isArmed()){
-					if(isToggleStyle())
-						setToggled(!isToggled());
-					else
-						setSelected(false);
-					fireActionPerformed(0);
-				}
-				setArmed(false);
-			}
-			
-		}
-
-		public void focusGained(FocusEvent fe) {
-			repaint();
-		}
-
-		public void focusLost(FocusEvent fe) {
-			repaint();
-			setArmed(false);
-			setMousePressed(false);
-			if(isToggleStyle())
-				setSelected(isToggled());
-			else
-				setSelected(false);
-		}
-		
-	}
-	
-	
-	
 
 	/**
 	 * The border for a button which has different paint based on the button pressed status.
@@ -447,8 +418,8 @@ public class ActionButtonFigure extends Figure {
 	class ButtonBorder
 		extends SchemeBorder
 	{
-
-
+	
+	
 	/**
 	 * Provides for a scheme to represent the borders of clickable figures like buttons.
 	 * Though similar to the {@link SchemeBorder.Scheme Scheme} it supports an extra set of
@@ -460,7 +431,7 @@ public class ActionButtonFigure extends Figure {
 		private Color
 			highlightPressed[] = null,
 			shadowPressed[] = null;
-
+	
 		/**
 		 * Constructs a new button scheme where the input colors are the colors for the
 		 * top-left and bottom-right sides of the  border. These colors serve as the colors
@@ -476,7 +447,7 @@ public class ActionButtonFigure extends Figure {
 			shadowPressed = this.shadow = shadow;
 			init();
 		}
-
+	
 		/**
 		 * Constructs a new button scheme where the input colors are the colors for the
 		 * top-left and bottom-right sides of the  border, for the normal and pressed states. 
@@ -495,7 +466,7 @@ public class ActionButtonFigure extends Figure {
 			shadowPressed = shp;
 			init();
 		}
-
+	
 		/**
 		 * Calculates and returns the Insets for this border. The calculations are based on
 		 * the number of normal and pressed, highlight and shadow colors.
@@ -554,17 +525,7 @@ public class ActionButtonFigure extends Figure {
 		protected Color[] getHighlightPressed() {
 			return highlightPressed;
 		}
-
-		/**
-		 * Returns the pressed shadow colors of this border.
-		 *
-		 * @return  Colors as an array of Colors
-		 * @since 2.0
-		 */
-		protected Color[] getShadowPressed() {
-			return shadowPressed;
-		}
-		
+	
 		/**
 		 * Returns the pressed highlight colors of this border.
 		 *
@@ -574,7 +535,17 @@ public class ActionButtonFigure extends Figure {
 		protected Color[] getHighlightReleased() {
 			return getHighlight();
 		}
-
+		
+		/**
+		 * Returns the pressed shadow colors of this border.
+		 *
+		 * @return  Colors as an array of Colors
+		 * @since 2.0
+		 */
+		protected Color[] getShadowPressed() {
+			return shadowPressed;
+		}
+	
 		/**
 		 * Returns the pressed shadow colors of this border.
 		 *
@@ -585,7 +556,7 @@ public class ActionButtonFigure extends Figure {
 			return getShadow();
 		}
 	}
-
+	
 	 /**
 		 * Regular button scheme
 	 */
@@ -601,8 +572,8 @@ public class ActionButtonFigure extends Figure {
 	public ButtonBorder() {
 		setScheme(BUTTON);
 	}
-
-
+	
+	
 	/**
 	 * Paints this border with the help of the set scheme, the model of the clickable figure,
 	 * and other inputs. The scheme is used in conjunction with the state of the model to get 
@@ -615,7 +586,7 @@ public class ActionButtonFigure extends Figure {
 	public void paint(IFigure figure, Graphics graphics, Insets insets) {
 	
 		ButtonScheme colorScheme = (ButtonScheme)getScheme();
-
+	
 		Color tl[], br[];
 		if (isSelected()) {
 			tl = colorScheme.getShadowPressed();
@@ -624,10 +595,98 @@ public class ActionButtonFigure extends Figure {
 			tl = colorScheme.getHighlightReleased();
 			br = colorScheme.getShadowReleased();
 		}
-
+	
 		paint(graphics, figure, insets, tl, br);
 	}
+	
+	}
 
+	class ButtonEventHandler extends MouseMotionListener.Stub
+		implements
+			MouseListener,
+			KeyListener,
+			FocusListener
+	{
+	
+		private int mouseState;
+		public void focusGained(FocusEvent fe) {
+			repaint();
+		}
+	
+		public void focusLost(FocusEvent fe) {
+			repaint();
+			setArmed(false);
+			setMousePressed(false);
+			if(isToggleStyle())
+				setSelected(isToggled());
+			else
+				setSelected(false);
+		}
+	
+		public void keyPressed(KeyEvent ke) {
+			if (ke.character == ' ' || ke.character == '\r') {
+				setArmed(true);
+				setSelected(true);
+			}
+		}
+		
+		public void keyReleased(KeyEvent ke) {
+			if (ke.character == ' ' || ke.character == '\r') {
+				if(isArmed()){
+					if(isToggleStyle())
+						setToggled(!isToggled());
+					else
+						setSelected(false);
+					fireActionPerformed(0);
+				}
+				setArmed(false);
+			}
+			
+		}
+	
+		public void mouseDoubleClicked(MouseEvent me) {}
+	
+		public void mouseDragged(MouseEvent me) {		
+			if (isArmed()) {
+				if(!containsPoint(me.getLocation())){
+					setArmed(false);
+					if(!isToggled())
+						setSelected(false);
+				}
+			}else if(containsPoint(me.getLocation())){
+				setArmed(true);				
+				setSelected(true);
+			}
+		}
+	
+		public void mousePressed(MouseEvent me) {
+			if (me.button != 1)
+				return;
+			mouseState = me.getState();
+			requestFocus();
+			setArmed(true);
+			setMousePressed(true);
+			setSelected(true);
+			me.consume();
+		}
+	
+		public void mouseReleased(MouseEvent me) {
+			if (me.button != 1)
+				return;
+			if(isArmed()){
+				if(isToggleStyle()){
+					setToggled(!isToggled());
+				}
+				else
+					setSelected(false);
+				fireActionPerformed(mouseState);
+			}
+			setArmed(false);
+			setMousePressed(false);
+			
+			me.consume();
+		}
+		
 	}
 
 

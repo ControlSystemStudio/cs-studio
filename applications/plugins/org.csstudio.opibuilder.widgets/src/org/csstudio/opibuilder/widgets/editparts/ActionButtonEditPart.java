@@ -11,11 +11,11 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
-import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure;
 import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure2;
-import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.ActionButtonFigure;
+import org.csstudio.swt.widgets.figures.ActionButtonFigure.ButtonActionListener;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.InputEvent;
@@ -37,11 +37,11 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		ActionButtonModel model = getWidgetModel();
 
-		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode());
+		final ActionButtonFigure buttonFigure = new ActionButtonFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		buttonFigure.setText(model.getText());
 		buttonFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				model.getFont().getFontData()));
-		buttonFigure.setStyle(model.isToggleButton());
+		buttonFigure.setToggleStyle(model.isToggleButton());
 		buttonFigure.setImagePath(model.getImagePath());
 		updatePropSheet(model.isToggleButton());
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
@@ -172,7 +172,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ActionButtonFigure figure = (ActionButtonFigure) refreshableFigure;
-				figure.setStyle((Boolean) newValue);				
+				figure.setToggleStyle((Boolean) newValue);				
 				updatePropSheet((Boolean) newValue);
 				return true;
 			}
