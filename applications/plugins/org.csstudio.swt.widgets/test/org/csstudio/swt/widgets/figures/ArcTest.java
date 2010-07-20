@@ -2,11 +2,11 @@ package org.csstudio.swt.widgets.figures;
 import org.eclipse.draw2d.Figure;
 
 
-public class TankTest extends AbstractMarkedWidgetTest{
+public class ArcTest extends AbstractShapeWidgetTest{
 
 	@Override
-	public Figure createTestWidget() {		
-		return new TankFigure();
+	public Figure createTestWidget() {
+		return new ArcFigure();
 	}
 	
 	
@@ -14,9 +14,10 @@ public class TankTest extends AbstractMarkedWidgetTest{
 	public String[] getPropertyNames() {
 		String[] superProps =  super.getPropertyNames();
 		String[] myProps = new String[]{
-				"fillColor",
-				"fillBackgroundColor",
-				"effect3D"
+				"antiAlias",
+				"startAngle",
+				"totalAngle",
+				"fill"
 		};
 		
 		return concatenateStringArrays(superProps, myProps);
@@ -25,8 +26,5 @@ public class TankTest extends AbstractMarkedWidgetTest{
 	@Override
 	public boolean isAutoTest() {
 		return true;
-	}
-
-	
-		
+	}		
 }

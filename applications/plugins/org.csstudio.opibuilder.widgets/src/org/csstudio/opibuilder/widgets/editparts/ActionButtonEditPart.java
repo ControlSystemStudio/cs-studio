@@ -11,7 +11,6 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.opibuilder.widgetActions.AbstractWidgetAction;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
-import org.csstudio.opibuilder.widgets.figures.ActionButtonFigure2;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.ActionButtonFigure;

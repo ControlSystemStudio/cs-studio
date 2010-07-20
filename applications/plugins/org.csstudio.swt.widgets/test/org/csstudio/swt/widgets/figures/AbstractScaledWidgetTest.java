@@ -1,4 +1,5 @@
 package org.csstudio.swt.widgets.figures;
+import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,4 +27,13 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 		return concatenateStringArrays(superPropList.toArray(new String[]{}), scaleProps);
 	}
 	
+	
+	@Override
+	public Object generateTestData(PropertyDescriptor pd, Object seed) {	
+		if(seed !=null && seed instanceof Integer){			
+			if(pd.getName().equals("logScale"))
+				return super.generateTestData(pd, (Integer)seed  +1);
+		}
+				return super.generateTestData(pd, seed);
+	}
 }

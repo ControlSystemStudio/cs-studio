@@ -108,7 +108,7 @@ public abstract class AbstractWidgetTest {
                                     	text.setText(pd.getName() + " : " + testData);
                                     	System.out.println(pd.getName() + " : " + testData);
                                     	writeMethod.invoke(widget,testData);
-                                    	nextRunTime = 50;
+                                    	nextRunTime = getAutoTestSpeedInterval();
                                     } catch (final Exception e) {
                                     	e.printStackTrace();
                                     }
@@ -194,7 +194,7 @@ public abstract class AbstractWidgetTest {
             return CustomMediaFactory.getInstance().getColor(
 									new RGB((int) (Math.random()*255),(int) (Math.random()*255),(int) (Math.random()*255)));
         } else if(propType == double.class) {
-        	if(seed != null && seed instanceof Integer)
+        	if(seed != null && seed instanceof Integer){
         		if(((Integer)seed)%REPEAT_COUNT==1)
         			return Double.NaN;
         		else if(((Integer)seed)%REPEAT_COUNT==2)
@@ -207,7 +207,10 @@ public abstract class AbstractWidgetTest {
         			return Double.MIN_VALUE;
         		else if(((Integer)seed)%REPEAT_COUNT==5)
         			return 0;
-            return Math.random() *100;
+        		else
+        			return Math.random() *100;
+        	}else
+        		return Math.random() *100;
         } else if(propType == int.class) {
         	if(seed != null && seed instanceof Integer){
         		if(((Integer)seed)%REPEAT_COUNT==1)
@@ -216,6 +219,8 @@ public abstract class AbstractWidgetTest {
         			return Integer.MIN_VALUE;        		
         		else if(((Integer)seed)%REPEAT_COUNT==3)
         			return 0;
+        		else
+        		return (int)(Math.random()*100);
         	}else
         		return (int)(Math.random()*100);
         }
@@ -228,6 +233,10 @@ public abstract class AbstractWidgetTest {
 		return 8;
 	}
 
+	protected int getAutoTestSpeedInterval(){
+		return 500;
+	}
+	
 	/**
 	 * @return the test bench figure on which the widget will placed on.
 	 */
