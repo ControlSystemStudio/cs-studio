@@ -33,7 +33,7 @@ import org.eclipse.osgi.util.NLS;
  * @since 15.11.2007
  */
 public class Messages extends NLS {
-    private static final String BUNDLE_NAME = "org.csstudio.utility.adlconverter.internationalization.messages"; //$NON-NLS-1$
+    private static final String BUNDLE_NAME = "org.csstudio.utility.adlparser.internationalization.messages"; //$NON-NLS-1$
     public static String ADLBasicAttribute_AssertError_Begin;
     public static String ADLBasicAttribute_AssertError_End;
     public static String ADLBasicAttribute_WrongADLFormatException_Begin;
