@@ -6,12 +6,12 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.CheckBoxFigure;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.CheckBoxFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
@@ -29,12 +29,13 @@ public class CheckBoxEditPart extends AbstractPVWidgetEditPart {
 		figure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		figure.setText(getWidgetModel().getLabel());
-		figure.addBoolControlListener(new IBoolControlListener() {
-			public void valueChanged(final double newValue) {
+		figure.addManualValueChangeListener(new IManualValueChangeListener() {
+			
+			public void manualValueChanged(double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE)
-					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);
+					setPVValue(AbstractPVWidgetModel.PROP_PVNAME, newValue);				
 			}
-		});		
+		});
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		figure.setRunMode(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE));

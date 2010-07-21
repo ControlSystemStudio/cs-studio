@@ -7,11 +7,11 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolFigure;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -42,8 +42,8 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 		figure.setPassword(model.getPassword());
 		figure.setRunMode(getExecutionMode().equals(
 				ExecutionMode.RUN_MODE));
-		figure.addBoolControlListener(new IBoolControlListener() {
-			public void valueChanged(final double newValue) {
+		figure.addManualValueChangeListener(new IManualValueChangeListener() {
+			public void manualValueChanged(final double newValue) {
 				if (getExecutionMode() == ExecutionMode.RUN_MODE){
 					if(getWidgetModel().getDataType() == 0)
 						setPVValue(AbstractBoolControlModel.PROP_PVNAME, newValue);
@@ -152,15 +152,16 @@ public abstract class AbstractBoolControlEditPart extends AbstractBoolEditPart {
 	 */
 	private void configureButtonListener(
 			final AbstractBoolControlFigure figure) {
-		figure.addBoolControlListener(new IBoolControlListener() {
-			public void valueChanged(double newValue) {		
+		figure.addManualValueChangeListener(new IManualValueChangeListener() {			
+			
+			public void manualValueChanged(double newValue) {		
 				// If the display is not in run mode, don't do anything.
 				if (getExecutionMode() != ExecutionMode.RUN_MODE)
 					return;				
 				
 				int actionIndex;
 
-				if(figure.getBoolValue()){
+				if(figure.getBooleanValue()){
 					actionIndex = getWidgetModel().getPushActionIndex();
 				}else
 				actionIndex = getWidgetModel().getReleasedActionIndex();				

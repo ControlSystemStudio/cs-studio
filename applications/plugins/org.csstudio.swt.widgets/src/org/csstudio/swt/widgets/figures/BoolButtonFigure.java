@@ -1,7 +1,7 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
@@ -23,139 +23,6 @@ import org.eclipse.swt.widgets.Display;
  */
 public class BoolButtonFigure extends AbstractBoolControlFigure {
 
-	private final static int ELLIPSE_BORDER_WIDTH = 3;
-	private final static int SQURE_BORDER_WIDTH = 3;
-	private final static double LED_POSITION = 4.8/6.0;
-	private final static Color LIGHT_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(240, 240, 240)); 
-	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(200, 200, 200)); 
-	private final static Color DARK_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(127, 127, 127));
-	private final static Color DARKER_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(100, 100, 100));
-	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_WHITE); 
-	
-	private boolean effect3D = true;
-	private boolean squareButton = true;
-	private boolean showLED = true;
-	
-	private EllipseButton ellipseButton;
-	private SquareButton squareButtonFigure;
-	
-	Cursor cursor;
-	public BoolButtonFigure() {
-		super();	
-		squareButtonFigure = new SquareButton();
-		ellipseButton = new EllipseButton();
-		setLayoutManager(new XYLayout());		
-		add(squareButtonFigure);
-		squareButtonFigure.add(boolLabel);
-		cursor = Cursors.HAND;		
-	}
-	
-	@Override
-	protected void layout() {	
-		Rectangle clientArea = getClientArea().getCopy();
-		if(ellipseButton.isVisible() && !squareButton)
-			ellipseButton.setBounds(clientArea);	
-		if(squareButtonFigure.isVisible() && squareButton)
-			squareButtonFigure.setBounds(clientArea);
-		if(boolLabel.isVisible()){			
-			Dimension labelSize = boolLabel.getPreferredSize();				
-			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - labelSize.width/2,
-					clientArea.y + clientArea.height/2 - labelSize.height/2,
-					labelSize.width, labelSize.height));
-		}
-		super.layout();
-	}
-
-	@Override
-	protected void paintClientArea(Graphics graphics) {
-		super.paintClientArea(graphics);
-		if(!isEnabled()) {
-			graphics.setAlpha(DISABLED_ALPHA);
-			graphics.setBackgroundColor(DISABLE_COLOR);
-			graphics.fillRectangle(bounds);
-		}	
-	}
-	
-	/**
-	 * @param effect3D the effect3D to set
-	 */
-	public void setEffect3D(boolean effect3D) {
-		this.effect3D = effect3D;
-	}
-
-	/**
-	 * @param squareLED the squareLED to set
-	 */
-	public void setSquareButton(boolean squareButton) {
-		this.squareButton = squareButton;
-	
-		if(squareButton){
-			if(getChildren().contains(ellipseButton))
-				remove(ellipseButton);
-			if(!getChildren().contains(squareButtonFigure))
-				add(squareButtonFigure);
-			if(ellipseButton.getChildren().contains(boolLabel))
-				ellipseButton.remove(boolLabel);	
-			squareButtonFigure.add(boolLabel);
-			squareButtonFigure.setCursor(runMode ? cursor : null);	
-		}else {
-			if(getChildren().contains(squareButtonFigure))
-				remove(squareButtonFigure);
-			if(!getChildren().contains(ellipseButton))
-				add(ellipseButton);
-			if(squareButtonFigure.getChildren().contains(boolLabel))
-				squareButtonFigure.remove(boolLabel);	
-			ellipseButton.add(boolLabel);
-			ellipseButton.setCursor(runMode ? cursor : null);
-		}		
-		ellipseButton.setVisible(!squareButton);
-		ellipseButton.setEnabled(!squareButton);
-		squareButtonFigure.setVisible(squareButton);
-		squareButtonFigure.setEnabled(squareButton);					
-	}
-
-	/**
-	 * @param showLED the showLED to set
-	 */
-	public void setShowLED(boolean showLED) {
-		this.showLED = showLED;
-	}
-
-	@Override
-	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);					
-		if(ellipseButton.isVisible())
-			ellipseButton.setCursor(runMode ? cursor : null);
-		else if (squareButtonFigure.isVisible())
-			squareButtonFigure.setCursor(runMode ? cursor : null);	
-	}
-	
-	@Override
-	public void setEnabled(boolean value) {
-		super.setEnabled(value);
-		if(runMode){
-			if(value){
-				if(cursor == null || cursor.isDisposed())
-					cursor = Cursors.HAND;		
-			}else {				
-				cursor = null;
-			}	
-		}				
-		if(squareButton)
-			squareButtonFigure.setEnabled(value);
-		else
-			ellipseButton.setEnabled(value);
-		if(ellipseButton.isVisible())
-			ellipseButton.setCursor(runMode ? cursor : null);
-		else if (squareButtonFigure.isVisible())
-			squareButtonFigure.setCursor(runMode ? cursor : null);	
-	}
-	
 	class EllipseButton extends Figure {
 		
 		public EllipseButton() {
@@ -195,7 +62,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				double wp = b - a;
 				Point ul = new Point(clientArea.x + a + (wp-w)/2 -1, clientArea.y + b - (wp+w)/2 -1);
 				Point br = new Point(clientArea.x + a + (wp+w)/2 + 5, clientArea.y + b - (wp-w)/2+5);
-				if(boolValue){
+				if(booleanValue){
 					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
 						DARK_GRAY_COLOR, 255, WHITE_COLOR,0);
@@ -211,7 +78,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				
 				
 			}else {				
-				graphics.setBackgroundColor(boolValue ? WHITE_COLOR : DARK_GRAY_COLOR);
+				graphics.setBackgroundColor(booleanValue ? WHITE_COLOR : DARK_GRAY_COLOR);
 				graphics.fillOval(clientArea);
 			}
 			graphics.setBackgroundColor(getBackgroundColor());
@@ -235,7 +102,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				}
 				
 				// Fills the circle with solid bulb color
-				Color ledColor = boolValue ? onColor : offColor;
+				Color ledColor = booleanValue ? onColor : offColor;
 			    graphics.setBackgroundColor(ledColor);
 			    graphics.fillOval(ledArea);
 				if(effect3D && support3D){					
@@ -249,8 +116,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				}				
 			}
 		}		
-	}	
-	
+	}
 	class SquareButton extends Figure {
 		public SquareButton() {			
 			addMouseListener(buttonPresser);
@@ -274,7 +140,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 
 				//draw up border			
 				Pattern pattern;
-				if(boolValue)
+				if(booleanValue)
 					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
 							clientArea.x, clientArea.y+SQURE_BORDER_WIDTH, GRAY_COLOR, DARK_GRAY_COLOR);			
 				else
@@ -288,7 +154,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				pattern.dispose();
 				
 				//draw left border
-				if(boolValue)
+				if(booleanValue)
 					pattern = new Pattern(Display.getCurrent(), clientArea.x, clientArea.y, 
 						clientArea.x + SQURE_BORDER_WIDTH, clientArea.y, GRAY_COLOR, DARK_GRAY_COLOR);			
 				else
@@ -302,7 +168,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				pattern.dispose();				
 				
 				//draw bottom border	
-				if(boolValue)						
+				if(booleanValue)						
 					pattern = new Pattern(Display.getCurrent(), clientArea.x, 
 							clientArea.y+ clientArea.height - SQURE_BORDER_WIDTH, 
 							clientArea.x, clientArea.y+clientArea.height, 
@@ -322,7 +188,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				pattern.dispose();
 				
 				//draw right border			
-				if(boolValue)
+				if(booleanValue)
 					pattern = new Pattern(Display.getCurrent(), clientArea.x + clientArea.width - SQURE_BORDER_WIDTH, 
 							clientArea.y, 
 							clientArea.x + clientArea.width, clientArea.y, 
@@ -348,7 +214,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				
 			}else { //if not 3D
 				clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
-				graphics.setForegroundColor(boolValue ? WHITE_COLOR : DARK_GRAY_COLOR);
+				graphics.setForegroundColor(booleanValue ? WHITE_COLOR : DARK_GRAY_COLOR);
 				graphics.setLineWidth(SQURE_BORDER_WIDTH);
 				graphics.drawRectangle(clientArea);				
 				clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
@@ -373,7 +239,7 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				}
 				
 				// Fills the circle with solid bulb color
-				Color ledColor = boolValue ? onColor : offColor;
+				Color ledColor = booleanValue ? onColor : offColor;
 			    graphics.setBackgroundColor(ledColor);
 			    graphics.fillOval(ledArea);
 				if(effect3D && support3D){					
@@ -389,5 +255,168 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 			graphics.popState();
 			super.paintClientArea(graphics);
 		}
+	}
+	private final static int ELLIPSE_BORDER_WIDTH = 3;
+	private final static int SQURE_BORDER_WIDTH = 3; 
+	private final static double LED_POSITION = 4.8/6.0; 
+	private final static Color LIGHT_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(240, 240, 240));
+	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(200, 200, 200));
+	private final static Color DARK_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(127, 127, 127)); 
+	
+	private final static Color DARKER_GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(100, 100, 100));
+	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_WHITE);
+	private boolean effect3D = true;
+	
+	private boolean squareButton = true;
+	private boolean showLED = true;
+	
+	private EllipseButton ellipseButton;
+	private SquareButton squareButtonFigure;
+
+	Cursor cursor;
+
+	public BoolButtonFigure() {
+		super();	
+		squareButtonFigure = new SquareButton();
+		ellipseButton = new EllipseButton();
+		setLayoutManager(new XYLayout());		
+		add(squareButtonFigure);
+		squareButtonFigure.add(boolLabel);
+		cursor = Cursors.HAND;		
+	}
+
+	/**
+	 * @return the effect3D
+	 */
+	public boolean isEffect3D() {
+		return effect3D;
+	}
+	
+	/**
+	 * @return the showLED
+	 */
+	public boolean isShowLED() {
+		return showLED;
+	}
+
+	/**
+	 * @return the squareButton
+	 */
+	public boolean isSquareButton() {
+		return squareButton;
+	}
+	
+	@Override
+	protected void layout() {	
+		Rectangle clientArea = getClientArea().getCopy();
+		if(ellipseButton.isVisible() && !squareButton)
+			ellipseButton.setBounds(clientArea);	
+		if(squareButtonFigure.isVisible() && squareButton)
+			squareButtonFigure.setBounds(clientArea);
+		if(boolLabel.isVisible()){			
+			Dimension labelSize = boolLabel.getPreferredSize();				
+			boolLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - labelSize.width/2,
+					clientArea.y + clientArea.height/2 - labelSize.height/2,
+					labelSize.width, labelSize.height));
+		}
+		super.layout();
+	}
+
+	@Override
+	protected void paintClientArea(Graphics graphics) {
+		super.paintClientArea(graphics);
+		if(!isEnabled()) {
+			graphics.setAlpha(DISABLED_ALPHA);
+			graphics.setBackgroundColor(DISABLE_COLOR);
+			graphics.fillRectangle(bounds);
+		}	
+	}
+
+	/**
+	 * @param effect3D the effect3D to set
+	 */
+	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
+		this.effect3D = effect3D;
+		repaint();
+	}
+
+	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		if(runMode){
+			if(value){
+				if(cursor == null || cursor.isDisposed())
+					cursor = Cursors.HAND;		
+			}else {				
+				cursor = null;
+			}	
+		}				
+		if(squareButton)
+			squareButtonFigure.setEnabled(value);
+		else
+			ellipseButton.setEnabled(value);
+		if(ellipseButton.isVisible())
+			ellipseButton.setCursor(runMode ? cursor : null);
+		else if (squareButtonFigure.isVisible())
+			squareButtonFigure.setCursor(runMode ? cursor : null);	
+	}
+	
+	@Override
+	public void setRunMode(boolean runMode) {
+		super.setRunMode(runMode);					
+		if(ellipseButton.isVisible())
+			ellipseButton.setCursor(runMode ? cursor : null);
+		else if (squareButtonFigure.isVisible())
+			squareButtonFigure.setCursor(runMode ? cursor : null);	
+	}
+	
+	/**
+	 * @param showLED the showLED to set
+	 */
+	public void setShowLED(boolean showLED) {
+		if(this.showLED == showLED)
+			return;
+		this.showLED = showLED;
+		repaint();
+	}	
+	
+	/**
+	 * @param squareLED the squareLED to set
+	 */
+	public void setSquareButton(boolean squareButton) {
+		if(this.squareButton == squareButton)
+			return;
+		this.squareButton = squareButton;
+	
+		if(squareButton){
+			if(getChildren().contains(ellipseButton))
+				remove(ellipseButton);
+			if(!getChildren().contains(squareButtonFigure))
+				add(squareButtonFigure);
+			if(ellipseButton.getChildren().contains(boolLabel))
+				ellipseButton.remove(boolLabel);	
+			squareButtonFigure.add(boolLabel);
+			squareButtonFigure.setCursor(runMode ? cursor : null);	
+		}else {
+			if(getChildren().contains(squareButtonFigure))
+				remove(squareButtonFigure);
+			if(!getChildren().contains(ellipseButton))
+				add(ellipseButton);
+			if(squareButtonFigure.getChildren().contains(boolLabel))
+				squareButtonFigure.remove(boolLabel);	
+			ellipseButton.add(boolLabel);
+			ellipseButton.setCursor(runMode ? cursor : null);
+		}		
+		ellipseButton.setVisible(!squareButton);
+		ellipseButton.setEnabled(!squareButton);
+		squareButtonFigure.setVisible(squareButton);
+		squareButtonFigure.setEnabled(squareButton);					
 	}
 }

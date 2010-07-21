@@ -10,6 +10,7 @@ import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
@@ -123,14 +124,14 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 	/**
 	 * @return the on color
 	 */
-	public RGB getOnColor() {
-		return getRGBFromColorProperty(PROP_ON_COLOR);
+	public Color getOnColor() {
+		return getSWTColorFromColorProperty(PROP_ON_COLOR);
 	}	
 	/**
 	 * @return the off color
 	 */
-	public RGB getOffColor() {
-		return getRGBFromColorProperty(PROP_OFF_COLOR);
+	public Color getOffColor() {
+		return getSWTColorFromColorProperty(PROP_OFF_COLOR);
 	}	
 	
 	/**

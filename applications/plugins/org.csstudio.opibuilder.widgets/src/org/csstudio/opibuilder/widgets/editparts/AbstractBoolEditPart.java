@@ -9,11 +9,11 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolFigure;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
@@ -172,7 +172,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				figure.setOnColor(((OPIColor) newValue).getRGBValue());
+				figure.setOnColor(((OPIColor) newValue).getSWTColor());
 				return true;
 			}
 		};
@@ -184,7 +184,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				AbstractBoolFigure figure = (AbstractBoolFigure) refreshableFigure;
-				figure.setOffColor(((OPIColor) newValue).getRGBValue());
+				figure.setOffColor(((OPIColor) newValue).getSWTColor());
 				return true;
 			}
 		};
@@ -219,7 +219,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public Boolean getValue() {
-		return ((AbstractBoolFigure)getFigure()).getBoolValue();
+		return ((AbstractBoolFigure)getFigure()).getBooleanValue();
 	}
 	/**
 	 * @param newValue

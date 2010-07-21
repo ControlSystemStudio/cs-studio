@@ -1,9 +1,9 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
 import java.io.InputStream;
 
-import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.ResourceUtil;
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.swt.widgets.util.ResourceUtil;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Graphics;
@@ -25,14 +25,62 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	 */
 	private Image onImage, offImage;
 	
-	private boolean strech;
+	private boolean stretch;
 
 	private Cursor cursor;
+
+	private IPath onImagePath;
+
+	private IPath offImagePath;
 	
 	public ImageBoolButtonFigure() {
 		cursor = Cursors.HAND;
 		addMouseListener(buttonPresser);
 		add(boolLabel);
+	}
+	
+	public void dispose() {
+		if(onImage !=null){
+			onImage.dispose();
+			onImage = null;
+		}
+		
+		if(offImage !=null){
+			offImage.dispose();
+			offImage = null;
+		}
+			
+	}
+
+	
+	public Dimension getAutoSizedDimension() {		
+		Image temp = booleanValue ? onImage : offImage;
+		
+		if(temp != null)
+			return new Dimension(temp.getBounds().width + getInsets().left + getInsets().right,
+					temp.getBounds().height + getInsets().bottom + getInsets().top);
+		return null;
+	
+	}
+	
+	/**
+	 * @return the offImagePath
+	 */
+	public IPath getOffImagePath() {
+		return offImagePath;
+	}
+	/**
+	 * @return the onImagePath
+	 */
+	public IPath getOnImagePath() {
+		return onImagePath;
+	}
+	
+	/**
+	 * @return the stretch
+	 */
+	public boolean isStretch() {
+		return stretch;
 	}
 	
 	@Override
@@ -46,7 +94,6 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		}
 		super.layout();
 	}
-
 	
 	private Image loadImageFromIPath(IPath path){
 		if(path == null || path.isEmpty())
@@ -56,7 +103,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 			return new Image(Display.getDefault(), input);
 		} catch (Exception e) {
 			String message = NLS.bind("Failed to load image {0}\n{1}", path, e);
-			ConsoleService.getInstance().writeError(message);
+			CentralLogger.getInstance().error(this, message);
 		} 
 		return null;
 		
@@ -66,12 +113,12 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 	protected void paintClientArea(Graphics graphics) {		
 		Rectangle clientArea = getClientArea();
 		Image temp;
-		if(boolValue)
+		if(booleanValue)
 			temp = onImage;
 		else 
 			temp = offImage;
 		if(temp !=null)
-			if(strech)
+			if(stretch)
 				graphics.drawImage(temp, new Rectangle(temp.getBounds()), clientArea);
 			else
 				graphics.drawImage(temp, clientArea.getLocation());
@@ -82,6 +129,7 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		}	
 		super.paintClientArea(graphics);
 	}
+	
 	@Override
 	public void setEnabled(boolean value) {
 		super.setEnabled(value);
@@ -95,23 +143,9 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		}	
 		setCursor(runMode? cursor : null);
 	}
-	
-	@Override
-	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);
-		setCursor(runMode? cursor : null);
-	}
-	
-	public void setOnImagePath(IPath onImagePath) {
-		if(onImage != null){
-			onImage.dispose();
-			onImage = null;
-		}
-		onImage = loadImageFromIPath(onImagePath);
-		revalidate();
-	}
-	
+
 	public void setOffImagePath(IPath offImagePath) {
+		this.offImagePath = offImagePath;
 		if(offImage != null){
 			offImage.dispose();
 			offImage = null;
@@ -119,38 +153,31 @@ public class ImageBoolButtonFigure extends AbstractBoolControlFigure {
 		offImage = loadImageFromIPath(offImagePath);
 		revalidate();
 	}
-	
-	public void setStretch(boolean strech) {
-		this.strech = strech;
+
+	public void setOnImagePath(IPath onImagePath) {
+		this.onImagePath = onImagePath;
+		if(onImage != null){
+			onImage.dispose();
+			onImage = null;
+		}
+		onImage = loadImageFromIPath(onImagePath);
+		revalidate();
 	}
-	
+
+	@Override
+	public void setRunMode(boolean runMode) {
+		super.setRunMode(runMode);
+		setCursor(runMode? cursor : null);
+	}
+
+	public void setStretch(boolean strech) {
+		this.stretch = strech;
+	}
+
 	@Override
 	public void setValue(double value) {
 		super.setValue(value);
 		revalidate();
-	}
-
-	public Dimension getAutoSizedDimension() {		
-		Image temp = boolValue ? onImage : offImage;
-		
-		if(temp != null)
-			return new Dimension(temp.getBounds().width + getInsets().left + getInsets().right,
-					temp.getBounds().height + getInsets().bottom + getInsets().top);
-		return null;
-	
-	}
-
-	public void dispose() {
-		if(onImage !=null){
-			onImage.dispose();
-			onImage = null;
-		}
-		
-		if(offImage !=null){
-			offImage.dispose();
-			offImage = null;
-		}
-			
 	}
 	
 	

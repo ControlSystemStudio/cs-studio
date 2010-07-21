@@ -1,9 +1,10 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
 import org.eclipse.jface.dialogs.IInputValidator;
@@ -21,28 +22,6 @@ import org.eclipse.swt.widgets.MessageBox;
  */
 public class AbstractBoolControlFigure extends AbstractBoolFigure {
 
-	protected boolean toggle = false;
-	
-	protected boolean showConfirmDialog = false;
-	
-	protected String password = "";
-	
-	protected String confirmTip = "Are you sure you want to do this?";
-	
-	protected boolean runMode = false;
-	
-	protected ButtonPresser buttonPresser;	
-	
-	protected final static Color DISABLE_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_GRAY); 
-	/** The alpha (0 is transparency and 255 is opaque) for disabled paint */
-	protected static final int DISABLED_ALPHA = 100;	
-	
-	public AbstractBoolControlFigure() {
-		super();
-		buttonPresser = new ButtonPresser();
-	}
-	
 	class ButtonPresser extends MouseListener.Stub {
 		private boolean canceled = false;
 			public void mousePressed(MouseEvent me) {
@@ -51,7 +30,7 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 				if(runMode){
  					if(toggle){
 						if(openConfirmDialog())
-							fireManualValueChange(!boolValue);
+							fireManualValueChange(!booleanValue);
 					}						
 					else{
 						if(openConfirmDialog()){
@@ -81,68 +60,45 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 			}			
 	}
 	
+	protected boolean toggle = false;
+	
+	protected boolean showConfirmDialog = false;
+	
+	protected String password = "";
+	
+	protected String confirmTip = "Are you sure you want to do this?";
+	
+	protected boolean runMode = false;	
+	
+	protected ButtonPresser buttonPresser; 
+	protected final static Color DISABLE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_GRAY);	
+	
+	/** The alpha (0 is transparency and 255 is opaque) for disabled paint */
+	protected static final int DISABLED_ALPHA = 100;
+	
 	/**
 	 * Listeners that react on manual boolean value change events.
 	 */
-	private List<IBoolControlListener> boolControlListeners = 
-		new ArrayList<IBoolControlListener>();
+	private List<IManualValueChangeListener> boolControlListeners = 
+		new ArrayList<IManualValueChangeListener>();
+	
+	public AbstractBoolControlFigure() {
+		super();
+		buttonPresser = new ButtonPresser();
+	}
 	
 	
 	/**add a boolean control listener which will be executed when pressed or released
 	 * @param listener the listener to add
 	 */
-	public void addBoolControlListener(final IBoolControlListener listener){
+	public void addManualValueChangeListener(final IManualValueChangeListener listener){
 		boolControlListeners.add(listener);
 	}
-	/**
-	 * @param toggle the toggle to set
-	 */
-	public void setToggle(boolean toggle) {
-		this.toggle = toggle;
-	}
-
-	/**
-	 * @param showConfirmDialog the showConfirmDialog to set
-	 */
-	public void setShowConfirmDialog(boolean showConfirmDialog) {
-		this.showConfirmDialog = showConfirmDialog;
-	}
-
-	/**
-	 * @param password the password to set
-	 */
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	/**
-	 * @param confirmTip the confirmTip to set
-	 */
-	public void setConfirmTip(String confirmTip) {
-		this.confirmTip = confirmTip;
-	}
-
-	/**
-	 * @param runMode the runMode to set
-	 */
-	public void setRunMode(boolean runMode) {
-		this.runMode = runMode;		
-	}
 	
-	/**
-	 * Definition of listeners that react on boolean control events.
-	 * 
-	 * @author Xihui Chen
-	 * 
-	 */
-	public interface IBoolControlListener {
-		/**
-		 * React on a boolValue change event.
-		 * 
-		 * @param newValue
-		 *            The new bool value.
-		 */
-		void valueChanged(final double newValue);
+	public void removeManualValueChangeListener(final IManualValueChangeListener listener){
+		if(boolControlListeners.contains(listener))
+			boolControlListeners.remove(listener);
 	}
 	
 	/**
@@ -153,13 +109,43 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 	 */
 	protected void fireManualValueChange(final boolean newManualValue) {
 		
-		boolValue = newManualValue;
+		booleanValue = newManualValue;
 		updateValue();		
 		if(runMode){
-			for (IBoolControlListener l : boolControlListeners) {					
-					l.valueChanged(value);
+			for (IManualValueChangeListener l : boolControlListeners) {					
+					l.manualValueChanged(value);
 			}			
 		}
+	}
+	/**
+	 * @return the confirmTip
+	 */
+	public String getConfirmTip() {
+		return confirmTip;
+	}
+	/**
+	 * @return the password
+	 */
+	public String getPassword() {
+		return password;
+	}
+	/**
+	 * @return the runMode
+	 */
+	public boolean isRunMode() {
+		return runMode;
+	}
+	/**
+	 * @return the showConfirmDialog
+	 */
+	public boolean isShowConfirmDialog() {
+		return showConfirmDialog;
+	}
+	/**
+	 * @return the toggle
+	 */
+	public boolean isToggle() {
+		return toggle;
 	}
 
 	/**open a confirm dialog.
@@ -197,6 +183,43 @@ public class AbstractBoolControlFigure extends AbstractBoolFigure {
 			}			
 		}
 		return true;
+	}
+
+	/**
+	 * @param confirmTip the confirmTip to set
+	 */
+	public void setConfirmTip(String confirmTip) {
+		this.confirmTip = confirmTip;
+	}
+
+	/**
+	 * @param password the password to set
+	 */
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	/**
+	 * @param runMode the runMode to set
+	 */
+	public void setRunMode(boolean runMode) {
+		this.runMode = runMode;		
+	}
+	
+	
+	
+	/**
+	 * @param showConfirmDialog the showConfirmDialog to set
+	 */
+	public void setShowConfirmDialog(boolean showConfirmDialog) {
+		this.showConfirmDialog = showConfirmDialog;
+	}
+
+	/**
+	 * @param toggle the toggle to set
+	 */
+	public void setToggle(boolean toggle) {
+		this.toggle = toggle;
 	}
 	
 	

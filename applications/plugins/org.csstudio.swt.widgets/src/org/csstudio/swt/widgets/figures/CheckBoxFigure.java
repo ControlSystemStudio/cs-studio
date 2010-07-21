@@ -1,13 +1,17 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.csstudio.opibuilder.widgets.Activator;
-import org.csstudio.opibuilder.widgets.figures.AbstractBoolControlFigure.IBoolControlListener;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.introspection.Introspectable;
+import org.csstudio.swt.widgets.introspection.LabelWidgetIntrospector;
 import org.eclipse.draw2d.Label;
 import org.eclipse.draw2d.MouseEvent;
 import org.eclipse.draw2d.MouseListener;
@@ -19,7 +23,7 @@ import org.eclipse.swt.graphics.Image;
  * @author Xihui Chen
  *
  */
-public class CheckBoxFigure extends Label {
+public class CheckBoxFigure extends Label implements Introspectable{
 	
 	protected long value = 0;
 	
@@ -27,17 +31,32 @@ public class CheckBoxFigure extends Label {
 	
 	protected boolean boolValue = false;
 	
-	private static Image checked = CustomMediaFactory.getInstance().getImageFromPlugin(
-			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledon.gif");
+	static final Image
+	unChecked = createImage("icons/checkboxenabledoff.gif"), //$NON-NLS-1$
+	checked = createImage("icons/checkboxenabledon.gif"); //$NON-NLS-1$
+
+	private static Image createImage(String name) {
+		InputStream stream = CheckBoxFigure.class.getResourceAsStream(name);
+		Image image = new Image(null, stream);
+		try {
+			stream.close();
+		} catch (IOException ioe) {
+		}
+		return image;
+	}
+
 	
-	private static Image unChecked = CustomMediaFactory.getInstance().getImageFromPlugin(
-			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledoff.gif");
+//	private static Image checked = CustomMediaFactory.getInstance().getImageFromPlugin(
+//			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledon.gif");
+//	
+//	private static Image unChecked = CustomMediaFactory.getInstance().getImageFromPlugin(
+//			Activator.getDefault(), Activator.PLUGIN_ID, "icons/checkboxenabledoff.gif");
 	
 		/**
 	 * Listeners that react on manual boolean value change events.
 	 */
-	private List<IBoolControlListener> boolControlListeners = 
-		new ArrayList<IBoolControlListener>();
+	private List<IManualValueChangeListener> boolControlListeners = 
+		new ArrayList<IManualValueChangeListener>();
 
 	private boolean runMode;
 	
@@ -67,20 +86,18 @@ public class CheckBoxFigure extends Label {
 		});
 	}
 	
-	/**
-	 * @param runMode the runMode to set
-	 */
-	public void setRunMode(boolean runMode) {
-		this.runMode = runMode;		
-	}
-
-	
 	/**add a boolean control listener which will be executed when pressed or released
 	 * @param listener the listener to add
 	 */
-	public void addBoolControlListener(final IBoolControlListener listener){
+	public void addManualValueChangeListener(final IManualValueChangeListener listener){
 		boolControlListeners.add(listener);
 	}
+	
+	public void removeManualValueChangeListener(final IManualValueChangeListener listener){
+		if(boolControlListeners.contains(listener))
+			boolControlListeners.remove(listener);
+	}
+
 	
 	/**
 	 * Inform all boolean control listeners, that the manual value has changed.
@@ -91,15 +108,17 @@ public class CheckBoxFigure extends Label {
 	protected void fireManualValueChange(final boolean newManualValue) {		
 		boolValue = newManualValue;
 		updateValue();		
-		for (IBoolControlListener l : boolControlListeners) {					
-			l.valueChanged(value);
+		for (IManualValueChangeListener l : boolControlListeners) {					
+			l.manualValueChanged(value);
 		}			
 		
 	}
 	
-	@Override
-	public boolean isOpaque() {
-		return false;
+	/**
+	 * @return the bit
+	 */
+	public int getBit() {
+		return bit;
 	}
 	
 	/**
@@ -108,28 +127,69 @@ public class CheckBoxFigure extends Label {
 	public boolean getBoolValue() {
 		return boolValue;
 	}
+	
+	/**
+	 * @return the value
+	 */
+	public long getValue() {
+		return value;
+	}
+
+	@Override
+	public boolean isOpaque() {
+		return false;
+	}
 
 	/**
-	 * @param value the value to set
+	 * @return the runMode
 	 */
-	public void setValue(double value) {
-		this.value = (long) value;
-		updateBoolValue();
-		repaint();
+	public boolean isRunMode() {
+		return runMode;
 	}
-
-	public void setBoolValue(boolean boolValue) {
-		this.boolValue = boolValue;
-		updateValue();
-	}
-	
 
 	/**
 	 * @param bit the bit to set
 	 */
 	public void setBit(int bit) {
+		if(this.bit == bit)
+			return;
 		this.bit = bit;
 		updateBoolValue();
+	}
+
+	public void setBoolValue(boolean boolValue) {
+		if(this.boolValue == boolValue)
+			return;
+		this.boolValue = boolValue;
+		updateValue();
+	}
+
+	/**
+	 * @param runMode the runMode to set
+	 */
+	public void setRunMode(boolean runMode) {
+		if(this.runMode == runMode)
+			return;
+		this.runMode = runMode;
+	}
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(double value) {
+		setValue((long)value);
+	}
+	
+
+	/**
+	 * @param value the value to set
+	 */
+	public void setValue(long value) {
+		if(this.value == value)
+			return;
+		this.value = value;
+		updateBoolValue();
+		repaint();
 	}
 	
 	/**
@@ -196,6 +256,10 @@ public class CheckBoxFigure extends Label {
 			}
 		}
 		updateImage();
+	}
+
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new LabelWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 	
 	

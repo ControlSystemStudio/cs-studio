@@ -1,8 +1,8 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.figureparts.Bulb;
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figureparts.Bulb;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.draw2d.XYLayout;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -10,7 +10,6 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Pattern;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
@@ -37,7 +36,21 @@ public class LEDFigure extends AbstractBoolFigure {
 		setLayoutManager(new XYLayout());
 		add(bulb);
 		add(boolLabel);
-		bulb.setBulbColor(boolValue ? onColor.getRGB() : offColor.getRGB());		
+		bulb.setBulbColor(booleanValue ? onColor : offColor);		
+	}
+	
+	/**
+	 * @return the effect3D
+	 */
+	public boolean isEffect3D() {
+		return effect3D;
+	}
+	
+	/**
+	 * @return the squareLED
+	 */
+	public boolean isSquareLED() {
+		return squareLED;
 	}
 	
 	@Override
@@ -112,7 +125,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				
 				//draw light
 				clientArea.shrink(SQURE_BORDER_WIDTH, SQURE_BORDER_WIDTH);
-				Color fillColor = boolValue?onColor:offColor;
+				Color fillColor = booleanValue?onColor:offColor;
 		        graphics.setBackgroundColor(fillColor);
 		        graphics.fillRectangle(clientArea);
 				pattern = new Pattern(Display.getCurrent(), clientArea.x,	clientArea.y,
@@ -129,7 +142,7 @@ public class LEDFigure extends AbstractBoolFigure {
 				graphics.drawRectangle(clientArea);
 				
 				clientArea.shrink(SQURE_BORDER_WIDTH/2, SQURE_BORDER_WIDTH/2);
-				Color fillColor = boolValue?onColor:offColor;
+				Color fillColor = booleanValue?onColor:offColor;
 		        graphics.setBackgroundColor(fillColor);
 		        graphics.fillRectangle(clientArea);
 			}
@@ -156,40 +169,44 @@ public class LEDFigure extends AbstractBoolFigure {
 		super.paintClientArea(graphics);
 	}
 	
-	@Override
-	public void setOnColor(RGB onColor) {
-		super.setOnColor(onColor);
-		if(boolValue && bulb.isVisible())
-			bulb.setBulbColor(onColor);
-	}
-	
-	@Override
-	public void setOffColor(RGB offColor) {
-		super.setOffColor(offColor);
-		if(!boolValue  && bulb.isVisible())
-			bulb.setBulbColor(offColor);
-	}
-	
-	@Override
-	protected void updateBoolValue() {
-		super.updateBoolValue();
-		bulb.setBulbColor(boolValue ? onColor.getRGB() : offColor.getRGB());
-		
-	}
-	
 	/**
 	 * @param effect3D the effect3D to set
 	 */
 	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
 		this.effect3D = effect3D;
 		bulb.setEffect3D(effect3D);
+	}
+	
+	@Override
+	public void setOffColor(Color offColor) {
+		super.setOffColor(offColor);
+		if(!booleanValue  && bulb.isVisible())
+			bulb.setBulbColor(offColor);
+	}
+
+	@Override
+	public void setOnColor(Color onColor) {
+		super.setOnColor(onColor);
+		if(booleanValue && bulb.isVisible())
+			bulb.setBulbColor(onColor);
 	}
 
 	/**
 	 * @param squareLED the squareLED to set
 	 */
 	public void setSquareLED(boolean squareLED) {
+		if(this.squareLED == squareLED)
+			return;
 		this.squareLED = squareLED;
 		bulb.setVisible(!squareLED);
+	}
+
+	@Override
+	protected void updateBoolValue() {
+		super.updateBoolValue();
+		bulb.setBulbColor(booleanValue ? onColor : offColor);
+		
 	}
 }

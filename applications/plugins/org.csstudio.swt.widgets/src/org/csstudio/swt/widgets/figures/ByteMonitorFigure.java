@@ -1,9 +1,9 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.graphics.Color;
 /**
  * @author hammonds
  *
@@ -29,9 +29,9 @@ public class ByteMonitorFigure extends Figure {
 	/** The value to be displayed */
 	private int value;
 	/** The color to be displayed if a bit is 1 */
-	private RGB onColor = CustomMediaFactory.COLOR_GREEN;
+	private Color onColor = ColorConstants.green;
 	/** The color to be displayed if a bit is 0 */
-	private RGB offColor = new RGB(0,128,0);
+	private Color offColor = ColorConstants.darkGreen;
 	
 	/** Give the objects representing the bits a 3dEffect */
 	private boolean effect3D;
@@ -164,7 +164,7 @@ public class ByteMonitorFigure extends Figure {
 	 * Get the color to be displayed if a bit is 0.
 	 * @return
 	 */
-	private RGB getOffColor() {
+	private Color getOffColor() {
 		return offColor;
 	}
 
@@ -172,7 +172,7 @@ public class ByteMonitorFigure extends Figure {
 	 * Get the color to be displayed if a bit is 1.
 	 * @return
 	 */
-	private RGB getOnColor() {
+	private Color getOnColor() {
 		return onColor;
 	}
 
@@ -180,7 +180,7 @@ public class ByteMonitorFigure extends Figure {
 	 * Set the color to be displayed if a bit is 1.
 	 * @param onColor the onColor to set
 	 */
-	public void setOnColor(RGB rgb) {
+	public void setOnColor(Color rgb) {
 //		this.onColor = new Color(null, rgb);
 		this.onColor = rgb;
 		for (Object child : getChildren()){
@@ -193,7 +193,7 @@ public class ByteMonitorFigure extends Figure {
 	 * Set the color to be displayed if a bit is 0.
 	 * @param offColor the offColor to set
 	 */
-	public void setOffColor(RGB rgb) {
+	public void setOffColor(Color rgb) {
 //		this.offColor = new Color(null, rgb);
 		this.offColor = rgb;
 		for (Object child : getChildren()){

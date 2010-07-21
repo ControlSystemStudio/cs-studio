@@ -1,8 +1,8 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
 
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.AbstractLayout;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.draw2d.Ellipse;
@@ -34,141 +34,6 @@ import org.eclipse.swt.widgets.Display;
 public class BoolSwitchFigure extends AbstractBoolControlFigure {
 
 
-	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
-			new RGB(200, 200, 200)); 
-	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_WHITE); 
-	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_BLACK);
-	private boolean effect3D = true;
-	private boolean horizontal = false;
-	
-	
-	private Pedestal pedestal;
-	private Bar bar;
-	private Shadow shadow;
-	
-	Cursor cursor;
-	public BoolSwitchFigure() {
-		super();	
-		pedestal = new Pedestal();		
-		shadow = new Shadow();
-		bar = new Bar();
-		setLayoutManager(new BoolSwitchLayout());	
-		
-		add(pedestal, BoolSwitchLayout.PEDESTAL);	
-		add(shadow, BoolSwitchLayout.SHADOW);
-		add(bar, BoolSwitchLayout.BAR);	
-		bar.add(boolLabel);
-		cursor = Cursors.HAND;		
-	}
-	
-	@Override
-	protected boolean useLocalCoordinates() {
-		return true;
-	}
-
-	@Override
-	protected void paintClientArea(Graphics graphics) {
-		super.paintClientArea(graphics);		
-		if(!isEnabled()) {				
-			graphics.setAlpha(DISABLED_ALPHA);
-			graphics.setBackgroundColor(DISABLE_COLOR);		
-			graphics.fillRectangle(bounds);			
-		}	
-	}
-	
-	/**
-	 * @param effect3D the effect3D to set
-	 */
-	public void setEffect3D(boolean effect3D) {
-		this.effect3D = effect3D;
-	}
-	
-	@Override
-	public void setRunMode(boolean runMode) {
-		super.setRunMode(runMode);					
-		if(bar.isVisible())
-			bar.setCursor(runMode ? cursor : null);
-		else if (shadow.isVisible())
-			shadow.setCursor(runMode ? cursor : null);	
-	}
-	
-	@Override
-	public void setEnabled(boolean value) {
-		super.setEnabled(value);
-		if(runMode){
-			if(value){
-				if(cursor == null || cursor.isDisposed())
-					cursor = Cursors.HAND;		
-			}else {				
-				cursor = null;
-			}	
-		}
-		if(bar.isVisible())
-			bar.setCursor(runMode ? cursor : null);
-		else if (shadow.isVisible())
-			shadow.setCursor(runMode ? cursor : null);	
-	}
-	
-	@Override
-	public void setValue(double value) {
-		super.setValue(value);
-		revalidate();
-	}
-	
-	@Override
-	public void setBit(int bit) {
-		super.setBit(bit);
-		revalidate();
-	}
-	
-	@Override
-	public void setBounds(Rectangle rect) {
-		super.setBounds(rect);		
-		horizontal = (bounds.width > bounds.height);
-	
-		
-	}
-	
-	class Pedestal extends Figure {
-		@Override
-		protected void paintFigure(Graphics graphics) {
-			graphics.setAntialias(SWT.ON);
-			graphics.setBackgroundColor(effect3D? WHITE_COLOR : GRAY_COLOR);
-			graphics.fillOval(bounds);
-			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
-			if(effect3D && support3D) {
-				Pattern pattern;
-				if(boolValue)
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-						bounds.x+bounds.width, bounds.y + bounds.height, WHITE_COLOR, 10, 
-						BLACK_COLOR, 100);
-				else
-					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-						bounds.x+bounds.width, bounds.y + bounds.height, BLACK_COLOR, 0, 
-						BLACK_COLOR, 150);
-				graphics.setBackgroundPattern(pattern);
-				graphics.fillOval(bounds);
-				
-				if(boolValue){
-					if(horizontal)
-						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-								bounds.x, bounds.y+bounds.height, BLACK_COLOR, 5, 
-								BLACK_COLOR, 50);
-					else	
-						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
-								bounds.x+bounds.width, bounds.y, BLACK_COLOR, 5, 
-								BLACK_COLOR, 100);
-				graphics.setBackgroundPattern(pattern);
-				graphics.fillOval(bounds);
-				pattern.dispose();
-				}
-			}
-			
-		}
-	}
-	
 	class Bar extends Figure {
 		
 		private Rectangle smallEndBounds;
@@ -199,6 +64,13 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			return false;
 		}
 		
+		/**
+		 * @return the smallEndBounds
+		 */
+		public Rectangle getSmallEndBounds() {
+			return smallEndBounds;
+		}
+
 		@Override
 		protected void paintFigure(Graphics graphics) {			
 			graphics.setAntialias(SWT.ON);
@@ -213,22 +85,22 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 							smallEndBounds.x, smallEndBounds.y + smallEndBounds.height/2});
 				
 				//paint small end
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillOval(smallEndBounds);	
 				Pattern pattern = null;
 
 				if(effect3D && support3D){
 					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x+bigEndBounds.width, bigEndBounds.y, 
-						BLACK_COLOR, boolValue ? 10 : 10,
-						BLACK_COLOR, boolValue ? 210 : 160);
+						BLACK_COLOR, booleanValue ? 10 : 10,
+						BLACK_COLOR, booleanValue ? 210 : 160);
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(smallEndBounds);
 				}
 				
 				
 				//paint echelon
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillPolygon(echelon);
 				if(effect3D && support3D){
 					graphics.setBackgroundPattern(pattern);
@@ -236,7 +108,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				}				
 				
 				//paint big end
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillOval(bigEndBounds);	
 				if(effect3D && support3D){
 					/*
@@ -253,7 +125,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
-						BLACK_COLOR, boolValue ? 10 : 10, BLACK_COLOR, boolValue ? 180 : 160);
+						BLACK_COLOR, booleanValue ? 10 : 10, BLACK_COLOR, booleanValue ? 180 : 160);
 					
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(bigEndBounds);				
@@ -268,20 +140,20 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 							smallEndBounds.x + smallEndBounds.width/2, smallEndBounds.y});
 				
 				//paint small end
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillOval(smallEndBounds);	
 				Pattern pattern = null;
 				if(effect3D && support3D){
 					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x, bigEndBounds.y+bigEndBounds.height, 
-						BLACK_COLOR, boolValue ? 0 : 10,
-						BLACK_COLOR, boolValue ? 150 : 220);
+						BLACK_COLOR, booleanValue ? 0 : 10,
+						BLACK_COLOR, booleanValue ? 150 : 220);
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(smallEndBounds);
 				}			
 				
 				//paint echelon
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillPolygon(echelon);
 				if(effect3D && support3D){
 					graphics.setBackgroundPattern(pattern);
@@ -289,7 +161,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				}				
 				
 				//paint big end
-				graphics.setBackgroundColor(boolValue? onColor : offColor);
+				graphics.setBackgroundColor(booleanValue? onColor : offColor);
 				graphics.fillOval(bigEndBounds);	
 				if(effect3D && support3D){
 					/*
@@ -306,7 +178,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
-						BLACK_COLOR, boolValue ? 10 : 0, BLACK_COLOR, boolValue ? 180 : 150);
+						BLACK_COLOR, booleanValue ? 10 : 0, BLACK_COLOR, booleanValue ? 180 : 150);
 					
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(bigEndBounds);				
@@ -315,13 +187,6 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			}
 			
 			graphics.popState();
-		}
-
-		/**
-		 * @param smallEndBounds the smallEndBounds to set
-		 */
-		public void setSmallEndBounds(Rectangle smallEndBounds) {
-			this.smallEndBounds = smallEndBounds;
 		}
 
 		/**
@@ -339,15 +204,222 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 		}
 
 		/**
-		 * @return the smallEndBounds
+		 * @param smallEndBounds the smallEndBounds to set
 		 */
-		public Rectangle getSmallEndBounds() {
-			return smallEndBounds;
+		public void setSmallEndBounds(Rectangle smallEndBounds) {
+			this.smallEndBounds = smallEndBounds;
 		}
 
 		
-	}	
+	} 
+	class BoolSwitchLayout extends AbstractLayout {
+			
+			/** Used as a constraint for the bulb. */
+			public static final String PEDESTAL = "pedestal";   //$NON-NLS-1$
+			/** Used as a constraint for the bar. */
+			public static final String BAR = "bar"; //$NON-NLS-1$
+			/** Used as a constraint for the shadow */
+			public static final String SHADOW = "shadow";      //$NON-NLS-1$
+			
+			private Pedestal pedestal;
+			private Bar bar;
+			private Shadow shadow;
+			
+			@Override
+			protected Dimension calculatePreferredSize(IFigure container, int w,
+					int h) {
+				Insets insets = container.getInsets();
+				Dimension d = new Dimension(64, 2*64);
+				d.expand(insets.getWidth(), insets.getHeight());
+				return d;
+			}
+			
+			private void horizontalLayout(IFigure container) {
+				Rectangle area = container.getClientArea().getCopy();
+				if(area.height >  area.width/2)
+					area.height = (int) (area.width/2);
+				else 
+					area.width = (int) (2*area.height);
+				int W = area.width;
+				int H = area.height;
+				Rectangle pedBounds = null;
+				Rectangle smallBounds = null;
+				Rectangle bigBounds;
+				if(pedestal != null && pedestal.isVisible()) {
+					pedBounds = new Rectangle((int) ((63.0/218.0)*W), 0, H/2, H/2);
+					pedestal.setBounds(pedBounds);
+				}
+				if(bar != null && bar.isVisible()){
+					Dimension bigEndD = new Dimension((int) ((35.0/218.0)*W), (int) ((45.0/105.0)*H));
+					Dimension smallEndD = new Dimension((int) ((43.0/218.0)*W), (int) ((35.0/105.0)*H));
+					
+					int smallMove = (int) ((1.0/7.0)*pedBounds.width);
+					smallMove = booleanValue ? -smallMove : smallMove;
+					if(!booleanValue){			
+						bigBounds = new Rectangle(
+								0, pedBounds.height/2 - bigEndD.height/2, bigEndD.width, bigEndD.height);					
+					}else {					
+						bigBounds = new Rectangle(
+								2*pedBounds.x + pedBounds.width  - bigEndD.width,
+								pedBounds.height/2 - bigEndD.height/2,
+								bigEndD.width,bigEndD.height);					
+					}
+					smallBounds = new Rectangle(
+							pedBounds.x + pedBounds.width/2 - smallEndD.width/2,
+							pedBounds.y + pedBounds.height/2 - smallEndD.height/2,						
+							smallEndD.width, smallEndD.height);				
+					smallBounds.x -= smallMove;
+					
+					bar.setBounds(area);
+					bar.setBigEndBounds(bigBounds);
+					bar.setSmallEndBounds(smallBounds);				
+				}
+				if(shadow != null && shadow.isVisible()){
+					if(booleanValue)
+						shadow.setBounds(new Rectangle(
+								smallBounds.x + smallBounds.width/2, smallBounds.y,
+								W - smallBounds.x- smallBounds.width/2, H - smallBounds.y ));
+					else
+						shadow.setBounds(new Rectangle(
+								(int) ((34.0/218.0)*W), smallBounds.y, 
+								smallBounds.x + smallBounds.width - (int) ((34.0/218.0)*W),
+								H - smallBounds.y));
+				}
+				if(boolLabel != null && boolLabel.isVisible()){
+					Dimension labelSize = boolLabel.getPreferredSize();	
+					boolLabel.setBounds(new Rectangle(
+							pedBounds.x + pedBounds.width/2 - labelSize.width/2,
+							pedBounds.y + pedBounds.height/2 - labelSize.height/2,
+							labelSize.width, labelSize.height));
+				}	
+				
+			}
+		
+			public void layout(IFigure container) {
+				if(horizontal)
+					horizontalLayout(container);
+				else
+					verticalLayout(container);
+			}
+			
+			
+			@Override
+			public void setConstraint(IFigure child, Object constraint) {
+				if(constraint.equals(PEDESTAL))
+					pedestal = (Pedestal)child;
+				else if (constraint.equals(BAR))
+					bar = (Bar) child;
+				else if (constraint.equals(SHADOW))
+					shadow = (Shadow) child;
+			}
 	
+			private void verticalLayout(IFigure container) {
+				Rectangle area = container.getClientArea().getCopy();
+				if(area.width >  area.height/2)
+					area.width = (int) (area.height/2);
+				else 
+					area.height = (int) (2*area.width);
+				int W = area.width;
+				int H = area.height;
+				Rectangle pedBounds = null;
+				Rectangle barBounds;
+				Rectangle smallBounds = null;
+				Rectangle bigBounds;
+				if(pedestal != null && pedestal.isVisible()) {
+					pedBounds = new Rectangle(0, (int) ((63.0/218.0)*H), W/2, W/2);
+					pedestal.setBounds(pedBounds);
+				}
+				if(bar != null && bar.isVisible()){
+					Dimension bigEndD = new Dimension((int) ((45.0/105.0)*W), (int) ((35.0/218.0)*H));
+					Dimension smallEndD = new Dimension((int) ((35.0/105.0)*W), (int) ((43.0/218.0)*H));
+					
+					int smallMove = (int) ((1.0/7.0)*pedBounds.height);
+					smallMove = booleanValue ? -smallMove : smallMove;
+					if(booleanValue){					
+						barBounds = new Rectangle(pedBounds.width/2 - bigEndD.width/2,
+								0, bigEndD.width,
+								pedBounds.y + pedBounds.height/2 + smallEndD.height/2 +2);
+						bigBounds = new Rectangle(
+								barBounds.x, 0, bigEndD.width, bigEndD.height);					
+					}else {
+						barBounds = new Rectangle(pedBounds.width/2 - bigEndD.width/2,
+								pedBounds.y + pedBounds.height/2 - smallEndD.height/2, bigEndD.width,
+								pedBounds.y + pedBounds.height/2 + smallEndD.height/2 + 2);
+						bigBounds = new Rectangle(
+								barBounds.x, barBounds.y + barBounds.height - bigEndD.height,
+								bigEndD.width,bigEndD.height);
+						
+					}
+					smallBounds = new Rectangle(
+							pedBounds.x + pedBounds.width/2 - smallEndD.width/2,
+							pedBounds.y + pedBounds.height/2 - smallEndD.height/2,
+							smallEndD.width, smallEndD.height);				
+					smallBounds.y += smallMove;
+					//barBounds.x +=1;
+					//smallBounds.x += 1;
+					//bigBounds.x += 1;
+					bar.setBounds(area);
+					bar.setBigEndBounds(bigBounds);
+					bar.setSmallEndBounds(smallBounds);				
+				}
+				if(shadow != null && shadow.isVisible()){
+					if(!booleanValue)
+						shadow.setBounds(new Rectangle(
+								smallBounds.x, smallBounds.y + smallBounds.height/2,
+								W - smallBounds.x, H - smallBounds.y - smallBounds.height/2));
+					else
+						shadow.setBounds(new Rectangle(
+								smallBounds.x, (int) ((34.0/218.0)*H),
+								W - smallBounds.x,
+								smallBounds.y + smallBounds.height - (int) ((34.0/218.0)*H)));
+				}
+				if(boolLabel != null && boolLabel.isVisible()){
+					Dimension labelSize = boolLabel.getPreferredSize();	
+					boolLabel.setBounds(new Rectangle(
+							pedBounds.x + pedBounds.width/2 - labelSize.width/2,
+							pedBounds.y + pedBounds.height/2 - labelSize.height/2,
+							labelSize.width, labelSize.height));
+				}
+			}
+		
+		} 
+	class Pedestal extends Figure {
+		@Override
+		protected void paintFigure(Graphics graphics) {
+			graphics.setAntialias(SWT.ON);
+			graphics.setBackgroundColor(effect3D? WHITE_COLOR : GRAY_COLOR);
+			graphics.fillOval(bounds);
+			boolean support3D = GraphicsUtil.testPatternSupported(graphics);
+			if(effect3D && support3D) {
+				Pattern pattern;
+				if(booleanValue)
+					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+						bounds.x+bounds.width, bounds.y + bounds.height, WHITE_COLOR, 10, 
+						BLACK_COLOR, 100);
+				else
+					pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+						bounds.x+bounds.width, bounds.y + bounds.height, BLACK_COLOR, 0, 
+						BLACK_COLOR, 150);
+				graphics.setBackgroundPattern(pattern);
+				graphics.fillOval(bounds);
+				
+				if(booleanValue){
+					if(horizontal)
+						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+								bounds.x, bounds.y+bounds.height, BLACK_COLOR, 5, 
+								BLACK_COLOR, 50);
+					else	
+						pattern = new Pattern(Display.getCurrent(), bounds.x, bounds.y,
+								bounds.x+bounds.width, bounds.y, BLACK_COLOR, 5, 
+								BLACK_COLOR, 100);
+				graphics.setBackgroundPattern(pattern);
+				graphics.fillOval(bounds);
+				pattern.dispose();
+				}
+			}
+			
+		}
+	}
 	class Shadow extends Figure {
 		private final static int ALPHA = 80;
 		@Override
@@ -356,7 +428,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			graphics.setAlpha(ALPHA);
 			
 			if(horizontal){
-				if(!boolValue){
+				if(!booleanValue){
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
 					GC gc = new GC(image);		
 					
@@ -440,7 +512,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					image.dispose();							
 				}
 			}else {
-				if(boolValue){
+				if(booleanValue){
 					Image image = new Image(Display.getCurrent(), bounds.width, bounds.height);
 					GC gc = new GC(image);		
 					
@@ -529,176 +601,119 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 			super.paintClientArea(graphics);
 		}
 	}
+	private final static Color GRAY_COLOR = CustomMediaFactory.getInstance().getColor(
+			new RGB(200, 200, 200));
 	
-class BoolSwitchLayout extends AbstractLayout {
-		
-		/** Used as a constraint for the bulb. */
-		public static final String PEDESTAL = "pedestal";   //$NON-NLS-1$
-		/** Used as a constraint for the bar. */
-		public static final String BAR = "bar"; //$NON-NLS-1$
-		/** Used as a constraint for the shadow */
-		public static final String SHADOW = "shadow";      //$NON-NLS-1$
-		
-		private Pedestal pedestal;
-		private Bar bar;
-		private Shadow shadow;
-		
-		@Override
-		public void setConstraint(IFigure child, Object constraint) {
-			if(constraint.equals(PEDESTAL))
-				pedestal = (Pedestal)child;
-			else if (constraint.equals(BAR))
-				bar = (Bar) child;
-			else if (constraint.equals(SHADOW))
-				shadow = (Shadow) child;
-		}
-		
-		@Override
-		protected Dimension calculatePreferredSize(IFigure container, int w,
-				int h) {
-			Insets insets = container.getInsets();
-			Dimension d = new Dimension(64, 2*64);
-			d.expand(insets.getWidth(), insets.getHeight());
-			return d;
-		}
 	
-		public void layout(IFigure container) {
-			if(horizontal)
-				horizontalLayout(container);
-			else
-				verticalLayout(container);
-		}
-		
-		
-		private void horizontalLayout(IFigure container) {
-			Rectangle area = container.getClientArea().getCopy();
-			if(area.height >  area.width/2)
-				area.height = (int) (area.width/2);
-			else 
-				area.width = (int) (2*area.height);
-			int W = area.width;
-			int H = area.height;
-			Rectangle pedBounds = null;
-			Rectangle smallBounds = null;
-			Rectangle bigBounds;
-			if(pedestal != null && pedestal.isVisible()) {
-				pedBounds = new Rectangle((int) ((63.0/218.0)*W), 0, H/2, H/2);
-				pedestal.setBounds(pedBounds);
-			}
-			if(bar != null && bar.isVisible()){
-				Dimension bigEndD = new Dimension((int) ((35.0/218.0)*W), (int) ((45.0/105.0)*H));
-				Dimension smallEndD = new Dimension((int) ((43.0/218.0)*W), (int) ((35.0/105.0)*H));
-				
-				int smallMove = (int) ((1.0/7.0)*pedBounds.width);
-				smallMove = boolValue ? -smallMove : smallMove;
-				if(!boolValue){			
-					bigBounds = new Rectangle(
-							0, pedBounds.height/2 - bigEndD.height/2, bigEndD.width, bigEndD.height);					
-				}else {					
-					bigBounds = new Rectangle(
-							2*pedBounds.x + pedBounds.width  - bigEndD.width,
-							pedBounds.height/2 - bigEndD.height/2,
-							bigEndD.width,bigEndD.height);					
-				}
-				smallBounds = new Rectangle(
-						pedBounds.x + pedBounds.width/2 - smallEndD.width/2,
-						pedBounds.y + pedBounds.height/2 - smallEndD.height/2,						
-						smallEndD.width, smallEndD.height);				
-				smallBounds.x -= smallMove;
-				
-				bar.setBounds(area);
-				bar.setBigEndBounds(bigBounds);
-				bar.setSmallEndBounds(smallBounds);				
-			}
-			if(shadow != null && shadow.isVisible()){
-				if(boolValue)
-					shadow.setBounds(new Rectangle(
-							smallBounds.x + smallBounds.width/2, smallBounds.y,
-							W - smallBounds.x- smallBounds.width/2, H - smallBounds.y ));
-				else
-					shadow.setBounds(new Rectangle(
-							(int) ((34.0/218.0)*W), smallBounds.y, 
-							smallBounds.x + smallBounds.width - (int) ((34.0/218.0)*W),
-							H - smallBounds.y));
-			}
-			if(boolLabel != null && boolLabel.isVisible()){
-				Dimension labelSize = boolLabel.getPreferredSize();	
-				boolLabel.setBounds(new Rectangle(
-						pedBounds.x + pedBounds.width/2 - labelSize.width/2,
-						pedBounds.y + pedBounds.height/2 - labelSize.height/2,
-						labelSize.width, labelSize.height));
-			}	
-			
-		}
+	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_WHITE);
+	private final static Color BLACK_COLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_BLACK);
+	private boolean effect3D = true;
+	
+	private boolean horizontal = false;
+	private Pedestal pedestal;
+	
+	private Bar bar;
 
-		private void verticalLayout(IFigure container) {
-			Rectangle area = container.getClientArea().getCopy();
-			if(area.width >  area.height/2)
-				area.width = (int) (area.height/2);
-			else 
-				area.height = (int) (2*area.width);
-			int W = area.width;
-			int H = area.height;
-			Rectangle pedBounds = null;
-			Rectangle barBounds;
-			Rectangle smallBounds = null;
-			Rectangle bigBounds;
-			if(pedestal != null && pedestal.isVisible()) {
-				pedBounds = new Rectangle(0, (int) ((63.0/218.0)*H), W/2, W/2);
-				pedestal.setBounds(pedBounds);
-			}
-			if(bar != null && bar.isVisible()){
-				Dimension bigEndD = new Dimension((int) ((45.0/105.0)*W), (int) ((35.0/218.0)*H));
-				Dimension smallEndD = new Dimension((int) ((35.0/105.0)*W), (int) ((43.0/218.0)*H));
-				
-				int smallMove = (int) ((1.0/7.0)*pedBounds.height);
-				smallMove = boolValue ? -smallMove : smallMove;
-				if(boolValue){					
-					barBounds = new Rectangle(pedBounds.width/2 - bigEndD.width/2,
-							0, bigEndD.width,
-							pedBounds.y + pedBounds.height/2 + smallEndD.height/2 +2);
-					bigBounds = new Rectangle(
-							barBounds.x, 0, bigEndD.width, bigEndD.height);					
-				}else {
-					barBounds = new Rectangle(pedBounds.width/2 - bigEndD.width/2,
-							pedBounds.y + pedBounds.height/2 - smallEndD.height/2, bigEndD.width,
-							pedBounds.y + pedBounds.height/2 + smallEndD.height/2 + 2);
-					bigBounds = new Rectangle(
-							barBounds.x, barBounds.y + barBounds.height - bigEndD.height,
-							bigEndD.width,bigEndD.height);
-					
-				}
-				smallBounds = new Rectangle(
-						pedBounds.x + pedBounds.width/2 - smallEndD.width/2,
-						pedBounds.y + pedBounds.height/2 - smallEndD.height/2,
-						smallEndD.width, smallEndD.height);				
-				smallBounds.y += smallMove;
-				//barBounds.x +=1;
-				//smallBounds.x += 1;
-				//bigBounds.x += 1;
-				bar.setBounds(area);
-				bar.setBigEndBounds(bigBounds);
-				bar.setSmallEndBounds(smallBounds);				
-			}
-			if(shadow != null && shadow.isVisible()){
-				if(!boolValue)
-					shadow.setBounds(new Rectangle(
-							smallBounds.x, smallBounds.y + smallBounds.height/2,
-							W - smallBounds.x, H - smallBounds.y - smallBounds.height/2));
-				else
-					shadow.setBounds(new Rectangle(
-							smallBounds.x, (int) ((34.0/218.0)*H),
-							W - smallBounds.x,
-							smallBounds.y + smallBounds.height - (int) ((34.0/218.0)*H)));
-			}
-			if(boolLabel != null && boolLabel.isVisible()){
-				Dimension labelSize = boolLabel.getPreferredSize();	
-				boolLabel.setBounds(new Rectangle(
-						pedBounds.x + pedBounds.width/2 - labelSize.width/2,
-						pedBounds.y + pedBounds.height/2 - labelSize.height/2,
-						labelSize.width, labelSize.height));
-			}
-		}
-	
+	private Shadow shadow;
+
+	Cursor cursor;
+
+	public BoolSwitchFigure() {
+		super();	
+		pedestal = new Pedestal();		
+		shadow = new Shadow();
+		bar = new Bar();
+		setLayoutManager(new BoolSwitchLayout());	
+		
+		add(pedestal, BoolSwitchLayout.PEDESTAL);	
+		add(shadow, BoolSwitchLayout.SHADOW);
+		add(bar, BoolSwitchLayout.BAR);	
+		bar.add(boolLabel);
+		cursor = Cursors.HAND;		
 	}
+	
+	/**
+	 * @return the effect3D
+	 */
+	public boolean isEffect3D() {
+		return effect3D;
+	}
+	
+	/**
+	 * @return the horizontal
+	 */
+	public boolean isHorizontal() {
+		return horizontal;
+	}
+	
+	@Override
+	protected void paintClientArea(Graphics graphics) {
+		super.paintClientArea(graphics);		
+		if(!isEnabled()) {				
+			graphics.setAlpha(DISABLED_ALPHA);
+			graphics.setBackgroundColor(DISABLE_COLOR);		
+			graphics.fillRectangle(bounds);			
+		}	
+	}
+	
+	@Override
+	public void setBit(int bit) {
+		super.setBit(bit);
+		revalidate();
+	}
+	
+	@Override
+	public void setBounds(Rectangle rect) {
+		super.setBounds(rect);		
+		horizontal = (bounds.width > bounds.height);
+	}
+	
+	/**
+	 * @param effect3D the effect3D to set
+	 */
+	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
+		this.effect3D = effect3D;
+		repaint();
+	}
+	
+	@Override
+	public void setEnabled(boolean value) {
+		super.setEnabled(value);
+		if(runMode){
+			if(value){
+				if(cursor == null || cursor.isDisposed())
+					cursor = Cursors.HAND;		
+			}else {				
+				cursor = null;
+			}	
+		}
+		if(bar.isVisible())
+			bar.setCursor(runMode ? cursor : null);
+		else if (shadow.isVisible())
+			shadow.setCursor(runMode ? cursor : null);	
+	}
+	
+	@Override
+	public void setRunMode(boolean runMode) {
+		super.setRunMode(runMode);					
+		if(bar.isVisible())
+			bar.setCursor(runMode ? cursor : null);
+		else if (shadow.isVisible())
+			shadow.setCursor(runMode ? cursor : null);	
+	}	
+	
+	@Override
+	public void setValue(double value) {
+		super.setValue(value);
+		revalidate();
+	}
+	
+@Override
+protected boolean useLocalCoordinates() {
+	return true;
+}
 }

@@ -5,8 +5,8 @@ import java.beans.PropertyChangeListener;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.LEDFigure;
 import org.csstudio.opibuilder.widgets.model.LEDModel;
+import org.csstudio.swt.widgets.figures.LEDFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**

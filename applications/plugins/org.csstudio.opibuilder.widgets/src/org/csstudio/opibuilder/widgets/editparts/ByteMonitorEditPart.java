@@ -5,9 +5,9 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
-import org.csstudio.opibuilder.widgets.figures.ByteMonitorFigure;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
@@ -51,8 +51,8 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setHorizontal(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_HORIZONTAL)) );
 		fig.setReverseBits(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_BIT_REVERSE)) );
 		fig.setSquareLED(((Boolean)model.getPropertyValue(ByteMonitorModel.PROP_SQUARE_LED)) );
-		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getRGBValue() );
-		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getRGBValue() );
+		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
+		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
 		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
 		fig.setValue(new Integer(0x1111));
 		fig.drawValue();
@@ -108,7 +108,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
-				figure.setOnColor(((OPIColor) newValue).getRGBValue());
+				figure.setOnColor(((OPIColor) newValue).getSWTColor());
 				figure.drawValue();
 				return true;
 			}
@@ -121,7 +121,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue,
 					final IFigure refreshableFigure) {
 				ByteMonitorFigure figure = (ByteMonitorFigure) refreshableFigure;
-				figure.setOffColor(((OPIColor) newValue).getRGBValue());
+				figure.setOffColor(((OPIColor) newValue).getSWTColor());
 				figure.drawValue();
 				return true;
 			}

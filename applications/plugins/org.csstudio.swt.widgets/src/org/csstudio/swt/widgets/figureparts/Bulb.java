@@ -96,7 +96,10 @@ public class Bulb extends Figure{
 	 * @param effect3D the effect3D to set
 	 */
 	public void setEffect3D(boolean effect3D) {
+		if(this.effect3D == effect3D)
+			return;
 		this.effect3D = effect3D;
+		repaint();
 	}
 
 

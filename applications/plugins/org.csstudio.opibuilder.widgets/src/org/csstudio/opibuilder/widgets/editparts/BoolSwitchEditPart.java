@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.BoolSwitchFigure;
 import org.csstudio.opibuilder.widgets.model.BoolSwitchModel;
+import org.csstudio.swt.widgets.figures.BoolSwitchFigure;
 import org.eclipse.draw2d.IFigure;
 
 /**
