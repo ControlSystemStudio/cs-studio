@@ -47,6 +47,12 @@ public class AlarmTableContentProvider implements ILazyContentProvider
         }
     }
 
+    /** @return Alarms to be shown in table */
+    public AlarmTreePV[] getAlarms()
+    {
+        return alarms;
+    }
+
     /** @param comparator Comparator that's used to sort alarms */
     public void setComparator(final AlarmComparator comparator)
     {
