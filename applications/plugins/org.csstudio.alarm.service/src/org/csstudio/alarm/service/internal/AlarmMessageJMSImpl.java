@@ -98,6 +98,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     }
 
     @Override
+    @Nonnull
     public final synchronized Map<String, String> getMap() {
         if (_map == null) {
             _map = new HashMap<String, String>();
@@ -116,6 +117,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
     }
 
     @Override
+    @Nonnull
     public final String toString() {
         return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) + " for "
                 + getString(AlarmMessageKey.NAME) + ", Severity " + getSeverity() + ", Status "

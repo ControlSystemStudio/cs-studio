@@ -45,8 +45,7 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision$
  * @since 21.04.2010
  */
-@SuppressWarnings("unchecked")
-public class AlarmMessageDALImpl implements IAlarmMessage {
+public final class AlarmMessageDALImpl implements IAlarmMessage {
     private static final String NOT_AVAILABLE = "n.a.";
 
     private static final Logger LOG = CentralLogger.getInstance()
@@ -92,6 +91,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
         return true;
     }
 
+    @Nonnull
     public static IAlarmMessage newAlarmMessage(@Nonnull final SimpleProperty property,
                                                 @Nonnull final AnyData anyData) {
         assert canCreateAlarmMessageFrom(property, anyData) : "Alarm message cannot be created for "
@@ -158,6 +158,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     }
 
     @Override
+    @Nonnull
     public Map<String, String> getMap() {
         final Map<String, String> result = new HashMap<String, String>();
         for (final AlarmMessageKey key : AlarmMessageKey.values()) {
@@ -167,6 +168,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     }
 
     @Override
+    @Nonnull
     public final String toString() {
         return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) +
                " for " + getString(AlarmMessageKey.NAME) +
@@ -183,7 +185,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private DynamicValueCondition getCondition() {
         return getProperty().getCondition();
     }
-
+    @Nonnull
     private String retrieveAckAsString() {
         return NOT_AVAILABLE;
     }
@@ -213,7 +215,7 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private String retrieveSeverityAsString() {
         return getSeverity().name();
     }
-
+    @Nonnull
     private String retrieveSeverityOldAsString() {
         // TODO (jpenning) NYI
         return NOT_AVAILABLE;
@@ -223,12 +225,12 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
     private String retrieveStatusAsString() {
         return _anyData.getSeverity().descriptionToString();
     }
-
+    @Nonnull
     private String retrieveStatusOldAsString() {
         // TODO (jpenning) NYI
         return NOT_AVAILABLE;
     }
-
+    @Nonnull
     private String retrieveHostPhysAsString() {
         // TODO (jpenning) NYI
         return NOT_AVAILABLE;
@@ -246,13 +248,13 @@ public class AlarmMessageDALImpl implements IAlarmMessage {
 
         return result;
     }
-
+    @Nonnull
     private String retrieveFacilityString() {
         // TODO (jpenning): there's currently no facility available from DAL
         // this could be retrieved from LDAP - necessary ??
         return NOT_AVAILABLE;
     }
-
+    @Nonnull
     private String retrieveText() {
         // TODO (jpenning): this is actually the descriptor information from the channel
         // this is not available by default - it could be retrieved from the channel - as an additional DAL request
