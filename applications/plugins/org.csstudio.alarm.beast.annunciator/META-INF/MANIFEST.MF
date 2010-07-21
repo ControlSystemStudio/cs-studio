@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Alarm Annunciator
 Bundle-SymbolicName: org.csstudio.alarm.beast.annunciator;singleton:=true
-Bundle-Version: 2.1.0.qualifier
+Bundle-Version: 2.1.1.qualifier
 Bundle-Activator: org.csstudio.alarm.beast.annunciator.Activator
 Bundle-Localization: plugin
 Bundle-Vendor: Katia Danilova, Kay Kasemir

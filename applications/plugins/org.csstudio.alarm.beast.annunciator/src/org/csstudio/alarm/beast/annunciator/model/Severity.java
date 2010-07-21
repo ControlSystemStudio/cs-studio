@@ -36,6 +36,12 @@ public class Severity implements Comparable<Severity>
         return Severity.fromString("INFO"); //$NON-NLS-1$
     }
 
+    /** @return Severity used for error messages */
+    final public static Severity forError()
+    {
+        return Severity.fromString("ERROR"); //$NON-NLS-1$
+    }
+    
     /** Initialize understood severities.
      *  @param severities List of comma-separated severities. Most severe first.
      */

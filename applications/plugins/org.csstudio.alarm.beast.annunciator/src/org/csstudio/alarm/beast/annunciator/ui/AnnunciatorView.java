@@ -182,6 +182,21 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
     /** {@inheritDoc} */
     public void performedAnnunciation(final AnnunciationMessage annunciation)
     {
+        logAnnunciation(annunciation);
+    }
+
+    /** Called by ConnectJob or later Annunciator on error
+     *  {@inheritDoc}
+     */
+    public void annunciatorError(final Exception ex)
+    {
+        logAnnunciation(new AnnunciationMessage(Severity.forError(), ex.getMessage()));
+        ex.printStackTrace();
+    }
+
+    /** @param annunciation Annunciation to add to list of messages */
+    private void logAnnunciation(final AnnunciationMessage annunciation)
+    {
         final Control control = message_table.getControl();
         if (control.isDisposed())
             return;
@@ -201,13 +216,5 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
                 message_table.refresh();
             }
         });
-    }
-
-    /** Called by ConnectJob or later Annunciator on error
-     *  {@inheritDoc}
-     */
-    public void annunciatorError(final Exception ex)
-    {
-        ex.printStackTrace();
     }
 }
