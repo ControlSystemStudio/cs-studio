@@ -30,7 +30,7 @@
             name="BOY">
       </category>
       <command
-            category="gov.anl.aps.adl2boy.BoyCategory"
+            categoryId="org.csstudio.opibuilder.adl2boy.BOYCategory"
             defaultHandler="org.csstudio.opibuilder.adl2boy.EditADLHandler"
             description="Open ADL File for editing with BOY"
             id="org.csstudio.opibuilder.adl2boy.editADLwithBoy"
@@ -41,7 +41,7 @@
          point="org.eclipse.ui.handlers">
       <handler
             class="org.csstudio.opibuilder.adl2boy.EditADLHandler"
-            commandId="org.csstudio.opibuilder.adl2boy.editADLHandler">
+            commandId="org.csstudio.opibuilder.adl2boy.editADLwithBoy">
          <activeWhen>
             <iterate
                   ifEmpty="false"
