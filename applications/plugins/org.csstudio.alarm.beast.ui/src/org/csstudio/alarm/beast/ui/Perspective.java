@@ -26,7 +26,7 @@ public class Perspective implements IPerspectiveFactory
     // but that would add a (circular) dependency to that plugin.
     // This way, one could replace the table or tree view plugins.
     final private static String ID_SNS_PV_UTIL = 
-        "org.csstudio.sns.pvutil.view.PVUtilView";
+        "org.csstudio.diag.pvfields.view.PVFieldsView";
     final private static String ID_ALARM_TREE =
         "org.csstudio.alarm.beast.ui.alarmtree.View";
     final private static String ID_ALARM_TABLE =
