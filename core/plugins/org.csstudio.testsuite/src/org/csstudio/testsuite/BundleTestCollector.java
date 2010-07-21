@@ -152,7 +152,9 @@ public class BundleTestCollector {
                 } catch (final ClassNotFoundException e) {
 //                    throw new RuntimeException("Could not load class: " //$NON-NLS-1$
 //                            + testClassName, e);
-                    System.out.println("Class loading failed. ignore test.");
+                    // TODO (bknerr) : what's wrong with the class loader
+                    // TODO (bknerr) : where to log the test result messages, when the test even can't be loaded?
+                    System.out.println("Class loading failed. Ignore test.");
                 }
 
             }

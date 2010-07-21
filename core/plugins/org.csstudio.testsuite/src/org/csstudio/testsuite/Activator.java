@@ -17,7 +17,7 @@ public class Activator extends AbstractUIPlugin {
      */
     private static Activator INSTANCE;
 
-	private static BundleContext _context;
+	private static BundleContext CONTEXT;
 
 	/**
 	 * The constructor
@@ -29,19 +29,17 @@ public class Activator extends AbstractUIPlugin {
         INSTANCE = this; // Antipattern is required by the framework!
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
     public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		_context = context;
+		CONTEXT = context;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
     public void stop(final BundleContext context) throws Exception {
@@ -50,7 +48,7 @@ public class Activator extends AbstractUIPlugin {
 
 
 	public static Bundle[] getBundles() {
-		return _context.getBundles();
+		return CONTEXT.getBundles();
 	}
 
 }
