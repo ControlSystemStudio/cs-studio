@@ -39,7 +39,7 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses( {
     CircularBufferTest.class,
-    GraphTest.class,
+    GraphDemo.class,
     StaircaseTest.class
 })
 public class AllTests {

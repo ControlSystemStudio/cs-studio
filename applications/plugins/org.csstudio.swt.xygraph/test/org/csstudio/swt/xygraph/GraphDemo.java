@@ -36,9 +36,8 @@ import org.eclipse.swt.widgets.Shell;
  * This is a common java program, <b>not</b> a JUnit test.
  * </p>
  * @author Xihui Chen
- *
  */
-public class GraphTest {
+public class GraphDemo {
 	public static void main(final String[] args) {
 		final Shell shell = new Shell();
 		shell.setSize(800, 500);
