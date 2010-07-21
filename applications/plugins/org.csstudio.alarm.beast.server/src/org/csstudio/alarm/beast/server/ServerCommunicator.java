@@ -121,6 +121,33 @@ public class ServerCommunicator extends JMSAlarmCommunicator
         idle_timer.reset();
     }
 
+    /** Notify clients that they should re-load the configuration:
+     *  RDB might be out of sync because there were connection problems.
+     */
+    public void sendReloadMessage()
+    {
+        queueJMSCommunication(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    synchronized (this)
+                    {
+                        final MapMessage map = createMapMessage(JMSAlarmMessage.TEXT_CONFIG);
+                        producer.send(map);
+                        // Inform idle timer
+                        idle_timer.reset();
+                    }
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                }
+            }
+        });
+    }
+
     /** Notify clients of new alarm state
      *  @param pv PV that changes alarm state
      *  @param current_severity Current severity of the PV
