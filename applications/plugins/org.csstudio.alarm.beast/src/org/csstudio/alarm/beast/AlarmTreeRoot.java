@@ -64,6 +64,23 @@ public class AlarmTreeRoot extends AlarmTree
         return count;
     }
 
+    /** @return Number of elements (children, sub-children) in tree */
+    public int getElementCount()
+    {
+        return getElementCount(this);
+    }
+    
+    /** @return Number of elements (children, sub-children) below item (counts recursively) */
+    private int getElementCount(final AlarmTree item)
+    {
+        // Count children
+        int count = item.getChildCount();
+        // Then add counts recursively
+        for (int i=0; i<item.getChildCount(); ++i)
+            count += getElementCount(item.getChild(i));
+        return count;
+    }
+    
     /** Write XML representation of alarm tree
      *  @param out Stream to which to send XML output
      *  @throws Exception on error
