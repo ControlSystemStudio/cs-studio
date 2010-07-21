@@ -6,12 +6,12 @@ import java.util.Set;
 
 import junit.framework.Assert;
 
-import org.csstudio.nams.common.testutils.AbstractObject_TestCase;
+import org.csstudio.nams.common.testutils.AbstractTestObject;
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.AlarmbearbeiterDTO;
 import org.junit.Test;
 
 public class ConfigurationsElementeAuflistung_Test extends
-		AbstractObject_TestCase<ConfigurationsElementeAuflistung<?>> {
+		AbstractTestObject<ConfigurationsElementeAuflistung<?>> {
 
 	@Test
 	public void testListeFuellenUndFiltern() {
