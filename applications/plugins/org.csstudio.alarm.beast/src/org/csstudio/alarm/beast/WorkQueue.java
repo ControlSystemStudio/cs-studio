@@ -24,6 +24,9 @@ public class WorkQueue
     /** Task queue */
     final Queue<Runnable> tasks = new LinkedList<Runnable>();
     
+    /** Thread that executes the queue. Set on first access */
+    private Thread thread;
+    
     /** Add a task to the queue */
     public void add(final Runnable task)
     {
@@ -39,7 +42,9 @@ public class WorkQueue
      */
     public void execute(final int millisecs)
     {
+        assertOnThread();
         Runnable task;
+        // Wait in case there aren't any tasks in the queue
         synchronized (tasks)
         {
             task = tasks.poll();
@@ -56,6 +61,7 @@ public class WorkQueue
                 task = tasks.poll();
             }
         }
+        // Execute all tasks on queue
         while (task != null)
         {
             try
@@ -72,5 +78,21 @@ public class WorkQueue
                 task = tasks.poll();
             }
         }
+    }
+
+    /** Assert that the work queue is executed by the same original thread
+     *  @throws Error if called from thread other than the initial work queue thread
+     */
+    @SuppressWarnings("nls")
+    public void assertOnThread()
+    {
+        if (thread == null)
+        {
+            thread = Thread.currentThread();
+            return;
+        }
+        if (thread != Thread.currentThread())
+            throw new Error("Work queue thread changed from " +
+                    thread.getName() + " to " + Thread.currentThread().getName());
     }
 }

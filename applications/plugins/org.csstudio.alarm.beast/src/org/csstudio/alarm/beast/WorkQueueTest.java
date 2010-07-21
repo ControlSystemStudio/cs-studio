@@ -20,7 +20,7 @@ public class WorkQueueTest
     private String result = "";
     
     @Test
-    public void testExecute()
+    public void testExecute() throws Exception
     {
         final WorkQueue queue = new WorkQueue();
         queue.add(new Runnable()
@@ -41,5 +41,28 @@ public class WorkQueueTest
         });
         queue.execute(1000);
         assertEquals("HelloGoodbye", result);
+        
+        // Should be on the same thread
+        queue.assertOnThread();
+        
+        // Detect error when called from wrong thread
+        final Thread thread = new Thread(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    queue.assertOnThread();
+                    fail("Queue didn't notice access from wrong thread");
+                }
+                catch (Throwable ex)
+                {
+                    System.out.println(ex.getMessage());
+                    assertTrue(ex.getMessage().contains("WrongThread"));
+                }
+            }
+        }, "WrongThread");
+        thread.start();
+        thread.join();
     }
 }
