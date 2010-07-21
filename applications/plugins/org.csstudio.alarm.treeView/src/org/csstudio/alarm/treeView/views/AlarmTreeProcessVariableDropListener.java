@@ -27,12 +27,10 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableNameTransfer;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.util.TransferDropTargetListener;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.dnd.DND;
@@ -125,17 +123,11 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
     public void drop(@Nonnull final DropTargetEvent event) {
         final SubtreeNode parent = (SubtreeNode) event.item.getData();
         final IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;
-        boolean errors = false;
         for (final IProcessVariable pv : droppedPVs) {
-            try {
-
-                final ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
-                if (item != null) {
-                    _ldapModificationItems.add(item);
-                }
-
-            } catch (final DirectoryEditException e) {
-                errors = true;
+            // TODO (jpenning) This is slow for many pvs. Fix: Better give all pvs at once
+            final ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
+            if (item != null) {
+                _ldapModificationItems.add(item);
             }
         }
         final TreeViewer viewer = _alarmTreeView.getViewer();
@@ -144,11 +136,6 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
         } else {
             throw new IllegalStateException("Viewer of " + AlarmTreeView.class.getName() +
             " mustn't be null at this point.");
-        }
-        if (errors) {
-            MessageDialog.openError(_alarmTreeView.getSite().getShell(),
-                                    "Create New Records",
-                                    "One or more of the records could not be created.");
         }
     }
 }

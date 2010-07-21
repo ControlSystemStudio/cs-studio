@@ -38,6 +38,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.model.PVNodeItem;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.jobs.IJobChangeEvent;
@@ -106,37 +107,6 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         } else {
             LOG.warn("Initial state could not be retrieved because alarm service is not available.");
         }
-    }
-
-    /**
-     * The alarm tag of the PV node will be updated when the initial state was retrieved.
-     */
-    private static class PVNodeItem implements IAlarmInitItem {
-        private static final Logger LOG_INNER = CentralLogger.getInstance()
-                .getLogger(RefreshAlarmTreeViewAdapter.PVNodeItem.class);
-
-        private final IAlarmProcessVariableNode _pvNode;
-
-        protected PVNodeItem(@Nonnull final IAlarmProcessVariableNode pvNode) {
-            _pvNode = pvNode;
-        }
-
-        @Nonnull
-        public String getPVName() {
-            return _pvNode.getName();
-        }
-
-        public void init(@Nonnull final IAlarmMessage alarmMessage) {
-            // TODO (jpenning) Review access to alarm message properties
-            final String name = alarmMessage.getString(AlarmMessageKey.NAME);
-            if (name != null) {
-                final Alarm alarm = new Alarm(name, alarmMessage.getSeverity(), alarmMessage.getEventtimeOrCurrentTime());
-                _pvNode.updateAlarm(alarm);
-            } else {
-                LOG_INNER.warn("Could not retrieve name from " + alarmMessage);
-            }
-        }
-
     }
 
 }

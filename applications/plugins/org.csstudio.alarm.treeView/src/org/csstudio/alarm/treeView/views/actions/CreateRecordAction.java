@@ -53,12 +53,11 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
 
     /**
      * {@inheritDoc}
-     * @throws DirectoryEditException
      */
     @Override
     @Nonnull
     protected ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
-                                                    @Nonnull final String name) throws DirectoryEditException {
+                                                    @Nonnull final String name) {
         return DirectoryEditor.createProcessVariableRecord(parent, name);
     }
 }

@@ -23,6 +23,9 @@ package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -35,10 +38,13 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
+import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.PVNodeItem;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
@@ -290,32 +296,35 @@ public final class DirectoryEditor {
      *            the parent node.
      * @param recordName
      *            the name of the process variable record.
-     * @throws DirectoryEditException if the entry could not be created.
      */
     @CheckForNull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
-                                                                    @Nonnull final String recordName)
-        throws DirectoryEditException {
+                                                                    @Nonnull final String recordName) {
 
-        try {
-            final IAlarmProcessVariableNode node =
-                new ProcessVariableNode.Builder(recordName, parent.getSource()).setParent(parent).build();
+        final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName, parent
+                .getSource()).setParent(parent).build();
 
-            final Attributes attrs = new BasicAttributes();
-            attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
+        final Attributes attrs = new BasicAttributes();
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
 
-            // TODO (jpenning) : retrieve initial alarm states not from LDAP (Epics-Control) but from DAL
-            AlarmTreeNodeModifier.setAlarmState(node, attrs);
+        retrieveInitialStateSynchronously(node);
 
-            if (parent.getSource().equals(TreeNodeSource.LDAP)) {
-                return new CreateLdapEntryItem(node.getLdapName(), attrs);
-            }
-            return null;
+        if (parent.getSource().equals(TreeNodeSource.LDAP)) {
+            return new CreateLdapEntryItem(node.getLdapName(), attrs);
+        }
+        return null;
+
+    }
 
 
-        } catch (final NamingException e) {
-            LOG.error("Error creating directory entry", e);
-            throw new DirectoryEditException(e.getMessage(), e);
+    private static void retrieveInitialStateSynchronously(@Nonnull final IAlarmProcessVariableNode node) {
+        final List<PVNodeItem> initItems = Collections.singletonList(new PVNodeItem(node));
+
+        final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
+        if (alarmService != null) {
+            alarmService.retrieveInitialState(initItems);
+        } else {
+            LOG.warn("Initial state could not be retrieved because alarm service is not available.");
         }
     }
 
@@ -328,22 +337,19 @@ public final class DirectoryEditor {
      *            the parent node.
      * @param componentName
      *            the name of the component.
-     * @throws DirectoryEditException
-     *             if the entry could not be created.
      */
     @CheckForNull
     public static ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
-                                                        @Nonnull final String componentName)
-        throws DirectoryEditException {
+                                                        @Nonnull final String componentName) {
 
-        final SubtreeNode node =
-            new SubtreeNode.Builder(componentName,
-                                    LdapEpicsAlarmcfgConfiguration.COMPONENT,
-                                    parent.getSource())
-                           .setParent(parent).build();
+        final SubtreeNode node = new SubtreeNode.Builder(componentName,
+                                                         LdapEpicsAlarmcfgConfiguration.COMPONENT,
+                                                         parent.getSource()).setParent(parent)
+                .build();
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.COMPONENT
+                .getDescription());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryItem(node.getLdapName(), attrs);

@@ -23,14 +23,12 @@ import java.util.Queue;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.alarm.treeView.views.NodeNameInputValidator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.window.Window;
@@ -71,16 +69,9 @@ public abstract class AbstractCreateComponentAction extends Action {
             final SubtreeNode parent = (SubtreeNode) selected;
             final String name = promptForRecordName();
             if ( (name != null) && !name.equals("")) {
-                try {
-                    final ITreeModificationItem item = createComponent(parent, name);
-                    if (item != null) {
-                        _ldapModificationItems.add(item);
-                    }
-                } catch (final DirectoryEditException e) {
-                    MessageDialog.openError(_site.getShell(),
-                                            "Create New Component",
-                                            "Could not create the new component: "
-                                            + e.getMessage());
+                final ITreeModificationItem item = createComponent(parent, name);
+                if (item != null) {
+                    _ldapModificationItems.add(item);
                 }
                 _viewer.refresh(parent);
             }
@@ -102,6 +93,5 @@ public abstract class AbstractCreateComponentAction extends Action {
 
     @Nonnull
     protected abstract ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
-                                                             @Nonnull final String name)
-        throws DirectoryEditException;
+                                                             @Nonnull final String name);
 }
