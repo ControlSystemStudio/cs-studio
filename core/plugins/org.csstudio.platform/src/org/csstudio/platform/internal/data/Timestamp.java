@@ -112,6 +112,10 @@ public final class Timestamp implements ITimestamp
     {
         final Calendar cal = toCalendar();
         
+        // Formatting the time as a string is expensive.
+        // JProfiler comparison of this String.format() code with
+        // with custom StringBuilder.append(...) code seemed to save
+        // very little CPU time, but String.format() is a lot easier to read.
         switch (format)
         {
         case Date:
