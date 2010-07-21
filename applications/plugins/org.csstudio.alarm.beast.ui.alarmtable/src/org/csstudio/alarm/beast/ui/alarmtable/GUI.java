@@ -287,8 +287,7 @@ public class GUI implements AlarmClientModelListener
             Pattern.compile(RegExHelper.fullRegexFromGlob(filter_text),
                             Pattern.CASE_INSENSITIVE);
         final AlarmTreePV pvs[] =
-            ((AlarmTableContentProvider)
-                active_table_viewer.getContentProvider()).getAlarms();
+            ((AlarmTableContentProvider) table_viewer.getContentProvider()).getAlarms();
         final ArrayList<AlarmTreePV> selected =
             new ArrayList<AlarmTreePV>();
         for (AlarmTreePV pv : pvs)
