@@ -1,9 +1,13 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
-import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.ButtonGroup;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
@@ -14,26 +18,33 @@ import org.eclipse.draw2d.Toggle;
 import org.eclipse.draw2d.ToggleModel;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.RGB;
 
 /**The abstract figure for widget which can perform choice action.
  * @author Xihui Chen
  *
  */
-public abstract class AbstractChoiceFigure extends Figure {
+public abstract class AbstractChoiceFigure extends Figure implements Introspectable{
 
-	private ButtonGroup buttonGroup;
+	public interface IChoiceButtonListener extends EventListener {		
+		/**Executed when one of the choice button pressed.
+		 * @param index the index of the button.
+		 * @param value the string value of the state.
+		 */
+		public void buttonPressed(int index, String value);		
+	}
 	
+	private ButtonGroup buttonGroup;
 	private List<String> states;
 	private List<Toggle> toggles;
 	private List<ToggleModel> models;
-	private List<IChoiceButtonListener> listeners;
 	
+	private List<IChoiceButtonListener> listeners;
 	private boolean fromSetState = false;
+	
 	private boolean isHorizontal = false;
+
 	
 	protected Color selectedColor = ColorConstants.black;
-
 	
 	public AbstractChoiceFigure() {
 		buttonGroup = new ButtonGroup();
@@ -41,6 +52,49 @@ public abstract class AbstractChoiceFigure extends Figure {
 		toggles = new ArrayList<Toggle>();
 		models = new ArrayList<ToggleModel>();
 		listeners = new ArrayList<IChoiceButtonListener>();
+	}
+	
+	public void addChoiceButtonListener(IChoiceButtonListener listener){
+		if(listener != null)
+			listeners.add(listener);
+	}
+	
+	public void removeChoiceButtonListener(IChoiceButtonListener listener){
+		if(listeners.contains(listener))
+			listeners.remove(listener);
+	}
+	
+	protected abstract Toggle createToggle(String text);
+	
+	private void fireButtonPressed(int index, String value){
+		for(IChoiceButtonListener listener : listeners){
+			listener.buttonPressed(index, value);
+		}
+	}
+
+	/**
+	 * @return the selectedColor
+	 */
+	public Color getSelectedColor() {
+		return selectedColor;
+	}
+
+	public String getState(){
+		return states.get(models.indexOf(buttonGroup.getSelected()));
+	}
+		
+	/**Get all states.
+	 * @return all states.
+	 */
+	public List<String> getStates() {
+		return states;
+	}
+	
+	/**
+	 * @return the isHorizontal
+	 */
+	public boolean isHorizontal() {
+		return isHorizontal;
 	}
 	
 	@Override
@@ -69,6 +123,7 @@ public abstract class AbstractChoiceFigure extends Figure {
 		}
 	}
 	
+	
 	@Override
 	protected void paintClientArea(Graphics graphics) {
 		super.paintClientArea(graphics);
@@ -77,14 +132,38 @@ public abstract class AbstractChoiceFigure extends Figure {
 		}
 	}
 	
-	public void setSelectedColor(RGB checkedColor) {		
-		this.selectedColor = 
-			CustomMediaFactory.getInstance().getColor(checkedColor);
+	public void setHorizontal(boolean newValue) {
+		if(this.isHorizontal == newValue)
+			return;
+		isHorizontal = newValue;
+		revalidate();
+	}
+	
+	public void setSelectedColor(Color checkedColor) {		
+		if(this.selectedColor != null && this.selectedColor.equals(checkedColor))
+			return;
+		this.selectedColor = checkedColor;
 		repaint();
 	}
 	
-	protected abstract Toggle createToggle(String text);
-		
+	public synchronized void setState(int stateIndex){
+		if(stateIndex < states.size()){
+			fromSetState = true;
+			buttonGroup.setSelected(models.get(stateIndex));
+			fromSetState = false;
+		}
+			
+	}
+	
+	public synchronized void setState(String state){
+		if(states.contains(state)){
+			fromSetState = true;
+			buttonGroup.setSelected(models.get(
+				states.indexOf(state)));
+			fromSetState = false;
+		}
+	}
+
 	/**Set all the state string values.
 	 * @param states the states
 	 */
@@ -124,57 +203,8 @@ public abstract class AbstractChoiceFigure extends Figure {
 		}
 	}
 	
-	public synchronized void setState(String state){
-		if(states.contains(state)){
-			fromSetState = true;
-			buttonGroup.setSelected(models.get(
-				states.indexOf(state)));
-			fromSetState = false;
-		}
-	}
-	
-	public synchronized void setState(int stateIndex){
-		if(stateIndex < states.size()){
-			fromSetState = true;
-			buttonGroup.setSelected(models.get(stateIndex));
-			fromSetState = false;
-		}
-			
-	}
-	
-	
-	public String getState(){
-		return states.get(models.indexOf(buttonGroup.getSelected()));
-	}
-	
-	/**Get all states.
-	 * @return all states.
-	 */
-	public List<String> getStates() {
-		return states;
-	}
-	
-	public void addChoiceButtonListener(IChoiceButtonListener listener){
-		listeners.add(listener);
-	}
-	
-	private void fireButtonPressed(int index, String value){
-		for(IChoiceButtonListener listener : listeners){
-			listener.buttonPressed(index, value);
-		}
-	}
-	
-	public interface IChoiceButtonListener {		
-		/**Executed when one of the choice button pressed.
-		 * @param index the index of the button.
-		 * @param value the string value of the state.
-		 */
-		public void buttonPressed(int index, String value);		
-	}
-
-	public void setHorizontal(Boolean newValue) {
-		isHorizontal = newValue;
-		revalidate();
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 	
 }

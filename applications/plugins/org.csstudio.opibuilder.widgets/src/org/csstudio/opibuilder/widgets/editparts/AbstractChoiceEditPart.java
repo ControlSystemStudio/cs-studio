@@ -12,15 +12,15 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.AbstractChoiceFigure;
-import org.csstudio.opibuilder.widgets.figures.ChoiceButtonFigure;
-import org.csstudio.opibuilder.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
 import org.csstudio.opibuilder.widgets.model.AbstractChoiceModel;
 import org.csstudio.opibuilder.widgets.model.ChoiceButtonModel;
 import org.csstudio.platform.data.IEnumeratedMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.AbstractChoiceFigure;
+import org.csstudio.swt.widgets.figures.ChoiceButtonFigure;
+import org.csstudio.swt.widgets.figures.AbstractChoiceFigure.IChoiceButtonListener;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -47,7 +47,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		updatePropSheet(model.isItemsFromPV());		
 		AbstractChoiceFigure choiceFigure = createChoiceFigure();
 		choiceFigure.setSelectedColor(
-				getWidgetModel().getSelectedColor().getRGBValue());
+				getWidgetModel().getSelectedColor().getSWTColor());
 
 		choiceFigure.setFont(CustomMediaFactory.getInstance().getFont(
 						model.getFont().getFontData()));
@@ -210,7 +210,7 @@ public abstract class AbstractChoiceEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler selectedColorHandler = new IWidgetPropertyChangeHandler() {
 			
 			public boolean handleChange(Object oldValue, Object newValue, IFigure figure) {
-				((ChoiceButtonFigure)figure).setSelectedColor(((OPIColor)newValue).getRGBValue());
+				((ChoiceButtonFigure)figure).setSelectedColor(((OPIColor)newValue).getSWTColor());
 				return false;
 			}
 		};

@@ -1,6 +1,6 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.widgets.util.GraphicsUtil;
+import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.eclipse.draw2d.ButtonModel;
 import org.eclipse.draw2d.ChangeEvent;
 import org.eclipse.draw2d.ChangeListener;
