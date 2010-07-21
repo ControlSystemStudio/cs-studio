@@ -36,12 +36,12 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ChartTest
+public class ChartDemo
 {
     /** Flags for chart */
     private static final int chart_flags = Chart.USE_TRACE_NAMES
                                             | Chart.TIME_CHART;
-    
+
     /** Demo scrolling? */
     private static final boolean scroll = true;
 
@@ -58,38 +58,42 @@ public class ChartTest
     {
         public void run()
         {
-            if (chart.isDisposed())
+            if (chart.isDisposed()) {
                 return;
+            }
             final Display display = chart.getDisplay();
-            
+
             // Add a sample to each trace
             double start = Double.MAX_VALUE;
             double end = 0.0;
             synchronized (trace_data)
             {
-                for (ChartSampleSequenceDemo seq : trace_data)
+                for (final ChartSampleSequenceDemo seq : trace_data)
                 {
                     seq.add();
                     final double first_x = seq.get(0).getX();
-                    if (start > first_x)
+                    if (start > first_x) {
                         start = first_x;
+                    }
                     final double last_x = seq.get(seq.size()-1).getX();
-                    if (end < last_x)
+                    if (end < last_x) {
                         end = last_x;
+                    }
                 }
             }
-            
+
             // Trigger redraw
             if (scroll)
             {
                 // Scroll so that the last 60 seconds roll by
-                if (end - start > 60.0)
+                if (end - start > 60.0) {
                     start = end - 60.0;
+                }
                 chart.getXAxis().setValueRange(start, end);
-            }
-            else
+            } else {
                 chart.redrawTraces();
-            
+            }
+
             // Schedule next update
             display.timerExec(SCROLL_MS, sample_adder);
         }
@@ -97,17 +101,17 @@ public class ChartTest
 
     private void run()
     {
-        Display display = new Display();
-        Shell shell = new Shell(display); // Compare: JFrame
+        final Display display = new Display();
+        final Shell shell = new Shell(display); // Compare: JFrame
         shell.setBounds(100, 100, 800, 600);
         makeGUI(shell);
-        
+
         // Add initial demo data
         addDemoTrace("y", chart.getYAxis(0));
-       
+
         // List is a drag source
         new ProcessVariableDragSource(list_viewer.getList(), list_viewer);
-        // Listener Demo   
+        // Listener Demo
         chart.addListener(new ChartListener()
         {
             public void aboutToZoomOrPan(final String description)
@@ -133,47 +137,50 @@ public class ChartTest
                                 x + ", " + y + " Selected");
             }
         });
-        
+
         // Allow PV drops into the chart
         new ProcessVariableDropTarget(chart)
         {
             @Override
-            public void handleDrop(IProcessVariable name, DropTargetEvent event)
+            public void handleDrop(final IProcessVariable name, final DropTargetEvent event)
             {
                 YAxis yaxis = chart.getYAxisAtScreenPoint(event.x, event.y);
-                if (yaxis == null)
+                if (yaxis == null) {
                     yaxis = addDemoTrace(name.getName(), null);
-                else
+                } else
                 {
                     // Does the chart automatically use the trace labels?
                     String label;
-                    if ((chart_flags & Chart.USE_TRACE_NAMES) == 0)
+                    if ((chart_flags & Chart.USE_TRACE_NAMES) == 0) {
                         label = yaxis.getLabel() + ", " + name.getName();
-                    else
+                    } else {
                         label = name.getName();
+                    }
                     addDemoTrace(label, yaxis);
                 }
             }
         };
 
         shell.open();
-        
+
         display.timerExec(SCROLL_MS, sample_adder);
-        
+
         // Message loop left to the application
-        while (!shell.isDisposed())
-            if (!display.readAndDispatch())
+        while (!shell.isDisposed()) {
+            if (!display.readAndDispatch()) {
                 display.sleep();
+            }
+        }
         display.dispose(); // !
     }
 
-    private void makeGUI(Shell shell)
+    private void makeGUI(final Shell shell)
     {
-        GridLayout layout = new GridLayout();
+        final GridLayout layout = new GridLayout();
         layout.numColumns = 2;
         shell.setLayout(layout);
         GridData gd;
-    
+
         // ------ Title ---------------
         // | Process Variables | Plot |
         // | PV List ......... | .... |
@@ -185,7 +192,7 @@ public class ChartTest
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         l.setLayoutData(gd);
-        
+
         l = new Label(shell, SWT.LEFT);
         l.setText("Process Variables");
         gd = new GridData();
@@ -206,10 +213,10 @@ public class ChartTest
         }
         else
         {
-            InteractiveChart ichart = new InteractiveChart(shell, chart_flags);
+            final InteractiveChart ichart = new InteractiveChart(shell, chart_flags);
             chart = ichart.getChart();
             ichart.setLayoutData(gd);
-            
+
             new ToolBarActionHook(ichart, new ShowButtonBarAction(ichart));
             new ToolBarActionHook(ichart, new SaveCurrentImageAction(chart));
             new ToolBarActionHook(ichart, new PrintCurrentImageAction(chart));
@@ -217,18 +224,18 @@ public class ChartTest
         chart.getXAxis().setLabel("The X Axis");
         if ((chart_flags & Chart.TIME_CHART) != 0)
         {
-            double high = TimestampFactory.now().toDouble() + 60;
-            double low = high - 120;
+            final double high = TimestampFactory.now().toDouble() + 60;
+            final double low = high - 120;
             chart.getXAxis().setValueRange(low, high);
         }
         // LOG TEST?
         chart.getYAxis(0).setLogarithmic(false);
         chart.getYAxis(0).setValueRange(1, 100);
-        List list = new List(shell, SWT.SINGLE);
+        final List list = new List(shell, SWT.SINGLE);
         list_viewer = new ListViewer(list);
         list_viewer.setLabelProvider(new LabelProvider());
         list_viewer.setContentProvider(new ArrayContentProvider());
-        Vector<IProcessVariable> names = new Vector<IProcessVariable>();
+        final Vector<IProcessVariable> names = new Vector<IProcessVariable>();
         names.add(CentralItemFactory.createProcessVariable("fred"));
         names.add(CentralItemFactory.createProcessVariable("freddy"));
         names.add(CentralItemFactory.createProcessVariable("jane"));
@@ -242,7 +249,7 @@ public class ChartTest
     }
 
     /** Add another trace of demo data.
-     * 
+     *
      *  @param name New or modified title
      *  @param yaxis Axis to use or <code>null</code> for new axis to create.
      *  @return
@@ -261,19 +268,22 @@ public class ChartTest
             seq.add();
         }
         // Create new trace, using new or given Y axis
-        if (yaxis == null)
+        if (yaxis == null) {
             yaxis = chart.addYAxis(name);
-        else
+        } else {
             yaxis.setLabel(name);
+        }
         final int axis_index = chart.getYAxisIndex(yaxis);
         // Auto-scale every other axis
-        if ((axis_index % 2) == 1)
+        if ((axis_index % 2) == 1) {
             yaxis.setAutoScale(true);
+        }
         // Hide every 3rd axis
-        if ((axis_index % 3) == 1)
+        if ((axis_index % 3) == 1) {
             yaxis.setVisible(false);
+        }
         final int next = chart.getNumTraces();
-        Color color = new Color(null, DefaultColors.getRed(next),
+        final Color color = new Color(null, DefaultColors.getRed(next),
                                 DefaultColors.getGreen(next),
                                 DefaultColors.getBlue(next));
         // Add to chart
@@ -287,9 +297,9 @@ public class ChartTest
         return yaxis;
     }
 
-    public static void main(String[] args)
+    public static void main(final String[] args)
     {
-        ChartTest app = new ChartTest();
+        final ChartDemo app = new ChartDemo();
         app.run();
     }
 }
