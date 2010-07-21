@@ -22,7 +22,6 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;

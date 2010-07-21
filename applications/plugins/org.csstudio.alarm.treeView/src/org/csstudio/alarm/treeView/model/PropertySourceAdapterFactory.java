@@ -28,7 +28,7 @@ import org.eclipse.ui.views.properties.IPropertySource2;
 
 /**
  * Adapter factory that creates adapts alarm tree nodes to property sources.
- * 
+ *
  * @author Joerg Rathlev
  */
 public final class PropertySourceAdapterFactory implements IAdapterFactory {
@@ -52,7 +52,7 @@ public final class PropertySourceAdapterFactory implements IAdapterFactory {
 	 */
 	@SuppressWarnings("unchecked")
 	public Class[] getAdapterList() {
-		return new Class[] { IPropertySource2.class };
+		return new Class[] {IPropertySource2.class};
 	}
 
 }
