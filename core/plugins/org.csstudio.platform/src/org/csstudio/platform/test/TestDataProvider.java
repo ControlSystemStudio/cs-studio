@@ -48,22 +48,33 @@ import org.osgi.framework.Bundle;
  * @version $Revision$
  * @since 14.07.2010
  */
-public class TestDataProvider {
-    private final Properties _props;
+public final class TestDataProvider {
+
+    private static TestDataProvider INSTANCE;
+
+    private static Properties PROPERTIES;
+
+    private final String _pluginId;
 
 
     /**
      * Constructor.
-     * @param pluginId id of the plugin in which the tests and their config file reside
-     * @param testConfigFileName name of the dedicated test config file
-     * @throws IOException either file not found or stream couldn't be opened
+     * @throws IOException
      */
-    public TestDataProvider(final String pluginId, final String testConfigFileName) throws IOException {
+    private TestDataProvider(final String pluginId) throws IOException{
+        _pluginId = pluginId;
+        PROPERTIES = new Properties();
+    }
 
-        // We'd really love to use annoations @Nonnull, @Nullable, @CheckForNull etc.
-        if ((pluginId == null) || (testConfigFileName == null)) {
-            throw new IllegalArgumentException("Parameters pluginId and testConfigFileName must not be null.");
-        }
+    /**
+     * @param pluginId
+     * @param testConfigFileName
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private static void loadProperties(final String pluginId, final String testConfigFileName)
+        throws FileNotFoundException, IOException {
+
         InputStream openStream = null;
         try {
             final Bundle bundle = Platform.getBundle(pluginId);
@@ -74,9 +85,8 @@ public class TestDataProvider {
                                                 " and file name " + testConfigFileName +
                 " does not exist");
             }
-            _props = new Properties();
             openStream =  resource.openStream();
-            _props.load(openStream);
+            PROPERTIES.load(openStream);
         } finally {
             if (openStream != null) {
                 openStream.close();
@@ -90,14 +100,44 @@ public class TestDataProvider {
      * @return
      */
     public Object get(final String key) {
-        return _props.get(key);
+        return PROPERTIES.get(key);
     }
 
-    public static TestDataProvider loadTestProperties(final String pluginId)
-        throws IOException, IllegalArgumentException {
+    /**
+
+     * @param pluginId id of the plugin in which the tests and their config file reside
+     * @return the instance of the data provider
+     * @throws TestProviderException
+     */
+    public static TestDataProvider getInstance(final String pluginId) throws TestProviderException {
+
+        String testConfigFileName = "";
+        try {
+            synchronized (TestDataProvider.class) {
+                if (INSTANCE == null) {
+                    INSTANCE = new TestDataProvider(pluginId);
+                    testConfigFileName = createSiteSpecificName();
+                    loadProperties(pluginId, testConfigFileName);
+                }
+            }
+
+            if (INSTANCE._pluginId != pluginId) {
+                TestDataProvider.PROPERTIES.clear();
+                testConfigFileName = createSiteSpecificName();
+                loadProperties(pluginId, testConfigFileName);
+            }
+            return INSTANCE;
+
+        } catch (final IOException e) {
+            throw new TestProviderException("Test config file " + testConfigFileName + " couldn't be found or opened.", e);
+        }
+    }
+
+
+    private static String createSiteSpecificName() throws IllegalArgumentException {
 
         SiteKey site;
-        String siteProp = "";
+        String siteProp = null;
         try {
             siteProp = System.getProperty("siteId");
             if (siteProp == null) {
@@ -110,6 +150,6 @@ public class TestDataProvider {
         }
 
         final String testConfigFileName = site.getPrefix() + "TestConfiguration.ini";
-        return new TestDataProvider(pluginId, testConfigFileName);
+        return testConfigFileName;
     }
 }
