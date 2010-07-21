@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.beast.AlarmConfiguration;
 import org.csstudio.alarm.beast.AlarmTree;
 import org.csstudio.alarm.beast.AlarmTreeComponent;
@@ -21,6 +22,7 @@ import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.ui.Messages;
+import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -175,8 +177,10 @@ public class AlarmClientModel
      *  May be invoked from ReadConfigJob.
      *  @param monitor Progress monitor (has not been called)
      */
+    @SuppressWarnings("nls")
     void readConfiguration(final IProgressMonitor monitor)
     {
+        final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
         final String root_name = Preferences.getAlarmTreeRoot();
@@ -243,6 +247,20 @@ public class AlarmClientModel
             CentralLogger.getInstance().getLogger(this).error(ex);
             createPseudoAlarmTree("Alarm RDB Error: " + ex.getMessage()); //$NON-NLS-1$
         }
+        // Info about performance
+        timer.stop();
+        final Logger logger = CentralLogger.getInstance().getLogger(this);
+        if (logger.isInfoEnabled())
+        {
+            final int count = config_tree.getElementCount();
+            final int pv_count = config_tree.getPVCount();
+            logger.info(String.format(
+                "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
+                count, pv_count, timer.getSeconds(),
+                count / timer.getSeconds(),
+                pv_count/timer.getSeconds()));
+        }
+
         // After we received configuration, handle updates that might
         // have accumulated.
         communicator.setConfigurationName(root_name);
@@ -251,6 +269,7 @@ public class AlarmClientModel
         notify_listeners = true;
         fireNewConfig();
         monitor.done();
+        
     }
     
     /** @return Name of JMS server or some text that indicates
