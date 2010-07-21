@@ -86,6 +86,9 @@ public class AlarmServer
 
     /** Lazily (re-)created statement for updating the alarm state of a PV */
     private PreparedStatement updateStateStatement;
+    
+    /** Indicator for communication errors */
+    private volatile boolean had_RDB_error = false;
 
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
@@ -276,7 +279,7 @@ public class AlarmServer
         }
         timer.stop();
         // LDAP results: Read 12614 PVs in 2.69 seconds, 4689.0 PVs/sec
-        System.out.format("Read %d PVs in %.2f seconds, %.1f PVs/sec\n",
+        System.out.format("Read %d PVs in %.2f seconds: %.1f PVs/sec\n",
                 pv_list.length, timer.getSeconds(), pv_list.length/timer.getSeconds());
     }
 
@@ -395,7 +398,7 @@ public class AlarmServer
     }
 
     /** Read updated configuration for PV from RDB
-     *  @param path_name PV name
+     *  @param path_name PV name or <code>null</code> to reload complete configuration
      */
     void updateConfig(final String path_name) throws Exception
     {
@@ -522,14 +525,13 @@ public class AlarmServer
                     updateStateStatement.setInt(7, pv.getID());
                     updateStateStatement.execute();
                     connection.commit();
+                    
+                    recoverFromRDBErrors();
                 }
                 catch (Exception ex)
                 {
-                    // TODO Add a delay?
-                    // This method can be called a lot.
-                    // In case of database errors, each call will run into the same error.
-                    // Is that a problem? Should there be a delay in here?
-                    // But then the work_queue would grow out of bounds...
+                    // Remember that there was an error
+                    had_RDB_error = true;
                     CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
                 }
             }
@@ -559,6 +561,7 @@ public class AlarmServer
                         update_enablement_statement.setInt(2, pv.getID());
                         update_enablement_statement.execute();
                         connection.commit();
+                        recoverFromRDBErrors();
                     }
                     finally
                     {
@@ -567,9 +570,33 @@ public class AlarmServer
                 }
                 catch (Exception ex)
                 {
-                    CentralLogger.getInstance().getLogger(this).error("Exception", ex);
+                    // Remember that there was an error
+                    had_RDB_error = true;
+                    CentralLogger.getInstance().getLogger(this).error("Exception during enablement update", ex);
                 }
             }
         });
 	}
+
+    /** If this is the first successful RDB update after errors,
+     *  tell everybody to re-load the configuration because otherwise
+     *  they get out of sync.
+     *  @throws Exception on error
+     */
+    protected void recoverFromRDBErrors() throws Exception
+    {
+        if (! had_RDB_error)
+            return;
+        
+        // We should be on the work queue thread
+        work_queue.assertOnThread();
+        
+        CentralLogger.getInstance().getLogger(this).
+            warn("RDB connection recovered, re-loading configuration");
+        updateConfig(null);
+
+        // If that worked out, reset error and inform clients
+        had_RDB_error = false;
+        messenger.sendReloadMessage();
+    }
 }
