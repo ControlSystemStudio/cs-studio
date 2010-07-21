@@ -6,9 +6,6 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
@@ -20,6 +17,9 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -40,8 +40,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
-		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
+		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
+		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
 		return labelFigure;
 	}
 	
@@ -138,7 +138,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setH_alignment(H_ALIGN.values()[(Integer)newValue]);
+				((LabelFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -147,7 +147,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setV_alignment(V_ALIGN.values()[(Integer)newValue]);
+				((LabelFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};

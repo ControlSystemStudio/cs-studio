@@ -7,18 +7,18 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure;
-import org.csstudio.opibuilder.widgets.figures.SpinnerFigure;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
-import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.ISpinnerListener;
-import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.opibuilder.widgets.model.SpinnerModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.SpinnerFigure;
+import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -36,13 +36,13 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	private INumericMetaData meta = null;
 	@Override
 	protected IFigure doCreateFigure() {
-		SpinnerFigure spinner = new SpinnerFigure(getExecutionMode());
+		SpinnerFigure spinner = new SpinnerFigure();
 		LabelFigure labelFigure = spinner.getLabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
-		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
+		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
+		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
 		spinner.setMax(getWidgetModel().getMaximum());
 		spinner.setMin(getWidgetModel().getMinimum());
 		spinner.setStepIncrement(getWidgetModel().getStepIncrement());
@@ -50,7 +50,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 		spinner.setFormatType(getWidgetModel().getFormat());
 		spinner.setPrecision((Integer) getPropertyValue(SpinnerModel.PROP_PRECISION));
 		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			spinner.addManualValueChangeListener(new ISpinnerListener() {
+			spinner.addManualValueChangeListener(new IManualValueChangeListener() {
 				
 				public void manualValueChanged(double newValue) {
 					setPVValue(SpinnerModel.PROP_PVNAME, newValue);
@@ -218,7 +218,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().setH_alignment(H_ALIGN.values()[(Integer)newValue]);
+					((SpinnerFigure)figure).getLabelFigure().setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 					return true;
 				}
 			};
@@ -227,7 +227,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 			handler = new IWidgetPropertyChangeHandler(){
 				public boolean handleChange(Object oldValue, Object newValue,
 						IFigure figure) {
-					((SpinnerFigure)figure).getLabelFigure().setV_alignment(V_ALIGN.values()[(Integer)newValue]);
+					((SpinnerFigure)figure).getLabelFigure().setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 					return true;
 				}
 			};

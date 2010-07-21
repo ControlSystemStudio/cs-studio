@@ -6,11 +6,11 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgetActions.ActionsInput;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.opibuilder.widgets.model.LabelModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -31,8 +31,8 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.setH_alignment(getWidgetModel().getHorizontalAlignment());
-		labelFigure.setV_alignment(getWidgetModel().getVerticalAlignment());
+		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
+		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
 		labelFigure.setSelectable(
 				!getWidgetModel().getActionsInput().getActionsList().isEmpty() ||
 				getWidgetModel().getTooltip().trim().length() > 0);
@@ -142,7 +142,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setH_alignment(H_ALIGN.values()[(Integer)newValue]);
+				((LabelFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -151,7 +151,7 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setV_alignment(V_ALIGN.values()[(Integer)newValue]);
+				((LabelFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};

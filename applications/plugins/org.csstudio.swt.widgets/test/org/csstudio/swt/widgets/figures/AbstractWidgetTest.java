@@ -13,6 +13,7 @@ import org.eclipse.draw2d.LightweightSystem;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -223,18 +224,22 @@ public abstract class AbstractWidgetTest {
         		return (int)(Math.random()*100);
         	}else
         		return (int)(Math.random()*100);
-        }
-
+        }else if(propType == String.class){
+        	return "Hello, I'm " + seed;
+        }else if(propType == Font.class)
+        	if(seed != null && seed instanceof Integer)
+        		return CustomMediaFactory.getInstance().getFont(
+        				"Arial", (Integer)seed%100, (Integer)seed%3);
 		return null;
 
 	}
 	
 	protected int getRepeatCountOnEachProperty(){
-		return 8;
+		return 4;
 	}
 
 	protected int getAutoTestSpeedInterval(){
-		return 50;
+		return 500;
 	}
 	
 	/**

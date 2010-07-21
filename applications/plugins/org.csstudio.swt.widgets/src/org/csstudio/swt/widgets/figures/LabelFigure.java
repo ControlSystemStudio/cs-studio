@@ -1,5 +1,10 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
+import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -15,16 +20,12 @@ import org.eclipse.swt.graphics.Font;
  * @author Xihui Chen
  *
  */
-public class LabelFigure extends Figure{
+public class LabelFigure extends Figure implements Introspectable{
 	
 	public enum H_ALIGN{
 		LEFT("Left"),
 		CENTER("Center"),
 		RIGHT("Right");
-		String descripion;
-		H_ALIGN(String description){
-			this.descripion = description;
-		}
 		public static String[] stringValues(){
 			String[] result = new String[values().length];
 			int i=0;
@@ -32,6 +33,10 @@ public class LabelFigure extends Figure{
 				result[i++] = h.toString();
 			}
 			return result;
+		}
+		String descripion;
+		H_ALIGN(String description){
+			this.descripion = description;
 		}
 		
 		@Override
@@ -44,10 +49,6 @@ public class LabelFigure extends Figure{
 		TOP("Top"),
 		MIDDLE("Middle"),
 		BOTTOM("Bottom");
-		String descripion;
-		V_ALIGN(String description){
-			this.descripion = description;
-		}
 		public static String[] stringValues(){
 			String[] result = new String[values().length];
 			int i=0;
@@ -55,6 +56,10 @@ public class LabelFigure extends Figure{
 				result[i++] = h.toString();
 			}
 			return result;
+		}
+		String descripion;
+		V_ALIGN(String description){
+			this.descripion = description;
 		}
 		
 		@Override
@@ -68,8 +73,8 @@ public class LabelFigure extends Figure{
 	private TextFlow textFlow;
 	private FlowPage flowPage;
 	
-	private V_ALIGN v_alignment = V_ALIGN.TOP;
-	private H_ALIGN h_alignment = H_ALIGN.LEFT;
+	private V_ALIGN verticalAlignment = V_ALIGN.TOP;
+	private H_ALIGN horizontalAlignment = H_ALIGN.LEFT;
 	
 	private boolean runMode;
 	
@@ -90,7 +95,7 @@ public class LabelFigure extends Figure{
 		//setLayoutManager(new StackLayout());
 		//add(scrollPane);
 		flowPage = new FlowPage();
-		textFlow = new TextFlow(){
+		textFlow = new TextFlow(""){
 			@Override
 			public void setFont(Font f) {
 				super.setFont(f);
@@ -104,6 +109,26 @@ public class LabelFigure extends Figure{
 		add(flowPage);
 	}
 
+	@Override
+	public boolean containsPoint(int x, int y) {
+		if(runMode && !selectable)
+			return false;
+		else
+			return super.containsPoint(x, y);
+	}
+
+	public Dimension getAutoSizeDimension(){
+		return flowPage.getPreferredSize().getCopy().expand(
+				getInsets().getWidth(), getInsets().getHeight());
+	}
+
+	/**
+	 * @return the h_alignment
+	 */
+	public H_ALIGN getHorizontalAlignment() {
+		return horizontalAlignment;
+	}
+
 	/**
 	 * Returns the text inside the TextFlow.
 	 * 
@@ -114,49 +139,28 @@ public class LabelFigure extends Figure{
 	}
 
 	/**
-	 * Sets the text of the TextFlow to the given value.
-	 * 
-	 * @param newText the new text value.
+	 * @return the v_alignment
 	 */
-	public void setText(String newText) {		
-		textFlow.setText(newText);
-		revalidate();
+	public V_ALIGN getVerticalAlignment() {
+		return verticalAlignment;
+	}
 
+	/**
+	 * @return the runMode
+	 */
+	public boolean isRunMode() {
+		return runMode;
+	}
+
+	/**
+	 * @return the selectable
+	 */
+	public boolean isSelectable() {
+		return selectable;
 	}
 
 	
 
-	@Override
-	public void setOpaque(boolean opaque) {		
-		textFlow.setOpaque(opaque);
-		super.setOpaque(opaque);
-	}
-	
-	
-	@Override
-	public void setFont(Font f) {
-		flowPage.setFont(f);
-		textFlow.setFont(f);
-		super.setFont(f);
-		revalidate();			
-	}
-	
-
-	
-
-	
-	public void setV_alignment(V_ALIGN vAlignment) {
-		v_alignment = vAlignment;
-		revalidate();
-	}
-	
-	public void setH_alignment(H_ALIGN hAlignment) {
-		h_alignment = hAlignment;
-		revalidate();
-	}
-	
-	
-	
 	@Override
 	protected void layout() {
 		Rectangle clientArea = getClientArea();
@@ -164,7 +168,7 @@ public class LabelFigure extends Figure{
 			int x=clientArea.x;
 			if(clientArea.width > preferedSize.width){
 				
-				switch (h_alignment) {
+				switch (horizontalAlignment) {
 				case CENTER:
 					x = clientArea.x + (clientArea.width - preferedSize.width)/2;
 					break;
@@ -181,7 +185,7 @@ public class LabelFigure extends Figure{
 			}
 			int y=clientArea.y;
 			if(clientArea.height > preferedSize.height){
-				switch (v_alignment) {
+				switch (verticalAlignment) {
 				case MIDDLE:
 					y = clientArea.y + (clientArea.height - preferedSize.height)/2;
 					break;
@@ -200,24 +204,68 @@ public class LabelFigure extends Figure{
 	}
 	
 	
-	public Dimension getAutoSizeDimension(){
-		return flowPage.getPreferredSize().getCopy().expand(
-				getInsets().getWidth(), getInsets().getHeight());
+	@Override
+	public void setFont(Font f) {
+		flowPage.setFont(f);
+		textFlow.setFont(f);
+		super.setFont(f);
+		revalidate();			
+	}
+	
+
+	
+
+	
+	public void setHorizontalAlignment(H_ALIGN hAlignment) {
+		if(this.horizontalAlignment == hAlignment)
+			return;
+		horizontalAlignment = hAlignment;
+		revalidate();
 	}
 	
 	@Override
-	public boolean containsPoint(int x, int y) {
-		if(runMode && !selectable)
-			return false;
-		else
-			return super.containsPoint(x, y);
+	public void setOpaque(boolean opaque) {		
+		textFlow.setOpaque(opaque);
+		super.setOpaque(opaque);
 	}
-
+	
+	
+	
+	/**
+	 * @param runMode the runMode to set
+	 */
+	public void setRunMode(boolean runMode) {
+		this.runMode = runMode;
+	}
+	
+	
 	/**
 	 * @param selectable the selectable to set
 	 */
 	public void setSelectable(boolean selectable) {
 		this.selectable = selectable;
+	}
+	
+	/**
+	 * Sets the text of the TextFlow to the given value.
+	 * 
+	 * @param newText the new text value.
+	 */
+	public void setText(String newText) {		
+		textFlow.setText(newText);
+		revalidate();
+
+	}
+
+	public void setVerticalAlignment(V_ALIGN vAlignment) {
+		if(this.verticalAlignment == vAlignment)
+			return;
+		verticalAlignment = vAlignment;
+		revalidate();
+	}
+
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 
 	

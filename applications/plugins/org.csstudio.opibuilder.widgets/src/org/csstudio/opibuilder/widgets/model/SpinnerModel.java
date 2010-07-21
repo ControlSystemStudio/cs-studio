@@ -6,7 +6,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.opibuilder.widgets.figures.SpinnerFigure.NumericFormatType;
+import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
 
 /**
  *The model of spinner widget.

@@ -7,9 +7,9 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.opibuilder.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
 
 /**The model for label widget.
  * @author Xihui Chen
