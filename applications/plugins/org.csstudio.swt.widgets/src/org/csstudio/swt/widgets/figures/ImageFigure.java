@@ -236,11 +236,12 @@ public final class ImageFigure extends Figure implements Introspectable {
 			originalImageDataArray = loader.load(stream);
 			stream.close();
 			animated = (originalImageDataArray.length > 1);	
+			repaint();	
 		}finally {
 			if (temp != null && !temp.isDisposed()) 
 				temp.dispose();
 		}		
-			
+		
 	}
 	
 	/**
@@ -346,7 +347,10 @@ public final class ImageFigure extends Figure implements Introspectable {
 				(imgWidth-leftCrop-rightCrop) : imgWidth;
 		int cropedHeight = (imgHeight-topCrop-bottomCrop) > 0 ?
 				(imgHeight-topCrop-bottomCrop) : imgHeight;
-			
+		
+		if(leftCrop + cropedWidth > imgWidth || topCrop + cropedHeight > imgHeight)
+			return;
+				
 		if(animated) {   //draw refreshing image
 			ImageData imageData = imageDataArray[showIndex];
 			Image refresh_image = new Image(Display.getDefault(), imageData);
@@ -424,6 +428,16 @@ public final class ImageFigure extends Figure implements Introspectable {
 		repaint();
 	}
 	
+	/**
+	 * Automatically make the widget bounds be adjusted to the size of the static image 
+	 * @param autoSize
+	 */
+	public void setAutoSize(final boolean autoSize){
+		if(!stretch && autoSize)
+				resizeImage();			
+	}
+	
+	
 	public void setAnimationDisabled(final boolean stop){
 		if(animationDisabled == stop)
 			return;
@@ -449,7 +463,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setBottomCrop(final int newval) {
-		if(bottomCrop == newval)
+		if(bottomCrop == newval || (newval + topCrop)>= imgHeight|| newval <0|| (newval + topCrop) <0 )
 			return;
 		bottomCrop=newval;
 		resizeImage();
@@ -483,7 +497,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setLeftCrop(final int newval) {
-		if(leftCrop == newval)
+		if(leftCrop == newval || newval<0 || (newval + rightCrop) > imgWidth|| (newval + rightCrop) <0 )
 			return;
 		leftCrop=newval;
 		resizeImage();
@@ -494,7 +508,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setRightCrop(final int newval) {
-		if(rightCrop == newval)
+		if(rightCrop == newval || newval < 0 || (newval + leftCrop) > imgWidth || (newval + leftCrop) <0 )
 			return;
 		rightCrop=newval;
 		resizeImage();
@@ -547,7 +561,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 	 * @param newval The amount of pixels
 	 */
 	public void setTopCrop(final int newval) {
-		if(topCrop == newval)
+		if(topCrop == newval || newval <0 || (newval + bottomCrop) > imgHeight|| (newval + bottomCrop) <0 )
 			return;
 		topCrop=newval;
 		resizeImage();

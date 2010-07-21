@@ -25,8 +25,8 @@
 import org.csstudio.opibuilder.editparts.AbstractWidgetEditPart;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.ResourceUtil;
-import org.csstudio.opibuilder.widgets.figures.ImageFigure;
 import org.csstudio.opibuilder.widgets.model.ImageModel;
+import org.csstudio.swt.widgets.figures.ImageFigure;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Dimension;
@@ -66,7 +66,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 		figure.setRightCrop(model.getRightCrop());
 		figure.setStretch(model.getStretch());
 		figure.setAutoSize(model.isAutoSize());
-		figure.setStopAnimation(model.isStopAnimation());
+		figure.setAnimationDisabled(model.isStopAnimation());
 		return figure;
 	}
 	
@@ -185,7 +185,7 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 			public boolean handleChange(final Object oldValue, final Object newValue,
 					final IFigure figure) {
 				ImageFigure imageFigure = (ImageFigure) figure;
-				imageFigure.setStopAnimation((Boolean)newValue);
+				imageFigure.setAnimationDisabled((Boolean)newValue);
 				return false;
 			}
 		};
