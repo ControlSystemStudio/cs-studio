@@ -36,7 +36,7 @@ public class ChannelArchiverInterfaceTest
     public static void setUp()
 	{
 	    try {
-	        PROV = TestDataProvider.loadTestProperties("org.csstudio.archive.channelarchiver");
+	        PROV = TestDataProvider.getInstance("org.csstudio.archive.channelarchiver");
 	    } catch (final Exception e) {
 	        Assert.fail("Unexpected exception");
 	    }
