@@ -48,6 +48,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.osgi.framework.Bundle;
 import org.xml.sax.SAXException;
 
 /**
@@ -63,8 +64,8 @@ public class ContentModelExporterTest {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ContentModelExporterTest.class);
 
-    private static final String TEST_EXPORT_XML = "testres/Test_Export.xml";
-    private static final String TEST_DTD = "testres/test.dtd";
+    private static final String TEST_EXPORT_XML = "Test_Export.xml";
+    private static final String TEST_DTD = "test.dtd";
 
     private static ContentModel<TestTreeConfigurator> MODEL;
     private static Document IMPORTED_DOC;
@@ -119,27 +120,36 @@ public class ContentModelExporterTest {
     }
 
 
+    @SuppressWarnings("unchecked")
     @Test
     public void testExportContentModelToFile() throws IOException {
 
-        final URL entry = Platform.getBundle(Activator.PLUGIN_ID).getEntry(".");
-        if (entry == null) {
-            final Enumeration entries = Platform.getBundle(Activator.PLUGIN_ID).findEntries("/", "*.xml", true);
-            Assert.assertTrue("entries is empty", entries.hasMoreElements());
-            Assert.fail("URL of root entry '.' of bundle is null");
-        }
-        final String path = FileLocator.toFileURL(entry).getPath();
+        final Bundle bundle = Platform.getBundle(Activator.PLUGIN_ID);
+        Assert.assertNotNull("Bundle " + Activator.PLUGIN_ID + " is null!", bundle);
+        final String fileSeparator = "/";
+        final Enumeration<URL> xmlEntries = bundle.findEntries(fileSeparator, "*.xml", true);
+        Assert.assertTrue("No xml entries found!", xmlEntries.hasMoreElements());
+
+        final URL entry = xmlEntries.nextElement();
+
+
+        final String fullPath = FileLocator.toFileURL(entry).getPath();
+//        int lastIndexOf = fullPath.lastIndexOf(File.separator); - doesn't work - even on windows fullPath contains only "/" ???
+        final int lastIndexOf = fullPath.lastIndexOf(fileSeparator);
+        final String basePath = fullPath.substring(0, lastIndexOf);
+
 
         try {
-            ContentModelExporter.exportContentModelToXmlFile(path +  TEST_EXPORT_XML, MODEL, path +  TEST_DTD);
+            ContentModelExporter.exportContentModelToXmlFile(basePath + fileSeparator +  TEST_EXPORT_XML, MODEL,
+                                                             basePath + fileSeparator + TEST_DTD);
         } catch (final ExportContentModelException e) {
             Assert.fail("XML file export exception: " + e.getMessage());
         }
 
-        final File expFile = new File(path, TEST_EXPORT_XML);
+        final File expFile = new File(basePath, TEST_EXPORT_XML);
         Assert.assertTrue(expFile.exists());
 
-        final URL resource = TreeModelTestUtils.findResource(TEST_EXPORT_XML);
+        final URL resource = TreeModelTestUtils.findResource("testres" + fileSeparator + TEST_EXPORT_XML);
         _exportedDoc = getDomTreeOfResource(resource);
 
         // Compare the input file and the output file
