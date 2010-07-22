@@ -1,0 +1,57 @@
+General MySQL Setup Notes
+=========================
+
+Download the free, "community" edition of MySQL.  
+You need the "server" for your OS/version.
+(My Linux version of firefox actually had problems
+with the MySQL download site, but when I fetched
+the file with Safari, that went fine...)
+
+I also needed to install perl DBI.
+For Linux, I prefer the non-RPM package,
+which one can install under /usr/local
+like this:
+
+# Initial install
+cd /usr/local
+tar vzxf mysql-.....
+ln -s /usr/local/mysql-5.0.51a-linux-i686-glibc23 /usr/local/mysql
+groupadd mysql
+useradd mysql
+cd /usr/local/mysql
+./scripts/mysql_install_db --user=mysql
+chown -R root .
+chown -R mysql data
+chgrp -R mysql .
+
+
+# Start the server
+/usr/local/mysql/bin/mysqld_safe --user=mysql &
+
+# Stop the server
+/usr/local/mysql/bin/mysqladmin -u root -p shutdown
+
+
+# Set password
+./bin/mysqladmin -u root password 'new-password'
+
+# Similar, via mysql
+/usr/local/mysql/bin/mysql -u root -p
+... enter root password
+
+SET PASSWORD FOR root@localhost=PASSWORD('new-password');
+SET PASSWORD FOR root@'titan-terrier'=PASSWORD('new-password');
+
+
+# Delete empty default user stuff
+USE mysql;
+DELETE FROM user WHERE User='';
+DELETE FROM db WHERE User='';
+FLUSH PRIVILEGES;
+
+SELECT User, Host FROM user;
+SELECT User, Host, Db FROM db;
+
+ 
+# Add user 'fred' who can access the 'archive' tables
+GRANT ALL ON archive.* TO fred IDENTIFIED BY '$fred';
