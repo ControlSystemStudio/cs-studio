@@ -22,11 +22,14 @@ import org.eclipse.equinox.app.IApplicationContext;
  */
 public class EngineConfigImportApp implements IApplication
 {
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(EngineConfigImportApp.class);
+
     /** "Main" Routine
      *  @see IApplication#start(IApplicationContext)
      */
     @SuppressWarnings("nls")
-    public Object start(IApplicationContext context) throws Exception
+    public Object start(final IApplicationContext context) throws Exception
     {
         // Handle command-line options
         final String args[] =
@@ -58,10 +61,10 @@ public class EngineConfigImportApp implements IApplication
                 "-steal_channels", "Steal channels that are already in other engine");
         final BooleanOption delete_config = new BooleanOption(parser,
                 "-delete_config", "Delete existing engine config");
-        
+
         // NOTE:
         // On OS X, the application will have a file
-        // EngineConfigImport.app/Contents/Info.plist 
+        // EngineConfigImport.app/Contents/Info.plist
         // that includes a default option "-showlocation",
         // which the parser will see but not understand.
         // Solution for now: Remove that from Info.plist
@@ -69,7 +72,7 @@ public class EngineConfigImportApp implements IApplication
         {
             parser.parse(args);
         }
-        catch (Exception ex)
+        catch (final Exception ex)
         {
             System.err.println(ex.getMessage());
             return IApplication.EXIT_OK;
@@ -79,7 +82,7 @@ public class EngineConfigImportApp implements IApplication
             System.out.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        if (rdb_url.get() == null  ||  rdb_url.get().length() <= 0)
+        if ((rdb_url.get() == null)  ||  (rdb_url.get().length() <= 0))
         {
             System.err.println("Missing option " + rdb_url.getOption());
             System.err.println(parser.getHelp());
@@ -91,8 +94,8 @@ public class EngineConfigImportApp implements IApplication
             System.err.println(parser.getHelp());
             return IApplication.EXIT_OK;
         }
-        
-        final Logger logger = CentralLogger.getInstance().getLogger(this);
+
+
         try
         {
             if (export.get())
@@ -114,13 +117,13 @@ public class EngineConfigImportApp implements IApplication
                 new URL("http://" + engine_host.get() + ":" + engine_port.get() + "/main");
 
             // Dump options
-            logger.info("Importing     : " + filename.get());
-            logger.info("Engine        : " + engine_name.get());
-            logger.info("Description   : " + engine_description.get());
-            logger.info("URL           : " + engine_url);
-            logger.info("Replace engine: " + replace_engine.get());
-            logger.info("Steal channels: " + steal_channels.get());
-            
+            LOG.info("Importing     : " + filename.get());
+            LOG.info("Engine        : " + engine_name.get());
+            LOG.info("Description   : " + engine_description.get());
+            LOG.info("URL           : " + engine_url);
+            LOG.info("Replace engine: " + replace_engine.get());
+            LOG.info("Steal channels: " + steal_channels.get());
+
             // Perform XML Import
             if (filename.get().length() <= 0)
             {
@@ -130,8 +133,11 @@ public class EngineConfigImportApp implements IApplication
             }
             final InputStream stream = new FileInputStream(filename.get());
             final XMLImport importer = new XMLImport(rdb_url.get(),
-                    user.get(), password.get(),
-                    engine_name.get(), engine_description.get(), engine_url,
+                    user.get(),
+                    password.get(),
+                    engine_name.get(),
+                    engine_description.get(),
+                    engine_url,
                     replace_engine.get(),
                     steal_channels.get());
             try
@@ -146,17 +152,18 @@ public class EngineConfigImportApp implements IApplication
         catch (final Throwable ex)
         {
             final String error = ex.getMessage();
-            if (error != null  &&  error.length() > 0)
-                logger.fatal(error, ex);
-            else
-                logger.fatal(ex);
+            if ((error != null)  &&  (error.length() > 0)) {
+                LOG.fatal(error, ex);
+            } else {
+                LOG.fatal(ex);
+            }
         }
         return IApplication.EXIT_OK;
     }
 
-    /** Delete existing engine config 
+    /** Delete existing engine config
      *  @param rdb_url
-     *  @param user 
+     *  @param user
      *  @param password
      *  @param engine_name
      */
@@ -170,11 +177,11 @@ public class EngineConfigImportApp implements IApplication
             final SampleEngineHelper engines =
                 new SampleEngineHelper(archive);
             final SampleEngineConfig engine = engines.find(engine_name);
-            if (engine == null)
-                CentralLogger.getInstance().getLogger(this).warn(engine_name + " not found");
-            else
+            if (engine == null) {
+                LOG.warn(engine_name + " not found");
+            } else
             {
-                CentralLogger.getInstance().getLogger(this).info("Deleting " + engine);
+                LOG.info("Deleting " + engine);
                 engines.deleteEngineInfo(engine);
             }
         }
