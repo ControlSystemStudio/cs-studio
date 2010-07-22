@@ -26,12 +26,13 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in demo of Controller for Plot and Model.
- * 
+ *
  *  Creates Model, Plot and Controller, showing most of the functionality
- *  but does not have a workbench. 
+ *  but does not have a workbench.
  *
  *  Must run as plug-in test to load XY Graph icons etc.
  *  @author Kay Kasemir
@@ -40,25 +41,25 @@ import org.junit.Test;
 public class ControllerTest
 {
     private boolean run = true;
-    
+
     private Model model;
     private Plot plot;
 
     private Controller controller;
-    
+
     private void createModel() throws Exception
     {
         model = new Model();
 
         ModelItem item;
-        
+
         item = new PVItem("sim://sine(-1, 1, 20, 0.25)", 1);
         item.setDisplayName("Sine (scanned)");
         model.addItem(item);
 
         item = new FormulaItem("math", "sine*0.5+2",
                 new FormulaInput[] { new FormulaInput(item, "sine") });
-        
+
         item = new PVItem("sim://ramp(0, 2, 40, 0.5)", 0);
         item.setDisplayName("Ramp (monitored)");
         item.setAxis(model.addAxis());
@@ -89,7 +90,7 @@ public class ControllerTest
     {
         final GridLayout layout = new GridLayout(2, false);
         parent.setLayout(layout);
-        
+
         // Canvas that holds the graph
         final Canvas plot_box = new Canvas(parent, 0);
         plot_box.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
@@ -101,12 +102,12 @@ public class ControllerTest
         debug.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 debug();
             }
         });
-        
+
         // [Done] button to end demo
         final Button ok = new Button(parent, SWT.PUSH);
         ok.setText("Done");
@@ -114,7 +115,7 @@ public class ControllerTest
         ok.addSelectionListener(new SelectionAdapter()
         {
             @Override
-            public void widgetSelected(SelectionEvent e)
+            public void widgetSelected(final SelectionEvent e)
             {
                 run = false;
             }
@@ -128,14 +129,16 @@ public class ControllerTest
         for (int i=0; i<model.getItemCount(); ++i)
         {
             final ModelItem item = model.getItem(i);
-            if (! (item instanceof PVItem))
+            if (! (item instanceof PVItem)) {
                 continue;
+            }
             System.out.println("\n" + item.getName() + ":");
             final PlotSamples samples = item.getSamples();
             synchronized (samples)
             {
-                if (samples.getSize() <= 0)
+                if (samples.getSize() <= 0) {
                     continue;
+                }
                 ITimestamp last = samples.getSample(0).getTime();
                 for (int s=0; s<samples.getSize(); ++s)
                 {
@@ -153,6 +156,8 @@ public class ControllerTest
         }
     }
 
+    // FIXME (kasemir) : can we make this a test?
+    @Ignore("Does not finish - show stopper for all bundles test suite.")
     @Test
     public void controllerDemo() throws Exception
     {
@@ -165,15 +170,16 @@ public class ControllerTest
         createGUI(shell);
         controller = new Controller(shell, model, plot);
         controller.start();
-        
+
         shell.open();
-        
+
         while (run  &&  !shell.isDisposed())
         {
-          if (!display.readAndDispatch())
+          if (!display.readAndDispatch()) {
             display.sleep();
         }
-        
+        }
+
         controller.stop();
         System.out.println("Controller stopped, waiting a little");
         // Wait a few seconds to see if more events happen after controller is stopped
