@@ -23,7 +23,7 @@ package org.csstudio.utility.ldap.ui.preference;
 
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.Messages;
-import org.csstudio.utility.ldap.preference.PreferenceKey;
+import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
@@ -49,26 +49,26 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 */
 	@Override
     public void createFieldEditors() {
-		addField(new StringFieldEditor(PreferenceKey.P_STRING_URL.name(),
+		addField(new StringFieldEditor(LdapPreference.URL.getKeyAsString(),
 		                               Messages.getString("PreferencePage.URL"),
 		                               getFieldEditorParent())); //$NON-NLS-1$
-		addField(new StringFieldEditor(PreferenceKey.P_STRING_USER_DN.name(),
+		addField(new StringFieldEditor(LdapPreference.USER_DN.getKeyAsString(),
 		                               Messages.getString("PreferencePage.DN"),
 		                               getFieldEditorParent())); //$NON-NLS-1$
 
 		final StringFieldEditor sfeP =
-		    new StringFieldEditor(PreferenceKey.P_STRING_USER_PASSWORD.name(),
+		    new StringFieldEditor(LdapPreference.USER_PASSWORD.getKeyAsString(),
 		                          Messages.getString("PreferencePage.PASS"),
 		                          getFieldEditorParent()); //$NON-NLS-1$
 
         sfeP.getTextControl(getFieldEditorParent()).setEchoChar('*');
 		addField(sfeP);
 
-		addField(new StringFieldEditor(PreferenceKey.SECURITY_PROTOCOL.name(),
+		addField(new StringFieldEditor(LdapPreference.SECURITY_PROTOCOL.getKeyAsString(),
 		                               Messages.getString("PreferencePage.SECURITY_PROTOCOL"),
 		                               getFieldEditorParent())); //$NON-NLS-1$
 
-		addField(new StringFieldEditor(PreferenceKey.SECURITY_AUTHENTICATION.name(),
+		addField(new StringFieldEditor(LdapPreference.SECURITY_AUTH.getKeyAsString(),
 		                               Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"),
 		                               getFieldEditorParent())); //$NON-NLS-1$
 

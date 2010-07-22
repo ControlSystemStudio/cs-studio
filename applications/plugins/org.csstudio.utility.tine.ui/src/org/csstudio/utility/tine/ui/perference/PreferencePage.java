@@ -27,7 +27,6 @@ import org.csstudio.utility.tine.preference.PreferenceConstants;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.StringFieldEditor;
-import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.preferences.ScopedPreferenceStore;
@@ -48,28 +47,17 @@ public class PreferencePage extends FieldEditorPreferencePage
 	 * of preferences. Each field editor knows how to save and
 	 * restore itself.
 	 */
-	public void createFieldEditors() {
-		StringFieldEditor pathSFE = new StringFieldEditor(PreferenceConstants.TINE_CONFIG_PATH, Messages.getString("Tine.PreferencePage.Path"), getFieldEditorParent());
+	@Override
+    public void createFieldEditors() {
+		final StringFieldEditor pathSFE = new StringFieldEditor(PreferenceConstants.TINE_CONFIG_PATH, Messages.getString("Tine.PreferencePage.Path"), getFieldEditorParent());
 		pathSFE.getTextControl(getFieldEditorParent()).setToolTipText(Messages.getString("Tine.PreferencePage.Path.ToolTip"));
 		addField(pathSFE); //$NON-NLS-1$
-//		StringFieldEditor defaultSFE = new StringFieldEditor(PreferenceConstants.TINE_CONFIG_DEFAULT, Messages.getString("PreferencePage.DN"), getFieldEditorParent()); //$NON-NLS-1$
-//		Text test = defaultSFE.getTextControl(getFieldEditorParent());
-//		test.
-//		addField(defaultSFE);
-			
-//		addField(
-//				new StringFieldEditor(PreferenceConstants.P_STRING_USER_PASSWORD, Messages.getString("PreferencePage.PASS"), getFieldEditorParent())); //$NON-NLS-1$
-//		addField(
-//				new StringFieldEditor(PreferenceConstants.SECURITY_PROTOCOL, Messages.getString("PreferencePage.SECURITY_PROTOCOL"), getFieldEditorParent())); //$NON-NLS-1$
-//		addField(
-//				new StringFieldEditor(PreferenceConstants.SECURITY_AUTHENTICATION, Messages.getString("PreferencePage.SECURITY_AUTHENTICATION"), getFieldEditorParent())); //$NON-NLS-1$
-
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(IWorkbench workbench) {
+	public void init(final IWorkbench workbench) {
 	}
 
 

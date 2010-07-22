@@ -32,7 +32,7 @@ import javax.annotation.Nullable;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.preference.PreferenceKey;
+import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
 import org.eclipse.core.runtime.IStatus;
@@ -72,8 +72,8 @@ public final class LdapActivator extends AbstractCssPlugin {
         _ldapService = null;
 
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
-        String ldapURL = getCssPluginPreferences().getString(PreferenceKey.P_STRING_URL.name());
-        boolean useLDAP = (ldapURL != null) && (ldapURL.length() > 5);
+        final String ldapURL = getCssPluginPreferences().getString(LdapPreference.URL.getKeyAsString());
+        final boolean useLDAP = (ldapURL != null) && (ldapURL.length() > 5);
 
         if (useLDAP) {
             final Dictionary<String, Object> props = new Hashtable<String, Object>();

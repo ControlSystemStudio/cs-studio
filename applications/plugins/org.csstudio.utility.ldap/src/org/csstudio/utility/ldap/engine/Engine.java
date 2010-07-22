@@ -48,16 +48,13 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
-import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.preference.PreferenceKey;
+import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.DefaultScope;
-import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * TODO (bknerr) : - Does it have to be a job?
@@ -285,8 +282,8 @@ public final class Engine extends Job {
              * sleep before we check for work again
              */
             try {
-                final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
-                final String protocol = prefs.get(PreferenceKey.SECURITY_PROTOCOL.name(), "");
+                final String protocol = LdapPreference.SECURITY_PROTOCOL.getValue();
+
                 if (protocol.trim().length() > 0) {
                     intSleepTimer = new Integer(protocol);
                 } else {

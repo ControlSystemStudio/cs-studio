@@ -25,10 +25,9 @@
 package org.csstudio.utility.ldap.connection;
 
 import java.util.Collections;
-import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.annotation.Nonnull;
 import javax.naming.Context;
@@ -37,12 +36,10 @@ import javax.naming.directory.DirContext;
 import javax.naming.ldap.InitialLdapContext;
 
 import org.apache.log4j.Logger;
+import org.csstudio.platform.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.LdapActivator;
-import org.csstudio.utility.ldap.preference.PreferenceKey;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.csstudio.utility.ldap.preference.LdapPreference;
 
 /**
  * The LDAP Connector.
@@ -57,7 +54,7 @@ public class LDAPConnector {
 
     private InitialLdapContext _ctx = null;
 
-    private Map<PreferenceKey, String> _prefsMap = Collections.emptyMap();
+    private Map<String, String> _contextPrefs = Collections.emptyMap();
 
     /**
      * The connection settings come from
@@ -67,10 +64,8 @@ public class LDAPConnector {
      */
     public LDAPConnector() throws NamingException{// throws NamingException{
         try {
-            _prefsMap = getUIenv();
-            _ctx = createInitialContext(_prefsMap); // does the same now, but better naming
-
-
+            _contextPrefs = createContextPrefsFromLdapPrefs();
+            _ctx = createInitialContext(_contextPrefs); // does the same now, but better naming
         } catch (final NamingException e) {
             logError(e);
             throw e;
@@ -102,7 +97,7 @@ public class LDAPConnector {
     @Nonnull
     public final DirContext reconnect() throws NamingException {
         try {
-            _ctx = createInitialContext(_prefsMap);
+            _ctx = createInitialContext(_contextPrefs);
 
         } catch (final NamingException e) {
             logError(e);
@@ -117,56 +112,37 @@ public class LDAPConnector {
      * Read first the preferences in instance scope and if there is no
      * user defined setting, get them from default scope.
      *
-     * @return env with the settings from PreferencPage
+     * @return env with the settings from PreferencePage
      */
     @Nonnull
-    private Map<PreferenceKey, String> getUIenv() {
-
-        final IPreferencesService preferencesService = Platform.getPreferencesService();
-        final String url = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_URL.name(), "", null);
-        final String proto = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_PROTOCOL.name(), "", null);
-        final String auth = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.SECURITY_AUTHENTICATION.name(), "", null);
-        final String dn = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_USER_DN.name(), "", null);
-        final String pw = preferencesService.getString(LdapActivator.PLUGIN_ID, PreferenceKey.P_STRING_USER_PASSWORD.name(), "", null);
-
-        _prefsMap = new EnumMap<PreferenceKey, String>(PreferenceKey.class);
-
-        if (StringUtil.hasLength(url)) {
-            _prefsMap.put(PreferenceKey.P_STRING_URL, url);
-        }
-        if (StringUtil.hasLength(proto)) {
-            _prefsMap.put(PreferenceKey.SECURITY_PROTOCOL, proto);
-        }
-        if (StringUtil.hasLength(auth)) {
-            _prefsMap.put(PreferenceKey.SECURITY_AUTHENTICATION, auth);
-        }
-        if (StringUtil.hasLength(dn)) {
-            _prefsMap.put(PreferenceKey.P_STRING_USER_DN, dn);
-        }
-        if (StringUtil.hasLength(pw)) {
-            _prefsMap.put(PreferenceKey.P_STRING_USER_PASSWORD, pw);
-        }
+    private Map<String, String> createContextPrefsFromLdapPrefs() {
 
         LOG.debug("++++++++++++++++++++++++++++++++++++++++++++++");
         LOG.debug("+ PLUGIN_ID: " + LdapActivator.PLUGIN_ID);
-        LOG.debug("+ P_STRING_URL: " + url);
-        LOG.debug("+ SECURITY_PROTOCOL: " + proto);
-        LOG.debug("+ SECURITY_AUTHENTICATION: " + auth);
-        LOG.debug("+ P_STRING_USER_DN: " + dn);
-        LOG.debug("+ P_STRING_USER_PASSWORD: " + pw);
+
+        _contextPrefs = new HashMap<String, String>();
+
+        for (final AbstractPreference<?> pref : LdapPreference.URL.getAllPreferences()) {
+            final String key = pref.getKeyAsString();
+            final String value = (String) pref.getValue();
+            LOG.debug("+ " + key + ": " + value);
+
+            if (!"".equals(pref.getValue())) { // put only non empty strings in the map
+                _contextPrefs.put( ((LdapPreference<?>) pref).getContextId(), value);
+            }
+        }
+
         LOG.debug("----------------------------------------------");
 
-        return _prefsMap;
+        return _contextPrefs;
     }
 
 
     @Nonnull
-    private InitialLdapContext createInitialContext(@Nonnull final Map<PreferenceKey, String> prefsMap) throws NamingException {
+    private InitialLdapContext createInitialContext(@Nonnull final Map<String, String> contextPrefs) throws NamingException {
 
-        final Hashtable<Object, String> env = new Hashtable<Object, String>();
-        for (final Entry<PreferenceKey, String> entry : prefsMap.entrySet()) {
-            env.put(entry.getKey().getContextId(), entry.getValue());
-        }
+        final Hashtable<Object, String> env = new Hashtable<Object, String>(contextPrefs);
+
         env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
 
         return new InitialLdapContext(env, null);

@@ -21,6 +21,9 @@
  */
 package org.csstudio.utility.ldap.preference;
 
+import java.util.List;
+
+import org.csstudio.platform.AbstractPreference;
 import org.csstudio.utility.ldap.LdapActivator;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -38,11 +41,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
     public final void initializeDefaultPreferences() {
         final IEclipsePreferences prefs = new DefaultScope().getNode(LdapActivator.PLUGIN_ID);
 
-        prefs.put(PreferenceKey.P_STRING_USER_DN.name(), "uid=css_user,ou=people,o=DESY,c=DE"); //$NON-NLS-1$
-        prefs.put(PreferenceKey.P_STRING_USER_PASSWORD.name(), "cssPass"); //$NON-NLS-1$
-        prefs.put(PreferenceKey.SECURITY_PROTOCOL.name(), ""); //$NON-NLS-1$
-        prefs.put(PreferenceKey.SECURITY_AUTHENTICATION.name(), ""); //$NON-NLS-1$
-        prefs.put(PreferenceKey.P_STRING_URL.name(), "ldap://krynfs.desy.de:389/o=DESY,c=DE"); //$NON-NLS-1$
+        final List<AbstractPreference<?>> allPreferences = LdapPreference.URL.getAllPreferences();
+        for (final AbstractPreference<?> preference : allPreferences) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
     }
 
 }
