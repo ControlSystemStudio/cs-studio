@@ -1,6 +1,10 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
-import org.csstudio.opibuilder.util.UIBundlingThread;
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
+import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.Border;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FigureListener;
@@ -11,12 +15,13 @@ import org.eclipse.draw2d.ScalableFreeformLayeredPane;
 import org.eclipse.draw2d.ScrollPane;
 import org.eclipse.draw2d.StackLayout;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.swt.widgets.Display;
 
 /**The figure of linking container, which can host children widgets from another OPI file.
  * @author Xihui Chen
  *
  */
-public class LinkingContainerFigure extends Figure {
+public class LinkingContainerFigure extends Figure implements Introspectable {
 	
 	private ScalableFreeformLayeredPane pane;
 	
@@ -40,7 +45,7 @@ public class LinkingContainerFigure extends Figure {
 		
 		addFigureListener(new FigureListener(){
 			public void figureMoved(IFigure source) {
-				UIBundlingThread.getInstance().addRunnable(new Runnable(){
+				Display.getDefault().asyncExec(new Runnable(){
 					public void run() {
 						updateZoom();
 					}
@@ -57,6 +62,29 @@ public class LinkingContainerFigure extends Figure {
 		return pane;
 	}
 	
+	public boolean isZoomToFitAll() {
+		return zoomToFitAll;
+	}
+	
+	@Override
+	public void setBorder(Border border) {
+		super.setBorder(border);
+		Display.getDefault().asyncExec(new Runnable(){
+			public void run() {
+				updateZoom();
+			}
+		});
+	}
+
+	public void setZoomToFitAll(boolean zoomToFitAll) {
+		this.zoomToFitAll = zoomToFitAll;
+		Display.getDefault().asyncExec(new Runnable(){
+			public void run() {
+				updateZoom();
+			}
+		});
+	}
+	
 	/**
 	 * Refreshes the zoom.
 	 */
@@ -67,19 +95,9 @@ public class LinkingContainerFigure extends Figure {
 			zoomManager.setZoomAsText(ZoomManager.FIT_ALL);
 		}
 	}
-	
-	public void setZoomToFitAll(boolean zoomToFitAll) {
-		this.zoomToFitAll = zoomToFitAll;
-	}
 
-	@Override
-	public void setBorder(Border border) {
-		super.setBorder(border);
-		UIBundlingThread.getInstance().addRunnable(new Runnable(){
-			public void run() {
-				updateZoom();
-			}
-		});
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
 	}
 	
 

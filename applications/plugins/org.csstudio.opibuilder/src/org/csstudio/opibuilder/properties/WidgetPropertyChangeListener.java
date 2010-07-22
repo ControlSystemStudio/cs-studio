@@ -41,10 +41,9 @@ public class WidgetPropertyChangeListener implements PropertyChangeListener {
 				}
 				for(IWidgetPropertyChangeHandler h : handlers) {
 					IFigure figure = editpart.getFigure();
-					boolean repaint = h.handleChange(
+					h.handleChange(
 							evt.getOldValue(), evt.getNewValue(), figure);
-					if(repaint)
-						figure.repaint();
+					
 				}
 			}
 		};		

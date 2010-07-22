@@ -32,7 +32,12 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 	 */
 	@Override
 	public void setValue(Object value) {
-		((ByteMonitorFigure)getFigure()).setValue(value);
+		if(value instanceof Integer)
+			((ByteMonitorFigure)getFigure()).setValue((Integer)value);
+		else if (value instanceof Long)
+			((ByteMonitorFigure)getFigure()).setValue((Long)value);
+		else if (value instanceof Double)
+			((ByteMonitorFigure)getFigure()).setValue((Double)value);
 	}
 
 	/* (non-Javadoc)

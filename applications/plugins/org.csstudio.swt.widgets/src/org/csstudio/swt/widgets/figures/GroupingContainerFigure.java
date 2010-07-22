@@ -1,5 +1,10 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
+
+import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -12,13 +17,15 @@ import org.eclipse.draw2d.StackLayout;
  * @author Xihui Chen
  *
  */
-public class GroupingContainerFigure extends Figure {
+public class GroupingContainerFigure extends Figure implements Introspectable{
 	
 	private IFigure pane;
 	
 	private boolean transparent;
 
 	private ScrollPane scrollPane;
+
+	private boolean showScrollbar;
 	
 	public GroupingContainerFigure() {
 		scrollPane = new ScrollPane(){
@@ -35,8 +42,16 @@ public class GroupingContainerFigure extends Figure {
 		scrollPane.setContents(pane);			
 	}
 	
-	public void setShowScrollBar(boolean show){
-		scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+	
+	public IFigure getContentPane(){
+		return pane;
+	}
+	
+	public boolean isShowScrollBar(){
+		return showScrollbar;
 	}
 	
 	@Override
@@ -45,9 +60,12 @@ public class GroupingContainerFigure extends Figure {
 		pane.setOpaque(opaque);
 		super.setOpaque(opaque);
 	}
-	
-	public IFigure getContentPane(){
-		return pane;
+
+	public void setShowScrollBar(boolean show){
+		if(this.showScrollbar == show)
+			return;
+		this.showScrollbar = show;
+		scrollPane.setScrollBarVisibility(show ? ScrollPane.AUTOMATIC : ScrollPane.NEVER);
 	}
 	
 	
