@@ -317,8 +317,7 @@ public abstract class AbstractScale extends Figure{
     /** set the scale range */
     public void setRange(double lower, double upper){
         if (Double.isNaN(lower) || Double.isNaN(upper) 
-        		|| Double.isInfinite(lower) || Double.isInfinite(upper) 
-        		|| lower == upper) {
+        		|| Double.isInfinite(lower) || Double.isInfinite(upper)) {
             throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
         

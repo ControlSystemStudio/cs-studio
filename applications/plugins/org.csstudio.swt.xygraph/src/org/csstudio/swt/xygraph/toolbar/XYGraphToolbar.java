@@ -1,6 +1,5 @@
 package org.csstudio.swt.xygraph.toolbar;
 
-import org.csstudio.swt.xygraph.Activator;
 import org.csstudio.swt.xygraph.figures.XYGraph;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.undo.AddAnnotationCommand;
@@ -56,7 +55,7 @@ public class XYGraphToolbar extends Figure {
 		this.xyGraph = xyGraph;
 		setLayoutManager(new WrappableToolbarLayout());
 		
-		final Button configButton = new Button(createImage("icons/Configure.png"));
+		final Button configButton = new Button(XYGraphMediaFactory.createImage("../icons/Configure.png"));
 		configButton.setToolTip(new Label("Configure Settings..."));
 		addButton(configButton);
 		configButton.addActionListener(new ActionListener(){
@@ -67,7 +66,7 @@ public class XYGraphToolbar extends Figure {
 			}
 		});
 			
-		final Button addAnnotationButton = new Button(createImage("icons/Add_Annotation.png"));
+		final Button addAnnotationButton = new Button(XYGraphMediaFactory.createImage("../icons/Add_Annotation.png"));
 		addAnnotationButton.setToolTip(new Label("Add Annotation..."));		
 		addButton(addAnnotationButton);
 		addAnnotationButton.addActionListener(new ActionListener(){
@@ -82,7 +81,7 @@ public class XYGraphToolbar extends Figure {
 			}
 		});
 		
-		final Button delAnnotationButton = new Button(createImage("icons/Del_Annotation.png"));
+		final Button delAnnotationButton = new Button(XYGraphMediaFactory.createImage("../icons/Del_Annotation.png"));
 		delAnnotationButton.setToolTip(new Label("Remove Annotation..."));
 		addButton(delAnnotationButton);
 		delAnnotationButton.addActionListener(new ActionListener(){
@@ -100,7 +99,7 @@ public class XYGraphToolbar extends Figure {
 		addSeparator();	
 		if ((flags & XYGraphFlags.STAGGER) > 0)
 		{	//stagger axes button
-    		final Button staggerButton = new Button(createImage("icons/stagger.png"));
+    		final Button staggerButton = new Button(XYGraphMediaFactory.createImage("../icons/stagger.png"));
     		staggerButton.setToolTip(new Label("Stagger axes so they don't overlap"));
     		addButton(staggerButton);
     		staggerButton.addActionListener(new ActionListener(){
@@ -111,7 +110,7 @@ public class XYGraphToolbar extends Figure {
 		}
 		else
 		{	//auto scale button
-            final Button autoScaleButton = new Button(createImage("icons/AutoScale.png"));
+            final Button autoScaleButton = new Button(XYGraphMediaFactory.createImage("../icons/AutoScale.png"));
             autoScaleButton.setToolTip(new Label("Perform Auto Scale"));
             addButton(autoScaleButton);
             autoScaleButton.addActionListener(new ActionListener(){
@@ -137,14 +136,10 @@ public class XYGraphToolbar extends Figure {
 //		return true;
 //	}
 	
-	private static Image createImage(String path) {			
-		Image image = XYGraphMediaFactory.getInstance().getImageFromPlugin(Activator.getDefault(),
-				Activator.PLUGIN_ID, path);				
-		return image;
-	}
+	
 	
 	private void addSnapshotButton() {
-		Button snapShotButton = new Button(createImage("icons/camera.gif"));
+		Button snapShotButton = new Button(XYGraphMediaFactory.createImage("../icons/camera.gif"));
 		snapShotButton.setToolTip(new Label("Save Snapshot to PNG file"));
 		addButton(snapShotButton);
 		snapShotButton.addActionListener(new ActionListener(){
@@ -172,7 +167,7 @@ public class XYGraphToolbar extends Figure {
 
 	private void addUndoRedoButtons() {
 		//undo button		
-		final GrayableButton undoButton = new GrayableButton(createImage("icons/Undo.png"));
+		final GrayableButton undoButton = new GrayableButton(XYGraphMediaFactory.createImage("../icons/Undo.png"));
 		undoButton.setToolTip(new Label("Undo"));
 		undoButton.setEnabled(false);
 		addButton(undoButton);		
@@ -196,7 +191,7 @@ public class XYGraphToolbar extends Figure {
 		});
 		
 		// redo button
-		final GrayableButton redoButton = new GrayableButton(createImage("icons/Redo.png"));
+		final GrayableButton redoButton = new GrayableButton(XYGraphMediaFactory.createImage("../icons/Redo.png"));
 		redoButton.setToolTip(new Label("Redo"));
 		redoButton.setEnabled(false);
 		addButton(redoButton);		

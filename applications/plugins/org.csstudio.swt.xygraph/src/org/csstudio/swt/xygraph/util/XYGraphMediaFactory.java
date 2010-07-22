@@ -21,11 +21,13 @@
  */
  package org.csstudio.swt.xygraph.util;
 
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.csstudio.swt.xygraph.Activator;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.jface.resource.ColorRegistry;
@@ -89,6 +91,20 @@ public final class XYGraphMediaFactory {
 	
 	private static Cursor CURSOR_GRABBING;	
 	
+	public static Image createImage(String path) {			
+		URL url = XYGraphMediaFactory.class.getResource(path);
+		File file;
+		try{
+			file = new File(url.toURI());
+		}catch (URISyntaxException e) {
+			file = new File(url.getPath());
+		}
+		if(file.exists()){
+			return new Image(null, file.getAbsolutePath());
+		}
+		return null;
+		
+	}
 	
 	public void disposeResources(){
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
@@ -104,9 +120,11 @@ public final class XYGraphMediaFactory {
 	public static Cursor getCursor(CURSOR_TYPE cursorType){
 		switch (cursorType) {
 		case GRABBING:
-			if(CURSOR_GRABBING == null)
-				CURSOR_GRABBING = new Cursor(Display.getDefault(), XYGraphMediaFactory.getInstance().getImageFromPlugin(
-						Activator.getDefault(), Activator.PLUGIN_ID, "icons/Grabbing.png").getImageData(), 8, 8);
+			if(CURSOR_GRABBING == null){
+				
+				CURSOR_GRABBING = new Cursor(Display.getDefault(), 
+						createImage("../icons/Grabbing.png").getImageData(), 8,8);		
+			}
 			return CURSOR_GRABBING;
 
 		default:

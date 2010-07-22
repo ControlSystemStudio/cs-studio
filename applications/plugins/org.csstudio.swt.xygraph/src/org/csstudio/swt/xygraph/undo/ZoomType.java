@@ -1,6 +1,5 @@
 package org.csstudio.swt.xygraph.undo;
 
-import org.csstudio.swt.xygraph.Activator;
 import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.figures.XYGraphFlags;
 import org.csstudio.swt.xygraph.util.XYGraphMediaFactory;
@@ -17,67 +16,67 @@ import org.eclipse.swt.widgets.Display;
 public enum ZoomType{
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
-		        createImage("icons/RubberbandZoom.png"),
-				createImage("icons/RubberbandZoomCursor.png"),
+		        XYGraphMediaFactory.createImage("../icons/RubberbandZoom.png"),
+		        XYGraphMediaFactory.createImage("../icons/RubberbandZoomCursor.png"),
 				XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for horizontal start/end position */		
 		HORIZONTAL_ZOOM(Messages.Zoom_Horiz,
-		        createImage("icons/HorizontalZoom.png"),
-				createImage("icons/HorizontalZoomCursor.png"),
+				XYGraphMediaFactory.createImage("../icons/HorizontalZoom.png"),
+				XYGraphMediaFactory.createImage("../icons/HorizontalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for vertical start/end position */     
 		VERTICAL_ZOOM(Messages.Zoom_Vert,
-		        createImage("icons/VerticalZoom.png"),
-				createImage("icons/VerticalZoomCursor.png"),
+				XYGraphMediaFactory.createImage("../icons/VerticalZoom.png"),
+				XYGraphMediaFactory.createImage("../icons/VerticalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom 'in' around mouse pointer */
 		ZOOM_IN(Messages.Zoom_In,
-		        createImage("icons/ZoomIn.png"),
-				createImage("icons/ZoomInCursor.png"),
+				XYGraphMediaFactory.createImage("../icons/ZoomIn.png"),
+				XYGraphMediaFactory.createImage("../icons/ZoomInCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'out' around mouse pointer */
         ZOOM_OUT(Messages.Zoom_Out,
-                createImage("icons/ZoomOut.png"),
-                createImage("icons/ZoomOutCursor.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOut.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOutCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'in' around mouse pointer along horizontal axis */
         ZOOM_IN_HORIZONTALLY(Messages.Zoom_InHoriz,
-                createImage("icons/ZoomInHoriz.png"),
-                createImage("icons/ZoomInHorizCursor.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomInHoriz.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomInHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY(Messages.Zoom_OutHoriz,
-                createImage("icons/ZoomOutHoriz.png"),
-                createImage("icons/ZoomOutHorizCursor.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOutHoriz.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOutHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 
         /** Zoom 'in' around mouse pointer along vertical axis */
         ZOOM_IN_VERTICALLY(Messages.Zoom_InVert,
-                createImage("icons/ZoomInVert.png"),
-                createImage("icons/ZoomInVertCursor.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomInVert.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomInVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY(Messages.Zoom_OutVert,
-                createImage("icons/ZoomOutVert.png"),
-                createImage("icons/ZoomOutVertCursor.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOutVert.png"),
+        		XYGraphMediaFactory.createImage("../icons/ZoomOutVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer */
 		PANNING(Messages.Zoom_Pan,
-		        createImage("icons/Panning.png"),
-				createImage("icons/PanningCursor.png"),
+				XYGraphMediaFactory.createImage("../icons/Panning.png"),
+				XYGraphMediaFactory.createImage("../icons/PanningCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Disarm zoom behavior */
 		NONE(Messages.Zoom_None,
-		        createImage("icons/MouseArrow.png"), null,
+				XYGraphMediaFactory.createImage("../icons/MouseArrow.png"), null,
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM);
 		
 		final private Image iconImage;
@@ -138,11 +137,8 @@ public enum ZoomType{
 		    return (this.flags & flags) > 0;
 		}
 		
-		private static Image createImage(String path) {			
-			Image image = XYGraphMediaFactory.getInstance().getImageFromPlugin(Activator.getDefault(),
-					Activator.PLUGIN_ID, path);				
-			return image;
-		}
+		
+	
 		
 		@Override
 		public String toString() {
