@@ -4,12 +4,12 @@ import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
-import org.csstudio.opibuilder.widgets.figures.IValueChangeListener;
-import org.csstudio.opibuilder.widgets.figures.ScrollbarFigure;
 import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
+import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.figures.ScrollbarFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.eclipse.draw2d.IFigure;
@@ -86,9 +86,9 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 		scrollBar.setHorizontal(model.isHorizontal());
 
 		if (getExecutionMode() == ExecutionMode.RUN_MODE){
-			scrollBar.addValueChangeListener(new IValueChangeListener() {
+			scrollBar.addManualValueChangeListener(new IManualValueChangeListener() {
 				
-				public void valueChanged(double newValue) {
+				public void manualValueChanged(double newValue) {
 					setPVValue(ScrollBarModel.PROP_PVNAME, newValue);					
 				}
 			});
