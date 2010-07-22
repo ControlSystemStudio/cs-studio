@@ -72,6 +72,9 @@ public class CartesianPlot extends ADLAbstractWidget {
 				if (FileLine.argEquals(row[0], "countpvname")){
 					setCount(FileLine.getTrimmedValue(row[1]));
 				}
+				if (FileLine.argEquals(row[0], "count")){
+					setCount(FileLine.getTrimmedValue(row[1]));
+				}
 				if (FileLine.argEquals(row[0], "erase")){
 					setErase(FileLine.getTrimmedValue(row[1]));
 				}
@@ -86,7 +89,9 @@ public class CartesianPlot extends ADLAbstractWidget {
 				}
 				if (FileLine.argEquals(row[0], "erase_oldest")){
 					setPlotMode(FileLine.getTrimmedValue(row[1]));
-				}
+	            }else {
+	                throw new WrongADLFormatException("\n"+Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+" "+row[0]+"\n "+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+" "+row[1] + "\n");
+	            }
 			}
 		}
 		catch (WrongADLFormatException ex) {
