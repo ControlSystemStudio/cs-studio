@@ -68,7 +68,6 @@ public class EditADLHandler implements IHandler {
 						if (widgetType.equals("color map")){
 							ColorMap tempColorMap = new ColorMap(adlWidget);
 							colorMap = tempColorMap.getColors();
-							
 						}
 					}
 					catch (Exception ex) {
@@ -83,6 +82,10 @@ public class EditADLHandler implements IHandler {
 						displayModel = (DisplayModel)(new Display2Model(adlWidget, colorMap, null)).getWidgetModel();
 					}
 				}
+				//Dynamic and basic attribute are static in Translator utils to allow for defaults to be set (used before vers 020200)
+				TranslatorUtils.initDefaultBasicAttribute();
+				TranslatorUtils.initDefaultDynamicAttribute();
+				
 				TranslatorUtils.ConvertChildren(root.getObjects(), displayModel, colorMap);
 				
 				String s = XMLUtil.WidgetToXMLString(displayModel, true);
