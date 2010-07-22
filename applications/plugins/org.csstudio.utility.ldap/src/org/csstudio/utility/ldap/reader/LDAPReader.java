@@ -231,6 +231,7 @@ public final class LDAPReader extends Job {
 
 
     @Override
+    @Nonnull
     protected IStatus run(@Nonnull final IProgressMonitor monitor) {
         monitor.beginTask("LDAP Reader", IProgressMonitor.UNKNOWN);
 

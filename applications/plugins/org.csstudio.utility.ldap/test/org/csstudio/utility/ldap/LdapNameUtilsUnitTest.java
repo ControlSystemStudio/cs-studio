@@ -33,8 +33,6 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 import static org.junit.Assert.assertEquals;
 
 import javax.naming.InvalidNameException;
-import javax.naming.NamingException;
-import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
@@ -52,24 +50,18 @@ import org.junit.Test;
  * @version $Revision$
  * @since 07.05.2010
  */
-public class LdapNameUtilsTest {
+public class LdapNameUtilsUnitTest {
 
-    private static final String COUNTRY_FIELD_NAME = "c";
-    private static final String COUNTRY_FIELD_VALUE = "DE";
-    private static final String ECON_FIELD_VALUE = "berndTest";
-    private static final String EFAN_FIELD_VALUE = "TEST";
-    private static final String O_FIELD_VALUE = "DESY";
+    public static final String COUNTRY_FIELD_NAME = "c";
+    public static final String COUNTRY_FIELD_VALUE = "DE";
+    public static final String ECON_FIELD_VALUE = "berndTest";
+    public static final String EFAN_FIELD_VALUE = "TEST";
+    public static final String O_FIELD_VALUE = "DESY";
 
-    private static SearchResult RESULT;
     private static LdapName QUERY;
-
 
     @BeforeClass
     public static void setUp() {
-
-        RESULT = new SearchResult("econ=berndTest",
-                                   null,
-                                   null);
 
         QUERY = createLdapQuery(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
                                 COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
@@ -77,8 +69,6 @@ public class LdapNameUtilsTest {
                                 ROOT.getNodeTypeName(), ROOT.getRootTypeValue(),
                                 O_FIELD_NAME, O_FIELD_VALUE,
                                 COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
-
-        RESULT.setNameInNamespace(QUERY.toString());
     }
 
     @Test
@@ -99,15 +89,7 @@ public class LdapNameUtilsTest {
         assertEquals("name/with=special,characters", LdapNameUtils.simpleName(name));
     }
 
-    @Test
-    public void testLdapNameParsing() {
 
-        try {
-            LdapNameUtils.parseSearchResult(RESULT);
-        } catch (final NamingException e) {
-            Assert.fail();
-        }
-    }
 
     @Test
     public void testGetValue() {

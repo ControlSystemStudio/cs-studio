@@ -60,10 +60,11 @@ public class LdapSearchResult extends NameSpaceSearchResult {
         // Empty
     }
 
-    /* (non-Javadoc)
-     * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpaceResultList#getResultList()
+    /**
+     * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public List<ControlSystemItem> getCSIResultList() {
         if ((_csiResult != null) && !_csiResult.isEmpty()) {
             return _csiResult;
