@@ -21,28 +21,56 @@
  *
  * $Id$
  */
-package org.csstudio.alarm.treeView;
+package org.csstudio.alarm.treeView.views;
 
-import org.csstudio.alarm.treeView.ldap.LdapNameUtilsTest;
-import org.csstudio.alarm.treeView.ldap.TreeBuilderTest;
-import org.csstudio.alarm.treeView.model.AlarmTest;
-import org.csstudio.alarm.treeView.model.ProcessVariableNodeTest;
-import org.csstudio.alarm.treeView.views.AlarmTreeViewTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
+import junit.framework.Assert;
+
+import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.PlatformUI;
+import org.junit.AfterClass;
+import org.junit.BeforeClass;
+import org.junit.Test;
 
 /**
- * TODO (bknerr) : Das muss anders gehen.
- * Test database.
+ * AlarmTreeView Test.
+ *
+ * @author bknerr
+ * @author $Author$
+ * @version $Revision$
+ * @since 24.06.2010
  */
-@RunWith(Suite.class)
-@SuiteClasses({LdapNameUtilsTest.class,
-               TreeBuilderTest.class,
-               AlarmTest.class,
-               ProcessVariableNodeTest.class,
-               AlarmTreeViewTest.class
-})
-public class AllTests {
-    // public? well, should be refactored anyway
+public class AlarmTreeViewUiPluginTest {
+
+    private static AlarmTreeView VIEW;
+    private static IWorkbenchPage ACTIVE_PAGE;
+
+    @BeforeClass
+    public static void openView() throws PartInitException {
+
+        final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+        ACTIVE_PAGE = window.getActivePage();
+
+        Assert.assertNotNull(ACTIVE_PAGE);
+
+        VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
+
+    }
+
+    @AfterClass
+    public static void closeView() {
+        ACTIVE_PAGE.hideView(VIEW);
+    }
+
+    @Test
+    public void testView() {
+        final IAlarmSubtreeNode node = VIEW.getRootNode();
+        Assert.assertNotNull(node);
+
+       // Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
+
+    }
+
 }
