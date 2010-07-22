@@ -194,7 +194,7 @@ public class RelatedDisplayItem extends WidgetPart {
 //                _args = Arrays.copyOf(row, row.length+1);
 //                _args[_args.length-1]=fileLine.toString();
             } else if (head.equals("policy")) { //$NON-NLS-1$
-                _policy = row;
+                setPolicy(row);
             } else if (head.equals("x")) { //$NON-NLS-1$
                 // Do Nothing
                 // SDS not support this Property
@@ -315,6 +315,20 @@ public Object[] getChildren() {
 	ret[2] = new ADLResource(ADLResource.RD_ARGS, _args);
 	
 	return ret;
+}
+
+/**
+ * @param _policy the _policy to set
+ */
+public void setPolicy(String _policy) {
+	this._policy = _policy;
+}
+
+/**
+ * @return the _policy
+ */
+public String getPolicy() {
+	return _policy;
 }
 
 
