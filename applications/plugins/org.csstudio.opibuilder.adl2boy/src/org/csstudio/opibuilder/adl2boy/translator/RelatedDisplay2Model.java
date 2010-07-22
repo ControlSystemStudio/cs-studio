@@ -57,6 +57,12 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 						if (rdDisplays[ii].getLabel() != null){
 							odAction.setPropertyValue(OpenDisplayAction.PROP_DESCRIPTION, rdDisplays[ii].getLabel().replaceAll("\"", ""));
 						}
+						if ((rdDisplays[ii].getPolicy() == null) || (!(rdDisplays[ii].getPolicy().equals("replace display"))) ){
+							odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, false);
+						}
+						else{
+							odAction.setPropertyValue(OpenDisplayAction.PROP_REPLACE, true);
+						}
 						ai.addAction(odAction);
 					}
 				}
