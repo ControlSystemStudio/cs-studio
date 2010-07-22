@@ -21,10 +21,12 @@
  */
 package org.csstudio.alarm.service.preferences;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.platform.util.StringUtil;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.ListEditor;
 import org.eclipse.jface.preference.RadioGroupFieldEditor;
@@ -66,6 +68,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
         // Nothing to do
     }
 
+    @Nonnull
     private RadioGroupFieldEditor newImplSelectionEditor() {
         final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
         group.setText("Alarm Service");
@@ -82,7 +85,7 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
                                            contextTypes,
                                            group);
     }
-
+    @Nonnull
     private ListEditor newListEditor() {
         final Group group = new Group(getFieldEditorParent(), SWT.SHADOW_ETCHED_IN);
         group.setText("Facility Names");
@@ -93,24 +96,25 @@ public class AlarmServicePreferencePage extends FieldEditorPreferencePage implem
         		"The selected facilities will show up in the Alarm Tree. They will also be used to retrieve\n" +
         		"the initial state of the contained PVs.", group){
 
-            public String[] parseString(final String stringList){
+            @Override
+            @Nonnull
+            public String[] parseString(@Nonnull final String stringList){
                 return stringList.split(AlarmPreference.STRING_LIST_SEPARATOR);
             }
 
+            @Override
             public String getNewInputObject(){
-                AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
+                final AddMountPointDlg inputDialog = new AddMountPointDlg(getFieldEditorParent().getShell());
                 if (inputDialog.open() == Window.OK) {
                     return (inputDialog).getResult();
                 }
                 return null;
             }
 
-            public String createList(final String[] items){
-                String temp = "";
-                for (String item : items) {
-                    temp = temp + item + AlarmPreference.STRING_LIST_SEPARATOR;
-                }
-                return temp;
+            @Override
+            @Nonnull
+            public String createList(@Nonnull final String[] items){
+                return StringUtil.join(items, AlarmPreference.STRING_LIST_SEPARATOR);
             }
         };
     }
