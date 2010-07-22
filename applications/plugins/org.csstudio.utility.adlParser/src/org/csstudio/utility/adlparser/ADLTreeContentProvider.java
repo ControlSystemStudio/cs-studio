@@ -18,7 +18,6 @@ public class ADLTreeContentProvider extends TreeNodeContentProvider {
 
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		//TODO switch to use WidgetParts and Widgets to get more complete entries
 		if (parentElement instanceof ADLWidget){
 			rootWidget = (ADLWidget)parentElement;
 			Object widgets[] = ADLWidgetUtils.adlWidgetArray2ObjectArray(rootWidget.getObjects());
