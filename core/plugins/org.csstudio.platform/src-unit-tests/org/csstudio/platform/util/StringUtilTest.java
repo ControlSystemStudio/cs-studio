@@ -1,6 +1,7 @@
 package org.csstudio.platform.util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import junit.framework.TestCase;
@@ -109,5 +110,27 @@ public class StringUtilTest extends TestCase {
         assertEquals("a", StringUtil.trimNull("a"));
         assertEquals("a ", StringUtil.trimNull("a "));
         assertEquals(" a ", StringUtil.trimNull(" a "));
+    }
+
+    @Test
+    public final void testJoin() {
+        assertNull(StringUtil.join(null, null));
+        assertNull(StringUtil.join(null, ""));
+        assertNull(StringUtil.join(null, "xxx"));
+        assertEquals("", StringUtil.join(new String[0], null));
+        assertEquals("", StringUtil.join(new String[0], ""));
+        assertEquals("", StringUtil.join(new String[0], "abc"));
+        assertEquals("", StringUtil.join(new String[]{""}, "abc"));
+        assertEquals("abc", StringUtil.join(new String[]{null, null}, "abc"));
+        assertEquals("abc", StringUtil.join(new String[]{"", null}, "abc"));
+        assertEquals("abc", StringUtil.join(new String[]{null, ""}, "abc"));
+        assertEquals("abcabc", StringUtil.join(new String[]{null, "", null}, "abc"));
+
+        assertEquals("|x|y|z||&|3|", StringUtil.join(new String[]{null, "x", "y", "z", null, "&", "3", ""}, "|"));
+
+        assertEquals("1|2|", StringUtil.join(new Integer[]{1, 2, null}, "|"));
+        assertEquals("[true, false]|[1.0, 2.0]", StringUtil.join(new ArrayList<?>[]{ new ArrayList<Object>(Arrays.<Boolean>asList(Boolean.TRUE, Boolean.FALSE)),
+                                                             new ArrayList<Object>(Arrays.<Double>asList(Double.valueOf(1.0), Double.valueOf(2.0)))},
+                                             "|"));
     }
 }
