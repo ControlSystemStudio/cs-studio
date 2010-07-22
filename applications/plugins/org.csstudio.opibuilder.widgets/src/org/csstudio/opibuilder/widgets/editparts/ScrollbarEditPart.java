@@ -8,7 +8,7 @@ import org.csstudio.opibuilder.widgets.model.ScrollBarModel;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.ScrollbarFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;

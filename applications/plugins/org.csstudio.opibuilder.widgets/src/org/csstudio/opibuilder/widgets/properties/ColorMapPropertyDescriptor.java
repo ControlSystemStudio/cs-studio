@@ -1,7 +1,6 @@
-package org.csstudio.opibuilder.properties.support;
+package org.csstudio.opibuilder.widgets.properties;
 
 
-import org.csstudio.opibuilder.visualparts.ColorMapCellEditor;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;

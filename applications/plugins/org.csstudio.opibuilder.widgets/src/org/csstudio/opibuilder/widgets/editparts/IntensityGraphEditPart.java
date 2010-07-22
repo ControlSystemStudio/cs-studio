@@ -3,7 +3,6 @@ package org.csstudio.opibuilder.widgets.editparts;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
-import org.csstudio.opibuilder.datadefinition.ColorMap;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
@@ -13,13 +12,15 @@ import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.opibuilder.visualparts.BorderFactory;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
-import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure;
-import org.csstudio.opibuilder.widgets.figures.IntensityGraphFigure.IProfileDataChangeLisenter;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.opibuilder.widgets.model.IntensityGraphModel.AxisProperty;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.swt.widgets.figures.IntensityGraphFigure;
+import org.csstudio.swt.widgets.figures.IntensityGraphFigure.IProfileDataChangeLisenter;
 import org.csstudio.swt.xygraph.figures.Axis;
 import org.csstudio.swt.xygraph.linearscale.Range;
 import org.eclipse.draw2d.IFigure;
@@ -37,7 +38,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		IntensityGraphModel model = getWidgetModel();
-		IntensityGraphFigure graph = new IntensityGraphFigure(getExecutionMode());
+		IntensityGraphFigure graph = new IntensityGraphFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		graph.setMin(model.getMinimum());
 		graph.setMax(model.getMaximum());
 		graph.setDataWidth(model.getDataWidth());
@@ -45,7 +46,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		graph.setColorMap(model.getColorMap());
 		graph.setShowRamp(model.isShowRamp());
 		graph.setCropLeft(model.getCropLeft());
-		graph.setCropRigth(model.getCropRight());
+		graph.setCropRight(model.getCropRight());
 		graph.setCropTop(model.getCropTOP());
 		graph.setCropBottom(model.getCropBottom());
 		//init X-Axis
@@ -201,7 +202,7 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((IntensityGraphFigure)figure).setCropRigth((Integer)newValue);
+				((IntensityGraphFigure)figure).setCropRight((Integer)newValue);
 				return true;
 			}
 		};
@@ -367,7 +368,17 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		default:
 			break;
 		}		
-}
+	}
+	
+	public void setColorMap(String mapName){		
+		for(PredefinedColorMap map : ColorMap.PredefinedColorMap.values()){
+			if(map.toString().equals(mapName)){
+				setPropertyValue(IntensityGraphModel.PROP_COLOR_MAP, new ColorMap(map, true, true));
+			break;
+			}
+		}
+		
+	}
 	
 	@Override
 	public double[] getValue() {

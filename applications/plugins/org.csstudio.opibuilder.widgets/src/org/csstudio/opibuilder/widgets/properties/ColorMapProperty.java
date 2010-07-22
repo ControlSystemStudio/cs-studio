@@ -1,10 +1,11 @@
-package org.csstudio.opibuilder.properties;
+package org.csstudio.opibuilder.widgets.properties;
 
 import java.util.LinkedHashMap;
 
-import org.csstudio.opibuilder.datadefinition.ColorMap;
-import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
-import org.csstudio.opibuilder.properties.support.ColorMapPropertyDescriptor;
+import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;

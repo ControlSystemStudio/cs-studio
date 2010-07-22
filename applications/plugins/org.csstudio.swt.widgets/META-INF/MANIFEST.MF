@@ -14,7 +14,7 @@ Require-Bundle: org.eclipse.ui,
  com.ibm.icu;bundle-version="4.0.1"
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
-Export-Package: org.csstudio.swt.datadefinition,
+Export-Package: org.csstudio.swt.widgets.datadefinition,
  org.csstudio.swt.widgets.figureparts,
  org.csstudio.swt.widgets.figures,
  org.csstudio.swt.widgets.introspection,

@@ -1,10 +1,7 @@
 package org.csstudio.opibuilder.widgets.model;
 
-import org.csstudio.opibuilder.datadefinition.ColorMap;
-import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
-import org.csstudio.opibuilder.properties.ColorMapProperty;
 import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
@@ -13,6 +10,9 @@ import org.csstudio.opibuilder.properties.NameDefinedCategory;
 import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.properties.ColorMapProperty;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;

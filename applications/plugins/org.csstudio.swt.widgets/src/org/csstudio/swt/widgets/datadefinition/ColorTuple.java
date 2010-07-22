@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.datadefinition;
+package org.csstudio.swt.widgets.datadefinition;
 
 import org.eclipse.swt.graphics.RGB;
 

@@ -1,7 +1,7 @@
-package org.csstudio.opibuilder.widgets.figureparts;
+package org.csstudio.swt.widgets.figureparts;
 
-import org.csstudio.opibuilder.datadefinition.ColorMap;
-import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.swt.xygraph.linearscale.LinearScale;
 import org.csstudio.swt.xygraph.linearscale.AbstractScale.LabelSide;
 import org.csstudio.swt.xygraph.linearscale.LinearScale.Orientation;

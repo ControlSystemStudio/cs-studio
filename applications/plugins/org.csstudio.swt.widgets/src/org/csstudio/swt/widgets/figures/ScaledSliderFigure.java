@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figureparts.AlphaLabel;
 import org.csstudio.swt.widgets.util.GraphicsUtil;
 import org.csstudio.swt.widgets.util.RepeatFiringBehavior;

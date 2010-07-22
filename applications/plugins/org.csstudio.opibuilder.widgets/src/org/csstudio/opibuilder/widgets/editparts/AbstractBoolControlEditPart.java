@@ -9,7 +9,7 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolControlModel;
 import org.csstudio.opibuilder.widgets.model.AbstractBoolWidgetModel;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.AbstractBoolControlFigure;
 import org.csstudio.swt.widgets.figures.AbstractBoolFigure;
 import org.eclipse.draw2d.IFigure;

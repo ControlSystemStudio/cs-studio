@@ -1,5 +1,5 @@
 package org.csstudio.swt.widgets.figures;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.eclipse.draw2d.Figure;
 
 

@@ -1,7 +1,8 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.widgets.properties;
 
-import org.csstudio.opibuilder.datadefinition.ColorMap;
-import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
+import org.csstudio.opibuilder.visualparts.AbstractDialogCellEditor;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;

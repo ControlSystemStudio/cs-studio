@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.datadefinition;
+package org.csstudio.swt.widgets.datadefinition;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -19,7 +19,7 @@ public class ColorMap {
 		JET("JET", new double[]{0, 0.111, 0.365, 0.619, 0.873, 1},
 			new RGB[]{new RGB(0,0,143), new RGB(0,0,255), new RGB(0,255,255),
 					  new RGB(255,255,0), new RGB(255,0,0), new RGB(128,0,0)}),
-		ColorSpectrum("Color Spectrum", new double[]{0, 0.126, 0.251, 0.375, 0.5, 0.625, 0.749, 0.874,1},
+		ColorSpectrum("ColorSpectrum", new double[]{0, 0.126, 0.251, 0.375, 0.5, 0.625, 0.749, 0.874,1},
 			new RGB[]{new RGB(0,0,0), new RGB(255,0,255), new RGB(0,0,255),
 					  new RGB(0,255,255), new RGB(0,255,0), new RGB(255,255,0),
 					  new RGB(255,128,0), new RGB(255,0,0), new RGB(255,255,255)}),
@@ -173,8 +173,8 @@ public class ColorMap {
 	 * @param min the lower limit of the data in dataArray
 	 * @return the image data. null if dataWidth or dataHeight is less than 1.
 	 */
-	public ImageData drawImage(double[] dataArray, int dataWidth, int dataHeight, double max, double min){
-		if(dataWidth <1 || dataHeight < 1)
+	public synchronized ImageData drawImage(double[] dataArray, int dataWidth, int dataHeight, double max, double min){
+		if(dataWidth <1 || dataHeight < 1 || dataWidth *dataHeight > dataArray.length || dataWidth * dataHeight < 0)
 			return null;
 		PaletteData palette = new PaletteData(0xff, 0xff00, 0xff0000);
 		ImageData imageData = new ImageData(dataWidth,dataHeight, 24, palette);	
@@ -183,7 +183,7 @@ public class ColorMap {
 		if(autoScale){
 			for(int y = 0; y < dataHeight; y++){
 				for(int x = 0; x<dataWidth; x++){					
-					//the index of the value in the color table array					
+					//the index of the value in the color table array	
 					int index = (int) ((dataArray[y*dataWidth + x]-min)/(max-min)*255);
 					if(index <0)
 						index = 0;

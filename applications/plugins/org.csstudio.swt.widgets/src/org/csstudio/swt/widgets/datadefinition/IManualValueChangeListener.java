@@ -1,4 +1,4 @@
-package org.csstudio.swt.datadefinition;
+package org.csstudio.swt.widgets.datadefinition;
 
 import java.util.EventListener;
 

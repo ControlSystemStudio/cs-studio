@@ -9,7 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.introspection.LabelWidgetIntrospector;
 import org.eclipse.draw2d.Label;

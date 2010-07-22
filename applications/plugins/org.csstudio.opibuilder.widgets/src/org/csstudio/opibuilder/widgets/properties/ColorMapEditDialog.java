@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.visualparts;
+package org.csstudio.opibuilder.widgets.properties;
 
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -6,11 +6,12 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
-import org.csstudio.opibuilder.datadefinition.ColorMap;
-import org.csstudio.opibuilder.datadefinition.ColorTuple;
-import org.csstudio.opibuilder.datadefinition.ColorMap.PredefinedColorMap;
 import org.csstudio.opibuilder.util.OPIColor;
+import org.csstudio.opibuilder.visualparts.RGBColorCellEditor;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.datadefinition.ColorMap;
+import org.csstudio.swt.widgets.datadefinition.ColorTuple;
+import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.dialogs.Dialog;

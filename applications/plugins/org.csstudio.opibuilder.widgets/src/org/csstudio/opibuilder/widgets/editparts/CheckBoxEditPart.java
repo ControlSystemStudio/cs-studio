@@ -10,7 +10,7 @@ import org.csstudio.opibuilder.widgets.model.CheckBoxModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.datadefinition.IManualValueChangeListener;
+import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
 import org.csstudio.swt.widgets.figures.CheckBoxFigure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
