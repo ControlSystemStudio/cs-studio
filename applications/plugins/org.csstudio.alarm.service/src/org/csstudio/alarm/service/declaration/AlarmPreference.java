@@ -38,7 +38,7 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
 /**
- * Constant definitions for alarm service preferences
+ * Constant definitions for alarm service preferences (mimicked enum with inheritance).
  *
  * @param <T> the type of the preference. It must match the type of the default value.
  *
@@ -87,6 +87,9 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         super(keyAsString, defaultValue);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     protected String getPluginID() {
         return AlarmServiceActivator.PLUGIN_ID;
