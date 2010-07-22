@@ -1,9 +1,14 @@
-package org.csstudio.opibuilder.widgets.figures;
+package org.csstudio.swt.widgets.figures;
 
+import java.beans.BeanInfo;
+import java.beans.IntrospectionException;
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.List;
 
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
+import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.FreeformLayer;
 import org.eclipse.draw2d.FreeformLayout;
@@ -24,26 +29,37 @@ import org.eclipse.swt.graphics.Color;
  * @author Xihui Chen
  *
  */
-public class TabFigure extends Figure {
+public class TabFigure extends Figure implements Introspectable{
 	
+	/**
+	 * Definition of listeners that react on active tab index changed.
+	 * 
+	 * @author Xihui Chen
+	 * 
+	 */
+	public interface ITabListener extends EventListener{
+		
+		void activeTabIndexChanged(int oldIndex, int newIndex);
+	}
 	private static final int MARGIN = 10;
 	private List<Label> tabLabelList;
 	private List<Color> tabColorList;
-	private int activeTabIndex;
+	private int activeTabIndex; 
 	private final static Color BORDER_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_DARK_GRAY); 
-	private final static Color DEFAULT_TABCOLOR = CustomMediaFactory.getInstance().getColor(
-			CustomMediaFactory.COLOR_WHITE); 
 	
 //	private final static Font DEFAULT_TITLE_FONT = CustomMediaFactory.getInstance().getFont(
 //			new FontData("Arial", 12, SWT.BOLD));
 	
+	private final static Color DEFAULT_TABCOLOR = CustomMediaFactory.getInstance().getColor(
+			CustomMediaFactory.COLOR_WHITE);
+	
 	private final static int MINIMUM_TAB_HEIGHT = 10;
 //	private final static int MINIMUM_TAB_WIDTH = 20;
-	
 	private IFigure pane;
-	private ScrollPane tabArea;
 
+	private ScrollPane tabArea;
+	
 	/**
 	 * Listeners that react on tab index events.
 	 */
@@ -66,17 +82,97 @@ public class TabFigure extends Figure {
 		
 	}
 	
+	public void addTab(String title){
+		Label tabLabel = createTabLabel(title, tabLabelList.size());
+		tabLabelList.add(tabLabel);
+		tabColorList.add(DEFAULT_TABCOLOR);
+		add(tabLabel);
+		if(activeTabIndex <0)
+			setActiveTabIndex(0);
+		revalidate();
+	}
+	
+	public void addTab(String title, int index){
+		Label tabLabel = createTabLabel(title, index);
+		tabLabelList.add(index, tabLabel);
+		tabColorList.add(index, DEFAULT_TABCOLOR);
+		add(tabLabel);
+		if(activeTabIndex <0)
+			setActiveTabIndex(0);
+		revalidate();
+	}
+	
 	public void addTabListener(ITabListener listener){
 		tabListeners.add(listener);
 	}
+	
+	private Label createTabLabel(String title, final int index) {
+		final Label tabLabel = new Label(title);
+		tabLabel.setLabelAlignment(PositionConstants.CENTER);
+		tabLabel.setOpaque(true);
+		tabLabel.setBorder(new LineBorder(BORDER_COLOR));		
+		tabLabel.setBackgroundColor(getDarkColor(DEFAULT_TABCOLOR));
+	//	tabLabel.setCursor(Cursors.HAND);
+		tabLabel.addMouseListener(new MouseListener.Stub(){
+			@Override
+			public void mousePressed(MouseEvent me) {
+				if(me.button != 1)
+					return;
+				setActiveTabIndex(tabLabelList.indexOf(tabLabel));
+			}
+		});
+		return tabLabel;
+	}
+	
 	
 	private void fireActiveTabIndexChanged(int oldIndex, int newIndex){
 		for(ITabListener listener : tabListeners)
 			listener.activeTabIndexChanged(oldIndex, newIndex);
 	}
 	
+	
+	public int getActiveTabIndex() {
+		return activeTabIndex;
+	}
+	
+	public BeanInfo getBeanInfo() throws IntrospectionException {
+		return new DefaultWidgetIntrospector().getBeanInfo(this.getClass());
+	}
+	
 	public IFigure getContentPane(){
 		return pane;
+	}
+	
+	private Color getDarkColor(Color color){
+		int d = 30;
+		int r = color.getRed();
+		int g = color.getGreen();
+		int b = color.getBlue();
+		r = Math.max(0, r-d);
+		g = Math.max(0, g-d);
+		b = Math.max(0, b-d);		
+		return CustomMediaFactory.getInstance().getColor(r,g,b);
+	}
+	
+	public int getTabAmount(){
+		return tabLabelList.size();
+	}
+
+
+	public Label getTabLabel(int index){
+		if(index >= getTabAmount())
+			throw new IndexOutOfBoundsException();		
+		return tabLabelList.get(index);
+	}
+	
+	public int getTabLabelHeight(){
+		int h = MINIMUM_TAB_HEIGHT;
+		for(Label label : tabLabelList){
+			if(label.getPreferredSize().height > h){
+				h = label.getPreferredSize().height;
+			}
+		}
+		return h + MARGIN;
 	}
 	
 	@Override
@@ -94,17 +190,6 @@ public class TabFigure extends Figure {
 		tabArea.setBounds(new Rectangle(clientArea.x, clientArea.y + height-1, 
 				clientArea.width-1, clientArea.height - height));		
 	}
-	
-	public int getTabLabelHeight(){
-		int h = MINIMUM_TAB_HEIGHT;
-		for(Label label : tabLabelList){
-			if(label.getPreferredSize().height > h){
-				h = label.getPreferredSize().height;
-			}
-		}
-		return h + MARGIN;
-	}
-	
 	
 	@Override
 	protected void paintClientArea(Graphics graphics) {
@@ -124,14 +209,28 @@ public class TabFigure extends Figure {
 		}
 	}
 	
+
 	
-	public int getActiveTabIndex() {
-		return activeTabIndex;
+	
+	public void removeTab(){
+		remove(tabLabelList.get(tabLabelList.size()-1));
+		tabLabelList.remove(tabLabelList.size()-1);
+		tabColorList.remove(tabColorList.size()-1);
+		revalidate();
+	}
+	
+	public void removeTab(int index){
+		if(index <0 || index >=getTabAmount())
+			throw new IndexOutOfBoundsException();
+		remove(tabLabelList.get(index));
+		tabLabelList.remove(index);
+		tabColorList.remove(index);
+		revalidate();
 	}
 	
 	public void setActiveTabIndex(int activeTabIndex) {
-		//if(this.activeTabIndex == activeTabIndex)
-		//	return;
+		if(activeTabIndex >= getTabAmount())
+			throw new IndexOutOfBoundsException();
 		int i=0;
 		for(Label l : tabLabelList){
 			l.setBackgroundColor(
@@ -145,100 +244,16 @@ public class TabFigure extends Figure {
 		repaint();
 		
 	}
-	
+
 	public void setTabColor(int index, Color color){
+		if(index >= getTabAmount())
+			throw new IndexOutOfBoundsException();
 		tabColorList.set(index, color);
 		getTabLabel(index).setBackgroundColor(
 			index == activeTabIndex ? color : getDarkColor(color));
 		if(index == activeTabIndex)
 			tabArea.setBackgroundColor(color);
 		repaint();
-	}
-	
-	public Label getTabLabel(int index){
-		return tabLabelList.get(index);
-	}
-	
-	public void addTab(String title){
-		Label tabLabel = createTabLabel(title, tabLabelList.size());
-		tabLabelList.add(tabLabel);
-		tabColorList.add(DEFAULT_TABCOLOR);
-		add(tabLabel);
-		if(activeTabIndex <0)
-			setActiveTabIndex(0);
-		revalidate();
-	}
-
-
-	private Label createTabLabel(String title, final int index) {
-		final Label tabLabel = new Label(title);
-		tabLabel.setLabelAlignment(PositionConstants.CENTER);
-		tabLabel.setOpaque(true);
-		tabLabel.setBorder(new LineBorder(BORDER_COLOR));		
-		tabLabel.setBackgroundColor(getDarkColor(DEFAULT_TABCOLOR));
-	//	tabLabel.setCursor(Cursors.HAND);
-		tabLabel.addMouseListener(new MouseListener.Stub(){
-			@Override
-			public void mousePressed(MouseEvent me) {
-				if(me.button != 1)
-					return;
-				setActiveTabIndex(tabLabelList.indexOf(tabLabel));
-			}
-		});
-		return tabLabel;
-	}
-	
-	public void addTab(String title, int index){
-		Label tabLabel = createTabLabel(title, index);
-		tabLabelList.add(index, tabLabel);
-		tabColorList.add(index, DEFAULT_TABCOLOR);
-		add(tabLabel);
-		if(activeTabIndex <0)
-			setActiveTabIndex(0);
-		revalidate();
-	}
-	
-	public void removeTab(int index){
-		remove(tabLabelList.get(index));
-		tabLabelList.remove(index);
-		tabColorList.remove(index);
-		revalidate();
-	}
-	
-	public void removeTab(){
-		remove(tabLabelList.get(tabLabelList.size()-1));
-		tabLabelList.remove(tabLabelList.size()-1);
-		tabColorList.remove(tabColorList.size()-1);
-		revalidate();
-	}
-	
-
-	
-	
-	public int getTabAmount(){
-		return tabLabelList.size();
-	}
-	
-	private Color getDarkColor(Color color){
-		int d = 30;
-		int r = color.getRed();
-		int g = color.getGreen();
-		int b = color.getBlue();
-		r = Math.max(0, r-d);
-		g = Math.max(0, g-d);
-		b = Math.max(0, b-d);		
-		return CustomMediaFactory.getInstance().getColor(r,g,b);
-	}
-	
-	/**
-	 * Definition of listeners that react on active tab index changed.
-	 * 
-	 * @author Xihui Chen
-	 * 
-	 */
-	public interface ITabListener {
-		
-		void activeTabIndexChanged(int oldIndex, int newIndex);
 	}
 	
 }

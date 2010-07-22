@@ -65,7 +65,7 @@ public abstract class AbstractWidgetTest {
 	/**Graphically test widget.
 	 * @throws Exception
 	 */
-	@Ignore("Does not finish - show stopper for all bundles test suite.")
+	//@Ignore("Does not finish - show stopper for all bundles test suite.")
 	@Test
 	public void testWidget() throws Exception{
 
@@ -242,7 +242,7 @@ public abstract class AbstractWidgetTest {
 	}
 
 	protected int getRepeatCountOnEachProperty(){
-		return 4;
+		return 8;
 	}
 
 	protected int getAutoTestSpeedInterval(){
