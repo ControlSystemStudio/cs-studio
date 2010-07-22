@@ -3,22 +3,15 @@
 
 <product name="ArchiveEngine" id="org.csstudio.archive.engine.engine" application="org.csstudio.archive.engine.application" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-rdb_url jdbc:mysql://localhost:3306/archive
--rdb_user localArchiver
--rdb_password archive
--engine TestEngine
--port 4811</programArgs>
       <vmArgs>-Djava.awt.headless=true -Xms64m -Xmx256m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
-
 
    <launcher name="ArchiveEngine">
       <solaris/>
@@ -27,10 +20,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="javax.servlet"/>
