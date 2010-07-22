@@ -30,17 +30,16 @@ public class TestSetup
     }
 
     /** Default database URL */
-    final public static String URL = (String) PROV.get("TestSetup.oracleUrl");
+    final public static String URL = (String) PROV.get("TestSetup.dbUrl");
     // SNS Test, read-only
     //   "jdbc:oracle:thin:sns_reports/sns@//172.31.73.122:1521/prod";
 
     // MySQL Test
     // "jdbc:mysql://titan-terrier.sns.ornl.gov/archive?user=fred&password=$fred";
-    // = (String) PROV.get("TestSetup.mysqlUrl");
 
     /** Database user/password (null if already in URL) */
-    public static final String USER = "root";
-    public static final String PASSWORD = "f9s$jAv";
+    public static final String USER = (String) PROV.get("TestSetup.dbUser");
+    public static final String PASSWORD = (String) PROV.get("TestSetup.dbPassword");
 
     /** Data types to test and the PVs to use for them */
     public enum TestType
@@ -51,16 +50,16 @@ public class TestSetup
         STRING((String) PROV.get("TestSetup.pvString")),
         ARRAY((String) PROV.get("TestSetup.pvArray"));
 
-        final private String pv_name;
+        final private String _pvName;
 
-        private TestType(final String pv_name)
+        private TestType(final String pvName)
         {
-            this.pv_name = pv_name;
+            this._pvName = pvName;
         }
 
         public String getPvName()
         {
-            return pv_name;
+            return _pvName;
         }
     }
 }
