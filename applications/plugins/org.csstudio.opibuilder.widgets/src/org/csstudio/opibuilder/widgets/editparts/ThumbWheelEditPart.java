@@ -30,12 +30,12 @@ import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.opibuilder.widgets.figures.ThumbWheelFigure;
-import org.csstudio.opibuilder.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.csstudio.opibuilder.widgets.model.ThumbWheelModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.swt.widgets.figures.ThumbWheelFigure;
+import org.csstudio.swt.widgets.figures.ThumbWheelFigure.WheelListener;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.swt.graphics.FontData;
 
@@ -69,7 +69,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 		model.setWholePartDigits(logic.getIntegerWheels());
 		model.setDecimalPartDigits(logic.getDecimalWheels());
 		FontData fontData = model.getFont().getFontData();
-		figure.setWheelFonts(CustomMediaFactory.getInstance().getFont(
+		figure.setWheelFont(CustomMediaFactory.getInstance().getFont(
 				fontData.getName(), fontData.getHeight(),
 				fontData.getStyle()));
 		figure.setInternalBorderColor(model.getInternalBorderColor());
@@ -189,7 +189,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
 
 				logic.setDecimalWheels((Integer) newValue);
-				figure.setDecimalDigitsPart(logic.getDecimalWheels());
+				figure.setDecimalDigits(logic.getDecimalWheels());
 				model.setDecimalPartDigits(logic.getDecimalWheels());
 				updateWheelValues();
 				return true;
@@ -205,7 +205,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
 
 				logic.setIntegerWheels((Integer) newValue);
-				figure.setWholeDigitsPart(logic.getIntegerWheels());
+				figure.setIntegerDigits(logic.getIntegerWheels());
 				model.setWholePartDigits(logic.getIntegerWheels());
 				updateWheelValues();
 				return true;
@@ -256,7 +256,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 					final Object newValue, final IFigure refreshableFigure) {
 				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
 				FontData fontData = ((OPIFont)newValue).getFontData();
-				figure.setWheelFonts(CustomMediaFactory.getInstance().getFont(
+				figure.setWheelFont(CustomMediaFactory.getInstance().getFont(
 						fontData.getName(), fontData.getHeight(),
 						fontData.getStyle()));
 				return true;
@@ -269,7 +269,7 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
 				ThumbWheelFigure figure = (ThumbWheelFigure) refreshableFigure;
-				figure.setInternalBorderColor(((OPIColor)newValue).getRGBValue());
+				figure.setInternalBorderColor(((OPIColor)newValue).getSWTColor());
 				return true;
 			}
 		};
@@ -545,17 +545,9 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
 		}
 
-		public Double getMax() {
-			return max.doubleValue();
-		}
-
 		public void setMax(Double max) {
 			this.max = Double.isNaN(max) ? null : new BigDecimal(Double
 					.toString(max), MathContext.UNLIMITED);
-		}
-
-		public Double getMin() {
-			return min.doubleValue();
 		}
 
 		public void setMin(Double min) {

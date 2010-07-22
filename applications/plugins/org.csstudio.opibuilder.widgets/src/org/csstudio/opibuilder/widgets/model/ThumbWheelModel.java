@@ -30,6 +30,7 @@ import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -165,8 +166,8 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 		return (Double)getProperty(PROP_MAX).getPropertyValue();
 	}
 
-	public RGB getInternalBorderColor() {
-		return getRGBFromColorProperty(PROP_INTERNAL_FRAME_COLOR);
+	public Color getInternalBorderColor() {
+		return getSWTColorFromColorProperty(PROP_INTERNAL_FRAME_COLOR);
 	}
 
 	public int getInternalBorderWidth() {
