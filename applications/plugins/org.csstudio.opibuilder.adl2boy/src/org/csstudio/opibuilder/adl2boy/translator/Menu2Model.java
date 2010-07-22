@@ -21,6 +21,7 @@ public class Menu2Model extends AbstractADL2Model {
 			setADLControlProps(menuWidget, menuModel);
 		}
 		menuModel.setPropertyValue(MenuButtonModel.PROP_ACTIONS_FROM_PV, true);
+		//set color mode
 		String color_mode = menuWidget.getColor_mode();
 		if ( color_mode.equals("static") ){
 			menuModel.setPropertyValue(ActionButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
