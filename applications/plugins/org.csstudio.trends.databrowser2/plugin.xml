@@ -150,5 +150,15 @@
             name="Change Data Browser Archive Data Sources">
       </cheatsheet>
    </extension>
-
+   <extension
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/overview.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+      <configExtension
+            content="intro/firststeps.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+   </extension>
 </plugin>
