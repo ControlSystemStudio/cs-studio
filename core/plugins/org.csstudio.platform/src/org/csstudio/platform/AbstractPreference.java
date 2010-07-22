@@ -133,16 +133,16 @@ public abstract class AbstractPreference<T> {
         final Field[] fields = clazz.getFields();
 
         final List<AbstractPreference<?>> list = new ArrayList<AbstractPreference<?>>();
-        try {
             for (final Field field : fields) {
                 if (field.getType().equals(clazz)) {
-                    final Object pref = field.get(null); // for static fields param is ignored
-                    list.add((AbstractPreference<?>) pref);
+                    try {
+                        final Object pref = field.get(null); // for static fields param is ignored
+                        list.add((AbstractPreference<?>) pref);
+                    } catch (final IllegalAccessException e) {
+                        LOG.error("One of the preferences constants in class " + clazz.getName() + " is not accessible.", e);
+                    }
                 }
             }
-        } catch (final IllegalAccessException e) {
-            LOG.error("One of the preferences constants in class " + clazz.getName() + " is not accessible.", e);
-        }
         return list;
     }
 
