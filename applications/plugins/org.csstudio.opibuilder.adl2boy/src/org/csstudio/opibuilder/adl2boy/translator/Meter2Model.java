@@ -2,6 +2,7 @@ package org.csstudio.opibuilder.adl2boy.translator;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.widgets.model.AbstractMarkedWidgetModel;
 import org.csstudio.opibuilder.widgets.model.ActionButtonModel;
 import org.csstudio.opibuilder.widgets.model.XMeterModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
@@ -35,7 +36,30 @@ public class Meter2Model extends AbstractADL2Model {
 		}
 		
 		//TODO Add PV Limits to Meter2Model
-		//TODO Add Label to Meter2Model
+		// Decorate the meter Model
+		//TODO Meter2Model cannot show value or channel at this time. can this be added to the widget or do we need to make a grouping container.
+		String label = meterWidget.getLabel();
+		if ( label.equals("none")){
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, false);
+		}
+		if ( label.equals("no decorations")){
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, false);
+		}
+		if ( label.equals("outline")){
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, true);
+		}
+		if ( label.equals("limits")){
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, true);
+		}
+		if ( label.equals("channel")){
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_MARKERS, false);
+			meterModel.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_SCALE, true);
+		}
+
 	}
 
 	@Override
