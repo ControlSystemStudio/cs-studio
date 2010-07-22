@@ -134,7 +134,6 @@ public class ContentModelExporterTest {
 
 
         final String fullPath = FileLocator.toFileURL(entry).getPath();
-//        int lastIndexOf = fullPath.lastIndexOf(File.separator); - doesn't work - even on windows fullPath contains only "/" ???
         final int lastIndexOf = fullPath.lastIndexOf(fileSeparator);
         final String basePath = fullPath.substring(0, lastIndexOf);
 
@@ -149,8 +148,7 @@ public class ContentModelExporterTest {
         final File expFile = new File(basePath, TEST_EXPORT_XML);
         Assert.assertTrue(expFile.exists());
 
-        final URL resource = TreeModelTestUtils.findResource("testres" + fileSeparator + TEST_EXPORT_XML);
-        _exportedDoc = getDomTreeOfResource(resource);
+        _exportedDoc = getDomTreeOfResource(expFile.toURI().toURL());
 
         // Compare the input file and the output file
         try {
