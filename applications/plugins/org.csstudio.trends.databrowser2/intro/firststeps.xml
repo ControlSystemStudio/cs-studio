@@ -2,13 +2,16 @@
 <introContent>
     <extensionContent id="org.csstudio.trends.databrowser" name="Databrowser" style="intro.css" path="firststeps/@">
         <group id="content-group" style-id="content-group">
-			<link id="databrowser" label="Data Browser"
-			      url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.trends.databrowser2/doc/databrowser.html#101"
-			      style-id="content-link">
-                <text>The online manual's "Getting started" section will
-                      get you going.
-                </text>
-			</link>
+            <link id="databrowser" label="Data Browser Cheat Sheet"
+                  url="http://org.eclipse.ui.intro/showStandby?partId=org.eclipse.platform.cheatsheet&amp;input=org.csstudio.trends.databrowser2.plot"
+                  style-id="content-link">
+                <text>Follow along to plot archived data</text>
+            </link>
+            <link id="databrowser" label="Data Browser Manual"
+                  url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.trends.databrowser2/doc/databrowser.html"
+                  style-id="content-link">
+                <text>Read the online manual to learn more</text>
+            </link>
         </group>
     </extensionContent>
 </introContent>
