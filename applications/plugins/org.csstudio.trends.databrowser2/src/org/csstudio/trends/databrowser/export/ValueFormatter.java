@@ -40,6 +40,7 @@ public class ValueFormatter
     {
         if (value == null)
             return Messages.Export_NoValueMarker;
+        // TODO Find a way to show full arrays, not just "1, 2, 3, ...."
         return value.format(format, precision);
     }
 
@@ -54,8 +55,9 @@ public class ValueFormatter
             return nameWithPrecision(Messages.Format_Decimal);
         case Exponential:
             return nameWithPrecision(Messages.Format_Exponential);
+        default:
+            return format.name();
         }
-        return format.name();
     }
 
     /** @return name of format with info on 'digits' */
