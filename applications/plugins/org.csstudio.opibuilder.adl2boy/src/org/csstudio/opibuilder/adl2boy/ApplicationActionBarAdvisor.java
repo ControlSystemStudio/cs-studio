@@ -21,6 +21,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 	// in the fill methods. This ensures that the actions aren't recreated
 	// when fillActionBars is called with FILL_PROXY.
 	private IWorkbenchAction exitAction;
+    private IWorkbenchAction helpAction;
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
@@ -35,14 +36,20 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		// the window is closed.
 
 		exitAction = ActionFactory.QUIT.create(window);
+        helpAction = ActionFactory.HELP_CONTENTS.create(window);
+        register(helpAction);
 		register(exitAction);
 	}
 
 	protected void fillMenuBar(IMenuManager menuBar) {
 		MenuManager fileMenu = new MenuManager("&File",
 				IWorkbenchActionConstants.M_FILE);
+		MenuManager helpMenu = new MenuManager("&Help",
+				IWorkbenchActionConstants.M_HELP);
 		menuBar.add(fileMenu);
+		menuBar.add(helpMenu);
 		fileMenu.add(exitAction);
+		helpMenu.add(helpAction);
 	}
 
 }

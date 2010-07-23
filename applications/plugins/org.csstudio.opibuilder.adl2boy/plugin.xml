@@ -107,5 +107,12 @@
             objectClass="org.eclipse.core.resources.IResource">
       </objectContribution>
    </extension>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="xml/toc.xml"
+            primary="true">
+      </toc>
+   </extension>
 
 </plugin>
