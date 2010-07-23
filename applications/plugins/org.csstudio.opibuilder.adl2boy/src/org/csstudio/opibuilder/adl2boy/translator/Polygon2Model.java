@@ -19,7 +19,7 @@ public class Polygon2Model extends AbstractADL2Model {
 		Polygon polygonWidget = new Polygon(adlWidget);
 		if (polygonWidget != null) {
 			setADLObjectProps(polygonWidget, polygonModel);
-			setADLBasicAttributeProps(polygonWidget, polygonModel, false);
+			setADLBasicAttributeProps(polygonWidget, polygonModel, true);
 		}
 		polygonModel.setPoints(polygonWidget.getAdlPoints().getPointsList(), true);
 
