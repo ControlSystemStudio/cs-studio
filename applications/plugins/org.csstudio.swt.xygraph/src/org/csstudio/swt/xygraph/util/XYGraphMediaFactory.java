@@ -22,12 +22,15 @@
  package org.csstudio.swt.xygraph.util;
 
 import java.io.File;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.jface.resource.ColorRegistry;
@@ -91,16 +94,36 @@ public final class XYGraphMediaFactory {
 	
 	private static Cursor CURSOR_GRABBING;	
 	
-	public static Image createImage(String path) {			
-		URL url = XYGraphMediaFactory.class.getResource(path);
-		File file;
-		try{
-			file = new File(url.toURI());
-		}catch (URISyntaxException e) {
-			file = new File(url.getPath());
-		}
-		if(file.exists()){
-			return new Image(null, file.getAbsolutePath());
+	/**
+	 * @param path the relative path to the class file of XYGraphMediaFactory.
+	 * @return the image on the path. null if no image exist on this path.
+	 */
+	public Image createImage(String path) {
+		if(_imageRegistry.get(path) != null)
+			return _imageRegistry.get(path);	
+		
+		try {
+			InputStream in = XYGraphMediaFactory.class.getResourceAsStream(path);
+			if(in != null){
+				Path ePath = new Path(path);
+				File temp = File.createTempFile(ePath.removeFileExtension().lastSegment(),
+						"." + ePath.getFileExtension()); //$NON-NLS-1$
+				temp.deleteOnExit();
+				OutputStream out = new FileOutputStream(temp);
+				byte[] buf = new byte[1024];				
+				int len;
+			    while ((len = in.read(buf)) > 0){
+			        out.write(buf, 0, len);
+			     }
+			    in.close();
+				out.close();
+				
+				Image image = new Image(Display.getDefault(), temp.getAbsolutePath());
+				_imageRegistry.put(path, image);
+				return image;
+			}
+		} catch (IOException e) {
+			return null;
 		}
 		return null;
 		
@@ -123,7 +146,7 @@ public final class XYGraphMediaFactory {
 			if(CURSOR_GRABBING == null){
 				
 				CURSOR_GRABBING = new Cursor(Display.getDefault(), 
-						createImage("../icons/Grabbing.png").getImageData(), 8,8);		
+						getInstance().createImage("../icons/Grabbing.png").getImageData(), 8,8);		
 			}
 			return CURSOR_GRABBING;
 
@@ -144,7 +167,7 @@ public final class XYGraphMediaFactory {
 		_imageCache = new HashMap<ImageDescriptor, Image>();
 
 		// dispose all images from the image cache, when the display is disposed
-		Display.getCurrent().addListener(SWT.Dispose, new Listener() {
+		Display.getDefault().addListener(SWT.Dispose, new Listener() {
 			public void handleEvent(final Event event) {
 				for (Image img : _imageCache.values()) {
 					img.dispose();
