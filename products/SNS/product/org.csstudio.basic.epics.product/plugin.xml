@@ -51,31 +51,46 @@
                name="windowImages"
                value="platform:/plugin/org.csstudio.startuphelper/resources/icons/css16x16.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css32x32.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css48x48.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css64x64.gif,platform:/plugin/org.csstudio.startuphelper/resources/icons/css128x128.gif">
          </property>
+         <property
+            name="introTitle"
+            value="Welcome to CSS for EPICS!&lt;/h1&gt;&lt;p&gt;Control System Studio, CSS, is a collection of tools to monitor and operate the control system&lt;/p&gt;&lt;h1&gt;">
+         </property>
+         <property
+            name="introBrandingImage"
+            value="product:icons/css64.gif"/>
+         <property
+            name="introBrandingImageText"
+            value="CSS for EPICS"/>
       </product>
    </extension>
+   
    <extension
          point="org.eclipse.ui.intro">
-      <intro
-            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
-            icon="icons/css16.gif"
-            id="org.csstudio.basic.epics.product.intro">
-      </intro>
       <introProductBinding
-            introId="org.csstudio.basic.epics.product.intro"
-            productId="org.csstudio.basic.epics.product.product">
-      </introProductBinding>
+            introId="org.eclipse.ui.intro.universal"
+            productId="org.csstudio.basic.epics.product.product"/>
    </extension>
+   
    <extension
-         point="org.eclipse.ui.intro.config">
-      <config
-            content="/intro/intro.xml"
-            id="org.csstudio.basic.epics.product.introConfigId"
-            introId="org.csstudio.basic.epics.product.intro">
-         <presentation home-page-id="root">
-            <implementation kind="html"/>
-         </presentation>
-      </config>
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="intro/overview.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+      <configExtension
+            content="intro/whatsnew.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
    </extension>
+   
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+     
    <extension
          point="org.csstudio.startup.module">
       <workbench
