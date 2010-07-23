@@ -156,6 +156,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	private ThreadPoolExecutor executor;
 	
 	private boolean containsValue = false;
+	private boolean containsMetaData = false;
 	
 	// This task changes channel with INITIAL state to CONNECTION_FAILED.
 	private class AbortConnectionRunnable implements Runnable {
@@ -442,7 +443,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @param s new condition state.
 	 */
 	protected void setCondition(DynamicValueCondition s) {
-		if (containsValue) {
+		if (containsValue && containsMetaData) {
 			s = s.deriveConditionWithoutStates(DynamicValueState.NO_VALUE);
 		}
 		else {
@@ -722,6 +723,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			createSpecificCharacteristics(dbr);
 
 			characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
+			containsMetaData = true;
+			setCondition(getCondition());
 			
 			characteristics.notifyAll();
 		}
@@ -927,6 +930,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @param dbr DBR.
 	 */
 	public void updateWithDBR(DBR dbr) {
+		if (dbr == null) {
+			containsValue = false;
+			setCondition(getCondition());
+			return;
+		}
 		containsValue = (dbr.getValue() != null);
 		if (dbr.isSTS()) {
 			updateConditionWithDBRStatus((STS) dbr);
@@ -985,7 +993,8 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 */
 	public synchronized void connectionChanged(ConnectionEvent event) {
 		if (abortConnectionTask != null) abortConnectionTask.cancel();
-		if (abortConnection) return;
+		// this prevented the proxy from ever connecting
+//		if (abortConnection) return;
 		
 		Runnable connChangedRunnable = new Runnable () {
 

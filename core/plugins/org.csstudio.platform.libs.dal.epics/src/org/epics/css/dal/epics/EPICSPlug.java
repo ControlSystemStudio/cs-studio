@@ -59,6 +59,7 @@ import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.ConnectionException;
 import org.epics.css.dal.context.PlugEvent;
 import org.epics.css.dal.device.AbstractDevice;
+import org.epics.css.dal.impl.DoublePropertyImpl;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.proxy.DeviceProxy;
@@ -148,10 +149,26 @@ public class EPICSPlug extends AbstractPlug
 	public static final String PARAMETER_MONITOR_MASK = "EPICSPlug.monitor.mask";
 	
 	/**
+	 * Property name for default pendIO timeout property. 
+	 * Value is of type Double and provides the default timeout for pendIO.
+	 */
+	public static final String DEFAULT_PENDIO_TIMEOUT = "EPICSPlug.default_pendIO_timeout";
+	
+	/**
 	 * Property name for default monitor property. 
 	 * Value is of type Integer and provides mask value for default EPICS monitor creation.
 	 */
 	public static final String DEFAULT_MONITOR_MASK = "EPICSPlug.default_monitor_mask";
+	
+	/**
+	 * Property name for default property implementation class that is used when
+	 * implementation class can not be determined because channel is not connected. 
+	 * Value is of type String and must represent a fully qualified name of a property 
+	 * implementation class.
+	 */
+	public static final String DEFAULT_PROPERTY_IMPL_CLASS = "EPICSPlug.default_property_impl_class";
+	
+	private static final Class<? extends SimpleProperty<?>> DEFAULT_PROP_IMPL_CLASS = DoublePropertyImpl.class;
 	
 	/**
 	 * Property name for JNI flush timer delay.
@@ -200,14 +217,18 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	private Timer timer;
 
+	private static final Double DEFAULT_PENDIO_TIMEOUT_VALUE = 1.0;
+	
 	/**
 	 * PendIO timeout.
-	 * TODO to be configurable
+	 * it is configurable now
 	 * MCL 2010-07-20
 	 * configurable would be a great idea!
 	 * 5 seconds is too much ANY ioc will respond within 1 sec at most!
 	 * Changed from 5 to 1 sec
 	 */
+	private double pendIOTimeout = DEFAULT_PENDIO_TIMEOUT_VALUE;
+	
 	private double timeout = 1.0;
 
 	/**
@@ -228,7 +249,16 @@ public class EPICSPlug extends AbstractPlug
 	 */
 	private boolean use_jni = false;
 	
+	/**
+	 * Default monitor mask used for creation of monitors.
+	 */
 	private int defaultMonitorMask = Monitor.ALARM | Monitor.VALUE;
+	
+	/**
+	 * Default property implementation class that is used because it can not 
+	 * be determined on a channel that is not connected.
+	 */
+	private Class<? extends SimpleProperty<?>> defaultPropertyImplClass = DEFAULT_PROP_IMPL_CLASS;
 	
 	/**
 	 * If JNI is used, this flag indicates if <code>flushIO</code> method has been
@@ -365,6 +395,22 @@ public class EPICSPlug extends AbstractPlug
 			defaultMonitorMask = new Integer(getConfiguration().getProperty(DEFAULT_MONITOR_MASK, (new Integer(defaultMonitorMask)).toString()));
 		}
 		
+		String className;
+		if (System.getProperties().containsKey(DEFAULT_PROPERTY_IMPL_CLASS)) {
+			className = System.getProperty(DEFAULT_PROPERTY_IMPL_CLASS);
+			
+		} else {
+			className = getConfiguration().getProperty(DEFAULT_PROPERTY_IMPL_CLASS);
+		}
+		if (className != null) {
+			try {
+				defaultPropertyImplClass = (Class<? extends SimpleProperty<?>>) Class.forName(className);
+			} catch (Exception e) {
+				defaultPropertyImplClass = DEFAULT_PROP_IMPL_CLASS;
+			}
+		}
+		else defaultPropertyImplClass = DEFAULT_PROP_IMPL_CLASS;
+		
 		if (System.getProperties().containsKey(USE_JNI)) {
 			use_jni = new Boolean(System.getProperty(USE_JNI, "false"));
 		} else {
@@ -403,7 +449,14 @@ public class EPICSPlug extends AbstractPlug
 		// initialize supported proxy implementation
 		PlugUtilities.initializeSupportedProxyImplementations(this);
 	
-		timeout= Plugs.getConnectionTimeout(getConfiguration(), 10000)/1000.0;
+		if (System.getProperties().containsKey(DEFAULT_PENDIO_TIMEOUT)) {
+			pendIOTimeout = new Double(System.getProperty(DEFAULT_PENDIO_TIMEOUT, DEFAULT_PENDIO_TIMEOUT_VALUE.toString()));
+		} else {
+			pendIOTimeout = new Double(getConfiguration().getProperty(DEFAULT_PENDIO_TIMEOUT, DEFAULT_PENDIO_TIMEOUT_VALUE.toString()));
+		}
+		
+		timeout = Plugs.getConnectionTimeout(getConfiguration(), 10000)/1000.0;
+		
 	}
 
 	/**
@@ -483,6 +536,8 @@ public class EPICSPlug extends AbstractPlug
 			
 			return PlugUtilities.getPropertyImplForDBRType(type, elementCount);
 			
+		} catch (IllegalStateException ise) {
+			return defaultPropertyImplClass;
 		} catch (Throwable th) {
 			throw new RuntimeException("Failed create CA channel tqo determine channel type.", th);
 		}
@@ -590,7 +645,7 @@ public class EPICSPlug extends AbstractPlug
 	 * @see Context.pendIO(double)
 	 */
 	public void pendIO() throws CAException, TimeoutException, RemoteException {
-		getContext().pendIO(timeout);
+		getContext().pendIO(pendIOTimeout);
 	}
 
 	/*
