@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.1.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="SNS CSS" id="org.csstudio.sns.product.product" application="org.csstudio.sns.product.application" version="2.2.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.sns.product/icons/about.gif"/>
@@ -45,7 +45,7 @@ See http://ics-web.sns.ornl.gov/css
       </win>
    </launcher>
 
-   <intro introId="org.csstudio.sns.product.intro"/>
+   <intro introId="org.eclipse.ui.intro.universal"/>
 
    <vm>
    </vm>
@@ -69,9 +69,9 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </plugins>
 
    <features>
-      <feature id="org.csstudio.sns.feature.eclipse" version="2.1.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.eclipse" version="2.2.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.core" version="2.1.0.qualifier"/>
-      <feature id="org.csstudio.sns.feature.snscore" version="2.1.0.qualifier"/>
+      <feature id="org.csstudio.sns.feature.snscore" version="2.2.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.applications" version="2.1.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.databrowser" version="2.1.0.qualifier"/>
       <feature id="org.csstudio.sns.feature.opi" version="2.1.0.qualifier"/>

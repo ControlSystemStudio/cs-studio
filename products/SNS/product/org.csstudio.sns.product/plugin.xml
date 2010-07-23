@@ -2,6 +2,13 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+   <extension
          point="org.eclipse.core.runtime.applications"
          id="application"
 		 name="SNS CSS">
@@ -55,28 +62,36 @@
                name="preferenceCustomization"
                value="plugin_customization.ini">
          </property>
+         <property
+            name="introTitle"
+            value="Welcome to CSS for the SNS!&lt;/h1&gt;&lt;p&gt;Control System Studio, CSS, is a collection of tools to monitor and operate the control system&lt;/p&gt;&lt;h1&gt;">
+         </property>
+         <property
+            name="introBrandingImage"
+            value="product:icons/css64.gif"/>
+         <property
+            name="introBrandingImageText"
+            value="SNS CSS"/>
       </product>
    </extension>
+
    <extension
          point="org.eclipse.ui.intro">
-      <intro
-            class="org.eclipse.ui.intro.config.CustomizableIntroPart"
-            icon="icons/css16.gif"
-            id="org.csstudio.sns.product.intro"/>
       <introProductBinding
-            introId="org.csstudio.sns.product.intro"
+            introId="org.eclipse.ui.intro.universal"
             productId="org.csstudio.sns.product.product"/>
    </extension>
+
    <extension
-         point="org.eclipse.ui.intro.config">
-      <config
-            content="/intro/intro.xml"
-            id="org.csstudio.sns.product.introConfigId"
-            introId="org.csstudio.sns.product.intro">
-         <presentation home-page-id="root">
-            <implementation kind="html"/>
-         </presentation>
-      </config>
+         point="org.eclipse.ui.intro.configExtension">
+      <configExtension
+            content="doc/overview.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
+      <configExtension
+            content="doc/whatsnew.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
+      </configExtension>
    </extension>
 
    <extension point="org.csstudio.startup.module">

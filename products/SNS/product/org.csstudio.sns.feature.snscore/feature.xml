@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.sns.feature.snscore"
       label="Core CSS Components specific to SNS"
-      version="2.1.1.qualifier"
+      version="2.2.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
@@ -39,16 +39,17 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.resources"/>
       <import plugin="org.eclipse.ui"/>
       <import plugin="org.eclipse.ui.intro"/>
+      <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.eclipse.ui.cheatsheets"/>
       <import plugin="org.csstudio.platform.ui"/>
       <import plugin="org.csstudio.platform.workspace"/>
       <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startuphelper" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.ui.intro.universal"/>
+      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin
