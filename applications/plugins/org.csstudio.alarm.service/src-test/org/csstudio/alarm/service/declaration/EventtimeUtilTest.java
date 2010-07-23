@@ -19,14 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.alarm.service.declaration;
 
 import static org.junit.Assert.assertEquals;
 
 import java.util.Date;
 
-import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.junit.Test;
 
 
@@ -42,7 +40,7 @@ public class EventtimeUtilTest {
 		 * Important note: This test will fail in any timezone except Central
 		 * European Time ("mitteleuropaeische Zeit") because DESY uses
 		 * timestamps without timezone information.
-		 * 
+		 *
 		 * The time difference to UTC is +1 normal, +2 daylight savings time.
 		 */
 		String timestamp = "1970-01-01 01:00:00.000";
