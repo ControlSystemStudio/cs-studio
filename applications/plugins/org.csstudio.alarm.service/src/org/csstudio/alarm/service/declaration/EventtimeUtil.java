@@ -71,8 +71,8 @@ public final class EventtimeUtil {
             // Already handled
             LOG.error("ParseException: " + timestamp, e);
         } catch (final NumberFormatException e) {
-            // Already handled
-//            LOG.error("NumberFormatException: " + timestamp, e);
+            // Already handled - ignore
+            LOG.error("NumberFormatException: " + timestamp, e);
         } catch (final ArrayIndexOutOfBoundsException e) {
             LOG.error("ArrayIndexOutOfBoundsException: " + timestamp, e);
         }

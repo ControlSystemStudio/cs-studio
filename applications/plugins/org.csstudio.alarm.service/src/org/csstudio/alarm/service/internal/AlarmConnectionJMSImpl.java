@@ -119,8 +119,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         public void onMessage(@Nonnull final Message message) {
             if (AlarmMessageJMSImpl.canCreateAlarmMessageFrom(message)) {
                 _alarmListener.onMessage(AlarmMessageJMSImpl.newAlarmMessage(message));
-            }
-            else {
+            } else {
                 LOG.warn("Could not create alarm message from " + message);
             }
         }

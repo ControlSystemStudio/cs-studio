@@ -40,7 +40,7 @@ public interface IAlarmMessage {
      * @param key
      * @return value
      */
-    @CheckForNull
+    @Nonnull
     String getString(@Nonnull final AlarmMessageKey key);
 
     /**

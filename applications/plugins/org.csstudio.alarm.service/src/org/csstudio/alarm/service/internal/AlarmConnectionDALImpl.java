@@ -124,7 +124,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
             for (final String recordName : model
                     .getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD)) {
                 LOG.debug("Connecting to " + recordName);
-                connectToPV(connectionMonitor, listener, recordName);
+                connectToPV(/*connectionMonitor, */listener, recordName);
             }
 
             // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
@@ -139,7 +139,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
     }
 
-    private void connectToPV(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+    private void connectToPV(//@Nonnull final IAlarmConnectionMonitor connectionMonitor,
                              @Nonnull final IAlarmListener listener,
                              @Nonnull final String pvName) {
 
@@ -151,8 +151,10 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         final ListenerItem item = new ListenerItem();
         // REVIEW (jpenning): hard coded type in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, String.class);
-        item._dynamicValueAdapter = new DynamicValueListenerAdapter<String, StringProperty>(listener,
-                                                                                            connectionMonitor);
+        item._dynamicValueAdapter = new DynamicValueListenerAdapter<String, StringProperty>(listener
+//                ,
+//                                                                                            connectionMonitor
+                                                                                            );
         // TODO (jpenning) use constants for parameterization of expert mode
         item._parameters = new HashMap<String, Object>();
         item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
@@ -182,8 +184,10 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
         private final IAlarmListener _alarmListener;
 
-        public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener,
-                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor) {
+        public DynamicValueListenerAdapter(@Nonnull final IAlarmListener alarmListener
+//                                           ,
+//                                           @Nonnull final IAlarmConnectionMonitor alarmConnectionMonitor
+                                           ) {
             // The alarmConnectionMonitor is not used by the DynamicValueListenerAdapter, instead the connect is sent
             // directly after connectWithListenerForResource()
             _alarmListener = alarmListener;

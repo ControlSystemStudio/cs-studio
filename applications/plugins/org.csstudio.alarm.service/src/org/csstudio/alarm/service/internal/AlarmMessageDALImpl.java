@@ -63,7 +63,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
     private static final String APPLICATION_ID = "CSS_AlarmService";
 
     // The message is based upon this data
-    private final SimpleProperty _property;
+    private final SimpleProperty<?> _property;
     private final AnyData _anyData;
 
     /**
@@ -71,13 +71,13 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
      * @param property
      * @param anyData
      */
-    private AlarmMessageDALImpl(@Nonnull final SimpleProperty property,
+    private AlarmMessageDALImpl(@Nonnull final SimpleProperty<?> property,
                                 @Nonnull final AnyData anyData) {
         _property = property;
         _anyData = anyData;
     }
 
-    public static boolean canCreateAlarmMessageFrom(@Nonnull final SimpleProperty property,
+    public static boolean canCreateAlarmMessageFrom(@Nonnull final SimpleProperty<?> property,
                                                     @Nonnull final AnyData anyData) {
         // TODO (jpenning) define correctness of alarm message from DAL here
 
@@ -92,7 +92,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
     }
 
     @Nonnull
-    public static IAlarmMessage newAlarmMessage(@Nonnull final SimpleProperty property,
+    public static IAlarmMessage newAlarmMessage(@Nonnull final SimpleProperty<?> property,
                                                 @Nonnull final AnyData anyData) {
         assert canCreateAlarmMessageFrom(property, anyData) : "Alarm message cannot be created for "
                 + property.getUniqueName();
@@ -101,11 +101,12 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
 
     /**
      * {@inheritDoc}
+     * CHECKSTYLE OFF: CyclomaticComplexity|MethodLength
      */
+    @Override
     @Nonnull
-    public final String getString(@Nonnull final AlarmMessageKey key) {
-        String result = null;
-
+    public String getString(@Nonnull final AlarmMessageKey key) {
+        String result;
         switch (key) {
             case ACK:
                 result = retrieveAckAsString();
@@ -156,6 +157,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
         }
         return result;
     }
+    // CHECKSTYLE ON: CyclomaticComplexity|MethodLength
 
     @Override
     @Nonnull
@@ -169,7 +171,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
 
     @Override
     @Nonnull
-    public final String toString() {
+    public String toString() {
         return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) +
                " for " + getString(AlarmMessageKey.NAME) +
                ", Severity " + getSeverity() +
@@ -177,7 +179,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
     }
 
     @Nonnull
-    private SimpleProperty getProperty() {
+    private SimpleProperty<?> getProperty() {
         return _property;
     }
 
@@ -286,8 +288,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
      * {@inheritDoc}
      */
     @Nonnull
-    public Severity getSeverity()
-    {
+    public Severity getSeverity() {
         Severity result = Severity.UNKNOWN;
 
         final DynamicValueCondition condition = getCondition();

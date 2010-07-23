@@ -45,7 +45,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @version $Revision$
  * @since 21.04.2010
  */
-public class AlarmMessageJMSImpl implements IAlarmMessage {
+public final class AlarmMessageJMSImpl implements IAlarmMessage {
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmMessageJMSImpl.class);
 
@@ -67,17 +67,14 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
         // TODO (jpenning) define correctness of alarm message from JMS here
         return message instanceof MapMessage;
     }
-
+    @Nonnull
     public static IAlarmMessage newAlarmMessage(@Nonnull final Message message) {
         assert canCreateAlarmMessageFrom(message) : "Alarm message cannot be created";
         return new AlarmMessageJMSImpl((MapMessage) message);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Nonnull
-    private final String getString(@Nonnull final String key) {
+    private String getString(@Nonnull final String key) {
         String result = "";
         try {
             result = _mapMessage.getString(key);
@@ -93,13 +90,13 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
      */
     @Override
     @Nonnull
-    public final String getString(@Nonnull final AlarmMessageKey key) {
+    public String getString(@Nonnull final AlarmMessageKey key) {
         return getString(key.getDefiningName());
     }
 
     @Override
     @Nonnull
-    public final synchronized Map<String, String> getMap() {
+    public synchronized Map<String, String> getMap() {
         if (_map == null) {
             _map = new HashMap<String, String>();
             try {
@@ -118,7 +115,7 @@ public class AlarmMessageJMSImpl implements IAlarmMessage {
 
     @Override
     @Nonnull
-    public final String toString() {
+    public String toString() {
         return "JMS-AlarmMessage of type " + getString(AlarmMessageKey.TYPE) + " for "
                 + getString(AlarmMessageKey.NAME) + ", Severity " + getSeverity() + ", Status "
                 + getString(AlarmMessageKey.STATUS);
