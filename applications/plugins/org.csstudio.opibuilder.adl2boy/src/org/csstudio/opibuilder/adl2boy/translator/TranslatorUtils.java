@@ -27,6 +27,7 @@ public class TranslatorUtils {
 				
 				}
 				else if (widgetType.equals("byte")){
+					new Byte2Model(adlWidget, colorMap,parentModel);
 					printNotHandledMessage(widgetType);
 					
 				}
@@ -36,6 +37,7 @@ public class TranslatorUtils {
 					
 				}
 				else if (widgetType.equals("choice button")){
+					new ChoiceButton2Model(adlWidget, colorMap,parentModel);
 					printNotHandledMessage(widgetType);
 					
 				}
