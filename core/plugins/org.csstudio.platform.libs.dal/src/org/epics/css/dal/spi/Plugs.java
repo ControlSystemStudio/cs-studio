@@ -452,7 +452,7 @@ public final class Plugs
 			}
 		}
 
-		return Long.getLong(CONNECTION_TIMEOUT, def);
+		return Long.getLong(INITIAL_CONNECTION_TIMEOUT, def);
 	}
 	/**
 	 * Convenience method which tries to get initial connection timeout first from provided properties,

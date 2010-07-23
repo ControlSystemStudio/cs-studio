@@ -115,10 +115,20 @@ public class SimpleDALBroker {
 		return sb.toString();
 	}
 
+	/**
+	 * Creates singleton instance of SimpleDALBroker. 
+	 * This is same as calling {@link SimpleDALBroker#newInstance(AbstractApplicationContext)} with <code>null</code> as parameter.
+	 * @return singleton instance of SimpleDALBroker
+	 */
 	public static SimpleDALBroker getInstance() {
 		return newInstance(null);
 	}
 
+	/**
+	 * Creates new instance of SimpleDALBroker or singelton instance of parameter is <code>null</code>.
+	 * @param ctx application context or null
+	 * @return if ctx is provided new instance, otherwise singelton
+	 */
 	public static SimpleDALBroker newInstance(final AbstractApplicationContext ctx) {
 		if (ctx==null) {
 			if (broker == null) {
@@ -141,7 +151,7 @@ public class SimpleDALBroker {
 
 	private static final long CLEANUP_INTERVAL = 60000;
 	private final Timer cleanupTimer;
-
+	
 	private SimpleDALBroker(final AbstractApplicationContext ctx) {
 		this.ctx=ctx;
 		properties= new HashMap<String, PropertyHolder>();
@@ -168,7 +178,7 @@ public class SimpleDALBroker {
 			}
 		});
 	}
-
+	
 	private PropertyHolder getPropertyHolder(final ConnectionParameters cparam) throws InstantiationException, CommonException {
 		return getPropertyHolder(cparam, System.currentTimeMillis()+timeToLive);
 	}
@@ -554,6 +564,14 @@ public class SimpleDALBroker {
 	 */
 	public void setDefaultPlugType(final String plugType) {
 		getFactory().setDefaultPlugType(plugType);
+	}
+	
+	public void releaseAll() {
+		getFactory().releaseAll();
+		
+		synchronized (properties) {
+			properties.clear();
+		}
 	}
 
 }

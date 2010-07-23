@@ -72,18 +72,20 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		if (type==null) {
 			type=defaultPlugType;
 		}
-		PropertyFactory f = factories.get(type);
-		if (f != null) {
-            return f;
-        }
-		try {
-			f = (PropertyFactory) Plugs.getInstance(ctx.getConfiguration()).getPropertyFactoryClassForPlug(type).newInstance();
-			f.initialize(ctx, linkPolicy);
-			factories.put(type, f);
-		} catch (final InstantiationException e) {
-		} catch (final IllegalAccessException e) {
+		synchronized (factories) {
+			PropertyFactory f = factories.get(type);
+			if (f != null) {
+	            return f;
+	        }
+			try {
+				f = (PropertyFactory) Plugs.getInstance(ctx.getConfiguration()).getPropertyFactoryClassForPlug(type).newInstance();
+				f.initialize(ctx, linkPolicy);
+				factories.put(type, f);
+			} catch (final InstantiationException e) {
+			} catch (final IllegalAccessException e) {
+			}
+			return f;
 		}
-		return f;
 	}
 
 	public String[] getSupportedPlugTypes() {
@@ -139,9 +141,11 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	public void destroy(final DynamicValueProperty<?> property) {
-		final Iterator<PropertyFactory> it = factories.values().iterator();
-		while(it.hasNext()) {
-			it.next().getPropertyFamily().destroy(property);
+		synchronized (factories) {
+			final Iterator<PropertyFactory> it = factories.values().iterator();
+			while (it.hasNext()) {
+				it.next().getPropertyFamily().destroy(property);
+			}
 		}
 	}
 
@@ -177,4 +181,13 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		return false;
 	}
 
+	public void releaseAll() {
+		synchronized (factories) {
+			final Iterator<PropertyFactory> it = factories.values().iterator();
+			while (it.hasNext()) {
+				it.next().getPropertyFamily().destroyAll();
+			}
+		}
+	}
+	
 }
