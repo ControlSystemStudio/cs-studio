@@ -84,7 +84,7 @@ public class StringUtilTest extends TestCase {
     }
 
     @Test
-    public final void testHasLength() {
+    public final void testIsBlank() {
         assertTrue(StringUtil.hasLength("a"));
         assertTrue(StringUtil.hasLength(" "));
         assertFalse(StringUtil.hasLength(""));

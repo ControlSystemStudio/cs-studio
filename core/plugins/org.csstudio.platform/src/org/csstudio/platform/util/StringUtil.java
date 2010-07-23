@@ -43,8 +43,12 @@ public class StringUtil {
 		return result;
 	}
 
+	public static boolean isBlank(final String s) {
+	    return ((s == null) || "".equals(s));
+	}
+
 	public static boolean hasLength(final String s) {
-		return ((s != null) && !"".equals(s));
+		return !isBlank(s);
 	}
 
 	public static String toSeparatedString(final Collection<String> collection, final String separator) {
@@ -64,7 +68,7 @@ public class StringUtil {
 	}
 
 	public static String trimNull(final String s) {
-		return hasLength(s)?s:"";
+		return hasLength(s) ? s : "";
 	}
 
 	private static final char SPACE = ' ';
@@ -74,7 +78,7 @@ public class StringUtil {
 	 * Split source string into an array of elements by the splitting character,
 	 * but the split characters between two quotes will be ignored.
 	 *
-	 * @param source
+	 * @param trimmedSource
 	 *            string to be split
 	 * @param splitChar
 	 *            the character used to split the source string
@@ -85,34 +89,34 @@ public class StringUtil {
 	 * @throws Exception
 	 *             Exception on parse error (missing end of quoted string)
 	 */
-	public static String[] splitIgnoreInQuotes(String source, final char splitChar,
+	public static String[] splitIgnoreInQuotes(final String source, final char splitChar,
 			final boolean deleteHeadTailQuotes) throws Exception {
 
 		// Trim, replace tabs with spaces so we only need to handle
         // space in the following
-		source = source.replace('\t', SPACE).trim();
+		final String trimmedSource = source.replace('\t', SPACE).trim();
 		final List<String> resultList = new ArrayList<String>();
 		int pos = 0;
 		int start = 0;
-		while(pos < source.length()) {
+		while(pos < trimmedSource.length()) {
 
 			start = pos;
 			//skip multiple splitChars
-			while((start < source.length()) && (source.charAt(start) == splitChar)) {
+			while((start < trimmedSource.length()) && (trimmedSource.charAt(start) == splitChar)) {
                 start++;
             }
-			if(start >= source.length()) {
+			if(start >= trimmedSource.length()) {
                 break;
             }
 			pos = start;
 
-			while((pos < source.length()) && (source.charAt(pos) !=splitChar)) {
+			while((pos < trimmedSource.length()) && (trimmedSource.charAt(pos) !=splitChar)) {
 				//in case of quote, go to the end of next quote
-				if(source.charAt(pos) == QUOTE) {
-					final int end = source.indexOf(QUOTE, pos+1);
+				if(trimmedSource.charAt(pos) == QUOTE) {
+					final int end = trimmedSource.indexOf(QUOTE, pos+1);
 					if(end < 0) {
                         throw new Exception("Missing end of quoted text in '" +
-								source + "'");
+								trimmedSource + "'");
                     }
 					pos = end + 1;
 				} else {
@@ -120,7 +124,7 @@ public class StringUtil {
                 }
 			}
 
-			String subString = source.substring(start, pos);
+			String subString = trimmedSource.substring(start, pos);
 			subString = subString.trim();
 			if(deleteHeadTailQuotes) {
                 //only delete quotes when both head and tail are quote
