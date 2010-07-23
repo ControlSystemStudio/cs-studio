@@ -19,7 +19,7 @@ public class Oval2Model extends AbstractADL2Model {
 		Oval ovalWidget = new Oval(adlWidget);
 		if (ovalWidget != null) {
 			setADLObjectProps(ovalWidget, ellipseModel);
-			setADLBasicAttributeProps(ovalWidget, ellipseModel, false);
+			setADLBasicAttributeProps(ovalWidget, ellipseModel, true);
 		}
 		//check fill parameters
 		if ( ovalWidget.hasADLBasicAttribute() ) {
