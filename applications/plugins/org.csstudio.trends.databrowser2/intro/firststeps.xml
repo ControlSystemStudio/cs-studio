@@ -14,7 +14,7 @@
                 <text>Follow along to plot archived data</text>
             </link>
              -->
-            <link id="databrowser" label="Data Browser Manual"
+            <link id="databrowser" label="Data Browser"
                   url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.trends.databrowser2/doc/databrowser.html"
                   style-id="content-link">
                 <text>Read the online manual to learn more, or try the menu 
