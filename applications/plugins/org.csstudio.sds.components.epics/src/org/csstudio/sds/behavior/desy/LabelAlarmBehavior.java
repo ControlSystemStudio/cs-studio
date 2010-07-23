@@ -25,6 +25,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.LabelModel;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -47,6 +48,17 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
         addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final LabelModel widget) {
+        super.doInitialize(widget);
+        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+            widget.setJavaType(String.class);
+        }
     }
 
     /**

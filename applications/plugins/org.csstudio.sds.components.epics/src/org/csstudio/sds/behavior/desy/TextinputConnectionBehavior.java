@@ -20,6 +20,7 @@ package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.BorderStyleEnum;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -52,7 +53,12 @@ public class TextinputConnectionBehavior extends AbstractDesyConnectionBehavior<
     @Override
     protected void doInitialize(final TextInputModel widget) {
         super.doInitialize(widget);
-        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, BorderStyleEnum.LOWERED.getIndex());
+        widget.setPropertyValue(TextInputModel.PROP_BORDER_STYLE, BorderStyleEnum.LOWERED
+                .getIndex());
+        if (widget.getValueType().equals(TextTypeEnum.TEXT)) {
+            widget.setJavaType(String.class);
+        }
+
     }
 
     /**

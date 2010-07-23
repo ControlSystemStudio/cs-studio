@@ -21,9 +21,6 @@ package org.csstudio.sds.behavior.desy;
 import java.util.HashSet;
 import java.util.Set;
 
-
-
-
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.LabelModel;
@@ -55,7 +52,8 @@ public abstract class AbstractDesyConnectionBehavior<W extends AbstractWidgetMod
      */
     public AbstractDesyConnectionBehavior() {
         addInvisiblePropertyId(AbstractWidgetModel.PROP_NAME);
-        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+        // FIXME: How needs to disable PROP_COLOR_BACKGROUND
+//        addInvisiblePropertyId(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
         addInvisiblePropertyId(AbstractWidgetModel.PROP_CROSSED_OUT);
         addInvisiblePropertyId(TextInputModel.PROP_CURSOR);
     }

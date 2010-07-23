@@ -20,6 +20,7 @@ package org.csstudio.sds.behavior.desy;
 
 
 import org.csstudio.sds.components.model.ActionButtonModel;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -38,6 +39,17 @@ public class ActionButtonBehavior extends AbstractDesyConnectionBehavior<ActionB
      */
     public ActionButtonBehavior() {
         // TODO Auto-generated constructor stub
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final ActionButtonModel widget) {
+        super.doInitialize(widget);
+        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+            widget.setJavaType(String.class);
+        }
     }
 
     /**

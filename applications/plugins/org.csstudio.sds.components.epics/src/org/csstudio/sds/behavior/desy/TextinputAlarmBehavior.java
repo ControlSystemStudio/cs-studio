@@ -25,6 +25,7 @@
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.components.model.TextInputModel;
+import org.csstudio.sds.model.TextTypeEnum;
 import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
@@ -43,6 +44,17 @@ public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputM
         addInvisiblePropertyId(TextInputModel.PROP_INPUT_TEXT);
         addInvisiblePropertyId(TextInputModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(TextInputModel.PROP_PERMISSSION_ID);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected void doInitialize(final TextInputModel widget) {
+        super.doInitialize(widget);
+        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+            widget.setJavaType(String.class);
+        }
     }
 
     /**
