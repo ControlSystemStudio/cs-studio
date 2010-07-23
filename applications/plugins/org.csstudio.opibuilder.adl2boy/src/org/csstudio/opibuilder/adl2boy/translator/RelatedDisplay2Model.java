@@ -73,7 +73,11 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 				}
 			}
 		}
-		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, rdWidget.getLabel());
+		String label = rdWidget.getLabel();
+		if (label.startsWith("-")){          // leading "-" was used to flag not using the icon.  Just don't use the icon and throw this away
+			label = label.substring(1);
+		}
+		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
 		//TODO Add Visual property to RelatedDisplay2Model
 		//TODO Add remove parent display to RelatedDisplay2Model
 	}
