@@ -345,7 +345,7 @@ public class AlarmTreeView extends ViewPart {
      * @param viewer
      * @param currentAlarmFilter
      *
-     * CHECKSTYLE:MethodLength:OFF (this method properly encapsulates all view actions)
+     * CHECKSTYLE OFF: MethodLength (this method properly encapsulates all view actions)
      */
     private void createActions(@Nonnull final IAlarmSubtreeNode rootNode,
                                @Nonnull final TreeViewer viewer,
@@ -411,6 +411,7 @@ public class AlarmTreeView extends ViewPart {
 
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
     }
+    // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
 
     @Nonnull
     private Job createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
