@@ -1,34 +1,33 @@
-
-/* 
+/*
  * Copyright (c) C1 WPS mbH, HAMBURG, GERMANY. All Rights Reserved.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
  * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT
  * LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR
- * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
- * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, 
+ * PURPOSE AND  NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+ * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
- * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, 
+ * IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING,
  * REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL
- * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER 
+ * PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
  * EXCEPT UNDER THIS DISCLAIMER.
- * C1 WPS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, 
- * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE 
- * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND 
- * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU 
+ * C1 WPS HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE
+ * SOFTWARE THE REDISTRIBUTION, MODIFICATION, USAGE AND OTHER RIGHTS AND
+ * OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU
  * MAY FIND A COPY AT
  * {@link http://www.eclipse.org/org/documents/epl-v10.html}.
  */
-
 package org.csstudio.nams.application.department.decision;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.List;
+
 import org.csstudio.nams.application.department.decision.management.Stop;
 import org.csstudio.nams.application.department.decision.office.decision.AlarmEntscheidungsBuero;
 import org.csstudio.nams.application.department.decision.remote.RemotelyStoppable;
@@ -80,7 +79,7 @@ import org.remotercp.login.connection.HeadlessConnection;
  * The decision department or more precise the activator and application class
  * to controls their life cycle.
  * </p>
- * 
+ *
  * <p>
  * <strong>Pay attention:</strong> There are always exactly two instances of
  * this class present: The <emph>bundle activator instance</emph> and the
@@ -92,17 +91,17 @@ import org.remotercp.login.connection.HeadlessConnection;
  * start operation are static to be accessible from the <emph>bundles
  * application</emph> start.
  * </p>
- * 
+ *
  * @author <a href="mailto:mz@c1-wps.de">Matthias Zeimer</a>
  * @author <a href="mailto:gs@c1-wps.de">Goesta Steen</a>
- * 
+ *
  * @version 0.1-2008-04-25: Created.
  * @version 0.1.1-2008-04-28 (MZ): Change to use
  *          org.csstudio.nams.common.activatorUtils.BundleActivatorUtils.
  * @version 0.2.0-2008-06-10 (MZ): Change to use {@link AbstractBundleActivator}.
  */
 public class DecisionDepartmentActivator extends AbstractBundleActivator
-		implements IApplication, BundleActivator, RemotelyStoppable {
+		implements IApplication, RemotelyStoppable {
 
 	class AusgangsKorbBearbeiter extends StepByStepProcessor {
 
@@ -188,11 +187,11 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private static LocalStoreConfigurationService localStoreConfigurationService;
 
 	private static String managementPassword;
-		
+
 	/**
 	 * Versucht via dem Distributor eine Synchronisation auszufürehn. Das
 	 * Ergebnis gibt an, ob weitergearbeitet werden soll.
-	 * 
+	 *
 	 * @param instance
 	 * @param logger
 	 * @param amsAusgangsProducer
@@ -260,7 +259,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	/**
 	 * Indicates if the application instance should continue working. Unused in
 	 * the activator instance.
-	 * 
+	 *
 	 * This field may be set by another thread to indicate that application
 	 * should shut down.
 	 */
@@ -318,7 +317,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	private StandardAblagekorb<Vorgangsmappe> ausgangskorbDesDecisionOfficeUndEingangskorbDesPostOffice;
 
 	private Producer extCommandProducer;
-	
+
     /** Class that collects statistic informations. Query it via XMPP. */
     private Collector ackMessages = null;
 
@@ -330,13 +329,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	/**
 	 * Starts the bundle application instance. Second Step.
-	 * 
+	 *
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public Object start(final IApplicationContext context)
 	{
         Stop.staticInject(this);
-        
+
         ackMessages = new Collector();
         ackMessages.setApplication("AmsDecisionDepartment");
         ackMessages.setDescriptor("NOT acknowleged messages");
@@ -356,13 +355,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger
 				.logInfoMessage(this,
 						"Decision department application is going to be initialized...");
-		
+
 		connectToXMPPServer();
-		
+
 		configureExecutionService();
 
-		createMessagingConsumer();	
-		
+		createMessagingConsumer();
+
 		if (this._continueWorking) {
 			createMessagingProducer();
 		}
@@ -405,7 +404,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 							.sendeSystemnachricht(new SyncronisationsBestaetigungSystemNachricht());
 					DecisionDepartmentActivator.logger.logInfoMessage(this,
 							"Commiting synchronization after restart done.");
-				} catch (MessagingException e) {
+				} catch (final MessagingException e) {
 					DecisionDepartmentActivator.logger
 							.logFatalMessage(
 									this,
@@ -414,12 +413,12 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 					this._continueWorking = false;
 				}
 			}
-			
+
 			/*-
 			 * if a synchronize request has been received here it is handled.
 			 */
 			DecisionDepartmentActivator._hasReceivedSynchronizationRequest = false;
-			
+
 			if (this._continueWorking) {
 				createDecissionOffice();
 			}
@@ -447,18 +446,18 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	/**
 	 * Connects the application to the XMPP server.
-	 * 
+	 *
 	 * ATTENTION: It does not use the preference service of NAMS, because the service
 	 *            uses the qualifier org.csstudio.ams.
-	 *            
+	 *
 	 *            Have to be changed in the future!!!
 	 */
     public void connectToXMPPServer()
     {
-        IPreferencesService pref = Platform.getPreferencesService();
-        String xmppServer = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppServer", "krynfs.desy.de", null);
-        String xmppUser = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppUser", "anonymous", null);
-        String xmppPassword = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppPassword", "anonymous", null);
+        final IPreferencesService pref = Platform.getPreferencesService();
+        final String xmppServer = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppServer", "krynfs.desy.de", null);
+        final String xmppUser = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppUser", "anonymous", null);
+        final String xmppPassword = pref.getString(DecisionDepartmentActivator.PLUGIN_ID, "xmppPassword", "anonymous", null);
 
 //        String xmppUser = "ams-department-decision";
 //        String xmppPassword = "ams";
@@ -467,9 +466,9 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
         try
         {
             HeadlessConnection.connect(xmppUser, xmppPassword, xmppServer, ECFConstants.XMPP);
-            ServiceLauncher.startRemoteServices();     
+            ServiceLauncher.startRemoteServices();
         }
-        catch(Exception e)
+        catch(final Exception e)
         {
             CentralLogger.getInstance().warn(this, "Could not connect to XMPP server: " + e.getMessage());
         }
@@ -480,30 +479,30 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.logger
 				.logInfoMessage(this,
 						"Decision department application is closing opened connections...");
-		if (this.amsAusgangsProducer != null
+		if ((this.amsAusgangsProducer != null)
 				&& !this.amsAusgangsProducer.isClosed()) {
 			this.amsAusgangsProducer.tryToClose();
 		}
-		if (this.amsCommandConsumer != null
+		if ((this.amsCommandConsumer != null)
 				&& !this.amsCommandConsumer.isClosed()) {
 			this.amsCommandConsumer.close();
 		}
-		if (this.amsMessagingSessionForConsumer != null
+		if ((this.amsMessagingSessionForConsumer != null)
 				&& !this.amsMessagingSessionForConsumer.isClosed()) {
 			this.amsMessagingSessionForConsumer.close();
 		}
-		if (this.amsMessagingSessionForProducer != null
+		if ((this.amsMessagingSessionForProducer != null)
 				&& !this.amsMessagingSessionForProducer.isClosed()) {
 			this.amsMessagingSessionForProducer.close();
 		}
-		if (this.extAlarmConsumer != null && !this.extAlarmConsumer.isClosed()) {
+		if ((this.extAlarmConsumer != null) && !this.extAlarmConsumer.isClosed()) {
 			this.extAlarmConsumer.close();
 		}
-		if (this.extCommandConsumer != null
+		if ((this.extCommandConsumer != null)
 				&& !this.extCommandConsumer.isClosed()) {
 			this.extCommandConsumer.close();
 		}
-		if (this.extMessagingSessionForConsumer != null
+		if ((this.extMessagingSessionForConsumer != null)
 				&& !this.extMessagingSessionForConsumer.isClosed()) {
 			this.extMessagingSessionForConsumer.close();
 		}
@@ -718,26 +717,17 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	/**
 	 * Starts the bundle activator instance. First Step.
-	 * 
+	 *
 	 * @see BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	@OSGiBundleActivationMethod
-	public void startBundle(@OSGiService
-	@Required
-	final Logger injectedLogger, @OSGiService
-	@Required
-	final MessagingService injectedMessagingService, @OSGiService
-	@Required
-	final PreferenceService injectedPreferenceService, @OSGiService
-	@Required
-	final RegelwerkBuilderService injectedBuilderService, @OSGiService
-	@Required
-	final HistoryService injectedHistoryService, @OSGiService
-	@Required
-	final ConfigurationServiceFactory injectedConfigurationServiceFactory,
-			@OSGiService
-			@Required
-			final ExecutionService injectedExecutionService) throws Exception {
+	public void startBundle(@OSGiService @Required final Logger injectedLogger,
+	                        @OSGiService @Required final MessagingService injectedMessagingService,
+	                        @OSGiService @Required final PreferenceService injectedPreferenceService,
+	                        @OSGiService @Required final RegelwerkBuilderService injectedBuilderService,
+	                        @OSGiService @Required final HistoryService injectedHistoryService,
+	                        @OSGiService @Required final ConfigurationServiceFactory injectedConfigurationServiceFactory,
+	                        @OSGiService @Required final ExecutionService injectedExecutionService) throws Exception {
 
 		// ** Services holen...
 
@@ -790,7 +780,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	/**
 	 * Stops the bundle application instance.Ppenultimate Step.
-	 * 
+	 *
 	 * @see IApplication#start(IApplicationContext)
 	 */
 	public void stop() {
@@ -812,7 +802,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 
 	/**
 	 * Stops the bundle activator instance. Last Step.
-	 * 
+	 *
 	 * @see BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	@OSGiBundleDeactivationMethod
@@ -857,7 +847,7 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	/**
 	 * This method is receiving Messages and handle them. It will block until
 	 * _continueWorking get false.
-	 * 
+	 *
 	 * @param eingangskorb
 	 *            Der {@link Eingangskorb} to read on.
 	 */
@@ -923,10 +913,10 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 												"Decission department received re-synchronization request, going to be re-initialized...");
 
 								message.acknowledge();
-								
+
 								// Office stoppen...
 								closeDecissionOffice();
-								
+
 								// cancel receive wihout stopping application!
 								return ;
 							}
@@ -957,16 +947,16 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 	}
 
 	/**
-	 * 
+	 *
 	 */
-    public synchronized void stopRemotely(Logger logger)
+    public synchronized void stopRemotely(final Logger logger)
     {
         this.stop();
         logger.logDebugMessage(this, "DecisionDepartmentActivator.stopRemotely(): After this.stop()");
     }
-    
+
     /**
-     * 
+     *
      * @return
      */
     public synchronized String getPassword() {

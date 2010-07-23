@@ -9,13 +9,11 @@ import org.csstudio.nams.common.activatorUtils.Required;
 import org.csstudio.nams.common.material.regelwerk.ProcessVariableRegel;
 import org.csstudio.nams.common.service.ExecutionService;
 import org.csstudio.nams.service.logging.declaration.Logger;
-import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class CommonActivator extends AbstractBundleActivator implements
-		BundleActivator {
+public class CommonActivator extends AbstractBundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.nams.common";

@@ -20,6 +20,5 @@ Bundle-ActivationPolicy: lazy
 Bundle-Vendor: DESY
 Import-Package: org.csstudio.alarm.service.declaration,
  org.eclipse.core.resources
-Bundle-ClassPath: lib/mockito-all-1.6.jar,
- .
+Bundle-ClassPath: .
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
