@@ -1,5 +1,7 @@
 package org.csstudio.archivereader;
 
+import org.eclipse.osgi.util.NLS;
+
 /** Exception thrown by {@link ArchiveReader} when trying to read data
  *  for an unknown channel.
  *  <p>
@@ -19,6 +21,6 @@ public class UnknownChannelException extends Exception
      */
     public UnknownChannelException(final String channel)
     {
-        super(channel);
+        super(NLS.bind(Messages.UnknownChannelFmt, channel));
     }
 }
