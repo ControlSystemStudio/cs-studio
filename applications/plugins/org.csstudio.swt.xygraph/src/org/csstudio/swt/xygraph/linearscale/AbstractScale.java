@@ -314,27 +314,32 @@ public abstract class AbstractScale extends Figure{
 	    setRange(range.getLower(), range.getUpper());
 	}
 
-    /** set the scale range */
+    /**set the scale range
+     * @param lower the lower limit
+     * @param upper the upper limit
+     * @throws IllegalArgumentException  
+     * if lower or upper is Nan of Infinite, or lower >= upper or (upper - lower) is Infinite  
+     */
     public void setRange(double lower, double upper){
         if (Double.isNaN(lower) || Double.isNaN(upper) 
-        		|| Double.isInfinite(lower) || Double.isInfinite(upper)) {
+        		|| Double.isInfinite(lower) || Double.isInfinite(upper) || lower >= upper || Double.isInfinite(upper-lower)) {
             throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
         
-        //in case of lower > upper, reverse them.       
-        if(lower > upper){
-        	double temp = lower;        	
-        	lower = upper;
-        	upper = temp;
-        }        
+//        //in case of lower > upper, reverse them.       
+//        if(lower > upper){
+//        	double temp = lower;        	
+//        	lower = upper;
+//        	upper = temp;
+//        }        
         
        // if (min == lower && max == upper) {
        //     return;
        // }
 
-        if (lower == upper) {
-        	upper = lower +1;
-        }
+//        if (lower == upper) {
+//        	upper = lower +1;
+//        }
 
         if (logScaleEnabled && lower <= 0) {
         	lower = DEFAULT_LOG_SCALE_MIN;

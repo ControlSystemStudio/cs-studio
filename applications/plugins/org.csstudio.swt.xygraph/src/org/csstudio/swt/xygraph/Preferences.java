@@ -26,6 +26,12 @@ public class Preferences
 
     public static boolean useAdvancedGraphics()
     {
-        return use_advanced_graphics;
+    	if(use_advanced_graphics){
+    		String value = System.getProperty("prohibit_advanced_graphics"); //$NON-NLS-1$
+    		if(value == null || !value.equals("true")) //$NON-NLS-1$
+    			return true;
+    		return  false;
+    	}
+        return false;
     }
 }

@@ -24,7 +24,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.widgets.model.AbstractPolyModel;
-import org.csstudio.opibuilder.widgets.util.RotationUtil;
+import org.csstudio.swt.widgets.util.RotationUtil;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.Polyline;
 import org.eclipse.draw2d.geometry.PointList;

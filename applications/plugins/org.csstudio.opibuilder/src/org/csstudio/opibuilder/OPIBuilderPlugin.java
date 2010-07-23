@@ -73,6 +73,10 @@ public class OPIBuilderPlugin extends AbstractUIPlugin {
 				}
 				if(event.getProperty().equals(PreferencesHelper.OPI_GUI_REFRESH_CYCLE))
 					GUIRefreshThread.getInstance().reSchedule();
+				if(event.getProperty().equals(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS)){
+					System.setProperty("prohibit_advanced_graphics", //$NON-NLS-1$
+							PreferencesHelper.isAdvancedGraphicsDisabled() ? "true": "false"); //$NON-NLS-1$ //$NON-NLS-2$
+				}
 			}
 			
 		};
