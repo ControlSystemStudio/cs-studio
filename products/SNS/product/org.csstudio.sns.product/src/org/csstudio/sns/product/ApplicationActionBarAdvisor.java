@@ -121,8 +121,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         //will create a separator before the menu. 
         //ContributionItemFactory.REOPEN_EDITORS.create(window);
         
-        intro = ActionFactory.INTRO.create(window);
-        register(intro);
+        if (window.getWorkbench().getIntroManager().hasIntro())
+        {
+            intro = ActionFactory.INTRO.create(window);
+            register(intro);
+        }
+        else
+            System.out.println("There is no Intro: Check for org.eclipse.ui.intro.univeral"); //$NON-NLS-1$
         
         help = ActionFactory.HELP_CONTENTS.create(window);
         register(help);
