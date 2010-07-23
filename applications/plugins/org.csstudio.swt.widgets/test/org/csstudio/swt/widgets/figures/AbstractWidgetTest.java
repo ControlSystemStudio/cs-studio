@@ -21,7 +21,6 @@ import org.eclipse.swt.widgets.Canvas;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.junit.Ignore;
 import org.junit.Test;
 
 
@@ -95,7 +94,7 @@ public abstract class AbstractWidgetTest {
 				public void run() {
 						int nextRunTime = 10;
 
-						if((getRepeatTestCount() > 0) && (pdIndex < getRepeatTestCount() * pds.length)){
+						if((getTestRepeatCount() > 0) && (pdIndex > getTestRepeatCount() * pds.length)){
 							shell.close();
 							return;
 						}
@@ -140,8 +139,8 @@ public abstract class AbstractWidgetTest {
 	 * @return the count of the tests need to be repeated. -1 for infinite test. Test
 	 *  can be terminated at any time by closing the shell.
 	 */
-	public int getRepeatTestCount(){
-		return -1;
+	public int getTestRepeatCount(){
+		return 2;
 	}
 
 	/**
