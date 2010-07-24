@@ -1,11 +1,20 @@
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import java.util.List;
+
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.properties.RulesProperty;
+import org.csstudio.opibuilder.script.Expression;
+import org.csstudio.opibuilder.script.PVTuple;
+import org.csstudio.opibuilder.script.RuleData;
+import org.csstudio.opibuilder.script.RuleScriptData;
+import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLControl;
+import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLMonitor;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLObject;
 import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
@@ -55,23 +64,71 @@ public abstract class AbstractADL2Model {
 			basAttr = TranslatorUtils.getDefaultBasicAttribute();
 			adlWidget.setAdlBasicAttribute(basAttr);
 		}
-			if (basAttr.isColorDefined()) {
-				if (colorForeground) {
-					widgetModel.setForegroundColor(colorMap[basAttr.getClr()]);
+		if (basAttr.isColorDefined()) {
+			if (colorForeground) {
+				widgetModel.setForegroundColor(colorMap[basAttr.getClr()]);
+			} else {
+				widgetModel.setBackgroundColor(colorMap[basAttr.getClr()]);
+			}
+		} else {
+			if (colorForeground) {
+				widgetModel.setForegroundColor(widgetModel.getParent()
+						.getForegroundColor());
+			} else {
+				widgetModel.setBackgroundColor(widgetModel.getParent()
+						.getBackgroundColor());
+			}
+
+		}
+		
+	}
+	
+	/**
+	 * 
+	 * @param adlWidget
+	 * @param widgetModel
+	 */
+	protected void setADLDynamicAttributeProps(ADLAbstractWidget adlWidget, AbstractWidgetModel widgetModel){
+		ADLDynamicAttribute dynAttr;
+		if (adlWidget.hasADLDynamicAttribute()) {
+			dynAttr = adlWidget.getAdlDynamicAttribute();
+		}
+		else {
+			dynAttr = TranslatorUtils.getDefaultDynamicAttribute();
+			adlWidget.setAdlDynamicAttribute(dynAttr);
+		}
+		if (!(dynAttr.get_vis().equals("static"))){
+			if (dynAttr.get_chan() != null) {
+				if (dynAttr.get_vis().equals("if not zero")){
+					RulesInput ruleInput = widgetModel.getRulesInput();
+					List<RuleData> ruleData = ruleInput.getRuleDataList(); 
+					RuleData newRule = new RuleData(widgetModel);
+					PVTuple pvs = new PVTuple(dynAttr.get_chan(), true);
+					newRule.addPV(pvs);
+					newRule.addExpression(new Expression("pv0==0", false));
+					ruleData.add(newRule);
+					newRule.setName("Visibility");
+					newRule.setPropId(AbstractWidgetModel.PROP_VISIBLE);
+					widgetModel.setPropertyValue(AbstractWidgetModel.PROP_RULES, ruleData);
 				}
-				else {
-					widgetModel.setBackgroundColor(colorMap[basAttr.getClr()]);
+				else if (dynAttr.get_vis().equals("if zero")){
+					RulesInput ruleInput = widgetModel.getRulesInput();
+					List<RuleData> ruleData = ruleInput.getRuleDataList(); 
+					RuleData newRule = new RuleData(widgetModel);
+					PVTuple pvs = new PVTuple(dynAttr.get_chan(), true);
+					newRule.addPV(pvs);
+					newRule.addExpression(new Expression("!(pv0==0)", false));
+					newRule.setName("Visibility");
+					newRule.setPropId(AbstractWidgetModel.PROP_VISIBLE);
+					ruleData.add(newRule);
+					widgetModel.setPropertyValue(AbstractWidgetModel.PROP_RULES, ruleData);
+					
+				}
+				else if (dynAttr.get_vis().equals("calc")){
+					
 				}
 			}
-			else {
-				if (colorForeground) {
-					widgetModel.setForegroundColor(widgetModel.getParent().getForegroundColor());
-				}
-				else {
-					widgetModel.setBackgroundColor(widgetModel.getParent().getBackgroundColor());
-				}
-				
-			}
+		}
 		
 	}
 	/** set the properties contained in the ADL basic properties section in the 
