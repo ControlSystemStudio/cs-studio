@@ -15,6 +15,7 @@ public class TextUpdate2Model extends AbstractADL2Model {
 
 	public TextUpdate2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "TextUpdate2Model";
 		parentModel.addChild(textInModel, true);
 
 		TextUpdateWidget textUpdateWidget = new TextUpdateWidget(adlWidget);
@@ -29,13 +30,13 @@ public class TextUpdate2Model extends AbstractADL2Model {
 		newFontData.setHeight(fontSize);
 		textInModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
 		//TODO Add Alignment to TextUpdate2Model
-		System.out.println("Warning- TextUpdate2Model: alignment not handled");
+		TranslatorUtils.printNotHandledWarning(className, "Text alingnment" );
 		//TODO Add limits to TextUpdate2Model
-		System.out.println("Warning- TextUpdate2Model: limits not handled");
+		TranslatorUtils.printNotHandledWarning(className, "limits" );
 		//TODO Add format to TextUpdate2Model
-		System.out.println("Warning- TextUpdate2Model: format not handled");
+		TranslatorUtils.printNotHandledWarning(className, "format" );
 		//TODO Add color mode to TextUpdate2Model
-		System.out.println("Warning- TextUpdate2Model: color mode not handled");
+		TranslatorUtils.printNotHandledWarning(className, "color mode" );
 	}
 
 	@Override

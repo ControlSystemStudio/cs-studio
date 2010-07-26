@@ -11,9 +11,10 @@ import org.eclipse.swt.graphics.RGB;
 
 public class Text2Model extends AbstractADL2Model {
 	LabelModel labelModel = new LabelModel();
-
+	
 	public Text2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel){
 		super(adlWidget, colorMap, parentModel);
+		className = "Text2Model";
 		parentModel.addChild(labelModel, true);
 		TextWidget textWidget = new TextWidget(adlWidget);
 		if (textWidget != null) {
@@ -33,7 +34,7 @@ public class Text2Model extends AbstractADL2Model {
 		labelModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
 		
 		//TODO Add Alignment to Text2Model
-		System.out.println("Warning - Text2Model Text alignment is not currently handled by the conversion");
+		TranslatorUtils.printNotHandledWarning(className, "Text alingnment" );
 	}
 
 	@Override
