@@ -22,6 +22,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 		RelatedDisplay rdWidget = new RelatedDisplay(adlWidget);
 		if (rdWidget != null) {
 			setADLObjectProps(rdWidget, menuModel);
+			setADLDynamicAttributeProps(rdWidget, menuModel);
 			if (rdWidget.isForeColorDefined() ){
 				menuModel.setForegroundColor( colorMap[rdWidget.getForegroundColor()] );
 			}
@@ -38,7 +39,6 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 						//Try to add the filename to the PROP_PATH
 						IPath fPath = new Path(rdDisplays[ii].getName().replaceAll("\"", "").replace(".adl", ".opi"));
 						System.out.println("Related display file: " + rdDisplays[ii].getName().replace(".adl", ".opi"));
-						System.out.println("Related display file from IPath: " + fPath.toString() + ", " + fPath.getFileExtension());
 						odAction.setPropertyValue(OpenDisplayAction.PROP_PATH, fPath);
 	
 						//Try to add macros
@@ -74,12 +74,12 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			}
 		}
 		String label = rdWidget.getLabel();
-		if (label.startsWith("-")){          // leading "-" was used to flag not using the icon.  Just don't use the icon and throw this away
-			label = label.substring(1);
+		if (label != null){
+			if (label.startsWith("-")){          // leading "-" was used to flag not using the icon.  Just don't use the icon and throw this away
+				label = label.substring(1);
+			}
 		}
 		menuModel.setPropertyValue(MenuButtonModel.PROP_LABEL, label);
-		//TODO Add Visual property to RelatedDisplay2Model
-		//TODO Add remove parent display to RelatedDisplay2Model
 	}
 
 	@Override
