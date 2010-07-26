@@ -68,6 +68,7 @@ public class Model
     final public static String TAG_MAX = "max";
     final public static String TAG_MIN = "min";
     final public static String TAG_BACKGROUND = "background";
+    final public static String TAG_ARCHIVE_RESCALE = "archive_rescale";
     final public static String TAG_REQUEST = "request";
     final public static String TAG_VISIBLE = "visible";
    
@@ -684,6 +685,7 @@ public class Model
         }
         // Misc.
         writeColor(writer, 1, TAG_BACKGROUND, background);
+        XMLWriter.XML(writer, 1, TAG_ARCHIVE_RESCALE, archive_rescale.name());
         // Value axes
         XMLWriter.start(writer, 1, TAG_AXES);
         writer.println();
@@ -746,6 +748,16 @@ public class Model
         RGB color = loadColorFromDocument(root_node, TAG_BACKGROUND);
         if (color != null)
             background = color;
+        
+        try
+        {
+            archive_rescale = ArchiveRescale.valueOf(
+                    DOMHelper.getSubelementString(root_node, TAG_ARCHIVE_RESCALE));
+        }
+        catch (Throwable ex)
+        {
+            archive_rescale = ArchiveRescale.STAGGER;
+        }
 
         // Load Axes
         Element list = DOMHelper.findFirstElementNode(root_node.getFirstChild(), TAG_AXES);
