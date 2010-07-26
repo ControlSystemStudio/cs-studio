@@ -49,17 +49,14 @@ public class EditADLHandler implements IHandler {
 			IStructuredSelection strucSelection = (IStructuredSelection)selection;
 			for (Iterator<Object> iterator = strucSelection.iterator(); iterator.hasNext(); ){
 				Object element = iterator.next();
-				System.out.println(element.toString());
 				String adlFileName = element.toString().substring(1);
 				String outfileName = adlFileName.substring(0, element.toString().length()-4);
-				System.out.println("outfileName " + outfileName);
 				String opiFileName = new String(outfileName + "opi");
 				System.out.println("opiFileName " +  opiFileName);
 				Path path = new Path(opiFileName);
 				
 				IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(path);
 				DisplayModel displayModel = new DisplayModel();
-				System.out.println(Platform.getLocation());
 				ADLWidget root = ParserADL.getNextElement(new File(Platform.getLocation() + adlFileName));
 				// Configure the display
 				for (ADLWidget adlWidget : root.getObjects()){
