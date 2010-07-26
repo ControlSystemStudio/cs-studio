@@ -57,6 +57,7 @@ public class TraceTableHandler implements ILazyContentProvider
     final private ModelListener model_listener = new ModelListener()
     {
         public void changedUpdatePeriod() { /* Ignored */ }
+        public void changedArchiveRescale() { /* Ignored */ }
         public void changedColors() { /* Ignored */ }
         public void changedTimerange() { /* Ignored */ }
 

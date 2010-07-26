@@ -9,8 +9,10 @@ package org.csstudio.trends.databrowser.preferences;
 
 import java.util.ArrayList;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -44,7 +46,8 @@ public class Preferences
                                ARCHIVE_FETCH_DELAY = "archive_fetch_delay",
                                PLOT_BINS = "plot_bins",
                                URLS = "urls",
-                               ARCHIVES = "archives";
+                               ARCHIVES = "archives",
+                               ARCHIVE_RESCALE = "archive_rescale";
     
     public static double getTimeSpan()
     {
@@ -131,5 +134,25 @@ public class Preferences
             }
         }
         return archives.toArray(new ArchiveDataSource[archives.size()]);
+    }
+    
+    /** @return Archive rescale setting */
+    static public ArchiveRescale getArchiveRescale()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return ArchiveRescale.STAGGER;
+        try
+        {
+            return ArchiveRescale.valueOf(
+                    prefs.getString(Activator.PLUGIN_ID, ARCHIVE_RESCALE,
+                                    ArchiveRescale.STAGGER.name(), null));
+        }
+        catch (Throwable ex)
+        {
+            CentralLogger.getInstance().getLogger(Preferences.class)
+                .error(ex.getMessage());
+        }
+        return ArchiveRescale.STAGGER;
     }
 }

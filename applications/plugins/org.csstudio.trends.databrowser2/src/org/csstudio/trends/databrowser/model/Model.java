@@ -124,6 +124,9 @@ public class Model
     /** Background color */
     private RGB background = new RGB(255, 255, 255);
     
+    /** How should plot rescale when archived data arrives? */
+    private ArchiveRescale archive_rescale = Preferences.getArchiveRescale();
+    
     /** @param listener New listener to notify */
     public void addListener(final ModelListener listener)
     {
@@ -228,6 +231,22 @@ public class Model
         axis.setModel(null);
         axes.remove(axis);
         fireAxisChangedEvent(null);
+    }
+
+    /** @return How should plot rescale after archived data arrived? */
+    public ArchiveRescale getArchiveRescale()
+    {
+        return archive_rescale;
+    }
+
+    /** @param archive_rescale How should plot rescale after archived data arrived? */
+    public void setArchiveRescale(final ArchiveRescale archive_rescale)
+    {
+        if (this.archive_rescale == archive_rescale)
+            return;
+        this.archive_rescale = archive_rescale;
+        for (ModelListener listener : listeners)
+            listener.changedArchiveRescale();
     }
 
     /** @return {@link ModelItem} count in model */

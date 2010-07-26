@@ -165,6 +165,9 @@ public class DataBrowserEditor extends EditorPart
             public void changedUpdatePeriod()
             {   setDirty(true);   }
 
+            public void changedArchiveRescale()
+            {   setDirty(true);   }
+
             public void changedColors()
             {   setDirty(true);   }
 

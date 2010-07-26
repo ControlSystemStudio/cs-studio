@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import org.csstudio.swt.xygraph.undo.OperationsManager;
 import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.FormulaItem;
 import org.csstudio.trends.databrowser.model.Model;
@@ -45,6 +46,7 @@ import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.ColorDialog;
 import org.eclipse.swt.widgets.Composite;
@@ -110,6 +112,8 @@ public class DataBrowserPropertySheetPage extends Page
     private Text start_time;
 
     private Text end_time;
+
+    private Button rescales[];
 
     private ColorBlob background;
 
@@ -498,13 +502,52 @@ public class DataBrowserPropertySheetPage extends Page
     {
         final TabItem axes_tab = new TabItem(tab_folder, 0);
         axes_tab.setText(Messages.ValueAxes);
+
+        final Composite parent = new Composite(tab_folder, SWT.BORDER);
+        parent.setLayout(new GridLayout());
         
+        // Rescale options
+        final Composite rescale = new Composite(parent, 0);
+        rescale.setLayout(new RowLayout());
+        rescale.setLayoutData(new GridData(SWT.FILL, 0, true, false));
+        final Label l = new Label(rescale, 0);
+        l.setText(Messages.ArchiveRescale_Label);
+        final ArchiveRescale rescale_items[] = ArchiveRescale.values();
+        rescales = new Button[rescale_items.length];
+        for (int i=0; i<rescales.length; ++i)
+        {
+            final ArchiveRescale item = rescale_items[i];
+            if (item.ordinal() != i)
+                throw new Error("ArchiveRescale items out of order"); //$NON-NLS-1$
+            
+            rescales[i] = new Button(rescale, SWT.RADIO);
+            rescales[i].setText(item.toString());
+            if (model.getArchiveRescale() == item)
+                rescales[i].setSelection(true);
+            rescales[i].addSelectionListener(new SelectionAdapter()
+            {
+                @Override
+                public void widgetSelected(SelectionEvent e)
+                {
+                    // Called for both the newly selected radio button
+                    // and the one that's not de-selected.
+                    // Only react to the selected button
+                    if (model.getArchiveRescale() == item)
+                        return;
+                    new ChangeArchiveRescaleCommand(model, operations_manager, item);
+                }
+            });
+        }
+
         // Tab is filled with 'axes' table
         final AxesTableHandler ath = new AxesTableHandler(color_registry,
-                tab_folder, operations_manager);
-        axes_tab.setControl(ath.getAxesTable().getTable());
-        
+                parent, operations_manager);
         ath.getAxesTable().setInput(model);
+        // Unclear: When setting the layout data inside AxesTableHandler(),
+        // the whole 'parent' didn't show up?!
+        ath.getAxesTable().getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
+        axes_tab.setControl(parent);
     }
 
     /** Create tab for misc. config items (update period, colors)
@@ -583,6 +626,18 @@ public class DataBrowserPropertySheetPage extends Page
     public void changedUpdatePeriod()
     {
         update_period.setText(Double.toString(model.getUpdatePeriod()));
+    }
+    
+    /** {@inheritDoc} */
+    public void changedArchiveRescale()
+    {
+        final int selected = model.getArchiveRescale().ordinal();
+        for (int i=0; i<rescales.length; ++i)
+        {
+            boolean desired = i == selected;
+            if (rescales[i].getSelection() != desired)
+                rescales[i].setSelection(desired);
+        }
     }
 
     /** {@inheritDoc} */

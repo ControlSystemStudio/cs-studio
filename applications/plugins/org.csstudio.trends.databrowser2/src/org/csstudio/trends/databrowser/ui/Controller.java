@@ -19,6 +19,7 @@ import org.csstudio.trends.databrowser.Messages;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJob;
 import org.csstudio.trends.databrowser.archive.ArchiveFetchJobListener;
 import org.csstudio.trends.databrowser.model.ArchiveDataSource;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.csstudio.trends.databrowser.model.AxisConfig;
 import org.csstudio.trends.databrowser.model.Model;
 import org.csstudio.trends.databrowser.model.ModelItem;
@@ -240,6 +241,11 @@ public class Controller implements ArchiveFetchJobListener
             {
                 if (update_task != null)
                     createUpdateTask();
+            }
+
+            public void changedArchiveRescale()
+            {
+                // NOP
             }
 
             public void changedColors()
@@ -539,6 +545,30 @@ public class Controller implements ArchiveFetchJobListener
                 return;
         }
         // All completed. Do something to the plot?
+        final ArchiveRescale rescale = model.getArchiveRescale();
+        if (rescale == ArchiveRescale.NONE)
+            return;
+        if (shell.isDisposed())
+            return;
+        shell.getDisplay().asyncExec(new Runnable()
+        {
+            public void run()
+            {
+                if (shell.isDisposed())
+                    return;
+                switch (rescale)
+                {       
+                case AUTOZOOM:
+                    plot.getXYGraph().performAutoScale();
+                    break;
+                case STAGGER:
+                    plot.getXYGraph().performStagger();
+                    break;
+                default:
+                    break;
+                }
+            }
+        });
     }
 
     /** @see ArchiveFetchJobListener */

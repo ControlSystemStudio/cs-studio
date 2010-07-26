@@ -51,6 +51,7 @@ public class AxesTableHandler implements ILazyContentProvider
     final private ModelListener model_listener = new ModelListener()
     {
         public void changedUpdatePeriod()                { /* NOP */ }
+        public void changedArchiveRescale()              { /* NOP */ }
         public void changedColors()                      { /* NOP */ }
         public void changedTimerange()                   { /* NOP */ }
 
@@ -84,7 +85,8 @@ public class AxesTableHandler implements ILazyContentProvider
     {
         this.color_registry = color_registry;
         this.operations_manager = operations_manager;
-        axes_table = new TableViewer(parent ,
+        
+        axes_table = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION
                 | SWT.VIRTUAL);
         final Table table = axes_table.getTable();
@@ -94,7 +96,10 @@ public class AxesTableHandler implements ILazyContentProvider
         createColumns();
         
         axes_table.setContentProvider(this);
-        
+
+        // See comment in DataBrowserPropertySheetPage.createValueAxesTab
+        // table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+
         createContextMenu();
     }
 

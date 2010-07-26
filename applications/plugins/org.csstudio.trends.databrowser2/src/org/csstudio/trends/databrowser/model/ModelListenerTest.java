@@ -35,6 +35,11 @@ public class ModelListenerTest
             ++changes;
         }
 
+        public void changedArchiveRescale()
+        {
+            ++changes;            
+        }
+
         public void changedColors()
         {
             //System.out.println("Colors changed");

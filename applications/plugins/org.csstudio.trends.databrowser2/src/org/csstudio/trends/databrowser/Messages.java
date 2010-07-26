@@ -43,9 +43,12 @@ public class Messages extends NLS
     public static String ArchiveFetchProgressFmt;
     public static String ArchiveFetchDetailFmt;
     public static String ArchiveKey;
-
     public static String ArchiveListGUI_NoArchives;
     public static String ArchiveName;   
+    public static String ArchiveRescale_AUTOZOOM;
+    public static String ArchiveRescale_Label;
+    public static String ArchiveRescale_NONE;
+    public static String ArchiveRescale_STAGGER;
     public static String ArchiveServerErrorFmt;
     public static String ArchiveServerInfo;
     public static String ArchiveServerInfoTT;
