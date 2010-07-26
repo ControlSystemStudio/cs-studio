@@ -17,9 +17,9 @@ public class TranslatorUtils {
 		for (ADLWidget adlWidget : childWidgets){
 			try {
 				String widgetType = adlWidget.getType();
+				printHandlingMessage(widgetType);
 				if (widgetType.equals("arc")){
 					new Arc2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
 				}
 				else if (widgetType.equals("bar")){
 					new Bar2Model(adlWidget, colorMap, parentModel);
@@ -84,32 +84,21 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("oval")){
 					new Oval2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("polygon")){
 					new Polygon2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("polyline")){
 					new PolyLine2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("line")){
-					printNotHandledMessage(widgetType);
-					
+					new PolyLine2Model(adlWidget, colorMap, parentModel);
 				}
 				else if (widgetType.equals("rectangle")){
 					new Rectangle2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("related display")){
 					new RelatedDisplay2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("strip chart")){
 					printNotHandledMessage(widgetType);
@@ -117,18 +106,12 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("text")){
 					new Text2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("text update")){
 					new TextUpdate2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("text entry")){
 					new TextEntry2Model(adlWidget, colorMap, parentModel);
-					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("valuator")){
 					new Valuator2Model(adlWidget, colorMap, parentModel);
@@ -170,6 +153,17 @@ public class TranslatorUtils {
 		System.out.println("TranslatorUtils: " + type + " is not completely handled");
 	}
 
+	/**
+	 * 
+	 * @param type
+	 */
+	private static void printHandlingMessage(String type) {
+		System.out.println("Handling: " + type);
+	}
+	
+	public static void printNotHandledWarning(String translator, String message){
+		System.out.println("---Warning - " + translator + ": " + message + " is not handled" );
+	}
 	public static int convertTextHeightToFontSize(int h){
 		if (h < 9) {
 			return 6;
