@@ -12,7 +12,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources;bundle-version="3.4.0",
  org.junit4;bundle-version="4.3.1",
  org.csstudio.platform.libs.jmock;bundle-version="1.1.0",
- org.csstudio.platform.libs.dal;bundle-version="1.1.0";visibility:=reexport
+ org.csstudio.platform.libs.dal;bundle-version="1.1.0";visibility:=reexport,
+ org.csstudio.platform.libs.jdom
 Bundle-ActivationPolicy: lazy
 Export-Package: org.apache.commons.beanutils,
  org.apache.commons.beanutils.converters,
@@ -36,7 +37,6 @@ Export-Package: org.apache.commons.beanutils,
  org.csstudio.dct.util
 Bundle-ClassPath: lib/jaxen-core.jar,
  lib/jaxen-jdom.jar,
- lib/jdom.jar,
  lib/saxpath.jar,
  lib/xalan.jar,
  lib/xerces.jar,
@@ -45,4 +45,5 @@ Bundle-ClassPath: lib/jaxen-core.jar,
  lib/commons-beanutils-1.8.0.jar,
  lib/commons-logging-1.1.1.jar,
  lib/JbcParser.jar
+Import-Package: org.jdom
 

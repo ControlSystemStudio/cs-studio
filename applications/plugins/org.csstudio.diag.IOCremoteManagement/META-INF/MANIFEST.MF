@@ -19,8 +19,8 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.platform,
  org.csstudio.apputil,
- org.csstudio.apputil.ui
-Eclipse-LazyStart: true
-Bundle-ClassPath: lib/jdom.jar,
- .,
+ org.csstudio.apputil.ui,
+ org.csstudio.platform.libs.jdom;bundle-version="1.1.0"
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
  bin/

@@ -24,7 +24,7 @@ import org.junit.Test;
 
 /**
  * Test the {@link Channel} and the {@link StructChannel} classes.
- * 
+ *
  * @author hrickens
  * @author $Author$
  * @version $Revision$
@@ -38,7 +38,7 @@ public class Channel_Test {
     private Master _master;
     private Slave _slave;
     private Module _module;
-    private String _gsdFile = ";===============================================================================\r\n" +
+    private final String _gsdFile = ";===============================================================================\r\n" +
         "; Profibus Device Database of MKS-2 Measurement System                                        \r\n" +
         ";                                                                                             \r\n" +
         "; Model:       PROFIBUS DP-V1 with Anybus-CC                                                  \r\n" +
@@ -294,14 +294,14 @@ public class Channel_Test {
 
     @Test
     public void testDocument() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
 
-        Set<Document> docList = new HashSet<Document>();
-        Document doc1 = new Document();
+        final Set<Document> docList = new HashSet<Document>();
+        final Document doc1 = new Document();
         doc1.setId("docId1");
-        Document doc2 = new Document();
+        final Document doc2 = new Document();
         doc2.setId("docId2");
-        Document doc3 = new Document();
+        final Document doc3 = new Document();
         doc3.setId("docId3");
 
         docList.add(doc1);
@@ -316,21 +316,21 @@ public class Channel_Test {
 
     @Test
     public void TestInput() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         out.setInput(true);
         assertTrue(out.isInput());
     }
 
     @Test
     public void testOutput() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         out.setOutput(true);
         assertTrue(out.isOutput());
     }
 
     @Test
     public void testIoName() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         assertNull(out.getIoName());
         out.setIoName("ioName");
         assertEquals(out.getIoName(), "ioName");
@@ -338,7 +338,7 @@ public class Channel_Test {
 
     @Test
     public void testDigital() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         assertFalse(out.isDigital());
         out.setDigital(true);
         assertTrue(out.isDigital());
@@ -346,7 +346,7 @@ public class Channel_Test {
 
     @Test
     public void testChSize() {
-        Channel out = ChannelStructure.makeSimpleChannel(_module, false).getFirstChannel();
+        final Channel out = ChannelStructure.makeSimpleChannel(_module, false).getFirstChannel();
         // Channel out = new Channel(_structure);
         assertEquals(1, out.getChSize());
         out.setChannelTypeNonHibernate(DataType.DS33);
@@ -356,7 +356,7 @@ public class Channel_Test {
 
     @Test
     public void testGetCurrenUserParamDataIndex() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         assertNull(out.getCurrenUserParamDataIndex());
         out.setCurrenUserParamDataIndex("");
         assertEquals(out.getCurrenUserParamDataIndex(), "");
@@ -369,7 +369,7 @@ public class Channel_Test {
 
     @Test
     public void testGetCurrentValue() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         assertNull(out.getCurrentValue());
         out.setCurrentValue("");
         assertEquals(out.getCurrentValue(), "");
@@ -392,10 +392,10 @@ public class Channel_Test {
         _module.setModuleNumber(1);
 //        _module.localSave();
 
-        Channel out = ChannelStructure.makeSimpleChannel(_module, false).getFirstChannel();
+        final Channel out = ChannelStructure.makeSimpleChannel(_module, false).getFirstChannel();
 //        out.localUpdate();
 //        out.localSave();
-        
+
         assertNotNull(out.getEpicsAddressStringNH());
         assertEquals("@Subnet:17/0 'T=BIT'", out.getEpicsAddressStringNH());
         out.moveSortIndex((short) 24);
@@ -409,7 +409,7 @@ public class Channel_Test {
     @Ignore("Not yet implemented")
     @Test
     public void testGetStruct() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         out.getStruct();
         fail("Not yet implemented");
     }
@@ -420,13 +420,13 @@ public class Channel_Test {
 
     @Test
     public void testModule() {
-        ProfibusSubnet profibusSubnet = new ProfibusSubnet(new Ioc());
-        Master master = new Master(profibusSubnet);
-        Slave slave = new Slave(master);
-        Module module = new Module(slave);
-        ChannelStructure structure = new ChannelStructure();
+        final ProfibusSubnet profibusSubnet = new ProfibusSubnet(new Ioc());
+        final Master master = new Master(profibusSubnet);
+        final Slave slave = new Slave(master);
+        final Module module = new Module(slave);
+        final ChannelStructure structure = new ChannelStructure();
         structure.setModule(module);
-        Channel out = new Channel(structure, false, false);
+        final Channel out = new Channel(structure, false, false);
         assertNotNull(out.getParent());
         assertNotNull(out.getModule());
 
@@ -442,11 +442,11 @@ public class Channel_Test {
     @Ignore("Not yet implemented")
     @Test
     public void testChannelStructure() {
-        Channel out = new Channel();
+        final Channel out = new Channel();
         assertNull(out.getParent());
         assertNull(out.getChannelStructure());
 
-        ChannelStructure channelStructure = new ChannelStructure();
+        final ChannelStructure channelStructure = new ChannelStructure();
         channelStructure.setId(456);
         channelStructure.addChild(out);
 
@@ -474,32 +474,32 @@ public class Channel_Test {
          * OUTPUT, ANALOG
          */
         // create Module 1
-        Module module1 = new Module(_slave, "Module 1");
+        final Module module1 = new Module(_slave, "Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
         testModule("@Subnet:815", (short) 21, 0, 0, 0, 0, module1);
 
         // create Channels for Module 1
-        ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
+        final ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
 
-        Channel channelM1C1 = structureM1C1.getFirstChannel();
+        final Channel channelM1C1 = structureM1C1.getFirstChannel();
         channelM1C1.setDigital(false);
         channelM1C1.setName("channelM1C1");
         channelM1C1.setChannelTypeNonHibernate(DataType.INT16);
         channelM1C1.localSave();
 
-        ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
+        final ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
 
-        Channel channelM1C2 = structureM1C2.getFirstChannel();
+        final Channel channelM1C2 = structureM1C2.getFirstChannel();
         channelM1C2.setDigital(false);
         channelM1C2.setName("channelM1C2");
         channelM1C2.setChannelTypeNonHibernate(DataType.UINT16);
         channelM1C2.localSave();
 
-        ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
+        final ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
 
-        Channel channelM1C3 = structureM1C3.getFirstChannel();
+        final Channel channelM1C3 = structureM1C3.getFirstChannel();
         channelM1C3.setDigital(false);
         channelM1C3.setName("channelM1C3");
         channelM1C3.setChannelTypeNonHibernate(DataType.INT8);
@@ -518,7 +518,7 @@ public class Channel_Test {
          * OUTPUT, ANALOG
          */
         // --- create Module 2 -----------------------
-        Module module2 = new Module(_slave, "Module 2");
+        final Module module2 = new Module(_slave, "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -526,25 +526,25 @@ public class Channel_Test {
 
         // create Channels for Module 2
 
-        ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, false);
+        final ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, false);
 
-        Channel channelM2C1 = structureM2C1.getFirstChannel();
+        final Channel channelM2C1 = structureM2C1.getFirstChannel();
         channelM2C1.setDigital(false);
         channelM2C1.setName("channelM2C1");
         channelM2C1.setChannelTypeNonHibernate(DataType.UINT8);
         channelM2C1.localSave();
 
-        ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, false);
+        final ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, false);
 
-        Channel channelM2C2 = structureM2C2.getFirstChannel();
+        final Channel channelM2C2 = structureM2C2.getFirstChannel();
         channelM2C2.setDigital(false);
         channelM2C2.setName("channelM2C2");
         channelM2C2.setChannelTypeNonHibernate(DataType.INT16);
         channelM2C2.localSave();
 
-        ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, false);
+        final ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, false);
 
-        Channel channelM2C3 = structureM2C3.getFirstChannel();
+        final Channel channelM2C3 = structureM2C3.getFirstChannel();
         channelM2C3.setDigital(false);
         channelM2C3.setName("channelM2C3");
         channelM2C3.setChannelTypeNonHibernate(DataType.UINT16);
@@ -564,32 +564,32 @@ public class Channel_Test {
          * OUTPUT, ANALOG
          */
         // --- create Module 3 -----------------------
-        Module module3 = new Module(_slave, "Module 3");
+        final Module module3 = new Module(_slave, "Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
         testModule("@Subnet:815", (short) 23, 0, 0, 10, 0, module3);
 
         // create Channels for Module 3
-        ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, false);
+        final ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, false);
 
-        Channel channelM3C1 = structureM3C1.getFirstChannel();
+        final Channel channelM3C1 = structureM3C1.getFirstChannel();
         channelM3C1.setDigital(false);
         channelM3C1.setName("channelM3C1");
         channelM3C1.setChannelTypeNonHibernate(DataType.UINT8);
         channelM3C1.localSave();
 
-        ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, false);
+        final ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, false);
 
-        Channel channelM3C2 = structureM3C2.getFirstChannel();
+        final Channel channelM3C2 = structureM3C2.getFirstChannel();
         channelM3C2.setDigital(false);
         channelM3C2.setName("channelM3C2");
         channelM3C2.setChannelTypeNonHibernate(DataType.INT16);
         channelM3C2.localSave();
 
-        ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, false);
+        final ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, false);
 
-        Channel channelM3C3 = structureM3C3.getFirstChannel();
+        final Channel channelM3C3 = structureM3C3.getFirstChannel();
         channelM3C3.setDigital(false);
         channelM3C3.setName("channelM3C3");
         channelM3C3.setChannelTypeNonHibernate(DataType.UINT16);
@@ -634,32 +634,32 @@ public class Channel_Test {
          * INPUT, ANALOG
          */
         // create Module 1
-        Module module1 = new Module(_slave, "Module 1");
+        final Module module1 = new Module(_slave, "Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
         testModule("@Subnet:815", (short) 21, 0, 0, 0, 0, module1);
 
         // create Channels for Module 1
-        ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, INPUT);
 
-        Channel channelM1C1 = structureM1C1.getFirstChannel();
+        final Channel channelM1C1 = structureM1C1.getFirstChannel();
         channelM1C1.setDigital(false);
         channelM1C1.setName("channelM1C1");
         channelM1C1.setChannelTypeNonHibernate(DataType.INT16);
         channelM1C1.localSave();
 
-        ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, INPUT);
 
-        Channel channelM1C2 = structureM1C2.getFirstChannel();
+        final Channel channelM1C2 = structureM1C2.getFirstChannel();
         channelM1C2.setDigital(false);
         channelM1C2.setName("channelM1C2");
         channelM1C2.setChannelTypeNonHibernate(DataType.UINT16);
         channelM1C2.localSave();
 
-        ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, INPUT);
 
-        Channel channelM1C3 = structureM1C3.getFirstChannel();
+        final Channel channelM1C3 = structureM1C3.getFirstChannel();
         channelM1C3.setDigital(false);
         channelM1C3.setName("channelM1C3");
         channelM1C3.setChannelTypeNonHibernate(DataType.INT8);
@@ -678,32 +678,32 @@ public class Channel_Test {
          * INPUT, ANALOG
          */
         // create Module 2
-        Module module2 = new Module(_slave, "Module 2");
+        final Module module2 = new Module(_slave, "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
         testModule("@Subnet:815", (short) 22, 5, 0, 0, 0, module2);
 
         // create Channels for Module 2
-        ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, INPUT);
+        final ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, INPUT);
 
-        Channel channelM2C1 = structureM2C1.getFirstChannel();
+        final Channel channelM2C1 = structureM2C1.getFirstChannel();
         channelM2C1.setDigital(false);
         channelM2C1.setName("channelM2C1");
         channelM2C1.setChannelTypeNonHibernate(DataType.UINT8);
         channelM2C1.localSave();
 
-        ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, INPUT);
+        final ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, INPUT);
 
-        Channel channelM2C2 = structureM2C2.getFirstChannel();
+        final Channel channelM2C2 = structureM2C2.getFirstChannel();
         channelM2C2.setDigital(false);
         channelM2C2.setName("channelM2C2");
         channelM2C2.setChannelTypeNonHibernate(DataType.INT16);
         channelM2C2.localSave();
 
-        ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, INPUT);
+        final ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, INPUT);
 
-        Channel channelM2C3 = structureM2C3.getFirstChannel();
+        final Channel channelM2C3 = structureM2C3.getFirstChannel();
         channelM2C3.setDigital(false);
         channelM2C3.setName("channelM2C3");
         channelM2C3.setChannelTypeNonHibernate(DataType.UINT16);
@@ -723,32 +723,32 @@ public class Channel_Test {
          * INPUT, ANALOG
          */
         // create Module 3
-        Module module3 = new Module(_slave, "Module 3");
+        final Module module3 = new Module(_slave, "Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
         testModule("@Subnet:815", (short) 23, 10, 0, 0, 0, module3);
 
         // create Channels for Module 3
-        ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, INPUT);
+        final ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, INPUT);
 
-        Channel channelM3C1 = structureM3C1.getFirstChannel();
+        final Channel channelM3C1 = structureM3C1.getFirstChannel();
         channelM3C1.setDigital(false);
         channelM3C1.setName("channelM3C1");
         channelM3C1.setChannelTypeNonHibernate(DataType.UINT8);
         channelM3C1.localSave();
 
-        ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, INPUT);
+        final ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, INPUT);
 
-        Channel channelM3C2 = structureM3C2.getFirstChannel();
+        final Channel channelM3C2 = structureM3C2.getFirstChannel();
         channelM3C2.setDigital(false);
         channelM3C2.setName("channelM3C2");
         channelM3C2.setChannelTypeNonHibernate(DataType.INT16);
         channelM3C2.localSave();
 
-        ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, INPUT);
+        final ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, INPUT);
 
-        Channel channelM3C3 = structureM3C3.getFirstChannel();
+        final Channel channelM3C3 = structureM3C3.getFirstChannel();
         channelM3C3.setDigital(false);
         channelM3C3.setName("channelM3C3");
         channelM3C3.setChannelTypeNonHibernate(DataType.UINT16);
@@ -788,36 +788,36 @@ public class Channel_Test {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        Module module1 = new Module(_slave, "Module 1");
+        final Module module1 = new Module(_slave, "Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
         testModule("@Subnet:815", (short) 21, 0, 0, 0, 0, module1);
 
         // create Channels for Module 1
-        ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, INPUT);
-        Channel channelM1C1 = structureM1C1.getFirstChannel();
+        final ChannelStructure structureM1C1 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final Channel channelM1C1 = structureM1C1.getFirstChannel();
         channelM1C1.setDigital(false);
         channelM1C1.setName("channelM1C1");
         channelM1C1.setChannelTypeNonHibernate(DataType.INT8);
         channelM1C1.localSave();
 
-        ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, INPUT);
-        Channel channelM1C2 = structureM1C2.getFirstChannel();
+        final ChannelStructure structureM1C2 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final Channel channelM1C2 = structureM1C2.getFirstChannel();
         channelM1C2.setDigital(false);
         channelM1C2.setName("channelM1C2");
         channelM1C2.setChannelTypeNonHibernate(DataType.INT16);
         // channelM1C2.localSave();
 
-        ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
-        Channel channelM1C3 = structureM1C3.getFirstChannel();
+        final ChannelStructure structureM1C3 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
+        final Channel channelM1C3 = structureM1C3.getFirstChannel();
         channelM1C3.setDigital(false);
         channelM1C3.setName("channelM1C3");
         channelM1C3.setChannelTypeNonHibernate(DataType.INT16);
         // channelM1C3.localSave();
 
-        ChannelStructure structureM1C4 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
-        Channel channelM1C4 = structureM1C4.getFirstChannel();
+        final ChannelStructure structureM1C4 = ChannelStructure.makeSimpleChannel(module1, OUTPUT);
+        final Channel channelM1C4 = structureM1C4.getFirstChannel();
         channelM1C4.setDigital(false);
         channelM1C4.setName("channelM1C4");
         channelM1C4.setChannelTypeNonHibernate(DataType.INT16);
@@ -831,33 +831,33 @@ public class Channel_Test {
         assertEquals("@Subnet:815/2 'T=INT16'", channelM1C4.getEpicsAddressStringNH());
 
         // create Module 2
-        Module module2 = new Module(_slave, "Module 2");
+        final Module module2 = new Module(_slave, "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
         testModule("@Subnet:815", (short) 22, 3, 0, 4, 0, module2);
 
         // create Channels for Module 2
-        ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, OUTPUT);
-        Channel channelM2C1 = structureM2C1.getFirstChannel();
+        final ChannelStructure structureM2C1 = ChannelStructure.makeSimpleChannel(module2, OUTPUT);
+        final Channel channelM2C1 = structureM2C1.getFirstChannel();
         channelM2C1.setName("channelM2C1");
         channelM2C1.setChannelTypeNonHibernate(DataType.INT8);
         // channelM2C1.localSave();
 
-        ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, OUTPUT);
-        Channel channelM2C2 = structureM2C2.getFirstChannel();
+        final ChannelStructure structureM2C2 = ChannelStructure.makeSimpleChannel(module2, OUTPUT);
+        final Channel channelM2C2 = structureM2C2.getFirstChannel();
         channelM2C2.setName("channelM2C2");
         channelM2C2.setChannelTypeNonHibernate(DataType.INT16);
         // channelM2C2.localSave();
 
-        ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, INPUT);
-        Channel channelM2C3 = structureM2C3.getFirstChannel();
+        final ChannelStructure structureM2C3 = ChannelStructure.makeSimpleChannel(module2, INPUT);
+        final Channel channelM2C3 = structureM2C3.getFirstChannel();
         channelM2C3.setName("channelM2C3");
         channelM2C3.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM2C3.localSave();
 
-        ChannelStructure structureM2C4 = ChannelStructure.makeSimpleChannel(module2, INPUT);
-        Channel channelM2C4 = structureM2C4.getFirstChannel();
+        final ChannelStructure structureM2C4 = ChannelStructure.makeSimpleChannel(module2, INPUT);
+        final Channel channelM2C4 = structureM2C4.getFirstChannel();
         channelM2C4.setName("channelM2C4");
         channelM2C4.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM2C4.localSave();
@@ -870,7 +870,7 @@ public class Channel_Test {
         assertEquals("@Subnet:815/5 'T=UNSIGN16'", channelM2C4.getEpicsAddressStringNH());
 
         // create Module 3
-        Module module3 = new Module(_slave, "Module 3");
+        final Module module3 = new Module(_slave, "Module 3");
         module3.moveSortIndex((short) 23);
         module3.localSave();
 
@@ -878,29 +878,29 @@ public class Channel_Test {
 
         // create Channels for Module 3
 
-        ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, INPUT);
-        Channel channelM3C1 = structureM3C1.getFirstChannel();
+        final ChannelStructure structureM3C1 = ChannelStructure.makeSimpleChannel(module3, INPUT);
+        final Channel channelM3C1 = structureM3C1.getFirstChannel();
         channelM3C1.setDigital(false);
         channelM3C1.setName("channelM3C1");
         channelM3C1.setChannelTypeNonHibernate(DataType.UINT8);
         // channelM3C1.localSave();
 
-        ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, OUTPUT);
-        Channel channelM3C2 = structureM3C2.getFirstChannel();
+        final ChannelStructure structureM3C2 = ChannelStructure.makeSimpleChannel(module3, OUTPUT);
+        final Channel channelM3C2 = structureM3C2.getFirstChannel();
         channelM3C2.setDigital(false);
         channelM3C2.setName("channelM3C2");
         channelM3C2.setChannelTypeNonHibernate(DataType.INT8);
         // channelM3C2.localSave();
 
-        ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, OUTPUT);
-        Channel channelM3C3 = structureM3C3.getFirstChannel();
+        final ChannelStructure structureM3C3 = ChannelStructure.makeSimpleChannel(module3, OUTPUT);
+        final Channel channelM3C3 = structureM3C3.getFirstChannel();
         channelM3C3.setDigital(false);
         channelM3C3.setName("channelM3C3");
         channelM3C3.setChannelTypeNonHibernate(DataType.UINT8);
         // channelM3C3.localSave();
 
-        ChannelStructure structureM3C4 = ChannelStructure.makeSimpleChannel(module3, INPUT);
-        Channel channelM3C4 = structureM3C4.getFirstChannel();
+        final ChannelStructure structureM3C4 = ChannelStructure.makeSimpleChannel(module3, INPUT);
+        final Channel channelM3C4 = structureM3C4.getFirstChannel();
         channelM3C4.setDigital(false);
         channelM3C4.setName("channelM3C4");
         channelM3C4.setChannelTypeNonHibernate(DataType.UINT16);
@@ -915,35 +915,35 @@ public class Channel_Test {
         testSimpleChannel("@Subnet:815/8 'T=UNSIGN16'", (short) 3, channelM3C4, structureM3C4);
 
         // create Module 4
-        Module module4 = new Module(_slave, "Module 4");
+        final Module module4 = new Module(_slave, "Module 4");
         module4.moveSortIndex((short) 24);
         module4.localSave();
 
         testModule("@Subnet:815", (short) 24, 10, 0, 9, 0, module4);
 
         // create Channels for Module 4
-        ChannelStructure structureM4C1 = ChannelStructure.makeSimpleChannel(module4, true);
-        Channel channelM4C1 = new Channel(structureM4C1, true, false);
+        final ChannelStructure structureM4C1 = ChannelStructure.makeSimpleChannel(module4, true);
+        final Channel channelM4C1 = new Channel(structureM4C1, true, false);
         channelM4C1.setName("channelM4C1");
         channelM4C1.setChannelTypeNonHibernate(DataType.INT16);
         // channelM4C1.localSave();
 
-        ChannelStructure structureM4C2 = ChannelStructure.makeSimpleChannel(module4, true);
-        Channel channelM4C2 = new Channel(structureM4C2, true, false);
+        final ChannelStructure structureM4C2 = ChannelStructure.makeSimpleChannel(module4, true);
+        final Channel channelM4C2 = new Channel(structureM4C2, true, false);
         channelM4C2.setName("channelM4C2");
         channelM4C2.setChannelTypeNonHibernate(DataType.INT8);
         // channelM4C2.localSave();
 
-        ChannelStructure structureM4C3 = ChannelStructure
+        final ChannelStructure structureM4C3 = ChannelStructure
                 .makeSimpleChannel(module4, false);
-        Channel channelM4C3 = new Channel(structureM4C3, false, false);
+        final Channel channelM4C3 = new Channel(structureM4C3, false, false);
         channelM4C3.setName("channelM4C3");
         channelM4C3.setChannelTypeNonHibernate(DataType.UINT8);
         // channelM4C3.localSave();
 
-        ChannelStructure structureM4C4 = ChannelStructure
+        final ChannelStructure structureM4C4 = ChannelStructure
                 .makeSimpleChannel(module4, false);
-        Channel channelM4C4 = new Channel(structureM4C4, false, false);
+        final Channel channelM4C4 = new Channel(structureM4C4, false, false);
         channelM4C4.setName("channelM4C3");
         channelM4C4.setChannelTypeNonHibernate(DataType.UINT16);
         // channelM4C4.localSave();
@@ -954,7 +954,7 @@ public class Channel_Test {
         assertEquals("@Subnet:815/9 'T=UNSIGN8,L=0,H=32768'", channelM4C3.getEpicsAddressStringNH());
         assertEquals("@Subnet:815/10 'T=UNSIGN16'", channelM4C4.getEpicsAddressStringNH());
 
-        // 
+        //
         channelM2C1.setChannelTypeNonHibernate(DataType.INT16);
         channelM2C1.localSave();
 
@@ -1035,19 +1035,19 @@ public class Channel_Test {
         assertEquals("@Subnet:815", _slave.getEpicsAdressString());
 
         // create Module 1
-        Module module1 = new Module(_slave, "Module 1");
+        final Module module1 = new Module(_slave, "Module 1");
         module1.moveSortIndex((short) 21);
         module1.localSave();
 
         testModule("@Subnet:815", (short) 21, 0, 0, 0, 0, module1);
 
-        ChannelStructure channelStructure1 = ChannelStructure.makeChannelStructure(module1, false,
+        final ChannelStructure channelStructure1 = ChannelStructure.makeChannelStructure(module1, false,
                 DataType.INT8, "ABC");
-        Set<? extends Node> values1 = channelStructure1.getChildren();
-        Collection<Channel> channels1 = channelStructure1.getChannelsAsMap().values();
+        final Set<? extends Node> values1 = channelStructure1.getChildren();
+        final Collection<Channel> channels1 = channelStructure1.getChannelsAsMap().values();
         assertEquals(8, values1.size());
         assertEquals(8, channels1.size());
-        Channel[] structChannels1 = channels1.toArray(new Channel[0]);
+        final Channel[] structChannels1 = channels1.toArray(new Channel[0]);
 
         Channel structChannel1 = structChannels1[0];
         assertEquals("Struct Channel: " + structChannel1, DataType.BIT, structChannel1
@@ -1124,14 +1124,14 @@ public class Channel_Test {
 
         testModule("@Subnet:815", (short) 21, 0, 0, 0, 1, module1);
 
-        ChannelStructure channelStructure2 = ChannelStructure.makeChannelStructure(module1, false,
+        final ChannelStructure channelStructure2 = ChannelStructure.makeChannelStructure(module1, false,
                 DataType.INT8, "def");
 
-        Collection<? extends Node> values2 = channelStructure2.getChildren();
-        Collection<Channel> channels2 = channelStructure2.getChannelsAsMap().values();
+        final Collection<? extends Node> values2 = channelStructure2.getChildren();
+        final Collection<Channel> channels2 = channelStructure2.getChannelsAsMap().values();
         assertEquals(8, values2.size());
         assertEquals(8, channels2.size());
-        Channel[] structChannels2 = channels2.toArray(new Channel[0]);
+        final Channel[] structChannels2 = channels2.toArray(new Channel[0]);
         Channel structChannel2 = structChannels2[0];
 
         assertEquals("Struct Channel: " + structChannel2, DataType.BIT, structChannel2
@@ -1211,7 +1211,7 @@ public class Channel_Test {
         assertEquals(2, module1.getOutputSize());
 
         // create Module 2
-        Module module2 = new Module(_slave, "Module 2");
+        final Module module2 = new Module(_slave, "Module 2");
         module2.moveSortIndex((short) 22);
         module2.localSave();
 
@@ -1221,19 +1221,19 @@ public class Channel_Test {
         assertEquals(2, module2.getOutputOffsetNH());
         assertEquals(0, module2.getOutputSize());
 
-        ChannelStructure channelStructure3 = ChannelStructure.makeChannelStructure(module2, false,
+        final ChannelStructure channelStructure3 = ChannelStructure.makeChannelStructure(module2, false,
                 DataType.INT16, "GhI");
 
-        Collection<? extends Node> values3 = channelStructure3.getChildren();
-        Collection<Channel> channels3 = channelStructure3.getChannelsAsMap().values();
+        final Collection<? extends Node> values3 = channelStructure3.getChildren();
+        final Collection<Channel> channels3 = channelStructure3.getChannelsAsMap().values();
         assertEquals(16, values3.size());
         assertEquals(16, channels3.size());
-        Channel[] structChannels3 = channels3.toArray(new Channel[0]);
+        final Channel[] structChannels3 = channels3.toArray(new Channel[0]);
 
         Channel structChannel3 = structChannels3[0];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 0, structChannel3.getSortIndex());
+        assertEquals((short) 0, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1242,7 +1242,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[1];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 1, structChannel3.getSortIndex());
+        assertEquals((short) 1, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1251,7 +1251,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[2];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 2, structChannel3.getSortIndex());
+        assertEquals((short) 2, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1260,7 +1260,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[3];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 3, structChannel3.getSortIndex());
+        assertEquals((short) 3, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1269,7 +1269,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[4];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 4, structChannel3.getSortIndex());
+        assertEquals((short) 4, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1278,7 +1278,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[5];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 5, structChannel3.getSortIndex());
+        assertEquals((short) 5, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1287,7 +1287,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[6];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 6, structChannel3.getSortIndex());
+        assertEquals((short) 6, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1296,7 +1296,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[7];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 7, structChannel3.getSortIndex());
+        assertEquals((short) 7, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1305,7 +1305,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[8];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 8, structChannel3.getSortIndex());
+        assertEquals((short) 8, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1314,7 +1314,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[9];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 9, structChannel3.getSortIndex());
+        assertEquals((short) 9, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1323,7 +1323,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[10];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 10, structChannel3.getSortIndex());
+        assertEquals((short) 10, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1332,7 +1332,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[11];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 11, structChannel3.getSortIndex());
+        assertEquals((short) 11, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1341,7 +1341,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[12];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 12, structChannel3.getSortIndex());
+        assertEquals((short) 12, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1350,7 +1350,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[13];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 13, structChannel3.getSortIndex());
+        assertEquals((short) 13, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1359,7 +1359,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[14];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 14, structChannel3.getSortIndex());
+        assertEquals((short) 14, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1368,7 +1368,7 @@ public class Channel_Test {
         structChannel3 = structChannels3[15];
         assertEquals("Struct Channel: " + structChannel3, DataType.BIT, structChannel3
                 .getChannelType());
-        assertEquals((short) 15, structChannel3.getSortIndex());
+        assertEquals((short) 15, (short) structChannel3.getSortIndex());
         assertEquals(1, structChannel3.getChSize());
         assertEquals(0, structChannel3.getChannelNumber());
         assertEquals(2, structChannel3.getFullChannelNumber());
@@ -1389,14 +1389,14 @@ public class Channel_Test {
         assertEquals(2, module2.getOutputOffsetNH());
         assertEquals(2, module2.getOutputSize());
 
-        ChannelStructure channelStructure4 = ChannelStructure.makeChannelStructure(module2, false,
+        final ChannelStructure channelStructure4 = ChannelStructure.makeChannelStructure(module2, false,
                 DataType.UINT16, "jKl");
 
-        Collection<? extends Node> values4 = channelStructure4.getChildren();
-        Collection<Channel> channels4 = channelStructure4.getChannelsAsMap().values();
+        final Collection<? extends Node> values4 = channelStructure4.getChildren();
+        final Collection<Channel> channels4 = channelStructure4.getChannelsAsMap().values();
         assertEquals(16, values4.size());
         assertEquals(16, channels4.size());
-        Channel[] structChannels4 = channels4.toArray(new Channel[0]);
+        final Channel[] structChannels4 = channels4.toArray(new Channel[0]);
         Channel structChannel4 = structChannels4[0];
 
         assertEquals("Struct Channel: " + structChannel4, DataType.BIT, structChannel4
@@ -1488,16 +1488,16 @@ public class Channel_Test {
 
     /**
      * See the also the TestAllChannelCombinations.html file.
-     * 
+     *
      * Need Modules (M) and every - Channel as Input and Output (PCI/PCO) - StructChannel as Input
      * and Output (SCI/SCO) combination.
-     * 
+     *
      * Possible combinations: M->PCI ok | PCI->SCI ok M->PCO ok | SCI->PCI ok M->SCI ok | PCO->SCO
      * ok M->SCO ok | SCO->PCO ok
-     * 
+     *
      * The test M1-->PCI11(INT16)-->SCO11(INT8 )-->PCO11(UNSIGN16)-->SCI11(UNSIGN8 )-->SCO12()-->PCO12
      * M2-->SCI2(INT8 )-->PCO2(INT16)-->PCI2(UNSIGN8 )-->SCI2(UNSIGN16)
-     * 
+     *
      */
     @Test
     public void TestAllChannelCombinations() throws PersistenceException {
@@ -1507,7 +1507,7 @@ public class Channel_Test {
 
         // create Module 1
         // M1-->
-        Module module1 = new Module(_slave, "Module 1");
+        final Module module1 = new Module(_slave, "Module 1");
         module1.moveSortIndex((short) 31);
         module1.localSave();
 
@@ -1516,8 +1516,8 @@ public class Channel_Test {
         // Make Channe Input 1
         // M1-->PCI1(INT16)-->
 
-        ChannelStructure structure11 = ChannelStructure.makeSimpleChannel(module1, INPUT);
-        Channel pci11 = structure11.getFirstChannel();
+        final ChannelStructure structure11 = ChannelStructure.makeSimpleChannel(module1, INPUT);
+        final Channel pci11 = structure11.getFirstChannel();
         pci11.setDigital(false);
         pci11.setName(" Channel Input 1.1");
         pci11.setChannelTypeNonHibernate(DataType.INT16);
@@ -1532,15 +1532,15 @@ public class Channel_Test {
 
         // Make Structure Channel Output 1.1
         // M1-->PCI1-->SCO1(INT8)-->
-        ChannelStructure sco11 = ChannelStructure.makeChannelStructure(module1, OUTPUT,
+        final ChannelStructure sco11 = ChannelStructure.makeChannelStructure(module1, OUTPUT,
                 DataType.INT8, "SCO1.1_");
 
         // - Test Module Changes
         testModule("@Subnet:123", (short) 31, 0, 2, 0, 1, module1);
 
         // - Test Structure Channels.
-        Collection<Channel> valuesSCO1 = sco11.getChannelsAsMap().values();
-        Set<Channel> channelsSCO1 = sco11.getChannels();
+        final Collection<Channel> valuesSCO1 = sco11.getChannelsAsMap().values();
+        final Set<Channel> channelsSCO1 = sco11.getChannels();
         assertEquals(8, valuesSCO1.size());
         assertEquals(8, channelsSCO1.size());
 
@@ -1555,9 +1555,9 @@ public class Channel_Test {
 
         // Make Channel Output 1.1
         // M1-->PCI1-->SCO1-->PCO11-->
-        ChannelStructure structurePCO11 = ChannelStructure.makeSimpleChannel(module1,
+        final ChannelStructure structurePCO11 = ChannelStructure.makeSimpleChannel(module1,
                 "Channel Output 1.1", OUTPUT, false);
-        Channel pco11 = structurePCO11.getFirstChannel();
+        final Channel pco11 = structurePCO11.getFirstChannel();
         pco11.setChannelTypeNonHibernate(DataType.UINT16);
         pco11.localSave();
 
@@ -1570,15 +1570,15 @@ public class Channel_Test {
 
         // Make Struct Channel Input 1.1
         // M1-->PCI1-->SCO1-->PCO1-->SCI1
-        ChannelStructure sci1 = ChannelStructure.makeChannelStructure(module1, INPUT,
+        final ChannelStructure sci1 = ChannelStructure.makeChannelStructure(module1, INPUT,
                 DataType.UINT8, "SCI1.1_");
 
         // - Test Module Changes
         testModule("@Subnet:123", (short) 31, 0, 3, 0, 3, module1);
 
         // - Test Channel.
-        Collection<Channel> valuesSCI1 = sci1.getChannelsAsMap().values();
-        Set<Channel> channelssci1 = sci1.getChannels();
+        final Collection<Channel> valuesSCI1 = sci1.getChannelsAsMap().values();
+        final Set<Channel> channelssci1 = sci1.getChannels();
         assertEquals(8, valuesSCI1.size());
         assertEquals(8, channelssci1.size());
 
@@ -1591,7 +1591,7 @@ public class Channel_Test {
 
         // Make Struct Channel Input 1.2
         // M1-->PCI11-->SCO11-->PCO11-->SCI11-->SCO12
-        ChannelStructure sco12 = ChannelStructure.makeChannelStructure(module1, OUTPUT,
+        final ChannelStructure sco12 = ChannelStructure.makeChannelStructure(module1, OUTPUT,
                 DataType.UINT16, "SCO1.2_");
 
         // - Test Module Changes
@@ -1609,9 +1609,9 @@ public class Channel_Test {
 
         // Make Channel Input 1.2
         // M1-->PCI11-->SCO11-->PCO11-->SCI11-->SCO12-->PCI12
-        ChannelStructure structurePCI12 = ChannelStructure.makeSimpleChannel(module1,
+        final ChannelStructure structurePCI12 = ChannelStructure.makeSimpleChannel(module1,
                 "Channel Input 1.2", INPUT, false);
-        Channel pci12 = structurePCI12.getFirstChannel();
+        final Channel pci12 = structurePCI12.getFirstChannel();
         pci12.setChannelTypeNonHibernate(DataType.INT8);
         pci12.localSave();
 
@@ -1624,7 +1624,7 @@ public class Channel_Test {
 
         // create Module 2
         // M2-->
-        Module module2 = new Module(_slave, "Module 2");
+        final Module module2 = new Module(_slave, "Module 2");
         module2.moveSortIndex((short) 32);
         module2.localSave();
 
@@ -1633,15 +1633,15 @@ public class Channel_Test {
 
         // Make structure Channel Input 2.1
         // M2-->SCI21-->
-        ChannelStructure sci21 = ChannelStructure.makeChannelStructure(module2, INPUT,
+        final ChannelStructure sci21 = ChannelStructure.makeChannelStructure(module2, INPUT,
                 DataType.INT8, "SCI2.2_");
 
         // - Test Module Changes
         testModule("@Subnet:123", (short) 32, 4, 1, 5, 0, module2);
 
         // - Test structure Channels.
-        Collection<Channel> valuesSCI21 = sci21.getChannelsAsMap().values();
-        Set<Channel> channelsSCI21 = sci21.getChannels();
+        final Collection<Channel> valuesSCI21 = sci21.getChannelsAsMap().values();
+        final Set<Channel> channelsSCI21 = sci21.getChannels();
         assertEquals(8, valuesSCI21.size());
         assertEquals(8, channelsSCI21.size());
 
@@ -1654,9 +1654,9 @@ public class Channel_Test {
 
         // Make Struct Channel Output 2.2
         // M2-->SCI21-->PCO21-->
-        ChannelStructure structurePCO21 = ChannelStructure.makeSimpleChannel(module2,
+        final ChannelStructure structurePCO21 = ChannelStructure.makeSimpleChannel(module2,
                 "Channel Output 2.1", OUTPUT, false);
-        Channel pco21 = structurePCO21.getFirstChannel();
+        final Channel pco21 = structurePCO21.getFirstChannel();
         pco21.setChannelTypeNonHibernate(DataType.INT16);
         pco21.localSave();
 
@@ -1669,9 +1669,9 @@ public class Channel_Test {
 
         // Make structure Channel Input 2
         // M2-->SCI21-->PCO21-->PCI21-->
-        ChannelStructure structurePCI21 = ChannelStructure.makeSimpleChannel(module2,
+        final ChannelStructure structurePCI21 = ChannelStructure.makeSimpleChannel(module2,
                 "Channel Input 2.1", INPUT, false);
-        Channel pci21 = structurePCI21.getFirstChannel();
+        final Channel pci21 = structurePCI21.getFirstChannel();
         pci21.setChannelTypeNonHibernate(DataType.UINT8);
         pci21.localSave();
 
@@ -1684,15 +1684,15 @@ public class Channel_Test {
 
         // Make Struct Channel Input 2
         // M2-->SCI21-->PCO21-->PCI21-->SCO21
-        ChannelStructure sco21 = ChannelStructure.makeChannelStructure(module2, OUTPUT,
+        final ChannelStructure sco21 = ChannelStructure.makeChannelStructure(module2, OUTPUT,
                 DataType.UINT16, "SCO2.1_");
 
         // - Test Module Changes
         testModule("@Subnet:123", (short) 32, 4, 2, 5, 4, module2);
 
         // - Test structure Channels.
-        Collection<Channel> valuesSCO21 = sco21.getChannelsAsMap().values();
-        Set<Channel> channelsSCO21 = sco21.getChannels();
+        final Collection<Channel> valuesSCO21 = sco21.getChannelsAsMap().values();
+        final Set<Channel> channelsSCO21 = sco21.getChannels();
         assertEquals(16, valuesSCO21.size());
         assertEquals(16, channelsSCO21.size());
 
@@ -1705,9 +1705,9 @@ public class Channel_Test {
 
         // Make simple Channel Output 2.2
         // M2-->SCI21-->PCO21-->PCI21-->SCO21-->PCO22
-        ChannelStructure structurePCO22 = ChannelStructure.makeSimpleChannel(module2,
+        final ChannelStructure structurePCO22 = ChannelStructure.makeSimpleChannel(module2,
                 "Channel Output 2.2", OUTPUT, false);
-        Channel pco22 = structurePCO22.getFirstChannel();
+        final Channel pco22 = structurePCO22.getFirstChannel();
         pco22.setChannelTypeNonHibernate(DataType.INT8);
         pco22.localSave();
 
@@ -1720,15 +1720,15 @@ public class Channel_Test {
 
         // Make Struct Channel Input 2.2
         // M2-->SCI21-->PCO21-->PCI21-->SCO21-->PCO22-->SCI22
-        ChannelStructure sci22 = ChannelStructure.makeChannelStructure(module2, INPUT,
+        final ChannelStructure sci22 = ChannelStructure.makeChannelStructure(module2, INPUT,
                 DataType.UINT16, "SCI2.2_");
 
         // - Test Module Changes
         testModule("@Subnet:123", (short) 32, 4, 4, 5, 5, module2);
 
         // - Test structure Channels.
-        Collection<Channel> valuesSCI22 = sci22.getChannelsAsMap().values();
-        Set<Channel> channelsSCI22 = sci22.getChannels();
+        final Collection<Channel> valuesSCI22 = sci22.getChannelsAsMap().values();
+        final Set<Channel> channelsSCI22 = sci22.getChannels();
         assertEquals(16, valuesSCI22.size());
         assertEquals(16, channelsSCI22.size());
 
@@ -1741,30 +1741,30 @@ public class Channel_Test {
 
     }
 
-    private void testModule(String addressString, short sortIndex, int inputOffset, int inputSize,
-            int outputOffset, int outputSize, Module module) {
+    private void testModule(final String addressString, final short sortIndex, final int inputOffset, final int inputSize,
+            final int outputOffset, final int outputSize, final Module module) {
         assertEquals(addressString, module.getEpicsAddressString());
-        assertEquals(sortIndex, module.getSortIndex());
+        assertEquals(sortIndex, (short) module.getSortIndex());
         assertEquals(inputOffset, module.getInputOffsetNH());
         assertEquals(inputSize, module.getInputSize());
         assertEquals(outputOffset, module.getOutputOffsetNH());
         assertEquals(outputSize, module.getOutputSize());
     }
 
-    private void testSimpleChannel(String addressString, short sortIndex, Channel channel,
-            ChannelStructure structure) {
-        assertEquals(sortIndex, structure.getSortIndex());
-        assertEquals(sortIndex, channel.getSortIndex());
+    private void testSimpleChannel(final String addressString, final short sortIndex, final Channel channel,
+            final ChannelStructure structure) {
+        assertEquals(sortIndex, (short) structure.getSortIndex());
+        assertEquals(sortIndex, (short) channel.getSortIndex());
         assertEquals(addressString, channel.getEpicsAddressStringNH());
     }
 
-    private void testChannelFromStructure(String addressString, short sortIndex, DataType dataType,
-            int chSize, int channelNumber, int fullChannelNumber, ChannelStructure channelStructure) {
-        Channel channel = (Channel) channelStructure.getChildrenAsMap().get(sortIndex);
+    private void testChannelFromStructure(final String addressString, final short sortIndex, final DataType dataType,
+            final int chSize, final int channelNumber, final int fullChannelNumber, final ChannelStructure channelStructure) {
+        final Channel channel = (Channel) channelStructure.getChildrenAsMap().get(sortIndex);
         assertNotNull("Wrong sortIndex (" + sortIndex + ")! Hint: "
                 + channelStructure.getFirstChannel().getSortIndex(), channel);
         assertEquals("Struct Channel: " + channel, dataType, channel.getChannelType());
-        assertEquals(sortIndex, channel.getSortIndex());
+        assertEquals(sortIndex, (short) channel.getSortIndex());
         assertEquals(chSize, channel.getChSize());
         assertEquals(channelNumber, channel.getChannelNumber());
         assertEquals(fullChannelNumber, channel.getFullChannelNumber());
