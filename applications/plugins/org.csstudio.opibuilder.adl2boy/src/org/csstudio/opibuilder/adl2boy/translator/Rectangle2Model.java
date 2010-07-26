@@ -4,7 +4,6 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.AbstractShapeModel;
-import org.csstudio.opibuilder.widgets.model.GroupingContainerModel;
 import org.csstudio.opibuilder.widgets.model.RectangleModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgets.Rectangle;
