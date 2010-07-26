@@ -26,6 +26,7 @@ package org.csstudio.alarm.treeView.model;
 import java.util.Collection;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 /**
@@ -115,6 +116,13 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      */
     @Nonnull
     List<IAlarmTreeNode> getChildren();
+
+    /**
+     * Returns the direct child by name.
+     * @return the child component with the specified name, if there is any, otherwise null
+     */
+    @CheckForNull
+    IAlarmTreeNode getChild(@Nonnull final String name);
 
     /**
      * Removes all children and their subtrees from the node. Clears all caches and maps.

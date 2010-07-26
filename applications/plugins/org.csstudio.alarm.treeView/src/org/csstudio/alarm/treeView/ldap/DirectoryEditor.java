@@ -341,14 +341,14 @@ public final class DirectoryEditor {
     public static ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                         @Nonnull final String componentName) {
 
-        final SubtreeNode node = new SubtreeNode.Builder(componentName,
-                                                         LdapEpicsAlarmcfgConfiguration.COMPONENT,
-                                                         parent.getSource()).setParent(parent)
-                .build();
+        final SubtreeNode node =
+            new SubtreeNode.Builder(componentName,
+                                    LdapEpicsAlarmcfgConfiguration.COMPONENT,
+                                    parent.getSource()).setParent(parent).build();
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.COMPONENT
-                .getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS,
+                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryItem(node.getLdapName(), attrs);

@@ -29,6 +29,7 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
@@ -196,16 +197,49 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     }
 
     private void copyNodes(@Nonnull final List<IAlarmTreeNode> nodes,
-                           @Nonnull final SubtreeNode target) throws DirectoryEditException {
+                           @Nonnull final IAlarmSubtreeNode target) throws DirectoryEditException {
+
         for (final IAlarmTreeNode node : nodes) {
-            final Queue<ITreeModificationItem> items = DirectoryEditor.copyNode(node, target);
-            _ldapModificationItems.addAll(items);
+            if (node.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.FACILITY)) {
+                copyFacilityComponentAsInsertion(target, node);
+            } else {
+                final Queue<ITreeModificationItem> items = DirectoryEditor.copyNode(node, target);
+                _ldapModificationItems.addAll(items);
+            }
+
+        }
+    }
+
+    /**
+     * Moving or copying facility nodes is special.
+     * The normal case is the nodes  (COMPONENTS, RECORDS) are just copied to the new location
+     * (and for the 'move action' deleted afterwards from the old location).
+     *
+     * The FACILITY node changes its type and becomes a COMPONENT! This action is (up to now)
+     * not reversible.
+     *
+     * @param target
+     * @param node
+     * @throws DirectoryEditException
+     */
+    private void copyFacilityComponentAsInsertion(@Nonnull final IAlarmSubtreeNode target,
+                                                  @Nonnull final IAlarmTreeNode node) throws DirectoryEditException {
+        final String name = node.getName();
+        // generate a new component for the facility
+        final ITreeModificationItem item = DirectoryEditor.createComponent(target, name);
+        if (item != null) {
+            final IAlarmTreeNode newComp = target.getChild(name);
+            if (newComp != null) {
+                _ldapModificationItems.add(item);
+                // copy the children of the facility below new component
+                copyNodes(((IAlarmSubtreeNode) node).getChildren(), (IAlarmSubtreeNode) newComp);
+            }
         }
     }
 
 
     private void moveNodes(@Nonnull final List<IAlarmTreeNode> nodes,
-                           @Nonnull final SubtreeNode target) throws DirectoryEditException {
+                           @Nonnull final IAlarmSubtreeNode target) throws DirectoryEditException {
 
         copyNodes(nodes, target);
 
