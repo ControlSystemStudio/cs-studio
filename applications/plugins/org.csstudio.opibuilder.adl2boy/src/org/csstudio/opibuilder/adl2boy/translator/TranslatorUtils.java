@@ -28,8 +28,6 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("byte")){
 					new Byte2Model(adlWidget, colorMap,parentModel);
-					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("cartesian plot")){
 					new CartesianPlot2Model(adlWidget, colorMap,parentModel);
@@ -38,49 +36,33 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("choice button")){
 					new ChoiceButton2Model(adlWidget, colorMap,parentModel);
-					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("composite")){
 					new Composite2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("dynamic symbol")){
 					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("file")){
 					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("image")){
 					new Image2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("indicator")){
 					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("menu")){
 					new Menu2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("message button")){
 					new MessageButton2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("toggle button")){
 					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("meter")){
 					new Meter2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-						
 				}
 				else if (widgetType.equals("oval")){
 					new Oval2Model(adlWidget, colorMap, parentModel);
@@ -102,7 +84,6 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("strip chart")){
 					printNotHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("text")){
 					new Text2Model(adlWidget, colorMap, parentModel);
@@ -115,8 +96,6 @@ public class TranslatorUtils {
 				}
 				else if (widgetType.equals("valuator")){
 					new Valuator2Model(adlWidget, colorMap, parentModel);
-					printNotCompletelyHandledMessage(widgetType);
-					
 				}
 				else if (widgetType.equals("basic attribute")){
 					ArrayList<ADLWidget> children = adlWidget.getObjects();
