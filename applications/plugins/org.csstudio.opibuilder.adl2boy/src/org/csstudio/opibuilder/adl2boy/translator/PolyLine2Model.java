@@ -17,10 +17,9 @@ public class PolyLine2Model extends AbstractADL2Model {
 		if (polylineWidget != null) {
 			setADLObjectProps(polylineWidget, polylineModel);
 			setADLBasicAttributeProps(polylineWidget, polylineModel, false);
+			setADLDynamicAttributeProps(polylineWidget, polylineModel);
 		}
 		polylineModel.setPoints(polylineWidget.getAdlPoints().getPointsList(), true);
-		//TODO Add basic properties to PolyLine2Model
-		//TODO Add dynamic properties to PolyLine2Model
 	}
 
 	@Override

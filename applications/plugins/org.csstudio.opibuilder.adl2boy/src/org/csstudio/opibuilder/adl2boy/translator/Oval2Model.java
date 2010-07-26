@@ -20,11 +20,12 @@ public class Oval2Model extends AbstractADL2Model {
 		if (ovalWidget != null) {
 			setADLObjectProps(ovalWidget, ellipseModel);
 			setADLBasicAttributeProps(ovalWidget, ellipseModel, true);
+			setADLDynamicAttributeProps(ovalWidget, ellipseModel);
 		}
 		//check fill parameters
 		if ( ovalWidget.hasADLBasicAttribute() ) {
 			if (ovalWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-				System.out.println("RECTANGLE fill is solid");				
+				System.out.println("Oval fill is solid");				
 				ellipseModel.setPropertyValue(EllipseModel.PROP_TRANSPARENT, false);
 				ellipseModel.setPropertyValue(EllipseModel.PROP_FILL_LEVEL, 100);
 				ellipseModel.setPropertyValue(EllipseModel.PROP_HORIZONTAL_FILL, true);

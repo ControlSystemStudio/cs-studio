@@ -19,6 +19,7 @@ public class Text2Model extends AbstractADL2Model {
 		if (textWidget != null) {
 			setADLObjectProps(textWidget, labelModel);
 			setADLBasicAttributeProps(textWidget, labelModel, true);
+			setADLDynamicAttributeProps(textWidget, labelModel);
 			if (textWidget.getTextix() != null ){
 				labelModel.setText(textWidget.getTextix());
 			}
@@ -31,7 +32,6 @@ public class Text2Model extends AbstractADL2Model {
 		newFontData.setHeight(fontSize);
 		labelModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
 
-		//TODO Figure out dynamic properties on Text2Model
 		//TODO Add Alignment to Text2Model
 	}
 

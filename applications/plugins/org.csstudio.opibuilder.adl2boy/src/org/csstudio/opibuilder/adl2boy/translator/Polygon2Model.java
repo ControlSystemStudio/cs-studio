@@ -20,13 +20,13 @@ public class Polygon2Model extends AbstractADL2Model {
 		if (polygonWidget != null) {
 			setADLObjectProps(polygonWidget, polygonModel);
 			setADLBasicAttributeProps(polygonWidget, polygonModel, true);
+			setADLDynamicAttributeProps(polygonWidget, polygonModel);
 		}
 		polygonModel.setPoints(polygonWidget.getAdlPoints().getPointsList(), true);
 
 		//check fill parameters
 		if ( polygonWidget.hasADLBasicAttribute() ) {
 			if (polygonWidget.getAdlBasicAttribute().getFill().equals("solid") ) {
-				System.out.println("RECTANGLE fill is solid");				
 				polygonModel.setPropertyValue(PolygonModel.PROP_TRANSPARENT, false);
 				polygonModel.setPropertyValue(PolygonModel.PROP_FILL_LEVEL, 100);
 				polygonModel.setPropertyValue(PolygonModel.PROP_HORIZONTAL_FILL, true);

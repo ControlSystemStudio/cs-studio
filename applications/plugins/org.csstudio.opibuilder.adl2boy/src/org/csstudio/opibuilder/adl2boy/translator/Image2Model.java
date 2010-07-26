@@ -17,8 +17,9 @@ public class Image2Model extends AbstractADL2Model {
 		if (imageWidget != null) {
 			setADLObjectProps(imageWidget, imageModel);
 			setADLBasicAttributeProps(imageWidget, imageModel, false);
+			setADLDynamicAttributeProps(imageWidget, imageModel);
+
 		}
-		//TODO Add dynamic properties to Image2Model
 		//TODO Add Image Type to Image2Model
 		//TODO Add ImageName 2 Image2Model
 		//TODO Add ImageCalc to Image2Model

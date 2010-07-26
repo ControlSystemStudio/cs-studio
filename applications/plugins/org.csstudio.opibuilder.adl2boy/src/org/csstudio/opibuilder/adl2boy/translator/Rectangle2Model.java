@@ -20,6 +20,7 @@ public class Rectangle2Model extends AbstractADL2Model {
 		if (rectWidget != null) {
 			setADLObjectProps(rectWidget, rectangleModel);
 			setADLBasicAttributeProps(rectWidget, rectangleModel, true);
+			setADLDynamicAttributeProps(rectWidget, rectangleModel);
 		}
 		//check fill parameters
 		if ( rectWidget.hasADLBasicAttribute() ) {
@@ -44,7 +45,6 @@ public class Rectangle2Model extends AbstractADL2Model {
 			}
 			
 		}
-		//TODO Add Dynamic properties to Rectangle2Model
 	}
 
 	@Override
