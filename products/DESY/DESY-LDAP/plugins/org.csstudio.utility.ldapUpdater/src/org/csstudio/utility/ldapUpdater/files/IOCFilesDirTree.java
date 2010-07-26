@@ -46,6 +46,8 @@ public final class IOCFilesDirTree {
 
     private static Logger LOG = CentralLogger.getInstance().getLogger(IOCFilesDirTree.class.getName());
 
+    private static final String RECORDS_FILE_SUFFIX = ".records";
+
     /**
      * Don't instantiate.
      */
@@ -63,28 +65,13 @@ public final class IOCFilesDirTree {
     private static void doFile(@Nonnull final File f, @Nonnull final Map<String, IOC> iocMap) {
         final String fileName = f.getName();
 
-        if (!filterFileName(fileName, ".")) {
+        if (fileName.endsWith(RECORDS_FILE_SUFFIX)) {
             final GregorianCalendar dateTime = findLastModifiedDateForFile(fileName);
 
-            iocMap.put(fileName, new IOC(fileName, dateTime));
-            LOG.debug("File found for IOC: " + fileName);
+            final String iocName = fileName.replace(RECORDS_FILE_SUFFIX, "");
+            iocMap.put(iocName, new IOC(iocName, dateTime));
+            LOG.debug("File found for IOC: " + iocName);
         }
-    }
-
-    /**
-     * Filters the given string whether the filterString is contained.
-     * @param fileName the name to filter for
-     * @param filterStrings the array of filters
-     * @return true, if the name contains any of the given filterStrings
-     */
-    private static boolean filterFileName(@Nonnull final String fileName, @Nonnull final String...filterStrings) {
-
-        for (final String filter : filterStrings) {
-            if (fileName.contains(filter)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -107,11 +94,11 @@ public final class IOCFilesDirTree {
     }
 
     @Nonnull
-    private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocName) {
+    private static GregorianCalendar findLastModifiedDateForFile(@Nonnull final String iocFileName) {
         final GregorianCalendar dateTime = new GregorianCalendar(TimeZone.getTimeZone("ETC"));
         final String prefFileName = getValueFromPreferences(IOC_DBL_DUMP_PATH);
         final File filePath = new File(prefFileName);
-        dateTime.setTimeInMillis(new File(filePath,iocName).lastModified());
+        dateTime.setTimeInMillis(new File(filePath,iocFileName).lastModified());
         return dateTime;
     }
 
@@ -158,7 +145,7 @@ public final class IOCFilesDirTree {
     public static Set<Record> getRecordsFromFile(@Nonnull final String pathToFile) {
         final Set<Record> records = new HashSet<Record>();
         try {
-            final BufferedReader br = new BufferedReader(new FileReader(pathToFile));
+            final BufferedReader br = new BufferedReader(new FileReader(pathToFile + RECORDS_FILE_SUFFIX));
             String strLine;
             while ((strLine = br.readLine()) != null)   {
                 records.add(new Record(strLine));
