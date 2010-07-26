@@ -87,6 +87,10 @@ public class ADLResource {
 	public static final String PLOT_XDATA = "xData";
 	public static final String PLOT_YDATA = "xData";
 	public static final String PLOT_DATA_COLOR = "data color";
+	public static final String CHANNELB = "chanb";
+	public static final String CHANNELC = "chanc";
+	public static final String CHANNELD = "chand";
+	public static final String CALC = "calc";
 	
 	public ADLResource (String name, Object value){
 		this._name = name;
