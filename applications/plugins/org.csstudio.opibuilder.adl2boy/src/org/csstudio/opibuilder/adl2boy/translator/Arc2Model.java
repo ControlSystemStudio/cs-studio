@@ -19,6 +19,7 @@ public class Arc2Model extends AbstractADL2Model {
 		if (arcWidget != null) {
 			setADLObjectProps(arcWidget, arcModel);
 			setADLBasicAttributeProps(arcWidget, arcModel, false);
+			setADLDynamicAttributeProps(arcWidget, arcModel);
 		}
 		arcModel.setPropertyValue(ArcModel.PROP_START_ANGLE, (float)arcWidget.get_begin()/64);
 		arcModel.setPropertyValue(ArcModel.PROP_TOTAL_ANGLE, (float)arcWidget.get_path()/64);
@@ -45,7 +46,6 @@ public class Arc2Model extends AbstractADL2Model {
 			
 		}
 
-		//TODO Add Dynamic Properties to Arc2Model
 	}
 
 	@Override
