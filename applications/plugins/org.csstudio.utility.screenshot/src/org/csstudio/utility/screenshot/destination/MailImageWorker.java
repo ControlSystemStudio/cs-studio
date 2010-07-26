@@ -51,6 +51,7 @@ import org.csstudio.utility.screenshot.dialog.MailSenderDialog;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
@@ -118,7 +119,8 @@ public class MailImageWorker implements IImageWorker
                 ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 Properties props = new Properties();
                 
-                props.put("mail.smtp.host", ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_SERVER));
+                IPreferencesService pref = Platform.getPreferencesService();
+                props.put("mail.smtp.host", pref.getString(ScreenshotPlugin.PLUGIN_ID, ScreenshotPreferenceConstants.MAIL_SERVER, "", null));
                 props.put("mail.smtp.port", "25");
                 
                 Session session = Session.getDefaultInstance(props);
