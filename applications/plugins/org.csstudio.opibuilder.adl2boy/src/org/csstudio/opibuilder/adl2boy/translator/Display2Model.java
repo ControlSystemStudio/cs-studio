@@ -18,7 +18,6 @@ public class Display2Model extends AbstractADL2Model {
 	
 		if (adlDisp !=null){
 			setADLObjectProps(adlDisp, displayModel);
-//			setADLBasicAttributeProps(adlDisp, displayModel, false);
 			displayForeColor = adlDisp.getForegroundColor();
 			displayBackColor = adlDisp.getBackgroundColor();
 			displayModel.setBackgroundColor(colorMap[displayBackColor]);
