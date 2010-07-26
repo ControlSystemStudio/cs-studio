@@ -6,19 +6,24 @@ public enum PreferenceServiceDatabaseKeys implements HoldsAPreferenceId {
 			"Configuration databases jdbc-url"),
 
 	P_CONFIG_DATABASE_TYPE("configDatabaseType",
-			"Type of config database"), P_CONFIG_DATABASE_USER(
+			"Type of config database"),
+	P_CONFIG_DATABASE_USER(
 			"configDatabaseUser",
-			"Configuration databases user"), P_CONFIG_DATABASE_PASSWORD(
+			"Configuration databases user"),
+	P_CONFIG_DATABASE_PASSWORD(
 			"configDatabasePassword",
 			"Configuration databases password"),
 
 	P_APP_DATABASE_CONNECTION(
 			"appDatabaseConnection",
-			"Application databases jdbc-url"), P_APP_DATABASE_USER(
+			"Application databases jdbc-url"), 
+	P_APP_DATABASE_USER(
 			"appDatabaseUser",
-			"Application databases user"), P_APP_DATABASE_PASSWORD(
+			"Application databases user"), 
+	P_APP_DATABASE_PASSWORD(
 			"appDatabasePassword",
-			"Application databases password"), P_APP_DATABASE_TYPE(
+			"Application databases password"), 
+	P_APP_DATABASE_TYPE(
 			"appDatabaseType",
 			"Type of application database");
 
