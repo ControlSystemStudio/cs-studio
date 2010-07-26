@@ -29,9 +29,13 @@ public class TextUpdate2Model extends AbstractADL2Model {
 		newFontData.setHeight(fontSize);
 		textInModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
 		//TODO Add Alignment to TextUpdate2Model
+		System.out.println("Warning- TextUpdate2Model: alignment not handled");
 		//TODO Add limits to TextUpdate2Model
+		System.out.println("Warning- TextUpdate2Model: limits not handled");
 		//TODO Add format to TextUpdate2Model
+		System.out.println("Warning- TextUpdate2Model: format not handled");
 		//TODO Add color mode to TextUpdate2Model
+		System.out.println("Warning- TextUpdate2Model: color mode not handled");
 	}
 
 	@Override

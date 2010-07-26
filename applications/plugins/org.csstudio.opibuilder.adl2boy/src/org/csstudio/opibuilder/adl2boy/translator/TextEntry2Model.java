@@ -28,8 +28,11 @@ public class TextEntry2Model extends AbstractADL2Model {
 		newFontData.setHeight(fontSize);
 		textInModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
 		//TODO Add limits to TextEntry2Model
+		System.out.println("Warning- TextEntry2Model: limits not handled");
 		//TODO Add format to TextEntry2Model
+		System.out.println("Warning- TextEntry2Model: format not handled");
 		//TODO Add color mode to TextEntry2Model
+		System.out.println("Warning- TextEntry2Model: color mode not handled");
 	}
 
 	@Override

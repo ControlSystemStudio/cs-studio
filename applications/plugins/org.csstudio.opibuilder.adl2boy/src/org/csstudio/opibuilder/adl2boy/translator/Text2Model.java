@@ -31,8 +31,9 @@ public class Text2Model extends AbstractADL2Model {
 		FontData newFontData = new FontData(fontData.getName(), fontData.getHeight(), fontData.getStyle());
 		newFontData.setHeight(fontSize);
 		labelModel.setPropertyValue(LabelModel.PROP_FONT, newFontData);
-
+		
 		//TODO Add Alignment to Text2Model
+		System.out.println("Warning - Text2Model Text alignment is not currently handled by the conversion");
 	}
 
 	@Override
