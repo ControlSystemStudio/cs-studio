@@ -69,13 +69,12 @@ public class MailImageWorker implements IImageWorker
 {
     private final String MENU_ITEM_ENTRY = "eMail";
 
-    public String getMenuItemEntry()
-    {
+    public String getMenuItemEntry() {
         return MENU_ITEM_ENTRY;
     }
     
-    public void processImage(Shell parentShell, Image image)
-    {
+    public void processImage(Shell parentShell, Image image) {
+        
         InternetAddress addressFrom = null;
         InternetAddress carbonCopy = null;
         InternetAddress[] addressTo = null;
@@ -83,24 +82,20 @@ public class MailImageWorker implements IImageWorker
         String workspaceLocation = null;
         String imageFilename = "capture.jpg";
         
-        if(image == null)
-        {
+        if(image == null) {
+            
             MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.NO_IMAGE"));
         
             return;
         }
         
         // Retrieve the location of the workspace directory
-        try
-        {
+        try {
             workspaceLocation = Platform.getLocation().toPortableString();
-            if(workspaceLocation.endsWith("/") == false)
-            {
+            if(workspaceLocation.endsWith("/") == false) {
                 workspaceLocation = workspaceLocation + "/";
             }
-        }
-        catch(IllegalStateException ise)
-        {
+        } catch(IllegalStateException ise) {
             CentralLogger.getInstance().warn(this, "Workspace location could not be found. Using working directory '.'");
             workspaceLocation = "./";
         }
@@ -111,10 +106,9 @@ public class MailImageWorker implements IImageWorker
         
         int value = dialog.open();
                 
-        if((value == Dialog.OK) && (dialog.getMailEntry() != null))
-        {
-            try
-            {
+        if((value == Dialog.OK) && (dialog.getMailEntry() != null)) {
+            
+            try {
                 // ImageIO.write(bufferedImage, "jpg", new File(ScreenshotPlugin.getInstalledFilePath("/") + imageFilename));
                 ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 Properties props = new Properties();
@@ -153,40 +147,29 @@ public class MailImageWorker implements IImageWorker
                 msg.setHeader( "X-Mailer", "Java-Mailer V 1.60217733" ); 
                 msg.setSentDate( new Date() );
     
-                try
-                {
-                    addressFrom = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
-
-                    msg.setFrom(addressFrom);
+                try {
                     
+                    addressFrom = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
+                    msg.setFrom(addressFrom);
                     addressTo = InternetAddress.parse(dialog.getMailEntry().getMailToAddress());
-
                     msg.setRecipients(Message.RecipientType.TO, addressTo);
                     
-                    if(dialog.getMailEntry().copyToSender())
-                    {
-                        carbonCopy = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
+                    if(dialog.getMailEntry().copyToSender()) {
                         
+                        carbonCopy = new InternetAddress(dialog.getMailEntry().getMailFromAddress());
                         msg.addRecipient(Message.RecipientType.CC, carbonCopy);
                     }
 
                     msg.setSubject(dialog.getMailEntry().getMailSubject());    
-                    
                     Transport.send(msg);
                     
                     MessageDialog.openInformation(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), ScreenshotMessages.getString("MailImageWorker.MAIL_SENT"));
-                }
-                catch(MessagingException me)
-                {
+                } catch(MessagingException me) {
                     MessageDialog.openError(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), "Not possible to send the mail.\n\nReason:\n" + me.getMessage() + "\n\nIf port 25 is blocked by the virus scanner, you have to allow java(w).exe to use it.");
                 }
-            }
-            catch(MessagingException mee)
-            {
+            } catch(MessagingException mee) {
                 MessageDialog.openError(parentShell, ScreenshotPlugin.getDefault().getNameAndVersion(), mee.getMessage());
-            }
-            catch(IOException ioe)
-            {
+            } catch(IOException ioe) {
                 MessageDialog.openInformation(parentShell, "Error", ioe.getMessage());
             }
         }
@@ -194,13 +177,13 @@ public class MailImageWorker implements IImageWorker
         dialog = null;
     }
     
-    public BufferedImage convertToBufferedImage(ImageData data)
-    {
+    public BufferedImage convertToBufferedImage(ImageData data) {
+        
         ColorModel  colorModel  = null;
         PaletteData palette     = data.palette;
         
-        if(palette.isDirect)
-        {
+        if(palette.isDirect) {
+            
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
             
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
@@ -209,10 +192,9 @@ public class MailImageWorker implements IImageWorker
             
             int[] pixelArray = new int[3];
           
-            for (int y = 0; y < data.height; y++)
-            {
-                for (int x = 0; x < data.width; x++)
-                {
+            for (int y = 0; y < data.height; y++) {
+                
+                for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
                     pixelArray[0] = rgb.red;
@@ -223,17 +205,16 @@ public class MailImageWorker implements IImageWorker
             }
             
             return bufferedImage;
-        }
-        else
-        {
+        } else {
+            
             RGB[] rgbs = palette.getRGBs();
             
             byte[] red   = new byte[rgbs.length];
             byte[] green = new byte[rgbs.length];
             byte[] blue  = new byte[rgbs.length];
             
-            for (int i = 0; i < rgbs.length; i++)
-            {
+            for (int i = 0; i < rgbs.length; i++) {
+                
                 RGB rgb = rgbs[i];
                 
                 red[i]   = (byte) rgb.red;
@@ -241,12 +222,9 @@ public class MailImageWorker implements IImageWorker
                 blue[i]  = (byte) rgb.blue;
             }
             
-            if (data.transparentPixel != -1)
-            {
+            if (data.transparentPixel != -1) {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue, data.transparentPixel);
-            }
-            else
-            {
+            } else {
                 colorModel = new IndexColorModel(data.depth, rgbs.length, red, green, blue);
             }
 
@@ -256,10 +234,10 @@ public class MailImageWorker implements IImageWorker
             
             int[] pixelArray = new int[1];
 
-            for(int y = 0; y < data.height; y++)
-            {
-                for(int x = 0; x < data.width; x++)
-                {
+            for(int y = 0; y < data.height; y++) {
+                
+                for(int x = 0; x < data.width; x++) {
+                    
                     int pixel = data.getPixel(x, y);
                     pixelArray[0] = pixel;
                     raster.setPixel(x, y, pixelArray);

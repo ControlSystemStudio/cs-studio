@@ -34,8 +34,8 @@ import org.eclipse.swt.widgets.Shell;
  * 
  */
 
-public interface IImageWorker
-{
+public interface IImageWorker {
+    
     /**
      * Returns the string that is used to build the sub menu in the screenshot plugin.
      * 

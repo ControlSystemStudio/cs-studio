@@ -39,17 +39,16 @@ import org.eclipse.swt.widgets.ToolBar;
  * @author Markus Moeller
  *
  */
-public class ImageCreator
-{
+public class ImageCreator {
+    
     private Display display;
     
-    public ImageCreator(Display display)
-    {
+    public ImageCreator(Display display) {
         this.display = display;
     }
         
-    public void captureImages(ImageBundle imageBundle)
-    {
+    public void captureImages(ImageBundle imageBundle) {
+        
         Rectangle rect = null;
         Image img = null;
         Image dispImg = null;

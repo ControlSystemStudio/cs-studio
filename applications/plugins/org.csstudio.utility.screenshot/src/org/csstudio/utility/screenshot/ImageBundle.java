@@ -33,8 +33,8 @@ import org.eclipse.swt.graphics.Image;
  *
  */
 
-public class ImageBundle
-{
+public class ImageBundle {
+    
     /** The screen image */
     private Image screen = null;
 
@@ -59,8 +59,7 @@ public class ImageBundle
     /**
      * Standard constructor
      */
-    public ImageBundle()
-    {
+    public ImageBundle() {
         imgWidth = 0;
         imgHeight = 0;
     }
@@ -70,8 +69,7 @@ public class ImageBundle
      * @return The screen image
      */
     
-    public Image getScreenImage()
-    {
+    public Image getScreenImage() {
         return screen;
     }
     
@@ -81,14 +79,13 @@ public class ImageBundle
      * @param i - screen image object 
      */
     
-    public void setScreenImage(Image i)
-    {
-        if(screen != null)
-        {
-            if(!screen.isDisposed())
-            {
-                screen.dispose();
+    public void setScreenImage(Image i) {
+        
+        if(screen != null) {
+            
+            if(!screen.isDisposed()) {
                 
+                screen.dispose();
                 screen = null;
             }
         }
@@ -101,8 +98,7 @@ public class ImageBundle
      * @return The window image
      */
 
-    public Image getWindowImage()
-    {
+    public Image getWindowImage() {
         return window;
     }
 
@@ -112,14 +108,13 @@ public class ImageBundle
      * @param i - window image object 
      */
 
-    public void setWindowImage(Image i)
-    {
-        if(window != null)
-        {
-            if(!window.isDisposed())
-            {
-                window.dispose();
+    public void setWindowImage(Image i) {
+        
+        if(window != null) {
+            
+            if(!window.isDisposed()) {
                 
+                window.dispose();
                 window = null;
             }
         }
@@ -132,8 +127,7 @@ public class ImageBundle
      * @return The section image
      */
 
-    public Image getSectionImage()
-    {
+    public Image getSectionImage() {
         return section;
     }
     
@@ -143,12 +137,11 @@ public class ImageBundle
      * @param i - section image object 
      */
 
-    public void setSectionImage(Image i)
-    {
-        if(section != null)
-        {
-            if(!section.isDisposed())
-            {
+    public void setSectionImage(Image i) {
+        
+        if(section != null) {
+            
+            if(!section.isDisposed()) {
                 section.dispose();
                 
                 section = null;
@@ -158,12 +151,11 @@ public class ImageBundle
         section = new Image(null, i.getImageData());
     }
     
-    public void setDisplayedImage(Image i)
-    {
-        if(displayedImage != null)
-        {
-            if(!displayedImage.isDisposed())
-            {
+    public void setDisplayedImage(Image i) {
+        
+        if(displayedImage != null) {
+            
+            if(!displayedImage.isDisposed()) {
                 displayedImage.dispose();
                 displayedImage = null;
                 imgWidth = 0;
@@ -171,23 +163,19 @@ public class ImageBundle
             }
         }
         
-        if(i != null)
-        {
+        if(i != null) {
             displayedImage = new Image(null, i.getImageData());        
             imgWidth = displayedImage.getBounds().width;
             imgHeight = displayedImage.getBounds().height;
-        }
-        else
-        {
+        } else {
             displayedImage = new Image(null, 2, 2);        
             imgWidth = displayedImage.getBounds().width;
             imgHeight = displayedImage.getBounds().height;
         }
         
-        if(gc != null)
-        {
-            if(!gc.isDisposed())
-            {
+        if(gc != null) {
+            
+            if(!gc.isDisposed()) {
                 gc.dispose();
                 gc = null;
             }
@@ -195,24 +183,20 @@ public class ImageBundle
         
         gc = new GC(displayedImage);
         
-        if(i == null)
-        {
+        if(i == null) {
             gc.drawRectangle(0, 0, 2, 2);
         }
     }
     
-    public int getImageWidth()
-    {
+    public int getImageWidth() {
         return imgWidth;
     }
 
-    public int getImageHeight()
-    {
+    public int getImageHeight() {
         return imgHeight;
     }
 
-    public Image getDisplayedImage()
-    {
+    public Image getDisplayedImage() {
         return displayedImage;
     }
     
@@ -220,21 +204,19 @@ public class ImageBundle
      * Disposes the images of this bundle.
      */
     
-    public void dispose()
-    {
-        if(gc != null)
-        {
-            if(!gc.isDisposed())
-            {
+    public void dispose() {
+        
+        if(gc != null) {
+            
+            if(!gc.isDisposed()) {
                 gc.dispose();
                 gc = null;
             }
         }
 
-        if(displayedImage != null)
-        {
-            if(!displayedImage.isDisposed())
-            {
+        if(displayedImage != null) {
+            
+            if(!displayedImage.isDisposed()) {
                 displayedImage.dispose();
                 displayedImage = null;
                 imgWidth = 0;
@@ -242,28 +224,25 @@ public class ImageBundle
             }
         }
 
-        if(screen != null)
-        {
-            if(!screen.isDisposed())
-            {
+        if(screen != null) {
+            
+            if(!screen.isDisposed()) {
                 screen.dispose();
                 screen = null;
             }
         }
         
-        if(window != null)
-        {
-            if(!window.isDisposed())
-            {
+        if(window != null) {
+            
+            if(!window.isDisposed()) {
                 window.dispose();
                 window = null;
             }
         }
 
-        if(section != null)
-        {
-            if(!section.isDisposed())
-            {
+        if(section != null) {
+            
+            if(!section.isDisposed()) {
                 section.dispose();
                 section = null;
             }
