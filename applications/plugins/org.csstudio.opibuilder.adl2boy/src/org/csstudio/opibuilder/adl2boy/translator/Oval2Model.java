@@ -46,8 +46,7 @@ public class Oval2Model extends AbstractADL2Model {
 			}
 			
 		}
-		//TODO Add dynamic properties to Oval2Model
-		
+
 	}
 
 	@Override

@@ -47,7 +47,6 @@ public class Polygon2Model extends AbstractADL2Model {
 			}
 			
 		}
-		//TODO Add dynamic properties to Polygon2Model
 	}
 
 	@Override
