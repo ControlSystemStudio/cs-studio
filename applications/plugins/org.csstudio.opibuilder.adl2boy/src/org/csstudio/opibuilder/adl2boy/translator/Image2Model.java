@@ -12,6 +12,7 @@ public class Image2Model extends AbstractADL2Model {
 
 	public Image2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "Image2Model";
 		parentModel.addChild(imageModel, true);
 		Image imageWidget = new Image(adlWidget);
 		if (imageWidget != null) {
@@ -21,9 +22,13 @@ public class Image2Model extends AbstractADL2Model {
 
 		}
 		//TODO Add Image Type to Image2Model
+		TranslatorUtils.printNotHandledWarning(className, "Image Type");
 		//TODO Add ImageName 2 Image2Model
+		TranslatorUtils.printNotHandledWarning(className, "Image Name");
 		//TODO Add ImageCalc to Image2Model
+		TranslatorUtils.printNotHandledWarning(className, "Image Calc");
 		//TODO Figure out how to put in path to images.
+		TranslatorUtils.printNotHandledWarning(className, "Setting Image Path");
 	}
 
 	@Override

@@ -12,6 +12,7 @@ public class Valuator2Model extends AbstractADL2Model {
 
 	public Valuator2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "Valuator2Model";
 		parentModel.addChild(sliderModel, true);
 		Valuator valuatorWidget = new Valuator(adlWidget);
 		if (valuatorWidget != null) {
@@ -19,10 +20,15 @@ public class Valuator2Model extends AbstractADL2Model {
 			setADLControlProps(valuatorWidget, sliderModel);
 		}
 		//TODO Add PV Limits to Valuator2Model
+		TranslatorUtils.printNotHandledWarning(className, "Limits");
 		//TODO Add Label info to Valuator2Model
+		TranslatorUtils.printNotHandledWarning(className, "Label");
 		//TODO Add Direction to Valuator2Model
+		TranslatorUtils.printNotHandledWarning(className, "Direction");
 		//TODO Add ColorMode to Valuator2Model
+		TranslatorUtils.printNotHandledWarning(className, "Color Mode");
 		//TODO Add Increment to Valuator2Model
+		TranslatorUtils.printNotHandledWarning(className, "Increment");
 	}
 
 	@Override

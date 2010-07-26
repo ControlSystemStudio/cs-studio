@@ -13,6 +13,7 @@ public class ChoiceButton2Model extends AbstractADL2Model {
 
 	public ChoiceButton2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "ChoiceButton2Model";
 		parentModel.addChild(choiceModel, true);
 
 		ChoiceButton choiceWidget = new ChoiceButton(adlWidget);
@@ -38,6 +39,7 @@ public class ChoiceButton2Model extends AbstractADL2Model {
 		else if (color_mode.equals("discrete") ){
 			choiceModel.setPropertyValue(ChoiceButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
 			//TODO Menu2Model Figure out what to do if colorMode is discrete
+			TranslatorUtils.printNotHandledWarning(className, "discrete color mode");
 		}
 	}
 

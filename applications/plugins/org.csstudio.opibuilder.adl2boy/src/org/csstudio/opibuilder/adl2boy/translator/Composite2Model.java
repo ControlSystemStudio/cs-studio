@@ -13,6 +13,7 @@ public class Composite2Model extends AbstractADL2Model {
 
 	public Composite2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "Composite2Model";
 		Composite compositeWidget = new Composite(adlWidget);
 
 		if (compositeWidget.hasCompositeFile()) {
@@ -32,13 +33,14 @@ public class Composite2Model extends AbstractADL2Model {
 			}
 		}
 		if (compositeWidget.hasCompositeFile()) {
+			//Add Composite File to Composite2Model
+			TranslatorUtils.printNotHandledWarning(className, "composite file");
 		}
 		else {
 			TranslatorUtils.ConvertChildren(compositeWidget.getChildWidgets(), containerModel, colorMap);
 			((GroupingContainerModel)(containerModel)).setPropertyValue(GroupingContainerModel.PROP_SHOW_SCROLLBAR, false);
 			FixChildPositions();
 		}
-		//Add Composite File to Composite2Model
 	}
 
 	@Override

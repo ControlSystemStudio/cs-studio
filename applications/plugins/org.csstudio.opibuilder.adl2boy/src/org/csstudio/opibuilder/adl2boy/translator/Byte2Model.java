@@ -19,7 +19,8 @@ public class Byte2Model extends AbstractADL2Model {
 			setADLObjectProps(byteWidget, byteModel);
 			setADLMonitorProps(byteWidget, byteModel);
 		}
-
+		//TODO many things
+		TranslatorUtils.printNotHandledWarning(className, "many things");
 	}
 
 	@Override

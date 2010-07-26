@@ -13,6 +13,7 @@ public class Menu2Model extends AbstractADL2Model {
 
 	public Menu2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		className = "Menu2Model";
 		parentModel.addChild(menuModel, true);
 
 		Menu menuWidget = new Menu(adlWidget);
@@ -32,7 +33,10 @@ public class Menu2Model extends AbstractADL2Model {
 		else if (color_mode.equals("discrete") ){
 			menuModel.setPropertyValue(ActionButtonModel.PROP_FORECOLOR_ALARMSENSITIVE, false);
 			//TODO Menu2Model Figure out what to do if colorMode is discrete
+			TranslatorUtils.printNotHandledWarning(className, "discrete color mode");
 		}
+		//TODO Menu2Model Handle Visual mode to allow display of rows or columns
+		TranslatorUtils.printNotHandledWarning(className, "Visual");
 	}
 
 	@Override
