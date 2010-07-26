@@ -55,6 +55,11 @@ public class ADLDynamicAttribute extends WidgetPart{
      * The Channel.
      */
     private String _chan;
+    private String _chanb;
+    private String _chanc;
+    private String _chand;
+    private String _calc;
+
     /**
      * The Color rule.
      */
@@ -98,6 +103,7 @@ public class ADLDynamicAttribute extends WidgetPart{
     @Override
     void init() {
         name = new String("dynamic attribute");
+        set_vis("static");
         set_isColorDefined(false);
     }
     
@@ -120,107 +126,35 @@ public class ADLDynamicAttribute extends WidgetPart{
         _color=false;
 
         for (FileLine parameter : adlDynamicAttribute.getBody()) {
-            if(parameter.getLine().trim().startsWith("//")){ //$NON-NLS-1$
+            if(parameter.getLine().trim().startsWith("//")){ 
                 continue;
             }
             String head = parameter.getLine().replaceAll("\"", "").split("=")[0]; //$NON-NLS-1$
-//            String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
             String[] row = {parameter.getLine().replaceAll("\"", "").substring(head.length()+1)};
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$
                 _clr=FileLine.getIntValue(row[0]);
                 set_isColorDefined(true);
             }else if(head.equals("vis")){ //$NON-NLS-1$
-                _vis=FileLine.getTrimmedValue(row[0]);
+                set_vis(FileLine.getTrimmedValue(row[0]));
             }else if(head.equals("chan")){ //$NON-NLS-1$
-                _chan=FileLine.getTrimmedValue(row[0]);
-//**                if(_chan[0].contains("[")) {
-//**                    uninit();
-//**                }
+                set_chan(FileLine.getTrimmedValue(row[0]));
             }else if(head.equals("chanb")){ //$NON-NLS-1$
-//                CentralLogger.getInstance().debug(this, "chanB"+adlDynamicAttribute.toString());
+                set_chanb(FileLine.getTrimmedValue(row[0]));
+            }else if(head.equals("chanc")){ //$NON-NLS-1$
+                set_chanc(FileLine.getTrimmedValue(row[0]));
+            }else if(head.equals("chand")){ //$NON-NLS-1$
+                set_chand(FileLine.getTrimmedValue(row[0]));
             }else if(head.equals("colorrule")){ //$NON-NLS-1$
                 _colorRule=FileLine.getTrimmedValue(row[0]);
             }else if(head.equals("calc")){ //$NON-NLS-1$
-//                CentralLogger.getInstance().debug(this, "calc"+adlDynamicAttribute.toString());
+                set_calc(FileLine.getTrimmedValue(row[0]));
             }else {
                 throw new WrongADLFormatException(Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLDynamicAttribute_WrongADLFormatException_Parameter_End);
             }
         }
     }
 
-//**    /**
-  //**     * Generate all Elements from ADL dynamic Attributes.
-  //**     */
-  //**    final void generateElements() {
-  //**//        _adlDynamicAttribute= new Element[1];
-  //**        if(_chan!=null){
-  //**//            ADLHelper.setChan(_parentWidgetModel, _chan);
-  //**            ADLHelper.setChan(_widgetModel, _chan);
-  //**            String channel = "$channel$";
-  //**            if(_chan.length>2){ //$NON-NLS-1$
-  //**                // Beim Oval als Led AN/Aus wird post fix doppelet gesetzt.
-  //**                //channel = channel.concat("."+_chan[2]);
-  //**            }
-  //**            if(_vis!=null && _vis.equals("if not zero")){ //$NON-NLS-1$
-  //**                _bool=true;
-  //**                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_zero"); //$NON-NLS-1$
-  //**                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
-  //**            }else if(_vis!=null && _vis.equals("if zero")){ //$NON-NLS-1$
-  //**                _bool=true;
-  //**                _adlBooleanDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.if_not_zero"); //$NON-NLS-1$
-  //**                _adlBooleanDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,"")); //$NON-NLS-1$
-  //**            }
-  //**            if( _colorRule!=null){
-  //**                _color = true;
-  //**            //            <dynamicsDescriptor ruleId="cosyrules.color.aend_dlog">
-  //**            //                <inputChannel name="$channel$" type="java.lang.Double" />
-  //**            //            </dynamicsDescriptor>
-  //**                _adlColorDynamicAttribute = new DynamicsDescriptor("cosyrules.color."+_colorRule.toLowerCase()); //$NON-NLS-1$
-  //**                _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(channel,""));
-  //**//                if(_chan.length>2&&_chan[2].startsWith("$")){ //$NON-NLS-1$
-  //**//                    ADLHelper.setChan(_parentWidgetModel, _chan);
-  //**//                }
-  //**//                ADLHelper.setConnectionState(_adlColorDynamicAttribute);
-  //**            }
-  //**//            else {
-  //**//                _color = true;
-  //**//                _adlColorDynamicAttribute = new Element("dynamicsDescriptor");
-  //**//                _adlColorDynamicAttribute.setAttribute("ruleId", "org.css.sds.color.default_epics_alarm_background");
-  //**//                Element inputChannel = new Element("inputChannel");
-  //**//                inputChannel.setAttribute("name", _chan[0]);
-  //**//                inputChannel.setAttribute("type", "java.lang.Double");
-  //**//                _adlColorDynamicAttribute.addContent(inputChannel);
-  //**//            }
-  //**            if(_clr!=null){
-  //**                if(_clr.equals("alarm")){ //$NON-NLS-1$
-  //**                    _color = true;
-  //**                    _adlColorDynamicAttribute = new DynamicsDescriptor("org.css.sds.color.default_epics_alarm_background"); //$NON-NLS-1$
-  //**                    String temp = _chan[0];
-  //**                    if(temp.contains("[")) {
-  //**                        temp = String.format("%1$s[severity]", temp.substring(0,temp.indexOf('[')));
-  //**                    }
-  //**//                    if(!temp.endsWith(".SEVR")){
-  //**//                        temp= temp.concat("[severity]");
-  //**//                    }
-  //**                    _adlColorDynamicAttribute.addInputChannel(new ParameterDescriptor(temp,"")); //$NON-NLS-1$
-  //**                }
-  //**            }
-  //**        }
-  //**    }
-    
-  //**    /**
-  //**     * @return the boolean dynamic Attributes DynamicsDescriptor.
-  //**     */
-  //**    public final DynamicsDescriptor getBooleanAdlDynamicAttributes() {
-  //**        return _adlBooleanDynamicAttribute;
-  //**    }
-  //**    /**
-  //**     * @return the boolean dynamic Attributes Elememt.
-  //**     */
-  //**    public final DynamicsDescriptor getColorAdlDynamicAttributes() {
-  //**        return _adlColorDynamicAttribute;
-  //**    }
 
     /**
      * @return true when the DynamicAttribute have a <b>boolean rule</b> otherwise false.
@@ -242,6 +176,10 @@ public class ADLDynamicAttribute extends WidgetPart{
 		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
 		ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
+		ret[2] = new ADLResource(ADLResource.CHANNELB, _chanb);
+		ret[2] = new ADLResource(ADLResource.CHANNELC, _chanc);
+		ret[2] = new ADLResource(ADLResource.CHANNELD, _chand);
+		ret[2] = new ADLResource(ADLResource.CALC, _chan);
 		ret[3] = new ADLResource(ADLResource.COLOR_RULE, _colorRule);
 		return ret;
 	}
@@ -258,5 +196,89 @@ public class ADLDynamicAttribute extends WidgetPart{
 	 */
 	public boolean isColorDefined() {
 		return _isColorDefined;
+	}
+
+	/**
+	 * @param _chanb the _chanb to set
+	 */
+	public void set_chanb(String _chanb) {
+		this._chanb = _chanb;
+	}
+
+	/**
+	 * @return the _chanb
+	 */
+	public String get_chanb() {
+		return _chanb;
+	}
+
+	/**
+	 * @param _chanc the _chanc to set
+	 */
+	public void set_chanc(String _chanc) {
+		this._chanc = _chanc;
+	}
+
+	/**
+	 * @return the _chanc
+	 */
+	public String get_chanc() {
+		return _chanc;
+	}
+
+	/**
+	 * @param _chand the _chand to set
+	 */
+	public void set_chand(String _chand) {
+		this._chand = _chand;
+	}
+
+	/**
+	 * @return the _chand
+	 */
+	public String get_chand() {
+		return _chand;
+	}
+
+	/**
+	 * @param _calc the _calc to set
+	 */
+	public void set_calc(String _calc) {
+		this._calc = _calc;
+	}
+
+	/**
+	 * @return the _calc
+	 */
+	public String get_calc() {
+		return _calc;
+	}
+
+	/**
+	 * @param _vis the _vis to set
+	 */
+	public void set_vis(String _vis) {
+		this._vis = _vis;
+	}
+
+	/**
+	 * @return the _vis
+	 */
+	public String get_vis() {
+		return _vis;
+	}
+
+	/**
+	 * @param _chan the _chan to set
+	 */
+	public void set_chan(String _chan) {
+		this._chan = _chan;
+	}
+
+	/**
+	 * @return the _chan
+	 */
+	public String get_chan() {
+		return _chan;
 	}
 }
