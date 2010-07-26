@@ -23,6 +23,7 @@ import org.eclipse.swt.graphics.RGB;
 public abstract class AbstractADL2Model {
 	AbstractWidgetModel widgetModel;
 	RGB colorMap[] = new RGB[0];
+	protected String className = new String();
 	
 	public AbstractADL2Model(final ADLWidget adlWidget, RGB colorMap[], AbstractContainerModel parentWidget) {
 		this.colorMap = colorMap;
@@ -125,7 +126,7 @@ public abstract class AbstractADL2Model {
 					
 				}
 				else if (dynAttr.get_vis().equals("calc")){
-					
+					//TODO Figure out calc option on dynamic attributes AbstractADL2Model
 				}
 			}
 		}
