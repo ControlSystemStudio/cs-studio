@@ -9,9 +9,11 @@ package org.csstudio.trends.databrowser.preferences;
 
 import org.csstudio.trends.databrowser.Activator;
 import org.csstudio.trends.databrowser.Messages;
+import org.csstudio.trends.databrowser.model.ArchiveRescale;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
 import org.eclipse.jface.preference.StringFieldEditor;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
@@ -49,7 +51,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         final IntegerFieldEditor timespan = new IntegerFieldEditor(Preferences.TIME_SPAN,
                 Messages.PrefPage_TimeRange, parent);
         timespan.setValidRange(60, 60*60*24*30);
-        addField(timespan);        
+        addField(timespan);
 
         // Scan period: >=0
         final StringFieldEditor scanperiod = new StringFieldEditor(Preferences.SCAN_PERIOD,
@@ -79,7 +81,7 @@ public class PreferencePage extends FieldEditorPreferencePage
                 }
             }
         };
-        addField(scanperiod);        
+        addField(scanperiod);
         
         // Live sample buffer: 0 ... max int
         final IntegerFieldEditor buffersize = new IntegerFieldEditor(Preferences.BUFFER_SIZE,
@@ -115,26 +117,41 @@ public class PreferencePage extends FieldEditorPreferencePage
                 }
             }
         };
-        addField(updateperiod);        
+        addField(updateperiod);
         
         // Line Width: Some pixel range
         final IntegerFieldEditor linewidth = new IntegerFieldEditor(Preferences.LINE_WIDTH,
                 Messages.PrefPage_TraceLineWidth, parent);
         linewidth.setValidRange(0, 100);
-        addField(linewidth);        
+        addField(linewidth);
         
         // Archive fetch delay:  0.1 .. 10 seconds
         final IntegerFieldEditor fetch_delay = new IntegerFieldEditor(Preferences.ARCHIVE_FETCH_DELAY,
                 Messages.PrefPage_ArchiveFetchDelay, parent);
         fetch_delay.setValidRange(100, 10000);
-        addField(fetch_delay);        
+        addField(fetch_delay);
         
         // Plot bins: 10 ... one bin per second for a year
         final IntegerFieldEditor plotbins = new IntegerFieldEditor(Preferences.PLOT_BINS,
                 Messages.PrefPage_PlotBins, parent);
         plotbins.setValidRange(10, 365*24*60*60);
-        addField(plotbins);        
-
+        addField(plotbins);
+        
+        // Archive rescale options
+        final ArchiveRescale values[] = ArchiveRescale.values();
+        final String labels_and_values[][] = new String[values.length][2];
+        for (int i=0; i<values.length; ++i)
+        {
+            labels_and_values[i][0] = values[i].toString();
+            labels_and_values[i][1] = values[i].name();
+        }
+        final RadioGroupFieldEditor rescale = new RadioGroupFieldEditor(Preferences.ARCHIVE_RESCALE,
+                Messages.ArchiveRescale_Label, 1,
+                labels_and_values, parent, false);
+//        final ComboFieldEditor rescale = new ComboFieldEditor(Preferences.ARCHIVE_RESCALE,
+//                Messages.ArchiveRescale_Label, labels_and_values, parent);
+        addField(rescale);
+        
         // Server URLs
         final StringTableFieldEditor urls = new StringTableFieldEditor(
                 parent, Preferences.URLS, Messages.PrefPage_DataServerURLs,
