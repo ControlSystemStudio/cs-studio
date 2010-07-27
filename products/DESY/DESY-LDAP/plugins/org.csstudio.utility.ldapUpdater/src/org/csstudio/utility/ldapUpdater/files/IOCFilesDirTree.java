@@ -148,7 +148,12 @@ public final class IOCFilesDirTree {
             final BufferedReader br = new BufferedReader(new FileReader(pathToFile + RECORDS_FILE_SUFFIX));
             String strLine;
             while ((strLine = br.readLine()) != null)   {
-                records.add(new Record(strLine));
+                final String[] fields = strLine.split(",");
+                if ((fields != null) && (fields.length > 0)) {
+                    final String name = fields[0];
+                    final String desc = fields.length >= 2 ? fields[1] : "";
+                    records.add(new Record(name, desc));
+                }
             }
             br.close();
             return records;

@@ -36,13 +36,23 @@ public class Record implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private final String _name;
+    private final String _description;
 
     /**
      * Constructor.
      * @param name .
      */
     public Record(@Nonnull final String name) {
+        this(name, "");
+    }
+    /**
+     * Constructor.
+     * @param name .
+     * @param desc description
+     */
+    public Record(@Nonnull final String name, @Nonnull final String desc) {
         _name = name;
+        _description = desc;
     }
 
     /**
@@ -52,6 +62,14 @@ public class Record implements Serializable {
     @Nonnull
     public final String getName() {
         return _name;
+    }
+    /**
+     * Getter.
+     * @return the description
+     */
+    @Nonnull
+    public final String getDescription() {
+        return _description;
     }
 
     /**
