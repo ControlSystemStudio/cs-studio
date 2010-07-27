@@ -183,3 +183,8 @@ code {
 code i {
     color: #0000c0;
 }
+
+div.image {
+    margin-left: 10ex;
+    font-style: italic;
+}
