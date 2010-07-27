@@ -9,13 +9,11 @@ import org.csstudio.nams.service.configurationaccess.localstore.declaration.Data
 import org.csstudio.nams.service.configurationaccess.localstore.declaration.LocalStoreConfigurationService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService;
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
-import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class HistoryServiceImplActivator extends AbstractBundleActivator
-		implements BundleActivator {
+public class HistoryServiceImplActivator extends AbstractBundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.history.impl.confstore";
