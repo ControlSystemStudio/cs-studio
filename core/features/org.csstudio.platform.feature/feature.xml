@@ -35,10 +35,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
       <discovery label="Control System Studio (CSS) Update Site" url="http://eclipse.desy.de/update"/>
    </url>
 
-   <requires>
-      <import feature="org.csstudio.platform.feature" version="1.0.0"/>
-   </requires>
-
    <plugin
          id="org.csstudio.platform"
          download-size="0"
@@ -379,5 +375,26 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          download-size="0"
          install-size="0"
          version="0.0.0"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.xmlunit"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.easymock"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.ant"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
