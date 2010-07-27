@@ -41,10 +41,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
       <update url="http://eclipse.desy.de/update/"/>
    </url>
 
-   <requires>
-      <import feature="org.csstudio.platform.feature.product" version="0.9.6" match="greaterOrEqual"/>
-   </requires>
-
    <plugin
          id="org.csstudio.alarm.dbaccess"
          download-size="0"
