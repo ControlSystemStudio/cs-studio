@@ -12,39 +12,38 @@ import org.csstudio.nams.service.preferenceservice.declaration.PreferenceService
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.platform.simpledal.IProcessVariableConnectionService;
 import org.csstudio.platform.simpledal.ProcessVariableConnectionServiceFactory;
-import org.osgi.framework.BundleActivator;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class RegelwerkBuilderImplActivator extends AbstractBundleActivator
-		implements BundleActivator {
+public class RegelwerkBuilderImplActivator extends AbstractBundleActivator {
 
 	/** The plug-in ID */
 	public static final String PLUGIN_ID = "org.csstudio.nams.service.regelwerkbuilder.impl.confstore";
 
 	@OSGiBundleActivationMethod
 	public void startBundle(@OSGiService
-	@Required
-	final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory,
-			@OSGiService
-			@Required
-			final PreferenceService preferenceService, @OSGiService
-			@Required
-			final ConfigurationServiceFactory configurationServiceFactory,
-			@OSGiService
-			@Required
-			final Logger logger) {
+	                        @Required
+	                        final ProcessVariableConnectionServiceFactory pvConnectionServiceFactory,
+	                        @OSGiService
+	                        @Required
+	                        final PreferenceService preferenceService,
+	                        @OSGiService
+	                        @Required
+	                        final ConfigurationServiceFactory configurationServiceFactory,
+	                        @OSGiService
+	                        @Required
+	                        final Logger logger) {
 
-		final LocalStoreConfigurationService configurationStoreService = configurationServiceFactory
-				.getConfigurationService(
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-						DatabaseType.Derby,
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
-						preferenceService
-								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD));
+		final String connection = preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION);
+        final String username = preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER);
+        final String password = preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_PASSWORD);
+
+        final LocalStoreConfigurationService configurationStoreService =
+		    configurationServiceFactory.getConfigurationService(connection,
+		                                                        DatabaseType.Derby,
+		                                                        username,
+		                                                        password);
 
 		final IProcessVariableConnectionService pvConnectionService = pvConnectionServiceFactory
 				.createProcessVariableConnectionService();
