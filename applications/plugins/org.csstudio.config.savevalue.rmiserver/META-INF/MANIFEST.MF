@@ -10,8 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.junit4,
  org.remotercp.common;bundle-version="1.0.0",
- org.remotercp.ecf;bundle-version="1.0.0"
+ org.remotercp.ecf;bundle-version="1.0.0",
+ org.csstudio.platform.libs.mockito;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: .,
- lib/mockito-all-1.6.jar
+Bundle-ClassPath: .
 Import-Package: javax.annotation
