@@ -1,7 +1,5 @@
 package org.csstudio.alarm.dbaccess;
 
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 
 import java.sql.ResultSet;
 import java.util.ArrayList;
@@ -12,6 +10,7 @@ import org.csstudio.alarm.dbaccess.archivedb.FilterItem;
 import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 
@@ -72,9 +71,9 @@ public class ArchiveDBAccessTest {
 	    final List<ResultSet> dbdaten = new ArrayList<ResultSet>();
 
 	    // Prepare ResultSet-Mock:
-	    final ResultSet resultSet = mock(ResultSet.class);
+	    final ResultSet resultSet = Mockito.mock(ResultSet.class);
 
-	    doAnswer(new Answer<Boolean>() {
+	    Mockito.doAnswer(new Answer<Boolean>() {
             public Boolean answer(final InvocationOnMock invocation) throws Throwable {
                 currentFirstColumn = 23;
                 currentSecondColumn = "property1";
@@ -94,25 +93,25 @@ public class ArchiveDBAccessTest {
             }
         }).when(resultSet).next();
 
-	    doAnswer(new Answer<Integer>() {
+	    Mockito.doAnswer(new Answer<Integer>() {
             public Integer answer(final InvocationOnMock invocation) throws Throwable {
                 return currentFirstColumn;
             }
 	    }).when(resultSet).getInt(1);
 
-	    doAnswer(new Answer<String>() {
+	    Mockito.doAnswer(new Answer<String>() {
 	        public String answer(final InvocationOnMock invocation) throws Throwable {
 	            return ""+ currentFirstColumn;
 	        }
 	    }).when(resultSet).getString(1);
 
-	    doAnswer(new Answer<String>() {
+	    Mockito.doAnswer(new Answer<String>() {
             public String answer(final InvocationOnMock invocation) throws Throwable {
                 return currentSecondColumn;
             }
         }).when(resultSet).getString(2);
 
-	    doAnswer(new Answer<String>() {
+	    Mockito.doAnswer(new Answer<String>() {
             public String answer(final InvocationOnMock invocation) throws Throwable {
                 return currentThirdColumn;
             }
