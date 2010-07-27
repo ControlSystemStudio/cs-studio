@@ -32,6 +32,14 @@ public class NewDataBrowserAction implements IWorkbenchWindowActionDelegate
     public void run(IAction action)
     {
         DataBrowserEditor.createInstance();
+        try
+        {
+        	Perspective.showPerspective();
+        }
+        catch (Exception ex)
+        {
+        	// never mind
+        }
     }
 
     public void dispose()

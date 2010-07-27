@@ -60,7 +60,6 @@ import org.eclipse.ui.IWorkbenchPartReference;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.WorkbenchException;
 import org.eclipse.ui.dialogs.SaveAsDialog;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
@@ -109,18 +108,6 @@ public class DataBrowserEditor extends EditorPart
         {
             CentralLogger.getInstance().error("Cannot create DataBrowserEditor", ex); //$NON-NLS-1$
             return null;
-        }
-        
-        //  Try to switch to the DataBrowser perspective
-        final IWorkbench workbench = PlatformUI.getWorkbench();
-        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        try
-        {
-            workbench.showPerspective(Perspective.ID, window);
-        }
-        catch (WorkbenchException ex)
-        {
-            // Never mind
         }
         return editor;
     }

@@ -13,6 +13,10 @@ import org.csstudio.trends.databrowser.search.SearchView;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.WorkbenchException;
 
 /** Create a perspective that's convenient for Data Browser use.
  *  @author Kay Kasemir
@@ -25,6 +29,16 @@ public class Perspective implements IPerspectiveFactory
     
     final private static String ID_SNS_PV_UTIL = "org.csstudio.diag.pvutil.view.PVUtilView";
 
+    /** Try to switch to the DataBrowser perspective
+     *  @throws WorkbenchException on error
+     */
+    public static void showPerspective() throws WorkbenchException
+    {
+        final IWorkbench workbench = PlatformUI.getWorkbench();
+        final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+        workbench.showPerspective(Perspective.ID, window);
+    }
+    
     /** {@inheritDoc} */
     @SuppressWarnings("deprecation")
     public void createInitialLayout(final IPageLayout layout)
