@@ -205,12 +205,10 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * {@inheritDoc}
 	 */
 	public void removeHighestUnacknowledgedAlarm() {
-	    if (_highestUnacknowledgedAlarm != null) {
-	        _highestUnacknowledgedAlarm = null;
+	        _highestUnacknowledgedAlarm = new Alarm(_highestUnacknowledgedAlarm.getObjectName(), Severity.UNKNOWN, new Date(0L));
 	        final IAlarmSubtreeNode parent = getParent();
 	        if (parent != null) {
 	            parent.childSeverityChanged(this);
 	        }
-	    }
 	}
 }
