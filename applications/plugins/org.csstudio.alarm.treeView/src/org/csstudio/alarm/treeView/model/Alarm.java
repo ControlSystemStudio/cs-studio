@@ -126,6 +126,6 @@ public final class Alarm {
 	@Override
 	@Nonnull
     public String toString() {
-		return "Alarm[" + _objectName + "," + _severity + "]";
+		return "Alarm[" + _objectName + "," + _severity + "," + _eventtime.toString()  +"]";
 	}
 }
