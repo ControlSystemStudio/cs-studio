@@ -5,14 +5,12 @@ import java.util.GregorianCalendar;
 
 import org.csstudio.platform.logging.CentralLogger;
 
-import com.sun.istack.internal.Nullable;
-
 /**
  * Filter for JMSMessages in DB archive. The filter is set by the user in
  * LogViewArchive.
- * 
+ *
  * @author jhatje
- * 
+ *
  */
 public class Filter {
 
@@ -43,26 +41,26 @@ public class Filter {
      */
     private String _filterName;
 
-    public Filter(String name) {
+    public Filter(final String name) {
         this(name, null, null, null, 5000);
     }
-    
-    public Filter(GregorianCalendar from, GregorianCalendar to) {
+
+    public Filter(final GregorianCalendar from, final GregorianCalendar to) {
         this(null, from, to);
     }
 
-    public Filter(ArrayList<FilterItem> filterItems, GregorianCalendar from,
-            GregorianCalendar to) {
+    public Filter(final ArrayList<FilterItem> filterItems, final GregorianCalendar from,
+            final GregorianCalendar to) {
         this(null, filterItems, from, to, 5000);
     }
 
-    public Filter(String name, ArrayList<FilterItem> filterItems, GregorianCalendar from,
-                  GregorianCalendar to) {
+    public Filter(final String name, final ArrayList<FilterItem> filterItems, final GregorianCalendar from,
+                  final GregorianCalendar to) {
         this(name, filterItems, from, to, 5000);
     }
 
-    public Filter(@Nullable String name, ArrayList<FilterItem> filterItems, GregorianCalendar from,
-            GregorianCalendar to, int maxMsgSize) {
+    public Filter(final String name, final ArrayList<FilterItem> filterItems, final GregorianCalendar from,
+            final GregorianCalendar to, final int maxMsgSize) {
         if (filterItems != null) {
             this._filterItems = filterItems;
         }
@@ -76,7 +74,7 @@ public class Filter {
         return _to;
     }
 
-    public void setTo(GregorianCalendar to) {
+    public void setTo(final GregorianCalendar to) {
         this._to = to;
     }
 
@@ -84,19 +82,19 @@ public class Filter {
         _filterItems.clear();
     }
 
-    public void addFilterItem(String property, String value, String relation) {
+    public void addFilterItem(final String property, final String value, final String relation) {
         _filterItems.add(new FilterItem(property, value, relation));
     }
-    
+
     public ArrayList<FilterItem> getFilterItems() {
         return _filterItems;
     }
 
-    public void setFilterItems(ArrayList<FilterItem> filterItems) {
+    public void setFilterItems(final ArrayList<FilterItem> filterItems) {
         this._filterItems = filterItems;
     }
 
-    public void setFilterItem(FilterItem filterItem) {
+    public void setFilterItem(final FilterItem filterItem) {
         _filterItems.add(filterItem);
     }
 
@@ -104,7 +102,7 @@ public class Filter {
         return _from;
     }
 
-    public void setFrom(GregorianCalendar from) {
+    public void setFrom(final GregorianCalendar from) {
         this._from = from;
     }
 
@@ -114,14 +112,14 @@ public class Filter {
      * parts (for a better performance the or will be merged in java) this
      * method splits the FilterSetting list on the OR association and returns a
      * list of lists of filter settings associated only with AND.
-     * 
+     *
      * @param filter
      * @return
      */
     public ArrayList<ArrayList<FilterItem>> getSeparatedFilterSettings() {
 
         // list of list of AND associated Filter settings we want to return.
-        ArrayList<ArrayList<FilterItem>> separatedFilterSettings = new ArrayList<ArrayList<FilterItem>>();
+        final ArrayList<ArrayList<FilterItem>> separatedFilterSettings = new ArrayList<ArrayList<FilterItem>>();
         // list of filterSettings associated with AND to put in
         // separatedFilterSettings.
         ArrayList<FilterItem> filterSettingsAndAssociated = new ArrayList<FilterItem>();
@@ -133,7 +131,7 @@ public class Filter {
             return separatedFilterSettings;
         }
         String association = "BEGIN";
-        for (FilterItem setting : _filterItems) {
+        for (final FilterItem setting : _filterItems) {
             if (association.equalsIgnoreCase("AND")) {
                 if (filterSettingsAndAssociated != null) {
                     association = setting.getRelation();
@@ -166,7 +164,7 @@ public class Filter {
 
     /**
      * A deep copy of this filter.
-     * 
+     *
      * @return The copy of this filter
      */
     public Filter copy() {
@@ -178,8 +176,8 @@ public class Filter {
         }
         ArrayList<FilterItem> newFilterItems = new ArrayList<FilterItem>();
         if (this._filterItems != null) {
-            for (FilterItem filterItem : this.getFilterItems()) {
-                FilterItem f = new FilterItem(filterItem.getProperty(),
+            for (final FilterItem filterItem : this.getFilterItems()) {
+                final FilterItem f = new FilterItem(filterItem.getProperty(),
                         filterItem.getOriginalValue(), filterItem.getRelation());
                 newFilterItems.add(f);
             }
@@ -193,31 +191,30 @@ public class Filter {
         return _maximumMessageNumber;
     }
 
-    public void setMaximumMessageNumber(int messageNumber) {
+    public void setMaximumMessageNumber(final int messageNumber) {
         _maximumMessageNumber = messageNumber;
     }
 
-    @Nullable
     public String getName() {
         return _filterName;
     }
 
-    public void setName(@Nullable String name) {
+    public void setName(final String name) {
         _filterName = name;
     }
 
     /**
      * Check weather the THIS filter has the same setting as the given one.
      * Without time settings
-	 */ 
-    public boolean compareWithoutTime(Filter filter) {
+	 */
+    public boolean compareWithoutTime(final Filter filter) {
         if ((_filterName.equals(filter.getName()) == false) ||
             (_filterItems.size() != filter.getFilterItems().size())) {
             return false;
         }
-        for (FilterItem localItem : _filterItems) {
+        for (final FilterItem localItem : _filterItems) {
             boolean isIncluded = false;
-            for (FilterItem newItem : filter.getFilterItems()) {
+            for (final FilterItem newItem : filter.getFilterItems()) {
                 if (newItem.compare(localItem)) {
                     isIncluded = true;
                     break;
