@@ -1,0 +1,9 @@
+
+syntax: regexp
+\.cvsignore$
+syntax: regexp
+^applications/plugins/org\.csstudio\.utility\.screenshot\.desy/bin$
+
+syntax: glob
+*~
+*.swp
