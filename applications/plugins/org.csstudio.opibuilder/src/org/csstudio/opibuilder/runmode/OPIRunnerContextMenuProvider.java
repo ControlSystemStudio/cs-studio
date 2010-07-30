@@ -3,6 +3,7 @@ package org.csstudio.opibuilder.runmode;
 
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.CompactModeAction;
 import org.csstudio.opibuilder.actions.ConfigureRuntimePropertiesAction;
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
@@ -56,6 +57,8 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 			getActivePage().getActiveEditor().getAdapter(ActionRegistry.class);
 		
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(FullScreenAction.ID));
+		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(CompactModeAction.ID));
+
 		if(SendToElogAction.isElogAvailable())
 			menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendToElogAction.ID));
 		menu.appendToGroup(GEFActionConstants.GROUP_EDIT, actionRegistry.getAction(SendEMailAction.ID));

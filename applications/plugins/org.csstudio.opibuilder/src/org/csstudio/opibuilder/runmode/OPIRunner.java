@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.CompactModeAction;
 import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
@@ -118,6 +119,7 @@ public class OPIRunner extends EditorPart {
 		
 		getActionRegistry().registerAction(new PrintDisplayAction(this));
 		getActionRegistry().registerAction(new FullScreenAction(this));
+		getActionRegistry().registerAction(new CompactModeAction(this));
 		if(SendToElogAction.isElogAvailable())
 			getActionRegistry().registerAction(new SendToElogAction(this));
 		getActionRegistry().registerAction(new SendEMailAction(this));

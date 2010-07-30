@@ -7,13 +7,16 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPart;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.internal.WorkbenchWindow;
 
 
 /**The action to make CSS full screen.
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("restriction")
 public class FullScreenAction extends WorkbenchPartAction {
 	
 	public static final String ID = "org.csstudio.opibuilder.actions.fullscreen";
@@ -28,15 +31,16 @@ public class FullScreenAction extends WorkbenchPartAction {
 	private ImageDescriptor exitFullScreenImage = 
 		CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
 			OPIBuilderPlugin.PLUGIN_ID, "icons/exitfullscreen.png");
-	
+	private IWorkbenchWindow window;
+	private boolean toolbarWasInvisible;
 	/**
 	 * Constructor.
 	 * @param part The workbench part associated with this PrintAction
 	 */
 	public FullScreenAction(IWorkbenchPart part) {
 		super(part);
-		 toggleToolbarAction = ActionFactory.TOGGLE_COOLBAR.create(
-				 part.getSite().getWorkbenchWindow()); 
+		window = part.getSite().getWorkbenchWindow();
+		 toggleToolbarAction = ActionFactory.TOGGLE_COOLBAR.create(window); 
 		 shell = part.getSite().getWorkbenchWindow().getShell();
 		 menuBar = shell.getMenuBar();
 		 setImageDescriptor(fullScreenImage);
@@ -65,14 +69,20 @@ public class FullScreenAction extends WorkbenchPartAction {
 	public void run() {
 		if(inFullScreenMode){
 			shell.setFullScreen(false);
-			toggleToolbarAction.run();
+			if(!toolbarWasInvisible)
+				toggleToolbarAction.run();
 			shell.setMenuBar(menuBar);		
 			inFullScreenMode = false;
 			setText("Full Screen");
 			setImageDescriptor(fullScreenImage);
 		}else {
 			shell.setFullScreen(true);
-			toggleToolbarAction.run();
+			if(window instanceof WorkbenchWindow && !((WorkbenchWindow) window).getCoolBarVisible()){
+				toolbarWasInvisible = true;
+			}else{
+				toolbarWasInvisible = false;
+				toggleToolbarAction.run();
+			}
 			shell.setMenuBar(null);		
 			inFullScreenMode = true;
 			setText("Exit Full Screen");
