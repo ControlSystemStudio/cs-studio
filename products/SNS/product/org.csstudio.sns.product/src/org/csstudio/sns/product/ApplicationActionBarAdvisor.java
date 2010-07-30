@@ -8,6 +8,7 @@ import org.csstudio.platform.ui.workbench.CssWorkbenchActionConstants;
 import org.csstudio.platform.ui.workbench.OpenViewAction;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.GroupMarker;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
@@ -21,10 +22,12 @@ import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.actions.ActionFactory;
+import org.eclipse.ui.actions.ActionFactory.IWorkbenchAction;
 import org.eclipse.ui.actions.ContributionItemFactory;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.internal.ReopenEditorMenu;
+import org.eclipse.ui.menus.IMenuService;
 import org.eclipse.ui.part.CoolItemGroupMarker;
 
 
@@ -69,14 +72,25 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     private IContributionItem menu_perspectives;
     private IContributionItem recent_files;
     private IContributionItem menu_views;
+    
+    /**
+     * The coolbar context menu manager.
+     * @since 2.2.1
+     */
+	private MenuManager coolbarPopupMenuManager;
 
     // SNS Actions
     private ArrayList<IAction> web_actions = new ArrayList<IAction>();
+	private IWorkbenchWindow window;
+	private IWorkbenchAction lockToolBarAction;
+
+	private IWorkbenchAction editActionSetAction;
 
 
     public ApplicationActionBarAdvisor(IActionBarConfigurer configurer)
     {
         super(configurer);
+        window = configurer.getWindowConfigurer().getWindow();
     }
 
     /** {@inheritDoc} */
@@ -109,6 +123,13 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         
         new_window = ActionFactory.OPEN_NEW_WINDOW.create(window);
         register(new_window);
+        
+        lockToolBarAction = ActionFactory.LOCK_TOOL_BAR.create(window);
+        register(lockToolBarAction);
+        
+        editActionSetAction = ActionFactory.EDIT_ACTION_SETS
+        .create(window);
+        register(editActionSetAction);
         
         open_windows = ContributionItemFactory.OPEN_WINDOWS.create(window);
         
@@ -320,6 +341,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
     @Override
     protected void fillCoolBar(ICoolBarManager coolbar)
     {
+        { // Set up the context Menu
+            coolbarPopupMenuManager = new MenuManager();
+			coolbarPopupMenuManager.add(new ActionContributionItem(lockToolBarAction));
+            coolbarPopupMenuManager.add(new ActionContributionItem(editActionSetAction));
+            coolbar.setContextMenuManager(coolbarPopupMenuManager);
+            IMenuService menuService = (IMenuService) window.getService(IMenuService.class);
+            menuService.populateContributionManager(coolbarPopupMenuManager, "popup:windowCoolbarContextMenu"); //$NON-NLS-1$
+        }
+    	
         IToolBarManager file_bar = new ToolBarManager();
         IToolBarManager user_bar = new ToolBarManager();   
         coolbar.add(new ToolBarContributionItem(file_bar, IWorkbenchActionConstants.M_FILE));
@@ -333,6 +363,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor
         user_bar.add(new CoolItemGroupMarker(MENU_TOOLBAR_LOGIN));
         user_bar.add(logout);
        
-    }
+    } 
     
 }
