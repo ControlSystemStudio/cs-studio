@@ -1,0 +1,3 @@
+instructions.configure=\
+  addRepository(type:0,name:Development CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates);\
+  addRepository(type:1,name:Development CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates);
