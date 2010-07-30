@@ -381,6 +381,31 @@
               style="push">
         </command>
      </menuContribution>
+     <menuContribution
+           locationURI="menu:window?after=additions">
+        <command
+              commandId="org.eclipse.ui.ToggleCoolbarAction"
+              style="push"
+              tooltip="%menu.toggleCoolbar.tooltip">
+           <visibleWhen
+                 checkEnabled="false">
+              <or>
+                 <with
+                       variable="activeWorkbenchWindow.isCoolbarVisible">
+                    <equals
+                          value="false">
+                    </equals>
+                 </with>
+                 <with
+                       variable="activeWorkbenchWindow.isPerspectiveBarVisible">
+                    <equals
+                          value="false">
+                    </equals>
+                 </with>
+              </or>
+           </visibleWhen>
+        </command>
+     </menuContribution>
   </extension>
   <extension
         point="org.eclipse.ui.menus">
