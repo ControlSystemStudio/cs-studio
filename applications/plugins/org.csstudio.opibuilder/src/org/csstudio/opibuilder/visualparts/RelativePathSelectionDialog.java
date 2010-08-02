@@ -22,6 +22,7 @@
 
 package org.csstudio.opibuilder.visualparts;
 
+import org.csstudio.opibuilder.persistence.URLPath;
 import org.csstudio.opibuilder.util.ResourceUtil;
 import org.csstudio.platform.ui.composites.ResourceSelectionGroup;
 import org.eclipse.core.runtime.IPath;
@@ -156,10 +157,12 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
         _resourcePathText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
         if (_path != null && !_path.isEmpty()) {        	
         		_resourcePathText.setText(_path.toString());
-        	if(relative)
-        		_resourceSelectionGroup.setSelectedResource(refPath.append(_path));
-        	else
-        		_resourceSelectionGroup.setSelectedResource(_path);
+        	if(!(_path instanceof URLPath)){
+        		if(relative)
+        			_resourceSelectionGroup.setSelectedResource(refPath.append(_path));
+        		else
+        			_resourceSelectionGroup.setSelectedResource(_path);
+        	}
         }
         
         //the check box for relative path
@@ -187,7 +190,10 @@ public final class RelativePathSelectionDialog extends Dialog implements Listene
 	 */
 	@Override
 	protected void okPressed() {
-        _path = new Path(_resourcePathText.getText());
+		if(ResourceUtil.isURL(_resourcePathText.getText()))
+			_path = new URLPath(_resourcePathText.getText());
+		else
+			_path = new Path(_resourcePathText.getText());
 		super.okPressed();
 	}
 
