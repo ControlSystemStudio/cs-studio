@@ -29,6 +29,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.csstudio.platform.ExecutionService;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.swt.widgets.introspection.DefaultWidgetIntrospector;
 import org.csstudio.swt.widgets.introspection.Introspectable;
 import org.csstudio.swt.widgets.util.ResourceUtil;
@@ -364,7 +365,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 				offScreenImageGC.setBackground(bgColor != null ? bgColor : getBackgroundColor());
 				offScreenImageGC.fillRectangle(
 						imageData.x, imageData.y, imageData.width, imageData.height);
-				if (bgColor != null) bgColor.dispose();
+//				if (bgColor != null) bgColor.dispose();
 				break;
 			case SWT.DM_FILL_PREVIOUS:
 				/* Restore the previous image before drawing. */
@@ -592,7 +593,7 @@ public final class ImageFigure extends Figure implements Introspectable {
 			refreshing = true;
 			Runnable animationTask = new Runnable() {
 				public void run() {
-					Display.getDefault().asyncExec(new Runnable(){
+					UIBundlingThread.getInstance().addRunnable(new Runnable(){
 						
 						public void run() {				
 				

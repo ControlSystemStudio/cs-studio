@@ -1,4 +1,4 @@
-package org.csstudio.opibuilder.util;
+package org.csstudio.platform.ui.util;
 
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -20,7 +20,7 @@ import org.eclipse.ui.PlatformUI;
  * This thread sleeps for a time, which is below the processing capacity of
  * human eyes and brain - so the user will not feel any delay.
  * 
- * @author Xihui Chen
+ * @author Sven Wende, Xihui Chen
  * 
  */
 public final class UIBundlingThread implements Runnable {

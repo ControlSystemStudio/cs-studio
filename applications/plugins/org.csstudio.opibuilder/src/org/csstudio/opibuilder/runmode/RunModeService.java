@@ -1,8 +1,8 @@
 package org.csstudio.opibuilder.runmode;
 
 import org.csstudio.opibuilder.util.MacrosInput;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.ui.IEditorPart;
