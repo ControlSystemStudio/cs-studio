@@ -9,3 +9,5 @@ syntax: glob
 *.swp
 bin/*
 classes/*
+build/build
+build/ext
