@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<introContent>
+  	<extensionContent id="orgcsstudionsls2startupintro-introExtension" style="css/sample.css" name="CSS strartup intro" path="firststeps/@">
+		<group style-id="content-group" id="orgcsstudionsls2startupintro-introLink-group">
+       		<link label=" Introduction to CSS" url="http://org.eclipse.ui.intro/showPage?id=css-nsls2-intro" id="orgcsstudionsls2startupintro-introLink" style-id="content-link">
+          		<text></text>
+       		</link>
+       	</group>
+  	</extensionContent>
+  	
+  	<page url="html/root.html"  id="css-nsls2-intro" />
+  	
+</introContent>

@@ -8,3 +8,4 @@ syntax: glob
 *~
 *.swp
 bin/*
+classes/*
