@@ -2,8 +2,8 @@ package org.csstudio.opibuilder.script;
 
 import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.util.ConsoleService;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.csstudio.utility.pv.PV;
 import org.eclipse.osgi.util.NLS;
 import org.mozilla.javascript.Context;

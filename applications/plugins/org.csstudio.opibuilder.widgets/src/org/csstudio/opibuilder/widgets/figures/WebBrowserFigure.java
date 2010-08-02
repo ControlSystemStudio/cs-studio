@@ -2,8 +2,8 @@ package org.csstudio.opibuilder.widgets.figures;
 
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
-import org.csstudio.opibuilder.util.UIBundlingThread;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.platform.ui.util.UIBundlingThread;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.graphics.Color;
