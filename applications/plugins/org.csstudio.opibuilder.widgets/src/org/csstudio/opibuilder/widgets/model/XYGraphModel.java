@@ -22,6 +22,7 @@ import org.csstudio.swt.xygraph.figures.Trace.TraceType;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * The model for XYGraph
@@ -37,6 +38,7 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		PRIMARY("left_bottom_side", "Left/Bottom Side"),
 		TITLE("axis_title", "Axis Title"),
 		TITLE_FONT("title_font", "Title Font"),
+		SCALE_FONT("scale_font", "Scale Font"),
 		AXIS_COLOR("axis_color", "Axis Color"),
 		AUTO_SCALE("auto_scale", "Auto Scale"),
 		AUTO_SCALE_THRESHOLD("auto_scale_threshold", "Auto Scale Threshold"),
@@ -248,6 +250,10 @@ public class XYGraphModel extends AbstractPVWidgetModel {
 		case TITLE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
 			break;
+		case SCALE_FONT:
+			addProperty(new FontProperty(propID, axisProperty.toString(), category,
+					Display.getDefault().getSystemFont().getFontData()[0]));
+			break;	
 		case AXIS_COLOR:
 			addProperty(new ColorProperty(propID, axisProperty.toString(), category, DEFAULT_AXIS_COLOR));
 			break;

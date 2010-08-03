@@ -407,6 +407,7 @@ public class Axis extends LinearScale{
 	 */
 	public void setTitleFont(final Font titleFont) {
 		this.titleFont = titleFont;
+		repaint();
 	}
 
 
