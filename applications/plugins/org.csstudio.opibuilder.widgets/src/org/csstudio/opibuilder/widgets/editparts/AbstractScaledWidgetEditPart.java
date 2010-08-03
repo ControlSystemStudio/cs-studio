@@ -3,6 +3,7 @@ import org.csstudio.opibuilder.editparts.AbstractBaseEditPart;
 import org.csstudio.opibuilder.editparts.AbstractPVWidgetEditPart;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
+import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.widgets.model.AbstractScaledWidgetModel;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
@@ -38,7 +39,7 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		figure.setShowScale(model.isShowScale());
 		figure.setShowMinorTicks(model.isShowMinorTicks());	
 		figure.setTransparent(model.isTransparent());
-		
+		figure.getScale().setFont(model.getFont().getSWTFont());
 		
 		
 	}	
@@ -151,6 +152,14 @@ public abstract class AbstractScaledWidgetEditPart extends AbstractPVWidgetEditP
 		};
 		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_TRANSPARENT, transparentHandler);
 		
+		IWidgetPropertyChangeHandler scaleFontHandler = new IWidgetPropertyChangeHandler() {			
+			public boolean handleChange(Object oldValue, Object newValue, IFigure refreshableFigure) {
+				AbstractScaledWidgetFigure figure = (AbstractScaledWidgetFigure) refreshableFigure;
+				figure.getScale().setFont(((OPIFont)newValue).getSWTFont());
+				return false;
+			}
+		};
+		setPropertyChangeHandler(AbstractScaledWidgetModel.PROP_SCALE_FONT, scaleFontHandler);
 	}
 
 	@Override

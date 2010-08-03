@@ -3,8 +3,11 @@ package org.csstudio.opibuilder.widgets.model;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.DoubleProperty;
+import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.OPIFont;
+import org.eclipse.swt.widgets.Display;
 
 /**
  * This class defines a common widget model for any widget 
@@ -34,8 +37,10 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	
 	/** True if the scale is log scale. */
 	public static final String PROP_LOG_SCALE = "log_scale"; //$NON-NLS-1$	
-	
-	
+
+	/** True if the scale is log scale. */
+	public static final String PROP_SCALE_FONT = "scale_font"; //$NON-NLS-1$	
+
 	/** The default value of the minimum property. */
 	private static final double DEFAULT_MIN = 0;
 	
@@ -69,6 +74,9 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 		
 		addProperty(new BooleanProperty(PROP_LOG_SCALE, "Log Scale", 
 				WidgetPropertyCategory.Display, false));
+		
+		addProperty(new FontProperty(PROP_SCALE_FONT, "Scale Font", WidgetPropertyCategory.Display,
+				Display.getDefault().getSystemFont().getFontData()[0]));
 		
 	}
 	
@@ -127,6 +135,10 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 	 */
 	public boolean isTransparent() {
 		return (Boolean) getProperty(PROP_TRANSPARENT).getPropertyValue();
+	}
+	
+	public OPIFont getFont(){
+		return (OPIFont)getCastedPropertyValue(PROP_SCALE_FONT);
 	}
 	
 }

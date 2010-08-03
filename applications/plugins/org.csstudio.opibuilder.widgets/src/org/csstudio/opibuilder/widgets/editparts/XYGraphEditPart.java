@@ -337,9 +337,11 @@ public class XYGraphEditPart extends AbstractPVWidgetEditPart {
 				axis.setDateEnabled(true);
 				axis.setFormatPattern(format);				
 				break;
+			case SCALE_FONT:
+				axis.setFont(((OPIFont)newValue).getSWTFont());
+				break;
 			case TITLE_FONT:
-				axis.setTitleFont(CustomMediaFactory.getInstance().getFont(
-						((OPIFont)newValue).getFontData()));
+				axis.setTitleFont(((OPIFont)newValue).getSWTFont());
 				break;
 			case Y_AXIS:
 				axis.setYAxis((Boolean)newValue);

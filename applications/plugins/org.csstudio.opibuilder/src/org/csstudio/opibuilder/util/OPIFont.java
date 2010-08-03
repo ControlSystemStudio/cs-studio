@@ -1,5 +1,7 @@
 package org.csstudio.opibuilder.util;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
 
 /**The dedicated font type which supports predefined font name in OPI builder font file.
@@ -83,6 +85,10 @@ public class OPIFont{
 	 */
 	public FontData getFontData() {
 		return fontData;
+	}
+	
+	public Font getSWTFont(){
+		return CustomMediaFactory.getInstance().getFont(fontData);
 	}
 	
 	/**
