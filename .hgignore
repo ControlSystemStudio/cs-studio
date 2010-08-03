@@ -7,6 +7,7 @@ syntax: regexp
 syntax: glob
 *~
 *.swp
+*.orig
 bin/*
 classes/*
 build/build
