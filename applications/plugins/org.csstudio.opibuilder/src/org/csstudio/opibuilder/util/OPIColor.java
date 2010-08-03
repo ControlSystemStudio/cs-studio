@@ -27,7 +27,7 @@ public class OPIColor implements IAdaptable {
 	
 	private RGB colorValue;
 	
-	private boolean preDefined;
+	private boolean preDefined = false;
 	
 	
 	static ImageRegistry imageRegistry = new ImageRegistry();
@@ -47,12 +47,13 @@ public class OPIColor implements IAdaptable {
 	
 	public OPIColor(int red, int green, int blue){
 		this(new RGB(red, green, blue));
-	}
+	}	
 	
-	public OPIColor(String name, RGB rgb) {
+	
+	public OPIColor(String name, RGB rgb, boolean predefined) {
 		this.colorName = name;
-		this.colorValue = rgb;
-		preDefined = true;
+		this.colorValue = rgb;		
+		this.preDefined = predefined;
 	}
 
 	/**
@@ -96,7 +97,7 @@ public class OPIColor implements IAdaptable {
 		preDefined = false;
 	}
 
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	public Object getAdapter(Class adapter) {
 		if(adapter == IWorkbenchAdapter.class)
 			return new IWorkbenchAdapter() {
@@ -210,7 +211,7 @@ public class OPIColor implements IAdaptable {
 	}
 	
 	public OPIColor getCopy(){
-		return new OPIColor(colorName, new RGB(colorValue.red, colorValue.green, colorValue.blue));
+		return new OPIColor(colorName, new RGB(colorValue.red, colorValue.green, colorValue.blue), preDefined);
 	}
 	
 }

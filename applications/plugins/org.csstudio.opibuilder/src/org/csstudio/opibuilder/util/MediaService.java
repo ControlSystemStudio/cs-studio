@@ -57,13 +57,13 @@ public final class MediaService {
 	
 	private void loadPredefinedColors() {
 		colorMap.put(AlarmColorScheme.MAJOR, 
-				new OPIColor(AlarmColorScheme.MAJOR, CustomMediaFactory.COLOR_RED)); 
+				new OPIColor(AlarmColorScheme.MAJOR, CustomMediaFactory.COLOR_RED, true)); 
 		colorMap.put(AlarmColorScheme.MINOR, 
-				new OPIColor(AlarmColorScheme.MINOR, CustomMediaFactory.COLOR_ORANGE)); 
+				new OPIColor(AlarmColorScheme.MINOR, CustomMediaFactory.COLOR_ORANGE, true)); 
 		colorMap.put(AlarmColorScheme.INVALID, 
-				new OPIColor(AlarmColorScheme.INVALID, CustomMediaFactory.COLOR_PINK));
+				new OPIColor(AlarmColorScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
 		colorMap.put(AlarmColorScheme.DISCONNECTED, 
-				new OPIColor(AlarmColorScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK));
+				new OPIColor(AlarmColorScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
 	}
 	
 	/**
@@ -103,7 +103,7 @@ public final class MediaService {
 					try{
 						RGB color = StringConverter.asRGB(line.substring(i+1).trim());
 						
-						colorMap.put(name, new OPIColor(name, color));
+						colorMap.put(name, new OPIColor(name, color, true));
 					}catch (DataFormatException e) {
 						CentralLogger.getInstance().error(this,"Failed to read color difinition file.", e);
 					}
@@ -169,7 +169,7 @@ public final class MediaService {
 	public OPIColor getOPIColor(String name){
 		if(colorMap.containsKey(name))
 			return colorMap.get(name);		
-		return new OPIColor(name, DEFAULT_UNKNOWN_COLOR);
+		return new OPIColor(name, DEFAULT_UNKNOWN_COLOR, true);
 	}
 	
 	public OPIColor[] getAllPredefinedColors(){

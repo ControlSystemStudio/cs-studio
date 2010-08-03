@@ -7,6 +7,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -125,7 +126,17 @@ public class OPIFontDialog extends Dialog {
 		
 		if(opiFont.isPreDefined())
 			preDefinedFontsViewer.setSelection(new StructuredSelection(opiFont));
+		else
+			preDefinedFontsViewer.setSelection(null);
 		return parent_Composite;
+	}
+	
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		//this will help resolve a bug on GTK: The table widget in GTK 
+		//will force one item selected if it got the focus.
+		getButton(IDialogConstants.OK_ID).setFocus();		
 	}
 	
 	/**
