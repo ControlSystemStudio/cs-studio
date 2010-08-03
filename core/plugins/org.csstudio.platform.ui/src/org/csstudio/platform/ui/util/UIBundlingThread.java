@@ -5,6 +5,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.TimeUnit;
 
 import org.csstudio.platform.ExecutionService;
+import org.csstudio.platform.ui.CSSPlatformUiPlugin;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -70,7 +71,11 @@ public final class UIBundlingThread implements Runnable {
 	 * Process the complete queue.
 	 */
 	private synchronized void processQueue() {
-		Display display = PlatformUI.getWorkbench().getDisplay();
+		Display display;
+		if(CSSPlatformUiPlugin.getDefault() != null && PlatformUI.getWorkbench() != null)
+			display = PlatformUI.getWorkbench().getDisplay();
+		else
+			display = Display.getDefault();
 		Runnable r;
 		while( (r=tasksQueue.poll()) != null){	
 			display.asyncExec(r);
