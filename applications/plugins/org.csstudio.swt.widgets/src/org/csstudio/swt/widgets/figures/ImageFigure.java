@@ -547,16 +547,6 @@ public final class ImageFigure extends Figure implements Introspectable {
 		repaint();
 	}
 	
-	@Override
-	public void setBounds(Rectangle rect) {
-		super.setBounds(rect);
-		if(stretch)
-			if (staticImage!=null  && !staticImage.isDisposed()) {
-				staticImage.dispose();
-			}
-			staticImage=null; 
-	}
-	
 	/**
 	 * Sets the amount of pixels, which are cropped from the top. 
 	 * @param newval The amount of pixels
