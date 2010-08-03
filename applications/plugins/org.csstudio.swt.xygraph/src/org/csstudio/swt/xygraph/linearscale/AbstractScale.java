@@ -14,6 +14,7 @@ import java.util.Calendar;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 
 
 /**
@@ -253,6 +254,13 @@ public abstract class AbstractScale extends Figure{
 	 */
 	public String getFormatPattern() {
 		return formatPattern;
+	}
+	
+	@Override
+	public void setFont(Font f) {
+		super.setFont(f);
+		setDirty(true);
+		revalidate();
 	}
 
 	/**

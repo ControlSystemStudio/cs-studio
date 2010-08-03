@@ -16,6 +16,7 @@ import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
+import org.eclipse.swt.widgets.Display;
 
 /**The model for intensity graph.
  * @author Xihui Chen
@@ -30,6 +31,7 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 	public enum AxisProperty{		
 		TITLE("axis_title", "Axis Title"), //$NON-NLS-1$
 		TITLE_FONT("title_font", "Title Font"),//$NON-NLS-1$
+		SCALE_FONT("scale_font", "Scale Font"),
 		AXIS_COLOR("axis_color", "Axis Color"),//$NON-NLS-1$
 		SHOW_MINOR_TICKS("show_minor_ticks", "Show Minor Ticks"),//$NON-NLS-1$
 		MAJOR_TICK_STEP_HINT("major_tick_step_hint", "Major Tick Step Hint"),//$NON-NLS-1$
@@ -221,6 +223,10 @@ public class IntensityGraphModel extends AbstractPVWidgetModel {
 		switch (axisProperty) {
 		case TITLE:
 			addProperty(new StringProperty(propID, axisProperty.toString(), category, category.toString()));
+			break;
+		case SCALE_FONT:
+			addProperty(new FontProperty(propID, axisProperty.toString(), category,
+					Display.getDefault().getSystemFont().getFontData()[0]));
 			break;
 		case TITLE_FONT:
 			addProperty(new FontProperty(propID, axisProperty.toString(), category, new FontData("Arial", 9, SWT.BOLD)));
