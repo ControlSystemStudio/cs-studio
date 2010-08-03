@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.nsls2.feature.core"
-      label="Core"
+      id="org.csstudio.nsls2.core.feature"
+      label="css-nsls2 Core plugins"
       version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
@@ -17,7 +17,7 @@
    </license>
 
    <url>
-      <update url="http://130.199.240.253:8080/org.csstudio.nsls2.update-site"/>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
    <plugin

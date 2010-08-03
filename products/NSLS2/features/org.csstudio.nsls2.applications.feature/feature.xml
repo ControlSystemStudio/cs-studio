@@ -16,6 +16,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+   </url>
+
    <includes
          id="org.csstudio.databrowser.nsls2.feature"
          version="0.0.0"
