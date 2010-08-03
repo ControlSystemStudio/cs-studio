@@ -352,9 +352,11 @@ public class IntensityGraphEditPart extends AbstractPVWidgetEditPart {
 		case MIN:
 			axis.setRange((Double)newValue, axis.getRange().getUpper());
 			break;
+		case SCALE_FONT:
+			axis.setFont(((OPIFont)newValue).getSWTFont());
+			break;
 		case TITLE_FONT:
-			axis.setTitleFont(CustomMediaFactory.getInstance().getFont(
-					((OPIFont)newValue).getFontData()));
+			axis.setTitleFont(((OPIFont)newValue).getSWTFont());
 			break;
 		case MAJOR_TICK_STEP_HINT:
 			axis.setMajorTickMarkStepHint((Integer)newValue);

@@ -7,6 +7,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
@@ -102,8 +103,7 @@ public class OPIColorDialog extends Dialog {
 		rightComposite.setLayout(new GridLayout(1, false));
 		gd = new GridData(SWT.LEFT, SWT.BEGINNING, true, true);
 		rightComposite.setLayoutData(gd);
-		
-		
+				
 		createLabel(rightComposite, "");
 		
 		Button colorDialogButton = new Button(rightComposite, SWT.PUSH);
@@ -126,10 +126,9 @@ public class OPIColorDialog extends Dialog {
 				}
 			}
 		});
-		
-		createRGBEditGroup(rightComposite);
 
-		
+		createRGBEditGroup(rightComposite);
+				
 		Group group = new Group(rightComposite, SWT.None);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
 		group.setLayout(new GridLayout(3, false));
@@ -145,13 +144,22 @@ public class OPIColorDialog extends Dialog {
 		outputTextLabel = new Label(group, SWT.None);
 		outputTextLabel.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		outputTextLabel.setText(opiColor.getColorName());
-		
+
 		if(opiColor.isPreDefined())
 			preDefinedColorsViewer.setSelection(new StructuredSelection(opiColor));
-		
+		else
+			preDefinedColorsViewer.setSelection(null);
 		return parent_Composite;
 	}
 
+	
+	@Override
+	protected void createButtonsForButtonBar(Composite parent) {
+		super.createButtonsForButtonBar(parent);
+		//this will help resolve a bug on GTK: The table widget in GTK 
+		//will force one item selected if it got the focus.
+		getButton(IDialogConstants.OK_ID).setFocus();		
+	}
 	/**
 	 * @param rightComposite
 	 */
