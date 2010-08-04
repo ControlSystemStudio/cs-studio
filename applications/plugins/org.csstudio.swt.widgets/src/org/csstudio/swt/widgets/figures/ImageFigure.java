@@ -232,6 +232,8 @@ public final class ImageFigure extends Figure implements Introspectable {
 			InputStream stream = ResourceUtil.pathToInputStream(filePath);
 			temp=new Image(null,stream); 
 			originalStaticImageData = temp.getImageData();
+			imgWidth=originalStaticImageData.width;
+			imgHeight=originalStaticImageData.height;	
 			stream.close();
 			stream = ResourceUtil.pathToInputStream(filePath); // reopen stream
 			originalImageDataArray = loader.load(stream);

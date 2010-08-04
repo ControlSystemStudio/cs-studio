@@ -57,16 +57,15 @@ public final class ImageEditPart extends AbstractWidgetEditPart {
 	protected IFigure doCreateFigure() {
 		ImageModel model = getWidgetModel();
 		// create AND initialize the view properly
-		final ImageFigure figure = new ImageFigure();
-		
-		figure.setFilePath(model.getFilename());
+		final ImageFigure figure = new ImageFigure();		
+		figure.setFilePath(model.getFilename());		
+		figure.setStretch(model.getStretch());
+		figure.setAutoSize(model.isAutoSize());
+		figure.setAnimationDisabled(model.isStopAnimation());
 		figure.setTopCrop(model.getTopCrop());
 		figure.setBottomCrop(model.getBottomCrop());
 		figure.setLeftCrop(model.getLeftCrop());
 		figure.setRightCrop(model.getRightCrop());
-		figure.setStretch(model.getStretch());
-		figure.setAutoSize(model.isAutoSize());
-		figure.setAnimationDisabled(model.isStopAnimation());
 		return figure;
 	}
 	
