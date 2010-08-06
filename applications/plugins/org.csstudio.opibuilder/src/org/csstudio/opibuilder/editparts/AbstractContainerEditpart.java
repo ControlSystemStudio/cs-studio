@@ -92,14 +92,23 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 	}
 	
 	@Override
-	public void activate() {
-		//set macro map
-		LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
-		if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
-			macrosMap.putAll(getWidgetModel().getParentMacroMap());
+	public void setModel(Object model) {
+		super.setModel(model);
+		if(model instanceof AbstractContainerModel){
+			//set macro map
+			LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
+			if(getWidgetModel().getMacrosInput().isInclude_parent_macros()){
+				macrosMap.putAll(getWidgetModel().getParentMacroMap());
+			}
+			macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());		
+			getWidgetModel().setMacroMap(macrosMap);
 		}
-		macrosMap.putAll(getWidgetModel().getMacrosInput().getMacrosMap());		
-		getWidgetModel().setMacroMap(macrosMap);
+		
+	}
+	
+	@Override
+	public void activate() {
+		
 		
 		super.activate();
 		

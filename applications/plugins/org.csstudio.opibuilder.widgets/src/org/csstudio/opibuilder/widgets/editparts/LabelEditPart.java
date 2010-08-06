@@ -36,13 +36,13 @@ public class LabelEditPart extends AbstractWidgetEditPart {
 		labelFigure.setSelectable(
 				!getWidgetModel().getActionsInput().getActionsList().isEmpty() ||
 				getWidgetModel().getTooltip().trim().length() > 0);
+		labelFigure.setText(getWidgetModel().getText());		
 		return labelFigure;
 	}
 	
 	@Override
 	public void activate() {
 		super.activate();
-		((LabelFigure)getFigure()).setText(getWidgetModel().getText());		
 		if(getWidgetModel().isAutoSize()){
 			getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
 			figure.revalidate();
