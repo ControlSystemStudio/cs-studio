@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true"/>
+   </extension>
+   <extension
+         point="org.csstudio.diag.pvfields.pvfielddata">
+      <pvfielddata
+            class="org.csstudio.diag.pvfields.sns.SNSPVFieldsData"
+            name="org.csstudio.diag.pvfields.sns.SNSPVFieldsData"/>
+   </extension>
+</plugin>
