@@ -7,9 +7,6 @@
 
 source ../settings.sh
 
-# These SNS files are NOT included in the published sources
-rsync -az --delete ../../org.csstudio.mps.sns ../build/plugins
-
 # Build _feature_ using build.xml, not productBuild.xml
 # Add  -verbose option after antRunner to get truckload of meaningless info
 java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \

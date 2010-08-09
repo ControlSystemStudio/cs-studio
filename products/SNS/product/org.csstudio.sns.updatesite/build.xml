@@ -11,7 +11,10 @@
     <!-- Map all environment variables XYZ to ${env.XYZ} -->
     <property environment="env"/>
 
-    <!-- Workspace from which sources are copied -->
+    <!-- Repository dir where sources have been checked out -->
+    <property name="repo_dir" value="/Kram/MerurialRepos/cs-studio" />
+
+	<!-- Workspace from which sources are copied that are not in repo -->
     <property name="workspace_dir" value="/Kram/Eclipse/Workspace" />
     
     <!-- Build directory -->
@@ -26,6 +29,9 @@
     <!-- Remove all that might have been built previously -->
     <target name="clean">
         <delete dir="${build_dir}" />
+        <delete>
+            <fileset dir="." includes="*/*.log"/>
+        </delete>
     </target>
 
 	
@@ -38,21 +44,64 @@
 
     <!-- Gather all the source files for building -->
     <target name="get_sources" depends="prepare">
-        <!-- Plugins
+    	<!-- Plugins
+    	
+    	     Uses one list of plugins, but applies them to the various
+    	     directories that hold the sources, copying them all into
+    	     one flat 'todir'.
+    	     
              With 'overwrite' it seems much faster in case we really need
              to copy.
              If there's nothing to copy, it would have been faster without
              overwrite, i.e. check what needs to be done and then do nothing
-          -->
+         -->
+    	<echo>Core plugins</echo>
         <copy todir="${build_dir}/plugins" overwrite="true">
-             <fileset dir="${workspace_dir}" includesfile="plugins.list">
+             <fileset dir="${repo_dir}/core/plugins" includesfile="plugins.list">
                  <exclude name="**/bin/**"/>
                  <exclude name="**/classes/**"/>
             </fileset>
         </copy>
+
+    	<echo>Application plugins</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+             <fileset dir="${repo_dir}/applications/plugins" includesfile="plugins.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+
+    	<echo>SNS plugins</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+             <fileset dir="${repo_dir}/products/SNS/plugins" includesfile="plugins.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+    	
+    	<!-- SNS-specific tools kept in SNS CVS,
+    	     checked out into Workspace
+    	  -->
+        <echo>SNS tools</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+            <fileset dir="${workspace_dir}" includesfile="local.list">
+               <exclude name="**/bin/**"/>
+               <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+
+        <echo>SNS Products</echo>
+        <copy todir="${build_dir}/plugins" overwrite="true">
+             <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
+        
         <!-- Features -->
+        <echo>SNS Features</echo>
         <copy todir="${build_dir}/features" overwrite="true">
-             <fileset dir="${workspace_dir}" includesfile="features.list">
+             <fileset dir="${repo_dir}/products/SNS/product" includesfile="features.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
             </fileset>
@@ -60,23 +109,38 @@
     </target>
 
 
-    <!-- Zip all the source files -->
+    <!-- Zip all the source files 
+    TODO Use build dir, but don't include the  local.list
+    -->
     <target name="zip_sources" depends="check_vars">
-    	<zip destfile="apps/sns_css_src_${env.VERSION}.zip">
-             <fileset dir="${workspace_dir}" includesfile="plugins.list">
-                 <exclude name="**/bin/**"/>
-                 <exclude name="**/classes/**"/>
-            </fileset>
-             <fileset dir="${workspace_dir}" includesfile="features.list">
+        <zip destfile="apps/sns_css_src_${env.VERSION}.zip">
+            <fileset dir="${repo_dir}/core/plugins" includesfile="plugins.list">
                 <exclude name="**/bin/**"/>
                 <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/applications/plugins" includesfile="plugins.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/plugins" includesfile="plugins.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/product" includesfile="plugins.list">
+                <exclude name="**/bin/**"/>
+                <exclude name="**/classes/**"/>
+            </fileset>
+            <fileset dir="${repo_dir}/products/SNS/product" includesfile="features.list">
+               <exclude name="**/bin/**"/>
+               <exclude name="**/classes/**"/>
             </fileset>
         </zip>
     </target>
 
 
-	<!-- Ideally, ant could drive the whole build, but it doesn't -->
+    <!-- Ideally, ant could drive the whole build, but it doesn't -->
     <target name="all">
         <echo>=== Complete ${name} rebuild - was not done by this ===</echo>
+        <echo>See make.sh and config_*/build.sh</echo>
     </target>
 </project>
