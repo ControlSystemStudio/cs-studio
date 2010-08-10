@@ -104,6 +104,9 @@ AS
                                           time line.
       1.1        03/05/2010  Kay Kasemir  When there is no sample before the requested
                                           start time, use the start time as given.
+                                          
+      1.2        08/10/2010  Jeff Patton  Decrease the degree of parallelism
+                                          in the get_paralle_degree function.                                          
 
    ******************************************************************************/
 
@@ -648,19 +651,14 @@ ORDER BY smpl_time';
       v_number := CAST (p_end_time AS DATE) - CAST (p_start_time AS DATE);
 
       -- Original days vs. parallel: >12  16 , >8  12,  >4  8, >=4 4
+      -- Now >30 = 4, >15 = 2
       CASE
          WHEN v_number >= 30 THEN
             v_parallel_text :=
-               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 16) */';
-         WHEN v_number >= 14 THEN
-            v_parallel_text :=
-               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 12) */';
-         WHEN v_number >= 7 THEN
-            v_parallel_text :=
-               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 8) */';
-         WHEN v_number >= 2 THEN
-            v_parallel_text :=
                'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 4) */';
+         WHEN v_number >= 15 THEN
+            v_parallel_text :=
+               'SELECT /*+ PARALLEL_INDEX(sample, pk_sample, 2) */';
          ELSE
             v_parallel_text := 'SELECT ';
       END CASE;
