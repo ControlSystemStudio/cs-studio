@@ -623,9 +623,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
 	}
-
-
-
 	
 	/**Add/modify an external object from javascript.
 	 * @param name the name of the object.
@@ -648,12 +645,25 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		return null;
 	}
 	
-	/**Set the property value of the widget. 
+	/**Set the property value of the widget. If the new value is same as 
+	 * the old value, it will be ignored.
 	 * @param prop_id the property id. 
 	 * @param value the value.
 	 */
 	public void setPropertyValue(String prop_id, Object value){
 		getWidgetModel().setPropertyValue(prop_id, value);
+	}
+	
+	
+	/**Set the property value of the widget. 
+	 * @param prop_id the property id. 
+	 * @param value the value.
+	 * @param forceFire If true, the property will be 
+	 * set again even if the new value is same as old value. If false and the new value is same as 
+	 * the old value, it will be ignored.
+	 */
+	public void setPropertyValue(String prop_id, Object value, boolean forceFire){
+		getWidgetModel().setPropertyValue(prop_id, value, forceFire);
 	}
 	
 	/**Get property value of the widget.

@@ -83,10 +83,19 @@ The utility class to facilitate Javascript programming
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;double[]</CODE></FONT></TD>
 <TD><CODE><B><A HREF="PVUtil.html#getDoubleArray(org.csstudio.utility.pv.PV)">getDoubleArray</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
-
 <BR>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Try to get a double-typed array from the pv.</TD>
 </TR>
+
+<TR BGCOLOR="white" CLASS="TableRowColor">
+<TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
+<CODE>static&nbsp;long[]</CODE></FONT></TD>
+<TD><CODE><B><A HREF="PVUtil.html#getLongArray(org.csstudio.utility.pv.PV)">getLongArray</A></B>(org.csstudio.utility.pv.PV&nbsp;pv)</CODE>
+
+<BR>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Try to get an integer-typed array from the pv.</TD>
+</TR>
+
 <TR BGCOLOR="white" CLASS="TableRowColor">
 <TD ALIGN="right" VALIGN="top" WIDTH="1%"><FONT SIZE="-1">
 <CODE>static&nbsp;java.lang.String</CODE></FONT></TD>
@@ -227,6 +236,24 @@ public static final double[] <B>getDoubleArray</B>(org.csstudio.utility.pv.PV&nb
           does not decode into a number, or if the value's severity
           indicates that there happens to be no useful value.<DT><B>See Also:</B><DD><A HREF="PVUtil.html#getSize(org.csstudio.utility.pv.PV)"><CODE>getSize(PV)</CODE></A>, 
 <A HREF="PVUtil.html#getDouble(org.csstudio.utility.pv.PV)"><CODE>getDouble(PV)</CODE></A></DL>
+</DD>
+</DL>
+<HR>
+
+
+<A NAME="getLongArray(org.csstudio.utility.pv.PV)"><!-- --></A><H3>
+getLongArray</H3>
+<PRE>
+public static final long[] <B>getLongArray</B>(org.csstudio.utility.pv.PV&nbsp;pv)</PRE>
+<DL>
+<DD>Try to get an integer-typed array from the pv.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>pv</CODE> - the pv.
+<DT><B>Returns:</B><DD>A long integer array, or an empty long integer array in case the value type
+          does not decode into a number, or if the value's severity
+          indicates that there happens to be no useful value.<DT><B>See Also:</B><DD><A HREF="../../../../org/csstudio/opibuilder/scriptUtil/PVUtil.html#getSize(org.csstudio.utility.pv.PV)"><CODE>getSize(PV)</CODE></A>, 
+<A HREF="../../../../org/csstudio/opibuilder/scriptUtil/PVUtil.html#getLong(org.csstudio.utility.pv.PV)"><CODE>getLong(PV)</CODE></A></DL>
 </DD>
 </DL>
 <HR>

@@ -21,6 +21,7 @@
    <ul>
     <li><a href = "#getPropertyValue(java.lang.String)">getPropertyValue(prop_id) </a></li>
     <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object)">setPropertyValue(prop_id, value)</a></li>
+    <li><a href = "#setPropertyValue(java.lang.String, java.lang.Object, boolean)">setPropertyValue(prop_id, value, forceFire)</a></li>
     <li><a href = "#setExternalObject(java.lang.String, java.lang.Object)">setExternalObject(name, var)</a></li>
     <li><a href = "#getExternalObject(java.lang.String)">getExternalObject(name)</a></li>
     <li><a href = "#executeAction(int)">executeAction(index)</a></li>
@@ -66,6 +67,27 @@ public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
 </DL>
 <HR>
  
+ 
+<A NAME="setPropertyValue(java.lang.String, java.lang.Object, boolean)"><!-- --></A><H3>
+setPropertyValue</H3>
+<PRE>
+public void <B>setPropertyValue</B>(java.lang.String&nbsp;prop_id,
+                             java.lang.Object&nbsp;value,
+                             boolean&nbsp;forceFire)</PRE>
+<DL>
+<DD>Set the property value of the widget.
+<P>
+<DD><DL>
+<DT><B>Parameters:</B><DD><CODE>prop_id</CODE> - the property id.<DD><CODE>value</CODE> - the value.<DD><CODE>forceFire</CODE> - If true, the property will be 
+ set again even if the new value is same as old value. If false and the new value is same as 
+ the old value, it will be ignored.</DL>
+ <b>Example:</b><br>
+	<pre class="example_code">widgetController.setPropertyValue(
+	"opi_file", widgetController.getPropertyValue("opi_file"), true); //reload OPI in linking container.</pre>
+ 
+</DD>
+</DL>
+<HR>
 
 <A NAME="setExternalObject(java.lang.String, java.lang.Object)"><!-- --></A><H3>
 setExternalObject</H3>

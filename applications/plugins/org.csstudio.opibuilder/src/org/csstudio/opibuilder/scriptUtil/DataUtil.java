@@ -1,5 +1,8 @@
 package org.csstudio.opibuilder.scriptUtil;
 
+import java.util.LinkedHashMap;
+
+import org.csstudio.opibuilder.util.MacrosInput;
 import org.mozilla.javascript.NativeArray;
 
 
@@ -14,20 +17,20 @@ import org.mozilla.javascript.NativeArray;
  */
 public class DataUtil {
 
-	/**Returns a new int array with given size.
+	/**Create a new int array with given size.
 	 * @param size the size of the array
 	 * @return an int array with given size.
 	 */
-	public final static int[] getIntArray(int size){
+	public final static int[] createIntArray(int size){
 		int[] result = new int[size];	
 		return result;
 	}
 
-	/**Returns a new double array with given size.
+	/**Create a new double array with given size.
 	 * @param size the size of the array
 	 * @return a double array with given size.
 	 */
-	public final static double[] getDoubleArray(int size){
+	public final static double[] createDoubleArray(int size){
 		double[] result = new double[size];	
 		return result;
 	}
@@ -66,4 +69,13 @@ public class DataUtil {
 		return result;
 	}
 	
+	/**Create a MacrosInput, which can be used as the macros input for a container widget or display.
+	 * New macro can be added or replaced by 
+	 * <code>MacrosInput.put(String macroName, String macroValue);</code> 
+	 * @param include_parent_macros If parent macros should be included.
+	 * @return a new created MacrosInput.
+	 */
+	public final static MacrosInput createMacrosInput(boolean include_parent_macros){
+		return new MacrosInput(new LinkedHashMap<String, String>(), include_parent_macros);
+	}	
 }

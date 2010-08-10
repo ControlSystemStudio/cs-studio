@@ -41,6 +41,14 @@ public class MacrosInput {
 		this.macrosMap = macrosMap;
 	}
 
+	/**Add or replace a macro.
+	 * @param macroName
+	 * @param macroValue
+	 */
+	public final void put(String macroName, String macroValue){
+		macrosMap.put(macroName, macroValue);
+	}
+	
 	/**
 	 * @return the include_parent_macros
 	 */

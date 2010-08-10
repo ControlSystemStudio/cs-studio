@@ -67,6 +67,24 @@ public class PVUtil{
 		return ValueUtil.getDoubleArray(pv.getValue());
 	}
 	
+	 /** Try to get an integer-typed array from the pv.
+     *  @param pv the pv.
+     *  @see #getSize(PV)
+     *  @see #getLong(PV)
+     *  @return A long integer array, or an empty long integer array in case the value type
+     *          does not decode into a number, or if the value's severity
+     *          indicates that there happens to be no useful value.
+     */
+	public final static long[] getLongArray(PV pv){
+		double[] dblArray = ValueUtil.getDoubleArray(pv.getValue());
+		long[] longArray = new long[dblArray.length];
+		int i=0;
+		for(double d : dblArray){
+			longArray[i++] = (long) d;
+		}
+		return longArray;
+	}
+	
     /**Get the size of the pv's value
      * @param pv the pv. 
      * @return Array length of the pv value. <code>1</code> for scalars. */

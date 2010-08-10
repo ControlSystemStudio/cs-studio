@@ -517,6 +517,12 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		Assert.isTrue(propertyMap.containsKey(id));
 		propertyMap.get(id).setPropertyValue(value);
 	}
+	
+	public void setPropertyValue(Object id, Object value, boolean forceFire) {
+		Assert.isTrue(propertyMap.containsKey(id));
+		propertyMap.get(id).setPropertyValue(value, forceFire);
+	}
+	
 	public void setPropertyVisible(final String prop_id, final boolean visible){
 		Assert.isTrue(propertyMap.containsKey(prop_id));
 		AbstractWidgetProperty property = propertyMap.get(prop_id);
