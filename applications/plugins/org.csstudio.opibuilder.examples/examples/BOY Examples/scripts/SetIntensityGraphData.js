@@ -1,6 +1,6 @@
 importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
 
-var simuData = DataUtil.getDoubleArray(65536);
+var simuData = DataUtil.createDoubleArray(65536);
 var value = PVUtil.getDouble(pvArray[0]);
 var dataSrc = PVUtil.getString(pvArray[1]);
 

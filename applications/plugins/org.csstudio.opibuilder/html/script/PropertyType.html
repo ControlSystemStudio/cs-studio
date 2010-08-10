@@ -64,6 +64,10 @@
     		<td>Polyline.Points, Polygon.Points</td>
     	</tr>
     	<tr>
+    		<td><a href = "#MacrosProperty">Macros Property</a></td>
+    		<td>Macros</td>
+    	</tr>
+    	<tr>
     		<td><a href = "#ColorMapProperty">ColorMap Property</a></td>
     		<td>IntensityGraph.Color Map</td>
     	</tr>
@@ -180,6 +184,25 @@ Font Property</H3>
 </DL>
 <HR>
 
+<A NAME="MacrosProperty"><!-- --></A><H3>
+Macros Property</H3>
+<DD>
+<DL>
+<DT><B>Acceptable Value Type</B></DT><DD>MacrosInput</DD>
+<br>
+<B>Property Value Type</B><DD>MacrosInput</DD><br>
+<B>Examples:</B>
+	<pre class="example_code">
+	importPackage(Packages.org.csstudio.opibuilder.scriptUtil);
+	var macroInput = DataUtil.createMacrosInput(true);
+	macroInput.put("pv", PVUtil.getString(pvArray[0]));
+	widgetController.setPropertyValue("macros", macroInput);
+</pre>
+
+</DL>
+<HR>
+
+
 <A NAME="FilePathProperty"><!-- --></A><H3>
 File Path Property</H3>
 <DD>
@@ -254,7 +277,7 @@ ColorMap Property</H3>
 </DL>
 <HR>
 
-<p><b>Actions Property</b>, <b>Macros Property</b> and <b>Script Property</b> are not changeable from script becaues 
+<p><b>Actions Property</b> and <b>Script Property</b> are not changeable from script becaues 
 they are only loaded once during the initialization of widget.
 </p>
 <HR>
