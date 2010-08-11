@@ -21,17 +21,11 @@
  */
  package org.csstudio.swt.xygraph.util;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Plugin;
+import org.csstudio.swt.xygraph.Activator;
 import org.eclipse.draw2d.Cursors;
 import org.eclipse.jface.resource.ColorRegistry;
 import org.eclipse.jface.resource.FontRegistry;
@@ -93,42 +87,7 @@ public final class XYGraphMediaFactory {
 	}
 	
 	private static Cursor CURSOR_GRABBING;	
-	
-	/**
-	 * @param path the relative path to the class file of XYGraphMediaFactory.
-	 * @return the image on the path. null if no image exist on this path.
-	 */
-	public Image createImage(String path) {
-		if(_imageRegistry.get(path) != null)
-			return _imageRegistry.get(path);	
 		
-		try {
-			InputStream in = XYGraphMediaFactory.class.getResourceAsStream(path);
-			if(in != null){
-				Path ePath = new Path(path);
-				File temp = File.createTempFile(ePath.removeFileExtension().lastSegment(),
-						"." + ePath.getFileExtension()); //$NON-NLS-1$
-				temp.deleteOnExit();
-				OutputStream out = new FileOutputStream(temp);
-				byte[] buf = new byte[1024];				
-				int len;
-			    while ((len = in.read(buf)) > 0){
-			        out.write(buf, 0, len);
-			     }
-			    in.close();
-				out.close();
-				
-				Image image = new Image(Display.getDefault(), temp.getAbsolutePath());
-				_imageRegistry.put(path, image);
-				return image;
-			}
-		} catch (IOException e) {
-			return null;
-		}
-		return null;
-		
-	}
-	
 	public void disposeResources(){
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())
 			CURSOR_GRABBING.dispose();
@@ -146,7 +105,7 @@ public final class XYGraphMediaFactory {
 			if(CURSOR_GRABBING == null){
 				
 				CURSOR_GRABBING = new Cursor(Display.getDefault(), 
-						getInstance().createImage("../icons/Grabbing.png").getImageData(), 8,8);		
+						getInstance().getImage("images/Grabbing.png").getImageData(), 8,8);		
 			}
 			return CURSOR_GRABBING;
 
@@ -309,29 +268,6 @@ public final class XYGraphMediaFactory {
 	}
 	
 
-	/**
-	 * Load the <code>Image</code> from the given path in the given plugin.
-	 * 
-	 * @param pluginId
-	 *            The id of the plugin that contains the requested image.
-	 * @param relativePath
-	 *            The resource path of the requested image.
-	 * @return The <code>Image</code> from the given path in the given plugin.
-	 */
-	public Image getImageFromPlugin(final String pluginId,
-			final String relativePath) {
-		String key = pluginId + "." + relativePath; //$NON-NLS-1$
-
-		// does image exist
-		if (_imageRegistry.get(key) == null) {
-			ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
-					pluginId, relativePath);
-			_imageRegistry.put(key, descr);
-		}
-
-		return _imageRegistry.get(key);
-	}
-	
 	/**Register the image to imageRegistry so it can be disposed when Display disposed.
 	 * @param key
 	 * @param img
@@ -352,80 +288,33 @@ public final class XYGraphMediaFactory {
      * test, the path is used as is, i.e. relative to the current
      * directory.
 	 * 
-	 * @param plugin 
-	 * 			  The plugin that contains the requested image.
-	 * @param pluginId
-	 *            The id of the plugin.
 	 * @param relativePath
 	 *            The image's relative path to the root of the plugin.
 	 * @return The <code>Image</code> from the given path in the given plugin.
 	 */
-	public Image getImageFromPlugin(final Plugin plugin, final String pluginId,
-			final String relativePath) {
-		String key = pluginId + "." + relativePath; //$NON-NLS-1$	
+	public Image getImage(final String relativePath)
+	{
 		// Is image already cached in imageRegistry?
-		if (_imageRegistry.get(key) == null) {
+		if (_imageRegistry.get(relativePath) == null)
+		{
 		    // Not cached. Get from plugin (this should be the usual case)
-			if(plugin != null){					
+			if(Activator.getDefault() != null)
+			{					
 					ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
-							pluginId, relativePath);
-					_imageRegistry.put(key, descr);				
-			}else{
+							Activator.PLUGIN_ID, relativePath);
+					_imageRegistry.put(relativePath, descr);				
+			}
+			else
+			{
 			    // Must be running as JUnit test or demo w/o plugin environment.
 			    // The following only works for test code inside this plugin,
 			    // not when called from other plugins' test code.
 				final Display display = Display.getCurrent();
 	            final Image img = new Image(display, relativePath);        
-	            _imageRegistry.put(key, img);	            
+	            _imageRegistry.put(relativePath, img);	            
 			}
 		}
-
-		return _imageRegistry.get(key);
-	}
-	
-
-	/**
-	 * Load the <code>ImageDescriptor</code> from the given path in the given
-	 * plugin.
-	 * 
-	 * @param pluginId
-	 *            The id of the plugin that contains the requested image.
-	 * @param relativePath
-	 *            The resource path of the requested image.
-	 * @return The <code>ImageDescriptor</code> from the given path in the
-	 *         given plugin.
-	 */
-	public ImageDescriptor getImageDescriptorFromPlugin(final String pluginId,
-			final String relativePath) {
-		String key = pluginId + "." + relativePath; //$NON-NLS-1$
-
-		// does image exist
-		if (_imageRegistry.get(key) == null) {
-			ImageDescriptor descr = AbstractUIPlugin.imageDescriptorFromPlugin(
-					pluginId, relativePath);
-			_imageRegistry.put(key, descr);
-		}
-
-		return _imageRegistry.getDescriptor(key);
-	}
-
-	/**
-	 * Create an <code>Image</code> from the given
-	 * <code>ImageDescriptor</code>.
-	 * 
-	 * @param imageDescriptor
-	 *            The <code>ImageDescriptor</code>
-	 * @return The <code>Image</code> that was created from the given
-	 *         <code>ImageDescriptor</code>
-	 */
-	public Image getImageFromImageDescriptorCache(
-			final ImageDescriptor imageDescriptor) {
-		assert imageDescriptor != null : "imageDescriptor!=null"; //$NON-NLS-1$
-
-		if (!_imageCache.containsKey(imageDescriptor)) {
-			_imageCache.put(imageDescriptor, imageDescriptor.createImage());
-		}
-		return _imageCache.get(imageDescriptor);
+		return _imageRegistry.get(relativePath);
 	}
 	
 	/**Register the cursor so it can be disposed when the plugin stopped.

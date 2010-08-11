@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.swt.xygraph.undo;
 
 import org.csstudio.swt.xygraph.Messages;
@@ -16,67 +23,67 @@ import org.eclipse.swt.widgets.Display;
 public enum ZoomType{
         /** Interactive Rubberband zoom */
         RUBBERBAND_ZOOM(Messages.Zoom_Rubberband,
-		        XYGraphMediaFactory.getInstance().createImage("../icons/RubberbandZoom.png"),
-		        XYGraphMediaFactory.getInstance().createImage("../icons/RubberbandZoomCursor.png"),
+		        XYGraphMediaFactory.getInstance().getImage("images/RubberbandZoom.png"),
+		        XYGraphMediaFactory.getInstance().getImage("images//RubberbandZoomCursor.png"),
 				XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for horizontal start/end position */		
 		HORIZONTAL_ZOOM(Messages.Zoom_Horiz,
-				XYGraphMediaFactory.getInstance().createImage("../icons/HorizontalZoom.png"),
-				XYGraphMediaFactory.getInstance().createImage("../icons/HorizontalZoomCursor.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoom.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/HorizontalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom via 'cursors' for vertical start/end position */     
 		VERTICAL_ZOOM(Messages.Zoom_Vert,
-				XYGraphMediaFactory.getInstance().createImage("../icons/VerticalZoom.png"),
-				XYGraphMediaFactory.getInstance().createImage("../icons/VerticalZoomCursor.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/VerticalZoom.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/VerticalZoomCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
 		/** Zoom 'in' around mouse pointer */
 		ZOOM_IN(Messages.Zoom_In,
-				XYGraphMediaFactory.getInstance().createImage("../icons/ZoomIn.png"),
-				XYGraphMediaFactory.getInstance().createImage("../icons/ZoomInCursor.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/ZoomIn.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/ZoomInCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'out' around mouse pointer */
         ZOOM_OUT(Messages.Zoom_Out,
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOut.png"),
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOutCursor.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOut.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM),
 
         /** Zoom 'in' around mouse pointer along horizontal axis */
         ZOOM_IN_HORIZONTALLY(Messages.Zoom_InHoriz,
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomInHoriz.png"),
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomInHorizCursor.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomInHoriz.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomInHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along horizontal axis */
         ZOOM_OUT_HORIZONTALLY(Messages.Zoom_OutHoriz,
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOutHoriz.png"),
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOutHorizCursor.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutHoriz.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutHorizCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 
         /** Zoom 'in' around mouse pointer along vertical axis */
         ZOOM_IN_VERTICALLY(Messages.Zoom_InVert,
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomInVert.png"),
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomInVertCursor.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomInVert.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomInVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer along vertical axes */
         ZOOM_OUT_VERTICALLY(Messages.Zoom_OutVert,
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOutVert.png"),
-        		XYGraphMediaFactory.getInstance().createImage("../icons/ZoomOutVertCursor.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVert.png"),
+        		XYGraphMediaFactory.getInstance().getImage("images/ZoomOutVertCursor.png"),
                 XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Zoom 'out' around mouse pointer */
 		PANNING(Messages.Zoom_Pan,
-				XYGraphMediaFactory.getInstance().createImage("../icons/Panning.png"),
-				XYGraphMediaFactory.getInstance().createImage("../icons/PanningCursor.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/Panning.png"),
+				XYGraphMediaFactory.getInstance().getImage("images/PanningCursor.png"),
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM),
 				
         /** Disarm zoom behavior */
 		NONE(Messages.Zoom_None,
-				XYGraphMediaFactory.getInstance().createImage("../icons/MouseArrow.png"), null,
+				XYGraphMediaFactory.getInstance().getImage("images/MouseArrow.png"), null,
                 XYGraphFlags.COMBINED_ZOOM | XYGraphFlags.SEPARATE_ZOOM);
 		
 		final private Image iconImage;
