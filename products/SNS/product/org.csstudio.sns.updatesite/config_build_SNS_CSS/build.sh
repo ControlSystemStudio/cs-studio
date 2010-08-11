@@ -17,7 +17,7 @@ java -jar $ECLIPSE/plugins/org.eclipse.equinox.launcher_*.jar \
   -Ddeltapack=$DELTAPACK \
   -Dqualifier=$QUALIFIER \
    > build.log 2>&1
-   
+
 tail build.log
 
 # Cute way to signal we're done

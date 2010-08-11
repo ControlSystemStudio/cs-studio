@@ -9,7 +9,7 @@
 #
 # Kay Kasemir
 
-cd /Kram/Eclipse/Workspace/org.csstudio.sns.updatesite
+cd /Kram/MerurialRepos/cs-studio/products/SNS/product/org.csstudio.sns.updatesite
 
 source settings.sh
 
@@ -44,6 +44,7 @@ done
 if [ $OK = 1 ]
 then
     echo Collecting ZIP files
+    mkdir -p apps
     
     # When exporting the product from the IDE, all is OK.
     # With a headless build, the OS X and Linux launchers are not
