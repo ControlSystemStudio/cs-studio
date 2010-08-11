@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SNS Rack Utility Data Supplier
 Bundle-SymbolicName: org.csstudio.diag.rack.sns;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Vendor: Dave Purcell
 Require-Bundle: org.eclipse.swt,
  org.eclipse.jface,
