@@ -18,12 +18,13 @@ public class SNSRackData implements RackDataAPI
 		final private RDBUtil rdbutil;
 		private PreparedStatement select;
 		private String returnedRack = "Not Set Yet";
-		final private static String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdb1.sns.ornl.gov/prod";
-		//private static final String URL = "jdbc:oracle:thin:sns_reports/sns@//snsdev3.sns.ornl.gov:1521/devl";
+	    final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93 )(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
+	    final private static String USER = "sns_reports";
+	    final private static String PASSWORD = "sns";
 
 	public SNSRackData() throws Exception
 		{ 
-			rdbutil = RDBUtil.connect(URL, true);
+        rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
 		}
 		
 	   
