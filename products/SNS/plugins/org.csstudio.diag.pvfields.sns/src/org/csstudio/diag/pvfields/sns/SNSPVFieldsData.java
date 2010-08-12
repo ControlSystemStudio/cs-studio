@@ -7,6 +7,7 @@ import java.util.ArrayList;
 
 import org.csstudio.diag.pvfields.model.PVFieldsAPI;
 import org.csstudio.diag.pvfields.model.PVInfo;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 
 /**
@@ -19,7 +20,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSPVFieldsData implements PVFieldsAPI
 {
     final private RDBUtil rdbutil;
-    final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93 )(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
+    final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
     final private static String USER = "sns_reports";
     final private static String PASSWORD = "sns";
     private ArrayList<String> extraFields = new ArrayList<String>(); 
@@ -29,7 +30,15 @@ public class SNSPVFieldsData implements PVFieldsAPI
 
     public SNSPVFieldsData() throws Exception
     {
-        rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
+    	try
+    	{
+    		rdbutil = RDBUtil.connect(URL, USER, PASSWORD, true);
+    	}
+    	catch (Exception ex)
+    	{
+    		CentralLogger.getInstance().getLogger(this).error("Cannot connect to RDB " + URL);
+    		throw ex;
+    	}
     }
 
 	public PVInfo [] getPVInfo(String pv_name, String field) throws Exception {
