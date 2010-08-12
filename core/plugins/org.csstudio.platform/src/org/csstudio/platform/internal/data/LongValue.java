@@ -55,54 +55,51 @@ public class LongValue extends Value implements ILongValue
 	{	return values[0];	}
 	
     /** {@inheritDoc} */
-    @Override
-    public final String format(final Format how, int precision)
+	@Override
+	public final String format(final Format how, int precision)
 	{
-	    StringBuffer buf = new StringBuffer();
-		if (getSeverity().hasValue())
+		// Any value at all?
+		if (!getSeverity().hasValue())
+			return Messages.NoValue;
+
+		final StringBuffer buf = new StringBuffer();
+		if (how == Format.Exponential)
 		{
-			 if (how == Format.Exponential){
-				 // Is there a better way to get this silly format?
-				 	NumberFormat fmt;
-	                StringBuffer pattern = new StringBuffer(10);
-	                pattern.append("0."); //$NON-NLS-1$
-	                for (int i=0; i<precision; ++i)
-	                    pattern.append('0');
-	                pattern.append("E0"); //$NON-NLS-1$
-	                fmt = new DecimalFormat(pattern.toString());
-	                buf.append(fmt.format(values[0]));
-	                for (int i = 1; i < values.length; i++)
-		        	 {
-		        		 buf.append(Messages.ArrayElementSeparator);
-		        		 buf.append(buf.append(fmt.format(values[i])));
-		        	 }
-			 }else if (how == Format.String){
-				 for (int i = 0; i<values.length; i++)
-				 {
-					 if (values[i] != 0){
-					     buf.append((char)values[i]);
-					 } else {
-						 i = values.length;
-					 }
-				 }
-	          }else{
-		        	 buf.append(values[0]);
-		        	 for (int i = 1; i < values.length; i++)
-		        	 {
-		        		 buf.append(Messages.ArrayElementSeparator);
-		        		 buf.append(values[i]);
-		        		 if(i >= MAX_FORMAT_VALUE_COUNT){
-		                 	 buf.append(Messages.ArrayElementSeparator);
-		        			 buf.append("..."); //$NON-NLS-1$
-		                 	break;
-		                 }
-		        	 }
-	          }
-			
-			
+			// Is there a better way to get this silly format?
+			NumberFormat fmt;
+			StringBuffer pattern = new StringBuffer(10);
+			pattern.append("0."); //$NON-NLS-1$
+			for (int i = 0; i < precision; ++i)
+				pattern.append('0');
+			pattern.append("E0"); //$NON-NLS-1$
+			fmt = new DecimalFormat(pattern.toString());
+			buf.append(fmt.format(values[0]));
+			for (int i = 1; i < values.length; i++)
+			{
+				buf.append(Messages.ArrayElementSeparator);
+				buf.append(buf.append(fmt.format(values[i])));
+			}
+		}
+		else if (how == Format.String)
+		{   // Format array elements as characters
+			for (int i = 0; i < values.length; i++)
+				buf.append(getDisplayChar((char) values[i]));
 		}
 		else
-			buf.append(Messages.NoValue);
+		{
+			buf.append(values[0]);
+			for (int i = 1; i < values.length; i++)
+			{
+				buf.append(Messages.ArrayElementSeparator);
+				buf.append(values[i]);
+				if (i >= MAX_FORMAT_VALUE_COUNT)
+				{
+					buf.append(Messages.ArrayElementSeparator);
+					buf.append("..."); //$NON-NLS-1$
+					break;
+				}
+			}
+		}
 		return buf.toString();
 	}
 	

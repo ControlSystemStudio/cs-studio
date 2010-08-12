@@ -110,6 +110,18 @@ abstract public class Value implements IValue
         }
         return buffer.toString();
     }
+    
+	/** Convert char into printable character for Format.String
+	 *  @param c Char
+	 *  @return Printable version
+	 */
+	protected char getDisplayChar(final char c)
+	{
+		if (Character.isLetterOrDigit(c) ||
+		    Character.isWhitespace(c))
+			return c;
+		return '?';
+	}
 
     /** {@inheritDoc} */
 	@Override

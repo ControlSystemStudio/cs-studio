@@ -66,8 +66,18 @@ public class DoubleValue extends Value implements IDoubleValue
 	    if (!getSeverity().hasValue())
 	        return Messages.NoValue;
 	    
-		final StringBuilder buf = new StringBuilder();
-        NumberFormat fmt;
+	    if (how == Format.String)
+	    {   // Handle array elements as characters
+	    	final char buf[] = new char[values.length];
+	    	for (int i = 0; i<values.length; i++)
+	    		buf[i] = getDisplayChar((char) values[i]);
+	    	return new String(buf);
+	    }
+
+	    // Show array elements as numbers
+	    final StringBuilder buf = new StringBuilder();
+		
+		NumberFormat fmt;
         if (how == Format.Exponential)
         {   // Is there a better way to get this silly format?
             StringBuffer pattern = new StringBuffer(10);
