@@ -207,7 +207,8 @@ public class PVFieldsView  extends ViewPart
         @Override
         public void setFocus()
         {
-            gui.getPVViewer().getCombo().setFocus();
+        	if (gui != null)
+        		gui.getPVViewer().getCombo().setFocus();
         }
 
         private void setPVName(final String pv_name)
