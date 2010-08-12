@@ -19,7 +19,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 public class SNSPVUtilData implements PVUtilDataAPI
 {
    final private RDBUtil rdbutil;
-   final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(SOURCE_ROUTE=YES)(ADDRESS_LIST=(LOAD_BALANCE=OFF)(FAILOVER=ON)(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1a.sns.ornl.gov)(PORT=1610))(ADDRESS=(PROTOCOL=TCP)(HOST=snsapp1b.sns.ornl.gov)(PORT=1610)))(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.73.93 )(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
+   final private static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
    final private static String USER = "sns_reports";
    final private static String PASSWORD = "sns";
    
