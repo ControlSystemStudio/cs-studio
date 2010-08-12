@@ -83,7 +83,12 @@ public class LongValue extends Value implements ILongValue
 		else if (how == Format.String)
 		{   // Format array elements as characters
 			for (int i = 0; i < values.length; i++)
-				buf.append(getDisplayChar((char) values[i]));
+			{
+				final char c = getDisplayChar((char) values[i]);
+				if (c == 0)
+					break;
+				buf.append(c);
+			}
 		}
 		else
 		{

@@ -112,11 +112,13 @@ abstract public class Value implements IValue
     }
     
 	/** Convert char into printable character for Format.String
-	 *  @param c Char
+	 *  @param c Char, 0 for end-of-string
 	 *  @return Printable version
 	 */
 	protected char getDisplayChar(final char c)
 	{
+		if (c == 0)
+			return 0;
 		if (Character.isLetterOrDigit(c) ||
 		    Character.isWhitespace(c))
 			return c;
