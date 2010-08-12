@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Regelwerk Plug-in
-Bundle-SymbolicName: org.csstudio.nams.common.regelwerk
-Bundle-Version: 1.0.0
-Require-Bundle: org.csstudio.nams.common,
- org.csstudio.platform,
- org.csstudio.nams.service.logging,
- org.csstudio.platform.libs.dal
