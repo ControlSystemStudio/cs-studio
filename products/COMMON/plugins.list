@@ -34,6 +34,7 @@ org.csstudio.utility.namespace.utility
 org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
+org.csstudio.utility.pv.ui
 org.csstudio.platform
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics
