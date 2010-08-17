@@ -1,4 +1,12 @@
 org.csstudio.common.product
+org.csstudio.alarm.beast
+org.csstudio.alarm.beast.annunciator
+org.csstudio.alarm.beast.configtool
+org.csstudio.alarm.beast.msghist
+org.csstudio.alarm.beast.server
+org.csstudio.alarm.beast.ui
+org.csstudio.alarm.beast.ui.alarmtable
+org.csstudio.alarm.beast.ui.alarmtree
 org.csstudio.apputil
 org.csstudio.apputil.ui
 org.csstudio.archive
@@ -35,6 +43,7 @@ org.csstudio.utility.pv
 org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
+org.csstudio.utility.speech
 org.csstudio.platform
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics

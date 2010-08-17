@@ -19,6 +19,14 @@
       <plugin id="org.apache.jasper"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
+      <plugin id="org.csstudio.alarm.beast"/>
+      <plugin id="org.csstudio.alarm.beast.annunciator"/>
+      <plugin id="org.csstudio.alarm.beast.configtool"/>
+      <plugin id="org.csstudio.alarm.beast.msghist"/>
+      <plugin id="org.csstudio.alarm.beast.server"/>
+      <plugin id="org.csstudio.alarm.beast.ui"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtable"/>
+      <plugin id="org.csstudio.alarm.beast.ui.alarmtree"/>
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive"/>
@@ -63,6 +71,7 @@
       <plugin id="org.csstudio.utility.pv.epics"/>
       <plugin id="org.csstudio.utility.pv.simu"/>
       <plugin id="org.csstudio.utility.pv.ui"/>
+      <plugin id="org.csstudio.utility.speech"/>
       <plugin id="org.eclipse.compare.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
