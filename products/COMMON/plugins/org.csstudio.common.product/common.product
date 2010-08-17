@@ -22,8 +22,20 @@
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.apputil.ui"/>
       <plugin id="org.csstudio.archive"/>
+      <plugin id="org.csstudio.archive.channelarchiver"/>
+      <plugin id="org.csstudio.archivereader"/>
+      <plugin id="org.csstudio.archivereader.channelarchiver"/>
       <plugin id="org.csstudio.common.product"/>
+      <plugin id="org.csstudio.diag.epics.pvtree"/>
+      <plugin id="org.csstudio.diag.probe"/>
+      <plugin id="org.csstudio.display.pvtable"/>
+      <plugin id="org.csstudio.email"/>
+      <plugin id="org.csstudio.email.ui"/>
       <plugin id="org.csstudio.logbook"/>
+      <plugin id="org.csstudio.opibuilder"/>
+      <plugin id="org.csstudio.opibuilder.adl2boy"/>
+      <plugin id="org.csstudio.opibuilder.examples"/>
+      <plugin id="org.csstudio.opibuilder.widgets"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
@@ -43,6 +55,7 @@
       <plugin id="org.csstudio.swt.chart"/>
       <plugin id="org.csstudio.swt.widgets"/>
       <plugin id="org.csstudio.swt.xygraph"/>
+      <plugin id="org.csstudio.trends.databrowser2"/>
       <plugin id="org.csstudio.utility.adlParser"/>
       <plugin id="org.csstudio.utility.clock"/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
@@ -57,6 +70,7 @@
       <plugin id="org.eclipse.core.databinding.observable"/>
       <plugin id="org.eclipse.core.databinding.property"/>
       <plugin id="org.eclipse.core.expressions"/>
+      <plugin id="org.eclipse.core.filebuffers"/>
       <plugin id="org.eclipse.core.filesystem"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
@@ -118,8 +132,10 @@
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.text"/>
       <plugin id="org.eclipse.ui"/>
+      <plugin id="org.eclipse.ui.browser"/>
       <plugin id="org.eclipse.ui.cheatsheets"/>
       <plugin id="org.eclipse.ui.console"/>
+      <plugin id="org.eclipse.ui.editors"/>
       <plugin id="org.eclipse.ui.forms"/>
       <plugin id="org.eclipse.ui.ide"/>
       <plugin id="org.eclipse.ui.intro"/>
