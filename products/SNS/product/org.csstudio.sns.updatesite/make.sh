@@ -27,8 +27,6 @@ do
     echo Done with $prod
 done
 
-exit 1
-
 OK=1
 # Each build log contains 2(!) "BUILD SUCCESSFUL" lines
 for prod in config_build_Basic_CSS config_build_SNS_CSS config_build_optional
