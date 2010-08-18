@@ -1,0 +1,4 @@
+syntax: glob
+apps/*
+build/*
+config_*/*.log
