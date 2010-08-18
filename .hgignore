@@ -15,3 +15,11 @@ bin/*
 classes/*
 build/build
 build/ext
+
+
+# SNS Product: Ignore output of headless build
+syntax: glob
+products/SNS/product/org.csstudio.sns.updatesite/build/*
+products/SNS/product/org.csstudio.sns.updatesite/apps/*
+products/SNS/product/org.csstudio.sns.updatesite/config_build_*/build.log
+
