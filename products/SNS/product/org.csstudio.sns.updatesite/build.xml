@@ -110,7 +110,7 @@
 
 
     <!-- Zip all the source files 
-    TODO Use build dir, but don't include the  local.list
+         Use build dir, but don't include the  local.list
     -->
     <target name="zip_sources" depends="check_vars">
         <zip destfile="apps/sns_css_src_${env.VERSION}.zip">

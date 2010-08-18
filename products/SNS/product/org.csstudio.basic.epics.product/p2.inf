@@ -5,11 +5,13 @@
 # Kay Kasemir
 
 # Define P2 repository
+# Create dropins folder
 #
 # See http://www.ralfebert.de/blog/eclipsercp/p2_updates_tutorial/
 instructions.configure=\
   addRepository(type:0,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);\
-  addRepository(type:1,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);
+  addRepository(type:1,name: SNS update-site,location:http${#58}//ics-web.sns.ornl.gov/css/updates/);\
+  mkdir(path:${installFolder}/dropins);
 
 # Add to the config.ini to set the default workspace location to
 # $HOME/CSS-Workspaces/Default instead of somewhere inside the product.
