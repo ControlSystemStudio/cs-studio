@@ -312,7 +312,7 @@ public class EpicsDataBaseCompareView extends ViewPart {
                 .getActivePage();
         CompareEditorInput input = new SaveablesCompareEditorInput(ancestor, left, right,
                 workBenchPage);
-        IEditorPart editor = CompareRevisionAction.findReusableCompareEditor(input, workBenchPage);
+        IEditorPart editor = CompareRevisionAction.findReusableCompareEditor(workBenchPage);
         if (editor != null) {
             IEditorInput otherInput = editor.getEditorInput();
             if (otherInput.equals(input)) {
