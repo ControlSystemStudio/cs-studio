@@ -27,8 +27,8 @@ import java.util.Map;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.ui.SdsUiPlugin;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.sds.util.TextDnDUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
@@ -285,6 +285,7 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 					String key = (String) ((IStructuredSelection)_viewer.getSelection()).getFirstElement();
 	        		openMapDialog(key, _map.get(key), false);
 	        		refreshAction();
+	        		setFocus();
 				}
 			};
 			_editAction.setText("Edit "+_title);
@@ -419,15 +420,16 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 					}
 				}
 				_dialog = null;
+
 				if (!_viewer.getList().isDisposed()) {
 					this.getButton(IDialogConstants.CANCEL_ID).setEnabled(true);
 					this.getButton(IDialogConstants.OK_ID).setEnabled(true);
 					_viewer.getList().setSelection(index);
-				} 
+				}
+                getShell().setFocus();
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
 		}
 		
 		/**
@@ -590,7 +592,9 @@ public final class StringMapCellEditor extends AbstractDialogCellEditor {
 			Label label = new Label(parent, SWT.NONE);
 	        label.setText(labelTitle);
 	        final Text text = new Text(parent, SWT.MULTI | SWT.BORDER);
-	        text.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,false));
+	        GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false);
+	        gd.widthHint = 280;
+	        text.setLayoutData(gd);
 	        if (textValue==null) {
 	        	text.setText("");
 	        } else {

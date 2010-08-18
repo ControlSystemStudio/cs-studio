@@ -1,4 +1,4 @@
-var returns = "java.lang.Double";
+var compatibleProperties = "sds.double";
 var description = "Fill Grade Rule";
 var parameters = new Array("Current PV value", "Minimum PV value", "Maximum PV value");
 

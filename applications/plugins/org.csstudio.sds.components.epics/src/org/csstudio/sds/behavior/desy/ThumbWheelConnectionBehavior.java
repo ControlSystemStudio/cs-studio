@@ -27,8 +27,8 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link ThumbWheelModel} widget with Connection state
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 20.04.2010
  */
 public class ThumbWheelConnectionBehavior extends AbstractDesyConnectionBehavior<ThumbWheelModel> {

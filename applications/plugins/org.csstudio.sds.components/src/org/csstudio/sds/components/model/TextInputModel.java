@@ -28,7 +28,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * A widget model for text inputs.
  *
  * @author Alexander Will, Kai Meyer
- * @version $Revision$
+ * @version $Revision: 1.35 $
  */
 public final class TextInputModel extends AbstractTextTypeWidgetModel {
     /**

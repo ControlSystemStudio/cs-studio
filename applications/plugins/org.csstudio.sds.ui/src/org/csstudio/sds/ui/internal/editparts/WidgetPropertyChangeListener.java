@@ -24,19 +24,11 @@ package org.csstudio.sds.ui.internal.editparts;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.properties.PropertyChangeAdapter;
+import org.csstudio.sds.model.PropertyChangeAdapter;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.IWidgetPropertyChangeHandler;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.progress.UIJob;
 
 /**
  * A <code>IPropertyChangeListener</code> implementation, which delegates
@@ -86,20 +78,11 @@ public final class WidgetPropertyChangeListener extends PropertyChangeAdapter {
 
 					boolean repaint = h
 							.handleChange(oldValue, newValue, figure);
-
+					
 					if (repaint) {
 						figure.repaint();
 					}
 				}
-			}
-		};
-	}
-
-	public void dynamicsDescriptorChanged(DynamicsDescriptor dynamicsDescriptor) {
-		new CheckedUiRunnable() {
-			@Override
-			protected void doRunInUi() {
-				_editPart.refreshTooltip();
 			}
 		};
 	}

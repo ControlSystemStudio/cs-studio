@@ -23,14 +23,14 @@ package org.csstudio.sds.model;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.junit.Test;
 
 /**
  * Test case for class {@link DynamicsDescriptor}.
  * 
  * @author Alexander Will, Stefan Hofer
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public final class DynamicsDescriptorTest {
@@ -47,12 +47,11 @@ public final class DynamicsDescriptorTest {
 		assertEquals(descriptorId, ec.getRuleId());
 
 		ec.addInputChannel(new ParameterDescriptor(
-				channel, Double.class));
+				channel));
 		final ParameterDescriptor[] inputChannels = ec.getInputChannels();
 		
 		assertEquals(1, inputChannels.length);
 		assertEquals(channel, inputChannels[0].getChannel());
-		assertEquals(Double.class, inputChannels[0].getType());
 	}
 
 }

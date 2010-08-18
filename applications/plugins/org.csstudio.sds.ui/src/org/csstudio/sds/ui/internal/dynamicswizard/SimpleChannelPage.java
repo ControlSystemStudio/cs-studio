@@ -1,10 +1,30 @@
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.ui.internal.dynamicswizard;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,30 +35,24 @@ import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.ui.dnd.rfc.IProcessVariableAdressReceiver;
 import org.csstudio.platform.ui.dnd.rfc.IShowControlSystemDialogStrategy;
 import org.csstudio.platform.ui.dnd.rfc.ProcessVariableExchangeUtil;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.platform.ui.util.SelectionUtil;
+import org.csstudio.sds.internal.rules.NullRule;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
+import org.csstudio.sds.internal.rules.RuleDescriptor;
+import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.logic.RuleDescriptor;
-import org.csstudio.sds.model.logic.RuleService;
-import org.csstudio.sds.model.properties.ActionData;
+import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.ui.SdsUiPlugin;
-import org.csstudio.sds.ui.internal.properties.ActionDataCellEditor;
-import org.csstudio.sds.ui.internal.properties.DoubleCellEditor;
-import org.csstudio.sds.ui.internal.properties.IntegerCellEditor;
-import org.csstudio.sds.ui.internal.properties.MultipleLineTextCellEditor;
-import org.csstudio.sds.ui.internal.properties.RGBCellEditor;
-import org.csstudio.sds.ui.internal.properties.ResourceCellEditor;
-import org.csstudio.sds.ui.internal.properties.view.IPropertyDescriptor;
+import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
@@ -67,12 +81,18 @@ import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
 import org.eclipse.swt.dnd.DropTargetEvent;
+import org.eclipse.swt.events.KeyEvent;
+import org.eclipse.swt.events.KeyListener;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
@@ -80,13 +100,14 @@ import org.eclipse.swt.widgets.Item;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.model.BaseWorkbenchContentProvider;
 import org.eclipse.ui.model.WorkbenchLabelProvider;
 
 /**
  * WizardPage implementation, which enables the user to configure a simple
  * channel.
- * 
+ *
  * @author Sven Wende
  */
 public final class SimpleChannelPage extends WizardPage {
@@ -105,12 +126,12 @@ public final class SimpleChannelPage extends WizardPage {
 	 * Flag that signals if the definition of output channels should
 	 * automatically lead to the definition of an input channel.
 	 */
-	private boolean _isLinkOutput = true;
+	private final boolean _isLinkOutput = true;
 
 	/**
 	 * The dynamics descriptor that is edited.
 	 */
-	private DynamicsDescriptor _dynamicsDescriptor;
+	private final DynamicsDescriptor _dynamicsDescriptor;
 
 	/**
 	 * The model for the channel table.
@@ -118,60 +139,32 @@ public final class SimpleChannelPage extends WizardPage {
 	private InputChannelTableModel _inputChannelTableModel;
 
 	/**
-	 * The descriptor of the property which is to be configured.
-	 */
-	private IPropertyDescriptor _propertyDescriptor;
-
-	/**
 	 * Names of existing aliases that can be used in channel names.
 	 */
-	private Map<String, String> _aliases;
-	
+	private final Map<String, String> _aliases;
+
 	/**
 	 * A tree viewer, which shows the available rules.
 	 */
 	private TreeViewer _rulesViewer;
 	/**
+	 * Checkbox for using only the connection states.
+	 */
+	private Button _useOnlyConnectionsCheckBox;
+	/**
 	 * The selected rule.
 	 */
 	private RuleDescriptor _selectedRule;
-	
-	@SuppressWarnings("unchecked")
-	private static final Map<Class, CellEditor> CELLEDITORS = new HashMap<Class, CellEditor>();
 
-	/**
-	 * Creates the widgets to display the alias informations.
-	 * @param parent The parent for the widgets
-	 */
-	private void createAliasInformation(final Composite parent) {
-		Composite c = new Composite(parent, SWT.NONE);
-		c.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-		c.setLayout(LayoutUtil.createGridLayout(2, 0, 5, 5));
+    private Text _rulePattern;
 
-		Label header = new Label(c, SWT.NONE);
-		GridData gd = LayoutUtil.createGridDataForFillingCell();
-		gd.horizontalSpan = 2;
-		header.setLayoutData(gd);
-		header.setFont(CustomMediaFactory.getInstance()
-				.getDefaultFont(SWT.BOLD));
-		header.setText("Available Aliases / Macros");
+	private final PropertyTypesEnum _propertyType;
 
-		for (String alias : _aliases.keySet()) {
-			Label left = new Label(c, SWT.NONE);
-			left.setLayoutData(LayoutUtil.createGridData());
-			left.setForeground(CustomMediaFactory.getInstance().getColor(
-					new RGB(0, 0, 255)));
-			left.setText("$" + alias + "$");
-
-			Label right = new Label(c, SWT.NONE);
-			right.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-			right.setText("--> " + _aliases.get(alias));
-		}
-	}
+    private Text _ruleDescriptionText;
 
 	/**
 	 * An action, which removes an input channel from the configuration.
-	 * 
+	 *
 	 * @author Sven Wende
 	 */
 	private final class RemoveChannelAction extends Action {
@@ -201,23 +194,25 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * An action, which adds a type hint to the selected channel parameter.
-	 * 
+	 *
 	 * @author Sven Wende
 	 */
 	protected final class AppendTypeHintAction extends Action {
 		/**
 		 * The {@link DalPropertyTypes}.
 		 */
-		private DalPropertyTypes _typeHint;
+		private final DalPropertyTypes _typeHint;
 
 		/**
 		 * Constructor.
-		 * @param typeHint The {@link DalPropertyTypes}
+		 *
+		 * @param typeHint
+		 *            The {@link DalPropertyTypes}
 		 */
 		protected AppendTypeHintAction(final DalPropertyTypes typeHint) {
-			super(typeHint.toString(), CustomMediaFactory
-					.getInstance().getImageDescriptorFromPlugin(
-							SdsUiPlugin.PLUGIN_ID, "icons/getas.gif"));
+			super(typeHint.toString(), CustomMediaFactory.getInstance()
+					.getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID,
+							"icons/getas.gif"));
 			assert typeHint != null;
 			_typeHint = typeHint;
 		}
@@ -230,51 +225,53 @@ public final class SimpleChannelPage extends WizardPage {
 			IStructuredSelection sel = (IStructuredSelection) _channelTableViewer
 					.getSelection();
 
-			if (sel != null && sel.getFirstElement() != null && !sel.isEmpty()) {
+			if ((sel != null) && (sel.getFirstElement() != null) && !sel.isEmpty()) {
 				for (Object o : sel.toArray()) {
 					InputChannelTableRow row = (InputChannelTableRow) o;
 
 					String rowValue = row.getChannel();
 
-					if (rowValue != null && rowValue.length() > 0) {
+					if ((rowValue != null) && (rowValue.length() > 0)) {
 						row.setChannel(applyTypeHint(rowValue));
 					}
 				}
-				
+
 				_channelTableViewer.refresh();
 			}
 		}
-		
+
 		/**
 		 * Adds the type hint to the channel url.
-		 * @param channel the existing channel url
+		 *
+		 * @param channel
+		 *            the existing channel url
 		 * @return a enriched channel url
 		 */
 		private String applyTypeHint(final String channel) {
 			String result = null;
 
 			// try to replace existing type hint
-			String newPattern = ", "+_typeHint.toPortableString();
-			for(DalPropertyTypes dalType : DalPropertyTypes.values()) {
+			String newPattern = ", " + _typeHint.toPortableString();
+			for (DalPropertyTypes dalType : DalPropertyTypes.values()) {
 				String oldPattern = ", " + dalType.toPortableString();
-				
-				if(dalType!=_typeHint && channel.indexOf(oldPattern)>0) {
+
+				if ((dalType != _typeHint) && (channel.indexOf(oldPattern) > 0)) {
 					result = channel.replace(oldPattern, newPattern);
 				}
 			}
-			
+
 			// if there was no existing type hint, just add the new one
-			if(result==null) {
+			if (result == null) {
 				result = channel + newPattern;
 			}
-			
+
 			return result;
 		}
 	}
 
 	/**
 	 * An action, which adds an input channel to the configuration.
-	 * 
+	 *
 	 * @author Sven Wende
 	 */
 	protected final class AddInputChannelAction extends Action {
@@ -298,7 +295,7 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * An action, which adds an output channel to the configuration.
-	 * 
+	 *
 	 * @author Alexander Will
 	 */
 	protected final class AddOutputChannelAction extends Action {
@@ -322,9 +319,9 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Label provider for the channel tables.
-	 * 
+	 *
 	 * @author Sven Wende
-	 * 
+	 *
 	 */
 	protected final class ChannelTableLabelProvider extends ColumnLabelProvider {
 
@@ -347,9 +344,12 @@ public final class SimpleChannelPage extends WizardPage {
 		}
 
 		/**
-		 * Returns the text to display. 
-		 * @param element the current element
-		 * @param columnIndex the current column index
+		 * Returns the text to display.
+		 *
+		 * @param element
+		 *            the current element
+		 * @param columnIndex
+		 *            the current column index
 		 * @return The text to display in the viewer
 		 */
 		private String getText(final Object element, final int columnIndex) {
@@ -416,8 +416,11 @@ public final class SimpleChannelPage extends WizardPage {
 
 		/**
 		 * Returns the font, which is used to display the channel informations.
-		 * @param element The current element
-		 * @param column The current column index
+		 *
+		 * @param element
+		 *            The current element
+		 * @param column
+		 *            The current column index
 		 * @return The font
 		 */
 		private Font getFont(final Object element, final int column) {
@@ -426,7 +429,7 @@ public final class SimpleChannelPage extends WizardPage {
 			InputChannelTableRow row = (InputChannelTableRow) element;
 
 			if (column == 1) {
-				if (row.getDescription() == null
+				if ((row.getDescription() == null)
 						|| row.getDescription().equals("")) {
 					style = SWT.ITALIC;
 				} else {
@@ -438,9 +441,12 @@ public final class SimpleChannelPage extends WizardPage {
 
 		/**
 		 * returns the foreground color for a cell.
-		 * @param element The current element
-		 * @param column The current column index
-		 * @return The foreground color 
+		 *
+		 * @param element
+		 *            The current element
+		 * @param column
+		 *            The current column index
+		 * @return The foreground color
 		 */
 		private Color getForeground(final Object element, final int column) {
 			RGB rgb = new RGB(0, 0, 0);
@@ -448,7 +454,7 @@ public final class SimpleChannelPage extends WizardPage {
 			if (column == 1) {
 				InputChannelTableRow row = (InputChannelTableRow) element;
 
-				if (row.getDescription() == null
+				if ((row.getDescription() == null)
 						|| row.getDescription().equals("")) {
 					rgb = new RGB(200, 200, 200);
 				} else {
@@ -463,8 +469,11 @@ public final class SimpleChannelPage extends WizardPage {
 
 		/**
 		 * Returns the Image for a cell.
-		 * @param element The current element
-		 * @param index The current column index
+		 *
+		 * @param element
+		 *            The current element
+		 * @param index
+		 *            The current column index
 		 * @return The Image for the cell
 		 */
 		private Image getImage(final Object element, final int index) {
@@ -490,9 +499,9 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Content provider for the input channel table.
-	 * 
+	 *
 	 * @author Sven Wende
-	 * 
+	 *
 	 */
 	protected final class ChannelTableContentProvider implements
 			IStructuredContentProvider {
@@ -521,9 +530,9 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Cell modifier for the channel tables.
-	 * 
+	 *
 	 * @author Sven Wende
-	 * 
+	 *
 	 */
 	protected class ChannelTableCellModifier implements ICellModifier {
 		/**
@@ -621,7 +630,7 @@ public final class SimpleChannelPage extends WizardPage {
 		/**
 		 * Hook method that is called before the channel name is actually set.
 		 * Subclasses may overwrite in order to perform custom actions.
-		 * 
+		 *
 		 * @param descriptor
 		 *            the parameter descriptor.
 		 * @param channel
@@ -633,10 +642,10 @@ public final class SimpleChannelPage extends WizardPage {
 
 		/**
 		 * Gets the colunmn index for the specified property.
-		 * 
+		 *
 		 * @param property
 		 *            the property
-		 * 
+		 *
 		 * @return the column index
 		 */
 		private int findColumnIndex(final String property) {
@@ -652,34 +661,39 @@ public final class SimpleChannelPage extends WizardPage {
 			return result;
 		}
 	}
-	
+
 	/**
 	 * The {@link EditingSupport} for the columns of the property table.
+	 *
 	 * @author Kai Meyer
 	 *
 	 */
 	private final class CustomEditingSupport extends EditingSupport {
-		
+
 		/**
 		 * The {@link Table} where this {@link EditingSupport} is embedded.
 		 */
 		private final Table _table;
+
 		/**
-		 * A {@link Map} of the already known CellEditors.
+		 * Determines if this {@link EditingSupport} is for the <i>Channel</i>
+		 * column.
 		 */
-		private Map<Object, CellEditor> _cellEditors = new HashMap<Object, CellEditor>();
-		/**
-		 * Determines if this {@link EditingSupport} is for the <i>Channel</i> column. 
-		 */
-		private boolean _channelColumn;
-		
+		private final boolean _channelColumn;
+
 		/**
 		 * Constructor.
-		 * @param viewer The {@link ColumnViewer} for this {@link EditingSupport}.
-		 * @param table The {@link Table} 
-		 * @param channelColumn True if this {@link EditingSupport} is for the <i>Channel</i> column
+		 *
+		 * @param viewer
+		 *            The {@link ColumnViewer} for this {@link EditingSupport}.
+		 * @param table
+		 *            The {@link Table}
+		 * @param channelColumn
+		 *            True if this {@link EditingSupport} is for the <i>Channel</i>
+		 *            column
 		 */
-		private CustomEditingSupport(final ColumnViewer viewer, final Table table, final boolean channelColumn) {
+		private CustomEditingSupport(final ColumnViewer viewer,
+				final Table table, final boolean channelColumn) {
 			super(viewer);
 			_table = table;
 			_channelColumn = channelColumn;
@@ -698,24 +712,7 @@ public final class SimpleChannelPage extends WizardPage {
 		 */
 		@Override
 		protected CellEditor getCellEditor(final Object element) {
-			if (_channelColumn) {
-				return new TextCellEditor(_table);
-			}
-			if (!_cellEditors.containsKey(element)) {
-				InputChannelTableRow row = (InputChannelTableRow) element;
-				if (row!=null) {
-					Class valueType = row.getValueType();
-					CellEditor editor = CELLEDITORS.get(valueType);
-					//editor = new TextCellEditor(_table);
-					if (editor!=null) {
-						_cellEditors.put(element, editor);
-					}
-				}
-			}
-			if (_cellEditors.containsKey(element)) {
-				return _cellEditors.get(element);
-			}
-			return null;
+			return new TextCellEditor(_table);
 		}
 
 		/**
@@ -724,7 +721,7 @@ public final class SimpleChannelPage extends WizardPage {
 		@Override
 		protected Object getValue(final Object element) {
 			if (element instanceof InputChannelTableRow) {
-				InputChannelTableRow row = (InputChannelTableRow)element;
+				InputChannelTableRow row = (InputChannelTableRow) element;
 				if (_channelColumn) {
 					return row.getChannel();
 				}
@@ -740,9 +737,16 @@ public final class SimpleChannelPage extends WizardPage {
 		protected void setValue(final Object element, final Object value) {
 			if (element instanceof InputChannelTableRow) {
 				if (_channelColumn) {
-					((InputChannelTableRow)element).setChannel(value.toString());
+					((InputChannelTableRow) element).setChannel(value
+							.toString());
+					_channelTableViewer.getCellModifier().modify(element,
+							"PROP_NAME", value);
 				} else {
-					((InputChannelTableRow)element).setDefaultValue(value);
+					String newValue = "";
+					if (value != null) {
+						newValue = value.toString();
+					}
+					((InputChannelTableRow) element).setDefaultValue(newValue);
 				}
 			}
 			this.getViewer().refresh();
@@ -751,43 +755,29 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Constructor.
-	 * 
+	 *
 	 * @param pageName
 	 *            the name of the page
 	 * @param dynamicsDescriptor
-	 * 			  the {@link DynamicsDescriptor}
+	 *            the {@link DynamicsDescriptor}
 	 * @param propertyDescriptor
-	 * 			  the {@link IPropertyDescriptor}
-	 * @param aliases 
-	 * 			  the aliases
+	 *            the {@link IPropertyDescriptor}
+	 * @param aliases
+	 *            the aliases
 	 */
 	public SimpleChannelPage(final String pageName,
 			final DynamicsDescriptor dynamicsDescriptor,
-			final IPropertyDescriptor propertyDescriptor, final Map<String, String> aliases) {
+			final PropertyTypesEnum propertyType,
+			final Map<String, String> aliases) {
 		super(pageName);
 		assert dynamicsDescriptor != null;
 		assert aliases != null;
-		assert propertyDescriptor != null;
+		assert propertyType != null : "propertyType != null";
+		_propertyType = propertyType;
 		setTitle("Dynamics Wizard");
 		setDescription("Use this wizard to configure the dynamic behaviour of your properties");
 		_dynamicsDescriptor = dynamicsDescriptor;
-		_propertyDescriptor = propertyDescriptor;
 		_aliases = aliases;
-	}
-	
-	/**
-	 * Initializes the <code>CELLEDITORS</code>-map with known {@link CellEditor}s.
-	 * @param parent The parent composite for the {@link CellEditor}s
-	 */
-	private void fillCellEditorMap(final Composite parent) {
-		CELLEDITORS.put(Object.class, new TextCellEditor(parent));
-		CELLEDITORS.put(RGB.class, new RGBCellEditor(parent));
-		CELLEDITORS.put(ActionData.class, new ActionDataCellEditor(parent));
-		CELLEDITORS.put(Boolean.class, new CheckboxCellEditor(parent));
-		CELLEDITORS.put(Double.class, new DoubleCellEditor(parent));
-		CELLEDITORS.put(Integer.class, new IntegerCellEditor(parent));
-		CELLEDITORS.put(String.class, new MultipleLineTextCellEditor(parent));
-		CELLEDITORS.put(IPath.class, new ResourceCellEditor(parent, new String[] {"*.*"}));
 	}
 
 	/**
@@ -795,12 +785,26 @@ public final class SimpleChannelPage extends WizardPage {
 	 */
 	public void createControl(final Composite parent) {
 		Composite c = new Composite(parent, SWT.None);
-		c.setLayout(LayoutUtil.createGridLayout(1, 0, 5, 0));
+		c.setLayout(new GridLayout(1, false));
 
-		// create widgets
+		_useOnlyConnectionsCheckBox = new Button(c, SWT.CHECK);
+		_useOnlyConnectionsCheckBox.setText("Use only connection states");
+		_useOnlyConnectionsCheckBox
+				.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(final SelectionEvent e) {
+						executeCheckBoxStateChange(_useOnlyConnectionsCheckBox
+								.getSelection());
+					}
+				});
+
+        _rulePattern = new Text(c, SWT.SEARCH);
+        _rulePattern.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+        _rulePattern.setMessage("Rule Pattern");
+
 		_rulesViewer = createRuleControl(c);
 		_channelTableViewer = createInputChannelsTable(c);
-		
+
 		createAliasInformation(c);
 
 		// initialize the widgets
@@ -808,35 +812,71 @@ public final class SimpleChannelPage extends WizardPage {
 			_selectedRule = RuleService.getInstance().getRuleDescriptor(
 					_dynamicsDescriptor.getRuleId());
 			if (_selectedRule != null) {
-				_rulesViewer.setSelection(new StructuredSelection(_selectedRule));
+				_rulesViewer
+						.setSelection(new StructuredSelection(_selectedRule));
 			}
 			updateChannelTableModel();
 		}
 
+		_useOnlyConnectionsCheckBox.setSelection(_dynamicsDescriptor
+				.isUsingOnlyConnectionStates());
+		this.executeCheckBoxStateChange(_useOnlyConnectionsCheckBox
+				.getSelection());
+
 		// important for wizards -> set the control
 		setControl(c);
-		this.fillCellEditorMap(c);
+	}
+
+	/**
+     * @param c
+     * @return
+     */
+    private Text createDescriptionControl(final Composite c) {
+        Text text = new Text(c, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER|SWT.READ_ONLY);
+//        text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+        text.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+        text.setText("");
+        return text;
+    }
+
+    /**
+	 * Updates the viewer for the rules depending on given choice.
+	 *
+	 * @param choice
+	 *            <code>true</code> if the viewer should be disabled,
+	 *            <code>false</code> otherwise.
+	 */
+	private void executeCheckBoxStateChange(final boolean choice) {
+		_rulesViewer.getTree().setEnabled(!choice);
+		if (choice) {
+			_selectedRule = RuleService.getInstance().getRuleDescriptor(
+					NullRule.ID);
+		} else {
+			_selectedRule = RuleService.getInstance().getRuleDescriptor(
+					_dynamicsDescriptor.getRuleId());
+		}
+		updateChannelTableModel();
 	}
 
 	/**
 	 * Creates a control, which contains a filtered list of rules.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
 	 * @return the control
 	 */
 	private TreeViewer createRuleControl(final Composite parent) {
 		Group group = new Group(parent, SWT.NONE);
-		group.setLayout(LayoutUtil.createGridLayout(2, 3, 5, 0));
+		group.setLayout(new GridLayout(2, false));
 		group.setText("Rules / Scripts");
-		group.setLayoutData(LayoutUtil
-				.createGridDataForHorizontalFillingCell(120));
+		group.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).align(SWT.FILL, SWT.CENTER).hint(SWT.DEFAULT, 120).create());
 
-		TreeViewer viewer = new TreeViewer(group, SWT.DROP_DOWN | SWT.READ_ONLY
-				| SWT.SCROLL_LINE | SWT.V_SCROLL | SWT.H_SCROLL);
+		final TreeViewer viewer = new TreeViewer(group, SWT.DROP_DOWN | SWT.READ_ONLY
+				| SWT.SCROLL_LINE | SWT.V_SCROLL | SWT.H_SCROLL | SWT.BORDER);
 
-		viewer.getControl().setLayoutData(
-				LayoutUtil.createGridDataForFillingCell());
+		viewer.getControl().setLayoutData(GridDataFactory.fillDefaults().grab(false, true).create());
+	    _ruleDescriptionText = createDescriptionControl(group);
+
 
 		viewer.setLabelProvider(new WorkbenchLabelProvider());
 		viewer.setContentProvider(new BaseWorkbenchContentProvider() {
@@ -846,11 +886,12 @@ public final class SimpleChannelPage extends WizardPage {
 				return ((Collection<RuleDescriptor>) element).toArray();
 			}
 		});
-		
+		ColumnViewerToolTipSupport.enableFor(viewer);
+
 		List<RuleDescriptor> rules = RuleService.getInstance()
-		.getRegisteredRuleDescriptors();
-		
-		Collections.sort(rules, new Comparator<RuleDescriptor>(){
+				.getRegisteredRuleDescriptors();
+
+		Collections.sort(rules, new Comparator<RuleDescriptor>() {
 			public int compare(final RuleDescriptor r1, final RuleDescriptor r2) {
 				return r1.getDescription().compareTo(r2.getDescription());
 			}
@@ -861,19 +902,53 @@ public final class SimpleChannelPage extends WizardPage {
 		viewer.addFilter(new ViewerFilter() {
 
 			@Override
-			public boolean select(final Viewer viewer, final Object parentElement,
-					final Object element) {
+			public boolean select(final Viewer viewer,
+					final Object parentElement, final Object element) {
 				RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
-				
-				Class ruleReturnType = ruleDescriptor.getReturnType();
-				
-				boolean result = _propertyDescriptor
-						.isCompatibleWith(ruleReturnType);
-				
-				return result;
+
+				PropertyTypesEnum[] ruleReturnType = ruleDescriptor.getCompatiblePropertyTypes();
+
+				for (PropertyTypesEnum type : ruleReturnType) {
+					if (type.equals(_propertyType)) {
+						return true;
+					}
+				}
+
+				return false;
 			}
 
 		});
+
+        // Filter for Pattern set by User.
+        viewer.addFilter(new ViewerFilter() {
+
+            @Override
+            public boolean select(final Viewer viewer, final Object parentElement, final Object element) {
+                RuleDescriptor ruleDescriptor = (RuleDescriptor) element;
+                String pattern = _rulePattern.getText();
+                if ((pattern == null) || (pattern.length() < 1)) {
+                    return true;
+                }
+                return ruleDescriptor.getDescription().toLowerCase().matches(
+                        pattern.replace("$", "\\$").replace(".", "\\.").replace("*", ".*").replace(
+                                "?", ".?").toLowerCase()
+                                + ".*");
+            }
+
+        });
+
+        // listener to update rule list for new rule patterns set by user.
+        _rulePattern.addKeyListener(new KeyListener() {
+
+            public void keyPressed(final KeyEvent e) {
+            }
+
+            public void keyReleased(final KeyEvent e) {
+                viewer.refresh();
+            }
+
+        });
+
 
 		// add a selection listener that updates the channel table when the rule
 		// changes
@@ -887,6 +962,11 @@ public final class SimpleChannelPage extends WizardPage {
 							.getFirstElement();
 					_selectedRule = descriptor;
 
+					String description = descriptor.getRule().getDescription();
+					if((description == null) || description.isEmpty()) {
+					    description = "no description available";
+					}
+					_ruleDescriptionText.setText(description);
 					updateChannelTableModel();
 				}
 			}
@@ -899,10 +979,10 @@ public final class SimpleChannelPage extends WizardPage {
 	/**
 	 * Creates a table viewer, which enables the user to enter typed input
 	 * channels.
-	 * 
+	 *
 	 * @param parent
 	 *            the parent composite
-	 * 
+	 *
 	 * @return the created viewer
 	 */
 	private TableViewer createInputChannelsTable(final Composite parent) {
@@ -950,13 +1030,47 @@ public final class SimpleChannelPage extends WizardPage {
 	}
 
 	/**
+	 * Creates the widgets to display the alias informations.
+	 *
+	 * @param parent
+	 *            The parent for the widgets
+	 */
+	private void createAliasInformation(final Composite parent) {
+		Composite c = new Composite(parent, SWT.NONE);
+		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+		c.setLayout(new GridLayout(2, false));
+
+		Label header = new Label(c, SWT.NONE);
+		GridData gd = GridDataFactory.fillDefaults().grab(true, true).create();
+		gd.horizontalSpan = 2;
+		header.setLayoutData(gd);
+		header.setFont(CustomMediaFactory.getInstance()
+				.getDefaultFont(SWT.BOLD));
+		header.setText("Available Aliases / Macros");
+
+		for (String alias : _aliases.keySet()) {
+			Label left = new Label(c, SWT.NONE);
+			left.setLayoutData(GridDataFactory.fillDefaults().create());
+			left.setForeground(CustomMediaFactory.getInstance().getColor(
+					new RGB(0, 0, 255)));
+			left.setText("$" + alias + "$");
+
+			Label right = new Label(c, SWT.NONE);
+			right.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
+			right.setText("--> " + _aliases.get(alias));
+		}
+	}
+
+	/**
 	 * Creates the popup menu.
-	 * @param control The parent control for the menu
+	 *
+	 * @param control
+	 *            The parent control for the menu
 	 * @return The {@link Menu}
 	 */
 	private Menu createPopupMenu(final Control control) {
 		MenuManager popupMenu = new MenuManager();
-		
+
 		// channel actions
 		IAction a = new AddInputChannelAction();
 		popupMenu.add(a);
@@ -965,10 +1079,10 @@ public final class SimpleChannelPage extends WizardPage {
 		a = new RemoveChannelAction();
 		popupMenu.add(a);
 
-		// "get as" actions
+		// "get as [TYPE]" actions
 		MenuManager subMenu = new MenuManager("Get As");
 		popupMenu.add(subMenu);
-		
+
 		for (DalPropertyTypes type : DalPropertyTypes.values()) {
 			a = new AppendTypeHintAction(type);
 			subMenu.add(a);
@@ -981,7 +1095,9 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Creates the model for the channel table.
-	 * @param dynamicsDescriptor The {@link DynamicsDescriptor}
+	 *
+	 * @param dynamicsDescriptor
+	 *            The {@link DynamicsDescriptor}
 	 * @return the created {@link InputChannelTableModel}
 	 */
 	private static InputChannelTableModel createChannelTableModel(
@@ -1001,7 +1117,7 @@ public final class SimpleChannelPage extends WizardPage {
 			String outputChannel = new String(dynamicsDescriptor
 					.getOutputChannel().getChannel());
 
-			if (outputChannel != null && outputChannel.length() > 0) {
+			if ((outputChannel != null) && (outputChannel.length() > 0)) {
 				model.addRowForOutputChannel(new InputChannelTableRow(
 						ParameterType.OUT, "Output Channel", outputChannel));
 			}
@@ -1018,11 +1134,15 @@ public final class SimpleChannelPage extends WizardPage {
 			_inputChannelTableModel.clearInputChannelDescriptions();
 			for (int i = 0; i < _selectedRule.getParameterDescriptions().length; i++) {
 				_inputChannelTableModel.setInputChannelDescription(i,
-						_selectedRule.getParameterDescriptions()[i], _selectedRule.getParameterTypes()[i]);
-				if (_selectedRule.getRuleId().equals(_dynamicsDescriptor.getRuleId()) && _dynamicsDescriptor.getInputChannels().length>i) {
-					_inputChannelTableModel.setInputChannelValue(i, _dynamicsDescriptor.getInputChannels()[i].getValue());
+						_selectedRule.getParameterDescriptions()[i]);
+				if (_selectedRule.getRuleId().equals(
+						_dynamicsDescriptor.getRuleId())
+						&& (_dynamicsDescriptor.getInputChannels().length > i)) {
+					_inputChannelTableModel.setInputChannelValue(i,
+							_dynamicsDescriptor.getInputChannels()[i]
+									.getValue());
 				} else {
-					_inputChannelTableModel.setInputChannelValue(i, null);
+					_inputChannelTableModel.setInputChannelValue(i, "");
 				}
 			}
 			_channelTableViewer.refresh();
@@ -1031,15 +1151,16 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Creates a table viewer for managing channels.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent composite.
-	 * 
+	 *
 	 * @return The created viewer.
 	 */
 	private TableViewer createChannelTable(final Composite parent) {
 		// define column names
-		String[] columnNames = new String[] { "PROP_DESCRIPTION", "PROP_NAME", "PROP_VALUE"}; //$NON-NLS-1$ //$NON-NLS-2$ 
+		String[] columnNames = new String[] {
+				"PROP_DESCRIPTION", "PROP_NAME", "PROP_VALUE" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 		// create table
 		final Table table = new Table(parent, SWT.FULL_SELECTION
@@ -1050,7 +1171,7 @@ public final class SimpleChannelPage extends WizardPage {
 
 		// create viewer
 		final TableViewer viewer = new TableViewer(table);
-		
+
 		TableViewerColumn tvColumn;
 		tvColumn = new TableViewerColumn(viewer, SWT.NONE);
 		tvColumn.getColumn().setText("Description");
@@ -1060,7 +1181,8 @@ public final class SimpleChannelPage extends WizardPage {
 		tvColumn.getColumn().setText("Channel");
 		tvColumn.getColumn().setMoveable(false);
 		tvColumn.getColumn().setWidth(300);
-		EditingSupport editingSupport = new CustomEditingSupport(viewer, table, true);
+		EditingSupport editingSupport = new CustomEditingSupport(viewer, table,
+				true);
 		tvColumn.setEditingSupport(editingSupport);
 		tvColumn = new TableViewerColumn(viewer, SWT.NONE);
 		tvColumn.getColumn().setText("Default Value");
@@ -1068,8 +1190,7 @@ public final class SimpleChannelPage extends WizardPage {
 		tvColumn.getColumn().setWidth(200);
 		editingSupport = new CustomEditingSupport(viewer, table, false);
 		tvColumn.setEditingSupport(editingSupport);
-		
-		
+
 		viewer.setUseHashlookup(true);
 
 		// define column properties
@@ -1078,14 +1199,15 @@ public final class SimpleChannelPage extends WizardPage {
 		// configure keyboard support
 		TableViewerFocusCellManager focusCellManager = new TableViewerFocusCellManager(
 				viewer, new FocusCellOwnerDrawHighlighter(viewer));
+
 		ColumnViewerEditorActivationStrategy actSupport = new ColumnViewerEditorActivationStrategy(
 				viewer) {
 			protected boolean isEditorActivationEvent(
 					final ColumnViewerEditorActivationEvent event) {
-				return event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL
-						|| event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION
-						|| (event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED && event.keyCode == SWT.F2)
-						|| event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC;
+				return (event.eventType == ColumnViewerEditorActivationEvent.TRAVERSAL)
+						|| (event.eventType == ColumnViewerEditorActivationEvent.MOUSE_DOUBLE_CLICK_SELECTION)
+						|| ((event.eventType == ColumnViewerEditorActivationEvent.KEY_PRESSED) && (event.keyCode == SWT.F2))
+						|| (event.eventType == ColumnViewerEditorActivationEvent.PROGRAMMATIC);
 			}
 		};
 
@@ -1151,7 +1273,7 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Add a output channel.
-	 * 
+	 *
 	 * @param channelName
 	 *            The output channel name.
 	 */
@@ -1159,12 +1281,6 @@ public final class SimpleChannelPage extends WizardPage {
 		ParameterDescriptor descriptor = new ParameterDescriptor();
 		descriptor.setChannel(channelName);
 		_dynamicsDescriptor.setOutputChannel(descriptor);
-
-//		if (_isLinkOutput) {
-//			if (!_dynamicsDescriptor.hasInputChannel(descriptor)) {
-//				// _dynamicsDescriptor.addInputChannel(descriptor);
-//			}
-//		}
 
 		InputChannelTableRow row = new InputChannelTableRow(ParameterType.OUT,
 				"OUT", channelName);
@@ -1176,7 +1292,7 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Add a input channel.
-	 * 
+	 *
 	 * @param channelName
 	 *            The input channel name.
 	 */
@@ -1192,32 +1308,31 @@ public final class SimpleChannelPage extends WizardPage {
 
 	/**
 	 * Finishes the editing.
-	 * @param dynamicsDescriptor The {@link DynamicsDescriptor}
+	 *
+	 * @param dynamicsDescriptor
+	 *            The {@link DynamicsDescriptor}
 	 */
 	public void performFinish(final DynamicsDescriptor dynamicsDescriptor) {
 		// setup rule
 		if (_selectedRule != null) {
 			dynamicsDescriptor.setRuleId(_selectedRule.getRuleId());
 		}
+		boolean selection = _useOnlyConnectionsCheckBox.getSelection();
+		dynamicsDescriptor.setUsingOnlyConnectionStates(selection);
 		// setup IN channels
 		for (InputChannelTableRow row : _inputChannelTableModel
 				.getRowsWithContent(ParameterType.IN)) {
-			dynamicsDescriptor.addInputChannel(new ParameterDescriptor(row.getChannel(), row.getValueType(), row.getDefaultValue()));
+			dynamicsDescriptor.addInputChannel(new ParameterDescriptor(row
+					.getChannel(), row.getDefaultValue()));
 		}
 
 		// setup OUT channels
-		// FIXME: Sobald es mehere OUT-Parameter geben kann, hier entsprechend
-		// anpassen
 		List<InputChannelTableRow> outParameter = _inputChannelTableModel
 				.getRowsWithContent(ParameterType.OUT);
 		if (outParameter.size() > 0) {
-			InputChannelTableRow row = outParameter.get(0); 
-			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
-					row.getChannel(), row.getValueType(), row.getDefaultValue()));
+			InputChannelTableRow row = outParameter.get(0);
+			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(row
+					.getChannel(), row.getDefaultValue()));
 		}
-		// for (String value :
-		// _inputChannelTableModel.getRowsWithContent(ParameterType.OUT)) {
-		// dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(value));
-		// }
 	}
 }

@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Stefan Hofer
  * 
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class RectangleEditPartTest {

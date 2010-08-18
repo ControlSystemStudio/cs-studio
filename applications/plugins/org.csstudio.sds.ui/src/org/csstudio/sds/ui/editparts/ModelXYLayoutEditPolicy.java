@@ -1,4 +1,25 @@
-package org.csstudio.sds.ui.editparts;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+ package org.csstudio.sds.ui.editparts;
 
 import java.util.List;
 
@@ -13,6 +34,7 @@ import org.csstudio.sds.ui.internal.commands.ChangeGuideCommand;
 import org.csstudio.sds.ui.internal.commands.CloneCommand;
 import org.csstudio.sds.ui.internal.commands.CreateElementCommand;
 import org.csstudio.sds.ui.internal.commands.SetBoundsCommand;
+import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
 import org.csstudio.sds.ui.internal.feedback.GraphicalFeedbackContributionsService;
 import org.csstudio.sds.util.GuideUtil;
 import org.eclipse.draw2d.IFigure;
@@ -66,11 +88,10 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 		ContainerModel container = (ContainerModel) getHost().getModel();
 		AbstractWidgetModel widget = (AbstractWidgetModel) child.getModel();
 		CompoundCommand compoundCommand = new CompoundCommand();
-		Command cmd = new AddWidgetCommand(container, widget);
-		compoundCommand.add(cmd);
-
-		cmd = new SetBoundsCommand(widget, (Rectangle) constraint);
-		compoundCommand.add(cmd);
+		
+		compoundCommand.add(new AddWidgetCommand(container, widget));
+		compoundCommand.add(new SetSelectionCommand(child.getViewer(), widget));
+		compoundCommand.add(new SetBoundsCommand(widget, (Rectangle) constraint));
 
 		return compoundCommand;
 	}
@@ -183,7 +204,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	protected Command getCreateCommand(final CreateRequest request) {
 		ContainerModel container = (ContainerModel) getHost().getModel();
 		Rectangle bounds = (Rectangle) getConstraintFor(request);
-		Command cmd = new CreateElementCommand(container, request, bounds);
+		Command cmd = new CreateElementCommand(getHost().getViewer(), container, request, bounds);
 
 		return cmd;
 	}
@@ -269,6 +290,7 @@ final class ModelXYLayoutEditPolicy extends XYLayoutEditPolicy {
 	 *            the create request
 	 * @return the type identification
 	 */
+	@SuppressWarnings("unchecked")
 	private String determineTypeIdFromRequest(final CreateRequest request) {
 		Class newObject = (Class) request.getNewObjectType();
 		AbstractWidgetModel instance;

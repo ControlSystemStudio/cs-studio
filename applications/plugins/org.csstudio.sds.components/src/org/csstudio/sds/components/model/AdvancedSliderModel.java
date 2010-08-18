@@ -28,7 +28,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * An ellipse widget model.
  *
  * @author Sven Wende, Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.19 $
  *
  */
 public final class AdvancedSliderModel extends AbstractWidgetModel {

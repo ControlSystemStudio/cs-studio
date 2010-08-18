@@ -26,16 +26,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.sds.model.logic.DirectConnectionRule;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.internal.rules.DirectConnectionRule;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * Descriptor for the dynamic behavior of <code>ElementProperties</code>.
  * 
  * @author Alexander Will, Stefan Hofer, Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.20 $
  * 
  */
 public final class DynamicsDescriptor implements Cloneable {
@@ -163,6 +163,12 @@ public final class DynamicsDescriptor implements Cloneable {
 	private Map<DynamicValueState, Object> _conditionStateDependentPropertyValues;
 
 	/**
+	 * Indicates whether this {@link DynamicsDescriptor} should only use the
+	 * connection states.
+	 */
+	private boolean _useOnlyConnectionStates;
+
+	/**
 	 * Returns the property values, which should be applied for certain
 	 * connection states.
 	 * 
@@ -184,6 +190,11 @@ public final class DynamicsDescriptor implements Cloneable {
 	public void setConnectionStateDependentPropertyValues(
 			final Map<ConnectionState, Object> values) {
 		assert values != null;
+		for (ConnectionState state : values.keySet()) {
+			assert state != null : "state != null";
+			assert values.get(state) != null : "values.get("+ state +") != null";
+		}
+		
 		_connectionStateDependentPropertyValues = values;
 	}
 
@@ -225,6 +236,8 @@ public final class DynamicsDescriptor implements Cloneable {
 		for (ParameterDescriptor parameter : _inputChannels) {
 			clonedParameters.add(parameter.clone());
 		}
+		
+		clone._useOnlyConnectionStates = this._useOnlyConnectionStates;
 
 		clone._inputChannels = clonedParameters;
 
@@ -240,7 +253,7 @@ public final class DynamicsDescriptor implements Cloneable {
 			HashMap<ConnectionState, Object> clonedConnectionValues = new HashMap<ConnectionState, Object>();
 			for (ConnectionState key : _connectionStateDependentPropertyValues
 					.keySet()) {
-				// TODO: Deep clone the value, too.
+				// FIXME: Sven Wende: Clonen der Werte!
 				clonedConnectionValues.put(key,
 						_connectionStateDependentPropertyValues.get(key));
 			}
@@ -252,7 +265,7 @@ public final class DynamicsDescriptor implements Cloneable {
 			HashMap<DynamicValueState, Object> clonedConditionValues = new HashMap<DynamicValueState, Object>();
 			for (DynamicValueState key : _conditionStateDependentPropertyValues
 					.keySet()) {
-				// TODO: Deep clone the value, too.
+				// FIXME: Sven Wende: Clonen der Werte!
 				clonedConditionValues.put(key,
 						_conditionStateDependentPropertyValues.get(key));
 			}
@@ -269,5 +282,27 @@ public final class DynamicsDescriptor implements Cloneable {
 	 */
 	public void setRuleId(final String ruleId) {
 		_ruleId = ruleId;
+	}
+
+	/**
+	 * Sets whether this {@link DynamicsDescriptor} should only use the
+	 * connection states.
+	 * 
+	 * @param choice
+	 *            The choice
+	 */
+	public void setUsingOnlyConnectionStates(final boolean choice) {
+		_useOnlyConnectionStates = choice;
+	}
+
+	/**
+	 * Return if this {@link DynamicsDescriptor} uses only the connection
+	 * states.
+	 * 
+	 * @return <code>true</code> if this {@link DynamicsDescriptor} uses only
+	 *         the connection states, <code>false</code> otherwise
+	 */
+	public boolean isUsingOnlyConnectionStates() {
+		return _useOnlyConnectionStates;
 	}
 }

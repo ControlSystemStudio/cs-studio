@@ -29,7 +29,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * This class defines a widget model factory for action button models.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class ActionButtonModelFactory implements IWidgetModelFactory {

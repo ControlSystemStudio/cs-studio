@@ -25,8 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.Set;
-
 import org.csstudio.sds.internal.model.test.WidgetModelTestHelper;
 import org.junit.Before;
 import org.junit.Test;
@@ -35,7 +33,7 @@ import org.junit.Test;
  * Test case for class {@link AbstractWidgetModel}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.6 $
  * 
  */
 public final class AbstractWidgetModelTest {
@@ -100,31 +98,18 @@ public final class AbstractWidgetModelTest {
 
 	/**
 	 * Test method for
-	 * {@link org.csstudio.sds.model.AbstractWidgetModel#getPropertyNames()}.
-	 */
-	@Test
-	public void testGetPropertyNames() {
-		Set<String> properties = _testWidgetModel.getPropertyNames();
-		assertTrue(properties.contains(AbstractWidgetModel.PROP_HEIGHT));
-		assertTrue(properties.contains(AbstractWidgetModel.PROP_WIDTH));
-		assertTrue(properties.contains(AbstractWidgetModel.PROP_POS_X));
-		assertTrue(properties.contains(AbstractWidgetModel.PROP_POS_Y));
-	}
-
-	/**
-	 * Test method for
 	 * {@link org.csstudio.sds.model.AbstractWidgetModel#getProperty(java.lang.String)}.
 	 */
 	@Test
 	public void testGetProperty() {
 		assertNotNull(_testWidgetModel
-				.getProperty(AbstractWidgetModel.PROP_HEIGHT));
+				.getIntegerProperty(AbstractWidgetModel.PROP_HEIGHT));
 		assertNotNull(_testWidgetModel
-				.getProperty(AbstractWidgetModel.PROP_WIDTH));
+				.getIntegerProperty(AbstractWidgetModel.PROP_WIDTH));
 		assertNotNull(_testWidgetModel
-				.getProperty(AbstractWidgetModel.PROP_POS_X));
+				.getIntegerProperty(AbstractWidgetModel.PROP_POS_X));
 		assertNotNull(_testWidgetModel
-				.getProperty(AbstractWidgetModel.PROP_POS_Y));
+				.getIntegerProperty(AbstractWidgetModel.PROP_POS_Y));
 	}
 
 	/**
@@ -168,38 +153,6 @@ public final class AbstractWidgetModelTest {
 	}
 
 	/**
-	 * Test method for the connection methods.
-	 */
-	@Test
-	public void testConnections() {
-		AbstractWidgetModel sourceModel = WidgetModelTestHelper
-				.createWidgetModel();
-		AbstractWidgetModel targetElement1 = WidgetModelTestHelper
-				.createWidgetModel();
-		AbstractWidgetModel targetElement2 = WidgetModelTestHelper
-				.createWidgetModel();
-
-		ConnectionElement connectionElement1 = new ConnectionElement(
-				sourceModel, targetElement1);
-		ConnectionElement connectionElement2 = new ConnectionElement(
-				sourceModel, targetElement2);
-
-		assertEquals(2, sourceModel.getSourceConnections().size());
-		assertTrue(sourceModel.getSourceConnections().contains(
-				connectionElement1));
-		assertTrue(sourceModel.getSourceConnections().contains(
-				connectionElement2));
-
-		assertEquals(1, targetElement1.getTargetConnections().size());
-		assertTrue(targetElement1.getTargetConnections().contains(
-				connectionElement1));
-
-		assertEquals(1, targetElement2.getTargetConnections().size());
-		assertTrue(targetElement2.getTargetConnections().contains(
-				connectionElement2));
-	}
-
-	/**
 	 * Test method for
 	 * {@link org.csstudio.sds.model.AbstractWidgetModel#setLocation(int, int)}.
 	 */
@@ -214,6 +167,10 @@ public final class AbstractWidgetModelTest {
 		assertEquals(600, _testWidgetModel.getY());
 
 		_testWidgetModel.setLocation(oldX, oldY);
+	}
+
+	@Test
+	public void testAddColorProperty() {
 	}
 
 }

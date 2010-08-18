@@ -10,3 +10,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.utility.ldap,
  org.csstudio.utility.namespace.utility
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,39 +1,41 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.editparts;
 
 import java.beans.PropertyChangeEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.sds.internal.model.ILayerModelListener;
+import org.csstudio.sds.internal.model.Layer;
+import org.csstudio.sds.internal.model.LayerSupport;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
-import org.csstudio.sds.model.layers.ILayerModelListener;
-import org.csstudio.sds.model.layers.Layer;
-import org.csstudio.sds.model.layers.LayerSupport;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.internal.commands.CreateWidgetFromDroppedPvCommand;
-import org.csstudio.sds.ui.internal.commands.DeleteElementCommand;
+import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
 import org.csstudio.sds.ui.internal.commands.OrphanChildCommand;
 import org.csstudio.sds.ui.internal.editor.DropPvRequest;
 import org.eclipse.core.runtime.IAdaptable;
@@ -56,16 +58,16 @@ import org.eclipse.gef.editpolicies.SnapFeedbackPolicy;
 import org.eclipse.gef.requests.CreateRequest;
 import org.eclipse.gef.requests.GroupRequest;
 import org.eclipse.gef.rulers.RulerProvider;
+import org.eclipse.jface.viewers.StructuredSelection;
 
 /**
  * EditPart implementation with container semantics. Can be used as controller
  * base class for widgets that are derived from {@link ContainerModel}.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
-public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
-		implements IAdaptable, ILayerModelListener {
+public abstract class AbstractContainerEditPart extends AbstractBaseEditPart implements IAdaptable, ILayerModelListener {
 
 	/**
 	 * Flag for the selection behaviour of children.
@@ -106,23 +108,14 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void registerPropertyChangeHandlers() {
-		// do nothing
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
 	public IFigure getContentPane() {
 		IFigure f = super.getContentPane();
 
 		// initialize the layers
-		if (f instanceof LayeredWidgetPane && !_layersInitialized) {
+		if ((f instanceof LayeredWidgetPane) && !_layersInitialized) {
 			LayeredWidgetPane layeredWidgetPane = (LayeredWidgetPane) f;
 			int i = 0;
-			for (Layer layer : getContainerModel().getLayerSupport()
-					.getLayers()) {
+			for (Layer layer : getContainerModel().getLayerSupport().getLayers()) {
 				layeredWidgetPane.addLayer(layer.getId(), i);
 				i++;
 			}
@@ -136,7 +129,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	 * Returns the container model, which is managed by this controller. This is
 	 * for convinience only. The method returns the same object as
 	 * {@link #getModel()} or {@link #getWidgetModel()}.
-	 * 
+	 *
 	 * @return the container model
 	 */
 	public final ContainerModel getContainerModel() {
@@ -146,23 +139,19 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	/**
 	 * Overidden to suppport layers. Layers are only supported if the figure for
 	 * this editpart used a {@link LayeredWidgetPane} as its content pane.
-	 * 
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected final void addChildVisual(final EditPart childEditPart,
-			final int index) {
+	protected final void addChildVisual(final EditPart childEditPart, final int index) {
 		IFigure child = ((GraphicalEditPart) childEditPart).getFigure();
 		IFigure contentPane = getContentPane();
 
-		AbstractWidgetModel widgetModel = (AbstractWidgetModel) childEditPart
-				.getModel();
+		AbstractWidgetModel widgetModel = (AbstractWidgetModel) childEditPart.getModel();
 
 		if (contentPane instanceof LayeredWidgetPane) {
-			Layer layer = getContainerModel().getLayerSupport().findLayer(
-					widgetModel.getLayer());
-			((LayeredWidgetPane) contentPane).addWidget(layer.getId(), child,
-					index);
+			Layer layer = getContainerModel().getLayerSupport().findLayer(widgetModel.getLayer());
+			((LayeredWidgetPane) contentPane).addWidget(layer.getId(), child, index);
 		} else {
 			super.addChildVisual(childEditPart, index);
 		}
@@ -171,7 +160,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	/**
 	 * Overidden to suppport layers. Layers are only supported if the figure for
 	 * this editpart used a {@link LayeredWidgetPane} as its content pane.
-	 * 
+	 *
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -192,13 +181,10 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	protected void createEditPolicies() {
 		installEditPolicy(EditPolicy.COMPONENT_ROLE, new ComponentEditPolicy() {
 			@Override
-			protected Command createDeleteCommand(
-					final GroupRequest deleteRequest) {
-				ContainerModel model = (ContainerModel) getHost().getParent()
-						.getModel();
-				AbstractWidgetModel widgetModel = (AbstractWidgetModel) getHost()
-						.getModel();
-				return new DeleteElementCommand(model, widgetModel);
+			protected Command createDeleteCommand(final GroupRequest deleteRequest) {
+				ContainerModel model = (ContainerModel) getHost().getParent().getModel();
+				AbstractWidgetModel widgetModel = (AbstractWidgetModel) getHost().getModel();
+				return new DeleteWidgetsCommand(getViewer(), model, Arrays.asList(widgetModel));
 			}
 
 			@Override
@@ -217,18 +203,13 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 
 		// to prevent selection and manipulation of widgets in the the Run Mode,
 		// the layout role is only installed for the Edit Mode
-		installEditPolicy(
-				EditPolicy.LAYOUT_ROLE,
-				getExecutionMode() == ExecutionMode.EDIT_MODE ? new ModelXYLayoutEditPolicy()
-						: null);
+		installEditPolicy(EditPolicy.LAYOUT_ROLE, getExecutionMode() == ExecutionMode.EDIT_MODE ? new ModelXYLayoutEditPolicy() : null);
 
 		installEditPolicy(EditPolicy.CONTAINER_ROLE, new ContainerEditPolicy() {
 			@Override
 			public Command getCommand(final Request request) {
 				if (DropPvRequest.REQ_DROP_PV.equals(request.getType())) {
-					return new CreateWidgetFromDroppedPvCommand(
-							(DropPvRequest) request, (ContainerModel) getHost()
-									.getModel());
+					return new CreateWidgetFromDroppedPvCommand(getViewer(), (DropPvRequest) request, (ContainerModel) getHost().getModel());
 				}
 				return super.getCommand(request);
 			}
@@ -238,17 +219,15 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 				return null;
 			}
 
+			@SuppressWarnings("unchecked")
 			@Override
 			public Command getOrphanChildrenCommand(final GroupRequest request) {
 				List parts = request.getEditParts();
 				CompoundCommand result = new CompoundCommand(""); //$NON-NLS-1$
 				for (int i = 0; i < parts.size(); i++) {
-					ContainerModel container = (ContainerModel) getHost()
-							.getModel();
-					AbstractWidgetModel widget = (AbstractWidgetModel) ((EditPart) parts
-							.get(i)).getModel();
-					OrphanChildCommand orphan = new OrphanChildCommand(
-							container, widget);
+					ContainerModel container = (ContainerModel) getHost().getModel();
+					AbstractWidgetModel widget = (AbstractWidgetModel) ((EditPart) parts.get(i)).getModel();
+					OrphanChildCommand orphan = new OrphanChildCommand(container, widget);
 					result.add(orphan);
 				}
 				return result.unwrap();
@@ -270,10 +249,10 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	protected final synchronized List getModelChildren() {
-		List<AbstractWidgetModel> modelChildren = getContainerModel()
-				.getWidgets();
+		List<AbstractWidgetModel> modelChildren = getContainerModel().getWidgets();
 		return modelChildren;
 	}
 
@@ -285,18 +264,15 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	public final Object getAdapter(final Class adapter) {
 		if (adapter == SnapToHelper.class) {
 			List snapStrategies = new ArrayList();
-			Boolean val = (Boolean) getViewer().getProperty(
-					RulerProvider.PROPERTY_RULER_VISIBILITY);
+			Boolean val = (Boolean) getViewer().getProperty(RulerProvider.PROPERTY_RULER_VISIBILITY);
 			if ((val != null) && val.booleanValue()) {
 				snapStrategies.add(new SnapToGuides(this));
 			}
-			val = (Boolean) getViewer().getProperty(
-					SnapToGeometry.PROPERTY_SNAP_ENABLED);
+			val = (Boolean) getViewer().getProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED);
 			if ((val != null) && val.booleanValue()) {
 				snapStrategies.add(new SnapToGeometry(this));
 			}
-			val = (Boolean) getViewer().getProperty(
-					SnapToGrid.PROPERTY_GRID_ENABLED);
+			val = (Boolean) getViewer().getProperty(SnapToGrid.PROPERTY_GRID_ENABLED);
 			if ((val != null) && val.booleanValue()) {
 				snapStrategies.add(new SnapToGrid(this));
 			}
@@ -326,70 +302,95 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	 * {@inheritDoc}
 	 */
 	@Override
-	@SuppressWarnings("unchecked")
 	public final synchronized void propertyChange(final PropertyChangeEvent evt) {
 		super.propertyChange(evt);
-		
+
 		new CheckedUiRunnable() {
 			@Override
 			protected void doRunInUi() {
 				String prop = evt.getPropertyName();
 
 				if (prop.equals(ContainerModel.PROP_CHILD_ADDED)) {
-					AbstractWidgetModel model = (AbstractWidgetModel) evt
-							.getNewValue();
-					addChild(createChild(model), getChildren().size());
+					refreshChildren();
+				} else if (prop.equals(ContainerModel.PROP_CHILDREN_ADDED)) {
+					refreshChildren();
 				} else if (prop.equals(ContainerModel.PROP_CHILD_REMOVED)) {
+					refreshChildren();
+				} else if (prop.equals(ContainerModel.PROP_CHILDREN_REMOVED)) {
 					refreshChildren();
 				} else if (prop.equals(ContainerModel.PROP_ORDER_CHANGED)) {
 					refreshChildren();
+				} else if (prop.equals(ContainerModel.PROP_CHILDREN_SELECTED)) {
+					List<AbstractWidgetModel> widgets = (List<AbstractWidgetModel>) evt.getNewValue();
+
+					List<EditPart> eps = new ArrayList<EditPart>();
+					for (AbstractWidgetModel w : widgets) {
+						EditPart ep = findEditPart(w);
+
+						if (ep != null) {
+							eps.add(ep);
+
+						}
+
+					}
+					getRoot().getViewer().setSelection(new StructuredSelection(eps));
 				}
 			}
 
 		};
+	}
 
+	@Override
+	protected void refreshChildren() {
+		super.refreshChildren();
+	}
+
+	private EditPart findEditPart(final AbstractWidgetModel model) {
+		EditPart result = null;
+
+		Iterator<EditPart> it = getChildren().iterator();
+
+		while (it.hasNext() && (result == null)) {
+			EditPart p = it.next();
+
+			if (p.getModel().equals(model)) {
+				result = p;
+			}
+		}
+
+		return result;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void layerChanged(
-			final org.csstudio.sds.model.layers.Layer layer,
-			final String property) {
-		if (getContentPane() instanceof LayeredWidgetPane) {
-			final LayeredWidgetPane layeredWidgetPane = (LayeredWidgetPane) getContentPane();
+	public final void layerChanged(final org.csstudio.sds.internal.model.Layer layer, final String property) {
+		new CheckedUiRunnable() {
+			@Override
+			protected void doRunInUi() {
 
-			if (property.equals(LayerSupport.PROP_LAYER_MOVED)) {
-				layeredWidgetPane.moveLayer(layer.getId(), getContainerModel()
-						.getLayerSupport().getLayerIndex(layer));
-			} else if (property.equals(LayerSupport.PROP_LAYER_ADDED)) {
-				new CheckedUiRunnable() {
+				if (getContentPane() instanceof LayeredWidgetPane) {
+					final LayeredWidgetPane layeredWidgetPane = (LayeredWidgetPane) getContentPane();
 
-					@Override
-					protected void doRunInUi() {
-						layeredWidgetPane.addLayer(layer.getId(), getContainerModel()
-								.getLayerSupport().getLayerIndex(layer));
-						layeredWidgetPane.setVisibility(layer.getId(), layer
-								.isVisible());		
+					if (property.equals(LayerSupport.PROP_LAYER_MOVED)) {
+						layeredWidgetPane.moveLayer(layer.getId(), getContainerModel().getLayerSupport().getLayerIndex(layer));
+					} else if (property.equals(LayerSupport.PROP_LAYER_ADDED)) {
+						layeredWidgetPane.addLayer(layer.getId(), getContainerModel().getLayerSupport().getLayerIndex(layer));
+						layeredWidgetPane.setVisibility(layer.getId(), layer.isVisible());
+					} else if (property.equals(LayerSupport.PROP_LAYER_REMOVED)) {
+						layeredWidgetPane.removeLayer(layer.getId(), getContainerModel().getLayerSupport().getDefaultLayer().getId());
+					} else if (property.equals(org.csstudio.sds.internal.model.Layer.PROP_VISIBLE)) {
+						layeredWidgetPane.setVisibility(layer.getId(), layer.isVisible());
 					}
-					
-				};
-				
-			} else if (property.equals(LayerSupport.PROP_LAYER_REMOVED)) {
-				layeredWidgetPane.removeLayer(layer.getId(),
-						getContainerModel().getLayerSupport().getDefaultLayer()
-								.getId());
-			} else if (property
-					.equals(org.csstudio.sds.model.layers.Layer.PROP_VISIBLE)) {
-				layeredWidgetPane.setVisibility(layer.getId(), layer
-						.isVisible());
+				}
 			}
-		}
+		};
+
 	}
 
 	/**
 	 * Sets the selection behaviour for children of this container.
-	 * 
+	 *
 	 * @param childrenSelectable
 	 *            true, if children of this container should be selectable,
 	 *            false otherwise
@@ -405,6 +406,7 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 	@Override
 	protected final EditPart createChild(final Object model) {
 		EditPart result = super.createChild(model);
+
 		// setup selection behaviour for the new child
 		if (result instanceof AbstractBaseEditPart) {
 			((AbstractBaseEditPart) result).setSelectable(_childrenSelectable);
@@ -415,35 +417,28 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart
 
 	/**
 	 * Called by child editparts when their current layer has changed.
-	 * 
+	 *
 	 * Note: Layers are only supported if the figure for this editpart used a
 	 * {@link LayeredWidgetPane} as its content pane. Otherwise this call won´t
 	 * have any effect.
-	 * 
+	 *
 	 * @param childEditPart
 	 *            the child editpart
 	 * @param oldLayerName
 	 *            the old name of the layer
 	 * @param newLayerName
 	 *            the new name of the layer
-	 * 
-	 * FIXME: Auf Layer typisieren, sobald Backend entsprechend umgestellt
 	 */
-	protected final void handleLayerChanged(
-			final AbstractGraphicalEditPart childEditPart,
-			final String oldLayerName, final String newLayerName) {
+	protected final void handleLayerChanged(final AbstractGraphicalEditPart childEditPart, final String oldLayerName, final String newLayerName) {
 		if (getContentPane() instanceof LayeredWidgetPane) {
 
-			// FIXME: Layers: Bitte keine Layer implizit anlegen lassen! Und
-			// erst recht nicht hier!
 			LayeredWidgetPane contentPane = (LayeredWidgetPane) getContentPane();
 			if (!contentPane.hasLayer(newLayerName)) {
-				this.getContainerModel().getLayerSupport().addLayer(
-						new Layer(newLayerName, newLayerName));
+				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, getContainerModel().getLayerSupport().getDefaultLayer().getId());
+				CentralLogger.getInstance().warn(this, "Tried to move widget into not existing layer '"+ newLayerName +"'");
+			} else {
+				contentPane.moveWidget(childEditPart.getFigure(), oldLayerName, newLayerName);
 			}
-			contentPane.moveWidget(childEditPart.getFigure(), oldLayerName,
-					newLayerName);
 		}
 	}
-
 }

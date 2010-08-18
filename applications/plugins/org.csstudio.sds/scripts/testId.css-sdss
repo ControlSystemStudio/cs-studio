@@ -1,4 +1,4 @@
-var returns = "java.lang.Double";
+var compatibleProperties = "sds.double";
 var description = "Logic Component Example";
 var parameters = new Array("Arbitrary PV1", "Arbitrary PV2", "Arbitrary PV3");
 

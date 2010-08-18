@@ -25,7 +25,7 @@ package org.csstudio.sds.model;
  * This interface defines a factory that is used to create widget models.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public interface IWidgetModelFactory {
@@ -41,5 +41,6 @@ public interface IWidgetModelFactory {
 	 * 
 	 * @return The type of the models that are created by this factory.
 	 */
+	@SuppressWarnings("unchecked")
 	Class getWidgetModelType();
 }

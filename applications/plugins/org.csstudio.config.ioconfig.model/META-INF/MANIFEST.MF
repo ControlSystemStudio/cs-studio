@@ -47,3 +47,4 @@ Bundle-ClassPath: bin/,
  lib/javassist-3.4.GA.jar,
  lib/jta-1.1.jar,
  lib/ehcache-1.2.3.jar
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

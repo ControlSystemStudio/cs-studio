@@ -22,9 +22,11 @@
 package org.csstudio.sds.internal;
 
 import org.csstudio.sds.SdsPlugin;
+import org.csstudio.sds.cursorservice.ICursorService;
 import org.csstudio.sds.internal.model.initializers.ManualSchema;
-import org.csstudio.sds.model.optionEnums.CursorStyleEnum;
-import org.csstudio.sds.preferences.PreferenceConstants;
+import org.csstudio.sds.internal.preferences.CategorizationType;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
@@ -33,7 +35,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * Initializes the SDS preferences.
  * 
  * @author Stefan Hofer
- * @version $Revision$
+ * @version $Revision: 1.23 $
  * 
  */
 public final class SdsPreferenceInitializer extends
@@ -47,6 +49,18 @@ public final class SdsPreferenceInitializer extends
 		IEclipsePreferences node = new DefaultScope()
 				.getNode(SdsPlugin.PLUGIN_ID);
 		initializeInitializationSchemaPreferences(node);
+		
+		node.put(PreferenceConstants.PROP_DEFAULT_DISPLAY_FILE, "/CSS/SDS/defaultDisplay.css-sds");
+		node.put(PreferenceConstants.PROP_DEFAULT_DISPLAY_ALIAS, "channel");
+		node.putBoolean(PreferenceConstants.PROP_DEFAULT_DISPLAY_OPEN_AS_SHELL, true);
+		
+		// Cursors
+		node.put(PreferenceConstants.CURSOR_SELECTION_RULE, ICursorService.DEFAULT_RULE_ID);
+		
+		//Display Options
+		node.put(PreferenceConstants.PROP_WIDGET_CATEGORIZATION, CategorizationType.DRAWER.getId());
+		
+		node.putBoolean(PreferenceConstants.PROP_WRITE_ACCESS_DENIED, false);
 	}
 
 	/**
@@ -58,15 +72,9 @@ public final class SdsPreferenceInitializer extends
 	 */
 	private void initializeInitializationSchemaPreferences(
 			final IEclipsePreferences node) {
-		node.put(PreferenceConstants.PROP_SCHEMA, ManualSchema.ID);
+		node.put(WidgetInitializationService.PROP_SCHEMA, ManualSchema.ID);
 		node.putInt(PreferenceConstants.PROP_GRID_SPACING, 12);
 		node.putBoolean(PreferenceConstants.PROP_ANTIALIASING, false);
-		node.put(PreferenceConstants.PROP_DEFAULT_CURSOR, CursorStyleEnum.ARROW.getDisplayName());
-		node.put(PreferenceConstants.PROP_ENABLED_ACTION_CURSOR, CursorStyleEnum.HAND.getDisplayName());
-		node.put(PreferenceConstants.PROP_DISABLED_ACTION_CURSOR, CursorStyleEnum.HAND.getDisplayName());
-//		node.putBoolean(PreferenceConstants.PROP_USE_WORKSPACE_ID, true);
-//		XXX Removed, because the default dialog font should be used (23.11.2007) 
-//		node.putBoolean(PreferenceConstants.PROP_USE_DIALOG_FONT, true);
 	}
 
 }

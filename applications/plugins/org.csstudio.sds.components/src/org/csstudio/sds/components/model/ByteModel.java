@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ByteModel.java,v 1.7 2010/05/06 16:23:18 hrickens Exp $
  */
 package org.csstudio.sds.components.model;
 
@@ -29,8 +29,8 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
  * @since 05.10.2007
  */
 public class ByteModel extends AbstractWidgetModel {

@@ -30,18 +30,19 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link LabelModel} widget with Connection state
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
  * @since 19.04.2010
  */
 public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<LabelModel> {
 
 
+    private boolean _showUnits;
+
     /**
      * Constructor.
      */
     public LabeConnectionBehavior() {
-        System.out.println("Constructor LabeConnectionBehavior");
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
         addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
@@ -53,7 +54,8 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
     @Override
     protected void doInitialize(final LabelModel widget) {
         super.doInitialize(widget);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
+        _showUnits=!widget.getValueType().equals(TextTypeEnum.TEXT);
+        if(!_showUnits) {
             widget.setJavaType(String.class);
         }
     }
@@ -71,7 +73,9 @@ public class LabeConnectionBehavior extends AbstractDesyConnectionBehavior<Label
 
     @Override
     protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
-        model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
+        if(_showUnits) {
+            model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
+        }
     }
 
 }

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: TickmarkRule.java,v 1.6 2010/06/17 10:39:50 hrickens Exp $
  */
 package org.csstudio.sds.cosyrules.color;
 
@@ -28,8 +28,8 @@ import org.csstudio.sds.model.IRule;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 27.09.2007
  */
 public class TickmarkRule implements IRule {

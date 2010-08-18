@@ -33,7 +33,7 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * Initializes a rectangle with EPICS specific property values.
  * 
  * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.10 $
  * 
  */
 public final class RectangleInitializer extends AbstractEpicsWidgetInitializer {

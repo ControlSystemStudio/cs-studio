@@ -28,7 +28,7 @@ import org.eclipse.draw2d.IFigure;
  * the graphical update of associated display.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public interface IDisplayPropertyChangeHandler {

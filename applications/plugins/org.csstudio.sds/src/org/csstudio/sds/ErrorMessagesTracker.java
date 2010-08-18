@@ -29,7 +29,7 @@ import java.util.List;
  * requested as one joined <code>String</code>.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public class ErrorMessagesTracker {

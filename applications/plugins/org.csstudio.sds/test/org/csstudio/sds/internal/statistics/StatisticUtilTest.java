@@ -32,7 +32,7 @@ import org.junit.Test;
  * Test case for class {@link StatisticUtil}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class StatisticUtilTest {
@@ -81,8 +81,6 @@ public final class StatisticUtilTest {
 			Thread.sleep(100);
 			StatisticUtil.getInstance().trackExecution(MeasureCategoriesEnum.SYNC_EXEC_CATEGORY, 10);
 			Thread.sleep(100);
-			
-			//TODO: Tests (swende)
 		} catch (InterruptedException e) {
 			fail(e.getMessage());
 		}

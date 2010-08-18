@@ -35,7 +35,7 @@ import org.eclipse.swt.widgets.Label;
  * A cell editor for fonts.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class FontCellEditor extends DialogCellEditor {

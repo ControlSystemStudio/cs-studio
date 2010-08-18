@@ -1,6 +1,9 @@
 
 syntax: regexp
 \.cvsignore$
+\.checkstyle$
+
+
 syntax: regexp
 ^applications/plugins/org\.csstudio\.utility\.screenshot\.desy/bin$
 

@@ -1,34 +1,40 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.ui.runmode;
 
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.internal.connection.ConnectionService;
-import org.csstudio.sds.ui.editparts.ExecutionMode;
-import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
+import org.csstudio.sds.internal.runmode.RunModeBoxInput;
+import org.csstudio.sds.internal.runmode.RunModeType;
 import org.csstudio.sds.ui.internal.runmode.AbstractRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.DisplayViewPart;
 import org.csstudio.sds.ui.internal.runmode.IRunModeDisposeListener;
-import org.csstudio.sds.ui.internal.runmode.RunModeBoxInput;
-import org.csstudio.sds.ui.internal.runmode.RunModeType;
 import org.csstudio.sds.ui.internal.runmode.ShellRunModeBox;
 import org.csstudio.sds.ui.internal.runmode.ViewRunModeBox;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IResource;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.gef.EditDomain;
-import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
-import org.eclipse.gef.tools.SelectionTool;
-import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
-import org.eclipse.swt.widgets.Composite;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IMemento;
 
 /**
@@ -71,6 +77,11 @@ public final class RunModeService {
 		return _instance;
 	}
 
+	public void openDisplayShellInRunMode(final IPath path,
+			final Map<String, String> aliases) {
+		openDisplayShellInRunMode(path, aliases, null);
+	}
+
 	/**
 	 * Opens a Display in a new Shell and adds the new Aliases.
 	 * 
@@ -80,22 +91,21 @@ public final class RunModeService {
 	 *            A Map of new Aliases for the Display (can be null)
 	 */
 	public void openDisplayShellInRunMode(final IPath path,
-			final Map<String, String> aliases) {
+			final Map<String, String> aliases, RunModeBoxInput predecessor) {
 		assert path != null;
 
 		final RunModeBoxInput runModeBoxInput = new RunModeBoxInput(path,
 				aliases, RunModeType.SHELL);
 
+		runModeBoxInput.setPredecessorBox(predecessor);
+
 		if (_activeBoxes.containsKey(runModeBoxInput)) {
 			AbstractRunModeBox box = _activeBoxes.get(runModeBoxInput);
 			box.bringToTop();
 		} else {
-			InputStream is = getInputStream(path);
-
-			if (is != null) {
-
-				final AbstractRunModeBox runModeBox = new ShellRunModeBox(is,
-						path.toString(), ConnectionService.getInstance());
+			try {
+				final AbstractRunModeBox runModeBox = new ShellRunModeBox(
+						runModeBoxInput);
 
 				// memorize box
 				_activeBoxes.put(runModeBoxInput, runModeBox);
@@ -104,19 +114,33 @@ public final class RunModeService {
 				runModeBox.addDisposeListener(new IRunModeDisposeListener() {
 					public void dispose() {
 						_activeBoxes.remove(runModeBoxInput);
+						assert !_activeBoxes.containsKey(runModeBox) : "!_activeBoxes.containsKey(runModeBox)";
 					}
 				});
 
 				// open the box
-				runModeBox.openRunMode(aliases, null);
-				
-			} else {
+				runModeBox.openRunMode(null);
+			} catch (IllegalArgumentException e) {
 				CentralLogger.getInstance().info(
 						null,
 						"Cannot open run mode: " + path.toOSString()
 								+ " does not exist.");
+				MessageDialog.openError(null, "Control System Studio",
+						"The display file was not found: " + path.toString());
 			}
 		}
+	}
+
+	/**
+	 * Closes the RunModeBox corresponding to the given {@link RunModeBoxInput}.
+	 * 
+	 * @param modeBoxInput
+	 *            The {@link RunModeBoxInput}
+	 */
+	public void closeRunModeBox(final RunModeBoxInput modeBoxInput) {
+		CentralLogger.getInstance().debug(this, "Close RunModeBox: " + modeBoxInput.getFilePath());
+		AbstractRunModeBox runModeBox = _activeBoxes.get(modeBoxInput);
+		runModeBox.dispose();
 	}
 
 	/**
@@ -126,7 +150,7 @@ public final class RunModeService {
 	 *            The IPath to the Display
 	 */
 	public void openDisplayViewInRunMode(final IPath location) {
-		this.openDisplayViewInRunMode(location, null);
+		this.openDisplayViewInRunMode(location, new HashMap<String, String>());
 	}
 
 	/**
@@ -144,14 +168,18 @@ public final class RunModeService {
 	}
 
 	/**
-	 * Opens a Display in a new View with the informations of the given {@link IMemento}.
-	 * @param displayViewPart the {@link DisplayViewPart}
-	 * @param memento the {@link IMemento} for the view
+	 * Opens a Display in a new View with the informations of the given
+	 * {@link IMemento}.
+	 * 
+	 * @param displayViewPart
+	 *            the {@link DisplayViewPart}
+	 * @param memento
+	 *            the {@link IMemento} for the view
 	 * @required memento!=null
 	 */
 	public void openDisplayViewInRunMode(final DisplayViewPart displayViewPart,
 			final IMemento memento) {
-		assert memento!=null : "Precondition violated: memento!=null";
+		assert memento != null : "Precondition violated: memento!=null";
 		String storedPath = memento.getString("FILE");
 
 		if (storedPath != null) {
@@ -188,11 +216,9 @@ public final class RunModeService {
 			AbstractRunModeBox box = _activeBoxes.get(runModeBoxInput);
 			box.bringToTop();
 		} else {
-			InputStream is = getInputStream(path);
-
-			if (is != null) {
-				final ViewRunModeBox runModeBox = new ViewRunModeBox(is, path
-						.toString(), ConnectionService.getInstance(), view);
+			try {
+				final ViewRunModeBox runModeBox = new ViewRunModeBox(
+						runModeBoxInput, view);
 
 				// memorize box
 				_activeBoxes.put(runModeBoxInput, runModeBox);
@@ -204,7 +230,8 @@ public final class RunModeService {
 					}
 				});
 
-				// create a runnable that is executed, when the view is fully launched
+				// create a runnable that is executed, when the view is fully
+				// launched
 				Runnable runnable = new Runnable() {
 					public void run() {
 						// IMPORTANT: set the memento infos on the view
@@ -220,55 +247,25 @@ public final class RunModeService {
 							}
 							mementoInfos.put("ALIASES", sb.toString());
 						}
-						
-						// TODO: Funktioniert so nicht, da die View asynchron geladen wird
-						runModeBox.getView().setMementoInfos(mementoInfos);						
+
+						// TODO: Funktioniert so nicht, da die View asynchron
+						// geladen wird
+						runModeBox.getView().setMementoInfos(mementoInfos);
 					}
 				};
-				
-				
+
 				// open the box
-				runModeBox.openRunMode(aliases, runnable);
-			} else {
+				runModeBox.openRunMode(runnable);
+			} catch (IllegalArgumentException e) {
 				CentralLogger.getInstance().info(
 						null,
 						"Cannot open run mode: " + path.toOSString()
 								+ " does not exist.");
+				MessageDialog.openError(null, "Control System Studio",
+						"The display file was not found: " + path.toString());
 			}
 		}
 
-	}
-
-	/**
-	 * Creates a graphical viewer that can be used to display SDS models.
-	 * 
-	 * @param parent
-	 *            the parent composite
-	 * 
-	 * TODO: Methode abschaffen.
-	 * 
-	 * @deprecated
-	 * @return a graphical viewer that can be used to display SDS models
-	 */
-	public static GraphicalViewer createGraphicalViewer(final Composite parent) {
-		
-		
-		final ScrollingGraphicalViewer viewer = new ScrollingGraphicalViewer();
-		viewer.createControl(parent);
-
-		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
-
-		final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart();
-		viewer.setRootEditPart(root);
-
-		EditDomain editDomain = new EditDomain();
-		
-		final SelectionTool tool = new SelectionTool();
-		tool.setUnloadWhenFinished(false);
-		editDomain.setDefaultTool(tool);
-		editDomain.addViewer(viewer);
-		
-		return viewer;
 	}
 
 	/**
@@ -282,37 +279,17 @@ public final class RunModeService {
 	}
 
 	/**
-	 * Return the {@link InputStream} from the given path.
+	 * Closes all running instances of the specified display.
 	 * 
 	 * @param path
-	 *            The {@link IPath} to the file
-	 * @return The corresponding {@link InputStream}
+	 *            the display path
 	 */
-	private InputStream getInputStream(final IPath path) {
-		InputStream result = null;
-
-		// try workspace
-
-		IResource r = ResourcesPlugin.getWorkspace().getRoot().findMember(path,
-				false);
-		if (r instanceof IFile) {
-			try {
-				result = ((IFile) r).getContents();
-			} catch (CoreException e) {
-				result = null;
+	public void closeDisplayShellInRunMode(IPath path) {
+		for (RunModeBoxInput in : _activeBoxes.keySet()) {
+			if (path.equals(in.getFilePath())) {
+				_activeBoxes.get(in).dispose();
 			}
 		}
-
-		if (result == null) {
-			// try from local file system
-			try {
-				result = new FileInputStream(path.toFile());
-			} catch (FileNotFoundException e) {
-				result = null;
-			}
-
-		}
-
-		return result;
 	}
+
 }

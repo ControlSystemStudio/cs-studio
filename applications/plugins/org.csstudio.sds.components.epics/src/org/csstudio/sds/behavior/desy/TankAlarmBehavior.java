@@ -29,8 +29,8 @@ import org.epics.css.dal.simple.AnyData;
  * Default DESY-Behavior for the {@link TankModel} widget with Connection state and Alarms.
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 21.04.2010
  */
 public class TankAlarmBehavior extends MarkedWidgetDesyAlarmBehavior<TankModel> {

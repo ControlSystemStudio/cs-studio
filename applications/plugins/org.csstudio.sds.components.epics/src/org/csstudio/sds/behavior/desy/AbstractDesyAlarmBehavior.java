@@ -27,8 +27,8 @@ import org.epics.css.dal.simple.Severity;
  * TODO (hrickens) :
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 19.04.2010
  *
  * @param <W>

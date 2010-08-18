@@ -926,7 +926,7 @@ public final class AdvancedSliderFigure extends Panel implements IAdaptable {
 	 * Definition of listeners that react on slider events.
 	 *
 	 * @author Sven Wende
-	 * @version $Revision$
+	 * @version $Revision: 1.16 $
 	 *
 	 */
 	public interface ISliderListener {

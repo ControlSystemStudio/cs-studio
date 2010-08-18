@@ -7,7 +7,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModule;
 
-public class DummyRepository implements IReposetory {
+public class DummyRepository implements IRepository {
 
     private int id = 1;
 
@@ -107,7 +107,6 @@ public class DummyRepository implements IReposetory {
     @Override
     public void close() {
         // TODO Auto-generated method stub
-        
     }
 
 }

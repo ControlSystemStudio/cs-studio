@@ -1,20 +1,44 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.ui.internal.properties;
 
+import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.sds.util.ColorAndFontUtil;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.FontDialog;
 import org.eclipse.swt.widgets.Shell;
 
 /**
  * A table cell editor for values of type Font.
  * <p>
  * There is already a FontCellEditor, but when activated, it adds another step
- * where it only displays a small color patch, the Font indices and then a button
- * to start the dialog.
+ * where it only displays a small color patch, the Font indices and then a
+ * button to start the dialog.
  * <p>
  * That's a waste of real estate, adds another 'click' to the editing of fonts,
  * plus the overall layout was really poor on Mac OS X, where the button didn't
@@ -22,7 +46,7 @@ import org.eclipse.swt.widgets.Shell;
  * <p>
  * This implementation, based on the CheckboxCellEditor sources, jumps right
  * into the font dialog.
- *  
+ * 
  * @author Kay Kasemir, Kai Meyer
  */
 public final class FontCellEditor2 extends CellEditor {
@@ -34,11 +58,11 @@ public final class FontCellEditor2 extends CellEditor {
 	/**
 	 * The current RGB value.
 	 */
-	private FontData _value;
+	private String _value;
 
 	/**
-	 * Creates a new font cell editor parented under the given control. The
-	 * cell editor value is an SWT Font value.
+	 * Creates a new font cell editor parented under the given control. The cell
+	 * editor value is an SWT Font value.
 	 * 
 	 * @param parent
 	 *            The parent table.
@@ -55,9 +79,17 @@ public final class FontCellEditor2 extends CellEditor {
 	public void activate() {
 		FontDialog dialog = new FontDialog(_shell);
 		if (_value != null) {
-			dialog.setFontList(new FontData[] {_value});
+			Font font = SdsUiPlugin.getDefault().getColorAndFontService().getFont(_value);
+
+			if (font != null) {
+				dialog.setFontList(new FontData[] { font.getFontData()[0] });
+			}
 		}
-		_value = dialog.open();
+		FontData fd = dialog.open();
+
+		_value = ColorAndFontUtil.toFontString(fd.getName(), fd.getHeight(), SWT.BOLD == (fd.getStyle() & SWT.BOLD),
+				SWT.ITALIC == (fd.getStyle() & SWT.ITALIC));
+
 		if (_value != null) {
 			fireApplyEditorValue();
 		}
@@ -92,7 +124,7 @@ public final class FontCellEditor2 extends CellEditor {
 	 */
 	@Override
 	protected void doSetValue(final Object value) {
-		Assert.isTrue(value instanceof FontData);
-		this._value = (FontData) value;
+		Assert.isTrue(value instanceof String);
+		this._value = (String) value;
 	}
 }

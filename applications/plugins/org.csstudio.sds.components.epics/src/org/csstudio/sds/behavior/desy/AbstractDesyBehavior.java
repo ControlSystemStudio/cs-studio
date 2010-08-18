@@ -31,8 +31,8 @@ import org.epics.css.dal.simple.Severity;
  * Define color and fonts for Alarms and Connection states.
  *
  * @author Sven Wende
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.5 $
  * @since 20.04.2010
  * @param <W> The Widget model that have this Behavior
  */

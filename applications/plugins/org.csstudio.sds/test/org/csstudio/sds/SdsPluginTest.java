@@ -30,7 +30,7 @@ import org.junit.Test;
  * Test case for class {@link SdsPlugin}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.3 $
  *
  */
 public final class SdsPluginTest {

@@ -1,96 +1,125 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.ui.internal.actions;
 
 import java.util.List;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.GroupingContainerModel;
+import org.csstudio.sds.model.commands.SetPropertyCommand;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.commands.AddWidgetCommand;
+import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
+import org.csstudio.sds.ui.internal.commands.SetSelectionCommand;
 import org.csstudio.sds.ui.internal.editor.WidgetCreationFactory;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.commands.Command;
-import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.commands.CompoundCommand;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ui.IWorkbenchPart;
 
 /**
  * An Action to create a group surrounding the selected Widgets.
- * @author Kai Meyer
- *
+ * 
+ * @author Kai Meyer &  Sven Wende
+ * 
  */
-public final class CreateGroupAction extends AbstractGroupingAction {
-	
-	/**
-	 * The image for this action.
-	 */
-	private static final ImageDescriptor IMAGE_DESCRIPTOR = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/addgroup.gif");
+public final class CreateGroupAction extends AbstractSelectionAction {
 
-	/**
-	 * The selected widgets.
-	 */
-	private List<AbstractWidgetModel> _widgets;
-	
-	/**
-	 * The common ancestor for all widgets.
-	 */
-	private ContainerModel _ancestor;
-	
+	public static final String ID = "org.csstudio.sds.ui.internal.actions.CreateGroupAction";
+
 	/**
 	 * The offset for the surrounding {@link GroupingContainerModel}.
 	 */
 	private static final int OFFSET = 5;
-	
-	/**
-	 * Constructor.
-	 * @param widgets The widgets which should be added to the new container 
-	 * @param cmdStack the {@link CommandStack} for the internal {@link Command}
-	 */
-	public CreateGroupAction(final CommandStack cmdStack, final List<AbstractWidgetModel> widgets) {
-		super("Create a Group", IMAGE_DESCRIPTOR, cmdStack);
-		_widgets = widgets;
+
+	public CreateGroupAction(IWorkbenchPart workbenchPart) {
+		super(workbenchPart);
+		setId(ID);
+		setText("Create Group");
+		setImageDescriptor(CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "/icons/addgroup.gif"));
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected Command createCommand() {
+
+	@Override
+	protected boolean doCalculateEnabled(List<AbstractWidgetModel> selectedWidgets) {
+		return selectedWidgets.size()>1;
+	}
+
+	@Override
+	protected Command doCreateCommand(List<AbstractWidgetModel> widgets) {
+
 		CompoundCommand cmd = new CompoundCommand();
 		cmd.setLabel("Create Group");
-		//ContainerModel parent = _widgets.get(0).getParent();
-		_ancestor = this.getCommonAncestor(_widgets);
-		
-		this.removeWidgets(cmd, _widgets);
-		
+		ContainerModel parentContainer = getCommonAncestor(widgets);
+
 		// Create a new GroupingContainer
-		Rectangle bounds = this.getFittingBounds(_widgets);
+		Rectangle bounds = getFittingBounds(widgets, parentContainer);
 		WidgetCreationFactory factory = new WidgetCreationFactory(GroupingContainerModel.ID);
 		// create a widget
-		ContainerModel containerModel = (ContainerModel) factory.getNewObject();
+		ContainerModel container = (ContainerModel) factory.getNewObject();
 		// initialize widget
-		containerModel.setLocation(bounds.x,bounds.y);
-		containerModel.setWidth(bounds.width);
-		containerModel.setHeight(bounds.height);
-		containerModel.setLayer(_ancestor.getLayerSupport().getActiveLayer().getId());
-		this.setContainerModel(containerModel);
-		AddWidgetCommand addCommand = new AddWidgetCommand(_ancestor, this.getContainerModel(), true);
-		cmd.add(addCommand);
+		container.setLocation(bounds.x, bounds.y);
+		container.setWidth(bounds.width);
+		container.setHeight(bounds.height);
+		container.setLayer(parentContainer.getLayerSupport().getActiveLayer().getId());
 		
-		this.addWidgets(cmd, this.getContainerModel(), _widgets);
+		// add new container
+		cmd.add(new AddWidgetCommand(parentContainer, container));
+
+		// select new container
+		cmd.add(new SetSelectionCommand(getGraphicalViewer(), container));
+		
+		// remove widgets from surrounding container
+		cmd.add(new DeleteWidgetsCommand(null, parentContainer, widgets));
+
+		// adjust widget positions
+		for (AbstractWidgetModel w : widgets) {
+			Point p = this.adaptWidgetPosition(w, parentContainer, container);
+			cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_X, p.x));
+			cmd.add(new SetPropertyCommand(w, AbstractWidgetModel.PROP_POS_Y, p.y));
+		}
+
+		// add widgets to new container
+		cmd.add(new AddWidgetCommand(container, widgets));
+
+
 		return cmd;
 	}
-	
+
 	/**
-	 * Determines the common ancestor for all given {@link AbstractWidgetModel}s.
-	 * @param widgets The {@link AbstractWidgetModel}s
-	 * @return The {@link ContainerModel}, which is the ancestor for all {@link AbstractWidgetModel}s
+	 * Determines the common ancestor for all given {@link AbstractWidgetModel}
+	 * s.
+	 * 
+	 * @param widgets
+	 *            The {@link AbstractWidgetModel}s
+	 * @return The {@link ContainerModel}, which is the ancestor for all
+	 *         {@link AbstractWidgetModel}s
 	 */
 	private ContainerModel getCommonAncestor(final List<AbstractWidgetModel> widgets) {
-		if (widgets.size()>0) {
+		if (widgets.size() > 0) {
 			ContainerModel ancestor = widgets.get(0).getParent();
-			while (ancestor!=null) {
+			while (ancestor != null) {
 				boolean isForAllReachable = true;
 				for (AbstractWidgetModel widget : widgets) {
 					if (!isAncestorReachable(ancestor, widget)) {
@@ -99,23 +128,28 @@ public final class CreateGroupAction extends AbstractGroupingAction {
 					}
 				}
 				if (isForAllReachable) {
-					return ancestor; 
+					return ancestor;
 				}
 				ancestor = ancestor.getParent();
 			}
 		}
 		return null;
 	}
-	
+
 	/**
-	 * Determines if the given {@link ContainerModel} is an ancestor of this model.
-	 * @param ancestor The probably ancestor
-	 * @param widget The {@link AbstractWidgetModel} which ancestor should be find 
-	 * @return true, if the given {@link ContainerModel} is an ancestor of this model, false otherwise
+	 * Determines if the given {@link ContainerModel} is an ancestor of this
+	 * model.
+	 * 
+	 * @param ancestor
+	 *            The probably ancestor
+	 * @param widget
+	 *            The {@link AbstractWidgetModel} which ancestor should be find
+	 * @return true, if the given {@link ContainerModel} is an ancestor of this
+	 *         model, false otherwise
 	 */
 	private boolean isAncestorReachable(final ContainerModel ancestor, final AbstractWidgetModel widget) {
 		ContainerModel parent = widget.getParent();
-		while (parent!=null) {
+		while (parent != null) {
 			if (parent.equals(ancestor)) {
 				return true;
 			}
@@ -123,37 +157,33 @@ public final class CreateGroupAction extends AbstractGroupingAction {
 		}
 		return false;
 	}
-	
+
 	/**
-	 * Determines the bounds for the container, which surrounds for all selected widgets.
-	 * @param widgets The widgets, which should be added to a container
+	 * Determines the bounds for the container, which surrounds for all selected
+	 * widgets.
+	 * 
+	 * @param widgets
+	 *            The widgets, which should be added to a container
 	 * @return The bounds for the new container
 	 */
-	private Rectangle getFittingBounds(final List<AbstractWidgetModel> widgets) {
-		int x = widgets.get(0).getXForAncestor(_ancestor);
-		int y = widgets.get(0).getYForAncestor(_ancestor);
-		int absoluteWidth = widgets.get(0).getWidth() + widgets.get(0).getXForAncestor(_ancestor);
-		int absoluteHeight = widgets.get(0).getHeight() + widgets.get(0).getYForAncestor(_ancestor);
-		for (int i=1;i<widgets.size();i++) {			
+	private Rectangle getFittingBounds(final List<AbstractWidgetModel> widgets, ContainerModel parentContainer) {
+		int x = widgets.get(0).getXForAncestor(parentContainer);
+		int y = widgets.get(0).getYForAncestor(parentContainer);
+		int absoluteWidth = widgets.get(0).getWidth() + widgets.get(0).getXForAncestor(parentContainer);
+		int absoluteHeight = widgets.get(0).getHeight() + widgets.get(0).getYForAncestor(parentContainer);
+		for (int i = 1; i < widgets.size(); i++) {
 			AbstractWidgetModel model = widgets.get(i);
-			x = Math.min(x, model.getXForAncestor(_ancestor));
-			y = Math.min(y, model.getYForAncestor(_ancestor));
-			absoluteWidth = Math.max(absoluteWidth, model.getXForAncestor(_ancestor) + model.getWidth());
-			absoluteHeight = Math.max(absoluteHeight, model.getYForAncestor(_ancestor) + model.getHeight());
+			x = Math.min(x, model.getXForAncestor(parentContainer));
+			y = Math.min(y, model.getYForAncestor(parentContainer));
+			absoluteWidth = Math.max(absoluteWidth, model.getXForAncestor(parentContainer) + model.getWidth());
+			absoluteHeight = Math.max(absoluteHeight, model.getYForAncestor(parentContainer) + model.getHeight());
 		}
-		return new Rectangle(x-OFFSET, y-OFFSET, absoluteWidth-x+2*OFFSET, absoluteHeight-y+2*OFFSET);
+		return new Rectangle(x - OFFSET, y - OFFSET, absoluteWidth - x + 2 * OFFSET, absoluteHeight - y + 2 * OFFSET);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Point adaptWidgetPosition(final AbstractWidgetModel widgetModel) {
-		int x = widgetModel.getXForAncestor(_ancestor) - this.getContainerModel().getX();
-		int y = widgetModel.getYForAncestor(_ancestor) - this.getContainerModel().getY();
-//		int x = widgetModel.getX() - this.getContainerModel().getX();
-//		int y = widgetModel.getY() - this.getContainerModel().getY();
-		return new Point(x,y);
+	private Point adaptWidgetPosition(final AbstractWidgetModel widgetModel, ContainerModel parentContainer, ContainerModel container) {
+		int x = widgetModel.getXForAncestor(parentContainer) - container.getX();
+		int y = widgetModel.getYForAncestor(parentContainer) - container.getY();
+		return new Point(x, y);
 	}
-
 }

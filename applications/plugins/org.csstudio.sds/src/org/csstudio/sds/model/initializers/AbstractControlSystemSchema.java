@@ -1,183 +1,125 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.model.initializers;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.eclipse.swt.graphics.RGB;
 
 /**
- * A control system schema defines default properties that are used to
- * initialize widget models. Subclasses must provide a map with the default
- * values. These can be retrieved by typed getters or by a generic getter that
- * can be casted as necessary. The getters provide default values and never
- * return null (Null-Object-Pattern).
+ * An initialization schema defines default settings that are applied to
+ * every widget in the course of its creation.
  * 
- * @author Stefan Hofer & Sven Wende
- * @version $Revision$
+ * @author Sven Wende
+ * @version $Revision: 1.12 $
  * 
  */
-public abstract class AbstractControlSystemSchema {
-
-	/**
-	 * The control system specific properties.
-	 */
-	private Map<String, Object> _properties;
+public abstract class AbstractControlSystemSchema extends AbstractInitializer {
 
 	/**
 	 * Constructor.
 	 */
 	public AbstractControlSystemSchema() {
-		_properties = new HashMap<String, Object>();
-		initializeProperties();
 	}
 
 	/**
-	 * Called during the creation of the schema. Subclasses should init aliases
-	 * here.
+	 * Returns the connection states that should be supported, when this schema
+	 * is active. This will effect the dynamics wizard which will offer only
+	 * supported states for selection. By default all known connection states
+	 * are supported. Inheriting class may override this method and return a
+	 * reduced set of connection states.
 	 * 
-	 * @param widgetModel
-	 *            the w
+	 * @return the supported connection states
 	 */
-	protected abstract void initializeAliases(AbstractWidgetModel widgetModel);
+	protected Set<ConnectionState> getSupportedConnectionStates() {
+		// by default, all states are supported
+		Set<ConnectionState> result = new HashSet<ConnectionState>();
+
+		for (ConnectionState state : ConnectionState.values()) {
+			result.add(state);
+		}
+
+		return result;
+	}
+
+	public void initialize() {
+		initializeWidgetDefaults();
+		initializeWidget();
+	}
+
+	private void initializeWidgetDefaults() {
+		// background color
+		initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
+				getDefaultBackgroundColor());
+
+		// foreground color
+		initializeStaticProperty(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
+				getDefaultForegroundColor());
+
+		if (getDefaultRecordAlias() != null) {
+			// primary pv
+			initializeStaticProperty(AbstractWidgetModel.PROP_PRIMARY_PV,
+					getDefaultRecordAliasAsVariable());
+
+			// alias
+			initializeAlias(getDefaultRecordAlias(), "");
+
+			// connected state
+			Map<ConnectionState, Object> values = new HashMap<ConnectionState, Object>();
+			values.put(ConnectionState.CONNECTED, new Boolean(true));
+			values.put(ConnectionState.DISCONNECTED, new Boolean(false));
+			values.put(ConnectionState.CONNECTION_FAILED, new Boolean(false));
+			values.put(ConnectionState.CONNECTION_LOST, new Boolean(false));
+		}
+	}
 
 	/**
 	 * Called for every widget that is initialized. Subclasses may apply
 	 * settings which are valid in general for all widgets.
 	 * 
-	 * @param widgetModel
-	 *            the widget that is beeing initialized
 	 */
-	protected abstract void initializeWidget(AbstractWidgetModel widgetModel);
+	protected abstract void initializeWidget();
 
-	/**
-	 * Called during the creation of the schema. Subclasses should init global
-	 * properties here.
-	 */
-	protected abstract void initializeProperties();
+	protected abstract String getDefaultBackgroundColor();
 
-	/**
-	 * Adds a global property.
-	 * 
-	 * @param key
-	 *            the key for the property
-	 * @param value
-	 *            the property value
-	 */
-	protected final void addGlobalProperty(final String key, final Object value) {
-		_properties.put(key, value);
-	}
+	protected abstract String getDefaultForegroundColor();
 
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or <code>false</code> if there is no such
-	 *         property.
-	 */
-	public final boolean getBooleanProperty(final String name) {
-		return (Boolean) getProperty(name, Boolean.class, false);
-	}
+	protected abstract String getDefaultErrorColor();
 
-	/**
-	 * @param name
-	 *            Name of the requested property.
-	 * @param clazz
-	 *            The expexted type of the requested property.
-	 * @param defaultValue
-	 *            A default value if there is no such property.
-	 * @return The requested property as object or the default value.
-	 */
-	@SuppressWarnings("unchecked")
-	private Object getProperty(final String name, final Class clazz,
-			final Object defaultValue) {
-		Object value = _properties.get(name);
-		if (value != null) {
-			if (clazz.isAssignableFrom(value.getClass())) {
-				return value;
-			}
-			CentralLogger
-					.getInstance()
-					.error(
-							this,
-							"Value of property " //$NON-NLS-1$
-									+ name
-									+ "is of type " + value.getClass() + " and cannot be casted to type " + clazz); //$NON-NLS-1$ //$NON-NLS-2$
-		} else {
-			CentralLogger.getInstance().error(this,
-					"No value found for property " + name + //$NON-NLS-1$
-							". Using default value instead."); //$NON-NLS-1$
+	protected abstract String getDefaultRecordAlias();
+
+	protected String getDefaultRecordAliasAsVariable() {
+		String result = null;
+
+		String alias = getDefaultRecordAlias();
+
+		if (alias != null) {
+			result = "$" + alias + "$";
 		}
-		return defaultValue;
-	}
 
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or a default color if there is no such
-	 *         property.
-	 */
-	public final RGB getColorProperty(final String name) {
-		return (RGB) getProperty(name, RGB.class, new RGB(100, 100, 100));
-	}
-
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or <code>0.0</code> if there is no such
-	 *         property.
-	 */
-	public final double getDoubleProperty(final String name) {
-		return (Double) getProperty(name, Double.class, 0.0);
-	}
-
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or <code>0</code> if there is no such
-	 *         property.
-	 */
-	public final int getIntegerProperty(final String name) {
-		return (Integer) getProperty(name, Integer.class, 0);
-	}
-
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or an empty object if there is no such
-	 *         property.
-	 */
-	public final Object getObjectProperty(final String name) {
-		return getProperty(name, Object.class, new Object());
-	}
-
-	/**
-	 * @return The names of all properties.
-	 */
-	public final Set<String> getPropertyNames() {
-		return _properties.keySet();
-	}
-
-	/**
-	 * Returns the requested property.
-	 * 
-	 * @param name
-	 *            The name of the property.
-	 * @return The property value or an empty String if there is no such
-	 *         property.
-	 */
-	public final String getStringProperty(final String name) {
-		return (String) getProperty(name, String.class, ""); //$NON-NLS-1$
+		return result;
 	}
 }

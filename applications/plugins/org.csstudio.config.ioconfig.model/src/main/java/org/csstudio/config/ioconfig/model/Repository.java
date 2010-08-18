@@ -39,7 +39,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
  */
 public final class Repository {
 
-    private static IReposetory _repository = new HibernateReposetory();
+    private static IRepository _repository = new HibernateRepository();
     private static List<Document> _documents;
     
     /**
@@ -50,10 +50,10 @@ public final class Repository {
     /**
      * For use different Repositories can inject the {@link IRepository}.<br>
      * e.g. Dummy Repositories for tests.<br>
-     * The Default {@link IReposetory} is the {@link HibernateReposetory}.
+     * The Default {@link IRepository} is the {@link HibernateRepository}.
      * @param repository the repository to inject. 
      */
-    public static void injectIRepository(IReposetory repository) {
+    public static void injectIRepository(IRepository repository) {
         _repository = repository;
     }
     

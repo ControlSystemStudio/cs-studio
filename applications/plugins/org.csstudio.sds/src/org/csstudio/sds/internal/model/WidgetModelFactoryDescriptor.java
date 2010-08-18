@@ -28,11 +28,10 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * <code>widgetElementFactories</code> extension point.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.5 $
  * 
  */
 public class WidgetModelFactoryDescriptor {
-
 	/**
 	 * The description of the widget model factory.
 	 */
@@ -72,6 +71,9 @@ public class WidgetModelFactoryDescriptor {
 	 * @param pluginId
 	 *            The ID of the plugin that contributes the widget model
 	 *            factory.
+	 * @param inUse
+	 *            Determines if the corresponding widget should be used within
+	 *            the editor
 	 */
 	public WidgetModelFactoryDescriptor(final String description,
 			final String name, final String icon,
@@ -128,4 +130,6 @@ public class WidgetModelFactoryDescriptor {
 	public final String getPluginId() {
 		return _pluginId;
 	}
+
+	
 }

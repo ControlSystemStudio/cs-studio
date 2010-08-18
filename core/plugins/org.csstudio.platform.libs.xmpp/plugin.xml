@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension-point id="loginHandlers" name="Login Handlers" schema="schema/loginHandlers.exsd"/>
+   <extension
+         point="org.csstudio.platform.libs.dcf.protocol">
+      <protocolImplementation
+            class="org.csstudio.platform.libs.xmpp.XmppConnectionManager"
+            id="org.csstudio.platform.libs.xmpp.protocolImplementation"
+            name="XMPP Protocol"/>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer class="org.csstudio.platform.libs.xmpp.preferences.PreferenceInitializer"/>
+   </extension>
+
+</plugin>

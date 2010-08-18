@@ -30,27 +30,31 @@ import org.eclipse.gef.handles.HandleBounds;
  * @author Sven Wende
  *
  */
-public final class GroupingContainerFigure extends Figure implements HandleBounds, IAdaptable {
+public final class GroupingContainerFigure extends Figure implements HandleBounds, IAdaptable{
 
 	/**
 	 * The content pane of this widget.
 	 */
-	private LayeredWidgetPane _pane;
-	
+	private final LayeredWidgetPane _pane;
+
 	/**
 	 * The transparent state of the background.
 	 */
 	private boolean _transparent = false;
-	
+
 	/**
 	 * The internal {@link ScrollPane}.
 	 */
-	private InternalScrollPane _scrollPane;
-	
+	private final InternalScrollPane _scrollPane;
+
 	/**
 	 * A border adapter, which covers all border handlings.
 	 */
 	private IBorderEquippedWidget _borderAdapter;
+
+    private ICrossedFigure _crossedOutAdapter;
+
+    private IRhombusEquippedWidget _rhombusAdapter;
 
 	/**
 	 * Constructor.
@@ -66,6 +70,13 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 		_scrollPane.setContents(_pane);
 
 		setOpaque(true);
+	}
+
+	@Override
+	public void paint(final Graphics graphics) {
+	    super.paint(graphics);
+	    _crossedOutAdapter.paint(graphics);
+	    _rhombusAdapter.paint(graphics);
 	}
 
 	/**
@@ -127,24 +138,24 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	 * This method is a tribute to unit tests, which need a way to test the
 	 * performance of the figure implementation. Implementors should produce
 	 * some random changes and refresh the figure, when this method is called.
-	 * 
+	 *
 	 */
 	public void randomNoiseRefresh() {
 		//nothing to do yet
 	}
-	
+
 	/**
 	 * Gets the transparent state of the background.
-	 * 
+	 *
 	 * @return the transparent state of the background
 	 */
 	public boolean gettransparent() {
 		return _transparent;
 	}
-	
+
 	/**
 	 * Sets the transparent state of the background.
-	 * 
+	 *
 	 * @param transparent
 	 *            the transparent state.
 	 */
@@ -157,15 +168,27 @@ public final class GroupingContainerFigure extends Figure implements HandleBound
 	 */
 	@SuppressWarnings("unchecked")
 	public Object getAdapter(final Class adapter) {
-		if (adapter == IBorderEquippedWidget.class) {
-			if(_borderAdapter==null) {
-				_borderAdapter = new BorderAdapter(this);
-			}
-			return _borderAdapter;
-		}
+        if (adapter == IBorderEquippedWidget.class) {
+            if (_borderAdapter == null) {
+                _borderAdapter = new BorderAdapter(this);
+            }
+            return _borderAdapter;
+        } else if (adapter == ICrossedFigure.class) {
+            if (_crossedOutAdapter == null) {
+                _crossedOutAdapter = new CrossedOutAdapter(this);
+            }
+            return _crossedOutAdapter;
+
+        } else if (adapter == IRhombusEquippedWidget.class) {
+            if (_rhombusAdapter == null) {
+                _rhombusAdapter = new RhombusAdapter(this);
+            }
+            return _rhombusAdapter;
+
+        }
 		return null;
 	}
-	
+
 	/**
 	 * A {@link ScrollPane} for internal use.
 	 * @author Kai Meyer

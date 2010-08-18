@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MenuButtonBehavior.java,v 1.2 2010/03/30 21:55:54 swende Exp $
  */
 package org.csstudio.sds.behavior.desy;
 
@@ -33,8 +33,8 @@ import org.epics.css.dal.simple.MetaData;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: swende $
+ * @version $Revision: 1.2 $
  * @since 26.03.2010
  */
 public class MenuButtonBehavior extends AbstractDesyBehavior<MenuButtonModel> {

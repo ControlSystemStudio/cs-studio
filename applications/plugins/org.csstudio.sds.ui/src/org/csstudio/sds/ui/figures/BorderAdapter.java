@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.ui.figures;
 
-import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.AbstractBorder;
 import org.eclipse.draw2d.AbstractLabeledBorder;
 import org.eclipse.draw2d.Graphics;
@@ -40,7 +40,7 @@ import org.eclipse.swt.graphics.Color;
  * that are defined by the <code>IBorderEquippedWidget</code> interface.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public class BorderAdapter implements IBorderEquippedWidget {
@@ -129,9 +129,15 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		case 4:
 			border = this.createSchemeBorder(SchemeBorder.SCHEMES.LOWERED); break;
 		case 5:
-			border = this.createStriatedBorder(); break;
+			border = this.createStriatedBorder(SWT.LINE_DOT); break;
 		case 6:
 			border = this.createShapeBorder(_borderWidth, _borderColor); break;
+		case 7:
+            border = this.createStriatedBorder(SWT.LINE_DASH); break;
+		case 8:
+            border = this.createStriatedBorder(SWT.LINE_DASHDOT); break;
+		case 9:
+            border = this.createStriatedBorder(SWT.LINE_DASHDOTDOT); break;
 		default:
 			border = null; break;
 		}
@@ -178,9 +184,9 @@ public class BorderAdapter implements IBorderEquippedWidget {
 	 * 
 	 * @return AbstractBorder The requested Border
 	 */
-	private AbstractBorder createStriatedBorder() {
+	private AbstractBorder createStriatedBorder(final int lineStyle) {
 		if (_borderWidth>0) {
-			StriatedBorder border = new StriatedBorder(_borderWidth);
+			StriatedBorder border = new StriatedBorder(_borderWidth, lineStyle);
 			border.setBorderColor(_borderColor);
 			return border;	
 		}
@@ -226,6 +232,7 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		 * The Color of the border.
 		 */
 		private Color _borderColor;
+        private int _lineStyle;
 
 		/**
 		 * Constructor.
@@ -233,9 +240,10 @@ public class BorderAdapter implements IBorderEquippedWidget {
 		 * @param borderWidth
 		 *            The width of the Border
 		 */
-		public StriatedBorder(final int borderWidth) {
+		public StriatedBorder(final int borderWidth, final int lineStyle) {
 			_insets = new Insets(borderWidth);
 			_borderWidth = borderWidth;
+			_lineStyle = lineStyle;
 		}
 
 		/**
@@ -263,7 +271,8 @@ public class BorderAdapter implements IBorderEquippedWidget {
 			Rectangle bounds = figure.getBounds();
 			graphics.setForegroundColor(_borderColor);
 			graphics.setBackgroundColor(_borderColor);
-			graphics.setLineStyle(SWT.LINE_DOT);
+//			graphics.setLineStyle(SWT.LINE_DOT);
+			graphics.setLineStyle(_lineStyle);
 			graphics.setLineWidth(_borderWidth);
 			
 			int correction = (int)Math.ceil(((double)_borderWidth)/2);

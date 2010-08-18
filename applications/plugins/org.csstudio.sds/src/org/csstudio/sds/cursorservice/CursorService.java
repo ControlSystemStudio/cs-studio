@@ -1,446 +1,531 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.cursorservice;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.SdsPlugin;
-import org.csstudio.sds.model.optionEnums.CursorStyleEnum;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
-import org.csstudio.sds.preferences.PreferenceConstants;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
+import org.csstudio.sds.model.AbstractWidgetModel;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.IResourceVisitor;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.InstanceScope;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.ImageData;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
+import org.eclipse.swt.SWT;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 
 /**
- * This service holds and provides the {@link Cursor}s, which are hold in the
- * {@link CursorStyleEnum} or stored as .gif-images in the workspace.
+ * Service for using mouse cursors in SDS displays.
  * 
- * @author Kai Meyer
- * 
+ * @author Sven Wende, Joerg Rathlev
  */
-public final class CursorService implements IPropertyChangeListener {
+public final class CursorService implements ICursorService {
+	/**
+	 * The supported file extensions for workspace cursors.
+	 */
+	private static final Set<String> SUPPORTED_FILE_EXTENSIONS;
 
 	/**
-	 * The name of the project, where cursor images are searched.
+	 * The default cursor selection rule.
 	 */
-	public static final String CURSORS_PROJECT_NAME = "SDS Cursors";
+	private static final CursorSelectionRule DEFAULT_RULE = new SystemCursorOnlyRule();
+	
 	/**
-	 * The supported file extensions.
+	 * Descriptor for the default rule.
 	 */
-	private static final String[] SUPPORTED_FILE_EXTENSIONS = new String[] { "gif" };
+	private static final RuleDescriptor DEFAULT_RULE_DESCRIPTOR = new RuleDescriptor(
+			DEFAULT_RULE_ID, "System cursor only",
+			Collections.<CursorState>emptyList(), null);
+
+	static {
+		SUPPORTED_FILE_EXTENSIONS = new HashSet<String>();
+		SUPPORTED_FILE_EXTENSIONS.add("gif");
+		SUPPORTED_FILE_EXTENSIONS.add("jpg");
+		SUPPORTED_FILE_EXTENSIONS.add("png");
+	}
+	
+	/**
+	 * The singleton instance.
+	 */
+	private static ICursorService _instance;
 
 	/**
-	 * The current instance of this service.
+	 * The cursor descriptors.
 	 */
-	private static CursorService _instance = null;
+	private List<AbstractCursor> _cursors;
 
 	/**
-	 * The list of known {@link Cursor}s.
+	 * The cursor strategy descriptors.
 	 */
-	private List<Cursor> _cursorList;
+	private List<RuleDescriptor> _ruleDescriptors;
+	
 	/**
-	 * The list of known names for the cursors.
+	 * The current cursor preferences.
 	 */
-	private List<String> _nameList;
-	/**
-	 * The list of known {@link ICursorServiceListener}s.
-	 */
-	private List<ICursorServiceListener> _listener;
+	private CursorSettings _preferences;
 
 	/**
-	 * The count of known cursors.
-	 */
-	private int _cursorCount = 0;
-
-	/**
-	 * The default cursor.
-	 */
-	private Cursor _defaultCursor = CursorStyleEnum.ARROW.getCursor();
-	/**
-	 * The cursor for widgets, which holds at least one {@link WidgetAction} and
-	 * it is enabled.
-	 */
-	private Cursor _enabledActionCursor = CursorStyleEnum.HAND.getCursor();
-	/**
-	 * The cursor for widgets, which holds at least one {@link WidgetAction} and
-	 * it is disabled.
-	 */
-	private Cursor _disabledActionCursor;
-
-	/**
-	 * Returns the current instance of this service.
+	 * Returns the singleton instance.
 	 * 
-	 * @return The current {@link CursorService}
+	 * @return the singleton instance
 	 */
-	public static CursorService getInstance() {
+	public static synchronized ICursorService getInstance() {
 		if (_instance == null) {
 			_instance = new CursorService();
 		}
+
 		return _instance;
 	}
 
 	/**
-	 * Constructor. Fetches the cursors hold by the {@link CursorStyleEnum} and
-	 * searches for cursors defined by images in the
-	 * {@link CursorService#CURSORS_PROJECT_NAME}-project. Registers the
-	 * service as listener by the {@link IPreferenceStore} provided by the
-	 * {@link SdsPlugin}.
+	 * Constructor.
 	 */
 	private CursorService() {
-		String qualifier = SdsPlugin.getDefault().getBundle().getSymbolicName();
-		IPreferenceStore preferenceStore = new ScopedPreferenceStore(
-				new InstanceScope(), qualifier);
-		preferenceStore.addPropertyChangeListener(this);
-		_cursorList = new LinkedList<Cursor>();
-		_nameList = new LinkedList<String>();
-		_listener = new LinkedList<ICursorServiceListener>();
-		this.initEnumCursor();
-		this.initWorkSpaceCursor();
-		this.getPreferenceStoreCursor(preferenceStore);
+		_cursors = new ArrayList<AbstractCursor>();
+		addSystemCursors();
+		addExtensionCursors();
+
+		_ruleDescriptors = new ArrayList<RuleDescriptor>();
+		addDefaultCursorSelectionRule();
+		addExtensionCursorSelectionRules();
+		
+		loadPreferences();
 	}
 
 	/**
-	 * Initializes the cursors hold by the {@link CursorStyleEnum}.
+	 * Returns a list of the available cursors.
+	 * 
+	 * @return a list of the available cursors.
 	 */
-	private void initEnumCursor() {
-		for (int i = 0; i < CursorStyleEnum.values().length; i++) {
-			CursorStyleEnum styleEnum = CursorStyleEnum.getEnumForIndex(i);
-			_cursorList.add(styleEnum.getIndex(), styleEnum.getCursor());
-			_nameList.add(styleEnum.getIndex(), styleEnum.getDisplayName());
-			_cursorCount++;
+	public List<AbstractCursor> availableCursors() {
+		List<AbstractCursor> result = new ArrayList<AbstractCursor>();
+		result.addAll(_cursors);
+		result.addAll(getWorkSpaceCursors());
+		return result;
+	}
+
+	/**
+	 * Returns an unmodifiable list of the available cursor selection rules.
+	 * 
+	 * @return an unmodifiable list of rule descriptors for the available cursor
+	 *         selection rules.
+	 */
+	public List<RuleDescriptor> availableRules() {
+		return Collections.unmodifiableList(_ruleDescriptors);
+	}
+	
+	/**
+	 * Applies the cursor to the given widget based on the selection rule
+	 * configured by the user.
+	 * 
+	 * @param widget
+	 *            the widget.
+	 */
+	public void applyCursor(final AbstractWidgetModel widget) {
+		RuleDescriptor ruleDesc = getPreferredRule();
+		CursorSelectionRule rule = executableRule(ruleDesc);
+		String stateId = rule.determineState(widget);
+		String cursorId = cursorIdFromState(ruleDesc, stateId);
+		if (cursorId != null) {
+			widget.setCursorId(cursorId);
 		}
-		assert _nameList.size() == _cursorList.size() : "PostCondition violated: _nameList.size()==_cursorList.size()";
 	}
-
+	
 	/**
-	 * Initializes the cursors, which are defined by images in the workspace.
+	 * Returns the executable rule described by the specified descriptor.
+	 * 
+	 * @param ruleDesc
+	 *            the rule descriptor.
+	 * @return the executable rule. If an executable rule for the specified
+	 *         descriptor cannot be created, this method returns the default
+	 *         rule.
 	 */
-	private void initWorkSpaceCursor() {
-		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
-				CURSORS_PROJECT_NAME);
-		if (project != null) {
+	private CursorSelectionRule executableRule(final RuleDescriptor ruleDesc) {
+		IConfigurationElement config = ruleDesc.configurationElement();
+		CursorSelectionRule rule = null;
+		if (config != null && config.isValid()) {
 			try {
-				this.getCursorFromResources(project.members());
+				rule = (CursorSelectionRule) config.createExecutableExtension("class");
 			} catch (CoreException e) {
-				e.printStackTrace();
+				rule = null;
 			}
 		}
-		assert _nameList.size() == _cursorList.size() : "PostCondition violated: _nameList.size()==_cursorList.size()";
-		assert _cursorList.size() == _cursorCount : "PostCondition violated: _cursorList.size()==_cursorCount";
+		if (rule == null) {
+			rule = DEFAULT_RULE;
+		}
+		return rule;
 	}
 
 	/**
-	 * Fetches all cursors defined by a resource of the given {@link IResource}-array.
+	 * Determines the cursor id from the given cursor state.
 	 * 
-	 * @param resources
-	 *            An array of {@link IResource}s
-	 * @throws CoreException
-	 *             Thrown when problems occurred during navigating through the
-	 *             workspace.
+	 * @param rule
+	 *            the cursor selection rule.
+	 * @param stateId
+	 *            the ID of the state.
+	 * @return the cursor id.
 	 */
-	private void getCursorFromResources(final IResource[] resources)
-			throws CoreException {
-		for (IResource resource : resources) {
-			if (resource.getType() == IResource.FILE) {
-				IFile file = (IFile) resource;
-				if (file.getFileExtension() != null
-						&& this.isSupportedFileExtension(file
-								.getFileExtension())) {
-					String filePath = file.getLocation().toString();
-					try {
-						ImageData imageData = new ImageData(filePath);
-						if (imageData == null) {
-							CentralLogger.getInstance().warn(
-									this,
-									"Couldn't get an ImageData from file: "
-											+ filePath);
-						} else {
-							Cursor newCursor = new Cursor(Display.getCurrent(),
-									imageData, 1, 1);
-							if (newCursor != null) {
-								_cursorList.add(_cursorCount, newCursor);
-								_nameList.add(_cursorCount, this
-										.createNameForCursor(file.getFullPath()
-												.toString()));
-								_cursorCount++;
-							}
-						}
-					} catch (Exception e) {
-						CentralLogger.getInstance().error(
-								this,
-								"Couldn't get an ImageData from file: "
-										+ filePath, e);
-					}
-				}
-			} else if (resource.getType() == IResource.FOLDER) {
-				IFolder folder = (IFolder) resource;
-				this.getCursorFromResources(folder.members());
-			}
+	private String cursorIdFromState(final RuleDescriptor rule,
+			final String stateId) {
+		String cursorId = null;
+		if (stateId != null) {
+			CursorState state = rule.state(stateId);
+			AbstractCursor cursor = _preferences.getCursor(rule, state);
+            if (cursor == null) {
+                cursor = ICursorService.SYSTEM_DEFAULT_CURSOR;
+            }
+			cursorId = cursor.getIdentifier();
 		}
+		return cursorId;
 	}
-
+	
 	/**
-	 * Reruns if the requested file extension is a supported type.
+	 * Returns the preferred rule.
 	 * 
-	 * @param requestedExtension
-	 *            The file extension
-	 * @return True if the given file extension is supported, false otherwise
+	 * @return a descriptor of the preferred rule.
 	 */
-	private boolean isSupportedFileExtension(final String requestedExtension) {
-		for (String extension : SUPPORTED_FILE_EXTENSIONS) {
-			if (extension.equalsIgnoreCase(requestedExtension)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-	 * Creates and returns a name for the cursor of the given path.
-	 * 
-	 * @param fullPath
-	 *            The path to the image of the cursor.
-	 * @return The create name
-	 */
-	private String createNameForCursor(final String fullPath) {
-		String result = fullPath;
-		if (result.startsWith("/")) {
-			result = result.replaceFirst("/", "");
-		}
-		if (result.startsWith(CURSORS_PROJECT_NAME)) {
-			result = result.replaceFirst(CURSORS_PROJECT_NAME, "");
-		}
-		if (result.startsWith("/")) {
-			result = result.replaceFirst("/", "");
+	public RuleDescriptor getPreferredRule() {
+		RuleDescriptor result = null;
+		String id = Platform.getPreferencesService().getString(
+				SdsPlugin.getDefault().getBundle().getSymbolicName(),
+				PreferenceConstants.CURSOR_SELECTION_RULE, DEFAULT_RULE_ID,
+				null);
+		if (id != null) {
+			result = findRuleDescriptor(id);
 		}
 		return result;
 	}
 
 	/**
-	 * Gets the cursor defined in the preference page.
+	 * Sets the preferred cursor selection rule. The preferred rule is stored in
+	 * the preference store.
 	 * 
-	 * @param preferenceStore
-	 *            The {@link IPreferenceStore}, which holds the cursors
+	 * @param rule
+	 *            the preferred rule.
 	 */
-	private void getPreferenceStoreCursor(final IPreferenceStore preferenceStore) {
-		String defaultName = preferenceStore
-				.getString(PreferenceConstants.PROP_DEFAULT_CURSOR);
-		_defaultCursor = this.getCursor(defaultName);
-		String enabledActionName = preferenceStore
-				.getString(PreferenceConstants.PROP_ENABLED_ACTION_CURSOR);
-		_enabledActionCursor = this.getCursor(enabledActionName);
-		String disabledActionName = preferenceStore
-				.getString(PreferenceConstants.PROP_ENABLED_ACTION_CURSOR);
-		_disabledActionCursor = this.getCursor(disabledActionName);
+	public void setPreferredRule(final RuleDescriptor rule) {
+		IEclipsePreferences node = new InstanceScope().getNode(SdsPlugin.PLUGIN_ID);
+		node.put(PreferenceConstants.CURSOR_SELECTION_RULE, rule.getId());
 	}
 
 	/**
-	 * Adds a {@link ICursorServiceListener}.
+	 * Finds the rule with the specified id.
 	 * 
-	 * @param listener
-	 *            The {@link ICursorServiceListener} to be added
+	 * @param id
+	 *            the id
+	 * @return the rule descriptor. If the rule was not found, returns the
+	 *         descriptor of the default rule.
 	 */
-	public void addCursorServiceListener(final ICursorServiceListener listener) {
-		_listener.add(listener);
-	}
+	private RuleDescriptor findRuleDescriptor(final String id) {
+		assert id != null;
 
-	/**
-	 * Removes the given {@link ICursorServiceListener}.
-	 * 
-	 * @param listener
-	 *            The {@link ICursorServiceListener} to be removed
-	 */
-	public void removeCursorServiceListener(
-			final ICursorServiceListener listener) {
-		_listener.remove(listener);
-	}
-
-	/**
-	 * Returns the current count of known {@link Cursor}.
-	 * 
-	 * @return The count of cursor
-	 */
-	public int getCursorCount() {
-		return _cursorCount;
-	}
-
-	/**
-	 * Returns all names of the known cursors.
-	 * 
-	 * @return An array of the names
-	 */
-	public String[] getDisplayNames() {
-		return _nameList.toArray(new String[_nameList.size()]);
-	}
-
-	/**
-	 * Returns all known cursors.
-	 * 
-	 * @return The cursors
-	 */
-	public Cursor[] getCursors() {
-		return _cursorList.toArray(new Cursor[_cursorList.size()]);
-	}
-
-	/**
-	 * Returns the name to display of the cursor with the given index.
-	 * 
-	 * @param index
-	 *            The index of the cursor.
-	 * @return The name of the cursor specified by the index
-	 */
-	public String getDisplayName(final int index) {
-		if (index > -1 && index < _nameList.size()) {
-			return _nameList.get(index);
+		RuleDescriptor result = null;
+		for (RuleDescriptor d : _ruleDescriptors) {
+			if (d.getId().equalsIgnoreCase(id)) {
+				result = d;
+			}
 		}
-		return "";
-	}
-
-	/**
-	 * Returns the cursor with the given index.
-	 * 
-	 * @param index
-	 *            The index of the cursor.
-	 * @return The cursor specified by the index
-	 */
-	public Cursor getCursor(final int index) {
-		if (index > -1 && index < _cursorList.size()) {
-			return _cursorList.get(index);
+		if (result == null) {
+			result = defaultRuleDescriptor();
 		}
-		return _defaultCursor;
+		return result;
 	}
 
 	/**
-	 * Returns the cursor with the given name.
+	 * Returns a descriptor for the default cursor selection rule.
 	 * 
-	 * @param name
-	 *            The name of the cursor.
-	 * @return The cursor specified by the name
+	 * @return a descriptor for the default cursor selection rule.
 	 */
-	public Cursor getCursor(final String name) {
-		int index = this.getIndex(name);
-		return this.getCursor(index);
+	private RuleDescriptor defaultRuleDescriptor() {
+		return DEFAULT_RULE_DESCRIPTOR;
 	}
 
 	/**
-	 * Returns the index of the cursor with the given name.
+	 * Find the cursor with the specified id.
 	 * 
-	 * @param name
-	 *            The name of the cursor.
-	 * @return The index of the specified cursor
+	 * @param id
+	 *            the id.
+	 * @return a cursor, or <code>null</code> if none was found for that id.
 	 */
-	public int getIndex(final String name) {
-		return _nameList.indexOf(name);
+	public AbstractCursor findCursor(final String id) {
+		assert id != null;
+
+		AbstractCursor result = null;
+
+		for (AbstractCursor d : availableCursors()) {
+			if (d.getIdentifier().equalsIgnoreCase(id)) {
+				result = d;
+			}
+		}
+
+		return result;
 	}
 
+	
 	/**
-	 * Returns the index of the given cursor.
+	 * Returns the current cursor preferences. Changes in the returned object
+	 * are not immediately reflected in the preference store. Use the
+	 * {@link #setPreferences(CursorSettings)} method to change the stored
+	 * preferences.
 	 * 
-	 * @param cursor
-	 *            The cursor.
-	 * @return The index of the specified cursor
+	 * @return the current cursor settings from the preferences.
 	 */
-	public int getIndex(final Cursor cursor) {
-		return _cursorList.indexOf(cursor);
-	}
-
-	/**
-	 * Returns the default cursor defined by the preference page.
-	 * 
-	 * @return The default cursor
-	 */
-	public Cursor getDefaultCursor() {
-		return _defaultCursor;
-	}
-
-	/**
-	 * Returns the cursor used for widget which has {@link WidgetAction}s
-	 * and is enabled (defined by the preference page).
-	 * 
-	 * @return The action cursor
-	 */
-	public Cursor getEnabledActionCursor() {
-		return _enabledActionCursor;
+	public CursorSettings getPreferences() {
+		return new CursorSettings(_preferences);
 	}
 	
 	/**
-	 * Returns the cursor used for widget which has {@link WidgetAction}s
-	 * and is disabled (defined by the preference page).
+	 * Sets the cursor preferences to the specified settings.
 	 * 
-	 * @return The action cursor
+	 * @param settings
+	 *            the settings.
 	 */
-	public Cursor getDisabledActionCursor() {
-		return _disabledActionCursor;
-	}
-
-	/**
-	 * Returns the index of default cursor defined by the preference page.
-	 * 
-	 * @return The index of the default cursor
-	 */
-	public int getDefaultCursorIndex() {
-		return this.getIndex(_defaultCursor);
-	}
-
-	/**
-	 * Returns the index of the cursor used for widget which has {@link WidgetAction}s
-	 * and is enabled (defined by the preference page).
-	 * 
-	 * @return The index of the action cursor
-	 */
-	public int getEnabledActionCursorIndex() {
-		return this.getIndex(_enabledActionCursor);
+	public void setPreferences(final CursorSettings settings) {
+		if (settings == null) {
+			throw new NullPointerException();
+		}
+		
+		_preferences = new CursorSettings(settings);
+		storePreferences();
 	}
 	
 	/**
-	 * Returns the index of the cursor used for widget which has {@link WidgetAction}s
-	 * and is disabled (defined by the preference page).
+	 * Loads the cursor settings from the preference store.
+	 */
+	private void loadPreferences() {
+		_preferences = new CursorSettings(_ruleDescriptors);
+		
+		/*
+		 * The structure of the preferences: there is a node for the cursor
+		 * preferences. Below that node, there is one node for each cursor
+		 * selection rule, and below that node, one preference for each cursor
+		 * state.
+		 * 
+		 * Example:
+		 * 
+		 * <SdsPlugin.PLUGIN_ID>
+		 *   + <PreferenceConstants.CURSOR_SETTINGS>
+		 *       + de.desy.DesyCursorStrategy
+		 *       |   + default
+		 *       |   + disabled
+		 *       |   + enabled
+		 *       |   + ...
+		 *       + org.example.OtherCursorStrategy
+		 *           + enabled
+		 *           + disabled
+		 */
+		Preferences cursorSettings = new InstanceScope().
+				getNode(SdsPlugin.PLUGIN_ID).
+				node(PreferenceConstants.CURSOR_SETTINGS);
+		for (RuleDescriptor rule : _ruleDescriptors) {
+			try {
+				if (cursorSettings.nodeExists(rule.getId())) {
+					Preferences ruleNode = cursorSettings.node(rule.getId());
+					for (String stateId : ruleNode.keys()) {
+						CursorState state = rule.state(stateId);
+						String cursorId = ruleNode.get(stateId, null);
+						if (state != null && cursorId != null) {
+							AbstractCursor cursor = findCursor(cursorId);
+							if (cursor != null) {
+								_preferences.setCursor(rule, state, cursor);
+							}
+						}
+					}
+				}
+			} catch (BackingStoreException e) {
+				CentralLogger.getInstance().warn(this,
+						"BackingStoreException while reading preferences", e);
+			}
+		}
+	}
+	
+	/**
+	 * Stores the cursor settings in the preference store.
+	 */
+	private void storePreferences() {
+		Preferences cursorSettings = new InstanceScope().
+				getNode(SdsPlugin.PLUGIN_ID).
+				node(PreferenceConstants.CURSOR_SETTINGS);
+		for (RuleDescriptor rule : _ruleDescriptors) {
+			Preferences ruleNode = cursorSettings.node(rule.getId());
+			for (CursorState state : rule.cursorStates()) {
+				AbstractCursor cursor = _preferences.getCursor(rule, state);
+                if (cursor == null) {
+                    cursor = ICursorService.SYSTEM_DEFAULT_CURSOR;
+                }
+				ruleNode.put(state.getId(),
+						cursor.getIdentifier());
+			}
+		}
+	}
+
+	/**
+	 * Adds the cursors contributed via the {@code cursors} extension point to
+	 * the list of available cursors.
+	 */
+	private void addExtensionCursors() {
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IConfigurationElement[] cursorConfigurationElements =
+			extensionRegistry.getConfigurationElementsFor(SdsPlugin.EXPOINT_CURSORS);
+		for (IConfigurationElement element : cursorConfigurationElements) {
+			String bundle = element.getContributor().getName();
+			String id = element.getAttribute("id");
+			String name = element.getAttribute("name");
+			String image = element.getAttribute("image");
+			_cursors.add(new ContributedCursor(id, name, bundle, image));
+		}
+	}
+	
+	/**
+	 * Adds the cursor selection rules contributed via the
+	 * {@code cursorSelectionRules} extension point to the list of available
+	 * cursor selection rules.
+	 */
+	private void addExtensionCursorSelectionRules() {
+		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
+		IConfigurationElement[] ruleConfigurationElements =
+			extensionRegistry.getConfigurationElementsFor(SdsPlugin.EXTPOINT_CURSOR_SELECTION_RULES);
+		for (IConfigurationElement element : ruleConfigurationElements) {
+			String id = element.getAttribute("id");
+			String label = element.getAttribute("label");
+			if (label == null) {
+				label = id;
+			}
+			Collection<CursorState> states = readCursorStates(element);
+			RuleDescriptor rule = new RuleDescriptor(id, label, states, element);
+			_ruleDescriptors.add(rule);
+		}
+	}
+	
+	/**
+	 * Reads the cursor states of a rule from the extension registry.
 	 * 
-	 * @return The index of the action cursor
+	 * @param rule
+	 *            the configuration element which declares the rule.
+	 * @return a collection of the cursor states declared for the rule.
 	 */
-	public int getDisabledActionCursorIndex() {
-		return this.getIndex(_disabledActionCursor);
+	private Collection<CursorState> readCursorStates(final IConfigurationElement rule) {
+		Collection<CursorState> result = new ArrayList<CursorState>();
+		IConfigurationElement[] stateConfigs = rule.getChildren("state");
+		for (IConfigurationElement stateElement : stateConfigs) {
+			String stateId = stateElement.getAttribute("id");
+			String stateLabel = stateElement.getAttribute("label");
+			if (stateLabel == null) {
+				stateLabel = stateId;
+			}
+			CursorState state = new CursorState(stateId, stateLabel);
+			result.add(state);
+		}
+		return result;
 	}
 
 	/**
-	 * Notifies all registered {@link ICursorServiceListener}.
+	 * Adds the default cursor selection rule to the list of available rules.
 	 */
-	private void notifyListener() {
-		for (ICursorServiceListener listener : _listener) {
-			listener.cursorChanged();
-		}
+	private void addDefaultCursorSelectionRule() {
+		_ruleDescriptors.add(DEFAULT_RULE_DESCRIPTOR);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * Adds the system cursors to the list of available cursors. 
 	 */
-	public void propertyChange(final PropertyChangeEvent event) {
-		if (event.getProperty().equals(PreferenceConstants.PROP_ENABLED_ACTION_CURSOR)) {
-			String cursorName = (String) event.getNewValue();
-			_enabledActionCursor = this.getCursor(cursorName);
-			this.notifyListener();
+	private void addSystemCursors() {
+		_cursors.add(SYSTEM_DEFAULT_CURSOR);
+		_cursors.add(new SWTCursor("cursor.system.arrow",
+				"Arrow (System)", SWT.CURSOR_ARROW));
+		_cursors.add(new SWTCursor("cursor.system.appStart",
+				"Application Startup (System)", SWT.CURSOR_APPSTARTING));
+		_cursors.add(new SWTCursor("cursor.system.cross",
+				"Cross Hair (System)", SWT.CURSOR_CROSS));
+		_cursors.add(new SWTCursor("cursor.system.hand",
+				"Hand (System)", SWT.CURSOR_HAND));
+		_cursors.add(new SWTCursor("cursor.system.help",
+				"Help (System)", SWT.CURSOR_HELP));
+		_cursors.add(new SWTCursor("cursor.system.ibeam",
+				"i-beam (System)", SWT.CURSOR_IBEAM));
+		_cursors.add(new SWTCursor("cursor.system.no",
+				"not allowed (System)", SWT.CURSOR_NO));
+		_cursors
+				.add(new SWTCursor("cursor.system.resizeall",
+						"Resize all directions (System)", SWT.CURSOR_SIZEALL));
+		_cursors.add(new SWTCursor("cursor.system.uparrow",
+				"Up Arrow (System)", SWT.CURSOR_UPARROW));
+		_cursors.add(new SWTCursor("cursor.system.wait",
+				"Wait (System)", SWT.CURSOR_WAIT));
+	}
+
+	/**
+	 * Lookup cursors in the workspace.
+	 * 
+	 * @return a list of cursors found in the workspace.
+	 */
+	private List<AbstractCursor> getWorkSpaceCursors() {
+		final List<AbstractCursor> cursors = new ArrayList<AbstractCursor>();
+
+		IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(
+				CURSORS_PROJECT_NAME);
+		if (project != null && project.isOpen()) {
+			try {
+				project.accept(new IResourceVisitor() {
+
+					public boolean visit(final IResource resource)
+							throws CoreException {
+						if (resource instanceof IFile
+								&& SUPPORTED_FILE_EXTENSIONS.contains(resource
+										.getFileExtension())) {
+							IPath path = resource.getProjectRelativePath();
+							AbstractCursor descriptor = new WorkspaceCursor(
+									path.toPortableString(), path
+											.lastSegment()
+											+ " (Workspace local)", resource
+											.getLocation().toPortableString());
+							cursors.add(descriptor);
+						}
+
+						return resource instanceof IContainer;
+					}
+
+				});
+			} catch (CoreException e) {
+				CentralLogger.getInstance().warn(this, e);
+			}
 		}
-		if (event.getProperty().equals(PreferenceConstants.PROP_DISABLED_ACTION_CURSOR)) {
-			String cursorName = (String) event.getNewValue();
-			_disabledActionCursor = this.getCursor(cursorName);
-			this.notifyListener();
-		}
-		if (event.getProperty().equals(PreferenceConstants.PROP_DEFAULT_CURSOR)) {
-			String cursorName = (String) event.getNewValue();
-			_defaultCursor = this.getCursor(cursorName);
-			this.notifyListener();
-		}
+
+		return cursors;
 	}
 }

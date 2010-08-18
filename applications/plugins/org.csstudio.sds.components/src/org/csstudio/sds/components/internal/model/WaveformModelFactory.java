@@ -30,7 +30,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * A widget model factory for {@link TextInputModel}.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.4 $
  */
 public final class WaveformModelFactory implements IWidgetModelFactory {
 

@@ -45,7 +45,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
  * ActionBarContributor implementation for the display editor.
  * 
  * @author Sven Wende & Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.12 $
  * 
  */
 public class DisplayEditorActionBarContributor extends ActionBarContributor {

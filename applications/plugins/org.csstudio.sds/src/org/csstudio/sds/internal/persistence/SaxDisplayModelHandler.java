@@ -27,21 +27,19 @@ import java.util.Map;
 import java.util.Stack;
 
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.internal.model.properties.AbstractPropertyPersistenceHandler;
-import org.csstudio.sds.internal.model.properties.PropertyPersistenceHandlerRegistry;
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.SdsPlugin;
+import org.csstudio.sds.eventhandling.EventType;
+import org.csstudio.sds.internal.model.Layer;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.IWidgetModelFactory;
+import org.csstudio.sds.model.GroupingContainerModel;
+import org.csstudio.sds.model.PropertyTypesEnum;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.sds.model.layers.Layer;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.persistence.IDisplayModelLoadListener;
-import org.csstudio.sds.model.persistence.internal.XmlConstants;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
 import org.jdom.DataConversionException;
 import org.jdom.Element;
 import org.xml.sax.Attributes;
@@ -56,9 +54,10 @@ import org.xml.sax.helpers.DefaultHandler;
  * underlying display model is updated concurrently.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.27 $
  * 
  */
+@SuppressWarnings("unchecked")
 public final class SaxDisplayModelHandler extends DefaultHandler {
 
 	/**
@@ -141,8 +140,6 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 			if (XmlConstants.XML_ELEMENT_WIDGET.equals(element.getName())) {
 				final AbstractWidgetModel widgetModel = parseWidgetModel(element);
 				_displayModel.addWidget(widgetModel);
-				// TODO: Der UI-Thread muss nun Luft bekommen!
-				// Thread.currentThread().yield();
 			} else if (XmlConstants.XML_ELEMENT_PROPERTY.equals(element
 					.getName())) {
 				setProperty(_displayModel, element);
@@ -208,13 +205,16 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 		String elementType = element
 				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_WIDGET_TYPE);
 
-		IWidgetModelFactory factory = WidgetModelFactoryService.getInstance()
-				.getWidgetModelFactory(elementType);
+		// .. let the model factory create the base model
+		AbstractWidgetModel result = WidgetModelFactoryService.getInstance()
+		.getWidgetModel(elementType);
 
-		AbstractWidgetModel result = factory.createWidgetModel();
-
+		// .. configure model details (properties, dynamics) from xml
 		fillWidgetModel(result, element);
 
+		// .. update model to ensure invariants that have been declared by {@link SdsPlugin#EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS}
+		SdsPlugin.getDefault().getWidgetPropertyPostProcessingService().applyForAllProperties(result, EventType.ON_DISPLAY_MODEL_LOADED);
+		
 		return result;
 	}
 
@@ -254,7 +254,7 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 		}
 
 		// 4. widgets
-		if (widgetModel instanceof ContainerModel) {
+		if (widgetModel instanceof DisplayModel || widgetModel instanceof GroupingContainerModel) {
 			List widgetList = widgetElement
 					.getChildren(XmlConstants.XML_ELEMENT_WIDGET);
 			for (Object o : widgetList) {
@@ -307,23 +307,6 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 	}
 
 	/**
-	 * Parse the property value from the given property DOM element.
-	 * 
-	 * @param propertyType
-	 *            The type ID of the parsed property.
-	 * @param propertyElement
-	 *            The property DOM element.
-	 * @return The property value that was parsed from the given property DOM
-	 *         element.
-	 */
-	private Object parsePropertyValue(final String propertyType,
-			final Element propertyElement) {
-		AbstractPropertyPersistenceHandler persistenceHandler = getPropertyPersistenceHandler(propertyType);
-
-		return parsePropertyValue(persistenceHandler, propertyElement);
-	}
-
-	/**
 	 * Parse the property value from the given DOM element.
 	 * 
 	 * @param persistenceHandler
@@ -362,12 +345,23 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 	private DynamicsDescriptor parseDynamicsDescriptor(
 			final AbstractPropertyPersistenceHandler persistenceHandler,
 			final Element dynamicsDescriptorElement) throws SAXException {
-
 		String ruleId = dynamicsDescriptorElement
 				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_RULE_ID);
+		
+		String useConnectionStatesString = dynamicsDescriptorElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_USE_CONNECTION_STATES);
+		boolean useConnectionStates = false;
+		if (useConnectionStatesString!=null) {
+			try {
+				Boolean b = new Boolean(useConnectionStatesString);
+				useConnectionStates = b;
+			} catch (Exception e) {
+				// do nothing
+			}
+		}
 
 		DynamicsDescriptor result = new DynamicsDescriptor(ruleId);
 
+		result.setUsingOnlyConnectionStates(useConnectionStates);
 		// input channels
 		List inputChannelElements = dynamicsDescriptorElement
 				.getChildren(XmlConstants.XML_ELEMENT_INPUT_CHANNEL);
@@ -396,6 +390,7 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 				persistenceHandler, dynamicsDescriptorElement));
 
 		// dynamic value states
+		
 		result
 				.setConditionStateDependentPropertyValues(parseDynamicValueStates(
 						persistenceHandler, dynamicsDescriptorElement));
@@ -429,9 +424,12 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 
 				ConnectionState state = null;
 				try {
+					String attributeValue = connectionStateElement
+							.getAttributeValue(XmlConstants.XML_ATTRIBUTE_STATE);
 					state = ConnectionState
-							.valueOf(connectionStateElement
-									.getAttributeValue(XmlConstants.XML_ATTRIBUTE_STATE));
+							.valueOf(attributeValue);
+					result.put(state, persistenceHandler
+							.readProperty(connectionStateElement));
 				} catch (Exception e) {
 					throw new SAXException(
 							"Could not parse connection state < "
@@ -440,8 +438,6 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 									+ ">", e);
 				}
 
-				result.put(state, persistenceHandler
-						.readProperty(connectionStateElement));
 			}
 		}
 
@@ -505,23 +501,14 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 			throws SAXException {
 		String channelName = channelElement
 				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_CHANNEL_NAME);
-		String channelType = channelElement
-				.getAttributeValue(XmlConstants.XML_ATTRIBUTE_CHANNEL_TYPE);
-		Class type = null;
-
-		if (channelType != null) {
-			try {
-				type = Class.forName(channelType);
-			} catch (ClassNotFoundException e) {
-				throw new SAXException("Unable to find class <" + channelType
-						+ "> in the classpath", e);
-			}
+		String value = channelElement.getAttributeValue(XmlConstants.XML_ATTRIBUTE_CHANNEL_VALUE);
+		if (value == null) {
+			value = "";
 		}
-
 		ParameterDescriptor result = null;
 
-		if (channelName != null && type != null) {
-			result = new ParameterDescriptor(channelName, type);
+		if ((channelName != null || value != null)) {
+			result = new ParameterDescriptor(channelName, value);
 		}
 
 		return result;
@@ -547,9 +534,6 @@ public final class SaxDisplayModelHandler extends DefaultHandler {
 							.getAttributeValue(XmlConstants.XML_ATTRIBUTE_ALIAS_NAME);
 					String value = aliasElement
 							.getAttributeValue(XmlConstants.XML_ATTRIBUTE_ALIAS_VALUE);
-					// String description = aliasElement
-					// .getAttributeValue(XmlConstants.XML_ATTRIBUTE_ALIAS_DESCRIPTION);
-
 					result.put(name, value);
 				}
 			}

@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.model;
@@ -25,50 +25,61 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
+import org.csstudio.sds.cursorservice.AbstractCursor;
 import org.csstudio.sds.cursorservice.CursorService;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.optionEnums.BorderStyleEnum;
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.ActionDataProperty;
-import org.csstudio.sds.model.properties.BooleanProperty;
-import org.csstudio.sds.model.properties.ColorProperty;
-import org.csstudio.sds.model.properties.DoubleProperty;
-import org.csstudio.sds.model.properties.IntegerProperty;
-import org.csstudio.sds.model.properties.OptionProperty;
-import org.csstudio.sds.model.properties.ParameterStringProperty;
-import org.csstudio.sds.model.properties.StringMapProperty;
-import org.csstudio.sds.model.properties.StringProperty;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
-import org.csstudio.sds.util.AbstractToolTipConverter;
+import org.csstudio.sds.internal.model.ActionDataProperty;
+import org.csstudio.sds.internal.model.ArrayOptionProperty;
+import org.csstudio.sds.internal.model.BehaviorProperty;
+import org.csstudio.sds.internal.model.BooleanProperty;
+import org.csstudio.sds.internal.model.ColorProperty;
+import org.csstudio.sds.internal.model.DoubleArrayProperty;
+import org.csstudio.sds.internal.model.DoubleProperty;
+import org.csstudio.sds.internal.model.FontProperty;
+import org.csstudio.sds.internal.model.IntegerProperty;
+import org.csstudio.sds.internal.model.OptionProperty;
+import org.csstudio.sds.internal.model.PointlistProperty;
+import org.csstudio.sds.internal.model.ResourceProperty;
+import org.csstudio.sds.internal.model.StringMapProperty;
+import org.csstudio.sds.internal.model.StringProperty;
+import org.csstudio.sds.internal.model.TooltipProperty;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
+import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.swt.graphics.Cursor;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.draw2d.geometry.PointList;
+import org.eclipse.swt.graphics.FontData;
 
 /**
  * An abstract base class for all widget models.
- * 
- * @author Alexander Will, Sven Wende, Stefan Hofer
- * @version $Revision$
- * 
+ *
+ * @author Alexander Will, Sven Wende, Stefan Hofer, Kai Meyer, Xihui Chen
+ * @version $Revision: 1.130 $
+ *
  */
 public abstract class AbstractWidgetModel implements IAdaptable {
+
 	/**
 	 * ID for the <i>connection state</i> of the model.
 	 */
 	public static final String PROP_LIVE = "PROP_LIVE"; //$NON-NLS-1$
+
+	/**
+	 * Property ID for behavior.
+	 */
+	public static final String PROP_BEHAVIOR = "behavior"; //$NON-NLS-1$
 
 	/**
 	 * Property ID to use when the list of outgoing connections is modified.
@@ -108,7 +119,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * The ID of the foreground color property.
 	 */
-	public static final String PROP_COLOR_FOREGROUND = "color.foreground"; //$NON-NLS-1$		
+	public static final String PROP_COLOR_FOREGROUND = "color.foreground"; //$NON-NLS-1$
 
 	/**
 	 * The ID of the border color property.
@@ -131,7 +142,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	public static final String PROP_VISIBILITY = "visibility"; //$NON-NLS-1$
 
 	/**
-	 * The ID for the alias property.
+	 * The ID for the permission id property.
 	 */
 	public static final String PROP_PERMISSSION_ID = "permission_id"; //$NON-NLS-1$
 
@@ -159,28 +170,40 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * The ID for the primary PV property.
 	 */
 	public static final String PROP_PRIMARY_PV = "primary_pv"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the {@link ActionData} property.
 	 */
 	public static final String PROP_ACTIONDATA = "actionData"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the tooltip property.
 	 */
 	public static final String PROP_TOOLTIP = "tooltip"; //$NON-NLS-1$
-	
+
 	/**
 	 * The ID of the cursor property.
 	 */
 	public static final String PROP_CURSOR = "cursor"; //$NON-NLS-1$
-	
+
 	/**
-	 * The ID of the rotation property.
-	 * Is only used if the widget is rotatable.
+	 * The ID of the connected property.
+	 */
+	public static final String PROP_CONNECTED = "connected"; //$NON-NLS-1$
+
+	/**
+	 * The ID of the rotation property. Is only used if the widget is rotatable.
+	 *
 	 * @see AbstractWidgetModel#isRotatable()
 	 */
 	public static final String PROP_ROTATION = "rotation"; //$NON-NLS-1$
+
+	public static final String PROP_ACCESS_GRANTED = "PROP_ACCESS_GRANTED"; //$NON-NLS-1$
+	public static final String PROP_WRITE_ACCESS_GRANTED = "PROP_WRITE_ACCESS_GRANTED"; //$NON-NLS-1$
+
+	public static final String PROP_CROSSED_OUT = "PROP_CROSSED_OUT";
+
+	public static final String PROP_RHOMBUS = "PROP_RHOMBUS";
 
 	/**
 	 * A boolean, representing if this Model is alive.
@@ -190,27 +213,19 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * Property event handler.
 	 */
-	private PropertyChangeSupport _propertyChangeSupport;
+	private final PropertyChangeSupport _propertyChangeSupport;
 
 	/**
 	 * This map holds all the properties of the widget model.
 	 */
-	private Map<String, WidgetProperty> _propertyMap;
-	
-	/**
-	 * This map holds all the names of the invisible properties of the widget model.
-	 */
-	private Set<String> _invisiblePropertyNames;
+	private final Map<String, WidgetProperty> _propertyMap;
+
+	private final List<WidgetProperty> _properties = new ArrayList<WidgetProperty>();
 
 	/**
-	 * Stores outgoing connections.
+	 * This map holds all the properties of the widget model.
 	 */
-	private List<ConnectionElement> _sourceConnections = new ArrayList<ConnectionElement>();
-
-	/**
-	 * Stores incoming connections.
-	 */
-	private List<ConnectionElement> _targetConnections = new ArrayList<ConnectionElement>();
+	private final Map<String, WidgetProperty> _tempRemovedPropertyMap;
 
 	/**
 	 * The initial <i>height</i> value for all widget models.
@@ -242,6 +257,8 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 */
 	private static final String DEFAULT_LAYER = "";
 
+	private static final boolean DEFAULT_ACCESS_GRANTED = true;
+
 	/**
 	 * The parent model of this model.
 	 */
@@ -250,50 +267,28 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * Holds if this widget is rotatable.
 	 */
-	private boolean _isRotatable;
+	private final boolean _isRotatable;
 
 	/**
-	 * Return a property id for a {@link DoubleProperty} that can be used for
-	 * simulation purposes.
-	 * 
-	 * @return a property id for a {@link DoubleProperty} that can be used for
-	 *         simulation purposes.
-	 * @deprecated Will be removed soon!
+	 * Holds if this widget crossed out.
 	 */
-	@Deprecated
-	public String getDoubleTestProperty() {
-		return null;
-	}
+	private boolean _crossed;
+
+	private boolean _rhombus;
+
+	private boolean grantAccessCall;
 
 	/**
-	 * Return a property id for a {@link DoubleArrayProperty} that can be used
-	 * for simulation purposes.
-	 * 
-	 * @return a property id for a {@link DoubleArrayProperty} that can be used
-	 *         for simulation purposes.
-	 * @deprecated Will be removed soon!
+	 * Keeps the internal property state, when {@link #saveState()} and
+	 * {@link #restoreState()} are used.
 	 */
-	@Deprecated
-	public String getDoubleSeqTestProperty() {
-		return null;
-	}
+	private Map<String, Object> state;
+
+	private Class _javaType;
+
 
 	/**
-	 * Return a property id for a {@link ColorProperty} that can be used for
-	 * simulation purposes.
-	 * 
-	 * @return a property id for a {@link ColorProperty} that can be used for
-	 *         simulation purposes.
-	 * @deprecated Will be removed soon!
-	 */
-	@Deprecated
-	public String getColorTestProperty() {
-		return null;
-	}
-	
-	/**
-	 * Standard constructor.
-	 * Creates a not rotatable widget
+	 * Standard constructor. Creates a not rotatable widget
 	 */
 	public AbstractWidgetModel() {
 		this(false);
@@ -301,25 +296,23 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Standard constructor.
-	 * @param isRotatable true if this widget is rotatable
+	 *
+	 * @param isRotatable
+	 *            true if this widget is rotatable
 	 */
 	public AbstractWidgetModel(final boolean isRotatable) {
 		_propertyChangeSupport = new PropertyChangeSupport(this);
-		_propertyMap = new HashMap<String, WidgetProperty>();
-		_invisiblePropertyNames = new HashSet<String>();
+		_propertyMap = new LinkedHashMap<String, WidgetProperty>();
+		_tempRemovedPropertyMap = new HashMap<String, WidgetProperty>();
 		_isRotatable = isRotatable;
-
+		setJavaType(Double.class);
 		configureBaseProperties(_isRotatable);
 		configureProperties();
-		configureToolTipProperty();
-		
-		markBasePropertiesAsInvisible();
-		markPropertiesAsInvisible();
 	}
 
 	/**
 	 * Returns a default name for this model.
-	 * 
+	 *
 	 * @return String The default name
 	 */
 	protected final String getDefaultName() {
@@ -329,120 +322,128 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * Initialize the basic geometric properties such as <i>width</i>,
 	 * <i>height</i>, <i>X coordinate</i>, <i>Y coordinate</i>.
-	 * @param isRotatable If the widget is rotatable, than a rotation-property is added
+	 *
+	 * @param isRotatable
+	 *            If the widget is rotateable, than a rotation-property is added
 	 */
 	private void configureBaseProperties(final boolean isRotatable) {
-		// positions
-		addProperty(PROP_POS_X, new IntegerProperty("X-Coordinate",
-				WidgetPropertyCategory.Position, DEFAULT_X));
-		addProperty(PROP_POS_Y, new IntegerProperty("Y-Coordinate",
-				WidgetPropertyCategory.Position, DEFAULT_Y));
-		addProperty(PROP_WIDTH, new IntegerProperty("Width",
-				WidgetPropertyCategory.Position, DEFAULT_WIDTH, 1,
-				Integer.MAX_VALUE));
-		addProperty(PROP_HEIGHT, new IntegerProperty("Height",
-				WidgetPropertyCategory.Position, DEFAULT_HEIGHT, 1,
-				Integer.MAX_VALUE));
-		addProperty(PROP_LAYER, new StringProperty("Layer",
-				WidgetPropertyCategory.Position, DEFAULT_LAYER));
-		// colors
-		addProperty(PROP_COLOR_BACKGROUND, new ColorProperty(
-				"Background Color", WidgetPropertyCategory.Display, new RGB(
-						240, 240, 240)));
-		addProperty(PROP_COLOR_FOREGROUND, new ColorProperty(
-				"Foreground Color", WidgetPropertyCategory.Display, new RGB(
-						200, 100, 100)));
-		// visibility
-		addProperty(PROP_VISIBILITY, new BooleanProperty("Visibility",
-				WidgetPropertyCategory.Behaviour, true));
-
-		addProperty(PROP_BORDER_COLOR, new ColorProperty("Border Color",
-				WidgetPropertyCategory.Border, new RGB(100, 0, 0)));
-
-		addProperty(PROP_BORDER_WIDTH, new IntegerProperty("Border Width",
-				WidgetPropertyCategory.Border, 0, 0, Integer.MAX_VALUE));
-
-//		addProperty(PROP_BORDER_STYLE, new OptionProperty("Border Style",
-//				WidgetPropertyCategory.Border, new String[] {"None", "Line Style",
-//						"Labeled Style", "Raised Style","Lowered Style", "Striated Style",
-//						"Shape Style" }, 0));
-		addProperty(PROP_BORDER_STYLE, new OptionProperty("Border Style",
-				WidgetPropertyCategory.Border, BorderStyleEnum.getDisplayNames(), BorderStyleEnum.LINE.getIndex()));
-		// Property for Aliases
-		addProperty(PROP_ALIASES,
-				new StringMapProperty("Alias",
-						WidgetPropertyCategory.Behaviour,
-						new HashMap<String, String>()));
-		addProperty(PROP_ENABLED, new BooleanProperty("Enabled",
-				WidgetPropertyCategory.Behaviour, DEFAULT_ENABLED));
-		addProperty(PROP_PERMISSSION_ID, new StringProperty("Permission ID",
-				WidgetPropertyCategory.Behaviour, ""));
+		// .. behavior
+		addBehaviorProperty(PROP_BEHAVIOR, "Behavior", WidgetPropertyCategory.CONNECTION, "");
+		// primary pv
+		addStringProperty(PROP_PRIMARY_PV, "Primary PV", WidgetPropertyCategory.CONNECTION, "", false);
 		// Name
-		addProperty(PROP_NAME, new StringProperty("Name",
-				WidgetPropertyCategory.Display, this.getDefaultName()));
-		// Primary PV
-		addProperty(PROP_PRIMARY_PV, new StringProperty("Primary PV",
-				WidgetPropertyCategory.Behaviour, ""));
-		// ActionData
-		addProperty(PROP_ACTIONDATA, new ActionDataProperty("Action Data",
-				WidgetPropertyCategory.Behaviour, new ActionData()));
+		addStringProperty(PROP_NAME, "Name", WidgetPropertyCategory.BEHAVIOR, this.getDefaultName(), false);
+		// .. Aliases
+		addStringMapProperty(PROP_ALIASES, "Alias", WidgetPropertyCategory.CONNECTION, new HashMap<String, String>(), false);
+		// .. Actions
+		addActionDataProperty(PROP_ACTIONDATA, "Action Data", WidgetPropertyCategory.ACTIONS, new ActionData());
+		// positions
+		addIntegerProperty(PROP_POS_X, "X-Coordinate", WidgetPropertyCategory.POSITION, DEFAULT_X, false);
+		addIntegerProperty(PROP_POS_Y, "Y-Coordinate", WidgetPropertyCategory.POSITION, DEFAULT_Y, false);
+		addIntegerProperty(PROP_WIDTH, "Width", WidgetPropertyCategory.POSITION, DEFAULT_WIDTH, 1, Integer.MAX_VALUE, false);
+		addIntegerProperty(PROP_HEIGHT, "Height", WidgetPropertyCategory.POSITION, DEFAULT_HEIGHT, 1, Integer.MAX_VALUE, false);
+		// colors
+		addColorProperty(PROP_COLOR_FOREGROUND, "Foreground Color", WidgetPropertyCategory.FORMAT, "#C86464", false);
+		addColorProperty(PROP_COLOR_BACKGROUND, "Background Color", WidgetPropertyCategory.FORMAT, "#F0F0F0", false);
+		// visibility
+		addBooleanProperty(PROP_VISIBILITY, "Visibility", WidgetPropertyCategory.BEHAVIOR, true, false);
+
+		addArrayOptionProperty(PROP_BORDER_STYLE, "Border Style", WidgetPropertyCategory.BORDER, BorderStyleEnum.getDisplayNames(),
+				BorderStyleEnum.LINE.getIndex(), false);
+		addIntegerProperty(PROP_BORDER_WIDTH, "Border Width", WidgetPropertyCategory.BORDER, 0, 0, Integer.MAX_VALUE, false);
+		addColorProperty(PROP_BORDER_COLOR, "Border Color", WidgetPropertyCategory.BORDER, "#640000", false);
+
+		addBooleanProperty(PROP_ENABLED, "Enabled", WidgetPropertyCategory.BEHAVIOR, DEFAULT_ENABLED, false);
+		addStringProperty(PROP_PERMISSSION_ID, "Permission ID", WidgetPropertyCategory.BEHAVIOR, "", false);
 		// Cursor
-		addProperty(PROP_CURSOR, new OptionProperty("Cursor",
-				WidgetPropertyCategory.Display, CursorService.getInstance().getDisplayNames(), CursorService.getInstance().getDefaultCursorIndex()));
-		
+		List<AbstractCursor> cursorDescriptors = CursorService.getInstance().availableCursors();
+		addOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,
+		                  cursorDescriptors.toArray(new IOption[cursorDescriptors.size()]), "cursor.default", false);
+//		List<String> cursorTextDescriptors = new ArrayList<String>();
+//		for (AbstractCursor abstractCursor : cursorDescriptors) {
+//            cursorTextDescriptors.add(abstractCursor.getTitle());
+//        }
+//		int index = cursorDescriptors.indexOf(CursorService.getInstance().findCursor("cursor.default"));
+//		addArrayOptionProperty(PROP_CURSOR, "Cursor", WidgetPropertyCategory.BEHAVIOR,cursorTextDescriptors.toArray(new String[0]), index, false);
+		// Rotation
 		if (isRotatable) {
-			addProperty(PROP_ROTATION, new DoubleProperty("Rotation Angle", WidgetPropertyCategory.Display, 0, 0, 360));
+			addDoubleProperty(PROP_ROTATION, "Rotation Angle", WidgetPropertyCategory.DISPLAY, 0, 0, 360, false);
 		}
+		addTooltipProperty(PROP_TOOLTIP, "ToolTip", WidgetPropertyCategory.DISPLAY, this.getDefaultToolTip());
+		addBooleanProperty(PROP_CROSSED_OUT, "Crossed Out", WidgetPropertyCategory.BEHAVIOR, false, false);
+		addBooleanProperty(PROP_RHOMBUS, "Rhombus Style", WidgetPropertyCategory.BEHAVIOR, false, false);
+		// .. some internal properties
+		addStringProperty(PROP_LAYER, "Layer", WidgetPropertyCategory.POSITION, DEFAULT_LAYER, false);
+		addBooleanProperty(PROP_ACCESS_GRANTED, "Access granted", WidgetPropertyCategory.BEHAVIOR, DEFAULT_ACCESS_GRANTED, false);
+		addBooleanProperty(PROP_WRITE_ACCESS_GRANTED, "Write Access granted", WidgetPropertyCategory.BEHAVIOR, DEFAULT_ACCESS_GRANTED, false);
+		// .. hide internal properties
+		hideProperty(PROP_LAYER, getTypeID());
+		hideProperty(PROP_ACCESS_GRANTED, getTypeID());
+		hideProperty(PROP_WRITE_ACCESS_GRANTED, getTypeID());
 	}
-		
-	/**
-	 * Configures the tooltip-property.
-	 */
-	private void configureToolTipProperty() {
-		addProperty(PROP_TOOLTIP, new ParameterStringProperty("ToolTip",
-				WidgetPropertyCategory.Display, this.getDefaultToolTip()));
-	}
-	
+
 	/**
 	 * Returns the default tooltip for this model.
+	 *
 	 * @return the tooltip text
 	 */
 	protected String getDefaultToolTip() {
-		return this.createParameter(PROP_NAME);
+		return this.createTooltipParameter(PROP_ALIASES);
 	}
-	
+
 	/**
-	 * Returns the given parameter encapsulated by '${' and '}$'. 
-	 * @param propertyName The name of the parameter
-	 * 
-	 * @deprecated 2008.01.08 : swende: Inperformant. Besser nur den SEPARATOR verwenden
-	 * @return the created parameter
+	 * Returns the given parameter encapsulated by '${' and '}$'.
+	 *
+	 * @param propertyName
+	 *            The name of the parameter
+	 *
 	 */
-	protected final String createParameter(final String propertyName) {
-		return AbstractToolTipConverter.START_SEPARATOR+propertyName+AbstractToolTipConverter.END_SEPARATOR;
+	protected final String createTooltipParameter(final String propertyName) {
+		return "${" + propertyName + "}";
 	}
-	
+
 	/**
-	 * Marks the the property with the given ID as invisible.
-	 * @param propertyID The ID of the property
+	 * Hides the specified property. Visibility may depend on other properties
+	 * which is indicated by the master id. A property is only visible (in the
+	 * property view), if its master references are empty. This method adds the
+	 * specified master id from the internal reference list.
+	 *
+	 * @param propertyID
+	 *            the property id
+	 * @param masterId
+	 *            the id of the master
 	 */
-	protected final void markPropertyAsInvisible(final String propertyID) {
-		_invisiblePropertyNames.add(propertyID);
+	public final void hideProperty(final String propertyID, final String masterId) {
+		WidgetProperty property = getPropertyInternal(propertyID);
+		if (property != null) {
+			property.hide(masterId);
+		}
 	}
-	
+
 	/**
-	 * Marks the the property with the given ID as visible.
-	 * @param propertyID The ID of the property
+	 * Shows the specified property. Visibility may depend on other properties
+	 * which is indicated by the master id. A property is only visible (in the
+	 * property view), if its master references are empty. This method removes
+	 * the specified master id from the internal reference list.
+	 *
+	 * @param propertyID
+	 *            the property id
+	 * @param masterId
+	 *            the id of the master
 	 */
-	protected final void markPropertyAsVisible(final String propertyID) {
-		_invisiblePropertyNames.remove(propertyID);
+	public final void showProperty(final String propertyID, final String masterId) {
+		WidgetProperty property = getPropertyInternal(propertyID);
+		if (property != null) {
+			property.show(masterId);
+		}
 	}
 
 	/**
 	 * Sets the connection state of this model.
-	 * 
+	 *
 	 * @param isLive
-	 *            The new connection state
+	 *            true if this model is connected to a control system, false
+	 *            otherwise
 	 */
 	public void setLive(final boolean isLive) {
 		if (_live != isLive) {
@@ -452,18 +453,18 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	/**
-	 * Returns the connection state of this model.
-	 * 
-	 * @return true, if the model is connected to the control system, false
-	 *         otherwise
+	 * Returns true if this model is connected to a control system.
+	 *
+	 * @return true if this model is connected to a control system
 	 */
 	public boolean isLive() {
 		return _live;
 	}
-	
+
 	/**
-	 * Returns if this widget is rotatable or not.
-	 * @return true id this widget is rotatable, false otherwise
+	 * Returns true if this widget can be rotated.
+	 *
+	 * @return true if this widget can be rotated
 	 */
 	public boolean isRotatable() {
 		return _isRotatable;
@@ -471,109 +472,91 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience getter to access the <i>height</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>height</i> property.
 	 */
 	public final synchronized int getHeight() {
-		return getCastedPropertyValue(PROP_HEIGHT);
+		return getIntegerProperty(PROP_HEIGHT);
 	}
 
 	/**
 	 * Convenience setter to access the <i>height</i> property.
-	 * 
+	 *
 	 * @param height
 	 *            The value for the <i>height</i> property.
 	 */
 	public synchronized void setHeight(final int height) {
 		setPropertyValue(PROP_HEIGHT, height);
 	}
-	
+
 	/**
 	 * Returns the {@link ActionData} of this widget and its parents.
+	 *
 	 * @return The {@link ActionData}
 	 */
 	public ActionData getActionData() {
 		ActionData result = new ActionData();
-		ActionData ownData = this.getOwnActionData();
-		for (WidgetAction action : ownData.getWidgetActions()) {
+		ActionData ownData = getActionDataProperty(PROP_ACTIONDATA);
+		for (AbstractWidgetActionModel action : ownData.getWidgetActions()) {
 			result.addAction(action);
 		}
-		if (this.getParent()!=null) {
+		if (this.getParent() != null) {
 			ActionData parentData = this.getParent().getActionData();
-			for (WidgetAction action : parentData.getWidgetActions()) {
+			for (AbstractWidgetActionModel action : parentData.getWidgetActions()) {
 				result.addAction(action);
-			}	
+			}
 		}
 		return result;
 	}
-	
-	/**
-	 * Returns only the {@link ActionData} of this widget.
-	 * @return The {@link ActionData}
-	 */
-	public ActionData getOwnActionData() {
-		return (ActionData) getProperty(PROP_ACTIONDATA).getPropertyValue();
-	}
 
-	/**
-	 * Gets the background color.
-	 * 
-	 * @return the background color
-	 */
-	public final RGB getBackgroundColor() {
-		return (RGB) getProperty(PROP_COLOR_BACKGROUND).getPropertyValue();
-	}
-
-	/**
-	 * Sets the background color.
-	 * 
-	 * @param rgb
-	 *            the background color
-	 */
-	public final void setBackgroundColor(final RGB rgb) {
-		setPropertyValue(PROP_COLOR_BACKGROUND, rgb);
-	}
-
-	/**
-	 * Gets the foreground color.
-	 * 
-	 * @return the foreground color
-	 */
-	public final RGB getForegroundColor() {
-		return (RGB) getProperty(PROP_COLOR_FOREGROUND).getPropertyValue();
-	}
-
-	/**
-	 * Sets the foreground color.
-	 * 
-	 * @param rgb
-	 *            the foreground color
-	 */
-	public final void setForegroundColor(final RGB rgb) {
-		setPropertyValue(PROP_COLOR_FOREGROUND, rgb);
+	public final boolean isConnectedToControlSystem() {
+		return getBooleanProperty(PROP_CONNECTED);
 	}
 
 	/**
 	 * Returns the permission id.
-	 * 
+	 *
 	 * @return String The permission id
 	 */
 	public final String getPermissionID() {
-		return (String) getProperty(PROP_PERMISSSION_ID).getPropertyValue();
+		return getStringProperty(PROP_PERMISSSION_ID);
+	}
+
+	public final boolean isEnable() {
+		return getBooleanProperty(PROP_ENABLED);
+	}
+
+	public final boolean isWriteAccessAllowed() {
+		return getBooleanProperty(PROP_WRITE_ACCESS_GRANTED);
+	}
+
+	public final boolean isAccessGranted() {
+		return getBooleanProperty(PROP_ACCESS_GRANTED);
 	}
 
 	/**
-	 * Returns the enable state.
-	 * 
-	 * @return boolean The enable state
+	 * Returns the enable state independent of any parent states.
+	 *
+	 * @return boolean the enable state independent of any parent states
 	 */
-	public final boolean isEnabled() {
-		return (Boolean) getProperty(PROP_ENABLED).getPropertyValue();
+	public final boolean isAccesible() {
+		return getBooleanProperty(PROP_ACCESS_GRANTED) && isEnable() && (isWriteAccessAllowed() || !hasOutputChannel());
+	}
+
+	/**
+	 * Returns true if the widget and all of its recursive parents are enabled.
+	 *
+	 * @return boolean true if the widget and all of its recursive parents are
+	 *         enabled
+	 */
+	public final boolean isEnabledRecursive() {
+		boolean result = isAccesible() && (getParent() != null ? getParent().isAccesible() : true);
+		return result;
 	}
 
 	/**
 	 * Sets the enable state of this model.
-	 * 
+	 *
 	 * @param enabled
 	 *            The new enable state
 	 */
@@ -581,60 +564,63 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		setPropertyValue(PROP_ENABLED, enabled);
 	}
 
+	public void grantAccess(final boolean permission) {
+		grantAccessCall = true;
+		setPropertyValue(PROP_ACCESS_GRANTED, permission);
+		grantAccessCall = false;
+	}
+
 	/**
 	 * Returns the name of the layer.
-	 * 
+	 *
 	 * @return String The name of the layer
 	 */
 	public final String getLayer() {
-		return (String) getProperty(PROP_LAYER).getPropertyValue();
+		return getStringProperty(PROP_LAYER);
 	}
 
 	/**
 	 * Sets the index of the layer.
-	 * 
+	 *
 	 * @param layer
 	 *            The index of the layer
 	 */
 	public final void setLayer(final String layer) {
 		setPropertyValue(PROP_LAYER, layer);
 	}
-	
-	/**
-	 * Returns the cursor for this widget.
-	 * 
-	 * @return The cursor
-	 */
-	public final int getCursor() {
-		return (Integer) getProperty(PROP_CURSOR).getPropertyValue();
+
+	public void setCursorId(final String cursorId) {
+		assert cursorId != null;
+//		AbstractCursor findCursor = CursorService.getInstance().findCursor(cursorId);
+//		int index = CursorService.getInstance().availableCursors().indexOf(findCursor);
+//		setPropertyValue(PROP_CURSOR, index);
+		setPropertyValue(PROP_CURSOR, cursorId);
+	}
+
+	public final String getCursorId() {
+		return getOptionProperty(PROP_CURSOR);
+//	    List<AbstractCursor> cursorDescriptors = CursorService.getInstance().availableCursors();
+//	    AbstractCursor abstractCursor = cursorDescriptors.get(getArrayOptionProperty(PROP_CURSOR));
+//	    return abstractCursor.getIdentifier();
 	}
 
 	/**
-	 * Sets the {@link Cursor}.
-	 * 
-	 * @param cursor
-	 *            The {@link Cursor}
-	 */
-	public final void setCursor(final Cursor cursor) {
-		setPropertyValue(PROP_CURSOR, cursor);
-	}
-	
-	/**
-	 * Returns the rotation angle for this widget.
-	 * Returns 0 if this widget is not rotatable
-	 * 
+	 * Returns the rotation angle for this widget. Returns 0 if this widget is
+	 * not rotatable
+	 *
 	 * @return The rotation angle
 	 */
 	public final double getRotationAngle() {
 		if (this.isRotatable()) {
-			return (Double) getProperty(PROP_ROTATION).getPropertyValue();
+			return getDoubleProperty(PROP_ROTATION);
 		}
 		return 0.0;
 	}
 
 	/**
-	 * Sets the rotation angle for this widget, only when this widget is rotatable.
-	 * 
+	 * Sets the rotation angle for this widget, only when this widget is
+	 * rotatable.
+	 *
 	 * @param angle
 	 *            The angle
 	 */
@@ -646,7 +632,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Return whether the widget model has a property with the given ID.
-	 * 
+	 *
 	 * @param name
 	 *            The ID of the property.
 	 * @return True, if the widget model has a property with the given ID.
@@ -660,105 +646,503 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		return result;
 	}
 
-	/**
-	 * Return a set with all the property IDs of the widget model.
-	 * 
-	 * @return A set with all the property IDs of the widget model.
-	 * 
-	 * @deprecated 2008.01.08: swende: Inperformant. Besser auf _propertyMap direkt zugreifen.
-	 */
-	public final synchronized Set<String> getPropertyNames() {
-		return new HashSet<String>(_propertyMap.keySet());
+	public List<WidgetProperty> getProperties() {
+		return _properties;
 	}
-	
+
 	/**
-	 * Returns a set with the property IDs of the widget model, which are visible.
-	 * @return A set with the property IDs of the widget model, which are visible
+	 * Returns the IDs of all visible properties.
+	 *
+	 * @return the IDs of all visible properties
 	 */
-	public final synchronized Set<String> getVisiblePropertyNames() {
-		Set<String> result = new HashSet<String>(_propertyMap.keySet());
-		result.removeAll(_invisiblePropertyNames);
+	public final synchronized Set<String> getVisiblePropertyIds() {
+		Set<String> result = new LinkedHashSet<String>();
+
+		for (WidgetProperty property : _properties) {
+			if (property.isVisible()) {
+				result.add(property.getId());
+			}
+		}
 		return result;
 	}
 
 	/**
-	 * Returns the number of properties.
-	 * 
-	 * @return the number of properties
+	 * Returns the property object for the specified property identifier.
+	 * Important: This method should not be called outside the SDS core. This
+	 * method might not exists in future releases. Please use the typed
+	 * get-methods (like {@link #getStringProperty(String)}) to access property
+	 * values.
+	 *
+	 * @param name
+	 *            the property identifier
+	 *
+	 * @return the property for the specified identifier
 	 */
-	public final synchronized int getPropertyCount() {
-		return _propertyMap.keySet().size();
+	public final synchronized WidgetProperty getPropertyInternal(final String name) {
+		assert name != null;
+		assert hasProperty(name);
+		return _propertyMap.get(name);
 	}
-	
-	/**
-	 * Returns the number of properties, which are visible.
-	 * 
-	 * @return the number of properties, which are visible
-	 */
-	public final synchronized int getVisiblePropertyCount() {
-		return this.getVisiblePropertyNames().size();
+
+	public final synchronized String getStringProperty(final String propertyId) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof StringProperty)) {
+			return property.getPropertyValue();
+		}
+		throw new IllegalArgumentException("No String property [" + propertyId + "] registered.");
+	}
+
+	public final synchronized ActionData getActionDataProperty(final String propertyId) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof ActionDataProperty)) {
+			return property.getPropertyValue();
+        }
+		throw new IllegalArgumentException("No ActionData property [" + propertyId + "] registered.");
+	}
+
+	public final synchronized int getIntegerProperty(final String propertyId) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof IntegerProperty)) {
+			return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Integer property [" + propertyId + "] registered.");
+	}
+
+	public final synchronized double getDoubleProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof DoubleProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Double property [" + propertyId + "] registered.");
+	}
+
+    public final synchronized String getTooltipProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof TooltipProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
+    }
+
+	public final synchronized boolean getBooleanProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof BooleanProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Boolean property [" + propertyId + "] registered.");
+    }
+
+    public final synchronized int getArrayOptionProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof ArrayOptionProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No ArrayOption property [" + propertyId
+                + "] registered.");
+    }
+
+	public final synchronized Map<String, String> getStringMapProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof StringMapProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No StringMap property [" + propertyId + "] registered.");
+    }
+
+    public final synchronized String getOptionProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof OptionProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Option property [" + propertyId + "] registered.");
+    }
+
+    public final synchronized IPath getResourceProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof ResourceProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Resource property [" + propertyId + "] registered.");
+	}
+
+	public final synchronized PointList getPointlistProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof PointlistProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
+	}
+
+    public final synchronized double[] getDoubleArrayProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof DoubleArrayProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
+	}
+
+    public final synchronized String getBehaviorProperty(final String propertyId) {
+        WidgetProperty property = _propertyMap.get(propertyId);
+
+        if ( (property != null) && (property instanceof BehaviorProperty)) {
+            return property.getPropertyValue();
+        }
+        throw new IllegalArgumentException("No Tooltip property [" + propertyId + "] registered.");
+    }
+
+	public final void addArrayOptionProperty(final String id, final String description,
+	                                         final WidgetPropertyCategory category,
+	                                         final String[] options, final int defaultValue,
+	                                         final boolean before, final String... relative) {
+		ArrayOptionProperty property = new ArrayOptionProperty(description, category, options, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addStringMapProperty(final String id, final String description,
+	                                       final WidgetPropertyCategory category,
+	                                       final Map<String, String> defaultValue,
+	                                       final boolean before, final String... relative) {
+		StringMapProperty property = new StringMapProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addOptionProperty(final String id, final String description,
+	                                    final WidgetPropertyCategory category,
+	                                    final IOption[] options, final String defaultValue,
+	                                    final boolean before, final String... relative) {
+		OptionProperty property = new OptionProperty(description, category, options, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addResourceProperty(final String id, final String description,
+	                                      final WidgetPropertyCategory category,
+	                                      final IPath defaultValue, final String[] fileExtensions,
+	                                      final boolean before, final String... relative) {
+		ResourceProperty property = new ResourceProperty(description, category, defaultValue, fileExtensions);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addPointlistProperty(final String id, final String description,
+	                                       final WidgetPropertyCategory category,
+	                                       final PointList defaultValue,
+	                                       final boolean before, final String... relative) {
+		PointlistProperty property = new PointlistProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addDoubleArrayProperty(final String id, final String description,
+	                                         final WidgetPropertyCategory category,
+	                                         final double[] defaultValue,
+	                                         final boolean before, final String... relative) {
+		DoubleArrayProperty property = new DoubleArrayProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	private void addBehaviorProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final String... after) {
+		BehaviorProperty property = new BehaviorProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, false, after);
+	}
+
+	private void addTooltipProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final String... after) {
+		TooltipProperty property = new TooltipProperty(description, category, defaultValue, this);
+		property.setId(id);
+		doAddProperty(property, false, after);
+	}
+
+	private void addActionDataProperty(final String id, final String description, final WidgetPropertyCategory category, final ActionData defaultValue,
+			final String... after) {
+		ActionDataProperty property = new ActionDataProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, false, after);
+	}
+
+	public final void addBooleanProperty(final String id, final String description,
+	                                     final WidgetPropertyCategory category,
+	                                     final boolean defaultValue,
+	                                     final boolean before, final String... relative) {
+		BooleanProperty property = new BooleanProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addIntegerProperty(final String id, final String description,
+	                                     final WidgetPropertyCategory category,
+	                                     final int defaultValue, final int min, final int max,
+	                                     final boolean before, final String... relative) {
+		IntegerProperty property = new IntegerProperty(description, category, defaultValue, min, max);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addIntegerProperty(final String id, final String description,
+	                                     final WidgetPropertyCategory category,
+	                                     final int defaultValue,
+	                                     final boolean before, final String... relative) {
+		addIntegerProperty(id, description, category, defaultValue, -Integer.MAX_VALUE, Integer.MAX_VALUE, before, relative);
+	}
+
+	public final void addDoubleProperty(final String id, final String description,
+	                                    final String longDescription,
+	                                    final WidgetPropertyCategory category,
+	                                    final double defaultValue,
+	                                    final double min, final double max,
+	                                    final boolean before, final String... relative) {
+		DoubleProperty property = new DoubleProperty(description, longDescription, category, defaultValue, min, max);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addDoubleProperty(final String id, final String description,
+	                                    final WidgetPropertyCategory category,
+	                                    final double defaultValue, final double min,
+	                                    final double max,
+	                                    final boolean before, final String... relative) {
+		addDoubleProperty(id, description, null, category, defaultValue, min, max, before, relative);
+	}
+
+	public final void addDoubleProperty(final String id, final String description, final WidgetPropertyCategory category, final double defaultValue, final boolean before, final String... relative) {
+		addDoubleProperty(id, description, null, category, defaultValue, -Double.MAX_VALUE, Double.MAX_VALUE, before, relative);
+	}
+
+	public final void addStringProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final boolean before, final String... relative) {
+		StringProperty property = new StringProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addColorProperty(final String id, final String description, final WidgetPropertyCategory category, final String defaultValue, final boolean before, final String... relative) {
+		ColorProperty property = new ColorProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	public final void addFontProperty(final String id, final String description,
+	                                  final WidgetPropertyCategory category,
+	                                  final String defaultValue, final boolean before,
+	                                  final String... relative) {
+		FontProperty property = new FontProperty(description, category, defaultValue);
+		property.setId(id);
+		doAddProperty(property, before, relative);
+	}
+
+	private void doAddProperty(final WidgetProperty property, final boolean before, final String... relative) {
+		// .. determine insertation index
+
+		int index = _properties.size();
+
+        if ( (relative != null) && (relative.length > 0)) {
+            int pos = 0;
+            if (!before) {
+              pos=1;
+            }
+            for (String pId : relative) {
+                WidgetProperty p = _propertyMap.get(pId);
+
+                if ( (p != null) && _properties.contains(p)) {
+                    index = _properties.indexOf(p) + pos;
+                }
+            }
+        }
+		property.setWidgetModel(this);
+		_propertyMap.put(property.getId(), property);
+		_properties.add(index, property);
+
+		assert property.getWidgetModel() == this;
+		assert property.getId() != null;
+		assert _propertyMap.containsKey(property.getId());
+		assert _propertyMap.get(property.getId()) == property;
+		assert _properties.contains(property);
+	}
+
+	public final String getColor(final String propertyId) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof ColorProperty)) {
+			return property.getPropertyValue();
+		}
+		throw new IllegalArgumentException("No color property [" + propertyId + "] registered.");
+	}
+
+	public final boolean isCrossedOut() {
+        return getBooleanProperty(PROP_CROSSED_OUT);
+    }
+    /**
+     * Set is this model corssed out or not.
+     *
+     * @param crossed
+     *            true if this model crossed out,<br>
+     *            false otherwise
+     */
+    public void setCrossedOut(final boolean crossed) {
+        if (_crossed != crossed) {
+            _crossed = crossed;
+            firePropertyChangeEvent(PROP_CROSSED_OUT, !_crossed, _crossed);
+        }
+    }
+    public final boolean isRhombus() {
+        return getBooleanProperty(PROP_RHOMBUS);
+    }
+    /**
+     * Set is this model corssed out or not.
+     *
+     * @param rhombus
+     *            true if this model crossed out,<br>
+     *            false otherwise
+     */
+    public void setRhombsus(final boolean rhombus) {
+        if (_rhombus != rhombus) {
+            _rhombus = rhombus;
+            firePropertyChangeEvent(PROP_RHOMBUS, !_rhombus, _rhombus);
+        }
+    }
+
+	public final void setColor(final String propertyId, final String hexOrVariable) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof ColorProperty)) {
+			property.setPropertyValue(hexOrVariable);
+		} else {
+			throw new IllegalArgumentException("No color property [" + propertyId + "] registered.");
+		}
+	}
+
+	public final String getFont(final String propertyId) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof FontProperty)) {
+			return property.getPropertyValue();
+		}
+		throw new IllegalArgumentException("No font property [" + propertyId + "] registered.");
+	}
+
+	public final void setFont(final String propertyId, final FontData font) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if ((property != null) && (property instanceof FontProperty)) {
+			property.setPropertyValue(font);
+		} else {
+			throw new IllegalArgumentException("No font property [" + propertyId + "] registered.");
+		}
 	}
 
 	/**
 	 * Return the widget model property with the given ID.
-	 * 
+	 *
 	 * @param name
 	 *            The ID of the property.
 	 * @return The widget model property with the given ID.
 	 */
-	public final synchronized WidgetProperty getProperty(final String name) {
+	public final synchronized WidgetProperty getTempRemovedProperty(final String name) {
 		assert name != null;
-		assert hasProperty(name);
+		assert hasTempRemovedProperty(name);
 
-		return _propertyMap.get(name);
+		return _tempRemovedPropertyMap.get(name);
 	}
 
 	/**
-	 * Add a property to the widget model.
-	 * 
-	 * @param id
-	 *            ID of the property.
-	 * @param property
-	 *            the property
+	 * Return whether the widget model has a property with the given ID.
+	 *
+	 * @param name
+	 *            The ID of the property.
+	 * @return True, if the widget model has a property with the given ID.
 	 */
-	protected final void addProperty(final String id,
-			final WidgetProperty property) {
-		_propertyMap.put(id, property);
+	public final synchronized boolean hasTempRemovedProperty(final String name) {
+		boolean result = false;
+		if (_propertyMap.containsKey(name)) {
+			result = true;
+		}
+
+		return result;
 	}
 
 	/**
-	 * Set the value of an widget property.
-	 * 
+	 * Set the value of a widget property.
+	 *
+	 * @param propertyID
+	 *            the property id
+	 * @param value
+	 *            the value
+	 */
+	public synchronized void setPropertyValue(final String propertyID, final Object value) {
+		WidgetProperty property = _propertyMap.get(propertyID);
+		if (property != null) {
+			if (!PROP_ACCESS_GRANTED.equals(propertyID) || grantAccessCall) {
+				// ignore setting of PROP_ACCESS_GRANTED if the property was
+				// loaded from storage
+				property.setPropertyValue(value);
+			}
+		}
+	}
+
+	/**
+	 * Set the manual value of a widget property.
+	 *
+	 * @param propertyID
+	 *            the property id
+	 * @param manualValue
+	 *            the value
+	 */
+	public synchronized void setPropertyManualValue(final String propertyID, final Object manualValue) {
+		WidgetProperty property = _propertyMap.get(propertyID);
+		if (property != null) {
+			if (!PROP_ACCESS_GRANTED.equals(propertyID) || grantAccessCall) {
+				// ignore setting of PROP_ACCESS_GRANTED if the property was
+				// loaded from storage
+				property.setManualValue(manualValue);
+			}
+		}
+	}
+
+	/**
+	 * Set the description of an widget property.
+	 *
 	 * @param propertyID
 	 *            The ID of the property.
-	 * @param value
-	 *            The new value of the property.
+	 * @param description
+	 *            The new description of the property.
 	 */
-	public synchronized void setPropertyValue(final String propertyID,
-			final Object value) {
+	public synchronized void setPropertyDescription(final String propertyID, final String description) {
 		WidgetProperty property = _propertyMap.get(propertyID);
 
 		if (property != null) {
-			property.setPropertyValue(value);
+			property.setDescription(description);
 		}
 	}
 
 	/**
 	 * Add an alias.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the alias
 	 * @param value
 	 *            The value of the alias
 	 */
-	public final synchronized void addAlias(final String name,
-			final String value) {
+	public final synchronized void addAlias(final String name, final String value) {
 		assert name != null;
 		assert value != null;
-		
+
 		Map<String, String> aliases = new HashMap<String, String>();
-		for (String key : this.getAliases().keySet()) {
-			aliases.put(key, this.getAliases().get(key));
+		for (String key : getAliases().keySet()) {
+			aliases.put(key, getAliases().get(key));
 		}
 		aliases.put(name, value);
 		this.setPropertyValue(PROP_ALIASES, aliases);
@@ -767,19 +1151,19 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * Remove the given alias descriptor from the widget model's internal alias
 	 * descriptors set.
-	 * 
+	 *
 	 * @param name
 	 *            The name of the alias that is to be removed.
 	 */
 	public final synchronized void removeAlias(final String name) {
-		if (this.getAliases().remove(name)!=null) {
+		if (this.getAliases().remove(name) != null) {
 			firePropertyChangeEvent(PROP_ALIASES, null, this.getAliases());
 		}
 	}
 
 	/**
 	 * Sets the given Map as Aliases.
-	 * 
+	 *
 	 * @param map
 	 *            A Map, which keys and values are Strings
 	 */
@@ -789,34 +1173,32 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Returns the Map for the Aliases. The keys and the values are Strings
-	 * 
+	 *
 	 * @return Map The Map of Aliases
 	 */
-	@SuppressWarnings("unchecked")
-	public final Map<String, String> getAliases() {
-		return (Map<String, String>) getProperty(PROP_ALIASES).getPropertyValue();
+	public Map<String, String> getAliases() {
+		return getStringMapProperty(PROP_ALIASES);
 	}
 
 	/**
 	 * Recursive method, which returns all aliases that can be used within this
 	 * widget model. The method relies on the parent-relationship to other
 	 * (container) widgets.
-	 * 
+	 *
 	 * Due to the recursive mechanism, aliases of parents are overridden by
 	 * aliases of their children. This way aliases can be re-defined by child
 	 * models.
-	 * 
+	 *
 	 * @return a complete map of all alias replacements (key=alias name e.g.
 	 *         "channel", value = replacement string e.g. "cryo/pump3")
 	 */
 	public final Map<String, String> getAllInheritedAliases() {
-		
+
 		Map<String, String> result = new HashMap<String, String>();
 
 		if (getParent() != null) {
 			// get aliases from parent
-			Map<String, String> inheritedAliases = getParent()
-					.getAllInheritedAliases();
+			Map<String, String> inheritedAliases = getParent().getAllInheritedAliases();
 
 			// put them into the result list first
 			result.putAll(inheritedAliases);
@@ -836,7 +1218,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Sets the specified alias.
-	 * 
+	 *
 	 * @param name
 	 *            the alias ID
 	 * @param value
@@ -850,14 +1232,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Set the dynamics descriptor of an widget property.
-	 * 
+	 *
 	 * @param propertyID
 	 *            The ID of the property.
 	 * @param dynamicsDescriptor
 	 *            The dynamics descriptor.
 	 */
-	public final synchronized void setDynamicsDescriptor(
-			final String propertyID, final DynamicsDescriptor dynamicsDescriptor) {
+	public final synchronized void setDynamicsDescriptor(final String propertyID, final DynamicsDescriptor dynamicsDescriptor) {
 		WidgetProperty p = _propertyMap.get(propertyID);
 
 		if (p != null) {
@@ -867,20 +1248,19 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 			// together with the current value of the property - do never send
 			// the dynamics descriptor itself as value, because it is not
 			// compatible to the expected data type for that property
-			Object propertyValue = getProperty(propertyID).getPropertyValue();
+			Object propertyValue = getPropertyInternal(propertyID).getPropertyValue();
 			firePropertyChangeEvent(propertyID, propertyValue, propertyValue);
 		}
 	}
 
 	/**
 	 * Return the dynamics descriptor of the widget property with the given ID.
-	 * 
+	 *
 	 * @param propertyID
 	 *            The ID of the property.
 	 * @return The dynamics descriptor of the widget property with the given ID.
 	 */
-	public final synchronized DynamicsDescriptor getDynamicsDescriptor(
-			final String propertyID) {
+	public final synchronized DynamicsDescriptor getDynamicsDescriptor(final String propertyID) {
 		DynamicsDescriptor result = null;
 
 		WidgetProperty p = _propertyMap.get(propertyID);
@@ -894,16 +1274,16 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience getter to access the <i>width</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>width</i> property.
 	 */
 	public final synchronized int getWidth() {
-		return getCastedPropertyValue(PROP_WIDTH);
+		return getIntegerProperty(PROP_WIDTH);
 	}
 
 	/**
 	 * Convenience setter to access the <i>width</i> property.
-	 * 
+	 *
 	 * @param width
 	 *            The value for the <i>width</i> property.
 	 */
@@ -913,53 +1293,63 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience getter to access the <i>X coordinate</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>X coordinate</i> property.
 	 */
 	public final synchronized int getX() {
-		return getCastedPropertyValue(PROP_POS_X);
+		return getIntegerProperty(PROP_POS_X);
 	}
-	
+
 	/**
-	 * Convenience getter to access the <i>X coordinate</i> property relative to the given ancestor.
-	 * @param ancestor An ancestor of this widget
+	 * Convenience getter to access the <i>X coordinate</i> property relative to
+	 * the given ancestor.
+	 *
+	 * @param ancestor
+	 *            An ancestor of this widget
 	 * @return The value of the <i>X coordinate</i> property.
 	 */
 	public final synchronized int getXForAncestor(final ContainerModel ancestor) {
-		assert isAncestorReachable(ancestor) : "Ancestor ("+ancestor+") is not reachable from "+this;
-		int result = getCastedPropertyValue(PROP_POS_X);
+		assert isAncestorReachable(ancestor) : "Ancestor (" + ancestor + ") is not reachable from " + this;
+		int result = getIntegerProperty(PROP_POS_X);
 		ContainerModel parent = this.getParent();
-		while (parent!=null && !parent.equals(ancestor)) {
+		while ((parent != null) && !parent.equals(ancestor)) {
 			result = result + parent.getX();
 			parent = parent.getParent();
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Convenience getter to access the <i>Y coordinate</i> property relative to the given ancestor.
-	 * @param ancestor An ancestor of this widget
+	 * Convenience getter to access the <i>Y coordinate</i> property relative to
+	 * the given ancestor.
+	 *
+	 * @param ancestor
+	 *            An ancestor of this widget
 	 * @return The value of the <i>Y coordinate</i> property.
 	 */
 	public final synchronized int getYForAncestor(final ContainerModel ancestor) {
-		assert isAncestorReachable(ancestor) : "Ancestor ("+ancestor+") is not reachable from "+this;
-		int result = getCastedPropertyValue(PROP_POS_Y);
+		assert isAncestorReachable(ancestor) : "Ancestor (" + ancestor + ") is not reachable from " + this;
+		int result = getIntegerProperty(PROP_POS_Y);
 		ContainerModel parent = this.getParent();
-		while (parent!=null && !parent.equals(ancestor)) {
+		while ((parent != null) && !parent.equals(ancestor)) {
 			result = result + parent.getY();
 			parent = parent.getParent();
 		}
 		return result;
 	}
-	
+
 	/**
-	 * Determines if the given {@link ContainerModel} is an ancestor of this model.
-	 * @param ancestor The probably ancestor
-	 * @return true, if the given {@link ContainerModel} is an ancestor of this model, false otherwise
+	 * Determines if the given {@link ContainerModel} is an ancestor of this
+	 * model.
+	 *
+	 * @param ancestor
+	 *            The probably ancestor
+	 * @return true, if the given {@link ContainerModel} is an ancestor of this
+	 *         model, false otherwise
 	 */
 	private boolean isAncestorReachable(final ContainerModel ancestor) {
 		ContainerModel parent = this.getParent();
-		while (parent!=null) {
+		while (parent != null) {
 			if (parent.equals(ancestor)) {
 				return true;
 			}
@@ -970,7 +1360,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience setter to access the <i>X coordinate</i> property.
-	 * 
+	 *
 	 * @param x
 	 *            The value for the <i>X coordinate</i> property.
 	 */
@@ -980,16 +1370,16 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience getter to access the <i>Y coordinate</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>Y coordinate</i> property.
 	 */
 	public final synchronized int getY() {
-		return getCastedPropertyValue(PROP_POS_Y);
+		return getIntegerProperty(PROP_POS_Y);
 	}
 
 	/**
 	 * Convenience setter to access the <i>Y coordinate</i> property.
-	 * 
+	 *
 	 * @param y
 	 *            The value for the <i>Y coordinate</i> property.
 	 */
@@ -999,34 +1389,34 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience getter to access the <i>name</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>name</i> property.
 	 */
 	public final synchronized String getName() {
-		return getCastedPropertyValue(PROP_NAME);
+		return getStringProperty(PROP_NAME);
 	}
-	
+
 	/**
 	 * Convenience getter to access the <i>name</i> property.
-	 * 
+	 *
 	 * @return The value of the <i>name</i> property.
 	 */
 	public final synchronized String getToolTipText() {
-		return getCastedPropertyValue(PROP_TOOLTIP);
+		return getTooltipProperty(PROP_TOOLTIP);
 	}
 
 	/**
 	 * Returns the primary process variable address.
-	 * 
+	 *
 	 * @return the primary process variable address
 	 */
 	public final synchronized String getPrimaryPV() {
-		return getCastedPropertyValue(PROP_PRIMARY_PV);
+		return getStringProperty(PROP_PRIMARY_PV);
 	}
 
 	/**
 	 * Sets the primary process variable address.
-	 * 
+	 *
 	 * @param rawName
 	 *            the raw name of the primary process variable address (can
 	 *            contain aliases)
@@ -1036,83 +1426,8 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	/**
-	 * Add an incoming or outgoing connection to this variable. This method
-	 * should stay package protected and will be called from the Connection
-	 * class only.
-	 * 
-	 * @param conn
-	 *            a non-null connection instance
-	 */
-	final synchronized void addConnection(final ConnectionElement conn) {
-		if ((conn == null) || (conn.getSourceModel() == conn.getTargetModel())) {
-			throw new IllegalArgumentException();
-		}
-		if (conn.getSourceModel() == this) {
-			_sourceConnections.add(conn);
-			firePropertyChangeEvent(PROP_CONNECTIONS_SOURCE, null, conn);
-		} else if (conn.getTargetModel() == this) {
-			_targetConnections.add(conn);
-			firePropertyChangeEvent(PROP_CONNECTIONS_TARGET, null, conn);
-		}
-	}
-
-	/**
-	 * Remove an incoming or outgoing connection from this variable. This method
-	 * should stay package protected and will be called from the Connection
-	 * class only.
-	 * 
-	 * @param conn
-	 *            a non-null connection instance
-	 */
-	protected final synchronized void removeConnection(
-			final ConnectionElement conn) {
-		if (conn == null) {
-			throw new IllegalArgumentException();
-		}
-		if (conn.getSourceModel() == this) {
-			_sourceConnections.remove(conn);
-			firePropertyChangeEvent(PROP_CONNECTIONS_SOURCE, null, conn);
-		} else if (conn.getTargetModel() == this) {
-			_targetConnections.remove(conn);
-			firePropertyChangeEvent(PROP_CONNECTIONS_TARGET, null, conn);
-		}
-	}
-
-	/**
-	 * Returns a list of outgoing connections.
-	 * 
-	 * @return a non-null List instance, the list may be empty
-	 */
-	public final synchronized List<ConnectionElement> getSourceConnections() {
-		return new ArrayList<ConnectionElement>(_sourceConnections);
-	}
-
-	/**
-	 * Returns a list of incoming connections.
-	 * 
-	 * @return a non-null List instance, the list may be empty
-	 */
-	public final synchronized List<ConnectionElement> getTargetConnections() {
-		return new ArrayList<ConnectionElement>(_targetConnections);
-	}
-
-	/**
-	 * Return the casted value of a property of this widget model.
-	 * 
-	 * @param <TYPE>
-	 *            The return type of the property value.
-	 * @param propertyName
-	 *            The ID of the property.
-	 * @return The casted value of a property of this widget model.
-	 */
-	@SuppressWarnings("unchecked")
-	private <TYPE> TYPE getCastedPropertyValue(final String propertyName) {
-		return (TYPE) getProperty(propertyName).getPropertyValue();
-	}
-
-	/**
 	 * Convenience setter for the size of this widget model.
-	 * 
+	 *
 	 * @param width
 	 *            The width.
 	 * @param height
@@ -1125,7 +1440,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Convenience setter for the location of this widget model.
-	 * 
+	 *
 	 * @param x
 	 *            The X coordinate.
 	 * @param y
@@ -1137,40 +1452,13 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	}
 
 	/**
-	 * Configure the properties of this widget model. Use
-	 * {@link #addProperty(String, WidgetProperty)} to add a property to the
-	 * model. Any property type in package org.csstudio.sds.model.properties can
-	 * be used for the configuration of you own models.
-	 * 
-	 * A typical implementation looks like this:
-	 * 
-	 * <pre>
-	 * configureProperties() {
-	 * 	addProperty(PROP_FILL, new DoubleProperty(Messages.FillLevelProperty,
-	 * 			WidgetPropertyCategory.Behaviour, DEFAULT_FILL, 0.0, 100.0));
-	 * }
-	 * </pre>
+	 * Configure the properties of this widget model.
 	 */
 	protected abstract void configureProperties();
 
 	/**
-	 * Is called to mark several basic {@link WidgetProperty}s as invisible.
-	 * Invisible Properties are not shown in the PropertyView
-	 */
-	protected final void markBasePropertiesAsInvisible() {
-		markPropertyAsInvisible(PROP_LAYER);
-	}
-	
-	/**
-	 * Is called to mark several {@link WidgetProperty}s as invisible.
-	 * Invisible Properties are not shown in the PropertyView
-	 */
-	protected void markPropertiesAsInvisible() {
-	}
-
-	/**
 	 * Return the type ID of this widget model.
-	 * 
+	 *
 	 * @return The type ID of this widget model.
 	 */
 	public abstract String getTypeID();
@@ -1178,16 +1466,16 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	/**
 	 * Returns true, if this widget is visible. Note: This setting will only
 	 * apply, when a display is connected mode.
-	 * 
+	 *
 	 * @return true, if this widget is visible, false otherwise
 	 */
 	public final synchronized boolean isVisible() {
-		return getCastedPropertyValue(PROP_VISIBILITY);
+		return getBooleanProperty(PROP_VISIBILITY);
 	}
 
 	/**
 	 * Sets the visibility state of this widget.
-	 * 
+	 *
 	 * @param visible
 	 *            true, if this widget should be visible during connected mode
 	 *            or false otherwise
@@ -1206,75 +1494,75 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 	/**
 	 * Gets the width of the border.
-	 * 
+	 *
 	 * @return the border width
 	 */
 	public final int getBorderWidth() {
-		return (Integer) getProperty(PROP_BORDER_WIDTH).getPropertyValue();
+		return getIntegerProperty(PROP_BORDER_WIDTH);
 	}
 
 	/**
-	 * Gets the color of the border.
-	 * 
-	 * @return the border color
+	 * Gets the width of the border.
+	 *
+	 * @return the border width
 	 */
-	public final RGB getBorderColor() {
-		return (RGB) getProperty(PROP_BORDER_COLOR).getPropertyValue();
+	public final String getBorderColor() {
+		return getColor(PROP_BORDER_COLOR);
 	}
 
 	/**
 	 * Gets the style of the border.
-	 * 
+	 *
 	 * @return the border style
 	 */
 	public final int getBorderStyle() {
-		return (Integer) getProperty(PROP_BORDER_STYLE).getPropertyValue();
+		return getArrayOptionProperty(PROP_BORDER_STYLE);
 	}
 
 	/**
 	 * Add a property change listener.
-	 * 
+	 *
 	 * @param listener
 	 *            The property change listener that is to be added.
 	 */
-	public final void addPropertyChangeListener(
-			final PropertyChangeListener listener) {
+	public final void addPropertyChangeListener(final PropertyChangeListener listener) {
 		_propertyChangeSupport.addPropertyChangeListener(listener);
+	}
+
+	public final void addPropertyChangeListener(final String propertyId, final IPropertyChangeListener listener) {
+		WidgetProperty property = _propertyMap.get(propertyId);
+
+		if (property != null) {
+			property.addPropertyChangeListener(listener);
+		}
 	}
 
 	/**
 	 * Remove a property change listener.
-	 * 
+	 *
 	 * @param listener
 	 *            The property change listener that is to be removed.
 	 */
-	public final void removePropertyChangeListener(
-			final PropertyChangeListener listener) {
+	public final void removePropertyChangeListener(final PropertyChangeListener listener) {
 		_propertyChangeSupport.removePropertyChangeListener(listener);
 	}
 
-	public StateMemento getStateMemento() {
-		Map<String, Object> currentPropertyValues = new HashMap<String, Object>();
-
+	public void saveState() {
+		state = new HashMap<String, Object>();
 		for (String key : _propertyMap.keySet()) {
-			currentPropertyValues.put(key, _propertyMap.get(key)
-					.getPropertyValue());
+			state.put(key, _propertyMap.get(key).getPropertyValue());
 		}
-
-		return new StateMemento(currentPropertyValues);
 	}
 
-	public void restoreState(StateMemento memento) {
-		assert memento != null;
-
-		for (String key : memento.getPropertyValues().keySet()) {
-			setPropertyValue(key, memento.getPropertyValues().get(key));
+	public void restoreState() {
+		for (String key : state.keySet()) {
+			setPropertyValue(key, state.get(key));
 		}
 	}
 
 	/**
 	 * Notify all registered property change listeners.
-	 * 
+	 *
 	 * @param propertyName
 	 *            ID of the property that has changed.
 	 * @param oldValue
@@ -1282,53 +1570,54 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 	 * @param newValue
 	 *            The new value of the property.
 	 */
-	protected final void firePropertyChangeEvent(final String propertyName,
-			final Object oldValue, final Object newValue) {
-		PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName,
-				oldValue, newValue);
+	protected final void firePropertyChangeEvent(final String propertyName, final Object oldValue, final Object newValue) {
+		PropertyChangeEvent evt = new PropertyChangeEvent(this, propertyName, oldValue, newValue);
 		_propertyChangeSupport.firePropertyChange(evt);
 	}
-	
-	/**
-	 * Notify all registered property change listeners.
-	 * 
-	 * @param propertyName
-	 *            ID of the property that has changed.
-	 * @param newValue
-	 *            The new value of the property.
-	 * @param customization
-	 *            The custom value of the property.
-	 */
-	protected final void fireCustomPropertyChangeEvent(final String propertyName, final Object newValue, final Object customization) {
-		CustomPropertyChangeEvent evt = new CustomPropertyChangeEvent(this, propertyName,
-				null, newValue, customization);
-		_propertyChangeSupport.firePropertyChange(evt);
+
+	public DisplayModel getRoot() {
+		DisplayModel root = null;
+
+		ContainerModel container = getParent();
+
+		while (root == null) {
+			if (container instanceof DisplayModel) {
+				root = (DisplayModel) container;
+			} else {
+				container = container.getParent();
+			}
+		}
+
+		return root;
 	}
 
 	public ContainerModel getParent() {
 		return _parent;
 	}
 
-	public void setParent(ContainerModel parent) {
+	public void setParent(final ContainerModel parent) {
 		_parent = parent;
 	}
 
 	public IProcessVariableAddress getMainPvAdress() {
-		IProcessVariableAddress pv = null;
 
-		Map<String, String> aliases = getAllInheritedAliases();
+		String raw = getPrimaryPV();
 
-		try {
-			String channelName = ChannelReferenceValidationUtil
-					.createCanonicalName(getPrimaryPV(), aliases);
+        if ((raw != null) && (raw.length() > 0)) {
+			Map<String, String> aliases = getAllInheritedAliases();
 
-			pv = ProcessVariableAdressFactory.getInstance()
-					.createProcessVariableAdress(channelName);
+			try {
+				String channelName = ChannelReferenceValidationUtil.createCanonicalName(raw, aliases);
 
-		} catch (ChannelReferenceValidationException e) {
+				IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
+				return pv;
+
+			} catch (ChannelReferenceValidationException e) {
+				return null;
+			}
 		}
 
-		return pv;
+		return null;
 	}
 
 	public List<IProcessVariableAddress> getAllPvAdresses() {
@@ -1341,7 +1630,7 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 		if (mainPv != null) {
 			result.add(mainPv);
 		}
-		
+
 		// collect pvs from dynamic descriptors
 		for (WidgetProperty wp : _propertyMap.values()) {
 			DynamicsDescriptor dd = wp.getDynamicsDescriptor();
@@ -1350,17 +1639,15 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 				for (ParameterDescriptor pd : dd.getInputChannels()) {
 
 					try {
-						String channelName = ChannelReferenceValidationUtil
-								.createCanonicalName(pd.getChannel(), aliases);
+						String channelName = ChannelReferenceValidationUtil.createCanonicalName(pd.getChannel(), aliases);
 
-						IProcessVariableAddress pv = ProcessVariableAdressFactory
-								.getInstance().createProcessVariableAdress(
-										channelName);
+						IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
 
 						if (pv != null) {
 							result.add(pv);
 						}
 					} catch (ChannelReferenceValidationException e) {
+		                   // we do nothing
 					}
 
 				}
@@ -1369,5 +1656,61 @@ public abstract class AbstractWidgetModel implements IAdaptable {
 
 		return new ArrayList<IProcessVariableAddress>(result);
 	}
+
+	public Set<IProcessVariableAddress> getPvAdressesWithWriteAccess() {
+		Set<IProcessVariableAddress> result = new HashSet<IProcessVariableAddress>();
+
+		Map<String, String> aliases = getAllInheritedAliases();
+
+		// collect pvs from dynamic descriptors
+		for (WidgetProperty wp : _propertyMap.values()) {
+			DynamicsDescriptor dd = wp.getDynamicsDescriptor();
+
+			if ((dd != null) && (dd.getOutputChannel() != null)) {
+				try {
+					String channelName = ChannelReferenceValidationUtil.createCanonicalName(dd.getOutputChannel().getChannel(), aliases);
+
+					IProcessVariableAddress pv = ProcessVariableAdressFactory.getInstance().createProcessVariableAdress(channelName);
+
+					if (pv != null) {
+						result.add(pv);
+					}
+				} catch (ChannelReferenceValidationException e) {
+					// we do nothing
+				}
+			}
+		}
+		return result;
+	}
+
+	private boolean hasOutputChannel() {
+		for (WidgetProperty property : _propertyMap.values()) {
+			DynamicsDescriptor dynamicsDescriptor = property.getDynamicsDescriptor();
+
+			// a dynamics descriptor must not exist
+			if (dynamicsDescriptor != null) {
+				// check,if an output channel exists
+				if (dynamicsDescriptor.getOutputChannel() != null) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
+    /**
+     * @param javaType the javaType to set
+     */
+    public void setJavaType(final Class javaType) {
+        _javaType = javaType;
+    }
+
+    /**
+     * @return the javaType
+     */
+    public Class getJavaType() {
+        return _javaType;
+    }
 
 }

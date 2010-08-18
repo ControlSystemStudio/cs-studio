@@ -29,7 +29,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * A widget model factory for {@link EllipseModel}. 
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.1 $
  */
 public final class EllipseModelFactory implements IWidgetModelFactory {
 	

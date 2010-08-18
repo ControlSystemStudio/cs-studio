@@ -1,16 +1,36 @@
-package org.csstudio.sds.ui.internal.properties;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+ package org.csstudio.sds.ui.internal.properties;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.WidgetProperty;
 import org.csstudio.sds.ui.SdsUiPlugin;
-import org.csstudio.sds.util.AbstractToolTipConverter;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.csstudio.sds.util.TextDnDUtil;
+import org.csstudio.sds.util.TooltipResolver;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
@@ -19,6 +39,8 @@ import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.KeyAdapter;
+import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -136,34 +158,6 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 	    private Menu _actionMenu;
 	    
 	    /**
-	     * The {@link AbstractToolTipConverter} to transfer the tooltip into a readable String.
-	     */
-	    private AbstractToolTipConverter _propertyToolTipConverter = new AbstractToolTipConverter() {
-			@Override
-			protected String getReplacementForParameter(final String parameter) {
-				if (_properties.containsKey(parameter)) {
-					return _properties.get(parameter).getDescription();
-				}
-				return parameter;
-			}
-	    };
-	    
-	    /**
-	     * The {@link AbstractToolTipConverter} to transfer the tooltip into a saveable String.
-	     */
-	    private AbstractToolTipConverter _displayToolTipConverter = new AbstractToolTipConverter() {
-			@Override
-			protected String getReplacementForParameter(final String parameter) {
-				for (String propertyName : _properties.keySet()) {
-					if (_properties.get(propertyName).getDescription().equals(parameter)) {
-						return propertyName;
-					}
-				}
-				return parameter;
-			}
-	    };
-
-	    /**
 	     * Creates an input dialog with OK and Cancel buttons. Note that the dialog
 	     * will have no visual representation (no widgets) until it is told to open.
 	     * <p>
@@ -191,7 +185,8 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 	        if (initialValue == null) {
 				_value = "";//$NON-NLS-1$
 			} else {
-				_value = _propertyToolTipConverter.convertToolTip(initialValue);
+//				_value = TooltipResolver.resolveToValue(initialValue, _properties);
+				_value = initialValue;
 			}
 		}
 		
@@ -251,6 +246,20 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 			_text.setLayoutData(gridData);
 			_text.setText(_value);
 	        _text.setFocus();
+	        _text.addKeyListener(new KeyAdapter() {
+				/**
+				 * The key code for Return.
+				 */
+				private static final int RETURN = 13;
+
+				public void keyPressed(final KeyEvent e) {
+					if (e.keyCode == SWT.ESC) {
+						buttonPressed(IDialogConstants.CANCEL_ID);
+					} else if (e.keyCode==RETURN && e.stateMask==SWT.MOD1) {
+						buttonPressed(IDialogConstants.OK_ID);
+					}
+				}
+			});
 	        
 	        TextDnDUtil.addDnDSupport(_text);
 	        return composite;
@@ -304,10 +313,11 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 				listMenu.add(categoryMenu);
 			}
 			// fill submenus with entries
-			for (String propertyName : propertyNames) {
-				String categoryName = _properties.get(propertyName).getCategory().name();
+			for (String key : _properties.keySet()) {
+				WidgetProperty p = _properties.get(key);
+				String categoryName = p.getCategory().name();
 				MenuManager subMenu = (MenuManager) listMenu.find(categoryName);
-				subMenu.add(new ParamAction(_properties.get(propertyName).getDescription()));	
+				subMenu.add(new ParamAction(key, p.getDescription()));
 			}
 			return listMenu.createContextMenu(control);
 		}
@@ -318,7 +328,7 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 		@Override
 	    protected void buttonPressed(final int buttonId) {
 	        if (buttonId == IDialogConstants.OK_ID) {
-	            _value = _displayToolTipConverter.convertToolTip(_text.getText());
+	        	_value = _text.getText();
 	        } else {
 	            _value = null;
 	        }
@@ -344,15 +354,17 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 	    	/**
 	    	 * The name of the property.
 	    	 */
-	    	private String _propertyName;
+	    	private String _tooltipVariable;
+	    	
+	    	private String _description;
 	    	
 	    	/**
 	    	 * Constructor.
-	    	 * @param propertyName The name of the property
+	    	 * @param tooltipVariable The name of the property
 	    	 */
-	    	public ParamAction(final String propertyName) {
-	    		_propertyName = propertyName;
-	    		this.setText("Add '"+_propertyName+"'-Tag");
+	    	public ParamAction(final String tooltipVariable, String description) {
+	    		_tooltipVariable = tooltipVariable;
+	    		this.setText("Add '"+description+"'-Tag");
 	    	}
 	    	
 	    	/**
@@ -366,9 +378,9 @@ public final class ParamStringCellEditor extends AbstractDialogCellEditor {
 	    		if (caretPosition<textLength) {
 	    			String prefix = text.substring(0,caretPosition);
 		    		String postfix = text.substring(caretPosition, text.length());
-		    		_text.setText(prefix+AbstractToolTipConverter.START_SEPARATOR+_propertyName+AbstractToolTipConverter.END_SEPARATOR+postfix);	
+		    		_text.setText(prefix+TooltipResolver.START_SEPARATOR+_tooltipVariable+TooltipResolver.END_SEPARATOR+postfix);	
 	    		} else {
-	    			_text.setText(text+AbstractToolTipConverter.START_SEPARATOR+_propertyName+AbstractToolTipConverter.END_SEPARATOR);
+	    			_text.setText(text+TooltipResolver.START_SEPARATOR+_tooltipVariable+TooltipResolver.END_SEPARATOR);
 	    		}
 	    	}
 	    }

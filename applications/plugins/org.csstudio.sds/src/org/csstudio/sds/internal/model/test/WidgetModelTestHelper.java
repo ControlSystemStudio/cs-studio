@@ -21,15 +21,15 @@
  */
 package org.csstudio.sds.internal.model.test;
 
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
 
 /**
  * Helper that provides support for model testing.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.6 $
  * 
  */
 public final class WidgetModelTestHelper {
@@ -54,9 +54,9 @@ public final class WidgetModelTestHelper {
 
 		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
 		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
-				"PV" + _pvCounter, //$NON-NLS-1$
-				Double.class));
-		result.getProperty(TestWidgetModel.PROP_TEST).setDynamicsDescriptor(dynamicsDescriptor);
+				"PV" + _pvCounter //$NON-NLS-1$
+				));
+		result.getPropertyInternal(TestWidgetModel.PROP_TEST).setDynamicsDescriptor(dynamicsDescriptor);
 
 		_pvCounter++;
 

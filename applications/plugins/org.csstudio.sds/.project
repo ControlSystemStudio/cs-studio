@@ -20,15 +20,16 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>com.atlassw.tools.eclipse.checkstyle.CheckstyleBuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.pde.PluginNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>com.atlassw.tools.eclipse.checkstyle.CheckstyleNature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>widgets</name>
+			<type>2</type>
+			<location>C:/Entwicklung/eclipse_workspaces/runtime-sds2/SDS Demo Display/Testcases/widgets</location>
+		</link>
+	</linkedResources>
 </projectDescription>

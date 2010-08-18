@@ -28,7 +28,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * This class defines an rectangle widget model.
  *
  * @author Sven Wende, Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.18 $
  *
  */
 public final class RectangleModel extends AbstractWidgetModel {

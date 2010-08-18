@@ -21,11 +21,12 @@
  */
 package org.csstudio.sds.ui.editparts;
 
-import org.csstudio.platform.model.IProcessVariable;
+import java.util.Arrays;
+
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.ui.internal.commands.ChangeSettingsFromDroppedPvCommand;
-import org.csstudio.sds.ui.internal.commands.DeleteElementCommand;
+import org.csstudio.sds.ui.internal.commands.DeleteWidgetsCommand;
 import org.csstudio.sds.ui.internal.editor.DropPvRequest;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPart;
@@ -42,11 +43,11 @@ import org.eclipse.gef.requests.GroupRequest;
  * controllers.
  * 
  * @author Sven Wende & Stefan Hofer
- * @version $Revision$
+ * @version $Revision: 1.28 $
  * 
  */
 public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implements
-		NodeEditPart, IProcessVariable {
+		NodeEditPart {
 
 	/**
 	 * {@inheritDoc}
@@ -61,7 +62,7 @@ public abstract class AbstractWidgetEditPart extends AbstractBaseEditPart implem
 						.getModel();
 				AbstractWidgetModel widgetModel = (AbstractWidgetModel) getHost()
 						.getModel();
-				return new DeleteElementCommand(model, widgetModel);
+				return new DeleteWidgetsCommand(getViewer(), model, Arrays.asList(widgetModel));
 			}
 
 			@Override

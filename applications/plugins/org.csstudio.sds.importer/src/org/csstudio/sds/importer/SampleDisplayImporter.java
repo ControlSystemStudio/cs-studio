@@ -42,7 +42,7 @@ import org.eclipse.swt.graphics.FontData;
  * demonstrate the creation of displays with code.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.10 $
  * 
  */
 public class SampleDisplayImporter extends AbstractDisplayImporter {

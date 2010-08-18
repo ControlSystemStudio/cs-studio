@@ -16,3 +16,4 @@ Require-Bundle: org.eclipse.ui,
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: bin/,
  .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -5,115 +5,132 @@
    <extension-point id="propertyPersistenceHandlers" name="propertyPersistenceHandlers" schema="schema/propertyPersistenceHandlers.exsd"/>
    <extension-point id="rules" name="rules" schema="schema/rules.exsd"/>
    <extension-point id="widgetModelInitializers" name="widgetModelInitializers" schema="schema/widgetModelInitializers.exsd"/>
+   <extension-point id="cursors" name="Cursors" schema="schema/cursors.exsd"/>
+   <extension-point id="cursorSelectionRules" name="cursorSelectionRules" schema="schema/cursorSelectionRules.exsd"/>
+   <extension-point id="widgetPropertyPostProcessors" name="widgetPropertyPostProcessors" schema="schema/widgetPropertyPostProcessors.exsd"/>
+   <extension-point id="behaviors" name="behaviors" schema="schema/behaviors.exsd"/>
    <extension
          point="org.csstudio.sds.propertyPersistenceHandlers">
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.DoublePropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.DoublePropertyPersistenceHandler"
             typeId="sds.double"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.IntegerPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.IntegerPropertyPersistenceHandler"
             typeId="sds.integer"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.StringPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.StringPropertyPersistenceHandler"
             typeId="sds.string"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.BooleanPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.BooleanPropertyPersistenceHandler"
             typeId="sds.boolean"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.PointListPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.PointListPropertyPersistenceHandler"
             typeId="sds.pointlist"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.ColorPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ColorPropertyPersistenceHandler"
             typeId="sds.color"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.FontPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.FontPropertyPersistenceHandler"
             typeId="sds.font"/>
+            
+	  <!-- TODO: 12.3.2008: Sven Wende: sds.option für OptionProperty, sds.arrayoption für ArrayOptionProperty -->
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.OptionPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ArrayOptionPropertyPersistenceHandler"
             typeId="sds.option"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.DoubleArrayPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.OptionPropertyPersistenceHandler"
+            typeId="sds.choiceoption" />
+            
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.persistence.DoubleArrayPropertyPersistenceHandler"
             typeId="sds.doublearray"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.StringMapPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.StringMapPropertyPersistenceHandler"
             typeId="sds.map"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.ResourcePropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ResourcePropertyPersistenceHandler"
             typeId="sds.path"/>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.ProcessVariablePropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ProcessVariablePropertyPersistenceHandler"
             typeId="sds.pv">
       </propertyPersistenceHandler>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.ActionPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ActionPropertyPersistenceHandler"
             typeId="sds.action">
       </propertyPersistenceHandler>
       <propertyPersistenceHandler
-            class="org.csstudio.sds.internal.model.properties.ParamStringPropertyPersistenceHandler"
+            class="org.csstudio.sds.internal.persistence.ParamStringPropertyPersistenceHandler"
             typeId="sds.paramstring">
+      </propertyPersistenceHandler>
+      <propertyPersistenceHandler
+            class="org.csstudio.sds.internal.persistence.StringPropertyPersistenceHandler"
+            typeId="sds.behavior">
       </propertyPersistenceHandler>
    </extension>
    <extension
          point="org.csstudio.sds.rules">
       <rule
-            class="org.csstudio.sds.model.logic.DirectConnectionRule"
+            class="org.csstudio.sds.internal.rules.DirectConnectionRule"
+            compatibleProperties="*"
             name="Direct Connection"
-            returnType="java.lang.Number"
             ruleId="directConnection">
          <parameterDescription name="Value"/>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.SimpleColorRule"
+            class="org.csstudio.sds.internal.rules.SimpleColorRule"
+            compatibleProperties="sds.color"
             name="Simple Color Rule"
-            returnType="org.eclipse.swt.graphics.RGB"
             ruleId="simpleColor">
-         <parameterDescription name="Value"/>
+         <parameterDescription
+               name="Value"
+               type="java.lang.Integer"/>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.VisibilityRule"
+            class="org.csstudio.sds.internal.rules.VisibilityRule"
+            compatibleProperties="sds.boolean"
             name="Visibility Rule"
-            returnType="java.lang.Boolean"
             ruleId="rule.visibility">
          <parameterDescription name="Value"/>
       </rule>
        <rule
-             class="org.csstudio.sds.model.logic.NullRule"
+             class="org.csstudio.sds.internal.rules.NullRule"
+             compatibleProperties="*"
              name="NullRule"
-             returnType="java.lang.Object"
              ruleId="rule.null">
          <parameterDescription
                name="Value">
          </parameterDescription>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.SystemTimeRule"
+            class="org.csstudio.sds.internal.rules.SystemTimeRule"
+            compatibleProperties="sds.string"
             name="System Time Rule"
-            returnType="java.lang.String"
             ruleId="rule.systemTime">
          <parameterDescription name="Value"/>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.ActionDataRule"
+            class="org.csstudio.sds.internal.rules.ActionDataRule"
+            compatibleProperties="sds.action"
             name="Action Data From Enum"
-            returnType="org.csstudio.sds.model.properties.ActionData"
             ruleId="rule.actionData">
          <parameterDescription
-               name="Enum[]">
+               name="Enum[]"
+               type="Enum[]">
          </parameterDescription>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.ConcatEnumValuesRule"
+            class="org.csstudio.sds.internal.rules.ConcatEnumValuesRule"
+            compatibleProperties="sds.string"
             name="Concat Enum Values To String"
-            returnType="java.lang.String"
             ruleId="rule.stringArray">
          <parameterDescription
                name="Enum[]">
          </parameterDescription>
       </rule>
       <rule
-            class="org.csstudio.sds.model.logic.TestStringRule"
+            class="org.csstudio.sds.internal.rules.TestStringRule"
+            compatibleProperties="sds.string"
             name="TestStringRule"
-            returnType="java.lang.String"
             ruleId="TestStringRule">
          <parameterDescription
                name="Angle"
@@ -122,6 +139,28 @@
          <parameterDescription
                name="Prefix"
                type="java.lang.String">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.internal.rules.AdvancedColorRule"
+            compatibleProperties="sds.color"
+            name="Advanced Color Rule"
+            ruleId="org.csstudio.sds.AdvancedColor">
+         <parameterDescription
+               name="Value"
+               type="java.lang.Double">
+         </parameterDescription>
+         <parameterDescription
+               name="High Color"
+               type="org.eclipse.swt.graphics.RGB">
+         </parameterDescription>
+         <parameterDescription
+               name="Medium Color"
+               type="org.eclipse.swt.graphics.RGB">
+         </parameterDescription>
+         <parameterDescription
+               name="Low Color"
+               type="org.eclipse.swt.graphics.RGB">
          </parameterDescription>
       </rule>
    </extension>
@@ -152,5 +191,87 @@
             name="Grouping Container"
             typeId="org.csstudio.sds.components.GroupingContainer">
       </widgetModelFactory>
+   </extension>
+   <extension
+         point="org.csstudio.sds.cursors">
+      <cursor
+            id="org.csstudio.sds.actionEnabledCursor"
+            image="icons/Action_Enabled_Cursor.gif"
+            name="Action enabled">
+      </cursor>
+      <cursor
+            id="org.csstudio.sds.actionDisabledCursor"
+            image="icons/Action_Disabled_Cursor.gif"
+            name="Action disabled">
+      </cursor>
+   </extension>
+   <extension
+         point="org.csstudio.sds.cursorSelectionRules">
+      <selectionRule
+            class="org.csstudio.sds.cursorservice.DesyRule"
+            id="org.csstudio.sds.DesyCursorSelectionRule"
+            label="DESY Cursor Selection Rule">
+         <state
+               id="default"
+               label="Default">
+         </state>
+         <state
+               id="widgetDisabled"
+               label="Widget disabled">
+         </state>
+         <state
+               id="noPermission"
+               label="No permission (CSS security)">
+         </state>
+         <state
+               id="accessAllowed"
+               label="Channel access allowed">
+         </state>
+         <state
+               id="accessDenied"
+               label="Channel access denied">
+         </state>
+         <state
+               id="accessUnknown"
+               label="Channel access unknown">
+         </state>
+         <state
+               id="writeAccessDenied"
+               label="Write access denied">
+         </state>
+         <state
+               id="actionDataAvailable  "
+               label="Has Action Data">
+         </state>
+      </selectionRule>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.contentTypes">
+      <content-type
+            base-type="org.eclipse.core.runtime.xml"
+            default-charset="ISO-8859-1"
+            file-extensions="css-sds"
+            id="org.csstudio.sds.content-type"
+            name="%SDSContentType"
+            priority="normal">
+         <property
+               name="org.csstudio.sds.ContentTypeProperty">
+         </property>
+      </content-type>
+   </extension>
+   <extension
+         point="org.csstudio.sds.widgetPropertyPostProcessors">
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.internal.eventhandling.BorderPropertyPostProcessor"
+            propertyId="border.style"
+            skipOnLoad="false"
+            widgetId="*">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.internal.eventhandling.BehaviourPropertyPostProcessor"
+            propertyId="behavior"
+            skipOnLoad="false"
+            widgetId="*">
+      </widgetPropertyPostProcessor>
    </extension>
 </plugin>

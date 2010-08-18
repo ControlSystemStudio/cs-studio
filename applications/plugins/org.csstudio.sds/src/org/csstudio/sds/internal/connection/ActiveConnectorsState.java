@@ -26,14 +26,13 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
-import org.csstudio.sds.internal.connection.dal.SystemConnector;
 
 /**
  * A bean class that encapsulates information about the connectors that are
  * registered for certain process variables.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.15 $
  */
 public final class ActiveConnectorsState {
 
@@ -83,11 +82,12 @@ public final class ActiveConnectorsState {
 			final SystemConnector connector) {
 		if (_connectors.containsKey(reference)) {
 			List<SystemConnector> connectors = _connectors.get(reference);
-			if (connectors.contains(connector)) {
+			
+			if (connectors!=null && connectors.contains(connector)) {
 				connectors.remove(connector);
 			}
 
-			if (connectors.size() <= 0) {
+			if (connectors==null || connectors.size() <= 0) {
 				_connectors.remove(reference);
 			}
 		}
@@ -114,10 +114,11 @@ public final class ActiveConnectorsState {
 		HashMap<IProcessVariableAddress, List<SystemConnector>> result = new HashMap<IProcessVariableAddress, List<SystemConnector>>();
 
 		for (IProcessVariableAddress reference : _connectors.keySet()) {
-			List<SystemConnector> list = new ArrayList<SystemConnector>();
-			list.addAll(_connectors.get(reference));
+			List<SystemConnector> connectors = _connectors.get(reference);
 
-			result.put(reference, list);
+			if(connectors!=null) {
+				result.put(reference, new ArrayList<SystemConnector>(connectors));
+			}
 		}
 
 		return result;

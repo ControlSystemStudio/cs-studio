@@ -24,9 +24,13 @@ package org.csstudio.sds;
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.ResourceService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.sds.cursorservice.CursorService;
+import org.csstudio.sds.cursorservice.ICursorService;
 import org.csstudio.sds.internal.SdsResourceChangeListener;
-import org.csstudio.sds.model.logic.RuleService;
+import org.csstudio.sds.internal.eventhandling.BehaviorService;
+import org.csstudio.sds.internal.eventhandling.IBehaviorService;
+import org.csstudio.sds.internal.eventhandling.IWidgetPropertyPostProcessingService;
+import org.csstudio.sds.internal.eventhandling.WidgetPropertyPostProcessingService;
+import org.csstudio.sds.internal.rules.RuleService;
 import org.csstudio.sds.util.StringUtil;
 import org.eclipse.core.resources.IProject;
 import org.osgi.framework.BundleContext;
@@ -35,7 +39,7 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.28 $
  */
 public final class SdsPlugin extends AbstractCssPlugin {
 
@@ -67,7 +71,12 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	 * point.
 	 */
 	public static final String EXTPOINT_WIDGET_MODEL_INITIALIZERS = PLUGIN_ID
-			+ ".widgetModelInitializers"; //$NON-NLS-1$	
+			+ ".widgetModelInitializers"; //$NON-NLS-1$
+
+	/**
+	 * Extension point ID for the <b>cursors</b> extension point.
+	 */
+	public static final String EXPOINT_CURSORS = PLUGIN_ID + ".cursors"; //$NON-NLS-1$
 
 	/**
 	 * The name of the default SDS workspace project.
@@ -80,10 +89,30 @@ public final class SdsPlugin extends AbstractCssPlugin {
 	public static final String RESOURCE_SCRIPT_FOLDER_NAME = "scripts"; //$NON-NLS-1$
 
 	/**
+	 * Extension point ID for the {@code cursorSelectionRules} extension point.
+	 */
+	public static final String EXTPOINT_CURSOR_SELECTION_RULES = PLUGIN_ID
+			+ ".cursorSelectionRules"; //$NON-NLS-1$
+
+	/**
+	 * Extension point ID for the widgetPropertyPostProcessors extension point.
+	 */
+	public static final String EXTPOINT_WIDGET_PROPERTY_POSTPROCESSORS = PLUGIN_ID
+		+ ".widgetPropertyPostProcessors"; //$NON-NLS-1$
+	
+	/**
+	 * The ID of the behavior extension point.
+	 */
+	public static final String EXTPOINT_BEHAVIORS = PLUGIN_ID + ".behaviors"; //$NON-NLS-1$
+
+	/**
 	 * The shared instance of this plugin activator.
 	 */
 	private static SdsPlugin _plugin;
-
+	
+	private IBehaviorService _behaviourService;
+	
+	private IWidgetPropertyPostProcessingService _widgetPropertyPostProcessingService;
 	/**
 	 * Change listener for SDS resources.
 	 */
@@ -123,9 +152,10 @@ public final class SdsPlugin extends AbstractCssPlugin {
 				.copyResources(scriptProject,
 						SdsPlugin.getDefault().getBundle(),
 						RESOURCE_SCRIPT_FOLDER_NAME);
-		
+
 		// put the cursors project into the workspace
-		ResourceService.getInstance().createWorkspaceProject(CursorService.CURSORS_PROJECT_NAME);
+		ResourceService.getInstance().createWorkspaceProject(
+				ICursorService.CURSORS_PROJECT_NAME);
 
 		// register the workspace listener that keeps track of script file
 		// changes
@@ -139,6 +169,9 @@ public final class SdsPlugin extends AbstractCssPlugin {
 					StringUtil.convertListToSingleString(RuleService
 							.getInstance().getErrorMessages()));
 		}
+		
+		_behaviourService = new BehaviorService();
+		_widgetPropertyPostProcessingService = new WidgetPropertyPostProcessingService();
 	}
 
 	/**
@@ -149,6 +182,14 @@ public final class SdsPlugin extends AbstractCssPlugin {
 		// de-register the workspace listener
 		ResourceService.getInstance().removeResourceChangeListener(
 				_resourceChangeListener);
+	}
+	
+	public IBehaviorService getBehaviourService() {
+		return _behaviourService;
+	}
+	
+	public IWidgetPropertyPostProcessingService getWidgetPropertyPostProcessingService() {
+		return _widgetPropertyPostProcessingService;
 	}
 
 	/**

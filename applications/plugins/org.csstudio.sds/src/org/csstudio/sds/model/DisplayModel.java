@@ -21,8 +21,9 @@
  */
 package org.csstudio.sds.model;
 
-import org.csstudio.platform.util.PerformanceUtil;
-import org.csstudio.sds.model.properties.BooleanProperty;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The display model. The term "Display" refers to a synoptic display. A display
@@ -35,7 +36,7 @@ import org.csstudio.sds.model.properties.BooleanProperty;
  * 
  * @author Alexander Will, Sven Wende, Kai Meyer
  * 
- * @version $Revision$
+ * @version $Revision: 1.53 $
  * 
  */
 public final class DisplayModel extends ContainerModel {
@@ -44,38 +45,62 @@ public final class DisplayModel extends ContainerModel {
 	 */
 	public static final String PROP_DISPLAY_BORDER_VISIBILITY = "display_border_visibility";
 
+	public static final String PROP_GRID_ON = "grid_on";
+	public static final String PROP_RULER_ON = "ruler_on";
+	public static final String PROP_GEOMETRY_ON = "geometry_on";
+
+	/**
+	 * The runtime context. (This is transient and will not get persisted).
+	 */
+	private RuntimeContext runtimeContext;
+
+	
+	/**
+	 * Constructor.
+	 */
+	public DisplayModel(boolean parentChecksEnabled) {
+		super(parentChecksEnabled);
+	}
+
 	/**
 	 * Standard constructor.
-	 * 
 	 */
 	public DisplayModel() {
 		super();
 		setWidth(800);
 		setHeight(600);
-		PerformanceUtil.getInstance().constructorCalled(this);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
 	@Override
-	protected void configureProperties() {
-		addProperty(PROP_DISPLAY_BORDER_VISIBILITY, new BooleanProperty(
-				"Show Display Border", WidgetPropertyCategory.Border, true));
+	public DisplayModel getRoot() {
+		return this;
 	}
 	
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void markPropertiesAsInvisible() {
-		this.markPropertyAsInvisible(PROP_BORDER_COLOR);
-		this.markPropertyAsInvisible(PROP_BORDER_STYLE);
-		this.markPropertyAsInvisible(PROP_BORDER_WIDTH);
-		this.markPropertyAsInvisible(PROP_LAYER);
-		this.markPropertyAsInvisible(PROP_ENABLED);
-		this.markPropertyAsInvisible(PROP_TOOLTIP);
-		this.markPropertyAsInvisible(PROP_CURSOR);
+	protected void configureProperties() {
+		addBooleanProperty(PROP_DISPLAY_BORDER_VISIBILITY, 
+				"Show Display Border", WidgetPropertyCategory.BORDER, true, false);
+		addBooleanProperty(PROP_GRID_ON, "Grid Visible",
+				WidgetPropertyCategory.DISPLAY, false, false);
+		addBooleanProperty(PROP_RULER_ON, "Ruler Visible",
+				WidgetPropertyCategory.DISPLAY, false, false);
+		addBooleanProperty(PROP_GEOMETRY_ON, "Snap to Geometry activated",
+				WidgetPropertyCategory.DISPLAY, false, false);
+		
+		// .. hide properties
+		hideProperty(PROP_BORDER_COLOR, getTypeID());
+		hideProperty(PROP_BORDER_STYLE, getTypeID());
+		hideProperty(PROP_BORDER_WIDTH, getTypeID());
+		hideProperty(PROP_LAYER, getTypeID());
+		hideProperty(PROP_ENABLED, getTypeID());
+		hideProperty(PROP_TOOLTIP, getTypeID());
+		hideProperty(PROP_CURSOR, getTypeID());
+		hideProperty(PROP_GRID_ON, getTypeID());
+		hideProperty(PROP_RULER_ON, getTypeID());
+		hideProperty(PROP_GEOMETRY_ON, getTypeID());
 	}
 
 	/**
@@ -83,16 +108,27 @@ public final class DisplayModel extends ContainerModel {
 	 */
 	@Override
 	public String getTypeID() {
-		return null;
+		return "display";
+	}
+	
+	public boolean getGridState() {
+		return getBooleanProperty(PROP_GRID_ON);
+	}
+	
+	public boolean getRulerState() {
+		return getBooleanProperty(PROP_RULER_ON);
+	}
+	
+	public boolean getGeometryState() {
+		return getBooleanProperty(PROP_GEOMETRY_ON);
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		PerformanceUtil.getInstance().finalizedCalled(this);
-		super.finalize();
+	public RuntimeContext getRuntimeContext() {
+		return runtimeContext;
+	}
+
+	public void setRuntimeContext(RuntimeContext runtimeContext) {
+		this.runtimeContext = runtimeContext;
 	}
 
 	/**
@@ -102,19 +138,23 @@ public final class DisplayModel extends ContainerModel {
 	protected String getDefaultToolTip() {
 		return "";
 	}
-	
-	/**
-	 * {@inheritDoc}
-	 */
+
 	@Override
-	public synchronized void setPropertyValue(final String propertyID, final Object value) {
-		super.setPropertyValue(propertyID, value);
-//		if (propertyID.equals(PROP_ALIASES)) {
-//			for (String key : this.getAliases().keySet()) {
-//				for (AbstractWidgetModel childModel : this.getWidgets()) {
-//					childModel.addAlias(key, this.getAliases().get(key));
-//				}
-//			}
-//		}
+	public Map<String, String> getAliases() {
+		Map<String, String> aliases = new HashMap<String, String>();
+
+		if (runtimeContext != null && runtimeContext.getAliases() != null) {
+			aliases.putAll(runtimeContext.getAliases());
+
+			Map<String, String> staticAliases = super.getAliases();
+
+			if (staticAliases != null) {
+				aliases.putAll(staticAliases);
+			}
+		} else {
+			aliases = super.getAliases();
+		}
+
+		return Collections.unmodifiableMap(aliases);
 	}
 }

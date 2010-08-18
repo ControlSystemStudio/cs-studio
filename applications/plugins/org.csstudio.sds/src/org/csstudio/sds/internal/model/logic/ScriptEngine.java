@@ -21,9 +21,7 @@
  */
 package org.csstudio.sds.internal.model.logic;
 
-import org.csstudio.sds.internal.statistics.MeasureCategoriesEnum;
-import org.csstudio.sds.internal.statistics.TimeTrackedRunnable;
-import org.csstudio.sds.model.logic.IScript;
+import org.csstudio.sds.model.IScript;
 
 /**
  * A rule engine processes a single rule.
@@ -34,7 +32,7 @@ import org.csstudio.sds.model.logic.IScript;
  * of a rule engine.
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.4 $
  * 
  */
 public final class ScriptEngine {

@@ -29,7 +29,7 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * Initializes a TextInput with EPICS specific property values.
  *
  * @author Stefan Hofer + Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.11 $
  *
  */
 public final class TextInputInitializer extends AbstractEpicsWidgetInitializer {

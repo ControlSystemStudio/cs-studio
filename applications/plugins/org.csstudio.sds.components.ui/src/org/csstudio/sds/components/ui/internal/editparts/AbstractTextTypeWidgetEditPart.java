@@ -57,8 +57,8 @@ import org.eclipse.draw2d.IFigure;
  *
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 11.05.2010
  */
 public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditPart {
@@ -287,8 +287,13 @@ public abstract class AbstractTextTypeWidgetEditPart extends AbstractWidgetEditP
                 || updatedPropertyId.equals(AbstractTextTypeWidgetModel.PROP_PRECISION)) {
             try {
                 double d = Double.parseDouble(text);
+                int indexOf = text.indexOf('.');
+                int min = model.getPrecision();
+                if(indexOf>=0) {
+                    min = text.length()-indexOf-1;
+                }
+                numberFormat.setMinimumFractionDigits(min);
                 numberFormat.setMaximumFractionDigits(model.getPrecision());
-                numberFormat.setMinimumFractionDigits(model.getPrecision());
                 return numberFormat.format(d);
             } catch (Exception e) {
                 return text;

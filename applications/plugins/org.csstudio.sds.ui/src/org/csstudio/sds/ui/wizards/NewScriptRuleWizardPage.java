@@ -25,14 +25,14 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
-import org.csstudio.sds.model.logic.RuleService;
+import org.csstudio.sds.internal.rules.RuleService;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
 /**
  * Wizard page for the creation of new SDS script rules.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.5 $
  * 
  */
 public final class NewScriptRuleWizardPage extends WizardNewFileCreationPage {
@@ -40,14 +40,16 @@ public final class NewScriptRuleWizardPage extends WizardNewFileCreationPage {
 	/**
 	 * The initial script file contents.
 	 */
-	private static final String INITIAL_CONTENTS = "var returns = \"java.lang.Double\";\n"
+	private static final String INITIAL_CONTENTS = "var compatibleProperties = \"sds.double\";\n"
 			+ "var description = \"Rule name\";\n"
-			+ "var parameters = new Array(\"Description of argument 1\", \"Description of argument 2\", \"Description of argument 3\");\n\n"
+			+ "var parameters = new Array(\"Description of argument 1\", \"Description of argument 2\", \"Description of argument 3\");\n"
+			+ "var parameterTypes = new Array(\"java.lang.Double\", \"java.lang.Double\", \"java.lang.Double\");\n\n"
 			+ "function execute(args) {\n"
-			+ "	var argument1 = args[0];\n"
-			+ "	var argument2 = args[1];\n"
-			+ "	var argument3 = args[2];\n\n"
-			+ "	return argument1;\n}";
+			+ "\tvar argument1 = args[0];\n"
+			+ "\tvar argument2 = args[1];\n"
+			+ "\tvar argument3 = args[2];\n\n"
+			+ "\treturn argument1;\n"
+			+"}";
 
 	/**
 	 * Creates a new SDS script rule creation wizard page.
@@ -59,9 +61,9 @@ public final class NewScriptRuleWizardPage extends WizardNewFileCreationPage {
 	 */
 	public NewScriptRuleWizardPage(final String pageName,
 			final IStructuredSelection selection) {
-		super(pageName, selection, false);
+		super(pageName, selection, true);
 		setTitle("Create a new scripted rule");
-		setDescription("Create a new scripted rule in the default rule project.");
+		setDescription("Create a new scripted rule.");
 	}
 
 	/**

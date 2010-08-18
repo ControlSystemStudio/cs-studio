@@ -30,21 +30,21 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.Map;
 
+import org.csstudio.platform.simpledal.ConnectionState;
+import org.csstudio.sds.internal.persistence.DisplayModelInputStream;
+import org.csstudio.sds.internal.persistence.DisplayModelReader;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.sds.model.WidgetProperty;
-import org.csstudio.sds.model.persistence.DisplayModelInputStream;
-import org.eclipse.swt.graphics.RGB;
 import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
 import org.junit.Test;
 
 /**
  * Test case for the SDS XML processing.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.15 $
  * 
  */
 public final class XmlProcessingTest {
@@ -197,44 +197,22 @@ public final class XmlProcessingTest {
 		assertNotNull(displayModel);
 		assertFalse(reader.isErrorOccurred());
 
-		WidgetProperty propertyHeight = displayModel
-				.getProperty(AbstractWidgetModel.PROP_HEIGHT);
-		WidgetProperty propertyWidth = displayModel
-				.getProperty(AbstractWidgetModel.PROP_WIDTH);
-		WidgetProperty propertyBackgroundColor = displayModel
-				.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
-		WidgetProperty propertyX = displayModel
-				.getProperty(AbstractWidgetModel.PROP_POS_X);
-		WidgetProperty propertyY = displayModel
-				.getProperty(AbstractWidgetModel.PROP_POS_Y);
-
-		assertNotNull(propertyHeight);
-		assertNotNull(propertyWidth);
-		assertNotNull(propertyBackgroundColor);
-		assertNotNull(propertyX);
-		assertNotNull(propertyY);
-
-		assertEquals(400, propertyHeight.getPropertyValue());
-		assertEquals(500, propertyWidth.getPropertyValue());
-		assertEquals(100, propertyY.getPropertyValue());
-		assertEquals(0, propertyX.getPropertyValue());
-
-		assertTrue(propertyBackgroundColor.getPropertyValue() instanceof RGB);
-
-		RGB modelBackgroundColor = (RGB) propertyBackgroundColor
-				.getPropertyValue();
-
-		assertEquals(128, modelBackgroundColor.red);
-		assertEquals(0, modelBackgroundColor.green);
-		assertEquals(255, modelBackgroundColor.blue);
+		assertEquals(400, displayModel
+				.getIntegerProperty(AbstractWidgetModel.PROP_HEIGHT));
+		assertEquals(500, displayModel
+				.getIntegerProperty(AbstractWidgetModel.PROP_WIDTH));
+		assertEquals(100, displayModel
+				.getIntegerProperty(AbstractWidgetModel.PROP_POS_Y));
+		assertEquals(0, displayModel
+				.getIntegerProperty(AbstractWidgetModel.PROP_POS_X));
+		assertTrue("#8000FF".equalsIgnoreCase(displayModel
+				.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND)));
 
 		assertEquals(2, displayModel.getWidgets().size());
 
 		AbstractWidgetModel widgetModel = displayModel.getWidgets().get(0);
 		assertEquals(
 				"org.csstudio.sds.components.Rectangle", widgetModel.getTypeID()); //$NON-NLS-1$
-
-		assertEquals(22, widgetModel.getPropertyNames().size());
 
 		assertTrue(widgetModel.hasProperty("fill")); //$NON-NLS-1$
 		assertTrue(widgetModel.hasProperty("orientation")); //$NON-NLS-1$
@@ -264,41 +242,29 @@ public final class XmlProcessingTest {
 		assertTrue(widgetModel.hasProperty(AbstractWidgetModel.PROP_PRIMARY_PV));
 		assertTrue(widgetModel.hasProperty(AbstractWidgetModel.PROP_TOOLTIP));
 
-		assertEquals(135, widgetModel.getProperty(
-				AbstractWidgetModel.PROP_POS_X).getPropertyValue());
+		assertEquals(135, widgetModel.getIntegerProperty(
+				AbstractWidgetModel.PROP_POS_X));
 		assertEquals(15, widgetModel
-				.getProperty(AbstractWidgetModel.PROP_POS_Y).getPropertyValue());
-		assertEquals(290, widgetModel.getProperty(
-				AbstractWidgetModel.PROP_WIDTH).getPropertyValue());
-		assertEquals(114, widgetModel.getProperty(
-				AbstractWidgetModel.PROP_HEIGHT).getPropertyValue());
+				.getIntegerProperty(AbstractWidgetModel.PROP_POS_Y));
+		assertEquals(290, widgetModel.getIntegerProperty(
+				AbstractWidgetModel.PROP_WIDTH));
+		assertEquals(114, widgetModel.getIntegerProperty(
+				AbstractWidgetModel.PROP_HEIGHT));
 
-		Object colorForegroundObj = widgetModel.getProperty(
+		Object colorForegroundObj = widgetModel.getPropertyInternal(
 				AbstractWidgetModel.PROP_COLOR_FOREGROUND).getPropertyValue();
-		assertTrue(colorForegroundObj instanceof RGB);
+		assertTrue(colorForegroundObj instanceof String);
 
-		RGB colorForeground = (RGB) colorForegroundObj;
+		String colorForeground = (String) colorForegroundObj;
+		assertTrue("#8000FF".equalsIgnoreCase(colorForeground));
 
-		assertEquals(128, colorForeground.red);
-		assertEquals(0, colorForeground.green);
-		assertEquals(255, colorForeground.blue);
-
-		Object colorBackgroundObj = widgetModel.getProperty(
+		Object colorBackgroundObj = widgetModel.getPropertyInternal(
 				AbstractWidgetModel.PROP_COLOR_BACKGROUND).getPropertyValue();
-		assertTrue(colorBackgroundObj instanceof RGB);
+		assertTrue(colorBackgroundObj instanceof String);
+		String colorBackground = (String) colorBackgroundObj;
+		assertTrue("#646464".equalsIgnoreCase(colorBackground));
 
-		RGB colorBackground = (RGB) colorBackgroundObj;
-
-		assertEquals(100, colorBackground.red);
-		assertEquals(100, colorBackground.green);
-		assertEquals(100, colorBackground.blue);
-
-		WidgetProperty borderStyleProperty = widgetModel
-				.getProperty(AbstractWidgetModel.PROP_BORDER_STYLE);
-		assertEquals(borderStyleProperty.getDefaultValue(), borderStyleProperty
-				.getPropertyValue());
-
-		WidgetProperty fillProperty = widgetModel.getProperty("fill"); //$NON-NLS-1$
+		WidgetProperty fillProperty = widgetModel.getPropertyInternal("fill"); //$NON-NLS-1$
 		DynamicsDescriptor dynamicsDescriptor = fillProperty
 				.getDynamicsDescriptor();
 
@@ -308,13 +274,9 @@ public final class XmlProcessingTest {
 		assertEquals(1, dynamicsDescriptor.getInputChannels().length);
 		assertEquals("PV1", dynamicsDescriptor.getInputChannels()[0] //$NON-NLS-1$
 				.getChannel());
-		assertEquals(Double.class, dynamicsDescriptor.getInputChannels()[0]
-				.getType());
 
 		assertNotNull(dynamicsDescriptor.getOutputChannel());
 		assertEquals("PV2", dynamicsDescriptor.getOutputChannel().getChannel()); //$NON-NLS-1$
-		assertEquals(Integer.class, dynamicsDescriptor.getOutputChannel()
-				.getType());
 	}
 
 	/**
@@ -338,13 +300,10 @@ public final class XmlProcessingTest {
 
 		// test the connection state & dynamic value state definitions on
 		// display model level
-		assertTrue(displayModel.hasProperty("color.background")); //$NON-NLS-1$
-		WidgetProperty backgroundColorProperty = displayModel
-				.getProperty("color.background"); //$NON-NLS-1$
-		assertNotNull(backgroundColorProperty);
+		assertTrue(displayModel.hasProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		assertNotNull(displayModel.getColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
 
-		DynamicsDescriptor backgroundColorDynamicsDescriptor = backgroundColorProperty
-				.getDynamicsDescriptor();
+		DynamicsDescriptor backgroundColorDynamicsDescriptor = displayModel.getDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
 		assertNotNull(backgroundColorDynamicsDescriptor);
 
 		testConnectionStates(backgroundColorDynamicsDescriptor
@@ -358,9 +317,9 @@ public final class XmlProcessingTest {
 		// test a widget model with complex property types
 		assertEquals(
 				"org.csstudio.sds.components.Waveform", widgetModel.getTypeID()); //$NON-NLS-1$
-		assertTrue(widgetModel.hasProperty("wave")); //$NON-NLS-1$
+		assertTrue(widgetModel.hasProperty("data1")); //$NON-NLS-1$
 
-		WidgetProperty waveProperty = widgetModel.getProperty("wave"); //$NON-NLS-1$
+		WidgetProperty waveProperty = widgetModel.getPropertyInternal("data1"); //$NON-NLS-1$
 		assertNotNull(waveProperty);
 
 		Object value = waveProperty.getPropertyValue();
@@ -369,26 +328,14 @@ public final class XmlProcessingTest {
 
 		double[] doubleArray = (double[]) value;
 
-		assertEquals(8, doubleArray.length);
-
-		assertEquals(20.0, doubleArray[0]);
-		assertEquals(15.0, doubleArray[1]);
-		assertEquals(33.0, doubleArray[2]);
-		assertEquals(44.0, doubleArray[3]);
-		assertEquals(22.0, doubleArray[4]);
-		assertEquals(3.0, doubleArray[5]);
-		assertEquals(25.0, doubleArray[6]);
-		assertEquals(4.0, doubleArray[7]);
+		assertEquals(0, doubleArray.length);
 
 		// test the connection state & dynamic value state definitions on widget
 		// level
 		assertTrue(widgetModel.hasProperty("border.color")); //$NON-NLS-1$
-		WidgetProperty borderColorProperty = widgetModel
-				.getProperty("border.color"); //$NON-NLS-1$
-		assertNotNull(borderColorProperty);
+		assertNotNull(widgetModel.getColor(AbstractWidgetModel.PROP_BORDER_COLOR));
 
-		DynamicsDescriptor borderColorDynamicsDescriptor = borderColorProperty
-				.getDynamicsDescriptor();
+		DynamicsDescriptor borderColorDynamicsDescriptor = widgetModel.getDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR);
 		assertNotNull(borderColorDynamicsDescriptor);
 
 		testConnectionStates(borderColorDynamicsDescriptor
@@ -450,19 +397,14 @@ public final class XmlProcessingTest {
 		Object disconnectedColorObject = connectionStatesMap
 				.get(ConnectionState.DISCONNECTED);
 
-		assertTrue(connectedColorObject instanceof RGB);
-		assertTrue(disconnectedColorObject instanceof RGB);
+		assertTrue(connectedColorObject instanceof String);
+		assertTrue(disconnectedColorObject instanceof String);
 
-		RGB connectedColor = (RGB) connectedColorObject;
-		RGB disconnectedColor = (RGB) disconnectedColorObject;
+		String connectedColor = (String) connectedColorObject;
+		String disconnectedColor = (String) disconnectedColorObject;
 
-		assertEquals(0, connectedColor.red);
-		assertEquals(255, connectedColor.green);
-		assertEquals(0, connectedColor.blue);
-
-		assertEquals(255, disconnectedColor.red);
-		assertEquals(0, disconnectedColor.green);
-		assertEquals(0, disconnectedColor.blue);
+		assertEquals("#00ff00", connectedColor);
+		assertEquals("#ff0000", disconnectedColor);
 	}
 
 	/**
@@ -483,18 +425,13 @@ public final class XmlProcessingTest {
 		Object errorColorObject = dynamicValueStatesMap
 				.get(DynamicValueState.ERROR);
 
-		assertTrue(normalColorObject instanceof RGB);
-		assertTrue(errorColorObject instanceof RGB);
+		assertTrue(normalColorObject instanceof String);
+		assertTrue(errorColorObject instanceof String);
 
-		RGB normalColor = (RGB) normalColorObject;
-		RGB errorColor = (RGB) errorColorObject;
+		String normalColor = (String) normalColorObject;
+		String errorColor = (String) errorColorObject;
 
-		assertEquals(255, normalColor.red);
-		assertEquals(255, normalColor.green);
-		assertEquals(255, normalColor.blue);
-
-		assertEquals(255, errorColor.red);
-		assertEquals(0, errorColor.green);
-		assertEquals(0, errorColor.blue);
+		assertTrue("#ffffff".equalsIgnoreCase(normalColor));
+		assertTrue("#ff0000".equalsIgnoreCase(errorColor));
 	}
 }

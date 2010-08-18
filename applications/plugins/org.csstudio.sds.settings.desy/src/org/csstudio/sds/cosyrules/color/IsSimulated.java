@@ -41,8 +41,8 @@ import org.epics.css.dal.DynamicValueCondition;
  * Check if the incoming Object represent a Invalid state
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 08.06.2010
  */
 public class IsSimulated implements IRule {

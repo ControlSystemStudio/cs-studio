@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkbench;
  * A wizard for creating new display models.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class NewDisplayWizard extends Wizard implements INewWizard {

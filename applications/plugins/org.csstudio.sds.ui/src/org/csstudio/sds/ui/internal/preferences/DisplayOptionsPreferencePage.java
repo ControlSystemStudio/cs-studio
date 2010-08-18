@@ -21,22 +21,30 @@
  */
 package org.csstudio.sds.ui.internal.preferences;
 
-import org.csstudio.sds.cursorservice.CursorService;
-import org.csstudio.sds.preferences.PreferenceConstants;
+import java.util.List;
+
+import org.csstudio.sds.internal.preferences.CategorizationType;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.sds.ui.internal.editor.newproperties.colorservice.NamedStyle;
 import org.eclipse.jface.preference.BooleanFieldEditor;
-import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.IntegerFieldEditor;
+import org.eclipse.jface.preference.RadioGroupFieldEditor;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * A preference page to set the options for the display editors.
  * 
- * @author Kai Meyer
+ * @author Sven Wende & Kai Meyer
  */
 public final class DisplayOptionsPreferencePage extends
 		FieldEditorPreferencePage implements IWorkbenchPreferencePage {
@@ -63,31 +71,53 @@ public final class DisplayOptionsPreferencePage extends
 		editor = new BooleanFieldEditor(PreferenceConstants.PROP_ANTIALIASING,
 				"Antialiasing", getFieldEditorParent());
 		addField(editor);
+
+		editor = new BooleanFieldEditor(
+				PreferenceConstants.PROP_CLOSE_PARENT_DISPLAY,
+				"Close Parent Display", getFieldEditorParent());
+		addField(editor);
+
+		String[][] labelAndValues = new String[][] {
+				{ "No categorization", CategorizationType.NONE.getId() },
+				{ "Collapsible groups", CategorizationType.DRAWER.getId() },
+				{ "Stack", CategorizationType.STACK.getId() } };
+		editor = new RadioGroupFieldEditor(
+				PreferenceConstants.PROP_WIDGET_CATEGORIZATION,
+				"Categorization of SDS widgets", 1, labelAndValues,
+				getFieldEditorParent(), true);
+		addField(editor);
+
+		editor = new BooleanFieldEditor(
+				PreferenceConstants.PROP_WRITE_ACCESS_DENIED,
+				"Deny Write Access for all widgets", getFieldEditorParent());
+		addField(editor);
 		
-		String[] displayNames = CursorService.getInstance().getDisplayNames();
-		String[][] entriesAndValues = new String[displayNames.length][2];
-		for (int i=0;i<displayNames.length;i++) {
-			entriesAndValues[i][0] = displayNames[i];
-			entriesAndValues[i][1] = displayNames[i];
+		Group styleComposite = new Group(getFieldEditorParent(), SWT.NONE);
+		styleComposite.setText("Styles");
+		GridLayout layout = new GridLayout(2,false);
+		styleComposite.setLayout(layout);
+		styleComposite.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		String[][] cafLabelAndValues = createLabelsAndValues();
+		if (cafLabelAndValues.length == 0) {
+			Label notFound = new Label(styleComposite, SWT.WRAP);
+			notFound.setText("No styles found");
+			notFound.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+		} else {
+			addField(new RadioGroupFieldEditor(PreferenceConstants.PROP_SELECTED_COLOR_AND_FONT_STYLE, 
+				"Select the style for colors and fonts", 1, cafLabelAndValues, styleComposite));
 		}
-		editor = new ComboFieldEditor(PreferenceConstants.PROP_DEFAULT_CURSOR,
-				"Default Cursor", entriesAndValues , getFieldEditorParent());
-		addField(editor);
-		editor = new ComboFieldEditor(PreferenceConstants.PROP_ENABLED_ACTION_CURSOR,
-				"Cursor for allowed actions", entriesAndValues , getFieldEditorParent());
-		addField(editor);
-		editor = new ComboFieldEditor(PreferenceConstants.PROP_DISABLED_ACTION_CURSOR,
-				"Cursor for denied actions", entriesAndValues , getFieldEditorParent());
-		addField(editor);
-		
-//		editor = new BooleanFieldEditor(PreferenceConstants.PROP_USE_WORKSPACE_ID,
-//				"Use workspace as root", getFieldEditorParent());
-//		addField(editor);
-		
-//		XXX Removed, because the default dialog font should be used (23.11.2007) 
-//		editor = new BooleanFieldEditor(PreferenceConstants.PROP_USE_DIALOG_FONT,
-//				"Use default dialog font", getFieldEditorParent());
-//		addField(editor);
+		Label hint = new Label(styleComposite, SWT.WRAP);
+		hint.setText("The styles are taken from file '/Settings/settings.xml'");
+		hint.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1));
+	}
+
+	private String[][] createLabelsAndValues() {
+		List<NamedStyle> styles = SdsUiPlugin.getDefault().getColorAndFontService().getStyles();
+		String[][] result = new String[styles.size()][2];
+		for (int i = 0; i < styles.size(); i++) {
+			result[i] = new String[] {styles.get(i).getDescription() + " ("+ styles.get(i).getName() +")", styles.get(i).getName()};
+		}
+		return result;
 	}
 
 	/**
@@ -102,6 +132,13 @@ public final class DisplayOptionsPreferencePage extends
 	 * {@inheritDoc}
 	 */
 	public void init(final IWorkbench workbench) {
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void dispose() {
 	}
 
 }

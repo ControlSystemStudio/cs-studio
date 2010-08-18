@@ -17,10 +17,11 @@
   </editor>
   <editor
         class="org.csstudio.sds.ui.logic.ScriptEditor"
+        default="false"
         extensions="css-sdss"
         icon="icons/rule_script.gif"
         id="org.csstudio.sds.ui.logic.ScriptEditor"
-        name="SDS Script Editor">
+        name="Simple Script Editor">
   </editor>
   </extension>
   <extension
@@ -33,27 +34,37 @@
               class="org.csstudio.sds.ui.internal.actions.OpenDisplayEditorAction"
               icon="icons/sds.gif"
               id="org.csstudio.ui.sds.ui.internal.actions.OpenDisplayEditorAction"
-              label="Synoptic Display Editor"
+              label="Synoptic Display Studio"
               menubarPath="css/display/"
               style="push"/>
         <action
-              class="org.csstudio.ui.sds.ui.internal.actions.GcAction"
-              icon="icons/connector.png"
-              id="org.csstudio.ui.sds.ui.internal.actions.GcAction"
-              label="Garbage Collection"
-              menubarPath="css/display/"
+              class="org.csstudio.sds.ui.internal.runmode.OpenAsShellMenuAction"
+              definitionId="org.csstudio.sds.ui.displayRunAsShell"
+              icon="icons/run.gif"
+              id="org.csstudio.sds.ui.internal.runmode.OpenAsShellMenuAction"
+              label="Display in Run Mode"
               style="push"
-              toolbarPath="additions"/>
+              toolbarPath="run">
+        </action>
+        <action
+              class="org.csstudio.sds.ui.internal.runmode.OpenAsViewMenuAction"
+              definitionId="org.csstudio.sds.ui.displayRunAsView"
+              icon="icons/run.gif"
+              id="org.csstudio.sds.ui.internal.runmode.OpenAsViewlMenuAction"
+              label="Display run as View">
+        </action>
+        <action
+              class="org.csstudio.sds.ui.internal.editor.newproperties.colorservice.InstallDefaultSettingsAction"
+              icon="icons/sds.gif"
+              id="org.csstudio.sds.ui.InstallDefaultSettingsAction"
+              label="Install default settings"
+              menubarPath="css/display/"
+              style="push">
+        </action>
      </actionSet>
   </extension>
   <extension
         point="org.eclipse.ui.views">
-     <view
-           category="org.csstudio.sds.ui.viewCategory"
-           class="org.csstudio.sds.ui.internal.editor.ConnectionView"
-           icon="icons/connectionPerf.png"
-           id="org.csstudio.sds.ui.internal.editor.ConnectionView"
-           name="Connections &amp; Performance [For Experimental Use]"/>
      <view
            category="org.csstudio.sds.ui.viewCategory"
            class="org.csstudio.sds.ui.internal.properties.view.PropertySheet"
@@ -73,12 +84,6 @@
            icon="icons/sdsRun.png"
            id="org.csstudio.sds.ui.internal.runmode.DisplayViewPart"
            name="Run Mode View"/>
-     <view
-           category="org.csstudio.sds.ui.viewCategory"
-           class="org.csstudio.sds.ui.internal.connection.ConnectionStateView"
-           icon="icons/connectionStat.png"
-           id="org.csstudio.sds.ui.internal.connection.ConnectionStateView"
-           name="Connector Overview"/>
      <category
            id="org.csstudio.sds.ui.viewCategory"
            name="Synoptic Display Studio"/>
@@ -108,6 +113,18 @@
            commandId="org.eclipse.ui.edit.delete"
            schemeId="org.csstudio.sds.ui.acceleratorScheme"
            sequence="DEL"/>
+     <key
+           commandId="org.csstudio.sds.ui.displayRunAsShell"
+           contextId="org.eclipse.ui.contexts.window"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+R">
+     </key>
+     <key
+           commandId="org.csstudio.sds.ui.displayRunAsView"
+           contextId="org.eclipse.ui.contexts.window"
+           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+           sequence="M1+F11">
+     </key>
      <scheme
            description="Synoptic Display Studio Accelerators"
            id="org.csstudio.sds.ui.acceleratorScheme"
@@ -135,53 +152,73 @@
            id="org.csstudio.sds.ui.wizards.NewScriptRuleWizard"
            name="Scripted Rule">
      </wizard>
+     <wizard
+           canFinishEarly="false"
+           category="org.csstudio.sds.ui.newWizard.display/"
+           class="org.csstudio.sds.ui.wizards.NewScriptWizard"
+           hasPages="true"
+           icon="icons/rule_script.gif"
+           id="org.csstudio.sds.ui.wizards.NewScriptWizard"
+           name="SDS Script">
+     </wizard>
+     <primaryWizard
+           id="org.csstudio.sds.ui.internal.wizards.NewDisplayWizard">
+     </primaryWizard>
   </extension>
   <extension
         point="org.csstudio.sds.ui.propertyDescriptorFactories">
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.BooleanPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.BooleanPropertyDescriptorFactory"
            typeId="sds.boolean"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.IntegerPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.IntegerPropertyDescriptorFactory"
            typeId="sds.integer"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.ColorPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ColorPropertyDescriptorFactory"
            typeId="sds.color"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.FontPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.FontPropertyDescriptorFactory"
            typeId="sds.font"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.StringPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.StringPropertyDescriptorFactory"
            typeId="sds.string"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.DoublePropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.DoublePropertyDescriptorFactory"
            typeId="sds.double"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.PointlistPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.PointlistPropertyDescriptorFactory"
            typeId="sds.pointlist"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.OptionPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ArrayOptionPropertyDescriptorFactory"
            typeId="sds.option"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.DoubleArrayPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.DoubleArrayPropertyDescriptorFactory"
            typeId="sds.doublearray"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.StringMapPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.StringMapPropertyDescriptorFactory"
            typeId="sds.map"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.ResourcePropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ResourcePropertyDescriptorFactory"
            typeId="sds.path"/>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.ProcessVariablePropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ProcessVariablePropertyDescriptorFactory"
            typeId="sds.pv">
      </propertyDescriptorFactory>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.ActionDataPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ActionDataPropertyDescriptorFactory"
            typeId="sds.action">
      </propertyDescriptorFactory>
      <propertyDescriptorFactory
-           class="org.csstudio.sds.ui.internal.properties.ParamStringPropertyDescriptorFactory"
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.ParamStringPropertyDescriptorFactory"
            typeId="sds.paramstring">
+     </propertyDescriptorFactory>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.OptionPropertyDescriptorFactory"
+           typeId="sds.choiceoption">
+     </propertyDescriptorFactory>
+     <propertyDescriptorFactory
+           class="org.csstudio.sds.ui.internal.properties.descriptorfactories.StringPropertyDescriptorFactory"
+           typeId="sds.behavior">
      </propertyDescriptorFactory>
   </extension>
   <extension
@@ -192,18 +229,8 @@
         <adapter type="org.csstudio.sds.ui.internal.properties.view.IPropertySource"/>
      </factory>
      <factory
-           adaptableType="org.csstudio.sds.model.logic.RuleDescriptor"
+           adaptableType="org.csstudio.sds.internal.rules.RuleDescriptor"
            class="org.csstudio.sds.ui.internal.adapters.RuleDescriptorAdapterFactory">
-        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-     </factory>
-     <factory
-           adaptableType="org.csstudio.sds.internal.connection.Connector"
-           class="org.csstudio.sds.ui.internal.connection.ConnectorAdapterFactory">
-        <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
-     </factory>
-     <factory
-           adaptableType="org.csstudio.sds.internal.connection.ChannelReference"
-           class="org.csstudio.sds.ui.internal.connection.ChannelReferenceAdapterFactory">
         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
      </factory>
      <factory
@@ -217,12 +244,12 @@
         <adapter type="org.csstudio.platform.security.IActivationAdapter"/>
      </factory>
      <factory
-           adaptableType="org.csstudio.sds.model.layers.Layer"
+           adaptableType="org.csstudio.sds.internal.model.Layer"
            class="org.csstudio.sds.ui.internal.layers.LayerAdapterFactory">
         <adapter type="org.eclipse.ui.model.IWorkbenchAdapter"/>
      </factory>
      <factory
-           adaptableType="org.csstudio.sds.model.properties.actions.WidgetAction"
+           adaptableType="org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel"
            class="org.csstudio.sds.ui.internal.adapters.WidgetActionAdapterFactory">
         <adapter
               type="org.eclipse.ui.model.IWorkbenchAdapter">
@@ -245,6 +272,33 @@
            class="org.csstudio.sds.ui.internal.preferences.DisplayOptionsPreferencePage"
            id="org.csstudio.sds.ui.internal.preferences.DisplayOptionsPreferencePage"
            name="Display Options"/>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.DefaultDisplayPreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.DefaultDisplayPreferencePage"
+           name="Default Display">
+     </page>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.WidgetOptionPreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.WidgetOptionsPreferencePage"
+           name="Widget Options">
+     </page>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.MouseCursorPreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.MouseCursorPreferencePage"
+           name="Mouse Cursors">
+        <keywordReference
+              id="org.csstudio.sds.ui.keyword.pointer">
+        </keywordReference>
+     </page>
+     <page
+           category="org.csstudio.platform.ui.css.applications.display"
+           class="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
+           id="org.csstudio.sds.ui.internal.preferences.RuleFoldersPreferencePage"
+           name="Rule Folders">
+     </page>
   </extension>
   <extension
         point="org.eclipse.ui.popupMenus">
@@ -270,13 +324,6 @@
      <editorContribution
            id="org.csstudio.sds.ui.internal.editor.DisplayEditor.Contribution"
            targetID="org.csstudio.sds.ui.internal.editor.DisplayEditor">
-        <action
-              class="org.csstudio.sds.ui.internal.runmode.OpenAsShellEditorAction"
-              icon="icons/run.gif"
-              id="org.csstudio.sds.ui.internal.parts.OpenInRunModeAction"
-              label="Open in Run Mode"
-              style="push"
-              toolbarPath="additions"/>
      </editorContribution>
   </extension>
   <extension
@@ -319,6 +366,16 @@
            description="Paste Widgets"
            id="org.csstudio.sds.ui.pasteWidgets"
            name="Paste"/>
+     <command
+           defaultHandler="org.csstudio.sds.ui.internal.actions.RunAsShellHandler"
+           id="org.csstudio.sds.ui.displayRunAsShell"
+           name="RunAsShell">
+     </command>
+     <command
+           defaultHandler="org.csstudio.sds.ui.internal.actions.RunAsShellHandler"
+           id="org.csstudio.sds.ui.displayRunAsView"
+           name="RunAsView">
+     </command>
   </extension>
   <extension
         point="org.eclipse.ui.bindings">
@@ -374,12 +431,8 @@
       <key
             commandId="org.eclipse.ui.edit.selectAll"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
-            sequence="M1+A"
-            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
-      <key
-            commandId="org.eclipse.ui.edit.delete"
-            sequence="DEL"
-            schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+            schemeId="de.smartpls.platform.ui.acceleratorScheme"
+            sequence="M1+A" />
       <key
             commandId="org.eclipse.ui.edit.cut"
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
@@ -461,19 +514,6 @@
      </menuContribution>
   </extension>
     <extension
-          point="org.eclipse.ui.popupMenus">
-       <objectContribution
-             id="Contribs.IProcessVariableAdressProvider"
-             objectClass="org.csstudio.platform.model.pvs.IProcessVariableAdressProvider">
-          <action
-                class="org.csstudio.ui.sds.ui.internal.actions.PrintPvsAction"
-                id="org.csstudio.ui.sds.ui.internal.actions.PrintPvsAction"
-                label="Print Process Variable Names To Console"
-                menubarPath="css/additions">
-          </action>
-       </objectContribution>
-    </extension>
-    <extension
           point="org.csstudio.sds.ui.widgetEditParts">
        <widgetEditPart
              class="org.csstudio.sds.ui.editparts.LinkingContainerEditPart"
@@ -483,5 +523,82 @@
              class="org.csstudio.sds.ui.editparts.GroupingContainerEditPart"
              typeId="org.csstudio.sds.components.GroupingContainer">
        </widgetEditPart>
+    </extension>
+    <extension
+          point="org.eclipse.help.toc">
+       <toc
+             file="toc.xml"
+             primary="true">
+       </toc>
+    </extension>
+    <extension
+          point="org.eclipse.help.contexts">
+       <contexts
+             file="contexts.xml"
+             plugin="org.csstudio.sds.ui">
+       </contexts>
+    </extension>
+    <extension
+          point="org.eclipse.ui.popupMenus">
+       <objectContribution
+             adaptable="true"
+             id="Contribs.OpenDefaultDisplayAction"
+             objectClass="org.csstudio.platform.model.IProcessVariable">
+          <menu
+                id="org.csstudio.popmenu"
+                label="CSS"
+                path="additions">
+             <groupMarker
+                   name="content">
+             </groupMarker>
+             <separator
+                   name="additions">
+             </separator>
+          </menu>
+          <action
+                class="org.csstudio.sds.ui.internal.actions.OpenPvInDefaultDisplayAction"
+                icon="icons/run.gif"
+                id="org.csstudio.sds.ui.OpenPvInDefaultDisplayAction"
+                label="Open in display"
+                menubarPath="org.csstudio.popmenu/content"
+                tooltip="Open this process variable in the default display">
+          </action>
+       </objectContribution>
+    </extension>
+    <extension
+          point="org.eclipse.ui.keywords">
+       <keyword
+             id="org.csstudio.sds.ui.keyword.pointer"
+             label="pointer">
+       </keyword>
+    </extension>
+    <extension
+          point="org.eclipse.ui.perspectiveExtensions">
+       <perspectiveExtension
+             targetID="org.csstudio.platform.ui.internal.perspectives.CssDefaultPerspective">
+          <perspectiveShortcut
+                id="org.csstudio.sds.ui.internal.workbench.SynopticDisplayStudioPerspective">
+          </perspectiveShortcut>
+       </perspectiveExtension>
+       <perspectiveExtension
+             targetID="org.csstudio.sds.ui.internal.workbench.SynopticDisplayStudioPerspective">
+          <viewShortcut
+                id="org.csstudio.sds.ui.internal.properties.view.PropertySheet">
+          </viewShortcut>
+          <viewShortcut
+                id="org.csstudio.sds.ui.internal.layers.LayerManagementView">
+          </viewShortcut>
+       </perspectiveExtension>
+    </extension>
+    <extension
+          point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+       <propertyContributor
+             contributorId="org.csstudio.sds.ui.internal.editor.DisplayEditor"
+             labelProvider="org.csstudio.sds.ui.internal.editor.newproperties.PropertyContributorLabelProvider"
+             tabDescriptorProvider="org.csstudio.sds.ui.internal.editor.newproperties.TabDescriptorProvider">
+          <propertyCategory
+                category="default">
+          </propertyCategory>
+       </propertyContributor>
     </extension>
 </plugin>

@@ -1,35 +1,36 @@
-package org.csstudio.sds.model.initializers;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+ package org.csstudio.sds.model.initializers;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
 
 /**
- * Base class for widget model initializers that provides a convinient API for
+ * Base class for widget model initializers that provides a convenient API for
  * initializing widget model for a certain control system.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.8 $
  * 
  */
-public abstract class AbstractWidgetModelInitializer {
-	/**
-	 * The current model that is beeing initialized. This reference will be
-	 * injected at runtime.
-	 */
-	private AbstractWidgetModel _widgetModel;
-
-	/**
-	 * Setter, which injects the widget model at runtime. Should only be called
-	 * within this package.
-	 * 
-	 * @param widgetModel
-	 *            the widget model
-	 */
-	final void setWidgetModel(final AbstractWidgetModel widgetModel) {
-		_widgetModel = widgetModel;
-	}
-
+public abstract class AbstractWidgetModelInitializer extends AbstractInitializer {
 	/**
 	 * Subclasses should implement the proper widget initialization in this
 	 * method. Some Control System wide settings might have been stored in a
@@ -40,7 +41,7 @@ public abstract class AbstractWidgetModelInitializer {
 	 * 
 	 * {@link #initializeDynamicProperty(String, String)}
 	 * {@link #initializeDynamicProperty(String, String[])}
-	 * {@link #initializeDynamicProperty(String, String, String)}
+	 * {@link #initializeDynamicProperty(String, String, String, String)}
 	 * {@link #initializeAlias(String, String)}
 	 * {@link #initializeStaticProperty(String, Object)}
 	 * 
@@ -57,106 +58,4 @@ public abstract class AbstractWidgetModelInitializer {
 	 *            the control system schema
 	 */
 	protected abstract void initialize(final AbstractControlSystemSchema schema);
-
-	/**
-	 * Initializes a alias, which has widget scope.
-	 * 
-	 * @param alias
-	 *            the alias name, e.g. "channel"
-	 * @param description
-	 *            a alias description
-	 * 
-	 */
-	public final void initializeAlias(final String alias,
-			final String description) {
-		_widgetModel.addAlias(alias, "");
-	}
-
-	/**
-	 * Initializes a property with a static value.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param value
-	 *            the value
-	 */
-	public final void initializeStaticProperty(final String propertyId,
-			final Object value) {
-		_widgetModel.setPropertyValue(propertyId, value);
-	}
-
-	/**
-	 * Initializes a property with a single input and a single output channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelName
-	 *            the input channel name
-	 * @param outputChannelName
-	 *            the output channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String channelName, final String outputChannelName) {
-		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-		dynamicsDescriptor.addInputChannel(new ParameterDescriptor(channelName,
-				Object.class));
-		if (outputChannelName != null) {
-			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
-					outputChannelName, Object.class));
-		}
-		_widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
-
-	/**
-	 * Initializes a property with a single input channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelName
-	 *            the input channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String channelName) {
-		initializeDynamicProperty(propertyId, channelName, null);
-	}
-
-	/**
-	 * Initializes a property with a several input channels.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelNames
-	 *            the input channel names
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String[] channelNames) {
-		initializeDynamicProperty(propertyId, channelNames, null);
-	}
-	/**
-	 * Initializes a property with a several input channels and a single output channel.
-	 * 
-	 * @param propertyId
-	 *            the property id
-	 * @param channelNames
-	 *            the input channel names
-	 * @param outputChannelName
-	 *            the output channel name
-	 */
-	public final void initializeDynamicProperty(final String propertyId,
-			final String[] channelNames, final String outputChannelName) {
-		final DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
-
-		for (String channelName : channelNames) {
-			dynamicsDescriptor.addInputChannel(new ParameterDescriptor(
-					channelName, Object.class));
-		}
-
-		if (outputChannelName != null) {
-			dynamicsDescriptor.setOutputChannel(new ParameterDescriptor(
-					outputChannelName, Object.class));
-		}
-
-		_widgetModel.setDynamicsDescriptor(propertyId, dynamicsDescriptor);
-	}
-
 }

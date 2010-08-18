@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.IPath;
  * display.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.8 $
  * 
  */
 public abstract class AbstractDisplayImporter {

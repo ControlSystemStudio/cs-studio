@@ -32,7 +32,7 @@ import org.junit.Test;
  * Test case for class {@link WidgetModelFactoryDescriptor}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.4 $
  * 
  */
 public final class WidgetModelFactoryDescriptorTest {
@@ -47,7 +47,8 @@ public final class WidgetModelFactoryDescriptorTest {
 			public AbstractWidgetModel createWidgetModel() {
 				return null;
 			}
-
+			
+			@SuppressWarnings("unchecked")
 			public Class getWidgetModelType() {
 				return AbstractWidgetModel.class;
 			}

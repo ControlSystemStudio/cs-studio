@@ -1,23 +1,20 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
- * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, Member of the Helmholtz Association,
+ * (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
- * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
+ * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, THE USER ASSUMES
+ * THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY
+ * CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
+ * EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
+ * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
+ * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.editparts;
 
@@ -26,28 +23,32 @@ import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.Semaphore;
 
+import org.csstudio.platform.ExecutionService;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.IProcessVariableAdressProvider;
 import org.csstudio.sds.cursorservice.CursorService;
-import org.csstudio.sds.cursorservice.ICursorServiceListener;
-import org.csstudio.sds.internal.connection.BundelingThread;
-import org.csstudio.sds.internal.connection.ConnectionService;
-import org.csstudio.sds.internal.statistics.MeasureCategoriesEnum;
-import org.csstudio.sds.internal.statistics.TimeTrackedRunnable;
+import org.csstudio.sds.internal.connection.ConnectionUtilNew;
+import org.csstudio.sds.internal.connection.IListenerRegistry;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.ConnectionElement;
+import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.model.RuntimeContext;
 import org.csstudio.sds.model.WidgetProperty;
+import org.csstudio.sds.ui.SdsUiPlugin;
+import org.csstudio.sds.ui.cursors.internal.CursorHelper;
 import org.csstudio.sds.ui.figures.IBorderEquippedWidget;
+import org.csstudio.sds.ui.figures.ICrossedFigure;
+import org.csstudio.sds.ui.figures.IRhombusEquippedWidget;
 import org.csstudio.sds.ui.figures.ToolTipFigure;
 import org.csstudio.sds.ui.internal.editparts.WidgetPropertyChangeListener;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySource;
 import org.csstudio.sds.util.ChannelReferenceValidationException;
 import org.csstudio.sds.util.ChannelReferenceValidationUtil;
-import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.sds.util.TooltipResolver;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -55,7 +56,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.draw2d.ChopboxAnchor;
 import org.eclipse.draw2d.ConnectionAnchor;
 import org.eclipse.draw2d.IFigure;
-import org.eclipse.draw2d.Label;
+import org.eclipse.draw2d.MouseEvent;
+import org.eclipse.draw2d.MouseMotionListener;
 import org.eclipse.draw2d.geometry.Dimension;
 import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
@@ -64,8 +66,15 @@ import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.NodeEditPart;
 import org.eclipse.gef.Request;
 import org.eclipse.gef.editparts.AbstractGraphicalEditPart;
-import org.eclipse.swt.graphics.RGB;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.graphics.Font;
 import org.eclipse.ui.progress.UIJob;
+import org.epics.css.dal.simple.ChannelListener;
+import org.epics.css.dal.simple.ConnectionParameters;
+import org.epics.css.dal.simple.SimpleDALBroker;
+
+import com.cosylab.util.CommonException;
 
 /**
  * This is the base class for all controllers of SDS widgets. In the GEF
@@ -73,49 +82,36 @@ import org.eclipse.ui.progress.UIJob;
  * controllers.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.98 $
  * 
  */
 public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		implements NodeEditPart, PropertyChangeListener,
-		IProcessVariableAdressProvider, ICursorServiceListener {
+		IProcessVariableAdressProvider, IProcessVariable, IListenerRegistry {
 
-	public List<IProcessVariableAddress> getProcessVariableAdresses() {
-		return getCastedModel().getAllPvAdresses();
+	private boolean activated = false;
+
+	enum ConnectionStatus {
+		DISCONNECTED, CONNECTED, CONNECTING, DISCONNECTING
 	}
 
-	public String getName() {
-		// String primaryPv = getCastedModel().getPrimaryPV();
-		return getCastedModel().getMainPvAdress().getProperty();
-	}
+	private ConnectionStatus _connectionStatus = ConnectionStatus.DISCONNECTED;
 
-	public String getTypeId() {
-		return IProcessVariable.TYPE_ID;
-	}
+	private final Semaphore _semaphore;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public IProcessVariableAddress getPVAdress() {
-		return getCastedModel().getMainPvAdress();
-	}
-
-	/**
-	 * A boolean, representing if this EditPart is connected.
-	 */
-	private boolean _isConnected;
+	private final Map<WidgetProperty, org.csstudio.sds.model.IPropertyChangeListener> _outChannelListeners;
 
 	/**
 	 * A map, which takes property ids as key and property change listeners as
 	 * values.
 	 */
-	private HashMap<String, WidgetPropertyChangeListener> _propertyChangeListenersById;
+	public HashMap<String, WidgetPropertyChangeListener> _propertyChangeListenersById;
 
 	/**
 	 * A map, which takes properties as key and property change listeners as
 	 * values.
 	 */
-	private HashMap<WidgetProperty, WidgetPropertyChangeListener> _propertyChangeListenersByProperty;
+	private final HashMap<WidgetProperty, WidgetPropertyChangeListener> _propertyChangeListenersByProperty;
 
 	/**
 	 * Flag for the selection behaviour of this controller.
@@ -127,14 +123,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	private ExecutionMode _executionMode;
 
+	private MouseMotionListener _motionListener;
+
+	private final IPropertyChangeListener _preferencesListener;
+
 	/**
 	 * Standard constructor.
 	 */
 	public AbstractBaseEditPart() {
+		_semaphore = new Semaphore(1);
 		_executionMode = ExecutionMode.EDIT_MODE;
 		_propertyChangeListenersById = new HashMap<String, WidgetPropertyChangeListener>();
 		_propertyChangeListenersByProperty = new HashMap<WidgetProperty, WidgetPropertyChangeListener>();
 		_selectable = true;
+		_preferencesListener = new PreferencesListener();
+		_outChannelListeners = new HashMap<WidgetProperty, org.csstudio.sds.model.IPropertyChangeListener>();
 	}
 
 	/**
@@ -174,6 +177,17 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	protected final IFigure createFigure() {
 		AbstractWidgetModel model = getWidgetModel();
 
+		// FIXME: Sven Wende: Das Setzen dieser Property und alles, was im
+		// Weiteren damit zusammenhängt sollte dringend! einem Refactoring
+		// unterworfen werden. Die Property und das Handling in den konkreten
+		// Widgets ist nicht abstrakt und könnte viel weiter oben in der
+		// Widget-Hierarchie und der Editpart-Hierarchie erledigt werden. Diesen
+		// Aufruf hier zu machen, ist ein wilder Hack!!
+		getCastedModel().setPropertyValue(
+				AbstractWidgetModel.PROP_WRITE_ACCESS_GRANTED,
+				!SdsUiPlugin.getCorePreferenceStore().getBoolean(
+						PreferenceConstants.PROP_WRITE_ACCESS_DENIED));
+
 		// create figure
 		IFigure f = doCreateFigure();
 
@@ -183,23 +197,35 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		}
 
 		// initialize figure
-		f.setBackgroundColor(CustomMediaFactory.getInstance().getColor(
-				model.getBackgroundColor()));
 
-		f.setForegroundColor(CustomMediaFactory.getInstance().getColor(
-				model.getForegroundColor()));
+		// ... enabled
+		updateFigureEnablementState(f);
 
+		// ... colors
+		f
+				.setBackgroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND));
+		f
+				.setForegroundColor(getModelColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND));
+
+		// ... size
 		f.setSize(model.getWidth(), model.getHeight());
 
 		if (f instanceof IAdaptable) {
+			ICrossedFigure crossedFigure = (ICrossedFigure) ((IAdaptable) f)
+					.getAdapter(ICrossedFigure.class);
+			crossedFigure.setCrossedOut(model.isCrossedOut());
+		}
+
+		if (f instanceof IAdaptable) {
+			// ... borders
 			IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) f)
 					.getAdapter(IBorderEquippedWidget.class);
 
 			if (borderEquippedWidgetAdapter != null) {
 				borderEquippedWidgetAdapter.setBorderWidth(model
 						.getBorderWidth());
-				borderEquippedWidgetAdapter.setBorderColor(CustomMediaFactory
-						.getInstance().getColor(model.getBorderColor()));
+				borderEquippedWidgetAdapter
+						.setBorderColor(getModelColor(AbstractWidgetModel.PROP_BORDER_COLOR));
 				borderEquippedWidgetAdapter.setBorderStyle(model
 						.getBorderStyle());
 				if (model.getPrimaryPV() == null) {
@@ -217,44 +243,36 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 					}
 				}
 			}
+			// ... cross out
+			ICrossedFigure crossedEquippedWidgetAdapter = (ICrossedFigure) ((IAdaptable) f)
+					.getAdapter(ICrossedFigure.class);
+
+			if (crossedEquippedWidgetAdapter != null) {
+				crossedEquippedWidgetAdapter
+						.setCrossedOut(model.isCrossedOut());
+			}
+			// ... rhombus
+			IRhombusEquippedWidget rhombusEquippedWidgetAdapter = (IRhombusEquippedWidget) ((IAdaptable) f)
+					.getAdapter(IRhombusEquippedWidget.class);
+
+			if (rhombusEquippedWidgetAdapter != null) {
+				rhombusEquippedWidgetAdapter.setVisible(model.isRhombus());
+			}
+
 		}
 
-		setCursorForFigure(f, model);
+		// ... cursor
+		CursorHelper.applyCursor(f, model.getCursorId());
 
-		f.setToolTip(new ToolTipFigure(model));
-		f.repaint();
+		// ... visibility
+		f.setVisible(model.isLive() ? model.isVisible() : true);
+
+		// f.repaint();
 
 		return f;
 	}
 
-	/**
-	 * Sets the cursor of a figure.
-	 * 
-	 * @param figure
-	 *            The figure, which cursor should be set.
-	 * @param model
-	 *            The corresponding model of the figure
-	 */
-	protected void setCursorForFigure(final IFigure figure,
-			final AbstractWidgetModel model) {
-		if (this.getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-			if (model.getActionData().getWidgetActions().isEmpty()) {
-				figure.setCursor(CursorService.getInstance().getCursor(
-						model.getCursor()));
-			} else {
-				if (this.getCastedModel().isEnabled()) {
-					figure.setCursor(CursorService.getInstance()
-							.getEnabledActionCursor());
-				} else {
-					figure.setCursor(CursorService.getInstance()
-							.getDisabledActionCursor());
-				}
-			}
-		} else {
-			figure.setCursor(CursorService.getInstance().getDefaultCursor());
-		}
-	}
-
+	
 	/**
 	 * Implementors should create and return the figure here.
 	 * 
@@ -271,7 +289,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	}
 
 	/**
-	 * Resizes the figure. Use {@link AbstractBaseEditPart}} to implement more
+	 * Resizes the figure. Use {@link AbstractBaseEditPart} to implement more
 	 * complex refreshing behavior.
 	 * 
 	 * @param refreshableFigure
@@ -289,7 +307,6 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		GraphicalEditPart parent = (GraphicalEditPart) getParent();
 
 		parent.setLayoutConstraint(this, refreshableFigure, bounds);
-
 	}
 
 	/**
@@ -304,23 +321,34 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	}
 
 	/**
+	 * Returns runtime context information.
+	 * 
+	 * @return runtime context information
+	 */
+	protected RuntimeContext getRuntimeContext() {
+		return getCastedModel().getRoot().getRuntimeContext();
+	}
+
+	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	public void activate() {
 		super.activate();
+
+		activated = true;
+
 		final AbstractWidgetModel model = getWidgetModel();
 
 		// add as property change listener to the widget
 		model.addPropertyChangeListener(this);
 
 		// add one property change listener to each property of the widget
-		for (String propertyId : model.getPropertyNames()) {
-			WidgetProperty property = model.getProperty(propertyId);
+		for (WidgetProperty property : model.getProperties()) {
 			WidgetPropertyChangeListener listener = new WidgetPropertyChangeListener(
 					this);
 			property.addPropertyChangeListener(listener);
-			_propertyChangeListenersById.put(propertyId, listener);
+			_propertyChangeListenersById.put(property.getId(), listener);
 			_propertyChangeListenersByProperty.put(property, listener);
 		}
 
@@ -330,11 +358,35 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// let subclasses register their property change handlers
 		registerPropertyChangeHandlers();
 
-		// listen to cursor service
-		CursorService.getInstance().addCursorServiceListener(this);
-
 		// connect
 		handleLiveState(model.isLive());
+
+		// register a mouse motion listener that updates the tooltip and cursor
+		// of the figure lazily (this saves runtime resources and improves
+		// performance)
+		if (!(model instanceof DisplayModel)) {
+			_motionListener = new MouseMotionListener.Stub() {
+
+				public void mouseEntered(final MouseEvent me) {
+					// initialize cursor states
+					CursorService.getInstance().applyCursor(getCastedModel());
+
+					// update the tooltip
+					String resolvedTooltipText = TooltipResolver
+							.resolveToValue(getWidgetModel().getToolTipText(),
+									getWidgetModel());
+					getFigure().setToolTip(
+							new ToolTipFigure(resolvedTooltipText));
+				}
+			};
+
+			getFigure().addMouseMotionListener(_motionListener);
+
+		}
+
+		// listen to preference changes
+		SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(
+				_preferencesListener);
 	}
 
 	/**
@@ -402,29 +454,23 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_HEIGHT,
 				fullRefreshHandler);
 
-		IWidgetPropertyChangeHandler bgColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				refreshableFigure.setBackgroundColor(CustomMediaFactory
-						.getInstance().getColor((RGB) newValue));
-				return true;
-			}
-		};
-
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				bgColorHandler);
-
-		IWidgetPropertyChangeHandler fgColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				refreshableFigure.setForegroundColor(CustomMediaFactory
-						.getInstance().getColor((RGB) newValue));
-				return true;
-			}
-		};
+				new ColorChangeHander<IFigure>() {
+					@Override
+					protected void doHandle(final IFigure figure,
+							final Color color) {
+						figure.setBackgroundColor(color);
+					}
+				});
 
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_COLOR_FOREGROUND,
-				fgColorHandler);
+				new ColorChangeHander<IFigure>() {
+					@Override
+					protected void doHandle(final IFigure figure,
+							final Color color) {
+						figure.setForegroundColor(color);
+					}
+				});
 
 		IWidgetPropertyChangeHandler borderWidthHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -446,24 +492,21 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_WIDTH,
 				borderWidthHandler);
 
-		IWidgetPropertyChangeHandler borderColorHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure figure) {
-				if (figure instanceof IAdaptable) {
-					IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
-							.getAdapter(IBorderEquippedWidget.class);
-					if (borderEquippedWidgetAdapter != null) {
-						borderEquippedWidgetAdapter
-								.setBorderColor(CustomMediaFactory
-										.getInstance().getColor((RGB) newValue));
-					}
-					return true;
-				}
-				return false;
-			}
-		};
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_BORDER_COLOR,
-				borderColorHandler);
+				new ColorChangeHander<IFigure>() {
+					@Override
+					protected void doHandle(final IFigure figure,
+							final Color color) {
+						if (figure instanceof IAdaptable) {
+							IBorderEquippedWidget borderEquippedWidgetAdapter = (IBorderEquippedWidget) ((IAdaptable) figure)
+									.getAdapter(IBorderEquippedWidget.class);
+							if (borderEquippedWidgetAdapter != null) {
+								borderEquippedWidgetAdapter
+										.setBorderColor(color);
+							}
+						}
+					}
+				});
 
 		IWidgetPropertyChangeHandler borderStyleHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -485,16 +528,19 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		// enabled
 		IWidgetPropertyChangeHandler enableHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
+					final Object newValue, final IFigure figure) {
+
 				if (getExecutionMode().equals(ExecutionMode.RUN_MODE)) {
-					refreshableFigure.setEnabled((Boolean) newValue);
+					updateFigureEnablementState(figure);
 				} else {
-					refreshableFigure.setEnabled(false);
+					figure.setEnabled(false);
 				}
 				return true;
 			}
 		};
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ENABLED,
+				enableHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_ACCESS_GRANTED,
 				enableHandler);
 		// layer
 		IWidgetPropertyChangeHandler layerHandler = new IWidgetPropertyChangeHandler() {
@@ -545,50 +591,55 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_ALIASES,
 				primaryPVHandler);
 
-		// tooltip
-		IWidgetPropertyChangeHandler tooltipHandler = new IWidgetPropertyChangeHandler() {
-			public boolean handleChange(final Object oldValue,
-					final Object newValue, final IFigure refreshableFigure) {
-				if (refreshableFigure.getToolTip() instanceof ToolTipFigure) {
-					ToolTipFigure ttFigure = (ToolTipFigure) refreshableFigure
-							.getToolTip();
-					ttFigure.setToolTipText((String) newValue);
-				}
-				return true;
-			}
-		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_TOOLTIP,
-				tooltipHandler);
-
 		// cursor
 		IWidgetPropertyChangeHandler actionDataHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				setCursorForFigure(figure, getCastedModel());
+
+				if (newValue != null) {
+					CursorHelper.applyCursor(figure, newValue.toString());
+				}
+
 				return true;
 			}
 		};
-		setPropertyChangeHandler(AbstractWidgetModel.PROP_ACTIONDATA,
-				actionDataHandler);
 		setPropertyChangeHandler(AbstractWidgetModel.PROP_CURSOR,
 				actionDataHandler);
-		// tooltip
-		IWidgetPropertyChangeHandler tooltipRefreshHandler = new IWidgetPropertyChangeHandler() {
+
+		// crossed
+		IWidgetPropertyChangeHandler crossedHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if (refreshableFigure.getToolTip() instanceof ToolTipFigure) {
-					ToolTipFigure ttFigure = (ToolTipFigure) refreshableFigure
-							.getToolTip();
-					ttFigure.refresh();
+				if (refreshableFigure instanceof IAdaptable) {
+					ICrossedFigure crossedFigure = (ICrossedFigure) ((IAdaptable) refreshableFigure)
+							.getAdapter(ICrossedFigure.class);
+					crossedFigure.setCrossedOut((Boolean) newValue);
+					return true;
 				}
-				return true;
+				return false;
 			}
 		};
-		for (String propertyName : getWidgetModel().getPropertyNames()) {
-			if (!propertyName.equals(AbstractWidgetModel.PROP_TOOLTIP)) {
-				setPropertyChangeHandler(propertyName, tooltipRefreshHandler);
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_CROSSED_OUT,
+				crossedHandler);
+		// rhombus
+		IWidgetPropertyChangeHandler rhombusHandler = new IWidgetPropertyChangeHandler() {
+			public boolean handleChange(final Object oldValue,
+					final Object newValue, final IFigure refreshableFigure) {
+				if (refreshableFigure instanceof IAdaptable) {
+					IRhombusEquippedWidget rhombusEquippedWidgetAdapter = (IRhombusEquippedWidget) ((IAdaptable) refreshableFigure)
+							.getAdapter(IRhombusEquippedWidget.class);
+					if (rhombusEquippedWidgetAdapter != null) {
+						rhombusEquippedWidgetAdapter
+								.setVisible((Boolean) newValue);
+					}
+					return true;
+				}
+
+				return false;
 			}
-		}
+		};
+		setPropertyChangeHandler(AbstractWidgetModel.PROP_RHOMBUS,
+				rhombusHandler);
 	}
 
 	/**
@@ -640,6 +691,12 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	@Override
 	public void deactivate() {
+		activated = false;
+
+		// stop listening to the preferences
+		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(
+				_preferencesListener);
+
 		// remove
 		getWidgetModel().removePropertyChangeListener(this);
 
@@ -651,34 +708,25 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 							.get(property));
 		}
 
-		// disconnect from control system
-		if (_isConnected) {
-			ConnectionService.getInstance().disConnectWidgetModel(
-					getWidgetModel());
-			_isConnected = false;
+		if (this._executionMode.equals(ExecutionMode.RUN_MODE)
+				&& !(this.getModel() instanceof DisplayModel)) {
+			this.getFigure().removeMouseMotionListener(_motionListener);
 		}
 
-		// disconnect from cursor service
-		CursorService.getInstance().removeCursorServiceListener(this);
+		// disconnect from control system
+		if ((_connectionStatus == ConnectionStatus.CONNECTED)
+				|| (_connectionStatus == ConnectionStatus.CONNECTING)) {
+			disconnectFromControlSystem();
+		}
+
+		// de-register the mouse motion listener that was registered for
+		// tooltips and cursor refreshs
+		if (_motionListener != null) {
+			getFigure().removeMouseMotionListener(_motionListener);
+		}
 
 		super.deactivate();
 
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final List<ConnectionElement> getModelSourceConnections() {
-		return getWidgetModel().getSourceConnections();
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected final List<ConnectionElement> getModelTargetConnections() {
-		return getWidgetModel().getTargetConnections();
 	}
 
 	/**
@@ -755,20 +803,99 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 	 */
 	private void handleLiveState(final boolean live) {
 		if (live) {
-			if (!_isConnected) {
-				ConnectionService.getInstance().connectWidgetModel(
-						getWidgetModel());
-				_isConnected = true;
+			if ((_connectionStatus == ConnectionStatus.DISCONNECTED)
+					|| (_connectionStatus == ConnectionStatus.DISCONNECTING)) {
+				connectToControlSystem();
 			}
 		} else {
-			if (_isConnected) {
-				ConnectionService.getInstance().disConnectWidgetModel(
-						getWidgetModel());
-				_isConnected = false;
+			if ((_connectionStatus == ConnectionStatus.CONNECTED)
+					|| (_connectionStatus == ConnectionStatus.CONNECTING)) {
+				disconnectFromControlSystem();
+			}
+		}
+	}
+
+	private void disconnectFromControlSystem() {
+		Runnable r = new Runnable() {
+			public void run() {
+				try {
+					_semaphore.acquire();
+
+					_connectionStatus = ConnectionStatus.DISCONNECTING;
+
+					// .. remove all (outgoing) channel listeners
+					for (WidgetProperty p : _outChannelListeners.keySet()) {
+						p.removePropertyChangeListener(_outChannelListeners
+								.get(p));
+					}
+
+					_connectionStatus = ConnectionStatus.DISCONNECTED;
+				} catch (Exception e) {
+					CentralLogger.getInstance().error(this, e);
+				} finally {
+					_semaphore.release();
+				}
+			}
+		};
+
+		ExecutionService.getInstance().executeWithNormalPriority(r);
+	}
+
+	private void connectToControlSystem() {
+		_connectionStatus = ConnectionStatus.CONNECTING;
+
+		Runnable r = new Runnable() {
+
+			public void run() {
+				try {
+					_semaphore.acquire();
+
+					// we only need to connect to the control system if this
+					// edit part is still active (maybe the display has already
+					// been closed)
+					if (AbstractBaseEditPart.this.isActive()) {
+						_connectionStatus = ConnectionStatus.CONNECTING;
+
+						AbstractWidgetModel widget = getCastedModel();
+
+						// .. connect to security API
+						ConnectionUtilNew.connectToWidgetManagementApi(widget);
+
+						// .. connect single dynamized properties
+						List<WidgetProperty> properties = widget
+								.getProperties();
+						for (WidgetProperty property : properties) {
+							if (property.isVisible()) {
+								ConnectionUtilNew.connectDynamizedProperties(
+										property, widget
+												.getAllInheritedAliases(),
+										widget.isWriteAccessAllowed(),
+										AbstractBaseEditPart.this, getBroker());
+							}
+						}
+
+						// .. connect behavior
+						ConnectionUtilNew.connectToBehavior(widget,
+								AbstractBaseEditPart.this);
+
+						// .. initialize cursor states
+						CursorService.getInstance().applyCursor(widget);
+						_connectionStatus = ConnectionStatus.CONNECTED;
+					} else {
+						_connectionStatus = ConnectionStatus.DISCONNECTED;
+					}
+
+				} catch (InterruptedException e) {
+					CentralLogger.getInstance().error(this, e);
+				} finally {
+					_semaphore.release();
+				}
+
 			}
 
-			getWidgetModel().setVisible(true);
-		}
+		};
+
+		ExecutionService.getInstance().executeWithNormalPriority(r);
 	}
 
 	/**
@@ -789,18 +916,226 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart
 		return _selectable;
 	}
 
-	public void refreshTooltip() {
-		IFigure toolTip = getFigure().getToolTip();
-		if (toolTip instanceof ToolTipFigure) {
-			((ToolTipFigure) toolTip).refresh();
-		}
+	/**
+	 * {@inheritDoc}
+	 */
+
+	public List<IProcessVariableAddress> getProcessVariableAdresses() {
+		return getCastedModel().getAllPvAdresses();
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void cursorChanged() {
-		this.setCursorForFigure(this.getFigure(), this.getCastedModel());
+	public String getName() {
+		return getCastedModel().getMainPvAdress().getProperty();
 	}
 
+	/**
+	 * {@inheritDoc}
+	 */
+	public String getTypeId() {
+		return IProcessVariable.TYPE_ID;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public IProcessVariableAddress getPVAdress() {
+		return getCastedModel().getMainPvAdress();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	public void register(final ConnectionParameters parameters,
+			final ChannelListener listener) {
+		try {
+			SimpleDALBroker broker = getBroker();
+
+			if (broker != null) {
+				broker.registerListener(parameters, listener);
+			}
+		} catch (InstantiationException e) {
+			CentralLogger.getInstance().error(this, e);
+		} catch (CommonException e) {
+			CentralLogger.getInstance().error(this, e);
+		}
+	}
+
+	/**
+	 *{@inheritDoc}
+	 */
+	public void register(final WidgetProperty property,
+			final org.csstudio.sds.model.IPropertyChangeListener listener) {
+		property.addPropertyChangeListener(listener);
+		_outChannelListeners.put(property, listener);
+	}
+
+	/**
+	 * Returns a {@link SimpleDALBroker} instance. Those instance will be
+	 * display dependent. There will be 1 broker per display.
+	 * 
+	 * @return the {@link SimpleDALBroker}
+	 */
+	protected SimpleDALBroker getBroker() {
+		SimpleDALBroker broker = getRuntimeContext().getBroker();
+		return broker;
+	}
+
+	/**
+	 * Updates the figures enabled state. The figure is only enabled when the
+	 * current widget and all of its parents are enabled.
+	 * 
+	 * Additionally we disable all input widgets like sliders and buttons etc.
+	 * in edit mode.
+	 * 
+	 * @param f
+	 *            the figure that should be enabled or disabled
+	 */
+	protected void updateFigureEnablementState(final IFigure f) {
+		// when no figure is provided via parameter we query it
+		IFigure figure = f != null ? f : getFigure();
+		assert figure != null;
+
+		// in run mode the enable state depends on the widget and its parent
+		// widgets
+		boolean enabled = getWidgetModel().isEnabledRecursive();
+
+		// in edit mode some widgets (e.g. sliders and buttons) are generally
+		// disabled to prevent
+		// accidental execution of actions and to be able to drag their
+		// graphical representation
+		if (getExecutionMode() == ExecutionMode.EDIT_MODE) {
+			if (forceDisabledInEditMode()) {
+				enabled = false;
+			}
+		}
+
+		// update the figures state
+		figure.setEnabled(enabled);
+
+		// force all children to refresh their enable state, too
+		for (Object child : getChildren()) {
+			if (child instanceof AbstractBaseEditPart) {
+				((AbstractBaseEditPart) child)
+						.updateFigureEnablementState(null);
+			}
+		}
+	}
+
+	/**
+	 * Subclasses should override this method to specify if the figure for this
+	 * controller should be disabled in edit mode in general. Default return
+	 * value is false.
+	 * 
+	 * @return true if the figure for this controller should be disabled in edit
+	 *         mode in general, false otherwise
+	 */
+	protected boolean forceDisabledInEditMode() {
+		return false;
+	}
+
+	/**
+	 * Convenience method that returns the real color for the specified model
+	 * property (which has to be a color property!). This call does also resolve
+	 * color variables. Callers do not need to care about Color.dispose().
+	 * 
+	 * @param property
+	 *            the id of a color property
+	 * 
+	 * @return the color
+	 */
+	protected Color getModelColor(final String propertyId) {
+		String hexOrVariable = getCastedModel().getColor(propertyId);
+		return SdsUiPlugin.getDefault().getColorAndFontService().getColor(
+				hexOrVariable);
+	}
+
+	/**
+	 * Convenience method that returns the real font for the specified model
+	 * property (which has to be a font property!). This call does also resolve
+	 * font variables (see {@link IFontService}. Callers do not need to care
+	 * about Font.dispose().
+	 * 
+	 * @param property
+	 *            the id of a font property
+	 * 
+	 * @return the font
+	 */
+	protected Font getModelFont(final String propertyId) {
+		String font = getCastedModel().getFont(propertyId);
+		return SdsUiPlugin.getDefault().getColorAndFontService().getFont(font);
+	}
+
+	class PreferencesListener implements IPropertyChangeListener {
+		public void propertyChange(
+				final org.eclipse.jface.util.PropertyChangeEvent event) {
+			// .. handle preference that switches write access permissions for
+			// all open displays
+			if (PreferenceConstants.PROP_WRITE_ACCESS_DENIED.equals(event
+					.getProperty())) {
+				getCastedModel().setPropertyValue(
+						AbstractWidgetModel.PROP_WRITE_ACCESS_GRANTED,
+						!(Boolean) event.getNewValue());
+			}
+		}
+
+	}
+
+	/**
+	 * Convenience handler class for color properties.
+	 * 
+	 * @author Sven Wende
+	 * 
+	 * @param <F>
+	 *            the figure type
+	 */
+	public abstract class ColorChangeHander<F extends IFigure> implements
+			IWidgetPropertyChangeHandler {
+
+		public boolean handleChange(final Object oldValue,
+				final Object newValue, final IFigure refreshableFigure) {
+			assert newValue != null;
+			assert newValue instanceof String;
+			Color color = SdsUiPlugin.getDefault().getColorAndFontService()
+					.getColor((String) newValue);
+
+			if (color != null) {
+				doHandle((F) figure, color);
+			}
+
+			return true;
+		}
+
+		protected abstract void doHandle(F figure, Color color);
+	}
+
+	/**
+	 * Convenience handler class for font properties.
+	 * 
+	 * @author Sven Wende
+	 * 
+	 * @param <F>
+	 *            the figure type
+	 */
+	public abstract class FontChangeHander<F extends IFigure> implements
+			IWidgetPropertyChangeHandler {
+
+		public boolean handleChange(final Object oldValue,
+				final Object newValue, final IFigure refreshableFigure) {
+			assert newValue instanceof String;
+
+			Font font = SdsUiPlugin.getDefault().getColorAndFontService()
+					.getFont((String) newValue);
+
+			if (font != null) {
+				doHandle((F) figure, font);
+			}
+
+			return true;
+		}
+
+		protected abstract void doHandle(F figure, Font font);
+	}
 }

@@ -1,4 +1,4 @@
-var returns = "org.eclipse.swt.graphics.RGB";
+var compatibleProperties = "sds.color";
 var description = "Simple Color Rule";
 var parameters = new Array("An arbitrary PV");
 

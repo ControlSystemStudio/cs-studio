@@ -39,7 +39,7 @@ import org.eclipse.swt.widgets.Text;
  * Wizard page for the selection of import source files.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class ImportSourceSelectionWizardPage extends WizardPage {

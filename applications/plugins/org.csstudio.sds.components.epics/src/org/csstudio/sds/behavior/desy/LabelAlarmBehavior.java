@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: LabelAlarmBehavior.java,v 1.6 2010/07/23 08:40:58 hrickens Exp $
  */
 package org.csstudio.sds.behavior.desy;
 
@@ -34,8 +34,8 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link LabelModel} widget with Connection state and Alarms.
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 26.03.2010
  */
 public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {

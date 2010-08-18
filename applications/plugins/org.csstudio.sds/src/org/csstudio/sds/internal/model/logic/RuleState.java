@@ -23,56 +23,56 @@ package org.csstudio.sds.internal.model.logic;
 
 import java.util.HashMap;
 
-import org.csstudio.sds.internal.connection.ChannelReference;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 
 /**
  * RuleState information for the <code>RuleEngine</code>.
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.4 $
  * 
  */
 final class RuleState {
 	/**
 	 * References to all input channels.
 	 */
-	private ChannelReference[] _channelReferences;
+	private ParameterDescriptor[] _parameters;
 
 	/**
 	 * Contains the latest values for the input channels.
 	 */
-	private HashMap<ChannelReference, Object> _cachedValues;
+	private HashMap<ParameterDescriptor, Object> _cachedValues;
 
 	/**
 	 * Standard constructor.
 	 * 
-	 * @param references
+	 * @param parameters
 	 *            Parameter descriptions for the inialisation of this state
 	 *            object.
 	 */
-	public RuleState(final ChannelReference[] references) {
-		_channelReferences = references;
+	public RuleState(final ParameterDescriptor[] parameters) {
+		_parameters = parameters;
 
 		// prepare cache
-		_cachedValues = new HashMap<ChannelReference, Object>();
+		_cachedValues = new HashMap<ParameterDescriptor, Object>();
 
-		for (int i = 0; i < references.length; i++) {
-			_cachedValues.put(references[i], null);
+		for(ParameterDescriptor p : parameters) {
+			_cachedValues.put(p, p.getValue());
 		}
 	}
 
 	/**
 	 * Cache the latest value for a given channel name in this state.
 	 * 
-	 * @param reference
+	 * @param parameter
 	 *            A channel name.
 	 * @param value
-	 *            The lastest value from the given channel.
+	 *            The latest value from the given channel.
 	 */
-	public void cacheParameterValue(final ChannelReference reference,
+	public synchronized void cacheParameterValue(final ParameterDescriptor parameter,
 			final Object value) {
-		if (_cachedValues.containsKey(reference)) {
-			_cachedValues.put(reference, value);
+		if (_cachedValues.containsKey(parameter)) {
+			_cachedValues.put(parameter, value);
 		}
 	}
 
@@ -82,9 +82,9 @@ final class RuleState {
 	 * @return The most recent parameter values of this state.
 	 */
 	public Object[] getRecentParameterValues() {
-		Object[] result = new Object[_channelReferences.length];
-		for (int i = 0; i < _channelReferences.length; i++) {
-			result[i] = _cachedValues.get(_channelReferences[i]);
+		Object[] result = new Object[_parameters.length];
+		for (int i = 0; i < _parameters.length; i++) {
+			result[i] = _cachedValues.get(_parameters[i]);
 		}
 
 		return result;

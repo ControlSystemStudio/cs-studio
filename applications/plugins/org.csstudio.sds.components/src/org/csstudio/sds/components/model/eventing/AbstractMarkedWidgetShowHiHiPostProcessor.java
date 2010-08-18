@@ -43,8 +43,8 @@ import org.eclipse.gef.commands.Command;
  * TODO (hrickens) :
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 30.04.2010
  */
 public class AbstractMarkedWidgetShowHiHiPostProcessor extends AbstractWidgetPropertyPostProcessor<AbstractMarkedWidgetModel> {

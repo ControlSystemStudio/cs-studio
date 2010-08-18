@@ -27,7 +27,7 @@ import org.csstudio.sds.model.WidgetPropertyCategory;
  * This class defines a simple waverform widget model.
  *
  * @author Joerg Rathlev, Sven Wende, Kai Meyer
- * @version $Revision$
+ * @version $Revision: 1.35 $
  *
  */
 public final class WaveformModel extends AbstractChartModel {

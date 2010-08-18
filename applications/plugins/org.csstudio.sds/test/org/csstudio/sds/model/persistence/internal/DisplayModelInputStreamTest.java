@@ -1,26 +1,32 @@
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
 package org.csstudio.sds.model.persistence.internal;
 
-import static org.junit.Assert.assertTrue;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.csstudio.sds.internal.model.test.TestWidgetModel;
-import org.csstudio.sds.model.AbstractWidgetModel;
-import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.model.logic.DirectConnectionRule;
-import org.csstudio.sds.model.logic.ParameterDescriptor;
-import org.csstudio.sds.model.persistence.DisplayModelInputStream;
-import org.eclipse.swt.graphics.RGB;
-import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
-import org.junit.Test;
 
 /**
- * 
- * @version $Revision$
+ * TODO: test methode wurde entfernt ???
+ * @version $Revision: 1.14 $
  * 
  */
 public final class DisplayModelInputStreamTest {
@@ -29,10 +35,10 @@ public final class DisplayModelInputStreamTest {
 	 */
 	private static final String[] XML_CONTENTS = new String[] {
 			"<?xml version=\"1.0\" encoding=\"UTF-8\"?>", //$NON-NLS-1$
-			"<display modelVersion=\"1.0\">", //$NON-NLS-1$
+			"<display modelVersion=\"1.1\">", //$NON-NLS-1$
 			"<property type=\"sds.color\" id=\"color.background\">", //$NON-NLS-1$
-			"<color red=\"128\" green=\"0\" blue=\"255\" />", //$NON-NLS-1$
-			"<dynamicsDescriptor ruleId=\"directConnection\">", //$NON-NLS-1$
+			"<color hex=\"#8000FF\" />", //$NON-NLS-1$
+			"<dynamicsDescriptor ruleId=\"directConnection\" useConnectionStates=\"false\">", //$NON-NLS-1$
 			"<inputChannel name=\"channel1\" type=\"java.lang.Integer\" />", //$NON-NLS-1$
 			"<connectionState state=\"CONNECTED\" value=\"20\" />", //$NON-NLS-1$
 			"<dynamicValueState state=\"ALARM\" value=\"30\" />", //$NON-NLS-1$
@@ -45,7 +51,7 @@ public final class DisplayModelInputStreamTest {
 			"<mapEntry name=\"aliasName\" value=\"aliasValue\" />", //$NON-NLS-1$
 			"</map>", //$NON-NLS-1$
 			"<property type=\"sds.integer\" id=\"position.x\" value=\"10\">", //$NON-NLS-1$
-			"<dynamicsDescriptor ruleId=\"directConnection\">", //$NON-NLS-1$
+			"<dynamicsDescriptor ruleId=\"directConnection\" useConnectionStates=\"false\">", //$NON-NLS-1$
 			"<inputChannel name=\"channel2\" type=\"java.lang.Double\" />", //$NON-NLS-1$
 			"<connectionState state=\"CONNECTED\" value=\"20\" />", //$NON-NLS-1$
 			"<dynamicValueState state=\"ALARM\" value=\"30\" />", //$NON-NLS-1$
@@ -54,75 +60,19 @@ public final class DisplayModelInputStreamTest {
 			"</widget>", "</display>" }; //$NON-NLS-1$ //$NON-NLS-2$
 
 	/**
-	 * Test the display model input stream.
-	 */
-	@Test
-	public void testContentModel() {
-		DisplayModel model = new DisplayModel();
-		model.setPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				new RGB(128, 0, 255));
-		model.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND,
-				createDynamicsDescriptor(DirectConnectionRule.TYPE_ID,
-						"channel1", Integer.class)); //$NON-NLS-1$
-
-		AbstractWidgetModel widgetModel = new TestWidgetModel();
-		model.addWidget(widgetModel);
-
-		model.addAlias("aliasName", "aliasValue"); //$NON-NLS-1$ //$NON-NLS-2$
-
-		DynamicsDescriptor dynamicsDescriptor = createDynamicsDescriptor(
-				DirectConnectionRule.TYPE_ID, "channel2", Double.class); //$NON-NLS-1$
-
-		HashMap<ConnectionState, Object> connectionStateMap = new HashMap<ConnectionState, Object>();
-		connectionStateMap.put(ConnectionState.CONNECTED, new Integer(20));
-
-		HashMap<DynamicValueState, Object> dynamicValueStateMap = new HashMap<DynamicValueState, Object>();
-		dynamicValueStateMap.put(DynamicValueState.ALARM, new Integer(30));
-
-		dynamicsDescriptor
-				.setConnectionStateDependentPropertyValues(connectionStateMap);
-		dynamicsDescriptor
-				.setConditionStateDependentPropertyValues(dynamicValueStateMap);
-
-		widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_POS_X,
-				dynamicsDescriptor);
-
-		DisplayModelInputStream dmis = new DisplayModelInputStream(model);
-
-		List<Integer> intList = new ArrayList<Integer>();
-		while (dmis.available() > 0) {
-			intList.add(dmis.read());
-		}
-
-		byte[] byteArr = new byte[intList.size()];
-		for (int i = 0; i < intList.size(); i++) {
-			byteArr[i] = intList.get(i).byteValue();
-		}
-
-		String xmlString = new String(byteArr);
-
-		for (String s : XML_CONTENTS) {
-			assertTrue(s, xmlString.indexOf(s) > -1);
-		}
-	}
-
-	/**
 	 * Create a dynamics descriptor with the given parameters.
 	 * 
 	 * @param ruleId
 	 *            the used rule ID.
 	 * @param channelName
 	 *            the channel name.
-	 * @param channelType
-	 *            the channel type.
 	 * @return a dynamics descriptor with the given parameters.
 	 */
-	@SuppressWarnings("unchecked")
 	protected DynamicsDescriptor createDynamicsDescriptor(String ruleId,
-			String channelName, Class channelType) {
+			String channelName) {
 		DynamicsDescriptor result = new DynamicsDescriptor(ruleId);
 		ParameterDescriptor parameterDescr = new ParameterDescriptor(
-				channelName, channelType);
+				channelName);
 
 		result.addInputChannel(parameterDescr);
 

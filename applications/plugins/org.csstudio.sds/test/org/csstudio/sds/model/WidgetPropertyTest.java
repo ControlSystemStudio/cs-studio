@@ -23,16 +23,13 @@ package org.csstudio.sds.model;
 
 import static org.junit.Assert.assertEquals;
 
-import org.csstudio.sds.model.properties.ActionData;
-import org.csstudio.sds.model.properties.IPropertyChangeListener;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 import org.junit.Test;
 
 /**
  * Test case for class {@link WidgetProperty}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.7 $
  * 
  */
 public final class WidgetPropertyTest implements IPropertyChangeListener {
@@ -45,7 +42,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
 		DynamicsDescriptor dynamicsDescriptor = new DynamicsDescriptor();
 
 		String defaultValue = "default";
-		WidgetPropertyCategory category = WidgetPropertyCategory.Behaviour;
+		WidgetPropertyCategory category = WidgetPropertyCategory.BEHAVIOR;
 		String name = "description";
 		PropertyTypesEnum type = PropertyTypesEnum.STRING;
 
@@ -63,6 +60,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
 			 * {@inheritDoc}
 			 */
 			@Override
+			@SuppressWarnings("unchecked")
 			public Class[] getCompatibleJavaTypes() {
 				return new Class[] {Object.class };
 			}
@@ -91,7 +89,7 @@ public final class WidgetPropertyTest implements IPropertyChangeListener {
 	/**
 	 * {@inheritDoc}
 	 */
-	public void propertyManualValueChanged(final Object manualValue) {
+	public void propertyManualValueChanged(String propertyId, final Object manualValue) {
 
 	}
 

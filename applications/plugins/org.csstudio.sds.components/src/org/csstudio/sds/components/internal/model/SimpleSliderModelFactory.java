@@ -29,7 +29,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * This class defines a widget model factory for rectangle widget models.
  * 
  * @author Sven Wende & Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class SimpleSliderModelFactory implements IWidgetModelFactory {

@@ -24,22 +24,37 @@ package org.csstudio.sds.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.model.layers.LayerSupport;
+import org.csstudio.sds.internal.model.LayerSupport;
 import org.eclipse.core.runtime.IAdaptable;
 
 /**
  * @author Sven Wende
  * 
- * @version $Revision$
+ * @version $Revision: 1.27 $
  * 
  */
 public abstract class ContainerModel extends AbstractWidgetModel implements
 		IAdaptable {
 
 	/**
+	 * ID for <i>select child</i> events.
+	 */
+	public static final String PROP_CHILDREN_SELECTED = "PROP_CHILDREN_SELECTED";
+
+	/**
+	 * ID for <i>add children</i> events.
+	 */
+	public static final String PROP_CHILDREN_ADDED = "PROP_CHILDREN_ADDED"; //$NON-NLS-1$
+
+	/**
 	 * ID for <i>add child</i> events.
 	 */
 	public static final String PROP_CHILD_ADDED = "PROP_CHILD_ADDED"; //$NON-NLS-1$
+
+	/**
+	 * ID for <i>remove children</i> events.
+	 */
+	public static final String PROP_CHILDREN_REMOVED = "PROP_CHILDREN_REMOVED"; //$NON-NLS-1$
 
 	/**
 	 * ID for <i>remove child</i> events.
@@ -50,6 +65,13 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 * ID for <i>order changed</i> events.
 	 */
 	public static final String PROP_ORDER_CHANGED = "PROP_ORDER_CHANGED"; //$NON-NLS-1$
+
+	/**
+	 * Flag that indicates whether parent relationships of contained widgets
+	 * should be checked an maintained (is used to provide simple cloning
+	 * facility for the use in copy&paste function).
+	 */
+	private boolean _parentChecks = true;
 
 	/**
 	 * A list that contains all widgets.
@@ -67,25 +89,84 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	private boolean _loading = false;
 
 	/**
-	 * Encapsulats all layer information.
+	 * Encapsulates all layer information.
 	 */
 	private LayerSupport _layerSupport;
 
 	/**
 	 * Standard constructor.
-	 * Creates a not rotatable widget 
 	 */
 	public ContainerModel() {
-		this(false);
+		this(true, false);
 	}
-	
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param parentChecksEnabled
+	 *            true if this container should check and maintain parent
+	 *            relationships for contained widgets
+	 */
+	public ContainerModel(boolean parentChecksEnabled) {
+		this(parentChecksEnabled, false);
+	}
+
 	/**
 	 * Standard constructor.
-	 * @param isRotatable true if this widget is rotatable
+	 * 
+	 * @param parentChecksEnabled
+	 *            true if this container should check and maintain parent
+	 *            relationships for contained widgets
+	 * @param isRotatable
+	 *            true if this widget can be rotated
 	 */
-	public ContainerModel(final boolean isRotatable) {
+	public ContainerModel(boolean parentChecksEnabled, final boolean isRotatable) {
 		super(true);
 		_layerSupport = new LayerSupport(this);
+		_parentChecks = parentChecksEnabled;
+	}
+
+	/**
+	 * Adds multiple widgets to the container.
+	 * 
+	 * @param indices
+	 *            the indices for the added images
+	 * @param widget
+	 *            A widget model that is to be added.
+	 */
+	public void addWidgets(List<Integer> indices,
+			List<AbstractWidgetModel> widgets) {
+		// add all widgets
+		for (AbstractWidgetModel w : widgets) {
+			doAddWidget(_widgets.size(), w);
+		}
+
+		// adjust indices
+		for (int i = 0; i < indices.size(); i++) {
+			doChangeOrder(widgets.get(i), indices.get(i));
+		}
+
+		// fire a single event for all added widgets at once
+		firePropertyChangeEvent(PROP_CHILDREN_ADDED, null, widgets);
+
+	}
+
+	/**
+	 * Adds multiple widgets to the container.
+	 * 
+	 * @param widget
+	 *            A widget model that is to be added.
+	 */
+	public final void addWidgets(final List<AbstractWidgetModel> widgets) {
+		assert widgets != null;
+
+		// add all widgets
+		for (AbstractWidgetModel w : widgets) {
+			doAddWidget(_widgets.size(), w);
+		}
+
+		// fire a single event for all added widgets at once
+		firePropertyChangeEvent(PROP_CHILDREN_ADDED, null, widgets);
 	}
 
 	/**
@@ -96,24 +177,10 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 */
 	public final void addWidget(final AbstractWidgetModel widget) {
 		assert widget != null;
-		doAddWidget(_widgets.size(), widget, false);
-		widget.setLive(isLive());
+		doAddWidget(_widgets.size(), widget);
+		firePropertyChangeEvent(PROP_CHILD_ADDED, null, widget);
 	}
-	
-	/**
-	 * Add a widget model to the model.
-	 * 
-	 * @param widget
-	 *            A widget model that is to be added.
-	 * @param selectWidget
-	 * 			  Specifies if the {@link AbstractWidgetModel} should be selected
-	 */
-	public final void addWidget(final AbstractWidgetModel widget,final boolean selectWidget) {
-		assert widget != null;
-		doAddWidget(_widgets.size(), widget, selectWidget);
-		widget.setLive(isLive());
-	}
-	
+
 	/**
 	 * Add a widget model at the given index to the model.
 	 * 
@@ -127,55 +194,15 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 			final AbstractWidgetModel widget) {
 		assert index >= 0 : "Precondition violated: index >= 0"; //$NON-NLS-1$
 		assert index <= getWidgets().size() : "Precondition violated: index <= getWidgets().size()"; //$NON-NLS-1$
-
-		doAddWidget(index, widget, false);
-		widget.setLive(isLive());
+		doAddWidget(index, widget);
+		firePropertyChangeEvent(PROP_CHILD_ADDED, null, widget);
 	}
 
 	/**
-	 * Add a widget model at the given index to the model.
-	 * 
-	 * @param index
-	 *            The index where to insert the widget. Must be >= 0 and <=
-	 *            {@link #getWidgets()}.size()
-	 * @param widget
-	 *            A widget model that is to be added.
-	 * @param selectWidget
-	 * 			  Specifies if the {@link AbstractWidgetModel} should be selected
-	 */
-	public final void addWidget(final int index,
-			final AbstractWidgetModel widget, final boolean selectWidget) {
-		assert index >= 0 : "Precondition violated: index >= 0"; //$NON-NLS-1$
-		assert index <= getWidgets().size() : "Precondition violated: index <= getWidgets().size()"; //$NON-NLS-1$
-
-		doAddWidget(index, widget, selectWidget);
-		widget.setLive(isLive());
-	}
-
-	/**
-	 * @deprecated
-	 * @see #enableParentChecks()
-	 */
-	private boolean _parentChecks = true;
-
-	/**
-	 * FIXME: Dies ist bisher nur ein Workarround, damit Copy & Paste
-	 * funktioniert. Benötigt wird eine einfache, generische Möglichkeit,
-	 * Widgets zu clonen.
-	 * 
-	 * @deprecated
-	 * 
-	 */
-	public void enableParentChecks() {
-		_parentChecks = true;
-	}
-
-	/**
-	 * @deprecated
 	 * @see #enableParentChecks()
 	 */
 	public void disableParentChecks() {
-		_parentChecks = false;
+
 	}
 
 	/**
@@ -183,34 +210,28 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 * 
 	 * @param index
 	 *            the index
-	 * @param widgetModel
+	 * @param widget
 	 *            the widget model
 	 * @param selectWidget
-	 * 			  Specifies if the {@link AbstractWidgetModel} should be selected
+	 *            Specifies if the {@link AbstractWidgetModel} should be
+	 *            selected
 	 */
-	protected void doAddWidget(final int index,
-			final AbstractWidgetModel widgetModel, final boolean selectWidget) {
+	protected void doAddWidget(final int index, final AbstractWidgetModel widget) {
 		// check parent relationship
 		if (_parentChecks) {
-			if (widgetModel.getParent() != null) {
+			if (widget.getParent() != null) {
 				throw new RuntimeException(
 						"Widget already has another parent. Remove it from its parent first.");
 			} else {
-				widgetModel.setParent(this);
-			}
-		}
-		// add widget
-		_widgets.add(index, widgetModel);
-		
-		//check aliases
-		for (String key : this.getAliases().keySet()) {
-			if (!widgetModel.getAliases().containsKey(key)) {
-				widgetModel.addAlias(key, this.getAliases().get(key));
+				widget.setParent(this);
 			}
 		}
 
-		// fire events
-		fireCustomPropertyChangeEvent(PROP_CHILD_ADDED, widgetModel, new Boolean(selectWidget));
+		// add widget
+		_widgets.add(index, widget);
+
+		// inherit live state
+		widget.setLive(isLive());
 	}
 
 	/**
@@ -223,12 +244,35 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	}
 
 	/**
+	 * Remove widgets from the container.
+	 * 
+	 * @param widget
+	 *            The widget model that is to be removed.
+	 */
+	public final void removeWidgets(final List<AbstractWidgetModel> widgets) {
+		assert widgets != null;
+
+		// remove all widgets
+		for (AbstractWidgetModel w : widgets) {
+			doRemoveWidget(w);
+		}
+
+		// fire a single event for all removed widgets at once
+		firePropertyChangeEvent(PROP_CHILDREN_REMOVED, null, widgets);
+	}
+
+	/**
 	 * Remove a widget model from the model.
 	 * 
 	 * @param widget
 	 *            The widget model that is to be removed.
 	 */
 	public final void removeWidget(final AbstractWidgetModel widget) {
+		doRemoveWidget(widget);
+		firePropertyChangeEvent(PROP_CHILD_REMOVED, widget, null);
+	}
+
+	private void doRemoveWidget(final AbstractWidgetModel widget) {
 		// check parent relationship
 		if (_parentChecks) {
 			if (widget.getParent() != this) {
@@ -239,8 +283,6 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 		}
 		// remove
 		_widgets.remove(widget);
-		// fire events
-		firePropertyChangeEvent(PROP_CHILD_REMOVED, widget, null);
 	}
 
 	/**
@@ -254,25 +296,25 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	public final int getIndexOf(final AbstractWidgetModel widget) {
 		return _widgets.indexOf(widget);
 	}
-	
+
 	public final int getPreviousLayerIndex(final AbstractWidgetModel widget) {
-		int startIndex = this.getIndexOf(widget)-1;
-		for (int i = startIndex;i>=0;i--) {
+		int startIndex = this.getIndexOf(widget) - 1;
+		for (int i = startIndex; i >= 0; i--) {
 			if (_widgets.get(i).getLayer().equals(widget.getLayer())) {
 				return i;
 			}
 		}
 		return 0;
 	}
-	
+
 	public final int getNextLayerIndex(final AbstractWidgetModel widget) {
-		int startIndex = this.getIndexOf(widget)+1;
-		for (int i = startIndex;i<_widgets.size();i++) {
+		int startIndex = this.getIndexOf(widget) + 1;
+		for (int i = startIndex; i < _widgets.size(); i++) {
 			if (_widgets.get(i).getLayer().equals(widget.getLayer())) {
 				return i;
 			}
 		}
-		return _widgets.size()-1;
+		return _widgets.size() - 1;
 	}
 
 	/**
@@ -319,7 +361,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 * @return int The index for the front
 	 */
 	public final int getFrontIndex(final AbstractWidgetModel child) {
-		for (int i = _widgets.size()-1;i>=0;i--) {
+		for (int i = _widgets.size() - 1; i >= 0; i--) {
 			AbstractWidgetModel widgetModel = _widgets.get(i);
 			if (widgetModel.getLayer().equals(child.getLayer())) {
 				return i;
@@ -334,7 +376,7 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 * @return int The index for the back
 	 */
 	public final int getBackIndex(final AbstractWidgetModel child) {
-		for (int i=0;i<_widgets.size();i++) {
+		for (int i = 0; i < _widgets.size(); i++) {
 			if (_widgets.get(i).getLayer().equals(child.getLayer())) {
 				return i;
 			}
@@ -352,6 +394,12 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	 */
 	public final void changeOrder(final AbstractWidgetModel child,
 			final int newIndex) {
+		doChangeOrder(child, newIndex);
+		firePropertyChangeEvent(PROP_ORDER_CHANGED, null, null);
+	}
+
+	private void doChangeOrder(final AbstractWidgetModel child,
+			final int newIndex) {
 		if (_widgets.contains(child) && newIndex >= 0
 				&& newIndex < _widgets.size()) {
 			int oldLength = _widgets.size();
@@ -362,7 +410,6 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 			_widgets.add(newIndex, child);
 
 			assert oldLength == _widgets.size() : "List is corrupted";
-			firePropertyChangeEvent(PROP_ORDER_CHANGED, null, null);
 		}
 	}
 
@@ -376,4 +423,15 @@ public abstract class ContainerModel extends AbstractWidgetModel implements
 	public final LayerSupport getLayerSupport() {
 		return _layerSupport;
 	}
+
+	/**
+	 * Selects the specified widgets.
+	 * 
+	 * @param widgetModel
+	 *            the widget
+	 */
+	public void selectWidgets(List<AbstractWidgetModel> widgets) {
+		firePropertyChangeEvent(PROP_CHILDREN_SELECTED, null, widgets);
+	}
+
 }

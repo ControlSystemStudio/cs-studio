@@ -33,8 +33,8 @@ import org.epics.css.dal.simple.Severity;
  * Default DESY-Behavior for the {@link BargraphModel} widget with Connection state and Alarms.
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 20.04.2010
  */
 public class BargraphAlarmBehavior extends AbstractDesyAlarmBehavior<BargraphModel> {

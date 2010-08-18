@@ -23,13 +23,12 @@ package org.csstudio.sds.internal.model.test;
 
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.WidgetPropertyCategory;
-import org.csstudio.sds.model.properties.DoubleProperty;
 
 /**
  * Simple instantiatable widget model for testing.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.6 $
  * 
  */
 public final class TestWidgetModel extends AbstractWidgetModel {
@@ -43,7 +42,7 @@ public final class TestWidgetModel extends AbstractWidgetModel {
 	 */
 	@Override
 	protected void configureProperties() {
-		addProperty(PROP_TEST, new DoubleProperty("Test Property", WidgetPropertyCategory.Behaviour, 1.0)); //$NON-NLS-1$
+		addDoubleProperty(PROP_TEST, "Test Property", WidgetPropertyCategory.BEHAVIOR, 1.0, false); //$NON-NLS-1$
 	}
 
 	/**

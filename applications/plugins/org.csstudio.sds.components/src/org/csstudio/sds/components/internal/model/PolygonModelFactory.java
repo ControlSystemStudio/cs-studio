@@ -31,7 +31,7 @@ import org.eclipse.draw2d.geometry.PointList;
  * 
  * @author Sven Wende
  * 
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class PolygonModelFactory implements IWidgetModelFactory {

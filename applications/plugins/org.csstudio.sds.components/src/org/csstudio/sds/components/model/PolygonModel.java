@@ -27,7 +27,7 @@ package org.csstudio.sds.components.model;
  * A polygon widget model.
  * 
  * @author Sven Wende, Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class PolygonModel extends AbstractPolyModel {

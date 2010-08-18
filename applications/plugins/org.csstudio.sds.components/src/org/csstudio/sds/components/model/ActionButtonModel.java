@@ -35,7 +35,7 @@ import org.csstudio.sds.util.ColorAndFontUtil;
  * An action button widget model.
  *
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.46 $
  *
  */
 public final class ActionButtonModel extends AbstractTextTypeWidgetModel {

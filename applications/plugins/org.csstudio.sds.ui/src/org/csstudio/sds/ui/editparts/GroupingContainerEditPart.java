@@ -22,12 +22,12 @@ import org.eclipse.draw2d.geometry.Rectangle;
  * LogicEditParts.
  */
 public final class GroupingContainerEditPart extends AbstractContainerEditPart {
-	
+
 	/**
 	 * The previously set angle.
 	 */
 	private double _previousRotationAngle = 0.0;
-	
+
 	/**
 	 * {@inheritDoc}
 	 */
@@ -44,7 +44,7 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 			}
 		};
 		setPropertyChangeHandler(GroupingContainerModel.PROP_TRANSPARENT, transparentHandler);
-		
+
 		// Rotation
 		IWidgetPropertyChangeHandler rotationHandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
@@ -56,7 +56,7 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 		};
 		setPropertyChangeHandler(GroupingContainerModel.PROP_ROTATION, rotationHandler);
 	}
-	
+
 	/**
 	 * Rotates all children.
 	 * @param angle the angle to rotate
@@ -67,17 +67,17 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 		for (Object obj : this.getChildren()) {
 			if (obj instanceof AbstractBaseEditPart) {
 				AbstractBaseEditPart editPart = (AbstractBaseEditPart) obj;
-				
+
 				Rectangle childBounds = editPart.getFigure().getBounds();
 				Point point = childBounds.getCenter();
 				Rectangle groupBounds = this.getFigure().getBounds();
 				Point center = groupBounds.getCenter();
 				Point rotationPoint = new Point(center.x-groupBounds.x, center.y-groupBounds.y);
-				
+
 				Point rotatedPoint = RotationUtil.rotate(point, trueAngle, rotationPoint);
-				
+
 				editPart.getCastedModel().setLocation(rotatedPoint.x-childBounds.width/2, rotatedPoint.y-childBounds.height/2);
-				
+
 				if (editPart.getCastedModel().isRotatable()) {
 					//rotate children if it is rotatable
 					editPart.getCastedModel().setRotationAngle(angle);

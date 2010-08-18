@@ -29,8 +29,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * Model factory for {@link GroupingContainerModel}.
  * 
  * @author Sven Wende
- * @version $Revision$
- * 
+ * @version $Revision: 1.2 $
  */
 public final class GroupingContainerModelFactory implements IWidgetModelFactory {
 	/**
@@ -43,6 +42,7 @@ public final class GroupingContainerModelFactory implements IWidgetModelFactory 
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Class getWidgetModelType() {
 		return GroupingContainerModel.class;
 	}

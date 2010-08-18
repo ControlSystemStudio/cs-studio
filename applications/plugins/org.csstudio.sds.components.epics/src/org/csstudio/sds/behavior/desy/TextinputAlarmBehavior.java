@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: TextinputAlarmBehavior.java,v 1.6 2010/07/23 08:40:59 hrickens Exp $
  */
 package org.csstudio.sds.behavior.desy;
 
@@ -31,8 +31,8 @@ import org.epics.css.dal.simple.MetaData;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 26.03.2010
  */
 public class TextinputAlarmBehavior extends AbstractDesyAlarmBehavior<TextInputModel> {

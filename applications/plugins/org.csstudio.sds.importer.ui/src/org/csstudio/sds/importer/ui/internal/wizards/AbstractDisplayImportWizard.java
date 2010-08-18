@@ -38,7 +38,7 @@ import org.eclipse.ui.IWorkbench;
  * Abstract super class for display import wizards.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public abstract class AbstractDisplayImportWizard extends Wizard implements

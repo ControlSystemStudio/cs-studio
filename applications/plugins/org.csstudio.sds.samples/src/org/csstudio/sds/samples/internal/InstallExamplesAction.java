@@ -1,29 +1,28 @@
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.samples.internal;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.HashMap;
@@ -46,20 +45,17 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IInputValidator;
-import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.cheatsheets.ICheatSheetAction;
 import org.eclipse.ui.cheatsheets.ICheatSheetManager;
-import org.eclipse.ui.progress.UIJob;
 
-public class InstallExamplesAction extends Action implements ICheatSheetAction,
-		IWorkbenchWindowActionDelegate {
+public class InstallExamplesAction extends Action implements ICheatSheetAction, IWorkbenchWindowActionDelegate {
 
-	public void run(String[] params, ICheatSheetManager manager) {
+	public void run(final String[] params, final ICheatSheetManager manager) {
 		run(null);
 	}
 
@@ -67,48 +63,48 @@ public class InstallExamplesAction extends Action implements ICheatSheetAction,
 
 	}
 
-	public void init(IWorkbenchWindow window) {
+	public void init(final IWorkbenchWindow window) {
 
 	}
 
-	public void run(IAction action) {
+	public void run(final IAction action) {
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 
-		final InputDialog dialog = new InputDialog(PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getShell(), "Where?",
-				"Where should the sample files be stored?", "SDS Demo Display",
-				new IInputValidator() {
-					public String isValid(String newText) {
-						String result = null;
-						if (root.getProject(newText).exists()) {
-							result = "Project already exists!";
-						}
+		final String projectName = "SDS Demo Display";
+		final IProject project = root.getProject(projectName);
+		boolean install = !project.exists();
+		if (!install) {
+			install = MessageDialog.openConfirm(new Shell(), "Project exists", "Project already exists!\r\nOverride?");
+//			if (install) {
+//				try {
+//					project.create(new NullProgressMonitor());
+//				} catch (CoreException e) {
+//					e.printStackTrace();
+//				}
+//			}
+		}
 
-						return result;
-					}
-
-				});
-
-		int returnValue = dialog.open();
-
-		if (returnValue == InputDialog.OK) {
+		if (install) {
 
 			Job job = new Job("Import SDS Sample Displays") {
 
+				@SuppressWarnings("unchecked")
 				@Override
-				protected IStatus run(IProgressMonitor monitor) {
+				protected IStatus run(final IProgressMonitor monitor) {
 					try {
 						// copy the sample displays
-						IProject project = root.getProject(dialog.getValue());
-						project.create(new NullProgressMonitor());
-						project.open(new NullProgressMonitor());
-						URL url = FileLocator.find(Activator.getDefault()
-								.getBundle(), new Path("demoDisplays"),
-								new HashMap());
+						if (!project.exists()) {
+							project.create(monitor);
+						}
+
+						if (!project.isOpen()) {
+							project.open(new NullProgressMonitor());
+						}
+
+						URL url = FileLocator.find(Activator.getDefault().getBundle(), new Path("demoDisplays"), new HashMap());
 
 						try {
-							File directory = new File(FileLocator
-									.toFileURL(url).getPath());
+							File directory = new File(FileLocator.toFileURL(url).getPath());
 							if (directory.isDirectory()) {
 								File[] files = directory.listFiles();
 								monitor.beginTask("Copying Samples", count(files));
@@ -118,9 +114,12 @@ public class InstallExamplesAction extends Action implements ICheatSheetAction,
 							e.printStackTrace();
 						}
 
-						// TODO: 2008-10-07: Kopieren von Scripted Rules einbauen, die in den Sample-Displays benötigt werden!!
-						
+						// TODO: 2008-10-07: Kopieren von Scripted Rules
+						// einbauen, die in den Sample-Displays benötigt
+						// werden!!
+
 					} catch (CoreException e) {
+						e.printStackTrace();
 					}
 
 					return Status.OK_STATUS;
@@ -132,27 +131,25 @@ public class InstallExamplesAction extends Action implements ICheatSheetAction,
 		}
 	}
 
-	private int count(File[] files) {
+	private int count(final File[] files) {
 		int result = 0;
 		for (File file : files) {
 			if (file.isDirectory()) {
-				result+=count(file.listFiles());
+				result += count(file.listFiles());
 			} else {
 				result++;
 			}
 		}
-		
+
 		return result;
 	}
 
-	private void copy(File[] files, IContainer container,
-			IProgressMonitor monitor) {
+	private void copy(final File[] files, final IContainer container, final IProgressMonitor monitor) {
 		try {
 			for (File file : files) {
 				monitor.subTask("Copying " + file.getName());
 				if (file.isDirectory()) {
-					IFolder folder = container.getFolder(new Path(file
-							.getName()));
+					IFolder folder = container.getFolder(new Path(file.getName()));
 
 					if (!folder.exists()) {
 						folder.create(true, true, null);
@@ -161,20 +158,18 @@ public class InstallExamplesAction extends Action implements ICheatSheetAction,
 				} else {
 					IFile pFile = container.getFile(new Path(file.getName()));
 					if (!pFile.exists()) {
-						pFile.create(new FileInputStream(file), true,
-								new NullProgressMonitor());
+						pFile.create(new FileInputStream(file), true, new NullProgressMonitor());
 					}
 					monitor.internalWorked(1);
 				}
 
-				
 			}
 		} catch (Exception e) {
 			CentralLogger.getInstance().error(null, e);
 		}
 	}
 
-	public void selectionChanged(IAction action, ISelection selection) {
+	public void selectionChanged(final IAction action, final ISelection selection) {
 
 	}
 }

@@ -35,7 +35,7 @@ import org.junit.Test;
  * Test case for class {@link DisplayModel}.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class DisplayModelTest {

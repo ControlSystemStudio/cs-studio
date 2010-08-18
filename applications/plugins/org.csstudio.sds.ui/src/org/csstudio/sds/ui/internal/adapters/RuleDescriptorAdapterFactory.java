@@ -21,9 +21,9 @@
  */
 package org.csstudio.sds.ui.internal.adapters;
 
-import org.csstudio.sds.model.logic.RuleDescriptor;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.internal.rules.RuleDescriptor;
 import org.csstudio.sds.ui.SdsUiPlugin;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;

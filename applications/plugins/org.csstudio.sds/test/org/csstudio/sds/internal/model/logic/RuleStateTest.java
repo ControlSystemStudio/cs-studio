@@ -24,7 +24,7 @@ package org.csstudio.sds.internal.model.logic;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-import org.csstudio.sds.internal.connection.ChannelReference;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -32,7 +32,7 @@ import org.junit.Test;
  * Test case for class {@link org.csstudio.sds.internal.model.logic.RuleState}.
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public final class RuleStateTest {
@@ -40,12 +40,12 @@ public final class RuleStateTest {
 	/**
 	 * A test channel reference.
 	 */
-	private ChannelReference _channelReference1;
+	private ParameterDescriptor _channelReference1;
 
 	/**
 	 * A test channel reference.
 	 */
-	private ChannelReference _channelReference2;
+	private ParameterDescriptor _channelReference2;
 
 	/**
 	 * A test rule state.
@@ -56,10 +56,10 @@ public final class RuleStateTest {
 	 */
 	@Before
 	public void setUp() {
-		_channelReference1 = new ChannelReference("channel1", Double.class); //$NON-NLS-1$
-		_channelReference2 = new ChannelReference("channel2", Double.class); //$NON-NLS-1$
+		_channelReference1 = new ParameterDescriptor("channel1", "1.0"); //$NON-NLS-1$
+		_channelReference2 = new ParameterDescriptor("channel2", "aa"); //$NON-NLS-1$
 
-		_state = new RuleState(new ChannelReference[] { _channelReference1,
+		_state = new RuleState(new ParameterDescriptor[] { _channelReference1,
 				_channelReference2 });
 	}
 
@@ -72,8 +72,10 @@ public final class RuleStateTest {
 		Object[] recentValues = _state.getRecentParameterValues();
 
 		assertEquals(2, recentValues.length);
-		assertNull(recentValues[0]);
-		assertNull(recentValues[1]);
+		assertEquals("1.0", recentValues[0]);
+		assertEquals("aa", recentValues[1]);
+//		assertNull(recentValues[0]);
+//		assertNull(recentValues[1]);
 
 		// update value 1
 		Object value1 = new Object();
@@ -84,7 +86,8 @@ public final class RuleStateTest {
 
 		assertEquals(2, recentValues.length);
 		assertEquals(value1, recentValues[0]);
-		assertNull(recentValues[1]);
+		assertEquals("aa", recentValues[1]);
+//		assertNull(recentValues[1]);
 
 		// update value 2
 		Object value2 = new Object();

@@ -51,7 +51,7 @@ import org.eclipse.swt.graphics.Color;
  * A slider figure.
  *
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.30 $
  *
  */
 public final class SimpleSliderFigure extends Panel implements IAdaptable {
@@ -581,7 +581,7 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
      * Definition of listeners that react on slider events.
      *
      * @author Sven Wende
-     * @version $Revision$
+     * @version $Revision: 1.30 $
      *
      */
     public interface ISliderListener {
@@ -599,8 +599,8 @@ public final class SimpleSliderFigure extends Panel implements IAdaptable {
      * A Scrollbar how can disable separately the Buttons
      *
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: jhatje $
+     * @version $Revision: 1.30 $
      * @since 16.04.2010
      */
     private class MyScrollBar extends ScrollBar{

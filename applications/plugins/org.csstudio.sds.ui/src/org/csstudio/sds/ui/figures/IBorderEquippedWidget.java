@@ -27,7 +27,7 @@ import org.eclipse.swt.graphics.Color;
  * A definition of widgets that have a border that provide a border.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public interface IBorderEquippedWidget {

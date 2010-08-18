@@ -28,8 +28,8 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link ActionButtonModel} widget with Connection state.
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 21.04.2010
  */
 public class ActionButtonBehavior extends AbstractDesyConnectionBehavior<ActionButtonModel> {

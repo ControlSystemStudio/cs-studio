@@ -30,7 +30,7 @@ import org.eclipse.core.runtime.Path;
  * This class defines a timer widget model.
  *
  * @author Kai Meyer
- * @version $Revision$
+ * @version $Revision: 1.13 $
  *
  */
 public final class TimerModel extends AbstractWidgetModel {

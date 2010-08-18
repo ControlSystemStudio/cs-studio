@@ -29,7 +29,7 @@ import org.csstudio.sds.model.IWidgetModelFactory;
  * A widget model factory for {@link TextInputModel}.
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.3 $
  */
 public final class TextInputModelFactory implements IWidgetModelFactory {
 

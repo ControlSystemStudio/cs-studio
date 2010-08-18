@@ -27,8 +27,8 @@ import org.eclipse.ui.IWorkbenchPart;
 /**
  *
  * @author Kai Meyer
- * @author $Author$
- * @version $Revision$
+ * @author $Author: jhatje $
+ * @version $Revision: 1.5 $
  * @since 15.04.2010
  */
 public class SimpleSliderIncrementAction extends Action implements IObjectActionDelegate {
@@ -103,8 +103,8 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
      * A Input Dialog that have four buttons to set most wanted values.
      *
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: jhatje $
+     * @version $Revision: 1.5 $
      * @since 15.04.2010
      */
     private final class IncInputDialog extends InputDialog {
@@ -163,8 +163,8 @@ public class SimpleSliderIncrementAction extends Action implements IObjectAction
      *  This listener set the given value, on a selection, to the Text.
      *
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: jhatje $
+     * @version $Revision: 1.5 $
      * @since 15.04.2010
      */
     private class IncSelectionListener implements SelectionListener {

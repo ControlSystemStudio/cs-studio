@@ -108,7 +108,7 @@ public class NodeTest {
 
     @BeforeClass
     public static void setUp() {
-        Repository.injectIRepository(new HibernateReposetory());
+        Repository.injectIRepository(new HibernateRepository());
 
         Configuration cfg = new AnnotationConfiguration()
                 //.addPackage("org.csstudio.config.ioconfig.model")

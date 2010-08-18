@@ -17,7 +17,7 @@
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: StripChartBehavior.java,v 1.3 2010/04/20 07:13:43 hrickens Exp $
  */
 package org.csstudio.sds.behavior.desy;
 
@@ -26,8 +26,8 @@ import org.epics.css.dal.simple.MetaData;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 26.03.2010
  */
 public class StripChartBehavior extends AbstractDesyConnectionBehavior<StripChartModel> {

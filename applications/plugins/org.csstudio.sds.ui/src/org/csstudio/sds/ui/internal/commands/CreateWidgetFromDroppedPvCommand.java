@@ -21,20 +21,17 @@
  */
 package org.csstudio.sds.ui.internal.commands;
 
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
-import org.csstudio.platform.model.pvs.IProcessVariableAddress;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.ContainerModel;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.sds.ui.internal.editor.AliasInitializationDialog;
 import org.csstudio.sds.ui.internal.editor.DropPvRequest;
 import org.csstudio.sds.ui.internal.editor.WidgetCreationFactory;
-import org.csstudio.sds.util.CustomMediaFactory;
+import org.eclipse.gef.EditPartViewer;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CompoundCommand;
 import org.eclipse.jface.dialogs.IDialogConstants;
@@ -69,7 +66,9 @@ public final class CreateWidgetFromDroppedPvCommand extends Command {
 	/**
 	 * The internal {@link CompoundCommand}.
 	 */
-	private Command _compoundCommand;
+	private CompoundCommand _compoundCommand;
+	
+	private EditPartViewer _viewer;
 
 	/**
 	 * Constructor.
@@ -79,11 +78,13 @@ public final class CreateWidgetFromDroppedPvCommand extends Command {
 	 * @param containerModel
 	 *            The DisplayModel for the new Widget
 	 */
-	public CreateWidgetFromDroppedPvCommand(final DropPvRequest request,
+	public CreateWidgetFromDroppedPvCommand(EditPartViewer viewer, final DropPvRequest request,
 			final ContainerModel containerModel) {
+		assert viewer!=null;
 		assert request != null;
 		assert containerModel != null;
 		this.setLabel("Drop Widget");
+		_viewer = viewer;
 		_containerModel = containerModel;
 		_dropPvRequest = request;
 	}
@@ -115,8 +116,14 @@ public final class CreateWidgetFromDroppedPvCommand extends Command {
 					.getActiveLayer().getId());
 
 			// create compound command, which can be undone
-			_compoundCommand = new AddWidgetCommand(_containerModel,
-					widgetModel);
+			_compoundCommand = new CompoundCommand();
+			
+			// add widget
+			_compoundCommand.add(new AddWidgetCommand(_containerModel,
+					widgetModel));
+
+			_compoundCommand.add(new SetSelectionCommand(_viewer,
+					widgetModel));
 
 			// execute the command
 			_compoundCommand.execute();
@@ -129,23 +136,6 @@ public final class CreateWidgetFromDroppedPvCommand extends Command {
 	@Override
 	public void redo() {
 		_compoundCommand.execute();
-	}
-
-	private Map<String, String> determineAliases(String droppedString) {
-		Map<String, String> result = null;
-
-		// pop up the alias dialog
-		Map<String, String> initialAliases = new HashMap<String, String>();
-		initialAliases.put("channel", droppedString);
-
-		// 
-		AliasInitializationDialog dialog = new AliasInitializationDialog(
-				Display.getCurrent().getActiveShell(), initialAliases);
-		if (dialog.open() == Window.OK) {
-			result = dialog.getAliasDescriptors();
-		}
-
-		return result;
 	}
 
 	private String determineWidgetType() {
@@ -245,7 +235,7 @@ public final class CreateWidgetFromDroppedPvCommand extends Command {
 		 */
 		private void createRadioButtons(final Composite parent) {
 			Set<String> widgetTypes = WidgetModelFactoryService.getInstance()
-					.getWidgetTypes();
+					.getUsedWidgetTypes();
 			for (String widgetId : widgetTypes) {
 				Button button = new Button(parent, SWT.RADIO);
 				button.setText(WidgetModelFactoryService.getInstance().getName(

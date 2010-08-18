@@ -30,7 +30,7 @@ import org.eclipse.draw2d.geometry.PointList;
  * Model widget model factory for polyline widget models.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class PolylineModelFactory implements IWidgetModelFactory {

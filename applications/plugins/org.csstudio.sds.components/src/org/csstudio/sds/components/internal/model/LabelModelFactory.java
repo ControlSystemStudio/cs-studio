@@ -30,7 +30,7 @@ import org.csstudio.sds.model.LabelModel;
  * A widget model factory for {@link LabelModel}. 
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.3 $
  */
 public final class LabelModelFactory implements IWidgetModelFactory {
 	

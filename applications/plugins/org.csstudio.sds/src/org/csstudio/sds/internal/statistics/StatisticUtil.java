@@ -27,7 +27,7 @@ import java.util.HashMap;
  * Utility for the statistical analysis of SDS performance.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.2 $
  */
 public final class StatisticUtil {
 

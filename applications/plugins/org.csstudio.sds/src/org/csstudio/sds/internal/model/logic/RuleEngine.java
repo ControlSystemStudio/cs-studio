@@ -21,10 +21,8 @@
  */
 package org.csstudio.sds.internal.model.logic;
 
-import org.csstudio.sds.internal.connection.ChannelReference;
-import org.csstudio.sds.internal.statistics.MeasureCategoriesEnum;
-import org.csstudio.sds.internal.statistics.TimeTrackedRunnable;
-import org.csstudio.sds.model.logic.IRule;
+import org.csstudio.sds.internal.rules.ParameterDescriptor;
+import org.csstudio.sds.model.IRule;
 
 /**
  * A rule engine processes a single rule.
@@ -35,7 +33,7 @@ import org.csstudio.sds.model.logic.IRule;
  * of a rule engine.
  * 
  * @author Alexander Will & Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.10 $
  * 
  */
 public final class RuleEngine {
@@ -59,12 +57,12 @@ public final class RuleEngine {
 	 *            references to all input channels, the rule relies on
 	 */
 	public RuleEngine(final IRule rule,
-			final ChannelReference[] channelReferences) {
+			final ParameterDescriptor[] parameters) {
 		assert rule != null;
-		assert channelReferences != null;
+		assert parameters != null;
 
 		_rule = rule;
-		_state = new RuleState(channelReferences);
+		_state = new RuleState(parameters);
 	}
 
 	/**
@@ -72,7 +70,7 @@ public final class RuleEngine {
 	 * based on the latest input values for all input channels, which have been
 	 * cached in a state object.
 	 * 
-	 * @param channelReference
+	 * @param parameter
 	 *            a channel reference for the channel which delivered a new
 	 *            value
 	 * @param newValue
@@ -81,9 +79,9 @@ public final class RuleEngine {
 	 * @return the result of the rule
 	 */
 	public synchronized Object processRule(
-			final ChannelReference channelReference, final Object newValue) {
+			final ParameterDescriptor parameter, final Object newValue) {
 		// cache the new value
-		_state.cacheParameterValue(channelReference, newValue);
+		_state.cacheParameterValue(parameter, newValue);
 
 		// get all cached values
 		Object[] values = _state.getRecentParameterValues();
@@ -95,32 +93,15 @@ public final class RuleEngine {
 	}
 
 	/**
-	 * Simple wrapper class (needed for the performance tracking).
+	 * Cache the constant value for a given channel name.
 	 * 
-	 * @author Sven Wende
-	 * @version $Revision$
+	 * @param parameter
+	 *            A channel name.
+	 * @param value
+	 *            The constant value from the given channel.
 	 */
-	final class Wrapper {
-		/**
-		 * Value.
-		 */
-		private Object _value;
-
-		/**
-		 * @return Gets the value.
-		 */
-		public Object getValue() {
-			return _value;
-		}
-
-		/**
-		 * Sets the value.
-		 * 
-		 * @param value
-		 *            the value
-		 */
-		public void setValue(final Object value) {
-			_value = value;
-		}
+	public synchronized void cacheConstantValue(final ParameterDescriptor parameter, final Object value) {
+		_state.cacheParameterValue(parameter, value);
 	}
+
 }

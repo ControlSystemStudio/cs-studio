@@ -27,9 +27,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.csstudio.platform.simpledal.ConnectionState;
 import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.sds.model.DynamicsDescriptor;
+import org.csstudio.sds.model.initializers.WidgetInitializationService;
 import org.csstudio.sds.ui.internal.dynamicswizard.SimpleChannelPage;
+import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
@@ -59,7 +62,6 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.context.ConnectionState;
 
 /**
  * A wizard, which enables users to configure dynamic settings for a property.
@@ -67,15 +69,10 @@ import org.epics.css.dal.context.ConnectionState;
  * to properties.
  * 
  * @author Sven Wende, Stefan Hofer, Kai Meyer
- * @version $Revision$
+ * @version $Revision: 1.55 $
  * 
  */
 public final class DynamicAspectsWizard extends Wizard {
-
-	/**
-	 * The property sheet entry, whose dynamics descriptor is currently edited.
-	 */
-	private IPropertySheetEntry _propertySheetEntry;
 
 	/**
 	 * The dynamics descriptor that is edited.
@@ -101,6 +98,8 @@ public final class DynamicAspectsWizard extends Wizard {
 	 */
 	private StatePage _statePage;
 
+	private Object _initValue;
+	
 	/**
 	 * Constructs a dynamic aspects wizard for the specified property sheet
 	 * entry.
@@ -114,32 +113,14 @@ public final class DynamicAspectsWizard extends Wizard {
 	 * @param propertyDescriptor
 	 *            The Descriptor for the property
 	 */
-	public DynamicAspectsWizard(final IPropertySheetEntry entry,
-			final DynamicsDescriptor dynamicsDescriptor,
-			final Map<String, String> aliasNames,
-			final IPropertyDescriptor propertyDescriptor) {
+	public DynamicAspectsWizard(final DynamicsDescriptor dynamicsDescriptor, final Map<String, String> aliasNames,
+			final IPropertyDescriptor propertyDescriptor, Object currentValue) {
 
-		assert entry != null;
 		assert aliasNames != null;
-		_propertySheetEntry = entry;
 		_aliases = aliasNames;
+		_initValue = currentValue;
 		_propertyDescriptor = propertyDescriptor;
-		configureDynamicDescriptor(dynamicsDescriptor);
-	}
-
-	/**
-	 * Configures the given DynamicDescriptor.
-	 * 
-	 * @param dynamicsDescriptor
-	 *            The DynamicDescriptor for this wizard
-	 */
-	public void configureDynamicDescriptor(
-			final DynamicsDescriptor dynamicsDescriptor) {
-		if (dynamicsDescriptor != null) {
-			_dynamicsDescriptor = dynamicsDescriptor.clone();
-		} else {
-			_dynamicsDescriptor = new DynamicsDescriptor();
-		}
+		_dynamicsDescriptor = dynamicsDescriptor != null ? dynamicsDescriptor.clone() : new DynamicsDescriptor();
 	}
 
 	/**
@@ -147,13 +128,19 @@ public final class DynamicAspectsWizard extends Wizard {
 	 */
 	@Override
 	public boolean performFinish() {
-		DynamicsDescriptor descriptor = new DynamicsDescriptor();
-		
-		_simpleChannelPage.performFinish(descriptor);
-		_statePage.performFinish(descriptor);
-		
-		_propertySheetEntry.applyDynamicsDescriptor(descriptor);
+		_dynamicsDescriptor = new DynamicsDescriptor();
+		_simpleChannelPage.performFinish(_dynamicsDescriptor);
+		_statePage.performFinish(_dynamicsDescriptor);
 		return true;
+	}
+
+	/**
+	 * Returns the prepared {@link DynamicsDescriptor}.
+	 * 
+	 * @return the {@link DynamicsDescriptor}
+	 */
+	public DynamicsDescriptor getDynamicsDescriptor() {
+		return _dynamicsDescriptor;
 	}
 
 	/**
@@ -161,10 +148,11 @@ public final class DynamicAspectsWizard extends Wizard {
 	 */
 	@Override
 	public void addPages() {
-		_simpleChannelPage = new SimpleChannelPage("Simple Channel", _dynamicsDescriptor, _propertyDescriptor, _aliases);
+		_simpleChannelPage = new SimpleChannelPage("Simple Channel", _dynamicsDescriptor, _propertyDescriptor.getPropertyType(), _aliases);
 		addPage(_simpleChannelPage);
-		
-		_statePage = new StatePage("States", _dynamicsDescriptor.getConnectionStateDependentPropertyValues(), _dynamicsDescriptor.getConditionStateDependentPropertyValues());
+
+		_statePage = new StatePage("States", _dynamicsDescriptor.getConnectionStateDependentPropertyValues(), _dynamicsDescriptor
+				.getConditionStateDependentPropertyValues());
 		addPage(_statePage);
 	}
 
@@ -176,7 +164,7 @@ public final class DynamicAspectsWizard extends Wizard {
 	private final class StatePage extends WizardPage {
 		private Map<ConnectionState, Object> _connectionStateValues = new HashMap<ConnectionState, Object>();
 		private Map<DynamicValueState, Object> _conditionStateValues = new HashMap<DynamicValueState, Object>();
-		
+
 		/**
 		 * A CellEditorListener for the CellEditor.
 		 */
@@ -203,13 +191,14 @@ public final class DynamicAspectsWizard extends Wizard {
 		 * @param pageName
 		 *            the name of the page
 		 */
-		protected StatePage(final String pageName, Map<ConnectionState, Object> connectionStateValues, Map<DynamicValueState, Object> conditionStateValues) {
+		protected StatePage(final String pageName, Map<ConnectionState, Object> connectionStateValues,
+				Map<DynamicValueState, Object> conditionStateValues) {
 			super(pageName);
 			assert pageName != null;
 			setTitle("State Configurater");
 			setDescription("Use this page to configure the states");
-			_connectionStateValues = connectionStateValues!=null?connectionStateValues:new HashMap<ConnectionState, Object>();
-			_conditionStateValues = conditionStateValues!=null?conditionStateValues:new HashMap<DynamicValueState, Object>();
+			_connectionStateValues = connectionStateValues != null ? connectionStateValues : new HashMap<ConnectionState, Object>();
+			_conditionStateValues = conditionStateValues != null ? conditionStateValues : new HashMap<DynamicValueState, Object>();
 		}
 
 		/**
@@ -222,15 +211,13 @@ public final class DynamicAspectsWizard extends Wizard {
 		 *         error message on the page
 		 */
 		@SuppressWarnings("unchecked")
-		private ICellEditorListener createEditorListener(
-				final StateComposite composite) {
+		private ICellEditorListener createEditorListener(final StateComposite composite) {
 			ICellEditorListener editorListener = new ICellEditorListener() {
 				public void cancelEditor() {
 					setErrorMessage(null);
 				}
 
-				public void editorValueChanged(final boolean oldValidState,
-						final boolean newValidState) {
+				public void editorValueChanged(final boolean oldValidState, final boolean newValidState) {
 					setErrorMessage(composite.getErrorMessage());
 				}
 
@@ -248,8 +235,10 @@ public final class DynamicAspectsWizard extends Wizard {
 			Composite c = new Composite(parent, SWT.None);
 			c.setLayout(new GridLayout(1, false));
 
-			_connectionStateComposite = new StateComposite<ConnectionState>(c,
-					SWT.NONE, "Connection", ConnectionState.values()) {
+			// we display only the supported connection states
+			Set<ConnectionState> supportedConnectionStates = WidgetInitializationService.getInstance().getSupportedConnectionStates();
+			_connectionStateComposite = new StateComposite<ConnectionState>(c, SWT.NONE, "Connection", supportedConnectionStates
+					.toArray(new Enum[supportedConnectionStates.size()])) {
 
 				@Override
 				protected Map<ConnectionState, Object> getStateMap() {
@@ -257,13 +246,10 @@ public final class DynamicAspectsWizard extends Wizard {
 				}
 
 			};
-			_connectionEditorListener = this
-					.createEditorListener(_connectionStateComposite);
-			_connectionStateComposite
-					.addEditorListener(_connectionEditorListener);
+			_connectionEditorListener = this.createEditorListener(_connectionStateComposite);
+			_connectionStateComposite.addEditorListener(_connectionEditorListener);
 
-			_conditionStateComposite = new StateComposite<DynamicValueState>(c,
-					SWT.NONE, "Condition", DynamicValueState.values()) {
+			_conditionStateComposite = new StateComposite<DynamicValueState>(c, SWT.NONE, "Condition", DynamicValueState.values()) {
 
 				@Override
 				protected Map<DynamicValueState, Object> getStateMap() {
@@ -271,10 +257,8 @@ public final class DynamicAspectsWizard extends Wizard {
 				}
 
 			};
-			_conditionEditorListener = this
-					.createEditorListener(_conditionStateComposite);
-			_conditionStateComposite
-					.addEditorListener(_conditionEditorListener);
+			_conditionEditorListener = this.createEditorListener(_conditionStateComposite);
+			_conditionStateComposite.addEditorListener(_conditionEditorListener);
 
 			// important for wizards -> set the control
 			setControl(c);
@@ -296,8 +280,7 @@ public final class DynamicAspectsWizard extends Wizard {
 		 * @author Kai Meyer
 		 */
 		@SuppressWarnings("unchecked")
-		private abstract class StateComposite<ETYPE extends Enum> extends
-				Composite {
+		private abstract class StateComposite<ETYPE extends Enum> extends Composite {
 			/**
 			 * The Action to add a state.
 			 */
@@ -322,7 +305,7 @@ public final class DynamicAspectsWizard extends Wizard {
 			 * All possible states.
 			 */
 			private final Enum[] _allStates;
-
+			
 			/**
 			 * Constructor.
 			 * 
@@ -335,11 +318,9 @@ public final class DynamicAspectsWizard extends Wizard {
 			 * @param allStates
 			 *            All possible states
 			 */
-			public StateComposite(final Composite parent, final int style,
-					final String stateName, final Enum[] allStates) {
+			public StateComposite(final Composite parent, final int style, final String stateName, final Enum[] allStates) {
 				super(parent, style);
-				this.setLayoutData(LayoutUtil
-						.createGridDataForHorizontalFillingCell());
+				this.setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell());
 				this.setLayout(new GridLayout(1, false));
 				_stateName = stateName;
 				_allStates = allStates;
@@ -363,23 +344,19 @@ public final class DynamicAspectsWizard extends Wizard {
 			 *            The parent Composite for the table
 			 * @return The TableViewer for the connection states
 			 */
-			private TableViewer createConnectionStateTable(
-					final Composite parent) {
+			private TableViewer createConnectionStateTable(final Composite parent) {
 				Group group = new Group(parent, SWT.NONE);
 				group.setLayout(new GridLayout(1, false));
 				group.setText(_stateName + " States");
 				group.setLayoutData(LayoutUtil.createGridDataForFillingCell());
 
 				// define column names
-				String[] columnNames = new String[] {
-						"FIRST", "PROP_NAME", "PROP_TYPE" }; //$NON-NLS-1$ //$NON-NLS-2$ 
+				String[] columnNames = new String[] { "FIRST", "PROP_NAME", "PROP_TYPE" }; //$NON-NLS-1$ //$NON-NLS-2$ 
 
 				// create table
-				final Table table = new Table(group, SWT.FULL_SELECTION
-						| SWT.SCROLL_PAGE);
+				final Table table = new Table(group, SWT.FULL_SELECTION | SWT.SCROLL_PAGE);
 				table.setLinesVisible(true);
-				table.setLayoutData(LayoutUtil
-						.createGridDataForHorizontalFillingCell(150));
+				table.setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(150));
 				table.setHeaderVisible(true);
 
 				TableColumn column = new TableColumn(table, SWT.CENTER, 0);
@@ -436,8 +413,7 @@ public final class DynamicAspectsWizard extends Wizard {
 			 * Removes the current selected State.
 			 */
 			private void removeState() {
-				TableItem[] selection = _stateTableViewer.getTable()
-						.getSelection();
+				TableItem[] selection = _stateTableViewer.getTable().getSelection();
 				for (TableItem item : selection) {
 					this.getStateMap().remove(item.getData());
 				}
@@ -447,16 +423,12 @@ public final class DynamicAspectsWizard extends Wizard {
 			/**
 			 * Opens a dialog and adds the selected State to the Table.
 			 */
-			@SuppressWarnings("unchecked")
 			private void addState() {
-				StateDialog dialog = new StateDialog(
-						this.getShell(),
-						"Choose the '" + _stateName + " State' you want to add",
-						this.makeStateArray(this.getAllStates()));
-				Object initValue = _propertySheetEntry.getValues()[0];
+				StateDialog dialog = new StateDialog(this.getShell(), "Choose the '" + _stateName + " State' you want to add", this
+						.makeStateArray(this.getAllStates()));
 				if (dialog.open() == Window.OK) {
 					for (Enum state : dialog.getSelectedStates()) {
-						this.getStateMap().put((ETYPE) state, initValue);
+						this.getStateMap().put((ETYPE) state, _initValue);
 					}
 					this.refresh();
 				}
@@ -467,10 +439,8 @@ public final class DynamicAspectsWizard extends Wizard {
 			 */
 			private void refresh() {
 				_stateTableViewer.refresh();
-				_removeStateAction.setEnabled(_stateTableViewer.getTable()
-						.getItemCount() > 0);
-				_addStateAction.setEnabled(_stateTableViewer.getTable()
-						.getItemCount() < _allStates.length);
+				_removeStateAction.setEnabled(_stateTableViewer.getTable().getItemCount() > 0);
+				_addStateAction.setEnabled(_stateTableViewer.getTable().getItemCount() < _allStates.length);
 			}
 
 			/**
@@ -623,8 +593,7 @@ public final class DynamicAspectsWizard extends Wizard {
 				 * @param states
 				 *            The available States to display
 				 */
-				public StateDialog(final Shell parentShell,
-						final String message, final Enum[] states) {
+				public StateDialog(final Shell parentShell, final String message, final Enum[] states) {
 					super(parentShell);
 					_states = states;
 					_message = message;
@@ -644,8 +613,7 @@ public final class DynamicAspectsWizard extends Wizard {
 				 */
 				@Override
 				protected Control createDialogArea(final Composite parent) {
-					final Composite composite = (Composite) super
-							.createDialogArea(parent);
+					final Composite composite = (Composite) super.createDialogArea(parent);
 					this.setTitle("Select the State");
 					this.setMessage(_message);
 					Composite comp = new Composite(composite, SWT.NONE);
@@ -682,8 +650,7 @@ public final class DynamicAspectsWizard extends Wizard {
 				 * @return String The selected state
 				 */
 				public Enum[] getSelectedStates() {
-					return _selectedStates.toArray(new Enum[_selectedStates
-							.size()]);
+					return _selectedStates.toArray(new Enum[_selectedStates.size()]);
 				}
 
 				/**
@@ -711,18 +678,15 @@ public final class DynamicAspectsWizard extends Wizard {
 				/**
 				 * {@inheritDoc}
 				 */
-				public boolean canModify(final Object element,
-						final String property) {
+				public boolean canModify(final Object element, final String property) {
 					return true;
 				}
 
 				/**
 				 * {@inheritDoc}
 				 */
-				public Object getValue(final Object element,
-						final String property) {
-					if (element instanceof ConnectionState
-							|| element instanceof DynamicValueState) {
+				public Object getValue(final Object element, final String property) {
+					if (element instanceof ConnectionState || element instanceof DynamicValueState) {
 						return getStateMap().get(element);
 					}
 					return "";
@@ -732,13 +696,13 @@ public final class DynamicAspectsWizard extends Wizard {
 				 * {@inheritDoc}
 				 */
 				@SuppressWarnings("unchecked")
-				public void modify(final Object element, final String property,
-						final Object value) {
+				public void modify(final Object element, final String property, final Object value) {
 					if (element instanceof TableItem) {
 						ETYPE state = (ETYPE) ((TableItem) element).getData();
 						if (value != null) {
 							getStateMap().put((ETYPE) state, value);
 						}
+
 						_stateTableViewer.refresh();
 					}
 				}
@@ -751,20 +715,17 @@ public final class DynamicAspectsWizard extends Wizard {
 			 * @author Kai Meyer
 			 * 
 			 */
-			private final class StateTableLabelProvider extends LabelProvider
-					implements ITableLabelProvider {
+			private final class StateTableLabelProvider extends LabelProvider implements ITableLabelProvider {
 				/**
 				 * {@inheritDoc}
 				 */
-				public Image getColumnImage(final Object element,
-						final int columnIndex) {
+				public Image getColumnImage(final Object element, final int columnIndex) {
 					if (columnIndex == 2) {
 						Object value = getStateMap().get(element);
 						if (value != null) {
 							if (_propertyDescriptor.getLabelProvider() != null) {
 								try {
-									return _propertyDescriptor
-											.getLabelProvider().getImage(value);
+									return _propertyDescriptor.getLabelProvider().getImage(value);
 								} catch (Exception e) {
 									e.printStackTrace();
 								}
@@ -777,8 +738,7 @@ public final class DynamicAspectsWizard extends Wizard {
 				/**
 				 * {@inheritDoc}
 				 */
-				public String getColumnText(final Object element,
-						final int columnIndex) {
+				public String getColumnText(final Object element, final int columnIndex) {
 					if (element == null) {
 						return "Fehler";
 					} else {
@@ -787,9 +747,7 @@ public final class DynamicAspectsWizard extends Wizard {
 							if (value != null) {
 								if (_propertyDescriptor.getLabelProvider() != null) {
 									try {
-										return _propertyDescriptor
-												.getLabelProvider().getText(
-														value);
+										return _propertyDescriptor.getLabelProvider().getText(value);
 									} catch (Exception e) {
 										e.printStackTrace();
 									}

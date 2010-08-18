@@ -30,8 +30,8 @@ import org.eclipse.gef.commands.CompoundCommand;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 06.05.2010
  */
 public class LabelValueTypePostProcessor extends AbstractWidgetPropertyPostProcessor<LabelModel> {
@@ -69,7 +69,8 @@ public class LabelValueTypePostProcessor extends AbstractWidgetPropertyPostProce
                     chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 } else {
                     chain.add(new ShowPropertyCommand(widget, PROP_TEXTVALUE, PROP_TEXT_TYPE));
-                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
+//                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
+                    chain.add(new ShowPropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 }
             }
 

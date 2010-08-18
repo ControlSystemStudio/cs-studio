@@ -22,7 +22,7 @@
 package org.csstudio.sds.util;
 
 import org.csstudio.sds.SdsPlugin;
-import org.csstudio.sds.preferences.PreferenceConstants;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.eclipse.draw2d.Graphics;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.GC;

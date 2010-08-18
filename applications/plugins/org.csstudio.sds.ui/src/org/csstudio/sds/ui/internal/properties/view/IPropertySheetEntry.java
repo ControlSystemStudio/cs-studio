@@ -10,11 +10,8 @@
  *******************************************************************************/
 package org.csstudio.sds.ui.internal.properties.view;
 
-import java.util.Map;
-
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.eclipse.jface.viewers.CellEditor;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
@@ -198,7 +195,7 @@ public interface IPropertySheetEntry {
 	 * @return Creates a wizard, which can be used to configure the dynamic
 	 *         property settings for this entry.
 	 */
-	IWizard getDynamicsDescriptionConfigurationWizard();
+	DynamicAspectsWizard getDynamicsDescriptionConfigurationWizard();
 
 	/**
 	 * Sets the dynamics descriptors which represent the dynamic property

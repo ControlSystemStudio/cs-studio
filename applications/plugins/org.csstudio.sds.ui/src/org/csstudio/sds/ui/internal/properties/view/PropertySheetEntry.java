@@ -1,24 +1,40 @@
-package org.csstudio.sds.ui.internal.properties.view;
+/* 
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+ * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ *
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * OR MODIFICATIONS.
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ */
+ package org.csstudio.sds.ui.internal.properties.view;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
 
-import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
-import org.csstudio.sds.ui.internal.adapters.WidgetPropertySourceAdapter;
+import org.csstudio.sds.ui.properties.IPropertyDescriptor;
 import org.eclipse.core.commands.common.EventManager;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellEditorListener;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.wizard.IWizard;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 
@@ -906,9 +922,8 @@ public class PropertySheetEntry extends EventManager implements
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public final IWizard getDynamicsDescriptionConfigurationWizard() {
-		return new DynamicAspectsWizard(this, _dynamicsDescriptor, _alias, _descriptor);
+	public final DynamicAspectsWizard getDynamicsDescriptionConfigurationWizard() {
+		return new DynamicAspectsWizard(_dynamicsDescriptor, _alias, _descriptor, getValues()[0]);
 	}
 	
 	/**
@@ -940,21 +955,12 @@ public class PropertySheetEntry extends EventManager implements
 			final DynamicsDescriptor[] dynamicsDescriptors) {
 		_dynamicsDescriptors = dynamicsDescriptors;
 
-		// TODO: Ist das wichtig? (swende)
-		// sources = new HashMap(values.length * 2 + 1);
-
 		if (dynamicsDescriptors.length == 0) {
 			_dynamicsDescriptor = null;
 		} else {
 			// set the first value object as the entry's value
 			DynamicsDescriptor newValue = _dynamicsDescriptors[0];
 
-			// see if we should convert the value to an editable value
-			// TODO: Ist das wichtig? (swende)
-			// IPropertySource source = getPropertySource(newValue);
-			// if (source != null) {
-			// newValue = source.getEditableValue();
-			// }
 			_dynamicsDescriptor = newValue;
 		}
 
@@ -1038,12 +1044,6 @@ public class PropertySheetEntry extends EventManager implements
 	 */
 	protected final DynamicsDescriptor getDynamicsDescriptor(final int index) {
 		DynamicsDescriptor descriptor = _dynamicsDescriptors[index];
-
-		// TODO: Wird das gebraucht?
-		// IPropertySource source = getPropertySource(value);
-		// if (source != null) {
-		// value = source.getEditableValue();
-		// }
 		return descriptor;
 	}
 

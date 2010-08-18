@@ -32,7 +32,7 @@ import org.csstudio.sds.model.initializers.AbstractControlSystemSchema;
  * system.
  * 
  * @author Stefan Hofer
- * @version $Revision$
+ * @version $Revision: 1.14 $
  * 
  */
 public final class EpicsSchema extends AbstractControlSystemSchema {

@@ -21,7 +21,7 @@
  */
 package org.csstudio.sds.ui.wizards;
 
-import org.csstudio.sds.model.logic.RuleService;
+import org.csstudio.sds.internal.rules.RuleService;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -35,7 +35,7 @@ import org.eclipse.ui.IWorkbench;
  * A wizard for creating new SDS script rules.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class NewScriptRuleWizard extends Wizard implements INewWizard {

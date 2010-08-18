@@ -1,22 +1,22 @@
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 package org.csstudio.sds.ui.internal.properties;
@@ -46,17 +46,18 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * A table cell editor for values of type PointList.
- * 
+ *
  * @deprecated
- * 
+ *
  * @author Kai Meyer
  */
+@Deprecated
 public final class ProcessVariableCellEditor extends CellEditor {
 
 	/**
 	 * A shell.
 	 */
-	private Shell _shell;
+	private final Shell _shell;
 
 	/**
 	 * The title for this CellEditor.
@@ -71,7 +72,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 	/**
 	 * Creates a new string cell editor parented under the given control. The
 	 * cell editor value is a {@link IProcessVariableAddress}.
-	 * 
+	 *
 	 * @param parent
 	 *            The parent table.
 	 * @param title
@@ -125,24 +126,24 @@ public final class ProcessVariableCellEditor extends CellEditor {
 	@Override
 	protected void doSetValue(final Object value) {
 		Assert.isTrue((value instanceof IProcessVariableAddress)
-				|| value == null);
+				|| (value == null));
 		_processVariable = (IProcessVariableAddress) value;
 	}
 
 	/**
 	 * This class represents a Dialog to edit a {@link IProcessVariableAddress}.
-	 * 
+	 *
 	 * @author Kai Meyer
 	 */
 	private final class ProcessVariableInputDialog extends Dialog {
 		/**
 		 * The title of the dialog.
 		 */
-		private String _title;
+		private final String _dialogTitle;
 		/**
 		 * The message to display, or <code>null</code> if none.
 		 */
-		private String _message;
+		private final String _message;
 
 		private Text _fullText;
 		private CCombo _controlSystemCombo;
@@ -160,7 +161,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		 * <p>
 		 * Note that the <code>open</code> method blocks for input dialogs.
 		 * </p>
-		 * 
+		 *
 		 * @param parentShell
 		 *            the parent shell, or <code>null</code> to create a
 		 *            top-level shell
@@ -174,7 +175,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 			super(parentShell);
 			this.setShellStyle(SWT.MODELESS | SWT.CLOSE | SWT.MAX | SWT.TITLE
 					| SWT.BORDER | SWT.RESIZE);
-			_title = dialogTitle;
+			_dialogTitle = dialogTitle;
 			_message = dialogMessage;
 		}
 
@@ -184,8 +185,8 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		@Override
 		protected void configureShell(final Shell shell) {
 			super.configureShell(shell);
-			if (_title != null) {
-				shell.setText(_title);
+			if (_dialogTitle != null) {
+				shell.setText(_dialogTitle);
 			}
 		}
 
@@ -194,13 +195,13 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		 */
 		@Override
 		protected Control createDialogArea(final Composite parent) {
-			Composite composite = (Composite) super.createDialogArea(parent);
+			final Composite composite = (Composite) super.createDialogArea(parent);
 			composite.setLayout(new GridLayout(2, false));
 
 			if (_message != null) {
-				Label label = new Label(composite, SWT.WRAP);
+				final Label label = new Label(composite, SWT.WRAP);
 				label.setText(_message);
-				GridData data = new GridData(GridData.GRAB_HORIZONTAL
+				final GridData data = new GridData(GridData.GRAB_HORIZONTAL
 						| GridData.GRAB_VERTICAL
 						| GridData.HORIZONTAL_ALIGN_FILL
 						| GridData.VERTICAL_ALIGN_CENTER);
@@ -211,7 +212,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 			}
 			_fullText = this.createTextEntry(composite, "Process Variable:");
 			_fullText.setEditable(false);
-			Label label = new Label(composite, SWT.NONE);
+			final Label label = new Label(composite, SWT.NONE);
 			label.setAlignment(SWT.RIGHT);
 			label.setText("Control System:");
 			_controlSystemCombo = new CCombo(composite, SWT.BORDER);
@@ -251,22 +252,22 @@ public final class ProcessVariableCellEditor extends CellEditor {
 
 			_controlSystemCombo.addSelectionListener(new SelectionAdapter() {
 				@Override
-				public void widgetSelected(SelectionEvent event) {
+				public void widgetSelected(final SelectionEvent event) {
 					generateProcessVariable();
 				}
 			});
 			_deviceText.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(final ModifyEvent e) {
 					generateProcessVariable();
 				}
 			});
 			_propertyText.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(final ModifyEvent e) {
 					generateProcessVariable();
 				}
 			});
 			_characteristicsText.addModifyListener(new ModifyListener() {
-				public void modifyText(ModifyEvent e) {
+				public void modifyText(final ModifyEvent e) {
 					generateProcessVariable();
 				}
 			});
@@ -285,7 +286,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 
 		/**
 		 * Creates a Label and a Text.
-		 * 
+		 *
 		 * @param parent
 		 *            The parent composite for the Widgets
 		 * @param labelTitle
@@ -294,7 +295,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		 */
 		private Text createTextEntry(final Composite parent,
 				final String labelTitle) {
-			Label label = new Label(parent, SWT.NONE);
+			final Label label = new Label(parent, SWT.NONE);
 			label.setText(labelTitle);
 			final Text text = new Text(parent, SWT.BORDER);
 			text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
@@ -302,10 +303,10 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		}
 
 		private void generateProcessVariable() {
-			ControlSystemEnum system = ControlSystemEnum
+			final ControlSystemEnum system = ControlSystemEnum
 					.valueOf(_controlSystemCombo.getText());
-			String device = this.convertString(_deviceText.getText());
-			String characteristics = this.convertString(_characteristicsText
+			final String device = this.convertString(_deviceText.getText());
+			final String characteristics = this.convertString(_characteristicsText
 					.getText());
 			try {
 				_newProcessVariable = ProcessVariableAdressFactory
@@ -314,7 +315,7 @@ public final class ProcessVariableCellEditor extends CellEditor {
 								characteristics);
 				_fullText.setText(_newProcessVariable.getFullName());
 				_messageLabel.setVisible(false);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				_newProcessVariable = null;
 				_fullText.setText("No Process Variable");
 				_messageLabel.setVisible(true);
@@ -328,19 +329,17 @@ public final class ProcessVariableCellEditor extends CellEditor {
 		}
 
 		private String convertString(final String input) {
-			if (input != null && input.trim().length() > 0) {
+			if ((input != null) && (input.trim().length() > 0)) {
 				return input;
-			} else {
-				return null;
 			}
+            return null;
 		}
 
 		private String getNotNullString(final String input) {
 			if (input == null) {
 				return "";
-			} else {
-				return input;
 			}
+            return input;
 		}
 
 	}

@@ -29,7 +29,7 @@ import org.csstudio.sds.model.LinkingContainerModel;
  * Model factory for {@link LinkingContainerModel}.
  * 
  * @author Sven Wende
- * @version $Revision$
+ * @version $Revision: 1.2 $
  * 
  */
 public final class LinkingContainerModelFactory implements IWidgetModelFactory {
@@ -43,6 +43,7 @@ public final class LinkingContainerModelFactory implements IWidgetModelFactory {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	public Class getWidgetModelType() {
 		return LinkingContainerModel.class;
 	}

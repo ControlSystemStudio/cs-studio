@@ -30,38 +30,48 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.dialogs.SaveAsDialog;
-import org.csstudio.platform.util.PerformanceUtil;
 import org.csstudio.sds.SdsPlugin;
+import org.csstudio.sds.internal.model.LayerSupport;
+import org.csstudio.sds.internal.persistence.DisplayModelLoadAdapter;
+import org.csstudio.sds.internal.persistence.IDisplayModelLoadListener;
+import org.csstudio.sds.internal.persistence.PersistenceUtil;
+import org.csstudio.sds.internal.preferences.CategorizationType;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
+import org.csstudio.sds.model.IPropertyChangeListener;
+import org.csstudio.sds.model.PropertyChangeAdapter;
 import org.csstudio.sds.model.RulerModel;
 import org.csstudio.sds.model.WidgetModelFactoryService;
-import org.csstudio.sds.model.layers.LayerSupport;
-import org.csstudio.sds.model.persistence.PersistenceUtil;
-import org.csstudio.sds.model.properties.IPropertyChangeListener;
-import org.csstudio.sds.model.properties.PropertyChangeAdapter;
-import org.csstudio.sds.preferences.PreferenceConstants;
+import org.csstudio.sds.model.WidgetProperty;
+import org.csstudio.sds.model.commands.SetPropertyCommand;
 import org.csstudio.sds.ui.CheckedUiRunnable;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.editparts.ExecutionMode;
 import org.csstudio.sds.ui.internal.actions.CopyWidgetsAction;
+import org.csstudio.sds.ui.internal.actions.CreateGroupAction;
+import org.csstudio.sds.ui.internal.actions.CutWidgetsAction;
+import org.csstudio.sds.ui.internal.actions.DeleteWidgetsAction;
 import org.csstudio.sds.ui.internal.actions.MoveToBackAction;
 import org.csstudio.sds.ui.internal.actions.MoveToFrontAction;
 import org.csstudio.sds.ui.internal.actions.PasteWidgetsAction;
+import org.csstudio.sds.ui.internal.actions.RemoveGroupAction;
 import org.csstudio.sds.ui.internal.actions.StepBackAction;
 import org.csstudio.sds.ui.internal.actions.StepFrontAction;
 import org.csstudio.sds.ui.internal.editparts.WidgetEditPartFactory;
-import org.csstudio.sds.ui.internal.feedback.GraphicalFeedbackContributionsService;
 import org.csstudio.sds.ui.internal.layers.ILayerManager;
 import org.csstudio.sds.ui.internal.properties.view.IPropertySheetPage;
 import org.csstudio.sds.ui.internal.properties.view.PropertySheetPage;
 import org.csstudio.sds.ui.internal.properties.view.UndoablePropertySheetEntry;
-import org.csstudio.sds.util.CustomMediaFactory;
+import org.csstudio.sds.ui.internal.viewer.PatchedGraphicalViewer;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -76,6 +86,7 @@ import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.AutoexposeHelper;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.EditPart;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
@@ -85,8 +96,6 @@ import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ViewportAutoexposeHelper;
 import org.eclipse.gef.editparts.ZoomManager;
-import org.eclipse.gef.palette.CreationToolEntry;
-import org.eclipse.gef.palette.PaletteContainer;
 import org.eclipse.gef.palette.PaletteGroup;
 import org.eclipse.gef.palette.PaletteRoot;
 import org.eclipse.gef.palette.PanningSelectionToolEntry;
@@ -95,8 +104,8 @@ import org.eclipse.gef.rulers.RulerProvider;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.AlignmentAction;
 import org.eclipse.gef.ui.actions.CopyTemplateAction;
-import org.eclipse.gef.ui.actions.DeleteAction;
 import org.eclipse.gef.ui.actions.DirectEditAction;
+import org.eclipse.gef.ui.actions.GEFActionConstants;
 import org.eclipse.gef.ui.actions.MatchHeightAction;
 import org.eclipse.gef.ui.actions.MatchWidthAction;
 import org.eclipse.gef.ui.actions.ToggleGridAction;
@@ -110,8 +119,8 @@ import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.gef.ui.rulers.RulerComposite;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.RGB;
@@ -126,17 +135,19 @@ import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.internal.help.WorkbenchHelpSystem;
 import org.eclipse.ui.part.FileEditorInput;
+import org.eclipse.ui.views.properties.tabbed.ITabbedPropertySheetPageContributor;
+import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 /**
  * The editor for synoptic displays.
  * 
  * @author Sven Wende & Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.120 $
  * 
  */
-public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
-		implements IDisplayEditor {
+public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette implements ITabbedPropertySheetPageContributor {
 
 	/**
 	 * The default value for the grid spacing property.
@@ -155,7 +166,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	/**
 	 * A DisplayListener.
 	 */
-	private IPropertyChangeListener _displayListener;
+	private Map<String, IPropertyChangeListener> _propertyChangeListeners;
 
 	/**
 	 * The preference page listener for the grid space.
@@ -167,74 +178,44 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 */
 	private PaletteRoot _paletteRoot;
 
+	private TabbedPropertySheetPage propertyPage;
+
 	/**
 	 * The RulerComposite for the GraphicalViewer.
 	 */
 	private RulerComposite _rulerComposite;
 
+	private static KeyListenerAdapter keyAdapter = new KeyListenerAdapter();
+
 	/**
 	 * Constructor.
 	 */
 	public DisplayEditor() {
-		PerformanceUtil.getInstance().constructorCalled(this);
 		setEditDomain(new DefaultEditDomain(this));
+
+		initPropertyChangeListeners();
 	}
-
-	/**
-	 * Creates a new IPropertyChangeListener.
-	 * 
-	 * @return IPropertyChangeListener The new IPropertyChangeListener
-	 */
-	private IPropertyChangeListener createDisplayListener() {
-		IPropertyChangeListener listener = new PropertyChangeAdapter() {
-			@Override
-			public void propertyValueChanged(final Object oldValue,
-					final Object newValue) {
-				if (newValue instanceof RGB) {
-					new CheckedUiRunnable() {
-
-						@Override
-						protected void doRunInUi() {
-							getGraphicalViewer().getControl().setBackground(
-									CustomMediaFactory.getInstance().getColor(
-											(RGB) newValue));
-						}
-					};
-				}
-			}
-		};
-		return listener;
-	}
-
-	// /**
-	// * Registers DisplayPropertyListener to the properties.
-	// *
-	// * @param model
-	// * The DisplayModel
-	// */
-	// private void addDisplayPropertyListener2(final DisplayModel model) {
-	// if (model == null) {
-	// return;
-	// }
-	// model.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND)
-	// .addPropertyChangeListener(_displayListener);
-	// }
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
 	protected PaletteRoot getPaletteRoot() {
-		if (_paletteRoot == null) {
-			_paletteRoot = new PaletteRoot();
-			_paletteRoot.add(createControlGroup(_paletteRoot));
-		}
+		// if (_paletteRoot == null) {
+		_paletteRoot = new PaletteRoot();
+		// _paletteRoot.add(createControlGroup(_paletteRoot));
+		createControlGroup(_paletteRoot);
+		// }
 		return _paletteRoot;
 	}
 
+	/**
+	 * Returns the currently selected {@link AbstractBaseEditPart}s.
+	 * 
+	 * @return a list of {@link AbstractBaseEditPart}s
+	 */
 	public List<AbstractBaseEditPart> getSelectedEditParts() {
-		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>(
-				getGraphicalViewer().getSelectedEditParts().size());
+		List<AbstractBaseEditPart> result = new ArrayList<AbstractBaseEditPart>(getGraphicalViewer().getSelectedEditParts().size());
 		for (Object obj : getGraphicalViewer().getSelectedEditParts()) {
 			if (obj instanceof AbstractBaseEditPart) {
 				result.add((AbstractBaseEditPart) obj);
@@ -251,44 +232,21 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 *            the palette root
 	 * @return a palette container
 	 */
-	@SuppressWarnings("unchecked")
-	private static PaletteContainer createControlGroup(final PaletteRoot root) {
+	private static void createControlGroup(final PaletteRoot root) {
 		PaletteGroup controlGroup = new PaletteGroup("controlGroup"); //$NON-NLS-1$
 
-		List entries = new ArrayList();
-
 		ToolEntry toolEntry = new PanningSelectionToolEntry();
-		entries.add(toolEntry);
-		root.setDefaultEntry(toolEntry);
+		controlGroup.add(toolEntry);
+		root.add(controlGroup);
 
-		WidgetModelFactoryService service = WidgetModelFactoryService
-				.getInstance();
+		WidgetModelFactoryService service = WidgetModelFactoryService.getInstance();
 
-		for (String typeId : service.getWidgetTypes()) {
-			String contributingPluginId = service
-					.getContributingPluginId(typeId);
+		PaletteEntryCreator paletteEntryCreator = new PaletteEntryCreator(service, keyAdapter);
 
-			String iconPath = service.getIcon(typeId);
+		String string = SdsPlugin.getDefault().getPluginPreferences().getString(PreferenceConstants.PROP_WIDGET_CATEGORIZATION);
 
-			ImageDescriptor icon = CustomMediaFactory.getInstance()
-					.getImageDescriptorFromPlugin(contributingPluginId,
-							iconPath);
-			toolEntry = new CreationToolEntry(service.getName(typeId), service
-					.getDescription(typeId), new WidgetCreationFactory(typeId),
-					icon, icon);
-
-			Class toolClass = GraphicalFeedbackContributionsService
-					.getInstance().getGraphicalFeedbackFactory(typeId)
-					.getCreationTool();
-
-			if (toolClass != null) {
-				toolEntry.setToolClass(toolClass);
-			}
-			entries.add(toolEntry);
-		}
-
-		controlGroup.addAll(entries);
-		return controlGroup;
+		CategorizationType categorization = CategorizationType.getTypeForId(string);
+		paletteEntryCreator.createEntries(root, categorization);
 	}
 
 	/**
@@ -314,8 +272,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 * @return Point The Point, which is the center of the Display
 	 */
 	public Point getDisplayCenterPosition() {
-		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer()
-				.getRootEditPart();
+		ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart();
 
 		ZoomManager m = root.getZoomManager();
 
@@ -333,15 +290,32 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 
 	/**
 	 * {@inheritDoc}
+	 * 
+	 * We overide the behaviour of the superclass totally. Don´t add a super
+	 * call in future!!
 	 */
 	@Override
 	protected void createGraphicalViewer(final Composite parent) {
 		_rulerComposite = new RulerComposite(parent, SWT.NONE);
-		super.createGraphicalViewer(_rulerComposite);
-		_rulerComposite
-				.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
+
+		GraphicalViewer viewer = new PatchedGraphicalViewer();
+		viewer.createControl(_rulerComposite);
+		setGraphicalViewer(viewer);
+		configureGraphicalViewer();
+		hookGraphicalViewer();
+		initializeGraphicalViewer();
+
+		_rulerComposite.setGraphicalViewer((ScrollingGraphicalViewer) getGraphicalViewer());
+		WorkbenchHelpSystem.getInstance().setHelp(_rulerComposite, SdsUiPlugin.PLUGIN_ID + ".synoptic_display_studio");
+
+		viewer.getControl().addKeyListener(keyAdapter);
 	}
 
+	/**
+	 * Returns the main composite of the editor.
+	 * 
+	 * @return the main composite of the editor
+	 */
 	public Composite getParentComposite() {
 		return _rulerComposite;
 	}
@@ -353,12 +327,9 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		// Ruler properties
 		RulerProvider hprovider = new SDSRulerProvider(new RulerModel(true));
 		RulerProvider vprovider = new SDSRulerProvider(new RulerModel(false));
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
-		getGraphicalViewer().setProperty(RulerProvider.PROPERTY_VERTICAL_RULER,
-				vprovider);
-		getGraphicalViewer().setProperty(
-				RulerProvider.PROPERTY_RULER_VISIBILITY, Boolean.TRUE);
+		getGraphicalViewer().setProperty(RulerProvider.PROPERTY_HORIZONTAL_RULER, hprovider);
+		getGraphicalViewer().setProperty(RulerProvider.PROPERTY_VERTICAL_RULER, vprovider);
+		getGraphicalViewer().setProperty(RulerProvider.PROPERTY_RULER_VISIBILITY, Boolean.FALSE);
 	}
 
 	/**
@@ -381,29 +352,129 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 * Adds a listener for the background color and one for the grid space.
 	 */
 	private void addModelListeners() {
-		// add a listener for the background color
-		_displayListener = createDisplayListener();
-		_displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND)
-				.addPropertyChangeListener(_displayListener);
+		// register all property change listeners
+		for (String propertyId : _propertyChangeListeners.keySet()) {
+			WidgetProperty property = _displayModel.getPropertyInternal(propertyId);
 
-		// add a listener for changes to the grid spacing preference setting
+			if (property != null) {
+				property.addPropertyChangeListener(_propertyChangeListeners.get(propertyId));
+			}
+		}
+
+		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
+		// mit Model persistiert werden
 		_gridSpacingListener = new GridSpacingListener();
-		SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(
-				_gridSpacingListener);
+		SdsUiPlugin.getCorePreferenceStore().addPropertyChangeListener(_gridSpacingListener);
 	}
 
 	/**
 	 * Removes the listener for the model.
 	 */
 	private void removeModelListeners() {
-		// remove the background color listener
-		_displayModel.getProperty(AbstractWidgetModel.PROP_COLOR_BACKGROUND)
-				.removePropertyChangeListener(_displayListener);
+		// remove all property change listeners
+		// register all property change listeners
+		for (String propertyId : _propertyChangeListeners.keySet()) {
+			WidgetProperty property = _displayModel.getPropertyInternal(propertyId);
 
-		// remove the grid spacing listener
-		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(
-				_gridSpacingListener);
+			if (property != null) {
+				property.removePropertyChangeListener(_propertyChangeListeners.get(propertyId));
+			}
+		}
 
+		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
+		// mit Model persistiert werden
+		SdsUiPlugin.getCorePreferenceStore().removePropertyChangeListener(_gridSpacingListener);
+
+	}
+
+	/**
+	 * Creates all property change listeners that should be registered to the
+	 * loaded display.
+	 */
+	private void initPropertyChangeListeners() {
+		_propertyChangeListeners = new HashMap<String, IPropertyChangeListener>();
+
+		// ... background color
+		IPropertyChangeListener listener = new PropertyChangeAdapter() {
+			@Override
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+				if (newValue instanceof String) {
+					new CheckedUiRunnable() {
+
+						@Override
+						protected void doRunInUi() {
+							getGraphicalViewer().getControl().setBackground(
+									SdsUiPlugin.getDefault().getColorAndFontService().getColor((String) newValue));
+						}
+					};
+				}
+			}
+		};
+
+		_propertyChangeListeners.put(AbstractWidgetModel.PROP_COLOR_BACKGROUND, listener);
+
+		// ... grid visibility
+		listener = new PropertyChangeAdapter() {
+			@Override
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+				final boolean visible = (Boolean) newValue;
+
+				new CheckedUiRunnable() {
+					@Override
+					protected void doRunInUi() {
+						// update viewer settings
+						getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, visible);
+						getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, visible);
+
+						// update toolbar action state
+						getActionRegistry().getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY).setChecked(visible);
+					}
+				};
+			}
+		};
+
+		_propertyChangeListeners.put(DisplayModel.PROP_GRID_ON, listener);
+
+		// ... ruler visibility
+		listener = new PropertyChangeAdapter() {
+			@Override
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+				final boolean visible = (Boolean) newValue;
+
+				new CheckedUiRunnable() {
+					@Override
+					protected void doRunInUi() {
+						// update viewer settings
+						getGraphicalViewer().setProperty(RulerProvider.PROPERTY_RULER_VISIBILITY, visible);
+
+						// update toolbar action state
+						getActionRegistry().getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY).setChecked(visible);
+					}
+				};
+			}
+		};
+
+		_propertyChangeListeners.put(DisplayModel.PROP_RULER_ON, listener);
+
+		// ... snap to geometry active
+		listener = new PropertyChangeAdapter() {
+			@Override
+			public void propertyValueChanged(final Object oldValue, final Object newValue) {
+				final boolean active = (Boolean) newValue;
+
+				new CheckedUiRunnable() {
+					@Override
+					protected void doRunInUi() {
+						// update viewer settings
+						getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, active);
+
+						// update toolbar action state
+						getActionRegistry().getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY).setChecked(active);
+					}
+				};
+			}
+		};
+		_propertyChangeListeners.put(DisplayModel.PROP_GEOMETRY_ON, listener);
 	}
 
 	/**
@@ -416,26 +487,21 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		final GraphicalViewer viewer = getGraphicalViewer();
 
 		// initialize context menu
-		ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer,
-				getActionRegistry());
+		ContextMenuProvider cmProvider = new DisplayContextMenuProvider(viewer, getActionRegistry());
 
 		viewer.setContextMenu(cmProvider);
 		getSite().registerContextMenu(cmProvider, viewer);
 
-		// initialize the connection router
-		// ScalableFreeformRootEditPart root = (ScalableFreeformRootEditPart)
-		// viewer
-		// .getRootEditPart();
-
+		// load the model
 		loadModelAsynchroniously();
-		// loadModelSynchroniously();
 
+		// initialize drop support
 		viewer.addDropTargetListener(new EditorDropTargetListener(viewer));
 
-		// this.refreshCustomLayer();
-		this.getGraphicalViewer().getControl().setBackground(
-				CustomMediaFactory.getInstance().getColor(
-						_displayModel.getBackgroundColor()));
+		// initialize background color
+		// this.getGraphicalViewer().getControl().setBackground(
+		// CustomMediaFactory.getInstance().getColor(
+		// _displayModel.getBackgroundColor()));
 	}
 
 	/**
@@ -446,9 +512,41 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 
 		final InputStream inputStream = getInputStream();
 
+		IDisplayModelLoadListener modelLoadListener = new DisplayModelLoadAdapter() {
+			@Override
+			public void onDisplayModelLoaded() {
+				new CheckedUiRunnable() {
+					@Override
+					protected void doRunInUi() {
+						GraphicalViewer viewer = getGraphicalViewer();
+
+						// setup grid and ruler states on the graphical editor
+						viewer.setProperty(SnapToGrid.PROPERTY_GRID_ENABLED, _displayModel.getGridState());
+						viewer.setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE, _displayModel.getGridState());
+
+						viewer.setProperty(RulerProvider.PROPERTY_RULER_VISIBILITY, _displayModel.getRulerState());
+						viewer.setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED, _displayModel.getGeometryState());
+
+						// refresh the checked state on the according editor
+						// actions
+						IAction action;
+
+						action = getActionRegistry().getAction(GEFActionConstants.TOGGLE_GRID_VISIBILITY);
+						action.setChecked(action.isChecked());
+
+						action = getActionRegistry().getAction(GEFActionConstants.TOGGLE_RULER_VISIBILITY);
+						action.setChecked(action.isChecked());
+
+						action = getActionRegistry().getAction(GEFActionConstants.TOGGLE_SNAP_TO_GEOMETRY);
+						action.setChecked(action.isChecked());
+					}
+				};
+			}
+		};
+
 		if (inputStream != null) {
 			setPartName(getEditorInput().getName());
-			PersistenceUtil.asyncFillModel(_displayModel, inputStream, null);
+			PersistenceUtil.asyncFillModel(_displayModel, inputStream, modelLoadListener);
 		}
 	}
 
@@ -459,8 +557,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	protected void configureGraphicalViewer() {
 		super.configureGraphicalViewer();
 		ScrollingGraphicalViewer viewer = (ScrollingGraphicalViewer) getGraphicalViewer();
-		viewer.setEditPartFactory(new WidgetEditPartFactory(
-				ExecutionMode.EDIT_MODE));
+		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.EDIT_MODE));
 		viewer.getControl().setBackground(ColorConstants.listBackground);
 
 		final ScalableFreeformRootEditPart root = new ScalableFreeformRootEditPart() {
@@ -499,37 +596,50 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		}
 
 		/* scroll-wheel zoom */
-		getGraphicalViewer().setProperty(
-				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
-				MouseWheelZoomHandler.SINGLETON);
+		getGraphicalViewer().setProperty(MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1), MouseWheelZoomHandler.SINGLETON);
 
-		/* grid actions */
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_VISIBLE,
-				false);
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_ENABLED,
-				false);
-		getGraphicalViewer().setProperty(SnapToGeometry.PROPERTY_SNAP_ENABLED,
-				false);
-
-		// TODO dynamisieren
-		int spacing = SdsPlugin.getDefault().getPluginPreferences().getInt(
-				PreferenceConstants.PROP_GRID_SPACING);
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
-				new Dimension(spacing, spacing));
+		// FIXME: 2008-07-24: Sven Wende: Entfernen, sobald Grid-Einstellungen
+		// mit Model persistiert werden
+		int spacing = SdsPlugin.getDefault().getPluginPreferences().getInt(PreferenceConstants.PROP_GRID_SPACING);
+		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(spacing, spacing));
 
 		// Ruler Actions
-		IAction showRulers = new ToggleRulerVisibilityAction(
-				getGraphicalViewer());
+		IAction showRulers = new ToggleRulerVisibilityAction(getGraphicalViewer()) {
+			@Override
+			public void run() {
+				super.run();
+				DisplayModel displayModel = getDisplayModel();
+				SetPropertyCommand cmd = new SetPropertyCommand(displayModel, DisplayModel.PROP_RULER_ON, isChecked());
+				getCommandStack().execute(cmd);
+			}
+		};
 		getActionRegistry().registerAction(showRulers);
 
-		IAction a = new ToggleGridAction(getGraphicalViewer());
+		// Grid Action
+		IAction a = new ToggleGridAction(getGraphicalViewer()) {
+			@Override
+			public void run() {
+				super.run();
+				DisplayModel displayModel = getDisplayModel();
+				SetPropertyCommand cmd = new SetPropertyCommand(displayModel, DisplayModel.PROP_GRID_ON, isChecked());
+				getCommandStack().execute(cmd);
+
+			}
+		};
 		getActionRegistry().registerAction(a);
 
-		/* snap to geometriy */
-		a = new ToggleSnapToGeometryAction(getGraphicalViewer());
-		// a.setImageDescriptor(AbstractUIPlugin.imageDescriptorFromPlugin(
-		// SdsUiPlugin.PLUGIN_ID, "icons/snap2geometry.png"));
+		/* snap to geometry */
+		a = new ToggleSnapToGeometryAction(getGraphicalViewer()) {
+			@Override
+			public void run() {
+				super.run();
+				DisplayModel displayModel = getDisplayModel();
+				SetPropertyCommand cmd = new SetPropertyCommand(displayModel, DisplayModel.PROP_GEOMETRY_ON, isChecked());
+				getCommandStack().execute(cmd);
+			}
+		};
 		getActionRegistry().registerAction(a);
+
 		hookGraphicalViewer();
 
 		viewer.setKeyHandler(new GraphicalViewerKeyHandler(viewer));
@@ -542,8 +652,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 *            The new value for the spacing property from the GridLayer
 	 */
 	public void refreshGridLayer(final int spacing) {
-		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING,
-				new Dimension(spacing, spacing));
+		getGraphicalViewer().setProperty(SnapToGrid.PROPERTY_GRID_SPACING, new Dimension(spacing, spacing));
 	}
 
 	/**
@@ -558,6 +667,18 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 
 		ActionRegistry registry = getActionRegistry();
 		IAction action;
+
+		action = new CreateGroupAction((IWorkbenchPart) this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+
+		action = new RemoveGroupAction((IWorkbenchPart) this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
+
+		action = new DeleteWidgetsAction((IWorkbenchPart) this);
+		registry.registerAction(action);
+		getSelectionActions().add(action.getId());
 
 		action = new CopyTemplateAction(this);
 		registry.registerAction(action);
@@ -574,14 +695,12 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		/*
-		 * XXX Warum wird die DirectEditAction 2x eingebunden???
-		 */
-		action = new DirectEditAction((IWorkbenchPart) this);
+		action = new CopyWidgetsAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
+		keyBindingService.registerAction(action);
 
-		action = new CopyWidgetsAction(this);
+		action = new CutWidgetsAction(this);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 		keyBindingService.registerAction(action);
@@ -614,33 +733,42 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		action.setActionDefinitionId("org.eclipse.ui.edit.delete"); //$NON-NLS-1$
 		keyBindingService.registerAction(action);
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.LEFT);
+		id = ActionFactory.SELECT_ALL.getId();
+		action = getActionRegistry().getAction(id);
+		action.setActionDefinitionId("org.eclipse.ui.edit.selectAll");
+		keyBindingService.registerAction(action);
+
+		id = ActionFactory.UNDO.getId();
+		action = getActionRegistry().getAction(id);
+		action.setActionDefinitionId("org.eclipse.ui.edit.undo");
+		keyBindingService.registerAction(action);
+
+		id = ActionFactory.REDO.getId();
+		action = getActionRegistry().getAction(id);
+		action.setActionDefinitionId("org.eclipse.ui.edit.redo");
+		keyBindingService.registerAction(action);
+
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.LEFT);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.RIGHT);
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.RIGHT);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.TOP);
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.TOP);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.BOTTOM);
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.BOTTOM);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.CENTER);
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.CENTER);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 
-		action = new AlignmentAction((IWorkbenchPart) this,
-				PositionConstants.MIDDLE);
+		action = new AlignmentAction((IWorkbenchPart) this, PositionConstants.MIDDLE);
 		registry.registerAction(action);
 		getSelectionActions().add(action.getId());
 	}
@@ -648,9 +776,33 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unchecked")
 	@Override
 	public void commandStackChanged(final EventObject event) {
 		firePropertyChange(IEditorPart.PROP_DIRTY);
+
+		if (propertyPage != null && !propertyPage.getControl().isDisposed()) {
+			// .. update the property page (this is necessary to allow dynamic
+			// visibility changes of properties)
+			List<EditPart> selectedEditParts = getGraphicalViewer().getSelectedEditParts();
+			if (selectedEditParts.isEmpty()) {
+				EditPart focusEditPart = getGraphicalViewer().getFocusEditPart();
+				selectedEditParts = new ArrayList<EditPart>(1);
+				selectedEditParts.add(focusEditPart);
+			}
+
+			propertyPage.selectionChanged(this, new StructuredSelection(selectedEditParts) {
+				@Override
+				public boolean equals(Object o) {
+					return false;
+				}
+
+				@Override
+				public int hashCode() {
+					return UUID.randomUUID().hashCode();
+				}
+			});
+		}
 		super.commandStackChanged(event);
 	}
 
@@ -659,8 +811,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 */
 	@Override
 	public void doSave(final IProgressMonitor monitor) {
-		if (getEditorInput() instanceof FileEditorInput
-				|| getEditorInput() instanceof FileStoreEditorInput) {
+		if (getEditorInput() instanceof FileEditorInput || getEditorInput() instanceof FileStoreEditorInput) {
 			performSave();
 		} else {
 			doSaveAs();
@@ -679,8 +830,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		try {
 			if (ret == Window.OK) {
 				IPath targetPath = saveAsDialog.getResult();
-				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot()
-						.getFile(targetPath);
+				IFile targetFile = ResourcesPlugin.getWorkspace().getRoot().getFile(targetPath);
 
 				if (!targetFile.exists()) {
 					targetFile.create(null, true, null);
@@ -695,8 +845,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 				performSave();
 			}
 		} catch (CoreException e) {
-			MessageDialog.openError(getSite().getShell(), "IO Error", e
-					.getMessage());
+			MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
 			CentralLogger.getInstance().error(this, e);
 		}
 	}
@@ -715,24 +864,16 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	private void performSave() {
 		try {
 			if (_displayModel.isLoading()) {
-				MessageDialog
-						.openInformation(
-								getSite().getShell(),
-								"Information",
-								"The displayed model isn't completeley loaded, yet. It can not be saved until this operation is completed.");
+				MessageDialog.openInformation(getSite().getShell(), "Information",
+						"The displayed model isn't completeley loaded, yet. It can not be saved until this operation is completed.");
 			} else {
 				// getInputStream().setContents(is, false, false, null);
 				if (getEditorInput() instanceof FileEditorInput) {
-					InputStream is = PersistenceUtil
-							.createStream(_displayModel);
-					((FileEditorInput) getEditorInput()).getFile().setContents(
-							is, false, false, null);
+					InputStream is = PersistenceUtil.createStream(_displayModel);
+					((FileEditorInput) getEditorInput()).getFile().setContents(is, false, false, null);
 				} else if (getEditorInput() instanceof FileStoreEditorInput) {
-					File file = URIUtil.toPath(
-							((FileStoreEditorInput) getEditorInput()).getURI())
-							.toFile();
-					String content = PersistenceUtil
-							.createString(_displayModel);
+					File file = URIUtil.toPath(((FileStoreEditorInput) getEditorInput()).getURI()).toFile();
+					String content = PersistenceUtil.createString(_displayModel);
 					try {
 						FileWriter fileWriter = new FileWriter(file, false);
 						BufferedWriter writer = new BufferedWriter(fileWriter);
@@ -740,8 +881,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 						writer.flush();
 						writer.close();
 					} catch (IOException e) {
-						MessageDialog.openError(getSite().getShell(),
-								"IO Error", e.getMessage());
+						MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
 						CentralLogger.getInstance().error(this, e);
 					}
 				}
@@ -751,8 +891,7 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 				firePropertyChange(IEditorPart.PROP_DIRTY);
 			}
 		} catch (CoreException e) {
-			MessageDialog.openError(getSite().getShell(), "IO Error", e
-					.getMessage());
+			MessageDialog.openError(getSite().getShell(), "IO Error", e.getMessage());
 			CentralLogger.getInstance().error(this, e);
 		}
 	}
@@ -768,14 +907,12 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		IEditorInput editorInput = getEditorInput();
 		if (editorInput instanceof FileEditorInput) {
 			try {
-				result = ((FileEditorInput) editorInput).getFile()
-						.getContents();
+				result = ((FileEditorInput) editorInput).getFile().getContents();
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 		} else if (editorInput instanceof FileStoreEditorInput) {
-			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());
+			IPath path = URIUtil.toPath(((FileStoreEditorInput) editorInput).getURI());
 			try {
 				result = new FileInputStream(path.toFile());
 			} catch (FileNotFoundException e) {
@@ -795,10 +932,9 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		IPath result = null;
 		IEditorInput editorInput = getEditorInput();
 		if (editorInput instanceof FileEditorInput) {
-			result = ((FileEditorInput) editorInput).getFile().getLocation();
+			result = ((FileEditorInput) editorInput).getFile().getFullPath();
 		} else if (editorInput instanceof FileStoreEditorInput) {
-			result = URIUtil.toPath(((FileStoreEditorInput) editorInput)
-					.getURI());
+			result = URIUtil.toPath(((FileStoreEditorInput) editorInput).getURI());
 		}
 
 		return result;
@@ -825,15 +961,17 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	 */
 	@Override
 	public Object getAdapter(final Class adapter) {
-		if (adapter == IPropertySheetPage.class) {
+
+		if (adapter == org.eclipse.ui.views.properties.IPropertySheetPage.class) {
+			propertyPage = new TabbedPropertySheetPage(this);
+			return propertyPage;
+		} else if (adapter == IPropertySheetPage.class) {
 			PropertySheetPage page = new PropertySheetPage();
-			page
-					.setRootEntry(new UndoablePropertySheetEntry(
-							getCommandStack()));
+			page.setRootEntry(new UndoablePropertySheetEntry(getCommandStack()));
+
 			return page;
 		} else if (adapter == ZoomManager.class) {
-			return ((ScalableFreeformRootEditPart) getGraphicalViewer()
-					.getRootEditPart()).getZoomManager();
+			return ((ScalableFreeformRootEditPart) getGraphicalViewer().getRootEditPart()).getZoomManager();
 		} else if (adapter == ILayerManager.class) {
 			return new ILayerManager() {
 				public LayerSupport getLayerSupport() {
@@ -885,27 +1023,13 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 	public void dispose() {
 		removeModelListeners();
 		_displayModel = null;
-		System.out.println("Editor Dispose");
 		super.dispose();
 	}
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected void finalize() throws Throwable {
-		PerformanceUtil.getInstance().finalizedCalled(this);
-		super.finalize();
-	}
-
-	final class GridSpacingListener implements
-			org.eclipse.jface.util.IPropertyChangeListener {
+	final class GridSpacingListener implements org.eclipse.jface.util.IPropertyChangeListener {
 		public void propertyChange(final PropertyChangeEvent event) {
-			if (event.getProperty().equals(
-					PreferenceConstants.PROP_GRID_SPACING)) {
-				IEditorReference[] references = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow().getActivePage()
-						.getEditorReferences();
+			if (event.getProperty().equals(PreferenceConstants.PROP_GRID_SPACING)) {
+				IEditorReference[] references = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().getEditorReferences();
 				for (IEditorReference ref : references) {
 					IEditorPart editor = ref.getEditor(false);
 					if (editor instanceof DisplayEditor) {
@@ -924,4 +1048,17 @@ public final class DisplayEditor extends GraphicalEditorWithFlyoutPalette
 		}
 	}
 
+	public String getContributorId() {
+		return getSite().getId();
+	}
+
+	@Override
+	public GraphicalViewer getGraphicalViewer() {
+		return super.getGraphicalViewer();
+	}
+
+	@Override
+	public CommandStack getCommandStack() {
+		return super.getCommandStack();
+	}
 }

@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Stefan Hofer
  * 
- * @version $Revision$
+ * @version $Revision: 1.3 $
  *
  */
 public final class LabelEditPartTest {

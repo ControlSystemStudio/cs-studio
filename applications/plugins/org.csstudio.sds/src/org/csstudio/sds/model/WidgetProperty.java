@@ -21,27 +21,36 @@
  */
 package org.csstudio.sds.model;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.csstudio.sds.model.properties.IPropertyChangeListener;
-import org.csstudio.sds.model.properties.PropertyTypesEnum;
 
 /**
  * This class defines a property for SDS widget models.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.15 $
  * 
  */
 public abstract class WidgetProperty {
 
 	/**
+	 * ID of the property.
+	 */
+	private String _id;
+	
+	private AbstractWidgetModel _widgetModel;
+	
+	private Set<String> _hiddenBy; 
+	
+	/**
 	 * Indicates, whether this property can be used to display dynamic values
 	 * from a control system.
 	 */
 	private boolean _dynamicWriteAllowed;
-
+	
 	/**
 	 * The registered property change listeners.
 	 */
@@ -51,6 +60,8 @@ public abstract class WidgetProperty {
 	 * A textual description of this property.
 	 */
 	private String _description;
+	
+	private String _longDescription;
 
 	/**
 	 * The data type of this property.
@@ -97,23 +108,71 @@ public abstract class WidgetProperty {
 	 *            the dynamics descriptor
 	 */
 	public WidgetProperty(final PropertyTypesEnum propertyType,
+			final String description, String longDescription, final WidgetPropertyCategory category,
+			final Object defaultValue,
+			final DynamicsDescriptor dynamicsDescriptor) {
+			assert propertyType != null;
+			assert description != null;
+			assert category != null;
+			assert defaultValue != null;
+
+			_propertyType = propertyType;
+			_description = description;
+			_longDescription = longDescription;
+			_category = category;
+			_defaultValue = defaultValue;
+			_propertyValue = defaultValue;
+			_dynamicsDescriptor = dynamicsDescriptor;
+			_changeListeners = new CopyOnWriteArrayList<IPropertyChangeListener>();
+			_dynamicWriteAllowed = true;
+			_hiddenBy = new HashSet<String>();
+			
+	}
+	public WidgetProperty(final PropertyTypesEnum propertyType,
 			final String description, final WidgetPropertyCategory category,
 			final Object defaultValue,
 			final DynamicsDescriptor dynamicsDescriptor) {
+		this(propertyType, description, null, category, defaultValue, dynamicsDescriptor);
+	}
+	
+	public String getId() {
+		return _id;
+	}
+	
+	public void setId(String id) {
+		_id = id;
+	}
+	
+	public AbstractWidgetModel getWidgetModel() {
+		return _widgetModel;
+	}
+	
+	public void setWidgetModel(AbstractWidgetModel widgetModel) {
+		_widgetModel = widgetModel;
+	}
+	
+	
+	public void hide(String masterId) {
+		_hiddenBy.add(masterId);
+	}
 
-		assert propertyType != null;
-		assert description != null;
-		assert category != null;
-		assert defaultValue != null;
-
-		_propertyType = propertyType;
-		_description = description;
-		_category = category;
-		_defaultValue = defaultValue;
-		_propertyValue = defaultValue;
-		_dynamicsDescriptor = dynamicsDescriptor;
-		_changeListeners = new CopyOnWriteArrayList<IPropertyChangeListener>();
-		_dynamicWriteAllowed = true;
+	public void show(String masterId) {
+		_hiddenBy.remove(masterId);
+	}
+	
+	public boolean isVisible() {
+		return _hiddenBy.isEmpty();
+	}
+	
+	/**
+	 * Returns a text representation for tooltips. Should be overridden by
+	 * subclasses to implement customized tooltip texts.
+	 * 
+	 * @return a text representation for tooltips
+	 */
+	public String getTextForTooltip() {
+		Object v = getPropertyValue();
+		return v != null ? v.toString() : "-";
 	}
 
 	/**
@@ -123,6 +182,7 @@ public abstract class WidgetProperty {
 	 * @return an array which contains all Java types, the property value is
 	 *         compatible too
 	 */
+	@SuppressWarnings("unchecked")
 	public abstract Class[] getCompatibleJavaTypes();
 
 	/**
@@ -144,6 +204,7 @@ public abstract class WidgetProperty {
 	 * 
 	 * @return The current value of this property.
 	 */
+	@SuppressWarnings("unchecked")
 	public final <E> E getPropertyValue() {
 		return (E) _propertyValue;
 	}
@@ -182,6 +243,14 @@ public abstract class WidgetProperty {
 		}
 	}
 
+	
+	/**
+	 * set the textual description of this property.
+	 */
+	public final void setDescription(String description) {
+		this._description = description;
+	}
+	
 	/**
 	 * Return the textual description of this property.
 	 * 
@@ -189,6 +258,10 @@ public abstract class WidgetProperty {
 	 */
 	public final String getDescription() {
 		return _description;
+	}
+	
+	public String getLongDescription() {
+		return _longDescription;
 	}
 
 	/**
@@ -318,7 +391,7 @@ public abstract class WidgetProperty {
 	 */
 	protected final synchronized void fireManualValueChanged() {
 		for (IPropertyChangeListener listener : _changeListeners) {
-			listener.propertyManualValueChanged(_manualValue);
+			listener.propertyManualValueChanged(_id, _manualValue);
 		}
 	}
 

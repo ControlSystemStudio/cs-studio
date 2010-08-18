@@ -24,8 +24,8 @@ package org.csstudio.sds.ui.wizards;
 import java.io.InputStream;
 
 import org.csstudio.platform.ui.wizards.WizardNewFileCreationPage;
+import org.csstudio.sds.internal.persistence.PersistenceUtil;
 import org.csstudio.sds.model.DisplayModel;
-import org.csstudio.sds.model.persistence.PersistenceUtil;
 import org.csstudio.sds.ui.internal.editor.DisplayEditor;
 import org.eclipse.jface.viewers.IStructuredSelection;
 
@@ -33,7 +33,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
  * Wizard page for the creation of new SDS files.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public final class NewDisplayWizardPage extends WizardNewFileCreationPage {

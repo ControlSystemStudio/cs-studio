@@ -28,11 +28,13 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.sds.model.logic.IRule;
-import org.csstudio.sds.model.logic.LogicException;
+import org.csstudio.sds.internal.rules.LogicException;
+import org.csstudio.sds.model.IRule;
+import org.csstudio.sds.model.PropertyTypesEnum;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.ContextAction;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.ImporterTopLevel;
 import org.mozilla.javascript.NativeArray;
 import org.mozilla.javascript.NativeJavaObject;
 import org.mozilla.javascript.Scriptable;
@@ -41,7 +43,7 @@ import org.mozilla.javascript.Scriptable;
  * A rule that is based upon a script definition.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.9 $
  * 
  */
 public class ScriptedRule implements IRule {
@@ -61,18 +63,12 @@ public class ScriptedRule implements IRule {
 	 * script's parameters.
 	 */
 	private static final String SCRIPT_PARAMTER_DESCRIPTIONS = "parameters"; //$NON-NLS-1$
-	
-	/**
-	 * The name of the script field that contains the types of the
-	 * script's parameters.
-	 */
-	private static final String SCRIPT_PARAMTER_TYPES = "parameterTypes"; //$NON-NLS-1$
 
 	/**
 	 * The name of the script field that contains the descriptions of the
 	 * script's return value.
 	 */
-	private static final String SCRIPT_RETURN_TYPE = "returns";
+	private static final String SCRIPT_PROPERTY_TYPES = "compatibleProperties";
 
 	/**
 	 * The script function that will be executed.
@@ -94,12 +90,6 @@ public class ScriptedRule implements IRule {
 	 * script.
 	 */
 	private List<String> _parameterDescriptions;
-	/**
-	 * The types of the parameters that are defined within the underlying
-	 * script.
-	 */
-	@SuppressWarnings("unchecked")
-	private List<Class> _parameterTypes;
 
 	/**
 	 * The scripting scope.
@@ -109,8 +99,7 @@ public class ScriptedRule implements IRule {
 	/**
 	 * The expected return type.
 	 */
-	@SuppressWarnings("unchecked")
-	private Class _returnType;
+	private PropertyTypesEnum[] _compatiblePropertyTypes;
 
 	/**
 	 * Standard constructor.
@@ -118,8 +107,8 @@ public class ScriptedRule implements IRule {
 	 * @param id
 	 *            The ID of this rule.
 	 * @param scriptFileInputStream
-	 *            An <code>InputStream</code> that contains the script that
-	 *            will be associated to rule.
+	 *            An <code>InputStream</code> that contains the script that will
+	 *            be associated to rule.
 	 * @throws LogicException
 	 *             A <code>LogicException</code> is thrown an error occurs
 	 *             during the parsing of the script.
@@ -132,7 +121,7 @@ public class ScriptedRule implements IRule {
 
 		try {
 			Context scriptContext = Context.enter();
-			_scriptScope = scriptContext.initStandardObjects();
+			_scriptScope = new ImporterTopLevel(scriptContext);
 			_scriptFunction = parseScriptFile(scriptFileInputStream,
 					scriptContext);
 		} catch (Exception e) {
@@ -186,13 +175,13 @@ public class ScriptedRule implements IRule {
 
 	/**
 	 * Returns the expected return type.
+	 * 
 	 * @return The expected return type
 	 */
-	@SuppressWarnings("unchecked")
-	public Class getReturnType() {
-		return _returnType;
+	public PropertyTypesEnum[] getCompatiblePropertyTypes() {
+		return _compatiblePropertyTypes;
 	}
-	
+
 	/**
 	 * Return the textual description of this rule.
 	 * 
@@ -220,19 +209,6 @@ public class ScriptedRule implements IRule {
 	 */
 	public final String[] getParameterDescriptions() {
 		return _parameterDescriptions.toArray(new String[_parameterDescriptions
-				.size()]);
-	}
-	
-	/**
-	 * Return the types of the parameters that are defined within the
-	 * underlying script.
-	 * 
-	 * @return The types of the parameters that are defined within the
-	 *         underlying script.
-	 */
-	@SuppressWarnings("unchecked")
-	public final Class[] getParameterTypes() {
-		return _parameterTypes.toArray(new Class[_parameterTypes
 				.size()]);
 	}
 
@@ -269,10 +245,9 @@ public class ScriptedRule implements IRule {
 		scriptContext.evaluateString(_scriptScope, scriptString,
 				"script file", 1, null); //$NON-NLS-1$
 
-		_returnType = fetchReturnType();
+		_compatiblePropertyTypes = fetchCompatiblePropertyTypes();
 		_description = fetchTextualDescription();
 		_parameterDescriptions = fetchParameterDescriptions();
-		_parameterTypes = fetchParameterTypes();
 
 		// Try to allocate the function object.
 		Object functionObject = _scriptScope.get(SCRIPT_LOGIC_FUNCTION_NAME,
@@ -288,25 +263,30 @@ public class ScriptedRule implements IRule {
 	/**
 	 * Try to fetch the return type from the script.
 	 */
-	@SuppressWarnings("unchecked")
-	private Class fetchReturnType() {
-		Class returnType=Object.class;
-		
-		Object returnTypeObject = _scriptScope.get(SCRIPT_RETURN_TYPE,
+	private PropertyTypesEnum[] fetchCompatiblePropertyTypes() {
+		List<PropertyTypesEnum> result = new ArrayList<PropertyTypesEnum>();
+
+		Object returnTypeObject = _scriptScope.get(SCRIPT_PROPERTY_TYPES,
 				_scriptScope);
 
 		if (returnTypeObject != Scriptable.NOT_FOUND) {
-			try {
-				returnType = Class.forName(Context.toString(returnTypeObject));
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-				// ignore
+			String attribute = Context.toString(returnTypeObject);
+			if (attribute != null) {
+				String[] ids = attribute.split(",");
+				for (String id : ids) {
+					try {
+						result.add(PropertyTypesEnum.createFromPortable(id
+								.trim()));
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+				}
 			}
 		}
-		
-		return returnType;
+
+		return result.toArray(new PropertyTypesEnum[result.size()]);
 	}
-	
+
 	/**
 	 * Try to fetch the textual description from the script.
 	 */
@@ -318,7 +298,7 @@ public class ScriptedRule implements IRule {
 		if (descriptionObject != Scriptable.NOT_FOUND) {
 			result = Context.toString(descriptionObject);
 		}
-		
+
 		return result;
 	}
 
@@ -327,7 +307,7 @@ public class ScriptedRule implements IRule {
 	 */
 	private List<String> fetchParameterDescriptions() {
 		List<String> result = new ArrayList<String>();
-		
+
 		Object parameterDescriptionsObject = _scriptScope.get(
 				SCRIPT_PARAMTER_DESCRIPTIONS, _scriptScope);
 
@@ -341,37 +321,8 @@ public class ScriptedRule implements IRule {
 				}
 			}
 		}
-		
+
 		return result;
 	}
-	
-	/**
-	 * Try to fetch the parameter types from the script.
-	 */
-	@SuppressWarnings("unchecked")
-	private List<Class> fetchParameterTypes() {
-		List<Class> result = new ArrayList<Class>();
-		
-		Object parameterDescriptionsObject = _scriptScope.get(
-				SCRIPT_PARAMTER_TYPES, _scriptScope);
 
-		if ((parameterDescriptionsObject instanceof NativeArray)) {
-			NativeArray parameterTypes = (NativeArray) parameterDescriptionsObject;
-
-			for (int i = 0; i < parameterTypes.getIds().length; i++) {
-				Object o = parameterTypes.get(i, parameterTypes);
-				if (o != null) {
-					try {
-						result.add(Class.forName(o.toString()));
-					} catch (ClassNotFoundException e) {
-						result.add(Object.class);
-					}
-				}
-			}
-		}
-		
-		return result;
-	}
-	
-	
 }

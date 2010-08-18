@@ -29,7 +29,7 @@ import org.csstudio.sds.importer.SampleDisplayImporter;
  * demonstrate the creation of displays with code.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 public final class SampleDisplayImportWizard extends

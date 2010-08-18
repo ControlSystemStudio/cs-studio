@@ -21,24 +21,28 @@
  */
 package org.csstudio.sds.model;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.csstudio.sds.SdsPlugin;
 import org.csstudio.sds.internal.model.WidgetModelFactoryDescriptor;
+import org.csstudio.sds.internal.preferences.PreferenceConstants;
+import org.csstudio.sds.internal.preferences.WidgetSelectionStringConverter;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Platform;
 
 /**
- * This class provides access to the <code>widgetModelFactories</code>
- * extension point.
+ * This class provides access to the <code>widgetModelFactories</code> extension
+ * point.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.8 $
  * 
  */
 public final class WidgetModelFactoryService {
@@ -47,16 +51,31 @@ public final class WidgetModelFactoryService {
 	 */
 	private static WidgetModelFactoryService _instance = null;
 
+	private static final String DEFAULT_CATEGORY = "Others";
+
 	/**
 	 * The descriptors of all registered extensions.
 	 */
-	private Map<String, WidgetModelFactoryDescriptor> _descriptors = null;
+	private Map<String, WidgetModelFactoryDescriptor> _allDescriptors = null;
+
+	private HashMap<String, List<String>> _allCategories;
 
 	/**
 	 * Private constructor due to the singleton pattern.
 	 */
 	private WidgetModelFactoryService() {
 		lookup();
+	}
+
+	/**
+	 * Return the widget type IDs of all registered widget models.
+	 * 
+	 * @return The widget type IDs of all registered widget models.
+	 */
+	public Set<String> getUsedWidgetTypes() {
+		Set<String> result = new HashSet<String>(_allDescriptors.keySet());
+		result.removeAll(determineExcludedWidgetIds());
+		return result;
 	}
 
 	/**
@@ -72,42 +91,51 @@ public final class WidgetModelFactoryService {
 		return _instance;
 	}
 
-	/**
-	 * Return the widget type IDs of all registered widget models.
-	 * 
-	 * @return The widget type IDs of all registered widget models.
-	 */
-	public Set<String> getWidgetTypes() {
-		return new HashSet<String>(_descriptors.keySet());
+	public Set<String> getAllCategories() {
+		return _allCategories.keySet();
+	}
+
+	public Set<String> getWidgetForCategory(String category) {
+		Set<String> result = new HashSet<String>(_allCategories.get(category));
+		result.removeAll(determineExcludedWidgetIds());
+		return result;
 	}
 
 	/**
-	 * Return whether a widget model factory for the given type ID is
-	 * registered.
-	 * 
-	 * @param typeId
-	 *            A widget model type ID.
-	 * @return True, if a widget model factory is registered for the given type
-	 *         ID.
-	 */
-	public boolean hasWidgetModelFactory(final String typeId) {
-		return _descriptors.containsKey(typeId);
-	}
-
-	/**
-	 * Return the widget model factory for the given type ID.
+	 * Creates a widget of the specified type.
 	 * 
 	 * @param typeId
-	 *            A widget model type ID.
-	 * @return The widget model factory for the given type ID.
+	 *            type identifier
+	 * 
+	 * @return a new widget or null
 	 */
-	public IWidgetModelFactory getWidgetModelFactory(final String typeId) {
-		return _descriptors.get(typeId).getFactory();
+	public AbstractWidgetModel getWidgetModel(final String typeId) {
+		AbstractWidgetModel model = null;
+
+		IWidgetModelFactory factory = _allDescriptors.get(typeId).getFactory();
+
+		if (factory != null) {
+			model = factory.createWidgetModel();
+		}
+
+		return model;
+	}
+
+	@SuppressWarnings("unchecked")
+	public Object getWidgetModelType(String widgetType) {
+		Class type = null;
+
+		IWidgetModelFactory factory = _allDescriptors.get(widgetType).getFactory();
+
+		if (factory != null) {
+			type = factory.getWidgetModelType();
+		}
+
+		return type;
 	}
 
 	/**
-	 * Return the description of the widget model factory for the given type
-	 * ID.
+	 * Return the description of the widget model factory for the given type ID.
 	 * 
 	 * @param typeId
 	 *            A widget model type ID.
@@ -115,7 +143,7 @@ public final class WidgetModelFactoryService {
 	 *         ID.
 	 */
 	public String getDescription(final String typeId) {
-		return _descriptors.get(typeId).getDescription();
+		return _allDescriptors.get(typeId).getDescription();
 	}
 
 	/**
@@ -124,11 +152,12 @@ public final class WidgetModelFactoryService {
 	 * 
 	 * @param typeId
 	 *            A widget model type ID.
-	 * @return the icon ressource path of the widget model factory for the
-	 *         given type ID.
+	 * @return the icon ressource path of the widget model factory for the given
+	 *         type ID.
 	 */
 	public String getIcon(final String typeId) {
-		return _descriptors.get(typeId).getIcon();
+		WidgetModelFactoryDescriptor descriptor = _allDescriptors.get(typeId);
+		return descriptor != null ? descriptor.getIcon() : null;
 	}
 
 	/**
@@ -139,7 +168,7 @@ public final class WidgetModelFactoryService {
 	 * @return The name of the widget model factory for the given type ID.
 	 */
 	public String getName(final String typeId) {
-		return _descriptors.get(typeId).getName();
+		return _allDescriptors.get(typeId).getName();
 	}
 
 	/**
@@ -152,20 +181,52 @@ public final class WidgetModelFactoryService {
 	 *         the given type ID.
 	 */
 	public String getContributingPluginId(final String typeId) {
-		return _descriptors.get(typeId).getPluginId();
-	}	
+		WidgetModelFactoryDescriptor descriptor = _allDescriptors.get(typeId);
+		return descriptor != null ? descriptor.getPluginId() : null;
+	}
+
+	/**
+	 * Returns the IDs of all known contributing plugins.
+	 * 
+	 * @return A set of the plugin-IDs
+	 */
+	public Set<String> getAllContributingPluginIds() {
+		HashSet<String> contributingPluginIds = new HashSet<String>();
+		for (String typeId : _allDescriptors.keySet()) {
+			contributingPluginIds.add(this.getContributingPluginId(typeId));
+		}
+		return contributingPluginIds;
+	}
+
+	/**
+	 * Returns all widget-IDs contributed by the plugin with the given
+	 * <code>pluginId</code>.
+	 * 
+	 * @param pluginId
+	 *            The ID of the plugin
+	 * @return A set of the widget-IDs
+	 */
+	public Set<String> getWidgetIdsOfPlugin(final String pluginId) {
+		HashSet<String> typeIds = new HashSet<String>();
+		for (String typeId : _allDescriptors.keySet()) {
+			if (this.getContributingPluginId(typeId).equals(pluginId)) {
+				typeIds.add(typeId);
+			}
+		}
+		return typeIds;
+	}
 
 	/**
 	 * Perform a lookup for plugin that provide extensions for the
 	 * <code>widgetModelFactories</code> extension point.
 	 */
 	private void lookup() {
-		_descriptors = new HashMap<String, WidgetModelFactoryDescriptor>();
+		_allDescriptors = new HashMap<String, WidgetModelFactoryDescriptor>();
+		_allCategories = new HashMap<String, List<String>>();
 
 		IExtensionRegistry extReg = Platform.getExtensionRegistry();
 		String id = SdsPlugin.EXTPOINT_WIDGET_MODEL_FACTORIES;
-		IConfigurationElement[] confElements = extReg
-				.getConfigurationElementsFor(id);
+		IConfigurationElement[] confElements = extReg.getConfigurationElementsFor(id);
 
 		for (IConfigurationElement element : confElements) {
 			IWidgetModelFactory factory = null;
@@ -173,21 +234,41 @@ public final class WidgetModelFactoryService {
 			String name = element.getAttribute("name"); //$NON-NLS-1$
 			String description = element.getAttribute("description"); //$NON-NLS-1$
 			String icon = element.getAttribute("icon"); //$NON-NLS-1$
-			String pluginId = element.getDeclaringExtension()
-					.getNamespaceIdentifier();
+			String pluginId = element.getDeclaringExtension().getNamespaceIdentifier();
+			String category = element.getAttribute("category");
+			if (category == null || category.trim().length() == 0) {
+				category = DEFAULT_CATEGORY;
+			}
 			try {
-				factory = (IWidgetModelFactory) element
-						.createExecutableExtension("class"); //$NON-NLS-1$
+				factory = (IWidgetModelFactory) element.createExecutableExtension("class"); //$NON-NLS-1$
 			} catch (CoreException e) {
 				e.printStackTrace();
 			}
 
 			if (factory != null && typeId != null) {
-				_descriptors.put(typeId, new WidgetModelFactoryDescriptor(
-						description, name, icon, factory, pluginId));
+				List<String> list = _allCategories.get(category);
+				if (list == null) {
+					list = new ArrayList<String>();
+					_allCategories.put(category, list);
+				}
+				list.add(typeId);
+				_allDescriptors.put(typeId, new WidgetModelFactoryDescriptor(description, name, icon, factory, pluginId));
 			}
 		}
 
+	}
+
+	/**
+	 * Determines the excluded Widgets based on the settings in the preference
+	 * page.
+	 * 
+	 * @return The list of excluded widget-ids
+	 */
+	private List<String> determineExcludedWidgetIds() {
+		String excludedWidgets = Platform.getPreferencesService().getString(SdsPlugin.getDefault().getBundle().getSymbolicName(),
+				PreferenceConstants.PROP_DESELECTED_WIDGETS, "", null);
+
+		return WidgetSelectionStringConverter.createStringListFromString(excludedWidgets);
 	}
 
 }

@@ -4,7 +4,7 @@ import org.csstudio.nams.common.fachwert.MessageKeyEnum;
 import org.csstudio.nams.common.material.regelwerk.StringRegelOperator;
 import org.csstudio.nams.common.testutils.AbstractTestObject;
 
-public class StringFilterConditionDTO_Test extends
+public class SFCD_Test extends
 		AbstractTestObject<StringFilterConditionDTO> {
 
 	@Override

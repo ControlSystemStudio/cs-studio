@@ -26,8 +26,8 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link ImageModel} widget with Connection state and Alarms.
  *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: jhatje $
+ * @version $Revision: 1.1 $
  * @since 20.04.2010
  */
 public class ImageAlarmBehavior extends AbstractDesyAlarmBehavior<ImageModel> {

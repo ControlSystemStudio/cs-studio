@@ -21,10 +21,10 @@
  */
 package org.csstudio.sds.ui.internal.adapters;
 
-import org.csstudio.sds.model.properties.ActionType;
-import org.csstudio.sds.model.properties.actions.WidgetAction;
+import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.csstudio.sds.model.ActionType;
+import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
 import org.csstudio.sds.ui.SdsUiPlugin;
-import org.csstudio.sds.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
@@ -46,12 +46,12 @@ public final class WidgetActionAdapterFactory implements IAdapterFactory {
 			final Class adapterType) {
 		assert adaptableObject != null;
 		assert adapterType != null;
-		assert adaptableObject instanceof WidgetAction : "adaptableObject instanceof WidgetAction"; //$NON-NLS-1$
+		assert adaptableObject instanceof AbstractWidgetActionModel : "adaptableObject instanceof WidgetAction"; //$NON-NLS-1$
 		if (adapterType == IWorkbenchAdapter.class) {
 			return new WorkbenchAdapter() {
 				@Override
 				public String getLabel(final Object o) {
-					final WidgetAction widgetAction = (WidgetAction)o;
+					final AbstractWidgetActionModel widgetAction = (AbstractWidgetActionModel)o;
 					String result = widgetAction.getActionLabel();
 					return result;
 				}
@@ -59,22 +59,14 @@ public final class WidgetActionAdapterFactory implements IAdapterFactory {
 				@Override
 				public ImageDescriptor getImageDescriptor(final Object object) {
 					ActionType type = null;
-					if (object instanceof WidgetAction) {
-						type = ((WidgetAction)object).getType(); 
+					if (object instanceof AbstractWidgetActionModel) {
+						type = ((AbstractWidgetActionModel)object).getType(); 
 					} else if (object instanceof ActionType) {
 						type = (ActionType) object;
 					}
 					if (type!=null) {
-						String path = "icons/widgetaction.gif";
-						if (type.equals(ActionType.COMMIT_VALUE)) {
-							path = "icons/commitvalue2.gif";
-						} else if (type.equals(ActionType.OPEN_SHELL)) {
-							path = "icons/openshell2.gif";
-						} else if (type.equals(ActionType.OPEN_VIEW)) {
-							path = "icons/openview2.gif";
-						}
 						return CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-								SdsUiPlugin.PLUGIN_ID,path); //$NON-NLS-1$	
+								SdsUiPlugin.PLUGIN_ID,type.getIcon());	
 					}
 					return null;
 				}
