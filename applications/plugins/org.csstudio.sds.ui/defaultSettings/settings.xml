@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<settings>
+	<style name="Default" description="Default Settings">
+		<color name="Test1" description="Test Color 1 (Red)" value="#FF0000"/>
+		<color name="Test2" description="Test Color 2 (Green)" value="#00FF00"/>
+		<font name="Test1" description="Test Font 1" fontName="Arial" fontSize="10" bold="false" italic="false"/>
+		<font name="Test2" description="Test Font 2" fontName="Arial" fontSize="20" bold="true" italic="false"/>
+	</style>
+	
+</settings>
