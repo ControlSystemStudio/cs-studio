@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
@@ -106,16 +107,19 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 	}
 
 	private MacrosInput getMacrosInput(){
+		MacrosInput result = new MacrosInput(new LinkedHashMap<String, String>(), false);
+		
 		MacrosInput macrosInput = ((MacrosInput)getPropertyValue(PROP_MACROS)).getCopy();
-		IEditorPart activeEditor = 
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow().
-			getActivePage().getActiveEditor();
-		if(macrosInput.isInclude_parent_macros() && activeEditor instanceof OPIRunner){
-			Map<String, String> macrosMap = ((OPIRunner)activeEditor).getDisplayModel().getMacroMap();
-			macrosInput.getMacrosMap().putAll(macrosMap);			
+		
+		if(macrosInput.isInclude_parent_macros()){
+			Map<String, String> macrosMap = 
+				getWidgetModel() instanceof AbstractContainerModel? 
+						((AbstractContainerModel)getWidgetModel()).getParentMacroMap() : 
+							getWidgetModel().getParent().getMacroMap();
+			result.getMacrosMap().putAll(macrosMap);			
 		}
-		macrosInput.setInclude_parent_macros(false);
-		return macrosInput;
+		result.getMacrosMap().putAll(macrosInput.getMacrosMap());
+		return result;
 	}
 	
 	/**
