@@ -13,5 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.help,
  org.csstudio.utility.treemodel;bundle-version="1.3.0",
  org.csstudio.platform.libs.annotations;bundle-version="1.3.0",
- org.csstudio.platform.libs.guava;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+ org.csstudio.platform.libs.guava
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

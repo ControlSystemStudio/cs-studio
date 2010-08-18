@@ -13,7 +13,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
  * @version $Revision$
  * @since 30.04.2009
  */
-public interface IReposetory {
+public interface IRepository {
 
     /**
      * @param <T>

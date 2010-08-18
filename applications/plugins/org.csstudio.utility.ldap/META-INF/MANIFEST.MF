@@ -10,7 +10,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.namespace.utility,
  org.junit4;bundle-version="4.5.0",
  org.csstudio.platform.libs.annotations;bundle-version="1.0.0",
- org.csstudio.platform.libs.guava;bundle-version="1.0.0",
+ org.csstudio.platform.libs.guava,
  org.csstudio.utility.treemodel;bundle-version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.utility.ldap,
@@ -23,5 +23,4 @@ Export-Package: org.csstudio.utility.ldap,
  org.csstudio.utility.ldap.utils
 Import-Package: org.csstudio.utility.treemodel,
  org.eclipse.ecf.core.util
-Bundle-ClassPath: lib/jdom.jar,
- .
+Bundle-ClassPath: .

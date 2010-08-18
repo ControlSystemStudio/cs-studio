@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.jdom;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

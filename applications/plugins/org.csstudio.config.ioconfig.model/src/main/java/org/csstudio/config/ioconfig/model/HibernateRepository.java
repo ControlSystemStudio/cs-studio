@@ -25,7 +25,7 @@ import org.hibernate.Session;
  * @version $Revision$
  * @since 03.06.2009
  */
-public class HibernateReposetory implements IReposetory {
+public class HibernateRepository implements IRepository {
 
     /**
      * {@inheritDoc}
@@ -410,5 +410,4 @@ public class HibernateReposetory implements IReposetory {
     public void close() {
         HibernateManager.closeSession();
     }
-
 }

@@ -13,7 +13,7 @@ public class DocumentTest {
 
     @BeforeClass
     public static void setUp() {
-        Repository.injectIRepository(new HibernateReposetory());
+        Repository.injectIRepository(new HibernateRepository());
         Configuration cfg = new AnnotationConfiguration()
                 .addAnnotatedClass(Facility.class)
                 .addAnnotatedClass(Node.class)
