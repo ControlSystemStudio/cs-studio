@@ -183,6 +183,4 @@ public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<Lda
     public ImmutableSet<String> getAttributes() {
         return ImmutableSet.<String>builder().build(); // Empty for this tree configuration type
     }
-
 }
-
