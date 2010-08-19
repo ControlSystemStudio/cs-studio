@@ -751,13 +751,13 @@ public class DecisionDepartmentActivator extends AbstractBundleActivator
 		DecisionDepartmentActivator.historyService = injectedHistoryService;
 
 		// LocalStoreConfigurationService
+		final DatabaseType dbType = DatabaseType.valueOf(preferenceService.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_TYPE));
+
 		DecisionDepartmentActivator.localStoreConfigurationService = injectedConfigurationServiceFactory
 				.getConfigurationService(
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_CONNECTION),
-						DatabaseType
-								.valueOf(preferenceService
-										.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_TYPE)),
+						dbType,
 						DecisionDepartmentActivator.preferenceService
 								.getString(PreferenceServiceDatabaseKeys.P_APP_DATABASE_USER),
 						DecisionDepartmentActivator.preferenceService

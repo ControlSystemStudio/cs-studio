@@ -4,6 +4,7 @@ import org.csstudio.nams.common.contract.Contract;
 import org.hibernate.dialect.DerbyDialect;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.HSQLDialect;
+import org.hibernate.dialect.MySQLDialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.Oracle9iDialect;
@@ -42,7 +43,13 @@ public enum DatabaseType {
 	Derby("Apache Derby", "org.apache.derby.jdbc.ClientDriver",
 			DerbyDialect.class),
 
-	/**
+    /**
+     * Treiber und Dialect für MySQL.
+     */
+    MySQL("MySQL", "com.mysql.jdbc.Driver",
+            MySQLDialect.class),
+	
+    /**
 	 * Treiber und Dialect für HSQL. "jdbc:hsqldb:file:namsconfigurator.db"
 	 * oder "jdbc:hsqldb:mem:namsconfigurator". User "sa", password "".
 	 */
