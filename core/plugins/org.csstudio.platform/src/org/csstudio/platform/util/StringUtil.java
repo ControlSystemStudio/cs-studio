@@ -43,13 +43,45 @@ public class StringUtil {
 		return result;
 	}
 
+	/**
+	 * Checks if a String is whitespace, empty ("") or null.
+       <code>
+         StringUtils.isBlank(null)      = true
+         StringUtils.isBlank("")        = true
+         StringUtils.isBlank(" ")       = true
+         StringUtils.isBlank("bob")     = false
+         StringUtils.isBlank("  bob  ") = false
+       </code>
+	 * @param s
+	 * @return true if the string is null, empty, or does only contain whitespaces
+	 */
 	public static boolean isBlank(final String s) {
-	    return ((s == null) || "".equals(s));
+	    return s == null || s.trim().equals("");
 	}
 
 	public static boolean hasLength(final String s) {
-		return !isBlank(s);
+		return s != null && s.length() > 0;
 	}
+
+	/**
+     * Returns the Substring of the String.
+     *
+     * @param str    String
+     * @param end    the last char Position (not included in the Substring)
+     * @return <code>null</code> if the String is <code>null</code>,
+     *  the Substring from the beginning to the position <code>endIdx</code>,
+     *  or the String if the position <code>endIdx</code>
+     *  is larger than length of the String.
+     */
+    public static String checkedSubstring(final String str, final int end) {
+        if (str == null) {
+            return null;
+        }
+        if (str.length() < end) {
+            return str;
+        }
+        return str.substring(0, end);
+    }
 
 	public static String toSeparatedString(final Collection<String> collection, final String separator) {
 		final StringBuffer sb = new StringBuffer();
@@ -89,8 +121,9 @@ public class StringUtil {
 	 * @throws Exception
 	 *             Exception on parse error (missing end of quoted string)
 	 */
-	public static String[] splitIgnoreInQuotes(final String source, final char splitChar,
-			final boolean deleteHeadTailQuotes) throws Exception {
+	public static String[] splitIgnoreInQuotes(final String source,
+											   final char splitChar,
+											   final boolean deleteHeadTailQuotes) throws Exception {
 
 		// Trim, replace tabs with spaces so we only need to handle
         // space in the following
@@ -102,7 +135,7 @@ public class StringUtil {
 
 			start = pos;
 			//skip multiple splitChars
-			while((start < trimmedSource.length()) && (trimmedSource.charAt(start) == splitChar)) {
+			while(start < trimmedSource.length() && trimmedSource.charAt(start) == splitChar) {
                 start++;
             }
 			if(start >= trimmedSource.length()) {
@@ -110,7 +143,7 @@ public class StringUtil {
             }
 			pos = start;
 
-			while((pos < trimmedSource.length()) && (trimmedSource.charAt(pos) !=splitChar)) {
+			while(pos < trimmedSource.length() && trimmedSource.charAt(pos) !=splitChar) {
 				//in case of quote, go to the end of next quote
 				if(trimmedSource.charAt(pos) == QUOTE) {
 					final int end = trimmedSource.indexOf(QUOTE, pos+1);
@@ -128,7 +161,7 @@ public class StringUtil {
 			subString = subString.trim();
 			if(deleteHeadTailQuotes) {
                 //only delete quotes when both head and tail are quote
-				if((subString.charAt(0) == QUOTE) && (subString.charAt(subString.length()-1) == QUOTE)) {
+				if(subString.charAt(0) == QUOTE && subString.charAt(subString.length()-1) == QUOTE) {
                     subString = subString.substring(1, subString.length()-1);
                 }
             }
