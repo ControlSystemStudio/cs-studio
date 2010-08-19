@@ -23,3 +23,4 @@ Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: bin/,
  .
 Bundle-Localization: plugin
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
