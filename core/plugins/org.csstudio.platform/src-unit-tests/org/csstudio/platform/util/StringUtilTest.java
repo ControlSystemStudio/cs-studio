@@ -84,11 +84,20 @@ public class StringUtilTest extends TestCase {
     }
 
     @Test
-    public final void testIsBlank() {
+    public final void testHasLength() {
         assertTrue(StringUtil.hasLength("a"));
         assertTrue(StringUtil.hasLength(" "));
         assertFalse(StringUtil.hasLength(""));
         assertFalse(StringUtil.hasLength(null));
+    }
+
+    @Test
+    public final void testIsBlank() {
+    	assertFalse(StringUtil.isBlank("a"));
+    	assertFalse(StringUtil.isBlank(" a  "));
+    	assertTrue(StringUtil.isBlank(" "));
+    	assertTrue(StringUtil.isBlank(""));
+    	assertTrue(StringUtil.isBlank(null));
     }
 
     @Test

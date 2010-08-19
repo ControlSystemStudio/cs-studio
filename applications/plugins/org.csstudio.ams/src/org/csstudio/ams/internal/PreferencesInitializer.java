@@ -1,41 +1,39 @@
 
-/* 
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton, 
+/*
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchroton,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
 package org.csstudio.ams.internal;
 
+import org.csstudio.ams.AmsActivator;
+import org.csstudio.ams.AmsConstants;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
-
-import org.csstudio.ams.AmsActivator;
-import org.csstudio.ams.AmsConstants;
-import org.csstudio.ams.internal.AmsPreferenceKey;
 
 /**
  * Preference initializer implemenation. This class initializes the preferences
  * with default values. New preference settings should be initialized in this
  * class, too.
- * 
+ *
  * @author Alexander Will
  */
 public final class PreferencesInitializer extends AbstractPreferenceInitializer {
@@ -44,9 +42,9 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
      * {@inheritDoc}
      */
     @Override
-    public final void initializeDefaultPreferences() 
+    public final void initializeDefaultPreferences()
     {
-        IEclipsePreferences node = new DefaultScope().getNode(AmsActivator.PLUGIN_ID);
+        final IEclipsePreferences node = new DefaultScope().getNode(AmsActivator.PLUGIN_ID);
 
         // database settings
         node.put(AmsPreferenceKey.P_CONFIG_DATABASE_CONNECTION, "jdbc:oracle:thin:@(DESCRIPTION =" +
@@ -68,12 +66,13 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(AmsPreferenceKey.P_CONFIG_DATABASE_USER, "krykams");
         node.put(AmsPreferenceKey.P_CONFIG_DATABASE_PASSWORD, "krykams");
         node.put(AmsPreferenceKey.P_APP_DATABASE_CONNECTION, "jdbc:derby://krykderby.desy.de/amsdb;create=true");
-        node.put(AmsPreferenceKey.P_APP_DATABASE_USER, "");
-        node.put(AmsPreferenceKey.P_APP_DATABASE_PASSWORD, "");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_USER, "APP");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_PASSWORD, "APP");
+        node.put(AmsPreferenceKey.P_APP_DATABASE_TYPE, "Derby");
 
         // filter key field of message
         node.put(AmsPreferenceKey.P_FILTER_KEYFIELDS,
-                "TYPE" + ";" + 
+                "TYPE" + ";" +
                 "EVENTTIME" + ";" +
                 "TEXT" + ";" +
                 "USER" + ";" +
@@ -108,7 +107,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, "org.exolab.jms.jndi.InitialContextFactory");
         node.put(SampleService.P_JMS_FREE_TOPIC_CONNECTION_FACTORY, "ConnectionFactory");
         */
-        
+
         /* ActiveMQ */
         // jms communication - external
         node.put(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
@@ -119,7 +118,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(AmsPreferenceKey.P_JMS_EXTERN_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         node.put(AmsPreferenceKey.P_JMS_EXTERN_CONNECTION_FACTORY, "ConnectionFactory");
         node.put(AmsPreferenceKey.P_JMS_EXTERN_CREATE_DURABLE, "false");
-        
+
         // jms communication - ams internal
         node.put(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         node.put(AmsPreferenceKey.P_JMS_AMS_PROVIDER_URL_1, "failover:(tcp://krykjmsb.desy.de:64616)?maxReconnectDelay=5000");
@@ -129,7 +128,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(AmsPreferenceKey.P_JMS_AMS_SENDER_PROVIDER_URL, "failover:(tcp://krykjmsb.desy.de:64616,tcp://krykjmsa.desy.de:62616)?maxReconnectDelay=5000");
         node.put(AmsPreferenceKey.P_JMS_AMS_CONNECTION_FACTORY, "ConnectionFactory");
         node.put(AmsPreferenceKey.P_JMS_AMS_CREATE_DURABLE, "false");
-        
+
         // jms communication - free topics
         node.put(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY_CLASS, "org.apache.activemq.jndi.ActiveMQInitialContextFactory");
         node.put(AmsPreferenceKey.P_JMS_FREE_TOPIC_CONNECTION_FACTORY, "ConnectionFactory");
@@ -140,7 +139,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
         node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_COMMAND, "COMMAND");
         node.put(AmsPreferenceKey.P_JMS_EXT_TSUB_CMD_FMR_START_RELOAD, "SUB_AMS_CMD_FMR_START_RELOAD");
         node.put(AmsPreferenceKey.P_JMS_EXT_TOPIC_STATUSCHANGE, "T_AMS_STATUS_CHANGE");
-        
+
         // ams internal topics
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_DISTRIBUTOR, "T_AMS_DISTRIBUTE");
         node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_DISTRIBUTOR, "SUB_AMS_DISTRIBUTOR");
@@ -166,7 +165,7 @@ public final class PreferencesInitializer extends AbstractPreferenceInitializer 
 
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_COMMAND, "COMMAND");
         node.put(AmsPreferenceKey.P_JMS_AMS_TSUB_CMD_FMR_RELOAD_END, "SUB_AMS_CMD_FMR_RELOAD_END");
-        
+
         node.put(AmsPreferenceKey.P_JMS_AMS_TOPIC_MONITOR, "T_AMS_SYSTEM_MONITOR");
     }
 }

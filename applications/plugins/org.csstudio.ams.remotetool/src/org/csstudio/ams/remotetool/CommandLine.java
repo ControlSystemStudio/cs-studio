@@ -41,7 +41,7 @@
  *
  * Copyright 1999 (C) Exoffice Technologies Inc. All Rights Reserved.
  *
- * $Id$
+ * $Id: CommandLine.java,v 1.1 2009/07/26 13:19:31 mmoeller Exp $
  *
  * Date         Author  Changes
  * 1/6/2000     jima    Created

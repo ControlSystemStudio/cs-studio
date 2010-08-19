@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
- * $Id$
+ * $Id: AllTests.java,v 1.1 2010/07/06 09:18:31 bknerr Exp $
  */
 package org.csstudio.nams.common.activatorUtils;
 
@@ -31,8 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * FIXME (bknerr) : get rid of this class
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
+ * @author $Author: bknerr $
+ * @version $Revision: 1.1 $
  * @since 06.07.2010
  */
 @RunWith(Suite.class)

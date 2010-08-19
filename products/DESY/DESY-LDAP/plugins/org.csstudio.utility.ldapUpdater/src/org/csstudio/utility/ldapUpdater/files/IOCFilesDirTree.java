@@ -1,13 +1,11 @@
-package org.csstudio.utility.ldapUpdater.files;
-/*
+/**
  * Copyright (c) Ian F. Darwin, http://www.darwinsys.com/, 1996-2002.
  * All rights reserved. Software written by Ian F. Darwin and others.
  * $Id$
  *
  * Modified for settable recursion depth by Klaus Valett - DESY Hamburg
  */
-
-import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
+package org.csstudio.utility.ldapUpdater.files;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
 import java.io.BufferedReader;
@@ -30,6 +28,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
+
+import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 
 
 /**
@@ -149,7 +149,7 @@ public final class IOCFilesDirTree {
             String strLine;
             while ((strLine = br.readLine()) != null)   {
                 final String[] fields = strLine.split(",");
-                if ((fields != null) && (fields.length > 0)) {
+                if (fields != null && fields.length > 0) {
                     final String name = fields[0];
                     final String desc = fields.length >= 2 ? fields[1] : "";
                     records.add(new Record(name, desc));

@@ -20,14 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MessageKey.java,v 1.1 2007/11/19 13:13:14 hrickens Exp $
  */
 package org.csstudio.ams.messageminder;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 31.10.2007
  */
 public class MessageKey {

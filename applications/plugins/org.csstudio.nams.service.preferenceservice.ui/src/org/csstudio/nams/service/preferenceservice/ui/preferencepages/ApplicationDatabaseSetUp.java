@@ -2,15 +2,13 @@ package org.csstudio.nams.service.preferenceservice.ui.preferencepages;
 
 import org.csstudio.nams.service.preferenceservice.declaration.PreferenceServiceDatabaseKeys;
 import org.csstudio.nams.service.preferenceservice.ui.Messages;
-import org.eclipse.ui.IWorkbenchPreferencePage;
 
 /**
  * This preference page is used to set up the configuration database settings.
  */
 
 public class ApplicationDatabaseSetUp extends
-		AbstractNewAMSFieldEditorPreferencePage implements
-		IWorkbenchPreferencePage {
+		AbstractNewAMSFieldEditorPreferencePage {
 
 	public ApplicationDatabaseSetUp() {
 		this.setDescription(Messages.ApplicationDatabaseSetUp_title);
