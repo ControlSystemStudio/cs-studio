@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MessageTimeList.java,v 1.1 2007/11/29 07:54:19 mmoeller Exp $
  */
 package org.csstudio.ams.messageminder;
 
@@ -30,8 +30,8 @@ import org.csstudio.platform.data.ITimestamp;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: mmoeller $
+ * @version $Revision: 1.1 $
  * @since 30.10.2007
  */
 public class MessageTimeList extends LinkedList<ITimestamp> {

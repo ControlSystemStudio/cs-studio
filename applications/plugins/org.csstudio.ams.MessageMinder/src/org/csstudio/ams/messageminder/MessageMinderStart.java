@@ -21,7 +21,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MessageMinderStart.java,v 1.11 2010/04/16 14:07:27 mmoeller Exp $
  */
 
 package org.csstudio.ams.messageminder;
@@ -41,8 +41,8 @@ import org.remotercp.login.connection.HeadlessConnection;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: mmoeller $
+ * @version $Revision: 1.11 $
  * @since 01.11.2007
  */
 public final class MessageMinderStart implements IApplication {

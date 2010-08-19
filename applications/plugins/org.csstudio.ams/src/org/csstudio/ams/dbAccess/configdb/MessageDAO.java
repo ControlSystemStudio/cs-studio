@@ -1,23 +1,23 @@
 
-/* 
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
+/*
+ * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. 
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED 
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND 
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE 
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, 
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR 
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE 
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR 
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. 
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
+ * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
+ * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
+ * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
+ * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
+ * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
+ * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
+ * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
  * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS, 
+ * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
  * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, 
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS 
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
+ * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
+ * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
@@ -31,52 +31,58 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
+
 import javax.jms.JMSException;
 import javax.jms.MapMessage;
-import org.csstudio.ams.Log;
-import org.csstudio.ams.Utils;
-import org.csstudio.ams.dbAccess.DAO;
 
-public abstract class MessageDAO extends DAO 
+import org.csstudio.ams.Log;
+import org.csstudio.ams.dbAccess.DAO;
+import org.csstudio.platform.util.StringUtil;
+
+public abstract class MessageDAO extends DAO
 {
 	public static final int LEN_PROP = 16;
 	public static final int LEN_VAL = 256;
 
-	public static int insert(Connection con, MapMessage map, boolean withoutAMSProps) throws SQLException, JMSException
+	public static int insert(final Connection con, final MapMessage map, final boolean withoutAMSProps) throws SQLException, JMSException
 	{
 		final String query1 = "INSERT INTO AMS_Message (cProperty,cValue) VALUES('%PARAM1%','%PARAM2%')";
 		final String query2 = "INSERT INTO AMS_Message (iMessageID,cProperty,cValue) VALUES (?,?,?)";
-		      
+
 		PreparedStatement pst = null;
 		Statement st = null;
 		ResultSet rs = null;
 		String query = null;
-		
+
 		try
 		{
 			int messageID = Integer.MIN_VALUE;
 
-			Enumeration<?> enumProps = map.getMapNames();// not getPropertyNames 
+			final Enumeration<?> enumProps = map.getMapNames();// not getPropertyNames
 			while (enumProps.hasMoreElements())
 			{
-				String propName = (String)enumProps.nextElement();
+				final String propName = (String)enumProps.nextElement();
 
-				if (withoutAMSProps)
-					if (propName.startsWith(AMS_PREFIX))
-						continue;
+				if (withoutAMSProps) {
+                    if (propName.startsWith(AMS_PREFIX)) {
+                        continue;
+                    }
+                }
 
-				String value = map.getString(propName);
-				
+				final String value = map.getString(propName);
+
 				if(messageID == Integer.MIN_VALUE)
 				{
-					query = query1.replace("%PARAM1%",Utils.subStr(propName, LEN_PROP)).replace("%PARAM2%",Utils.subStr(value, LEN_VAL));
+					query = query1.replace("%PARAM1%", StringUtil.checkedSubstring(propName, LEN_PROP))
+					              .replace("%PARAM2%", StringUtil.checkedSubstring(value, LEN_VAL));
 					st = con.createStatement();
 					st.executeUpdate(query, Statement.RETURN_GENERATED_KEYS);
 				    rs = st.getGeneratedKeys();
-				    
-				    if(rs == null || rs.next() == false)
-				    	throw new SQLException("Can not determine autogenerated key");
-				    
+
+				    if((rs == null) || (rs.next() == false)) {
+                        throw new SQLException("Can not determine autogenerated key");
+                    }
+
 				    messageID = rs.getInt(1);
 				}
 				else
@@ -84,24 +90,24 @@ public abstract class MessageDAO extends DAO
 					if(pst == null)
 					{
 						query = query2;
-						pst = con.prepareStatement(query);		
+						pst = con.prepareStatement(query);
 					}
-				
+
 					pst.setInt(1, messageID);
-					pst.setString(2, Utils.subStr(propName, LEN_PROP));
-					pst.setString(3, Utils.subStr(value, LEN_VAL));
-				
+					pst.setString(2, StringUtil.checkedSubstring(propName, LEN_PROP));
+					pst.setString(3, StringUtil.checkedSubstring(value, LEN_VAL));
+
 					pst.execute();
 				}
 			}
 			return messageID;
-		}	
-		catch(SQLException ex)
+		}
+		catch(final SQLException ex)
 		{
 			Log.log(Log.FATAL, "Sql-Query failed(" + ex.getSQLState()+ "): " + query, ex);
 			throw ex;
 		}
-		catch(JMSException ex)
+		catch(final JMSException ex)
 		{
 			Log.log(Log.FATAL, ex);
 			throw ex;
@@ -112,25 +118,25 @@ public abstract class MessageDAO extends DAO
 			close(pst,null);
 		}
 	}
-	
-	public static void select(Connection con, int iMessageID, MapMessage msg) throws SQLException, JMSException
+
+	public static void select(final Connection con, final int iMessageID, final MapMessage msg) throws SQLException, JMSException
 	{
 		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = ?";
 		ResultSet rs = null;
 		PreparedStatement st = null;
-		
+
 		try
 		{
 			st = con.prepareStatement(query);
 			st.setInt(1, iMessageID);
 			rs = st.executeQuery();
-			
+
 			while(rs.next())
 			{
 				msg.setString(rs.getString(1), rs.getString(2));
 			}
 		}
-		catch(SQLException ex)
+		catch(final SQLException ex)
 		{
 			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
 			throw ex;
@@ -140,24 +146,25 @@ public abstract class MessageDAO extends DAO
 			close(st,rs);
 		}
 	}
-	
-	public static List<MessageTObject> select(Connection con, int iMessageID) throws SQLException
+
+	public static List<MessageTObject> select(final Connection con, final int iMessageID) throws SQLException
 	{
 		final String query = "SELECT cProperty,cValue FROM AMS_Message WHERE iMessageID = ?";
 		ResultSet rs = null;
 		PreparedStatement st = null;
-		ArrayList<MessageTObject> array = new ArrayList<MessageTObject>();
-		
+		final ArrayList<MessageTObject> array = new ArrayList<MessageTObject>();
+
 		try
 		{
 			st = con.prepareStatement(query);
 			st.setInt(1, iMessageID);
 			rs = st.executeQuery();
-			
-			while(rs.next())
-				array.add(new MessageTObject(iMessageID, rs.getString(1), rs.getString(2)));
+
+			while(rs.next()) {
+                array.add(new MessageTObject(iMessageID, rs.getString(1), rs.getString(2)));
+            }
 		}
-		catch(SQLException ex)
+		catch(final SQLException ex)
 		{
 			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
 			throw ex;
@@ -168,20 +175,20 @@ public abstract class MessageDAO extends DAO
 		}
 		return array;
 	}
-	
-	public static void remove(Connection con, int iMessageID) throws SQLException
+
+	public static void remove(final Connection con, final int iMessageID) throws SQLException
 	{
 		final String query = "DELETE FROM AMS_Message WHERE iMessageID = ?";
 
 		PreparedStatement st = null;
-		
+
 		try
 		{
 			st = con.prepareStatement(query);
 			st.setInt(1, iMessageID);
 			st.executeUpdate();
 		}
-		catch(SQLException ex)
+		catch(final SQLException ex)
 		{
 			Log.log(Log.FATAL, "Sql-Query failed: " + query, ex);
 			throw ex;

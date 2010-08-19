@@ -676,8 +676,7 @@ public class AMSMonitorView extends ViewPart implements SelectionListener {
             List<HistoryTObject> array = new ArrayList<HistoryTObject>();
             try {
                 if (lastHistoryID < 0)
-                    lastHistoryID = HistoryDAO.getLastHistoryID(MonitorPlugin
-                            .getConnection());
+                    lastHistoryID = HistoryDAO.getLastHistoryID(MonitorPlugin.getConnection());
 
                 array = HistoryDAO.selectList(MonitorPlugin.getConnection(),
                         autoLoadCount, lastHistoryID);
