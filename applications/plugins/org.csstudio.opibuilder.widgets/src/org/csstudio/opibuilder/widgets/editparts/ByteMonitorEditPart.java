@@ -6,7 +6,11 @@ import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.IWidgetPropertyChangeHandler;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgets.model.ByteMonitorModel;
+import org.csstudio.platform.data.IDoubleValue;
+import org.csstudio.platform.data.IEnumeratedValue;
+import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.swt.widgets.figures.ByteMonitorFigure;
 import org.eclipse.draw2d.IFigure;
 
@@ -96,11 +100,16 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler pvhandler = new IWidgetPropertyChangeHandler() {
 			public boolean handleChange(final Object oldValue,
 					final Object newValue, final IFigure refreshableFigure) {
-				if((newValue != null) && (newValue instanceof IValue) ){
-					setValue(new Integer((new Double(((IValue)newValue).format())).intValue()));					
+				if((newValue != null) && (newValue instanceof IValue) ){					
+					if(newValue instanceof IDoubleValue)
+						setValue(((IDoubleValue)newValue).getValue());
+					else if(newValue instanceof ILongValue)
+						setValue(((ILongValue)newValue).getValue());
+					else if(newValue instanceof IEnumeratedValue)
+						setValue(((IEnumeratedValue)newValue).getValue());					
 				}
 				else {
-					System.out.println("Not an IValue or null" );
+					CentralLogger.getInstance().error(this,"Not an IValue or null");
 				}
 				return false;
 			}

@@ -69,7 +69,6 @@ public class ByteMonitorFigure extends Figure implements Introspectable{
 			else{
 				widgetIndex = (numBits - 1) -(ii-startBit);
 			}
-			System.out.println(widgetIndex);
 			LEDFigure led = ((LEDFigure)children[widgetIndex]);
 			if (((value>>ii)&0x1) == 1){
 				led.setBooleanValue(true);

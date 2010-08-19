@@ -168,11 +168,12 @@ public abstract class AbstractContainerEditpart extends AbstractBaseEditPart {
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
 				MacrosInput macrosInput = (MacrosInput)newValue;
+				
 				LinkedHashMap<String, String> macrosMap = new LinkedHashMap<String, String>();
-				macrosMap.putAll(macrosInput.getMacrosMap());
 				if(macrosInput.isInclude_parent_macros()){	
 					macrosMap.putAll(getWidgetModel().getParentMacroMap());					
-				}
+				}		
+				macrosMap.putAll(macrosInput.getMacrosMap());
 				getWidgetModel().setMacroMap(macrosMap);
 				return false;
 			}
