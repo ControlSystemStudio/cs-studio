@@ -54,3 +54,4 @@ Export-Package: org.csstudio.sds,
  org.mozilla.javascript.xmlimpl
 Bundle-ClassPath: lib/rhino/js.jar,
  .
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
