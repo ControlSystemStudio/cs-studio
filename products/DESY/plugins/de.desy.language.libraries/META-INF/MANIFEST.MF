@@ -7,5 +7,4 @@ Bundle-Vendor: C1 WPS mbH / DESY Stiftung
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4
 Eclipse-LazyStart: true
-Export-Package: de.desy.language.libraries.utils.contract,
- org.easymock
+Export-Package: de.desy.language.libraries.utils.contract
