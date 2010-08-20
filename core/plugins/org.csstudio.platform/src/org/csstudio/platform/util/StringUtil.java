@@ -3,10 +3,12 @@ package org.csstudio.platform.util;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 
 /**
  * Utility methods for handling strings.
@@ -227,6 +229,27 @@ public class StringUtil {
                            builder.length());
         }
         return builder.toString();
+    }
+
+    /**
+     * Creates a list of string from the comma separated entries in the input string
+     * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
+     * added!
+     *
+     * @param commaSeparatedString a string of comma separated entries
+     * @return a list of strings, and an empty list if the string is blank
+     */
+    public static List<String> createListFrom(final String commaSeparatedString) {
+        if (StringUtil.isBlank(commaSeparatedString)) {
+            return Collections.emptyList();
+        }
+        final List<String> list = new ArrayList<String>();
+        for (final String entry : commaSeparatedString.split(",")) {
+            if (!isBlank(entry)) {
+                list.add(entry.trim());
+            }
+        }
+        return list;
     }
 
 }
