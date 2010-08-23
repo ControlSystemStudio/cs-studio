@@ -45,6 +45,7 @@ org.csstudio.utility.pv.simu
 org.csstudio.utility.pv.ui
 org.csstudio.utility.speech
 org.csstudio.platform
+org.csstudio.platform.libs.annotations
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics
 org.csstudio.platform.libs.epics
