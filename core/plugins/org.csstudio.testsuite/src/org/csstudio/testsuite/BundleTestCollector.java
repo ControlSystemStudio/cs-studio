@@ -7,22 +7,28 @@
  ******************************************************************************/
 package org.csstudio.testsuite;
 
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import junit.framework.JUnit4TestAdapter;
 import junit.framework.Test;
-import junit.framework.TestSuite;
+import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.Bundle;
 
-
 /**
- * This class allows you harvest unit tests from resolved bundles based on
- * filters you supply. It can harvest tests from both bundles and fragments, and
+ * This class allows you harvest tests from resolved bundles based on
+ * filters you supply. It can harvest tests from both bundles and
  * can also be used during automated builds using the Eclipse Testing Framework.
  * <p>
  * This class is similar to the JUnit TestCollector class, except that it takes
@@ -40,8 +46,8 @@ import org.osgi.framework.Bundle;
  *  TestSuite suite = new TestSuite(&quot;All Tests&quot;);
  *
  *  BundleTestCollector testCollector = new BundleTestCollector();
- *  List&lt;Test&gt; tests = testCollector.collectTests(&quot;com.rcpquickstart.&quot;,
- *          &quot;com.rcpquickstart.mypackage.&quot;, &quot;*Test&quot;);
+ *  List&lt;Test&gt; tests = testCollector.collectTests('list of bundle roots to be cut from the bundle names',
+ *                                                      'list of bundle names of interest');
  *
  *  return suite;
  *
@@ -61,38 +67,44 @@ import org.osgi.framework.Bundle;
  */
 public class BundleTestCollector {
 
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(BundleTestCollector.class);
+
     /**
      * Create a list of test classes for the bundles currently resolved by the
-     * framework. This method works with JUnit 3.x test cases only, meaning that
-     * it searches for classes that subclass the TestCase class.
+     * framework. This method works with JUnit 3.x and JUnit 4.x test cases by using
+     * the {@link JUnit4TestAdapter}.
      *
-     * @param suite
-     *      to which tests should be added
-     * @param bundleRoot
-     *      root string that a bundle id needs to start with in order for the
-     *      bundle to be included in the search
-     * @param packageRoot
-     *      root string that a package needs to start with in order for the
-     *      package to be included in the search
-     * @param testClassFilter
-     *      filter string that will be used to search for test cases. The filter
+     * @param bundleNames
+     *      List of bundle prefixes that shall be considered for test collecting
+     * @param packageBlackList
+     *      package prefix list that are explicitly excluded from the selected bundles
+     * @param testClassFilters
+     *      List of filter strings that will be used to search for test cases. The filter
      *      applies to the unqualified class name only (not including the
      *      package name). Wildcards are allowed, as defined by the {@link
      *      Activator Bundle#findEntries(String, String, boolean)} method.
-     * @return list of test classes that match the roots and filter passed in
+     * @return list of test classes that match the bundle prefixes and filters passed in
      */
-    public List<Test> collectTests(final TestSuite suite,
-                                   final String bundleRoot,
-                                   final String packageRoot,
-                                   final String testClassFilter) {
+    @Nonnull
+    public List<Test> collectTests(@Nonnull final List<String> bundleNames,
+                                   @Nonnull final List<String> bundlesBlackList,
+                                   @Nonnull final List<String> packageBlackList,
+                                   @Nonnull final List<String> testClassFilters,
+                                   @Nonnull final String commonSuffix) {
 
         final List<Test> tests = new ArrayList<Test>();
 
-        for (final Bundle bundle : Activator.getBundles()) {
+        final Bundle[] bundles = Activator.getInstance().getBundles();
+        for (final Bundle bundle : bundles) {
 
-            if (!isFragment(bundle) && checkBundleRoot(bundle, bundleRoot)) {
+            if (!isFragment(bundle) && isBundleValid(bundle, bundleNames, bundlesBlackList)) {
                 final List<Class<?>> testClasses =
-                    getTestClasesInBundle(bundle, packageRoot, testClassFilter);
+                    getTestClassesInBundle(bundle,
+                                           bundleNames,
+                                           packageBlackList,
+                                           testClassFilters,
+                                           commonSuffix);
 
                 for (final Class<?> clazz : testClasses) {
                     tests.add(new JUnit4TestAdapter(clazz));
@@ -102,67 +114,180 @@ public class BundleTestCollector {
         return tests;
     }
 
-    private List<Class<?>> getTestClasesInBundle(final Bundle bundle,
-                                                 final String packageRoot,
-                                                 final String testClassFilter) {
+    @Nonnull
+    private List<Class<?>> getTestClassesInBundle(@Nonnull final Bundle bundle,
+                                                  @Nonnull final List<String> bundleNames,
+                                                  @Nonnull final List<String> packageBlackList,
+                                                  @Nonnull final List<String> testClassFilters,
+                                                  @Nonnull final String commonFilterSuffix) {
 
+        final Enumeration<?> allClassNames = bundle.findEntries("/", "*.class", true); //$NON-NLS-1$
 
-        final List<Class<?>> testClassesInBundle = new ArrayList<Class<?>>();
-        final Enumeration<?> testClassNames =
-            bundle.findEntries("/", testClassFilter + ".class", true); //$NON-NLS-1$
+        if (allClassNames != null) {
 
-        if (testClassNames != null) {
-            while (testClassNames.hasMoreElements()) {
+            final List<Class<?>> testClassesInBundle = new ArrayList<Class<?>>();
+            while (allClassNames.hasMoreElements()) {
+                final String classPath = findPathAndConvertToClassName((URL) allClassNames.nextElement());
 
-                /*
-                 * Take relative path produced by findEntries method and convert
-                 * it into a properly formatted class name. The package root is
-                 * used to determine the start of the qualified class name in
-                 * the path.
-                 */
-                String testClassPath = ((URL) testClassNames.nextElement()).getPath();
-                testClassPath = testClassPath.replace('/', '.');
-
-                final int packageRootStart = getPackageRoot(testClassPath, packageRoot);
+                final int packageRootStartIndex = getPackageRoot(classPath, bundleNames);
 
                 /* if class does not begin with package root, just ignore it */
-                if (packageRootStart == -1) {
+                if (packageRootStartIndex == -1) {
                     continue;
                 }
 
-                String testClassName = testClassPath.substring(packageRootStart);
-                testClassName = testClassName.substring(0, testClassName.length() - ".class".length()); //$NON-NLS-1$
+                String className = classPath.substring(packageRootStartIndex);
+                className = className.substring(0, className.length() - ".class".length()); //$NON-NLS-1$
 
-                /* Attempt to load the class using the bundle classloader. */
-                Class<?> testClass = null;
-                try {
-                    if (!isFragment(bundle)) {
-                        testClass = bundle.loadClass(testClassName);
-                    } else {
-                        final Bundle hostbundle = getHostBundle(bundle);
-                        testClass = hostbundle.loadClass(testClassName);
-
-                    }
-                    /*
-                     * If the class is not abstract, add it to list
-                     */
-                    if (!Modifier.isAbstract(testClass.getModifiers())) {
+                final Class<?> testClass = loadClass(bundle, className);
+                if (testClass != null) {
+                    if (checkForValidTest(testClassFilters,
+                                          commonFilterSuffix,
+                                          packageBlackList,
+                                          testClass)) {
                         testClassesInBundle.add(testClass);
                     }
-                } catch (final ClassNotFoundException e) {
-//                    throw new RuntimeException("Could not load class: " //$NON-NLS-1$
-//                            + testClassName, e);
-                    // TODO (bknerr) : what's wrong with the class loader
-                    // TODO (bknerr) : where to log the test result messages, when the test even can't be loaded?
-                    System.out.println("Class loading failed. Ignore test.");
                 }
-
             }
+            return testClassesInBundle;
         }
-        return testClassesInBundle;
+        return Collections.emptyList();
     }
 
-    private boolean isFragment(final Bundle bundle) {
+
+    private boolean checkForValidTest(@Nonnull final List<String> testClassFilters,
+                                      @Nonnull final String commonFilterSuffix,
+                                      @Nonnull final List<String> blackList,
+                                      @Nonnull final Class<?> testClass) {
+        final String className = testClass.getName();
+
+        if (isClassBlackListed(className, blackList)) {
+            return false;
+        }
+
+        if (checkForTestClass(testClass)) {
+            // TEST FOUND
+            if (!className.endsWith(commonFilterSuffix)) {
+                LOG.warn("Class " + className + " is a test, but does not end on *" + commonFilterSuffix + ".java.\n" +
+                         "Please rename to one out of: " + testClassFilters);
+            } else {
+                for (final String filter : testClassFilters) { // check for filters
+                    if (className.endsWith(filter)) {
+                        return true; // Valid test found
+                    }
+                }
+            }
+        } else {
+            // NOT A TEST
+            if (className.endsWith(commonFilterSuffix)) {
+                LOG.warn("Class " + className + " is NOT a test!\n" +
+                         "Please rename to a different suffix. (Perhaps *Demo?).");
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the className beginning matches any of the blacklisted packages
+     * @param className
+     * @param packageBlackList
+     * @return
+     */
+    private boolean isClassBlackListed(@Nonnull final String className,
+                                       @Nonnull final List<String> packageBlackList) {
+
+        for (final String badPackage : packageBlackList) {
+            if (className.startsWith(badPackage)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Checks class for being either inherited from Testcase or that it contains @Test annotations.
+     * @param testClass
+     * @return
+     */
+    private boolean checkForTestClass(@Nonnull final Class<?> testClass) {
+
+        // Check for junit <4.0 test
+        Class<?> parent = testClass.getSuperclass();
+        while (!parent.getName().equals(Object.class.getName())) {
+
+            if (parent.getName().endsWith(TestCase.class.getName())) {
+                return true;
+            }
+            parent = parent.getSuperclass();
+        }
+        // Nope, now check for public methods that have @Test annotations, junit > 4.0
+        for (final Method method : testClass.getMethods()) {
+            if (method.getAnnotation(org.junit.Test.class) != null) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Take relative path produced by findEntries method and convert
+     * it into a properly formatted class name. The package root is
+     * used to determine the start of the qualified class name in
+     * the path.
+     * @param testClassNames
+     * @return
+     */
+    @Nonnull
+    private String findPathAndConvertToClassName(@Nonnull final URL testClassName) {
+         String testClassPath = testClassName.getPath();
+         testClassPath = testClassPath.replace('/', '.');
+        return testClassPath;
+    }
+
+    /**
+     * @param bundle
+     * @param testClassesInBundle
+     * @param testClassName
+     * @return
+     */
+    @CheckForNull
+    private Class<?> loadClass(@Nonnull final Bundle bundle,
+                               @Nonnull final String testClassName) {
+        /* Attempt to load the class using the bundle classloader. */
+         Class<?> testClass = null;
+         try {
+
+             if (!isFragment(bundle)) {
+                 testClass = bundle.loadClass(testClassName);
+             } else {
+                 final Bundle hostbundle = getHostBundle(bundle);
+                 if (hostbundle != null) {
+                     testClass = hostbundle.loadClass(testClassName);
+                 }
+             }
+             /*
+              * If the class is not abstract, add it to list
+              */
+             if (testClass != null && !Modifier.isAbstract(testClass.getModifiers())) {
+                 return testClass;
+             }
+         } catch (final ClassNotFoundException e) {
+//                    throw new RuntimeException("Could not load class: " //$NON-NLS-1$
+//                            + testClassName, e);
+             // TODO (bknerr) : what's wrong with the class loader
+             // TODO (bknerr) : where to log the test result messages, when the test even can't be loaded?
+
+             LOG.error("\nClass loading of " + testClassName + " failed. Ignore test!\n");
+             System.out.println("\nClass loading of " + testClassName + " failed. Ignore test!\n");
+             e.printStackTrace();
+         }
+        return null;
+    }
+
+
+    private static boolean isFragment(@Nonnull final Bundle bundle) {
         final Enumeration<?> headerKeys = bundle.getHeaders().keys();
         while (headerKeys.hasMoreElements()) {
             if (headerKeys.nextElement().toString().equals("Fragment-Host")) { //$NON-NLS-1$
@@ -172,8 +297,9 @@ public class BundleTestCollector {
         return false;
     }
 
-    private static Bundle getHostBundle(final Bundle bundle) {
-        String fragmenthost = new String();
+    @CheckForNull
+    private static Bundle getHostBundle(@Nonnull final Bundle bundle) {
+        String fragmenthost = "";
         final Enumeration<?> keys = bundle.getHeaders().keys();
         final Enumeration<?> e = bundle.getHeaders().elements();
         while (keys.hasMoreElements() && e.hasMoreElements()) {
@@ -188,7 +314,8 @@ public class BundleTestCollector {
         if(fragmenthost.indexOf(";") > 0) {
             fragmenthost = fragmenthost.substring(0,fragmenthost.indexOf(";"));
         }
-        for (final Bundle b : Activator.getBundles()) {
+        final Bundle[] bundles = Activator.getInstance().getBundles();
+        for (final Bundle b : bundles) {
             if(b.getSymbolicName().equals(fragmenthost)) {
                 return b;
             }
@@ -196,39 +323,49 @@ public class BundleTestCollector {
         return null;
     }
 
-    private static boolean checkBundleRoot(final Bundle bundle, final String bundleRoot) {
-        boolean res = false;
-        if (bundleRoot.contains(",")) {
-            final String[] bundleRoots = bundleRoot.split(",");
-            for(final String root : bundleRoots) {
-                if (bundle.getSymbolicName().startsWith(root)) {
-                    res = true;
-                    break;
+    /**
+     * Checks wether the currently analysed bundle features the 'selected bundle prefix'.
+     * @param bundle
+     * @param bundles
+     * @param blackList
+     * @return true if the bundle name matches any of the bundles' prefixes
+     */
+    private static boolean isBundleValid(@Nonnull final Bundle bundle,
+                                         @Nonnull final List<String> bundles,
+                                         @Nonnull final List<String> blackList) {
+        final String symbolicName = bundle.getSymbolicName();
+
+        for (final String bundlePrefix : bundles) {
+            if (symbolicName.startsWith(bundlePrefix)) {
+                for (final String black : blackList) { // blacklist
+                    if (symbolicName.startsWith(black)) {
+                        return false;
+                    }
                 }
-            }
-        } else {
-            if (bundleRoot.equals("")) {
-                res = true;
-            } else {
-                res = bundle.getSymbolicName().startsWith(bundleRoot);
+                return true;
             }
         }
-        return res;
+        return false;
     }
 
-    private static int getPackageRoot(final String testClassPath, final String packageRoot) {
-        int res = -1;
-        if (packageRoot.contains(",")) {
-            final String[] packageRoots = packageRoot.split(",");
-            for(final String root : packageRoots) {
-                res = testClassPath.indexOf(root);
-                if (res > -1) {
-                    break;
-                }
+    /**
+     * Checks whether the testClass (with full bundle and package class name) belongs to any of the
+     * packages in packageRoots and, if so, returns the char index of where the package root begins,
+     * and -1 otherwise
+     *
+     * @param testClassPath
+     * @param bundleRoots
+     * @return the index in the testClassPathName where package root begins, -1 if it is not contained
+     */
+    private static int getPackageRoot(@Nonnull final String testClassPath,
+                                      @Nonnull final List<String> bundleRoots) {
+
+        for(final String root : bundleRoots) {
+            final int res = testClassPath.indexOf(root);
+            if (res > -1) { // found
+                return res; // return root index
             }
-        } else {
-            res = testClassPath.indexOf(packageRoot);
         }
-        return res;
+        return -1;
     }
 }
