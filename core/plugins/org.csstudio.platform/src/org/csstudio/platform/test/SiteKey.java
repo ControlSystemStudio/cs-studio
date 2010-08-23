@@ -23,8 +23,10 @@
  */
 package org.csstudio.platform.test;
 
+import javax.annotation.Nonnull;
+
 /**
- * Site identifier to enable parameterisable test configuration
+ * Site identifier to enable parameterizable test configuration
  *
  * @author bknerr
  * @author $Author$
@@ -32,15 +34,25 @@ package org.csstudio.platform.test;
  * @since 14.07.2010
  */
 public enum SiteKey {
-    SNS,
-    DESY,
-    ITER;
+    SNS("sns"),
+    DESY("desy"),
+    ITER("iter");
+
+    private final String _prefix;
 
     /**
-     * @return the name of enum as lowercase,
-     * usable as prefix for site specific filenames for instance
+     * Constructor.
      */
+    private SiteKey(@Nonnull final String prefix) {
+        _prefix = prefix;
+    }
+
+    /**
+     * Usable as prefix for site specific filenames for instance
+     * @return the prefix
+     */
+    @Nonnull
     public String getPrefix() {
-        return name().toLowerCase();
+        return _prefix;
     }
 }
