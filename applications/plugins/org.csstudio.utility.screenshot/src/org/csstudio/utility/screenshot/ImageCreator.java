@@ -23,9 +23,14 @@
 
 package org.csstudio.utility.screenshot;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ViewForm;
 import org.eclipse.swt.graphics.GC;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.ImageData;
+import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.widgets.Composite;
@@ -41,9 +46,17 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class ImageCreator {
     
+	/** The loggerr of this class */
+	private Logger logger;
+	
+	/** The display related to the CSS instance */
     private Display display;
     
+    /**
+     *  Just one constructor
+     */
     public ImageCreator(Display display) {
+    	this.logger = CentralLogger.getInstance().getLogger(this);
         this.display = display;
     }
         
@@ -58,24 +71,27 @@ public class ImageCreator {
         gc = new GC(display);        
         rect = display.getBounds();
         dispImg = new Image(display, rect.width, rect.height);
-        gc.copyArea(dispImg, 0, 0);
+        gc.copyArea(dispImg, rect.x, rect.y);
         imageBundle.setScreenImage(dispImg);
         gc.dispose();
         gc = null;
+        rect = null;
         
-        // ------ TEST -------
-//        ImageLoader loader = null;
-//        loader = new ImageLoader();
-//        ImageData[] imageData = new ImageData[1];
-//        imageData[0] = dispImg.getImageData();
-//        loader.data = imageData;
-//        loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
-        
+//        try {
+//            ImageLoader loader = null;
+//            loader = new ImageLoader();
+//            ImageData[] imageData = new ImageData[1];
+//            imageData[0] = dispImg.getImageData();
+//            loader.data = imageData;
+//            loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
+//        } catch(Exception e) {
+//            logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//        }
+
         // Window dump
         rect = getPartControl(false, true);
-
-        if(rect != null)
-        {
+        if(rect != null) {
+            
             normalizeRectangle(display.getBounds(), rect);
 
             img = new Image(display, rect.width, rect.height);
@@ -85,20 +101,28 @@ public class ImageCreator {
             imageBundle.setWindowImage(img);            
             gc.dispose();
             gc = null;
-            
-//            imageData[0] = img.getImageData();
-//            loader.data = imageData;
-//            loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
+            rect = null;
+
+//            try {
+//                ImageLoader loader = null;
+//                loader = new ImageLoader();
+//                ImageData[] imageData = new ImageData[1];
+//                imageData[0] = img.getImageData();
+//                loader.data = imageData;
+//                loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
+//            } catch(Exception e) {
+//            	logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//            }
 
             img.dispose();           
             img = null;
         }
         
+
         // Section dump
         rect = getPartControl(true, false);
-
-        if(rect != null)
-        {            
+        if(rect != null) {            
+            
             normalizeRectangle(display.getBounds(), rect);
             img = new Image(display, rect.width, rect.height);
             
@@ -107,10 +131,18 @@ public class ImageCreator {
             imageBundle.setSectionImage(img);
             gc.dispose();
             gc = null;
-            
-//            imageData[0] = img.getImageData();
-//            loader.data = imageData;
-//            loader.save("D:\\section.bmp", SWT.IMAGE_BMP);
+            rect = null;
+
+//            try {
+//                ImageLoader loader = null;
+//                loader = new ImageLoader();
+//                ImageData[] imageData = new ImageData[1];
+//                imageData[0] = img.getImageData();
+//                loader.data = imageData;
+//                loader.save("D:\\part.bmp", SWT.IMAGE_BMP);
+//            } catch(Exception e) {
+//            	logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//            }
             
             img.dispose();
             img = null;
@@ -120,19 +152,21 @@ public class ImageCreator {
         dispImg = null;
     }
     
-    private void normalizeRectangle(Rectangle displayBounds, Rectangle target)
-    {
-        if(target == null)
-        {
+    private void normalizeRectangle(Rectangle displayBounds, Rectangle target) {
+        
+        if(target == null) {
             return;
-        }
-        else
-        {
+        } else {
+            
             target.x = Math.max(target.x, displayBounds.x);
             target.y = Math.max(target.y, displayBounds.y);
             target.width = Math.min(target.x + target.width, displayBounds.x + displayBounds.width) - target.x;
             target.height = Math.min(target.y + target.height, displayBounds.y + displayBounds.height) - target.y;
             
+            // Adjust the origin of the image if the display contains more then one monitor
+            target.x = (displayBounds.x < 0) ? (target.x - displayBounds.x) : target.x; 
+            target.y = (displayBounds.y < 0) ? (target.y - displayBounds.y) : target.y; 
+
             return;
         }
     }
@@ -145,39 +179,35 @@ public class ImageCreator {
      * @return
      */
     
-    private Rectangle getPartControl(boolean section, boolean shell)
-    {
+    private Rectangle getPartControl(boolean section, boolean shell) {
+        
         Control partControl = display.getFocusControl();
-        if(partControl != null && !partControl.isDisposed())
-        {
+        if(partControl != null && !partControl.isDisposed()) {
+            
             Control previousContr = null;
-            for(; partControl != null; partControl = partControl.getParent())
-            {
-                if(partControl instanceof Shell)
-                {
+            for(; partControl != null; partControl = partControl.getParent()) {
+                
+                if(partControl instanceof Shell) {
                     return partControl.getBounds();
                 }
                 
-                if(!shell)
-                {
+                if(!shell) {
+                    
                     boolean isView = partControl instanceof ViewForm;
-                    if(!isView && (partControl instanceof Composite))
-                    {
+                    if(!isView && (partControl instanceof Composite)) {
                         Composite parent = ((Composite)partControl).getParent();
 
-                        if(parent != null)
-                        {
+                        if(parent != null) {
+                            
                             Control children[] = parent.getChildren();
-                            for(int i = 0; i < children.length; i++)
-                            {
-                                if(children[i] instanceof ToolBar)
-                                {
+                            for(int i = 0; i < children.length; i++) {
+                                
+                                if(children[i] instanceof ToolBar) {
                                     isView = true;
                                     break;
                                 }
                                 
-                                if(previousContr == null || !(children[i] instanceof Sash))
-                                {
+                                if(previousContr == null || !(children[i] instanceof Sash)) {
                                     continue;
                                 }
                                 
@@ -188,27 +218,26 @@ public class ImageCreator {
                         }
                     }
                     
-                    if(isView)
-                    {
+                    if(isView) {
+                        
                         Point origin = partControl.toDisplay(0, 0);
                         Rectangle bounds = partControl.getBounds();
-                        if(section)
-                        {
+                        if(section) {
+                            
                             Composite parent;
-                            for(Control sectionControl = partControl; sectionControl != null; sectionControl = parent)
-                            {
+                            for(Control sectionControl = partControl; sectionControl != null; sectionControl = parent) {
+                                
                                 parent = sectionControl.getParent();
-                                if(parent == null)
-                                {
+                                if(parent == null) {
                                     break;
                                 }
                                 
                                 Control children[] = parent.getChildren();
-                                for(int i = 0; i < children.length; i++)
-                                {
+                                for(int i = 0; i < children.length; i++) {
+                                    
                                     Control child = children[i];
-                                    if(child instanceof Sash)
-                                    {
+                                    if(child instanceof Sash) {
+                                        
                                         Point sashSize = ((Sash)child).getSize();
                                         int sashWidth = 2 * Math.min(sashSize.x, sashSize.y) - 1;
                                         Rectangle parentBounds = parent.getBounds();
@@ -217,33 +246,28 @@ public class ImageCreator {
                                         int right = left + parentBounds.width + sashWidth;
                                         int top = parentOrigin.y - sashWidth;
                                         int bottom = top + parentBounds.height + sashWidth;
-                                        for(int j = i; j < children.length; j++)
-                                        {
+                                        
+                                        for(int j = i; j < children.length; j++) {
+                                            
                                             Control c2 = children[j];
-                                            if(c2 instanceof Sash)
-                                            {
+                                            if(c2 instanceof Sash) {
+                                                
                                                 Point loc = c2.toDisplay(0, 0);
                                                 Point size = c2.getSize();
-                                                if(size.x < size.y)
-                                                {
-                                                    if(loc.x < origin.x && loc.x > left)
-                                                    {
+                                                if(size.x < size.y) {
+                                                    if(loc.x < origin.x && loc.x > left) {
                                                         left = loc.x;
                                                     }
                                                     int r = loc.x + size.x;
-                                                    if(r > origin.x + bounds.width && r < right)
-                                                    {
+                                                    if(r > origin.x + bounds.width && r < right) {
                                                         right = r;
                                                     }
-                                                } else
-                                                {
-                                                    if(loc.y < origin.y && loc.y > top)
-                                                    {
+                                                } else {
+                                                    if(loc.y < origin.y && loc.y > top) {
                                                         top = loc.y;
                                                     }
                                                     int r = loc.y + size.y;
-                                                    if(r > origin.y + bounds.height && r < bottom)
-                                                    {
+                                                    if(r > origin.y + bounds.height && r < bottom) {
                                                         bottom = r;
                                                     }
                                                 }
@@ -258,15 +282,13 @@ public class ImageCreator {
                                     }
                                 }
 
-                                if(parent instanceof Shell)
-                                {
+                                if(parent instanceof Shell) {
                                     break;
                                 }
                             }
 
                             return null;
-                        } else
-                        {
+                        } else {
                             bounds.x = origin.x;
                             bounds.y = origin.y;
                             return bounds;

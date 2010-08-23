@@ -63,8 +63,8 @@ public class ScreenshotWorker
     
     public ScreenshotWorker(Composite p)
     {
-        mainComposite = p;
-        display = PlatformUI.getWorkbench().getDisplay();
+        this.mainComposite = p;
+        this.display = PlatformUI.getWorkbench().getDisplay();
         initResources();
         initActions();
         init();
@@ -75,8 +75,7 @@ public class ScreenshotWorker
     /**
      * Sets the default tool item states.
      */
-    public void setDefaults()
-    {
+    public void setDefaults() {
     }
 
     /**
@@ -256,7 +255,7 @@ public class ScreenshotWorker
 
     public void processCapture()
     {
-        ImageCreator ic = new ImageCreator(display);
+        ImageCreator ic = new ImageCreator(this.display);
         imageBundle = new ImageBundle();
         
         ic.captureImages(imageBundle);        
