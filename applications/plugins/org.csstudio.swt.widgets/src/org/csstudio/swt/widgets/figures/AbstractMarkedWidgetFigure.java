@@ -20,13 +20,13 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
 	
 	protected double hihiLevel = 90;
 	
-	protected boolean showLolo;
+	protected boolean showLolo = true;
 	
-	protected boolean showLo;
+	protected boolean showLo = true;
 	
-	protected boolean showHi;
+	protected boolean showHi = true;
 	
-	protected boolean showHihi;
+	protected boolean showHihi = true;
 	
 	protected Color loloColor;
 	
@@ -35,7 +35,7 @@ public abstract class AbstractMarkedWidgetFigure extends AbstractScaledWidgetFig
 	protected Color hiColor;
 	
 	protected Color hihiColor;	
-
+	
 	/**
 	 * @return the hiColor
 	 */
