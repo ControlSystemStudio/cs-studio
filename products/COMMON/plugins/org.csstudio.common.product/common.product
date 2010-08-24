@@ -45,6 +45,7 @@
       <plugin id="org.csstudio.opibuilder.examples"/>
       <plugin id="org.csstudio.opibuilder.widgets"/>
       <plugin id="org.csstudio.platform"/>
+      <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
       <plugin id="org.csstudio.platform.libs.dal.epics"/>
       <plugin id="org.csstudio.platform.libs.epics"/>
@@ -110,7 +111,7 @@
       <plugin id="org.eclipse.equinox.p2.director"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
       <plugin id="org.eclipse.equinox.p2.exemplarysetup"/>
-      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector" fragment=""/>
       <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
       <plugin id="org.eclipse.equinox.p2.metadata.repository"/>

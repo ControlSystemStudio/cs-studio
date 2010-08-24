@@ -29,6 +29,9 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.Properties;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -50,6 +53,8 @@ import org.osgi.framework.Bundle;
  */
 public final class TestDataProvider {
 
+    private static final String CONFIGURATION_FILE_SUFFIX = "TestConfiguration.ini";
+
     private static TestDataProvider INSTANCE;
 
     private static Properties PROPERTIES;
@@ -61,7 +66,7 @@ public final class TestDataProvider {
      * Constructor.
      * @throws IOException
      */
-    private TestDataProvider(final String pluginId) throws IOException{
+    private TestDataProvider(@Nonnull final String pluginId) throws IOException{
         _pluginId = pluginId;
         PROPERTIES = new Properties();
     }
@@ -72,7 +77,8 @@ public final class TestDataProvider {
      * @throws FileNotFoundException
      * @throws IOException
      */
-    private static void loadProperties(final String pluginId, final String testConfigFileName)
+    private static void loadProperties(@Nonnull final String pluginId,
+                                       @Nonnull final String testConfigFileName)
         throws FileNotFoundException, IOException {
 
         InputStream openStream = null;
@@ -97,9 +103,10 @@ public final class TestDataProvider {
     /**
      * Retrieve test config property from file
      * @param key
-     * @return
+     * @return the property object
      */
-    public Object get(final String key) {
+    @CheckForNull
+    public Object get(@Nonnull final String key) {
         return PROPERTIES.get(key);
     }
 
@@ -109,7 +116,9 @@ public final class TestDataProvider {
      * @return the instance of the data provider
      * @throws TestProviderException
      */
-    public static TestDataProvider getInstance(final String pluginId) throws TestProviderException {
+    @Nonnull
+    public static TestDataProvider getInstance(@Nonnull final String pluginId)
+        throws TestProviderException {
 
         String testConfigFileName = "";
         try {
@@ -133,7 +142,7 @@ public final class TestDataProvider {
         }
     }
 
-
+    @Nonnull
     private static String createSiteSpecificName() throws IllegalArgumentException {
 
         SiteKey site;
@@ -146,10 +155,10 @@ public final class TestDataProvider {
                 site = SiteKey.valueOf(siteProp);
             }
         } catch (final IllegalArgumentException e) {
-            throw new IllegalArgumentException("The site enum type for vm arg -DsiteId="+ siteProp +" is unknown. ", e);
+            throw new IllegalArgumentException("The site enum type for jvm arg -DsiteId="+ siteProp +" is unknown. ", e);
         }
 
-        final String testConfigFileName = site.getPrefix() + "TestConfiguration.ini";
+        final String testConfigFileName = site.getPrefix() + CONFIGURATION_FILE_SUFFIX;
         return testConfigFileName;
     }
 }

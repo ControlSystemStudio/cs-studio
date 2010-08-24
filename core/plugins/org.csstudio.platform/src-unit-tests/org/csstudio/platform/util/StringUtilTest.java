@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import junit.framework.Assert;
 import junit.framework.TestCase;
 
 import org.junit.Test;
@@ -141,5 +142,22 @@ public class StringUtilTest extends TestCase {
         assertEquals("[true, false]|[1.0, 2.0]", StringUtil.join(new ArrayList<?>[]{ new ArrayList<Object>(Arrays.<Boolean>asList(Boolean.TRUE, Boolean.FALSE)),
                                                              new ArrayList<Object>(Arrays.<Double>asList(Double.valueOf(1.0), Double.valueOf(2.0)))},
                                              "|"));
+    }
+
+    @Test
+    public final void testCreateListFromString() {
+        Assert.assertNotNull(StringUtil.createListFrom(null));
+        Assert.assertNotNull(StringUtil.createListFrom(""));
+        Assert.assertNotNull(StringUtil.createListFrom("hallo"));
+
+        Assert.assertEquals(0, StringUtil.createListFrom(null).size());
+        Assert.assertEquals(0, StringUtil.createListFrom("").size());
+        Assert.assertEquals(0, StringUtil.createListFrom("  ").size());
+        Assert.assertEquals(0, StringUtil.createListFrom(" ,  ").size());
+        Assert.assertEquals(1, StringUtil.createListFrom("hallo").size());
+        Assert.assertEquals(1, StringUtil.createListFrom("hallo ,").size());
+
+        Assert.assertEquals("hallo", StringUtil.createListFrom("hallo ,").get(0));
+        Assert.assertEquals("tut", StringUtil.createListFrom(" , hallo , tut,").get(1));
     }
 }

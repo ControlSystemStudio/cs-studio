@@ -6,6 +6,7 @@
  * Modified for settable recursion depth by Klaus Valett - DESY Hamburg
  */
 package org.csstudio.utility.ldapUpdater.files;
+
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
 import java.io.BufferedReader;
