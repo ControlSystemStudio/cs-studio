@@ -39,7 +39,8 @@ public class GroupingContainerFigure extends Figure implements Introspectable{
 		setLayoutManager(new StackLayout());
 		add(scrollPane);
 		scrollPane.setViewport(new FreeformViewport());
-		scrollPane.setContents(pane);			
+		scrollPane.setContents(pane);		
+		setShowScrollBar(true);
 	}
 	
 	public BeanInfo getBeanInfo() throws IntrospectionException {
