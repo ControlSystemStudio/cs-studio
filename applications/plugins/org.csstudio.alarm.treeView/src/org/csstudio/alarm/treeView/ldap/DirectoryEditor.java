@@ -218,7 +218,7 @@ public final class DirectoryEditor {
 
         final Queue<ITreeModificationItem> items = new ConcurrentLinkedQueue<ITreeModificationItem>();
         if (target.getSource().equals(TreeNodeSource.LDAP)) {
-            items.add(new CreateLdapEntryItem(copy.getLdapName(), attrs));
+            items.add(new CreateLdapEntryModificationItem(copy.getLdapName(), attrs));
         }
 
         if (node instanceof IAlarmSubtreeNode) {
@@ -309,7 +309,7 @@ public final class DirectoryEditor {
         retrieveInitialStateSynchronously(node);
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
-            return new CreateLdapEntryItem(node.getLdapName(), attrs);
+            return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
         }
         return null;
 
@@ -351,7 +351,7 @@ public final class DirectoryEditor {
                   LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
-            return new CreateLdapEntryItem(node.getLdapName(), attrs);
+            return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
         }
         return null;
     }

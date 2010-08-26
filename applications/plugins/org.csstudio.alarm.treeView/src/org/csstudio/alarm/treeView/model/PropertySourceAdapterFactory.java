@@ -22,6 +22,10 @@
 
 package org.csstudio.alarm.treeView.model;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.eclipse.core.runtime.IAdapterFactory;
 import org.eclipse.ui.views.properties.IPropertySource;
 import org.eclipse.ui.views.properties.IPropertySource2;
@@ -33,16 +37,41 @@ import org.eclipse.ui.views.properties.IPropertySource2;
  */
 public final class PropertySourceAdapterFactory implements IAdapterFactory {
 
+    /**
+     * Global cache for the property source of most recently selected node.
+     */
+    private static AlarmTreeNodePropertySource PROP_SOURCE_CACHE;
+
+    private static PropertySourceAdapterFactory INSTANCE;
+
+    /**
+     * Constructor. Mayo nly be called by the framework via extension points!
+     */
+    public PropertySourceAdapterFactory() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("ERROR:" + PropertySourceAdapterFactory.class.getName() +
+                                            " may only be instantiated once.");
+        }
+        INSTANCE = this;
+    }
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(final Object adaptableObject,
-			final Class adapterType) {
-		if (adaptableObject instanceof AbstractAlarmTreeNode
-				&& adapterType == IPropertySource.class) {
-			return new AlarmTreeNodePropertySource(
-					(AbstractAlarmTreeNode) adaptableObject);
+	@Override
+	@CheckForNull
+    public Object getAdapter(@Nonnull final Object adaptableObject,
+	                         @Nullable @SuppressWarnings("rawtypes") final Class adapterType) {
+
+	    if (adaptableObject instanceof AbstractAlarmTreeNode &&
+	        adapterType == IPropertySource.class) {
+
+	        final AbstractAlarmTreeNode node = (AbstractAlarmTreeNode) adaptableObject;
+	        if (PROP_SOURCE_CACHE == null || !PROP_SOURCE_CACHE.getNode().getLdapName().equals(node.getLdapName())) {
+	            PROP_SOURCE_CACHE = new AlarmTreeNodePropertySource((AbstractAlarmTreeNode) adaptableObject);
+	        }
+	        return PROP_SOURCE_CACHE;
 		}
 		return null;
 	}
@@ -50,9 +79,19 @@ public final class PropertySourceAdapterFactory implements IAdapterFactory {
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+	@Override
+    @Nonnull
+    @SuppressWarnings("rawtypes")
 	public Class[] getAdapterList() {
 		return new Class[] {IPropertySource2.class};
+	}
+
+	/**
+	 * Flags the cached propertySource to be dirty.
+	 * Hence it is reloaded from LDAP the next time
+	 */
+	public static void dirty() {
+	    PROP_SOURCE_CACHE = null;
 	}
 
 }

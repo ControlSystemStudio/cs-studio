@@ -38,7 +38,7 @@ import org.csstudio.utility.ldap.service.ILdapService;
  * @version $Revision$
  * @since 17.06.2010
  */
-final class CreateLdapEntryItem extends AbstractTreeModificationItem {
+final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem {
 
     private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
@@ -52,8 +52,8 @@ final class CreateLdapEntryItem extends AbstractTreeModificationItem {
      * @param attrs
      * @param recordName
      */
-    CreateLdapEntryItem(@Nonnull final LdapName newName,
-                        @Nonnull final Attributes attrs) {
+    CreateLdapEntryModificationItem(@Nonnull final LdapName newName,
+                                    @Nonnull final Attributes attrs) {
         _newName = new LdapName(newName.getRdns());
         _attrs = (Attributes) attrs.clone();
     }

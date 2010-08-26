@@ -89,18 +89,21 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 * @param value
 	 *            the value.
 	 */
-	public final void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value) {
-		if (value != null) {
-			_properties.put(property, value);
-		} else {
-			_properties.remove(property);
-		}
+	@Override
+    public final void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value) {
+
+        if (value != null) {
+            _properties.put(property, value);
+        } else {
+            _properties.remove(property);
+        }
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	@CheckForNull
+	@Override
+    @CheckForNull
 	public IAlarmSubtreeNode getParent() {
 	    return _parent;
 	}
@@ -108,13 +111,15 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setParent(@Nonnull final IAlarmSubtreeNode parent) {
+	@Override
+    public void setParent(@Nonnull final IAlarmSubtreeNode parent) {
 	    _parent = parent;
 	}
 
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public LdapEpicsAlarmcfgConfiguration getTreeNodeConfiguration() {
         return _configurationType;
@@ -123,6 +128,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	/**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public final String getProperty(@Nonnull final AlarmTreeNodePropertyId property) {
         String result = _properties.get(property);
@@ -138,6 +144,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public final String getOwnProperty(@Nonnull final AlarmTreeNodePropertyId property) {
         return _properties.get(property);
@@ -146,6 +153,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public LdapName getLdapName() {
         try {
@@ -174,6 +182,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public final String getName() {
     	return _name;
@@ -182,6 +191,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public final void setName(@Nonnull final String name) {
     	_name = name;
     }
@@ -189,6 +199,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasChildren() {
         return false;
     }
