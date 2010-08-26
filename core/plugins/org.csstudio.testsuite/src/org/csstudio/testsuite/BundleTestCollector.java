@@ -164,12 +164,15 @@ public class BundleTestCollector {
         if (isClassBlackListed(className, blackList)) {
             return false;
         }
+        if (Modifier.isAbstract(testClass.getModifiers())) {
+            return false;
+        }
 
         if (checkForTestClass(testClass)) {
             // TEST FOUND
             if (!className.endsWith(commonFilterSuffix)) {
                 LOG.warn("Class " + className + " is a test, but does not end on *" + commonFilterSuffix + ".java.\n" +
-                         "Please rename to one out of: " + testClassFilters);
+                         "Please rename to one out of for this launch config: " + testClassFilters);
             } else {
                 for (final String filter : testClassFilters) { // check for filters
                     if (className.endsWith(filter)) {
