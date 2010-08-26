@@ -9,15 +9,26 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.annotation.CheckForNull;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+
 
 /**
  * Utility methods for handling strings.
  *
  * @author <code>splitIgnoreInQuotes</code> by Xihui Chen
  */
-public class StringUtil {
+public final class StringUtil {
 
-	public static final String printArrays(final Object value) {
+    /**
+     * Constructor.
+     */
+    private StringUtil() {
+        // Don't instantiate
+    }
+
+	public static String printArrays(final Object value) {
 		String result = null;
 
 		if (value == null) {
@@ -207,7 +218,9 @@ public class StringUtil {
      * @param separator the separator character to use, null treated as ""
      * @return the joined String, <code>null</code> if null array input
      */
-    public static String join(final Object[] array, final String sep) {
+	@CheckForNull
+    public static String join(@CheckForNull final Object[] array,
+                              @CheckForNull final String sep) {
         if (array == null) {
             return null;
         }
@@ -232,6 +245,44 @@ public class StringUtil {
     }
 
     /**
+     * Joins the enumeration entries to a String object separated by the given String sep.
+     *
+     * @param values the string values in a enumeration
+     * @param separator the separating string
+     * @return the joined string with separated entries
+     * @throws NamingException
+     */
+    @CheckForNull
+    public static String join(@CheckForNull final NamingEnumeration<String> values,
+                              @CheckForNull final String separator) throws NamingException {
+
+        final String sep = separator != null ? separator : "";
+
+        if (values == null || !values.hasMoreElements()) {
+            return null;
+        }
+
+        String resultString;
+        boolean nonNullAttrValueFound = false;
+        final StringBuilder builder = new StringBuilder();
+        while (values.hasMore()) {
+            final String next = values.next();
+            if (next != null) { // null is permitted as value of a present attribute - not my idea!
+                builder.append(next).append(sep);
+                nonNullAttrValueFound = true;
+            }
+        }
+        if (!nonNullAttrValueFound) {
+            return null; // StringBuilder.toString would return an empty string in that case
+        }
+        if (!StringUtil.isBlank(sep)) {
+            builder.delete(builder.length() - sep.length(), builder.length());
+        }
+        resultString = builder.toString();
+        return resultString;
+    }
+
+    /**
      * Creates a list of string from the comma separated entries in the input string
      * Each list entry is trimmed of whitespaces, so <code>"", "  "</code> entries are not
      * added!
@@ -251,5 +302,6 @@ public class StringUtil {
         }
         return list;
     }
+
 
 }
