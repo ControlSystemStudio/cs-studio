@@ -88,7 +88,7 @@ public final class PropertySourceAdapterFactory implements IAdapterFactory {
 
 	/**
 	 * Flags the cached propertySource to be dirty.
-	 * Hence it is reloaded from LDAP the next time
+	 * Hence, it is reloaded from LDAP the next time.
 	 */
 	public static void dirty() {
 	    PROP_SOURCE_CACHE = null;

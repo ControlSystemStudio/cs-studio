@@ -23,6 +23,7 @@ import java.util.Queue;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.treeView.model.PropertySourceAdapterFactory;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
@@ -79,6 +80,9 @@ public final class ReloadFromLdapAction extends Action {
     public void run() {
         // Remove all recent modifications from the queue
         _ldapModificationItems.clear();
+
+        // Reset the selection cache for the property view
+        PropertySourceAdapterFactory.dirty();
 
         LOG.debug("Starting directory reader.");
         final IWorkbenchSiteProgressService progressService =

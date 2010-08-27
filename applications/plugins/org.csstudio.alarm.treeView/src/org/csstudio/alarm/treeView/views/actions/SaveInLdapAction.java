@@ -33,12 +33,14 @@ import org.eclipse.ui.IWorkbenchPartSite;
 /**
  * Saves the recent tree modifications in LDAP.
  *
+ *
  * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 17.06.2010
  */
 public final class SaveInLdapAction extends Action {
+
     private final IWorkbenchPartSite _site;
     private final Queue<ITreeModificationItem> _ldapModifications;
 
@@ -76,11 +78,14 @@ public final class SaveInLdapAction extends Action {
                 }
 
                 final String summary = appliedMods.isEmpty() ? "No LDAP Modifications!" :
-                                                               ("Applied Modifications:\n" + appliedMods);
+                                                               "Applied Modifications:\n" + appliedMods;
 
                 MessageDialog.openConfirm(_site.getShell(),
                                           "LDAP persistence status of recent tree modification.",
                                           summary);
+
+                setEnabled(false);
+
             } catch (final AlarmTreeModificationException e) {
 
                 for (final ITreeModificationItem item : _ldapModifications) {

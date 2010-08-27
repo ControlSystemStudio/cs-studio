@@ -259,7 +259,22 @@ public class AlarmTreeView extends ViewPart {
      * {@link org.csstudio.alarm.treeView.views.actions.SaveInLdapAction}.
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems =
-        new ConcurrentLinkedQueue<ITreeModificationItem>();
+        new ConcurrentLinkedQueue<ITreeModificationItem>() {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void clear() {
+            getSaveInLdapAction().setEnabled(false);
+            super.clear();
+        }
+
+        @Override
+        public boolean add(@Nonnull final ITreeModificationItem arg0) {
+            getSaveInLdapAction().setEnabled(true);
+            return super.add(arg0);
+        }
+    };
 
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
@@ -608,6 +623,15 @@ public class AlarmTreeView extends ViewPart {
     @CheckForNull
     public Action getReloadAction() {
         return _reloadAction;
+    }
+
+    /**
+     * Getter.
+     * @return the save in LDAP action reference
+     */
+    @CheckForNull
+    public Action getSaveInLdapAction() {
+        return _saveInLdapAction;
     }
 
     /**
