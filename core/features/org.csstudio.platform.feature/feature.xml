@@ -127,13 +127,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.jms.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.platform.libs.epics"
          download-size="0"
          install-size="0"
@@ -211,20 +204,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ecf.provider.xmpp"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.jivesoftware.smack"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.remotercp.chat"
          download-size="0"
          install-size="0"
@@ -253,61 +232,6 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          unpack="false"/>
 
    <plugin
-         id="org.remotercp.errorhandling"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.filetransfer.receiver"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.filetransfer.sender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.libs"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.remotercp.login"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.preferences"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.preferences.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.progress"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.remotercp.provisioning"
          download-size="0"
          install-size="0"
@@ -315,21 +239,7 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          unpack="false"/>
 
    <plugin
-         id="org.remotercp.provisioning.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.remotercp.util"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.remotercp.util.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -391,14 +301,14 @@ THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION, U
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.ant"
+         id="org.csstudio.testsuite"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.testsuite"
+         id="org.remotercp.libs.xstream"
          download-size="0"
          install-size="0"
          version="0.0.0"
