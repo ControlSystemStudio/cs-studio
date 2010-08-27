@@ -105,7 +105,7 @@ public final class ActionButtonModel extends AbstractPVWidgetModel {
 		addProperty(new StringProperty(PROP_TEXT, "Text",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL)); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, "Default")); //$NON-NLS-1$
 		addProperty(new IntegerProperty(PROP_ACTION_INDEX, "Click Action Index",
 				WidgetPropertyCategory.Behavior, 0, -1, Integer.MAX_VALUE));
 		

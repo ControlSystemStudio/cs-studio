@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
@@ -12,6 +14,7 @@ import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.util.Util;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
@@ -21,6 +24,8 @@ import org.eclipse.swt.widgets.Display;
  *
  */
 public final class MediaService {
+
+	public static final String DEFAULT_FONT = "Default"; 
 
 	/**
 	 * The shared instance of this class.
@@ -64,6 +69,17 @@ public final class MediaService {
 				new OPIColor(AlarmColorScheme.INVALID, CustomMediaFactory.COLOR_PINK, true));
 		colorMap.put(AlarmColorScheme.DISCONNECTED, 
 				new OPIColor(AlarmColorScheme.DISCONNECTED, CustomMediaFactory.COLOR_PINK, true));
+	}
+	
+	private void loadPredefinedFonts(){
+		FontData defaultFont = Display.getDefault().getSystemFont().getFontData()[0]; //$NON-NLS-1$
+//		String osName = getOSName();
+//		if(osName.equals("linux_gtk")) //$NON-NLS-1$
+//			defaultFont = new FontData("Sans", 10, SWT.NORMAL); //$NON-NLS-1$
+//		else if(osName.equals("macosx")) //$NON-NLS-1$
+//			defaultFont = new FontData("Courier", 12, SWT.NORMAL);//$NON-NLS-1$
+
+		fontMap.put(DEFAULT_FONT, new OPIFont(DEFAULT_FONT, defaultFont)); //$NON-NLS-1$
 	}
 	
 	/**
@@ -117,6 +133,9 @@ public final class MediaService {
 	}
 	
 	private void loadFontFile() {
+		loadPredefinedFonts();
+		Map<String, OPIFont> rawFontMap = new LinkedHashMap<String, OPIFont>();
+		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();		
 		if(fontFilePath == null){
 			CentralLogger.getInstance().warn(this, "No font definition file was found.");
@@ -136,14 +155,18 @@ public final class MediaService {
 				if(line.trim().startsWith("#") || line.trim().startsWith("//")) //$NON-NLS-1$ //$NON-NLS-2$
 					continue;
 				int i;
-				if((i = line.indexOf('=')) != -1){
+				if((i = line.indexOf('=')) != -1){ //$NON-NLS-1$
 					String name = line.substring(0, i).trim();
+					String trimmedName = name;
+					if(name.contains("(")) //$NON-NLS-1$
+						trimmedName = name.substring(0, name.indexOf("(")); //$NON-NLS-1$
+					trimmedNameSet.add(trimmedName);
 					try{
 						FontData fontdata = StringConverter.asFontData(line.substring(i+1).trim());
 						if(fontdata.getName().equals("SystemDefault")) //$NON-NLS-1$
 							fontdata.setName(
 									Display.getDefault().getSystemFont().getFontData()[0].getName());
-						fontMap.put(name, new OPIFont(name, fontdata));
+						rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
 					}catch (DataFormatException e) {
 						CentralLogger.getInstance().error(this, "Failed to read font definition file.",e);
 					}
@@ -154,6 +177,28 @@ public final class MediaService {
 		} catch (Exception e) {
 			CentralLogger.getInstance().error(this, e);
 		}
+		
+		 String osname = getOSName();
+	     for(String trimmedName : trimmedNameSet){
+	    	 String equippedName = trimmedName + "(" + osname +")"; //$NON-NLS-1$ //$NON-NLS-2$
+	    	 if(rawFontMap.containsKey(equippedName))
+	    		 fontMap.put(trimmedName, rawFontMap.get(equippedName));
+	    	 else if(rawFontMap.containsKey(trimmedName))
+	    		 fontMap.put(trimmedName, rawFontMap.get(trimmedName));	    		 
+	     }
+		
+		
+	}
+
+	private String getOSName() {
+		String osname = System.getProperty("os.name").trim(); //$NON-NLS-1$
+	     String wsname = Util.getWS().trim();
+	     osname = StringConverter.removeWhiteSpaces(osname).toLowerCase();
+	     if(wsname != null && wsname.length() > 0){
+	    	 wsname = StringConverter.removeWhiteSpaces(wsname).toLowerCase();
+	    	 osname = osname + "_" + wsname;
+	     }
+		return osname;
 	}
 	
 	/**Get the color from the predefined color map, which is defined in the color file.

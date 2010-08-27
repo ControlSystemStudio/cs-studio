@@ -6,9 +6,8 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**The model for a tab widget.
@@ -44,7 +43,7 @@ public class TabModel extends AbstractContainerModel {
 	
 	private static final RGB DEFAULT_TAB_BACKCOLOR = new RGB(255,255,255);
 	
-	private static final FontData DEFAULT_TAB_FONT = new FontData("Arial", 10, SWT.NONE); //$NON-NLS-1$
+	private static final String DEFAULT_TAB_FONT = MediaService.DEFAULT_FONT; //$NON-NLS-1$
 
 	public static final int MAX_TABS_AMOUNT = 20;
 	

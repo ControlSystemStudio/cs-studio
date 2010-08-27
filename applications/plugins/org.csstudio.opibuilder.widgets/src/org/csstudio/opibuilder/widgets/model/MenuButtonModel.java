@@ -27,11 +27,10 @@ import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.opibuilder.visualparts.BorderStyle;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 
 /**
  * 
@@ -87,8 +86,7 @@ public final class MenuButtonModel extends AbstractPVWidgetModel {
 		addProperty(new StringProperty(PROP_LABEL, "Label",
 				WidgetPropertyCategory.Display, "")); //$NON-NLS-1$
 		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 8, SWT.NONE))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_ACTIONS_FROM_PV, "Actions From PV", 
 				WidgetPropertyCategory.Behavior, DEFAULT_ACTIONS_FROM_PV));
 		removeProperty(PROP_ACTIONS);		

@@ -9,6 +9,7 @@ import org.csstudio.opibuilder.properties.ColorProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.StringListProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.util.OPIFont;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -56,7 +57,7 @@ public abstract class AbstractChoiceModel extends AbstractPVWidgetModel {
 		addProperty(new StringListProperty(
 				PROP_ITEMS, "Items", WidgetPropertyCategory.Behavior, Arrays.asList(DEFAULT_ITEMS)));
 		addProperty(new FontProperty(
-				PROP_FONT, "Font", WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
+				PROP_FONT, "Font", WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
 		addProperty(new BooleanProperty(
 				PROP_ITEMS_FROM_PV, "Items From PV", WidgetPropertyCategory.Behavior, true));
 		addProperty(new ColorProperty(PROP_SELECTED_COLOR, "Selected Color", 

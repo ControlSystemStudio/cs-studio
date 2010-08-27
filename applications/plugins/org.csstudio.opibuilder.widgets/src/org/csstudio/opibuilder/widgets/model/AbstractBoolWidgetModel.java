@@ -8,10 +8,9 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -86,8 +85,7 @@ public abstract class AbstractBoolWidgetModel extends AbstractPVWidgetModel {
 		addProperty(new ColorProperty(PROP_OFF_COLOR, "Off Color",
 				WidgetPropertyCategory.Display, DEFAULT_OFF_COLOR));		
 		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 9, SWT.NONE))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new ComboProperty(PROP_DATA_TYPE, "Data Type",
 				WidgetPropertyCategory.Behavior, new String[]{"Bit", "Enum"}, 0));
 		addProperty(new StringProperty(PROP_ON_STATE, "On State", 

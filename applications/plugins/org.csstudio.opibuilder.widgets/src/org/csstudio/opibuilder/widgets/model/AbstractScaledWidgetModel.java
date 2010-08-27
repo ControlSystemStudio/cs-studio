@@ -6,8 +6,8 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.eclipse.swt.widgets.Display;
 
 /**
  * This class defines a common widget model for any widget 
@@ -76,7 +76,7 @@ public abstract class AbstractScaledWidgetModel extends AbstractPVWidgetModel {
 				WidgetPropertyCategory.Display, false));
 		
 		addProperty(new FontProperty(PROP_SCALE_FONT, "Scale Font", WidgetPropertyCategory.Display,
-				Display.getDefault().getSystemFont().getFontData()[0]));
+				MediaService.DEFAULT_FONT));
 		
 	}
 	
