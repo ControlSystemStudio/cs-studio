@@ -20,7 +20,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 17.04.2009
  */
-public class ChannelStructure_Test {
+public class ChannelStructureTest {
     private ProfibusSubnet _profibusSubnet;
     private Master _master;
     private Slave _slave;

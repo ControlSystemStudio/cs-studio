@@ -27,7 +27,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 09.01.2009
  */
-public class Module_Test {
+public class ModuleTest {
     private ProfibusSubnet _profibusSubnet;
     private Master _master;
     private Slave _slave;

@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Slave_Test {
+public class SlaveTest {
     private ProfibusSubnet _profibusSubnet;
     private Master _master;
 

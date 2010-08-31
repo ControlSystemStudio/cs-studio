@@ -11,7 +11,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class Facility_Test {
+public class FacilityTest {
 
     @Test
     public void createFacility() throws PersistenceException{

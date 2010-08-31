@@ -14,7 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CopyNode_Test {
+public class CopyNodeTest {
     
     private static final boolean OUTPUT = false;
     private static final boolean INPUT = true;

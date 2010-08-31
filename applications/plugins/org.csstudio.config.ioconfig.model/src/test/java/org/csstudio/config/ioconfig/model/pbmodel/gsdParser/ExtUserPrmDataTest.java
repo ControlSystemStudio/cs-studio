@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 import org.junit.Test;
 
-public class ExtUserPrmData_Test {
+public class ExtUserPrmDataTest {
 
     @Test
     public void ExtUserPrmData() {
