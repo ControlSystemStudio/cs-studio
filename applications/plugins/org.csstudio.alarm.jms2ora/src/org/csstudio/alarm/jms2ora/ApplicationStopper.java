@@ -298,7 +298,11 @@ public class ApplicationStopper
                 parameter = new CommandParameters();
                 parameter.set("Password", password);
                 
-                CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
+                CommandResult retValue = null;
+                if(service != null) {
+                	retValue = service.execute(stopAction.getIdentifier(), parameter);
+                }
+                
                 if(retValue != null)
                 {
                     returnValue = (String)retValue.getValue();

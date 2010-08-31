@@ -132,7 +132,7 @@ public class JmsMessageReceiver
             {
                 if(r != null)
                 {
-        			try{r.close();}catch(JMSException e){}
+        			try{r.close();}catch(JMSException e){/* Can be ignored */}
         			r = null;
                 }
     		}
@@ -140,14 +140,14 @@ public class JmsMessageReceiver
         
         if(session != null)
         {
-            try{session.close();}catch(JMSException jmse){}
+            try{session.close();}catch(JMSException jmse){/* Can be ignored */}
             session = null;
         }
         
         if(connection != null)
         {
-            try{connection.stop();}catch(JMSException jmse){}        
-            try{connection.close();}catch(JMSException jmse){}
+            try{connection.stop();}catch(JMSException jmse){/* Can be ignored */}        
+            try{connection.close();}catch(JMSException jmse){/* Can be ignored */}
             connection = null;
         }
 
@@ -155,7 +155,7 @@ public class JmsMessageReceiver
         
         if(context != null)
         {
-            try{context.close();}catch(NamingException e){}
+            try{context.close();}catch(NamingException e){/* Can be ignored */}
             context = null;
         }
         

@@ -393,7 +393,7 @@ public class MessageContentCreator
     
     private void prepareAndSetUnknownProperty(MessageContent msgContent, String name, String value)
     {
-        String temp = "[" + name + "] [" + value + "]";;
+        String temp = "[" + name + "] [" + value + "]";
 
         if(temp.length() > valueLength)
         {
