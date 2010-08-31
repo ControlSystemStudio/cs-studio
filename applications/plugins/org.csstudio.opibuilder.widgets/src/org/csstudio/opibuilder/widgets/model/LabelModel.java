@@ -48,7 +48,7 @@ public class LabelModel extends AbstractPVWidgetModel {
 	protected void configureProperties() {
 		
 		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
+				WidgetPropertyCategory.Display, "Default")); //$NON-NLS-1$
 		addProperty(new StringProperty(PROP_TEXT, "Text", 
 				WidgetPropertyCategory.Display, "double click to enter text", true));
 		addProperty(new BooleanProperty(PROP_TRANSPARENT, "Transparent",
