@@ -21,9 +21,33 @@
  */
 package org.csstudio.alarm.treeView.model;
 
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+
+import java.util.Set;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.InvalidNameException;
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.alarm.treeView.views.WorkbenchWindowHelper;
+import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
+import org.csstudio.platform.util.StringUtil;
+import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource2;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
@@ -35,6 +59,14 @@ import org.eclipse.ui.views.properties.TextPropertyDescriptor;
  * intentional, as updates of the alarm state would not be relected in the
  * property sheet until the selection in the tree is updated or modified.
  *
+ * Changes made in the property sheet are immediately persisted in LDAP, since this a
+ * <b>different</b> view and not connected to the alarm tree view and its modification items.
+ * Another consequence is that the methods setPropertyValue and resetPropertyValue do not affect
+ * the alarm tree view directly anymore by setting the node's properties.
+ * That would be a violation of the separation of concerns rule and a breakdown of the
+ * model encapsulation.
+ *
+ *
  * @author Joerg Rathlev
  */
 public class AlarmTreeNodePropertySource implements IPropertySource2 {
@@ -44,10 +76,17 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	private static final IPropertyDescriptor[] PROPERTY_DESCRIPTORS;
 
+	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
+
 	/**
 	 * The node for which this property source provides properties.
 	 */
 	private final AbstractAlarmTreeNode _node;
+
+    /**
+	 * The LDAP attributes found for this node.
+	 */
+    private Attributes _attributes;
 
 	/**
 	 * IDs for the properties.
@@ -82,27 +121,27 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 
 		// help page
 		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_PAGE, "help page");
-		descriptor.setDescription("The help page. This should be the URL of a web page.");
+		descriptor.setDescription(AlarmTreeNodePropertyId.HELP_PAGE.getDescription());
 		PROPERTY_DESCRIPTORS[2] = descriptor;
 
 		// help guidance
 		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_GUIDANCE, "help guidance");
-		descriptor.setDescription("A short description of the object.");
+		descriptor.setDescription(AlarmTreeNodePropertyId.HELP_GUIDANCE.getDescription());
 		PROPERTY_DESCRIPTORS[3] = descriptor;
 
 		// CSS alarm display
 		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, "alarm display");
-		descriptor.setDescription("The CSS alarm display.");
+		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY.getDescription());
 		PROPERTY_DESCRIPTORS[4] = descriptor;
 
 		// CSS display
 		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_DISPLAY, "display");
-		descriptor.setDescription("The CSS display.");
+		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_DISPLAY.getDescription());
 		PROPERTY_DESCRIPTORS[5] = descriptor;
 
 		// CSS strip chart
 		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_STRIP_CHART, "strip chart");
-		descriptor.setDescription("The CSS strip chart.");
+		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_STRIP_CHART.getDescription());
 		PROPERTY_DESCRIPTORS[6] = descriptor;
 	}
 
@@ -110,14 +149,66 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * Creates a new property source for the given node.
 	 * @param node the node.
 	 */
-	public AlarmTreeNodePropertySource(final AbstractAlarmTreeNode node) {
-		this._node = node;
+	public AlarmTreeNodePropertySource(@Nonnull final AbstractAlarmTreeNode node) {
+
+	    _node = node;
+        _attributes = retrieveNodeAttributesFromLdap(node);
 	}
+
+	/**
+	 * Getter for the adaptableObject node.
+	 * @return the node
+	 */
+	@Nonnull
+    public AbstractAlarmTreeNode getNode() {
+        return _node;
+    }
+
+	@Nonnull
+    private Attributes retrieveNodeAttributesFromLdap(@Nonnull final AbstractAlarmTreeNode node) {
+        final String simpleName = node.getName();
+        final LdapName ldapName = node.getLdapName();
+
+        LdapSearchResult result = null;
+        try {
+            ldapName.remove(ldapName.size() - 1); // remove simple name part
+            result =
+                LDAP_SERVICE.retrieveSearchResultSynchronously(ldapName,
+                                                               node.getTreeNodeConfiguration().getNodeTypeName() + FIELD_ASSIGNMENT + simpleName,
+                                                               SearchControls.ONELEVEL_SCOPE);
+        } catch (final InvalidNameException e) {
+            exitWithErrorDialog("LDAP Access",
+                                "LDAP name for node " + node.getLdapName().toString() +
+                                " could not be composed. LDAP lookup canceled.");
+            return null;
+        }
+        if (result == null || result.getAnswerSet().isEmpty()) {
+            exitWithErrorDialog("LDAP Access", "No result could be retrieved from LDAP.");
+            return null;
+        }
+
+        final Set<SearchResult> answerSet = result.getAnswerSet();
+        if (answerSet.size() > 1) {
+            exitWithErrorDialog("LDAP Access", "LDAP entry for node " + node.getLdapName().toString() +
+                                " is not unique.");
+            return null;
+        }
+
+        final SearchResult entry = answerSet.iterator().next();
+        return entry.getAttributes();
+    }
+
+    private void exitWithErrorDialog(@Nonnull final String title, @Nonnull final String message) {
+        MessageDialog.openError(null, title, message);
+        WorkbenchWindowHelper.hideView(AlarmTreeViewActionFactory.PROPERTY_VIEW_ID);
+        PropertySourceAdapterFactory.dirty();
+    }
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Object getEditableValue() {
+	@Override
+    public final Object getEditableValue() {
 		// not editable
 		return null;
 	}
@@ -125,14 +216,18 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final IPropertyDescriptor[] getPropertyDescriptors() {
+	@Override
+	@Nonnull
+    public final IPropertyDescriptor[] getPropertyDescriptors() {
 		return PROPERTY_DESCRIPTORS;
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final Object getPropertyValue(final Object id) {
+	@Override
+	@CheckForNull
+    public final Object getPropertyValue(@Nullable final Object id) {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
@@ -143,16 +238,46 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 				return null;
 			}
 		} else if (id instanceof AlarmTreeNodePropertyId) {
-			final String result = _node.getOwnProperty((AlarmTreeNodePropertyId) id);
-			return (result != null) ? result : "";
+		    return extractValueFromAttributes((AlarmTreeNodePropertyId) id, _attributes);
 		}
 		return null;
 	}
 
+	@CheckForNull
+    private String extractValueFromAttributes(@Nonnull final AlarmTreeNodePropertyId id,
+                                              @Nonnull final Attributes attributes) {
+        final String ldapAttrName = id.getLdapAttribute();
+        final Attribute attr = attributes.get(ldapAttrName);
+
+        if (attr == null) {
+            return "";
+        }
+
+        // TODO (bknerr) : how to get type safety from here?
+        String resultString = "";
+        try {
+            if (attr.size() > 1) {
+                @SuppressWarnings("unchecked")
+                final NamingEnumeration<String> allValues = (NamingEnumeration<String>) attr.getAll();
+                resultString = StringUtil.join(allValues, ",");
+            } else {
+                resultString = (String) attr.get();
+            }
+        } catch (final NamingException e) {
+            MessageDialog.openError(null,
+                                    "Extract properties from LDAP attributes",
+                                    "Naming exception occurred:\n" + e.getMessage());
+        }
+        return resultString != null ? resultString : "";
+    }
+
+
+
 	/**
 	 * {@inheritDoc}
 	 */
-	public final boolean isPropertySet(final Object id) {
+	@Override
+    public final boolean isPropertySet(@Nullable final Object id) {
 		if (id instanceof PropertyID) {
 			switch ((PropertyID) id) {
 			case NAME:
@@ -172,30 +297,80 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void resetPropertyValue(@Nullable final Object id) {
+	@Override
+    public final void resetPropertyValue(@Nullable final Object id) {
 		if (id instanceof AlarmTreeNodePropertyId) {
-		    _node.setProperty((AlarmTreeNodePropertyId) id, null);
+		    //_node.setProperty((AlarmTreeNodePropertyId) id, null);
+		    final AlarmTreeNodePropertyId propId = (AlarmTreeNodePropertyId) id;
+            final ModificationItem item = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
+                                                               new BasicAttribute(propId.getLdapAttribute()));
+            try {
+                LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+            } catch (final NamingException e) {
+                // TODO (bknerr) : give nice user feedback
+                e.printStackTrace();
+            }
 		}
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public final void setPropertyValue(@Nullable final Object id, @Nullable final Object value) {
+	@Override
+    public final void setPropertyValue(@Nullable final Object id, @Nullable final Object value) {
 		if (id instanceof AlarmTreeNodePropertyId) {
-//				String str = (String) value; // on other code location null means 'remove' property! what the heck?!
-//				if (str.equals("")) {        // How to set an attribute to to empty string then?!
-//					str = null;
-//				}
-		    _node.setProperty((AlarmTreeNodePropertyId) id, (String) value);
+		    final AlarmTreeNodePropertyId propId = (AlarmTreeNodePropertyId) id;
+
+		    final String oldLdapValue = extractValueFromAttributes(propId, _attributes);
+
+		    _attributes = retrieveNodeAttributesFromLdap(_node);
+
+		    if (_attributes == null) {
+		        WorkbenchWindowHelper.hideView(AlarmTreeViewActionFactory.PROPERTY_VIEW_ID);
+		        return;
+		    }
+
+		    final String currentLdapValue = extractValueFromAttributes(propId, _attributes);
+
+		    if (!oldLdapValue.equals(currentLdapValue)) {
+		        exitWithErrorDialog("Set property value failed.",
+		                            "The LDAP content for this node has changed, please reopen the property sheet.");
+		        return;
+		    }
+		    if (value.equals(currentLdapValue)) {
+		        return; // No changes to set in LDAP
+		    }
+
+		    replaceAttributeValueInLdap(value, propId);
 		}
       //else { Ignore }
 	}
 
-	/**
+    private void replaceAttributeValueInLdap(@Nullable final Object value,
+                                             @Nonnull final AlarmTreeNodePropertyId propId) {
+
+        if (StringUtil.isBlank((String) value)) {
+            resetPropertyValue(propId);
+            return;
+        }
+
+        try {
+            final ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+                                                               new BasicAttribute(propId.getLdapAttribute(), value));
+            LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+
+        } catch (final NamingException e) {
+            exitWithErrorDialog("Write property value to LDAP failed.",
+            "The node's property could not be written to LDAP due to NamingException:\n" +
+            e.getMessage());
+        }
+    }
+
+    /**
 	 * {@inheritDoc}
 	 */
-	public final boolean isPropertyResettable(@Nullable final Object id) {
+	@Override
+    public final boolean isPropertyResettable(@Nullable final Object id) {
 	    return id instanceof AlarmTreeNodePropertyId;
 	}
 }

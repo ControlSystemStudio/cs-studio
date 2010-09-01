@@ -1,0 +1,16 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ChannelfinderAPI
+Bundle-SymbolicName: org.csstudio.platform.libs.channelfinderAPI
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.csstudio.platforms.libs.channelfinderapi.Activator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.csstudio.platform.libs.jersey;bundle-version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-ClassPath: lib/ChannelFinderAPI-0.0.1-SNAPSHOT.jar,
+ .
+Export-Package: gov.bnl.channelfinder.api,
+ gov.bnl.channelfinder.model,
+ org.csstudio.platforms.libs.channelfinderapi

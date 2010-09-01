@@ -30,15 +30,14 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 	
 	protected double maximum = 100;
 	
-	protected int majorTickMarkStepHint;
+	protected int majorTickMarkStepHint =30;
 	
-	protected boolean showMinorTicks;
+	protected boolean showMinorTicks = true;
 	
-	protected boolean showScale;
+	protected boolean showScale = true;
 	
-	protected boolean logScale;	
+	protected boolean logScale = false;	
 	
-
 	public BeanInfo getBeanInfo() throws IntrospectionException {
 		return new ScaleWidgetIntrospector().getBeanInfo(this.getClass());
 	}

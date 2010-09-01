@@ -43,6 +43,7 @@ org.csstudio.platform.jaasAuthentication/**
 org.csstudio.platform.jaasAuthentication.ui/**
 org.csstudio.platform.ldapAuthorization/**
 org.csstudio.platform.ldapAuthorization.ui/**
+org.csstudio.platform.libs.annotations/**
 org.csstudio.platform.libs.dal/**
 org.csstudio.platform.libs.dal.epics/**
 org.csstudio.platform.libs.epics/**

@@ -64,7 +64,7 @@ public final class AlarmTreeConnectionMonitor implements IAlarmConnectionMonitor
                 // TODO (who?): This rebuilds the whole tree from
                 // scratch. It would be better for the
                 // usability to resynchronize only.
-                _alarmTreeView.startImportInitialConfiguration(_monitorRootNode);
+                _alarmTreeView.createAndScheduleImportInitialConfiguration(_monitorRootNode);
             }
         });
     }

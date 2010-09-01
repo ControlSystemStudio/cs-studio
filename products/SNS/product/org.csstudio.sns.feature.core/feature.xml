@@ -46,6 +46,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.navigator"/>
       <import plugin="org.eclipse.ui.navigator.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
+      <import plugin="org.csstudio.platform.libs.jdom" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.utility.pv" version="1.0.8" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help.appserver"/>
@@ -66,7 +67,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.jdom" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.junit"/>
    </requires>
 
    <plugin
@@ -252,6 +253,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
 
    <plugin
          id="org.csstudio.platform.libs.jdom"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.platform.libs.annotations"
          download-size="0"
          install-size="0"
          version="0.0.0"

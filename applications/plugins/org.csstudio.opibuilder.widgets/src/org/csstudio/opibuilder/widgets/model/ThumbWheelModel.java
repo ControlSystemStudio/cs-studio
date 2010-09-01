@@ -27,8 +27,8 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
@@ -111,7 +111,7 @@ public class ThumbWheelModel extends AbstractPVWidgetModel {
 				"Decimal digits", WidgetPropertyCategory.Behavior, DEFAULT_DECIMAL_DIGITS));
 
 		addProperty(new FontProperty(PROP_FONT, "Font", 
-				WidgetPropertyCategory.Display, CustomMediaFactory.FONT_ARIAL));
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT));
 
 		addProperty(new ColorProperty(PROP_INTERNAL_FRAME_COLOR, 
 				"Internal frame color", WidgetPropertyCategory.Display,

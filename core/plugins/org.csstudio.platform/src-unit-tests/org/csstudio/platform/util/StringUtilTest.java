@@ -4,6 +4,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.naming.NamingEnumeration;
+import javax.naming.NamingException;
+import javax.naming.directory.Attribute;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.BasicAttributes;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 
@@ -124,9 +130,9 @@ public class StringUtilTest extends TestCase {
 
     @Test
     public final void testJoin() {
-        assertNull(StringUtil.join(null, null));
-        assertNull(StringUtil.join(null, ""));
-        assertNull(StringUtil.join(null, "xxx"));
+        assertNull(StringUtil.join((Object[]) null, null));
+        assertNull(StringUtil.join((Object[]) null, ""));
+        assertNull(StringUtil.join((Object[]) null, "xxx"));
         assertEquals("", StringUtil.join(new String[0], null));
         assertEquals("", StringUtil.join(new String[0], ""));
         assertEquals("", StringUtil.join(new String[0], "abc"));
@@ -142,6 +148,49 @@ public class StringUtilTest extends TestCase {
         assertEquals("[true, false]|[1.0, 2.0]", StringUtil.join(new ArrayList<?>[]{ new ArrayList<Object>(Arrays.<Boolean>asList(Boolean.TRUE, Boolean.FALSE)),
                                                              new ArrayList<Object>(Arrays.<Double>asList(Double.valueOf(1.0), Double.valueOf(2.0)))},
                                              "|"));
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    public final void testJoin2() {
+
+        final BasicAttributes attrs = new BasicAttributes();
+        String joined;
+        try {
+            attrs.put("ID0", null);
+            final NamingEnumeration<String> vals0 = (NamingEnumeration<String>) attrs.get("ID0").getAll();
+            joined = StringUtil.join(vals0, null);
+            Assert.assertNull(joined);
+
+
+            attrs.put("ID1", "");
+            final NamingEnumeration<String> vals1_1 = (NamingEnumeration<String>) attrs.get("ID1").getAll();
+            joined = StringUtil.join(vals1_1, null);
+            Assert.assertEquals("", joined);
+
+            final NamingEnumeration<String> vals1_2 = (NamingEnumeration<String>) attrs.get("ID1").getAll();
+            joined = StringUtil.join(vals1_2, "");
+            Assert.assertEquals("", joined);
+
+            final NamingEnumeration<String> vals1_3 = (NamingEnumeration<String>) attrs.get("ID1").getAll();
+            joined = StringUtil.join(vals1_3, "xxx");
+            Assert.assertEquals("", joined);
+
+
+            final Attribute attr = new BasicAttribute("ID2", true);
+            attr.add(0, "x");
+            attr.add(1, "y");
+            final NamingEnumeration<String> vals2_1 = (NamingEnumeration<String>) attr.getAll();
+            joined = StringUtil.join(vals2_1, "||");
+            Assert.assertEquals("x||y", joined);
+            final NamingEnumeration<String> vals2_2 = (NamingEnumeration<String>) attr.getAll();
+            joined = StringUtil.join(vals2_2, null);
+            Assert.assertEquals("xy", joined);
+
+        } catch (final NamingException e) {
+            Assert.fail("Naming exception for: " + e.getMessage() + "\n");
+            e.printStackTrace();
+        }
     }
 
     @Test

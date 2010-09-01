@@ -391,6 +391,7 @@ public final class AlarmTreeViewActionFactory {
         final Action saveInLdapAction = new SaveInLdapAction(site, modifications);
         saveInLdapAction.setToolTipText("Save in LDAP");
         saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/saveinldap.gif"));
+        saveInLdapAction.setEnabled(false);
         return saveInLdapAction;
     }
 

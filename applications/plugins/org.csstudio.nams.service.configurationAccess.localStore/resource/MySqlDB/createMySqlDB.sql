@@ -47,11 +47,11 @@ create table AMS_User
 	iUserId 		INT NOT NULL,
 	iGroupRef		INT default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
 	cUserName 		VARCHAR(128),
-	cEmail 			VARCHAR(128),			/* f�r MAIL 						*/
-	cMobilePhone		VARCHAR(64),			/* f�r SMS 						*/
-	cPhone			VARCHAR(64),			/* f�r VM 						*/
-	cStatusCode		VARCHAR(32),			/* Identifz. f�r Remote An- und Abmelden 		*/
-	cConfirmCode		VARCHAR(32),			/* Best�tigungscode der Antwort 			*/
+	cEmail 			VARCHAR(128),			/* für MAIL 						*/
+	cMobilePhone		VARCHAR(64),			/* für SMS 						*/
+	cPhone			VARCHAR(64),			/* für VM 						*/
+	cStatusCode		VARCHAR(32),			/* Identifz. für Remote An- und Abmelden 		*/
+	cConfirmCode		VARCHAR(32),			/* Bestätigungscode der Antwort 			*/
 	sActive			SMALLINT,			/* 0 - Inactive, 1 - Active				*/
 	sPreferredAlarmingTypeRR	SMALLINT,		/* ReplyRequired: 1 - SMS, 2 - VM, 3 - MAIL 		*/
 	/*sPreferredAlarmingType	SMALLINT,		Without Reply: 1 - SMS, 2 - VM, 3 - MAIL 		*/
@@ -76,7 +76,7 @@ create table AMS_UserGroup_User
 	iUserGroupRef		INT NOT NULL,
 	iUserRef		INT NOT NULL,
 	iPos			INT NOT NULL,		/* Benchrichtigungsreihenfolge 				*/
-	sActive			SMALLINT,			/* Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) */
+	sActive			SMALLINT,			/* Gruppenzugehörigkeit aktiv?(0 - Inactive, 1 - Active) */
 	cActiveReason		VARCHAR(128),			/* Grund/Ursache der An/Abmeldung			*/
 	tTimeChange		BIGINT,			/* Zeitstempel der letzten �nderung des Datensatzes	*/
 	PRIMARY KEY(iUserGroupRef,iUserRef)					
@@ -206,7 +206,7 @@ create table AMS_FilterAction
 (			
 	iFilterActionID		INT NOT NULL,
 	iFilterActionTypeRef	INT NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
-	iReceiverRef		INT,			/* abh�ngig von iFilterActionTypeID User oder UserGroup */
+	iReceiverRef		INT,			/* abhängig von iFilterActionTypeID User oder UserGroup */
 	cMessage		VARCHAR(1024),			/* Aktionsmessage mit Platzhalter der 17 Messagewerte, z.B. %HOST% */
 	PRIMARY KEY(iFilterActionID)
 );
@@ -216,7 +216,7 @@ create table AMS_Filter_FilterAction
 (
 	iFilterRef		INT NOT NULL,
 	iFilterActionRef	INT NOT NULL,
-	iPos			INT NOT NULL		/* Reihenfolge f�r die GUI, werden parallel ausgef�hrt */
+	iPos			INT NOT NULL		/* Reihenfolge für die GUI, werden parallel ausgef�hrt */
 );
 
 drop table AMS_Groups;
@@ -251,11 +251,11 @@ create table AMS_User_Syn
 	iUserId 		INT NOT NULL,
 	iGroupRef		INT default -1 NOT NULL, /* FK AMS_Groups.iGroupId				*/
 	cUserName 		VARCHAR(128),
-	cEmail 			VARCHAR(128),			/* f�r MAIL 						*/
-	cMobilePhone		VARCHAR(64),			/* f�r SMS 						*/
-	cPhone			VARCHAR(64),			/* f�r VM 						*/
-	cStatusCode		VARCHAR(32),			/* Identifz. f�r Remote An- und Abmelden 		*/
-	cConfirmCode		VARCHAR(32),			/* Best�tigungscode der Antwort 			*/
+	cEmail 			VARCHAR(128),			/* für MAIL 						*/
+	cMobilePhone		VARCHAR(64),			/* für SMS 						*/
+	cPhone			VARCHAR(64),			/* für VM 						*/
+	cStatusCode		VARCHAR(32),			/* Identifz. für Remote An- und Abmelden 		*/
+	cConfirmCode		VARCHAR(32),			/* Bestätigungscode der Antwort 			*/
 	sActive			SMALLINT,			/* 0 - Inactive, 1 - Active				*/
 	sPreferredAlarmingTypeRR	SMALLINT,		/* ReplyRequired: 1 - SMS, 2 - VM, 3 - MAIL 		*/
 	/*sPreferredAlarmingType	SMALLINT,		Without Reply: 1 - SMS, 2 - VM, 3 - MAIL 		*/
@@ -268,9 +268,9 @@ create table AMS_UserGroup_User_Syn
 	iUserGroupRef		INT NOT NULL,
 	iUserRef		INT NOT NULL,
 	iPos			INT NOT NULL,		/* Benchrichtigungsreihenfolge 				*/
-	sActive			SMALLINT,			/* Gruppenzugeh�rigkeit aktiv?(0 - Inactive, 1 - Active) */
+	sActive			SMALLINT,			/* Gruppenzugehörigkeit aktiv?(0 - Inactive, 1 - Active) */
 	cActiveReason		VARCHAR(128),			/* Grund/Ursache der An/Abmeldung			*/
-	tTimeChange		BIGINT,			/* Zeitstempel der letzten �nderung des Datensatzes	*/
+	tTimeChange		BIGINT,			/* Zeitstempel der letzten Änderung des Datensatzes	*/
 	PRIMARY KEY(iUserGroupRef,iUserRef)					
 );
 
@@ -397,7 +397,7 @@ create table AMS_FilterAction_Syn
 (			
 	iFilterActionID		INT NOT NULL,
 	iFilterActionTypeRef	INT NOT NULL,		/*FK AMS_FilterActionType.iFilterActionTypeID 		*/
-	iReceiverRef		INT,			/* abh�ngig von iFilterActionTypeID User oder UserGroup */
+	iReceiverRef		INT,			/* abhängig von iFilterActionTypeID User oder UserGroup */
 	cMessage		VARCHAR(1024),			/* Aktionsmessage mit Platzhalter der 17 Messagewerte, z.B. %HOST% */
 	PRIMARY KEY(iFilterActionID)
 );
@@ -407,7 +407,7 @@ create table AMS_Filter_FilterAction_Syn
 (
 	iFilterRef		INT NOT NULL,
 	iFilterActionRef	INT NOT NULL,
-	iPos			INT NOT NULL		/* Reihenfolge f�r die GUI, werden parallel ausgef�hrt */
+	iPos			INT NOT NULL		/* Reihenfolge für die GUI, werden parallel ausgeführt */
 );
 
 drop table AMS_UserGroup_Syn;

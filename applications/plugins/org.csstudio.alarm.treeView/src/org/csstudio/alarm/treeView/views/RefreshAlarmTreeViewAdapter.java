@@ -51,8 +51,8 @@ import org.eclipse.jface.viewers.TreeViewer;
  */
 public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(RefreshAlarmTreeViewAdapter.class);
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(RefreshAlarmTreeViewAdapter.class);
 
     private final AlarmTreeView _alarmTreeView;
     private final IAlarmSubtreeNode _adapterRootNode;
@@ -73,13 +73,15 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         retrieveInitialStateSynchronously(_adapterRootNode);
 
-        _alarmTreeView.asyncSetViewerInput(_adapterRootNode); // Display the new tree.
+        // Set the viewer's input to the newly obtained tree
+        _alarmTreeView.asyncSetViewerInput(_adapterRootNode);
 
         final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
 
         alarmListener.startUpdateProcessing();
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 final TreeViewer viewer = _alarmTreeView.getViewer();
                 if (viewer != null) {
@@ -90,7 +92,9 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
     }
 
     private void retrieveInitialStateSynchronously(@Nonnull final IAlarmSubtreeNode rootNode) {
+
         final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
+
         final List<PVNodeItem> initItems = new ArrayList<PVNodeItem>();
 
         for (final IAlarmProcessVariableNode pvNode : pvNodes) {

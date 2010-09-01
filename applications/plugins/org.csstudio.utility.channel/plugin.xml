@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            objectClass="gov.bnl.channelfinder.model.XmlChannel"
+            id="org.csstudio.utility.channel.contribution1">
+         <menu
+               icon="icons/cficon.gif"
+               id="org.csstudio.utility.channel.menu"
+               label="Channels"
+               path="additions">
+            <separator
+                  name="group">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.utility.channel.actions.AddTagAction"
+               icon="icons/add_tag.gif"
+               id="org.csstudio.utility.channel.addTag"
+               label="Add Tag"
+               menubarPath="org.csstudio.utility.channel.menu/group">
+         </action>
+         <action
+               class="org.csstudio.utility.channel.actions.RemoveTagAction"
+               icon="icons/remove_tag.gif"
+               id="org.csstudio.utility.channel.removeTag"
+               label="Remove Tag"
+               menubarPath="org.csstudio.utility.channel.menu/group">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

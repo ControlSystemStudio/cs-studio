@@ -259,7 +259,22 @@ public class AlarmTreeView extends ViewPart {
      * {@link org.csstudio.alarm.treeView.views.actions.SaveInLdapAction}.
      */
     private final Queue<ITreeModificationItem> _ldapModificationItems =
-        new ConcurrentLinkedQueue<ITreeModificationItem>();
+        new ConcurrentLinkedQueue<ITreeModificationItem>() {
+
+        private static final long serialVersionUID = 1L;
+
+        @Override
+        public void clear() {
+            getSaveInLdapAction().setEnabled(false);
+            super.clear();
+        }
+
+        @Override
+        public boolean add(@Nonnull final ITreeModificationItem arg0) {
+            getSaveInLdapAction().setEnabled(true);
+            return super.add(arg0);
+        }
+    };
 
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
@@ -305,6 +320,7 @@ public class AlarmTreeView extends ViewPart {
      */
     void asyncSetViewerInput(@Nonnull final IAlarmSubtreeNode inputElement) {
         getSite().getShell().getDisplay().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 _viewer.setInput(inputElement);
             }
@@ -455,6 +471,7 @@ public class AlarmTreeView extends ViewPart {
         _myMessageArea = new MessageArea(parent);
 
         _viewer = createTreeViewer(parent);
+        getSite().setSelectionProvider(_viewer);
 
         _currentAlarmFilter = new CurrentAlarmFilter();
 
@@ -467,16 +484,11 @@ public class AlarmTreeView extends ViewPart {
 
         contributeToActionBars();
 
-        getSite().setSelectionProvider(_viewer);
-
-        startConnection();
+        createAndScheduleConnectionJob();
 
         addDragAndDropSupport();
     }
 
-    /**
-     * @param parent
-     */
     @Nonnull
     private TreeViewer createTreeViewer(@Nonnull final Composite parent) {
         final TreeViewer viewer = new TreeViewer(parent, SWT.BORDER | SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL);
@@ -489,6 +501,7 @@ public class AlarmTreeView extends ViewPart {
 
         final ISelectionChangedListener selectionChangedListener =
             new ISelectionChangedListener() {
+            @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 AlarmTreeView.this.selectionChanged(event);
             }
@@ -614,6 +627,15 @@ public class AlarmTreeView extends ViewPart {
 
     /**
      * Getter.
+     * @return the save in LDAP action reference
+     */
+    @CheckForNull
+    public Action getSaveInLdapAction() {
+        return _saveInLdapAction;
+    }
+
+    /**
+     * Getter.
      * @return the view's root node (not visible).
      */
     @Nonnull
@@ -641,7 +663,7 @@ public class AlarmTreeView extends ViewPart {
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
             final String display = ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
-            return (display != null) && display.matches(".+\\.css-sds");
+            return display != null && display.matches(".+\\.css-sds");
         }
         return false;
     }
@@ -709,6 +731,7 @@ public class AlarmTreeView extends ViewPart {
 
         // add menu items to the context menu when it is about to show
         menuMgr.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(@Nullable final IMenuManager manager) {
                 AlarmTreeView.this.fillContextMenu(manager);
             }
@@ -759,7 +782,7 @@ public class AlarmTreeView extends ViewPart {
     /**
      * Starts the connection.
      */
-    private void startConnection() {
+    private void createAndScheduleConnectionJob() {
         LOG.debug("Starting connection.");
 
         if (_connection != null) {
@@ -768,8 +791,8 @@ public class AlarmTreeView extends ViewPart {
             LOG.warn("There was an active connection when starting a new connection");
         }
 
-        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
-        .getAdapter(IWorkbenchSiteProgressService.class);
+        final IWorkbenchSiteProgressService progressService =
+            (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
         final Job connectionJob = createConnectionJob(this);
 
@@ -780,10 +803,10 @@ public class AlarmTreeView extends ViewPart {
      * Starts a job which reads the contents of the directory in the background.
      * @param rootNode
      */
-    public void startImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
-        LOG.debug("Starting directory reader.");
-        final IWorkbenchSiteProgressService progressService = (IWorkbenchSiteProgressService) getSite()
-        .getAdapter(IWorkbenchSiteProgressService.class);
+    public void createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
+        LOG.debug("Start import initial configuration.");
+        final IWorkbenchSiteProgressService progressService =
+            (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
         final Job importInitialConfigJob = createImportInitialConfigJob(rootNode);
 

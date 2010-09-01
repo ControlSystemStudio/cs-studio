@@ -35,11 +35,16 @@ import com.google.common.collect.ImmutableSet.Builder;
  * @author Joerg Rathlev
  */
 public enum AlarmTreeNodePropertyId {
-	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay"),
-	CSS_DISPLAY("epicsCssDisplay"),
-	CSS_STRIP_CHART("epicsCssStripChart"),
-	HELP_GUIDANCE("epicsHelpGuidance"),
-	HELP_PAGE("epicsHelpPage");
+	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay",
+	                  "The CSS alarm display."),
+	CSS_DISPLAY("epicsCssDisplay",
+	            "The CSS display."),
+	CSS_STRIP_CHART("epicsCssStripChart",
+	                "The CSS strip chart."),
+	HELP_GUIDANCE("epicsHelpGuidance",
+	              "A short description of the object."),
+	HELP_PAGE("epicsHelpPage",
+	          "The help page. This should be the URL of a web page.");
 
 
 	private static ImmutableSet<String> LDAP_ATTRIBUTES;
@@ -54,14 +59,18 @@ public enum AlarmTreeNodePropertyId {
 
 	private final String _ldapAttribute;
 
+	private final String _description;
+
 	/**
 	 * Constructor.
 	 * @param ldapAttribute the name as it is defined as attribute in LDAP
 	 *
 	 * CHECKSTYLE:Jsr305Annotations:OFF
 	 */
-	private AlarmTreeNodePropertyId(final String ldapAttribute) {
+	private AlarmTreeNodePropertyId(final String ldapAttribute,
+	                                final String description) {
 	    _ldapAttribute = ldapAttribute;
+	    _description = description;
     }
 
 	@Nonnull
@@ -89,5 +98,14 @@ public enum AlarmTreeNodePropertyId {
     @Nonnull
 	public static ImmutableSet<String> getLdapAttributes() {
         return LDAP_ATTRIBUTES;
+    }
+
+    /**
+     * A describing string for this property.
+     * @return the description
+     */
+    @Nonnull
+    public String getDescription() {
+        return _description;
     }
 }

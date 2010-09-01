@@ -6,9 +6,8 @@ import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.util.MediaService;
 import org.csstudio.opibuilder.util.OPIFont;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -50,8 +49,7 @@ public class CheckBoxModel extends AbstractPVWidgetModel {
 		addProperty(new StringProperty(PROP_LABEL, "Label",
 				WidgetPropertyCategory.Display, ""));	//$NON-NLS-1$	
 		addProperty(new FontProperty(PROP_FONT, "Font",
-				WidgetPropertyCategory.Display, new FontData(
-						"Arial", 9, SWT.NONE))); //$NON-NLS-1$
+				WidgetPropertyCategory.Display, MediaService.DEFAULT_FONT)); //$NON-NLS-1$
 		addProperty(new BooleanProperty(PROP_AUTOSIZE, "Auto Size", 
 				WidgetPropertyCategory.Display, false));
 	}
