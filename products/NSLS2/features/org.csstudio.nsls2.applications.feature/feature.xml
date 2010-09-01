@@ -44,4 +44,8 @@
          id="org.csstudio.diag.epics.pvtree.nsls2.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.channelfinder.feature"
+         version="0.0.0"/>
+
 </feature>
