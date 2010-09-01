@@ -46,12 +46,12 @@ import javax.mail.internet.MimeMessage;
 import javax.mail.internet.MimeMultipart;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.IImageWorker;
-import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.desy.DestinationPlugin;
 import org.csstudio.utility.screenshot.desy.dialog.LogbookSenderDialog;
 import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderMessages;
-import org.csstudio.utility.screenshot.preference.ScreenshotPreferenceConstants;
+import org.csstudio.utility.screenshot.desy.preference.DestinationPreferenceConstants;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.graphics.Image;
@@ -108,7 +108,6 @@ public class ImageProcessor implements IImageWorker
         LogbookSenderDialog dialog = new LogbookSenderDialog(parentShell);
         
         int value = dialog.open();
-                
         if((value == Dialog.OK) && (dialog.getLogbookEntry() != null))
         {
             try
@@ -116,8 +115,9 @@ public class ImageProcessor implements IImageWorker
                 ImageIO.write(bufferedImage, "jpg", new File(workspaceLocation + imageFilename));
                 
                 Properties props = new Properties();
+                IPreferencesService pref = Platform.getPreferencesService();
                 
-                props.put("mail.smtp.host", ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_SERVER));
+                props.put("mail.smtp.host", pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.MAIL_SERVER, "", null));
                 props.put("mail.smtp.port", "25");
                 
                 Session session = Session.getDefaultInstance(props);
@@ -151,7 +151,7 @@ public class ImageProcessor implements IImageWorker
     
                 try
                 {
-                    addressFrom = new InternetAddress(ScreenshotPlugin.getDefault().getPluginPreferences().getString(ScreenshotPreferenceConstants.MAIL_ADDRESS_SENDER));
+                    addressFrom = new InternetAddress(pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.MAIL_ADDRESS_SENDER, "css-user@desy.de", null));
                
                     msg.setFrom(addressFrom);
                     
@@ -190,23 +190,15 @@ public class ImageProcessor implements IImageWorker
         if(palette.isDirect)
         {
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
-            
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             
-            WritableRaster raster = bufferedImage.getRaster();
-            
-            int[] pixelArray = new int[3];
-          
             for (int y = 0; y < data.height; y++)
             {
                 for (int x = 0; x < data.width; x++)
                 {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
-                    pixelArray[0] = rgb.red;
-                    pixelArray[1] = rgb.green;
-                    pixelArray[2] = rgb.blue;
-                    raster.setPixels(x, y, 1, 1, pixelArray);
+                    bufferedImage.setRGB(x, y,  rgb.red << 16 | rgb.green << 8 | rgb.blue);
                 }
             }
             

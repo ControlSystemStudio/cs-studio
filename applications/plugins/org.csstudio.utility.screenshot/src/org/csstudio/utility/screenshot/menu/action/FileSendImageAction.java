@@ -28,22 +28,22 @@ import org.csstudio.utility.screenshot.ScreenshotPlugin;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.eclipse.jface.action.Action;
 
-public class FileSendImageAction extends Action
-{
-    private ScreenshotWorker    worker      = null;
-    private IImageWorker        imageWorker = null;
+public class FileSendImageAction extends Action {
     
-    public FileSendImageAction(ScreenshotWorker w, IImageWorker iw)
-    {
+    /** The screenshot main class */
+    private ScreenshotWorker worker;
+    
+    /** Image worker */
+    private IImageWorker imageWorker;
+    
+    public FileSendImageAction(ScreenshotWorker w, IImageWorker iw) {
         worker = w;
-        
         imageWorker = iw;
-        
         this.setText(imageWorker.getMenuItemEntry());
     }
     
-    public void run()
-    {
-        imageWorker.processImage(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(), worker.getDisplayedImage());
+    public void run() {
+        imageWorker.processImage(ScreenshotPlugin.getDefault().getDisplay().getActiveShell(),
+                                 worker.getDisplayedImage());
     }
 }
