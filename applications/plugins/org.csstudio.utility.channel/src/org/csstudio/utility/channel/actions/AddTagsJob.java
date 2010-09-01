@@ -24,7 +24,7 @@ public class AddTagsJob extends Job {
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Adding Tags to channels", IProgressMonitor.UNKNOWN);
 //		System.out.println("adding "+tag.getName()+" to "+channels.getChannelNames());
-//		ChannelFinderClient.getInstance().addTag(channels.getChannelNames(), tag);		
+		ChannelFinderClient.getInstance().addTag(channels.getChannelNames(), tag);		
 		monitor.done();
         return Status.OK_STATUS;
 	}
