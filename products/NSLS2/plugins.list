@@ -5,6 +5,7 @@ org.csstudio.archive.channelarchiver
 org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
+org.csstudio.channelfinder
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.probe
@@ -27,6 +28,7 @@ org.csstudio.trends.databrowser
 org.csstudio.trends.databrowser2
 org.csstudio.trends.databrowser2.intro
 org.csstudio.utility.adlParser
+org.csstudio.utility.channel
 org.csstudio.utility.clock
 org.csstudio.utility.ldap
 org.csstudio.utility.namespace.utility
@@ -35,12 +37,14 @@ org.csstudio.utility.pv.epics
 org.csstudio.utility.pv.simu
 org.csstudio.platform
 org.csstudio.platform.libs.annotations
+org.csstudio.platform.libs.channelfinderAPI
 org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
 org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jdom
+org.csstudio.platform.libs.jersey
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
 org.csstudio.platform.ui
