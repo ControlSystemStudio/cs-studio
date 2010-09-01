@@ -285,7 +285,7 @@ public class ChannelFinderView extends ViewPart {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		// Remove all old columns :(
+		// Remove all old columns
 		// TDB add the additional columns in the correct sorted order.
 		while (viewer.getTable().getColumnCount() > 2) {
 			viewer.getTable().getColumn(viewer.getTable().getColumnCount() - 1)
