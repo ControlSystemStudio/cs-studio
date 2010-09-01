@@ -116,7 +116,7 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         setBlockOnOpen(true);
 
         IPreferencesService pref = Platform.getPreferencesService();
-        String temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.LOGBOOK_NAMES, "NONE",null);
+        String temp = pref.getString(DestinationPlugin.PLUGIN_ID, DestinationPreferenceConstants.LOGBOOK_NAMES, "NONE", null);
         StringTokenizer token = new StringTokenizer(temp, ";");
         if(token.countTokens() > 0)
         {

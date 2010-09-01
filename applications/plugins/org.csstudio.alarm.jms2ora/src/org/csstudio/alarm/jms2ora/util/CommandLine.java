@@ -93,6 +93,7 @@ public class CommandLine {
      * Default constructor which simply initialised the class
      */
     public CommandLine() {
+    	// Do nothing
     }
 
     /**

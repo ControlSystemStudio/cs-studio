@@ -79,48 +79,48 @@ public class MessageProcessor extends Thread implements MessageListener
     private static MessageProcessor instance = null;
     
     /** Queue for received messages */
-    private ConcurrentLinkedQueue<MessageContent> messages = null;
+    private ConcurrentLinkedQueue<MessageContent> messages;
     
     /** Object for database handling */
-    private DatabaseLayer dbLayer = null;
+    private DatabaseLayer dbLayer;
     
     /** Object that creates the MessageContent objects */
-    private MessageContentCreator contentCreator = null;
+    private MessageContentCreator contentCreator;
     
     /** Array of message receivers */
-    private JmsMessageReceiver[] receivers = null;
+    private JmsMessageReceiver[] receivers;
             
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector receivedMessages = null;
+    private Collector receivedMessages;
     
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector emptyMessages = null;
+    private Collector emptyMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector discardedMessages = null;
+    private Collector discardedMessages;
 
     /** Class that collects statistic informations. Query it via XMPP. */
-    private Collector storedMessages = null;
+    private Collector storedMessages;
 
     /** The logger */
-    private Logger logger = null;
+    private Logger logger;
     
     /** Array with JMS server URLs */
-    private String[] urlList = null;
+    private String[] urlList;
     
     /** Array with topic names */
-    private String[] topicList = null;
+    private String[] topicList;
     
     /** Indicates if the application was initialized or not */
-    private boolean initialized = false;
+    private boolean initialized;
     
     /** Indicates whether or not the application should stop */
-    private boolean running = true;
+    private boolean running;
 
     /** Indicates whether or not this thread stopped clean */
-    private boolean stoppedClean = false;
+    private boolean stoppedClean;
     
-    private Jms2OraApplication parent = null;
+    private Jms2OraApplication parent;
     
     /** Time to sleep in ms */
     private static long SLEEPING_TIME = 15000 ;
@@ -148,12 +148,13 @@ public class MessageProcessor extends Thread implements MessageListener
      */    
     private MessageProcessor()
     {
-        // Create the logger
+    	this.setName("MessageProcessor-Thread");
+
+    	// Create the logger
         logger = CentralLogger.getInstance().getLogger(this);
-        
-        this.setName("MessageProcessor-Thread");
-        
+
         messages = new ConcurrentLinkedQueue<MessageContent>();
+        parent = null;
         
         IPreferencesService prefs = Platform.getPreferencesService();
         String url = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_URL, "", null);
@@ -193,6 +194,8 @@ public class MessageProcessor extends Thread implements MessageListener
         String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
         String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
         
+        urlList = null;
+        topicList = null;
         if((urls.length() > 0) && (topics.length() > 0))
         {
             urlList = urls.split(",");
@@ -235,6 +238,9 @@ public class MessageProcessor extends Thread implements MessageListener
         {
             initialized = false;
         }
+        
+        running = true;
+        stoppedClean = false;
     }
 
     public static synchronized MessageProcessor getInstance()
@@ -252,7 +258,8 @@ public class MessageProcessor extends Thread implements MessageListener
      *
      */
     
-    public void run()
+    @Override
+	public void run()
     {
         MessageContent content = null;
         int result;

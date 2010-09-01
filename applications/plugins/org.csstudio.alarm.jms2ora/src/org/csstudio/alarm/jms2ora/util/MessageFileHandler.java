@@ -331,8 +331,8 @@ public class MessageFileHandler implements FilenameFilter
         }
         finally
         {
-            if(oos != null){try{oos.close();}catch(IOException ioe){}}
-            if(fos != null){try{fos.close();}catch(IOException ioe){}}
+            if(oos != null){try{oos.close();}catch(IOException ioe){/* Can be ignored */}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){/* Can be ignored */}}
             
             oos = null;
             fos = null;            
@@ -370,8 +370,8 @@ public class MessageFileHandler implements FilenameFilter
         }
         finally
         {
-            if(ois != null){try{ois.close();}catch(IOException ioe){}}
-            if(fis != null){try{fis.close();}catch(IOException ioe){}}
+            if(ois != null){try{ois.close();}catch(IOException ioe){/* Can be ignored */}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){/* Can be ignored */}}
             
             ois = null;
             fis = null;            

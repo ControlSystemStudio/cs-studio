@@ -146,7 +146,8 @@ public class MessageContent implements Serializable
         return discard;
     }
     
-    public String toString()
+    @Override
+	public String toString()
     {
         String temp = null;
         String result = "{MessageContent";

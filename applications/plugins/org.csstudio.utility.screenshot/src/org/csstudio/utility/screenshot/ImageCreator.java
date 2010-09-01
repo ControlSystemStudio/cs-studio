@@ -41,17 +41,9 @@ import org.eclipse.swt.widgets.ToolBar;
  */
 public class ImageCreator {
     
-	/** The loggerr of this class */
-	// private Logger logger;
-	
-	/** The display related to the CSS instance */
     private Display display;
     
-    /**
-     *  Just one constructor
-     */
     public ImageCreator(Display display) {
-    	// this.logger = CentralLogger.getInstance().getLogger(this);
         this.display = display;
     }
         
@@ -80,7 +72,7 @@ public class ImageCreator {
 //            loader.data = imageData;
 //            loader.save("D:\\screen.bmp", SWT.IMAGE_BMP);
 //        } catch(Exception e) {
-//            logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//            System.out.println("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
 //        }
 
         // Window dump
@@ -106,13 +98,12 @@ public class ImageCreator {
 //                loader.data = imageData;
 //                loader.save("D:\\window.bmp", SWT.IMAGE_BMP);
 //            } catch(Exception e) {
-//            	logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//                System.out.println("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
 //            }
 
             img.dispose();           
             img = null;
         }
-        
 
         // Section dump
         rect = getPartControl(true, false);
@@ -136,7 +127,7 @@ public class ImageCreator {
 //                loader.data = imageData;
 //                loader.save("D:\\part.bmp", SWT.IMAGE_BMP);
 //            } catch(Exception e) {
-//            	logger.error("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
+//                System.out.println("[*** Exception ***]: Cannot initialize ImageLoader: " + e.getMessage());
 //            }
             
             img.dispose();

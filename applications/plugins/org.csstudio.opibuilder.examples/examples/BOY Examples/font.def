@@ -1,7 +1,24 @@
+//Default Title Font. It will used in case the OS specified font macro was not defined.
 Title = Arial-bold-18
-Header1 = Arial-bold-16
-Header2 = Arial-bold-14
-Text = Arial-regular-10
-LinkText = Arial-italic-10
-LinkText2 = Arial-bold italic-10
 
+//Title Font for Linux GTK 
+Title(linux_gtk) = Sans-bold-18
+
+//Title Font for MacOS
+Title(macosx) = Lucida Grande-bold-18
+
+Header1 = Arial-bold-16
+Header1(linux_gtk) = Sans-bold-16
+
+Header2 = Arial-bold-14
+Header2(linux_gtk) = Sans-bold-14
+
+Text = Arial-regular-10
+Text(linux_gtk) = Sans-regular-10
+Text(macosx) = Lucida Grande-regular-10
+
+LinkText = Arial-italic-10
+LinkText(linux_gtk) = Monospace-italic-10
+
+LinkText2 = Arial-bold italic-10
+LinkText2(linux_gtk) = Monospace-bold italic-10

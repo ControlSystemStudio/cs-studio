@@ -34,9 +34,9 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Markus Moeller
  *
  */
-public class MessageFilter
-{
-    /** The instance of this object. */
+public class MessageFilter {
+    
+	/** The instance of this object. */
     private static MessageFilter instance = null;
     
     /** Object that contains the messages for comparing */
@@ -45,13 +45,13 @@ public class MessageFilter
     /** Thread that checks the hash table containing the stored messages */
     private WatchDog watchdog = null;
     
-    private long timePeriod = 120000;
+    private long timePeriod;
     
-    private long watchdogWaitTime = 120000;
+    private long watchdogWaitTime;
     
-    private MessageFilter()
-    {
-        IPreferencesService prefs = Platform.getPreferencesService();
+    private MessageFilter() {
+        
+    	IPreferencesService prefs = Platform.getPreferencesService();
 
         timePeriod = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_PERIOD, 120000, null);
         watchdogWaitTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_WAIT, 60000, null); 
@@ -64,18 +64,16 @@ public class MessageFilter
         watchdog.start();
     }
 
-    public static synchronized MessageFilter getInstance()
-    {
-        if(instance == null)
-        {
+    public static synchronized MessageFilter getInstance() {
+        
+    	if(instance == null) {
             instance = new MessageFilter();
         }
 
         return instance;
     }
     
-    public synchronized boolean shouldBeBlocked(MessageContent mc)
-    {
+    public synchronized boolean shouldBeBlocked(MessageContent mc) {
         boolean blockIt = false;
         
         blockIt = messages.addMessageContent(mc);
@@ -83,45 +81,61 @@ public class MessageFilter
         return blockIt;
     }
     
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         watchdog.interrupt();
     }
     
-    public class WatchDog extends Thread
-    {
-        private Logger logger = null;
+    public synchronized MessageFilterContainer getMessageFilterContainer() {
+    	return messages;
+    }
+    
+    public synchronized long getTimePeriod() {
+    	return this.timePeriod;
+    }
+    
+    public synchronized long getWatchdogWaitTime() {
+    	return this.watchdogWaitTime;
+    }
 
-        public WatchDog()
-        {
+    /**
+     * 
+     * TODO (mmoeller) : 
+     * 
+     * @author mmoeller
+     * @version $Revision: 1.7 $
+     * @since 25.08.2010
+     */
+    public class WatchDog extends Thread {
+        
+    	private Logger logger = null;
+
+        public WatchDog() {
             logger = CentralLogger.getInstance().getLogger(this);
             logger.info("WatchDog initialized");
         }
         
-        public void run()
-        {
-            int count;
+        @Override
+		public void run() {
             
-            while(!isInterrupted())
-            {
-                synchronized(this)
-                {
-                    try
-                    {
-                        wait(watchdogWaitTime);
-                    }
-                    catch(InterruptedException ie)
-                    {
+        	int count;
+            
+            while(!isInterrupted()) {
+                
+            	synchronized(this) {
+                    
+            		try {
+                        wait(getWatchdogWaitTime());
+                    } catch(InterruptedException ie) {
                         logger.info("WatchDog interrupted");
                         interrupt();
                     }
                     
-                    logger.debug("WatchDog is looking. Number of stored messages: " + messages.size());
+                    logger.debug("WatchDog is looking. Number of stored messages: "
+                    		     + getMessageFilterContainer().size());
                 }
                 
-                synchronized(messages)
-                {
-                    count = messages.removeInvalidContent(timePeriod);
+                synchronized(getMessageFilterContainer()) {
+                    count = getMessageFilterContainer().removeInvalidContent(getTimePeriod());
                     logger.debug("WatchDog has removed " + count + " message(s).");
                 }
             }

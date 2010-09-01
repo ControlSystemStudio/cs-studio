@@ -23,6 +23,8 @@
 
 package org.csstudio.utility.screenshot.menu.action;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.screenshot.ScreenshotWorker;
 import org.csstudio.utility.screenshot.internal.localization.ScreenshotMessages;
 import org.eclipse.jface.action.Action;
@@ -33,31 +35,41 @@ import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.ImageLoader;
 import org.eclipse.swt.widgets.FileDialog;
 
-public class FileSaveImageAsAction extends Action
-{
-    private ScreenshotWorker worker   = null;
-    private String[] ext = new String[] { "*.bmp", "*.jpg" };
-    private String[] filter = new String[] { "Windows Bitmap (*.bmp)", "JPEG (*.jpg)" };  
-    private int[] type = new int[] { SWT.IMAGE_BMP, SWT.IMAGE_JPEG };
+public class FileSaveImageAsAction extends Action {
+    
+    /** Logger of this class */ 
+    private Logger logger;
+    
+    /** The screenshot main class */
+    private ScreenshotWorker worker;
+    
+    /** Image file extensions */
+    private String[] ext;
+    
+    /** Filter strings for the save dialog */
+    private String[] filter;  
+    
+    /** Image types */
+    private int[] type;
     
     /**
-     * @author Markus Möller
+     * @author Markus Moeller
      * @param w
      */
     
-    public FileSaveImageAsAction(ScreenshotWorker w)
-    {
+    public FileSaveImageAsAction(ScreenshotWorker w) {
+        logger = CentralLogger.getInstance().getLogger(this);
         worker = w;
+        ext = new String[] { "*.bmp", "*.jpg" };
+        filter = new String[] { "Windows Bitmap (*.bmp)", "JPEG (*.jpg)" };
+        type = new int[] { SWT.IMAGE_BMP, SWT.IMAGE_JPEG };
         
         this.setText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SAVE"));
-
         this.setToolTipText(ScreenshotMessages.getString("ScreenshotView.MENU_FILE_SAVE_TT"));
-        
         this.setEnabled(true);
     }
     
-    public void run()
-    {
+    public void run() {
         int indexOfDot = -1;
         int indexExt = -1;
         
@@ -68,61 +80,49 @@ public class FileSaveImageAsAction extends Action
         
         String result = dialog.open();
         
-        if(result != null)
-        {
-            indexOfDot = result.lastIndexOf('.');
+        if(result != null) {
             
-            if(indexOfDot != -1)
-            {
+            indexOfDot = result.lastIndexOf('.');
+            if(indexOfDot != -1) {
+                
                 String e = result.substring(indexOfDot + 1).toLowerCase();
                 
-                for(int i = 0;i < ext.length;i++)
-                {
-                    if(ext[i].indexOf(e) != -1)
-                    {
+                for(int i = 0;i < ext.length;i++) {
+                    
+                    if(ext[i].indexOf(e) != -1) {
                         indexExt = i;
-                        
                         break;
                     }
                 }
                 
-                if(indexExt != -1)
-                {
-                    System.out.println(" Try to save image now...");
+                if(indexExt != -1) {
+                    
+                    logger.debug("Try to save image now...");
                     
                     ImageLoader loader = new ImageLoader();
-                    
                     ImageData[] imageData = new ImageData[1];
                     
-                    if(worker.getDisplayedImage() != null)
-                    {
-                        System.out.println(" Saving Displayed image");
+                    if(worker.getDisplayedImage() != null) {
+                        logger.debug("Saving Displayed image");
                         imageData[0] = worker.getDisplayedImage().getImageData();
-                    }
-                    else if(worker.getSimpleImage() != null)
-                    {
-                        System.out.println(" Saving Simple image");
+                    } else if(worker.getSimpleImage() != null) {
+                        logger.debug("Saving Simple image");
                         imageData[0] = worker.getSimpleImage().getImageData();
-                    }
-                    else
-                    {
-                        System.out.println(" NO IMAGE!!!!");
+                    } else {
+                        logger.debug("NO IMAGE!!!!");
                     }
                     
                     loader.data = imageData;
              
-                    try
-                    {
+                    try {
                         loader.save(result, type[indexExt]);
+                    } catch(SWTException swte) {
+                        MessageDialog.openError(worker.getDisplay().getActiveShell(),
+                                                worker.getNameAndVersion(), "*** SWTException *** : " + swte.getMessage());
                     }
-                    catch(SWTException swte)
-                    {
-                        MessageDialog.openError(worker.getDisplay().getActiveShell(), worker.getNameAndVersion(), "*** SWTException *** : " + swte.getMessage());
-                    }
-                }
-                else
-                {
-                    MessageDialog.openError(worker.getDisplay().getActiveShell(), worker.getNameAndVersion(), "Unsupported file type: " + e);
+                } else {
+                    MessageDialog.openError(worker.getDisplay().getActiveShell(),
+                                            worker.getNameAndVersion(), "Unsupported file type: " + e);
                 }
             }
         }
