@@ -36,29 +36,29 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class MessageFilter {
     
-	/** The instance of this object. */
+    /** The instance of this object. */
     private static MessageFilter instance = null;
     
     /** Object that contains the messages for comparing */
-    private MessageFilterContainer messages = null;
+    private MessageFilterContainer messageContainer;
     
     /** Thread that checks the hash table containing the stored messages */
-    private WatchDog watchdog = null;
+    private WatchDog watchdog;
     
-    private long timePeriod;
+    private long timePeriod = 120000;
     
-    private long watchdogWaitTime;
+    private long watchdogWaitTime = 120000;
     
     private MessageFilter() {
         
-    	IPreferencesService prefs = Platform.getPreferencesService();
+        IPreferencesService prefs = Platform.getPreferencesService();
 
         timePeriod = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_PERIOD, 120000, null);
         watchdogWaitTime = prefs.getLong(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.WATCHDOG_WAIT, 60000, null); 
         
         int sendBound = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_SEND_BOUND, 100, null);
         int maxSentMessages = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.FILTER_MAX_SENT_MESSAGES, 6, null);
-        messages = new MessageFilterContainer(sendBound, maxSentMessages);
+        messageContainer = new MessageFilterContainer(sendBound, maxSentMessages);
         
         watchdog = new WatchDog();
         watchdog.start();
@@ -66,7 +66,7 @@ public class MessageFilter {
 
     public static synchronized MessageFilter getInstance() {
         
-    	if(instance == null) {
+        if(instance == null) {
             instance = new MessageFilter();
         }
 
@@ -76,7 +76,7 @@ public class MessageFilter {
     public synchronized boolean shouldBeBlocked(MessageContent mc) {
         boolean blockIt = false;
         
-        blockIt = messages.addMessageContent(mc);
+        blockIt = messageContainer.addMessageContent(mc);
         
         return blockIt;
     }
@@ -85,29 +85,29 @@ public class MessageFilter {
         watchdog.interrupt();
     }
     
-    public synchronized MessageFilterContainer getMessageFilterContainer() {
-    	return messages;
+    public long getWatchdogWaitTime() {
+    	return watchdogWaitTime;
     }
     
-    public synchronized long getTimePeriod() {
-    	return this.timePeriod;
-    }
-    
-    public synchronized long getWatchdogWaitTime() {
-    	return this.watchdogWaitTime;
+    public long getTimePeriod() {
+    	return timePeriod;
     }
 
+    public MessageFilterContainer getMessageFilterContainer() {
+    	return messageContainer;
+    }
+    
     /**
      * 
      * TODO (mmoeller) : 
      * 
-     * @author mmoeller
-     * @version $Revision: 1.7 $
-     * @since 25.08.2010
+     * @author Markus Moeller
+     * @version 
+     * @since 17.06.2010
      */
     public class WatchDog extends Thread {
         
-    	private Logger logger = null;
+        private Logger logger = null;
 
         public WatchDog() {
             logger = CentralLogger.getInstance().getLogger(this);
@@ -117,21 +117,20 @@ public class MessageFilter {
         @Override
 		public void run() {
             
-        	int count;
+            int count;
             
             while(!isInterrupted()) {
                 
-            	synchronized(this) {
+                synchronized(this) {
                     
-            		try {
+                    try {
                         wait(getWatchdogWaitTime());
                     } catch(InterruptedException ie) {
                         logger.info("WatchDog interrupted");
                         interrupt();
                     }
                     
-                    logger.debug("WatchDog is looking. Number of stored messages: "
-                    		     + getMessageFilterContainer().size());
+                    logger.debug("WatchDog is looking. Number of stored messages: " + getMessageFilterContainer().size());
                 }
                 
                 synchronized(getMessageFilterContainer()) {

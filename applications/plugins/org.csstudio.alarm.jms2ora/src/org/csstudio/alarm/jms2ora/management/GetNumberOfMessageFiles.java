@@ -37,9 +37,9 @@ public class GetNumberOfMessageFiles implements IManagementCommand
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
-        String result = null;
+    public CommandResult execute(CommandParameters parameters) {
+        
+    	String result = null;
         
         result = Integer.toString(MessageFileHandler.getInstance().getMessageFilesNumber());
 

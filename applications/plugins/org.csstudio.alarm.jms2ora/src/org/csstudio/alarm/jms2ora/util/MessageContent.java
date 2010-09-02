@@ -33,8 +33,8 @@ import java.util.Vector;
  *  @author Markus Moeller
  *
  */
-public class MessageContent implements Serializable
-{
+public class MessageContent implements Serializable {
+    
     /** Serial version id */
     private static final long serialVersionUID = -5582704742047919825L;
 
@@ -53,47 +53,40 @@ public class MessageContent implements Serializable
     /** Flag, that indicates whether or not the message should be discarded */
     private boolean discard = false;
     
-    public MessageContent()
-    {
+    public MessageContent() {
         msgIdContent = new Hashtable<Long, String>();
         msgNameContent = new Hashtable<String, String>();
         unknownContent = new Vector<String>();
         unknownId = -1;
     }
     
-    public String getPropertyValue(Long key)
-    {
+    public String getPropertyValue(Long key) {
         return msgIdContent.get(key);
     }
     
-    public void put(Long key, String name, String value)
-    {
+    public void put(Long key, String name, String value) {
         msgIdContent.put(key, value);
         msgNameContent.put(name, value);
     }
 
-    public String getPropertyValue(String name)
-    {
+    public String getPropertyValue(String name) {
         return msgNameContent.get(name);
     }
 
-    public Enumeration<Long> keys()
-    {
+    public Enumeration<Long> keys() {
         return msgIdContent.keys();
     }
     
-    public boolean containsPropertyName(String name)
-    {
+    public boolean containsPropertyName(String name) {
         return msgNameContent.containsKey(name);
     }
     
-    public boolean hasContent()
-    {
+    public boolean hasContent() {
         return(!msgIdContent.isEmpty());
     }
     
-    public void deleteContent()
-    {
+    public void deleteContent() {
+        
         msgIdContent.clear();
         msgIdContent = null;
         msgIdContent = new Hashtable<Long, String>();
@@ -106,57 +99,48 @@ public class MessageContent implements Serializable
      * 
      *  @return True, if the object contains unknown message properties, false otherwise
      */
-    public boolean unknownPropertiesAvailable()
-    {
+    public boolean unknownPropertiesAvailable() {
         return (!unknownContent.isEmpty());
     }
     
-    public int countUnknownProperties()
-    {
+    public int countUnknownProperties() {
         return unknownContent.size();
     }
     
-    public String getUnknownProperty(int index)
-    {
+    public String getUnknownProperty(int index) {
         return unknownContent.get(index);
     }
     
-    public void addUnknownProperty(String value)
-    {
+    public void addUnknownProperty(String value) {
         unknownContent.add(value);
     }
     
-    public void setUnknownTableId(long id)
-    {
+    public void setUnknownTableId(long id) {
         this.unknownId = id;
     }
     
-    public long getUnknownTableId()
-    {
+    public long getUnknownTableId() {
         return this.unknownId;
     }
     
-    public void setDiscard(boolean discard)
-    {
+    public void setDiscard(boolean discard) {
         this.discard = discard;
     }
     
-    public boolean discard()
-    {
+    public boolean discard() {
         return discard;
     }
     
     @Override
-	public String toString()
-    {
+	public String toString() {
+        
         String temp = null;
         String result = "{MessageContent";
         
         result = result + ":[Known properties]";
         
         Enumeration<String> list = msgNameContent.keys();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
             result = result + "(" + temp + "=" + msgNameContent.get(temp) + ")";
         }
@@ -164,35 +148,30 @@ public class MessageContent implements Serializable
         result = result + ":[Unknown properties]";
 
         list = unknownContent.elements();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
             result = result + "(" + temp + ")";
         }
         
         result = result + ":[Object attributes]";
-        
         result = result + "(unknownId=" + unknownId + ")";
         result = result + "(discard=" + discard + ")";
-
         result = result + "}";
         
         return result;
     }
     
-    public String toStringWithoutEventtime()
-    {
+    public String toStringWithoutEventtime() {
+        
         String temp = null;
         String result = "{MessageContent";
         
         result = result + ":[Known properties]";
         
         Enumeration<String> list = msgNameContent.keys();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
-            if(temp.compareToIgnoreCase("EVENTTIME") != 0)
-            {
+            if(temp.compareToIgnoreCase("EVENTTIME") != 0) {
                 result = result + "(" + temp + "=" + msgNameContent.get(temp) + ")";
             }
         }
@@ -200,43 +179,37 @@ public class MessageContent implements Serializable
         result = result + ":[Unknown properties]";
 
         list = unknownContent.elements();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
             result = result + "(" + temp + ")";
         }
         
         result = result + ":[Object attributes]";
-        
         result = result + "(unknownId=" + unknownId + ")";
         result = result + "(discard=" + discard + ")";
-
         result = result + "}";
         
         return result;
     }
 
-    public boolean isEqual(MessageContent mc)
-    {
+    public boolean isEqual(MessageContent mc) {
+        
         boolean result;
         String temp;
         
         temp = mc.toStringWithoutEventtime();
         
-        if(temp.compareTo(this.toStringWithoutEventtime()) == 0)
-        {
+        if(temp.compareTo(this.toStringWithoutEventtime()) == 0) {
             result = true;
-        }
-        else
-        {
+        } else {
             result = false;
         }
         
         return result;
     }
     
-    public String toPrintableString()
-    {
+    public String toPrintableString() {
+        
         String temp = null;
         String nl = System.getProperty("line.separator");
         String result = "MessageContent" + nl;
@@ -244,8 +217,7 @@ public class MessageContent implements Serializable
         result = result + " Known properties" + nl;
         
         Enumeration<String> list = msgNameContent.keys();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
             result = result + "  " + temp + " = " + msgNameContent.get(temp) + nl;
         }
@@ -253,14 +225,12 @@ public class MessageContent implements Serializable
         result = result + nl + " Unknown properties" + nl;
 
         list = unknownContent.elements();
-        while(list.hasMoreElements())
-        {
+        while(list.hasMoreElements()) {
             temp = list.nextElement();
             result = result + "  " + temp + nl;
         }
         
         result = result + nl + " Object attributes" + nl;
-        
         result = result + "  unknownId = " + unknownId + nl;
         result = result + "  discard = " + discard + nl;
 

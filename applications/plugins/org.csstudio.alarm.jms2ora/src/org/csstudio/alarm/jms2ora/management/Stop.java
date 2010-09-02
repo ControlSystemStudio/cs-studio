@@ -23,14 +23,19 @@
 
 package org.csstudio.alarm.jms2ora.management;
 
+import java.util.Arrays;
+import java.util.List;
 import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
-import org.csstudio.alarm.jms2ora.Stoppable;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.service.application.ApplicationHandle;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * @author Markus Moeller
@@ -38,41 +43,70 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  */
 public class Stop implements IManagementCommand
 {
-    private static Stoppable objectToBeStopped = null;
-
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
+        
+        CommandResult result = null;
+        ApplicationHandle thisHandle = null;
+        BundleContext bundleContext = Jms2OraPlugin.getDefault().getBundleContext();
+
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppShutdownPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
-        String password = (String)parameters.get("Password");
-        if(password == null)
-        {
-            return CommandResult.createFailureResult("\nParameter not available.");
-        }
-        
-        try
-        {
-            if(password.compareTo(xmppShutdownPassword) != 0)
-            {
-                return CommandResult.createFailureResult("\nInvalid password");
+        if(xmppShutdownPassword.length() > 0) {
+            
+            String password = (String)parameters.get("Password");        
+            try {
+                if(password.compareTo(xmppShutdownPassword) != 0) {
+                    return CommandResult.createFailureResult("\nInvalid password");
+                }
+            } catch(Exception e) {
+                return CommandResult.createFailureResult(e.getMessage());
             }
         }
-        catch(Exception e)
-        {
-            return CommandResult.createFailureResult(e.getMessage());
-        }
 
-        objectToBeStopped.stopWorking();
+        String serviceFilter = "(&(objectClass=" +
+        ApplicationHandle.class.getName() + ")"
+        + "(application.descriptor=" + Jms2OraPlugin.getDefault().getPluginId() + "*))";
         
-        return CommandResult.createMessageResult("\nStopping Jms2Ora...");
-    }
+        // Get the application from the Application Admin Service
+        ServiceTracker tracker = null;
+        try {
+            tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
+            tracker.open();
+        
+            Object[] allServices = tracker.getServices();
+            if(allServices != null) {
+                
+                List<Object> services = Arrays.asList(allServices);
+                ApplicationHandle[] regApps = services.toArray(new ApplicationHandle[0]);
+                
+                for(ApplicationHandle o : regApps) {
+                    
+                    if(o.getInstanceId().contains("Jms2OraApplication")) {
+                        thisHandle = o;
+                        break;
+                    }
+                }
+            } else {
+                result = CommandResult.createFailureResult("\nCannot get the application entry from the service.");
+            }
+            
+            tracker.close();
+        } catch(InvalidSyntaxException e) {
+            result = CommandResult.createFailureResult(e.getMessage());
+        }
+        
+        if(thisHandle != null) {
 
-    public static void staticInject(Stoppable obj)
-    {
-        objectToBeStopped = obj;
+            result = CommandResult.createMessageResult("OK: [0] - Stopping Jms2Ora...");
+            thisHandle.destroy();
+        } else {
+            result = CommandResult.createFailureResult("ERROR: [1] - Cannot get the application entry from the service.");
+        }
+        
+        return result;
     }
 }

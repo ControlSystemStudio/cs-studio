@@ -26,7 +26,6 @@ package org.csstudio.alarm.jms2ora;
 
 import java.io.File;
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.jms2ora.management.Stop;
 import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.alarm.jms2ora.util.ApplicState;
 import org.csstudio.alarm.jms2ora.util.CommandLine;
@@ -44,7 +43,7 @@ import org.remotercp.login.connection.HeadlessConnection;
 /**
  * The starting class.
  * 
- * @author Markus Möller
+ * @author Markus Moeller
  *
  */
 
@@ -223,7 +222,7 @@ public class Jms2OraApplication implements IApplication, Stoppable {
                 
                 try {
                     messageProcessor.join(WAITFORTHREAD);
-                } catch(InterruptedException ie) {/* Can be ignored */}
+                } catch(InterruptedException ie) {/* Can be ignored */ }
             } while(sync.getSynchStatus() == ApplicState.LEAVING);
             
             if(messageProcessor.stoppedClean()) {
@@ -253,7 +252,7 @@ public class Jms2OraApplication implements IApplication, Stoppable {
         String xmppServer = prefs.getString(Jms2OraPlugin.PLUGIN_ID,
                 PreferenceConstants.XMPP_SERVER, "krynfs.desy.de", null);
 
-        Stop.staticInject(this);
+        // Stop.staticInject(this);
         // Restart.staticInject(this);
 
         try {
@@ -297,7 +296,15 @@ public class Jms2OraApplication implements IApplication, Stoppable {
     }
 
     public void stop() {
-    	// Do nothing
+        
+        running = false;
+        shutdown = true;
+        
+        logger.info("The application will shutdown...");
+        
+        synchronized(this) {
+            notify();
+        }
     }
     
     private void createObjectFolder() {

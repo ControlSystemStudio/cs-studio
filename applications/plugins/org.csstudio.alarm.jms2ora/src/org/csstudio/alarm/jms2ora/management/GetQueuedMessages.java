@@ -32,14 +32,12 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class GetQueuedMessages implements IManagementCommand
-{
+public class GetQueuedMessages implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
         return CommandResult.createMessageResult(Integer.toString(MessageProcessor.getInstance().getNumberOfQueuedMessages()));
     }
-
 }

@@ -32,14 +32,12 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class GetNameOfMessageFiles implements IManagementCommand
-{
+public class GetNameOfMessageFiles implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
-        // TODO Auto-generated method stub
+    public CommandResult execute(CommandParameters parameters) {
         return CommandResult.createMessageResult(MessageFileHandler.getInstance().getMessageFileNamesAsString());
     }
 }

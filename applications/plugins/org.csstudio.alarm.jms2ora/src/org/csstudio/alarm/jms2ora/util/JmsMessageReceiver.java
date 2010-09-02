@@ -34,14 +34,13 @@ import javax.jms.Session;
 import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
 import javax.jms.Topic;
-// import org.csstudio.platform.libs.jms.preferences.PreferenceConstants;
 
 /**
  * Class used to establish connection with jms server
  */
 
-public class JmsMessageReceiver
-{
+public class JmsMessageReceiver {
+    
     private Hashtable<String, String> properties  = null;
     private Context context = null;
     private ConnectionFactory factory = null;
@@ -65,8 +64,9 @@ public class JmsMessageReceiver
     }
     */
     
-    public JmsMessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)throws NamingException
-    {
+    public JmsMessageReceiver(String initialContextFactory, String providerURL, String[] topicArray)
+    throws NamingException {
+        
         properties = new Hashtable<String, String>();
         properties.put(Context.INITIAL_CONTEXT_FACTORY,initialContextFactory);
         properties.put(Context.PROVIDER_URL, providerURL);
@@ -79,9 +79,9 @@ public class JmsMessageReceiver
     /**
      * Parameter is listener, the one to be notified
      */
-	public void startListener(MessageListener listener, String uniqueId) throws Exception
-    {        
-        factory = (ConnectionFactory)context.lookup("ConnectionFactory");
+	public void startListener(MessageListener listener, String uniqueId) throws Exception {        
+        
+	    factory = (ConnectionFactory)context.lookup("ConnectionFactory");
         
         connection = factory.createConnection();
         connection.setClientID(uniqueId);
@@ -95,9 +95,9 @@ public class JmsMessageReceiver
         // for now we use here the only_when_online method
         //
         receiver = new MessageConsumer[topics.length];
-        for (int i = 0;i < topics.length;i++)
-        {
-        	/*
+        for (int i = 0;i < topics.length;i++) {
+        	
+            /*
         	 * changed from OpenJMS to ActiveMQ
         	 * MCL 2007-05-23
         	 */
@@ -109,12 +109,8 @@ public class JmsMessageReceiver
             // No durable subscription with ActiveMQ 4.x
             // receiver[i] = session.createDurableSubscriber(destination, uniqueId + "_" + topics[i]);
             receiver[i] = session.createConsumer(destination);
-        	
             receiver[i].setMessageListener(listener);
-        }
-        /*
-        else
-        {
+        } /* else {
         // create permanent connection:
         	receiver = session.createDurableSubscriber(destination, uniqueNameOfCssInstance);
         }
@@ -124,28 +120,23 @@ public class JmsMessageReceiver
 	/**
 	 * Cleans up resources
 	 */
-	public void stopListening()
-    {
-        if(receiver != null)
-        {
-    		for(MessageConsumer r: receiver)
-            {
-                if(r != null)
-                {
+	public void stopListening() {
+        
+	    if(receiver != null) {
+    		for(MessageConsumer r: receiver) {
+                if(r != null) {
         			try{r.close();}catch(JMSException e){/* Can be ignored */}
         			r = null;
                 }
     		}
         }
         
-        if(session != null)
-        {
+        if(session != null) {
             try{session.close();}catch(JMSException jmse){/* Can be ignored */}
             session = null;
         }
         
-        if(connection != null)
-        {
+        if(connection != null) {
             try{connection.stop();}catch(JMSException jmse){/* Can be ignored */}        
             try{connection.close();}catch(JMSException jmse){/* Can be ignored */}
             connection = null;
@@ -153,17 +144,16 @@ public class JmsMessageReceiver
 
         //properties  = null;
         
-        if(context != null)
-        {
+        if(context != null) {
             try{context.close();}catch(NamingException e){/* Can be ignored */}
             context = null;
         }
         
         //properties  = null;
-        factory     = null;
-        connection  = null;
-        session     = null;
-        receiver    = null;
+        factory = null;
+        connection = null;
+        session = null;
+        receiver = null;
         destination = null;
 	}
 }

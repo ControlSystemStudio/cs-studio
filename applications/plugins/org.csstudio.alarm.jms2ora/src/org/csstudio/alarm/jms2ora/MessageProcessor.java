@@ -73,8 +73,8 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *          - Die Properties der Datenbanktabellen
  */
 
-public class MessageProcessor extends Thread implements MessageListener
-{
+public class MessageProcessor extends Thread implements MessageListener {
+    
     /** The object instance of this class */
     private static MessageProcessor instance = null;
     
@@ -128,33 +128,18 @@ public class MessageProcessor extends Thread implements MessageListener
     public final long RET_ERROR = -1;
     public static final int CONSOLE = 1;
     
-    public final int PM_RETURN_OK = 0;
-    public final int PM_RETURN_DISCARD = 1;
-    public final int PM_RETURN_EMPTY = 2;
-    public final int PM_ERROR_DB = 3;
-    public final int PM_ERROR_JMS = 4;
-    public final int PM_ERROR_GENERAL = 5;
-    
-    public final String[] infoText = { "Message has been written into the database.",
-                                       "Message has been discarded.",
-                                       "Message is empty.",
-                                       "Database error",
-                                       "JMS error",
-                                       "General error" };
-
     /**
      * A nice private constructor...
      *
      */    
-    private MessageProcessor()
-    {
-    	this.setName("MessageProcessor-Thread");
-
-    	// Create the logger
+    private MessageProcessor() {
+        
+        // Create the logger
         logger = CentralLogger.getInstance().getLogger(this);
-
+        
+        this.setName("MessageProcessor-Thread");
+        
         messages = new ConcurrentLinkedQueue<MessageContent>();
-        parent = null;
         
         IPreferencesService prefs = Platform.getPreferencesService();
         String url = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DATABASE_URL, "", null);
@@ -194,20 +179,19 @@ public class MessageProcessor extends Thread implements MessageListener
         String urls = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_PROVIDER_URLS, "", null);
         String topics = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.JMS_TOPIC_NAMES, "", null);
         
-        urlList = null;
-        topicList = null;
-        if((urls.length() > 0) && (topics.length() > 0))
-        {
+        running = true;
+        stoppedClean = false;
+        
+        if((urls.length() > 0) && (topics.length() > 0)) {
+            
             urlList = urls.split(",");
             topicList = topics.split(",");
             
-            for(int i = 0;i < urlList.length;i++)
-            {
+            for(int i = 0;i < urlList.length;i++) {
                 logger.info("[" + urlList[i] + "]");
             }
             
-            for(int i = 0;i < topicList.length;i++)
-            {
+            for(int i = 0;i < topicList.length;i++) {
                 logger.info("[" + topicList[i] + "]");
             }
             
@@ -215,38 +199,27 @@ public class MessageProcessor extends Thread implements MessageListener
             
             String hostName = Hostname.getInstance().getHostname();
             
-            for(int i = 0;i < urlList.length;i++)
-            {
-                try
-                {
+            for(int i = 0;i < urlList.length;i++) {
+                
+                try {
                     receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
                     receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
-                    
                     initialized = true;
-                }
-                catch(Exception e)
-                {
+                } catch(Exception e) {
                     logger.error("*** Exception *** : " + e.getMessage());
-                    
                     initialized = false;
                 }
             }
             
             initialized = (initialized == true) ? true : false;
-        }
-        else
-        {
+        } else {
             initialized = false;
         }
-        
-        running = true;
-        stoppedClean = false;
     }
 
-    public static synchronized MessageProcessor getInstance()
-    {
-        if(instance == null)
-        {
+    public static synchronized MessageProcessor getInstance() {
+        
+        if(instance == null) {
             instance = new MessageProcessor();
         }
         
@@ -259,47 +232,42 @@ public class MessageProcessor extends Thread implements MessageListener
      */
     
     @Override
-	public void run()
-    {
+	public void run() {
+        
         MessageContent content = null;
-        int result;
+        ReturnValue result;
         
         logger.info("Started" + VersionInfo.getAll());        
         logger.info("Waiting for messages...");
         
-        while(running)
-        {
+        while(running) {
+            
             parent.setStatus(ApplicState.WORKING);
 
-            while(!messages.isEmpty() && running)
-            {
+            while(!messages.isEmpty() && running) {
+                
                 content = messages.poll();
                 result = processMessage(content);
-                if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
-                {                    
+                if((result != ReturnValue.PM_RETURN_OK)
+                        && (result != ReturnValue.PM_RETURN_DISCARD)
+                        && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
+                    
                     // Store the message in a file, if it was not possible to write it to the DB.
                     MessageFileHandler.getInstance().writeMessageContentToFile(content);
+                    logger.warn(result.getErrorMessage() + ": Could not store the message in the database. Message is written on disk.");
+                } else {
                     
-                    logger.warn(infoText[result] + ": Could not store the message in the database. Message is written on disk.");
-                }
-                else
-                {
-                    if(result != PM_RETURN_OK)
-                    {
-                        logger.info(infoText[result]);
-                        if(result == PM_RETURN_DISCARD)
-                        {
+                    if(result != ReturnValue.PM_RETURN_OK) {
+                        
+                        logger.info(result.getErrorMessage());
+                        if(result == ReturnValue.PM_RETURN_DISCARD) {
                             discardedMessages.incrementValue();
-                        }
-                        else if(result == this.PM_RETURN_EMPTY)
-                        {
+                        } else if(result == ReturnValue.PM_RETURN_EMPTY) {
                             emptyMessages.incrementValue();
                         }
-                    }
-                    else
-                    {
+                    } else {
                         storedMessages.incrementValue();
-                        logger.debug(infoText[result]);
+                        logger.debug(result.getErrorMessage());
                     }
                 }
                 
@@ -312,20 +280,15 @@ public class MessageProcessor extends Thread implements MessageListener
                 parent.setStatus(ApplicState.WORKING);
             }
 
-            if(running)
-            {
+            if(running) {
+                
                 parent.setStatus(ApplicState.SLEEPING);
                 
-                synchronized(this)
-                {
-                    try
-                    {
+                synchronized(this) {
+                    try {
                         wait(SLEEPING_TIME);
-                    }
-                    catch(InterruptedException ie)
-                    {
+                    } catch(InterruptedException ie) {
                         logger.error("*** InterruptedException *** : executeMe(): wait(): " + ie.getMessage());
-                    
                         running = false;
                     }               
                 }
@@ -344,20 +307,20 @@ public class MessageProcessor extends Thread implements MessageListener
         int writtenToDb = 0;
         int writtenToHd = 0;
         
-        while(!messages.isEmpty())
-        {
+        while(!messages.isEmpty()) {
+            
             content = messages.poll();
             
             result = processMessage(content);
-            if((result != PM_RETURN_OK) && (result != PM_RETURN_DISCARD) && (result != PM_RETURN_EMPTY))
-            {                    
+            if((result != ReturnValue.PM_RETURN_OK)
+                    && (result != ReturnValue.PM_RETURN_DISCARD)
+                    && (result != ReturnValue.PM_RETURN_EMPTY)) {                    
+                
                 // Store the message in a file, if it was not possible to write it to the DB.
                 MessageFileHandler.getInstance().writeMessageContentToFile(content);
                 
                 writtenToHd++;
-            }
-            else
-            {
+            } else {
                 writtenToDb++;
             }
             
@@ -374,83 +337,69 @@ public class MessageProcessor extends Thread implements MessageListener
         logger.info("executeMe() : ** DONE **");
     }
 
-    public boolean stoppedClean()
-    {
+    public boolean stoppedClean() {
         return stoppedClean;
     }
     
-    public void onMessage(Message message)
-    {
+    public void onMessage(Message message) {
+        
         MessageContent content = null;
         
         logger.debug("onMessage(): " + message.toString());
         
-        if(message instanceof MapMessage)
-        {
+        if(message instanceof MapMessage) {
             content = contentCreator.convertMapMessage((MapMessage)message);
             messages.add(content);
             receivedMessages.incrementValue();
 
-            synchronized(this)
-            {
+            synchronized(this) {
                 notify();
             }
-        }
-        else
-        {
+        } else {
             logger.info("Received a non MapMessage object. Discarded...");
         }        
     }
 
-    public int processMessage(MessageContent content)
-    {
+    public ReturnValue processMessage(MessageContent content) {
+        
         long typeId = 0;
         long msgId = 0;
-        int result = PM_RETURN_OK;
+        ReturnValue result = ReturnValue.PM_RETURN_OK;
 
-        if(content.discard())
-        {
-            return PM_RETURN_DISCARD;
+        if(content.discard()) {
+            return ReturnValue.PM_RETURN_DISCARD;
         }
 
-        if(!content.hasContent())
-        {
-            return PM_RETURN_EMPTY;
+        if(!content.hasContent()) {
+            return ReturnValue.PM_RETURN_EMPTY;
         }
                 
         // Create an entry in the table MESSAGE
         // TODO: typeId is always 0!!! We do not use it anymore. Delete the column in a future version.
         msgId = dbLayer.createMessageEntry(typeId, content);
-        if(msgId == RET_ERROR)
-        {
+        if(msgId == RET_ERROR) {
             logger.error("createMessageEntry(): No message entry created in database.");
-            
-            return PM_ERROR_DB;
+            return ReturnValue.PM_ERROR_DB;
         }
         
-        if(dbLayer.createMessageContentEntries(msgId, content) == false)
-        {
+        if(dbLayer.createMessageContentEntries(msgId, content) == false) {
+            
             logger.error("createMessageContentEntries(): No entry created in message_content. Delete message from database and store it to disk.");
-            
             dbLayer.deleteMessage(msgId);
-            
-            result = PM_ERROR_DB;
-        }
-        else
-        {
-            result = PM_RETURN_OK;
+            result = ReturnValue.PM_ERROR_DB;
+        } else {
+            result = ReturnValue.PM_RETURN_OK;
         }
         
         return result;
     }
     
 
-    public String createDatabaseNameFromRecord(String record)
-    {
+    public String createDatabaseNameFromRecord(String record) {
+        
         String result = null;
         
-        if(record.indexOf(':') != -1)
-        {
+        if(record.indexOf(':') != -1) {
             result = record.substring(0, record.indexOf(':')).toUpperCase();
         }
         
@@ -463,51 +412,43 @@ public class MessageProcessor extends Thread implements MessageListener
      * @return true, if the initialization was successfull ; false, if it was not
      */
     
-    public boolean isInitialized()
-    {
+    public boolean isInitialized() {
         return initialized;
     }
         
-    public int getNumberOfQueuedMessages()
-    {
-        if(messages != null)
-        {
+    public int getNumberOfQueuedMessages() {
+        
+        if(messages != null) {
             return messages.size();
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
     
-    public void closeAllReceivers()
-    {
+    public void closeAllReceivers() {
+        
         logger.info("closeAllReceivers(): Closing all receivers.");
         
-        if(receivers != null)
-        {
-            for(int i = 0;i < receivers.length;i++)
-            {
+        if(receivers != null) {
+            for(int i = 0;i < receivers.length;i++) {
                 receivers[i].stopListening();
             }
         }
     }
     
-    public void setParent(Jms2OraApplication parent)
-    {
+    public void setParent(Jms2OraApplication parent) {
         this.parent = parent;
     }
     
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         contentCreator.stopWorking();
         running = false;
         
         this.notify();
     }
     
-    public String createStatisticString()
-    {
+    public String createStatisticString() {
+        
         StringBuffer result = new StringBuffer();
         
         result.append("Statistic:\n\n");

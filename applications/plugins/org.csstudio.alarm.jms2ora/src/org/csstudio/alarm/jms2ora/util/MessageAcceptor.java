@@ -37,8 +37,8 @@ import org.csstudio.platform.statistic.Collector;
  * @author Markus Moeller
  *
  */
-public class MessageAcceptor implements MessageListener
-{
+public class MessageAcceptor implements MessageListener {
+    
     /** The logger */
     private Logger logger;
 
@@ -54,8 +54,8 @@ public class MessageAcceptor implements MessageListener
     /** Indicates if the application was initialized or not */
     private boolean initialized;
 
-    public MessageAcceptor(String[] urlList, String[] topicList)
-    {
+    public MessageAcceptor(String[] urlList, String[] topicList) {
+        
         // Create the logger
         logger = CentralLogger.getInstance().getLogger(this);
         messages = new ConcurrentLinkedQueue<MapMessage>();
@@ -69,20 +69,14 @@ public class MessageAcceptor implements MessageListener
 
         String hostName = Hostname.getInstance().getHostname();
         
-        for(int i = 0;i < urlList.length;i++)
-        {
-            try
-            {
+        for(int i = 0;i < urlList.length;i++) {
+            
+            try {
                 receivers[i] = new JmsMessageReceiver("org.apache.activemq.jndi.ActiveMQInitialContextFactory", urlList[i], topicList);
-                
                 receivers[i].startListener(this, VersionInfo.NAME + "@" + hostName + "_" + this.hashCode());
-                
                 initialized = true;
-            }
-            catch(Exception e)
-            {
+            } catch(Exception e) {
                 logger.error("*** Exception *** : " + e.getMessage());
-                
                 initialized = false;
             }
         }
@@ -90,25 +84,22 @@ public class MessageAcceptor implements MessageListener
         initialized = (initialized == true) ? true : false;
     }
     
-    public void closeAllReceivers()
-    {
+    public void closeAllReceivers() {
+        
         logger.info("closeAllReceivers(): Closing all receivers.");
         
-        if(receivers != null)
-        {
-            for(int i = 0;i < receivers.length;i++)
-            {
+        if(receivers != null) {
+            for(int i = 0;i < receivers.length;i++) {
                 receivers[i].stopListening();
             }
         }
     }
 
-    public synchronized Vector<MapMessage> getCurrentMessages()
-    {
+    public synchronized Vector<MapMessage> getCurrentMessages() {
+        
         Vector<MapMessage> result = null;
         
-        if(messages.isEmpty() == false)
-        {
+        if(messages.isEmpty() == false) {
             result = new Vector<MapMessage>(messages);
             messages.removeAll(result);
         }
@@ -116,20 +107,16 @@ public class MessageAcceptor implements MessageListener
         return result;
     }
     
-    public boolean isInitialized()
-    {
+    public boolean isInitialized() {
         return initialized;
     }
     
-    public void onMessage(Message message)
-    {
-        if(message instanceof MapMessage)
-        {
+    public void onMessage(Message message) {
+        
+        if(message instanceof MapMessage) {
             messages.add((MapMessage)message);
             receivedMessages.incrementValue();
-        }
-        else
-        {
+        } else {
             logger.info("Received a non MapMessage object. Discarded...");
         }        
     }
