@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:pp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
+	<searchPath name="default">
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/css-core/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/css-management/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/CSS-AMS/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/css-sds/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/css-dct/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/css-applications/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/SNL/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/p2Helios/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		<!--
+		<provider readerType="url.catalog" componentTypes="osgi.bundle,eclipse.feature,buckminster" mutable="true" source="true">
+				<uri format="file:///@workspace@/update/css-applications/{0}">
+					<bc:propertyRef key="buckminster.component" />
+				</uri>
+		</provider>
+		-->
+	</searchPath>
+	<locator searchPathRef="default" pattern=".*" />
+</rmap>
