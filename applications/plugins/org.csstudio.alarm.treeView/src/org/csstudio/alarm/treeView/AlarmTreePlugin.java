@@ -28,6 +28,8 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class of the LdapTree-Plug-In. This manages the plug-in's lifecycle.
@@ -42,6 +44,28 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
     public static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
 
     /**
+     * The private service tracker for the LDAP service.
+     *
+     * @author bknerr
+     * @author $Author: bknerr $
+     * @version $Revision: 1.7 $
+     * @since 27.08.2010
+     */
+    private class LdapServiceTracker extends ServiceTracker {
+        /**
+         * Constructor.
+         */
+        public LdapServiceTracker(@Nonnull final BundleContext context) {
+            super(context, ILdapService.class.getName(), null);
+        }
+    }
+
+    /**
+     * The service tracker reference for the LDAP service.
+     */
+    private ServiceTracker _ldapServiceTracker;
+
+    /**
      * The alarm service
      */
     private IAlarmService _alarmService;
@@ -50,11 +74,6 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      * The alarm configuration service
      */
     private IAlarmConfigurationService _alarmConfigurationService;
-
-    /**
-     * The LDAP service
-     */
-    private ILdapService _ldapService;
 
 
     private static AlarmTreePlugin INSTANCE;
@@ -86,9 +105,12 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     @Override
     protected void doStart(@Nonnull final BundleContext context) throws Exception {
+
         _alarmService = getService(context, IAlarmService.class);
         _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
-        _ldapService = getService(context, ILdapService.class);
+
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
     }
 
     /**
@@ -96,7 +118,7 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     @Override
     protected final void doStop(@Nonnull final BundleContext context) throws Exception {
-        // EMPTY
+        _ldapServiceTracker.close();
     }
 
     /**
@@ -141,8 +163,6 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      */
     @CheckForNull
     public ILdapService getLdapService() {
-        return _ldapService;
+        return (ILdapService) _ldapServiceTracker.getService();
     }
-
-
 }

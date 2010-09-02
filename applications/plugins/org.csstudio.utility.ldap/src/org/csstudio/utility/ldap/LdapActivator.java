@@ -21,7 +21,7 @@
  */
 package org.csstudio.utility.ldap;
 
-//
+
 import java.util.Dictionary;
 import java.util.Hashtable;
 
@@ -43,14 +43,14 @@ import org.osgi.framework.BundleContext;
  * The activator class controls the plug-in life cycle
  */
 public final class LdapActivator extends AbstractCssPlugin {
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);
-
     // The plug-in ID
     public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);
+
     private static LdapActivator INSTANCE;
 
-    private ILdapService _ldapService;
+    private BundleContext _bundleContext;
 
     /**
      * Don't instantiate.
@@ -69,18 +69,17 @@ public final class LdapActivator extends AbstractCssPlugin {
     @Override
     protected void doStart(@Nullable final BundleContext context) throws Exception {
 
-        _ldapService = null;
+        _bundleContext = context;
 
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
         final String ldapURL = getCssPluginPreferences().getString(LdapPreference.URL.getKeyAsString());
-        final boolean useLDAP = (ldapURL != null) && (ldapURL.length() > 5);
+        final boolean useLDAP = ldapURL != null && ldapURL.length() > 5;
 
         if (useLDAP) {
             final Dictionary<String, Object> props = new Hashtable<String, Object>();
             props.put("service.vendor", "DESY");
             props.put("service.description", "LDAP service implementation");
             context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
-            _ldapService = getService(context, ILdapService.class);
             LOG.info("Register LDAP-Service");
         } else {
             LOG.info("Do not register LDAP-Service");
@@ -153,6 +152,6 @@ public final class LdapActivator extends AbstractCssPlugin {
      */
     @CheckForNull
     public ILdapService getLdapService() {
-        return _ldapService;
+        return getService(_bundleContext, ILdapService.class);
     }
 }
