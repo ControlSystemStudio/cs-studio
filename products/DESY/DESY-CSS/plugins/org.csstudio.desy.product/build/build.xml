@@ -3,9 +3,12 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="init, buckminster-import, pde-build, update-configuration, test, hudsonupdate"/>
+	<!-- target name="build" depends="init, buckminster-import, pde-build, update-configuration, test, hudsonupdate"/-->
+	<target name="build" depends="buckminster-import, pde-build, update-configuration, test, hudsonupdate"/>
 	
-	
+	<echo message="'buildDirectory: ${buildDirectory}"/>
+	<echo message="'hudsonbase: ${hudsonbase}"/>
+	<echo message="'hudsonjob: ${hudsonjob}"/>
 	<!-- 
 		Delete & Create Directorys
 	 -->
