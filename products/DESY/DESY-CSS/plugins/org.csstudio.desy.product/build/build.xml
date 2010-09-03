@@ -9,6 +9,10 @@
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'hudsonbase: ${hudsonbase}"/>
 	<echo message="'hudsonjob: ${hudsonjob}"/>
+	<echo message="'BaseLocation: ${baseLocation}"/>
+	<echo message="'buckminsterLocation: ${buckminsterLocation}"/>
+	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
+	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
 	<!-- 
 		Delete & Create Directorys
 	 -->
