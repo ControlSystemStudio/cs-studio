@@ -28,7 +28,8 @@ import org.epics.css.dal.simple.SimpleDALBroker;
 import org.osgi.framework.BundleContext;
 
 /**
- * The activator class controls the plug-in life cycle
+ * The activator class controls the DAL plug-in life cycle.
+ * 
  */
 public class DalPlugin extends Plugin {
 	
