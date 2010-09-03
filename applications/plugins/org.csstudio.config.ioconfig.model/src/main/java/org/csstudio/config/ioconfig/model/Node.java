@@ -47,17 +47,17 @@ import org.csstudio.platform.security.User;
 import org.hibernate.annotations.Cascade;
 
 /**
- * 
+ *
  * @author gerke
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 21.03.2007
  */
 
 @Entity
 @Table(name = "ddb_node")
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Node extends NamedDBClass implements Comparable<Node> {
+public abstract class Node extends NamedDBClass implements Comparable<Node>, IDocumentable, INode{
 
     protected static final int DEFAULT_MAX_STATION_ADDRESS = 255;
 
@@ -80,7 +80,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     /**
      * A set of all manipulated Node from this node.
      */
-    private Set<Node> _alsoChanfedNodes = new HashSet<Node>();
+    private final Set<Node> _alsoChanfedNodes = new HashSet<Node>();
 
     private Set<Node> _children = new HashSet<Node>();
 
@@ -97,11 +97,11 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
      * Default Constructor needed by Hibernate.
      */
     public Node() {
-
+        // Do nothing
     }
 
     /**
-     * 
+     *
      * @param parent
      *            set the Parent of this Node
      */
@@ -110,7 +110,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @return The parent of this Node.
      */
     @ManyToOne
@@ -118,9 +118,9 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         return _parent;
     }
 
-    
+
     /**
-     * 
+     *
      * @param id
      *            set the Node key ID.
      */
@@ -129,9 +129,9 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         super.setId(id);
         NodeMap.put(id, this);
     }
-    
+
     /**
-     * 
+     *
      * @return the Children of this node.
      */
     @OneToMany(mappedBy = "parent", targetEntity = Node.class, fetch = FetchType.LAZY, cascade = {
@@ -146,26 +146,26 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
     /**
      * Set the Children to this node.
-     * 
+     *
      * @param children
      *            The Children for this node.
      */
-    public void setChildren(Set<Node> children) {
+    public void setChildren(final Set<Node> children) {
         _children = children;
     }
 
     /**
      * Add the Child to this node.
-     * 
+     *
      * @param <T> The Type of the Children.
      * @param child the Children to add.
      * @return null or the old Node for the SortIndex Position.
      */
-    public <T extends Node> Node addChild(T child) {
-        short sortIndex = child.getSortIndex();
+    public <T extends Node> Node addChild(final T child) {
+        int sortIndex = child.getSortIndex();
         Node oldNode = getChildrenAsMap().get(sortIndex);
 
-        if(oldNode!=null&&oldNode.equals(child)) {
+        if((oldNode!=null)&&oldNode.equals(child)) {
             return null;
         }
         child.setParent(this);
@@ -190,11 +190,11 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
     /**
      * Remove a children from this Node.
-     * 
+     *
      * @param child
      *            the children that remove.
      */
-    public void removeChild(Node child) {
+    public void removeChild(final Node child) {
         _children.remove(child);
     }
 
@@ -207,7 +207,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
     /**
      * Get the Children of the Node as Map. The Key is the Sort Index.
-     * @return the children as map. 
+     * @return the children as map.
      */
     @Transient
     public Map<Short, ? extends Node> getChildrenAsMap() {
@@ -219,13 +219,13 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @param maxStationAddress
      *            the maximum Station Address.
      * @return the first free Station Address.
      */
     @Transient
-    public short getfirstFreeStationAddress(int maxStationAddress) {
+    public short getfirstFreeStationAddress(final int maxStationAddress) {
         Map<Short, ? extends Node> children = getChildrenAsMap();
         Short nextKey = 0;
         if (!children.containsKey(nextKey)) {
@@ -244,7 +244,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @return have this Node one or more children then return true else false.
      */
     public final boolean hasChildren() {
@@ -257,7 +257,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
      *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
      *  -  Für MIME_FILES ist das Grand: select.
      *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
-     * 
+     *
      * @return Documents for the Node.
      */
     @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
@@ -268,25 +268,25 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @param documents set the Documents for this node.
      */
-    public void setDocuments(Set<Document> documents) {
+    public void setDocuments(final Set<Document> documents) {
         _documents = documents;
     }
 
     /**
-     * 
-     * @param document add the Document to this node. 
+     *
+     * @param document add the Document to this node.
      * @return this Node.
      */
-    public Node addDocument(Document document) {
+    public Node addDocument(final Document document) {
         this._documents.add(document);
         return this;
     }
 
     /**
-     * 
+     *
      * @return the Version of this node.
      */
     public int getVersion() {
@@ -294,7 +294,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @param version
      *            the Version of this node.
      */
@@ -303,13 +303,13 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
-     * @param sortIndex
+     *
+     * @param i
      *            set the Index to sort the node inside his parent.
      */
-    public void setSortIndexNonHibernate(short sortIndex) {
-        if (getSortIndex() != sortIndex) {
-            setSortIndex(sortIndex);
+    public void setSortIndexNonHibernate(final int i) {
+        if (getSortIndex() != i) {
+            setSortIndex(i);
             if (getSortIndex() >= 0) {
                 localUpdate();
             }
@@ -317,7 +317,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @return the Description of the Node.
      */
     public String getDescription() {
@@ -325,29 +325,23 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @param description set the Description for this node.
      */
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this._description = description;
-    }
-
-    @Transient
-    private boolean isSortIndexDuplicate() {
-        // the set can contain nodes with duplicate ids, but the map cannot!
-        return getChildren().size() == getChildrenAsMap().size();
     }
 
     /**
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
-     * 
+     *
      * @param toIndex
      *            the new sortIndex for this node.
      */
-    public void moveSortIndex(short toIndex) {
-        short direction = 1;
-        short index = this.getSortIndex();
+    public void moveSortIndex(final int toIndex) {
+        int direction = 1;
+        int index = this.getSortIndex();
         if (toIndex == index) {
             return;
         }
@@ -367,11 +361,11 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
                 node.setSortIndexNonHibernate(index);
                 node = nextNode;
-                index = (short) (index + direction);
+                index = (index + direction);
             } while (node != null);
         } else {
             // Move a exist Node
-            short start = index;
+            int start = index;
             Node moveNode = getParent().getChildrenAsMap().get(index);
             if (index > toIndex) {
                 direction = -1;
@@ -396,7 +390,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      */
     @Transient
     public void clearAlsoChangedNodes() {
@@ -405,7 +399,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
     /**
      * {@link Comparable}.
-     * 
+     *
      * @param other
      *            the node to compare whit this node.
      * @return if this node equals whit the give node return 0.
@@ -415,14 +409,14 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
             return -1;
         }
         int comper = getId() - other.getId();
-        if (comper == 0 && getId() == 0) {
+        if ((comper == 0) && (getId() == 0)) {
             comper = this.getSortIndex() - other.getSortIndex();
         }
         return comper;
     }
 
     @Deprecated
-    public void setImage(Image image) {
+    public void setImage(final Image image) {
         if (image != null) {
             // setImageBytes(image.getImageData().data);
         }
@@ -435,12 +429,12 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 
     /**
      * Copy this node to the given Parent Node.
-     * 
+     *
      * @param parentNode
      *            the target parent node.
      * @return the copy of this node.
      */
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         String createdBy = "Unknown";
         try {
             User user = SecurityFacade.getInstance().getCurrentUser();
@@ -456,8 +450,8 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         copy.setCreatedOn(new Date());
         copy.setUpdatedOn(new Date());
         //TODO: so umbauen das "Copy of" als prefix parameter übergeben wird.
-//        copy.setName("Copy of " + getName());
-        copy.setName(getName());
+        copy.setName("Copy of " + getName());
+//        copy.setName(getName());
         copy.setVersion(getVersion());
         if(parentNode!=null) {
             parentNode.localUpdate();
@@ -465,9 +459,9 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         return copy;
     }
 
-    
+
     // ---- Test Start
-    
+
 //    @ManyToOne
     @Transient
     public NodeImage getIcon() {
@@ -476,29 +470,29 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
 //
 //    /**
 //     * Set the Children to this node.
-//     * 
+//     *
 //     * @param children
 //     *            The Children for this node.
 //     */
-    public void setIcon(NodeImage icon) {
+    public void setIcon(final NodeImage icon) {
         _icon = icon;
     }
-    
+
     // ---- Test End
-    
-    
-    
+
+
+
     /**
      * Copy this node and set Special Parameter.
-     * 
+     *
      * @param parent the parent Node for the Copy.
-     * 
+     *
      * @return a Copy of this node.
      */
     protected abstract Node copyParameter(NamedDBClass parent);
 
     /**
-     * Save his self. 
+     * Save his self.
      * @throws PersistenceException
      */
     public void localSave() throws PersistenceException {
@@ -506,13 +500,13 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * make the data update for his self. 
+     * make the data update for his self.
      */
     protected void localUpdate() {
     }
 
     /**
-     * Update date it self and his siblings. 
+     * Update date it self and his siblings.
      */
     public void update() {
         if (isRootNode()) {
@@ -527,7 +521,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
      * Update the node an his children.
      * @param parent the node to update.
      */
-    protected void updateChildrenOf(Node parent) {
+    protected void updateChildrenOf(final Node parent) {
         for (Node n : parent.getChildrenAsMap().values()) {
             n.localUpdate();
             updateChildrenOf(n);
@@ -535,7 +529,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * 
+     *
      * @return is only true if this Node a Root Node.
      */
     @Transient
@@ -544,7 +538,7 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
     }
 
     /**
-     * Assemble the Epics Address String of the children Channels. 
+     * Assemble the Epics Address String of the children Channels.
      */
     @Transient
     public void assembleEpicsAddressString() throws PersistenceException {
@@ -558,16 +552,16 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         }
     }
 
-    /** 
+    /**
      * (@inheritDoc)
      */
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
         if (super.equals(obj)) {
             return true;
         }
         if (obj instanceof Node ) {
-            
+
             Node node = (Node) obj;
             if(getId()==node.getId()) {
                 if(getId()>0) {
@@ -579,5 +573,11 @@ public abstract class Node extends NamedDBClass implements Comparable<Node> {
         return false;
    }
 
-    
+    /**
+     * @return Return only true when the node need to work a GSD-File!
+     */
+    public GSDFileTypes needGSDFile() {
+        return GSDFileTypes.NONE;
+    }
+
 }

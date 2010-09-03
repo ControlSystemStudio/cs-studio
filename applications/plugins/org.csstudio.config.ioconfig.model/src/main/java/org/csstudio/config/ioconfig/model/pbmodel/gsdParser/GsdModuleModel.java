@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: GsdModuleModel.java,v 1.2 2009/10/22 06:58:59 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
@@ -37,8 +37,8 @@ import org.csstudio.platform.logging.CentralLogger;
  * The Model for a Profibus Module created from a GSD File.
  * 
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 22.08.2008
  */
 public class GsdModuleModel {

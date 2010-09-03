@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: CheckNumFocusListener.java,v 1.1 2009/08/26 07:09:21 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
@@ -37,8 +37,8 @@ import org.eclipse.swt.widgets.ToolTip;
 /**
  * 
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 15.08.2007
  */
 class CheckNumFocusListener implements FocusListener{

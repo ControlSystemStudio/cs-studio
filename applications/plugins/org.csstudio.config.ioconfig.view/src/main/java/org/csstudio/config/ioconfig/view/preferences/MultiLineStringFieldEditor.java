@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MultiLineStringFieldEditor.java,v 1.1 2009/08/26 07:09:27 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view.preferences;
 
@@ -35,8 +35,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 24.04.2009
  */
 public class MultiLineStringFieldEditor extends StringFieldEditor {

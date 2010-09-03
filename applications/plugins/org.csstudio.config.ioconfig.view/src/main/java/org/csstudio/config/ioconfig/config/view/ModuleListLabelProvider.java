@@ -18,8 +18,8 @@ import org.eclipse.swt.widgets.Table;
 /**
  * 
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 07.01.2009
  */
 public class ModuleListLabelProvider extends LabelProvider implements ILabelProvider, IFontProvider,

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: NodeConfigView.java,v 1.3 2009/11/09 09:17:05 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -33,8 +33,8 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 24.02.2009
  */
 public class NodeConfigView extends ViewPart {

@@ -20,30 +20,16 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Keywords.java,v 1.2 2010/08/20 13:33:05 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 10.03.2008
  */
 public interface Keywords {
-    
-    /**
-     * Typ of a GSD File.
-     */
-    static enum GSDFileTyp {
-        Master,
-        Slave;
-    }
-    
-    /**
-     * 
-     * @return the GSD File Type.
-     */
-    GSDFileTyp getType();
 
-}
+ }

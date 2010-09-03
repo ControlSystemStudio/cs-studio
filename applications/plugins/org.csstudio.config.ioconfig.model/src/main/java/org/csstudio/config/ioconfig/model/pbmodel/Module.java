@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Module.java,v 1.5 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -36,16 +36,19 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
+import org.hibernate.annotations.BatchSize;
 
 /**
  * @author gerke
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.5 $
  * @since 22.03.2007
  */
 
 @Entity
+@BatchSize(size=32)
 @Table(name = "ddb_Profibus_Module")
 public class Module extends Node {
 
@@ -78,7 +81,7 @@ public class Module extends Node {
      * The default Constructor.
      * @param slave the parent Slave.
      */
-    public Module(Slave slave) {
+    public Module(final Slave slave) {
         this(slave,null);
     }
 
@@ -87,7 +90,7 @@ public class Module extends Node {
      * @param slave The parent Salve
      * @param name the name of this Module.
      */
-    public Module(Slave slave, String name) {
+    public Module(final Slave slave, final String name) {
         setParent(slave);
         setName(name);
         slave.addChild(this);
@@ -104,12 +107,12 @@ public class Module extends Node {
         return _configurationData;
     }
 
-    public void setConfigurationData(String configurationData) {
+    public void setConfigurationData(final String configurationData) {
         _configurationData = configurationData;
     }
 
     /**
-     * 
+     *
      * @return the input offset
      */
     @Transient
@@ -117,13 +120,13 @@ public class Module extends Node {
         if (getSlave() != null) {
             Module module = null;
             int sub = 1;
-            while(module==null&&(getSortIndex()-sub)>=0) {
+            while((module==null)&&((getSortIndex()-sub)>=0)) {
                 module = (Module) getSlave().getChildrenAsMap().get((short) (getSortIndex() - sub));
                 sub++;
             }
-            if (module != null) { 
+            if (module != null) {
                 int inputOffset = module.getInputOffsetNH() + module.getInputSize();
-                setInputOffset(inputOffset);
+//                setInputOffset(inputOffset);
                 return inputOffset;
             }
         }
@@ -131,18 +134,18 @@ public class Module extends Node {
     }
 
     /**
-     * 
+     *
      * @return the input offset
      */
     public int getInputOffset() {
         return _inputOffset;
     }
-    
+
     /**
-     * 
+     *
      * @param inputOffset set the input offset.
      */
-    public void setInputOffset(int inputOffset) {
+    public void setInputOffset(final int inputOffset) {
         this._inputOffset = inputOffset;
     }
 
@@ -152,32 +155,32 @@ public class Module extends Node {
         if (getSlave() != null) {
             Module module = null;
             int sub = 1;
-            while(module==null&&(getSortIndex()-sub)>=0) {
+            while((module==null)&&((getSortIndex()-sub)>=0)) {
                 module = (Module) getSlave().getChildrenAsMap().get((short) (getSortIndex() - sub));
                 sub++;
             }
-            if (module != null) { 
+            if (module != null) {
                 int outputOffset = module.getOutputOffsetNH() + module.getOutputSize();
-                setOutputOffset(outputOffset);
+//                setOutputOffset(outputOffset);
                 return outputOffset;
             }
-        }    
+        }
         return 0;
     }
-    
+
     public int getOutputOffset() {
         return _outputOffset;
     }
 
-    public void setOutputOffset(int outputOffset) {
+    public void setOutputOffset(final int outputOffset) {
         this._outputOffset = outputOffset;
     }
 
     public int getInputSize() {
         return _inputSize;
     }
-    
-    public void setInputSize(int inputSize) {
+
+    public void setInputSize(final int inputSize) {
         this._inputSize = inputSize;
     }
 
@@ -185,7 +188,7 @@ public class Module extends Node {
         return _outputSize;
     }
 
-    public void setOutputSize(int outputSize) {
+    public void setOutputSize(final int outputSize) {
         this._outputSize = outputSize;
     }
 
@@ -193,7 +196,7 @@ public class Module extends Node {
         return _moduleNumber;
     }
 
-    public void setModuleNumber(int moduleNumber) {
+    public void setModuleNumber(final int moduleNumber) {
         if (_moduleNumber == moduleNumber) {
             return;
         }
@@ -204,13 +207,13 @@ public class Module extends Node {
     public GSDModule getGSDModule() {
         return getGSDFile().getGSDModule(getModuleNumber());
     }
-    
+
     @Transient
     @SuppressWarnings("unchecked")
     public Set<ChannelStructure> getChannelStructs() {
         return (Set<ChannelStructure>) getChildren();
     }
-    
+
     @Transient
     @SuppressWarnings("unchecked")
     public Map<Short, ChannelStructure> getChannelStructsAsMap() {
@@ -223,12 +226,12 @@ public class Module extends Node {
         return (Slave) getParent();
     }
 
-    public void setSlave(Slave slave) {
+    public void setSlave(final Slave slave) {
         this.setParent(slave);
     }
 
     /**
-     * 
+     *
      * @return the Slave GSD File.
      */
     @Transient
@@ -244,7 +247,7 @@ public class Module extends Node {
     /**
      * @param trim
      */
-    public void setExtModulePrmDataLen(String extModulePrmDataLen) {
+    public void setExtModulePrmDataLen(final String extModulePrmDataLen) {
         _extModulePrmDataLen = extModulePrmDataLen;
     }
 
@@ -289,13 +292,13 @@ public class Module extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parentNode) {
+    public Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof Slave) {
             Slave slave = (Slave) parentNode;
             Module copy = new Module(slave);
             copy.setModuleNumber(getModuleNumber());
             if(slave.getChildrenAsMap().get(getSortIndex())==null) {
-                copy.setSortIndex(getSortIndex());
+                copy.setSortIndex((int)getSortIndex());
             }
 //            copy.setDocuments(getDocuments());
             copy.setConfigurationData(getConfigurationData());
@@ -304,7 +307,7 @@ public class Module extends Node {
             for (Node n: getChildrenAsMap().values()) {
                 n.copyThisTo(copy);
             }
-            
+
             return copy;
         }
         return null;
@@ -315,7 +318,7 @@ public class Module extends Node {
         // make Offset
         int input;
         int output;
-        
+
         // make Size
         input = 0;
         output = 0;
@@ -359,8 +362,17 @@ public class Module extends Node {
     public String getExtUserPrmDataConst() {
         if(getConfigurationData()==null) {
             return getGsdModuleModel().getModiExtUserPrmDataConst().trim();
-        } 
+        }
         return getConfigurationData();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.MODULE;
     }
 
 }

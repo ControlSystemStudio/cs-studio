@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: IocConfigComposite.java,v 1.6 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -30,14 +30,11 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.Document;
 import org.csstudio.config.ioconfig.model.Facility;
-import org.csstudio.config.ioconfig.model.FacilityLight;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
-import org.eclipse.core.commands.operations.OperationStatus;
-import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
@@ -48,8 +45,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 20.03.2008
  */
 public class IocConfigComposite extends NodeConfig {
@@ -70,7 +67,6 @@ public class IocConfigComposite extends NodeConfig {
     public IocConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Ioc ioc) {
         super(parent, profiBusTreeView, "IOC Configuration", ioc, ioc == null);
-        profiBusTreeView.setConfiguratorName("IOC Configuration");
         _ioc = ioc;
 
         if (_ioc == null) {
@@ -84,7 +80,7 @@ public class IocConfigComposite extends NodeConfig {
 
     /**
      * Generate the Main IOC configuration Tab.
-     * 
+     *
      * @param head
      *            The headline of the tab.
      */
@@ -111,19 +107,19 @@ public class IocConfigComposite extends NodeConfig {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio
      * .config.ioconfig.model .pbmodel.GSDFile)
      */
     @Override
-    public boolean fill(GSDFile gsdFile) {
+    public boolean fill(final GSDFile gsdFile) {
         return false;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
      */
     @Override
@@ -131,32 +127,21 @@ public class IocConfigComposite extends NodeConfig {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getNode()
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public Node getNode() {
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
+    public final Node getNode() {
         if (_ioc == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView().getTreeViewer()
                     .getSelection();
             if (selection.getFirstElement() instanceof Facility) {
                 Facility facility = (Facility) selection.getFirstElement();
                 _ioc = new Ioc(facility);
-            } else if (selection.getFirstElement() instanceof FacilityLight) {
-                FacilityLight fL = (FacilityLight) selection.getFirstElement();
-                try {
-                    Facility facility = fL.getFacility();
-                    _ioc = new Ioc(facility);
-                } catch (Exception e) {
-                    String errorMessage = String.format("Device Data Base (DDB) Error\n"
-                            + "Can't load the Facility '%1s' (ID: %2s)", fL.getName(), fL.getId());
-                    OperationStatus status = new OperationStatus(OperationStatus.ERROR,
-                            ActivatorUI.PLUGIN_ID, 3, errorMessage, e);
-                    ErrorDialog
-                            .openError(getShell(), "Data Base Error: Get Facility", null, status);
-                }
             }
         }
         return _ioc;

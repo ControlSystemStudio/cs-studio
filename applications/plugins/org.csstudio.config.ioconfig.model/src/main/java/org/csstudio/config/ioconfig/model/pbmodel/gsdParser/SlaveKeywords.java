@@ -1,5 +1,6 @@
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.Keywords;
 
 /*******************************************************************************
@@ -91,12 +92,12 @@ public class SlaveKeywords implements Keywords {
     private short _maxDataLen;
 
     /**
-     * 
+     *
      * @author tboeckmanm
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 08.12.2005
-     * 
+     *
      * In order to display manufacturer-specific status- and error messages of a
      * DP slave centrally, it is possible to assign to a bit a text (_diagText)
      * in the device-related diagnostic field (refer to Section 2.3.6 Examples
@@ -150,12 +151,12 @@ public class SlaveKeywords implements Keywords {
     }
 
     /**
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 05.12.2005
-     * 
+     *
      * Between the key words UnitDiagArea and Unit_Diag_Area_End the assignment
      * of values in a bit field in the device-related diagnostic field to texts
      * (_diagText) is specified (refer to Section 0).
@@ -184,7 +185,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * First bit position of the bit field (LSB in the first byte is Bit 0).
          * Type: Unsigned16
-         * 
+         *
          * @return the first bit
          */
         public final short getFirstBit() {
@@ -194,7 +195,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * First bit position of the bit field (LSB in the first byte is Bit 0).
          * Type: Unsigned16
-         * 
+         *
          * @param firstBit
          *            set the first byte
          */
@@ -205,7 +206,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * Last bit position of the bit field. The bit field may be 16 bit wide
          * maximum. Type: Unsigned16
-         * 
+         *
          * @return the last Bit
          */
         public final short getLastBit() {
@@ -215,7 +216,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * Last bit position of the bit field. The bit field may be 16 bit wide
          * maximum. Type: Unsigned16
-         * 
+         *
          * @param lastBit
          *            set the last bit
          */
@@ -226,7 +227,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * The Value in bit field. Type: Unsigned16 _diagText: Type:
          * Visible-String(32)
-         * 
+         *
          * @return the Value
          */
         public final String getValue() {
@@ -236,7 +237,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * Value in bit field. Type: Unsigned16 _diagText: Type:
          * Visible-String(32)
-         * 
+         *
          * @param value
          *            set the Value
          */
@@ -246,12 +247,12 @@ public class SlaveKeywords implements Keywords {
     }
 
     /**
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 08.12.2005
-     * 
+     *
      * Between the key words Module and EndModule, the IDs of a DP compact
      * device or the IDs of all possible modules of a modular slave are
      * specified, manufacturer-specific error types are specified in the
@@ -301,7 +302,7 @@ public class SlaveKeywords implements Keywords {
          * Here, the ID or IDs of the module of a modular DP slave or of a
          * compact DP device are specified. Type: Octet-String(17) Type:
          * Octet-String(244) (Starting with GSD_Revision 1)
-         * 
+         *
          * @return the ID.
          */
         public final String getConfig() {
@@ -312,7 +313,7 @@ public class SlaveKeywords implements Keywords {
          * Here, the ID or IDs of the module of a modular DP slave or of a
          * compact DP device are specified. Type: Octet-String(17) Type:
          * Octet-String(244) (Starting with GSD_Revision 1)
-         * 
+         *
          * @param config
          *            return the ID.
          */
@@ -323,7 +324,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * Module name of a module used in a modular DP station, or device name
          * of a compact DP slave.
-         * 
+         *
          * @return the name
          */
         public final String getModName() {
@@ -333,7 +334,7 @@ public class SlaveKeywords implements Keywords {
         /**
          * Module name of a module used in a modular DP station, or device name
          * of a compact DP slave.
-         * 
+         *
          * @param modName
          *            set the Name
          */
@@ -347,7 +348,7 @@ public class SlaveKeywords implements Keywords {
          * referencing is useful in order to make language-independent
          * configuring possible in a language-dependent system, or to recognize
          * modules. Type: Unsigned8
-         * 
+         *
          * @return the reference
          */
         public final short getModuleReference() {
@@ -360,7 +361,7 @@ public class SlaveKeywords implements Keywords {
          * referencing is useful in order to make language-independent
          * configuring possible in a language-dependent system, or to recognize
          * modules. Type: Unsigned8
-         * 
+         *
          * @param moduleReference
          *            set the reference
          */
@@ -374,10 +375,10 @@ public class SlaveKeywords implements Keywords {
      * With the key word Channel_Diag, the assigment of manufacturer-specific
      * error types (Error_Type)in the channel-related diagnostic field to texts
      * (_diagText) is specified (refer to Section 0).
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 02.04.2008
      */
     public class ChannelDiag {
@@ -397,7 +398,7 @@ public class SlaveKeywords implements Keywords {
             return _diagText;
         }
 
-        public void setDiagText(String diagText) {
+        public void setDiagText(final String diagText) {
             _diagText = diagText;
         }
 
@@ -405,7 +406,7 @@ public class SlaveKeywords implements Keywords {
             return _errorType;
         }
 
-        public void setErrorType(byte errorType) {
+        public void setErrorType(final byte errorType) {
             _errorType = errorType;
         }
 
@@ -416,7 +417,7 @@ public class SlaveKeywords implements Keywords {
      * data instead of data message with data = 0 in the CLEAR mode of DP master
      * (Class1).<br>
      * Type: Boolean (1: TRUE)
-     * 
+     *
      */
     private boolean _failSafe;
 
@@ -461,10 +462,10 @@ public class SlaveKeywords implements Keywords {
      * definition of this key word excludes the evaluation of _userPrmData . If
      * areas overlap when describing the _userPrmData, the area defined last in
      * the Device Description Block has priority.
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 02.04.2008
      */
     public class Ext_User_Prm_Data_Ref {
@@ -489,7 +490,7 @@ public class SlaveKeywords implements Keywords {
             return _referenceNumber;
         }
 
-        public void setReferenceNumber(short referenceNumber) {
+        public void setReferenceNumber(final short referenceNumber) {
             _referenceNumber = referenceNumber;
         }
 
@@ -497,7 +498,7 @@ public class SlaveKeywords implements Keywords {
             return _referenceOffset;
         }
 
-        public void setReferenceOffset(byte referenceOffset) {
+        public void setReferenceOffset(final byte referenceOffset) {
             _referenceOffset = referenceOffset;
         }
 
@@ -508,10 +509,10 @@ public class SlaveKeywords implements Keywords {
      * this key word excludes the evaluation of _userPrmData . If areas overlap
      * when describing the _userPrmData, the area defined last in the Device
      * Description Data (GSD) file has priority.
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 02.04.2008
      */
     public class Ext_User_Prm_Data_Const {
@@ -527,7 +528,7 @@ public class SlaveKeywords implements Keywords {
          * Here, the constants or default selections within the _userPrmData are
          * defined.<br>
          * Type: Octet-String
-         * 
+         *
          */
         private String _constPrmData = "";
 
@@ -536,7 +537,7 @@ public class SlaveKeywords implements Keywords {
             return _constOffset;
         }
 
-        public void setConstOffset(byte constOffset) {
+        public void setConstOffset(final byte constOffset) {
             _constOffset = constOffset;
         }
 
@@ -547,7 +548,7 @@ public class SlaveKeywords implements Keywords {
             return _constPrmData;
         }
 
-        public void setConstPrmData(String constPrmData) {
+        public void setConstPrmData(final String constPrmData) {
             _constPrmData = constPrmData;
         }
 
@@ -557,10 +558,10 @@ public class SlaveKeywords implements Keywords {
      * Between the key words ExtUserPrmData and EndExtUserPrmData, a parameter
      * of the _userPrmData is described. The definition of this key word
      * excludes the evaluation of _userPrmData.
-     * 
+     *
      * @author tboeckmann
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.2 $
      * @since 02.04.2008
      */
     public class ExtUserPrmData {
@@ -570,13 +571,13 @@ public class SlaveKeywords implements Keywords {
          * This reference has to be unique.<br>
          * Type: Unsigned8
          */
-        private byte Reference_Number;
+        private byte _referenceNumber;
 
         /**
          * Clear text description of parameter.<br>
          * Type: Visible-String
          */
-        private String Ext_User_Prm_Data_Name;
+        private String _extUserPrmDataName;
 
         /**
          * The following data types are specified:<br>
@@ -629,10 +630,10 @@ public class SlaveKeywords implements Keywords {
         /**
          * Between the key words PrmText and EndPrmText, possible values of a
          * parameter are described. Texts are also assigned to these values.
-         * 
+         *
          * @author tboeckmann
-         * @author $Author$
-         * @version $Revision$
+         * @author $Author: hrickens $
+         * @version $Revision: 1.2 $
          * @since 08.12.2005
          */
         public class PrmText {
@@ -646,25 +647,25 @@ public class SlaveKeywords implements Keywords {
 
             /**
              * @author tboeckmann
-             * @author $Author$
-             * @version $Revision$
+             * @author $Author: hrickens $
+             * @version $Revision: 1.2 $
              * @since 01.10.2008
              */
             /**
              * @author hrickens
-             * @author $Author$
-             * @version $Revision$
+             * @author $Author: hrickens $
+             * @version $Revision: 1.2 $
              * @since 01.10.2008
              */
             /**
              * @author hrickens
-             * @author $Author$
-             * @version $Revision$
+             * @author $Author: hrickens $
+             * @version $Revision: 1.2 $
              * @since 01.10.2008
              */
-            public class Text_Item {
+            public class TextItem {
                 /**
-                 * 
+                 *
                  * Here, the value of the parameter is specified that is to be
                  * described. Type: Data_Type (has to correspond to the<br>
                  * Data_Type_Name in the parameter description).
@@ -678,19 +679,19 @@ public class SlaveKeywords implements Keywords {
                 private String _text;
 
                 // Methoden of class Text_Item
-                public String getPrm_Data_Type() {
+                public String getPrmDataType() {
                     return _prmDataType;
                 }
 
-                public void setPrm_Data_Type(String prm_Data_Type) {
-                    _prmDataType = prm_Data_Type;
+                public void setPrmDataType(final String prmDataType) {
+                    _prmDataType = prmDataType;
                 }
 
                 public String getText() {
                     return _text;
                 }
 
-                public void setText(String text) {
+                public void setText(final String text) {
                     _text = text;
                 }
 
@@ -701,75 +702,75 @@ public class SlaveKeywords implements Keywords {
                 return _referenceNumber;
             }
 
-            public void setReference_Number(byte referenceNumber) {
+            public void setReferenceNumber(final byte referenceNumber) {
                 _referenceNumber = referenceNumber;
             }
 
         }
 
         // Mehoden of class ExtUserPrmData
-        public String getAllowed_Value() {
+        public String getAllowedValue() {
             return _allowedValue;
         }
 
-        public void setAllowed_Value(String allowedValue) {
+        public void setAllowedValue(final String allowedValue) {
             _allowedValue = allowedValue;
         }
 
-        public String getData_Type_Name() {
+        public String getDataTypeName() {
             return _dataTypeName;
         }
 
-        public void setData_Type_Name(String dataTypeName) {
+        public void setDataTypeName(final String dataTypeName) {
             _dataTypeName = dataTypeName;
         }
 
-        public String getDefault_Value() {
+        public String getDefaultValue() {
             return _defaultValue;
         }
 
-        public void setDefault_Value(String defaultValue) {
+        public void setDefaultValue(final String defaultValue) {
             _defaultValue = defaultValue;
         }
 
-        public String getExt_User_Prm_Data_Name() {
-            return Ext_User_Prm_Data_Name;
+        public String getExtUserPrmDataName() {
+            return _extUserPrmDataName;
         }
 
-        public void setExt_User_Prm_Data_Name(String extUserPrmDataName) {
-            Ext_User_Prm_Data_Name = extUserPrmDataName;
+        public void setExtUserPrmDataName(final String extUserPrmDataName) {
+            _extUserPrmDataName = extUserPrmDataName;
         }
 
-        public String getMax_Value() {
+        public String getMaxValue() {
             return _maxValue;
         }
 
-        public void setMax_Value(String max_Value) {
-            _maxValue = max_Value;
+        public void setMaxValue(final String maxValue) {
+            _maxValue = maxValue;
         }
 
-        public String getMin_Value() {
+        public String getMinValue() {
             return _minValue;
         }
 
-        public void setMin_Value(String min_Value) {
-            _minValue = min_Value;
+        public void setMinValue(final String minValue) {
+            _minValue = minValue;
         }
 
-        public byte getPrm_Text_Ref() {
+        public byte getPrmTextRef() {
             return _prmTextRef;
         }
 
-        public void setPrm_Text_Ref(byte prm_Text_Ref) {
-            _prmTextRef = prm_Text_Ref;
+        public void setPrmTextRef(final byte prmTextRef) {
+            _prmTextRef = prmTextRef;
         }
 
-        public byte getReference_Number() {
-            return Reference_Number;
+        public byte getReferenceNumber() {
+            return _referenceNumber;
         }
 
-        public void setReference_Number(byte reference_Number) {
-            Reference_Number = reference_Number;
+        public void setReferenceNumber(final byte referenceNumber) {
+            _referenceNumber = referenceNumber;
         }
 
     }
@@ -778,7 +779,7 @@ public class SlaveKeywords implements Keywords {
         return _autoBaudSupp;
     }
 
-    public void setAutoBaudSupp(boolean autoBaudSupp) {
+    public void setAutoBaudSupp(final boolean autoBaudSupp) {
         _autoBaudSupp = autoBaudSupp;
     }
 
@@ -786,7 +787,7 @@ public class SlaveKeywords implements Keywords {
         return _failSafe;
     }
 
-    public void setFailSafe(boolean failSafe) {
+    public void setFailSafe(final boolean failSafe) {
         _failSafe = failSafe;
     }
 
@@ -794,7 +795,7 @@ public class SlaveKeywords implements Keywords {
         return _freezeModeSupp;
     }
 
-    public void setFreezeModeSupp(boolean freezeModeSupp) {
+    public void setFreezeModeSupp(final boolean freezeModeSupp) {
         _freezeModeSupp = freezeModeSupp;
     }
 
@@ -802,127 +803,127 @@ public class SlaveKeywords implements Keywords {
         return _maxDataLen;
     }
 
-    public void setMaxDataLen(short max_Data_Len) {
-        _maxDataLen = max_Data_Len;
+    public void setMaxDataLen(final short maxDataLen) {
+        _maxDataLen = maxDataLen;
     }
 
-    public byte getMax_Diag_Data_Len() {
+    public byte getMaxDiagDataLen() {
         return _maxDiagDataLen;
     }
 
-    public void setMax_Diag_Data_Len(byte max_Diag_Data_Len) {
-        _maxDiagDataLen = max_Diag_Data_Len;
+    public void setMaxDiagDataLen(final byte maxDiagDataLen) {
+        _maxDiagDataLen = maxDiagDataLen;
     }
 
     public byte getMaxmInputLen() {
         return _maxmInputLen;
     }
 
-    public void setMaxmInputLen(byte max_Input_Len) {
-        _maxmInputLen = max_Input_Len;
+    public void setMaxmInputLen(final byte maxInputLen) {
+        _maxmInputLen = maxInputLen;
     }
 
     public byte getMaxModule() {
         return _maxModule;
     }
 
-    public void setMaxModule(byte max_Module) {
-        _maxModule = max_Module;
+    public void setMaxModule(final byte maxModule) {
+        _maxModule = maxModule;
     }
 
     public byte getMaxOutputLen() {
         return _maxOutputLen;
     }
 
-    public void setMaxOutputLen(byte max_Output_Len) {
-        _maxOutputLen = max_Output_Len;
+    public void setMaxOutputLen(final byte maxOutputLen) {
+        _maxOutputLen = maxOutputLen;
     }
 
-    public byte getMax_User_Prm_Len() {
+    public byte getMaxUserPrmLen() {
         return _maxUserPrmLen;
     }
 
-    public void setMax_User_Prm_Len(byte max_User_Prm_Len) {
-        _maxUserPrmLen = max_User_Prm_Len;
+    public void setMaxUserPrmLen(final byte maxUserPrmLen) {
+        _maxUserPrmLen = maxUserPrmLen;
     }
 
     /**
      * This time specifies the minimum interval between two slave list cycles
      * for the DP device.
-     * 
+     *
      * @return Minimum slave interval time
      */
     public short getMinSlaveIntervall() {
         return _minSlaveIntervall;
     }
 
-    public void setMinSlaveIntervall(short min_Slave_Intervall) {
-        _minSlaveIntervall = min_Slave_Intervall;
+    public void setMinSlaveIntervall(final short minSlaveIntervall) {
+        _minSlaveIntervall = minSlaveIntervall;
     }
 
-    public byte getModul_Offset() {
+    public byte getModulOffset() {
         return _modulOffset;
     }
 
-    public void setModul_Offset(byte modul_Offset) {
-        _modulOffset = modul_Offset;
+    public void setModulOffset(final byte modulOffset) {
+        _modulOffset = modulOffset;
     }
 
     public boolean isModularStation() {
         return _modularStation;
     }
 
-    public void setModularStation(boolean modular_Station) {
-        _modularStation = modular_Station;
+    public void setModularStation(final boolean modularStation) {
+        _modularStation = modularStation;
     }
 
     public boolean isSetSlaveAddSupp() {
         return _setSlaveAddSupp;
     }
 
-    public void setSetSlaveAddSupp(boolean set_Slave_Add_supp) {
-        _setSlaveAddSupp = set_Slave_Add_supp;
+    public void setSetSlaveAddSupp(final boolean setSlaveAddsupp) {
+        _setSlaveAddSupp = setSlaveAddsupp;
     }
 
     public byte getSlaveFamily() {
         return _slaveFamily;
     }
 
-    public void setSlaveFamily(byte slave_Family) {
-        _slaveFamily = slave_Family;
+    public void setSlaveFamily(final byte slaveFamily) {
+        _slaveFamily = slaveFamily;
     }
 
     public boolean isSyncModeSupp() {
         return _syncModeSupp;
     }
 
-    public void setSyncModeSupp(boolean sync_Mode_supp) {
-        _syncModeSupp = sync_Mode_supp;
+    public void setSyncModeSupp(final boolean syncModeSupp) {
+        _syncModeSupp = syncModeSupp;
     }
 
     public String getUserPrmData() {
         return _userPrmData;
     }
 
-    public void setUserPrmData(String user_Prm_Data) {
-        _userPrmData = user_Prm_Data;
+    public void setUserPrmData(final String userPrmData) {
+        _userPrmData = userPrmData;
     }
 
     public byte getUserPrmDataLen() {
         return _userPrmDataLen;
     }
 
-    public void setUserPrmDataLen(byte user_Prm_Data_Len) {
-        _userPrmDataLen = user_Prm_Data_Len;
+    public void setUserPrmDataLen(final byte userPrmDataLen) {
+        _userPrmDataLen = userPrmDataLen;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.config.ioconfig.model.Keywords#getType()
      */
-    public GSDFileTyp getType() {
-        return GSDFileTyp.Slave;
+    public GSDFileTypes getType() {
+        return GSDFileTypes.Slave;
     }
 
     public Ext_User_Prm_Data_Const getExtUserPrmDataConst() {

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ShowIOConfig.java,v 1.2 2009/09/15 06:38:21 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -32,8 +32,8 @@ import org.eclipse.ui.WorkbenchException;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 20.07.2007
  */
 public class ShowIOConfig implements IWorkbenchWindowActionDelegate {

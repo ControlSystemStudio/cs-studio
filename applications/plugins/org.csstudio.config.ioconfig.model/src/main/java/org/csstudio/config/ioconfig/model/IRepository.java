@@ -9,8 +9,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 /**
  * 
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: bknerr $
+ * @version $Revision: 1.1 $
  * @since 30.04.2009
  */
 public interface IRepository {

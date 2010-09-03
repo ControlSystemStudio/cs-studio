@@ -20,12 +20,13 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ChannelStructureConfigComposite.java,v 1.9 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
 import java.util.ArrayList;
 
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
@@ -42,8 +43,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.9 $
  * @since 28.10.2009
  */
 public class ChannelStructureConfigComposite extends NodeConfig {
@@ -52,33 +53,32 @@ public class ChannelStructureConfigComposite extends NodeConfig {
      * System Line separator
      */
     private static final String LS = System.getProperty( "line.separator" );
-    private Node _channelStructure;
-    private Text _ioNameList;
+    private final Node _channelStructure;
+    private final Text _ioNameList;
 
     /**
      * That is a Config View that only show a Description.
-     * Is is useful to show nodes without properties to configure. 
-     * 
+     * Is is useful to show nodes without properties to configure.
+     *
      * @param parent The Parent composite.
      * @param profiBusTreeView the Navigate Profibus Tree-view
      * @param style the Composite Style.
      * @param node the node to "Configure"
-     * @param string The Description text. 
+     * @param string The Description text.
      */
-    public ChannelStructureConfigComposite(Composite parent, ProfiBusTreeView profiBusTreeView, ChannelStructure channelStructure) {
+    public ChannelStructureConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView, final ChannelStructure channelStructure) {
         super(parent,profiBusTreeView, channelStructure!=null?channelStructure.getClass().getSimpleName():"", channelStructure, false);
-        profiBusTreeView.setConfiguratorName("Channel Structure Configuration");
         _channelStructure = channelStructure;
         setSaveButtonSaved();
         Composite newTabItem = getNewTabItem("Main", 2);
         Label label = new Label(newTabItem, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("Description:");
-        
+
         label = new Label(newTabItem, SWT.NONE);
         label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         label.setText("IOName List:");
-        
+
         StyledText text = new StyledText(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER|SWT.READ_ONLY);
         text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         _ioNameList = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER);
@@ -91,7 +91,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                Channel channel = (Channel) node;
                int length = sbDesc.length();
                sbDesc.append(channel.getName());
-               if(channel.getIoName()==null||channel.getIoName().isEmpty()) {
+               if((channel.getIoName()==null)||channel.getIoName().isEmpty()) {
                    sbIOName.append(LS);
                }else {
                    sbIOName.append(channel.getIoName());
@@ -103,7 +103,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                if(channel.getDescription()!=null) {
                    sbDesc.append(channel.getDescription());
                    sbDesc.append(LS);
-               } 
+               }
                sbDesc.append(LS);
                StyleRange styleRange;
 //               styleRange = new StyleRange(length, sbDesc.length(),null,null,SWT.NONE);
@@ -115,7 +115,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
                textStyle.borderStyle = SWT.BORDER_DOT;
 //               textStyle.
 //               styleRanges.add(new StyleRange(textStyle));
-               
+
            }
            setText(_ioNameList, sbIOName.toString(), Text.LIMIT);
            text.setText(sbDesc.toString());
@@ -130,7 +130,7 @@ public class ChannelStructureConfigComposite extends NodeConfig {
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio.config.ioconfig.model.pbmodel.GSDFile)
      */
     @Override
-    public boolean fill(GSDFile gsdFile) {
+    public boolean fill(final GSDFile gsdFile) {
         // TODO Auto-generated method stub
         return false;
     }
@@ -148,10 +148,18 @@ public class ChannelStructureConfigComposite extends NodeConfig {
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getNode()
      */
     @Override
+    public IDocumentable getDocumentableObject() {
+        return _channelStructure;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public Node getNode() {
         return _channelStructure;
     }
-    
+
     @Override
     public void store() {
         super.store();

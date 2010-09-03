@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: NodeImage.java,v 1.2 2009/11/09 09:17:06 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
@@ -35,8 +35,8 @@ import javax.persistence.Table;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 16.10.2008
  */
 

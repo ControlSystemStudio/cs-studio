@@ -1,5 +1,6 @@
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.Keywords;
 
 /*******************************************************************************
@@ -44,7 +45,7 @@ public class MasterKeywords implements Keywords{
      * Maximum memory size (in bytes) that a DP device makes<br>
      * available for storing the master parameter set.<br>
      * Type: Unsigned32<br>
-     * 
+     *
      */
     private long _maxMpsLength;
 
@@ -52,7 +53,7 @@ public class MasterKeywords implements Keywords{
      * Here, the maximum L_sdu length for all master-slave<br>
      * communication relations is specified.<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _maxLsduMS;
 
@@ -60,7 +61,7 @@ public class MasterKeywords implements Keywords{
      * Here, the maximum L_sdu length for all master-master<br>
      * communication relations is specified.<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _maxLsduMM;
 
@@ -69,7 +70,7 @@ public class MasterKeywords implements Keywords{
      * as a maximum for processing a master-master function.<br>
      * Time Base: 10 ms<br>
      * Type: Unsigned16<br>
-     * 
+     *
      */
     private short _minPollTimeout;
 
@@ -80,7 +81,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy9k6;
 
@@ -91,7 +92,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy19k2;
 
@@ -102,7 +103,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy31k25;
 
@@ -113,7 +114,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy45k45;
 
@@ -124,7 +125,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy93k75;
 
@@ -135,7 +136,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy187k5;
 
@@ -146,7 +147,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy500;
 
@@ -157,7 +158,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy1M5;
 
@@ -168,7 +169,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy3M;
 
@@ -179,7 +180,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy6M;
 
@@ -190,7 +191,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _trdy12M;
 
@@ -200,7 +201,7 @@ public class MasterKeywords implements Keywords{
      * 9.6 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui9k6;
 
@@ -210,7 +211,7 @@ public class MasterKeywords implements Keywords{
      * 19.2 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui19k2;
 
@@ -220,7 +221,7 @@ public class MasterKeywords implements Keywords{
      * 31.25 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui31k25;
 
@@ -230,7 +231,7 @@ public class MasterKeywords implements Keywords{
      * 45.45 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui45k45;
 
@@ -240,7 +241,7 @@ public class MasterKeywords implements Keywords{
      * 93.75 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui93k75;
 
@@ -250,7 +251,7 @@ public class MasterKeywords implements Keywords{
      * 187.5 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui187k5;
 
@@ -260,7 +261,7 @@ public class MasterKeywords implements Keywords{
      * 500 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui500;
 
@@ -270,7 +271,7 @@ public class MasterKeywords implements Keywords{
      * 1.5 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui1M5;
 
@@ -280,7 +281,7 @@ public class MasterKeywords implements Keywords{
      * 3 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui3M;
 
@@ -290,7 +291,7 @@ public class MasterKeywords implements Keywords{
      * 6 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui6M;
 
@@ -300,7 +301,7 @@ public class MasterKeywords implements Keywords{
      * 12 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tqui12M;
 
@@ -311,7 +312,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset9k6;
 
@@ -322,7 +323,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset19k2;
 
@@ -333,7 +334,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset31k25;
 
@@ -344,7 +345,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset45k45;
 
@@ -355,7 +356,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset93k75;
 
@@ -366,7 +367,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset187k5;
 
@@ -377,7 +378,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset500;
 
@@ -388,7 +389,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset1M5;
 
@@ -399,7 +400,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset3M;
 
@@ -410,7 +411,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset6M;
 
@@ -421,7 +422,7 @@ public class MasterKeywords implements Keywords{
      * Part 8-2 Section 8.8).<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _tset12M;
 
@@ -429,7 +430,7 @@ public class MasterKeywords implements Keywords{
      * This value indicates how many entries the device in question can<br>
      * can manage in the list of active stations (LAS).<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _lasLen;
 
@@ -439,7 +440,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 9.6 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi9k6;
 
@@ -449,7 +450,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 19.2 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi19k2;
 
@@ -459,7 +460,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 31.25 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi31k25;
 
@@ -469,7 +470,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 45.45 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi45k45;
 
@@ -479,7 +480,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 93k75 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi93k75;
 
@@ -489,7 +490,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 187.5 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi187k5;
 
@@ -499,7 +500,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 500 kBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi500;
 
@@ -509,7 +510,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 1.5 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi1M5;
 
@@ -519,7 +520,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 3 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi3M;
 
@@ -529,7 +530,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 6 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi6M;
 
@@ -539,7 +540,7 @@ public class MasterKeywords implements Keywords{
      * baudrate of 12 MBaud.<br>
      * Time Base: Bit Time<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private short _tsdi12M;
 
@@ -547,7 +548,7 @@ public class MasterKeywords implements Keywords{
      * This value indicates how many DP slave stations a<br>
      * DP master (Class1) can handle.<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _maxSlavesSupp;
 
@@ -555,7 +556,7 @@ public class MasterKeywords implements Keywords{
      * here, the maximum length of input data per DP slave<br>
      * is specified that the DP master supports.<br>
      * Type: Unsigned8<br>
-     * 
+     *
      */
     private byte _maxMasterInputLen;
 
@@ -583,7 +584,7 @@ public class MasterKeywords implements Keywords{
         return _actParamBrctSupp;
     }
 
-    public void setActParamBrctSupp(boolean actParamBrctSupp) {
+    public void setActParamBrctSupp(final boolean actParamBrctSupp) {
         _actParamBrctSupp = actParamBrctSupp;
     }
 
@@ -591,7 +592,7 @@ public class MasterKeywords implements Keywords{
         return _actParamSupp;
     }
 
-    public void setActParamSupp(boolean actParamsupp) {
+    public void setActParamSupp(final boolean actParamsupp) {
         _actParamSupp = actParamsupp;
     }
 
@@ -599,7 +600,7 @@ public class MasterKeywords implements Keywords{
         return _downloadSupp;
     }
 
-    public void setDownloadSupp(boolean downloadSupp) {
+    public void setDownloadSupp(final boolean downloadSupp) {
         _downloadSupp = downloadSupp;
     }
 
@@ -607,7 +608,7 @@ public class MasterKeywords implements Keywords{
         return _lasLen;
     }
 
-    public void setLasLen(byte len) {
+    public void setLasLen(final byte len) {
         _lasLen = len;
     }
 
@@ -615,7 +616,7 @@ public class MasterKeywords implements Keywords{
         return _maxLsduMM;
     }
 
-    public void setMaxLsduMM(byte maxLsduMM) {
+    public void setMaxLsduMM(final byte maxLsduMM) {
         _maxLsduMM = maxLsduMM;
     }
 
@@ -623,7 +624,7 @@ public class MasterKeywords implements Keywords{
         return _maxLsduMS;
     }
 
-    public void setMaxLsduMS(byte maxLsduMS) {
+    public void setMaxLsduMS(final byte maxLsduMS) {
         _maxLsduMS = maxLsduMS;
     }
 
@@ -631,7 +632,7 @@ public class MasterKeywords implements Keywords{
         return _maxMasterDataLen;
     }
 
-    public void setMaxMasterDataLen(short maxMasterDataLen) {
+    public void setMaxMasterDataLen(final short maxMasterDataLen) {
         _maxMasterDataLen = maxMasterDataLen;
     }
 
@@ -639,7 +640,7 @@ public class MasterKeywords implements Keywords{
         return _maxMasterInputLen;
     }
 
-    public void setMaxMasterInputLen(byte maxMasterInputLen) {
+    public void setMaxMasterInputLen(final byte maxMasterInputLen) {
         _maxMasterInputLen = maxMasterInputLen;
     }
 
@@ -647,7 +648,7 @@ public class MasterKeywords implements Keywords{
         return _maxMasterOutputLen;
     }
 
-    public void setMaxMasterOutputLen(byte maxMasterOutputLen) {
+    public void setMaxMasterOutputLen(final byte maxMasterOutputLen) {
         _maxMasterOutputLen = maxMasterOutputLen;
     }
 
@@ -655,7 +656,7 @@ public class MasterKeywords implements Keywords{
         return _maxMpsLength;
     }
 
-    public void setMaxMpsLength(long maxMpsLength) {
+    public void setMaxMpsLength(final long maxMpsLength) {
         _maxMpsLength = maxMpsLength;
     }
 
@@ -663,7 +664,7 @@ public class MasterKeywords implements Keywords{
         return _maxSlavesSupp;
     }
 
-    public void setMaxSlavesSupp(byte maxSlavesSupp) {
+    public void setMaxSlavesSupp(final byte maxSlavesSupp) {
         _maxSlavesSupp = maxSlavesSupp;
     }
 
@@ -671,7 +672,7 @@ public class MasterKeywords implements Keywords{
         return _minPollTimeout;
     }
 
-    public void setMinPollTimeout(short minPollTimeout) {
+    public void setMinPollTimeout(final short minPollTimeout) {
         _minPollTimeout = minPollTimeout;
     }
 
@@ -679,7 +680,7 @@ public class MasterKeywords implements Keywords{
         return _tqui1M5;
     }
 
-    public void setTqui1M5(byte tqui1M5) {
+    public void setTqui1M5(final byte tqui1M5) {
         _tqui1M5 = tqui1M5;
     }
 
@@ -687,7 +688,7 @@ public class MasterKeywords implements Keywords{
         return _tqui12M;
     }
 
-    public void setTqui12M(byte tqui12M) {
+    public void setTqui12M(final byte tqui12M) {
         _tqui12M = tqui12M;
     }
 
@@ -695,7 +696,7 @@ public class MasterKeywords implements Keywords{
         return _tqui187k5;
     }
 
-    public void setTqui187k5(byte tqui187k5) {
+    public void setTqui187k5(final byte tqui187k5) {
         _tqui187k5 = tqui187k5;
     }
 
@@ -703,7 +704,7 @@ public class MasterKeywords implements Keywords{
         return _tqui19k2;
     }
 
-    public void setTqui19k2(byte tqui19k2) {
+    public void setTqui19k2(final byte tqui19k2) {
         _tqui19k2 = tqui19k2;
     }
 
@@ -711,7 +712,7 @@ public class MasterKeywords implements Keywords{
         return _tqui31k25;
     }
 
-    public void setTqui31k25(byte tqui31k25) {
+    public void setTqui31k25(final byte tqui31k25) {
         _tqui31k25 = tqui31k25;
     }
 
@@ -719,7 +720,7 @@ public class MasterKeywords implements Keywords{
         return _tqui3M;
     }
 
-    public void setTqui3M(byte tqui3M) {
+    public void setTqui3M(final byte tqui3M) {
         _tqui3M = tqui3M;
     }
 
@@ -727,7 +728,7 @@ public class MasterKeywords implements Keywords{
         return _tqui45k45;
     }
 
-    public void setTqui45k45(byte tqui45k45) {
+    public void setTqui45k45(final byte tqui45k45) {
         _tqui45k45 = tqui45k45;
     }
 
@@ -735,7 +736,7 @@ public class MasterKeywords implements Keywords{
         return _tqui500;
     }
 
-    public void setTqui500(byte tqui500) {
+    public void setTqui500(final byte tqui500) {
         _tqui500 = tqui500;
     }
 
@@ -743,7 +744,7 @@ public class MasterKeywords implements Keywords{
         return _tqui6M;
     }
 
-    public void setTqui6M(byte tqui6M) {
+    public void setTqui6M(final byte tqui6M) {
         _tqui6M = tqui6M;
     }
 
@@ -751,7 +752,7 @@ public class MasterKeywords implements Keywords{
         return _tqui9k6;
     }
 
-    public void setTqui9k6(byte tqui9k6) {
+    public void setTqui9k6(final byte tqui9k6) {
         _tqui9k6 = tqui9k6;
     }
 
@@ -759,7 +760,7 @@ public class MasterKeywords implements Keywords{
         return _tqui93k75;
     }
 
-    public void setTqui93k75(byte tqui93k75) {
+    public void setTqui93k75(final byte tqui93k75) {
         _tqui93k75 = tqui93k75;
     }
 
@@ -767,7 +768,7 @@ public class MasterKeywords implements Keywords{
         return _trdy1M5;
     }
 
-    public void setTrdy1M5(byte trdy1M5) {
+    public void setTrdy1M5(final byte trdy1M5) {
         _trdy1M5 = trdy1M5;
     }
 
@@ -775,7 +776,7 @@ public class MasterKeywords implements Keywords{
         return _trdy12M;
     }
 
-    public void setTrdy12M(byte trdy12M) {
+    public void setTrdy12M(final byte trdy12M) {
         _trdy12M = trdy12M;
     }
 
@@ -783,7 +784,7 @@ public class MasterKeywords implements Keywords{
         return _trdy187k5;
     }
 
-    public void setTrdy187k5(byte trdy187k5) {
+    public void setTrdy187k5(final byte trdy187k5) {
         _trdy187k5 = trdy187k5;
     }
 
@@ -791,7 +792,7 @@ public class MasterKeywords implements Keywords{
         return _trdy19k2;
     }
 
-    public void setTrdy19k2(byte trdy19k2) {
+    public void setTrdy19k2(final byte trdy19k2) {
         _trdy19k2 = trdy19k2;
     }
 
@@ -799,7 +800,7 @@ public class MasterKeywords implements Keywords{
         return _trdy31k25;
     }
 
-    public void setTrdy31k25(byte trdy31k25) {
+    public void setTrdy31k25(final byte trdy31k25) {
         _trdy31k25 = trdy31k25;
     }
 
@@ -807,7 +808,7 @@ public class MasterKeywords implements Keywords{
         return _trdy3M;
     }
 
-    public void setTrdy3M(byte trdy3M) {
+    public void setTrdy3M(final byte trdy3M) {
         _trdy3M = trdy3M;
     }
 
@@ -815,7 +816,7 @@ public class MasterKeywords implements Keywords{
         return _trdy45k45;
     }
 
-    public void setTrdy45k45(byte trdy45k45) {
+    public void setTrdy45k45(final byte trdy45k45) {
         _trdy45k45 = trdy45k45;
     }
 
@@ -823,7 +824,7 @@ public class MasterKeywords implements Keywords{
         return _trdy500;
     }
 
-    public void setTrdy500(byte trdy500) {
+    public void setTrdy500(final byte trdy500) {
         _trdy500 = trdy500;
     }
 
@@ -831,7 +832,7 @@ public class MasterKeywords implements Keywords{
         return _trdy6M;
     }
 
-    public void setTrdy6M(byte trdy6M) {
+    public void setTrdy6M(final byte trdy6M) {
         _trdy6M = trdy6M;
     }
 
@@ -839,7 +840,7 @@ public class MasterKeywords implements Keywords{
         return _trdy9k6;
     }
 
-    public void setTrdy9k6(byte trdy9k6) {
+    public void setTrdy9k6(final byte trdy9k6) {
         _trdy9k6 = trdy9k6;
     }
 
@@ -847,7 +848,7 @@ public class MasterKeywords implements Keywords{
         return _trdy93k75;
     }
 
-    public void setTrdy93k75(byte trdy93k75) {
+    public void setTrdy93k75(final byte trdy93k75) {
         _trdy93k75 = trdy93k75;
     }
 
@@ -855,7 +856,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi1M5;
     }
 
-    public void setTsdi1M5(short tsdi1M5) {
+    public void setTsdi1M5(final short tsdi1M5) {
         _tsdi1M5 = tsdi1M5;
     }
 
@@ -863,7 +864,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi12M;
     }
 
-    public void setTsdi12M(short tsdi12M) {
+    public void setTsdi12M(final short tsdi12M) {
         _tsdi12M = tsdi12M;
     }
 
@@ -871,7 +872,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi187k5;
     }
 
-    public void setTsdi187k5(short tsdi187k5) {
+    public void setTsdi187k5(final short tsdi187k5) {
         _tsdi187k5 = tsdi187k5;
     }
 
@@ -879,7 +880,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi19k2;
     }
 
-    public void setTsdi19k2(short tsdi19k2) {
+    public void setTsdi19k2(final short tsdi19k2) {
         _tsdi19k2 = tsdi19k2;
     }
 
@@ -887,7 +888,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi31k25;
     }
 
-    public void setTsdi31k25(short tsdi31k25) {
+    public void setTsdi31k25(final short tsdi31k25) {
         _tsdi31k25 = tsdi31k25;
     }
 
@@ -895,7 +896,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi3M;
     }
 
-    public void setTsdi3M(short tsdi3M) {
+    public void setTsdi3M(final short tsdi3M) {
         _tsdi3M = tsdi3M;
     }
 
@@ -903,7 +904,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi45k45;
     }
 
-    public void setTsdi45k45(short tsdi45k45) {
+    public void setTsdi45k45(final short tsdi45k45) {
         _tsdi45k45 = tsdi45k45;
     }
 
@@ -911,7 +912,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi500;
     }
 
-    public void setTsdi500(short tsdi500) {
+    public void setTsdi500(final short tsdi500) {
         _tsdi500 = tsdi500;
     }
 
@@ -919,7 +920,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi6M;
     }
 
-    public void setTsdi6M(short tsdi6M) {
+    public void setTsdi6M(final short tsdi6M) {
         _tsdi6M = tsdi6M;
     }
 
@@ -927,7 +928,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi9k6;
     }
 
-    public void setTsdi9k6(short tsdi9k6) {
+    public void setTsdi9k6(final short tsdi9k6) {
         _tsdi9k6 = tsdi9k6;
     }
 
@@ -935,7 +936,7 @@ public class MasterKeywords implements Keywords{
         return _tsdi93k75;
     }
 
-    public void setTsdi93k75(short tsdi93k75) {
+    public void setTsdi93k75(final short tsdi93k75) {
         _tsdi93k75 = tsdi93k75;
     }
 
@@ -943,7 +944,7 @@ public class MasterKeywords implements Keywords{
         return _tset1M5;
     }
 
-    public void setTset1M5(byte tset1M5) {
+    public void setTset1M5(final byte tset1M5) {
         _tset1M5 = tset1M5;
     }
 
@@ -951,7 +952,7 @@ public class MasterKeywords implements Keywords{
         return _tset12M;
     }
 
-    public void setTset12M(byte tset12M) {
+    public void setTset12M(final byte tset12M) {
         _tset12M = tset12M;
     }
 
@@ -959,7 +960,7 @@ public class MasterKeywords implements Keywords{
         return _tset187k5;
     }
 
-    public void setTset187k5(byte tset187k5) {
+    public void setTset187k5(final byte tset187k5) {
         _tset187k5 = tset187k5;
     }
 
@@ -967,7 +968,7 @@ public class MasterKeywords implements Keywords{
         return _tset19k2;
     }
 
-    public void setTset19k2(byte tset19k2) {
+    public void setTset19k2(final byte tset19k2) {
         _tset19k2 = tset19k2;
     }
 
@@ -975,7 +976,7 @@ public class MasterKeywords implements Keywords{
         return _tset31k25;
     }
 
-    public void setTset31k25(byte tset31k25) {
+    public void setTset31k25(final byte tset31k25) {
         _tset31k25 = tset31k25;
     }
 
@@ -983,7 +984,7 @@ public class MasterKeywords implements Keywords{
         return _tset3M;
     }
 
-    public void setTset3M(byte tset3M) {
+    public void setTset3M(final byte tset3M) {
         _tset3M = tset3M;
     }
 
@@ -991,7 +992,7 @@ public class MasterKeywords implements Keywords{
         return _tset45k45;
     }
 
-    public void setTset45k45(byte tset45k45) {
+    public void setTset45k45(final byte tset45k45) {
         _tset45k45 = tset45k45;
     }
 
@@ -999,7 +1000,7 @@ public class MasterKeywords implements Keywords{
         return _tset500;
     }
 
-    public void setTset500(byte tset500) {
+    public void setTset500(final byte tset500) {
         _tset500 = tset500;
     }
 
@@ -1007,7 +1008,7 @@ public class MasterKeywords implements Keywords{
         return _tset6M;
     }
 
-    public void setTset6M(byte tset6M) {
+    public void setTset6M(final byte tset6M) {
         _tset6M = tset6M;
     }
 
@@ -1015,7 +1016,7 @@ public class MasterKeywords implements Keywords{
         return _tset9k6;
     }
 
-    public void setTset9k6(byte tset9k6) {
+    public void setTset9k6(final byte tset9k6) {
         _tset9k6 = tset9k6;
     }
 
@@ -1023,7 +1024,7 @@ public class MasterKeywords implements Keywords{
         return _tset93k75;
     }
 
-    public void setTset93k75(byte tset93k75) {
+    public void setTset93k75(final byte tset93k75) {
         _tset93k75 = tset93k75;
     }
 
@@ -1031,14 +1032,14 @@ public class MasterKeywords implements Keywords{
         return _uploadSupp;
     }
 
-    public void setUploadSupp(boolean uploadSupp) {
+    public void setUploadSupp(final boolean uploadSupp) {
         _uploadSupp = uploadSupp;
     }
 
     /* (non-Javadoc)
      * @see org.csstudio.config.ioconfig.model.Keywords#getType()
      */
-    public GSDFileTyp getType() {
-        return GSDFileTyp.Master;
+    public GSDFileTypes getType() {
+        return GSDFileTypes.Master;
     }
 }

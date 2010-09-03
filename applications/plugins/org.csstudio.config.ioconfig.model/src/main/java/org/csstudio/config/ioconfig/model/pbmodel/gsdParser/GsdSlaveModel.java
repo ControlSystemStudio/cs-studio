@@ -20,20 +20,31 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: GsdSlaveModel.java,v 1.3 2010/09/03 07:13:20 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Formatter;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeMap;
+
+import javax.annotation.Nonnull;
+import javax.persistence.Transient;
+
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 18.07.2008
  */
 public class GsdSlaveModel extends GsdGeneralModel {
-    
+
     /**
      * The DP device supports the Freeze mode. DP slaves that support Freeze
      * mode have to guarantee that in the next data cycle after the Freeze
@@ -114,7 +125,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
      * data instead of data message with data = 0 in the CLEAR mode of DP master
      * (Class1).<br>
      * Type: Boolean (1: TRUE)
-     * 
+     *
      */
     private boolean _failSafe;
 
@@ -151,9 +162,9 @@ public class GsdSlaveModel extends GsdGeneralModel {
      * Type: Unsigned8
      */
     private byte _maxUserPrmLen;
-    
+
     /**
-     * The map Contain all PrmText entries. The Key is the Index. 
+     * The map Contain all PrmText entries. The Key is the Index.
      */
     private HashMap<String, HashMap<Integer,PrmText>> _prmTextMap;
 
@@ -161,20 +172,28 @@ public class GsdSlaveModel extends GsdGeneralModel {
 
     private HashMap<String, ExtUserPrmData> _extUserPrmDataMap;
 
-    private HashMap<String, ExtUserPrmDataConst> _extUserPrmDataConstMap;
+    private TreeMap<String, ExtUserPrmDataConst> _extUserPrmDataConstMap;
 
-    private HashMap<String, ExtUserPrmDataRef> _extUserPrmDataRefMap;
+    //FIXME: Müssen die anderen HashMap's auch TreeMaps sein? Nein Was hat diese Map für einen Sinn sie wird nie Ausgelese!
+    private List<ExtUserPrmDataRef> _extUserPrmDataRefMap;
+
+    /**
+     * A Map with all "ext User Prm Data" modification.
+     */
+    private final HashMap<Integer, Integer[]> _modifications = new HashMap<Integer, Integer[]>();
 
     private HashMap<String, UnitDiagBit> _unitDiagBit;
 
     private HashMap<Integer,GsdModuleModel> _gsdModuleMap;
+
+    private List<String> _userPrmDataList;
 
 
     public boolean isAutoBaudSupp() {
         return _autoBaudSupp;
     }
 
-    public void setAutoBaudSupp(boolean autoBaudSupp) {
+    public void setAutoBaudSupp(final boolean autoBaudSupp) {
         _autoBaudSupp = autoBaudSupp;
     }
 
@@ -182,7 +201,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _failSafe;
     }
 
-    public void setFailSafe(boolean failSafe) {
+    public void setFailSafe(final boolean failSafe) {
         _failSafe = failSafe;
     }
 
@@ -190,7 +209,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _freezeModeSupp;
     }
 
-    public void setFreezeModeSupp(boolean freezeModeSupp) {
+    public void setFreezeModeSupp(final boolean freezeModeSupp) {
         _freezeModeSupp = freezeModeSupp;
     }
 
@@ -198,15 +217,15 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _maxDataLen;
     }
 
-    public void setMaxDataLen(short maxDataLen) {
+    public void setMaxDataLen(final short maxDataLen) {
         _maxDataLen = maxDataLen;
     }
 
-    public byte getMax_Diag_Data_Len() {
+    public byte getMaxDiagDataLen() {
         return _maxDiagDataLen;
     }
 
-    public void setMax_Diag_Data_Len(byte maxDiagDataLen) {
+    public void setMaxDiagDataLen(final byte maxDiagDataLen) {
         _maxDiagDataLen = maxDiagDataLen;
     }
 
@@ -214,7 +233,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _maxmInputLen;
     }
 
-    public void setMaxmInputLen(byte maxInputLen) {
+    public void setMaxmInputLen(final byte maxInputLen) {
         _maxmInputLen = maxInputLen;
     }
 
@@ -222,7 +241,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _maxModule;
     }
 
-    public void setMaxModule(short maxModule) {
+    public void setMaxModule(final short maxModule) {
         _maxModule = maxModule;
     }
 
@@ -230,45 +249,45 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _maxOutputLen;
     }
 
-    public void setMaxOutputLen(byte maxOutputLen) {
+    public void setMaxOutputLen(final byte maxOutputLen) {
         _maxOutputLen = maxOutputLen;
     }
 
-    public byte getMax_User_Prm_Len() {
+    public byte getMaxUserPrmLen() {
         return _maxUserPrmLen;
     }
 
-    public void setMax_User_Prm_Len(byte maxUserPrmLen) {
+    public void setMaxUserPrmLen(final byte maxUserPrmLen) {
         _maxUserPrmLen = maxUserPrmLen;
     }
 
     /**
      * This time specifies the minimum interval between two slave list cycles
      * for the DP device.
-     * 
+     *
      * @return Minimum slave interval time
      */
     public short getMinSlaveIntervall() {
         return _minSlaveIntervall;
     }
 
-    public void setMinSlaveIntervall(short minSlaveIntervall) {
+    public void setMinSlaveIntervall(final short minSlaveIntervall) {
         _minSlaveIntervall = minSlaveIntervall;
     }
 
-    public byte getModul_Offset() {
+    public byte getModulOffset() {
         return _modulOffset;
     }
 
-    public void setModul_Offset(byte modul_Offset) {
-        _modulOffset = modul_Offset;
+    public void setModulOffset(final byte modulOffset) {
+        _modulOffset = modulOffset;
     }
 
     public boolean isModularStation() {
         return _modularStation;
     }
 
-    public void setModularStation(boolean modularStation) {
+    public void setModularStation(final boolean modularStation) {
         _modularStation = modularStation;
     }
 
@@ -276,7 +295,7 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _setSlaveAddSupp;
     }
 
-    public void setSetSlaveAddSupp(boolean setSlaveAddSupp) {
+    public void setSetSlaveAddSupp(final boolean setSlaveAddSupp) {
         _setSlaveAddSupp = setSlaveAddSupp;
     }
 
@@ -284,48 +303,59 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _slaveFamily;
     }
 
-    public void setSlaveFamily(byte slave_Family) {
-        _slaveFamily = slave_Family;
+    public void setSlaveFamily(final byte slaveFamily) {
+        _slaveFamily = slaveFamily;
     }
 
     public boolean isSyncModeSupp() {
         return _syncModeSupp;
     }
 
-    public void setSyncModeSupp(boolean sync_Mode_supp) {
-        _syncModeSupp = sync_Mode_supp;
+    public void setSyncModeSupp(final boolean syncModeSupp) {
+        _syncModeSupp = syncModeSupp;
     }
 
     public String getUserPrmData() {
         return _userPrmData;
     }
 
-    public void setUserPrmData(String user_Prm_Data) {
-        _userPrmData = user_Prm_Data;
+    public void setUserPrmData(final String userPrmData) {
+        _userPrmData = userPrmData;
+        _userPrmDataList  = Arrays.asList(_userPrmData.split(","));
     }
+
+    /**
+     * @return
+     *
+     */
+    @Transient
+    public List<String> getUserPrmDataList() {
+        return _userPrmDataList;
+    }
+
 
     public byte getUserPrmDataLen() {
         return _userPrmDataLen;
     }
 
-    public void setUserPrmDataLen(byte user_Prm_Data_Len) {
-        _userPrmDataLen = user_Prm_Data_Len;
+    public void setUserPrmDataLen(final byte userPrmDataLen) {
+        _userPrmDataLen = userPrmDataLen;
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.config.ioconfig.model.Keywords#getType()
      */
-    public GSDFileTyp getType() {
-        return GSDFileTyp.Slave;
+    public GSDFileTypes getType() {
+        return GSDFileTypes.Slave;
     }
-    
+
     public UserPrmDataModel getUserPrmDataModel(){
         return _userPrmDataModel;
     }
 
-    public void setUserPrmDataModel(UserPrmDataModel userPrmDataModel){
+    public void setUserPrmDataModel(final UserPrmDataModel userPrmDataModel){
         _userPrmDataModel = userPrmDataModel;
     }
 
@@ -333,18 +363,18 @@ public class GsdSlaveModel extends GsdGeneralModel {
         return _prmTextMap;
     }
 
-    public final void setPrmTextMap(HashMap<String, HashMap<Integer,PrmText>> prmTextMap) {
+    public final void setPrmTextMap(final HashMap<String, HashMap<Integer,PrmText>> prmTextMap) {
         _prmTextMap = prmTextMap;
     }
-    
-    public void addPrmText(String index, HashMap<Integer,PrmText> prmText){
+
+    public void addPrmText(final String index, final HashMap<Integer,PrmText> prmText){
         if(_prmTextMap==null){
             _prmTextMap = new HashMap<String, HashMap<Integer,PrmText>>();
         }
         _prmTextMap.put(index, prmText);
     }
-    
-    public HashMap<Integer,PrmText> getPrmText(String index){
+
+    public HashMap<Integer,PrmText> getPrmText(final String index){
         return _prmTextMap.get(index);
     }
 
@@ -352,14 +382,14 @@ public class GsdSlaveModel extends GsdGeneralModel {
      * @param index
      * @param extUserPrmData
      */
-    public void addExtUserPrmData(String index, ExtUserPrmData extUserPrmData) {
+    public void addExtUserPrmData(final String index, final ExtUserPrmData extUserPrmData) {
         if(_extUserPrmDataMap==null){
             _extUserPrmDataMap = new HashMap<String, ExtUserPrmData>();
         }
         _extUserPrmDataMap.put(index, extUserPrmData);
     }
-    
-    public ExtUserPrmData getExtUserPrmData(String index) {
+
+    public ExtUserPrmData getExtUserPrmData(final String index) {
         if(_extUserPrmDataMap==null){
             _extUserPrmDataMap = new HashMap<String, ExtUserPrmData>();
         }
@@ -378,73 +408,171 @@ public class GsdSlaveModel extends GsdGeneralModel {
      * @param index
      * @param extUserPrmDataConst
      */
-    public void addExtUserPrmDataConst(String index, ExtUserPrmDataConst extUserPrmDataConst) {
+    public void addExtUserPrmDataConst(final String index, final ExtUserPrmDataConst extUserPrmDataConst) {
         if(_extUserPrmDataConstMap==null){
-            _extUserPrmDataConstMap = new HashMap<String, ExtUserPrmDataConst>();
+            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
         }
         _extUserPrmDataConstMap.put(index, extUserPrmDataConst);
-        
+
     }
 
     /**
-     * 
-     * @param index
-     * @return
+     *
+     * @param index the selection Index.
+     * @return the Extend User Parameter Data Constant.
      */
-    public ExtUserPrmDataConst getExtUserPrmDataConst(String index) {
+    public ExtUserPrmDataConst getExtUserPrmDataConst(final String index) {
         if(_extUserPrmDataConstMap==null){
             return null;
         }
         return _extUserPrmDataConstMap.get(index);
-        
-    }
-    
-    public HashMap<String,ExtUserPrmDataConst> getExtUserPrmDataConst() {
-        if(_extUserPrmDataConstMap==null){
-            _extUserPrmDataConstMap = new HashMap<String, ExtUserPrmDataConst>();
-        }
-        return _extUserPrmDataConstMap;
-        
+
     }
 
+    public TreeMap<String,ExtUserPrmDataConst> getExtUserPrmDataConst() {
+        if(_extUserPrmDataConstMap==null){
+            _extUserPrmDataConstMap = new TreeMap<String, ExtUserPrmDataConst>();
+        }
+        return _extUserPrmDataConstMap;
+
+    }
+
+    /**
+     * Add a modification for the ExtUserPrmDataConst.
+     * @param bytePos The byte which a modified.
+     * @param bitMin  The lowest bits of the byte that are modified.
+     * @param bitMax  The highest bits of the byte that are modified.
+     * @param value the new value of the bits that are modified.
+     */
+    public final void addModify(final int bytePos, final int bitMin, final int bitMax,
+            final int value) {
+        int startBit = bytePos * 8 + bitMin;
+        _modifications.put(startBit, new Integer[] { bytePos, bitMin, bitMax, value });
+    }
+
+    @Nonnull
+    public String getModiExtUserPrmDataConst() {
+        if ((getExtUserPrmDataConst() != null) && (_extUserPrmDataRefMap !=null)) {
+            ArrayList<String> split = new ArrayList<String>();
+            Set<String> keySet = getExtUserPrmDataConst().keySet();
+            for (String key : keySet) {
+                ExtUserPrmDataConst extUserPrmDataConst = getExtUserPrmDataConst().get(key);
+                String[] sp = extUserPrmDataConst.toString().split(",");
+                split.addAll(Arrays.asList(sp));
+            }
+
+            for (ExtUserPrmDataRef extUserPrmDataRef : _extUserPrmDataRefMap) {
+                ExtUserPrmData eupd = getExtUserPrmData(extUserPrmDataRef.getValue());
+
+//                PrmText prmText = (PrmText) ((StructuredSelection) prmTextCV.getSelection())
+//                .getFirstElement();
+//                ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
+//                String index = extUserPrmData.getIndex();
+
+                int bytePos = Integer.parseInt(extUserPrmDataRef.getIndex());
+                int bitMin = eupd.getMinBit();
+                int bitMax = eupd.getMaxBit();
+
+                int val = Integer.parseInt(extUserPrmDataRef.getValue());
+                addModify(bytePos, bitMin, bitMax, val);
+            }
+            for (int bytePosAbs : _modifications.keySet()) {
+                Integer[] modis = _modifications.get(bytePosAbs);
+                int value = modis[3];
+                int bytePos = modis[0];
+                int low = modis[1];
+                int high = modis[2];
+                int mask = ~((int)Math.pow(2, high+1) - (int)Math.pow(2, low));
+                int radix = 10;
+                if((high>8)&&(high<16)){
+                    if (bytePos+1 < split.size()) {
+                        String byteValue = split.get(bytePos+1);
+                        byteValue = byteValue.concat(split.get(bytePos));
+                        if (byteValue.startsWith("0x")) {
+                            byteValue = byteValue.replaceAll("0x", "");
+                            radix = 16;
+                        }
+                        int parseInt = Integer.parseInt(byteValue, radix);
+                        value = value << (low);
+                        int result = (parseInt & mask) | (value);
+                        String tmp = dec2Hex(result);
+                        split.set(bytePos+1,"0x"+tmp.substring(0,1));
+                        split.set(bytePos,"0x"+tmp.substring(2,3));
+                    }
+                }else{
+                    if (bytePos < split.size()) {
+                        String byteValue = split.get(bytePos);
+                        if (byteValue.startsWith("0x")) {
+                            byteValue = byteValue.substring(2);
+                            radix = 16;
+                        }
+                        int parseInt = Integer.parseInt(byteValue, radix);
+                        value = value << (low);
+                        int result = (parseInt & mask) | (value);
+                        split.set(bytePos, dec2Hex(result));
+                    }
+                }
+            }
+            String string = split.toString();
+            string = string.substring(1, string.length() - 1);
+            return string;
+        } else if(_userPrmData != null) {
+            return _userPrmData;
+        }
+        return "";
+    }
+
+
+
+    /**
+     * @param result
+     * @return
+     */
+    private String dec2Hex(final int result) {
+        Formatter f = new Formatter();
+        f.format("%#04x", result);
+        return f.toString();
+    }
 
     /**
      * @param index
      * @param extUserPrmDataRef
      */
-    public void addExtUserPrmDataRef(String index, ExtUserPrmDataRef extUserPrmDataRef) {
+    public void addExtUserPrmDataRef(final String index, final ExtUserPrmDataRef extUserPrmDataRef) {
         if(_extUserPrmDataRefMap==null){
-            _extUserPrmDataRefMap = new HashMap<String, ExtUserPrmDataRef>();
+            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
         }
-        _extUserPrmDataRefMap.put(index, extUserPrmDataRef);
+        _extUserPrmDataRefMap.add(extUserPrmDataRef);
     }
 
+    public List<ExtUserPrmDataRef> getExtUserPrmDataRefMap() {
+        return _extUserPrmDataRefMap;
+    }
     /**
      * @param index
      * @param unitDiagBit
      */
-    public void addUnitDiagBit(String index, UnitDiagBit unitDiagBit) {
+    public void addUnitDiagBit(final String index, final UnitDiagBit unitDiagBit) {
         if(_unitDiagBit==null){
             _unitDiagBit = new HashMap<String, UnitDiagBit>();
         }
-        _unitDiagBit.put(index, unitDiagBit);        
+        _unitDiagBit.put(index, unitDiagBit);
     }
-    
+
     /**
-     * 
-     * @return the map of all {@link GsdModuleModel} from this model. 
+     *
+     * @return the map of all {@link GsdModuleModel} from this model.
      */
     public HashMap<Integer, GsdModuleModel> getGsdModuleList() {
         return _gsdModuleMap;
     }
- 
-    
+
+
     /**
      * Set all GsdModuleModel for this Slave model.
-     * @param moduleMap a Map of all {@link GsdModuleModel} 
+     * @param moduleMap a Map of all {@link GsdModuleModel}
      */
-    public final void setGsdModuleList(HashMap<Integer, GsdModuleModel> moduleMap) {
+    public final void setGsdModuleList(final HashMap<Integer, GsdModuleModel> moduleMap) {
         _gsdModuleMap = new HashMap<Integer, GsdModuleModel>(moduleMap);
     }
-
 }

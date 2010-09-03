@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: NodeMap.java,v 1.3 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.tools;
 
@@ -31,50 +31,53 @@ import org.csstudio.config.ioconfig.model.Node;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 22.10.2009
  */
-public class NodeMap {
+public final class NodeMap {
     
-    public static Map<Integer, Node> _nodeMap = new HashMap<Integer, Node>();
-    private static int _countAssembleEpicsAddressString;
-    private static int _localUpdate;
-    private static int _channelConfigComposite;
+    private static Map<Integer, Node> _NODE_MAP = new HashMap<Integer, Node>();
+    private static int _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
+    private static int _LOCAL_UPDATE;
+    private static int _CHANNEL_CONFIG_COMPOSITE;
+    
+    private NodeMap() {
+    }
     
     public static void put(Integer key, Node value) {
-        _nodeMap.put(key, value);
+        _NODE_MAP.put(key, value);
     }
     
     public static Node get(Integer key) {
-        return _nodeMap.get(key);
+        return _NODE_MAP.get(key);
     }
 
     public static int getNumberOfNodes() {
-        return _nodeMap.size();
+        return _NODE_MAP.size();
     }
 
     public static void countAssembleEpicsAddressString() {
-        _countAssembleEpicsAddressString++;
+        _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING++;
     }
 
     public static int getCountAssembleEpicsAddressString() {
-        return _countAssembleEpicsAddressString;
+        return _COUNT_ASSEMBLE_EPICS_ADDRESS_STRING;
     }
 
     public static void countlocalUpdate() {
-        _localUpdate++;
+        _LOCAL_UPDATE++;
     }
 
     public static int getLocalUpdate() {
-        return _localUpdate;
+        return _LOCAL_UPDATE;
     }
 
     public static void countChannelConfigComposite() {
-        _channelConfigComposite++;
+        _CHANNEL_CONFIG_COMPOSITE++;
     }
 
     public static int getChannelConfigComposite() {
-        return _channelConfigComposite;
+        return _CHANNEL_CONFIG_COMPOSITE;
     }
 }

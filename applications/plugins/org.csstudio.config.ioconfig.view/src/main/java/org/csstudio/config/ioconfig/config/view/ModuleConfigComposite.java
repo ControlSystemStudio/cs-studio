@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ModuleConfigComposite.java,v 1.13 2010/08/20 13:32:59 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -34,6 +34,7 @@ import java.util.TreeSet;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.model.Facility;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
@@ -85,27 +86,27 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.13 $
  * @since 26.07.2007
  */
 public class ModuleConfigComposite extends NodeConfig {
 
     /**
-     * 
+     *
      * If the selection changes the old Channels will be deleted and the new Channel created for the
      * new Module. Have the Module no Prototype the Dialog to generate Prototype is opened.
-     * 
+     *
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.13 $
      * @since 17.04.2009
      */
     private final class ISelectionChangedListenerForModuleTypeList implements
             ISelectionChangedListener {
         private final Group _topGroup;
 
-        private ISelectionChangedListenerForModuleTypeList(Group topGroup) {
+        private ISelectionChangedListenerForModuleTypeList(final Group topGroup) {
             _topGroup = topGroup;
         }
 
@@ -117,9 +118,9 @@ public class ModuleConfigComposite extends NodeConfig {
             // if the same Module do nothing.
             if (selectedModule == null) {
                 return;
-            } else if (_module == null
-                    || (_module.getGSDModule() != null && _module.getGSDModule().getModuleId() == selectedModule
-                            .getModuleNumber())) {
+            } else if ((_module == null)
+                    || ((_module.getGSDModule() != null) && (_module.getGSDModule().getModuleId() == selectedModule
+                            .getModuleNumber()))) {
                 return;
             }
 
@@ -172,7 +173,7 @@ public class ModuleConfigComposite extends NodeConfig {
             makeCurrentUserParamData(_topGroup);
         }
 
-        private void makeNewChannel(final ModuleChannelPrototype channelPrototype, int sortIndex) {
+        private void makeNewChannel(final ModuleChannelPrototype channelPrototype, final int sortIndex) {
             if (channelPrototype.isStructure()) {
                 makeStructChannel(channelPrototype, sortIndex);
             } else {
@@ -180,7 +181,7 @@ public class ModuleConfigComposite extends NodeConfig {
             }
         }
 
-        private void makeStructChannel(ModuleChannelPrototype channelPrototype, int sortIndex) {
+        private void makeStructChannel(final ModuleChannelPrototype channelPrototype, final int sortIndex) {
             channelPrototype.getOffset();
             Date now = new Date();
             String createdBy = "Unknown";
@@ -208,7 +209,7 @@ public class ModuleConfigComposite extends NodeConfig {
             }
         }
 
-        private void makeNewPureChannel(ModuleChannelPrototype channelPrototype, int sortIndex) {
+        private void makeNewPureChannel(final ModuleChannelPrototype channelPrototype, final int sortIndex) {
             Date now = new Date();
             String createdBy = "Unknown";
             User user = SecurityFacade.getInstance().getCurrentUser();
@@ -256,7 +257,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
         /**
          * Called when the input changes.
-         * 
+         *
          * @param arg0
          *            the parent viewer
          * @param arg1
@@ -279,7 +280,7 @@ public class ModuleConfigComposite extends NodeConfig {
      */
     private TableViewer _moduleTypList;
 
-    private ArrayList<Object> _prmTextCV = new ArrayList<Object>();
+    private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
 
     private Group _currentUserParamDataGroup;
 
@@ -288,14 +289,13 @@ public class ModuleConfigComposite extends NodeConfig {
      *            Parent Composite.
      * @param profiBusTreeView
      *            The IO Config TreeViewer.
-     * 
+     *
      * @param module
      *            the Profibus Module to Configer.
      */
     public ModuleConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Module module) {
         super(parent, profiBusTreeView, "Profibus Module Configuration", module, module == null);
-        profiBusTreeView.setConfiguratorName("Module Configuration");
         _module = module;
 
         if (_module == null) {
@@ -312,12 +312,12 @@ public class ModuleConfigComposite extends NodeConfig {
     /**
      * @param head
      *            the tabItemName
-     * 
+     *
      */
     private void moduels(final String head) {
         final Composite comp = getNewTabItem(head, 2);
         comp.setLayout(new GridLayout(2, false));
-        
+
         /*
          * Name
          */
@@ -325,11 +325,11 @@ public class ModuleConfigComposite extends NodeConfig {
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
         gName.setLayout(new GridLayout(3, false));
-        
+
         setNameWidget(new Text(gName, SWT.BORDER | SWT.SINGLE));
         setText(getNameWidget(), _module.getName(), 255);
         getNameWidget().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        
+
         setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _module, getMLSB(), "Sort Index",
                 getProfiBusTreeView()));
 
@@ -351,7 +351,7 @@ public class ModuleConfigComposite extends NodeConfig {
         layout.marginTop = 0;
         layout.marginBottom = 0;
         filterComposite.setLayout(layout);
-        
+
         final Text filter = new Text(filterComposite, SWT.SINGLE | SWT.BORDER | SWT.SEARCH);
         filter.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
         filter.setMessage("Module Filter");
@@ -368,11 +368,11 @@ public class ModuleConfigComposite extends NodeConfig {
         filterButton.setText("Only have prototype");
         filterButton.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 _moduleTypList.refresh();
             }
 
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 _moduleTypList.refresh();
             }
 
@@ -417,7 +417,7 @@ public class ModuleConfigComposite extends NodeConfig {
                     final Object element) {
                 if (element instanceof GsdModuleModel) {
                     GsdModuleModel gsdModuleModel = (GsdModuleModel) element;
-                    if (filter.getText() == null || filter.getText().length() < 1) {
+                    if ((filter.getText() == null) || (filter.getText().length() < 1)) {
                         return true;
                     }
                     String filterString = ".*" + filter.getText().replaceAll("\\*", ".*") + ".*";
@@ -450,7 +450,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
             @Override
             public int compare(final Viewer viewer, final Object e1, final Object e2) {
-                if (e1 instanceof GsdModuleModel && e2 instanceof GsdModuleModel) {
+                if ((e1 instanceof GsdModuleModel) && (e2 instanceof GsdModuleModel)) {
                     GsdModuleModel eUPD1 = (GsdModuleModel) e1;
                     GsdModuleModel eUPD2 = (GsdModuleModel) e2;
                     return eUPD1.getModuleNumber() - eUPD2.getModuleNumber();
@@ -484,7 +484,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
      */
@@ -530,9 +530,9 @@ public class ModuleConfigComposite extends NodeConfig {
         }
         String cfgData = _module.getConfigurationData();
         if (gsdModuleModel != null) {
-            if (gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length
-                    || values.length % 2 != 0) {
-                if (cfgData != null && gsdModuleModel.getExtUserPrmDataConst() != null) {
+            if ((gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length)
+                    || (values.length % 2 != 0)) {
+                if ((cfgData != null) && (gsdModuleModel.getExtUserPrmDataConst() != null)) {
                     String[] cfgDatas = cfgData.split(",");
                     String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(
                             ",");
@@ -629,7 +629,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
     /**
      * Change the a value on the Bit places, that is given from the input, to the bitValue.
-     * 
+     *
      * @param ranges
      *            give the start and end Bit position.
      * @param bitValue
@@ -638,7 +638,7 @@ public class ModuleConfigComposite extends NodeConfig {
      *            the value was changed.
      * @return the changed value as Hex String.
      */
-    private String setValue2BitMask(ExtUserPrmData ranges, Integer bitValue, String value) {
+    private String setValue2BitMask(final ExtUserPrmData ranges, Integer bitValue, final String value) {
         int val = ProfibusConfigXMLGenerator.getInt(value);
         int minBit = ranges.getMinBit();
         int maxBit = ranges.getMaxBit();
@@ -653,7 +653,7 @@ public class ModuleConfigComposite extends NodeConfig {
         return String.format("%1$#04x", val);
     }
 
-    public static int getValue2BitMask(ExtUserPrmData ranges, String value) {
+    public static int getValue2BitMask(final ExtUserPrmData ranges, final String value) {
         int val = ProfibusConfigXMLGenerator.getInt(value);
 
         int minBit = ranges.getMinBit();
@@ -669,7 +669,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      */
     private void updateChannels() {
         Set<ChannelStructure> channelStructs = _module.getChannelStructs();
@@ -693,7 +693,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
         try {
             GsdModuleModel gsdModuleModel = _module.getSlave().getGSDSlaveData().getGsdModuleList()
-                    .get((Integer) _moduleTypList.getTable().getData());
+                    .get(_moduleTypList.getTable().getData());
             if (gsdModuleModel != null) {
                 _moduleTypList.setSelection(new StructuredSelection(gsdModuleModel), true);
             }
@@ -739,6 +739,10 @@ public class ModuleConfigComposite extends NodeConfig {
      * {@inheritDoc}
      */
     @Override
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
     public final Node getNode() {
         if (_module == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
@@ -755,7 +759,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param currentUserParamDataGroup
      * @param extUserPrmData
      * @param value
@@ -769,8 +773,8 @@ public class ModuleConfigComposite extends NodeConfig {
         if (extUserPrmData != null) {
             text.setText(extUserPrmData.getText() + ":");
             prmTextMap = extUserPrmData.getPrmText();
-            if (extUserPrmData.getPrmText() == null
-                    && extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10) {
+            if ((extUserPrmData.getPrmText() == null)
+                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
                 _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
             } else {
                 _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData,
@@ -781,7 +785,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param currentUserParamDataGroup
      * @param value
      * @param extUserPrmData
@@ -815,7 +819,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param parent
      *            the Parent Composite.
      * @param value
@@ -855,7 +859,7 @@ public class ModuleConfigComposite extends NodeConfig {
             public void dispose() {
             }
 
-            public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             }
         });
         prmTextCV.getCombo().addModifyListener(getMLSB());
@@ -863,7 +867,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
             @Override
             public int compare(final Viewer viewer, final Object e1, final Object e2) {
-                if (e1 instanceof PrmText && e2 instanceof PrmText) {
+                if ((e1 instanceof PrmText) && (e2 instanceof PrmText)) {
                     PrmText eUPD1 = (PrmText) e1;
                     PrmText eUPD2 = (PrmText) e2;
                     return eUPD1.getValue() - eUPD2.getValue();
@@ -892,7 +896,7 @@ public class ModuleConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param prmTextCV
      */
     private void setModify(final ComboViewer prmTextCV) {
@@ -914,7 +918,7 @@ public class ModuleConfigComposite extends NodeConfig {
 
     /**
      * Open a Config-Dialog for {@link GSDModule} and create and store.
-     * 
+     *
      * @param model
      *            The {@link GsdModuleModel} Module Module from the GSD File.
      * @param gsdModule
@@ -933,7 +937,7 @@ public class ModuleConfigComposite extends NodeConfig {
         }
         String createdBy = "UNKNOWN";
         User currentUser = SecurityFacade.getInstance().getCurrentUser();
-        if (currentUser != null && currentUser.getUsername() != null) {
+        if ((currentUser != null) && (currentUser.getUsername() != null)) {
             createdBy = currentUser.getUsername();
         }
         gsdModule.setCreatedBy(createdBy);
@@ -980,7 +984,7 @@ public class ModuleConfigComposite extends NodeConfig {
         Object obj = ((StructuredSelection) getProfiBusTreeView().getTreeViewer().getSelection())
                 .getFirstElement();
 
-        if (getNode() instanceof Facility || obj == null) {
+        if ((getNode() instanceof Facility) || (obj == null)) {
             getProfiBusTreeView().getTreeViewer().setInput(getNode());
         } else if (obj instanceof Module) {
             Node nodeParent = (Node) obj;

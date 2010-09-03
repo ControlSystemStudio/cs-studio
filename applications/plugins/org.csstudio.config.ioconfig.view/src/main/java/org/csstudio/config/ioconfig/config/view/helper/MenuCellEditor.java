@@ -4,20 +4,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 
 /**
- * TODO: Das ist Svens implemaentation eines Combo Cell Editors.
- * Soll vom Look & Feel besser sein als die SWT Implementierung. 
- * Um den Verwenden zu können muss aber noch mehr angepasst werden. 
- * {@see IChoice} and {@see IMenuDefinition} im DCT! 
+ * TODO: (hrickens) Das ist Svens implemaentation eines Combo Cell Editors.
+ * Soll vom Look & Feel besser sein als die SWT Implementierung.
+ * Um den Verwenden zu können muss aber noch mehr angepasst werden.
+ * {@see IChoice} and {@see IMenuDefinition} im DCT!
  */
 /**
  * Cell editor implementation that uses a combo box.
- * 
+ *
  * The editor displays a set of {@link IOption}´s. When one of the options is
  * chosen, the identifier of that option (see {@link IOption#getIdentifier()})
  * is returned as selected value for this cell editor.
- * 
+ *
  * @author Sven Wende
- * 
+ *
  */
 public final class MenuCellEditor extends CellEditor {
 //	private AbstractListViewer _viewer;
@@ -26,7 +26,7 @@ public final class MenuCellEditor extends CellEditor {
 //
 //	/**
 //	 * Constructor.
-//	 * 
+//	 *
 //	 * @param parent
 //	 *            the parent composite
 //	 * @param menuDefinition
@@ -57,7 +57,7 @@ public final class MenuCellEditor extends CellEditor {
 //	 * {@inheritDoc}
 //	 */
 //	@Override
-	protected Control createControl(Composite parent) {
+	protected Control createControl(final Composite parent) {
 //		_combobox = new CCombo(parent, getStyle());
 //		_combobox.setEditable(false);
 //		_combobox.setVisibleItemCount(20);
@@ -164,7 +164,7 @@ public final class MenuCellEditor extends CellEditor {
 //	 * {@inheritDoc}
 //	 */
 //	@Override
-	protected void doSetValue(Object value) {
+	protected void doSetValue(final Object value) {
 //		_viewer.setSelection(new StructuredSelection(value));
 	}
 //

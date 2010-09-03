@@ -20,9 +20,12 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ProfibusHelper.java,v 1.4 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view.helper;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -44,10 +47,10 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This Class help handel the Unsign Datatyp from Profibus.
- * 
+ *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 26.06.2007
  */
 public final class ProfibusHelper {
@@ -66,7 +69,7 @@ public final class ProfibusHelper {
 	private static VerifyListener _checkOfU32;
 	/** A TraverseListener to jump per enter to the next field. */
 	private static TraverseListener _nETL = new TraverseListener() {
-		public void keyTraversed(TraverseEvent e) {
+		public void keyTraversed(final TraverseEvent e) {
 			if (e.detail == SWT.TRAVERSE_RETURN) {
 				e.detail = SWT.TRAVERSE_TAB_NEXT;
 			}
@@ -79,7 +82,7 @@ public final class ProfibusHelper {
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U8 (0-255).
-	 * 
+	 *
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -95,7 +98,7 @@ public final class ProfibusHelper {
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U16 (0-65535).
-	 * 
+	 *
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -112,7 +115,7 @@ public final class ProfibusHelper {
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U16 (0-2^32).
-	 * 
+	 *
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
@@ -131,7 +134,7 @@ public final class ProfibusHelper {
 	/**
 	 * Verify input at Text field is confirm with a Number that is in range Min
 	 * - Max.
-	 * 
+	 *
 	 * @param min
 	 *            the min Value was accept at Text field.
 	 * @param max
@@ -164,7 +167,7 @@ public final class ProfibusHelper {
 				}
 				// check ob value more then one Digit for range check (see
 				// below)
-				if (e.start > 0 || !b3) {
+				if ((e.start > 0) || !b3) {
 					// e.display.getCurrent().
 					String text = ((Text) e.getSource()).getText();
 					String temp = text.substring(0, e.start) + e.text;
@@ -199,12 +202,12 @@ public final class ProfibusHelper {
 		};
 	}
 
-	public static Text getTextField(Composite parent, String text) {
+	public static Text getTextField(final Composite parent, final String text) {
 		return getTextField(parent, false, text, null, 0);
 	}
 
 	/**
-	 * 
+	 *
 	 * @param parent
 	 *            The parent composite.
 	 * @param edit
@@ -216,12 +219,10 @@ public final class ProfibusHelper {
 	 *            set The Verification Type.
 	 * @return a Text field whit ranges and verify listener.
 	 */
-	public static Text getTextField(final Composite parent, final boolean edit,
-			final String value, final Value ranges, final int verifyListenerTyp) {
-		if (parent == null) {
-			return null;
-		}
-        
+	@Nonnull
+	public static Text getTextField(@Nonnull final Composite parent, final boolean edit,
+			@Nullable final String value,@Nonnull final Value ranges, final int verifyListenerTyp) {
+
 		Text textField = new Text(parent, SWT.SINGLE | SWT.TRAIL | SWT.BORDER);
 		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
 				1, 1));
@@ -260,7 +261,7 @@ public final class ProfibusHelper {
 	}
 
 	/**
-	 * 
+	 *
 	 * @return A TraverseListener to jump per enter to the next field.
 	 */
 	public static TraverseListener getNETL() {
@@ -273,7 +274,7 @@ public final class ProfibusHelper {
 	 * and DB Id).<br>
 	 * If the {@link DBClass} a {@link NamedDBClass} then give three Parameters
 	 * (Class Name, Object name and DB Id).<br>
-	 * 
+	 *
 	 * @param shell
 	 *            the parent Shell.
 	 * @param title
@@ -285,8 +286,8 @@ public final class ProfibusHelper {
 	 * @param e
 	 *            the thrown Exception.
 	 */
-	public static void openErrorDialog(Shell shell, String title,
-			String errMsg, DBClass node, Exception e) {
+	public static void openErrorDialog(final Shell shell, final String title,
+			final String errMsg, final DBClass node, final Exception e) {
 		String format;
 		CentralLogger.getInstance().error(ProfibusHelper.class.getSimpleName(), e);
 		if (node instanceof NamedDBClass) {

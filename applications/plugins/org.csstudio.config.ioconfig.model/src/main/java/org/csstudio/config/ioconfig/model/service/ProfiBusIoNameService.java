@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ProfiBusIoNameService.java,v 1.3 2009/12/08 07:36:02 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.service;
 
@@ -31,8 +31,8 @@ import org.csstudio.dct.IoNameService;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 12.02.2009
  */
 public class ProfiBusIoNameService implements IoNameService {

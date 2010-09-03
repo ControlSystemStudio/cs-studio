@@ -20,14 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: PreferenceConstants.java,v 1.3 2009/08/31 12:11:45 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.preference;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 24.04.2009
  */
 public class PreferenceConstants {

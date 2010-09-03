@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ProfibusConfigXMLGenerator.java,v 1.4 2010/08/20 13:33:10 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.xml;
 
@@ -44,8 +44,8 @@ import org.jdom.output.XMLOutputter;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 14.05.2008
  */
 public class ProfibusConfigXMLGenerator {
@@ -53,43 +53,43 @@ public class ProfibusConfigXMLGenerator {
     /**
      * The Profibus Config XML {@link Document}.
      */
-    private Document _document;
+    private final Document _document;
 
     /**
      * The Element for the BUSPARAMETER.
      */
-    private Element _busparameter;
+    private final Element _busparameter;
 
     /**
      * The Element for the SLAVE_CONFIGURATION.
      */
-    private Element _slaveConfig;
+    private final Element _slaveConfig;
 
     /**
      * The XML Root Element (PROFIBUS-DP_PARAMETERSET).
      */
-    private Element _root;
+    private final Element _root;
 
     /**
      * The XML Master Element.
      */
-    private Element _master;
+    private final Element _master;
 
     /**
      * List of all Slave Field Address.
      */
-    private ArrayList<Short> _slaveFldAdrs;
+    private final ArrayList<Integer> _slaveFldAdrs;
 
-    private ArrayList<XmlSlave> _slaveList;
+    private final ArrayList<XmlSlave> _slaveList;
 
-    private Element _fmbSet;
+    private final Element _fmbSet;
 
     /**
      * @param fileName
      *            The name of the XML file.
      */
     public ProfibusConfigXMLGenerator(final String fileName) {
-        _slaveFldAdrs = new ArrayList<Short>();
+        _slaveFldAdrs = new ArrayList<Integer>();
         _slaveList = new ArrayList<XmlSlave>();
         _root = new Element("PROFIBUS-DP_PARAMETERSET");
         _document = new Document(_root);
@@ -101,33 +101,33 @@ public class ProfibusConfigXMLGenerator {
     }
 
     /**
-     * 
+     *
      * @param subnet
      *            The Profibus Subnet.
      */
     public final void setSubnet(final ProfibusSubnet subnet) {
         Set<Master> masterTree = subnet.getProfibusDPMaster();
-        if (masterTree == null || masterTree.size() < 1) {
+        if ((masterTree == null) || (masterTree.size() < 1)) {
             return;
         }
 
         Master master = masterTree.iterator().next();
-        
+
         makeMaster(subnet, master);
         makeFMB(master);
 
         _busparameter.addContent(_master);
         _busparameter.addContent(_fmbSet);
-        
+
         Map<Short, ? extends Node> childrenAsMap = master.getChildrenAsMap();
         Iterator<Short> iterator = childrenAsMap.keySet().iterator();
         while (iterator.hasNext()) {
-            Short key = (Short) iterator.next();
+            Short key = iterator.next();
             addSlave((Slave) childrenAsMap.get(key));
         }
     }
 
-    private void makeFMB(Master master) {
+    private void makeFMB(final Master master) {
         String[] fmbKeys = new String[] {
                 "max_number_slaves",
                 "max_slave_output_len",
@@ -149,10 +149,10 @@ public class ProfibusConfigXMLGenerator {
         assert fmbKeys.length == fmbValues.length;
         for (int i = 0; i < fmbKeys.length; i++) {
             _fmbSet.setAttribute(fmbKeys[i], fmbValues[i]);
-        } 
+        }
     }
 
-    private void makeMaster(ProfibusSubnet subnet, Master master) {
+    private void makeMaster(final ProfibusSubnet subnet, final Master master) {
         String[] masterKeys = new String[] { "bus_para_len", "fdl_add", "baud_rate", "tslot",
                 "min_tsdr", "max_tsdr", "tqui", "tset", "ttr", "gap", "hsa", "max_retry_limit",
                 "bp_flag", "min_slave_interval", "poll_timeout", "data_control_time", "reserved",
@@ -202,11 +202,11 @@ public class ProfibusConfigXMLGenerator {
         assert masterKeys.length == masterValues.length;
         for (int i = 0; i < masterKeys.length; i++) {
             _master.setAttribute(masterKeys[i], masterValues[i]);
-        }        
+        }
     }
 
     /**
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      */
@@ -217,10 +217,10 @@ public class ProfibusConfigXMLGenerator {
     }
 
     /**
-     * 
+     *
      * @param path
      *            The target File Path.
-     * @throws IOException 
+     * @throws IOException
      */
     public final void getXmlFile(final File path) throws IOException {
         _root.addContent(_busparameter);
@@ -239,24 +239,24 @@ public class ProfibusConfigXMLGenerator {
     }
 
     /**
-     * 
+     *
      * @return The Slave Table XML element.
      */
     private Element slaveTable() {
         Element slaveTable = new Element("SLAVE_TABLE");
         for (int i = 0; i < _slaveFldAdrs.size(); i++) {
-            slaveTable.setAttribute("Station_" + (i + 1), Short.toString(_slaveFldAdrs.get(i)));
+            slaveTable.setAttribute("Station_" + (i + 1), Integer.toString(_slaveFldAdrs.get(i)));
         }
         return slaveTable;
     }
 
     /**
      * Return the integer value of a String.
-     * The String can dec or hex. 
+     * The String can dec or hex.
      * @param value The integer value as Sting.
      * @return The value as int.
      */
-    public static int getInt(String value) {
+    public static int getInt(final String value) {
         String tmp = value.toUpperCase().trim();
         int radix = 10;
         try {

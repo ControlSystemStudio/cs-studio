@@ -20,24 +20,24 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ExtUserPrmDataRef.java,v 1.2 2010/09/03 07:13:20 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 21.07.2008
  */
 public class ExtUserPrmDataRef extends IndexValueData {
 
     /**
      * @param index The Index.
-     * @param value The Value.
+     * @param referenceValue The Value.
      */
-    public ExtUserPrmDataRef(final String index, final String value) {
-        super(index, value);
+    public ExtUserPrmDataRef(final String byteIndex, final String referenceValue) {
+        super(byteIndex, referenceValue);
     }
 
 }

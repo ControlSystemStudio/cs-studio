@@ -20,19 +20,20 @@
  * AT http://www.desy.de/legal/license.htm
  */
 /*
- * $Id$
+ * $Id: NamedDBClass.java,v 1.4 2010/08/20 13:33:06 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
 import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 
 /**
  * This class represent a DB Table with Name and SortIndex and extends the {@link DBClass}
- * 
- * 
+ *
+ *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 03.06.2009
  */
 @MappedSuperclass
@@ -49,7 +50,7 @@ public class NamedDBClass extends DBClass {
     private Short _sortIndex = -1;
 
     /**
-     * 
+     *
      * @param name
      *            set the Name of this Node.
      */
@@ -60,7 +61,7 @@ public class NamedDBClass extends DBClass {
     }
 
     /**
-     * 
+     *
      * @return the Name of this Node.
      */
     public String getName() {
@@ -68,7 +69,7 @@ public class NamedDBClass extends DBClass {
     }
 
     /**
-     * 
+     *
      * @return the Index to sort the node inside his parent.
      */
     public Short getSortIndex() {
@@ -76,12 +77,16 @@ public class NamedDBClass extends DBClass {
     }
 
     /**
-     * 
+     *
      * @param sortIndex
      *            set the Index to sort the node inside his parent.
      */
-    public void setSortIndex(Short sortIndex) {
+    public void setSortIndex(final Short sortIndex) {
         _sortIndex = sortIndex;
+    }
+    @Transient
+    public void setSortIndex(final Integer sortIndex) {
+        _sortIndex = sortIndex.shortValue();
     }
 
     /**

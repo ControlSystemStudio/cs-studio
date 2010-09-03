@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: PerspectiveFactory.java,v 1.3 2010/08/20 13:33:04 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -30,8 +30,8 @@ import org.eclipse.ui.console.IConsoleConstants;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 04.11.2008
  */
 public class PerspectiveFactory implements IPerspectiveFactory {
@@ -39,18 +39,18 @@ public class PerspectiveFactory implements IPerspectiveFactory {
     /**
      * {@inheritDoc}
      */
-    public void createInitialLayout(IPageLayout layout) {
-        layout.setEditorAreaVisible(false);
-        
+    public void createInitialLayout(final IPageLayout layout) {
+        layout.setEditorAreaVisible(true);
+
 //        layout.addView(MainView.ID, IPageLayout.LEFT, 0.2f, IPageLayout.ID_EDITOR_AREA);
-        
+
 //        layout.addStandaloneView(NodeConfigView.ID,false, IPageLayout.RIGHT, 0.8f, IPageLayout.ID_NAVIGATE_ACTION_SET);
         layout.addView(IConsoleConstants.ID_CONSOLE_VIEW, IPageLayout.BOTTOM,
                 0.8f, IPageLayout.ID_EDITOR_AREA);
-        
-        
+
+
         layout.addView(MainView.ID, IPageLayout.LEFT, 0.2f, IPageLayout.ID_EDITOR_AREA);
-        layout.addView(NodeConfigView.ID, IPageLayout.TOP, 0.8f, IPageLayout.ID_EDITOR_AREA);
+//        layout.addView(NodeConfigView.ID, IPageLayout.TOP, 0.8f, IPageLayout.ID_EDITOR_AREA);
     }
 
 }

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Channel.java,v 1.10 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -34,15 +34,16 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.hibernate.annotations.BatchSize;
 
 /**
- * 
+ *
  * @author gerke
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.10 $
  * @since 21.03.2007
  */
 @Entity
@@ -82,16 +83,16 @@ public class Channel extends Node {
      * Generate a new Pure Channel on the parent Channel Structure. The Channel get the first free
      * Station Address. The max Station Address is {@link Channel}
      * {@value #DEFAULT_MAX_STATION_ADDRESS}
-     * 
+     *
      * @param channelStructure
      *            the parent Channel Structure.
-     * 
+     *
      * @param input
      *            only if true then is the channel a Input otherwise a Output channel.
      * @param digital
      *            only if true then is the channel a Digital otherwise a Analog channel.
      */
-    public Channel(ChannelStructure channelStructure, boolean input, boolean digital) {
+    public Channel(final ChannelStructure channelStructure, final boolean input, final boolean digital) {
         this(channelStructure, null, input, digital, (short) -1);
     }
 
@@ -99,13 +100,13 @@ public class Channel extends Node {
      * Generate a new Pure Channel on the parent Channel Structure. The Channel get the first free
      * Station Address. The max Station Address is {@link Channel}
      * {@value #DEFAULT_MAX_STATION_ADDRESS}
-     * 
+     *
      * @param channelStructure
      *            the parent Channel Structure.
-     * 
+     *
      * @param name
      *            the name of this Channel.
-     * 
+     *
      * @param input
      *            only if true then is the channel a Input otherwise a Output channel.
      * @param digital
@@ -113,8 +114,8 @@ public class Channel extends Node {
      * @param sortIndex
      *            the sort posiotion for this Channel.
      */
-    public Channel(ChannelStructure channelStructure, String name, boolean input, boolean digital,
-            short sortIndex) {
+    public Channel(final ChannelStructure channelStructure, final String name, final boolean input, final boolean digital,
+            final int sortIndex) {
         setName(name);
         setInput(input);
         setDigital(digital);
@@ -125,7 +126,7 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @return The Channel number inclusive offset.
      */
     @Transient
@@ -140,7 +141,7 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @return the Channel Number.
      */
     public int getChannelNumber() {
@@ -150,16 +151,16 @@ public class Channel extends Node {
     /**
      * Only used from Hibernate or Internal! The Channel number are automatic set when the sortIndex
      * are set.
-     * 
+     *
      * @param channelNumber
      *            the channel start Address.
      */
-    public void setChannelNumber(int channelNumber) {
+    public void setChannelNumber(final int channelNumber) {
         this._channelNumber = channelNumber;
     }
 
     /**
-     * 
+     *
      * @return is only true when this Channel is an Input.
      */
     public boolean isInput() {
@@ -167,16 +168,16 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @param input
      *            this channel as Input.
      */
-    public void setInput(boolean input) {
+    public void setInput(final boolean input) {
         this._input = input;
     }
 
     /**
-     * 
+     *
      * @return is only true when this Channel is an Output.
      */
     @Transient
@@ -185,16 +186,16 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @param output
      *            set this channel as Output.
      */
-    public void setOutput(boolean output) {
+    public void setOutput(final boolean output) {
         setInput(!output);
     }
 
     /**
-     * 
+     *
      * @return the IO Name of this Channel.
      */
     public String getIoName() {
@@ -202,16 +203,16 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @param ioName
      *            the IO Name of this Channel.
      */
-    public void setIoName(String ioName) {
+    public void setIoName(final String ioName) {
         this._ioName = ioName;
     }
 
     /**
-     * 
+     *
      * @return is only true if the {@link Channel} digital.
      */
     public boolean isDigital() {
@@ -219,16 +220,16 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @param digital
      *            set only true if this {@link Channel} digital.
      */
-    public void setDigital(boolean digital) {
+    public void setDigital(final boolean digital) {
         _digital = digital;
     }
 
     /**
-     * 
+     *
      * @return the bit size of the Channel.
      */
     @Transient
@@ -236,6 +237,10 @@ public class Channel extends Node {
         return getChannelType().getBitSize();
     }
 
+    /**
+     *
+     * @return the Type of this {@link Channel}
+     */
     public DataType getChannelType() {
         if (_channelType < DataType.values().length) {
             return DataType.values()[_channelType];
@@ -243,11 +248,15 @@ public class Channel extends Node {
         return DataType.BIT;
     }
 
-    public void setChannelType(DataType type) {
+    /**
+     *
+     * @param type set the Type of this {@link Channel}
+     */
+    public void setChannelType(final DataType type) {
         _channelType = type.ordinal();
     }
 
-    public void setChannelTypeNonHibernate(DataType type) {
+    public void setChannelTypeNonHibernate(final DataType type) {
         if (getChannelType() != type) {
             setChannelType(type);
             setDirty(true);
@@ -265,7 +274,7 @@ public class Channel extends Node {
         return _currenUserParamDataIndex;
     }
 
-    public void setCurrenUserParamDataIndex(String currenUserParamDataIndex) {
+    public void setCurrenUserParamDataIndex(final String currenUserParamDataIndex) {
         _currenUserParamDataIndex = currenUserParamDataIndex;
     }
 
@@ -273,7 +282,7 @@ public class Channel extends Node {
         return _currentValue;
     }
 
-    public void setCurrentValue(String currentValue) {
+    public void setCurrentValue(final String currentValue) {
         _currentValue = currentValue;
     }
 
@@ -296,17 +305,17 @@ public class Channel extends Node {
 
     /**
      * contribution to ioName (PV-link to EPICSORA)
-     * 
+     *
      * @param epicsAdress
      *            the Epics Address String.
      */
-    public void setEpicsAddressString(String epicsAdress) {
+    public void setEpicsAddressString(final String epicsAdress) {
         _epicsAdress = epicsAdress;
     }
 
     /**
      * contribution to ioName (PV-link to EPICSORA)
-     * 
+     *
      * @return the Epics Address String
      */
     @Transient
@@ -317,7 +326,7 @@ public class Channel extends Node {
 
     /**
      * contribution to ioName (PV-link to EPICSORA)
-     * 
+     *
      * @return the Epics Address String
      */
     public String getEpicsAddressString() {
@@ -334,7 +343,7 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @return the parent {@link ChannelStructure}.
      */
     @ManyToOne
@@ -343,16 +352,16 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @param channelStructure
      *            the parent {@link ChannelStructure} of this Channel.
      */
-    public void setChannelStructure(ChannelStructure channelStructure) {
+    public void setChannelStructure(final ChannelStructure channelStructure) {
         this.setParent(channelStructure);
     }
 
     /**
-     * 
+     *
      * @return the Slave GSD File
      */
     @Transient
@@ -372,16 +381,16 @@ public class Channel extends Node {
 
         // refreshChannelType();
 
-        if (!(channelSortIndex <= 0 && structSortIndex <= 0 && moduleSortIndex <= 0)) {
+        if (!((channelSortIndex <= 0) && (structSortIndex <= 0) && (moduleSortIndex <= 0))) {
             // if it a simple Channel (AI/AO)
             if (getChannelStructure().isSimple()) {
                 if (structSortIndex > 0) {
                     ChannelStructure channelStructure = null;
                     short counter = structSortIndex;
-                    while (channelStructure == null && counter > 0) {
+                    while ((channelStructure == null) && (counter > 0)) {
                         channelStructure = getModule().getChannelStructsAsMap().get(--counter);
-                        if (channelStructure != null && channelStructure.getLastChannel() != null
-                                && channelStructure.getLastChannel().isInput() == isInput()) {
+                        if ((channelStructure != null) && (channelStructure.getLastChannel() != null)
+                                && (channelStructure.getLastChannel().isInput() == isInput())) {
                             // Previous Channel is:
                             if (channelStructure.isSimple()) {
                                 Channel next = channelStructure.getLastChannel();
@@ -404,7 +413,7 @@ public class Channel extends Node {
                 if (channelSortIndex > 0) {
                     Channel channel = null;
                     short counter = channelSortIndex;
-                    while (channel == null && counter > 0) {
+                    while ((channel == null) && (counter > 0)) {
                         channel = getChannelStructure().getChannelsAsMap().get(--counter);
                         if (channel != null) {
                             channelNumber = channel.getChannelNumber();
@@ -415,13 +424,13 @@ public class Channel extends Node {
                     }
                 }
 
-                if (structSortIndex > 0 && !isSet) {
+                if ((structSortIndex > 0) && !isSet) {
                     ChannelStructure channelStructure = null;
                     short counter = structSortIndex;
-                    while (channelStructure == null && counter > 0) {
+                    while ((channelStructure == null) && (counter > 0)) {
                         channelStructure = getModule().getChannelStructsAsMap().get(--counter);
-                        if (channelStructure != null
-                                && channelStructure.getFirstChannel().isInput() == isInput()) {
+                        if ((channelStructure != null)
+                                && (channelStructure.getFirstChannel().isInput() == isInput())) {
                             if (channelStructure.isSimple()) {
                                 channelNumber = channelStructure.getFirstChannel()
                                         .getChannelNumber();
@@ -468,14 +477,14 @@ public class Channel extends Node {
             Set<ModuleChannelPrototype> moduleChannelPrototypes = getModule().getGSDModule()
                     .getModuleChannelPrototypeNH();
             for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
-                if (moduleChannelPrototype.isInput() == isInput()
-                        && getChannelNumber() == moduleChannelPrototype.getOffset()) {
+                if ((moduleChannelPrototype.isInput() == isInput())
+                        && (getChannelNumber() == moduleChannelPrototype.getOffset())) {
                         if(getChannelStructure().isSimple()) {
                             setChannelTypeNonHibernate(moduleChannelPrototype.getType());
                         }else {
                             setChannelTypeNonHibernate(moduleChannelPrototype.getType().getStructure()[0]);
                         }
-                    if (getChannelType() == DataType.BIT
+                    if ((getChannelType() == DataType.BIT)
                             && !getChannelStructure().isSimple()) {
                         sb.append(getChannelStructure().getStructureType().getType());
                         sb.append(getBitPostion());
@@ -489,8 +498,8 @@ public class Channel extends Node {
                     if (moduleChannelPrototype.getMaximum() != null) {
                         sb.append(",H=" + moduleChannelPrototype.getMaximum());
                     }
-                    if (moduleChannelPrototype.getMaximum() != null
-                            && moduleChannelPrototype.getByteOrdering() > 0) {
+                    if ((moduleChannelPrototype.getMaximum() != null)
+                            && (moduleChannelPrototype.getByteOrdering() > 0)) {
                         sb.append(",O=" + moduleChannelPrototype.getByteOrdering());
                     }
                 } else {
@@ -508,7 +517,7 @@ public class Channel extends Node {
         } catch (NullPointerException e) {
             setEpicsAddressString(null);
         }
-        setDirty((isDirty() || oldAdr == null || !oldAdr.equals(getEpicsAddressString())));
+        setDirty((isDirty() || (oldAdr == null) || !oldAdr.equals(getEpicsAddressString())));
     }
 
     @Transient
@@ -523,7 +532,7 @@ public class Channel extends Node {
     }
 
     /**
-     * 
+     *
      * @return the parent {@link Module}.
      */
     @Transient
@@ -563,7 +572,7 @@ public class Channel extends Node {
         sb.append(getFullChannelNumber());
         sb.append(": ");
         sb.append(getName());
-        if (getIoName() != null && getIoName().length() > 0) {
+        if ((getIoName() != null) && (getIoName().length() > 0)) {
             sb.append(" [" + getIoName() + "]");
         }
         return sb.toString();
@@ -573,7 +582,7 @@ public class Channel extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         Node copy = super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
@@ -583,7 +592,7 @@ public class Channel extends Node {
      * {@inheritDoc}
      */
     @Override
-    protected Node copyParameter(NamedDBClass parentNode) {
+    protected Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof ChannelStructure) {
             ChannelStructure channelStructure = (ChannelStructure) parentNode;
             Channel copy = new Channel(channelStructure, getName(), isInput(), isDigital(),
@@ -597,6 +606,15 @@ public class Channel extends Node {
             return copy;
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.CHANNEL;
     }
 
 }

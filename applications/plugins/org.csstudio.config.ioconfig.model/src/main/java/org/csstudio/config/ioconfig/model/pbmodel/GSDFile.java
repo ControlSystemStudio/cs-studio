@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: GSDFile.java,v 1.4 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -42,7 +42,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.Diagnose;
-import org.csstudio.config.ioconfig.model.Keywords;
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
@@ -50,8 +50,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 28.06.2007
  */
 @Entity
@@ -88,7 +88,7 @@ public class GSDFile {
 		return getMaster();
 	}
 
-	public void setMaster(Boolean master) {
+	public void setMaster(final Boolean master) {
 		_master = master;
 	}
 
@@ -105,7 +105,7 @@ public class GSDFile {
 		return isSlave();
 	}
 
-	public void setSlave(Boolean slave) {
+	public void setSlave(final Boolean slave) {
 		_slave = slave;
 	}
 
@@ -120,7 +120,7 @@ public class GSDFile {
 	 * @param gsdFile
 	 *            The text of gsdFile.
 	 */
-	public GSDFile(String name, String gsdFile) {
+	public GSDFile(final String name, final String gsdFile) {
 		setName(name);
 		setGSDFile(gsdFile);
 	}
@@ -136,7 +136,7 @@ public class GSDFile {
 	 * @param id
 	 *            set the ID.
 	 */
-	public void setId(int id) {
+	public void setId(final int id) {
 		this._id = id;
 	}
 
@@ -155,7 +155,7 @@ public class GSDFile {
 	 * @param gsdFile
 	 *            set the Text of gsdFile.
 	 */
-	public void setGSDFile(String gsdFile) {
+	public void setGSDFile(final String gsdFile) {
 		this._gsdFile = gsdFile;
 	}
 
@@ -169,13 +169,13 @@ public class GSDFile {
 	 * @param name
 	 *            set the Name of gsdFile.
 	 */
-	public void setName(String name) {
+	public void setName(final String name) {
 		this._name = name;
 		Diagnose.addNewLine(_name+"\t"+this.getClass().getSimpleName());
 	}
 
 	/**
-	 * 
+	 *
 	 * @return a map of the Modules from this GSD File.
 	 */
 	@OneToMany(cascade = CascadeType.ALL, mappedBy = "GSDFile", fetch = FetchType.EAGER)
@@ -186,20 +186,20 @@ public class GSDFile {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param gsdModules
 	 *            set the Modules for this GSD File.
 	 */
-	public void setGSDModules(Map<Integer, GSDModule> gsdModules) {
+	public void setGSDModules(final Map<Integer, GSDModule> gsdModules) {
 		_gSDModules = gsdModules;
 	}
 
 	/**
-	 * 
+	 *
 	 * @param gSDModule
 	 *            add a Module to this file.
 	 */
-	public void addGSDModule(GSDModule gSDModule) {
+	public void addGSDModule(final GSDModule gSDModule) {
 		gSDModule.setGSDFile(this);
 		if (_gSDModules == null) {
 			_gSDModules = new HashMap<Integer, GSDModule>();
@@ -209,12 +209,12 @@ public class GSDFile {
 
 	/**
 	 * Get a Module of this File.
-	 * 
+	 *
 	 * @param indexModule
 	 *            the index for the given Module.
 	 * @return the selected Module.
 	 */
-	public GSDModule getGSDModule(Integer indexModule) {
+	public GSDModule getGSDModule(final Integer indexModule) {
 		if (_gSDModules == null) {
 			_gSDModules = new HashMap<Integer, GSDModule>();
 		}
@@ -227,11 +227,11 @@ public class GSDFile {
 	@Transient
 	private void paresFile() {
 		GsdSlaveModel slave = GsdFactory.makeGsdSlave(this);
-		setSlave(slave != null && slave.getType() == Keywords.GSDFileTyp.Slave);
+		setSlave((slave != null) && (slave.getType() == GSDFileTypes.Slave));
 		slave = null;
 		GsdMasterModel master = GsdFactory.makeGsdMaster(this.getGSDFile());
-		setMaster(master != null
-				&& master.getType() == Keywords.GSDFileTyp.Master);
+		setMaster((master != null)
+				&& (master.getType() == GSDFileTypes.Master));
 		master = null;
 		Repository.save(this);
 	}

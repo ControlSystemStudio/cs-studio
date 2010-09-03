@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Diagnose.java,v 1.2 2010/08/20 13:33:06 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
@@ -32,39 +32,39 @@ import java.util.Date;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 15.12.2009
  */
 public class Diagnose {
     
-    private static StringBuilder _diagString = new StringBuilder();
+    private static StringBuilder _DIAG_STRING = new StringBuilder();
     
-    private static int _counter = 0;
+    private static int _COUNTER = 0;
     
-    private static long _oldTime;
+    private static long _OLD_TIME;
 
-    private static long _initTime;
+    private static long _INIT_TIME;
 
-    private static int _namedDBClassCounter = 0;
+    private static int _NAMED_DB_CLASS_COUNTER = 0;
     
-    synchronized public static void addNewLine(String line) {
+    public static synchronized void addNewLine(String line) {
 //    public static void addNewLine(String line) {
         long time = new Date().getTime();
-        long l = time-_oldTime;
-        _oldTime = time;
-        _diagString.append(_counter+": \t\t"+time+"\t"+l+"\t"+line+"\r\n");
-        _counter++;
+        long l = time-_OLD_TIME;
+        _OLD_TIME = time;
+        _DIAG_STRING.append(_COUNTER+": \t\t"+time+"\t"+l+"\t"+line+"\r\n");
+        _COUNTER++;
     }
 
     public static void clear() {
-        _diagString = new StringBuilder();
+        _DIAG_STRING = new StringBuilder();
         Date date = new Date();
-        _diagString.append("Start um "+date+"\r\n");
-        _initTime = date.getTime();
-        _oldTime = date.getTime();
-        _counter = 0;
-        _namedDBClassCounter = 0;
+        _DIAG_STRING.append("Start um "+date+"\r\n");
+        _INIT_TIME = date.getTime();
+        _OLD_TIME = date.getTime();
+        _COUNTER = 0;
+        _NAMED_DB_CLASS_COUNTER = 0;
     }
 
     public static void print() {
@@ -73,31 +73,31 @@ public class Diagnose {
             File createTempFile = File.createTempFile("Diag", "DDB.log");
             createTempFile.createNewFile();
             FileWriter fw = new FileWriter(createTempFile);
-            fw.write(_diagString.toString());
+            fw.write(_DIAG_STRING.toString());
             fw.flush();
-            _diagString.append(createTempFile.getAbsolutePath()+"\r\n");
+            _DIAG_STRING.append(createTempFile.getAbsolutePath()+"\r\n");
         } catch (IOException e) {
             e.printStackTrace();
-            _diagString.append(e.getLocalizedMessage());
+            _DIAG_STRING.append(e.getLocalizedMessage());
         }
-        System.out.print(_diagString.toString());
-        System.out.print("NamedDBClass count: "+_namedDBClassCounter+"\r\n");
+        System.out.print(_DIAG_STRING.toString());
+        System.out.print("NamedDBClass count: "+_NAMED_DB_CLASS_COUNTER+"\r\n");
         
         System.out.println("Print um "+date);
-        System.out.println("Zeit ab Start "+(date.getTime()-_initTime));
+        System.out.println("Zeit ab Start "+(date.getTime()-_INIT_TIME));
         
     }
 
     public static String getString() {
-        return _diagString.toString();
+        return _DIAG_STRING.toString();
     }
 
     public static String getCounts() {
-        return ""+_counter;
+        return ""+_COUNTER;
     }
 
     public static void countNamedDBClass() {
-        _namedDBClassCounter ++;
+        _NAMED_DB_CLASS_COUNTER ++;
     }
     
 }

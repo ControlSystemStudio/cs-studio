@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Helper.java,v 1.2 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.tools;
 
@@ -30,16 +30,16 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
 
-import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.IDocument;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 27.08.2009
  */
 public class Helper {
-    public static void writeDocumentFile(File outFile, Document document) throws SQLException,
+    public static void writeDocumentFile(final File outFile, final IDocument document) throws SQLException,
             IOException {
         InputStream inputStream = document.getImageData();
         byte[] buffer = new byte[8192];

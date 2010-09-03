@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: IconManageView.java,v 1.1 2009/08/26 07:09:21 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
@@ -55,8 +55,8 @@ import org.eclipse.swt.widgets.Label;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 17.06.2008
  */
 public class IconManageView extends Composite {

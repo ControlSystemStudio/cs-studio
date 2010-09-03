@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Messages.java,v 1.2 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -29,11 +29,11 @@ import java.util.ResourceBundle;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 25.11.2008
  */
-public class Messages {
+public final class Messages {
     private static final String BUNDLE_NAME = "org.csstudio.config.ioconfig.model.pbmodel.messages"; //$NON-NLS-1$
 
     private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);

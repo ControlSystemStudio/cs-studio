@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ProfibusSensorService.java,v 1.2 2009/09/10 12:17:29 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.service;
 
@@ -32,8 +32,8 @@ import org.csstudio.dct.ISensorIdService;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 06.07.2009
  */
 public class ProfibusSensorService implements ISensorIdService {

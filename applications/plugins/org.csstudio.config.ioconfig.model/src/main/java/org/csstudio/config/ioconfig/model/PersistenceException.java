@@ -20,14 +20,14 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: PersistenceException.java,v 1.1 2009/08/26 07:08:59 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 17.02.2009
  */
 public class PersistenceException extends Exception {

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ConfigHelper.java,v 1.8 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
@@ -31,16 +31,14 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.config.ioconfig.config.view.NodeConfig;
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.Facility;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.NodeImage;
-import org.csstudio.config.ioconfig.model.Repository;
-import org.csstudio.config.ioconfig.model.Keywords.GSDFileTyp;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.Master;
@@ -52,17 +50,8 @@ import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
-import org.eclipse.jface.layout.TableColumnLayout;
-import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
-import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.KeyEvent;
@@ -75,41 +64,41 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.FileDialog;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
-import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.ISharedImages;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.8 $
  * @since 20.06.2007
  */
 public final class ConfigHelper {
 
     /**
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.8 $
      * @since 22.07.2009
      */
     private static final class SpinnerKeyListener implements KeyListener {
-        private SpinnerModifyListener _modifyListener;
+        private final SpinnerModifyListener _modifyListener;
 
-        public SpinnerKeyListener(SpinnerModifyListener modifyListener) {
+        public SpinnerKeyListener(final SpinnerModifyListener modifyListener) {
             _modifyListener = modifyListener;
         }
 
-        public void keyPressed(KeyEvent e) {
+        public void keyPressed(final KeyEvent e) {
             Spinner spinner = (Spinner) e.widget;
-            if (e.keyCode == SWT.CR || e.keyCode == SWT.KEYPAD_CR) {
+            if ((e.keyCode == SWT.CR) || (e.keyCode == SWT.KEYPAD_CR)) {
                 _modifyListener.doIt();
                 spinner.setSelection(spinner.getSelection());
                 // _modifyListener.modifyText(new ModifyEvent(new Event()));
@@ -122,15 +111,15 @@ public final class ConfigHelper {
 
         }
 
-        public void keyReleased(KeyEvent e) {
+        public void keyReleased(final KeyEvent e) {
         }
 
     }
 
     /**
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.8 $
      * @since 22.07.2007
      */
     private static final class SpinnerModifyListener implements ModifyListener {
@@ -140,8 +129,9 @@ public final class ConfigHelper {
         private boolean _doIt = true;
         private int _lastValue;
 
-        private SpinnerModifyListener(ProfiBusTreeView profiBusTreeView, Node node,
-                Spinner indexSpinner) {
+        private SpinnerModifyListener(final ProfiBusTreeView profiBusTreeView,
+                                      final Node node,
+                                      final Spinner indexSpinner) {
             _profiBusTreeView = profiBusTreeView;
             _node = node;
             _indexSpinner = indexSpinner;
@@ -176,15 +166,14 @@ public final class ConfigHelper {
     }
 
     /**
-     * 
+     *
      */
     private static GSDFile _gsdFile;
 
     /**
      * The standard Date format.
      */
-    private static SimpleDateFormat _simpleDateFormat = new SimpleDateFormat(
-            "yyyy-MM-dd HH:mm:ss.S");
+    private static SimpleDateFormat _simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.S");
 
     private static List<GSDFile> _gsdFiles;
 
@@ -203,14 +192,23 @@ public final class ConfigHelper {
      *            the number of column
      * @return Tab Item Composite.
      */
-    public static Composite getNewTabItem(final String head, final TabFolder tabFolder,
-            final int size, int minWidthSize, int minHeight) {
+    @Nonnull
+    public static Composite getNewTabItem(@Nonnull final String head,
+                                          @Nonnull final TabFolder tabFolder,
+                                          final int size,
+                                          final int minWidthSize,
+                                          final int minHeight) {
         return getNewTabItem(head, tabFolder, size, null, minWidthSize, minHeight);
     }
 
-    public static Composite getNewTabItem(final String head, final TabFolder tabFolder,
-            final int size, Composite viewer, int minWidthSize, int minHeight) {
-        final TabItem item = new TabItem(tabFolder, SWT.NONE);
+    @Nonnull
+    public static Composite getNewTabItem(@Nonnull final String head,
+                                          @Nonnull final TabFolder tabFolder,
+                                          final int size,
+                                          final Composite viewer,
+                                          final int minWidthSize,
+                                          final int minHeight) {
+        final TabItem item = new TabItem(tabFolder, SWT.NONE,0);
         item.setText(head);
 
         GridLayoutFactory fillDefaults = GridLayoutFactory.fillDefaults();
@@ -238,15 +236,15 @@ public final class ConfigHelper {
 
             tabFolder.addSelectionListener(new SelectionListener() {
 
-                public void widgetDefaultSelected(SelectionEvent e) {
+                public void widgetDefaultSelected(final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
 
-                public void widgetSelected(SelectionEvent e) {
+                public void widgetSelected(final SelectionEvent e) {
                     docTabSelectionAction(e);
                 }
 
-                private void docTabSelectionAction(SelectionEvent e) {
+                private void docTabSelectionAction(final SelectionEvent e) {
                     if (e.item.equals(item)) {
                         docView.onActivate();
                     }
@@ -259,224 +257,26 @@ public final class ConfigHelper {
     }
 
     /**
-     * 
-     * @param tabFolder
-     *            The Tab Folder to add the Tab Item.
-     * @param head
-     *            Headline for the Tab.
-     * @param node
-     *            that have a GSD File.
-     * @param fileTyp
-     *            The GSD File Type (Master, Slave),
-     * @return Tab Item Composite.
+     *
      */
-    public static Composite makeGSDFileChooser(final TabFolder tabFolder, final String head,
-            final NodeConfig node, final Enum<GSDFileTyp> fileTyp) {
-        int columnNum = 7;
-        final Composite comp = ConfigHelper.getNewTabItem(head, tabFolder, columnNum, 520, 200);
-
-        Group gSelected, gAvailable;
-        final Text tSelected;
-        final Button fileSelect;
-        Button fileAdd, fileRemove;
-
-        gSelected = new Group(comp, SWT.NONE);
-        gSelected.setText("Selected GSD File:");
-        gSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, columnNum, 1));
-        gSelected.setLayout(new GridLayout(1, false));
-
-        tSelected = new Text(gSelected, SWT.SINGLE | SWT.BORDER);
-        tSelected.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        if (node != null && node.getGSDFile() != null) {
-            _gsdFile = node.getGSDFile();
-            node.fill(_gsdFile);
-            tSelected.setText(_gsdFile.getName());
-        }
-
-        gAvailable = new Group(comp, SWT.NONE);
-        gAvailable.setText("Available GSD File:");
-        gAvailable.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, columnNum, 1));
-        gAvailable.setLayout(new GridLayout(1, false));
-
-        TableColumnLayout tableColumnLayout = new TableColumnLayout();
-        Composite tableComposite = new Composite(gAvailable, SWT.BORDER);
-        GridDataFactory.fillDefaults().grab(true, true).applyTo(tableComposite);
-        tableComposite.setLayout(tableColumnLayout);
-
-        final boolean master = fileTyp == GSDFileTyp.Master;
-        final TableViewer tableViewer = new TableViewer(tableComposite, SWT.H_SCROLL | SWT.V_SCROLL
-                | SWT.MULTI | SWT.FULL_SELECTION);
-        tableViewer.setContentProvider(new ArrayContentProvider());
-        tableViewer.setSorter(new ViewerSorter() {
-            @Override
-            public int compare(final Viewer viewer, final Object e1, final Object e2) {
-                if (e1 instanceof GSDFile && e2 instanceof GSDFile) {
-                    GSDFile file1 = (GSDFile) e1;
-                    GSDFile file2 = (GSDFile) e2;
-
-                    // sort wrong files to back.
-                    if (!(file1.isMasterNonHN() || file1.isSlaveNonHN())
-                            && (file2.isMasterNonHN() || file2.isSlaveNonHN())) {
-                        return -1;
-                    } else if ((file1.isMasterNonHN() || file1.isSlaveNonHN())
-                            && !(file2.isMasterNonHN() || file2.isSlaveNonHN())) {
-                        return 1;
-                    }
-
-                    // if master -> master file to top
-                    if (master) {
-                        if (file1.isMasterNonHN() && !file2.isMasterNonHN()) {
-                            return -1;
-                        } else if (!file1.isMasterNonHN() && file2.isMasterNonHN()) {
-                            return 1;
-                        }
-                    } else {
-                        // if slave -> slave file to top
-                        if (file1.isSlaveNonHN() && !file2.isSlaveNonHN()) {
-                            return -1;
-                        } else if (!file1.isSlaveNonHN() && file2.isSlaveNonHN()) {
-                            return 1;
-                        }
-                    }
-                    return file1.getName().compareToIgnoreCase(file2.getName());
-                }
-                return super.compare(viewer, e1, e2);
-            }
-        });
-        tableViewer.setLabelProvider(new GSDLabelProvider(master));
-        tableViewer.getTable().setHeaderVisible(false);
-        tableViewer.getTable().setLinesVisible(false);
-        GridDataFactory.fillDefaults().grab(true, true).applyTo(tableViewer.getTable());
-
-        _gsdFiles = Repository.load(GSDFile.class);
-        if(_gsdFiles == null) {
-            _gsdFiles = new ArrayList<GSDFile>(); 
-        }else if (!_gsdFiles.isEmpty()) {
-            tableViewer.setInput(_gsdFiles.toArray(new GSDFile[_gsdFiles.size()]));
-        }
-
-        new Label(comp, SWT.NONE);
-        fileSelect = new Button(comp, SWT.PUSH);
-        fileSelect.setText("Select");
-        fileSelect.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileSelect.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(final SelectionEvent e) {
-                doFileAdd();
-            }
-
-            public void widgetSelected(final SelectionEvent e) {
-                doFileAdd();
-            }
-
-            private void doFileAdd() {
-                _gsdFile = (GSDFile) ((StructuredSelection) tableViewer.getSelection())
-                        .getFirstElement();
-                if (node.fill(_gsdFile)) {
-                    tSelected.setText(_gsdFile.getName());
-                    node.setSavebuttonEnabled("GSDFile", true);
-                }
-            }
-
-        });
-        new Label(comp, SWT.NONE);
-        new Label(comp, SWT.NONE);
-        fileAdd = new Button(comp, SWT.PUSH);
-        fileAdd.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileAdd.setText("Add File");
-        fileAdd.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(final SelectionEvent e) {
-                doFileAdd();
-            }
-
-            public void widgetSelected(final SelectionEvent e) {
-                doFileAdd();
-            }
-
-            private void doFileAdd() {
-                FileDialog fd = new FileDialog(comp.getShell(), SWT.MULTI);
-                fd.setFilterExtensions(new String[] { "*.gsd;*.gsg","*.gs?" });
-                fd.setFilterNames(new String[] { "GS(GER)","GS(ALL)" });
-                fd.setFilterPath("Z:\\Boeckmann\\GSD_Dateien\\");
-                if (fd.open() != null) {
-                    File path = new File(fd.getFilterPath());
-                    for (String fileName : fd.getFileNames()) {
-                        if (fileNotContain(fileName)) {
-                            String text = file2String(new File(path, fileName));
-                            File file = new File(path, fileName);
-                            GSDFile gsdFile = new GSDFile(file.getName(), text.toString());
-                            _gsdFiles.add(gsdFile);
-                            tableViewer.setInput(_gsdFiles);
-                            Repository.save(gsdFile);
-                        } else {
-                            MessageDialog.openInformation(tabFolder.getShell(), "Double GSD File",
-                                    "File is already in the DB");
-                        }
-                    }
-                }
-            }
-
-            private boolean fileNotContain(String fileName) {
-                boolean add = true;
-                if (_gsdFiles != null && !_gsdFiles.isEmpty()) {
-                    for (GSDFile file : _gsdFiles) {
-                        add = !file.getName().equals(fileName);
-                        if (!add) {
-                            break;
-                        }
-                    }
-                }
-                return add;
-            }
-
-        });
-        fileRemove = new Button(comp, SWT.PUSH);
-        fileRemove.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
-        fileRemove.setText("Remove File");
-        fileRemove.addSelectionListener(new SelectionListener() {
-
-            public void widgetDefaultSelected(final SelectionEvent e) {
-            }
-
-            public void widgetSelected(final SelectionEvent e) {
-                StructuredSelection selection = (StructuredSelection) tableViewer.getSelection();
-                GSDFile removeFile = (GSDFile) selection.getFirstElement();
-
-                if (MessageDialog.openQuestion(node.getShell(), "Lösche Datei aus der Datenbank",
-                        "Sind sie sicher das sie die Datei " + removeFile.getName()
-                                + " löschen möchten")) {
-                    Repository.removeGSDFiles(removeFile);
-                    _gsdFiles.remove(removeFile);
-                    tableViewer.setInput(_gsdFiles);
-                }
-
-            }
-        });
-
-        tableViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            public void selectionChanged(SelectionChangedEvent event) {
-                StructuredSelection selection = (StructuredSelection) event.getSelection();
-                if (selection == null || selection.isEmpty()) {
-                    fileSelect.setEnabled(false);
-                    return;
-                }
-                GSDFile file = (GSDFile) selection.getFirstElement();
-                fileSelect.setEnabled(master == file.isMasterNonHN());
-            }
-
-        });
-
-        new Label(comp, SWT.NONE);
-
-        return comp;
-
+    private static void makeGSDFileActions(final TableViewer viewer) {
+        Menu menu = new Menu(viewer.getControl());
+        MenuItem showItem = new MenuItem(menu, SWT.PUSH);
+        showItem.addSelectionListener(new ShowFileSelectionListener(viewer));
+        showItem.setText("&Show");
+        showItem.setImage(PlatformUI.getWorkbench().getSharedImages()
+                .getImage(ISharedImages.IMG_OBJ_FOLDER));
+//        MenuItem saveAsItem = new MenuItem(menu, SWT.PUSH);
+//        saveAsItem.addSelectionListener(new SaveAsSelectionListener(viewer));
+//        saveAsItem.setText("&Show");
+//        saveAsItem.setImage(PlatformUI.getWorkbench().getSharedImages()
+//                          .getImage(ISharedImages.IMG_ETOOL_SAVEAS_EDIT));
+        viewer.getTable().setMenu(menu);
     }
 
     /**
      * Put a Text file into a String.
-     * 
+     *
      * @param file
      *            the Text file.
      * @return the Text of the File.
@@ -486,7 +286,7 @@ public final class ConfigHelper {
         try {
             BufferedReader br = new BufferedReader(new FileReader(file));
             String tmp;
-            while ((tmp = br.readLine()) != null) {
+            while ( (tmp = br.readLine()) != null) {
                 text = text.append(tmp + "\r\n");
             }
         } catch (FileNotFoundException e1) {
@@ -518,7 +318,7 @@ public final class ConfigHelper {
     }
 
     /**
-     * 
+     *
      * @param parent
      *            The Parent composite.
      * @param node
@@ -531,9 +331,12 @@ public final class ConfigHelper {
      *            IO Config TreeViewer.
      * @return the Sort Index Spinner.
      */
-    public static Spinner getIndexSpinner(final Composite parent, final Node node,
-            final ModifyListener modifyListener, final String label,
-            final ProfiBusTreeView profiBusTreeView) {
+    @Nonnull
+    public static Spinner getIndexSpinner(@Nonnull final Composite parent,
+                                          @Nonnull final Node node,
+                                          @Nonnull final ModifyListener modifyListener,
+                                          @Nonnull final String label,
+                                          @Nonnull final ProfiBusTreeView profiBusTreeView) {
         int min = 0;
         int max = 99;
 
@@ -550,18 +353,19 @@ public final class ConfigHelper {
         indexSpinner.setData((short) node.getSortIndex());
         indexSpinner.addModifyListener(modifyListener);
         SpinnerModifyListener spinnerModifyListener = new SpinnerModifyListener(profiBusTreeView,
-                node, indexSpinner);
+                                                                                node,
+                                                                                indexSpinner);
         SpinnerKeyListener keyListener = new SpinnerKeyListener(spinnerModifyListener);
         indexSpinner.addKeyListener(keyListener);
         indexSpinner.addModifyListener(spinnerModifyListener);
         return indexSpinner;
     }
 
-    public static Image getImageFromNode(Node node) {
+    public static Image getImageFromNode(final Node node) {
         return getImageFromNode(node, -1, -1);
     }
 
-    public static Image getImageFromNode(Node node, int width, int height) {
+    public static Image getImageFromNode(final Node node, final int width, final int height) {
         if (node != null) {
             NodeImage icon = node.getIcon();
             if (icon != null) {
@@ -592,14 +396,14 @@ public final class ConfigHelper {
         return null;
     }
 
-    public static Image getImageMaxSize(String imagePath, int width, int height) {
-        ImageData imageData = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                ActivatorUI.PLUGIN_ID, imagePath).getImageData();
-        if (width > 0 && height > 0) {
+    public static Image getImageMaxSize(final String imagePath, final int width, final int height) {
+        ImageData imageData = CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, imagePath).getImageData();
+        if ((width > 0) && (height > 0)) {
             int width2 = imageData.width;
             int height2 = imageData.height;
 
-            if (width2 > width && height2 > height) {
+            if ((width2 > width) && (height2 > height)) {
                 width2 = width;
                 height2 = height;
             }
@@ -609,7 +413,7 @@ public final class ConfigHelper {
         return new Image(null, imageData);
     }
 
-    private static Image getChannelImage(boolean isInput, boolean isDigital, int width, int height) {
+    private static Image getChannelImage(final boolean isInput, final boolean isDigital, final int width, final int height) {
         // DI
         if (isInput && !isDigital) {
             return getImageMaxSize("icons/Input_red16.png", width, height);

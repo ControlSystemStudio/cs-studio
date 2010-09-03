@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MainView.java,v 1.2 2010/08/20 13:33:03 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -33,8 +33,8 @@ import org.eclipse.ui.part.ViewPart;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 19.06.2007
  */
 public class MainView extends ViewPart {
@@ -55,7 +55,7 @@ public class MainView extends ViewPart {
         parent.setLayout(layout);
         parent.setLayoutData(new GridData(SWT.FILL, SWT.FILL,true,true,1,1));
         parent.setBackground(Display.getCurrent().getSystemColor(SWT.COLOR_MAGENTA));
-        _profiBusTreeView = new ProfiBusTreeView(parent,SWT.NONE,getViewSite());
+        setProfiBusTreeView(new ProfiBusTreeView(parent,SWT.NONE,getViewSite()));
     }
 
     /**
@@ -63,8 +63,23 @@ public class MainView extends ViewPart {
      */
     @Override
     public void setFocus() {
-        _profiBusTreeView.setFocus();
+        getProfiBusTreeView().setFocus();
     }
+
+    /**
+     * @param profiBusTreeView the profiBusTreeView to set
+     */
+    private void setProfiBusTreeView(ProfiBusTreeView profiBusTreeView) {
+        _profiBusTreeView = profiBusTreeView;
+    }
+
+    /**
+     * @return the profiBusTreeView
+     */
+    public ProfiBusTreeView getProfiBusTreeView() {
+        return _profiBusTreeView;
+    }
+    
     
 
 

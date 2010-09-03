@@ -18,8 +18,9 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
+ */
+/*
+ * $Id: LogbookDocumentService.java,v 1.3 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.service;
 
@@ -36,28 +37,27 @@ import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.tools.Helper;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.documentservice.service.DocumentService;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 27.08.2009
  */
 public class LogbookDocumentService implements DocumentService {
 
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
-    public void openDocument(String id) {
+    public void openDocument(final String id) {
         Document firstElement = Repository.load(Document.class, id);
         File createTempFile = null;
         try {
             createTempFile = File.createTempFile("ddbDoc", "."
                     + firstElement.getMimeType());
             Helper.writeDocumentFile(createTempFile, firstElement);
-            if(createTempFile!=null&&createTempFile.isFile()) {
+            if((createTempFile!=null)&&createTempFile.isFile()) {
                 if(Desktop.isDesktopSupported()) {
                     if(Desktop.getDesktop().isSupported(Desktop.Action.OPEN)) {
                         CentralLogger.getInstance().debug(this,"Desktop unterstützt Open!");
@@ -76,18 +76,21 @@ public class LogbookDocumentService implements DocumentService {
     }
 
     /**
-     * {@inheritDoc} 
+     * {@inheritDoc}
      */
     @Override
-    public void saveDocumentAs(String id, File file) {
+    public void saveDocumentAs(final String id, final File file) {
         // TODO Auto-generated method stub
 
     }
 
-    
-    List<IDocument> getAllDocumentsFromNode(int id){
+
+    /**
+     * Get all Document from a Node.
+     */
+    List<IDocument> getAllDocumentsFromNode(final int nodeId){
         List<IDocument> docList = new ArrayList<IDocument>();
-        Node load = Repository.load(Node.class, id);
+        Node load = Repository.load(Node.class, nodeId);
         while(load!=null) {
             if(load.getDocuments()!=null) {
                 docList.addAll(load.getDocuments());
@@ -96,7 +99,7 @@ public class LogbookDocumentService implements DocumentService {
         }
         return docList;
     }
-    
+
 //    @Override
 //    public IDocument getDocumentFromNode(int id) {
 //        // TODO Auto-generated method stub

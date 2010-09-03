@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: MasterConfigComposite.java,v 1.13 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -33,7 +33,7 @@ import java.util.TreeMap;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Document;
-import org.csstudio.config.ioconfig.model.Keywords;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.model.pbmodel.Master;
@@ -66,8 +66,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.13 $
  * @since 06.06.2007
  */
 public class MasterConfigComposite extends NodeConfig {
@@ -156,7 +156,6 @@ public class MasterConfigComposite extends NodeConfig {
     public MasterConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Master master) {
         super(parent, profiBusTreeView, "Profibus Master Configuration", master, master == null);
-        profiBusTreeView.setConfiguratorName("Master Configuration");
         _master = master;
         if (_master == null) {
             newNode();
@@ -170,17 +169,17 @@ public class MasterConfigComposite extends NodeConfig {
         String[] heads = { "Master", "GSD File List" };
         master(heads[0]);
         documents();
-        ConfigHelper.makeGSDFileChooser(getTabFolder(), heads[1], this, Keywords.GSDFileTyp.Master);
+//        ConfigHelper.makeGSDFileChooser(getTabFolder(), heads[1], this, GSDFileTypes.Master);
         if (_gsdFile != null) {
             fill(_gsdFile);
         }
     }
 
-    private void makeFmbSetGroup(Composite parent) {
+    private void makeFmbSetGroup(final Composite parent) {
         final int limit = 13000;
         ModifyListener listener = new ModifyListener() {
 
-            public void modifyText(ModifyEvent e) {
+            public void modifyText(final ModifyEvent e) {
                 int value = (Integer.parseInt(_maxSlaveInputLenText.getText()) + Integer
                         .parseInt(_maxSlaveOutputLenText.getText()))
                         * Integer.parseInt(_maxNrSlaveText.getText());
@@ -208,7 +207,7 @@ public class MasterConfigComposite extends NodeConfig {
             min = map.lastKey();
         }
         int maxNrSlave;
-        if (min <= 0 && _master.getMaxNrSlave() <= 0) {
+        if ((min <= 0) && (_master.getMaxNrSlave() <= 0)) {
             // default
             maxNrSlave = 60;
         } else if (min > _master.getMaxNrSlave()) {
@@ -327,12 +326,12 @@ public class MasterConfigComposite extends NodeConfig {
         fillStationAddressCombo();
     }
 
-    private void makeMemoryAddressingGroup(Composite comp) {
+    private void makeMemoryAddressingGroup(final Composite comp) {
         _memAddressType = _master.getProfibusPnoId();
         _oldMemAddressType = _memAddressType;
 
         SelectionListener selectionListener = new SelectionAdapter() {
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 _memAddressType = (Integer) ((Button) e.getSource()).getData();
                 setSavebuttonEnabled("MasterMemAddressType", _oldMemAddressType != _memAddressType);
             }
@@ -362,7 +361,7 @@ public class MasterConfigComposite extends NodeConfig {
         }
     }
 
-    private void makeMasterUserData(Composite comp, int column) {
+    private void makeMasterUserData(final Composite comp, final int column) {
         Group masterUserData = new Group(comp, SWT.NONE);
         masterUserData.setText("Master User Data:");
         masterUserData.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false, column, 1));
@@ -373,8 +372,8 @@ public class MasterConfigComposite extends NodeConfig {
         _masterUserDataText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, true, 1, 1));
 
         // is a Default Value. Is not a part of the Master GSD File.
-        if (_master != null && _master.getMasterUserData() != null
-                && _master.getMasterUserData().length() > 0) {
+        if ((_master != null) && (_master.getMasterUserData() != null)
+                && (_master.getMasterUserData().length() > 0)) {
             _masterUserDataText.setText(_master.getMasterUserData());
         } else {
             _masterUserDataText
@@ -382,13 +381,13 @@ public class MasterConfigComposite extends NodeConfig {
         }
     }
 
-    private void makeParametersGroup(Composite comp) {
+    private void makeParametersGroup(final Composite comp) {
         Group gParameters = new Group(comp, SWT.NONE);
         gParameters.setText("Parameters:");
         gParameters.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 3));
         gParameters.setLayout(new GridLayout(3, false));
 
-        
+
         // min. Slave Interval
         new Label(gParameters, SWT.NONE);// .setText("[micros]");
 
@@ -435,7 +434,7 @@ public class MasterConfigComposite extends NodeConfig {
         });
     }
 
-    private void makeInformationGroup(Composite comp, int column) {
+    private void makeInformationGroup(final Composite comp, final int column) {
         Group gInformation = new Group(comp, SWT.NONE);
         gInformation.setText("Information:");
         gInformation.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, column, 1));
@@ -466,7 +465,7 @@ public class MasterConfigComposite extends NodeConfig {
 
     }
 
-    private void makeRedundencyMasterGroup(Composite comp, int column) {
+    private void makeRedundencyMasterGroup(final Composite comp, final int column) {
         Group gRedundencyMaster = new Group(comp, SWT.NONE);
         gRedundencyMaster.setText("Redundency Master:");
         gRedundencyMaster.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false, column, 1));
@@ -476,22 +475,22 @@ public class MasterConfigComposite extends NodeConfig {
         _redundentButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         _redundentButton.setText("Redunden IOC: ");
 
-        if(_master.getRedundant()<0&&!_master.getFreeStationAddress().contains((short)(_master.getSortIndex()+1))){
+        if((_master.getRedundant()<0)&&!_master.getFreeStationAddress().contains((short)(_master.getSortIndex()+1))){
             _redundentButton.setEnabled(false);
             gRedundencyMaster.setToolTipText("The Station address for the redundency Master is occupied");
         }
         _redundentButton.setSelection(_master.getRedundant()>=0);
         _redundentButton.setData(_master.getRedundant()>=0);
-        
+
         _redundentButton.addSelectionListener(new SelectionListener() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 select();
             }
 
             @Override
-            public void widgetDefaultSelected(SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 select();
             }
 
@@ -501,12 +500,12 @@ public class MasterConfigComposite extends NodeConfig {
                 _freeStationAddress = _master.getFreeMStationAddress(_redundentButton.getSelection());
                 _indexCombo.setInput(_freeStationAddress);
                 _indexCombo.setSelection(new StructuredSelection(sortIndex));
-                
+
             }
         });
     }
 
-    private void makeNameGroup(Composite comp, int column) {
+    private void makeNameGroup(final Composite comp, final int column) {
         Group gName = new Group(comp, SWT.NONE);
         gName.setText("Name");
         gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, column, 1));
@@ -532,7 +531,7 @@ public class MasterConfigComposite extends NodeConfig {
         _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void selectionChanged(final SelectionChangedEvent event) {
                 short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
                         .getFirstElement();
                 getNode().moveSortIndex(index);
@@ -585,7 +584,7 @@ public class MasterConfigComposite extends NodeConfig {
             _master.setRedundant((short) -1);
         }
         _indexCombo.getCombo().setData(_indexCombo.getCombo().getSelectionIndex());
-        
+
         // Information
         _master.setVendorName(_vendorText.getText());
         _master.setProfibusdpmasterBez(_pbBoardText.getText());
@@ -622,7 +621,7 @@ public class MasterConfigComposite extends NodeConfig {
         _master.setMaxSlaveParaLen(Integer.parseInt(_maxSlaveParaLenText.getText()));
         // -----------------------------
 
-        
+
         fillStationAddressCombo();
         save();
     }
@@ -663,6 +662,10 @@ public class MasterConfigComposite extends NodeConfig {
      * {@inheritDoc}
      */
     @Override
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
     public final Node getNode() {
         if (_master == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
@@ -676,7 +679,7 @@ public class MasterConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * {@inheritDoc}
      */
     @Override

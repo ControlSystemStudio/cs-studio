@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: FacilityConfigComposite.java,v 1.5 2010/08/20 13:32:59 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -30,6 +30,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.Document;
 import org.csstudio.config.ioconfig.model.Facility;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
@@ -42,8 +43,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.5 $
  * @since 20.03.2008
  */
 public class FacilityConfigComposite extends NodeConfig {
@@ -53,15 +54,14 @@ public class FacilityConfigComposite extends NodeConfig {
      */
     private Facility _facility;
 
-    public FacilityConfigComposite(Composite parent, final ProfiBusTreeView profiBusTreeView, short sortIndex) {
+    public FacilityConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView, final short sortIndex) {
         super(parent, profiBusTreeView, "Facility Configuration", null, true);
-        profiBusTreeView.setConfiguratorName("Facility Configuration");
         getProfiBusTreeView().getTreeViewer().setSelection(null);
         newNode();
         getNode().moveSortIndex(sortIndex);
         buildGui();
     }
-    
+
     /**
      * @param parent
      *            The Parent Composite.
@@ -70,10 +70,9 @@ public class FacilityConfigComposite extends NodeConfig {
      * @param facility
      *            to Configure. Is NULL create a new one.
      */
-    public FacilityConfigComposite(Composite parent, final ProfiBusTreeView profiBusTreeView,
-            Facility facility) {
+    public FacilityConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
+            final Facility facility) {
         super(parent, profiBusTreeView, "Facility Configuration", facility, facility == null);
-        profiBusTreeView.setConfiguratorName("Facility Configuration");
         _facility = facility;
         buildGui();
     }
@@ -88,7 +87,7 @@ public class FacilityConfigComposite extends NodeConfig {
 
     /**
      * Generate the Main IOC configuration Tab.
-     * 
+     *
      * @param head
      *            The headline of the tab.
      */
@@ -113,7 +112,7 @@ public class FacilityConfigComposite extends NodeConfig {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio
      * .config.ioconfig.model.pbmodel.GSDFile)
@@ -165,7 +164,7 @@ public class FacilityConfigComposite extends NodeConfig {
 
     /**
      * Have no GSD File.
-     * 
+     *
      * @return null.
      */
     @Override
@@ -173,13 +172,15 @@ public class FacilityConfigComposite extends NodeConfig {
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getNode()
+    /**
+     * {@inheritDoc}
      */
     @Override
-    public Node getNode() {
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
+    public final Node getNode() {
         if (_facility == null) {
             _facility = new Facility();
         }

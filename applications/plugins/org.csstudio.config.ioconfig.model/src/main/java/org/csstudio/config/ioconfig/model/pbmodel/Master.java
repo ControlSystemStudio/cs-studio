@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Master.java,v 1.8 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -34,8 +34,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdMasterModel;
 
 /*******************************************************************************
@@ -141,11 +143,11 @@ public class Master extends Node {
     /**
      * The default Constructor.
      */
-    public Master(ProfibusSubnet profibusSubnet) {
+    public Master(final ProfibusSubnet profibusSubnet) {
         this(profibusSubnet, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public Master(ProfibusSubnet profibusSubnet, int maxStationAddress) {
+    public Master(final ProfibusSubnet profibusSubnet, final int maxStationAddress) {
         setParent(profibusSubnet);
         profibusSubnet.addChild(this);
     }
@@ -173,7 +175,7 @@ public class Master extends Node {
     /**
      * Get the Redundant Station Address.
      * If the Station Address < 0 the ICO have no redundant.
-     * @return the redundant Station Address. 
+     * @return the redundant Station Address.
      */
     @Column(name = "FDLADDRESS")
     public short getRedundant() {
@@ -181,9 +183,9 @@ public class Master extends Node {
     }
 
     /**
-     * Set the redundant Address.  
+     * Set the redundant Address.
      * < 0 is not redundant.
-     * >= is redundant. 
+     * >= is redundant.
      * @param fdlAddress
      */
     public void setRedundant(final short fdlAddress) {
@@ -290,7 +292,7 @@ public class Master extends Node {
     // * Helper Methods *
     // ******************
     /**
-     * 
+     *
      * @return
      */
     @Transient
@@ -310,7 +312,7 @@ public class Master extends Node {
     public void setGSDMasterData(final GsdMasterModel masterModel) {
         _gsdMasterModel = masterModel;
     }
-    
+
     @Transient
     public SortedSet<Short> getFreeStationAddress(){
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
@@ -319,15 +321,15 @@ public class Master extends Node {
         }
         freeAddressList.remove(getSortIndex());
         freeAddressList.remove(getRedundant());
-        
+
         Set<Short> keySet = getChildrenAsMap().keySet();
         freeAddressList.removeAll(keySet);
-        
+
         return freeAddressList;
     }
 
     @Transient
-    public SortedSet<Short> getFreeMStationAddress(boolean redunant){
+    public SortedSet<Short> getFreeMStationAddress(final boolean redunant){
         TreeSet<Short> freeAddressList = new TreeSet<Short>();
         for (short i = 0; i < MAX_STATION_ADDRESS; i++) {
             freeAddressList.add(i);
@@ -344,9 +346,9 @@ public class Master extends Node {
         return freeAddressList;
     }
 
-    
+
     @Transient
-    public short getfirstFreeStationAddress(int maxStationAddress) {
+    public short getfirstFreeStationAddress(final int maxStationAddress) {
         return getFreeStationAddress().first();
     }
 
@@ -354,7 +356,7 @@ public class Master extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parentNode) {
+    public Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof ProfibusSubnet) {
             ProfibusSubnet subnet = (ProfibusSubnet) parentNode;
 
@@ -378,68 +380,85 @@ public class Master extends Node {
     }
 
     @Override
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         Node copy = super.copyThisTo(parentNode);
         for (Node node : getChildren()) {
             node.copyThisTo(copy);
         }
         return copy;    }
 
-    public void setMaxNrSlave(int maxNrSlave) {
+    public void setMaxNrSlave(final int maxNrSlave) {
         _maxNrSlave = maxNrSlave;
     }
 
     public int getMaxNrSlave() {
         return _maxNrSlave;
     }
-    
-    public void setMaxSlaveOutputLen(int maxSlaveOutputLen) {
+
+    public void setMaxSlaveOutputLen(final int maxSlaveOutputLen) {
         _maxSlaveOutputLen = maxSlaveOutputLen;
     }
-    
+
     public int getMaxSlaveOutputLen() {
         return _maxSlaveOutputLen;
     }
 
-    public void setMaxSlaveInputLen(int maxSlaveInputLen) {
+    public void setMaxSlaveInputLen(final int maxSlaveInputLen) {
         _maxSlaveInputLen = maxSlaveInputLen;
     }
-    
+
     public int getMaxSlaveInputLen() {
         return _maxSlaveInputLen;
     }
 
-    public void setMaxSlaveDiagEntries(int maxSlaveDiagEntries) {
+    public void setMaxSlaveDiagEntries(final int maxSlaveDiagEntries) {
         _maxSlaveDiagEntries = maxSlaveDiagEntries;
     }
-    
+
     public int getMaxSlaveDiagEntries() {
         return _maxSlaveDiagEntries;
     }
 
-    public void setMaxSlaveDiagLen(int maxSlaveDiagLen) {
+    public void setMaxSlaveDiagLen(final int maxSlaveDiagLen) {
         _maxSlaveDiagLen = maxSlaveDiagLen;
-        
+
     }
-    
+
     public int getMaxSlaveDiagLen() {
         return _maxSlaveDiagLen;
     }
-    
-    public void setMaxBusParaLen(int maxBusParaLen) {
+
+    public void setMaxBusParaLen(final int maxBusParaLen) {
         _maxBusParaLen = maxBusParaLen;
     }
-    
+
     public int getMaxBusParaLen() {
         return _maxBusParaLen;
     }
 
-    public void setMaxSlaveParaLen(int maxSlaveParaLen) {
+    public void setMaxSlaveParaLen(final int maxSlaveParaLen) {
         _maxSlaveParaLen = maxSlaveParaLen;
     }
 
     public int getMaxSlaveParaLen() {
         return _maxSlaveParaLen;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GSDFileTypes needGSDFile() {
+        return GSDFileTypes.Master;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.MASTER;
     }
 
 }

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: SearchDialog.java,v 1.11 2010/08/20 13:33:04 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -28,7 +28,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.csstudio.config.ioconfig.model.Facility;
-import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.SearchNode;
@@ -66,8 +65,8 @@ import org.eclipse.swt.widgets.Text;
 /**
  * 
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.11 $
  * @since 05.06.2009
  */
 public class SearchDialog extends Dialog {
@@ -698,22 +697,14 @@ public class SearchDialog extends Dialog {
                     while (!parentNode.isRootNode()) {
                         parentNode = parentNode.getParent();
                     }
-                    List<FacilityLight> input = (List<FacilityLight>)_profiBusTreeView.getTreeViewer().getInput();
+                    List<Facility> input = (List<Facility>)_profiBusTreeView.getTreeViewer().getInput();
                     Facility facility = (Facility) parentNode;
-                    for (FacilityLight facilityLight : input) {
-                        if(facilityLight.getId()==parentNode.getId()) {
-                            facilityLight.setFacility(facility);
-                            facility.setFacilityLigth(facilityLight);
-                            facilityLight.getFacility();
-                            break;
-                        }
-                    }
                     if(facility.getId()==_selectedNode.getId()) {
-                        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(facility.getFacilityLigth()));
+                        _profiBusTreeView.getTreeViewer().setSelection(new StructuredSelection(facility));
                         super.okPressed();
                         return;
                     } else {
-                        _profiBusTreeView.getTreeViewer().expandToLevel(facility.getFacilityLigth(),1);
+                        _profiBusTreeView.getTreeViewer().expandToLevel(facility,1);
                     }
                 }
                 _profiBusTreeView.getTreeViewer().expandToLevel(_selectedNode, _profiBusTreeView.getTreeViewer().ALL_LEVELS);

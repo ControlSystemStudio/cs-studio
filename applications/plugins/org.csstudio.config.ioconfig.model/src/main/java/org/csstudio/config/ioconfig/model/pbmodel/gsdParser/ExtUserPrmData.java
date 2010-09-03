@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ExtUserPrmData.java,v 1.3 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
@@ -28,8 +28,8 @@ import java.util.HashMap;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 21.07.2008
  */
 public class ExtUserPrmData {
@@ -37,7 +37,7 @@ public class ExtUserPrmData {
     /**
      * The Parent GSD Slave Model.
      */
-    private GsdSlaveModel _gsdSlaveModel;
+    private final GsdSlaveModel _gsdSlaveModel;
 
     /**
      * The ref index of this ext user prm data.
@@ -94,7 +94,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return The ref index of this ext user prm data.
      */
     public final String getIndex() {
@@ -102,7 +102,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @param index
      *            Set the ref index of this ext user prm data.
      */
@@ -111,7 +111,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return The Name/Desc of this ext user prm data.
      */
     public final String getText() {
@@ -119,26 +119,33 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @param text
      *            Set the Name/Desc of this ext user prm data.
      */
     public final void setText(final String text) {
-        _text = text.split(";")[0].trim();
+        if((text!=null)&&!text.isEmpty()) {
+            _text = text.split(";")[0].trim();
+        } else {
+            _text = "";
+        }
     }
 
     /**
      * The dataType of this ext user prm data as plain text.<br>
      * (e.G. Bit(1), BitArea(4-7), UnsignedX)
-     * 
+     *
      * @return the plain text dataType.
      */
     public final String getDataType() {
+        if(_dataType==null) {
+            _dataType="";
+        }
         return _dataType;
     }
 
     /**
-     * 
+     *
      * @param dataType
      *            set the plain text DataType.
      */
@@ -160,7 +167,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return the default value.
      */
     public final int getDefault() {
@@ -169,7 +176,7 @@ public class ExtUserPrmData {
 
     /**
      * Set a numeric int value, given as string.
-     * 
+     *
      * @param def
      *            set the default value.
      */
@@ -182,7 +189,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return The lowest bit to manipulate.
      */
     public final int getMinBit() {
@@ -190,7 +197,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @param minBit
      *            Set the lowest bit to manipulate.
      */
@@ -203,7 +210,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return The highest bit to manipulate.
      */
     public final int getMaxBit() {
@@ -211,7 +218,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @param maxBit
      *            Set the highest bit to manipulate.
      */
@@ -236,7 +243,7 @@ public class ExtUserPrmData {
      * @param maxValue
      *            Set the maximum Value.
      */
-    public final void setValueRange(final String minValue, String maxValue) {
+    public final void setValueRange(final String minValue, final String maxValue) {
         int min;
         int max;
         try {
@@ -278,7 +285,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @param prmTextRef
      *            Set the Parameter Text Reference.
      */
@@ -287,7 +294,7 @@ public class ExtUserPrmData {
     }
 
     /**
-     * 
+     *
      * @return The Parameter Text Map.
      */
     public final HashMap<Integer, PrmText> getPrmText() {
@@ -304,7 +311,7 @@ public class ExtUserPrmData {
 
     public void setValues(String[] values) {
         // _values = values.clone();
-        if (values != null && values.length > 0) {
+        if ((values != null) && (values.length > 0)) {
             _minValue = Integer.parseInt(values[0]);
             _maxValue = Integer.parseInt(values[values.length - 1]);
         }

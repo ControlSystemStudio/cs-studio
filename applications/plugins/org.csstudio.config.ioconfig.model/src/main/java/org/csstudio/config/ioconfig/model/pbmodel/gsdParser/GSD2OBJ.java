@@ -33,17 +33,17 @@ public class GSD2OBJ {
 
         /** ************** Set Vendor Name ********************* */
         generalStruct.setVendorName(
-                selProperty.SelectPropertyValue(gsdFile, "Vendor_Name")
+                selProperty.selectPropertyValue(gsdFile, "Vendor_Name")
         );
 
         /** ************** Set Model Name ********************* */
         generalStruct.setModelName(
-                selProperty.SelectPropertyValue(gsdFile, "Model_Name")
+                selProperty.selectPropertyValue(gsdFile, "Model_Name")
         );
 
         /** ************** Set Revision ********************* */
         generalStruct.setRevision(
-                selProperty.SelectPropertyValue(gsdFile, "Revision")
+                selProperty.selectPropertyValue(gsdFile, "Revision")
         );
 
         /** ************** Set RevisionNumber ******************* */
@@ -67,61 +67,61 @@ public class GSD2OBJ {
         );
 
         /** ************** Set FMS_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "FMS_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "FMS_supp");
         generalStruct.setFmsSupp(bool.equals("1"));
         
         /** ************** Set HardwareRelease ********************* */
         generalStruct.setHardwareRelease(
-                selProperty.SelectPropertyValue(gsdFile, "HardwareRelease")
+                selProperty.selectPropertyValue(gsdFile, "HardwareRelease")
         );
 
         /** ************** Set SoftwareRelease ********************* */
         generalStruct.setSoftwareRelease(
-                selProperty.SelectPropertyValue(gsdFile, "SoftwareRelease")
+                selProperty.selectPropertyValue(gsdFile, "SoftwareRelease")
         );
 
         /** ************** Set _9k6_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "9.6_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "9.6_supp");
         generalStruct.setSupp9k6(bool.equals("1"));
 
         /** ************** Set _19k2_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "19.2_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "19.2_supp");
         generalStruct.setSupp19k2(bool.equals("1"));
 
         /** ************** Set _31k25_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "31.25_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "31.25_supp");
         generalStruct.setSupp31k25(bool.equals("1"));
 
         /** ************** Set _45k45_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "45.45_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "45.45_supp");
         generalStruct.setSupp45k45(bool.equals("1"));
 
         /** ************** Set _93k75_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "93.75_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "93.75_supp");
         generalStruct.setSupp93k75(bool.equals("1"));
 
         /** ************** Set _187k5_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "187.5_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "187.5_supp");
         generalStruct.setSupp187k5(bool.equals("1"));
 
         /** ************** Set _500_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "500_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "500_supp");
         generalStruct.setSupp500(bool.equals("1"));
 
         /** ************** Set _1M5_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "1.5M_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "1.5M_supp");
         generalStruct.setSupp1M5(bool.equals("1"));
 
         /** ************** Set _3M_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "3M_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "3M_supp");
         generalStruct.setSupp3M(bool.equals("1"));
 
         /** ************** Set _6M_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "6M_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "6M_supp");
         generalStruct.setSupp6M(bool.equals("1"));
 
         /** ************** Set _12M_supp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "12M_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "12M_supp");
         generalStruct.setSupp12M(bool.equals("1"));
         /** ************** Set MaxTsdr9k6 ********************* */
         generalStruct.setMaxTsdr9k6(
@@ -178,7 +178,7 @@ public class GSD2OBJ {
         );
 
         /** ************** Set Redundancy ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Redundancy");
+        bool = selProperty.selectPropertyValue(gsdFile, "Redundancy");
         generalStruct.setRedundancy(bool.equals("1"));
 
         /** ************** Set RepeaterCtrlSig ******************* */
@@ -193,22 +193,22 @@ public class GSD2OBJ {
 
         /** ************** Set ImplementationType ********************* */
         generalStruct.setImplementationType(
-                selProperty.SelectPropertyValue(gsdFile, "Implementation_Type")
+                selProperty.selectPropertyValue(gsdFile, "Implementation_Type")
         );
 
         /** ************** Set BitmapDevice ********************* */
         generalStruct.setBitmapDevice(
-                selProperty.SelectPropertyValue(gsdFile, "Bitmap_Device")
+                selProperty.selectPropertyValue(gsdFile, "Bitmap_Device")
         );
 
         /** ************** Set BitmapDiag ********************* */
         generalStruct.setBitmapDiag(
-                selProperty.SelectPropertyValue(gsdFile, "Bitmap_Diag")
+                selProperty.selectPropertyValue(gsdFile, "Bitmap_Diag")
         );
 
         /** ************** Set BitmapSF *********************** */
         generalStruct.setBitmapSF(
-                selProperty.SelectPropertyValue(gsdFile, "Bitmap_SF")
+                selProperty.selectPropertyValue(gsdFile, "Bitmap_SF")
         );
     }
 
@@ -263,19 +263,19 @@ public class GSD2OBJ {
         }
 
         /** ************** Set downloadSupp ********************* */
-        downloadSupp = selProperty.SelectPropertyValue(gsdFile, "Download_supp");
+        downloadSupp = selProperty.selectPropertyValue(gsdFile, "Download_supp");
         masterStruct.setDownloadSupp(downloadSupp.equals("1"));
 
         /** ************** Set uploadSupp ********************* */
-        uploadSupp = selProperty.SelectPropertyValue(gsdFile, "Upload_supp");
+        uploadSupp = selProperty.selectPropertyValue(gsdFile, "Upload_supp");
         masterStruct.setUploadSupp(uploadSupp.equals("1"));
 
         /** ************** Set actParamBrctSupp ********************* */
-        actParamBrctSupp = selProperty.SelectPropertyValue(gsdFile, "Act_Param_Brct_supp");
+        actParamBrctSupp = selProperty.selectPropertyValue(gsdFile, "Act_Param_Brct_supp");
         masterStruct.setActParamBrctSupp(actParamBrctSupp.equals("1"));
 
         /** ************** Set actParamSupp ********************* */
-        actParamSupp = selProperty.SelectPropertyValue(gsdFile, "Act_Param_supp");
+        actParamSupp = selProperty.selectPropertyValue(gsdFile, "Act_Param_supp");
         masterStruct.setActParamSupp(actParamSupp.equals("1"));
 
         /** ************** Set maxMpsLength ********************* */
@@ -592,19 +592,19 @@ public class GSD2OBJ {
 
         // Station is Slave
         /** ************** Set FreezeModeSupp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Freeze_Mode_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "Freeze_Mode_supp");
         slaveStruct.setFreezeModeSupp(bool.equals("1"));
 
         /** ************** Set SyncModeSupp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Sync_Mode_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "Sync_Mode_supp");
         slaveStruct.setSyncModeSupp(bool.equals("1"));
 
         /** ************** Set AutoBaudSupp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Auto_Baud_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "Auto_Baud_supp");
         slaveStruct.setAutoBaudSupp(bool.equals("1"));
 
         /** ************** Set SetSlaveAddSupp ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Set_Slave_Add_supp");
+        bool = selProperty.selectPropertyValue(gsdFile, "Set_Slave_Add_supp");
         slaveStruct.setSetSlaveAddSupp(bool.equals("1"));
 
         /** ************** Set UserPrmDataLen ********************* */
@@ -612,7 +612,7 @@ public class GSD2OBJ {
                 (byte) getIntermediateValue(selProperty, gsdFile,"User_Prm_Data_Len")
         );
         /** ************** Set UserPrmData ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "User_Prm_Data");
+        bool = selProperty.selectPropertyValue(gsdFile, "User_Prm_Data");
         slaveStruct.setUserPrmData(bool);
 
         /** ************** Set MinSlaveIntervall ********************* */
@@ -621,7 +621,7 @@ public class GSD2OBJ {
         );
 
         /** ************** Set ModularStation ********************* */
-        bool = selProperty.SelectPropertyValue(gsdFile, "Modular_Station");
+        bool = selProperty.selectPropertyValue(gsdFile, "Modular_Station");
         slaveStruct.setModularStation(bool.equals("1"));
 
         /** ************** Set MaxModule ********************* */
@@ -656,7 +656,7 @@ public class GSD2OBJ {
      * @return The integer Value.
      */
     private long getIntermediateValue(final GSDPROPERTY selProperty, final String gsdFile, final String intermediateValue) {
-        return getIntermediateValue(selProperty.SelectPropertyValue(gsdFile, intermediateValue));
+        return getIntermediateValue(selProperty.selectPropertyValue(gsdFile, intermediateValue));
         
     }
 

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: DBClass.java,v 1.5 2010/03/18 09:54:26 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
@@ -35,8 +35,8 @@ import javax.persistence.Transient;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.5 $
  * @since 17.10.2008
  */
 

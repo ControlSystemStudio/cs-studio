@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: SearchNode.java,v 1.1 2009/08/26 07:08:57 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
@@ -30,8 +30,8 @@ import javax.persistence.Table;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 04.06.2009
  */
 @Entity

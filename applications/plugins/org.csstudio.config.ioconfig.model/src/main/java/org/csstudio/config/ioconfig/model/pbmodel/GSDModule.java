@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: GSDModule.java,v 1.3 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -39,32 +39,34 @@ import javax.persistence.Transient;
 import javax.persistence.UniqueConstraint;
 
 import org.csstudio.config.ioconfig.model.DBClass;
+import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * The Hibernate Persistence DataModel for the Profibus GSD Module.
- * 
+ *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 02.10.2008
  */
 
 @Entity
 @Table(name = "ddb_GSD_Module", uniqueConstraints = { @UniqueConstraint(columnNames = {
         "gSDFile_Id", "moduleId" }) })
-public class GSDModule extends DBClass implements Comparable<GSDModule> {
+public class GSDModule extends DBClass implements Comparable<GSDModule>, IDocumentable {
 
     private final class ComparatorImplementation implements Comparator<ModuleChannelPrototype> {
-        public int compare(ModuleChannelPrototype o1, ModuleChannelPrototype o2) {
-            if(o1.isInput()==true&&o2.isInput()==false) {
+        public int compare(final ModuleChannelPrototype o1, final ModuleChannelPrototype o2) {
+            if(o1.isInput()&&!o2.isInput()) {
                 return -1;
             }
-            if(o1.isInput()==false&&o2.isInput()==true) {
+            if(!o1.isInput()&&o2.isInput()) {
                 return 1;
             }
             if(o1.getOffset()!=o2.getOffset()) {
-                return o1.getOffset()-o2.getOffset();    
+                return o1.getOffset()-o2.getOffset();
             }
             // this is a Error handling
             CentralLogger.getInstance().warn(this,  "GSDModule sort is invalid");
@@ -78,7 +80,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
     private String _name;
 
     /**
-     * 
+     *
      */
     private int _moduleId;
 
@@ -91,7 +93,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
      * The I/O Parameter as series of numbers.<br>
      * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
      * input. 2 = output. 3 = not used.
-     * 
+     *
      */
     private String _parameter;
 
@@ -106,6 +108,8 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
 
     private boolean _isDirty;
 
+    private Set<Document> _documents;
+
     /**
      * Default Constructor needed by Hibernate.
      */
@@ -115,11 +119,11 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
 
     /**
      * Constructor.
-     * 
+     *
      * @param name
      *            The Module name.
      */
-    public GSDModule(String name) {
+    public GSDModule(final String name) {
         setName(name);
         _isDirty = true;
     }
@@ -131,16 +135,16 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
     public boolean isDirty() {
         return _isDirty;
     }
-    
+
     /**
-     * @param dirty set true when the Module have unsaved values. 
+     * @param dirty set true when the Module have unsaved values.
      */
-    public void setDirty(boolean dirty) {
+    public void setDirty(final boolean dirty) {
         _isDirty = dirty;
     }
 
     /**
-     * 
+     *
      * @return the parent {@link GSDFile}.
      */
     @ManyToOne
@@ -149,15 +153,15 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
     }
 
     /**
-     * 
+     *
      * @param gsdFile set the parent {@link GSDFile}.
      */
-    public void setGSDFile(GSDFile gsdFile) {
+    public void setGSDFile(final GSDFile gsdFile) {
         _gsdFile = gsdFile;
     }
 
     /**
-     * 
+     *
      * @param name
      *            set the Name of this GSD Module.
      */
@@ -166,7 +170,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
     }
 
     /**
-     * 
+     *
      * @return the Name of this GSD Module.
      */
     public String getName() {
@@ -181,10 +185,10 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
     }
 
     // Das ist der falsche weg!
-    // Kann nicht mit den Nodes in eine Table. 
+    // Kann nicht mit den Nodes in eine Table.
     // Wenn muß eine eigene Matching Table erstellt werden.
 //    /**
-//     * 
+//     *
 //     * @return documents that relate to this node.
 //     */
 //    @ManyToMany(fetch = FetchType.EAGER)
@@ -195,7 +199,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
 //
 //    /**
 //     * Set the documents relate to this node.
-//     * 
+//     *
 //     * @param document
 //     *            the documents to relate.
 //     */
@@ -205,12 +209,12 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
 
     /**
      * Compare to GSDModule instances on the basis of the DB Key (ID).
-     * 
+     *
      * @param other
      *            the other GSDModule to compare whit this one.
      * @return {@inheritDoc}
      */
-    public int compareTo(GSDModule other) {
+    public int compareTo(final GSDModule other) {
         return getId() - other.getId();
     }
 
@@ -218,7 +222,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
         return _configurationData;
     }
 
-    public void setConfigurationData(String configurationData) {
+    public void setConfigurationData(final String configurationData) {
         _configurationData = configurationData;
     }
 
@@ -226,7 +230,7 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
      * The I/O Parameter as series of numbers.<br>
      * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
      * input. 2 = output. 3 = not used.
-     * 
+     *
      * @return The I/O Parameter as series of numbers.
      */
     public String getParameter() {
@@ -237,11 +241,11 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
      * The I/O Parameter as series of numbers.<br>
      * Example: "AB1D33110000" D = Digital. AB = Analog Byte AW = Analog Word 0 = unknown. 1 =
      * input. 2 = output. 3 = not used.
-     * 
+     *
      * @param parameter
      *            Set the I/O Parameter as series of numbers.
      */
-    public void setParameter(String parameter) {
+    public void setParameter(final String parameter) {
         _parameter = parameter;
     }
 
@@ -260,38 +264,38 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
         return moduleChannelPrototypes;
     }
 
-    public void setModuleChannelPrototype(Set<ModuleChannelPrototype> moduleChannelPrototypes) {
+    public void setModuleChannelPrototype(final Set<ModuleChannelPrototype> moduleChannelPrototypes) {
         _moduleChannelPrototypes = moduleChannelPrototypes;
     }
 
-    public void addModuleChannelPrototype(ModuleChannelPrototype moduleChannelPrototype) {
+    public void addModuleChannelPrototype(final ModuleChannelPrototype moduleChannelPrototype) {
         if (_moduleChannelPrototypes == null) {
             _moduleChannelPrototypes = new TreeSet<ModuleChannelPrototype>(new ComparatorImplementation());
         }
         _moduleChannelPrototypes.add(moduleChannelPrototype);
         moduleChannelPrototype.setGSDModule(this);
     }
-    
-    public void removeModuleChannelPrototype(ModuleChannelPrototype moduleChannelPrototype) {
+
+    public void removeModuleChannelPrototype(final ModuleChannelPrototype moduleChannelPrototype) {
         if (_moduleChannelPrototypes == null) {
             return;
         }
         _moduleChannelPrototypes.remove(moduleChannelPrototype);
         moduleChannelPrototype.setGSDModule(null);
-    } 
-    
-    public void removeModuleChannelPrototype(Collection<ModuleChannelPrototype> moduleChannelPrototypes) {
+    }
+
+    public void removeModuleChannelPrototype(final Collection<ModuleChannelPrototype> moduleChannelPrototypes) {
         if (_moduleChannelPrototypes == null) {
             return;
         }
         _moduleChannelPrototypes.removeAll(moduleChannelPrototypes);
         for (ModuleChannelPrototype moduleChannelPrototype : moduleChannelPrototypes) {
-            moduleChannelPrototype.setGSDModule(null);    
+            moduleChannelPrototype.setGSDModule(null);
         }
     }
 
     /**
-     * @return is only true if the {@link GSDModule} persistent at the DB.  
+     * @return is only true if the {@link GSDModule} persistent at the DB.
      */
     @Transient
     public boolean isExisting() {
@@ -302,13 +306,40 @@ public class GSDModule extends DBClass implements Comparable<GSDModule> {
         return _moduleId;
     }
 
-    public void setModuleId(int moduleId) {
+    public void setModuleId(final int moduleId) {
         _moduleId = moduleId;
     }
 
     @Transient
     public int getGsdFileId() {
         return getGSDFile().getId();
+    }
+
+    /**
+     *  Die Tabellen MIME_FILES und MIME_FILES_DDB_NODE liegen auf einer anderen DB.
+     *  Daher wird hier mit einem Link gearbeitet der folgenden Rechte benötigt.
+     *  -  Für MIME_FILES ist das Grand: select.
+     *  -  Für MIME_FILES_DDB_NODE ist das Grand: select, insert, update, delete.
+     *
+     * @return Documents for the Node.
+     */
+    @Override
+    @Transient
+//    @ManyToMany(fetch = FetchType.LAZY, cascade = { CascadeType.PERSIST, CascadeType.REFRESH })
+//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+//    @JoinTable(name = "MIME_FILES_DDB_NODES_LINK_TEST", joinColumns = @JoinColumn(name = "docs_id", referencedColumnName = "id", unique = true), inverseJoinColumns = @JoinColumn(name = "nodes_id", referencedColumnName = "id"))
+    public Set<Document> getDocuments() {
+        return _documents;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public void setDocuments(final Set<Document> documents) {
+        _documents = documents;
+
     }
 
 //    public void save() throws PersistenceException {

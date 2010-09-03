@@ -1,26 +1,23 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
- * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
+ * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
+ * Association, (DESY), HAMBURG, GERMANY.
  *
- * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
- * WITHOUT WARRANTY OF ANY KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED
- * TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR PARTICULAR PURPOSE AND
- * NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE
- * FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
- * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR
- * THE USE OR OTHER DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE
- * IN ANY RESPECT, THE USER ASSUMES THE COST OF ANY NECESSARY SERVICING, REPAIR OR
- * CORRECTION. THIS DISCLAIMER OF WARRANTY CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE.
- * NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER EXCEPT UNDER THIS DISCLAIMER.
- * DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES, ENHANCEMENTS,
- * OR MODIFICATIONS.
- * THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
- * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
- * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
- * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+ * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
+ * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+ * HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+ * TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+ * DEALINGS IN THE SOFTWARE. SHOULD THE SOFTWARE PROVE DEFECTIVE IN ANY RESPECT, THE USER ASSUMES
+ * THE COST OF ANY NECESSARY SERVICING, REPAIR OR CORRECTION. THIS DISCLAIMER OF WARRANTY
+ * CONSTITUTES AN ESSENTIAL PART OF THIS LICENSE. NO USE OF ANY SOFTWARE IS AUTHORIZED HEREUNDER
+ * EXCEPT UNDER THIS DISCLAIMER. DESY HAS NO OBLIGATION TO PROVIDE MAINTENANCE, SUPPORT, UPDATES,
+ * ENHANCEMENTS, OR MODIFICATIONS. THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION,
+ * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
+ * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
+ * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ProfiBusTreeView.java,v 1.26 2010/08/20 13:33:03 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.view;
 
@@ -36,36 +33,38 @@ import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-import org.csstudio.config.ioconfig.config.view.ChannelConfigComposite;
-import org.csstudio.config.ioconfig.config.view.ChannelStructureConfigComposite;
-import org.csstudio.config.ioconfig.config.view.FacilityConfigComposite;
-import org.csstudio.config.ioconfig.config.view.IocConfigComposite;
-import org.csstudio.config.ioconfig.config.view.MasterConfigComposite;
-import org.csstudio.config.ioconfig.config.view.ModuleConfigComposite;
-import org.csstudio.config.ioconfig.config.view.NodeConfig;
-import org.csstudio.config.ioconfig.config.view.SlaveConfigComposite;
-import org.csstudio.config.ioconfig.config.view.SubNetConfigComposite;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.config.ioconfig.commands.CallEditor;
+import org.csstudio.config.ioconfig.commands.CallNewChildrenNodeEditor;
+import org.csstudio.config.ioconfig.commands.CallNewSiblingNodeEditor;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
-import org.csstudio.config.ioconfig.config.view.helper.InfoConfigComposte;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
+import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.Activator;
 import org.csstudio.config.ioconfig.model.Facility;
-import org.csstudio.config.ioconfig.model.FacilityLight;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
-import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
 import org.csstudio.config.ioconfig.model.pbmodel.Master;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 import org.csstudio.config.ioconfig.model.pbmodel.Slave;
+import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigSiemensGenerator;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
+import org.eclipse.core.commands.Command;
+import org.eclipse.core.commands.IParameter;
+import org.eclipse.core.commands.Parameterization;
+import org.eclipse.core.commands.ParameterizedCommand;
+import org.eclipse.core.commands.common.NotDefinedException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -92,7 +91,6 @@ import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
 import org.eclipse.jface.viewers.ColumnViewerToolTipSupport;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -101,18 +99,15 @@ import org.eclipse.jface.viewers.TreeViewerEditor;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.TreeEditor;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.events.KeyAdapter;
-import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -129,153 +124,43 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeItem;
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.ISharedImages;
-import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchActionConstants;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.commands.ICommandService;
+import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.26 $
  * @since 19.06.2007
  */
 public class ProfiBusTreeView extends Composite {
 
     /**
-     * 
-     * @author hrickens
-     * @author $Author$
-     * @version $Revision$
-     * @since 20.06.2007
-     */
-    class NameSorter extends ViewerSorter {
-
-        @Override
-        public int category(Object element) {
-            return super.category(element);
-        }
-
-        @Override
-        public int compare(final Viewer viewer, final Object e1, final Object e2) {
-            if (e1 instanceof NamedDBClass && e2 instanceof NamedDBClass) {
-                NamedDBClass node1 = (NamedDBClass) e1;
-                NamedDBClass node2 = (NamedDBClass) e2;
-                if (node1.getSortIndex() == null || node2.getSortIndex() == null) {
-                    return -1;
-                }
-                int sortIndex = node1.getSortIndex() - node2.getSortIndex().shortValue();
-                if (sortIndex == 0) {
-                    sortIndex = node1.getId() - node2.getId();
-                }
-                return sortIndex;
-            }
-            return 0;
-        }
-    }
-
-    /**
-     * 
-     * @author hrickens
-     * @author $Author$
-     * @version $Revision$
-     * @since 20.06.2007
-     */
-    class ViewLabelProvider extends ColumnLabelProvider {
-
-        private final Color PROGRAMMABLE_MARKER_COLOR = CustomMediaFactory.getInstance().getColor(
-                255, 140, 0);
-        private final Font PROGRAMMABLE_MARKER_FONT = CustomMediaFactory.getInstance().getFont(
-                "Tahoma", 8, SWT.ITALIC);
-
-        @Override
-        public Color getBackground(Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_COLOR;
-            }
-            return null;
-        }
-
-        @Override
-        public Font getFont(Object element) {
-            if (haveProgrammableModule(element)) {
-                return PROGRAMMABLE_MARKER_FONT;
-            }
-            return null;
-        }
-
-        public Image getImage(final Object obj) {
-            if (obj instanceof Node) {
-                Node node = (Node) obj;
-                return ConfigHelper.getImageFromNode(node);
-            } else if (obj instanceof FacilityLight) {
-                return ConfigHelper.getImageMaxSize("icons/css.gif", -1, -1);
-            }
-            return null;
-        }
-
-        @Override
-        public String getText(Object element) {
-            String text = super.getText(element);
-            String[] split = text.split("(\r(\n)?)");
-            if (split.length > 1) {
-                text = split[0];
-            }
-            if (haveProgrammableModule(element)) {
-                return text + " [prog]";
-            }
-            return text;
-        }
-
-        @Override
-        public String getToolTipText(Object element) {
-            if (haveProgrammableModule(element)) {
-                return "Is a programmable Module!";
-            }
-            return null;
-        }
-
-        private boolean haveProgrammableModule(Object element) {
-            // TODO: Das finden von Projekt Document Datein führt teilweise dazu das sich CSS
-            // Aufhängt!
-            // if (element instanceof Slave) {
-            // Slave node = (Slave) element;
-            // Set<Document> documents = node.getDocuments();
-            // while (documents.iterator().hasNext()) {
-            // Document doc = (Document) documents.iterator().next();
-            // if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
-            // return true;
-            // }
-            // }
-            // }
-            return false;
-        }
-
-    }
-
-    /**
      * The ID of the View.
      */
     public static final String ID = ProfiBusTreeView.class.getName();
-    private IViewSite _site;
+    public static final String PARENT_NODE_ID = "org.csstudio.config.ioconfig.parent.node";
+    private static final String NEW_NODE_COMMAND_ID = CallNewSiblingNodeEditor.getEditorID();
+//    private static final String NEW_NODE_COMMAND_ID = IocEditor.ID;
+    private final IViewSite _site;
+
     /**
      * The Parent Composite.
      */
-    private Composite _parent;
+    private final Composite _parent;
     /**
      * The ProfiBus Tree View.
      */
-    private TreeViewer _viewer;
+    private final TreeViewer _viewer;
     /**
      * The parent Composite for the Node Config Composite.
      */
-    private Composite _parentConfigComposite;
-    private DrillDownAdapter _drillDownAdapter;
+    //    private Composite _parentConfigComposite;
+    private final DrillDownAdapter _drillDownAdapter;
     /**
      * the Selected Node.
      */
@@ -296,10 +181,6 @@ public class ProfiBusTreeView extends Composite {
      * This action open an selected Node. Type of new node dependent on Parent.
      */
     private IAction _editNodeAction;
-    /**
-     * This action open a new level one empty Node. The type of this node is {@link Facility}.
-     */
-    private IAction _newFacilityAction;
     /**
      * This Action open a new empty Node. (No Facility!)
      */
@@ -340,26 +221,29 @@ public class ProfiBusTreeView extends Composite {
      * The Action to reassemble the EPICS Address String.
      */
     private IAction _assembleEpicsAddressStringAction;
-    /**
-     * The actual open Node Config Composite.
-     */
-    private NodeConfig _nodeConfigComposite;
+    //    /**
+    //     * The actual open Node Config Composite.
+    //     */
+    //    private NodeConfig _nodeConfigComposite;
     /**
      * A List of all loaded {@link Facility}'s
      */
-    private List<FacilityLight> _load;
+    private List<Facility> _load;
     private Action _infoDialogAction;
+    private AbstractNodeEditor _openNodeEditor;
+    private Action _createNewSiemensConfigFile;
 
     /**
      * Retrieves the image descriptor for specified image from the workbench's image registry.
      * Unlike Images, image descriptors themselves do not need to be disposed.
-     * 
+     *
      * @param symbolicName
      *            the symbolic name of the image; there are constants declared in this interface for
      *            build-in images that come with the workbench
      * @return the image descriptor, or null if not found
      */
-    private static ImageDescriptor getSharedImageDescriptor(String symbolicName) {
+    @CheckForNull
+    private static ImageDescriptor getSharedImageDescriptor(@Nonnull final String symbolicName) {
         return PlatformUI.getWorkbench().getSharedImages().getImageDescriptor(symbolicName);
     }
 
@@ -372,19 +256,19 @@ public class ProfiBusTreeView extends Composite {
      *            The Controll Site
      * @param configComposite
      */
-    public ProfiBusTreeView(final Composite parent, final int style, final IViewSite site) {
+    public ProfiBusTreeView(@Nonnull final Composite parent, final int style, final IViewSite site) {
         super(parent, style);
         new InstanceScope().getNode(Activator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new IPreferenceChangeListener() {
 
                     @Override
-                    public void preferenceChange(PreferenceChangeEvent event) {
+                    public void preferenceChange(@Nonnull final PreferenceChangeEvent event) {
                         String property = event.getKey();
                         if (property.equals(DDB_PASSWORD) || property.equals(DDB_USER_NAME)
                                 || property.equals(DIALECT)
                                 || property.equals(HIBERNATE_CONNECTION_DRIVER_CLASS)
                                 || property.equals(HIBERNATE_CONNECTION_URL)) {
-                            _load = Repository.load(FacilityLight.class);
+                            _load = Repository.load(Facility.class);
                             _viewer.getTree().removeAll();
                             _viewer.setInput(_load);
                             _viewer.refresh(false);
@@ -404,8 +288,7 @@ public class ProfiBusTreeView extends Composite {
         this.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 
         _viewer = new TreeViewer(this, SWT.MULTI | SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER);
-        ColumnViewerEditorActivationStrategy editorActivationStrategy = new ColumnViewerEditorActivationStrategy(
-                _viewer);
+        ColumnViewerEditorActivationStrategy editorActivationStrategy = new ColumnViewerEditorActivationStrategy(_viewer);
         TreeViewerEditor.create(_viewer, editorActivationStrategy, TreeViewerEditor.DEFAULT);
         _drillDownAdapter = new DrillDownAdapter(_viewer);
         _viewer.setContentProvider(new ProfibusTreeContentProvider(_site));
@@ -414,14 +297,14 @@ public class ProfiBusTreeView extends Composite {
         _viewer.setSorter(new NameSorter());
         _viewer.getTree().setHeaderVisible(false);
         _viewer.getTree().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-
+        _site.setSelectionProvider(_viewer);
         ColumnViewerToolTipSupport.enableFor(_viewer);
 
         CentralLogger.getInstance().debug(this, "ID: " + _site.getId());
         CentralLogger.getInstance().debug(this, "PlugIn ID: " + _site.getPluginId());
         CentralLogger.getInstance().debug(this, "Name: " + _site.getRegisteredName());
         CentralLogger.getInstance().debug(this, "SecID: " + _site.getSecondaryId());
-        
+
         // ---
         _viewer.setInput("Please wait a moment");
         try {
@@ -429,22 +312,18 @@ public class ProfiBusTreeView extends Composite {
             Job loadJob = new Job("DBLoader") {
 
                 @Override
-                protected IStatus run(IProgressMonitor monitor) {
+                protected IStatus run(@Nonnull final IProgressMonitor monitor) {
                     monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-                    monitor.setTaskName("Load \t-\tStart Time: "+new Date());
-                    
+                    monitor.setTaskName("Load \t-\tStart Time: " + new Date());
+
                     PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
 
                         @Override
                         public void run() {
-                            // Cursor oldCursor = getDisplay().getCursorControl().getCursor();
-                            // Cursor handCursor = new Cursor(Display.getCurrent(),SWT.CURSOR_WAIT);
-                            // getDisplay().getCursorControl().setCursor(handCursor);
                             _viewer.getTree().setEnabled(false);
-                            _load = Repository.load(FacilityLight.class);
+                            _load = Repository.load(Facility.class);
                             _viewer.setInput(_load);
                             _viewer.getTree().setEnabled(true);
-                            // getDisplay().getCursorControl().setCursor(oldCursor);
                         }
                     });
                     monitor.done();
@@ -456,15 +335,15 @@ public class ProfiBusTreeView extends Composite {
             loadJob.schedule();
 
         } catch (RuntimeException e) {
-            ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                    "Device Data Base (DDB) Error\n" + "Can't load the Root data", null,
-                    e);
+            ProfibusHelper.openErrorDialog(_site.getShell(),
+                                           "Data Base Error",
+                                           "Device Data Base (DDB) Error\n"
+                                                   + "Can't load the Root data",
+                                           null,
+                                           e);
             return;
-        } finally {
         }
-        
         // ---
-        
 
         makeActions();
         hookContextMenu();
@@ -472,34 +351,38 @@ public class ProfiBusTreeView extends Composite {
         contributeToActionBars();
 
         _viewer.addSelectionChangedListener(new ISelectionChangedListener() {
-            public void selectionChanged(final SelectionChangedEvent event) {
+            public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 if (event.getSelection() instanceof StructuredSelection) {
                     _selectedNode = (StructuredSelection) event.getSelection();
-                    if (_selectedNode != null && !_selectedNode.isEmpty()) {
+                    if ( (_selectedNode != null) && !_selectedNode.isEmpty()) {
+
                         _editNodeAction.run();
                     }
                 }
             }
         });
-        
+
         this.addDisposeListener(new DisposeListener() {
-            
-            public void widgetDisposed(DisposeEvent e) {
-                checkDirtyConfig(_nodeConfigComposite);
+
+            @Override
+            public void widgetDisposed(@Nonnull final DisposeEvent e) {
+                // TODO: Umstellen auf Editor
+                //                checkDirtyConfig(_nodeConfigComposite);
                 Repository.close();
             }
         });
 
     }
-    
+
     /**
      * Add a new Facility to the tree root.
-     * 
+     *
      * @param node
      *            the new Facility.
      */
-    public final void addFacility(Node node) {
+    public final void addFacility(@Nullable final Node node) {
         if (node instanceof Facility) {
+            //            _load.add((Facility) node);
             _viewer.setInput(node);
         }
     }
@@ -514,84 +397,24 @@ public class ProfiBusTreeView extends Composite {
      */
     private void editNode() {
         _editNodeAction.setEnabled(false);
-        setEditComposite();
+        //        setEditComposite();
 
-        Object selectedNode = _selectedNode.getFirstElement();
-        if (selectedNode instanceof FacilityLight) {
-            final FacilityLight f = (FacilityLight) selectedNode;
-            try {
-
-                Job loadJob = new Job("DBLoader") {
-
-                    @Override
-                    protected IStatus run(IProgressMonitor monitor) {
-                        monitor.beginTask("DBLoaderMonitor", IProgressMonitor.UNKNOWN);
-                        monitor.setTaskName("Load " + f.getName()+"\t-\tStart Time: "+new Date());
-                        // das wird beim erstenmal eine zeitlang dauern...
-                        f.getFacility();
-                        PlatformUI.getWorkbench().getDisplay().syncExec(new Runnable() {
-
-                            @Override
-                            public void run() {
-                                _nodeConfigComposite = new FacilityConfigComposite(
-                                        _parentConfigComposite, ProfiBusTreeView.this, f
-                                                .getFacility()); // XXX
-                                _editNodeAction.setEnabled(true);
-                                _parentConfigComposite.getParent().layout(false);
-                            }
-                        });
-                        monitor.done();
-                        return Status.OK_STATUS;
-                    }
-
-                };
-                loadJob.setUser(true);
-                loadJob.schedule();
-
-            } catch (RuntimeException e) {
-                ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                        "Device Data Base (DDB) Error\n" + "Can't load the %1s '%2s' (ID: %3s)", f,
-                        e);
-                return;
-            } finally {
-            }
-            // bar.dispose();
-        } else if (selectedNode instanceof Facility) {
-            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this,
-                    ((Facility) selectedNode));
-        } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this,
-                    ((Ioc) selectedNode));
-        } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this,
-                    ((ProfibusSubnet) selectedNode));
-        } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this,
-                    ((Master) selectedNode));
-        } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this,
-                    ((Slave) selectedNode));
-        } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this,
-                    ((Module) selectedNode));
-        } else if (selectedNode instanceof ChannelStructure) {
-            _nodeConfigComposite = new ChannelStructureConfigComposite(_parentConfigComposite,
-                    this, ((ChannelStructure) selectedNode));
-        } else if (selectedNode instanceof Channel) {
-            _nodeConfigComposite = new ChannelConfigComposite(_parentConfigComposite, this,
-                    ((Channel) selectedNode));
-        } else {
-            Node node = (Node) selectedNode;
-            String nodeText = "";
-            if (node != null) {
-                nodeText = node.toString();
-            }
-            _nodeConfigComposite = new InfoConfigComposte(_parentConfigComposite, this, SWT.NONE,
-                    node, nodeText);
+        closeOpenEditor();
+        IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
+        try {
+            handlerService.executeCommand(CallEditor.ID, null);
+        } catch (Exception ex) {
+            CentralLogger.getInstance().error(this, ex.getMessage());
         }
-        if (!(selectedNode instanceof FacilityLight)) {
-            _editNodeAction.setEnabled(true);
-            _parentConfigComposite.getParent().layout(false);
+        return;
+    }
+
+    /**
+     *
+     */
+    private void closeOpenEditor() {
+        if (_openNodeEditor != null) {
+            _openNodeEditor.perfromClose();
         }
     }
 
@@ -599,34 +422,29 @@ public class ProfiBusTreeView extends Composite {
      * Expand the complete Tree.
      */
     public final void expandAll() {
-        for (FacilityLight object : _load) {
-            if (object.isLoaded()) {
-                _viewer.expandToLevel(object, TreeViewer.ALL_LEVELS);
-            }
-        }
-        Control[] childs = _parent.getChildren();
-        for (Control control : childs) {
-            if (control instanceof NodeConfig) {
-                NodeConfig nodeConfig = (NodeConfig) control;
-                ISelection sel = new StructuredSelection(nodeConfig.getNode());
-                _viewer.setSelection(sel);
-            }
-        }
+        /*
+         * TODO: Wird nicht mehr gemacht da es von der Performenc her unklug ist.
+         * Es werden einfach zuviele Nodes auf einmal geladen, was zu Laden zeiten
+         * in Minutenbreiche führt
+         */
     }
 
-    private void fillContextMenu(final IMenuManager manager) {
+    private void fillContextMenu(@Nonnull final IMenuManager manager) {
         Object selectedNode = _selectedNode.getFirstElement();
-        if (selectedNode instanceof Facility || selectedNode instanceof FacilityLight) {
+        if (selectedNode instanceof Facility) {
             setContriebutionActions("New Ioc", Facility.class, Ioc.class, manager);
             manager.add(new Separator());
             manager.add(_createNewXMLConfigFile);
+            manager.add(_createNewSiemensConfigFile);
         } else if (selectedNode instanceof Ioc) {
             setContriebutionActions("New Subnet", Ioc.class, ProfibusSubnet.class, manager);
             manager.add(new Separator());
             manager.add(_createNewXMLConfigFile);
+            manager.add(_createNewSiemensConfigFile);
         } else if (selectedNode instanceof ProfibusSubnet) {
             setContriebutionActions("New Master", ProfibusSubnet.class, Master.class, manager);
             manager.add(_createNewXMLConfigFile);
+            manager.add(_createNewSiemensConfigFile);
         } else if (selectedNode instanceof Master) {
             setContriebutionActions("New Slave", Master.class, Slave.class, manager);
         } else if (selectedNode instanceof Slave) {
@@ -639,8 +457,8 @@ public class ProfiBusTreeView extends Composite {
             manager.add(_copyNodeAction);
             manager.add(_cutNodeAction);
 
-            boolean pasteEnable = _copiedNodesReferenceList != null
-                    && _copiedNodesReferenceList.size() > 0
+            boolean pasteEnable = (_copiedNodesReferenceList != null)
+                    && (_copiedNodesReferenceList.size() > 0)
                     && (Module.class.isInstance(_copiedNodesReferenceList.get(0)));
             _pasteNodeAction.setEnabled(pasteEnable);
             manager.add(_pasteNodeAction);
@@ -654,10 +472,10 @@ public class ProfiBusTreeView extends Composite {
         manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
     }
 
-    private void fillLocalToolBar(final IToolBarManager manager) {
+    private void fillLocalToolBar(@Nonnull final IToolBarManager manager) {
         manager.add(_infoDialogAction);
         manager.add(new Separator());
-        manager.add(_newFacilityAction);
+        manager.add(makeNewFacilityAction());
         manager.add(_refreshAction);
         manager.add(new Separator());
         _drillDownAdapter.addNavigationActions(manager);
@@ -666,7 +484,7 @@ public class ProfiBusTreeView extends Composite {
     }
 
     /**
-     * 
+     *
      * @return the Control of the TreeViewer
      */
     public final TreeViewer getTreeViewer() {
@@ -677,8 +495,7 @@ public class ProfiBusTreeView extends Composite {
         final MenuManager popupMenuMgr = new MenuManager("#PopupMenu");
         popupMenuMgr.setRemoveAllWhenShown(true);
         popupMenuMgr.addMenuListener(new IMenuListener() {
-            public void menuAboutToShow(final IMenuManager manager) {
-
+            public void menuAboutToShow(@Nonnull final IMenuManager manager) {
                 ProfiBusTreeView.this.fillContextMenu(manager);
             }
         });
@@ -687,9 +504,10 @@ public class ProfiBusTreeView extends Composite {
 
         _viewer.getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, _viewer);
-        ImageDescriptor iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                ActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
+        ImageDescriptor iDesc = CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
         Action expandAllAction = new Action() {
+            @Override
             public void run() {
                 expandAll();
             }
@@ -699,9 +517,10 @@ public class ProfiBusTreeView extends Composite {
         expandAllAction.setImageDescriptor(iDesc);
         _site.getActionBars().getToolBarManager().add(expandAllAction);
 
-        iDesc = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(
-                ActivatorUI.PLUGIN_ID, "icons/collapse_all.gif");
+        iDesc = CustomMediaFactory.getInstance()
+                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/collapse_all.gif");
         Action collapseAllAction = new Action() {
+            @Override
             public void run() {
                 _viewer.collapseAll();
             }
@@ -718,7 +537,7 @@ public class ProfiBusTreeView extends Composite {
 
     private void hookDoubleClickAction() {
         _viewer.addDoubleClickListener(new IDoubleClickListener() {
-            public void doubleClick(final DoubleClickEvent event) {
+            public void doubleClick(@Nonnull final DoubleClickEvent event) {
                 _doubleClickAction.run();
             }
         });
@@ -736,6 +555,7 @@ public class ProfiBusTreeView extends Composite {
         makePasteNodeAction();
         makeDeletNodeAction();
         makeCreateNewXMLConfigFile();
+        makeCreateNewSiemensConfigFile();
         makeTreeNodeRenameAction();
         makeRefreshAction();
         makeInfoDialogAction();
@@ -743,6 +563,7 @@ public class ProfiBusTreeView extends Composite {
 
     private void makeInfoDialogAction() {
         _infoDialogAction = new Action() {
+            @Override
             public void run() {
                 openInfoDialog();
             }
@@ -761,6 +582,7 @@ public class ProfiBusTreeView extends Composite {
      */
     private void makeAssembleEpicsAddressStringAction() {
         _assembleEpicsAddressStringAction = new Action() {
+            @Override
             public void run() {
                 Object selectedNode = _selectedNode.getFirstElement();
                 if (selectedNode instanceof Node) {
@@ -784,13 +606,13 @@ public class ProfiBusTreeView extends Composite {
 
     private void makeCreateNewXMLConfigFile() {
         _createNewXMLConfigFile = new Action("Create") {
-            private void makeXMLFile(File path, ProfibusSubnet subnet) {
+            private void makeXMLFile(final File path, final ProfibusSubnet subnet) {
                 ProfibusConfigXMLGenerator xml = new ProfibusConfigXMLGenerator(subnet.getName());
                 xml.setSubnet(subnet);
                 File xmlFile = new File(path, subnet.getName() + ".xml");
                 if (xmlFile.exists()) {
                     MessageBox box = new MessageBox(Display.getDefault().getActiveShell(),
-                            SWT.ICON_WARNING | SWT.YES | SWT.NO);
+                                                    SWT.ICON_WARNING | SWT.YES | SWT.NO);
                     box.setMessage("The file " + xmlFile.getName() + " exist! Overwrite?");
                     int erg = box.open();
                     if (erg == SWT.YES) {
@@ -810,13 +632,14 @@ public class ProfiBusTreeView extends Composite {
                         xml.getXmlFile(xmlFile);
                     } catch (IOException e) {
                         MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
-                                SWT.ICON_WARNING | SWT.ABORT);
+                                                             SWT.ICON_WARNING | SWT.ABORT);
                         abortBox.setMessage("The file " + xmlFile.getName() + " can not created!");
                         abortBox.open();
                     }
                 }
             }
 
+            @Override
             public void run() {
                 // TODO: Multi Selection XML Create.
                 final String filterPathKey = "FilterPath";
@@ -847,23 +670,6 @@ public class ProfiBusTreeView extends Composite {
                             makeXMLFile(path, subnet);
                         }
                     }
-                } else if (selectedNode instanceof FacilityLight) {
-                    FacilityLight fL = (FacilityLight) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + fL);
-                    try {
-                        Facility facility = fL.getFacility();
-                        for (Ioc ioc : facility.getIoc()) {
-                            for (ProfibusSubnet subnet : ioc.getProfibusSubnets()) {
-                                makeXMLFile(path, subnet);
-                            }
-                        }
-                    } catch (RuntimeException e) {
-                        ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                                "Device Data Base (DDB) Error\n"
-                                        + "Can't load the %1s '%2s' (ID: %3s)", fL, e);
-                        return;
-                    }
-
                 }
             }
         };
@@ -872,14 +678,89 @@ public class ProfiBusTreeView extends Composite {
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
     }
 
+    private void makeCreateNewSiemensConfigFile() {
+        _createNewSiemensConfigFile = new Action("Create Siemens") {
+            private void makeXMLFile(final File path, final ProfibusSubnet subnet) {
+                ProfibusConfigSiemensGenerator cfg = new ProfibusConfigSiemensGenerator(subnet.getName());
+                cfg.setSubnet(subnet);
+                File xmlFile = new File(path, subnet.getName() + ".cfg");
+                if (xmlFile.exists()) {
+                    MessageBox box = new MessageBox(Display.getDefault().getActiveShell(),
+                                                    SWT.ICON_WARNING | SWT.YES | SWT.NO);
+                    box.setMessage("The file " + xmlFile.getName() + " exist! Overwrite?");
+                    int erg = box.open();
+                    if (erg == SWT.YES) {
+                        try {
+                            cfg.getXmlFile(xmlFile);
+                        } catch (IOException e) {
+                            MessageBox abortBox = new MessageBox(Display.getDefault()
+                                                                 .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
+                            abortBox.setMessage("The file " + xmlFile.getName()
+                                                + " can not created!");
+                            abortBox.open();
+                        }
+                    }
+                } else {
+                    try {
+                        xmlFile.createNewFile();
+                        cfg.getXmlFile(xmlFile);
+                    } catch (IOException e) {
+                        MessageBox abortBox = new MessageBox(Display.getDefault().getActiveShell(),
+                                                             SWT.ICON_WARNING | SWT.ABORT);
+                        abortBox.setMessage("The file " + xmlFile.getName() + " can not created!");
+                        abortBox.open();
+                    }
+                }
+            }
+
+            @Override
+            public void run() {
+                // TODO: Multi Selection XML Create.
+                final String filterPathKey = "FilterPath";
+                IEclipsePreferences pref = new DefaultScope().getNode(Activator.PLUGIN_ID);
+                String filterPath = pref.get(filterPathKey, "");
+                DirectoryDialog dDialog = new DirectoryDialog(_parent.getShell());
+                dDialog.setFilterPath(filterPath);
+                filterPath = dDialog.open();
+                File path = new File(filterPath);
+                pref.put(filterPathKey, filterPath);
+                Object selectedNode = _selectedNode.getFirstElement();
+                if (selectedNode instanceof ProfibusSubnet) {
+                    ProfibusSubnet subnet = (ProfibusSubnet) selectedNode;
+                    CentralLogger.getInstance().info(this, "Create XML for Subnet: " + subnet);
+                    makeXMLFile(path, subnet);
+
+                } else if (selectedNode instanceof Ioc) {
+                    Ioc ioc = (Ioc) selectedNode;
+                    CentralLogger.getInstance().info(this, "Create XML for Ioc: " + ioc);
+                    for (ProfibusSubnet subnet : ioc.getProfibusSubnets()) {
+                        makeXMLFile(path, subnet);
+                    }
+                } else if (selectedNode instanceof Facility) {
+                    Facility facility = (Facility) selectedNode;
+                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + facility);
+                    for (Ioc ioc : facility.getIoc()) {
+                        for (ProfibusSubnet subnet : ioc.getProfibusSubnets()) {
+                            makeXMLFile(path, subnet);
+                        }
+                    }
+                }
+            }
+        };
+        _createNewSiemensConfigFile.setToolTipText("Action Create tooltip");
+        _createNewSiemensConfigFile
+        .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
+    }
+
     private void makeDeletNodeAction() {
         _deletNodeAction = new Action() {
 
+            @Override
             @SuppressWarnings("unchecked")
             public void run() {
                 boolean openConfirm = MessageDialog.openConfirm(getShell(), "Delete Node", String
-                        .format("Delete %1s: %2s", _selectedNode.toArray()[0]
-                                .getClass().getSimpleName(), _selectedNode));
+                        .format("Delete %1s: %2s", _selectedNode.toArray()[0].getClass()
+                                .getSimpleName(), _selectedNode));
                 if (openConfirm) {
                     Node parent = null;
                     NamedDBClass dbClass = null;
@@ -893,22 +774,14 @@ public class ProfiBusTreeView extends Composite {
                                 _load.remove(fac);
                                 _viewer.remove(_load);
                             } catch (Exception e) {
-                                ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                                        "Device Data Base (DDB) Error\n"
-                                                + "Can't delete the %1s '%2s' (ID: %3s)", fac, e);
+                                ProfibusHelper
+                                        .openErrorDialog(_site.getShell(),
+                                                         "Data Base Error",
+                                                         "Device Data Base (DDB) Error\n"
+                                                                 + "Can't delete the %1s '%2s' (ID: %3s)",
+                                                         fac,
+                                                         e);
 
-                                return;
-                            }
-                        } else if (dbClass instanceof FacilityLight) {
-                            FacilityLight fL = (FacilityLight) dbClass;
-                            try {
-                                Repository.removeNode(fL.getFacility());
-                                _load.remove(fL);
-                                _viewer.setInput(_load);
-                            } catch (RuntimeException e) {
-                                ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                                        "Device Data Base (DDB) Error\n"
-                                                + "Can't delete the %1s '%2s' (ID: %3s)", fL, e);
                                 return;
                             }
                         } else if (dbClass instanceof Node) {
@@ -918,9 +791,13 @@ public class ProfiBusTreeView extends Composite {
                             try {
                                 parent.save();
                             } catch (PersistenceException e) {
-                                ProfibusHelper.openErrorDialog(_site.getShell(), "Data Base Error",
-                                        "Device Data Base (DDB) Error\n"
-                                                + "Can't delete the %1s '%2s' (ID: %3s)", node, e);
+                                ProfibusHelper
+                                        .openErrorDialog(_site.getShell(),
+                                                         "Data Base Error",
+                                                         "Device Data Base (DDB) Error\n"
+                                                        +"Can't delete the %1s '%2s' (ID: %3s)",
+                                                         node,
+                                                         e);
                             }
                         }
                         dbClass = parent;
@@ -953,24 +830,10 @@ public class ProfiBusTreeView extends Composite {
     private void makeEditNodeAction() {
         _editNodeAction = new Action() {
 
+            @Override
             public void run() {
                 if (getEnabled()) {
-                    if (_parent instanceof SashForm) {
-                        SashForm form = (SashForm) _parent;
-                        int[] weights = form.getWeights();
-                        editNode();
-                        int[] test = form.getWeights();
-                        if (weights.length != test.length) {
-                            for (int i = 0; i < weights.length && i < test.length; i++) {
-                                test[i] = weights[i];
-                            }
-                            form.setWeights(test);
-                        } else {
-                            form.setWeights(weights);
-                        }
-                    } else {
-                        editNode();
-                    }
+                    editNode();
                 }
             }
         };
@@ -986,6 +849,7 @@ public class ProfiBusTreeView extends Composite {
      */
     private void makeNewChildrenNodeAction() {
         _newChildrenNodeAction = new Action() {
+            @Override
             public void run() {
                 openNewEmptyChildrenNode();
             }
@@ -997,47 +861,30 @@ public class ProfiBusTreeView extends Composite {
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_ADD));
     }
 
-    private void makeNewFacilityAction() {
-        _newFacilityAction = new Action() {
+    /**
+     * This action open a new level one empty Node. The type of this node is {@link Facility}.
+     */
+    @Nonnull
+    private Action makeNewFacilityAction() {
+        Action newFacilityAction = new Action() {
 
+            @Override
             public void run() {
-                setEditComposite();
-                if (_parent instanceof SashForm) {
-                    SashForm form = (SashForm) _parent;
-                    int[] weights = form.getWeights();
-                    Control[] childrens = _parent.getChildren();
-                    for (int i = 1; i < childrens.length; i++) {
-                        if (childrens[i] instanceof Composite) {
-                            childrens[i].dispose();
-                        }
-                    }
-                    new FacilityConfigComposite(_parentConfigComposite, ProfiBusTreeView.this, null);
-
-                    int[] test = form.getWeights();
-                    if (weights.length != test.length) {
-                        for (int i = 0; i < weights.length && i < test.length; i++) {
-                            test[i] = weights[i];
-                        }
-                        form.setWeights(test);
-                    } else {
-                        form.setWeights(weights);
-                    }
-                } else {
-                    Control[] childrens = _parent.getChildren();
-                    for (int i = 1; i < childrens.length; i++) {
-                        if (childrens[i] instanceof Composite) {
-                            childrens[i].dispose();
-                        }
-                    }
-                    new FacilityConfigComposite(_parentConfigComposite, ProfiBusTreeView.this, null);
+                closeOpenEditor();
+                IHandlerService handlerService = (IHandlerService) _site
+                        .getService(IHandlerService.class);
+                try {
+                    handlerService.executeCommand(CallNewSiblingNodeEditor.getEditorID(), null);
+                } catch (Exception ex) {
+                    CentralLogger.getInstance().error(this, ex.getMessage());
                 }
-                _parentConfigComposite.getParent().layout(true);
             }
         };
-        _newFacilityAction.setText("new Facility");
-        _newFacilityAction.setToolTipText("Create a new Facility");
-        _newFacilityAction
+        newFacilityAction.setText("new Facility");
+        newFacilityAction.setToolTipText("Create a new Facility");
+        newFacilityAction
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_TOOL_NEW_WIZARD));
+        return newFacilityAction;
 
     }
 
@@ -1046,9 +893,12 @@ public class ProfiBusTreeView extends Composite {
      */
     private void makeNewNodeAction() {
         _newNodeAction = new Action() {
+            @Override
             public void run() {
-                openNewEmptyNode();
+                closeOpenEditor();
+                openNewEmptySiblingNode();
             }
+
         };
         _newNodeAction.setText("New");
         _newNodeAction.setToolTipText("Action 1 tooltip");
@@ -1059,6 +909,7 @@ public class ProfiBusTreeView extends Composite {
     private void makeCopyNodeAction() {
         _copyNodeAction = new Action() {
 
+            @Override
             @SuppressWarnings("unchecked")
             public void run() {
                 _copiedNodesReferenceList = _selectedNode.toList();
@@ -1073,6 +924,7 @@ public class ProfiBusTreeView extends Composite {
     private void makeCutNodeAction() {
         _cutNodeAction = new Action() {
 
+            @Override
             @SuppressWarnings("unchecked")
             public void run() {
                 _copiedNodesReferenceList = _selectedNode.toList();
@@ -1087,15 +939,13 @@ public class ProfiBusTreeView extends Composite {
 
     private void makePasteNodeAction() {
         _pasteNodeAction = new Action() {
+            @Override
             @SuppressWarnings("static-access")
             public void run() {
                 Object firstElement = _selectedNode.getFirstElement();
                 Node selectedNode;
                 if (firstElement instanceof Node) {
                     selectedNode = (Node) firstElement;
-                } else if (firstElement instanceof FacilityLight) {
-                    FacilityLight fL = (FacilityLight) firstElement;
-                    selectedNode = fL.getFacility();
                 } else {
                     return;
                 }
@@ -1103,20 +953,22 @@ public class ProfiBusTreeView extends Composite {
                 for (Node node2Copy : _copiedNodesReferenceList) {
                     if (node2Copy instanceof Facility) {
                         Facility copy = (Facility) selectedNode.copyThisTo(null);
-                        FacilityLight facilityLight = new FacilityLight(copy);
-                        _load.add(facilityLight);
+                        //                        FacilityLight facilityLight = new FacilityLight(copy);
+                        //                        _load.add(facilityLight);
+                        _load.add(copy);
                         _viewer.setInput(_load);
-                        _viewer.setSelection(new StructuredSelection(facilityLight));
+                        //                        _viewer.setSelection(new StructuredSelection(facilityLight));
+                        _viewer.setSelection(new StructuredSelection(copy));
 
                     } else if (selectedNode.getClass().isInstance(node2Copy.getParent())) {
                         Node copy = null;
                         if (_move) {
                             Node oldParent = node2Copy.getParent();
                             oldParent.removeChild(node2Copy);
-                            Node node = selectedNode.getChildrenAsMap().get(
-                                    node2Copy.getSortIndex());
+                            Node node = selectedNode.getChildrenAsMap().get(node2Copy
+                                    .getSortIndex());
                             if (node != null) {
-                                short freeStationAddress = selectedNode
+                                int freeStationAddress = selectedNode
                                         .getfirstFreeStationAddress(selectedNode.MAX_STATION_ADDRESS);
                                 node2Copy.setSortIndex(freeStationAddress);
                             }
@@ -1142,7 +994,7 @@ public class ProfiBusTreeView extends Composite {
                             Node oldParent = node2Copy.getParent();
                             oldParent.removeChild(node2Copy);
                             Node parent = selectedNode.getParent();
-                            node2Copy.setSortIndex(selectedNode.getSortIndex());
+                            node2Copy.setSortIndex((int)selectedNode.getSortIndex());
                             parent.addChild(node2Copy);
                             try {
                                 parent.save();
@@ -1153,7 +1005,7 @@ public class ProfiBusTreeView extends Composite {
                             nodeCopy = node2Copy;
                         } else {
                             // paste to a sibling
-                            short targetIndex = (short) (selectedNode.getSortIndex());
+                            short targetIndex = (selectedNode.getSortIndex());
                             targetIndex++;
                             nodeCopy = node2Copy.copyThisTo(selectedNode.getParent());
                             nodeCopy.moveSortIndex(targetIndex);
@@ -1222,7 +1074,7 @@ public class ProfiBusTreeView extends Composite {
                 // If the text field loses focus, set its text into the tree
                 // and end the editing session
                 text.addFocusListener(new FocusAdapter() {
-                    public void focusLost(FocusEvent event) {
+                    public void focusLost(final FocusEvent event) {
                         text.dispose();
                     }
                 });
@@ -1232,32 +1084,33 @@ public class ProfiBusTreeView extends Composite {
                  * they hit Escape, ignore the text and end the editing session.
                  */
                 text.addKeyListener(new KeyAdapter() {
-                    public void keyPressed(KeyEvent event) {
-                        switch (event.keyCode) {
-                            case SWT.CR:
-                            case SWT.KEYPAD_CR:
-                                // Enter hit--set the text into the tree and drop through
-                                String changedText = text.getText();
-                                if (node instanceof Channel) {
-                                    ((Channel) node).setIoName(changedText);
-                                    if (_nodeConfigComposite instanceof ChannelConfigComposite) {
-                                        ((ChannelConfigComposite) _nodeConfigComposite)
-                                                .setIoNameText(changedText);
-                                    }
-                                } else {
-                                    _nodeConfigComposite.setName(text.getText());
-                                }
-                                _nodeConfigComposite.store();
-                                item.setText(node.toString());
-                                text.dispose();
-                            case SWT.ESC:
-                                // End editing session
-                                text.dispose();
-                                break;
-                            default:
-                                break;
-                        }
-                    }
+                    //TODO: Umstellen auf Editor
+                    //                    public void keyPressed(final KeyEvent event) {
+                    //                        switch (event.keyCode) {
+                    //                            case SWT.CR:
+                    //                            case SWT.KEYPAD_CR:
+                    //                                // Enter hit--set the text into the tree and drop through
+                    //                                String changedText = text.getText();
+                    //                                if (node instanceof Channel) {
+                    //                                    ((Channel) node).setIoName(changedText);
+                    //                                    if (_nodeConfigComposite instanceof ChannelConfigComposite) {
+                    //                                        ((ChannelConfigComposite) _nodeConfigComposite)
+                    //                                                .setIoNameText(changedText);
+                    //                                    }
+                    //                                } else {
+                    //                                    _nodeConfigComposite.setName(text.getText());
+                    //                                }
+                    //                                _nodeConfigComposite.store();
+                    //                                item.setText(node.toString());
+                    //                                text.dispose();
+                    //                            case SWT.ESC:
+                    //                                // End editing session
+                    //                                text.dispose();
+                    //                                break;
+                    //                            default:
+                    //                                break;
+                    //                        }
+                    //                    }
                 });
 
                 // Set the text field into the editor
@@ -1269,6 +1122,7 @@ public class ProfiBusTreeView extends Composite {
 
     private void makeRefreshAction() {
         _refreshAction = new Action() {
+            @Override
             public void run() {
                 refresh();
             }
@@ -1280,52 +1134,6 @@ public class ProfiBusTreeView extends Composite {
                 .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
 
-    private void openNewEmptyChildrenNode() {
-        setEditComposite();
-        Object selectedNode = _selectedNode.getFirstElement();
-        if (selectedNode instanceof Facility || selectedNode instanceof FacilityLight) {
-            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ChannelConfigComposite(_parentConfigComposite, this, null);
-        } // Do nothing (have no sub-elements)
-        // else if (_selectedNode instanceof Channel) {
-        // }
-        _parentConfigComposite.getParent().layout(true);
-    }
-
-    private void openNewEmptyNode() {
-        setEditComposite();
-        Object selectedNode = _selectedNode.getFirstElement();
-        if (selectedNode instanceof Facility) {
-            Node node = (Node) selectedNode;
-            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this,
-                    (short) (node.getSortIndex() + 1));
-        } else if (selectedNode instanceof FacilityLight) {
-            FacilityLight node = (FacilityLight) selectedNode;
-            _nodeConfigComposite = new FacilityConfigComposite(_parentConfigComposite, this,
-                    (short) (node.getSortIndex() + 1));
-        } else if (selectedNode instanceof Ioc) {
-            _nodeConfigComposite = new IocConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof ProfibusSubnet) {
-            _nodeConfigComposite = new SubNetConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Master) {
-            _nodeConfigComposite = new MasterConfigComposite(_parentConfigComposite, this, null);
-        } else if (selectedNode instanceof Slave) {
-            _nodeConfigComposite = new SlaveConfigComposite(_parentConfigComposite, this, null,((Slave) selectedNode).getName());
-        } else if (selectedNode instanceof Module) {
-            _nodeConfigComposite = new ModuleConfigComposite(_parentConfigComposite, this, null);
-        }
-        _parentConfigComposite.getParent().layout(true);
-    }
-
     /** refresh the Tree. Reload all Nodes */
     public final void refresh() {
         _viewer.setInput(new Object());
@@ -1334,7 +1142,7 @@ public class ProfiBusTreeView extends Composite {
 
     /**
      * Refresh the Tree. Reload element Nodes
-     * 
+     *
      * @param element
      *            Down at this element the tree are refreshed.
      */
@@ -1348,7 +1156,7 @@ public class ProfiBusTreeView extends Composite {
      * - copy<br>
      * - paste<br>
      * - delete<br>
-     * 
+     *
      * @param text
      *            Set the Text for this new Node Action.
      * @param clazz
@@ -1359,14 +1167,16 @@ public class ProfiBusTreeView extends Composite {
      *            The {@link IMenuManager} to add the Actions.
      */
     @SuppressWarnings("unchecked")
-    private void setContriebutionActions(final String text, final Class clazz,
-            final Class childClazz, final IMenuManager manager) {
+    private void setContriebutionActions(final String text,
+                                         final Class clazz,
+                                         final Class childClazz,
+                                         final IMenuManager manager) {
         _newChildrenNodeAction.setText(text);
         boolean pasteEnable = (_copiedNodesReferenceList != null)
                 && (_copiedNodesReferenceList.size() > 0)
                 && (clazz.isInstance(_copiedNodesReferenceList.get(0))
                         || childClazz.isInstance(_copiedNodesReferenceList.get(0)) || (clazz
-                        .equals(Facility.class) && FacilityLight.class
+                        .equals(Facility.class) && Facility.class
                         .isInstance(_copiedNodesReferenceList.get(0))));
         _pasteNodeAction.setEnabled(pasteEnable);
         manager.add(_newChildrenNodeAction);
@@ -1376,76 +1186,92 @@ public class ProfiBusTreeView extends Composite {
         manager.add(_deletNodeAction);
     }
 
-    private void setEditComposite() {
-        if (_parentConfigComposite != null && !_parentConfigComposite.isDisposed()) {
-            Control[] childrens = _parentConfigComposite.getChildren();
-            for (int i = 0; i < childrens.length; i++) {
-                if (childrens[i] instanceof NodeConfig && _selectedNode != null) {
-                    NodeConfig nc = (NodeConfig) childrens[i];
-                    if (nc.isDirty()) {
-                        String[] buttonLabels = new String[] { "&Save", "Don't Save", "&Cancel" };
-                        MessageDialog id = new MessageDialog(getShell(), "Node not saved!", null,
-                                "The Node is not saved.\r\n Save now?", MessageDialog.WARNING,
-                                buttonLabels, 2);
-                        id.setBlockOnOpen(true);
-                        switch (id.open()) {
-                            case Dialog.OK:
-                                // Persist the node.
-                                nc.store();
-                                break;
-                            case Dialog.CANCEL:
-                                // don't save the actual node and change to the new selected.
-                                Node node = nc.getNode();
-                                if (node != null && node.getId() < 1) {
-                                    if (node instanceof Facility) {
-                                        Facility fac = (Facility) node;
-                                        _viewer.remove(fac.getFacilityLigth());
-                                    } else if (node.getParent() != null) {
-                                        nc.getNode().getParent().removeChild(nc.getNode());
-                                    }
-                                }
-                                nc.cancel();
-                                _editNodeAction.setEnabled(true);
-                                break;
-                            default:
-                                _viewer.setSelection(new StructuredSelection(nc), true);
-                                _editNodeAction.setEnabled(true);
+    /**
+     * @param nc
+     */
+    private boolean checkDirtyConfig() {//final NodeConfig nc) {
+    //        if (nc.isDirty()) {
+    //            String[] buttonLabels = new String[] { "&Save", "Don't Save", "&Cancel" };
+    //            MessageDialog id = new MessageDialog(getShell(),
+    //                                                 "Node not saved!",
+    //                                                 null,
+    //                                                 "The Node is not saved.\r\n Save now?",
+    //                                                 MessageDialog.WARNING,
+    //                                                 buttonLabels,
+    //                                                 2);
+    //            id.setBlockOnOpen(true);
+    //            switch (id.open()) {
+    //                case Dialog.OK:
+    //                    // Persist the node.
+    //                    nc.store();
+    //                    break;
+    //                case Dialog.CANCEL:
+    //                    // don't save the actual node and change to the new selected.
+    //                    Node node = nc.getNode();
+    //                    if ( (node != null) && (node.getId() < 1)) {
+    //                        if (node instanceof Facility) {
+    //                            _viewer.remove(node);
+    //                        } else if (node.getParent() != null) {
+    //                            nc.getNode().getParent().removeChild(nc.getNode());
+    //                        }
+    //                    }
+    //                    nc.cancel();
+    //                    _editNodeAction.setEnabled(true);
+    //                    break;
+    //                default:
+    //                    _viewer.setSelection(new StructuredSelection(nc), true);
+    //                    _editNodeAction.setEnabled(true);
+    //                    return false;
+    //            }
+    //            id.close();
+    //        }
+        return true;
+    }
 
-                                return;
-                        }
-                        id.close();
-                    }
-                }
-            }
-            _parentConfigComposite.dispose();
-        }
-
-        _parentConfigComposite = null;
-        IWorkbench workbench = PlatformUI.getWorkbench();
-        IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        IViewPart showView;
+    private void openEditor(@Nonnull final String editorID) {
+        IHandlerService handlerService = (IHandlerService) _site
+                .getService(IHandlerService.class);
+        Node node = null;
         try {
-            showView = page.showView(NodeConfigView.ID);
-            if (showView instanceof NodeConfigView) {
-                NodeConfigView nodeConfigView = (NodeConfigView) showView;
-                _parentConfigComposite = new Composite(nodeConfigView.getComposite(),
-                        SWT.None);
-                FillLayout layout = new FillLayout();
-                _parentConfigComposite.setLayout(layout);
-            }
-        } catch (PartInitException e) {
-            e.printStackTrace();
+//            ParameterizedCommand cp = createParameterizedCommand(node);
+//            handlerService.executeCommand(cp, null);
+            handlerService.executeCommand(editorID, null);
+        } catch (Exception ex) {
+            CentralLogger.getInstance().error(this, ex.getMessage());
         }
+    }
+
+    /**
+     * @return
+     * @throws NotDefinedException
+     */
+    @Nonnull
+    private ParameterizedCommand createParameterizedCommand(@Nonnull final Node parent) throws NotDefinedException {
+        Command newNodeCommand = getNewNodeCommand();
+        IParameter nodeParamter = newNodeCommand.getParameter(PARENT_NODE_ID);
+//        Parameterization nodeParameterization = new Parameterization(nodeParamter, String.valueOf(parent.getId()));//parent);
+        Parameterization nodeParameterization = new Parameterization(nodeParamter, String.valueOf(parent.getId()));//parent);
+        ParameterizedCommand cmd =
+            new ParameterizedCommand(newNodeCommand,
+                    new Parameterization[] {nodeParameterization});
+        return cmd;    }
+
+    /**
+     * Returns the new node command.
+     *
+     * @return the new node command.
+     */
+    private Command getNewNodeCommand() {
+        ICommandService commandService =
+            (ICommandService) getSite().getService(ICommandService.class);
+        return commandService.getCommand(NEW_NODE_COMMAND_ID);
     }
 
     private void openInfoDialog() {
         Shell shell = new Shell(getShell(), SWT.DIALOG_TRIM | SWT.PRIMARY_MODAL);
-//        Shell shell2 = new Shell(shell, SWT.SHELL_TRIM | SWT.MODELESS);
-//        shell.setSize(800, 600);
         Dialog infoDialog = new Dialog(shell) {
             @Override
-            protected Control createDialogArea(Composite parent) {
+            protected Control createDialogArea(@Nonnull final Composite parent) {
                 Composite createDialogArea = (Composite) super.createDialogArea(parent);
                 createDialogArea.setLayoutData(new GridData(SWT.FILL, SWT.TOP, true, false));
 
@@ -1457,7 +1283,7 @@ public class ProfiBusTreeView extends Composite {
 
                 label = new Label(createDialogArea, SWT.NONE);
                 label.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-//                label.setText("ClassCallCount: " + Diagnose.getCounts());
+                // label.setText("ClassCallCount: " + Diagnose.getCounts());
 
                 label = new Label(createDialogArea, SWT.NONE);
 
@@ -1475,7 +1301,7 @@ public class ProfiBusTreeView extends Composite {
 
                 Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
                 text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-//                text.setText(Diagnose.getString());
+                // text.setText(Diagnose.getString());
 
                 label = new Label(createDialogArea, SWT.NONE);
                 createDialogArea.pack();
@@ -1484,62 +1310,155 @@ public class ProfiBusTreeView extends Composite {
         };
         infoDialog.open();
     }
-    
-    public void setConfiguratorName(String name){
-        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-        IWorkbenchPage page = window.getActivePage();
-        try {
-            IViewPart showView = page.showView(NodeConfigView.ID);
-            if (showView instanceof NodeConfigView) {
-                NodeConfigView nodeConfigView = (NodeConfigView) showView;
-                nodeConfigView.setPartName(name);
-            }        
-        } catch (PartInitException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+
+    private void openNewEmptyChildrenNode() {
+        Object node = _selectedNode.getFirstElement();
+        openEditor(CallNewChildrenNodeEditor.getEditorID());
+    }
+
+    private void openNewEmptySiblingNode() {
+        Object node = _selectedNode.getFirstElement();
+        openEditor(CallNewSiblingNodeEditor.getEditorID());
+    }
+
+    /**
+     * @return the site
+     */
+    public IViewSite getSite() {
+        return _site;
+    }
+
+    /**
+     * @param abstractNodeEditor
+     */
+    public void setOpenEditor(final AbstractNodeEditor openNodeEditor) {
+        _openNodeEditor = openNodeEditor;
+    }
+
+    //    public void setConfiguratorName(final String name) {
+    //        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    //        IWorkbenchPage page = window.getActivePage();
+    //        try {
+    //            IViewPart showView = page.showView(NodeConfigView.ID);
+    //            if (showView instanceof NodeConfigView) {
+    //                NodeConfigView nodeConfigView = (NodeConfigView) showView;
+    //                nodeConfigView.setPartName(name);
+    //            }
+    //        } catch (PartInitException e) {
+    //            // TODO Auto-generated catch block
+    //            e.printStackTrace();
+    //        }
+    //    }
+
+    /**
+     *
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.26 $
+     * @since 20.06.2007
+     */
+    class NameSorter extends ViewerSorter {
+
+        @Override
+        public int category(final Object element) {
+            return super.category(element);
+        }
+
+        @Override
+        public int compare(final Viewer viewer, final Object e1, final Object e2) {
+            if ( (e1 instanceof NamedDBClass) && (e2 instanceof NamedDBClass)) {
+                NamedDBClass node1 = (NamedDBClass) e1;
+                NamedDBClass node2 = (NamedDBClass) e2;
+                if ( (node1.getSortIndex() == null) || (node2.getSortIndex() == null)) {
+                    return -1;
+                }
+                int sortIndex = node1.getSortIndex() - node2.getSortIndex().shortValue();
+                if (sortIndex == 0) {
+                    sortIndex = node1.getId() - node2.getId();
+                }
+                return sortIndex;
+            }
+            return 0;
         }
     }
-    
+
     /**
-     * @param nc
+     *
+     * @author hrickens
+     * @author $Author: hrickens $
+     * @version $Revision: 1.26 $
+     * @since 20.06.2007
      */
-    private boolean checkDirtyConfig(NodeConfig nc) {
-        if (nc.isDirty()) {
-            String[] buttonLabels = new String[] { "&Save", "Don't Save", "&Cancel" };
-            MessageDialog id = new MessageDialog(getShell(),
-                                                 "Node not saved!",
-                                                 null,
-                                                 "The Node is not saved.\r\n Save now?",
-                                                 MessageDialog.WARNING,
-                                                 buttonLabels,
-                                                 2);
-            id.setBlockOnOpen(true);
-            switch (id.open()) {
-                case Dialog.OK:
-                    // Persist the node.
-                    nc.store();
-                    break;
-                case Dialog.CANCEL:
-                    // don't save the actual node and change to the new selected.
-                    Node node = nc.getNode();
-                    if (node != null && node.getId() < 1) {
-                        if (node instanceof Facility) {
-                            Facility fac = (Facility) node;
-                            _viewer.remove(fac.getFacilityLigth());
-                        } else if (node.getParent() != null) {
-                            nc.getNode().getParent().removeChild(nc.getNode());
-                        }
-                    }
-                    nc.cancel();
-                    _editNodeAction.setEnabled(true);
-                    break;
-                default:
-                    _viewer.setSelection(new StructuredSelection(nc), true);
-                    _editNodeAction.setEnabled(true);
-                    return false;
+    class ViewLabelProvider extends ColumnLabelProvider {
+
+        private final Color PROGRAMMABLE_MARKER_COLOR = CustomMediaFactory.getInstance()
+                .getColor(255, 140, 0);
+        private final Font PROGRAMMABLE_MARKER_FONT = CustomMediaFactory.getInstance()
+                .getFont("Tahoma", 8, SWT.ITALIC);
+
+        @Override
+        public Color getBackground(final Object element) {
+            if (haveProgrammableModule(element)) {
+                return PROGRAMMABLE_MARKER_COLOR;
             }
-            id.close();
+            return null;
         }
-        return true;
+
+        @Override
+        public Font getFont(final Object element) {
+            if (haveProgrammableModule(element)) {
+                return PROGRAMMABLE_MARKER_FONT;
+            }
+            return null;
+        }
+
+        public Image getImage(final Object obj) {
+            if (obj instanceof Node) {
+                Node node = (Node) obj;
+                return ConfigHelper.getImageFromNode(node);
+            } else if (obj instanceof Facility) {
+                return ConfigHelper.getImageMaxSize("icons/css.gif", -1, -1);
+            }
+            return null;
+        }
+
+        @Override
+        public String getText(final Object element) {
+            String text = super.getText(element);
+            String[] split = text.split("(\r(\n)?)");
+            if (split.length > 1) {
+                text = split[0];
+            }
+            if (haveProgrammableModule(element)) {
+                return text + " [prog]";
+            }
+            return text;
+        }
+
+        @Override
+        public String getToolTipText(final Object element) {
+            if (haveProgrammableModule(element)) {
+                return "Is a programmable Module!";
+            }
+            return null;
+        }
+
+        private boolean haveProgrammableModule(final Object element) {
+            /* TODO: (hrickens) Das finden von Projekt Document Datein führt teilweise dazu das sich CSS
+             * Aufhängt!
+             * if (element instanceof Slave) {
+             * Slave node = (Slave) element;
+             * Set<Document> documents = node.getDocuments();
+             * while (documents.iterator().hasNext()) {
+             * Document doc = (Document) documents.iterator().next();
+             * if (doc.getSubject() != null && doc.getSubject().startsWith("Projekt:")) {
+             * return true;
+             * }
+             * }
+             * }
+             */
+            return false;
+        }
+
     }
 }

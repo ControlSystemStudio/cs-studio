@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Facility.java,v 1.3 2010/08/20 13:33:05 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
@@ -32,15 +32,13 @@ import javax.persistence.Transient;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 12.03.2008
  */
 @Entity
 @Table(name = "ddb_Facility")
 public class Facility extends Node {
-
-    private FacilityLight _facilityLight;
 
     /**
      * Default Constructor needed by Hibernate.
@@ -94,74 +92,12 @@ public class Facility extends Node {
     }
 
     /**
-     *
-     * @param facilityLight set the equivalent {@link FacilityLight}.
-     */
-    @Transient
-    public void setFacilityLigth(final FacilityLight facilityLight) {
-        _facilityLight = facilityLight;
-
-    }
-
-    /**
-     *
-     * @return the equivalent {@link FacilityLight}.
-     */
-    @Transient
-    public FacilityLight getFacilityLigth() {
-        return _facilityLight;
-
-    }
-
-    /**
      * {@inheritDoc}
      */
     @Override
-    public void setName(final String name) {
-        super.setName(name);
-        if (_facilityLight != null) {
-            _facilityLight.setName(name);
-        }
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.FACILITY;
     }
 
-
-
-    @Override
-	public <T extends Node> Node addChild(final T child) {
-    	final Node addChild = super.addChild(child);
-        if (_facilityLight != null) {
-            _facilityLight.setCount(getChildren().size());
-        }
-		return addChild;
-	}
-
-
-
-	@Override
-    public void removeAllChild() {
-        super.removeAllChild();
-        if (_facilityLight != null) {
-            _facilityLight.setCount(getChildren().size());
-        }
-    }
-
-    @Override
-    public void removeChild(final Node child) {
-        super.removeChild(child);
-        if (_facilityLight != null) {
-            _facilityLight.setCount(getChildren().size());
-        }
-
-    }
-
-	/**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setSortIndex(final Short sortIndex) {
-        super.setSortIndex(sortIndex);
-        if (_facilityLight != null) {
-            _facilityLight.setSortIndex(sortIndex);
-        }
-    }
 }

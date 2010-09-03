@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ChannelStructure.java,v 1.8 2010/08/20 13:33:08 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
@@ -37,13 +37,14 @@ import javax.persistence.Transient;
 
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.PersistenceException;
 import org.hibernate.annotations.BatchSize;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.8 $
  * @since 18.12.2008
  */
 @Entity
@@ -62,13 +63,13 @@ public class ChannelStructure extends Node implements IStructured {
     public ChannelStructure() {
     }
 
-    private ChannelStructure(Module module, boolean simple, boolean isInput, DataType type,
-            String name) {
+    private ChannelStructure(final Module module, final boolean simple, final boolean isInput, final DataType type,
+            final String name) {
         this(module, simple, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    private ChannelStructure(Module module, boolean simple, boolean isInput, DataType type,
-            String name, int defaultMaxStationAddress) {
+    private ChannelStructure(final Module module, final boolean simple, final boolean isInput, final DataType type,
+            final String name, final int defaultMaxStationAddress) {
         setSimple(simple);
         setParent(module);
         setName("Struct of " + name);
@@ -79,24 +80,24 @@ public class ChannelStructure extends Node implements IStructured {
 
     }
 
-    public static ChannelStructure makeSimpleChannel(Module module, boolean isInput) {
+    public static ChannelStructure makeSimpleChannel(final Module module, final boolean isInput) {
         return makeSimpleChannel(module, null, isInput, false);
     }
 
-    public static ChannelStructure makeSimpleChannel(Module module, String name, boolean isInput,
-            boolean isDigit) {
+    public static ChannelStructure makeSimpleChannel(final Module module, final String name, final boolean isInput,
+            final boolean isDigit) {
         ChannelStructure channelStructure = new ChannelStructure(module, true, isInput,
                 DataType.SIMPLE, name);
         new Channel(channelStructure, name, isInput, isDigit, channelStructure.getSortIndex());
         return channelStructure;
     }
 
-    public static ChannelStructure makeChannelStructure(Module module, boolean isInput,
-            DataType type, String name) {
+    public static ChannelStructure makeChannelStructure(final Module module, final boolean isInput,
+            final DataType type, final String name) {
         return new ChannelStructure(module, false, isInput, type, name, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    private void buildChildren(DataType type, boolean isInput, String name) {
+    private void buildChildren(final DataType type, final boolean isInput, final String name) {
         if (isSimple()) {
             return;
         }
@@ -118,7 +119,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     /**
-     * 
+     *
      * @return the parent Module.
      */
     @ManyToOne
@@ -127,11 +128,11 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     /**
-     * 
+     *
      * @param module
      *            the parent Module.
      */
-    public void setModule(Module module) {
+    public void setModule(final Module module) {
         this.setParent(module);
     }
 
@@ -167,7 +168,7 @@ public class ChannelStructure extends Node implements IStructured {
         return _simple;
     }
 
-    public void setSimple(boolean simple) {
+    public void setSimple(final boolean simple) {
         _simple = simple;
 
     }
@@ -176,7 +177,7 @@ public class ChannelStructure extends Node implements IStructured {
         return DataType.valueOf(_structureType);
     }
 
-    public void setStructureType(DataType type) {
+    public void setStructureType(final DataType type) {
         if (type == null) {
             _structureType = DataType.BIT.name();
         } else {
@@ -186,7 +187,7 @@ public class ChannelStructure extends Node implements IStructured {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.config.ioconfig.model.Node#toString()
      */
     @Override
@@ -209,7 +210,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public void setCreatedBy(String createdBy) {
+    public void setCreatedBy(final String createdBy) {
         super.setCreatedBy(createdBy);
         for (NamedDBClass node : getChildren()) {
             node.setCreatedBy(createdBy);
@@ -217,7 +218,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public void setUpdatedBy(String updatedBy) {
+    public void setUpdatedBy(final String updatedBy) {
         super.setUpdatedBy(updatedBy);
         for (NamedDBClass node : getChildren()) {
             node.setUpdatedBy(updatedBy);
@@ -225,7 +226,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public void setCreatedOn(Date createdOn) {
+    public void setCreatedOn(final Date createdOn) {
         super.setCreatedOn(createdOn);
         for (Node node : getChildren()) {
             node.setCreatedOn(createdOn);
@@ -233,7 +234,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public void setUpdatedOn(Date updatedOn) {
+    public void setUpdatedOn(final Date updatedOn) {
         super.setUpdatedOn(updatedOn);
         for (Node node : getChildren()) {
             node.setUpdatedOn(updatedOn);
@@ -241,7 +242,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public short getfirstFreeStationAddress(int maxStationAddress) {
+    public short getfirstFreeStationAddress(final int maxStationAddress) {
         if (isSimple()) {
             return getSortIndex();
         }
@@ -249,7 +250,7 @@ public class ChannelStructure extends Node implements IStructured {
     }
 
     @Override
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         Node copy = super.copyThisTo(parentNode);
         copy.setName(getName());
         return copy;
@@ -259,12 +260,12 @@ public class ChannelStructure extends Node implements IStructured {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parentNode) {
+    public Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof Module) {
             Module module = (Module) parentNode;
             ChannelStructure copy = new ChannelStructure(module, isSimple(), true,
                     getStructureType(), getName());
-            copy.setSortIndex(getSortIndex());
+            copy.setSortIndex((int)getSortIndex());
             copy.removeAllChild();
             for (Node node : getChildrenAsMap().values()) {
                 node.copyThisTo(copy);
@@ -293,4 +294,14 @@ public class ChannelStructure extends Node implements IStructured {
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.CHANNEL_STRUCTURE;
+    }
+
 }

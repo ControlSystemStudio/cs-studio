@@ -20,21 +20,26 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Slave.java,v 1.7 2010/09/03 07:13:20 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
@@ -43,8 +48,8 @@ import org.hibernate.annotations.BatchSize;
 
 /**
  * @author gerke
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.7 $
  * @since 26.03.2007
  */
 
@@ -105,7 +110,8 @@ public class Slave extends Node {
     /**
      * Parameter user data.
      */
-    private String _prmUserData;
+//    private String _prmUserData;
+    private List<String> _prmUserDataList = new ArrayList<String>();
 
     /**
      * The GSD file for this Slave.
@@ -143,11 +149,11 @@ public class Slave extends Node {
     public Slave() {
     }
 
-    public Slave(Master master) {
-        this(master, (short) -1);
+    public Slave(final Master master) {
+        this(master, -1);
     }
 
-    public Slave(Master master, short stationAddress) {
+    public Slave(final Master master, final int stationAddress) {
         setParent(master);
         master.addChild(this);
         moveSortIndex(stationAddress);
@@ -188,7 +194,7 @@ public class Slave extends Node {
     }
 
     /**
-     * 
+     *
      * @return The Vendor name of this slave.
      */
     public String getVendorName() {
@@ -196,7 +202,7 @@ public class Slave extends Node {
     }
 
     /**
-     * 
+     *
      * @param vendorName
      *            Set the Vendor name of this slave.
      */
@@ -205,7 +211,7 @@ public class Slave extends Node {
     }
 
     /**
-     * 
+     *
      * @return get the Model Name of Slave.
      */
     public String getModelName() {
@@ -213,7 +219,7 @@ public class Slave extends Node {
     }
 
     /**
-     * 
+     *
      * @param modelName
      *            Set the Model Name of Slave.
      */
@@ -237,97 +243,116 @@ public class Slave extends Node {
         _profibusPNoID = profibusPNoID;
     }
 
-    public short getFdlAddress() {
+    public int getFdlAddress() {
         return _fdlAddress;
     }
 
-    public void setFdlAddress(final short fdlAddress) {
-        _fdlAddress = fdlAddress;
+    @Column(scale=5)
+    public void setFdlAddress(final int fdlAddress) {
+        _fdlAddress = (short) fdlAddress;
     }
 
-    public short getSlaveFlag() {
+    public int getSlaveFlag() {
         return _slaveFlag;
     }
-
-    public void setSlaveFlag(final short slaveFlag) {
-        _slaveFlag = slaveFlag;
+    @Column(scale=5)
+    public void setSlaveFlag(final int slaveFlag) {
+        _slaveFlag = (short) slaveFlag;
     }
 
-    public short getSlaveType() {
+    public int getSlaveType() {
         return _slaveType;
     }
-
-    public void setSlaveType(final short slaveType) {
-        _slaveType = slaveType;
+    @Column(scale=5)
+    public void setSlaveType(final int slaveType) {
+        _slaveType = (short) slaveType;
     }
 
-    public short getStationStatus() {
+    public int getStationStatus() {
         return _stationStatus;
     }
-
-    public void setStationStatus(final short stationStatus) {
-        _stationStatus = stationStatus;
+    @Column(scale=5)
+    public void setStationStatus(final int stationStatus) {
+        _stationStatus = (short) stationStatus;
     }
 
-    public short getWdFact1() {
+    public int getWdFact1() {
         return _wdFact1;
     }
-
-    public void setWdFact1(final short wdFact1) {
-        _wdFact1 = wdFact1;
+    @Column(scale=5)
+    public void setWdFact1(final int wdFact1) {
+        _wdFact1 = (short) wdFact1;
     }
 
-    public short getWdFact2() {
+    public int getWdFact2() {
         return _wdFact2;
     }
-
-    public void setWdFact2(final short wdFact2) {
-        _wdFact2 = wdFact2;
+    @Column(scale=5)
+    public void setWdFact2(final int wdFact2) {
+        _wdFact2 = (short) wdFact2;
     }
 
     /**
-     * 
+     *
      * @return Min. station delay time.
      */
-    public short getMinTsdr() {
+    public int getMinTsdr() {
         return _minTsdr;
     }
 
     /**
-     * 
+     *
      * @param minTsdr
      *            set Min. station delay time.
      */
-    public void setMinTsdr(short minTsdr) {
-        short subNetMinTsdr = -1;
-        if (getProfibusDPMaster() != null && getProfibusDPMaster().getProfibusSubnet() != null) {
-            subNetMinTsdr = (short) getProfibusDPMaster().getProfibusSubnet().getMinTsdr();
+    public void setMinTsdr(final int minTsdr) {
+        int subNetMinTsdr = -1;
+        if ((getProfibusDPMaster() != null) && (getProfibusDPMaster().getProfibusSubnet() != null)) {
+            subNetMinTsdr = getProfibusDPMaster().getProfibusSubnet().getMinTsdr();
         }
         if (getGSDSlaveData() == null) {
-            _minTsdr = minTsdr;
+            _minTsdr = (short) minTsdr;
             return;
         }
-        Short[] minTsdrs = new Short[] { getGSDSlaveData().getMinSlaveIntervall(), subNetMinTsdr,
+        int[] minTsdrs = new int[] { getGSDSlaveData().getMinSlaveIntervall(), subNetMinTsdr,
                 minTsdr };
         Arrays.sort(minTsdrs);
 
-        _minTsdr = minTsdrs[2];
+        _minTsdr = (short) minTsdrs[2];
     }
 
-    public short getGroupIdent() {
+    public int getGroupIdent() {
         return _groupIdent;
     }
 
-    public void setGroupIdent(final short groupIdent) {
-        _groupIdent = groupIdent;
+    public void setGroupIdent(final int groupIdent) {
+        _groupIdent = (short) groupIdent;
     }
 
     public String getPrmUserData() {
-        return _prmUserData;
+//        return _prmUserData;
+        String string = _prmUserDataList.toString();
+        string = string.substring(1,string.length()-1);
+        return string;
     }
 
     public void setPrmUserData(final String prmUserData) {
-        _prmUserData = prmUserData;
+//        _prmUserData = prmUserData;
+        _prmUserDataList = Arrays.asList(prmUserData.split(","));
+    }
+
+    /**
+     * @param index
+     * @param newValue
+     */
+    @Transient
+    public void setPrmUserDataByte(final int index, final String newValue) {
+        _prmUserDataList.set(index, newValue);
+    }
+
+    @Transient
+    public List<String> getPrmUserDataList() {
+        return _prmUserDataList;
     }
 
     /** {@inheritDoc} */
@@ -373,7 +398,7 @@ public class Slave extends Node {
             /*
              * Modules
              */
-            if(slaveModel.getGsdModuleList()==null||slaveModel.getGsdModuleList().isEmpty()) {
+            if((slaveModel.getGsdModuleList()==null)||slaveModel.getGsdModuleList().isEmpty()) {
                 slaveModel.setGsdModuleList(GSD2Module.parse(getGSDFile(), slaveModel));
             }
 
@@ -406,7 +431,7 @@ public class Slave extends Node {
     }
 
     @Transient
-    public final short getMaxSize() {
+    public final int getMaxSize() {
         return _maxSize;
     }
 
@@ -422,7 +447,7 @@ public class Slave extends Node {
 
     @Transient
     public GsdSlaveModel getGSDSlaveData() {
-        if (_gsdSlaveModel == null && getGSDFile() != null) {
+        if ((_gsdSlaveModel == null) && (getGSDFile() != null)) {
             fill();
         }
         return _gsdSlaveModel;
@@ -432,7 +457,7 @@ public class Slave extends Node {
      * @param slaveKeywords
      */
     @Transient
-    public void setGSDSlaveData(GsdSlaveModel gsdSlaveModel) {
+    public void setGSDSlaveData(final GsdSlaveModel gsdSlaveModel) {
         _gsdSlaveModel = gsdSlaveModel;
     }
 
@@ -440,7 +465,7 @@ public class Slave extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parentNode) {
+    public Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof Master) {
             Master master = (Master) parentNode;
             Slave copy = new Slave(master);
@@ -471,12 +496,12 @@ public class Slave extends Node {
     /**
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
-     * 
+     *
      * @param toIndex
      *            the new sortIndex for this node.
      */
     @Override
-    public void moveSortIndex(short toIndex) {
+    public void moveSortIndex(final int toIndex) {
         if (toIndex == getSortIndex()) {
             // no new Address don't move
             return;
@@ -493,8 +518,26 @@ public class Slave extends Node {
         // Move a exist Node
         Node moveNode = getParent().getChildrenAsMap().get(toIndex);
         if (moveNode != null) {
-            moveNode.moveSortIndex((short) (toIndex + 1));
+            moveNode.moveSortIndex((toIndex + 1));
         }
         setSortIndexNonHibernate(toIndex);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public GSDFileTypes needGSDFile() {
+        return GSDFileTypes.Slave;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.SLAVE;
+    }
+
 }

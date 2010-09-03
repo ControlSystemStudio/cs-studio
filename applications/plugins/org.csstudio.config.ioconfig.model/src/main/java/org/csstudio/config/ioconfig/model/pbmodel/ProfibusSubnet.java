@@ -1,6 +1,7 @@
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
@@ -9,14 +10,15 @@ import javax.persistence.Transient;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.Node;
+import org.csstudio.config.ioconfig.model.NodeType;
 
 /***********************************************************
  * Data model for Profibus-DP Subnet *
- *********************************************************** 
+ ***********************************************************
  * Created by: Torsten Boeckmann * Date: 07. Dezember 2005 *
- *********************************************************** 
- * last changed: @author $Author$ * Grounds of changed: ................... *
- * ................... * Revision: @version $Revision$ * Status: untested * Precondition: *
+ ***********************************************************
+ * last changed: @author $Author: hrickens $ * Grounds of changed: ................... *
+ * ................... * Revision: @version $Revision: 1.2 $ * Status: untested * Precondition: *
  * Postcondition: * *
  ***********************************************************/
 
@@ -93,18 +95,18 @@ public class ProfibusSubnet extends Node {
     /**
      * The default Constructor.
      */
-    public ProfibusSubnet(Ioc ioc) {
+    public ProfibusSubnet(final Ioc ioc) {
         this(ioc, DEFAULT_MAX_STATION_ADDRESS);
     }
 
-    public ProfibusSubnet(Ioc ioc, int maxStationAddress) {
+    public ProfibusSubnet(final Ioc ioc, final int maxStationAddress) {
         setParent(ioc);
         // setSortIndex(ioc.getfirstFreeStationAddress(maxStationAddress));
         ioc.addChild(this);
     }
 
     /**
-     * 
+     *
      * @return get the Baudrate
      */
     public String getBaudRate() {
@@ -112,7 +114,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param baudRate
      *            Set the Baudrate for the PBNet
      */
@@ -121,7 +123,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the length of the CU-Line.
      */
     public float getCuLineLength() {
@@ -129,7 +131,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param cuLineLength
      *            Set the length of CU-Line.
      */
@@ -138,7 +140,7 @@ public class ProfibusSubnet extends Node {
     }
 
 //    /**
-//     * 
+//     *
 //     * @return the Description of Profibus Subnet.
 //     */
 //    public String getDescription() {
@@ -146,7 +148,7 @@ public class ProfibusSubnet extends Node {
 //    }
 //
 //    /**
-//     * 
+//     *
 //     * @param description
 //     *            set the description for the Profibus Subnet.
 //     */
@@ -155,7 +157,7 @@ public class ProfibusSubnet extends Node {
 //    }
 
     /**
-     * 
+     *
      * @return the Gap.
      */
     public short getGap() {
@@ -163,7 +165,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param gap
      *            set the Gap.
      */
@@ -172,7 +174,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the HSA (Highest Server Adress).
      */
     public short getHsa() {
@@ -180,7 +182,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param hsa
      *            set the HSA (Highest Server Adress).
      */
@@ -189,7 +191,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the length of the LWL.
      */
     public float getLwlLength() {
@@ -197,7 +199,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param lwlLength
      *            set the length of the LWL.
      */
@@ -206,7 +208,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the number of Profibus Master
      */
     public short getMasterNumber() {
@@ -214,7 +216,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param masterNumber
      *            set the number of Profibus Master
      */
@@ -223,7 +225,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the max Tsdr
      */
     public int getMaxTsdr() {
@@ -231,7 +233,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param maxTsdr
      *            set the max Tsdr
      */
@@ -240,7 +242,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the min Tsdr.
      */
     public int getMinTsdr() {
@@ -248,7 +250,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param minTsdr
      *            set the min Tsdr.
      */
@@ -257,7 +259,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return The olm Number.
      */
     public short getOlmNumber() {
@@ -265,7 +267,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param olmNumber
      *            get the olm number.
      */
@@ -274,7 +276,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the state of Option.
      */
     public boolean isOptionPar() {
@@ -282,7 +284,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param optionPar
      *            set the state of option
      */
@@ -291,7 +293,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the Profile.
      */
     public String getProfil() {
@@ -299,7 +301,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param profil
      *            set the Profile
      */
@@ -308,7 +310,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the quota Fdl Fms S7 com.
      */
     public String getQuotaFdlFmsS7com() {
@@ -316,7 +318,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param quotaFdlFmsS7Com
      *            set the quota Fdl Fms S7 com.
      */
@@ -325,7 +327,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the Repeater number.
      */
     public short getRepeaterNumber() {
@@ -333,7 +335,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param repeaterNumber
      *            set the Repeater number.
      */
@@ -345,16 +347,16 @@ public class ProfibusSubnet extends Node {
         return _slaveNumber;
     }
 
-    public void setSlaveNumber(final short slave_number) {
-        this._slaveNumber = slave_number;
+    public void setSlaveNumber(final short slaveNumber) {
+        this._slaveNumber = slaveNumber;
     }
 
     public int getSlotTime() {
         return _slotTime;
     }
 
-    public void setSlotTime(final int slot_time) {
-        this._slotTime = slot_time;
+    public void setSlotTime(final int slotTime) {
+        this._slotTime = slotTime;
     }
 
     public short getSubscriber() {
@@ -404,7 +406,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @return the parent Ioc of this subnet.
      */
     @ManyToOne
@@ -413,7 +415,7 @@ public class ProfibusSubnet extends Node {
     }
 
     /**
-     * 
+     *
      * @param ioc
      *            set the parent Ioc of this subnet.
      */
@@ -423,7 +425,7 @@ public class ProfibusSubnet extends Node {
 
     /**
      * contribution to ioName (PV-link to EPICSORA).
-     * 
+     *
      * @return the Epics Address String
      */
     @Transient
@@ -431,9 +433,9 @@ public class ProfibusSubnet extends Node {
         return "@"+getName();
     }
 
-    
+
     @Transient
-    public void updateName(String name) {
+    public void updateName(final String name) {
         setName(name);
 //        localUpdate();
     }
@@ -442,7 +444,7 @@ public class ProfibusSubnet extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parent) {
+    public Node copyParameter(final NamedDBClass parent) {
         if (parent instanceof Ioc) {
             Ioc ioc = (Ioc) parent;
             ProfibusSubnet copy = new ProfibusSubnet(ioc);
@@ -474,11 +476,20 @@ public class ProfibusSubnet extends Node {
     }
 
     @Override
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         Node copy = super.copyThisTo(parentNode);
         for (Node node : getChildren()) {
             node.copyThisTo(copy);
         }
         return copy;
     }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.SUBNET;
+    }
+
 }

@@ -20,11 +20,12 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Ioc.java,v 1.2 2010/08/20 13:33:05 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
 import java.util.Set;
+
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -33,8 +34,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnet;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.2 $
  * @since 12.03.2008
  */
 @Entity
@@ -46,12 +47,12 @@ public class Ioc extends Node {
      */
     public Ioc() {
     }
-    
+
     /**
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
      */
-    public Ioc(Facility facility) {
+    public Ioc(final Facility facility) {
         this(facility, DEFAULT_MAX_STATION_ADDRESS);
 
     }
@@ -59,15 +60,15 @@ public class Ioc extends Node {
     /**
      * Create a new Ioc with parent Facility.
      * @param facility the parent Facility.
-     * @param maxStationAddress the highest possible Station Address.  
+     * @param maxStationAddress the highest possible Station Address.
      */
-    public Ioc(Facility facility, int maxStationAddress) {
+    public Ioc(final Facility facility, final int maxStationAddress) {
         setParent(facility);
         facility.addChild(this);
     }
 
     /**
-     * 
+     *
      * @return the parent Facility of this IOC.
      */
     @Transient
@@ -76,7 +77,7 @@ public class Ioc extends Node {
     }
 
     /**
-     * @return the ProfibusSubnets children.  
+     * @return the ProfibusSubnets children.
      */
     @Transient
     @SuppressWarnings("unchecked")
@@ -85,7 +86,7 @@ public class Ioc extends Node {
     }
 
     /**
-     * 
+     *
      * @param facility
      *            set the parent Facility of this IOC.
      */
@@ -97,7 +98,7 @@ public class Ioc extends Node {
      * {@inheritDoc}
      */
     @Override
-    public Node copyParameter(NamedDBClass parentNode) {
+    public Node copyParameter(final NamedDBClass parentNode) {
         if (parentNode instanceof Facility) {
             Facility facility = (Facility) parentNode;
             Ioc copy = new Ioc(facility);
@@ -107,17 +108,26 @@ public class Ioc extends Node {
         }
         return null;
     }
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public Node copyThisTo(Node parentNode) {
+    public Node copyThisTo(final Node parentNode) {
         Node copy = super.copyThisTo(parentNode);
         for (Node node : getChildren()) {
             node.copyThisTo(copy);
         }
         return copy;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transient
+    public NodeType getNodeType() {
+        return NodeType.IOC;
+    }
+
 }

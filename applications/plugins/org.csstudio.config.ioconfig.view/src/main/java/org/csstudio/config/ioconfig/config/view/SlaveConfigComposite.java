@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: SlaveConfigComposite.java,v 1.9 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -30,11 +30,11 @@ import java.util.Formatter;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
+import java.util.TreeMap;
 
-import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Document;
-import org.csstudio.config.ioconfig.model.Keywords;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructure;
@@ -43,28 +43,42 @@ import org.csstudio.config.ioconfig.model.pbmodel.Master;
 import org.csstudio.config.ioconfig.model.pbmodel.Module;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges;
 import org.csstudio.config.ioconfig.model.pbmodel.Slave;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmData;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.ExtUserPrmDataConst;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
+import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerSorter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -75,8 +89,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.9 $
  * @since 05.06.2007
  */
 public class SlaveConfigComposite extends NodeConfig {
@@ -145,16 +159,18 @@ public class SlaveConfigComposite extends NodeConfig {
     private Button _failButton;
     private Button _watchDogButton;
     private Button _syncButton;
-    private short _groupIdent;
-    private short _groupIdentStored;
+    private int _groupIdent;
+    private int _groupIdentStored;
     private Group _groupsRadioButtons;
     private ComboViewer _indexCombo;
+    private Group _currentUserParamDataGroup;
+    private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
 
     /**
-     * 
+     *
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.9 $
      * @since 14.08.2007
      */
     class RowNumLabelProvider implements ITableLabelProvider {
@@ -187,21 +203,22 @@ public class SlaveConfigComposite extends NodeConfig {
         public void removeListener(final ILabelProviderListener listener) {
         }
 
-        public Image getColumnImage(Object element, int columnIndex) {
+        public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
 
-        public String getColumnText(Object element, int columnIndex) {
+        public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof Slave) {
                 Slave slave = (Slave) element;
+                TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = slave.getGSDSlaveData().getExtUserPrmDataConst();
                 switch (columnIndex) {
                     case 1:
                         return slave.getName();
                     case 2:
                         StringBuffer sb = new StringBuffer();
-                        for (ExtUserPrmDataConst eupdc : slave.getGSDSlaveData()
-                                .getExtUserPrmDataConst().values()) {
-                            sb.append(eupdc.getValue());
+                        Set<String> keySet = extUserPrmDataConst.keySet();
+                        for (String key : keySet) {
+                            sb.append(extUserPrmDataConst.get(key).getValue());
                         }
                         return sb.toString();
 
@@ -229,7 +246,7 @@ public class SlaveConfigComposite extends NodeConfig {
 
     /**
      * Open a slave configuration view for a exist {@link Slave}.
-     * 
+     *
      * @param parent
      *            Parent Composite.
      * @param slave
@@ -242,7 +259,6 @@ public class SlaveConfigComposite extends NodeConfig {
     public SlaveConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Slave slave, final String nameOffer) {
         super(parent, profiBusTreeView, "Profibus Slave Configuration", slave, slave == null);
-        profiBusTreeView.setConfiguratorName("Slave Configuration");
         makeSlaveKonfiguration(parent, slave,nameOffer);
     }
 
@@ -254,7 +270,7 @@ public class SlaveConfigComposite extends NodeConfig {
      * @param slave
      *            the Profibus Slave to Configer.
      */
-    private void makeSlaveKonfiguration(final Composite parent, final Slave slave, String nameOffer) {
+    private void makeSlaveKonfiguration(final Composite parent, final Slave slave, final String nameOffer) {
         boolean nevv = false;
         _slave = slave;
         if (_slave == null) {
@@ -275,8 +291,8 @@ public class SlaveConfigComposite extends NodeConfig {
         settings(heads[1]);
         overview(heads[2]);
         documents();
-        ConfigHelper.makeGSDFileChooser(getTabFolder(), "GSD File List", this,
-                Keywords.GSDFileTyp.Slave);
+//        ConfigHelper.makeGSDFileChooser(getTabFolder(), "GSD File List", this,
+//                GSDFileTypes.Slave);
         if (_slave.getGSDFile() != null) {
             fill(_slave.getGSDFile());
         }
@@ -288,7 +304,7 @@ public class SlaveConfigComposite extends NodeConfig {
     }
 
     @SuppressWarnings("unchecked")
-    private void overview(String headline) {
+    private void overview(final String headline) {
         Composite comp = getNewTabItem(headline, 1);
         comp.setLayout(new GridLayout(1, false));
 
@@ -320,11 +336,11 @@ public class SlaveConfigComposite extends NodeConfig {
         TableColumn c6 = new TableColumn(overViewer.getTable(), SWT.LEFT);
         // c5.setWidth(60);
         c6.setText("DB Id");
-        
-        
+
+
         overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void selectionChanged(final SelectionChangedEvent event) {
                 // IStructuredSelection sel = (IStructuredSelection) event.getSelection();
                 getProfiBusTreeView().getTreeViewer().setSelection(event.getSelection(), true);
             }
@@ -405,7 +421,7 @@ public class SlaveConfigComposite extends NodeConfig {
         _indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
-            public void selectionChanged(SelectionChangedEvent event) {
+            public void selectionChanged(final SelectionChangedEvent event) {
                 short index = (Short) ((StructuredSelection) _indexCombo.getSelection())
                         .getFirstElement();
                 getNode().moveSortIndex(index);
@@ -502,7 +518,7 @@ public class SlaveConfigComposite extends NodeConfig {
         if (_slave.hasChildren()) {
             Iterator<Module> iterator = _slave.getModules().iterator();
             while (iterator.hasNext()) {
-                Module module = (Module) iterator.next();
+                Module module = iterator.next();
                 input += module.getInputSize();
                 output += module.getOutputSize();
             }
@@ -514,7 +530,7 @@ public class SlaveConfigComposite extends NodeConfig {
         _inputsText.setEditable(false);
         _inputsText.setText(Integer.toString(input));
 
-        Label outputsLabel = (Label) new Label(ioGroup, SWT.RIGHT);
+        Label outputsLabel = new Label(ioGroup, SWT.RIGHT);
         outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false, 2, 1));
         outputsLabel.setText("Outputs: ");
         _outputsText = new Text(ioGroup, SWT.SINGLE);
@@ -528,7 +544,7 @@ public class SlaveConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      */
     private void setSlots() {
         Formatter slotFormarter = new Formatter();
@@ -551,7 +567,7 @@ public class SlaveConfigComposite extends NodeConfig {
      */
     private void settings(final String head) {
         Composite comp = getNewTabItem(head, 2);
-        comp.setLayout(new GridLayout(2, false));
+        comp.setLayout(new GridLayout(3, false));
         // Operation Mode
         Group operationModeGroup = new Group(comp, SWT.NONE);
         GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -621,7 +637,7 @@ public class SlaveConfigComposite extends NodeConfig {
         _watchDogButton.setSelection(true);
         _watchDogButton.setData(true);
         _watchDogText = ProfibusHelper.getTextField(operationModeGroup, _watchDogButton
-                .getSelection(), Short.toString(_slave.getWdFact1()), Ranges.TTR,
+                .getSelection(), Integer.toString(_slave.getWdFact1()), Ranges.TTR,
                 ProfibusHelper.VL_TYP_U32);
         _watchDogText.addModifyListener(getMLSB());
         Label timeLabel = new Label(operationModeGroup, SWT.NONE);
@@ -640,7 +656,12 @@ public class SlaveConfigComposite extends NodeConfig {
                 _watchDogText.setEnabled(_watchDogButton.getSelection());
             }
         });
-
+//        Group topGroup = new Group(comp, SWT.V_SCROLL);
+//        topGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
+//        topGroup.setLayout(new GridLayout(4, true));
+//        topGroup.setText("Make Current User Param Data");
+//        makeCurrentUserParamData(topGroup);
+        makeCurrentUserParamData(comp);
         // User PRM Mode
         Group userPrmData = new Group(comp, SWT.V_SCROLL);
         userPrmData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 2));
@@ -673,7 +694,7 @@ public class SlaveConfigComposite extends NodeConfig {
         _groupsRadioButtons.setLayout(new GridLayout(4, true));
         _groupsRadioButtons.setText("Groups");
         _groupIdentStored = _slave.getGroupIdent();
-        if (_groupIdentStored < 0 || _groupIdentStored > 7) {
+        if ((_groupIdentStored < 0) || (_groupIdentStored > 7)) {
             _groupIdentStored = 0;
         }
         _groupIdent = _groupIdentStored;
@@ -841,7 +862,14 @@ public class SlaveConfigComposite extends NodeConfig {
      * {@inheritDoc}
      */
     @Override
-    public final Node getNode() {
+    public IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Node getNode() {
         if (_slave == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
                     .getTreeViewer().getSelection();
@@ -860,7 +888,7 @@ public class SlaveConfigComposite extends NodeConfig {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#cancel()
      */
     @Override
@@ -909,4 +937,250 @@ public class SlaveConfigComposite extends NodeConfig {
                 .getSelection());
     }
 
+    /**
+     *
+     * @param topGroup
+     *            The parent Group for the CurrentUserParamData content.
+     */
+    private void makeCurrentUserParamData(final Composite topGroup) {
+        if (_currentUserParamDataGroup != null) {
+            _currentUserParamDataGroup.dispose();
+        }
+        // Current User Param Data Group
+        _currentUserParamDataGroup = new Group(topGroup, SWT.NONE);
+        GridData gd = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 3);
+        _currentUserParamDataGroup.setLayoutData(gd);
+        _currentUserParamDataGroup.setLayout(new FillLayout());
+        _currentUserParamDataGroup.setText("Current User Param Data:");
+        final ScrolledComposite scrollComposite = new ScrolledComposite(_currentUserParamDataGroup,
+                SWT.V_SCROLL);
+        final Composite currentUserParamDataComposite = new Composite(scrollComposite, SWT.NONE);
+        RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
+        rowLayout.wrap = false;
+        rowLayout.fill = true;
+        currentUserParamDataComposite.setLayout(rowLayout);
+        scrollComposite.setContent(currentUserParamDataComposite);
+        scrollComposite.setExpandHorizontal(true);
+        scrollComposite.setExpandVertical(true);
+        _currentUserParamDataGroup.addControlListener(new ControlAdapter() {
+            public void controlResized(final ControlEvent e) {
+                Rectangle r = scrollComposite.getClientArea();
+                scrollComposite.setMinSize(scrollComposite.computeSize(r.width, SWT.DEFAULT));
+            }
+        });
+        scrollComposite.addControlListener(new ControlAdapter() {
+            public void controlResized(final ControlEvent e) {
+                Rectangle r = scrollComposite.getClientArea();
+                scrollComposite.setMinSize(currentUserParamDataComposite.computeSize(r.width,
+                        SWT.DEFAULT));
+            }
+        });
+        // Current User Param Data
+//        GsdModuleModel gsdModuleModel2 = _slave.getGsdModuleModel();
+//        gsdModuleModel2.get
+        GsdSlaveModel gsdModuleModel = _slave.getGSDSlaveData();
+        String[] values = {};
+        // if (_slave.getConfigurationData() != null) {
+//        if (gsdModuleModel.getValue() != null) {
+//            values = gsdModuleModel.getValue().split(",");
+//        }
+//        String cfgData = _slave.getConfigurationData();
+//        if (gsdModuleModel != null) {
+//            if (gsdModuleModel.getAllExtUserPrmDataRef().size() * 2 != values.length
+//                    || values.length % 2 != 0) {
+//                if (cfgData != null && gsdModuleModel.getExtUserPrmDataConst() != null) {
+//                    String[] cfgDatas = cfgData.split(",");
+//                    String[] extUserPrmDataConsts = gsdModuleModel.getExtUserPrmDataConst().split(
+//                            ",");
+//                    if (cfgDatas.length < extUserPrmDataConsts.length) {
+//                        _slave.setConfigurationData(gsdModuleModel.getExtUserPrmDataConst());
+//                        _slave.setDirty(true);
+//                    }
+//                }
+//                if (_slave.getConfigurationData() != null) {
+//                    String[] configurationDatas = _slave.getConfigurationData().split(",");
+//                    for (ExtUserPrmData extUserPrmData : gsdModuleModel.getAllExtUserPrmDataRef()) {
+//                        Integer value = null;
+//                        String extUserPrmDataRef = gsdModuleModel
+//                                .getExtUserPrmDataRef(extUserPrmData.getIndex());
+//                        int index = Integer.parseInt(extUserPrmDataRef);
+//                        if (configurationDatas.length > index) {
+//                            value = ModuleConfigComposite.getValue2BitMask(extUserPrmData, configurationDatas[index]);
+//                        }
+//                        makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData,
+//                                value);
+//                    }
+//                }
+//            } else {
+//                Set<String> values = gsdModuleModel.getExtUserPrmDataMap().keySet();
+                values = gsdModuleModel.getExtUserPrmDataMap().keySet().toArray(new String[0]);
+                for (String value : values) {
+                    ExtUserPrmData extUserPrmData = gsdModuleModel.getExtUserPrmData(value);
+//                    i++;
+//                    int val = Integer.parseInt(values[i]);
+                    int val = 0;
+                    makecurrentUserParamData(currentUserParamDataComposite, extUserPrmData, val);
+                }
+//            }
+//        }
+        topGroup.layout();
+    }
+
+    /**
+     *
+     * @param currentUserParamDataGroup
+     * @param extUserPrmData
+     * @param value
+     */
+    private void makecurrentUserParamData(final Composite currentUserParamDataGroup,
+            final ExtUserPrmData extUserPrmData, final Integer value) {
+        HashMap<Integer, PrmText> prmTextMap = null;
+
+        Text text = new Text(currentUserParamDataGroup, SWT.SINGLE | SWT.READ_ONLY);
+
+        if (extUserPrmData != null) {
+            text.setText(extUserPrmData.getText() + ":");
+            prmTextMap = extUserPrmData.getPrmText();
+            if ((extUserPrmData.getPrmText() == null)
+                    && (extUserPrmData.getMaxValue() - extUserPrmData.getMinValue() > 10)) {
+                _prmTextCV.add(makeTextField(currentUserParamDataGroup, value, extUserPrmData));
+            } else {
+                _prmTextCV.add(makeComboViewer(currentUserParamDataGroup, value, extUserPrmData,
+                        prmTextMap));
+            }
+        }
+        new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
+    }
+
+    /**
+     *
+     * @param currentUserParamDataGroup
+     * @param value
+     * @param extUserPrmData
+     * @return
+     */
+    private Text makeTextField(final Composite currentUserParamDataGroup, final Integer value,
+            final ExtUserPrmData extUserPrmData) {
+        Integer localValue = value;
+        Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER | SWT.SINGLE | SWT.RIGHT);
+        Formatter f = new Formatter();
+        f.format("Min: %d, Min: %d", extUserPrmData.getMinValue(), extUserPrmData.getMaxValue());
+        prmText.setToolTipText(f.toString());
+        prmText.setTextLimit(Integer.toString(extUserPrmData.getMaxValue()).length());
+
+        if (localValue == null) {
+            localValue = extUserPrmData.getDefault();
+        }
+        prmText.setText(localValue.toString());
+        prmText.setData(localValue.toString());
+        prmText.addModifyListener(getMLSB());
+        prmText.addVerifyListener(new VerifyListener() {
+
+            public void verifyText(final VerifyEvent e) {
+                if (e.text.matches("^\\D+$")) {
+                    e.doit = false;
+                }
+            }
+
+        });
+        return prmText;
+    }
+
+    /**
+     *
+     * @param parent
+     *            the Parent Composite.
+     * @param value
+     *            the Selected currentUserParamData Value.
+     * @param extUserPrmData
+     * @param prmTextMap
+     * @return a ComboView for are currentUserParamData Property
+     */
+    private ComboViewer makeComboViewer(final Composite parent, final Integer value,
+            final ExtUserPrmData extUserPrmData, final HashMap<Integer, PrmText> prmTextMap) {
+        Integer localValue = value;
+        ComboViewer prmTextCV = new ComboViewer(parent);
+        RowData data = new RowData();
+        data.exclude = false;
+        prmTextCV.getCombo().setLayoutData(data);
+        prmTextCV.setLabelProvider(new LabelProvider());
+        prmTextCV.setContentProvider(new IStructuredContentProvider() {
+
+            public Object[] getElements(final Object inputElement) {
+                if (inputElement instanceof ExtUserPrmData) {
+                    ExtUserPrmData extUserPrmData = (ExtUserPrmData) inputElement;
+                    HashMap<Integer, PrmText> prmText = extUserPrmData.getPrmText();
+                    if (prmText == null) {
+                        PrmText[] prmTextArray = new PrmText[extUserPrmData.getMaxValue()
+                                - extUserPrmData.getMinValue() + 1];
+                        for (int i = extUserPrmData.getMinValue(); i <= extUserPrmData
+                                .getMaxValue(); i++) {
+                            prmTextArray[i] = new PrmText(Integer.toString(i), i);
+                        }
+                        return prmTextArray;
+                    }
+                    return prmText.values().toArray();
+                }
+                return null;
+            }
+
+            public void dispose() {
+            }
+
+            public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
+            }
+        });
+        prmTextCV.getCombo().addModifyListener(getMLSB());
+        prmTextCV.setSorter(new ViewerSorter() {
+
+            @Override
+            public int compare(final Viewer viewer, final Object e1, final Object e2) {
+                if ((e1 instanceof PrmText) && (e2 instanceof PrmText)) {
+                    PrmText eUPD1 = (PrmText) e1;
+                    PrmText eUPD2 = (PrmText) e2;
+                    return eUPD1.getValue() - eUPD2.getValue();
+                }
+                return super.compare(viewer, e1, e2);
+            }
+
+        });
+        if (localValue == null) {
+            localValue = extUserPrmData.getDefault();
+        }
+        prmTextCV.setInput(extUserPrmData);
+        if (prmTextMap != null) {
+            PrmText prmText = prmTextMap.get(localValue);
+            if (prmText != null) {
+                prmTextCV.setSelection(new StructuredSelection(prmTextMap.get(localValue)));
+            } else {
+                prmTextCV.getCombo().select(0);
+            }
+        } else {
+            prmTextCV.getCombo().select(localValue);
+        }
+        prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
+        setModify(prmTextCV);
+        return prmTextCV;
+    }
+
+    /**
+     *
+     * @param prmTextCV
+     */
+    private void setModify(final ComboViewer prmTextCV) {
+        PrmText prmText = (PrmText) ((StructuredSelection) prmTextCV.getSelection())
+                .getFirstElement();
+        ExtUserPrmData extUserPrmData = (ExtUserPrmData) prmTextCV.getInput();
+        String index = extUserPrmData.getIndex();
+//        GsdModuleModel gsdModule = _slave.getGsdModuleModel();
+//        int bytePos = Integer.parseInt(gsdModule.getExtUserPrmDataRef(index));
+        int bitMin = extUserPrmData.getMinBit();
+        int bitMax = extUserPrmData.getMaxBit();
+
+        int val = 0;
+        if (prmText != null) {
+            val = prmText.getValue();
+        }
+//        gsdModule.addModify(bytePos, bitMin, bitMax, val);
+    }
 }

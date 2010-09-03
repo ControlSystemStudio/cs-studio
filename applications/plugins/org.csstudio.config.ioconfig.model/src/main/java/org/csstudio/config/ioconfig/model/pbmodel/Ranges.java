@@ -20,15 +20,15 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Ranges.java,v 1.1 2009/08/26 07:08:44 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 29.06.2007
  */
 public final class Ranges {
@@ -45,8 +45,8 @@ public final class Ranges {
     /**
      * 
      * @author hrickens
-     * @author $Author$
-     * @version $Revision$
+     * @author $Author: hrickens $
+     * @version $Revision: 1.1 $
      * @since 10.12.2007
      */
     public static class Value{

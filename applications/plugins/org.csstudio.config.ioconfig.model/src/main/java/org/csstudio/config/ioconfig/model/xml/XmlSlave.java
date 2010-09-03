@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: XmlSlave.java,v 1.4 2010/09/03 07:13:20 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.xml;
 
@@ -35,8 +35,8 @@ import org.jdom.Element;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.4 $
  * @since 14.05.2008
  */
 public class XmlSlave {
@@ -44,21 +44,21 @@ public class XmlSlave {
     /**
      * The Slave root {@link Element}.
      */
-    private Element _slaveElement;
+    private final Element _slaveElement;
     /**
      * Set of Profibus Modules.
      */
-    private TreeSet<Module> _modules;
+    private final TreeSet<Module> _modules;
 
     /**
      * Generate a GSD Configfile XML-Tag for a Profibus Slave.
-     * 
+     *
      * @param slave
      *            The Profibus slave.
      */
     public XmlSlave(final Slave slave) {
         _slaveElement = new Element("SLAVE");
-        _slaveElement.setAttribute("fdl_add", Short.toString(slave.getFdlAddress()));
+        _slaveElement.setAttribute("fdl_add", Integer.toString(slave.getFdlAddress()));
         Comparator<Module> comparator = new Comparator<Module>() {
 
             public int compare(final Module o1, final Module o2) {
@@ -84,7 +84,7 @@ public class XmlSlave {
 
     /**
      * Set all XML slave_para_set parameter.
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      * @param prmDataLen
@@ -102,15 +102,15 @@ public class XmlSlave {
         Element slaveParaSet = new Element("SLAVE_PARA_SET");
         int slaveParaLen = 16 + prmDataLen + cfgDataLen + slaveAatLen + slaveUserDataLen;
         slaveParaSet.setAttribute("slave_para_len", Integer.toString(slaveParaLen));
-        slaveParaSet.setAttribute("sl_flag", Short.toString(slave.getSlaveFlag()));
-        slaveParaSet.setAttribute("slave_type", Short.toString(slave.getSlaveType()));
+        slaveParaSet.setAttribute("sl_flag", Integer.toString(slave.getSlaveFlag()));
+        slaveParaSet.setAttribute("slave_type", Integer.toString(slave.getSlaveType()));
         slaveParaSet.setAttribute("reserved", "0,0,0,0,0,0,0,0,0,0,0,0");
         return slaveParaSet;
     }
 
     /**
      * Set all slave_prm_data parameter.
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Prm Data Element.
@@ -118,53 +118,73 @@ public class XmlSlave {
     public final Element setSlavePrmData(final Slave slave) {
         Element slavePrmData = new Element("SLAVE_PRM_DATA");
         GsdSlaveModel slaveData = slave.getGSDSlaveData();
-        String prmData = "";
-        if (slave.getGSDSlaveData() != null
-                && slave.getGSDSlaveData().getExtUserPrmDataConst() != null) {
-            prmData = slave.getGSDSlaveData().getExtUserPrmDataConst().values().toString()
-                    .replaceAll("[\\[\\]]", "");
+        StringBuilder prmDataSB = new StringBuilder();
+        if ((slave.getGSDSlaveData() != null)
+                && (slave.getGSDSlaveData().getExtUserPrmDataConst() != null)) {
+
+//            prmDataSB.append(slave.getGSDSlaveData().getModiExtUserPrmDataConst());
+//            prmDataSB.append(slave.getGSDSlaveData().getUserPrmData());
+            prmDataSB.append(slave.getPrmUserData());
+            /*
+            TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = slave.getGSDSlaveData().getExtUserPrmDataConst();
+            Set<String> keySet = extUserPrmDataConst.keySet();
+            for (String key : keySet) {
+                prmDataSB.append(extUserPrmDataConst.get(key).toString().replaceAll("[\\[\\]]", ""));
+                prmDataSB.append(',');
+            }
+            if(prmDataSB.length()>0) {
+                prmDataSB.deleteCharAt(prmDataSB.length()-1);
+            }
+            */
+
+//            prmData = slave.getGSDSlaveData().getExtUserPrmDataConst().values().toString()
+//                    .replaceAll("[\\[\\]]", "");
+
+            // XXX: Die ExtUserPrmData von den Modulen gehören hier wohl nicht hin!
             for (Module module : _modules) {
                 String modiExtUserPrmDataConst = module.getConfigurationData();
                 String modiExtUserPrmDataConstDef = module.getGsdModuleModel()
                         .getModiExtUserPrmDataConst();
-                if (modiExtUserPrmDataConst == null || modiExtUserPrmDataConst.length() < 1) {
+                if ((modiExtUserPrmDataConst == null) || (modiExtUserPrmDataConst.length() < 1)) {
                     // Do Nothing
-                } else if (modiExtUserPrmDataConstDef != null
-                        && modiExtUserPrmDataConstDef.split(",").length 
-                           > modiExtUserPrmDataConst.split(",").length) {
+                } else if ((modiExtUserPrmDataConstDef != null)
+                        && (modiExtUserPrmDataConstDef.split(",").length
+                           > modiExtUserPrmDataConst.split(",").length)) {
                     modiExtUserPrmDataConst = modiExtUserPrmDataConstDef;
-                    prmData = prmData.concat(",").concat(modiExtUserPrmDataConst);
+                    prmDataSB.append(',');
+                    prmDataSB.append(modiExtUserPrmDataConst);
                 } else {
-                    prmData = prmData.concat(",").concat(modiExtUserPrmDataConst);
+                    prmDataSB.append(',');
+                    prmDataSB.append(modiExtUserPrmDataConst);
                 }
             }
         }
-        int prmDataLen = 9 + prmData.split(",").length;
+        int prmDataLen = 9 + prmDataSB.toString().split(",").length;
         slavePrmData.setAttribute("prm_data_len", Integer.toString(prmDataLen));
-        slavePrmData.setAttribute("station_status", Short.toString(slave.getStationStatus()));
-        slavePrmData.setAttribute("watchdog_fact_1", Short.toString(slave.getWdFact1()));
-        slavePrmData.setAttribute("watchdog_fact_2", Short.toString(slave.getWdFact2()));
-        slavePrmData.setAttribute("min_tsdr", Short.toString(slave.getMinTsdr()));
+        slavePrmData.setAttribute("station_status", Integer.toString(slave.getStationStatus()));
+        slavePrmData.setAttribute("watchdog_fact_1", Integer.toString(slave.getWdFact1()));
+        slavePrmData.setAttribute("watchdog_fact_2", Integer.toString(slave.getWdFact2()));
+        slavePrmData.setAttribute("min_tsdr", Integer.toString(slave.getMinTsdr()));
         if (slaveData != null) {
             /*
              * we have some problems with work of the XML configuration. 1st. The parameter
              * baud_rate in the <MASTER> section must be write in decimal notation. Otherwise the
              * bus will start with a baud_rate = 9600 kbit/s.
-             * 
+             *
              * 2nd. The parameter ident_number in the <SLAVE> section must be write in hex notation.
              * Otherwise the Station will not work. You will get the error code 0x42 0x05 0x00.
              */
             slavePrmData.setAttribute("ident_number", "0x"
                     + Integer.toHexString(slaveData.getIdentNumber()));
         }
-        slavePrmData.setAttribute("group_ident", Short.toString(slave.getGroupIdent()));
-        slavePrmData.setText(prmData);
+        slavePrmData.setAttribute("group_ident", Integer.toString(slave.getGroupIdent()));
+        slavePrmData.setText(prmDataSB.toString());
         return slavePrmData;
     }
 
     /**
      * Set all slave_cfg_data parameter.
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave Cfg Data Element.
@@ -186,7 +206,7 @@ public class XmlSlave {
 
     /**
      * Set all SlaveAatData parameter.
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave aat Data Element.
@@ -217,7 +237,7 @@ public class XmlSlave {
 
     /**
      * Set all slave_user_data parameter.
-     * 
+     *
      * @param slave
      *            The Profibus Slave.
      * @return The XML Slave User Data Element.
@@ -232,7 +252,7 @@ public class XmlSlave {
     }
 
     /**
-     * 
+     *
      * @return the Slave {@link Element}
      */
     public final Element getSlave() {

@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ChannelConfigComposite.java,v 1.8 2010/08/20 13:33:00 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -30,6 +30,7 @@ import java.util.TreeSet;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.Repository;
 import org.csstudio.config.ioconfig.model.Sensors;
@@ -64,8 +65,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.8 $
  * @since 06.06.2007
  */
 public class ChannelConfigComposite extends NodeConfig {
@@ -87,19 +88,18 @@ public class ChannelConfigComposite extends NodeConfig {
 
     /**
      * Open a channel configuration view for a exist {@link Channel}.
-     * 
+     *
      * @param parent
      *            The parent Composite of this Configuration View
      * @param profiBusTreeView
      *            The TreeViewer.
-     * 
+     *
      * @param channel
      *            the channel to configured.
      */
     public ChannelConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
             final Channel channel) {
         super(parent, profiBusTreeView, "Profibus Channel Configuration", channel, channel == null);
-        profiBusTreeView.setConfiguratorName("Channel Configuration");
         NodeMap.countChannelConfigComposite();
         _channel = channel;
         if (_channel == null) {
@@ -152,9 +152,9 @@ public class ChannelConfigComposite extends NodeConfig {
         _ioNameText.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, false, 1, 1));
         setText(_ioNameText, _channel.getIoName(), 255);
 
-        if (_channel.getIoName() != null && !_channel.getIoName().isEmpty()) {
+        if ((_channel.getIoName() != null) && !_channel.getIoName().isEmpty()) {
             List<Sensors> loadSensors = Repository.loadSensors(_channel.getIoName());
-            if ((loadSensors != null && loadSensors.size() > 0)) {
+            if (((loadSensors != null) && (loadSensors.size() > 0))) {
                 Group sensorsGroup = new Group(comp, SWT.NONE);
                 sensorsGroup.setLayout(new GridLayout(1, false));
                 sensorsGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
@@ -164,7 +164,7 @@ public class ChannelConfigComposite extends NodeConfig {
                 _sensorsViewer.setContentProvider(new ArrayContentProvider());
                 _sensorsViewer.setInput(loadSensors.toArray());
                 int id = 0;
-                if (_channel.getCurrentValue() != null && _channel.getCurrentValue().length() > 0) {
+                if ((_channel.getCurrentValue() != null) && (_channel.getCurrentValue().length() > 0)) {
                     id = Integer.parseInt(_channel.getCurrentValue());
                 } else {
                     id = loadSensors.get(0).getId();
@@ -211,11 +211,11 @@ public class ChannelConfigComposite extends NodeConfig {
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
         assembleButton.addSelectionListener(new SelectionListener() {
 
-            public void widgetDefaultSelected(SelectionEvent e) {
+            public void widgetDefaultSelected(final SelectionEvent e) {
                 doAssemble();
             }
 
-            public void widgetSelected(SelectionEvent e) {
+            public void widgetSelected(final SelectionEvent e) {
                 doAssemble();
             }
 
@@ -318,6 +318,10 @@ public class ChannelConfigComposite extends NodeConfig {
      * {@inheritDoc}
      */
     @Override
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
     public final Node getNode() {
         if (_channel == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
@@ -355,11 +359,11 @@ public class ChannelConfigComposite extends NodeConfig {
     }
 
     /**
-     * 
+     *
      * @param ioNameText
      *            Set the new IOName for this channel.
      */
-    public void setIoNameText(String ioNameText) {
+    public void setIoNameText(final String ioNameText) {
         _ioNameText.setText(ioNameText);
     }
 }

@@ -20,15 +20,15 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: IStructured.java,v 1.1 2009/08/26 07:08:45 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel;
 
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 09.01.2009
  */
 public interface IStructured{

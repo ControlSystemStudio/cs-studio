@@ -7,46 +7,46 @@ import java.util.Date;
 public interface IDocument {
 
     /**
-     * 
+     *
      * @return the Document Id key.
      */
-    public abstract String getId();
+    String getId();
 
     /**
-     * 
+     *
      * @return the MIME type of this Document.
      */
-    public abstract String getMimeType();
+    String getMimeType();
 
-    public abstract String getAccountname();
+    String getAccountname();
 
-    public abstract String getLogseverity();
+    String getLogseverity();
 
-    public abstract String getLinkId();
+    String getLinkId();
 
-    public abstract String getSubject();
+    String getSubject();
 
-    public abstract String getDesclong();
+    String getDesclong();
 
-    public abstract String getLinkForward();
+    String getLinkForward();
 
-    public abstract String getErroridentifyer();
+    String getErroridentifyer();
 
-    public abstract String getLocation();
+    String getLocation();
 
-    public abstract String getKeywords();
+    String getKeywords();
 
     /**
-     * 
+     *
      * @return the created date of the Document.
      */
-    public abstract Date getCreatedDate();
+    Date getCreatedDate();
 
-    public abstract Date getDeleteDate();
+    Date getDeleteDate();
 
-    public abstract Date getUpdateDate();
+    Date getUpdateDate();
 
-    public abstract Date getEntrydate();
-    
-    public abstract InputStream getImageData() throws SQLException;
+    Date getEntrydate();
+
+    InputStream getImageData() throws SQLException;
 }

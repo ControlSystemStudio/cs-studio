@@ -20,28 +20,31 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: Repository.java,v 1.5 2010/08/20 13:33:04 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model;
 
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.CheckForNull;
 
 import org.csstudio.config.ioconfig.model.pbmodel.Channel;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 
 /**
  * @author gerke
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.5 $
  * @since 22.03.2007
  */
 public final class Repository {
 
-    private static IRepository _repository = new HibernateRepository();
-    private static List<Document> _documents;
-    
+    private static IReposetory _REPOSITORY = new HibernateReposetory();
+    private static List<Document> _DOCUMENTS;
+
     /**
      * Default Constructor.
      */
@@ -50,36 +53,36 @@ public final class Repository {
     /**
      * For use different Repositories can inject the {@link IRepository}.<br>
      * e.g. Dummy Repositories for tests.<br>
-     * The Default {@link IRepository} is the {@link HibernateRepository}.
-     * @param repository the repository to inject. 
+     * The Default {@link IReposetory} is the {@link HibernateReposetory}.
+     * @param repository the repository to inject.
      */
-    public static void injectIRepository(IRepository repository) {
-        _repository = repository;
+    public static void injectIRepository(final IReposetory repository) {
+        _REPOSITORY = repository;
     }
-    
+
     /**
      * Give a to a ioName the Epics Address String.
      * @param ioName the IO Name.
      * @return the Epics Address String.
      */
-    public static String getEpicsAddressString(String ioName) {
-        return _repository.getEpicsAddressString(ioName);
+    public static String getEpicsAddressString(final String ioName) {
+        return _REPOSITORY.getEpicsAddressString(ioName);
     }
 
     /**
-     * 
+     *
      * @return a List of all IoNames at the DB.
      */
     public static List<String> getIoNames() {
-        return _repository.getIoNames();
+        return _REPOSITORY.getIoNames();
     }
 
     /**
      * @param iocName the name of the Ioc.
      * @return a List of all IoNames from the Ioc with the given name.
      */
-    public static List<String> getIoNames(String iocName) {
-        return _repository.getIoNames(iocName);
+    public static List<String> getIoNames(final String iocName) {
+        return _REPOSITORY.getIoNames(iocName);
     }
 
     /**
@@ -89,51 +92,62 @@ public final class Repository {
      *            The Class Typ.
      * @return All Object of the Table clazz.getName.
      */
-    public static <T> List<T> load(Class<T> clazz) {
-        return _repository.load(clazz);
+    public static <T> List<T> load(final Class<T> clazz) {
+        return _REPOSITORY.load(clazz);
     }
-    
+
     /**
-     * 
+     *
      * @param <T>
      *            ClassTyp of the Data class
      * @param clazz
      *            The Class Typ.
      * @param id
-     *            The DB Id of the object. 
+     *            The DB Id of the object.
      * @return The Object of the Table clazz.getName with the given id.
      */
-    public static <T> T load(Class<T> clazz, Serializable id){
-        return _repository.load(clazz, id);
-    }
-
-    public static List<Sensors> loadSensors(String ioName){
-        return _repository.loadSensors(ioName);
-    }
-
-    public static Sensors loadSensor(String ioName, String selection){
-        return _repository.loadSensor(ioName, selection);
+    public static <T> T load(final Class<T> clazz, final Serializable id){
+        return _REPOSITORY.load(clazz, id);
     }
 
     /**
-     * 
-     * @param forceRefresh if true load new from the DB, otherwise get the cache.  
+     *  Load all Sensors from the Id ioName.
+     * @param ioName the Key IO-Name for the search Sensors.
+     * @return a {@link List} of {@link Sensors}
+     */
+    public static List<Sensors> loadSensors(final String ioName){
+        return _REPOSITORY.loadSensors(ioName);
+    }
+
+    /**
+     *  Load the selected Sensor from the Id ioName.
+     * @param ioName the Key IO-Name for the search Sensors.
+     * @param selection the selection of the Sensor.
+     * @return a {@link List} of {@link Sensors}
+     */
+    public static Sensors loadSensor(final String ioName, final String selection){
+        return _REPOSITORY.loadSensor(ioName, selection);
+    }
+
+    /**
+     *
+     * @param forceRefresh if true load new from the DB, otherwise get the cache.
      * @return All loaded Document's from the DB.
      */
-    public static List<Document> loadDocument(boolean forceRefresh) {
-        if(forceRefresh || _documents == null) {
-            _documents = _repository.loadDocument();
+    public static List<Document> loadDocument(final boolean forceRefresh) {
+        if(forceRefresh || (_DOCUMENTS == null)) {
+            _DOCUMENTS = _REPOSITORY.loadDocument();
         }
 
-        return _documents;
+        return _DOCUMENTS;
     }
 
     /**
      * @param gsdFile
      *            The GSD File to remove.
      */
-    public static void removeGSDFiles(GSDFile gsdFile) {
-        _repository.removeGSDFiles(gsdFile);
+    public static void removeGSDFiles(final GSDFile gsdFile) {
+        _REPOSITORY.removeGSDFiles(gsdFile);
     }
 
     /**
@@ -142,8 +156,8 @@ public final class Repository {
      * @param dbClass
      *            The Class Typ.
      */
-    public static <T extends DBClass> void removeNode(T dbClass) {
-        _repository.removeNode(dbClass);        
+    public static <T extends DBClass> void removeNode(final T dbClass) {
+        _REPOSITORY.removeNode(dbClass);
     }
 
     /**
@@ -151,8 +165,8 @@ public final class Repository {
      *            the GSD File that save to DB
      * @return the Saved GSD File.
      */
-    public static GSDFile save(GSDFile gsdFile) {
-        return _repository.save(gsdFile);
+    public static GSDFile save(final GSDFile gsdFile) {
+        return _REPOSITORY.save(gsdFile);
     }
 
     /**
@@ -160,8 +174,8 @@ public final class Repository {
      *            the document that save to DB
      * @return the Saved document.
      */
-    public static Document save(Document document) {
-        return _repository.save(document);
+    public static Document save(final Document document) {
+        return _REPOSITORY.save(document);
     }
 
     /**
@@ -172,8 +186,8 @@ public final class Repository {
      * @return the Saved Data class.
      * @throws PersistenceException
      */
-    public static <T extends DBClass> T saveOrUpdate(T dbClass) throws PersistenceException {
-        return _repository.saveOrUpdate(dbClass);
+    public static <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
+        return _REPOSITORY.saveOrUpdate(dbClass);
     }
 
     /**
@@ -183,8 +197,8 @@ public final class Repository {
      *            the Data class that update to DB
      * @return the Saved Data class.
      */
-    public static <T extends DBClass> T update(T dbClass) {
-        return _repository.update(dbClass);
+    public static <T extends DBClass> T update(final T dbClass) {
+        return _REPOSITORY.update(dbClass);
     }
 
     /**
@@ -192,24 +206,42 @@ public final class Repository {
      *            the document that update to DB.
      * @return the update document.
      */
-    public static Document update(Document document) {
-        return _repository.update(document);
-    }
-    
-    public static List<Integer> getRootPath(int id){
-        return _repository.getRootPath(id);
+    public static Document update(final Document document) {
+        return _REPOSITORY.update(document);
     }
 
-    public static Channel loadChannel(String ioName) {
-        Channel loadChannel = _repository.loadChannel(ioName);
+    /**
+     * Load the Channel selected by the IO Name
+     * @param ioName the selection IO-Name.
+     * @return The the selected Channel or null when not found!
+     */
+    @CheckForNull
+    public static Channel loadChannel(final String ioName) {
+        Channel loadChannel = _REPOSITORY.loadChannel(ioName);
         return loadChannel;
     }
 
-    public static String getShortChannelDesc(String ioName) {
-        return _repository.getShortChannelDesc(ioName);
+    /**
+     * Load the short Description (max. 40 character) selected by the IO Name.
+     * @param ioName the selection IO-Name.
+     * @return The the short Description or null when not found!
+     */
+    public static String getShortChannelDesc(final String ioName) {
+        return _REPOSITORY.getShortChannelDesc(ioName);
     }
 
-    public static void close() {
-        _repository.close();
+    @CheckForNull
+    public static List<PV2IONameMatcherModel> loadPV2IONameMatcher(final Collection<String> pvName) {
+        return _REPOSITORY.loadPV2IONameMatcher(pvName);
     }
+
+
+    /**
+     * Close all resources that the Repository need.
+     * e.g. DB Sessions
+     */
+    public static void close() {
+        _REPOSITORY.close();
+    }
+
 }

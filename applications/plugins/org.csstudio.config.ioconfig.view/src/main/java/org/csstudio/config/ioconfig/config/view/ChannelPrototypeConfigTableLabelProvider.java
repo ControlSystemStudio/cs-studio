@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: ChannelPrototypeConfigTableLabelProvider.java,v 1.1 2009/08/26 07:09:23 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -31,8 +31,8 @@ import org.eclipse.swt.graphics.Image;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.1 $
  * @since 18.12.2008
  */
 public class ChannelPrototypeConfigTableLabelProvider implements ITableLabelProvider {

@@ -19,10 +19,10 @@ import org.hibernate.Session;
 
 /**
  * Implementation for a Hibernate Repository.
- * 
+ *
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: bknerr $
+ * @version $Revision: 1.1 $
  * @since 03.06.2009
  */
 public class HibernateRepository implements IRepository {
@@ -38,23 +38,23 @@ public class HibernateRepository implements IRepository {
 
                 public GSDModule execute(final Session session) {
                     _session = session;
-                    Set<ModuleChannelPrototype> values = gsdModule.getModuleChannelPrototypeNH();
+                    final Set<ModuleChannelPrototype> values = gsdModule.getModuleChannelPrototypeNH();
                     _session.saveOrUpdate(gsdModule);
-                    if (values != null && values.size() > 0) {
+                    if ((values != null) && (values.size() > 0)) {
                         saveChildren(values);
                     }
                     _session.flush();
                     return gsdModule;
                 }
 
-                private void saveChildren(Set<ModuleChannelPrototype> moduleChannelPrototypes) {
-                    for (ModuleChannelPrototype prototype : moduleChannelPrototypes) {
+                private void saveChildren(final Set<ModuleChannelPrototype> moduleChannelPrototypes) {
+                    for (final ModuleChannelPrototype prototype : moduleChannelPrototypes) {
                         _session.saveOrUpdate(prototype);
                     }
                 }
             });
             return gsdModule;
-        } catch (HibernateException he) {
+        } catch (final HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
             throw new PersistenceException();
         }
@@ -74,9 +74,9 @@ public class HibernateRepository implements IRepository {
 
             });
             return dbClass;
-        } catch (HibernateException he) {
+        } catch (final HibernateException he) {
             CentralLogger.getInstance().warn(Repository.class, he);
-            PersistenceException persistenceException = new PersistenceException();
+            final PersistenceException persistenceException = new PersistenceException();
             persistenceException.setStackTrace(he.getStackTrace());
             throw persistenceException;
         }
@@ -104,7 +104,7 @@ public class HibernateRepository implements IRepository {
      * {@inheritDoc}
      */
     public <T> List<T> load(final Class<T> clazz) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public List<T> execute(final Session session) {
                 final Query query = session.createQuery("from " + clazz.getName());
@@ -123,7 +123,7 @@ public class HibernateRepository implements IRepository {
      * {@inheritDoc}
      */
     public <T> T load(final Class<T> clazz, final Serializable id) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public T execute(final Session session) {
                 final List<T> nodes = session.createQuery(
@@ -134,7 +134,7 @@ public class HibernateRepository implements IRepository {
                     return null;
                 }
 
-                return (T) nodes.get(0);
+                return nodes.get(0);
             }
         };
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
@@ -241,13 +241,13 @@ public class HibernateRepository implements IRepository {
     /**
      * Get the Epics Address string to an IO Name. It the name not found return the string '$$$
      * IO-Name NOT found! $$$'.
-     * 
+     *
      * @param ioName
      *            the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      */
     public String getEpicsAddressString(final String ioName) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public String execute(final Session session) {
                 final Query query = session.createQuery("select channel.epicsAddressString from "
@@ -258,10 +258,10 @@ public class HibernateRepository implements IRepository {
                 if (channels.size() < 1) {
                     return "%%% IO-Name (" + ioName + ") NOT found! %%%";
                 } else if (channels.size() > 1) {
-                    StringBuilder sb = new StringBuilder("%%% IO-Name (");
+                    final StringBuilder sb = new StringBuilder("%%% IO-Name (");
                     sb.append(ioName);
                     sb.append(" NOT Unique! %%% ");
-                    for (String string : channels) {
+                    for (final String string : channels) {
                         sb.append(" ,");
                         sb.append(string);
                     }
@@ -277,7 +277,7 @@ public class HibernateRepository implements IRepository {
      * {@inheritDoc}
      */
     public List<String> getIoNames() {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public List<String> execute(final Session session) {
                 final Query query = session.createQuery("select channel.ioName from "
@@ -292,8 +292,8 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public List<String> getIoNames(String iocName) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+    public List<String> getIoNames(final String iocName) {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public List<String> execute(final Session session) {
                 final Query query = session.createQuery("select channel.ioName from "
@@ -307,7 +307,7 @@ public class HibernateRepository implements IRepository {
 
     @Override
     public String getShortChannelDesc(final String ioName) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public String execute(final Session session) {
                 final Query query = session.createQuery("select channel.description from "
@@ -315,14 +315,14 @@ public class HibernateRepository implements IRepository {
                 query.setString(0, ioName); // Zero-Based!
 
                 final List<String> descList = query.list();
-                if (descList == null || descList.isEmpty()) {
+                if ((descList == null) || descList.isEmpty()) {
                     return "";
                 }
-                String string = descList.get(0);
-                if (string == null || string.isEmpty()) {
+                final String string = descList.get(0);
+                if ((string == null) || string.isEmpty()) {
                     return "";
                 }
-                String[] split = string.split("[\r\n]");
+                final String[] split = string.split("[\r\n]");
                 if (split[0].length() > 40) {
                     return split[0].substring(0, 40);
                 }
@@ -333,7 +333,7 @@ public class HibernateRepository implements IRepository {
     }
 
     public List<Sensors> loadSensors(final String ioName) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public List<Sensors> execute(final Session session) {
                 final Query query = session.createQuery("from " + Sensors.class.getName()
@@ -348,16 +348,16 @@ public class HibernateRepository implements IRepository {
     }
 
     public Sensors loadSensor(final String ioName, final String selection) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             @SuppressWarnings("unchecked")
             public Sensors execute(final Session session) {
-                String statment = "select" + " s" + " from " + Sensors.class.getName() + " s"
+                final String statment = "select" + " s" + " from " + Sensors.class.getName() + " s"
                         + ", " + Channel.class.getName() + " c" + " where c.currentValue like s.id"
                         + " and c.ioName like '" + ioName + "'";
                 final Query query = session.createQuery(statment);
                 // query.setString(0, ioName); // Zero-Based!
                 final List<Sensors> sensors = query.list();
-                if (sensors == null || sensors.size() < 1) {
+                if ((sensors == null) || (sensors.size() < 1)) {
                     return null;
                 }
                 return sensors.get(0);
@@ -367,19 +367,19 @@ public class HibernateRepository implements IRepository {
     }
 
     public List<Integer> getRootPath(final int id) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             public List<Integer> execute(final Session session) {
                 int level = 0;
                 int searchId = id;
-                String statment = "select node.parent_Id" + " from ddb_node node"
+                final String statment = "select node.parent_Id" + " from ddb_node node"
                         + " where node.id like ?";
                 final List<Integer> rootPath = new ArrayList<Integer>();
                 rootPath.add(searchId);
-                SQLQuery query = session.createSQLQuery(statment);
+                final SQLQuery query = session.createSQLQuery(statment);
                 while (searchId > 0) {
                     query.setInteger(0, searchId); // Zero-Based!
-                    BigDecimal uniqueResult = (BigDecimal) query.uniqueResult();
-                    if (uniqueResult == null || level++ > 10) {
+                    final BigDecimal uniqueResult = (BigDecimal) query.uniqueResult();
+                    if ((uniqueResult == null) || (level++ > 10)) {
                         break;
                     }
                     searchId = uniqueResult.intValue();
@@ -393,10 +393,9 @@ public class HibernateRepository implements IRepository {
 
     @Override
     public Channel loadChannel(final String ioName) {
-        HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+        final HibernateCallback hibernateCallback = new HibernateCallback() {
             public Channel execute(final Session session) {
-                Query createQuery = session.createQuery("select c from " + Channel.class.getName()
+                final Query createQuery = session.createQuery("select c from " + Channel.class.getName()
                         + " c where c.ioName like ?");
                 createQuery.setString(0, ioName);
                 final Channel nodes = (Channel) createQuery.uniqueResult();
@@ -410,4 +409,5 @@ public class HibernateRepository implements IRepository {
     public void close() {
         HibernateManager.closeSession();
     }
+
 }

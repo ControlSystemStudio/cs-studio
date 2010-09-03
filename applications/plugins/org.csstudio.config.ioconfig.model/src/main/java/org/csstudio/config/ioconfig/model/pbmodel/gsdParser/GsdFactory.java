@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: GsdFactory.java,v 1.3 2010/08/20 13:33:07 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.model.pbmodel.gsdParser;
 
@@ -30,15 +30,15 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.3 $
  * @since 18.07.2008
  */
 public final class GsdFactory {
     
     
     
-    private static HashMap<Integer, GsdSlaveModel> _gsdSlaveModelMap = new HashMap<Integer, GsdSlaveModel>();
+    private static HashMap<Integer, GsdSlaveModel> _GSD_SLAVE_MODEL_MAP = new HashMap<Integer, GsdSlaveModel>();
 
     /**
      * Default Constructor.
@@ -71,7 +71,7 @@ public final class GsdFactory {
      */
     public static GsdSlaveModel makeGsdSlave(final GSDFile gsdFile){
         
-        GsdSlaveModel slaveModel = _gsdSlaveModelMap.get(gsdFile.getId());
+        GsdSlaveModel slaveModel = _GSD_SLAVE_MODEL_MAP.get(gsdFile.getId());
         if(slaveModel==null) {
             GSD2OBJ dataInstanz = new GSD2OBJ();
             
@@ -82,7 +82,7 @@ public final class GsdFactory {
                 return null;
             }
             GsdFileParser.parseSlave(gsdFile, slaveModel);
-            _gsdSlaveModelMap.put(gsdFile.getId(), slaveModel);
+            _GSD_SLAVE_MODEL_MAP.put(gsdFile.getId(), slaveModel);
         }        
 
         return slaveModel;

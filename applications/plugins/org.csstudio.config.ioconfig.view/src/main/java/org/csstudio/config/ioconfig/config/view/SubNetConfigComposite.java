@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id$
+ * $Id: SubNetConfigComposite.java,v 1.6 2010/08/20 13:32:59 hrickens Exp $
  */
 package org.csstudio.config.ioconfig.config.view;
 
@@ -33,6 +33,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.Activator;
 import org.csstudio.config.ioconfig.model.Document;
+import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Ioc;
 import org.csstudio.config.ioconfig.model.Node;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFile;
@@ -66,8 +67,8 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * @author hrickens
- * @author $Author$
- * @version $Revision$
+ * @author $Author: hrickens $
+ * @version $Revision: 1.6 $
  * @since 20.06.2007
  */
 public class SubNetConfigComposite extends NodeConfig {
@@ -172,10 +173,10 @@ public class SubNetConfigComposite extends NodeConfig {
      * @param subnet
      *            to Configure. Is NULL create a new one.
      */
-    public SubNetConfigComposite(final Composite parent, final ProfiBusTreeView profiBusTreeView,
-            final ProfibusSubnet subnet) {
+    public SubNetConfigComposite(final Composite parent,
+                                 final ProfiBusTreeView profiBusTreeView,
+                                 final ProfibusSubnet subnet) {
         super(parent, profiBusTreeView, "Profibus Subnet Configuration", subnet, subnet == null);
-        profiBusTreeView.setConfiguratorName("Subnet Configuration");
         _subnet = subnet;
 
         // No Subnet, create a new one.
@@ -235,7 +236,7 @@ public class SubNetConfigComposite extends NodeConfig {
         _subnet.setHsa(Short.valueOf(_hSAddress.getItem(index)));
         _hSAddress.setData(_hSAddress.getSelectionIndex());
 
-        _subnet.setBaudRate(((Baudrates) _baudList.getElementAt(_baudList.getCombo()
+        _subnet.setBaudRate( ((Baudrates) _baudList.getElementAt(_baudList.getCombo()
                 .getSelectionIndex())).getVal()
                 + "");
         _baudList.getCombo().setData(_baudList.getCombo().getSelectionIndex());
@@ -294,7 +295,7 @@ public class SubNetConfigComposite extends NodeConfig {
 
         // Net Setting
         _subnet.setHsa(Short.valueOf(_hSAddress.getItem(_hSAddress.getSelectionIndex())));
-        _hSAddress.setText(((Integer) _hSAddress.getData()).toString());
+        _hSAddress.setText( ((Integer) _hSAddress.getData()).toString());
 
         _baudList.getCombo().select((Integer) _baudList.getCombo().getData());
 
@@ -348,7 +349,7 @@ public class SubNetConfigComposite extends NodeConfig {
         _facilityViewer.setContentProvider(new ArrayContentProvider());
         String[] facilities = prefNode.get(PreferenceConstants.DDB_FACILITIES, "NONE").split(",");
         _facilityViewer.setInput(facilities);
-        if (_subnet.getProfil() == null || _subnet.getProfil().isEmpty()) {
+        if ( (_subnet.getProfil() == null) || _subnet.getProfil().isEmpty()) {
             _facilityViewer.getCombo().select(0);
             _facilityViewer.getCombo().setData(0);
         } else {
@@ -357,10 +358,13 @@ public class SubNetConfigComposite extends NodeConfig {
         }
         _facilityViewer.getCombo().addModifyListener(getMLSB());
 
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _subnet, getMLSB(), "Index",
-                getProfiBusTreeView()));
+        setIndexSpinner(ConfigHelper.getIndexSpinner(gName,
+                                                     _subnet,
+                                                     getMLSB(),
+                                                     "Index",
+                                                     getProfiBusTreeView()));
 
-        makeDescGroup(comp,3);
+        makeDescGroup(comp, 3);
     }
 
     /**
@@ -407,8 +411,8 @@ public class SubNetConfigComposite extends NodeConfig {
         // Default is 1,5 MBit
         _baudList.getCombo().select(7);
         for (int i = 0; i < DB_BAUDRATES.length; i++) {
-            if ((_subnet.getBaudRate() != null && _subnet.getBaudRate().equals(
-                    Integer.toString(DB_BAUDRATES[i].getVal())))) {
+            if ( ( (_subnet.getBaudRate() != null) && _subnet.getBaudRate().equals(Integer
+                    .toString(DB_BAUDRATES[i].getVal())))) {
                 _baudList.getCombo().select(i);
                 break;
             }
@@ -429,7 +433,7 @@ public class SubNetConfigComposite extends NodeConfig {
      */
     private void bottom(final Composite parent) {
         GridDataFactory gdf = GridDataFactory.fillDefaults();
-        
+
         Group bottomGroup = new Group(parent, SWT.NONE);
         bottomGroup.setLayout(new GridLayout(3, false));
         bottomGroup.setLayoutData(gdf.create());
@@ -442,7 +446,9 @@ public class SubNetConfigComposite extends NodeConfig {
         left(left);
         // Separator
         new Label(bottomGroup, SWT.VERTICAL | SWT.SEPARATOR).setLayoutData(new GridData(SWT.FILL,
-                SWT.FILL, false, false));
+                                                                                        SWT.FILL,
+                                                                                        false,
+                                                                                        false));
         // Rigth Side
         Composite rigth = new Composite(bottomGroup, SWT.NONE);
         rigth.setLayoutData(gdf.create());
@@ -498,8 +504,11 @@ public class SubNetConfigComposite extends NodeConfig {
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
         front.setText("Ttr: ");
-        _ttr = ProfibusHelper.getTextField(rigth, true, _subnet.getTtr() + "", Ranges.TTR,
-                ProfibusHelper.VL_TYP_U32);
+        _ttr = ProfibusHelper.getTextField(rigth,
+                                           true,
+                                           _subnet.getTtr() + "",
+                                           Ranges.TTR,
+                                           ProfibusHelper.VL_TYP_U32);
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
         control[0] = _ttr;
 
@@ -522,8 +531,11 @@ public class SubNetConfigComposite extends NodeConfig {
         front = new Label(rigth, SWT.NONE);
         front.setAlignment(SWT.RIGHT);
         front.setText("Watchdog: ");
-        _watchdog = ProfibusHelper.getTextField(rigth, true, _subnet.getWatchdog() + "",
-                Ranges.WATCHDOG, ProfibusHelper.VL_TYP_U16);
+        _watchdog = ProfibusHelper.getTextField(rigth,
+                                                true,
+                                                _subnet.getWatchdog() + "",
+                                                Ranges.WATCHDOG,
+                                                ProfibusHelper.VL_TYP_U16);
         control[1] = _watchdog;
         new Label(rigth, SWT.NONE).setText("[t_Bit]");
 
@@ -578,8 +590,11 @@ public class SubNetConfigComposite extends NodeConfig {
             value = _subnet.getSlotTime() + "";
         }
 
-        _tslotInit = ProfibusHelper.getTextField(left, true, value, Ranges.TSLOT_INIT,
-                ProfibusHelper.VL_TYP_U16);
+        _tslotInit = ProfibusHelper.getTextField(left,
+                                                 true,
+                                                 value,
+                                                 Ranges.TSLOT_INIT,
+                                                 ProfibusHelper.VL_TYP_U16);
         _tslotInit.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -592,8 +607,11 @@ public class SubNetConfigComposite extends NodeConfig {
         } else {
             value = _subnet.getMaxTsdr() + "";
         }
-        _maxTsdr = ProfibusHelper.getTextField(left, true, value, Ranges.MAX_TSDR,
-                ProfibusHelper.VL_TYP_U16);
+        _maxTsdr = ProfibusHelper.getTextField(left,
+                                               true,
+                                               value,
+                                               Ranges.MAX_TSDR,
+                                               ProfibusHelper.VL_TYP_U16);
         _maxTsdr.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -607,8 +625,11 @@ public class SubNetConfigComposite extends NodeConfig {
             value = _subnet.getMinTsdr() + "";
         }
 
-        _minTsdr = ProfibusHelper.getTextField(left, true, value, Ranges.MIN_TSDR,
-                ProfibusHelper.VL_TYP_U16);
+        _minTsdr = ProfibusHelper.getTextField(left,
+                                               true,
+                                               value,
+                                               Ranges.MIN_TSDR,
+                                               ProfibusHelper.VL_TYP_U16);
         _minTsdr.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -622,8 +643,11 @@ public class SubNetConfigComposite extends NodeConfig {
             value = _subnet.getTset() + "";
         }
 
-        _tset = ProfibusHelper.getTextField(left, true, value, Ranges.TSET,
-                ProfibusHelper.VL_TYP_U08);
+        _tset = ProfibusHelper.getTextField(left,
+                                            true,
+                                            value,
+                                            Ranges.TSET,
+                                            ProfibusHelper.VL_TYP_U08);
         _tset.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -636,8 +660,11 @@ public class SubNetConfigComposite extends NodeConfig {
         } else {
             value = _subnet.getTqui() + "";
         }
-        _tqui = ProfibusHelper.getTextField(left, true, value, Ranges.TQUI,
-                ProfibusHelper.VL_TYP_U08);
+        _tqui = ProfibusHelper.getTextField(left,
+                                            true,
+                                            value,
+                                            Ranges.TQUI,
+                                            ProfibusHelper.VL_TYP_U08);
         _tqui.addModifyListener(getMLSB());
         new Label(left, SWT.NONE).setText("[t_Bit]");
 
@@ -650,7 +677,7 @@ public class SubNetConfigComposite extends NodeConfig {
         for (long i = Ranges.GAP_RANGE.getMin(); i <= Ranges.GAP_RANGE.getMax(); i++) {
             _gapCombo.add(i + "");
         }
-        if (1 <= _subnet.getGap() && _subnet.getGap() <= _gapCombo.getItemCount()) {
+        if ( (1 <= _subnet.getGap()) && (_subnet.getGap() <= _gapCombo.getItemCount())) {
             _gapCombo.select(_subnet.getGap() - 1);
         } else {
             // default GAP is 10 (index 9)
@@ -671,8 +698,8 @@ public class SubNetConfigComposite extends NodeConfig {
         for (int i = 1; i <= 8; i++) {
             _retrayCombo.add(i + "");
         }
-        if (1 <= _subnet.getRepeaterNumber()
-                && _subnet.getRepeaterNumber() <= _retrayCombo.getItemCount()) {
+        if ( (1 <= _subnet.getRepeaterNumber())
+                && (_subnet.getRepeaterNumber() <= _retrayCombo.getItemCount())) {
             _retrayCombo.select(_subnet.getRepeaterNumber() - 1);
         } else {
             _retrayCombo.select(0);
@@ -707,7 +734,15 @@ public class SubNetConfigComposite extends NodeConfig {
      * {@inheritDoc}
      */
     @Override
-    public final Node getNode() {
+    public final IDocumentable getDocumentableObject() {
+        return getNode();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Node getNode() {
         if (_subnet == null) {
             StructuredSelection selection = (StructuredSelection) getProfiBusTreeView()
                     .getTreeViewer().getSelection();
