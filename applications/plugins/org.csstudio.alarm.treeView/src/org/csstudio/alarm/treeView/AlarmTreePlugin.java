@@ -25,10 +25,10 @@ import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
 
 /**
@@ -42,23 +42,6 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
      * The plug-in id.
      */
     public static final String PLUGIN_ID = "org.csstudio.alarm.treeView";
-
-    /**
-     * The private service tracker for the LDAP service.
-     *
-     * @author bknerr
-     * @author $Author: bknerr $
-     * @version $Revision: 1.7 $
-     * @since 27.08.2010
-     */
-    private class LdapServiceTracker extends ServiceTracker {
-        /**
-         * Constructor.
-         */
-        public LdapServiceTracker(@Nonnull final BundleContext context) {
-            super(context, ILdapService.class.getName(), null);
-        }
-    }
 
     /**
      * The service tracker reference for the LDAP service.

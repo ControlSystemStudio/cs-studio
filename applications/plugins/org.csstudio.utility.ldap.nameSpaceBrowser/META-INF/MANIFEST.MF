@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.utility.ldap.namespacebrowser.Activator
 Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
  org.csstudio.utility.nameSpaceBrowser,
- org.csstudio.utility.ldap,
+ org.csstudio.utility.ldap.service.impl,
  org.csstudio.utility.namespace.utility
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

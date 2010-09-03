@@ -7,7 +7,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-Activator: org.csstudio.utility.ldapUpdater.Activator
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime,
- org.csstudio.utility.ldap,
  org.csstudio.utility.namespace.utility,
  org.remotercp.common;bundle-version="1.0.0",
  org.remotercp.ecf;bundle-version="1.0.0",
@@ -15,5 +14,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform;bundle-version="1.1.0",
  org.junit4,
  org.csstudio.platform.libs.annotations;bundle-version="1.0.0",
- org.csstudio.utility.treemodel;bundle-version="1.0.0"
+ org.csstudio.utility.treemodel;bundle-version="1.0.0",
+ org.csstudio.utility.ldap.service;bundle-version="1.0.0"
 Bundle-ClassPath: .

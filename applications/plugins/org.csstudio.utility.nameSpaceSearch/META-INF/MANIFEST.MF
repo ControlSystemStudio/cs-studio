@@ -7,7 +7,7 @@ Bundle-Activator: org.csstudio.utility.nameSpaceSearch.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui,
- org.csstudio.utility.ldap,
- org.csstudio.utility.namespace.utility
+ org.csstudio.utility.namespace.utility,
+ org.csstudio.utility.ldap.service;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
