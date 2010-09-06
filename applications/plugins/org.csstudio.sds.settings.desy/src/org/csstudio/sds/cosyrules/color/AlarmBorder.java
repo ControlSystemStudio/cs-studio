@@ -1,5 +1,6 @@
 package org.csstudio.sds.cosyrules.color;
 
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.IRule;
 import org.epics.css.dal.DynamicValueState;
 
@@ -41,19 +42,19 @@ public class AlarmBorder implements IRule {
 
 			if ((Math.abs(d - 0.0) < 0.00001)
 					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
-				return 0;
+				return BorderStyleEnum.NONE.getIndex();
 			}
 			if ((Math.abs(d - 1.0) < 0.00001)
 					|| (s.equals(DynamicValueState.WARNING.toString()))) {
-				return 1;
+				return BorderStyleEnum.LINE.getIndex();
 			}
 			if ((Math.abs(d - 2.0) < 0.00001)
 					|| (s.equals(DynamicValueState.ALARM.toString()))) {
-				return 1;
+				return BorderStyleEnum.LINE.getIndex();
 			}
 			if (((d >= 3.0) && (d <= 255.0))
 					|| (s.equals(DynamicValueState.ERROR.toString()))) {
-				return 1;
+				return BorderStyleEnum.LINE.getIndex();
 			}
 		}
 
@@ -65,8 +66,8 @@ public class AlarmBorder implements IRule {
      */
     @Override
     public String getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        String desc= "Only if the given arument a String "+DynamicValueState.NORMAL.toString()+" (DynamicValueState.NORMAL) or the argument is a Number between +- 0.00001 retrun a None-Border otherwise return a Line-Border.";
+        return desc;
     }
 
 }

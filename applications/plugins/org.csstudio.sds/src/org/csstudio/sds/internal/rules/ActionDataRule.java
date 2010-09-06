@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.sds.internal.rules;
+package org.csstudio.sds.internal.rules;
 
 import org.csstudio.sds.model.ActionData;
 import org.csstudio.sds.model.ActionType;
@@ -29,33 +29,35 @@ import org.csstudio.sds.model.properties.actions.CommitValueActionModel;
 
 public class ActionDataRule implements IRule {
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public Object evaluate(final Object[] arguments) {
-		ActionData result = new ActionData();
+    /**
+     * {@inheritDoc}
+     */
+    public Object evaluate(final Object[] arguments) {
+        ActionData result = new ActionData();
 
-		if ((arguments[0] instanceof  Long) || (arguments[0] instanceof  Double)) {
-			result.addAction(this.createWidgetAction(arguments[0]));
-		} else {
-			for (Object arg : (Object[])arguments[0]) {
-				result.addAction(this.createWidgetAction(arg));
-			}
-		}
-		return result;
-	}
+        if (arguments != null) {
+            if ( (arguments[0] instanceof Long) || (arguments[0] instanceof Double)) {
+                result.addAction(this.createWidgetAction(arguments[0]));
+            } else if(arguments[0] instanceof Object[]){
+                for (Object arg : (Object[]) arguments[0]) {
+                    result.addAction(this.createWidgetAction(arg));
+                }
+            }
+        }
+        return result;
+    }
 
-	/**
-	 * Creates a {@link CommitValueActionModel} with the given object as property value.
-	 * @param value The value for the property of the action
-	 * @return The corresponding {@link AbstractWidgetActionModel}
-	 */
-	private AbstractWidgetActionModel createWidgetAction(final Object value) {
-		CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
-			.getActionFactory().createWidgetActionModel();
-		action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(value);
-		return action;
-	}
+    /**
+     * Creates a {@link CommitValueActionModel} with the given object as property value.
+     * @param value The value for the property of the action
+     * @return The corresponding {@link AbstractWidgetActionModel}
+     */
+    private AbstractWidgetActionModel createWidgetAction(final Object value) {
+        CommitValueActionModel action = (CommitValueActionModel) ActionType.COMMIT_VALUE
+                .getActionFactory().createWidgetActionModel();
+        action.getProperty(CommitValueActionModel.PROP_VALUE).setPropertyValue(value);
+        return action;
+    }
 
     /**
      * {@inheritDoc}
