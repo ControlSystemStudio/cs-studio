@@ -19,8 +19,7 @@ Export-Package: org.csstudio.config.ioconfig.model,
  org.csstudio.config.ioconfig.model.siemens,
  org.csstudio.config.ioconfig.model.tools,
  org.csstudio.config.ioconfig.model.xml
-Bundle-ClassPath: bin/,
- .,
+Bundle-ClassPath: .,
  lib/ejb3-persistence.jar,
  lib/hibernate3.jar,
  lib/hibernate-annotations.jar

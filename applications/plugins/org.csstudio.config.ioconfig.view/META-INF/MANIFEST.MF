@@ -17,7 +17,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.jface.text,
  org.junit4;bundle-version="4.5.0"
 Bundle-ActivationPolicy: lazy
-Bundle-ClassPath: bin/,
- .
+Bundle-ClassPath: .
 Export-Package: org.csstudio.config.ioconfig.config.view.helper
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
