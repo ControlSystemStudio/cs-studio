@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Ldap Plug-in
+Bundle-Name: Ldap Service Implementation
 Bundle-SymbolicName: org.csstudio.utility.ldap.service.impl;singleton:=true
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.utility.ldap.LdapActivator
@@ -18,3 +18,4 @@ Bundle-ClassPath: .
 Export-Package: org.csstudio.utility.ldap.reader,
  org.csstudio.utility.ldap.model,
  org.csstudio.utility.ldap.utils
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

@@ -1,11 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Service
+Bundle-Name: LDAP Service
 Bundle-SymbolicName: org.csstudio.utility.ldap.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Require-Bundle: org.csstudio.platform.libs.annotations;bundle-version="1.3.0",
+Require-Bundle: org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0";visibility:=reexport,
  org.csstudio.utility.treemodel;bundle-version="1.3.0",
- org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0";visibility:=reexport
+ org.csstudio.platform.libs.annotations;bundle-version="1.3.0"
 Export-Package: org.csstudio.utility.ldap.service
 Import-Package: org.osgi.util.tracker;version="1.4.0"
