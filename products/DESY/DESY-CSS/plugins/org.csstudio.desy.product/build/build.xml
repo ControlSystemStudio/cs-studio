@@ -4,8 +4,9 @@
 	
 
 	<!-- target name="build" depends="init, buckminster-import, pde-build, update-configuration, test, hudsonupdate"/-->
-	<target name="build" depends="buckminster-import, pde-build, update-configuration, test, hudsonupdate"/>
+	<target name="build" depends="tmp"/>
 	
+	<echo message="'workspaceLocation: ${workspaceLocation}"/>
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'hudsonbase: ${hudsonbase}"/>
 	<echo message="'hudsonjob: ${hudsonjob}"/>
@@ -13,6 +14,14 @@
 	<echo message="'buckminsterLocation: ${buckminsterLocation}"/>
 	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
 	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
+
+	<!--
+	TMP target for simple build without tests and buckminster 
+	-->
+	<target name="tmp">
+		<delete dir="${workspaceLocation}/build" />
+		<mkdir dir="${workspaceLocation}/build" />
+	</target>
 	<!-- 
 		Delete & Create Directorys
 	 -->
