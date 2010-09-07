@@ -82,8 +82,8 @@
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.AlarmBorder"
-            compatibleProperties="sds.integer"
-            name="Alarm Border rule"
+            compatibleProperties="sds.option"
+            name="Alarm Border Style rule"
             ruleId="cosyrules.color.alarmBorder">
          <parameterDescription name="Double Value"/>
       </rule>
@@ -116,11 +116,29 @@
          <parameterDescription name="Double Value"/>
       </rule>
       <rule
+            class="org.csstudio.sds.cosyrules.color.BIN_gn_gr_rt"
+            compatibleProperties="sds.color"
+            name="BIN_gn_gr_rt"
+            ruleId="org.csstudio.sds.rule.color.bin_gn_gr_rt">
+         <parameterDescription
+               name="Value">
+         </parameterDescription>
+         <parameterDescription
+               name="gruen value">
+         </parameterDescription>
+         <parameterDescription
+               name="grau value">
+         </parameterDescription>
+         <parameterDescription
+               name="rot value">
+         </parameterDescription>
+      </rule>
+      <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0rt_1gn"
             compatibleProperties="sds.color"
             name="BIN_0rt_1gn color rule"
             ruleId="cosyrules.color.bin_0rt_1gn">
-         <parameterDescription name="Double Value"/>
+         <parameterDescription name="Duble Value"/>
       </rule>
       <rule
             class="org.csstudio.sds.cosyrules.color.BIN_0gn_1rt"
@@ -215,7 +233,7 @@
       <rule
             class="org.csstudio.sds.cosyrules.color.IfNotEqual"
             compatibleProperties="sds.boolean"
-            name="Equal (Two value) "
+            name="Not Equal (Two value) "
             ruleId="org.css.sds.ifNotEqual">
          <parameterDescription
                name="Value 1">
@@ -255,6 +273,18 @@
             ruleId="org.csstudio.rule.boolean.isInvalid">
          <parameterDescription
                name="Severity">
+         </parameterDescription>
+      </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.KompressorBetrColorRule"
+            compatibleProperties="sds.color"
+            name="Kompressor Betr Color Rule"
+            ruleId="org.csstudio.sds.rule.color.kbtr">
+         <parameterDescription
+               name="VAL">
+         </parameterDescription>
+         <parameterDescription
+               name="Störungs Bit">
          </parameterDescription>
       </rule>
    </extension>

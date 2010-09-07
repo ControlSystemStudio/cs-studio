@@ -17,8 +17,8 @@
 package org.csstudio.sds.components.model.eventing;
 
 import static org.csstudio.sds.components.model.TextInputModel.PROP_INPUT_TEXT;
-import static org.csstudio.sds.components.model.TextInputModel.PROP_PRECISION;
-import static org.csstudio.sds.components.model.TextInputModel.PROP_TEXT_TYPE;
+import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_PRECISION;
+import static org.csstudio.sds.model.AbstractTextTypeWidgetModel.PROP_TEXT_TYPE;
 
 import org.csstudio.sds.components.model.TextInputModel;
 import org.csstudio.sds.eventhandling.AbstractWidgetPropertyPostProcessor;
@@ -31,7 +31,7 @@ import org.eclipse.gef.commands.CompoundCommand;
 /**
  * @author hrickens
  * @author $Author: hrickens $
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 06.05.2010
  */
 public class TextInputValueTypePostProcessor extends AbstractWidgetPropertyPostProcessor<TextInputModel> {
@@ -69,7 +69,7 @@ public class TextInputValueTypePostProcessor extends AbstractWidgetPropertyPostP
                     chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 } else {
                     chain.add(new ShowPropertyCommand(widget, PROP_INPUT_TEXT, PROP_TEXT_TYPE));
-                    chain.add(new HidePropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
+                    chain.add(new ShowPropertyCommand(widget, PROP_PRECISION, PROP_TEXT_TYPE));
                 }
             }
 
