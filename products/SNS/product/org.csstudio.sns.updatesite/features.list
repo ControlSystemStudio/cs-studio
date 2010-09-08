@@ -1,10 +1,10 @@
+org.csstudio.opibuilder.feature/**
 org.csstudio.sns.feature.alarm/**
 org.csstudio.sns.feature.applications/**
 org.csstudio.sns.feature.basiccore/**
 org.csstudio.sns.feature.core/**
 org.csstudio.sns.feature.databrowser/**
 org.csstudio.sns.feature.eclipse/**
-org.csstudio.sns.feature.opi/**
 org.csstudio.sns.feature.optional/**
 org.csstudio.sns.feature.optional.linux/**
 org.csstudio.sns.feature.optional.win32/**

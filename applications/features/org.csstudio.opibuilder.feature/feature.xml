@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.sns.feature.opi"
+      id="org.csstudio.opibuilder.feature"
       label="Operator Interface Builder (BOY)"
       version="2.3.0.qualifier"
       provider-name="SNS">
@@ -46,7 +46,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.editors"/>
       <import plugin="org.eclipse.jface.text" version="3.4.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.console" version="3.3.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.swt.xygraph" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="compatible"/>
       <import plugin="org.csstudio.email.ui" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil.ui" version="1.1.4" match="greaterOrEqual"/>
@@ -56,6 +55,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.resources" version="3.4.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.opibuilder" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help"/>
+      <import plugin="org.csstudio.swt.xygraph" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui.browser"/>
       <import plugin="org.csstudio.swt.widgets" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.4.0" match="greaterOrEqual"/>
@@ -64,6 +64,13 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.opibuilder.widgets" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.draw2d" version="3.5.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.swt.xygraph" version="1.0.5" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.ui.intro.universal" version="3.2.300" match="greaterOrEqual"/>
+      <import plugin="org.junit" version="3.8.2" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help" version="3.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help.ui" version="3.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.help.webapp" version="3.4.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.gef" version="3.4.0" match="greaterOrEqual"/>
+      <import plugin="com.ibm.icu" version="4.0.1" match="greaterOrEqual"/>
    </requires>
 
    <plugin
