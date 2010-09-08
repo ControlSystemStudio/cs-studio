@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.sns.feature.alarm"
+      id="org.csstudio.alarm.beast.ui.feature"
       label="Alarm Handler UI"
       version="2.3.0.qualifier"
       provider-name="SNS, Kay Kasemir">
 
    <description>
-      Alarm Handler user interface
+      Alarm Handler user interface: Alarm Tree, table, annunciator
    </description>
 
    <copyright url="http://www.example.com/copyright">
