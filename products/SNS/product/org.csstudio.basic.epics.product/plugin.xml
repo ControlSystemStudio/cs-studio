@@ -53,7 +53,7 @@
          </property>
          <property
             name="introTitle"
-            value="Welcome to CSS for EPICS!&lt;/h1&gt;&lt;p&gt;Control System Studio, CSS, is a collection of tools to monitor and operate the control system&lt;/p&gt;&lt;h1&gt;">
+            value="Welcome to Control System Studio (CSS) for EPICS!">
          </property>
          <property
             name="introBrandingImage"
