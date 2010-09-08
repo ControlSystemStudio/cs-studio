@@ -119,7 +119,7 @@ public class AxesTableHandler implements ILazyContentProvider
         TableViewerColumn col;
         
         // Visible? Column ----------
-        col = AutoSizeColumn.make(axes_table, "Visible", 80, 10);
+        col = AutoSizeColumn.make(axes_table, Messages.AxisVisibility, 80, 10);
         col.setLabelProvider(new CellLabelProvider()
         {
             @Override
