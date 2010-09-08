@@ -95,9 +95,9 @@ abstract class AbstractColumnViewerSorter extends ViewerComparator {
 			};
 			t.start();
 
-			// Here's the trick stop here but hold the GUI responsive
 			Shell shell = viewer.getControl().getShell();
 			Display display = viewer.getControl().getDisplay();
+			BusyIndicator.showWhile(display, t);
 
 			while (flag[0] && !shell.isDisposed()) {
 				if (!display.readAndDispatch())
