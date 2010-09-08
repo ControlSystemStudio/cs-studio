@@ -197,6 +197,7 @@ public class AxisConfig
         XMLWriter.XML(writer, 3, Model.TAG_MAX, max);
         XMLWriter.XML(writer, 3, Model.TAG_LOG_SCALE, Boolean.toString(log_scale));
         XMLWriter.XML(writer, 3, Model.TAG_AUTO_SCALE, Boolean.toString(auto_scale));
+        XMLWriter.XML(writer, 3, Model.TAG_VISIBLE, Boolean.toString(visible));
         XMLWriter.end(writer, 2, Model.TAG_AXIS);
         writer.println();
     }
@@ -208,12 +209,12 @@ public class AxisConfig
      */
     public static AxisConfig fromDocument(final Element node)  throws Exception
     {
-    	final boolean visible = true;
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
         final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN, 0.0);
         final double max = DOMHelper.getSubelementDouble(node, Model.TAG_MAX, 10.0);
         final boolean auto_scale = DOMHelper.getSubelementBoolean(node, Model.TAG_AUTO_SCALE, false);
         final boolean log_scale = DOMHelper.getSubelementBoolean(node, Model.TAG_LOG_SCALE, false);
+    	final boolean visible = DOMHelper.getSubelementBoolean(node, Model.TAG_VISIBLE, true);
         RGB rgb = Model.loadColorFromDocument(node);
         if (rgb == null)
             rgb = new RGB(0, 0, 0);
