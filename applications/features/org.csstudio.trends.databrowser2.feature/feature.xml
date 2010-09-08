@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.sns.feature.databrowser"
+      id="org.csstudio.trends.databrowser2.feature"
       label="Data Browser"
       version="2.3.0.qualifier"
       provider-name="SNS, Kay Kasemir">
