@@ -30,6 +30,12 @@
                label="Remove Tag"
                menubarPath="org.csstudio.utility.channel.menu/group">
          </action>
+         <action
+               class="org.csstudio.utility.channel.actions.InfoAction"
+               id="org.csstudio.utility.channel.info"
+               label="Show Channel Info"
+               menubarPath="org.csstudio.utility.channel.menu/group">
+         </action>
       </objectContribution>
    </extension>
 
