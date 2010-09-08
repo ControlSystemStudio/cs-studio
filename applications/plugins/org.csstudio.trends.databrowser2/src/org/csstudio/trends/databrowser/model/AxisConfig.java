@@ -22,18 +22,21 @@ public class AxisConfig
     /** Model to which this axis belongs */
     private Model model = null;
     
+    /** Visible? */
+    private boolean visible;
+    
     /** Name, axis label */
     private String name;
     
     /** Color */
-    private RGB rgb = null;
+    private RGB rgb;
     
     /** Axis range */
     private double min, max;
 
     /** Auto-scale? */
-    private boolean auto_scale = false;
-    
+    private boolean auto_scale;
+
     /** Logarithmic scale? */
     private boolean log_scale;
 
@@ -45,9 +48,10 @@ public class AxisConfig
      *  @param auto_scale 
      *  @param log_scale
      */
-    public AxisConfig(final String name, final RGB rgb, final double min,
+    public AxisConfig(final Boolean visible, final String name, final RGB rgb, final double min,
             final double max, final boolean auto_scale, final boolean log_scale)
     {
+    	this.visible = visible;
         this.name = name;
         this.rgb = rgb;
         this.min = min;
@@ -61,7 +65,7 @@ public class AxisConfig
      */
     public AxisConfig(final String name)
     {
-        this(name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
+        this(true, name, new RGB(0, 0, 0), 0.0, 10.0, false, false);
     }
 
     /** @param model Model to which this item belongs */
@@ -70,7 +74,20 @@ public class AxisConfig
         this.model = model;
     }
 
-    /** @return Axis title */
+    /** @return <code>true</code> if axis should be displayed */
+    public boolean isVisible()
+    {
+		return visible;
+	}
+
+    /** @param visible Should axis be displayed? */
+	public void setVisible(final boolean visible)
+	{
+		this.visible = visible;
+        fireAxisChangeEvent();
+	}
+
+	/** @return Axis title */
     public String getName()
     {
         return name;
@@ -191,6 +208,7 @@ public class AxisConfig
      */
     public static AxisConfig fromDocument(final Element node)  throws Exception
     {
+    	final boolean visible = true;
         final String name = DOMHelper.getSubelementString(node, Model.TAG_NAME);
         final double min = DOMHelper.getSubelementDouble(node, Model.TAG_MIN, 0.0);
         final double max = DOMHelper.getSubelementDouble(node, Model.TAG_MAX, 10.0);
@@ -199,7 +217,7 @@ public class AxisConfig
         RGB rgb = Model.loadColorFromDocument(node);
         if (rgb == null)
             rgb = new RGB(0, 0, 0);
-        return new AxisConfig(name, rgb, min, max, auto_scale, log_scale);
+        return new AxisConfig(visible, name, rgb, min, max, auto_scale, log_scale);
     }
     
     /** @return String representation for debugging */
@@ -213,6 +231,6 @@ public class AxisConfig
     /** @return Copied axis configuration. Not associated with a model */
     public AxisConfig copy()
     {
-        return new AxisConfig(name, rgb, min, max, auto_scale, log_scale);
+        return new AxisConfig(visible, name, rgb, min, max, auto_scale, log_scale);
     }
 }
