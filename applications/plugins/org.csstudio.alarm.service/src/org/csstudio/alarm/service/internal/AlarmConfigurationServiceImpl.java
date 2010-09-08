@@ -39,10 +39,11 @@ import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.SearchControls;
 
+import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.ContentModelExporter;
@@ -60,16 +61,6 @@ import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilder;
  */
 public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService {
 
-    private final ILdapService _ldapService;
-
-    /**
-     * Constructor.
-     * @param ldapService access to LDAP
-     */
-    public AlarmConfigurationServiceImpl(@Nonnull final ILdapService ldapService) {
-        _ldapService = ldapService;
-    }
-
     /**
      * {@inheritDoc}
      * @throws CreateContentModelException
@@ -85,15 +76,18 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
             throw new CreateContentModelException("Error creating empty content model.", e);
         }
 
-        final LdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
-            new LdapContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(model);
+        final ILdapService ldapService = AlarmServiceActivator.getDefault().getLdapService();
+        if (ldapService == null) {
+            throw new CreateContentModelException("LDAP service is unavailable.", null);
+        }
+        final ILdapContentModelBuilder builder = ldapService.getLdapContentModelBuilder(model);
 
         for (final String facility : facilityNames) {
-            final LdapSearchResult result =
-                _ldapService.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), facility,
-                                                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
-                                                                               any(ATTR_FIELD_OBJECT_CLASS),
-                                                                               SearchControls.SUBTREE_SCOPE);
+            final ILdapSearchResult result =
+                ldapService.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), facility,
+                                                                              ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                              any(ATTR_FIELD_OBJECT_CLASS),
+                                                                              SearchControls.SUBTREE_SCOPE);
             if (result != null) {
                 builder.setSearchResult(result);
                 builder.build();

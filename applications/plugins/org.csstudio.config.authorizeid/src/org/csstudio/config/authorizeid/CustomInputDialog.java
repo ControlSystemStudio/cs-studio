@@ -16,22 +16,21 @@ import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.naming.CompositeName;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -211,9 +210,17 @@ public class CustomInputDialog extends Dialog {
         // button
         _eaigCombo.getCombo().setFocus();
 
-        final LdapSearchResult result =
-            LDAPReader.getSearchResultSynchronously(new LdapSearchParams(_searchRoot,
-                                                                         eagnFilter));
+        final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
+        if (service == null) {
+            MessageDialog.openError(null,
+                                    "LDAP Access failed",
+                                    "No LDAP service available. Try again later.");
+            return;
+        }
+
+        final ILdapSearchResult result =
+            service.retrieveSearchResultSynchronously(_searchRoot, eagnFilter, SearchControls.SUBTREE_SCOPE);
+
 
         final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
 
@@ -278,17 +285,26 @@ public class CustomInputDialog extends Dialog {
                 | GridData.HORIZONTAL_ALIGN_FILL));
         _eaigCombo.addSelectionChangedListener(new ISelectionChangedListener(){
 
+            @Override
             public void selectionChanged(final SelectionChangedEvent event) {
                 final String firstElement = (String) ((StructuredSelection)_eaigCombo.getSelection()).getFirstElement();
 
                 NameParser nameParser;
                 LdapName ldapName = null;
                 try {
-                    nameParser = Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
+
+                    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
+                    if (service == null) {
+                        MessageDialog.openError(null,
+                                                "LDAP Access failed",
+                                                "No LDAP service available. Try again later.");
+                        return;
+                    }
+
+                    nameParser = service.getLdapNameParser();
                     ldapName = (LdapName) nameParser.parse(firstElement);
-                    final LdapSearchResult result =
-                        LDAPReader.getSearchResultSynchronously(new LdapSearchParams(ldapName,
-                                                                                     eagnFilter));
+                    final ILdapSearchResult result =
+                        service.retrieveSearchResultSynchronously(ldapName, eagnFilter, SearchControls.SUBTREE_SCOPE);
 
                     final List<String> list = new ArrayList<String>(result.getAnswerSet().size());
 
@@ -413,13 +429,13 @@ public class CustomInputDialog extends Dialog {
      */
     public void setErrorMessage(final String errorMessage) {
     	this.errorMessage = errorMessage;
-    	if ((errorMessageText != null) && !errorMessageText.isDisposed()) {
+    	if (errorMessageText != null && !errorMessageText.isDisposed()) {
     		errorMessageText.setText(errorMessage == null ? " \n " : errorMessage); //$NON-NLS-1$
     		// Disable the error message text control if there is no error, or
     		// no error text (empty or whitespace only).  Hide it also to avoid
     		// color change.
     		// See https://bugs.eclipse.org/bugs/show_bug.cgi?id=130281
-    		final boolean hasError = (errorMessage != null) && ((StringConverter.removeWhiteSpaces(errorMessage)).length() > 0);
+    		final boolean hasError = errorMessage != null && StringConverter.removeWhiteSpaces(errorMessage).length() > 0;
     		errorMessageText.setEnabled(hasError);
     		errorMessageText.setVisible(hasError);
     		errorMessageText.getParent().update();

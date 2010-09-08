@@ -58,6 +58,7 @@ import com.cosylab.util.CommonException;
  */
 public final class AlarmConnectionDALImpl implements IAlarmConnection {
 
+
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmConnectionDALImpl.class);
 

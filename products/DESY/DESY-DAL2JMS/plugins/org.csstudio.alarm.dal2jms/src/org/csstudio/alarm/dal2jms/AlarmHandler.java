@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.dal2jms;
 
+
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -63,7 +64,7 @@ final class AlarmHandler {
     }
 
     public void connect(@Nonnull final String fileName) throws AlarmConnectionException {
-        IAlarmResource alarmResource = Activator.getDefault().getAlarmService()
+        final IAlarmResource alarmResource = Activator.getDefault().getAlarmService()
                 .newAlarmResource(null, null, fileName);
         _alarmConnection.connectWithListenerForResource(newAlarmConnectionMonitor(),
                                                         newAlarmListener(_jmsMessageService),

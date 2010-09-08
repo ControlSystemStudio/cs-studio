@@ -45,7 +45,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.WorkbenchWindowHelper;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
@@ -75,8 +75,6 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * The descriptors of the properties provided by this source.
 	 */
 	private static final IPropertyDescriptor[] PROPERTY_DESCRIPTORS;
-
-	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
 	/**
 	 * The node for which this property source provides properties.
@@ -169,13 +167,20 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
         final String simpleName = node.getName();
         final LdapName ldapName = node.getLdapName();
 
-        LdapSearchResult result = null;
+        ILdapSearchResult result = null;
         try {
             ldapName.remove(ldapName.size() - 1); // remove simple name part
+
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                return null;
+            }
+
             result =
-                LDAP_SERVICE.retrieveSearchResultSynchronously(ldapName,
-                                                               node.getTreeNodeConfiguration().getNodeTypeName() + FIELD_ASSIGNMENT + simpleName,
-                                                               SearchControls.ONELEVEL_SCOPE);
+                service.retrieveSearchResultSynchronously(ldapName,
+                                                          node.getTreeNodeConfiguration().getNodeTypeName() + FIELD_ASSIGNMENT + simpleName,
+                                                          SearchControls.ONELEVEL_SCOPE);
         } catch (final InvalidNameException e) {
             exitWithErrorDialog("LDAP Access",
                                 "LDAP name for node " + node.getLdapName().toString() +
@@ -305,10 +310,15 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
             final ModificationItem item = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
                                                                new BasicAttribute(propId.getLdapAttribute()));
             try {
-                LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+                final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+                if (service == null) {
+                    exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                    return;
+                }
+                service.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
             } catch (final NamingException e) {
-                // TODO (bknerr) : give nice user feedback
-                e.printStackTrace();
+                exitWithErrorDialog("LDAP Access", "Naming exception for node " + _node.getName());
+                return;
             }
 		}
 	}
@@ -357,7 +367,13 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
         try {
             final ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
                                                                new BasicAttribute(propId.getLdapAttribute(), value));
-            LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                return;
+            }
+            service.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
 
         } catch (final NamingException e) {
             exitWithErrorDialog("Write property value to LDAP failed.",

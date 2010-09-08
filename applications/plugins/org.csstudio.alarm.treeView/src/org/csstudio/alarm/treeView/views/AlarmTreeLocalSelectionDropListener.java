@@ -73,6 +73,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public Transfer getTransfer() {
         return LocalSelectionTransfer.getTransfer();
@@ -81,6 +82,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean isEnabled(@Nonnull final DropTargetEvent event) {
         final ISelection selection = LocalSelectionTransfer.getTransfer().getSelection();
         return dropTargetIsSubtreeNode(event) && canDrop(selection, event);
@@ -90,8 +92,8 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
      * Checks if the target of the drop operation is a SubtreeNode.
      */
     private boolean dropTargetIsSubtreeNode(@Nonnull final DropTargetEvent event) {
-        return (event.item instanceof TreeItem)
-                && (event.item.getData() instanceof SubtreeNode);
+        return event.item instanceof TreeItem
+                && event.item.getData() instanceof SubtreeNode;
     }
 
     /**
@@ -107,7 +109,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
             for (final Iterator<?> i = s.iterator(); i.hasNext();) {
                 final Object o = i.next();
                 if (o instanceof IAlarmTreeNode) {
-                    if ( (o == dropTarget) || isChild(dropTarget, (IAlarmTreeNode) o)) {
+                    if ( o == dropTarget || isChild(dropTarget, (IAlarmTreeNode) o)) {
                         return false;
                     }
                 } else {
@@ -137,6 +139,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragEnter(@Nonnull final DropTargetEvent event) {
         // EMPTY
     }
@@ -144,6 +147,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragLeave(@Nonnull final DropTargetEvent event) {
         // EMPTY
     }
@@ -151,6 +155,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragOver(@Nonnull final DropTargetEvent event) {
         event.feedback = DND.FEEDBACK_EXPAND | DND.FEEDBACK_SCROLL | DND.FEEDBACK_SELECT;
     }
@@ -158,6 +163,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dropAccept(@Nonnull final DropTargetEvent event) {
         // EMPTY
     }
@@ -165,6 +171,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void drop(@Nonnull final DropTargetEvent event) {
         final SubtreeNode dropTarget = (SubtreeNode) event.item.getData();
         final List<IAlarmTreeNode> droppedNodes =
@@ -254,6 +261,7 @@ public final class AlarmTreeLocalSelectionDropListener implements TransferDropTa
     /**
      * {@inheritDoc}
      */
+    @Override
     public void dragOperationChanged(@Nonnull final DropTargetEvent event) {
         // Empty
     }

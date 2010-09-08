@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.jms.MapMessage;
 
@@ -41,11 +41,11 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
 
 /**
  * This class gets a list of JMSMessages that should be acknowledged. The
@@ -153,10 +153,19 @@ public class SendAcknowledge extends Job {
 
                 // Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn",
                 // message.getName(), "ack"); epicsAlarmHighUnAckn
-                Engine.getInstance().addLdapWriteRequest(
-                        "epicsAlarmAcknTimeStamp", message.getName(), time);
-                Engine.getInstance().addLdapWriteRequest(
-                        "epicsAlarmHighUnAckn", message.getName(), "");
+
+                // FIXME (jpenning, bknerr)
+                // LDAP Write requests for acknowledging should be removed.
+                // Acknowledge action NOT via LDAP (and not with this bad Engine anyway)
+
+
+//                Engine.getInstance().addLdapWriteRequest(
+//                        "epicsAlarmAcknTimeStamp", message.getName(), time);
+//                Engine.getInstance().addLdapWriteRequest(
+//                        "epicsAlarmHighUnAckn", message.getName(), "");
+
+
+
                 if (user != null) {
                     String property = message.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
                     property = property == null ? "<set to null>" : property;

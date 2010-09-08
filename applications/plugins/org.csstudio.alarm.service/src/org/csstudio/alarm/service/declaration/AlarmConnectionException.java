@@ -32,7 +32,8 @@ import javax.annotation.Nullable;
  * @since 21.04.2010
  */
 public class AlarmConnectionException extends Exception {
-    private static final long serialVersionUID = -6008674229748613308L;
+
+    private static final long serialVersionUID = 1L;
 
     /**
      * Constructor.

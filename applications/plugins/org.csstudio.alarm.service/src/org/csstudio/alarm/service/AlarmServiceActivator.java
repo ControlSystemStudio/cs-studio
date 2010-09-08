@@ -20,6 +20,7 @@ package org.csstudio.alarm.service;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -33,6 +34,7 @@ import org.csstudio.alarm.service.internal.AlarmServiceJMSImpl;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -52,6 +54,9 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
 
     // The shared instance.
     private static AlarmServiceActivator PLUGIN;
+
+    private LdapServiceTracker _ldapServiceTracker;
+
 
     /**
      * The constructor.
@@ -79,7 +84,11 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
 
         LOG.debug("Starting AlarmService");
 
-        registerAlarmConfigurationService(context, getService(context, ILdapService.class));
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
+
+
+        registerAlarmConfigurationService(context);
 
         // Provide implementation for alarm service
         final boolean isDAL = AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue();
@@ -94,20 +103,20 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
     protected void doStop(@Nullable final BundleContext context) throws Exception {
         LOG.debug("Stopping AlarmService");
         PLUGIN = null;
+        _ldapServiceTracker.close();
     }
 
     /**
      * @param context
      * @param iLdapService
      */
-    private void registerAlarmConfigurationService(@Nonnull final BundleContext context,
-                                                   @Nonnull final ILdapService ldapService) {
+    private void registerAlarmConfigurationService(@Nonnull final BundleContext context) {
         final Dictionary<String, String> properties = new Hashtable<String, String>();
         properties.put("service.vendor", "DESY");
         properties.put("service.description", "Alarm configuration service implementation.");
 
         context.registerService(IAlarmConfigurationService.class.getName(),
-                                new AlarmConfigurationServiceImpl(ldapService),
+                                new AlarmConfigurationServiceImpl(),
                                 properties);
 
     }
@@ -137,9 +146,19 @@ public class AlarmServiceActivator extends AbstractCssUiPlugin {
                                 properties);
     }
 
+    @Nonnull
     @Override
     public String getPluginId() {
         return PLUGIN_ID;
+    }
+
+    /**
+     * Returns the LDAP service from the service tracker.
+     * @return the LDAP service or <code>null</code> if not available.
+     */
+    @CheckForNull
+    public ILdapService getLdapService() {
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 
 }

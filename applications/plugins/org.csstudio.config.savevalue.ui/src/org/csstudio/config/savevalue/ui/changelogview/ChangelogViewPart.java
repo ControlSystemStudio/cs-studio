@@ -46,8 +46,8 @@ import org.csstudio.config.savevalue.ui.RemoteMethodCallJob;
 import org.csstudio.config.savevalue.ui.SaveValueDialog;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -336,14 +336,17 @@ public class ChangelogViewPart extends ViewPart {
 				monitor.beginTask(Messages.ChangelogViewPart_GET_IOC_JOB,
 						IProgressMonitor.UNKNOWN);
 				final ILdapService service = Activator.getDefault().getLdapService();
-				final LdapSearchResult result =
+				if (service == null) {
+				    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "LDAP Service currently unavailable."); //$NON-NLS-1$
+				}
+				final ILdapSearchResult result =
 				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
 				                                              any(IOC.getNodeTypeName()),
 				                                              SearchControls.SUBTREE_SCOPE);
 
                 try {
-                    final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                        new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
+                    final ILdapContentModelBuilder builder =
+                        service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, result);
                     builder.build();
                     final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 

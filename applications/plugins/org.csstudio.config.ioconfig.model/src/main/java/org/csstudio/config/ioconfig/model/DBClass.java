@@ -19,9 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id$
- */
 package org.csstudio.config.ioconfig.model;
 
 import java.util.Date;
@@ -46,7 +43,7 @@ public class DBClass {
      * Key ID.
      */
     private int _id;
-    
+
     /**
      * The name of the creator of this Node.
      */
@@ -70,7 +67,7 @@ public class DBClass {
     private boolean _dirty;
 
     /**
-     * 
+     *
      * @return the Node key ID.
      */
     @Id
@@ -81,16 +78,16 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @param id
      *            set the Node key ID.
      */
     public void setId(final int id) {
         this._id = id;
     }
-    
+
     /**
-     * 
+     *
      * @return the Name of the creator of this Node.
      */
     public String getCreatedBy() {
@@ -98,7 +95,7 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @param createdBy
      *            set the Name of the creator of this Node.
      */
@@ -107,7 +104,7 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @return Created-Date of this node.
      */
     public Date getCreatedOn() {
@@ -115,7 +112,7 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @param createdOn
      *            set Created-Date of this node. Normally only use by create.
      */
@@ -124,7 +121,7 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @return Give the user that have make the last update.
      */
     public String getUpdatedBy() {
@@ -132,7 +129,7 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @param updatedBy
      *            set the User that make a update.
      */
@@ -141,33 +138,33 @@ public class DBClass {
     }
 
     /**
-     * 
+     *
      * @return get the date of last update.
      */
     public Date getUpdatedOn() {
         return _updatedOn;
     }
-    
+
     /**
      * Set the date of last Update.
-     * 
+     *
      * @param updatedOn
      *            The date of last update.
      */
     public void setUpdatedOn(final Date updatedOn) {
         this._updatedOn = updatedOn;
     }
-    
+
     /**
      * Save or Update the Class to the Repository.
-     * @throws PersistenceException was thrown when the class can not be persistence. 
+     * @throws PersistenceException was thrown when the class can not be persistence.
      */
     public void save() throws PersistenceException{
         Repository.saveOrUpdate(this);
     }
-    
+
     /**
-     * 
+     *
      * @return is this node persistent at DB return true.
      */
     @Transient
@@ -188,7 +185,7 @@ public class DBClass {
      * Set class have changes that non persisted.
      * @param dirty set the node dirty.
      */
-    public void setDirty(boolean dirty) {
+    public void setDirty(final boolean dirty) {
         _dirty = dirty;
     }
 }

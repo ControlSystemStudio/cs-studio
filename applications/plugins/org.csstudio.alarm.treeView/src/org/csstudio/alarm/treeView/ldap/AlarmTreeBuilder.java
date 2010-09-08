@@ -33,6 +33,7 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
@@ -58,7 +59,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * On the {@link #build(SubtreeNode, IProgressMonitor)} method the full tree is
  * build including all nodes, whether they contain eren nodes or not.
  *
- * @author Joerg Rathlev, Jurij Kodre
+ * @author Bastian Knerr
  */
 public final class AlarmTreeBuilder {
 
@@ -75,14 +76,14 @@ public final class AlarmTreeBuilder {
         // Empty
     }
 
-    private static void ensureTestFacilityExists() {
+    private static void ensureTestFacilityExists() throws ServiceUnavailableException {
         try {
             final LdapName testFacilityName = createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
                                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
 
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
             if (service == null) {
-                throw new ServiceNotAvailableException();
+                throw new ServiceUnavailableException("LDAP Service not available. Check for existing test facility failed.");
             }
 
             try {
@@ -92,6 +93,7 @@ public final class AlarmTreeBuilder {
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(FACILITY.getNodeTypeName(), "TEST");
                 attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getDescription());
+
                 service.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
@@ -108,7 +110,6 @@ public final class AlarmTreeBuilder {
      * @return
      * @throws NamingException
      */
-    @SuppressWarnings("unchecked")
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
                                               @Nonnull final INodeComponent<LdapEpicsAlarmcfgConfiguration> modelNode,
                                               @Nonnull final IProgressMonitor monitor,

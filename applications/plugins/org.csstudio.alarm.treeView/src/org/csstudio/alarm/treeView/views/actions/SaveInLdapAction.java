@@ -66,7 +66,7 @@ public final class SaveInLdapAction extends Action {
                   Note: although a concurrent queue is utilised, it has to be explicitly inhibited
                   that items are added, removed, or modified by any other thread during the following
                   queue traversal for the 'save in LDAP' action.
-                  Hence, a synchronised block is necessary on the queue - that still leaves a tiny time window in between the
+                  Hence, a synchronised block is necessary on the queue - that nonetheless leaves a tiny time window in between the
                   the user's 'save in LDAP' activation and the start of this block for the queue to be
                   modified!
                  */

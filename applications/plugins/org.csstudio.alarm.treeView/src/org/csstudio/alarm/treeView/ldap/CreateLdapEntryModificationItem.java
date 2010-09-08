@@ -22,6 +22,7 @@
 package org.csstudio.alarm.treeView.ldap;
 
 import javax.annotation.Nonnull;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
 
@@ -39,8 +40,6 @@ import org.csstudio.utility.ldap.service.ILdapService;
  * @since 17.06.2010
  */
 final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem {
-
-    private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
     private final LdapName _newName;
     private final Attributes _attrs;
@@ -71,7 +70,11 @@ final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem
      */
     @Override
     public boolean apply() throws AlarmTreeModificationException {
-        if (LDAP_SERVICE.createComponent(_newName, _attrs)) {
+        final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+        if (service == null) {
+            throw new AlarmTreeModificationException("Entry creation failed.", new ServiceUnavailableException("LDAP service unavailable."));
+        }
+        if (service.createComponent(_newName, _attrs)) {
             setApplied(true);
             return true;
         }

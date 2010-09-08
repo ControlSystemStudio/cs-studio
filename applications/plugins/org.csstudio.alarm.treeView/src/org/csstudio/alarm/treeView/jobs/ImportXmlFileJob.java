@@ -35,6 +35,7 @@ import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
@@ -46,7 +47,7 @@ import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -68,7 +69,6 @@ import org.eclipse.core.runtime.jobs.Job;
 public final class ImportXmlFileJob extends Job {
 
     private final IAlarmConfigurationService _configService;
-    private final ILdapService _ldapService;
     private final IAlarmSubtreeNode _rootNode;
     private String _filePath;
 
@@ -80,11 +80,9 @@ public final class ImportXmlFileJob extends Job {
      * @param rootNode
      */
     public ImportXmlFileJob(@Nonnull final IAlarmConfigurationService configService,
-                            @Nonnull final ILdapService ldapService,
                             @Nonnull final IAlarmSubtreeNode rootNode) {
         super("ImportFileJob");
         _configService = configService;
-        _ldapService = ldapService;
         _rootNode = rootNode;
     }
 
@@ -101,7 +99,7 @@ public final class ImportXmlFileJob extends Job {
                 _configService.retrieveInitialContentModelFromFile(_filePath);
 
 
-            final IStatus status = checkForExistingFacilities(model, _ldapService, _rootNode);
+            final IStatus status = checkForExistingFacilities(model, _rootNode);
             if (!status.isOK()) {
                 return status;
             }
@@ -136,7 +134,6 @@ public final class ImportXmlFileJob extends Job {
      * view itself (in case an XML file containing this facility identifier has been imported before).
      *
      * @param model the content model
-     * @param service the LDAP service
      * @param rootNode the root node of the alarm tree view
      * @return an error status if a facility does already exist, otherwise OK
      *
@@ -144,14 +141,13 @@ public final class ImportXmlFileJob extends Job {
      */
     @Nonnull
     private IStatus checkForExistingFacilities(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
-                                               @Nonnull final ILdapService service,
                                                @Nonnull final IAlarmSubtreeNode rootNode)
         throws NamingException {
 
 
         final Set<String> existingFacilityNames = new HashSet<String>();
 
-        existingFacilityNames.addAll(getExistingFacilityNamesFromLdap(service));
+        existingFacilityNames.addAll(getExistingFacilityNamesFromLdap());
 
         existingFacilityNames.addAll(getExistingFacilitiesFromView(rootNode));
 
@@ -180,10 +176,15 @@ public final class ImportXmlFileJob extends Job {
 
 
     @Nonnull
-    private Set<String> getExistingFacilityNamesFromLdap(@Nonnull final ILdapService service)
+    private Set<String> getExistingFacilityNamesFromLdap()
         throws NamingException {
 
-        final LdapSearchResult searchResult =
+        final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+        if (service == null) {
+            throw new ServiceUnavailableException("LDAP service not available. Existing facilities could not be retrieved from LDAP.");
+        }
+
+        final ILdapSearchResult searchResult =
             service.retrieveSearchResultSynchronously(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(FACILITY.getNodeTypeName()),
                                                       SearchControls.ONELEVEL_SCOPE);

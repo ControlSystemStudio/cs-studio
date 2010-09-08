@@ -10,13 +10,14 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
 import org.csstudio.config.authorizeid.AuthorizeIdEntry;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 
 /**
@@ -38,15 +39,20 @@ public class LdapProp {
 	 */
     public AuthorizeIdEntry[] getProp(final String eain, final String ou) {
 
-	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
+        final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
+        if (service == null) {
+            MessageDialog.openError(null,
+                                    "LDAP Access failed",
+                                    "No LDAP service available. Try again later.");
+            return new AuthorizeIdEntry[0];
+        }
 
-
-	    final LdapSearchResult result =
+	    final ILdapSearchResult result =
 	        service.retrieveSearchResultSynchronously(createLdapQuery(ID_NAME.getNodeTypeName(), eain,
 	                                                                  OU.getNodeTypeName(), ou,
 	                                                                  ROOT.getNodeTypeName(), ROOT.getNodeTypeName()),
 	                                                  any(ID_ROLE.getNodeTypeName()),
-	                                                  LDAPReader.DEFAULT_SCOPE);
+	                                                  SearchControls.SUBTREE_SCOPE);
 
 		final List<AuthorizeIdEntry> al = new ArrayList<AuthorizeIdEntry>();
 		for (final SearchResult row : result.getAnswerSet()) {

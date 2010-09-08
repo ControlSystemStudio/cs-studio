@@ -279,8 +279,6 @@ public class AlarmTreeView extends ViewPart {
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
-    private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
-
 
     /**
      * Constructor.
@@ -450,7 +448,6 @@ public class AlarmTreeView extends ViewPart {
     @Nonnull
     private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
         final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
-                                                                       _ldapService,
                                                                        rootNode);
         importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
 

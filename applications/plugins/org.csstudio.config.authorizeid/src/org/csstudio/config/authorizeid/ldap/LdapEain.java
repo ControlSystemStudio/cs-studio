@@ -8,13 +8,14 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.config.authorizeid.AuthorizeIdActivator;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapUtils;
+import org.eclipse.jface.dialogs.MessageDialog;
 
 /**
  * Retrieves eain from LDAP.
@@ -34,11 +35,18 @@ public class LdapEain {
 	public String[] getEain(final String ou) {
 
 	    final ILdapService service = AuthorizeIdActivator.getDefault().getLdapService();
-	    final LdapSearchResult result =
+	    if (service == null) {
+	        MessageDialog.openError(null,
+	                                "LDAP Access failed",
+	                                "No LDAP service available. Try again later.");
+	        return new String[0];
+	    }
+
+	    final ILdapSearchResult result =
 	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU.getNodeTypeName(), ou,
 	                                                                            ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
 	                                                  any(ID_NAME.getNodeTypeName()),
-	                                                  LDAPReader.DEFAULT_SCOPE);
+	                                                  SearchControls.SUBTREE_SCOPE);
 
 	    final List<String> al = new ArrayList<String>();
 	    for (final SearchResult searchResult : result.getAnswerSet()) {
