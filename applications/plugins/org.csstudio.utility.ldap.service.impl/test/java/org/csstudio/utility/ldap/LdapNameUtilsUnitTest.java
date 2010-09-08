@@ -28,7 +28,7 @@ import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FAC
 import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
 import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.O_FIELD_NAME;
+import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
 import static org.junit.Assert.assertEquals;
 
@@ -67,7 +67,7 @@ public class LdapNameUtilsUnitTest {
                                 COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
                                 FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
                                 ROOT.getNodeTypeName(), ROOT.getRootTypeValue(),
-                                O_FIELD_NAME, O_FIELD_VALUE,
+                                ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
                                 COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
     }
 

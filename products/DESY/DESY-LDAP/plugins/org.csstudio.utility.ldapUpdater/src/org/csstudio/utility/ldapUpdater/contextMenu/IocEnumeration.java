@@ -42,8 +42,8 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameterEnumValue;
 import org.csstudio.platform.management.IDynamicParameterValues;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldap.utils.LdapUtils;
@@ -73,7 +73,7 @@ public class IocEnumeration implements IDynamicParameterValues {
             return new CommandParameterEnumValue[0];
         }
 
-        final LdapSearchResult result =
+        final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(IOC.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
@@ -83,8 +83,9 @@ public class IocEnumeration implements IDynamicParameterValues {
         }
 
         try {
-            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
+            final ILdapContentModelBuilder builder =
+                service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, result);
+
             builder.build();
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 

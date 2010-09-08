@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -21,21 +21,23 @@
  */
 package org.csstudio.utility.ldap.service;
 
+import java.util.Map;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
+import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
+import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+import org.eclipse.core.runtime.jobs.Job;
 
 /**
  * LDAP Service.
@@ -44,8 +46,47 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * @author $Author$
  * @version $Revision$
  * @since 08.04.2010
+ * @param <T>
  */
 public interface ILdapService {
+
+    /**
+     *
+     * @return
+     */
+    @CheckForNull
+    DirContext getContext();
+
+    /**
+     * Reconnects to an LDAP according to the new preferences map
+     * @param ldapPrefs the map of preferences, if <code>null</code> the default values from preferences are used
+     * @return true, if reconnection has been successful, false otherwise
+     */
+    boolean reInitializeLdapConnection(@CheckForNull final Map<String, String> ldapPrefs);
+
+
+    /**
+     * Returns the ldap content model builder for the specified parameters
+     * @param objectClassRoot the tree configuration of the content model
+     * @param searchResult the current search result to build the model from
+     * @param <T> the tree configuration type of the content model
+     * @return the content model builder
+     */
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+        getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
+                                   @Nonnull final ILdapSearchResult searchResult);
+
+    /**
+     * Returns the ldap content model builder for the specified parameters
+     * @param model an already existing model which shall be enriched with
+     * @param <T> the tree configuration type of the content model
+     * @return the content model builder
+     */
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model);
+
 
     /**
      * Creates a new Record in LDAP.
@@ -84,9 +125,9 @@ public interface ILdapService {
      * @return the search result
      */
     @CheckForNull
-    LdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot,
-                                                       @Nonnull String filter,
-                                                       int searchScope);
+    ILdapSearchResult retrieveSearchResultSynchronously(@Nonnull LdapName searchRoot,
+                                                        @Nonnull String filter,
+                                                        int searchScope);
 
     /**
      * Returns an LDAPReader job that can be scheduled by the user arbitrarily.
@@ -97,9 +138,9 @@ public interface ILdapService {
      * @return the LDAP reader job
      */
     @Nonnull
-    LDAPReader createLdapReaderJob(@Nonnull LdapSearchParams params,
-                                   @Nullable LdapSearchResult result,
-                                   @Nullable IJobCompletedCallBack callBack);
+    Job createLdapReaderJob(@Nonnull ILdapSearchParams params,
+                            @Nullable ILdapSearchResult result,
+                            @Nullable ILdapReadCompletedCallback callBack);
 
 
     /**
@@ -158,5 +199,12 @@ public interface ILdapService {
         throws NamingException, CreateContentModelException;
 
 
+    /**
+     * Returns a name parser for this LDAP service.
+     * @return the parser
+     * @throws NamingException
+     */
+    @CheckForNull
+    NameParser getLdapNameParser() throws NamingException;
 
 }

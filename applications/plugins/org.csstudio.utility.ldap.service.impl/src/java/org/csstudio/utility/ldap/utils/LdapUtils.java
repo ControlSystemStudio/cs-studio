@@ -150,7 +150,7 @@ public final class LdapUtils {
      */
     @Nonnull
     public static String pvNameToRecordName(@Nonnull final String pv) {
-        // TODO (bknerr) : does this epics check really belong here
+        // FIXME (bknerr) : does this epics check really belong here
         if (pv.contains(".") && isEpicsDefaultControlSystem()) {
             return pv.substring(0, pv.indexOf("."));
         }

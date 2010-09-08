@@ -25,6 +25,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -88,6 +89,8 @@ public class IocManagement implements IManagementCommand {
         } catch (final InterruptedException e) {
             LOG.error("Interrupted.", e);
             Thread.currentThread().interrupt();
+        } catch (final ServiceUnavailableException e) {
+            LOG.error("LDAP service not available.", e);
         }
     }
 

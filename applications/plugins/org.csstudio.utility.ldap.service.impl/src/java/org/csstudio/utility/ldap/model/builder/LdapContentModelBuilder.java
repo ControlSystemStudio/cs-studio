@@ -38,7 +38,8 @@ import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
@@ -58,11 +59,12 @@ import org.csstudio.utility.treemodel.builder.AbstractContentModelBuilder;
  * @since 21.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T> {
+public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> extends AbstractContentModelBuilder<T>
+        implements ILdapContentModelBuilder {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapContentModelBuilder.class);
 
-    private LdapSearchResult _searchResult;
+    private ILdapSearchResult _searchResult;
     private final T _objectClassRoot;
 
     /**
@@ -71,7 +73,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * @param objectClassRoot the model type
      */
     public LdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                   @Nonnull final LdapSearchResult searchResult) {
+                                   @Nonnull final ILdapSearchResult searchResult) {
         _searchResult = searchResult;
         _objectClassRoot = objectClassRoot;
     }
@@ -85,7 +87,8 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
         setModel(model);
     }
 
-    public void setSearchResult(@Nonnull final LdapSearchResult result) {
+    @Override
+    public void setSearchResult(@Nonnull final ILdapSearchResult result) {
         _searchResult = result;
     }
 
@@ -117,7 +120,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      */
     @Nonnull
     private ContentModel<T> addSearchResult(@Nonnull final ContentModel<T> model,
-                                            @Nullable final LdapSearchResult searchResult) {
+                                            @Nullable final ILdapSearchResult searchResult) {
 
         if (searchResult != null) {
             final ISubtreeNodeComponent<T> root = model.getRoot();

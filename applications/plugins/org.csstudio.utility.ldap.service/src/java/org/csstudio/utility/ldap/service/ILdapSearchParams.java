@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2006 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,44 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap;
-
-import java.util.MissingResourceException;
-import java.util.ResourceBundle;
+package org.csstudio.utility.ldap.service;
 
 import javax.annotation.Nonnull;
+import javax.naming.ldap.LdapName;
 
-/**
- * TODO (hrickens): Docu
- *
- * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 07.04.2010
- */
-public final class Messages {
-	private static final String BUNDLE_NAME = "org.csstudio.utility.ldap.messages"; //$NON-NLS-1$
+public interface ILdapSearchParams {
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(BUNDLE_NAME);
+    @Nonnull LdapName getSearchRoot();
 
-	/**
-     * Constructor.
-     */
-    private Messages() {
-        // Don't instantiate.
-    }
+    @Nonnull String getFilter();
 
-    /**
-     * Retrieves the resource string
-     * @param key the resource key
-     * @return the resource string
-     */
-    @Nonnull
-	public static String getString(@Nonnull final String key) {
-		try {
-			return RESOURCE_BUNDLE.getString(key);
-		} catch (final MissingResourceException e) {
-			return '!' + key + '!';
-		}
-	}
+    @Nonnull int getScope();
 }

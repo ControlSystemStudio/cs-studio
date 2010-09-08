@@ -34,9 +34,8 @@ import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.preference.LdapPreference;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.csstudio.utility.ldap.service.impl.LdapServiceImpl;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -50,7 +49,7 @@ public final class LdapActivator extends AbstractCssPlugin {
 
     private static LdapActivator INSTANCE;
 
-    private BundleContext _bundleContext;
+    private LdapServiceTracker _ldapServiceTracker;
 
     /**
      * Don't instantiate.
@@ -69,8 +68,6 @@ public final class LdapActivator extends AbstractCssPlugin {
     @Override
     protected void doStart(@Nullable final BundleContext context) throws Exception {
 
-        _bundleContext = context;
-
         // TODO (jpenning) Hack: Find a better way to find out whether to use ldap
         final String ldapURL = getCssPluginPreferences().getString(LdapPreference.URL.getKeyAsString());
         final boolean useLDAP = ldapURL != null && ldapURL.length() > 5;
@@ -79,11 +76,16 @@ public final class LdapActivator extends AbstractCssPlugin {
             final Dictionary<String, Object> props = new Hashtable<String, Object>();
             props.put("service.vendor", "DESY");
             props.put("service.description", "LDAP service implementation");
-            context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
             LOG.info("Register LDAP-Service");
+            context.registerService(ILdapService.class.getName(), new LdapServiceImpl(), props);
+
+            _ldapServiceTracker = new LdapServiceTracker(context);
+            _ldapServiceTracker.open();
         } else {
             LOG.info("Do not register LDAP-Service");
         }
+
+
     }
 
     /* (non-Javadoc)
@@ -91,7 +93,9 @@ public final class LdapActivator extends AbstractCssPlugin {
      */
     @Override
     protected void doStop(@Nullable final BundleContext context) throws Exception {
-        // Empty
+        if (_ldapServiceTracker != null) {
+            _ldapServiceTracker.close();
+        }
     }
 
     /* (non-Javadoc)
@@ -114,44 +118,10 @@ public final class LdapActivator extends AbstractCssPlugin {
     }
 
     /**
-     * Add informational message to the plugin log.
-     * @param message info message
-     */
-    public static void logInfo(@Nonnull final String message) {
-        getDefault().log(IStatus.INFO, message, null);
-    }
-
-    /**
-     * Add error message to the plugin log.
-     * @param message error message
-     */
-    public static void logError(@Nonnull final String message) {
-        getDefault().log(IStatus.ERROR, message, null);
-    }
-
-    /**
-     * Add an exception to the plugin log.
-     * @param message error message
-     * @param e exception
-     */
-    public static void logException(@Nonnull final String message, @Nullable final Exception e) {
-        getDefault().log(IStatus.ERROR, message, e);
-    }
-
-    /** Add a message to the log.
-     * @param severity the severity; one of <code>OK</code>, <code>ERROR</code>,
-     * <code>INFO</code>, <code>WARNING</code>,  or <code>CANCEL</code>
-     * @param message
-     */
-    private void log(final int severity, @Nonnull final String message, @Nullable final Exception e) {
-        getLog().log(new Status(severity, PLUGIN_ID, IStatus.OK, message, e));
-    }
-
-    /**
-     * @return the LDAP service
+     * @return the LDAP service or null
      */
     @CheckForNull
     public ILdapService getLdapService() {
-        return getService(_bundleContext, ILdapService.class);
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 }

@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.utility.ldap.reader;
+package org.csstudio.utility.ldap.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -31,9 +31,9 @@ import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.LdapActivator;
-import org.csstudio.utility.ldap.Messages;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;
@@ -45,13 +45,11 @@ import org.csstudio.utility.namespace.utility.ProcessVariable;
  * @version $Revision$
  * @since 08.04.2010
  */
-public class LdapSearchResult extends NameSpaceSearchResult {
+public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSearchResult {
 
     private Set<SearchResult> _answerSet = Collections.emptySet();
 
-    private LdapSearchParams _searchParams;
-
-    private List<ControlSystemItem> _csiResult;
+    private ILdapSearchParams _searchParams;
 
     /**
      * Constructor.
@@ -66,42 +64,8 @@ public class LdapSearchResult extends NameSpaceSearchResult {
     @Override
     @Nonnull
     public List<ControlSystemItem> getCSIResultList() {
-        if ((_csiResult != null) && !_csiResult.isEmpty()) {
-            return _csiResult;
-        }
-
-        final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
-        if(_answerSet == null) {
-            return null;
-        }
-
-        for (final SearchResult row : _answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
-            String cleanList = row.getName();
-            // Delete "-Chars that add from LDAP-Reader when the result contains special character
-            if(cleanList.startsWith("\"")){ //$NON-NLS-1$
-                if(cleanList.endsWith("\"")) {
-                    cleanList = cleanList.substring(1,cleanList.length()-1);
-                } else {
-                    cleanList = cleanList.substring(1);
-                }
-            }
-            final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
-            if(token.length<2) {
-                if(!token[0].equals("no entry found")){
-                    LdapActivator.logError(Messages.getString("CSSView.Error1")+row+"'");//$NON-NLS-1$ //$NON-NLS-2$
-                }
-                break;
-
-            }
-
-            if (cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
-                tmpList.add(new ProcessVariable(token[1], cleanList));
-            } else {
-                tmpList.add(new ControlSystemItem(token[1], cleanList));
-            }
-
-        }
-        return tmpList;
+        // FIXME (bknerr) : obsolete probably
+        return Collections.emptyList();
     }
 
     /* (non-Javadoc)
@@ -119,11 +83,10 @@ public class LdapSearchResult extends NameSpaceSearchResult {
     }
 
     /**
-     * Sets the current result contents for these parameters
-     * @param searchParams the search root, the search filter, and search controls
-     * @param answerSet the corresponding result set
+     * {@inheritDoc}
      */
-    public void setResult(@Nonnull final LdapSearchParams searchParams,
+    @Override
+    public void setResult(@Nonnull final ILdapSearchParams searchParams,
                           @Nonnull final Set<SearchResult> answerSet) {
         _searchParams = searchParams;
         _answerSet = answerSet;
@@ -133,20 +96,20 @@ public class LdapSearchResult extends NameSpaceSearchResult {
     }
 
     /**
-     * Getter.
-     * @return the result set
+     * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public Set<SearchResult> getAnswerSet() {
         return _answerSet;
     }
 
     /**
-     * Search root of the current result
-     * @return the current search root, may be null
+     * {@inheritDoc}
      */
+    @Override
     @CheckForNull
-    public LdapSearchParams getSearchParams() {
+    public ILdapSearchParams getSearchParams() {
         return _searchParams;
     }
 
@@ -157,7 +120,7 @@ public class LdapSearchResult extends NameSpaceSearchResult {
     @Override
     public final void setCSIResultList(@Nonnull final List<ControlSystemItem> resultList) {
         // FIXME (bknerr) : Deprecated structure for css view
-        _csiResult = new ArrayList<ControlSystemItem>(resultList);
+        //_csiResult = new ArrayList<ControlSystemItem>(resultList);
         notifyView();
     }
 }

@@ -24,20 +24,29 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.utility;
 
-import javax.naming.CompositeName;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+
+import javax.annotation.Nonnull;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
+import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
+import org.csstudio.utility.namespace.utility.ProcessVariable;
 
 
 /**
@@ -48,7 +57,9 @@ import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
  */
 public class NameSpaceLDAP extends NameSpace {
 
-    private final Logger _log = CentralLogger.getInstance().getLogger(this);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(NameSpaceLDAP.class);
+
+    private List<ControlSystemItem> _csiResult;
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
@@ -59,12 +70,15 @@ public class NameSpaceLDAP extends NameSpace {
             final NameSpaceSearchResult nameSpaceResultList = getNameSpaceResultList();
             if (nameSpaceResultList instanceof LdapSearchResult) {
                 final ILdapService service = Activator.getDefault().getLdapService();
-
-                final NameParser parser = Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
+                if (service == null) {
+                    LOG.error("LDAP service unavailable.");
+                    return;
+                }
+                final NameParser parser = service.getLdapNameParser();
 
                 final LdapName searchRoot = (LdapName) parser.parse(getName());
 
-                LdapSearchResult result;
+                ILdapSearchResult result;
                 if(getSelection().endsWith("=*,")) {
                     result = service.retrieveSearchResultSynchronously(searchRoot,
                                                                        getFilter(),
@@ -75,17 +89,61 @@ public class NameSpaceLDAP extends NameSpace {
                                                                        SearchControls.ONELEVEL_SCOPE);
                 }
                 if (result != null) {
-                    updateResultList(result.getCSIResultList());
+                    updateResultList(getCSIResultList(result));
                 }
 
             } else{
                 // TODO: Was soll gemacht werden wenn das 'getNameSpaceResultList() instanceof LdapSearchResult' nicht stimmt.
-                Activator.logError(Messages.getString("CSSView.exp.IAE.2")); //$NON-NLS-1$
+                LOG.error("CSSView.exp.IAE.2"); //$NON-NLS-1$
             }
         } catch (final IllegalArgumentException e) {
-            Activator.logException(Messages.getString("CSSView.exp.IAE.1"), e); //$NON-NLS-1$
+            LOG.error("CSSView.exp.IAE.1", e);
         } catch (final NamingException ne) {
-            _log.error("Error while parsing search root " + getName() + " as LDAP name.", ne);
+            LOG.error("Error while parsing search root " + getName() + " as LDAP name.", ne);
         }
+	}
+
+
+	@Nonnull
+	private List<ControlSystemItem> getCSIResultList(@Nonnull final ILdapSearchResult result) {
+
+	    if (_csiResult != null && !_csiResult.isEmpty()) {
+	        return _csiResult;
+	    }
+
+	    final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
+	    final Set<SearchResult> answerSet = result.getAnswerSet();
+	    if(answerSet == null) {
+	        return Collections.emptyList();
+	    }
+
+	    for (final SearchResult row : answerSet) { // TODO (hrickens) : encapsulate LDAP answer parsing !
+	        String cleanList = row.getName();
+	        // Delete "-Chars that add from LDAP-Reader when the result contains special character
+	        if(cleanList.startsWith("\"")){ //$NON-NLS-1$
+	            if(cleanList.endsWith("\"")) {
+	                cleanList = cleanList.substring(1,cleanList.length()-1);
+	            } else {
+	                cleanList = cleanList.substring(1);
+	            }
+	        }
+	        final String[] token = cleanList.split("[,=]"); //$NON-NLS-1$
+	        if(token.length<2) {
+	            if(!token[0].equals("no entry found")){
+	                LOG.error("CSSViewError " + row + "'");//$NON-NLS-1$ //$NON-NLS-2$
+	            }
+	            break;
+
+	        }
+
+	        if (cleanList.startsWith(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName())) {
+	            tmpList.add(new ProcessVariable(token[1], cleanList));
+	        } else {
+	            tmpList.add(new ControlSystemItem(token[1], cleanList));
+	        }
+
+	    }
+	    _csiResult = tmpList;
+	    return _csiResult;
 	}
 }

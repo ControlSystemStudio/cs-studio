@@ -42,13 +42,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
@@ -57,8 +58,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapUtils;
@@ -164,8 +165,9 @@ public enum LdapUpdater {
      * @throws InterruptedException
      * @throws InvalidNameException
      * @throws CreateContentModelException
+     * @throws ServiceUnavailableException
      */
-    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException {
+    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException, ServiceUnavailableException {
         if ( isBusy() ) {
             return;
         }
@@ -181,7 +183,7 @@ public enum LdapUpdater {
             }
             final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final String filter = any(IOC.getNodeTypeName());
-            final LdapSearchResult result =
+            final ILdapSearchResult result =
                 service.retrieveSearchResultSynchronously(query,
                                                           filter,
                                                           SearchControls.ONELEVEL_SCOPE);
@@ -195,8 +197,7 @@ public enum LdapUpdater {
                 return;
             }
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
+            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, result);
             builder.build();
 
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -230,12 +231,12 @@ public enum LdapUpdater {
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
             if (service == null) {
-                LOG.info("No LDAP service present");
+                LOG.error("No LDAP service available.");
                 return;
             }
 
             final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
-            final LdapSearchResult searchResult =
+            final ILdapSearchResult searchResult =
                 service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),
                                                           SearchControls.SUBTREE_SCOPE);
@@ -259,11 +260,17 @@ public enum LdapUpdater {
     }
 
     private void createModelAndUpdateLdap(@Nonnull final HistoryFileContentModel historyFileModel,
-                                          @Nonnull final LdapSearchResult searchResult)
+                                          @Nonnull final ILdapSearchResult searchResult)
     throws CreateContentModelException, InterruptedException {
 
-        final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-            new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, searchResult);
+        final ILdapService service = Activator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("No LDAP service available.");
+            return;
+        }
+
+        final ILdapContentModelBuilder builder =
+            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, searchResult);
         builder.build();
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
@@ -317,7 +324,7 @@ public enum LdapUpdater {
             final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             String person = DEFAULT_RESPONSIBLE_PERSON;
             try {
-                if ((personAttr != null) && (personAttr.get() != null)) {
+                if (personAttr != null && personAttr.get() != null) {
                     person = (String) personAttr.get();
                 }
                 if (!missingIOCsPerPerson.containsKey(person)) {

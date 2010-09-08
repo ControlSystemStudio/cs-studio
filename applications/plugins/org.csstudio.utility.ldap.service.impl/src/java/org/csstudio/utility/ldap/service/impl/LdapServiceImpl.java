@@ -28,13 +28,18 @@ import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Map;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import javax.naming.CompositeName;
+import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NameNotFoundException;
+import javax.naming.NameParser;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
@@ -42,24 +47,30 @@ import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.InitialLdapContext;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.connection.LDAPConnector;
 import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
+import org.csstudio.utility.ldap.utils.LdapSearchParams;
+import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
+import org.eclipse.core.runtime.jobs.Job;
 
 
 /**
@@ -76,16 +87,90 @@ public final class LdapServiceImpl implements ILdapService {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceImpl.class);
 
-    private static DirContext CONTEXT = Engine.getInstance().getLdapDirContext();
+    /**
+     * DirContext Holder to prevent accidental direct access to DirContext field.
+     *
+     * @author bknerr
+     * @author $Author: bknerr $
+     * @version $Revision: 1.7 $
+     * @since 08.09.2010
+     */
+    private enum DirContextHolder {
+
+        INSTANCE;
+
+        private DirContext _context;
+
+        @CheckForNull
+        private DirContext get() {
+            if (_context == null) {
+                LDAPConnector ldapConnector = null;
+                try {
+                    ldapConnector = new LDAPConnector();
+                } catch (final NamingException e) {
+                    LOG.fatal("Engine.run - connection to LDAP server failed", e);
+                    return null;
+                }
+
+                _context = ldapConnector.getDirContext();
+
+                if (_context != null) {
+                    LOG.info("Engine.run - successfully connected to LDAP server");
+                } else {
+                    LOG.fatal("Engine.run - context creation for LDAP server failed");
+                }
+            }
+            return _context;
+        }
+
+        boolean reInit(@CheckForNull final Map<String, String> ldapPrefs) {
+            if (ldapPrefs == null) {
+                return get() != null; // just reinitializes the context with the default prefs
+            }
+
+            final Hashtable<Object, String> env = new Hashtable<Object, String>(ldapPrefs);
+
+            env.put(Context.INITIAL_CONTEXT_FACTORY,"com.sun.jndi.ldap.LdapCtxFactory");
+
+            try {
+                _context = new InitialLdapContext(env, null);
+            } catch (final NamingException e) {
+                LOG.error("Re-initialization of LDAP context failed.\n" +
+                          "Preferences:\n" + ldapPrefs);
+                return false;
+            }
+
+            return true;
+        }
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
     @CheckForNull
-    public LDAPReader createLdapReaderJob(@Nonnull final LdapSearchParams params,
-                                          @Nullable final LdapSearchResult result,
-                                          @Nullable final IJobCompletedCallBack callBack) {
+    public synchronized DirContext getContext() {
+        return DirContextHolder.INSTANCE.get();
+    }
+
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean reInitializeLdapConnection(@CheckForNull final Map<String, String> ldapPrefs) {
+        return DirContextHolder.INSTANCE.reInit(ldapPrefs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public Job createLdapReaderJob(@Nonnull final ILdapSearchParams params,
+                                   @Nullable final ILdapSearchResult result,
+                                   @Nullable final ILdapReadCompletedCallback callBack) {
 
             final LDAPReader ldapr =
                 new LDAPReader.Builder(params.getSearchRoot(), params.getFilter()).
@@ -106,12 +191,13 @@ public final class LdapServiceImpl implements ILdapService {
                                                               @Nonnull final String filter,
                                                               final int searchScope) {
 
-        if(CONTEXT != null){
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context != null){
             final SearchControls ctrl = new SearchControls();
             ctrl.setSearchScope(searchScope);
             NamingEnumeration<SearchResult> answer = null;
             try {
-                answer = CONTEXT.search(searchRoot, filter, ctrl);
+                answer = context.search(searchRoot, filter, ctrl);
 
                 final Set<SearchResult> answerSet = new HashSet<SearchResult>();
                 while(answer.hasMore()){
@@ -124,10 +210,10 @@ public final class LdapServiceImpl implements ILdapService {
                 return result;
 
             } catch (final NameNotFoundException nnfe){
-                Engine.getInstance().reconnectDirContext();
+//                Engine.getInstance().reconnectDirContext(); // WTF?
                 LOG.info("Wrong LDAP name?" + nnfe.getExplanation());
             } catch (final NamingException e) {
-                Engine.getInstance().reconnectDirContext();
+//                Engine.getInstance().reconnectDirContext();
                 LOG.info("Wrong LDAP query. " + e.getExplanation());
             } finally {
                 try {
@@ -150,8 +236,13 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public boolean createComponent(@Nonnull final LdapName newComponentName,
                                    @Nullable final Attributes attributes) {
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return false;
+        }
         try {
-            CONTEXT.bind(newComponentName, null, attributes);
+            context.bind(newComponentName, null, attributes);
             LOG.info( "New LDAP Component: " + newComponentName.toString());
         } catch (final NamingException e) {
             LOG.warn( "Naming Exception while trying to bind: " + newComponentName.toString());
@@ -166,9 +257,14 @@ public final class LdapServiceImpl implements ILdapService {
      */
     @Override
     public boolean removeLeafComponent(@Nonnull final LdapName component) {
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return false;
+        }
         try {
             LOG.info("Unbind entry from LDAP: " + component);
-            CONTEXT.unbind(component);
+            context.unbind(component);
         } catch (final NamingException e) {
             LOG.warn("Naming Exception while trying to unbind: " + component);
             LOG.warn(e.getExplanation());
@@ -224,8 +320,13 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public void modifyAttributes(@Nonnull final LdapName name,
                                  @Nonnull final ModificationItem[] mods) throws NamingException {
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return;
+        }
         LOG.debug("Modify entry for: " + name);
-        CONTEXT.modifyAttributes(name, mods);
+        context.modifyAttributes(name, mods);
     }
 
     /**
@@ -235,8 +336,13 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public void rename(@Nonnull final LdapName oldLdapName,
                        @Nonnull final LdapName newLdapName) throws NamingException {
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return;
+        }
         LOG.info("Rename entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
-        CONTEXT.rename(oldLdapName, newLdapName);
+        context.rename(oldLdapName, newLdapName);
     }
 
     /**
@@ -247,14 +353,18 @@ public final class LdapServiceImpl implements ILdapService {
         boolean move(@Nonnull final T configurationRoot,
                      @Nonnull final LdapName oldLdapName,
                      @Nonnull final LdapName newLdapName) throws NamingException, CreateContentModelException {
-
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return false;
+        }
         LOG.debug("Move entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
 
         final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(),
                                     configurationRoot.getRootTypeValue());
 
         // create for 'oldLdapName' entry a new one under 'newLdapName'
-        final Attributes attributes = CONTEXT.getAttributes(oldLdapName);
+        final Attributes attributes = context.getAttributes(oldLdapName);
         createComponent(newLdapName, attributes);
 
         // get complete subtree of 'oldLdapName' and create model
@@ -333,7 +443,12 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     @CheckForNull
     public Attributes getAttributes(@Nonnull final LdapName ldapName) throws NamingException {
-        return CONTEXT.getAttributes(ldapName);
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return null;
+        }
+        return context.getAttributes(ldapName);
     }
 
     /**
@@ -342,8 +457,36 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     @CheckForNull
     public Object lookup(@Nonnull final LdapName name) throws NamingException {
-        return CONTEXT.lookup(name);
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return null;
+        }
+        return context.lookup(name);
     }
 
+    /**
+     * {@inheritDoc}
+     * @throws NamingException
+     */
+    @Override
+    @CheckForNull
+    public NameParser getLdapNameParser() throws NamingException {
+        final DirContext context = DirContextHolder.INSTANCE.get();
+        if(context == null) {
+            LOG.error("LDAP context is null.");
+            return null;
+        }
+        return context.getNameParser(new CompositeName());
+    }
 
+    @Override
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
+                                                                                                                  @Nonnull final ILdapSearchResult searchResult) {
+        return new LdapContentModelBuilder(objectClassRoot, searchResult);
+    }
+    @Override
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
+        return new LdapContentModelBuilder(model);
+    }
 }

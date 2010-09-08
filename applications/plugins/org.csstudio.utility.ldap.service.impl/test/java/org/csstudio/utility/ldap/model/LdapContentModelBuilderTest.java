@@ -40,7 +40,7 @@ import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -62,8 +62,6 @@ public class LdapContentModelBuilderTest {
 
     private static ContentModel<LdapEpicsControlsConfiguration> MODEL_TWO;
 
-    private static final ILdapService SERVICE = LdapActivator.getDefault().getLdapService();
-
     private static final Map<LdapEpicsControlsConfiguration, Integer> RESULT_CHILDREN_BY_TYPE =
         new EnumMap<LdapEpicsControlsConfiguration, Integer>(LdapEpicsControlsConfiguration.class);
     static {
@@ -72,10 +70,15 @@ public class LdapContentModelBuilderTest {
         RESULT_CHILDREN_BY_TYPE.put(IOC, 19);
     }
 
+
+
     @BeforeClass
     public static void modelSetup() {
 
-        LdapSearchResult searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
+        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        Assert.assertNotNull("LDAP service unavailable.", service);
+
+        ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
                                                                                                   ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                                                                   any(IOC.getNodeTypeName()),
                                                                                                   SearchControls.SUBTREE_SCOPE);
@@ -91,7 +94,7 @@ public class LdapContentModelBuilderTest {
                 Assert.fail("Model setup failed. Search result is null.");
             }
 
-            searchResult = SERVICE.retrieveSearchResultSynchronously(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+            searchResult = service.retrieveSearchResultSynchronously(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
                                                                                      COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                                                                      FACILITY.getNodeTypeName(), "TEST",
                                                                                      ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),

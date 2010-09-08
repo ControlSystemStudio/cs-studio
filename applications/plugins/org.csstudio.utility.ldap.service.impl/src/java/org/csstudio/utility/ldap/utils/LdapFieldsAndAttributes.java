@@ -23,8 +23,18 @@
  */
 package org.csstudio.utility.ldap.utils;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
+import javax.naming.InvalidNameException;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
  * Constants for LDAP field names, popular values, and forbidden symbols in LDAP entry names.
@@ -36,7 +46,11 @@ import java.util.Set;
  */
 public final class LdapFieldsAndAttributes {
 
-    public static final String O_FIELD_NAME = "o";
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(LdapFieldsAndAttributes.class);
+
+    public static final String COUNTRY_FIELD_NAME = "c";
+    public static final String ORGANIZATION_FIELD_NAME = "o";
     public static final String OU_FIELD_NAME = "ou";
 
     public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
@@ -73,6 +87,18 @@ public final class LdapFieldsAndAttributes {
 
 
     public static final Set<String> FORBIDDEN_SUBSTRINGS = new HashSet<String>();
+    public static LdapName LDAP_ROOT;
+
+    static {
+        List<Rdn> rdns;
+        try {
+            rdns = Arrays.asList(new Rdn[] {new Rdn(COUNTRY_FIELD_NAME + FIELD_ASSIGNMENT + "DE"),
+                                            new Rdn(ORGANIZATION_FIELD_NAME + FIELD_ASSIGNMENT + "DESY")});
+        LDAP_ROOT = new LdapName(rdns);
+        } catch (final InvalidNameException e) {
+            LOG.error("LDAP ROOT variable could not be initialised.", e);
+        }
+    }
 
     /**
      * See http://www.ietf.org/rfc/rfc2253.txt

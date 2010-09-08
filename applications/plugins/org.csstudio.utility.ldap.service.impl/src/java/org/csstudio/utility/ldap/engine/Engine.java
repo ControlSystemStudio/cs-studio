@@ -26,13 +26,12 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Set;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.naming.CompositeName;
-import javax.naming.Name;
-import javax.naming.NameParser;
+import javax.naming.InvalidNameException;
 import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -43,17 +42,19 @@ import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.statistic.Collector;
-import org.csstudio.utility.ldap.connection.LDAPConnector;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.engine.LdapReferences.Entry;
 import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.preference.LdapPreference;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -197,8 +198,6 @@ public final class Engine extends Job {
 
     private static Engine INSTANCE = null;
 
-    private DirContext _ctx = null;
-
     private boolean _doWrite = false;
 
     private Collector _ldapReadTimeCollector = null;
@@ -266,11 +265,6 @@ public final class Engine extends Job {
          */
         LOG.debug("Engine.run - start");
 
-        if (_ctx == null) {
-            _ctx = getLdapDirContext();
-        }
-
-
         while (isRunning() || _doWrite) {
             //
             // do the work actually prepared
@@ -325,15 +319,15 @@ public final class Engine extends Job {
          */
         _ldapWriteRequests.setValue(bufferSize);
 
-        // / System.out.println("Engine.addLdapWriteRequest actual buffer size:
+        // / LOG.info("Engine.addLdapWriteRequest actual buffer size:
         // " + bufferSize);
         /**
          *  Start the sending, after a Buffer overflow,
          *  when the buffer have minimum 10% free space
          */
-        if (bufferSize > (maxBuffersize-_reStartSendDiff)) {
+        if (bufferSize > maxBuffersize-_reStartSendDiff) {
             if (_addVectorOK) {
-                System.out.println("Engine.addLdapWriteRequest writeVector > " + maxBuffersize
+                LOG.info("Engine.addLdapWriteRequest writeVector > " + maxBuffersize
                                    + " - cannot store more!");
                 LOG.warn("writeVector > " + maxBuffersize + " - cannot store more!");
                 _reStartSendDiff = (int)(LDAP_MAX_BUFFER_SIZE*0.1);
@@ -341,7 +335,7 @@ public final class Engine extends Job {
             }
         } else {
             if (!_addVectorOK) {
-                System.out.println("Engine.addLdapWriteRequest writeVector - continue writing");
+                LOG.info("Engine.addLdapWriteRequest writeVector - continue writing");
                 LOG.warn("writeVector < " + maxBuffersize + " - resume writing");
                 _reStartSendDiff = 0;
                 _addVectorOK = true;
@@ -354,41 +348,27 @@ public final class Engine extends Job {
         _doWrite = true;
     }
 
-    synchronized public DirContext getLdapDirContext() {
-        if (_ctx == null) {
-            LDAPConnector ldapConnector = null;
-            try {
-                ldapConnector = new LDAPConnector();
-                _ctx = ldapConnector.getDirContext();
-
-            } catch (final NamingException e1) {
-                try {
-                    Thread.sleep(100);
-                    _ctx = ldapConnector != null ? ldapConnector.getDirContext() : null;
-                } catch (final InterruptedException e) {
-                    LOG.error(e);
-                    return null;
-                }
-            }
-            LOG.debug("Engine.run - ctx: " + _ctx.toString());
-            if (_ctx != null) {
-                LOG.info("Engine.run - successfully connected to LDAP server");
-            } else {
-                LOG.fatal("Engine.run - connection to LDAP server failed");
-            }
+    @CheckForNull
+    public DirContext getLdapDirContext() {
+        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("LDAP service unavailable.");
+            return null;
         }
-        return _ctx;
+        return service.getContext();
     }
 
-    synchronized public DirContext reconnectDirContext() {
-        try {
-            _ctx.close();
-        } catch (final NamingException e) {
-            // ignore
-        }
-        _ctx = null;
-        return getLdapDirContext();
-    }
+//    synchronized public DirContext reconnectDirContext() {
+//        final ILdapService service = LdapActivator.getDefault().getLdapService();
+//        if (service == null) {
+//            LOG.error("LDAP service unavailable.");
+//            return null;
+//        }
+//
+//        service.reInitializeLdapConnection(null);
+//
+//        return service.getContext();
+//    }
 
     /**
      * Get the Value of an record attribute.
@@ -399,56 +379,43 @@ public final class Engine extends Job {
      * @param attribute
      *            The attribute from where get the value.
      * @return the value of the record attribute.
+     * @throws NamingException
      */
     synchronized public String getAttribute(final String recordPath,
-                                            final ChannelAttribute attribute) {
-        if ((recordPath == null) || (attribute == null)) {
+                                            final ChannelAttribute attribute) throws NamingException {
+        if (recordPath == null || attribute == null) {
             return null;
         }
-        if (getLdapDirContext() != null) {
-            final AttributeSet attributeSet = helpAttribute(recordPath);
-            try {
-                final String[] attStrings = new String[] { attribute.name() };
-                Attributes attributes = null;
-                try {
-                    if (attributeSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
-                        final SearchControls sc = attributeSet.getSearchControls();
-                        final NamingEnumeration<SearchResult> searchResults = getLdapDirContext().search(attributeSet
-                                                                                                         .getPath(), attributeSet.getFilter(), sc);
 
-                        if (searchResults.hasMore()) {
-                            final SearchResult element = searchResults.next();
-                            attributes = element.getAttributes();
-                        } else {
-                            return "NOT_FOUND";
-                        }
-                    } else {
-                        attributes = getLdapDirContext().getAttributes(attributeSet.getFilter() + ","
-                                                                       + attributeSet.getPath(), attStrings);
-                    }
-                } catch (final NamingException ne) {
-                    // fall through
-                }
-                if (attributes == null) {
-                    return "NONE";
-                }
-                final Attribute attr = attributes.get(attribute.name());
-                if (attr == null) {
-                    return "NONE";
-                }
-                final Object object = attr.get();
-                if (object == null) {
-                    return "NONE";
-                }
-                return object.toString();
-
-            } catch (final NamingException e) {
-                _ctx = null;
-                LOG.info("Falscher LDAP Suchpfad für Record suche.");
-                LOG.info(e);
-            }
+        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("LDAP service unavailable.");
+            return null;
         }
-        return null;
+
+        final AttributeSet attributeSet = createAttributeSet(recordPath);
+
+        final ILdapSearchResult result =
+            service.retrieveSearchResultSynchronously(new LdapName(attributeSet.getPath()),
+                                                      attributeSet.getFilter(),
+                                                      attributeSet.getSearchControls().getSearchScope());
+        if (result == null || result.getAnswerSet().isEmpty()) {
+            return "NOT_FOUND";
+        }
+        final Set<SearchResult> answerSet = result.getAnswerSet();
+        if (answerSet.size() > 1) {
+            return "RESULT_NOT_UNIQUE";
+        }
+
+        final SearchResult entry = answerSet.iterator().next();
+
+        final Attributes attrs = entry.getAttributes();
+        if (attrs == null || attrs.get(attribute.name()) == null) {
+            return "NONE";
+        }
+
+        final Attribute value = attrs.get(attribute.name());
+        return value.get() == null ? "NONE" : (String) value.get();
     }
 
     /**
@@ -461,179 +428,48 @@ public final class Engine extends Job {
      *            The attribute to set the Value.
      * @param value
      *            the value was set.
+     * @throws InvalidNameException
      */
     synchronized public void setAttribute(final String recordPath,
                                           final ChannelAttribute attribute,
-                                          final String value) {
-        assert (recordPath != null) && (attribute != null) && (value != null) : "The recordPath, attribute and/or value are NULL";
-        if (getLdapDirContext() != null) {
-            AttributeSet attributeSet = helpAttribute(recordPath);
-            try {
-                String ldapChannelName = "";
-                if (attributeSet.getSearchControls().getSearchScope() == SearchControls.SUBTREE_SCOPE) {
-                    final SearchControls sc = attributeSet.getSearchControls();
-                    final NamingEnumeration<SearchResult> searchResults =
-                        getLdapDirContext().search(attributeSet.getPath(), attributeSet.getFilter(), sc);
-                    if (searchResults.hasMore()) {
-                        final SearchResult element = searchResults.next();
-                        // element.getAttributes().get(attriebute.name()).get().toString();
-                        attributeSet = helpAttribute(element.getNameInNamespace());
-                    }
+                                          final String value) throws InvalidNameException {
+        assert recordPath != null && attribute != null && value != null : "The recordPath, attribute and/or value are NULL";
 
-                }
-                if ((attributeSet != null) && (attributeSet.getFilter() != null)
-                        && (attributeSet.getPath() != null)) {
-                    ldapChannelName = attributeSet.getFilter() + "," + attributeSet.getPath();
-                    final BasicAttribute ba = new BasicAttribute(attribute.name(), value);
-                    final List<ModificationItem> modItems = new ArrayList<ModificationItem>();
-                    modItems.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba));
+        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("LDAP service unavailable.");
+            return;
+        }
+        AttributeSet attributeSet = createAttributeSet(recordPath);
 
-                    final String channel = ldapChannelName.split("[=,]")[0];
-                    modifyAttributes(ldapChannelName, modItems, channel, new GregorianCalendar());
-                    // _ctx.modifyAttributes(ldapChannelName,modItemTemp);
-                } else {
-                    LOG.warn("Set attribute faild. Record: " + recordPath + " with attriebute: "
-                             + attribute.name() + " not found!");
-                }
-            } catch (final NamingException e) {
-                _ctx = null;
-                LOG.info("Falscher LDAP Suchpfad für Record suche. Beim setzen eines Atributes fehlgeschlagen.");
-                LOG.info(e);
+        final int searchScope = attributeSet.getSearchControls().getSearchScope();
+        if (searchScope == SearchControls.SUBTREE_SCOPE) {
+            final ILdapSearchResult result =
+                service.retrieveSearchResultSynchronously(new LdapName(attributeSet.getPath()),
+                                                          attributeSet.getFilter(),
+                                                          searchScope);
+            if (result != null && !result.getAnswerSet().isEmpty()) {
+                final SearchResult row = result.getAnswerSet().iterator().next();
+                attributeSet = createAttributeSet(row.getNameInNamespace()); // TODO (bknerr) : if more than one result???
             }
+        }
+        if (attributeSet != null && attributeSet.getFilter() != null && attributeSet.getPath() != null) {
+
+            final String ldapChannelName = attributeSet.getFilter() + "," + attributeSet.getPath();
+            final BasicAttribute ba = new BasicAttribute(attribute.name(), value);
+            final List<ModificationItem> modItems = new ArrayList<ModificationItem>();
+            modItems.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba));
+
+            final String channel = ldapChannelName.split("[=,]")[0];
+            modifyAttributes(ldapChannelName, modItems, channel, new GregorianCalendar());
+            // _ctx.modifyAttributes(ldapChannelName,modItemTemp);
+        } else {
+            LOG.warn("Set attribute faild. Record: " + recordPath + " with attriebute: "
+                     + attribute.name() + " not found!");
         }
     }
 
-    /**
-     * Returns the distinguished name of an IOC in the LDAP directory. If no IOC
-     * with the given IP address is configured in the LDAP directory, returns
-     * <code>null</code>.
-     *
-     * @param ipAddress
-     *            the IP address of the IOC.
-     * @return The LDAP distinguished name of the IOC with the given IP address.
-     */
-    synchronized public String getLogicalNameFromIPAdr(@Nullable final String ipAddress) {
-        if (ipAddress == null) {
-            return null;
-        }
 
-        // Better, split on dots, parse as positive ints + zero, check the range 0-255
-        final String[] fields = ipAddress.split("\\.");
-        if (fields.length != 4) {
-            return null;
-        }
-        for (final String ipPart : fields) { // check for ipPart is in [0,255]
-            final Integer value = Integer.valueOf(ipPart);
-            if ((value < 0) || (value > 255)) {
-                return null;
-            }
-        }
-
-
-        final DirContext context = getLdapDirContext();
-        if (context != null) {
-            final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            ctrl.setTimeLimit(1000);
-            try {
-                final NamingEnumeration<SearchResult> results = context.search("ou=EpicsControls",
-                                                                               "(&(objectClass=epicsController)" +
-                                                                               "(|(epicsIPAddress=" + ipAddress + ")" +
-                                                                               "(epicsIPAddressR=" + ipAddress + ")))",
-                                                                               ctrl);
-                if (results.hasMore()) {
-                    // The relative name of the search result is relative to
-                    // ou=EpicsControls, but the ou=EpicsControls part should
-                    // be contained in the returned result, so this code adds
-                    // it back to the name. Wrapping/unwrapping in CompositeName
-                    // ensures proper escaping/unescaping of LDAP and JNDI
-                    // special characters.
-                    final Name cname = new CompositeName(results.next().getName());
-                    final NameParser nameParser = context.getNameParser(new CompositeName());
-                    final LdapName ldapName = (LdapName) nameParser.parse(cname.get(0));
-                    ldapName.add(0, new Rdn("ou", "EpicsControls"));
-
-                    // Only a single IOC should be found for an IP address.
-                    if (results.hasMore()) {
-                        LOG.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);
-                    }
-
-                    return ldapName.toString();
-                }
-            } catch (final NamingException e) {
-                _ctx = null;
-                LOG.error("LDAP directory search failed.", e);
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Set the severity, status and eventTime to a record.
-     *
-     * @param ldapPath
-     *            the LDAP-Path to the record.
-     * @param severity
-     *            the severity to set.
-     * @param status
-     *            the status to set.
-     * @param eventTime
-     *            the event time to set.
-     * @return ErgebnisList to receive all channel of a IOC. the ErgebnisList is
-     *         Observable.
-     */
-    public ArrayList<String> getAllRecordsOfIOC(final String ldapPath, final String severity,
-                                                final String status, final String eventTime) {
-        String path = ldapPath;
-        int searchControls = SearchControls.SUBTREE_SCOPE;
-        if (path == null) {
-            LOG.warn("LDAPPath is NULL!");
-            return null;
-        } else if (path.contains(("ou=epicsControls"))) {
-            if (path.endsWith(",o=DESY,c=DE")) {
-                path = path.substring(0, path.length() - 12);
-            } else if (path.endsWith(",o=DESY")) {
-                path = path.substring(0, path.length() - 7);
-            }
-            if (path.startsWith("econ=")) {
-                searchControls = SearchControls.ONELEVEL_SCOPE;
-            }
-        } else if (path.contains(",")) {
-            // Unbekannter LDAP Pfad
-            // TODO: Mir ist nicht klar ob diese Abfrage Stimmt. Kann es nicht
-            // einen gültigen Path geben?
-            LOG.warn("Unknown LDAP Path! Path is " + path);
-            return null;
-        } else if (!path.startsWith("econ=")) {
-            path = "econ=" + path;
-        }
-
-        if (getLdapDirContext() != null) {
-            final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(searchControls);
-            try {
-                final ArrayList<String> list = new ArrayList<String>();
-                final NamingEnumeration<SearchResult> answer = getLdapDirContext().search(path, "eren=*", ctrl);
-                // NamingEnumeration<SearchResult> answer =
-                // _ctx.search(ldapPath,"eren=*" , ctrl);
-                while (answer.hasMore()) {
-                    final String name = answer.next().getName() + "," + path;
-                    // String name = answer.next().getName()+","+ldapPath;
-                    list.add(name);
-                }
-                if (list.size() < 1) {
-                    list.add("no entry found");
-                }
-                answer.close();
-                return list;
-            } catch (final NamingException e) {
-                _ctx = null;
-                LOG.info("Wrong LDAP path.", e);
-            }
-        }
-        LOG.warn("Can't connect the LDAP Server!");
-        return null;
-    }
 
     public int gregorianTimeDifference(final GregorianCalendar fromTime, final GregorianCalendar toTime) {
         //
@@ -676,8 +512,12 @@ public final class Engine extends Job {
                 // System.out.print("write: ");
                 // TODO this hard coded string must be removed to the
                 // preferences
-                changeValue(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), currentChannel, modItems);
-                // System.out.println(" finished!!!");
+                try {
+                    changeValue(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), currentChannel, modItems);
+                } catch (final InvalidNameException e) {
+                    LOG.error("Ldap name could not be composed properly.", e);
+                }
+                // LOG.info(" finished!!!");
                 modItems = new ArrayList<ModificationItem>(maxNumberOfWritesProcessed);
                 i = 0;
                 //
@@ -691,8 +531,8 @@ public final class Engine extends Job {
             final BasicAttribute ba = new BasicAttribute(writeReq.getAttribute(), writeReq.getValue());
             modItems.add(new ModificationItem(DirContext.REPLACE_ATTRIBUTE, ba));
 
-            if ((_writeVector.size() > 100) && ((_writeVector.size() % 100) == 0)) {
-                System.out.println("Engine.performLdapWrite buffer size: " + _writeVector.size());
+            if (_writeVector.size() > 100 && _writeVector.size() % 100 == 0) {
+                LOG.info("Engine.performLdapWrite buffer size: " + _writeVector.size());
             }
         }
         //
@@ -701,7 +541,7 @@ public final class Engine extends Job {
         if (i != 0) {
             //
             try {
-                // System.out.println("Vector leer jetzt den Rest zum LDAP
+                // LOG.info("Vector leer jetzt den Rest zum LDAP
                 // Server schreiben");
                 changeValue("eren", currentChannel, modItems);
             } catch (final Exception e) {
@@ -713,7 +553,7 @@ public final class Engine extends Job {
                 return;
             }
         } else {
-            // System.out.println("Vector leer - nothing left to do");
+            // LOG.info("Vector leer - nothing left to do");
         }
 
         _doWrite = false;
@@ -723,10 +563,11 @@ public final class Engine extends Job {
      * @param string
      * @param channel
      * @param modItemTemp
+     * @throws InvalidNameException
      */
     private void changeValue(final String string,
                              final String channel,
-                             final List<ModificationItem> modItems) {
+                             final List<ModificationItem> modItems) throws InvalidNameException {
 
         List<String> namesInNamespace = Collections.emptyList();
         final GregorianCalendar startTime = new GregorianCalendar();
@@ -740,7 +581,7 @@ public final class Engine extends Job {
             // take what's already stored
             //
             LOG.debug("Engine.changeValue : found entry for channel: " + channel);
-            // System.out.println ("Engine.changeValue : found entry for
+            // LOG.info ("Engine.changeValue : found entry for
             // channel: " + channel);
             namesInNamespace = this._ldapReferences.getEntry(channel).getNamesInNamespace();
             for (final String ldapChannelName : namesInNamespace) {
@@ -750,32 +591,23 @@ public final class Engine extends Job {
             //
             // search for channel in ldap server
             //
-            final SearchControls ctrl = new SearchControls();
-            ctrl.setSearchScope(SearchControls.SUBTREE_SCOPE);
-            try {
-                final NamingEnumeration<SearchResult> results =
-                    getLdapDirContext().search("",
-                                               string + "=" + channel,
-                                               ctrl);
-                // System.out.println ("Engine.changeValue : Time to search
-                // channel: " + gregorianTimeDifference ( startTime, new
-                // GregorianCalendar()));
-                _ldapReadTimeCollector.setInfo(channel);
-                _ldapReadTimeCollector.setValue(gregorianTimeDifference(startTime,
-                                                                        new GregorianCalendar()));
-                // System.out.println("Enter Engine.changeValue results for
-                // channnel: " + channel );
-                namesInNamespace = new Vector<String>();
-                while (results.hasMore()) {
-                    final String ldapChannelName = results.next().getNameInNamespace();
-                    namesInNamespace.add(ldapChannelName);
-                    modifyAttributes(ldapChannelName, modItems, channel, startTime);
-                }
-
-            } catch (final NamingException e1) {
-                // TODO Auto-generated catch block
-                _ctx = null;
-                e1.printStackTrace();
+            final ILdapService service = LdapActivator.getDefault().getLdapService();
+            if (service == null) {
+                LOG.error("Engine.changeValue: LDAP service unavailable!");
+                return;
+            }
+            final ILdapSearchResult result =
+                service.retrieveSearchResultSynchronously(new LdapName(""),
+                                                          string + "=" + channel,
+                                                          SearchControls.SUBTREE_SCOPE);
+            if (result == null || result.getAnswerSet().isEmpty()) {
+                LOG.info("No results for LDAP search query.\n" + string + "=" + channel);
+                return;
+            }
+            for (final SearchResult row : result.getAnswerSet()) {
+                final String ldapChannelName = row.getNameInNamespace();
+                namesInNamespace.add(ldapChannelName);
+                modifyAttributes(ldapChannelName, modItems, channel, startTime);
             }
             //
             // save ldapEntries
@@ -785,14 +617,14 @@ public final class Engine extends Job {
                 // Write if really something found
                 //
                 _ldapReferences.newLdapEntry(channel, namesInNamespace);
-                // System.out.println ("Engine.changeValue : add entry for
+                // LOG.info ("Engine.changeValue : add entry for
                 // channel: " + channel);
             }
         }
         //
         // calculate time difference
         //
-        // System.out.println ("Engine.changeValue : Time to write to
+        // LOG.info ("Engine.changeValue : Time to write to
         // LDAP-total: " + gregorianTimeDifference ( startTime, new
         // GregorianCalendar()));
     }
@@ -812,34 +644,33 @@ public final class Engine extends Job {
         }
         try {
             channelName = channelName.replace("/", "\\/");
-            getLdapDirContext().modifyAttributes(channelName,
-                                                 modItems.toArray(new ModificationItem[modItems.size()]));
+
+            final ILdapService service = LdapActivator.getDefault().getLdapService();
+            if (service == null) {
+                LOG.error("Engine.changeValue: LDAP service unavailable! Channel: " + channelName);
+                return;
+            }
+            service.modifyAttributes(new LdapName(channelName), modItems.toArray(new ModificationItem[0]));
+
             _ldapWriteTimeCollector.setInfo(channel);
             _ldapWriteTimeCollector.setValue(gregorianTimeDifference(startTime,
                                                                      new GregorianCalendar())
                                                                      / modItems.size());
-            // System.out.println ("Engine.changeValue : Time to write to LDAP:
+            // LOG.info ("Engine.changeValue : Time to write to LDAP:
             // (" + channel + ")" + gregorianTimeDifference ( startTime, new
             // GregorianCalendar()));
         } catch (final NamingException e) {
-            _ctx = null;
             LOG.warn("Engine.changeValue: Naming Exception in modifyAttributes! Channel: "
                      + channelName);
-            System.out.println("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: "
-                               + channelName);
+            LOG.info("Engine.changeValue: Naming Exceptionin modifyAttributes! Channel: " + channelName);
             // for (ModificationItem modificationItem : modItemTemp) {
-            // System.out.println(" - ModificationItem is:
+            // LOG.info(" - ModificationItem is:
             // "+modificationItem.getAttribute().get().toString());
             // }
             final String errorCode = e.getExplanation();
             if (errorCode.contains("10")) {
-                System.out
-                .println("Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
-                CentralLogger
-                .getInstance()
-                .warn(
-                      this,
-                "Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                LOG.info("Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
+                LOG.warn("Error code 10: Please check LDAP replica! - replica may be out of synch - use: [start accepting updates] in SUN-LDAP Console");
             }
             // e.printStackTrace();
             //
@@ -855,7 +686,8 @@ public final class Engine extends Job {
         }
     }
 
-    private AttributeSet helpAttribute(@Nonnull final String record) {
+    @CheckForNull
+    private AttributeSet createAttributeSet(@Nonnull final String record) {
         final AttributeSet attributeSet = new AttributeSet();
 
         String nRecord = record;
@@ -864,7 +696,7 @@ public final class Engine extends Job {
             // Prüft ob der nRecord schon in der ldapReferences gespeichert ist.
             if (!nRecord.contains("ou=epicsControls") &&
                 !nRecord.contains("econ=") &&
-                (_ldapReferences != null) &&
+                _ldapReferences != null &&
                 _ldapReferences.hasEntry(nRecord)) {// &&!nRecord.contains("ou=")){
 
                 final Entry entry = _ldapReferences.getEntry(nRecord);

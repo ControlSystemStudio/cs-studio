@@ -24,17 +24,18 @@ package org.csstudio.utility.ldap.utils;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.CompositeName;
 import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.service.ILdapService;
 
 
 /**
@@ -53,33 +54,19 @@ public final class LdapNameUtils {
     }
 
     /**
-     * Static Parser Holder.
-     *
-     * @author bknerr
-     * @author $Author$
-     * @version $Revision$
-     * @since 05.05.2010
+     * Creates the name parser for this service.
+     * @return the parser for this service context or <code>null</code>
      */
-    private static final class ParserHolder {
-
-        @CheckForNull
-        private static NameParser createParser() {
-            try {
-                return Engine.getInstance().getLdapDirContext().getNameParser(new CompositeName());
-            } catch (final NamingException e) {
-                LOG.error("LDAP NameParser could not be created.", e);
-            }
-            return null;
+    @CheckForNull
+    private static NameParser createParser(@Nonnull final ILdapService service) {
+        try {
+            return service.getLdapNameParser();
+        } catch (final NamingException e) {
+            LOG.error("LDAP NameParser could not be created.", e);
         }
-
-        private static final NameParser PARSER = createParser();
-        /**
-         * Don't instantiate.
-         */
-        private ParserHolder() {
-            // EMPTY
-        }
+        return null;
     }
+
 
     /**
      * Removes double quotes from a string.
@@ -152,17 +139,21 @@ public final class LdapNameUtils {
 
     /**
      * Parses a given SearchResult entry from LDAP into an LdapName object.
+     * @param the service
      * @param row a search result row
      * @return the ldap composite name
-     * @throws NamingException
+     * @throws NamingException, ServiceUnavailableException
      */
     @CheckForNull
     public static LdapName parseSearchResult(@Nonnull final SearchResult row) throws NamingException {
-        if (ParserHolder.PARSER == null) {
-            return null;
+
+        final ILdapService service = LdapActivator.getDefault().getLdapService();
+        if (service == null) {
+            throw new ServiceUnavailableException("LDAP service could not be retrieved to create Name Parser.");
         }
+        final NameParser parser = createParser(service);
         final String nameInNamespace = row.getNameInNamespace();
-        return (LdapName) ParserHolder.PARSER.parse(nameInNamespace);
+        return (LdapName) parser.parse(nameInNamespace);
     }
 
 
@@ -196,12 +187,12 @@ public final class LdapNameUtils {
         final LdapName name = new LdapName(fullName.getRdns());
         switch (dir) {
             case FORWARD :
-                while ((name.size() > 0) && !name.get(0).startsWith(fieldNamePrefix)) {
+                while (name.size() > 0 && !name.get(0).startsWith(fieldNamePrefix)) {
                     name.remove(0);
                 }
                 break;
             case BACKWARD :
-                while ((name.size() > 0) && !name.get(name.size() - 1).startsWith(fieldNamePrefix)) {
+                while (name.size() > 0 && !name.get(name.size() - 1).startsWith(fieldNamePrefix)) {
                     name.remove(name.size() - 1);
                 }
                 break;

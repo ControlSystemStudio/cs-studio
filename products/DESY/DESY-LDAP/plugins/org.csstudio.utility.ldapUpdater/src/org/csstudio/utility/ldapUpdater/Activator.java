@@ -23,10 +23,13 @@ package org.csstudio.utility.ldapUpdater;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.platform.AbstractCssPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -38,12 +41,12 @@ public class Activator extends AbstractCssPlugin {
      */
     public static final String PLUGIN_ID = "org.csstudio.utility.ldapUpdater";
 
-    private ILdapService _ldapService;
-
     /**
      *  The shared instance
      */
     private static Activator INSTANCE;
+
+    private ServiceTracker _ldapServiceTracker;
 
     /**
      * Don't instantiate.
@@ -66,14 +69,25 @@ public class Activator extends AbstractCssPlugin {
         return INSTANCE;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void doStart(@Nonnull final BundleContext context) throws Exception {
-        _ldapService = getService(context, ILdapService.class);
+    protected void doStart(@Nullable final BundleContext context) throws Exception {
+
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
     }
 
+
+
+
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    protected void doStop(@Nonnull final BundleContext context) throws Exception {
-        // Empty
+    protected void doStop(@Nullable final BundleContext context) throws Exception {
+        _ldapServiceTracker.close();
     }
 
 
@@ -88,7 +102,7 @@ public class Activator extends AbstractCssPlugin {
      */
     @CheckForNull
     public ILdapService getLdapService() {
-        return _ldapService;
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 
 }

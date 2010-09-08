@@ -15,7 +15,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.utility.ldap.service;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Export-Package: org.csstudio.utility.ldap.reader,
- org.csstudio.utility.ldap.model,
+Export-Package: org.csstudio.utility.ldap.model,
+ org.csstudio.utility.ldap.preference,
  org.csstudio.utility.ldap.utils
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
