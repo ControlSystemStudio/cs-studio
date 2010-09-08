@@ -120,14 +120,13 @@ public class TraceTableHandler implements ILazyContentProvider
         col = AutoSizeColumn.make(trace_table, Messages.TraceVisibility, 45, 1);
         col.setLabelProvider(new CellLabelProvider()
         {
-            @SuppressWarnings("nls")
             @Override
             public void update(final ViewerCell cell)
             {
                 final ModelItem item = (ModelItem) cell.getElement();
                 cell.setImage(item.isVisible()
-                        ? Activator.getDefault().getImage("icons/checked.gif")
-                        : Activator.getDefault().getImage("icons/unchecked.gif"));
+                        ? Activator.getDefault().getImage(Activator.ICON_CHECKED)
+                        : Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
         });
         col.setEditingSupport(new EditSupportBase(trace_table)

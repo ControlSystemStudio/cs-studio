@@ -40,10 +40,6 @@ import org.eclipse.swt.widgets.Table;
  */
 public class AxesTableHandler implements ILazyContentProvider
 {
-	/** Checkbox images */
-    final private static String UNCHECKED = "icons/unchecked.gif",
-	                            CHECKED = "icons/checked.gif";
-	
 	final private ColorRegistry color_registry;
     final private OperationsManager operations_manager;
     final private TableViewer axes_table;
@@ -127,9 +123,9 @@ public class AxesTableHandler implements ILazyContentProvider
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
                 if (axis.isVisible())
-                    cell.setImage(Activator.getDefault().getImage(CHECKED));
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
                 else
-                    cell.setImage(Activator.getDefault().getImage(UNCHECKED));
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
@@ -322,9 +318,9 @@ public class AxesTableHandler implements ILazyContentProvider
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
                 if (axis.isAutoScale())
-                    cell.setImage(Activator.getDefault().getImage(CHECKED));
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
                 else
-                    cell.setImage(Activator.getDefault().getImage(UNCHECKED));
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)
