@@ -1,13 +1,14 @@
 
 syntax: regexp
 \.cvsignore$
+\.gitignore$
 \.checkstyle$
 
 
-syntax: regexp
-^applications/plugins/org\.csstudio\.utility\.screenshot\.desy/bin$
-
 syntax: glob
+CVS/*
+.git/*
+
 *~
 *.swp
 *.orig

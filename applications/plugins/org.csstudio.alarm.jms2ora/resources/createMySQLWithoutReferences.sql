@@ -40,5 +40,5 @@ CREATE TABLE message
     severity VARCHAR(300)
 );
 
-CREATE USER krykams IDENTIFIED BY 'krykams';
-GRANT ALL PRIVILEGES ON messagearchive.* TO krykams IDENTIFIED BY 'krykams';
+CREATE USER 'krykams'@'localhost' IDENTIFIED BY 'krykams';
+GRANT ALL PRIVILEGES ON messagearchive.* TO 'krykams'@'localhost' IDENTIFIED BY 'krykams';

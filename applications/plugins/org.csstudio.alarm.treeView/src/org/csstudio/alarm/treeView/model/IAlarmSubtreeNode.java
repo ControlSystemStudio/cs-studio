@@ -54,14 +54,17 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
     void removeChildren();
 
     /**
-     * Adds the specified child node to the list of this node's children. Note:
-     * it is not checked whether the parent node of the child is correctly set
+     * Adds the specified child node to the list of this node's children unless a
+     * node with this name is already in the list, then nothing is added and false is
+     * returned.
+     * Note: it is not checked whether the parent node of the child is correctly set
      * to this node. This method is intended to be called only by constructors
      * of nodes.
      *
      * @param child the child node to add.
+     * @returns false, if the adding of the child did not succeed
      */
-    void addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
+    boolean addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
 
     /**
      * Adds the specified child node to the list of this node's children. Note:
@@ -70,8 +73,9 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      * of nodes.
      *
      * @param child the child node to add.
+     * @returns false, if the adding of the child did not succeed
      */
-    void addPVChild(@Nonnull final IAlarmProcessVariableNode child);
+    boolean addPVChild(@Nonnull final IAlarmProcessVariableNode child);
 
     /**
      * Signals to this node that the alarm severity of one of its children

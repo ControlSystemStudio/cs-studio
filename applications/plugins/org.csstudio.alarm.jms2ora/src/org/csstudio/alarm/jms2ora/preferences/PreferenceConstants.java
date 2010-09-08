@@ -28,8 +28,8 @@ package org.csstudio.alarm.jms2ora.preferences;
  * @author Markus Moeller
  *
  */
-public class PreferenceConstants
-{
+public class PreferenceConstants {
+    
     public static final String XMPP_USER_NAME = "xmppUserName";
     public static final String XMPP_PASSWORD = "xmppPassword";
     public static final String XMPP_SERVER = "xmppServer";
@@ -41,6 +41,9 @@ public class PreferenceConstants
     public static final String DATABASE_URL = "databaseUrl";
     public static final String DATABASE_USER = "databaseUser";
     public static final String DATABASE_PASSWORD = "databasePassword";
+    public static final String STORAGE_DIRECTORY = "storageDirectory";
+    public static final String MESSAGE_DIRECTORY = "messageDirectory";
+    public static final String META_DATA_DIRECTORY = "metaDataDirectory";
     public static final String DISCARD_TYPES = "discardTypes";
     public static final String DISCARD_NAMES = "discardNames";
     public static final String DEFAULT_VALUE_PRECISION = "defaultValuePrecision";

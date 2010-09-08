@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="id1"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.csstudio.cagateway.CaGateway">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.csstudio.cagateway.id1"
+            name="cagatewy">
+         <property
+               name="appName"
+               value="cagatewy">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.csstudio.platform.managementCommands">
+      <command
+            class="org.csstudio.cagateway.StopServer"
+            id="org.csstudio.diag.interconnectionServer.management.StopServer"
+            label="Stop Server">
+      </command>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.cagateway.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
+
+
+</plugin>

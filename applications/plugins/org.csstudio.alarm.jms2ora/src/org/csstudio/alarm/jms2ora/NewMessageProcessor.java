@@ -256,7 +256,8 @@ public class NewMessageProcessor extends Thread
      *
      */
     
-    public void run()
+    @Override
+	public void run()
     {
         MessageContent content = null;
         int result;

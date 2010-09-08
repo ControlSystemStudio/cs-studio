@@ -33,11 +33,11 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
  * @author Markus Moeller
  *
  */
-public class PreferenceInitializer extends AbstractPreferenceInitializer
-{
+public class PreferenceInitializer extends AbstractPreferenceInitializer {
+    
     @Override
-    public void initializeDefaultPreferences()
-    {
+    public void initializeDefaultPreferences() {
+        
         IEclipsePreferences prefs = new DefaultScope().getNode(Jms2OraPlugin.getDefault().getPluginId());
 
         prefs.put(PreferenceConstants.XMPP_USER_NAME, "anonymous");
@@ -51,6 +51,9 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer
         prefs.put(PreferenceConstants.DATABASE_URL, "");
         prefs.put(PreferenceConstants.DATABASE_USER , "");
         prefs.put(PreferenceConstants.DATABASE_PASSWORD, "");
+        prefs.put(PreferenceConstants.STORAGE_DIRECTORY, "./var/");
+        prefs.put(PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/");
+        prefs.put(PreferenceConstants.META_DATA_DIRECTORY, "columns/");
         prefs.put(PreferenceConstants.DISCARD_TYPES , "");
         prefs.put(PreferenceConstants.DISCARD_NAMES, "");
         prefs.put(PreferenceConstants.DEFAULT_VALUE_PRECISION , "");

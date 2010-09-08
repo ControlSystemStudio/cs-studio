@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="CSS"
+            id="org.csstudio">
+      </category>
+         
+      <view
+            category="org.csstudio"
+            class="org.csstudio.diag.jmssender.views.JMSView"
+            icon="icons/JMSSender.gif"
+            id="org.csstudio.diag.jmssender.views.JMSView"
+            name="Jms message sender"/>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="de.desy.css.jmsSender.actionSet"
+            label="jmsSender Actionset"
+            visible="true">
+         <action
+               class="org.csstudio.diag.jmssender.views.ShowJMSSender"
+               icon="icons/JMSSender.PNG"
+               id="de.desy.css.jmsSender.action"
+               label="JMS Sender"
+               menubarPath="css/diag/"
+               style="push"/>
+      </actionSet>
+   </extension>
+      <extension
+         point="org.eclipse.help.toc">
+      <toc
+            file="toc.xml"
+            primary="true">
+      </toc>
+   </extension>
+</plugin>

@@ -105,7 +105,6 @@ public class MailImageWorker implements IImageWorker
         MailSenderDialog dialog = new MailSenderDialog(parentShell);
         
         int value = dialog.open();
-                
         if((value == Dialog.OK) && (dialog.getMailEntry() != null)) {
             
             try {
@@ -179,28 +178,21 @@ public class MailImageWorker implements IImageWorker
     
     public BufferedImage convertToBufferedImage(ImageData data) {
         
-        ColorModel  colorModel  = null;
-        PaletteData palette     = data.palette;
-        
+        ColorModel colorModel = null;
+        PaletteData palette = data.palette;
+                
         if(palette.isDirect) {
             
             colorModel = new DirectColorModel(data.depth, palette.redMask, palette.greenMask, palette.blueMask);
             
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
             
-            WritableRaster raster = bufferedImage.getRaster();
-            
-            int[] pixelArray = new int[3];
-          
             for (int y = 0; y < data.height; y++) {
                 
                 for (int x = 0; x < data.width; x++) {
                     int pixel = data.getPixel(x, y);
                     RGB rgb = palette.getRGB(pixel);
-                    pixelArray[0] = rgb.red;
-                    pixelArray[1] = rgb.green;
-                    pixelArray[2] = rgb.blue;
-                    raster.setPixels(x, y, 1, 1, pixelArray);
+                    bufferedImage.setRGB(x, y,  rgb.red << 16 | rgb.green << 8 | rgb.blue);
                 }
             }
             
@@ -229,9 +221,7 @@ public class MailImageWorker implements IImageWorker
             }
 
             BufferedImage bufferedImage = new BufferedImage(colorModel, colorModel.createCompatibleWritableRaster(data.width, data.height), false, null);
-            
             WritableRaster raster = bufferedImage.getRaster();
-            
             int[] pixelArray = new int[1];
 
             for(int y = 0; y < data.height; y++) {
