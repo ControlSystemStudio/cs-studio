@@ -22,47 +22,33 @@
 package org.csstudio.utility.treemodel.builder;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
-
 /**
- * Content model builder.
+ * Builder interface for content model builder.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 21.05.2010
- * @param <T> the object class type for which a tree shall be created
+ * @author $Author: bknerr $
+ * @version $Revision: 1.7 $
+ * @since 07.09.2010
  */
-public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> implements IContentModelBuilder {
-
-    private ContentModel<T> _model;
-
-    @CheckForNull
-    protected abstract ContentModel<T> createContentModel() throws CreateContentModelException;
+public interface IContentModelBuilder {
 
     /**
-     * {@inheritDoc}
+     * Builds the tree model contained in the builder object.
+     *
+     * @throws CreateContentModelException
      */
-    @Override
-    public void build() throws CreateContentModelException {
-        _model = createContentModel();
-    }
+    void build() throws CreateContentModelException;
 
     /**
-     * {@inheritDoc}
+     * Returns the built tree model in the builder object.
+     * @param <T> the tree configuration type
+     * @return the model
      */
-    @Override
     @CheckForNull
-    public ContentModel<T> getModel() {
-        return _model;
-    }
-
-    protected void setModel(@Nonnull final ContentModel<T> model) {
-        _model = model;
-    }
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ContentModel<T> getModel();
 }
