@@ -34,7 +34,7 @@ import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 /**
  * Implements the <code>IIocConnectionReporter</code> service for remote
  * monitoring of IOCs connected to this interconnection server.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class IocConnectionReporter implements IIocConnectionReporter {
@@ -43,12 +43,12 @@ public class IocConnectionReporter implements IIocConnectionReporter {
 	 * {@inheritDoc}
 	 */
 	public IocConnectionReport getReport() {
-		String serverName = InterconnectionServer.getInstance().getLocalHostName();
-		List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
-		Collection<IocConnection> iocConnections = IocConnectionManager.getInstance().getIocConnections();
-		for (IocConnection ioc : iocConnections) {
-			IocConnectionState state = ioc.getIocConnectionState();
-			IocConnectionReportItem item = new IocConnectionReportItem(
+		final String serverName = InterconnectionServer.getInstance().getLocalHostName();
+		final List<IocConnectionReportItem> items = new ArrayList<IocConnectionReportItem>();
+		final Collection<IocConnection> iocConnections = IocConnectionManager.INSTANCE.getIocConnections();
+		for (final IocConnection ioc : iocConnections) {
+			final IocConnectionState state = ioc.getIocConnectionState();
+			final IocConnectionReportItem item = new IocConnectionReportItem(
 					ioc.getHost(), ioc.getLogicalIocName(), state);
 			items.add(item);
 		}

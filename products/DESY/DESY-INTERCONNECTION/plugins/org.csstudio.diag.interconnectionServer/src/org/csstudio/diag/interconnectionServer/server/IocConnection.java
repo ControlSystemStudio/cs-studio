@@ -25,6 +25,8 @@ package org.csstudio.diag.interconnectionServer.server;
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.NamingException;
+
 import org.csstudio.diag.icsiocmonitor.service.IocConnectionState;
 import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.TimeSource;
@@ -34,16 +36,16 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * Information about a connection to an IOC. Instances of this class track the
  * state of an IOC connection.
- * 
+ *
  * @author Matthias Clausen, Joerg Rathlev
  */
 public class IocConnection {
-	
+
 	private final String host;
 	private final int port;
 	private InetAddress _iocInetAddress = null;
 	private IocNameDefinitions iocNameDefinitions = null;
-	
+
 	private long timeReConnected = 0;
 	private long timeLastBeaconReceived = 0;
 	private long time2ndToLastBeaconReceived = 0;
@@ -70,7 +72,7 @@ public class IocConnection {
 
 	/**
 	 * Creates a new IOC connection.
-	 * 
+	 *
 	 * @param host
 	 *            the host name of the IOC.
 	 * @param port
@@ -81,20 +83,22 @@ public class IocConnection {
 	 * @param iocDirectory
 	 *            the IOC directory that will be used to query the logical IOC
 	 *            name.
+	 * @throws NamingException
 	 */
-	public IocConnection(InetAddress iocInetAddress, int port,
-			TimeSource timeSource, IIocDirectory iocDirectory) {
+	public IocConnection(final InetAddress iocInetAddress,
+	                     final int port,
+	                     final TimeSource timeSource) throws NamingException {
 
 		this.port = port;
 		_timeSource = timeSource;
-		
+
 		//  2009-07-06 MCL
 		// a good chance to get the host name...
 	    /*
-	     * getHostName is a blocking activity 
+	     * getHostName is a blocking activity
 	     * this may cause the process to wait for the answer from the name server
 	     * if the primary name server is NOT online it will take several seconds to fail over to the next in line
-	     * it seems that this will occur EACH time getHostName() is called! 
+	     * it seems that this will occur EACH time getHostName() is called!
 	     */
         String hostName = iocInetAddress.getHostName();
         /*
@@ -106,10 +110,9 @@ public class IocConnection {
         }
 		this.host = hostName;
 		this._iocInetAddress = iocInetAddress;
-		
-		this.iocNameDefinitions = new IocNameDefinitions(iocInetAddress,
-				hostName, iocDirectory);
-		
+
+		this.iocNameDefinitions = new IocNameDefinitions(iocInetAddress, hostName);
+
 		//
 		// init time
 		//
@@ -127,46 +130,46 @@ public class IocConnection {
 	 * Enables or disables handling of messages from the IOC. When this IOC
 	 * connection is disabled, all messages received from this IOC will be
 	 * ignored by the Interconnection Server.
-	 * 
+	 *
 	 * @param disabled
 	 *            <code>true</code> to ignore messages from the IOC,
 	 *            <code>false</code> to enable message handling.
 	 */
-	public void setDisabled(boolean disabled) {
+	public void setDisabled(final boolean disabled) {
 		_disabled = disabled;
 	}
 
 	/**
 	 * Returns whether this connection is disabled.
-	 * 
+	 *
 	 * @return <code>true</code> if the connection is disabled,
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean isDisabled() {
 		return _disabled;
 	}
-	
+
 	public boolean isGetAllAlarmsOnSelectChange() {
 		return getAllAlarmsOnSelectChange;
 	}
 
 	public void setGetAllAlarmsOnSelectChange(
-			boolean getAllAlarmsOnSelectChange) {
+			final boolean getAllAlarmsOnSelectChange) {
 		this.getAllAlarmsOnSelectChange = getAllAlarmsOnSelectChange;
 	}
 
-	public void setTime(Boolean received) {
+	public void setTime(final Boolean received) {
 		//
 		// init time
 		//
 		if (received) {
 			this._statTimeLastReceived = _timeSource.now();
 			_statNumberOfIncomingMessages++;
-			IocConnectionManager.getInstance().totalNumberOfIncomingMessages++;
+			IocConnectionManager.INSTANCE.totalNumberOfIncomingMessages++;
 		} else {
 			this._statTimeLastCommandSent = _timeSource.now();
 			_statNumberOfOutgoingMessages++;
-			IocConnectionManager.getInstance().totalNumberOfOutgoingMessages++;
+			IocConnectionManager.INSTANCE.totalNumberOfOutgoingMessages++;
 		}
 
 	}
@@ -188,7 +191,7 @@ public class IocConnection {
 		 * ==> we have to check against the 2ndprevious time
 		 */
 		// XXX: I don't understand this.
-		long now = _timeSource.now();
+		final long now = _timeSource.now();
 		timeBetweenLastAnd3rdToLastBeacon = now - time3rdToLastBeaconReceived;
 		time3rdToLastBeaconReceived = time2ndToLastBeaconReceived;
 		time2ndToLastBeaconReceived = timeLastBeaconReceived;
@@ -202,20 +205,20 @@ public class IocConnection {
 	public int getPort() {
 		return port;
 	}
-	
+
 	public InetAddress getIocInetAddress() {
 		return _iocInetAddress;
 	}
 
-	public void setLastMessageSize(int lastMessageSize) {
+	public void setLastMessageSize(final int lastMessageSize) {
 		this._statLastMessageSize = lastMessageSize;
 		this._statAccumulatedMessageSize += lastMessageSize;
 	}
-	
-	public void setConnectState(boolean state) {
+
+	public void setConnectState(final boolean state) {
 		this.connectState = state;
 	}
-	
+
 	/**
 	 * Returns the IOC connection state as required for the ICS/IOC monitor
 	 * service.
@@ -257,7 +260,7 @@ public class IocConnection {
 		return selectState;
 	}
 
-	public void setSelectState(boolean selectState) {
+	public void setSelectState(final boolean selectState) {
 		this.selectState = selectState;
 	}
 
@@ -276,7 +279,7 @@ public class IocConnection {
 	// TODO: This is currently called by the ClientRequest#run method, which
 	// basically is responsible in part for the initialization of this object.
 	// Refactor and move responsibility here, or into a builder class.
-	public void setLogicalIocName(String logicalIocName) {
+	public void setLogicalIocName(final String logicalIocName) {
 		iocNameDefinitions.set_logicalIocName( logicalIocName);
 	}
 
@@ -287,19 +290,19 @@ public class IocConnection {
 	// TODO: This is currently called by the ClientRequest#run method, which
 	// basically is responsible in part for the initialization of this object.
 	// Refactor and move responsibility here, or into a builder class.
-	public void setLdapIocName(String ldapIocName) {
+	public void setLdapIocName(final String ldapIocName) {
 		iocNameDefinitions.set_ldapIocName(ldapIocName);
 	}
 
 	/*
 	 * XXX: This method has a confusing name (and an unclear purpose). In
 	 * particular,
-	 * 
+	 *
 	 * - it does NOT check whether the last beacon occured at most 3*timeout
 	 *   ago,
 	 * - it does NOT check whether the third to last beacon occured at most
 	 *   3*timeout ago,
-	 *   
+	 *
 	 * but it only checks whether the time difference between the last and
 	 * the third to last beacon is greater than 3*timeout.
 	 */
@@ -337,18 +340,18 @@ public class IocConnection {
 	}
 
 	public void setDidWeSetAllChannelToDisconnect(
-			boolean didWeSetAllChannelToDisconnect) {
+			final boolean didWeSetAllChannelToDisconnect) {
 		this.didWeSetAllChannelToDisconnect = didWeSetAllChannelToDisconnect;
 	}
 
 	/**
 	 * Appends statistical information about this IOC connection to the
 	 * specified <code>output</code>.
-	 * 
+	 *
 	 * @param output
 	 *            the output to which the information is appended.
 	 */
-	public void appendStatisticInformationTo(StringBuilder output) {
+	public void appendStatisticInformationTo(final StringBuilder output) {
 		output.append("Host:                        ")
 				.append(host).append(":")
 				.append(Integer.toString(port)).append("\n");
@@ -380,7 +383,7 @@ public class IocConnection {
 	 * Returns whether this connection is timed out with an error. A connection
 	 * is timed out if the time since the last beacon was received is longer
 	 * than the configured limit and there is no scheduled downtime.
-	 * 
+	 *
 	 * @return <code>true</code> if this connection is timed out with an error,
 	 *         <code>false</code> otherwise.
 	 */
@@ -390,7 +393,7 @@ public class IocConnection {
 
 	/**
 	 * Returns whether this connection is currently in a scheduled downtime.
-	 * 
+	 *
 	 * @return <code>true</code> if there is currently a scheduled downtime for
 	 *         this connection, <code>false</code> otherwise.
 	 */
@@ -400,10 +403,10 @@ public class IocConnection {
 
 	/**
 	 * Returns whether this connection has timed out.
-	 * 
+	 *
 	 * @return <code>true</code> if this connection is timed out,
 	 *         <code>false</code> otherwise.
-	 * 
+	 *
 	 * @see #isTimeoutError()
 	 */
 	private boolean isTimeout() {
@@ -414,40 +417,40 @@ public class IocConnection {
 	/**
 	 * Schedules a downtime for this IOC connection. This connection will not
 	 * report a timeout error for the duration of the scheduled downtime.
-	 * 
+	 *
 	 * @param duration
 	 *            the duration of the downtime.
 	 * @param unit
 	 *            the time unit of the <code>duration</code> argument.
 	 */
-	public void scheduleDowntime(long duration, TimeUnit unit) {
+	public void scheduleDowntime(final long duration, final TimeUnit unit) {
 		_scheduledDowntimeUntil = _timeSource.now() + unit.toMillis(duration);
 	}
-	
+
 	public class IocNameDefinitions {
-		
+
 		private String _logicalIocName = null;
 		private String _ldapIocName = null;
-		
-		public IocNameDefinitions ( InetAddress iocInetAddress, String iocName,
-				IIocDirectory iocDirectory) {
+
+		public IocNameDefinitions ( final InetAddress iocInetAddress,
+		                            final String iocName) throws NamingException {
 			/*
 	    	 * new IOC - ask LDAP for logical name
 	    	 */
-	    	String[] iocNames = iocDirectory.getLogicalIocName(iocInetAddress.getHostAddress(), iocName);
+	    	final String[] iocNames = LdapSupport.INSTANCE.getLogicalIocName(iocInetAddress, iocName);
 	    	_logicalIocName = iocNames[0];
 	    	/*
-	    	 * save ldapIocName 
+	    	 * save ldapIocName
 	    	 */
 	    	System.out.println("ClientRequest:  ldapIocName = " + iocNames[1]);
 	    	_ldapIocName = iocNames[1];
 		}
-		
+
 		synchronized private String get_logicalIocName() {
 			return _logicalIocName;
 		}
 
-		synchronized private void set_logicalIocName(String iocName) {
+		synchronized private void set_logicalIocName(final String iocName) {
 			_logicalIocName = iocName;
 		}
 
@@ -455,7 +458,7 @@ public class IocConnection {
 			return _ldapIocName;
 		}
 
-		synchronized private void set_ldapIocName(String iocName) {
+		synchronized private void set_ldapIocName(final String iocName) {
 			_ldapIocName = iocName;
 		}
 	}

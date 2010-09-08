@@ -38,7 +38,9 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.MessageProducer;
 import javax.jms.Session;
+import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.DuplicateMessageDetector;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.IDuplicateMessageHandler;
@@ -48,8 +50,7 @@ import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagValuePair;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.platform.management.CommandResult;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -59,8 +60,10 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  * @author Matthias Clausen
  */
-public class ClientRequest implements Runnable
-{
+public class ClientRequest implements Runnable {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(ClientRequest.class);
+
     private String				packetData 		= null;
 	private DatagramSocket      socket          = null;
     private IocConnectionManager			statistic		= null;
@@ -68,7 +71,7 @@ public class ClientRequest implements Runnable
     private InterconnectionServer icServer = null;
     private final boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_TRUE	= true;
     private final boolean				RESET_HIGHEST_UNACKNOWLEDGED_ALARM_FALSE = false;
-    private int statusMessageDelay = 0;
+    private final int statusMessageDelay = 0;
 	private final InetAddress _address;
 	private final int _port;
 	private final int _length;
@@ -87,12 +90,11 @@ public class ClientRequest implements Runnable
         _port = replyPort;
         _length = packetLength;
 
-        this.statistic	  = IocConnectionManager.getInstance();
+        this.statistic	  = IocConnectionManager.INSTANCE;
         this._startTime = startTime;
 	}
 
-	public void run()
-	{
+	public void run() {
 	    String hostName = null;
 	    String hostAndPort = null;
 	    MapMessage message = null;
@@ -116,7 +118,7 @@ public class ClientRequest implements Runnable
 		final String showMessageIndicator = prefs.getString(Activator.getDefault().getPluginId(),
 	    		PreferenceConstants.SHOW_MESSAGE_INDICATOR, "", null);
 		boolean showMessageIndicatorB = false;
-		if ( (showMessageIndicator !=null) && showMessageIndicator.equals("true")) {
+		if ( showMessageIndicator !=null && showMessageIndicator.equals("true")) {
 			showMessageIndicatorB = true;
 		}
 
@@ -131,7 +133,12 @@ public class ClientRequest implements Runnable
         // 2009-07-06 MCL
         // change statistic ID from hostName to hostAddress
         //
-        statisticContent = statistic.getIocConnection( _address, _port);
+        try {
+            statisticContent = statistic.getIocConnection( _address, _port);
+        } catch (final NamingException e1) {
+            LOG.error("IOC connection failed for this address " + _address + ", port " + _port);
+            return;
+        }
         statisticContent.setTime( true);
 
         if (statisticContent.isDisabled()) {
@@ -238,11 +245,14 @@ public class ClientRequest implements Runnable
         		// just send a reply
         		// BUT wait to give the queues a chance to empty (depending on the size of the write vector in the LDAP engine)
         		//
-        		if ( (Engine.getInstance().getWriteVector().size() >=0) && (Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES)) {
-        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
-        		} else {
-        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
-        		}
+
+                // FIXME (jpenning, bknerr) : obsolete LDAP access stuff
+//        		if ( Engine.getInstance().getWriteVector().size() >=0 &&
+//        		     Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES) {
+//        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
+//        		} else {
+//        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
+//        		}
 
         		try {
     				Thread.sleep( statusMessageDelay);
@@ -300,11 +310,13 @@ public class ClientRequest implements Runnable
         		// just send a reply
         		// BUT wait to give the queues a chance to empty (depending on the size of the write vector in the LDAP engine)
         		//
-        		if ( (Engine.getInstance().getWriteVector().size() >=0) && (Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES)) {
-        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
-        		} else {
-        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
-        		}
+
+                // FIXME (jpenning, bknerr) : obsolete LDAP access stuff
+//        		if ( Engine.getInstance().getWriteVector().size() >=0 && Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES) {
+//        			statusMessageDelay = Engine.getInstance().getWriteVector().size();
+//        		} else {
+//        			statusMessageDelay = PreferenceProperties.MAX_TIME_DELAY_FOR_STATUS_MESSSAGES;
+//        		}
 
         		try {
     				Thread.sleep( statusMessageDelay);
@@ -327,7 +339,7 @@ public class ClientRequest implements Runnable
         		icServer.getMessageReplyTimeCollector().setValue(LegacyUtil.timeSince(_startTime));
 
         		break;
-        		
+
         	case TagList.SIM_LOG_MESSAGE:
         		//
         		// SIM
@@ -343,15 +355,15 @@ public class ClientRequest implements Runnable
                 	final MessageProducer alarmSender = session.createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
-                	
+
             		message = session.createMapMessage();
             		prepareTypedJmsMessage(message, tagValuePairs, iocMessage.getMessageTypeString());
             		alarmSender.send(message);
             		alarmSender.close();
-            		
+
             		icServer.getJmsMessageWriteCollector().setValue(LegacyUtil.timeSince(parseTime));
         		}
-        		catch(JMSException jmse)
+        		catch(final JMSException jmse)
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
@@ -360,7 +372,7 @@ public class ClientRequest implements Runnable
                 	if (session != null) {
                 		try {
 							session.close();
-						} catch (JMSException e) {
+						} catch (final JMSException e) {
 							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
 						}
                 	}
@@ -368,11 +380,11 @@ public class ClientRequest implements Runnable
         		//
         		// just send a reply
                 //
-    			
+
     			ReplySender.send(iocMessage.getMessageId(), status, sender);
-        		
+
         		break;
-        		
+
         	case TagList.ADIS_LOG_MESSAGE:
         		//
         		// ADIS
@@ -388,15 +400,15 @@ public class ClientRequest implements Runnable
                 	final MessageProducer alarmSender = session.createProducer( alarmDestination);
                 	alarmSender.setDeliveryMode( DeliveryMode.PERSISTENT);
                 	alarmSender.setTimeToLive( jmsTimeToLiveAlarmsInt);
-                	
+
             		message = session.createMapMessage();
             		prepareTypedJmsMessage(message, tagValuePairs, iocMessage.getMessageTypeString());
             		alarmSender.send(message);
             		alarmSender.close();
-            		
+
             		icServer.getJmsMessageWriteCollector().setValue(LegacyUtil.timeSince(parseTime));
         		}
-        		catch(JMSException jmse)
+        		catch(final JMSException jmse)
                 {
         			status = false;
         			icServer.countJmsSendMessageErrorAndReconnectIfTooManyErrors();
@@ -405,7 +417,7 @@ public class ClientRequest implements Runnable
                 	if (session != null) {
                 		try {
 							session.close();
-						} catch (JMSException e) {
+						} catch (final JMSException e) {
 							CentralLogger.getInstance().warn(this, "Failed to close JMS session", e);
 						}
                 	}
@@ -413,11 +425,11 @@ public class ClientRequest implements Runnable
         		//
         		// just send a reply
                 //
-    			
+
     			ReplySender.send(iocMessage.getMessageId(), status, sender);
-        		
+
         		break;
-        		
+
 
 //        	case TagList.SNL_LOG_MESSAGE:  // TODO send SNL log to its own topic
         	case TagList.SYSTEM_LOG_MESSAGE:
@@ -503,11 +515,18 @@ public class ClientRequest implements Runnable
         			 * send the command to the command port configured in the
         			 * preferences.
         			 */
-        			final IocCommandSender sendCommandToIoc = new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-    				icServer.getCommandExecutor().execute(sendCommandToIoc);
-    				statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
-    				statisticContent.setDidWeSetAllChannelToDisconnect(false);
-    				CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+        		    try {
+        		        final IocCommandSender sendCommandToIoc =
+        		            new IocCommandSender( _address, _port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+
+        		        icServer.getCommandExecutor().execute(sendCommandToIoc);
+
+        		        statisticContent.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+        		        statisticContent.setDidWeSetAllChannelToDisconnect(false);
+        		        CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+        		    } catch (final IllegalArgumentException e) {
+        		        CentralLogger.getInstance().fatal(this, "Creation of command sender failed:\n" + e.getMessage());
+        		    }
         		}
 
         		/*
@@ -1056,19 +1075,22 @@ public class ClientRequest implements Runnable
 				/*
 				 * check for actual alarm state
 				 */
-				final String currentSeverity = Engine.getInstance().getAttribute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
-				CentralLogger.getInstance().debug( this, "Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
 
-				if ( getSeverityEnum(severity) > getSeverityEnum(currentSeverity)) {
-					/*
-					 * new highest alarm!
-					 * set highest unacknowledged alarm to new severity
-					 * else we keep the highest unacknowledged alarm as it is
-					 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view
-					 * - or other applications will be set to ""
-					 */
-					Engine.getInstance().addLdapWriteRequest (LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK, channel, severity);
-				}
+			    // FIXME (jpenning, bknerr) alarm status not to be retrieved via LDAP
+
+//				final String currentSeverity = Engine.getInstance().getAttribute(channel, Engine.ChannelAttribute.epicsAlarmHighUnAckn);
+//				CentralLogger.getInstance().debug( this, "Channel: " + channel + " current severity: " + currentSeverity + "[" +getSeverityEnum(currentSeverity)+ "]" + " new severity: " + severity + "[" +getSeverityEnum(severity)+ "]");
+//
+//				if ( getSeverityEnum(severity) > getSeverityEnum(currentSeverity)) {
+//					/*
+//					 * new highest alarm!
+//					 * set highest unacknowledged alarm to new severity
+//					 * else we keep the highest unacknowledged alarm as it is
+//					 * the highest unacknowledged alarm will be removed if an acknowledge from the alarm table, alarm tree view
+//					 * - or other applications will be set to ""
+//					 */
+//					Engine.getInstance().addLdapWriteRequest (LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK, channel, severity);
+//				}
 			}
 
 			//
@@ -1093,7 +1115,7 @@ public class ClientRequest implements Runnable
 	 */
 	private int getSeverityEnum ( final String severity) {
 		int severityAsNumber = 0;
-		if ( (severity != null) && (severity.length()> 0)) {
+		if ( severity != null && severity.length()> 0) {
 			if (severity.startsWith( "INVALID")) {
 				severityAsNumber = 5;
 			} else if (severity.startsWith( "INVALID")) {

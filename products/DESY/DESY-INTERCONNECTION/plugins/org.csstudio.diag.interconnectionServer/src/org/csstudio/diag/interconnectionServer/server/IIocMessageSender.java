@@ -22,9 +22,11 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
+import javax.naming.NamingException;
+
 /**
  * Sends messages to an IOC.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IIocMessageSender {
@@ -32,10 +34,11 @@ public interface IIocMessageSender {
 	/**
 	 * Sends the specified message to the IOC. The message should be an ordinary
 	 * Java string without a terminating null byte.
-	 * 
+	 *
 	 * @param message
 	 *            the message to send to the IOC.
+	 * @throws NamingException
 	 */
-	void send(String message);
+	void send(String message) throws NamingException;
 
 }

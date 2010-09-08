@@ -33,7 +33,7 @@ import org.csstudio.platform.management.IDynamicParameterValues;
 
 /**
  * Enumeration of IOCs for the management commands.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class IocEnumeration implements IDynamicParameterValues {
@@ -42,14 +42,14 @@ public class IocEnumeration implements IDynamicParameterValues {
 	 * {@inheritDoc}
 	 */
 	public CommandParameterEnumValue[] getEnumerationValues() {
-		Collection<IocConnection> iocs =
-			IocConnectionManager.getInstance().getIocConnections();
-		List<CommandParameterEnumValue> result =
+		final Collection<IocConnection> iocs =
+			IocConnectionManager.INSTANCE.getIocConnections();
+		final List<CommandParameterEnumValue> result =
 			new ArrayList<CommandParameterEnumValue>(iocs.size());
-		for (IocConnection ioc : iocs) {
-			String hostname = ioc.getHost();
-			String logicalName = ioc.getLogicalIocName();
-			String label = logicalName + " (" + hostname + ")";
+		for (final IocConnection ioc : iocs) {
+			final String hostname = ioc.getHost();
+			final String logicalName = ioc.getLogicalIocName();
+			final String label = logicalName + " (" + hostname + ")";
 			result.add(new CommandParameterEnumValue(hostname, label));
 		}
 		return result.toArray(new CommandParameterEnumValue[result.size()]);

@@ -22,6 +22,8 @@
 
 package org.csstudio.diag.interconnectionServer.internal.management;
 
+import javax.naming.NamingException;
+
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
@@ -33,7 +35,7 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Enables or diables message handling for an IOC.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class EnableDisableIoc implements IManagementCommand {
@@ -41,25 +43,30 @@ public class EnableDisableIoc implements IManagementCommand {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
+	public CommandResult execute(final CommandParameters parameters) {
 		if (parameters == null) {
 			return CommandResult.createFailureResult("Paramters required");
 		}
-		String ioc = (String) parameters.get("ioc");
-		String action = (String) parameters.get("action");
+		final String ioc = (String) parameters.get("ioc");
+		final String action = (String) parameters.get("action");
 		if (ioc == null || action == null) {
 			return CommandResult.createFailureResult("Parameters required");
 		}
 
-		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
+		final int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		IocConnection iocConnection = IocConnectionManager.getInstance().getIocConnection( IocConnectionManager.getInstance().getIocInetAdressByName(ioc), dataPort);
+		IocConnection iocConnection;
+        try {
+            iocConnection = IocConnectionManager.INSTANCE.getIocConnection(IocConnectionManager.INSTANCE.getIocInetAdressByName(ioc), dataPort);
+        } catch (final NamingException e) {
+            return CommandResult.createFailureResult("LDAP name composition of IOC lookup failed for" + ioc);
+        }
 		boolean enabled = true;
 		if (action.equals("disable")) {
 			enabled = false;
 		}
 		iocConnection.setDisabled(!enabled);
-		
+
 		return CommandResult.createSuccessResult();
 	}
 
