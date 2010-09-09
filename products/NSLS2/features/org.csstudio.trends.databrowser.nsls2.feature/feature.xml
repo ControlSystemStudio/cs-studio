@@ -17,14 +17,6 @@
    </license>
 
    <includes
-         id="org.csstudio.archive.channelarchiver.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.archivereader.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.email.feature"
          version="0.0.0"/>
 
