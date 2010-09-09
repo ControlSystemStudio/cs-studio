@@ -32,7 +32,6 @@ import java.util.Vector;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
@@ -54,7 +53,6 @@ import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
 /**
@@ -509,7 +507,6 @@ public final class Engine extends Job {
                 currentChannel = nextChannel;
             }
             if (!currentChannel.equals(nextChannel)) {
-                // System.out.print("write: ");
                 // TODO this hard coded string must be removed to the
                 // preferences
                 try {

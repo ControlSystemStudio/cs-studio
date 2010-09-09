@@ -43,7 +43,7 @@ import org.osgi.framework.BundleContext;
  */
 public final class LdapActivator extends AbstractCssPlugin {
     // The plug-in ID
-    public static final String PLUGIN_ID = "org.csstudio.utility.ldap";
+    public static final String PLUGIN_ID = "org.csstudio.utility.ldap.service.impl";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapActivator.class);
 
