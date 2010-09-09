@@ -59,7 +59,6 @@ public class NameSpaceLDAP extends NameSpace {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(NameSpaceLDAP.class);
 
-    private List<ControlSystemItem> _csiResult;
 
 	/* (non-Javadoc)
 	 * @see org.csstudio.utility.nameSpaceBrowser.utility.NameSpace#start()
@@ -89,7 +88,8 @@ public class NameSpaceLDAP extends NameSpace {
                                                                        SearchControls.ONELEVEL_SCOPE);
                 }
                 if (result != null) {
-                    updateResultList(getCSIResultList(result));
+                    final List<ControlSystemItem> csiResultList = getCSIResultList(result);
+                    updateResultList(csiResultList);
                 }
 
             } else{
@@ -106,10 +106,6 @@ public class NameSpaceLDAP extends NameSpace {
 
 	@Nonnull
 	private List<ControlSystemItem> getCSIResultList(@Nonnull final ILdapSearchResult result) {
-
-	    if (_csiResult != null && !_csiResult.isEmpty()) {
-	        return _csiResult;
-	    }
 
 	    final List<ControlSystemItem> tmpList = new ArrayList<ControlSystemItem>();
 	    final Set<SearchResult> answerSet = result.getAnswerSet();
@@ -143,7 +139,7 @@ public class NameSpaceLDAP extends NameSpace {
 	        }
 
 	    }
-	    _csiResult = tmpList;
-	    return _csiResult;
+	    return tmpList;
+
 	}
 }

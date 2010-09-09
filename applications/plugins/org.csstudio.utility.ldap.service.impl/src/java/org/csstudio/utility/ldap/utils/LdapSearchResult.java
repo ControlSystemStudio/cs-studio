@@ -51,6 +51,8 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
 
     private ILdapSearchParams _searchParams;
 
+    private List<ControlSystemItem> _csiResult;
+
     /**
      * Constructor.
      */
@@ -65,7 +67,8 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
     @Nonnull
     public List<ControlSystemItem> getCSIResultList() {
         // FIXME (bknerr) : obsolete probably
-        return Collections.emptyList();
+        //return Collections.emptyList();
+        return _csiResult;
     }
 
     /* (non-Javadoc)
@@ -120,7 +123,7 @@ public class LdapSearchResult extends NameSpaceSearchResult implements ILdapSear
     @Override
     public final void setCSIResultList(@Nonnull final List<ControlSystemItem> resultList) {
         // FIXME (bknerr) : Deprecated structure for css view
-        //_csiResult = new ArrayList<ControlSystemItem>(resultList);
+        _csiResult = new ArrayList<ControlSystemItem>(resultList);
         notifyView();
     }
 }
