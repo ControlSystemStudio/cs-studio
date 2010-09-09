@@ -25,6 +25,7 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.List;
 import java.util.Queue;
 
@@ -48,6 +49,8 @@ import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -210,9 +213,9 @@ public final class AlarmTreeViewActionFactory {
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
             if (model != null) {
-                final Bundle bundle = AlarmTreePlugin.getDefault().getBundle();
+                final Bundle bundle = Platform.getBundle("org.csstudio.utility.ldap.service");
                 final File loc = FileLocator.getBundleFile(bundle);
-                final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();
+                final String dtdFilePath = new File(loc, "./res/dtd/epicsAlarmCfg.dtd").toString();
                 configService.exportContentModelToXmlFile(filePath, model, dtdFilePath);
             }
 
