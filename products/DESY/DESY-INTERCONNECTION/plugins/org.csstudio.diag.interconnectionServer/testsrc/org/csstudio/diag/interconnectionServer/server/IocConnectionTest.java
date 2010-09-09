@@ -22,16 +22,16 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.StubTimeSource;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 
 /**
