@@ -26,8 +26,10 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
 
@@ -91,6 +93,9 @@ public class AlarmTreePlugin extends AbstractCssUiPlugin {
 
         _alarmService = getService(context, IAlarmService.class);
         _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
+
+        final Bundle servBundle = Platform.getBundle("org.csstudio.utility.ldap.service.impl");
+        servBundle.start();
 
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();

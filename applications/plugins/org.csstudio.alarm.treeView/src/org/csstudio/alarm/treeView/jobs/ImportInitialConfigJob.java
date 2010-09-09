@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
@@ -103,16 +104,19 @@ public final class ImportInitialConfigJob extends Job {
             final long endTime = System.currentTimeMillis();
             LOG.debug("Directory reader time: " + (endTime - startTime) + "ms");
         } catch (final CreateContentModelException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Building content model",
-                                      "Could not properly build the content model from LDAP or XML: " + e.getMessage());
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                              "Building content model!\n" +
+                              "Could not properly build the content model from LDAP or XML: " + e.getMessage());
         } catch (final NamingException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Building Tree",
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                                      "Building Tree!\n" +
                                       "Could not properly build the full tree: " + e.getMessage());
         } catch (final FileNotFoundException e) {
-            MessageDialog.openWarning(_alarmTreeView.getSite().getShell(),
-                                      "Opening File",
+            return new Status(IStatus.ERROR,
+                              AlarmTreePlugin.PLUGIN_ID,
+                                      "Opening File!\n" +
                                       "Could not properly open the input file stream: " + e.getMessage());
         } finally {
             monitor.done();

@@ -64,12 +64,12 @@ public class AlarmTreePreferencePage
 		jmsGroup.setLayout(new GridLayout(2, false));
 
 		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_URL_PRIMARY,
+				AlarmTreePreference.JMS_URL_PRIMARY.getValue(),
 				"First transport URI:", jmsGroup));
 		addField(new StringFieldEditor(
-				PreferenceConstants.JMS_URL_SECONDARY,
+				AlarmTreePreference.JMS_URL_SECONDARY.getValue(),
 				"Second transport URI:", jmsGroup));
-		addField(new StringFieldEditor(PreferenceConstants.JMS_TOPICS,
+		addField(new StringFieldEditor(AlarmTreePreference.JMS_QUEUE.getValue(),
 				"Topics:", jmsGroup));
 	}
 
@@ -77,7 +77,8 @@ public class AlarmTreePreferencePage
 	/**
 	 * {@inheritDoc}
 	 */
-	public void init(@CheckForNull final IWorkbench workbench) {
+	@Override
+    public void init(@CheckForNull final IWorkbench workbench) {
 	    // Nothing to do
 	}
 

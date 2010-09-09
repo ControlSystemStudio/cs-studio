@@ -21,33 +21,30 @@
  */
  package org.csstudio.alarm.treeView.preferences;
 
+import java.util.List;
+
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
+import org.csstudio.platform.AbstractPreference;
+import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+
 
 /**
- * Constant definitions for plug-in preferences.
+ * Class used to initialize default preference values.
  */
-public final class PreferenceConstants {
+public class AlarmTreePreferenceInitializer extends AbstractPreferenceInitializer {
 
-	/**
-	 * Private constructor.
-	 */
-	private PreferenceConstants() {
-	    // EMPTY
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void initializeDefaultPreferences() {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmTreePlugin.PLUGIN_ID);
 
-	/**
-	 * A preference that stores the URL for the primary JMS server.
-	 */
-	public static final String JMS_URL_PRIMARY = "jmsurl";
-
-	/**
-	 * A preference that stores the URL for the secondary JMS server.
-	 */
-	public static final String JMS_URL_SECONDARY = "jms.url.2";
-
-	/**
-	 * A preference that stores the name or names of the JMS topics to connect
-	 * to.
-	 */
-	public static final String JMS_TOPICS = "jms.queue";
-
+        final List<AbstractPreference<?>> allPreferences = AlarmTreePreference.JMS_URL_PRIMARY.getAllPreferences();
+        for (final AbstractPreference<?> preference : allPreferences) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
+    }
 }

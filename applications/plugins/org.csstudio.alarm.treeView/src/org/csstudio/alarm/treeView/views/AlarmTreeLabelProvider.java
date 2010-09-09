@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
@@ -120,8 +121,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // If the active and unack severity are the same, only the active
             // alarm is displayed.
             return new String[] {iconName};
-        } else if ((activeAlarmSeverity != Severity.NO_ALARM) &&
-                   (unacknowledgedAlarmSeverity == Severity.NO_ALARM)) {
+        } else if (activeAlarmSeverity != Severity.NO_ALARM &&
+                   unacknowledgedAlarmSeverity == Severity.NO_ALARM) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {
@@ -222,8 +223,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         Image dualImage;
 
         if (names.length == 2) {
-            leftImage = loadImage("/icons/" + names[0] + ".gif");
-            rightImage = loadImage("/icons/" + names[1] + ".gif");
+            leftImage = loadImage(AlarmTreePreference.RES_ICON_PATH.getValue() + "/" + names[0] + ".gif");
+            rightImage = loadImage(AlarmTreePreference.RES_ICON_PATH.getValue() + "/" + names[1] + ".gif");
             width = leftImage.getBounds().width / 3 + 2 + rightImage.getBounds().width;
             dualImage = new Image(leftImage.getDevice(), width, leftImage.getBounds().height);
             final GC gc = new GC(dualImage);
@@ -236,7 +237,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             }
             gc.dispose();
         } else {
-            leftImage = loadImage("/icons/" + names[0] + ".gif");
+            leftImage = loadImage(AlarmTreePreference.RES_ICON_PATH.getValue() + "/" + names[0] + ".gif");
             width = leftImage.getBounds().width / 3 + 2 + leftImage.getBounds().width;
             dualImage = new Image(leftImage.getDevice(), width, leftImage.getBounds().height);
             final GC gc = new GC(dualImage);
