@@ -268,6 +268,13 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	
 	
 	private void drawYErrorArea(Graphics graphics, ISample predp, ISample dp, Point predpPos, Point dpPos){
+		// Shortcut if there is no error area
+		if (predp.getYPlusError() == 0.0  &&
+			predp.getYMinusError() == 0.0 &&
+			dp.getYPlusError() == 0.0 &&
+			dp.getYMinusError() == 0.0)
+			return;
+		
 		graphics.pushState();
 		Color lighter = null;
 		if (use_advanced_graphics)
