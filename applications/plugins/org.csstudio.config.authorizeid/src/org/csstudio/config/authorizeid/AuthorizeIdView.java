@@ -9,9 +9,7 @@ import javax.naming.ServiceUnavailableException;
 
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdGRManagement;
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdManagement;
-import org.csstudio.config.authorizeid.ldap.LdapEain;
-import org.csstudio.config.authorizeid.ldap.LdapGroups;
-import org.csstudio.config.authorizeid.ldap.LdapProp;
+import org.csstudio.config.authorizeid.ldap.LdapAccess;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
 import org.csstudio.platform.security.SecurityFacade;
@@ -80,12 +78,10 @@ public class AuthorizeIdView extends ViewPart {
 
 		combo = new Combo(g, SWT.NONE | SWT.READ_ONLY);
 
-		final LdapGroups ld = new LdapGroups();
-
 		String[] groups = new String[] { Messages.AuthorizeIdView_MessageWrong1 };
 
 			try {
-				groups = ld.getGroups();
+				groups = LdapAccess.getGroups();
 			} catch (final Exception e) {
 				e.printStackTrace();
 			}
@@ -578,8 +574,7 @@ public class AuthorizeIdView extends ViewPart {
 	 * Deletes all data and fills the first table again.
 	 */
 	private void refreshTable1() {
-		final LdapEain le = new LdapEain();
-		final String[] items = le.getEain(combo.getText());
+		final String[] items = LdapAccess.getEain(combo.getText());
 
 		table1.removeAll();
 		table1.clearAll();
@@ -599,10 +594,8 @@ public class AuthorizeIdView extends ViewPart {
 		table2.removeAll();
 		table2.clearAll();
 
-		final LdapProp lp = new LdapProp();
-
-		final AuthorizeIdEntry[] entries = lp.getProp(table1.getSelection()[0]
-				.getText(), combo.getText());
+		final AuthorizeIdEntry[] entries =
+		    LdapAccess.getProp(table1.getSelection()[0].getText(), combo.getText());
 
 		tableViewer2.setInput(entries);
 
