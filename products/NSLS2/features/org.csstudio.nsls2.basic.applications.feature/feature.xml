@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.nsls2.intro.feature"
-      label="nsls2 intro Feature"
+      id="org.csstudio.nsls2.basic.applications.feature"
+      label="Basic NSLS2 CSS Applications Feature"
       version="1.0.0.qualifier"
       provider-name="NSLS2">
 
@@ -22,19 +22,28 @@
    </url>
 
    <plugin
-         id="org.csstudio.diag.epics.pvtree.intro"
+         id="org.csstudio.diag.epics.pvtree"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
-         id="org.csstudio.diag.probe.intro"
+         id="org.csstudio.diag.probe"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
    <plugin
-         id="org.csstudio.nsls2.startup.intro"
+         id="org.csstudio.display.pvtable"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.clock"
          download-size="0"
          install-size="0"
          version="0.0.0"

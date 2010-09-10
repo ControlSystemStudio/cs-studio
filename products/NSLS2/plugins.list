@@ -8,6 +8,7 @@ org.csstudio.archivereader.rdb
 org.csstudio.channelfinder
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
+org.csstudio.diag.postanalyser
 org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.display.pvtable

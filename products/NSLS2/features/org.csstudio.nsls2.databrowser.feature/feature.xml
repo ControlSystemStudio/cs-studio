@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.databrowser.nsls2.feature"
+      id="org.csstudio.nsls2.databrowser.feature"
       label="Packaged Databrowser"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="NSLS2">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -16,13 +17,9 @@
       [Enter License Description here.]
    </license>
 
-   <includes
-         id="org.csstudio.archive.channelarchiver.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.archivereader.feature"
-         version="0.0.0"/>
+   <url>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+   </url>
 
    <includes
          id="org.csstudio.email.feature"
