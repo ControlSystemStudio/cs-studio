@@ -17,6 +17,10 @@
       [Enter License Description here.]
    </license>
 
+   <url>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+   </url>
+
    <plugin
          id="org.csstudio.diag.epics.pvtree.intro"
          download-size="0"
