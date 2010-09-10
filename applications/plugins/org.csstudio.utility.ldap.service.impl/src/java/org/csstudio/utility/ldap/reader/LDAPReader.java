@@ -33,7 +33,6 @@ import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapSearchParams;
-import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -126,7 +125,7 @@ public final class LDAPReader extends Job {
     }
 
 
-    private LDAPReader(@Nonnull final Builder builder){
+    LDAPReader(@Nonnull final Builder builder){
         super("LDAPReader");
         _searchParams = builder._searchParams;
         _searchResult = builder._searchResult;

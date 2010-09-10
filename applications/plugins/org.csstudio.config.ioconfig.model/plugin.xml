@@ -3,9 +3,11 @@
 <plugin>
    <extension
          point="org.csstudio.dct.ionameservices">
-      <service
-            class="org.csstudio.config.ioconfig.model.service.ProfiBusIoNameService">
-      </service>
+      <ionameservice
+            class="org.csstudio.config.ioconfig.model.service.ProfiBusIoNameService"
+            id="org.csstudio.config.ioconfig.model.service.ProfiBusIoNameService"
+            name="IO Name Service">
+      </ionameservice>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">

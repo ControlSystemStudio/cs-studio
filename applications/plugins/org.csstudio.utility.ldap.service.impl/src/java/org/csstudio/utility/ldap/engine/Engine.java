@@ -346,28 +346,6 @@ public final class Engine extends Job {
         _doWrite = true;
     }
 
-    @CheckForNull
-    public DirContext getLdapDirContext() {
-        final ILdapService service = LdapActivator.getDefault().getLdapService();
-        if (service == null) {
-            LOG.error("LDAP service unavailable.");
-            return null;
-        }
-        return service.getContext();
-    }
-
-//    synchronized public DirContext reconnectDirContext() {
-//        final ILdapService service = LdapActivator.getDefault().getLdapService();
-//        if (service == null) {
-//            LOG.error("LDAP service unavailable.");
-//            return null;
-//        }
-//
-//        service.reInitializeLdapConnection(null);
-//
-//        return service.getContext();
-//    }
-
     /**
      * Get the Value of an record attribute.
      *

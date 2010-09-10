@@ -51,13 +51,6 @@ import org.eclipse.core.runtime.jobs.Job;
 public interface ILdapService {
 
     /**
-     *
-     * @return
-     */
-    @CheckForNull
-    DirContext getContext();
-
-    /**
      * Reconnects to an LDAP according to the new preferences map
      * @param ldapPrefs the map of preferences, if <code>null</code> the default values from preferences are used
      * @return true, if reconnection has been successful, false otherwise

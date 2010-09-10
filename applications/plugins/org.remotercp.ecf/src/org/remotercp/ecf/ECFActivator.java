@@ -22,6 +22,7 @@ public class ECFActivator extends Plugin {
 
 	private static BundleContext _bundleContext;
 
+
 	/**
      * Don't instantiate.
      * Called by framework.

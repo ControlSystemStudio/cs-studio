@@ -29,7 +29,7 @@ import org.epics.css.dal.simple.MetaData;
  *
  * @author hrickens
  * @author $Author: hrickens $
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 20.04.2010
  */
 public class PolygonAlarmBehavior extends AbstractDesyAlarmBehavior<PolygonModel> {
@@ -62,7 +62,7 @@ public class PolygonAlarmBehavior extends AbstractDesyAlarmBehavior<PolygonModel
         } else if(arguments>=1) {
             model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(42,99,228));
         } else if(arguments>=0) {
-            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(253,0,0));
+            model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, "#707070");
         } else {
             model.setColor(PolygonModel.PROP_COLOR_FOREGROUND, ColorAndFontUtil.toHex(0,0,0));
         }

@@ -54,7 +54,6 @@ import javax.naming.ldap.Rdn;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.connection.LDAPConnector;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.reader.LDAPReader;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
@@ -80,12 +79,10 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author $Author$
  * @version $Revision$
  * @since 09.04.2010
- *
- *
  */
 public final class LdapServiceImpl implements ILdapService {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceImpl.class);
+    static final Logger LOG = CentralLogger.getInstance().getLogger(LdapServiceImpl.class);
 
     /**
      * DirContext Holder to prevent accidental direct access to DirContext field.
@@ -101,8 +98,7 @@ public final class LdapServiceImpl implements ILdapService {
 
         private DirContext _context;
 
-        @CheckForNull
-        private DirContext get() {
+        @CheckForNull DirContext get() {
             if (_context == null) {
                 LDAPConnector ldapConnector = null;
                 try {
@@ -122,6 +118,7 @@ public final class LdapServiceImpl implements ILdapService {
             }
             return _context;
         }
+
 
         boolean reInit(@CheckForNull final Map<String, String> ldapPrefs) {
             if (ldapPrefs == null) {
@@ -143,17 +140,6 @@ public final class LdapServiceImpl implements ILdapService {
             return true;
         }
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public synchronized DirContext getContext() {
-        return DirContextHolder.INSTANCE.get();
-    }
-
-
 
     /**
      * {@inheritDoc}
@@ -483,10 +469,10 @@ public final class LdapServiceImpl implements ILdapService {
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
                                                                                                                   @Nonnull final ILdapSearchResult searchResult) {
-        return new LdapContentModelBuilder(objectClassRoot, searchResult);
+        return new LdapContentModelBuilder<T>(objectClassRoot, searchResult);
     }
     @Override
     public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
-        return new LdapContentModelBuilder(model);
+        return new LdapContentModelBuilder<T>(model);
     }
 }
