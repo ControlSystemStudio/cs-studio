@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.opi.feature"
-      label="OPI Feature"
-      version="1.0.0.qualifier">
+      id="org.csstudio.nsls2.opibuilder.feature"
+      label="Operator Interface Builder (BOY)"
+      version="1.0.0.qualifier"
+      provider-name="NSLS2">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -17,7 +18,7 @@
    </license>
 
    <url>
-      <update url="http://130.199.240.253:8080/org.csstudio.nsls2.update-site"/>
+      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
    <requires>
