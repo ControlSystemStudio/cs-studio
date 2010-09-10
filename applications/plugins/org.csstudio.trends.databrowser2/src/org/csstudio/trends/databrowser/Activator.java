@@ -17,11 +17,16 @@ import org.osgi.framework.BundleContext;
 /** Eclipse Plugin Activator
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class Activator extends AbstractUIPlugin
 {
     /** Plug-in ID defined in MANIFEST.MF */
-    public static final String PLUGIN_ID = "org.csstudio.trends.databrowser2"; //$NON-NLS-1$
+	final public static String PLUGIN_ID = "org.csstudio.trends.databrowser2";
 
+	/** Checkbox images */
+    final public static String ICON_UNCHECKED = "icons/unchecked.gif",
+	                           ICON_CHECKED = "icons/checked.gif";
+    
     /** Singleton instance */
     private static Activator plugin;
 
@@ -73,7 +78,7 @@ public class Activator extends AbstractUIPlugin
     }
 
     /** @return Version code */
-    @SuppressWarnings({ "unchecked", "nls" })
+    @SuppressWarnings({ "unchecked" })
     public String getVersion()
     {
         final Dictionary<String, String> headers = getBundle().getHeaders();

@@ -57,6 +57,7 @@ public class Messages extends NLS
     public static String Axis;
     public static String AxisMax;
     public static String AxisMin;
+    public static String AxisVisibility;
     public static String BackgroundColorLbl;
     public static String BackgroundColorTT;
     public static String ChangeLiveCapacityCommandErrorFmt;

@@ -278,6 +278,7 @@ public class Plot
     public void updateAxis(final int index, final AxisConfig config)
     {
         final Axis axis = getYAxis(index);
+        axis.setVisible(config.isVisible());
         axis.setTitle(config.getName());
         axis.setForegroundColor(colormap.getColor(config.getColor()));
         plot_changes_valueaxis = true;
