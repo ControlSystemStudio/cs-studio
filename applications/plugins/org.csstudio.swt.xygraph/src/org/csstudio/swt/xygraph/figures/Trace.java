@@ -267,7 +267,7 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 	
 	
-	private void drawYErrorArea(Graphics graphics, ISample predp, ISample dp, Point predpPos, Point dpPos){
+	private void drawYErrorArea(final Graphics graphics, final ISample predp, final ISample dp, final Point predpPos, final Point dpPos){
 		// Shortcut if there is no error area
 		if (predp.getYPlusError() == 0.0  &&
 			predp.getYMinusError() == 0.0 &&
@@ -289,22 +289,25 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	                new RGB(hsb[0], hsb[1]*areaAlpha/255, 1.0f));
             graphics.setBackgroundColor(lighter);
 		}
+
+		final int predp_xpos = xAxis.getValuePosition(predp.getXValue(), false);
+		final int dp_xpos = xAxis.getValuePosition(dp.getXValue(), false);
 		Point preEp, ep;
 		switch (yErrorBarType) {
 		case BOTH:
 		case PLUS:
-			preEp = new Point(xAxis.getValuePosition(predp.getXValue(), false),
+			preEp = new Point(predp_xpos,
 				yAxis.getValuePosition(predp.getYValue() + predp.getYPlusError(), false));
-			ep = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+			ep = new Point(dp_xpos,
 				yAxis.getValuePosition(dp.getYValue() + dp.getYPlusError(), false));
 			graphics.fillPolygon(new int[]{predpPos.x, predpPos.y,
 					preEp.x, preEp.y, ep.x, ep.y, dpPos.x, dpPos.y});
 			if(yErrorBarType != ErrorBarType.BOTH)
 				break;
 		case MINUS:
-			preEp = new Point(xAxis.getValuePosition(predp.getXValue(), false),
+			preEp = new Point(predp_xpos,
 				yAxis.getValuePosition(predp.getYValue() - predp.getYMinusError(), false));
-			ep = new Point(xAxis.getValuePosition(dp.getXValue(), false),
+			ep = new Point(dp_xpos,
 				yAxis.getValuePosition(dp.getYValue() - dp.getYMinusError(), false));
 			graphics.fillPolygon(new int[]{predpPos.x, predpPos.y,
 					preEp.x, preEp.y, ep.x, ep.y, dpPos.x, dpPos.y});
