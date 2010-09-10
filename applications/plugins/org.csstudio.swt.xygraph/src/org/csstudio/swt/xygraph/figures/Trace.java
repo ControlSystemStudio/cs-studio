@@ -436,15 +436,13 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 			break;
 		case STEP_HORIZONTALLY:
 			graphics.setLineStyle(SWT.LINE_SOLID);
-			Point ph = new Point(p2.x, p1.y);
-			graphics.drawLine(p1, ph);
-			graphics.drawLine(ph, p2);
+			graphics.drawLine(p1.x, p1.y, p2.x, p1.y);
+			graphics.drawLine(p2.x, p1.y, p2.x, p2.y);
 			break;
 		case STEP_VERTICALLY:
 			graphics.setLineStyle(SWT.LINE_SOLID);
-			Point pv = new Point(p1.x, p2.y);
-			graphics.drawLine(p1, pv);
-			graphics.drawLine(pv, p2);
+			graphics.drawLine(p1.x, p1.y, p1.x, p2.y);
+			graphics.drawLine(p1.x, p2.y, p2.x, p2.y);
 			break;	
 			
 		default:
