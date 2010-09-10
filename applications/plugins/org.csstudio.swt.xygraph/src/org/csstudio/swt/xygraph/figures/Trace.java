@@ -10,6 +10,7 @@ package org.csstudio.swt.xygraph.figures;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.swt.xygraph.Messages;
 import org.csstudio.swt.xygraph.Preferences;
 import org.csstudio.swt.xygraph.dataprovider.IDataProvider;
 import org.csstudio.swt.xygraph.dataprovider.IDataProviderListener;
@@ -48,34 +49,34 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	 */
 	public enum TraceType {
 		/** Solid Line */
-		SOLID_LINE("Solid Line"),
+		SOLID_LINE(Messages.TraceSolid),
 		
 		/** Dash Line */
-		DASH_LINE("Dash Line"),
+		DASH_LINE(Messages.TraceDash),
 		
 		/** Only draw point whose style is defined by pointStyle. 
 		 * Its size is defined by pointSize. */
-		POINT("Point"),
+		POINT(Messages.TracePoint),
 		
 		/** Draw each data point as a bar whose width is defined by lineWidth.
 		 *  The data point is in the middle of the bar on X direction. 
 		 *  The bottom of the bar depends on the baseline.
 		 *  The alpha of the bar is defined by areaAlpha. */
-		BAR("Bar"),
+		BAR(Messages.TraceBar),
 		
 		/** Fill the area under the trace.  
 		 * The bottom of the filled area depends on the baseline.
 		 *  The alpha of the filled area is defined by areaAlpha. */ 
-		AREA("Area"),
+		AREA(Messages.TraceArea),
 		/**
 		 * Solid line in step. It looks like the y value(on vertical direction) changed firstly.
 		 */
-		STEP_VERTICALLY("Step Vertically"),
+		STEP_VERTICALLY(Messages.TraceStepVert),
 		
 		/**
 		 * Solid line in step. It looks like the x value(on horizontal direction) changed firstly.
 		 */
-		STEP_HORIZONTALLY("Step Horizontally");
+		STEP_HORIZONTALLY(Messages.TraceStepHoriz);
 		
 		/** Draw a single point. Only the last data point will be drawn.*/
 		//SINGLE_POINT("Single Point");
@@ -113,18 +114,18 @@ public class Trace extends Figure implements IDataProviderListener, IAxisListene
 	}
 	
 	public enum PointStyle{
-		NONE("None"),
-		POINT("point(" + (char)7 + ")"),
-		CIRCLE("Circle(o)"),
-		TRIANGLE("Triangle"),
-		FILLED_TRIANGLE("Filled Triangle"),
-		SQUARE("Square"),
-		FILLED_SQUARE("Filled Square"),
-		DIAMOND("Diamond"),
-		FILLED_DIAMOND("Filled Diamond"),
-		XCROSS("XCross(x)"),
-		CROSS("Cross(+)"),
-		BAR("Bar(|)");
+		NONE(Messages.PointNone),
+		POINT(Messages.PointPoint),
+		CIRCLE(Messages.PointCircle),
+		TRIANGLE(Messages.PointTriangle),
+		FILLED_TRIANGLE(Messages.PointFilledTriangle),
+		SQUARE(Messages.PointSquare),
+		FILLED_SQUARE(Messages.PointFilledSquare),
+		DIAMOND(Messages.PointDiamond),
+		FILLED_DIAMOND(Messages.PointFilledDiamond),
+		XCROSS(Messages.PointCross),
+		CROSS(Messages.ProintCross2),
+		BAR(Messages.PointBar);
 		
 		private PointStyle(String description) {
 			 this.description = description;
