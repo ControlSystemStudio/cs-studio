@@ -175,24 +175,6 @@ public interface ILdapService {
 
 
     /**
-     * Moves the object with the given name to the new location.
-     * <b>Attention</b>: the jndi api does not provide this function, hence it is necessary
-     * to copy the subtree (depth first search) to the new location and delete it at the old
-     * location.
-     * @param root
-     * @param oldLdapName
-     * @param newLdapName
-     * @return whether the complete move could be performed
-     * @throws NamingException
-     * @throws CreateContentModelException
-     */
-    <T extends Enum<T> & ITreeNodeConfiguration<T>> boolean move(@Nonnull T configurationRoot,
-                                                                 @Nonnull LdapName oldLdapName,
-                                                                 @Nonnull LdapName newLdapName)
-        throws NamingException, CreateContentModelException;
-
-
-    /**
      * Returns a name parser for this LDAP service.
      * @return the parser
      * @throws NamingException
