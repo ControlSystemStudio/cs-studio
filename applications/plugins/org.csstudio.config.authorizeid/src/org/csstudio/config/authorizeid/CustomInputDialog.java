@@ -10,8 +10,8 @@
  *******************************************************************************/
 package org.csstudio.config.authorizeid;
 
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.OU;
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.OU;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ROOT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -108,7 +108,7 @@ public class CustomInputDialog extends Dialog {
     //TODO: Define at the Preference Page
     private final String _stringSearchRoot = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
 
-    private final LdapName _searchRoot = LdapUtils.createLdapQuery(OU.getNodeTypeName(), "Css",
+    private final LdapName _searchRoot = LdapUtils.createLdapName(OU.getNodeTypeName(), "Css",
                                                                    ROOT.getNodeTypeName(), ROOT.getRootTypeValue()); //$NON-NLS-1$
 
 

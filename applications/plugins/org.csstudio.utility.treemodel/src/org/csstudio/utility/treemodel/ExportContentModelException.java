@@ -42,5 +42,6 @@ public class ExportContentModelException extends Exception {
      */
     public ExportContentModelException(@Nonnull final String message, @Nonnull final Exception e) {
         super(message, e);
+
     }
 }

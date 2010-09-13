@@ -21,14 +21,14 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -342,7 +342,7 @@ public class MainView extends ViewPart {
         final ILdapSearchParams params = new ILdapSearchParams() {
             @Override
             public LdapName getSearchRoot() {
-                return createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+                return createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             }
             @Override
             public String getFilter() {

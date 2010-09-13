@@ -31,9 +31,9 @@ import javax.annotation.Nonnull;
 import javax.naming.directory.SearchResult;
 
 import org.csstudio.utility.ldap.LdapActivator;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.service.ILdapSearchParams;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;
 import org.csstudio.utility.namespace.utility.NameSpaceSearchResult;
 import org.csstudio.utility.namespace.utility.ProcessVariable;

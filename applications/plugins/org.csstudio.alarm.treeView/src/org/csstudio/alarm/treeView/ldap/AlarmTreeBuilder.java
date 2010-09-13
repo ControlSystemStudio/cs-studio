@@ -24,8 +24,8 @@ package org.csstudio.alarm.treeView.ldap;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -78,7 +78,7 @@ public final class AlarmTreeBuilder {
 
     private static void ensureTestFacilityExists() throws ServiceUnavailableException {
         try {
-            final LdapName testFacilityName = createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
+            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), "TEST",
                                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
 
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();

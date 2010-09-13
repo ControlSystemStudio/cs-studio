@@ -38,10 +38,10 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.utility.NameSpace;
 import org.csstudio.utility.namespace.utility.ControlSystemItem;

@@ -26,7 +26,7 @@ import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EREN_FIELD_NAME;
 import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -56,7 +56,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      * The root (invisible in the alarm tree view).
      */
     ROOT("organizationUnit",
-         OU_FIELD_NAME,
+         ORGANIZATION_UNIT_FIELD_NAME,
          ImmutableSet.<String>builder().build()),
 
     /**

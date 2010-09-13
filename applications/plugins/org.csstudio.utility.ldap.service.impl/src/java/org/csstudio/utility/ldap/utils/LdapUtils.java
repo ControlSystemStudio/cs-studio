@@ -22,9 +22,9 @@
 package org.csstudio.utility.ldap.utils;
 
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -99,7 +99,7 @@ public final class LdapUtils {
      * @return the String with <field1>=<value1>, <field2>=<value2> assignments.
      */
     @Nonnull
-    public static LdapName createLdapQuery(@Nonnull final String... fieldsAndValues) {
+    public static LdapName createLdapName(@Nonnull final String... fieldsAndValues) {
         if (fieldsAndValues.length % 2 > 0) {
             LOG.error("Ldap Attributes: For field and value pairs the length of String array has to be multiple of 2!");
             throw new IllegalArgumentException("Length of parameter fieldsAndValues has to be multiple of 2.");

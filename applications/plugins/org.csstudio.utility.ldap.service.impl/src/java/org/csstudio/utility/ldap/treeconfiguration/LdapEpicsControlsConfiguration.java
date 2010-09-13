@@ -21,7 +21,7 @@
  *
  * $Id$
  */
-package org.csstudio.utility.ldap.model;
+package org.csstudio.utility.ldap.treeconfiguration;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -30,7 +30,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
 import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 import com.google.common.collect.ImmutableSet;
@@ -49,27 +48,27 @@ import com.google.common.collect.Sets;
  */
 public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<LdapEpicsControlsConfiguration> {
 
-    ROOT(LdapFieldsAndAttributes.OU_FIELD_NAME, "root"),
+    ROOT(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, "root"),
 
     /**
      * The facility object class (efan).
      */
-    FACILITY(LdapFieldsAndAttributes.EFAN_FIELD_NAME, "facility"),
+    FACILITY("efan", "facility"),
 
     /**
      * The component object class (ecom).
      */
-    COMPONENT(LdapFieldsAndAttributes.ECOM_FIELD_NAME, "component"),
+    COMPONENT("ecom", "component"),
 
     /**
      * The IOC object class (econ).
      */
-    IOC(LdapFieldsAndAttributes.ECON_FIELD_NAME, "ioc"),
+    IOC("econ", "ioc"),
 
     /**
      * The record object class (eren).
      */
-    RECORD(LdapFieldsAndAttributes.EREN_FIELD_NAME, "record");
+    RECORD("eren", "record");
 
 
     private static final Map<String, LdapEpicsControlsConfiguration> CACHE_BY_NAME =
@@ -172,7 +171,7 @@ public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<Lda
     @Override
     @Nonnull
     public String getRootTypeValue() {
-        return LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+        return LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
     }
 
     /**

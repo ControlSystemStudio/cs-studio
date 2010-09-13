@@ -18,41 +18,26 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.alarm.treeView.views;
+package org.csstudio.utility.ldap.treeconfiguration;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
+ /**
+  * Dedicated field and attribute names and values for the EpicsAuthorizeId LDPA tree.
+  *
+  * @author bknerr
+  * @author $Author: bknerr $
+  * @version $Revision: 1.7 $
+  * @since 13.09.2010
+  */
+public final class LdapEpicsAuthorizeIdFieldsAndAttributes {
 
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
+    public static final String ATTR_EAIN_FIELD_NAME = "eain";
+    public static final String ATTR_EAIG_FIELD_NAME = "eaig";
 
-/**
- * Input validator for alarm tree names.
- *
- * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 20.05.2010
- */
-public final class NodeNameInputValidator implements IInputValidator {
-
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
-
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
-            }
-        }
-        return null; // input is valid
-
+    /**
+     * Don't instantiate.
+     */
+    private LdapEpicsAuthorizeIdFieldsAndAttributes() {
+        // EMPTY
     }
 }

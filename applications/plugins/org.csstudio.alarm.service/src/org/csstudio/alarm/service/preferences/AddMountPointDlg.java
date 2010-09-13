@@ -22,11 +22,11 @@
  package org.csstudio.alarm.service.preferences;
 
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeQuotes;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.simpleName;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 
@@ -75,7 +75,7 @@ public class AddMountPointDlg extends Dialog {
 		}
 
 		final ILdapSearchResult result =
-		    service.retrieveSearchResultSynchronously(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+		    service.retrieveSearchResultSynchronously(createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
 		                                              any(ATTR_FIELD_OBJECT_CLASS),
 		                                              SearchControls.ONELEVEL_SCOPE);
 

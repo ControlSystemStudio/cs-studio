@@ -35,7 +35,6 @@ import javax.naming.CompositeName;
 import javax.naming.InvalidNameException;
 import javax.naming.Name;
 import javax.naming.NameParser;
-import javax.naming.NamingEnumeration;
 import javax.naming.NamingException;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
@@ -47,7 +46,9 @@ import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 
 /**
@@ -95,7 +96,7 @@ public enum LdapSupport {
 			 */
 		    final int pos = ldapIocEntry.size() - 1;
 		    final Rdn rdn = ldapIocEntry.getRdn(pos);
-		    if (rdn.getType().equals(LdapFieldsAndAttributes.ECON_FIELD_NAME)) {
+		    if (rdn.getType().equals(LdapEpicsControlsConfiguration.IOC.getNodeTypeName())) {
 		        final String iocName =  (String) rdn.getValue();
 
 
@@ -129,7 +130,7 @@ public enum LdapSupport {
         final ILdapService service = Activator.getDefault().getLdapService();
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE),
                                                       "(&(objectClass=epicsController)" +
                                                       "(|(epicsIPAddress=" + ipAddress.getHostAddress() + ")" +
                                                       "(epicsIPAddressR=" + ipAddress.getHostAddress() + ")))",
@@ -158,7 +159,7 @@ public enum LdapSupport {
         final Name cname = new CompositeName(entry.getName());
         final NameParser nameParser = service.getLdapNameParser();
         final LdapName ldapName = (LdapName) nameParser.parse(cname.get(0));
-        ldapName.add(0, new Rdn(LdapFieldsAndAttributes.OU_FIELD_NAME, LdapFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE));
+        ldapName.add(0, new Rdn(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE));
 
         if (answerSet.size() > 1) {
             LOG.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);
@@ -383,7 +384,8 @@ public enum LdapSupport {
             return Collections.emptyList();
         }
 
-        if (!ldapName.get(ldapName.size() -1 ).startsWith(LdapFieldsAndAttributes.ECON_FIELD_NAME + LdapFieldsAndAttributes.FIELD_ASSIGNMENT)) {
+        final String ldapIocPrefix = LdapEpicsControlsConfiguration.IOC.getNodeTypeName() + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+        if (!ldapName.get(ldapName.size() -1 ).startsWith(ldapIocPrefix)) {
             LOG.error("Unknown LDAP Path! Path is " + ldapPath);
             return Collections.emptyList();
         }
@@ -407,7 +409,7 @@ public enum LdapSupport {
         }
         final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(ldapName,
-                                                      LdapUtils.any(LdapFieldsAndAttributes.EREN_FIELD_NAME),
+                                                      LdapUtils.any(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName()),
                                                       SearchControls.ONELEVEL_SCOPE);
         Set<SearchResult> answerSet;
         if (result == null) {

@@ -29,8 +29,8 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
@@ -57,11 +57,11 @@ import javax.naming.ldap.LdapName;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
@@ -88,6 +88,7 @@ public enum LdapUpdater {
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
+
 
     /**
      * Converts milli seconds to a formatted date time string.
@@ -181,7 +182,7 @@ public enum LdapUpdater {
                 LOG.warn("NO LDAP service available. Tidying cancelled.");
                 return;
             }
-            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final String filter = any(IOC.getNodeTypeName());
             final ILdapSearchResult result =
                 service.retrieveSearchResultSynchronously(query,
@@ -235,7 +236,7 @@ public enum LdapUpdater {
                 return;
             }
 
-            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
             final ILdapSearchResult searchResult =
                 service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),
@@ -321,7 +322,7 @@ public enum LdapUpdater {
                                                       @Nonnull final String iocNameKey) {
         final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocNameKey);
         if (ioc != null) {
-            final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             String person = DEFAULT_RESPONSIBLE_PERSON;
             try {
                 if (personAttr != null && personAttr.get() != null) {
@@ -332,7 +333,7 @@ public enum LdapUpdater {
                 }
                 missingIOCsPerPerson.get(person).add(ioc.getName());
             } catch (final NamingException e) {
-                LOG.error("Attribute for " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
+                LOG.error("Attribute for " + LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
                           " in IOC " + ioc.getName() + "could not be retrieved.");
             }
         }

@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import java.util.Collections;
 import java.util.List;

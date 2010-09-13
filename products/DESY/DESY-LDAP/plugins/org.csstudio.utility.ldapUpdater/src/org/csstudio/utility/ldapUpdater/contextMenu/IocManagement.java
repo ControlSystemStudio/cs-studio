@@ -32,7 +32,7 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;

@@ -112,7 +112,7 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
         ContentModel<T> model = null;
         try {
             final String attributeValue = rootElement.getAttributeValue("name");
-            if ((attributeValue == null) || (attributeValue.length() == 0)) {
+            if (attributeValue == null || attributeValue.length() == 0) {
                 throw new CreateContentModelException("Root element has not a valid name attribute.", null);
             }
             final String typeValue = _configurationRoot.getRootTypeValue();

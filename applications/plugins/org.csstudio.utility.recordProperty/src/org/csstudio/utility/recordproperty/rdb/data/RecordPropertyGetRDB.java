@@ -1,9 +1,9 @@
 package org.csstudio.utility.recordproperty.rdb.data;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -338,7 +338,7 @@ public class RecordPropertyGetRDB {
 	            return;
 	        }
 
-	        final ILdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+	        final ILdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
 	                                                                                   RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
 	                                                                                   SearchControls.SUBTREE_SCOPE);
 	        if (!result.getAnswerSet().isEmpty()) {

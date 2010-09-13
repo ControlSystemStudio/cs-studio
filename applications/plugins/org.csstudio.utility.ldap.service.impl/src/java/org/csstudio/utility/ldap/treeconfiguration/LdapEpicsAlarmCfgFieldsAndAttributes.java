@@ -18,41 +18,30 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.alarm.treeView.views;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
+package org.csstudio.utility.ldap.treeconfiguration;
 
 /**
- * Input validator for alarm tree names.
+ * Dedicated field and attribute names and values for the EpicsAlarmcfg LDPA tree.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 20.05.2010
+ * @author $Author: bknerr $
+ * @version $Revision: 1.7 $
+ * @since 13.09.2010
  */
-public final class NodeNameInputValidator implements IInputValidator {
+public final class LdapEpicsAlarmCfgFieldsAndAttributes {
 
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
 
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
-            }
-        }
-        return null; // input is valid
+    // TODO (bknerr) : try to figure out whether enums could be used for distinct groups
+    public static final String ATTR_FIELD_ALARM_SEVERITY = "epicsAlarmSeverity";
+    public static final String ATTR_FIELD_ALARM_STATUS = "epicsAlarmStatus";
+    public static final String ATTR_FIELD_ALARM_TIMESTAMP = "epicsAlarmTimeStamp";
+    public static final String ATTR_FIELD_ALARM_HIGH_UNACK = "epicsAlarmHighUnAckn";
 
+    /**
+     * Don't instantiate.
+     */
+    private LdapEpicsAlarmCfgFieldsAndAttributes() {
+        // EMPTY
     }
 }

@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.treeView.model;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.util.Set;
 

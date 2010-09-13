@@ -21,14 +21,12 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.utils.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
@@ -53,10 +51,11 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
@@ -299,7 +298,7 @@ public final class LdapAccess {
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
-            final Attribute attr = iocFromLDAP.getAttribute(ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             String person;
             if (attr != null && !StringUtil.hasLength((String) attr.get())) {
                 person = (String) attr.get();
@@ -398,7 +397,7 @@ public final class LdapAccess {
         if (iocFromLdap == null) {
             LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
-            final LdapName middleName = createLdapQuery(COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+            final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                         FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
 
             iocFromLdapName =

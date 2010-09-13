@@ -42,7 +42,7 @@ import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmCfgFieldsAndAttributes;
 
 
 /**
@@ -151,11 +151,11 @@ public final class AlarmTreeNodeModifier {
                                      @Nonnull final Attributes attrs)
             throws NamingException {
 
-        final Attribute severityAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY);
-        final Attribute eventtimeAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP);
+        final Attribute severityAttr = attrs.get(LdapEpicsAlarmCfgFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY);
+        final Attribute eventtimeAttr = attrs.get(LdapEpicsAlarmCfgFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP);
         setSeverityAndTimestamp(node, severityAttr, eventtimeAttr);
 
-        final Attribute highUnAcknAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK);
+        final Attribute highUnAcknAttr = attrs.get(LdapEpicsAlarmCfgFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK);
         setHighestUnackAlarm(node, highUnAcknAttr);
     }
 
