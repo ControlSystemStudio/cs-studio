@@ -22,8 +22,7 @@
 package org.csstudio.utility.ldap.service.impl;
 
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EFAN_FIELD_NAME;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
@@ -196,10 +195,8 @@ public final class LdapServiceImpl implements ILdapService {
                 return result;
 
             } catch (final NameNotFoundException nnfe){
-//                Engine.getInstance().reconnectDirContext(); // WTF?
                 LOG.info("Wrong LDAP name?" + nnfe.getExplanation());
             } catch (final NamingException e) {
-//                Engine.getInstance().reconnectDirContext();
                 LOG.info("Wrong LDAP query. " + e.getExplanation());
             } finally {
                 try {
@@ -279,6 +276,12 @@ public final class LdapServiceImpl implements ILdapService {
                                               any(ATTR_FIELD_OBJECT_CLASS),
                                               SearchControls.SUBTREE_SCOPE);
 
+        if (result == null || result.getAnswerSet().isEmpty()) {
+            LOG.debug("LDAP query returned empty or null result for component " + component.toString() +
+                      "\nand filter " + any(ATTR_FIELD_OBJECT_CLASS));
+            return false;
+        }
+
         final LdapContentModelBuilder<T> builder =
             new LdapContentModelBuilder<T>(configurationRoot, result);
         builder.build();
@@ -286,8 +289,8 @@ public final class LdapServiceImpl implements ILdapService {
 
         // FIXME (bknerr) : the reference to a specific name 'efan' does not belong here - the model has to work with the full name
         final LdapName nameInModel = removeRdns(component,
-                                                       EFAN_FIELD_NAME,
-                                                       Direction.FORWARD);
+                                                "efan",
+                                                Direction.FORWARD);
 
         // perform the removal of the subtree
         copyAndRemoveTreeComponent(null,
@@ -332,6 +335,7 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     /**
+                                                       "efan",
      * Copies (if param <code>copy</code> set to true) the given subtree and removes it from the old location.
      *
      * @param <T>

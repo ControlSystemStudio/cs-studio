@@ -28,13 +28,12 @@ import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.COUNTRY_FIELD_VALU
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.ECON_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.EFAN_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.O_FIELD_VALUE;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import javax.naming.NamingException;
 import javax.naming.directory.SearchResult;
@@ -42,7 +41,7 @@ import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
 
-import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -67,8 +66,8 @@ public class LdapNameUtilsHeadlessTest {
                                    null,
                                    null);
 
-        QUERY = createLdapQuery(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
-                                COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+        QUERY = createLdapName(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
+                                COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                 FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
                                 ROOT.getNodeTypeName(), ROOT.getRootTypeValue(),
                                 ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,

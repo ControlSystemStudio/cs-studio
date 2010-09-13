@@ -21,12 +21,12 @@
  */
 package org.csstudio.config.authorizeid.ldap;
 
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.ID_NAME;
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.ID_ROLE;
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.OU;
-import static org.csstudio.config.authorizeid.LdapEpicsAuthorizeIdConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_NAME;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_ROLE;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.OU;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ROOT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,9 @@ import org.csstudio.config.authorizeid.AuthorizeIdEntry;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.jface.dialogs.MessageDialog;
 
@@ -69,7 +71,7 @@ public final class LdapAccess {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(createLdapQuery(ID_NAME.getNodeTypeName(), eain,
+            service.retrieveSearchResultSynchronously(createLdapName(ID_NAME.getNodeTypeName(), eain,
                                                                       OU.getNodeTypeName(), ou,
                                                                       ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(ID_ROLE.getNodeTypeName()),
@@ -94,9 +96,9 @@ public final class LdapAccess {
                 final String key = keyValueArray[0];
                 final String value = keyValueArray[1];
 
-                if (LdapFieldsAndAttributes.EAIG_FIELD_NAME.equals(key)) {
+                if (LdapEpicsAuthorizeIdFieldsAndAttributes.ATTR_EAIG_FIELD_NAME.equals(key)) {
                     eaig = value;
-                } else if (LdapFieldsAndAttributes.EAIR_FIELD_NAME.equals(key)) {
+                } else if (LdapEpicsAuthorizeIdConfiguration.ID_ROLE.getNodeTypeName().equals(key)) {
                     eair = value;
                 }
             }
@@ -125,7 +127,7 @@ public final class LdapAccess {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(OU.getNodeTypeName(), ou,
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(OU.getNodeTypeName(), ou,
                                                                                 ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(ID_NAME.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
@@ -166,7 +168,7 @@ public final class LdapAccess {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(OU.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
 

@@ -25,9 +25,9 @@ package org.csstudio.alarm.service.internal;
 
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -84,7 +84,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         for (final String facility : facilityNames) {
             final ILdapSearchResult result =
-                ldapService.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), facility,
+                ldapService.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), facility,
                                                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                                               any(ATTR_FIELD_OBJECT_CLASS),
                                                                               SearchControls.SUBTREE_SCOPE);

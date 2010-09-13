@@ -40,7 +40,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -154,7 +154,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
 
         // FIXME (bknerr) : this reference to 'efan' does not belong here - the LDapNames have to go completely into the model
         final LdapName partialName = LdapNameUtils.removeRdns(fullName,
-                                                              LdapFieldsAndAttributes.EFAN_FIELD_NAME,
+                                                              "efan",
                                                               Direction.FORWARD);
 
         final LdapName currentPartialName = new LdapName("");

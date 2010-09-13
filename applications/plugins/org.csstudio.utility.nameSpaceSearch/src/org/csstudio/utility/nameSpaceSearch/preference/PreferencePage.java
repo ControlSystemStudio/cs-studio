@@ -24,8 +24,8 @@
  */
 package org.csstudio.utility.nameSpaceSearch.preference;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
 
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;

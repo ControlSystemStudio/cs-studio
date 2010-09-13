@@ -18,41 +18,29 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.alarm.treeView.views;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
-import org.eclipse.jface.dialogs.IInputValidator;
+package org.csstudio.utility.ldap.treeconfiguration;
 
 /**
- * Input validator for alarm tree names.
+ * Dedicated field and attribute names and values for the EpicsControls LDPA tree.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 20.05.2010
+ * @author $Author: bknerr $
+ * @version $Revision: 1.7 $
+ * @since 13.09.2010
  */
-public final class NodeNameInputValidator implements IInputValidator {
+public class LdapEpicsControlsFieldsAndAttributes {
 
-    @CheckForNull
-    public String isValid(@Nonnull final String newText) {
-        if (newText.equals("")) {
-            return "Please enter a name.";
-        } else if (newText.matches("^\\s.*") || newText.matches(".*\\s$")) {
-            return "The name cannot begin or end with whitespace.";
-        }
+    public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
+    public static final String ECOM_EPICS_IOC_FIELD_VALUE = "EPICS-IOC";
+    public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
+    public static final String ATTR_FIELD_LAST_UPDATED = "lastUpdated";
+    public static final String ATTR_FIELD_LAST_UPDATED_IN_MILLIS = "lastUpdatedInMillis";
 
-        for (final String forbiddenString : LdapFieldsAndAttributes.FORBIDDEN_SUBSTRINGS) {
-            if (newText.contains(forbiddenString)) {
-                return "The name must not contain the substring or character '" + forbiddenString + "'!";
-            }
-        }
-        return null; // input is valid
-
+    /**
+     * Don't instantiate.
+     */
+    private LdapEpicsControlsFieldsAndAttributes() {
+        // EMPTY
     }
 }

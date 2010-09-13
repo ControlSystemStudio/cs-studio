@@ -21,13 +21,9 @@
  *
  * $Id$
  */
-package org.csstudio.config.authorizeid;
+package org.csstudio.utility.ldap.treeconfiguration;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EAIG_FIELD_NAME;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EAIN_FIELD_NAME;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EAIR_FIELD_NAME;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.EPICS_AUTH_ID_FIELD_VALUE;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.OU_FIELD_NAME;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
 import java.util.EnumSet;
 import java.util.Map;
@@ -59,29 +55,31 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
      * The root (invisible in the alarm tree view).
      */
     ROOT("organizationUnit",
-         OU_FIELD_NAME,
+         ORGANIZATION_UNIT_FIELD_NAME,
          ImmutableSet.<String>builder().build()),
 
     /**
      * The root (invisible in the alarm tree view).
      */
     OU("organizationUnit",
-       OU_FIELD_NAME,
+       ORGANIZATION_UNIT_FIELD_NAME,
        ImmutableSet.<String>builder().build()),
 
     /**
      * The id name.
      */
     ID_NAME("authorize id name",
-            EAIN_FIELD_NAME,
+            "eain",
             ImmutableSet.<String>builder().build()),
 
     /**
      * The component object class (ecom).
      */
     ID_ROLE("authorize id role",
-            EAIR_FIELD_NAME,
-            ImmutableSet.<String>builder().add(EAIN_FIELD_NAME).add(EAIG_FIELD_NAME).build());
+            "eair",
+            ImmutableSet.<String>builder().add(LdapEpicsAuthorizeIdFieldsAndAttributes.ATTR_EAIN_FIELD_NAME)
+                                          .add(LdapEpicsAuthorizeIdFieldsAndAttributes.ATTR_EAIG_FIELD_NAME)
+                                          .build());
 
 
     private static final Map<String, LdapEpicsAuthorizeIdConfiguration> CACHE_BY_NAME =
@@ -177,7 +175,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
     @Override
     @Nonnull
     public String getRootTypeValue() {
-        return EPICS_AUTH_ID_FIELD_VALUE;
+        return "EpicsAuthorizeID";
     }
 
 }

@@ -26,7 +26,7 @@ import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfigurat
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.parseSearchResult;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.io.FileNotFoundException;
 import java.util.HashSet;
@@ -185,7 +185,7 @@ public final class ImportXmlFileJob extends Job {
         }
 
         final ILdapSearchResult searchResult =
-            service.retrieveSearchResultSynchronously(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                       any(FACILITY.getNodeTypeName()),
                                                       SearchControls.ONELEVEL_SCOPE);
         final Set<SearchResult> set = searchResult.getAnswerSet();

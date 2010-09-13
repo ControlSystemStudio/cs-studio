@@ -18,18 +18,16 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
 package org.csstudio.utility.ldap.model;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.EnumMap;
 import java.util.Map;
@@ -42,6 +40,7 @@ import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -78,7 +77,7 @@ public class LdapContentModelBuilderTest {
         final ILdapService service = LdapActivator.getDefault().getLdapService();
         Assert.assertNotNull("LDAP service unavailable.", service);
 
-        ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
+        ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), "TEST",
                                                                                                   ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
                                                                                                   any(IOC.getNodeTypeName()),
                                                                                                   SearchControls.SUBTREE_SCOPE);
@@ -94,7 +93,7 @@ public class LdapContentModelBuilderTest {
                 Assert.fail("Model setup failed. Search result is null.");
             }
 
-            searchResult = service.retrieveSearchResultSynchronously(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+            searchResult = service.retrieveSearchResultSynchronously(createLdapName(IOC.getNodeTypeName(), "testLDAP",
                                                                                      COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                                                                      FACILITY.getNodeTypeName(), "TEST",
                                                                                      ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
@@ -145,22 +144,22 @@ public class LdapContentModelBuilderTest {
 
         ISubtreeNodeComponent<LdapEpicsControlsConfiguration> comp = MODEL_TWO.getByTypeAndSimpleName(IOC, "testLDAP");
 
-        Assert.assertEquals(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "testLDAP",
                                             COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                             FACILITY.getNodeTypeName(), "TEST"), comp.getLdapName());
 
-        Assert.assertEquals(createLdapQuery(COMPONENT.getNodeTypeName(), "EPICS-IOC",
+        Assert.assertEquals(createLdapName(COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                             FACILITY.getNodeTypeName(), "TEST"), comp.getParent().getLdapName());
 
 
         comp = MODEL_TWO.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.RECORD, "testLdap:alive");
 
-        Assert.assertEquals(createLdapQuery(RECORD.getNodeTypeName(), "testLdap:alive",
+        Assert.assertEquals(createLdapName(RECORD.getNodeTypeName(), "testLdap:alive",
                                             IOC.getNodeTypeName(), "testLDAP",
                                             COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                             FACILITY.getNodeTypeName(), "TEST"), comp.getLdapName());
 
-        Assert.assertEquals(createLdapQuery(IOC.getNodeTypeName(), "testLDAP",
+        Assert.assertEquals(createLdapName(IOC.getNodeTypeName(), "testLDAP",
                                             COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                             FACILITY.getNodeTypeName(), "TEST"), comp.getParent().getLdapName());
 

@@ -23,18 +23,17 @@
  */
 package org.csstudio.utility.ldapUpdater.service.impl;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_VAL_RECORD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.attributesForLdapEntry;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -52,11 +51,12 @@ import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.Record;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.Activator;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
@@ -101,7 +101,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
             LdapNameUtils.getValueOfRdnType(newLdapName, RECORD.getNodeTypeName());
 
         final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_RECORD_OBJECT_CLASS,
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS,
                                    RECORD.getNodeTypeName(), recordName);
 
         final ILdapService service = getLdapService();
@@ -163,8 +163,8 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
     public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
                                                    @Nonnull final String iocName) throws InterruptedException, ServiceUnavailableException {
 
-        final LdapName query = createLdapQuery(IOC.getNodeTypeName(), iocName,
-                                               COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+        final LdapName query = createLdapName(IOC.getNodeTypeName(), iocName,
+                                               COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                FACILITY.getNodeTypeName(), facilityName,
                                                ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
 
@@ -219,8 +219,8 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
             }
         }
 
-        service.removeLeafComponent(createLdapQuery(IOC.getNodeTypeName(), iocName,
-                                                    COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+        service.removeLeafComponent(createLdapName(IOC.getNodeTypeName(), iocName,
+                                                    COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                     FACILITY.getNodeTypeName(), facilityName,
                                                     ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
     }
