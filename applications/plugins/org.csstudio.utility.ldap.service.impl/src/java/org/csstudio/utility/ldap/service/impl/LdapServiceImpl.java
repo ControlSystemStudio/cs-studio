@@ -332,55 +332,6 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     /**
-     * {@inheritDoc}
-     */
-    @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>>
-        boolean move(@Nonnull final T configurationRoot,
-                     @Nonnull final LdapName oldLdapName,
-                     @Nonnull final LdapName newLdapName) throws NamingException, CreateContentModelException {
-        final DirContext context = DirContextHolder.INSTANCE.get();
-        if(context == null) {
-            LOG.error("LDAP context is null.");
-            return false;
-        }
-        LOG.debug("Move entry from:\n" + oldLdapName.toString() + "\nto\n" + newLdapName.toString());
-
-        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(),
-                                    configurationRoot.getRootTypeValue());
-
-        // create for 'oldLdapName' entry a new one under 'newLdapName'
-        final Attributes attributes = context.getAttributes(oldLdapName);
-        createComponent(newLdapName, attributes);
-
-        // get complete subtree of 'oldLdapName' and create model
-        final LdapSearchResult result =
-            retrieveSearchResultSynchronously(oldLdapName,
-                                              any(ATTR_FIELD_OBJECT_CLASS),
-                                              SearchControls.SUBTREE_SCOPE);
-
-        final LdapContentModelBuilder<T> builder =
-            new LdapContentModelBuilder<T>(configurationRoot, result);
-        builder.build();
-        final ContentModel<T> model = builder.getModel();
-
-        // FIXME (bknerr) : the reference to a specific name 'efan' does not belong here - the model has to work with the full name
-        final LdapName oldLdapNameInModel = removeRdns(oldLdapName,
-                                                       EFAN_FIELD_NAME,
-                                                       Direction.FORWARD);
-        // do the copy and the removal
-        copyAndRemoveTreeComponent(newLdapName,
-                                   model.getChildByLdapName(oldLdapNameInModel.toString()),
-                                   rootRdn,
-                                   true);
-
-        // and finally delete the old one
-        removeLeafComponent(oldLdapName);
-
-        return true;
-    }
-
-    /**
      * Copies (if param <code>copy</code> set to true) the given subtree and removes it from the old location.
      *
      * @param <T>
