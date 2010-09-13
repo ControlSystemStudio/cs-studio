@@ -135,6 +135,8 @@ public class XYGraph extends Figure{
 		Rectangle clientArea = getClientArea().getCopy();
 		boolean hasRightYAxis = false;
 		boolean hasTopXAxis = false;
+		boolean hasLeftYAxis = false;
+		boolean hasBottomXAxis = false;
 		if(titleLabel != null && titleLabel.isVisible() && !(titleLabel.getText().length() <= 0)){
 			Dimension titleSize = titleLabel.getPreferredSize();
 			titleLabel.setBounds(new Rectangle(clientArea.x + clientArea.width/2 - titleSize.width/2,
@@ -200,12 +202,15 @@ public class XYGraph extends Figure{
 			Axis xAxis = xAxisList.get(i);
 			Dimension xAxisSize = xAxis.getPreferredSize(clientArea.width, clientArea.height);
 			if(xAxis.getTickLablesSide() == LabelSide.Primary){
+				if(xAxis.isVisible())
+					hasBottomXAxis = true;
 				xAxis.setBounds(new Rectangle(clientArea.x,
 					clientArea.y + clientArea.height - xAxisSize.height,
 					xAxisSize.width, xAxisSize.height));
 				clientArea.height -= xAxisSize.height;
 			}else{
-				hasTopXAxis = true;
+				if(xAxis.isVisible())
+					hasTopXAxis = true;
 				xAxis.setBounds(new Rectangle(clientArea.x,
 					clientArea.y+1,
 					xAxisSize.width, xAxisSize.height));
@@ -216,16 +221,23 @@ public class XYGraph extends Figure{
 		
 		for(int i=yAxisList.size()-1; i>=0; i--){
 			Axis yAxis = yAxisList.get(i);
+			int hintHeight = clientArea.height + (hasTopXAxis ? 1 :0) *yAxis.getMargin()
+				+ (hasBottomXAxis ? 1 :0) *yAxis.getMargin();
+			if(hintHeight > getClientArea().height)
+				hintHeight = clientArea.height;
 			Dimension yAxisSize = yAxis.getPreferredSize(clientArea.width, 
-					clientArea.height + (hasTopXAxis? 2:1) *yAxis.getMargin());
+					hintHeight);
 			if(yAxis.getTickLablesSide() == LabelSide.Primary){ // on the left
+				if(yAxis.isVisible())
+					hasLeftYAxis = true;
 				yAxis.setBounds(new Rectangle(clientArea.x,
 					clientArea.y - (hasTopXAxis? yAxis.getMargin():0),
 					yAxisSize.width, yAxisSize.height));
 				clientArea.x += yAxisSize.width;
 				clientArea.width -= yAxisSize.width;
 			}else{ // on the right
-				hasRightYAxis = true;
+				if(yAxis.isVisible())
+					hasRightYAxis = true;
 				yAxis.setBounds(new Rectangle(clientArea.x + clientArea.width - yAxisSize.width -1,
 					clientArea.y- (hasTopXAxis? yAxis.getMargin():0),
 					yAxisSize.width, yAxisSize.height));
@@ -236,11 +248,12 @@ public class XYGraph extends Figure{
 		//re-adjust xAxis boundss
 		for(int i=xAxisList.size()-1; i>=0; i--){
 			Axis xAxis = xAxisList.get(i);
-			xAxis.getBounds().x = clientArea.x - xAxis.getMargin()-1;
-			if(hasRightYAxis)
-				xAxis.getBounds().width = clientArea.width + 2*xAxis.getMargin();
-			else
-				xAxis.getBounds().width = clientArea.width + xAxis.getMargin();
+			Rectangle r = xAxis.getBounds().getCopy();
+			if(hasLeftYAxis)
+				r.x = clientArea.x - xAxis.getMargin()-1;
+			r.width = clientArea.width + (hasLeftYAxis ? xAxis.getMargin() : -1) + 
+					(hasRightYAxis? xAxis.getMargin() : 0);
+			xAxis.setBounds(r);
 		}
 		
 		if(plotArea != null && plotArea.isVisible()){

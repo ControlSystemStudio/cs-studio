@@ -143,6 +143,11 @@ public class Axis extends LinearScale{
 	}
 	
 	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		revalidate();
+	}
+	@Override
 	public void setForegroundColor(final Color color) {
 		super.setForegroundColor(color);
 		if(xyGraph != null)
