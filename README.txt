@@ -13,11 +13,7 @@ that uses the original EPICS libraries via JNI.
 
 jca-2.3.3.jar
 -------------
-Built from 2009/09/13 source snapshot from http://epics-jca.sourceforge.net
-with the following changes:
-src/core/gov/aps/jca/jni/JNI.cpp, line 1112
-  // KUK, Mar 31 2009: Leaked memory from ....addMonitor()
-  delete ((MonitorID*)monitorID);
+Built from 2009/09/14 source snapshot from http://epics-jca.sourceforge.net.
 
 Set EPICS_BASE_RELEASE, HOST_ARCH, EPICS_HOST_ARCH as required to build
 EPICS base.
