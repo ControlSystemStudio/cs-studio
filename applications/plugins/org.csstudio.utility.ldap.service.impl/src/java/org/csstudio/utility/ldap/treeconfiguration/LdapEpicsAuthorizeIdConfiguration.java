@@ -54,7 +54,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
     /**
      * The root (invisible in the alarm tree view).
      */
-    ROOT("organizationUnit",
+    UNIT("organizationUnit",
          ORGANIZATION_UNIT_FIELD_NAME,
          ImmutableSet.<String>builder().build()),
 
@@ -89,7 +89,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
         ID_ROLE._nestedClasses = EnumSet.noneOf(LdapEpicsAuthorizeIdConfiguration.class);
         ID_NAME._nestedClasses = EnumSet.of(ID_ROLE);
         OU._nestedClasses = EnumSet.of(ID_NAME);
-        ROOT._nestedClasses = EnumSet.of(OU);
+        UNIT._nestedClasses = EnumSet.of(OU);
 
         for (final LdapEpicsAuthorizeIdConfiguration oc : values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);

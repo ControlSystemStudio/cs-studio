@@ -55,7 +55,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
     /**
      * The root (invisible in the alarm tree view).
      */
-    ROOT("organizationUnit",
+    UNIT("organizationUnit",
          ORGANIZATION_UNIT_FIELD_NAME,
          ImmutableSet.<String>builder().build()),
 
@@ -108,7 +108,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
         FACILITY._nestedClasses = EnumSet.noneOf(LdapEpicsAlarmcfgConfiguration.class);
         FACILITY._nestedClasses.addAll(COMPONENT._nestedClasses);
 
-        ROOT._nestedClasses = EnumSet.of(FACILITY);
+        UNIT._nestedClasses = EnumSet.of(FACILITY);
 
         for (final LdapEpicsAlarmcfgConfiguration oc : values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);

@@ -25,7 +25,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
@@ -78,13 +78,13 @@ public class LdapContentModelBuilderTest {
         Assert.assertNotNull("LDAP service unavailable.", service);
 
         ILdapSearchResult searchResult = service.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), "TEST",
-                                                                                                  ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                                                  UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                                                                   any(IOC.getNodeTypeName()),
                                                                                                   SearchControls.SUBTREE_SCOPE);
         try {
             if (searchResult != null) {
                 final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, searchResult);
+                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(UNIT, searchResult);
 
                 builder.build();
                 MODEL_ONE = builder.getModel();
@@ -96,12 +96,12 @@ public class LdapContentModelBuilderTest {
             searchResult = service.retrieveSearchResultSynchronously(createLdapName(IOC.getNodeTypeName(), "testLDAP",
                                                                                      COMPONENT.getNodeTypeName(), "EPICS-IOC",
                                                                                      FACILITY.getNodeTypeName(), "TEST",
-                                                                                     ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                                     UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                                                      any(RECORD.getNodeTypeName()),
                                                                                      SearchControls.SUBTREE_SCOPE);
             if (searchResult != null) {
                 final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, searchResult);
+                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(UNIT, searchResult);
 
                 builder.build();
                 MODEL_TWO = builder.getModel();

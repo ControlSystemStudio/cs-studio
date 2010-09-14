@@ -23,7 +23,7 @@ package org.csstudio.config.savevalue.ui;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.net.SocketTimeoutException;
@@ -308,7 +308,7 @@ public class SaveValueDialog extends Dialog {
 		}
 
 	    final ILdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
 	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
 	                                                  SearchControls.SUBTREE_SCOPE);
 

@@ -27,7 +27,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
@@ -166,7 +166,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         final LdapName query = createLdapName(IOC.getNodeTypeName(), iocName,
                                                COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                FACILITY.getNodeTypeName(), facilityName,
-                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+                                               UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
 
         final ILdapService service = getLdapService();
         return service.retrieveSearchResultSynchronously(query,
@@ -193,7 +193,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         if (recordsSearchResult != null) {
 
             final ILdapContentModelBuilder builder =
-                service.getLdapContentModelBuilder(ROOT, recordsSearchResult);
+                service.getLdapContentModelBuilder(UNIT, recordsSearchResult);
 
             try {
                 builder.build();
@@ -222,7 +222,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         service.removeLeafComponent(createLdapName(IOC.getNodeTypeName(), iocName,
                                                     COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                     FACILITY.getNodeTypeName(), facilityName,
-                                                    ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
+                                                    UNIT.getNodeTypeName(), UNIT.getRootTypeValue()));
     }
 
     /**
@@ -239,7 +239,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             if (searchResult != null) {
                 final ILdapService service = getLdapService();
-                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(ROOT, searchResult);
+                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(UNIT, searchResult);
 
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();

@@ -23,7 +23,7 @@ package org.csstudio.alarm.treeView.ldap;
 
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.junit.Assert.assertEquals;
 
@@ -48,7 +48,7 @@ public class LdapNameUtilsTest {
     @Test
     public void testObjectClassOfHierarchicalLdapName() throws Exception {
         final LdapName name = createLdapName(RECORD.getNodeTypeName(), "foobar",
-                                              ROOT.getNodeTypeName(), "Test",
+                                              UNIT.getNodeTypeName(), "Test",
                                               "dc", "example",
                                               "dc","com");
         final Rdn rdn = name.getRdn(name.size() - 1);

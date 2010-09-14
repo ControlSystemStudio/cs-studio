@@ -25,7 +25,7 @@
 package org.csstudio.utility.nameSpaceSearch.preference;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
@@ -59,7 +59,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 		                               Messages.getString(Messages.PreferencePage_RECORD_ATTRIBUTE),
 		                               getFieldEditorParent()));
 		final StringFieldEditor searchRoot =
-		    new StringFieldEditor(ROOT.getNodeTypeName() + "=" + ROOT.getRootTypeValue(),
+		    new StringFieldEditor(UNIT.getNodeTypeName() + "=" + UNIT.getRootTypeValue(),
 		                          Messages.getString(Messages.PreferencePage_SEARCH_ROOT),
 		                          getFieldEditorParent());
 

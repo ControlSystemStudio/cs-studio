@@ -25,7 +25,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.utils.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
@@ -85,7 +85,7 @@ public final class LdapAccess {
 
     static {
         try {
-            final Rdn ou = new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final Rdn ou = new Rdn(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
             final List<Rdn> list = new ArrayList<Rdn>();
             list.add(ou);
             NAME_SUFFIX = new LdapName(list);
@@ -404,7 +404,7 @@ public final class LdapAccess {
                 (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(IOC.getNodeTypeName(), iocName));
 
             final LdapName fullLdapName =
-                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
+                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()));
 
             LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
 

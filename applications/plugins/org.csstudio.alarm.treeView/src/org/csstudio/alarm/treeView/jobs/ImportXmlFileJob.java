@@ -22,7 +22,7 @@
 package org.csstudio.alarm.treeView.jobs;
 
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.parseSearchResult;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeRdns;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
@@ -185,14 +185,14 @@ public final class ImportXmlFileJob extends Job {
         }
 
         final ILdapSearchResult searchResult =
-            service.retrieveSearchResultSynchronously(createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                       any(FACILITY.getNodeTypeName()),
                                                       SearchControls.ONELEVEL_SCOPE);
         final Set<SearchResult> set = searchResult.getAnswerSet();
         final Set<String> facilityNamesInLdap = new HashSet<String>();
         for (final SearchResult row : set) {
             final LdapName fullLdapName= parseSearchResult(row);
-            final LdapName partLdapName = removeRdns(fullLdapName, ROOT.getNodeTypeName(), Direction.FORWARD);
+            final LdapName partLdapName = removeRdns(fullLdapName, UNIT.getNodeTypeName(), Direction.FORWARD);
             facilityNamesInLdap.add(partLdapName.toString());
         }
         return facilityNamesInLdap;

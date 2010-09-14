@@ -24,7 +24,7 @@ package org.csstudio.dct.treemodelexporter;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.COMPONENT;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +73,7 @@ public class DctContentModelBuilder extends AbstractContentModelBuilder<LdapEpic
     protected ContentModel<LdapEpicsAlarmcfgConfiguration> createContentModel() throws CreateContentModelException {
         ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel = null;
         try {
-            contentModel = new ContentModel<LdapEpicsAlarmcfgConfiguration>(ROOT);
+            contentModel = new ContentModel<LdapEpicsAlarmcfgConfiguration>(UNIT);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException(e.getMessage(), e);
         }
@@ -112,7 +112,7 @@ public class DctContentModelBuilder extends AbstractContentModelBuilder<LdapEpic
                                    @Nonnull final IRecord record) throws InvalidNameException, AliasResolutionException {
         ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent =
             contentModel.getChildByLdapName(FACILITY.getNodeTypeName() + "=" + _dctPoject.getName() + "," +
-                                            ROOT.getNodeTypeName() + "=" + ROOT.getRootTypeValue());
+                                            UNIT.getNodeTypeName() + "=" + UNIT.getRootTypeValue());
 
         ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
         for (final String instance : prototypeInstances) {

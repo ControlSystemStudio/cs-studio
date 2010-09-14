@@ -285,8 +285,8 @@ public final class AlarmTreeView extends ViewPart {
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue(),
-                                            LdapEpicsAlarmcfgConfiguration.ROOT,
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.UNIT.getRootTypeValue(),
+                                            LdapEpicsAlarmcfgConfiguration.UNIT,
                                             TreeNodeSource.ROOT).build();
     }
 

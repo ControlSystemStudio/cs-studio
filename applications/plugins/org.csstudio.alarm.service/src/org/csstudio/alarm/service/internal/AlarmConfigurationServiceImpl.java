@@ -24,7 +24,7 @@
 package org.csstudio.alarm.service.internal;
 
 import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
+import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
@@ -71,7 +71,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.UNIT);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating empty content model.", e);
         }
@@ -85,7 +85,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         for (final String facility : facilityNames) {
             final ILdapSearchResult result =
                 ldapService.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), facility,
-                                                                             ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                             UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                                              any(ATTR_FIELD_OBJECT_CLASS),
                                                                              SearchControls.SUBTREE_SCOPE);
             if (result != null) {
@@ -109,7 +109,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         throws CreateContentModelException, FileNotFoundException {
 
         final XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
-            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(ROOT, new FileInputStream(filePath));
+            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(UNIT, new FileInputStream(filePath));
         builder.build();
         return builder.getModel();
     }

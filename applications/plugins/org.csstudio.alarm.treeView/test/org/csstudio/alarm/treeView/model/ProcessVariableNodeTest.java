@@ -51,7 +51,7 @@ public class ProcessVariableNodeTest {
 
     @Before
     public void setUp() {
-        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.LDAP).build();
+        _subtreeNode = new SubtreeNode.Builder("SubTree", LdapEpicsAlarmcfgConfiguration.UNIT, TreeNodeSource.LDAP).build();
         _node = new ProcessVariableNode.Builder("A node", TreeNodeSource.LDAP).setParent(_subtreeNode).build();
     }
 

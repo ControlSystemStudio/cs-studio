@@ -23,7 +23,7 @@ package org.csstudio.utility.ldapUpdater.contextMenu;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 
 import java.util.ArrayList;
@@ -74,7 +74,7 @@ public class IocEnumeration implements IDynamicParameterValues {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                       any(IOC.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
         if (result == null) {
@@ -84,7 +84,7 @@ public class IocEnumeration implements IDynamicParameterValues {
 
         try {
             final ILdapContentModelBuilder builder =
-                service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, result);
+                service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, result);
 
             builder.build();
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();

@@ -28,7 +28,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_SEPARATOR;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
@@ -70,7 +70,7 @@ public class LDAP2Automat extends Automat {
 	    }
 
 
-		if(selection.startsWith(ROOT.getNodeTypeName() + FIELD_ASSIGNMENT)){
+		if(selection.startsWith(UNIT.getNodeTypeName() + FIELD_ASSIGNMENT)){
 		    _root = selection;
 
 		    parameter.name = _root;

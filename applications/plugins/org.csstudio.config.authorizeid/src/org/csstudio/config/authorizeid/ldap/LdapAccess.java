@@ -24,7 +24,7 @@ package org.csstudio.config.authorizeid.ldap;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_NAME;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ID_ROLE;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.OU;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAuthorizeIdConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
@@ -73,7 +73,7 @@ public final class LdapAccess {
         final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(createLdapName(ID_NAME.getNodeTypeName(), eain,
                                                                       OU.getNodeTypeName(), ou,
-                                                                      ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                      UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                       any(ID_ROLE.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
         if (result == null || result.getAnswerSet().isEmpty()) {
@@ -128,7 +128,7 @@ public final class LdapAccess {
 
         final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(OU.getNodeTypeName(), ou,
-                                                                                ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                                UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                       any(ID_NAME.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
            if (result == null || result.getAnswerSet().isEmpty()) {
@@ -168,7 +168,7 @@ public final class LdapAccess {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
                                                       any(OU.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
 

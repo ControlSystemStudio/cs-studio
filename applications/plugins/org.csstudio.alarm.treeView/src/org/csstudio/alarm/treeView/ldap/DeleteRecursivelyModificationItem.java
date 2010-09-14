@@ -71,7 +71,7 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
                 throw new AlarmTreeModificationException("Removal failed due to unavailable LDAP service", null);
             }
 
-            result = service.removeComponent(LdapEpicsAlarmcfgConfiguration.ROOT, _nodeName);
+            result = service.removeComponent(LdapEpicsAlarmcfgConfiguration.UNIT, _nodeName);
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final CreateContentModelException e) {

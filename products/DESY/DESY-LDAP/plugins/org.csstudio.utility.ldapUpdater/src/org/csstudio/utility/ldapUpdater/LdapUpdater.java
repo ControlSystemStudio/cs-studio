@@ -30,7 +30,7 @@
 package org.csstudio.utility.ldapUpdater;
 
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
@@ -182,7 +182,7 @@ public enum LdapUpdater {
                 LOG.warn("NO LDAP service available. Tidying cancelled.");
                 return;
             }
-            final LdapName query = LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
             final String filter = any(IOC.getNodeTypeName());
             final ILdapSearchResult result =
                 service.retrieveSearchResultSynchronously(query,
@@ -198,7 +198,7 @@ public enum LdapUpdater {
                 return;
             }
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, result);
+            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, result);
             builder.build();
 
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -236,7 +236,7 @@ public enum LdapUpdater {
                 return;
             }
 
-            final LdapName query = LdapUtils.createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
             final ILdapSearchResult searchResult =
                 service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),
@@ -271,7 +271,7 @@ public enum LdapUpdater {
         }
 
         final ILdapContentModelBuilder builder =
-            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.ROOT, searchResult);
+            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, searchResult);
         builder.build();
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 

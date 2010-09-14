@@ -48,7 +48,7 @@ import com.google.common.collect.Sets;
  */
 public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<LdapEpicsControlsConfiguration> {
 
-    ROOT(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, "root"),
+    UNIT(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, "root"),
 
     /**
      * The facility object class (efan).
@@ -83,7 +83,7 @@ public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<Lda
 
         FACILITY._nestedClasses = EnumSet.of(COMPONENT);
 
-        ROOT._nestedClasses = EnumSet.of(FACILITY);
+        UNIT._nestedClasses = EnumSet.of(FACILITY);
 
         for (final LdapEpicsControlsConfiguration oc : LdapEpicsControlsConfiguration.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);

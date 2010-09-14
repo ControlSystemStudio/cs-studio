@@ -82,7 +82,7 @@ public class ContentModelExporterTest {
         Assert.assertNotNull(resource);
 
         try {
-            MODEL = TreeModelTestUtils.buildContentModel(resource, TestTreeConfigurator.ROOT);
+            MODEL = TreeModelTestUtils.buildContentModel(resource, TestTreeConfigurator.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {

@@ -25,7 +25,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
@@ -342,7 +342,7 @@ public class MainView extends ViewPart {
         final ILdapSearchParams params = new ILdapSearchParams() {
             @Override
             public LdapName getSearchRoot() {
-                return createLdapName(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+                return createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
             }
             @Override
             public String getFilter() {
