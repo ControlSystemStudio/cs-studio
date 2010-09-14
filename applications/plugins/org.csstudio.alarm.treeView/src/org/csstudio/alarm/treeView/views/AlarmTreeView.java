@@ -494,7 +494,7 @@ public final class AlarmTreeView extends ViewPart {
 
         viewer.setContentProvider(new AlarmTreeContentProvider());
         viewer.setLabelProvider(new AlarmTreeLabelProvider());
-        viewer.setComparator(new ViewerComparator());
+        //viewer.setComparator(new ViewerComparator());
 
         final ISelectionChangedListener selectionChangedListener =
             new ISelectionChangedListener() {

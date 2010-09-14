@@ -85,9 +85,9 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         for (final String facility : facilityNames) {
             final ILdapSearchResult result =
                 ldapService.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), facility,
-                                                                              ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
-                                                                              any(ATTR_FIELD_OBJECT_CLASS),
-                                                                              SearchControls.SUBTREE_SCOPE);
+                                                                             ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+                                                                             any(ATTR_FIELD_OBJECT_CLASS),
+                                                                             SearchControls.SUBTREE_SCOPE);
             if (result != null) {
                 builder.setSearchResult(result);
                 builder.build();

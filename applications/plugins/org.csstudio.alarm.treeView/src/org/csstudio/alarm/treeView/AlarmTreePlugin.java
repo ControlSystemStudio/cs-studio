@@ -38,7 +38,7 @@ import org.osgi.util.tracker.ServiceTracker;
  *
  * @author Joerg Rathlev
  */
-public class AlarmTreePlugin extends AbstractCssUiPlugin {
+public final class AlarmTreePlugin extends AbstractCssUiPlugin {
 
     /**
      * The plug-in id.

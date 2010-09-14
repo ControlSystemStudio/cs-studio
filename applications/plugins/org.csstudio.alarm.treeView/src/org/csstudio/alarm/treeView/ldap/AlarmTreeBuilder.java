@@ -79,7 +79,7 @@ public final class AlarmTreeBuilder {
     private static void ensureTestFacilityExists() throws ServiceUnavailableException {
         try {
             final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), "TEST",
-                                                              ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+                                                             ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
 
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
             if (service == null) {
@@ -147,7 +147,7 @@ public final class AlarmTreeBuilder {
      * Retrieves the alarm tree information for the facilities given in the
      * preferences and builds the alarm tree view data structure.
      * Returns the cancellation status, i.e. true if the build process has been
-     * cancelled.
+     * canceled.
      *
      * @param rootNode the root node for the alarm tree
      * @param model the content model

@@ -66,10 +66,13 @@ public class AlarmServiceDALImpl implements IAlarmService {
         // There is nothing to do in the DAL implementation. The usual listeners will take care of the state changes.
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public final IAlarmResource newAlarmResource(@CheckForNull final List<String> topics,
-                                           @CheckForNull final List<String> facilities,
-                                           @CheckForNull final String filepath) {
+    public final IAlarmResource createAlarmResource(@CheckForNull final List<String> topics,
+                                                    @CheckForNull final List<String> facilities,
+                                                    @CheckForNull final String filepath) {
         return new AlarmResource(topics, facilities, filepath);
     }
 

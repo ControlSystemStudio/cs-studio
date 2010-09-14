@@ -65,7 +65,7 @@ final class AlarmHandler {
 
     public void connect(@Nonnull final String fileName) throws AlarmConnectionException {
         final IAlarmResource alarmResource = Activator.getDefault().getAlarmService()
-                .newAlarmResource(null, null, fileName);
+                .createAlarmResource(null, null, fileName);
         _alarmConnection.connectWithListenerForResource(newAlarmConnectionMonitor(),
                                                         newAlarmListener(_jmsMessageService),
                                                         alarmResource);

@@ -57,7 +57,6 @@ public final class ImportInitialConfigJob extends Job {
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ImportInitialConfigJob.class);
 
-    private final AlarmTreeView _alarmTreeView;
     private final IAlarmSubtreeNode _rootNode;
     private final IAlarmConfigurationService _configService;
 
@@ -71,7 +70,6 @@ public final class ImportInitialConfigJob extends Job {
                                   @Nonnull final IAlarmSubtreeNode rootNode,
                                   @Nonnull final IAlarmConfigurationService service) {
         super("Initialize alarm tree job.");
-        _alarmTreeView = alarmTreeView;
         _configService = service;
         _rootNode = rootNode;
     }
