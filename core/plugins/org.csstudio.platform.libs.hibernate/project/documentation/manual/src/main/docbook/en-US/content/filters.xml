@@ -1,0 +1,177 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<!--
+  ~ Hibernate, Relational Persistence for Idiomatic Java
+  ~
+  ~ Copyright (c) 2008, Red Hat Middleware LLC or third-party contributors as
+  ~ indicated by the @author tags or express copyright attribution
+  ~ statements applied by the authors.  All third-party contributions are
+  ~ distributed under license by Red Hat Middleware LLC.
+  ~
+  ~ This copyrighted material is made available to anyone wishing to use, modify,
+  ~ copy, or redistribute it subject to the terms and conditions of the GNU
+  ~ Lesser General Public License, as published by the Free Software Foundation.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+  ~ or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License
+  ~ for more details.
+  ~
+  ~ You should have received a copy of the GNU Lesser General Public License
+  ~ along with this distribution; if not, write to:
+  ~ Free Software Foundation, Inc.
+  ~ 51 Franklin Street, Fifth Floor
+  ~ Boston, MA  02110-1301  USA
+  -->
+
+<!DOCTYPE chapter PUBLIC "-//OASIS//DTD DocBook XML V4.5//EN" "http://www.oasis-open.org/docbook/xml/4.5/docbookx.dtd" [
+<!ENTITY % BOOK_ENTITIES SYSTEM "../HIBERNATE_-_Relational_Persistence_for_Idiomatic_Java.ent">
+%BOOK_ENTITIES;
+
+]>
+
+<chapter id="filters">
+    <title>Filtering data</title>
+    
+    <para>
+        Hibernate3 provides an innovative new approach to handling data with "visibility" rules.
+        A <emphasis>Hibernate filter</emphasis> is a global, named, parameterized filter that can be 
+        enabled or disabled for a particular Hibernate session.
+    </para>
+
+    <section id="objectstate-filters" revision="1">
+        <title>Hibernate filters</title>
+
+        <para>
+            Hibernate3 has the ability to pre-define filter criteria and attach those filters at both
+            a class level and a collection level. A filter criteria allows you to define a restriction clause
+            similar to the existing "where" attribute available on the class and various collection
+            elements. These filter conditions, however, can be parameterized. The application can then
+            decide at runtime whether certain filters should be enabled and what their parameter
+            values should be. Filters can be used like database views, but they are parameterized inside the
+            application.
+        </para>
+
+        <para>
+            In order to use filters, they must first be defined and then attached to the appropriate
+            mapping elements. To define a filter, use the <literal>&lt;filter-def/&gt;</literal> element
+            within a <literal>&lt;hibernate-mapping/&gt;</literal> element:
+        </para>
+
+        <programlisting role="XML"><![CDATA[<filter-def name="myFilter">
+    <filter-param name="myFilterParam" type="string"/>
+</filter-def>]]></programlisting>
+
+        <para>
+            This filter can then be attached to a class:
+        </para>
+
+        <programlisting role="XML"><![CDATA[<class name="myClass" ...>
+    ...
+    <filter name="myFilter" condition=":myFilterParam = MY_FILTERED_COLUMN"/>
+</class>]]></programlisting>
+
+        <para>
+            Or, to a collection:
+        </para>
+
+        <programlisting role="XML"><![CDATA[<set ...>
+    <filter name="myFilter" condition=":myFilterParam = MY_FILTERED_COLUMN"/>
+</set>]]></programlisting>
+
+        <para>
+            Or, to both or multiples of each at the same time.
+        </para>
+
+        <para>
+            The methods on <literal>Session</literal> are: <literal>enableFilter(String filterName)</literal>,
+            <literal>getEnabledFilter(String filterName)</literal>, and <literal>disableFilter(String filterName)</literal>.
+            By default, filters are <emphasis>not</emphasis> enabled for a given session. Filters must be
+            enabled through use of the <literal>Session.enableFilter()</literal> method, which returns an
+            instance of the <literal>Filter</literal> interface. If you used the simple filter defined above, it would
+            look like this:
+        </para>
+
+        <programlisting role="JAVA"><![CDATA[session.enableFilter("myFilter").setParameter("myFilterParam", "some-value");]]></programlisting>
+
+        <para>
+            Methods on the org.hibernate.Filter interface do allow the method-chaining common to much of Hibernate.
+        </para>
+
+        <para>
+            The following is a full example, using temporal data with an effective record date pattern:
+        </para>
+
+        <programlisting role="XML"><![CDATA[<filter-def name="effectiveDate">
+    <filter-param name="asOfDate" type="date"/>
+</filter-def>
+
+<class name="Employee" ...>
+...
+    <many-to-one name="department" column="dept_id" class="Department"/>
+    <property name="effectiveStartDate" type="date" column="eff_start_dt"/>
+    <property name="effectiveEndDate" type="date" column="eff_end_dt"/>
+...
+    <!--
+        Note that this assumes non-terminal records have an eff_end_dt set to
+        a max db date for simplicity-sake
+    -->
+    <filter name="effectiveDate"
+            condition=":asOfDate BETWEEN eff_start_dt and eff_end_dt"/>
+</class>
+
+<class name="Department" ...>
+...
+    <set name="employees" lazy="true">
+        <key column="dept_id"/>
+        <one-to-many class="Employee"/>
+        <filter name="effectiveDate"
+                condition=":asOfDate BETWEEN eff_start_dt and eff_end_dt"/>
+    </set>
+</class>]]></programlisting>
+
+        <para>
+            In order to ensure that you are provided with currently effective records,
+            enable the filter on the session prior to retrieving employee data:
+        </para>
+
+<programlisting role="JAVA"><![CDATA[Session session = ...;
+session.enableFilter("effectiveDate").setParameter("asOfDate", new Date());
+List results = session.createQuery("from Employee as e where e.salary > :targetSalary")
+         .setLong("targetSalary", new Long(1000000))
+         .list();
+]]></programlisting>
+
+        <para>
+            Even though a salary constraint was mentioned explicitly on the results in the above HQL,
+            because of the enabled filter, the query will return only currently active employees who have
+            a salary greater than one million dollars.
+        </para>
+
+        <para>
+            If you want to use filters with outer joining, either through HQL or load fetching, be
+            careful of the direction of the condition expression.  It is safest to set this up for left
+            outer joining. Place the parameter first followed by the column name(s) after
+            the operator.
+        </para>
+
+        <para>
+            After being defined, a filter might be attached to multiple entities and/or
+            collections each with its own condition.  This can be problematic when the
+            conditions are the same each time.  Using <literal>&lt;filter-def/&gt;</literal>
+            allows you to definine a default condition, either as an attribute or CDATA:
+        </para>
+
+        <programlisting role="XML"><![CDATA[<filter-def name="myFilter" condition="abc > xyz">...</filter-def>
+<filter-def name="myOtherFilter">abc=xyz</filter-def>]]></programlisting>
+
+        <para>
+            This default condition will be used whenever the filter is attached to something
+            without specifying a condition.  This means you can give a specific condition
+            as part of the attachment of the filter that overrides the default condition in that
+            particular case.
+        </para>
+
+    </section>
+
+</chapter>
+

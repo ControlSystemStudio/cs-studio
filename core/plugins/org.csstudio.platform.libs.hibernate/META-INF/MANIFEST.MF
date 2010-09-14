@@ -6,16 +6,15 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.hibernate.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Bundle-ClassPath: lib/ejb3-persistence.jar,
- lib/hibernate-annotations.jar,
- lib/hibernate-entitymanager.jar,
- lib/hibernate3.jar,
- lib/hibernate-commons-annotations.jar,
- lib/dom4j-1.6.1.jar,
- lib/log4j-1.2.11.jar,
- lib/slf4j-api-1.5.2.jar,
- lib/slf4j-log4j12-1.5.2.jar,
- .
+Bundle-ClassPath: .,
+ libs/antlr-2.7.6.jar,
+ libs/commons-collections-3.1.jar,
+ libs/dom4j-1.6.1.jar,
+ libs/hibernate-testing.jar,
+ libs/hibernate3.jar,
+ libs/javassist-3.9.0.GA.jar,
+ libs/jta-1.1.jar,
+ libs/slf4j-api-1.5.8.jar
 Export-Package: javax.persistence,
  javax.persistence.spi,
  org.csstudio.platform.libs.hibernate,
