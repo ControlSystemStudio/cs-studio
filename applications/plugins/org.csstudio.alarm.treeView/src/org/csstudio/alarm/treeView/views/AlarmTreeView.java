@@ -45,7 +45,6 @@ import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -82,8 +81,9 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * are visually marked in the view.
  *
  * @author Joerg Rathlev
+ * @author Bastian Knerr
  */
-public class AlarmTreeView extends ViewPart {
+public final class AlarmTreeView extends ViewPart {
 
     /**
      * The ID of this view.
