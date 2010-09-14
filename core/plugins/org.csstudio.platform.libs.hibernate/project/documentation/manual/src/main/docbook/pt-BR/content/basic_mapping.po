@@ -1,0 +1,4384 @@
+# translation of basic_mapping.po to
+# translation of Collection_Mapping.po to
+# translation of Collection_Mapping.po to
+# translation of Collection_Mapping.po to
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2006.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# , 2007.
+# Michael H. Smith <mhideo@redhat.com>, 2007.
+# Glaucia Cintra <gcintra@redhat.com>, 2007.
+msgid ""
+msgstr ""
+"Project-Id-Version: basic_mapping\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-02-11T05:38:15\n"
+"PO-Revision-Date: 2010-03-18 10:20+1000\n"
+"Last-Translator: \n"
+"Language-Team:  <en@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+
+#. Tag: title
+#, no-c-format
+msgid "Basic O/R Mapping"
+msgstr "Mapeamento O/R Básico"
+
+#. Tag: title
+#, no-c-format
+msgid "Mapping declaration"
+msgstr "Declaração de mapeamento"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Object/relational mappings are usually defined in an XML document. The "
+"mapping document is designed to be readable and hand-editable. The mapping "
+"language is Java-centric, meaning that mappings are constructed around "
+"persistent class declarations and not table declarations."
+msgstr ""
+"O mapeamento de objeto/relacional é geralmente definido em um documento XML. "
+"O documento de mapeamento é criado para ser de leitura e editável "
+"manualmente. A linguagem do mapeamento é Java-centric, ou seja, os "
+"mapeamentos são construídos em torno de declarações de classe persistente e "
+"não de declarações de tabelas. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Please note that even though many Hibernate users choose to write the XML by "
+"hand, a number of tools exist to generate the mapping document. These "
+"include XDoclet, Middlegen and AndroMDA."
+msgstr ""
+"Note que, embora muitos usuários do Hibernate escolham gravar o XML "
+"manualmente, existem diversas ferramentas para gerar o documento de "
+"mapeamento, incluindo o XDoclet Middlegen e AndroMDA."
+
+#. Tag: para
+#, no-c-format
+msgid "Here is an example mapping:"
+msgstr "Vamos iniciar com um exemplo de mapeamento:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We will now discuss the content of the mapping document. We will only "
+"describe, however, the document elements and attributes that are used by "
+"Hibernate at runtime. The mapping document also contains some extra optional "
+"attributes and elements that affect the database schemas exported by the "
+"schema export tool (for example, the <literal> not-null</literal> attribute)."
+msgstr ""
+"Discutiremos agora o conteúdo deste documento de mapeamento. Iremos apenas "
+"descrever os elementos do documento e funções que são utilizadas pelo "
+"Hibernate em tempo de execução. O documento de mapeamento também contém "
+"algumas funções adicionais e opcionais além de elementos que afetam os "
+"esquemas de banco de dados exportados pela ferramenta de exportação de "
+"esquemas. (Por exemplo, o atributo <literal>not-null</literal>). "
+
+#. Tag: title
+#, no-c-format
+msgid "Doctype"
+msgstr "Doctype"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"All XML mappings should declare the doctype shown. The actual DTD can be "
+"found at the URL above, in the directory <literal>hibernate-x.x.x/src/org/"
+"hibernate </literal>, or in <literal>hibernate3.jar</literal>. Hibernate "
+"will always look for the DTD in its classpath first. If you experience "
+"lookups of the DTD using an Internet connection, check the DTD declaration "
+"against the contents of your classpath."
+msgstr ""
+"Todos os mapeamentos de XML devem declarar o doctype exibido. O DTD atual "
+"pode ser encontrado na URL abaixo, no diretório <literal>hibernate-x.x.x/src/"
+"org/ hibernate </literal> ou no <literal>hibernate3.jar</literal>. O "
+"Hibernate sempre irá procurar pelo DTD inicialmente no seu classpath. Se "
+"você tentar localizar o DTD usando uma conexão de internet, compare a "
+"declaração do seu DTD com o conteúdo do seu classpath."
+
+#. Tag: title
+#, no-c-format
+msgid "EntityResolver"
+msgstr "Solucionador de Entidade"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Hibernate will first attempt to resolve DTDs in its classpath. It does this "
+"is by registering a custom <literal>org.xml.sax.EntityResolver</literal> "
+"implementation with the SAXReader it uses to read in the xml files. This "
+"custom <literal>EntityResolver</literal> recognizes two different systemId "
+"namespaces:"
+msgstr ""
+"O Hibernate irá primeiro tentar solucionar os DTDs em seus classpath. Isto é "
+"feito, registrando uma implementação <literal>org.xml.sax.EntityResolver</"
+"literal> personalizada com o SAXReader que ele utiliza para ler os arquivos "
+"xml. Este <literal>EntityResolver</literal> personalizado, reconhece dois "
+"nomes de espaço de sistemas Id diferentes:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a <literal>hibernate namespace</literal> is recognized whenever the resolver "
+"encounters a systemId starting with <literal>http://hibernate.sourceforge."
+"net/</literal>. The resolver attempts to resolve these entities via the "
+"classloader which loaded the Hibernate classes."
+msgstr ""
+"Um <literal>hibernate namespace</literal> é reconhecido quando um "
+"solucionador encontra um systema Id iniciando com <literal>http://hibernate."
+"sourceforge.net/</literal>. O solucionador tenta solucionar estas entidades "
+"através do carregador de classe que carregou as classes do Hibernate. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a <literal>user namespace</literal> is recognized whenever the resolver "
+"encounters a systemId using a <literal>classpath://</literal> URL protocol. "
+"The resolver will attempt to resolve these entities via (1) the current "
+"thread context classloader and (2) the classloader which loaded the "
+"Hibernate classes."
+msgstr ""
+"Um <literal>user namespace</literal> é reconhecido quando um solucionador "
+"encontra um sistema Id, utilizando um protocolo URL de <literal>classpath://"
+"</literal>. O solucionador tentará solucionar estas entidades através do "
+"carregador de classe do contexto de thread atual (1) e o carregador de "
+"classe (2) que carregou as classes do Hibernate. "
+
+#. Tag: para
+#, no-c-format
+msgid "The following is an example of utilizing user namespacing:"
+msgstr "Um exemplo de utilização do espaço de nome do usuário:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Where <literal>types.xml</literal> is a resource in the <literal>your."
+"domain</literal> package and contains a custom <link linkend=\"mapping-types-"
+"custom\">typedef</link>."
+msgstr ""
+"Onde <literal>types.xml</literal> é um recurso no pacote <literal>your."
+"domain</literal> e contém um <link linkend=\"mapping-types-"
+"custom\">typedef</link>  "
+"personalizado."
+
+#. Tag: title
+#, no-c-format
+msgid "Hibernate-mapping"
+msgstr "Mapeamento do Hibernate"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This element has several optional attributes. The <literal>schema</literal> "
+"and <literal>catalog</literal> attributes specify that tables referred to in "
+"this mapping belong to the named schema and/or catalog. If they are "
+"specified, tablenames will be qualified by the given schema and catalog "
+"names. If they are missing, tablenames will be unqualified. The "
+"<literal>default-cascade</literal> attribute specifies what cascade style "
+"should be assumed for properties and collections that do not specify a "
+"<literal>cascade</literal> attribute. By default, the <literal>auto-import</"
+"literal> attribute allows you to use unqualified class names in the query "
+"language."
+msgstr ""
+"Este elemento possui diversos atributos opcionais. Os atributos "
+"<literal>schema</literal> e <literal>catalog</literal> especificam que "
+"tabelas referenciadas neste mapeamento pertencem ao esquema e/ou ao catálogo "
+"nomeado. Se especificados, os nomes das tabelas serão qualificados no "
+"esquema ou catálogo dado. Se não, os nomes das tabelas não serão "
+"qualificados. O atributo <literal>default-cascade</literal> especifica qual "
+"estilo de cascata será considerado pelas propriedades e coleções que não "
+"especificarem uma função <literal>cascade</literal>. A função <literal>auto-"
+"import</literal> nos deixa utilizar nomes de classes não qualificados na "
+"linguagem de consulta, por padrão."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>schema</literal> (optional): the name of a database schema."
+msgstr "<literal>schema</literal> (opcional): O nome do esquema do banco de dados. "
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>catalog</literal> (optional): the name of a database catalog."
+msgstr "<literal>catalog</literal> (opcional): O nome do catálogo do banco de dados. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>default-cascade</literal> (optional - defaults to <literal>none</"
+"literal>): a default cascade style."
+msgstr ""
+"<literal>default-cascade</literal> (opcional – o padrão é <literal>none</"
+"literal>): Um estilo cascata padrão."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>default-access</literal> (optional - defaults to <literal>property</"
+"literal>): the strategy Hibernate should use for accessing all properties. "
+"It can be a custom implementation of <literal>PropertyAccessor</literal>."
+msgstr ""
+"<literal>default-access</literal> (opcional – o padrão é <literal>property</"
+"literal>): A estratégia que o Hibernate deve utilizar para acessar todas as "
+"propridades. Pode ser uma implementação personalizada de "
+"<literal>PropertyAccessor</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>default-lazy</literal> (optional - defaults to <literal>true</"
+"literal>): the default value for unspecified <literal>lazy</literal> "
+"attributes of class and collection mappings."
+msgstr ""
+"<literal>default-lazy</literal> (opcional - o padrão é <literal>true</"
+"literal>): O valor padrão para atributos <literal>lazy</literal> não "
+"especificados da classe e dos mapeamentos de coleções."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>auto-import</literal> (optional - defaults to <literal>true</"
+"literal>): specifies whether we can use unqualified class names of classes "
+"in this mapping in the query language."
+msgstr ""
+"<literal>auto-import</literal> (opcional - o padrão é <literal>true</"
+"literal>): Especifica se podemos usar nomes de classes não qualificados, das "
+"classes deste mapeamento, na linguagem de consulta."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>package</literal> (optional): specifies a package prefix to use for "
+"unqualified class names in the mapping document."
+msgstr ""
+"<literal>package</literal> (opcional): Especifica um prefixo do pacote a ser "
+"considerado para nomes de classes não qualificadas no documento de "
+"mapeamento. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you have two persistent classes with the same unqualified name, you "
+"should set <literal>auto-import=\"false\"</literal>. An exception will "
+"result if you attempt to assign two classes to the same \"imported\" name."
+msgstr ""
+"Se você tem duas classes persistentes com o mesmo nome (não qualificadas), "
+"você deve ajustar <literal>auto-import=\"false\"</literal>. Caso você tentar "
+"ajustar duas classes para o mesmo nome \"importado\", isto resultará numa "
+"exceção."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>hibernate-mapping</literal> element allows you to nest several "
+"persistent <literal>&lt;class&gt;</literal> mappings, as shown above. It is, "
+"however, good practice (and expected by some tools) to map only a single "
+"persistent class, or a single class hierarchy, in one mapping file and name "
+"it after the persistent superclass. For example, <literal>Cat.hbm.xml</"
+"literal>, <literal>Dog.hbm.xml</literal>, or if using inheritance, "
+"<literal>Animal.hbm.xml</literal>."
+msgstr ""
+"Observe que o elemento <literal>hibernate-mapping</literal> permite que você "
+"aninhe diversos mapeamentos de <literal>&lt;class&gt;</literal> "
+"persistentes, como mostrado abaixo. Entretanto, é uma boa prática (e "
+"esperado por algumas ferramentas) o mapeamento de apenas uma classe "
+"persistente simples (ou uma hierarquia de classes simples) em um arquivo de "
+"mapeamento e nomeá-la após a superclasse persistente, por exemplo: "
+"<literal>Cat.hbm.xml</literal>, <literal>Dog.hbm.xml</literal>, ou se "
+"estiver usando herança, <literal>Animal.hbm.xml</literal>. "
+
+#. Tag: title
+#, no-c-format
+msgid "Class"
+msgstr "Classe"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You can declare a persistent class using the <literal>class</literal> "
+"element. For example:"
+msgstr ""
+"Você pode declarar uma classe persistente utilizando o elemento "
+"<literal>class</literal>. Por exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>name</literal> (optional): the fully qualified Java class name of "
+"the persistent class or interface. If this attribute is missing, it is "
+"assumed that the mapping is for a non-POJO entity."
+msgstr ""
+"<literal>name</literal> (opcional): O nome da classe Java inteiramente "
+"qualificado da classe persistente (ou interface). Se a função é ausente, "
+"assume-se que o mapeamento é para entidades não-POJO. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>table</literal> (optional - defaults to the unqualified class "
+"name): the name of its database table."
+msgstr ""
+"<literal>table</literal> (opcional – padrão para nomes de classes não "
+"qualificadas): O nome da sua tabela do banco de dados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>discriminator-value</literal> (optional - defaults to the class "
+"name): a value that distinguishes individual subclasses that is used for "
+"polymorphic behavior. Acceptable values include <literal>null</literal> and "
+"<literal>not null</literal>."
+msgstr ""
+"<literal>discriminator-value</literal> (opcional – padrão para o nome da "
+"classe): Um valor que distingue subclasses individuais, usadas para o "
+"comportamento polimórfico. Valores aceitos incluem <literal>null</literal> e "
+"<literal>not null</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>mutable</literal> (optional - defaults to <literal>true</literal>): "
+"specifies that instances of the class are (not) mutable."
+msgstr ""
+"<literal>mutable</literal> (opcional - valor padrão <literal>true</"
+"literal>): Especifica quais instâncias da classe são (ou não) mutáveis."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>schema</literal> (optional): overrides the schema name specified by "
+"the root <literal>&lt;hibernate-mapping&gt;</literal> element."
+msgstr ""
+"<literal>schema</literal> (opcional): Sobrepõe o nome do esquema "
+"especificado pelo elemento raíz <literal>&lt;hibernate-mapping&gt;</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>catalog</literal> (optional): overrides the catalog name specified "
+"by the root <literal>&lt;hibernate-mapping&gt;</literal> element."
+msgstr ""
+"<literal>catalog</literal> (opcional): Sobrepõe o nome do catálogo "
+"especificado pelo elemento raíz <literal>&lt;hibernate-mapping&gt;</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>proxy</literal> (optional): specifies an interface to use for lazy "
+"initializing proxies. You can specify the name of the class itself."
+msgstr ""
+"<literal>proxy</literal> (opcional): Especifica uma interface para ser "
+"utilizada pelos proxies de inicialização lazy. Você pode especificar o nome "
+"da própria classe. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>dynamic-update</literal> (optional - defaults to <literal>false</"
+"literal>): specifies that <literal>UPDATE</literal> SQL should be generated "
+"at runtime and can contain only those columns whose values have changed."
+msgstr ""
+"<literal>dynamic-update</literal> (opcional, valor padrão <literal>false</"
+"literal>): Especifica que o SQL de <literal>UPDATE</literal> deve ser gerado "
+"em tempo de execução e conter apenas aquelas colunas cujos valores foram "
+"alterados. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>dynamic-insert</literal> (optional - defaults to <literal>false</"
+"literal>): specifies that <literal>INSERT</literal> SQL should be generated "
+"at runtime and contain only the columns whose values are not null."
+msgstr ""
+"<literal>dynamic-insert</literal> (opcional, valor padrão <literal>falso</"
+"literal>): Especifica que o SQL de <literal>INSERT</literal> deve ser gerado "
+"em tempo de execução e conter apenas aquelas colunas cujos valores não estão "
+"nulos. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>select-before-update</literal> (optional - defaults to "
+"<literal>false</literal>): specifies that Hibernate should <emphasis>never</"
+"emphasis> perform an SQL <literal>UPDATE</literal> unless it is certain that "
+"an object is actually modified. Only when a transient object has been "
+"associated with a new session using <literal>update()</literal>, will "
+"Hibernate perform an extra SQL <literal>SELECT</literal> to determine if an "
+"<literal>UPDATE</literal> is actually required."
+msgstr ""
+"<literal>select-before-update</literal> (opcional, valor padrão "
+"<literal>false</literal>): Especifica que o Hibernate <emphasis>nunca</"
+"emphasis> deve executar um SQL de <literal>UPDATE</literal> a não ser que "
+"seja certo que um objeto está atualmente modificado. Em certos casos (na "
+"verdade, apenas quando um objeto transiente foi associado a uma nova sessão "
+"utilizando <literal>update()</literal>), isto significa que o Hibernate irá "
+"executar uma instrução SQL de <literal>SELECT</literal> adicional para "
+"determinar se um <literal>UPDATE</literal> é necessário nesse momento."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>polymorphism</literal> (optional - defaults to <literal>implicit</"
+"literal>): determines whether implicit or explicit query polymorphism is "
+"used."
+msgstr ""
+"<literal>polymorphism</literal> (opcional, padrão para <literal>implicit</"
+"literal>): Determina se deve ser utilizado a consulta polimórfica implícita "
+"ou explicitamente. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>where</literal> (optional): specifies an arbitrary SQL "
+"<literal>WHERE</literal> condition to be used when retrieving objects of "
+"this class."
+msgstr ""
+"<literal>where</literal> (opicional): Especifica um comando SQL "
+"<literal>WHERE</literal> arbitrário para ser usado quando da recuperação de "
+"objetos desta classe."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>persister</literal> (optional): specifies a custom "
+"<literal>ClassPersister</literal>."
+msgstr ""
+"<literal>persister</literal> (opcional): Especifica uma "
+"<literal>ClassPersister</literal> customizada."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>batch-size</literal> (optional - defaults to <literal>1</literal>): "
+"specifies a \"batch size\" for fetching instances of this class by "
+"identifier."
+msgstr ""
+"<literal>batch-size</literal> (opcional, valor padrão <literal>1</literal>) "
+"Especifica um \"tamanho de lote\" para a recuperação de instâncias desta "
+"classe pela identificação."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimistic-lock</literal> (optional - defaults to <literal>version</"
+"literal>): determines the optimistic locking strategy."
+msgstr ""
+"<literal>optimistic-lock</literal> (opcional, valor padrão <literal>version</"
+"literal>): Determina a estratégia de bloqueio."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional): lazy fetching can be disabled by setting "
+"<literal>lazy=\"false\"</literal>."
+msgstr ""
+"<literal>lazy</literal> (opcional): A recuperação lazy pode ser "
+"completamente desabilitada, ajustando <literal>lazy=\"false\"</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>entity-name</literal> (optional - defaults to the class name): "
+"Hibernate3 allows a class to be mapped multiple times, potentially to "
+"different tables. It also allows entity mappings that are represented by "
+"Maps or XML at the Java level. In these cases, you should provide an "
+"explicit arbitrary name for the entity. See <xref linkend=\"persistent-"
+"classes-dynamicmodels\" /> and <xref linkend=\"xml\" /> for more information."
+msgstr ""
+"<literal>entity-name</literal> (opcional - padrão para o nome da classe): O "
+"Hibernate3 permite uma classe ser mapeada múltiplas vezes, potencialmente "
+"para diferentes tabelas. Além disso, isto permite mapeamentos de entidades "
+"que são representadas por Maps ou XML no nível Java. Nestes casos, você deve "
+"especificar um nome arbitrário explicitamente para a entidade. Veja <xref "
+"linkend=\"persistent-classes-dynamicmodels\"/> e <xref linkend=\"xml\"/> "
+"para maiores informações."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>check</literal> (optional): an SQL expression used to generate a "
+"multi-row <emphasis>check</emphasis> constraint for automatic schema "
+"generation."
+msgstr ""
+"<literal>check</literal> (opcional): Uma expressão SQL utilizada para gerar "
+"uma restrição de <emphasis>verificação</emphasis> de múltiplas linhas para a "
+"geração automática do esquema. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>rowid</literal> (optional): Hibernate can use ROWIDs on databases. "
+"On Oracle, for example, Hibernate can use the <literal>rowid</literal> extra "
+"column for fast updates once this option has been set to <literal>rowid</"
+"literal>. A ROWID is an implementation detail and represents the physical "
+"location of a stored tuple."
+msgstr ""
+"<literal>rowid</literal> (opcional): O Hibernate poder usar as então "
+"chamadas ROWIDs em bancos de dados que a suportam. Por exemplo, no Oracle, o "
+"Hibernate pode utilizar a coluna extra rowid para atualizações mais rápidas "
+"se você configurar esta opção para <literal>rowid</literal>. Um ROWID é uma "
+"implementação que representa de maneira detalhada a localização física de "
+"uma determinada tuple armazenada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>subselect</literal> (optional): maps an immutable and read-only "
+"entity to a database subselect. This is useful if you want to have a view "
+"instead of a base table. See below for more information."
+msgstr ""
+"<literal>subselect</literal> (opcional): Mapeia uma entidade imutável e "
+"somente de leitura para um subconjunto do banco de dados. Útil se você "
+"quiser ter uma visão, ao invés de uma tabela. Veja abaixo para mais "
+"informações. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>abstract</literal> (optional): is used to mark abstract "
+"superclasses in <literal>&lt;union-subclass&gt;</literal> hierarchies."
+msgstr ""
+"<literal>abstract</literal> (opcional): Utilizada para marcar superclasses "
+"abstratas em hierarquias <literal>&lt;union-subclass&gt;</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is acceptable for the named persistent class to be an interface. You can "
+"declare implementing classes of that interface using the <literal>&lt;"
+"subclass&gt;</literal> element. You can persist any <emphasis>static</"
+"emphasis> inner class. Specify the class name using the standard form i.e. "
+"<literal>e.g.Foo$Bar</literal>."
+msgstr ""
+"É perfeitamente aceitável uma classe persitente nomeada ser uma interface. "
+"Você deverá então declarar as classes implementadas desta interface "
+"utilizando o elemento <literal>&lt;subclass&gt;</literal>. Você pode "
+"persistir qualquer classe interna <emphasis>estática</emphasis>. Você deverá "
+"especificar o nome da classe usando a forma padrão, por exemplo: <literal>eg."
+"Foo&#36;Bar</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Immutable classes, <literal>mutable=\"false\"</literal>, cannot be updated "
+"or deleted by the application. This allows Hibernate to make some minor "
+"performance optimizations."
+msgstr ""
+"Classes imutáveis, <literal>mutable=\"false\"</literal>, não podem ser "
+"modificadas ou excluídas pela aplicação. Isso permite que o Hibernate "
+"aperfeiçoe o desempenho. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <literal>proxy</literal> attribute enables lazy initialization "
+"of persistent instances of the class. Hibernate will initially return CGLIB "
+"proxies that implement the named interface. The persistent object will load "
+"when a method of the proxy is invoked. See \"Initializing collections and "
+"proxies\" below."
+msgstr ""
+"A função opcional <literal>proxy</literal> habilita a inicialização lazy das "
+"instâncias persistentes da classe. O Hibernate irá retornar CGLIB proxies "
+"como implementado na interface nomeada. O objeto persistente atual será "
+"carregado quando um método do proxy for invocado. Veja \"Inicialização de "
+"Coleções e Proxies\" abaixo. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<emphasis>Implicit</emphasis> polymorphism means that instances of the class "
+"will be returned by a query that names any superclass or implemented "
+"interface or class, and that instances of any subclass of the class will be "
+"returned by a query that names the class itself. <emphasis>Explicit</"
+"emphasis> polymorphism means that class instances will be returned only by "
+"queries that explicitly name that class. Queries that name the class will "
+"return only instances of subclasses mapped inside this <literal>&lt;class&gt;"
+"</literal> declaration as a <literal>&lt;subclass&gt;</literal> or "
+"<literal>&lt;joined-subclass&gt;</literal>. For most purposes, the default "
+"<literal>polymorphism=\"implicit\"</literal> is appropriate. Explicit "
+"polymorphism is useful when two different classes are mapped to the same "
+"table This allows a \"lightweight\" class that contains a subset of the "
+"table columns."
+msgstr ""
+"Polimorfismo <emphasis>implícito</emphasis> significa que instâncias de uma "
+"classe serão retornadas por uma consulta que dá nome a qualquer superclasse "
+"ou interface e classe implementada, além das instâncias de qualquer "
+"subclasse da classe serão retornadas por uma consulta que nomeia a classe "
+"por si. Polimorfismo <emphasis>explícito</emphasis> significa que instâncias "
+"da classe serão retornadas apenas por consultas que explicitamente nomeiam a "
+"classe e que as consultas que nomeiam as classes irão retornar apenas "
+"instâncias de subclasses mapeadas dentro da declaração <literal>&lt;class&gt;"
+"</literal> como uma <literal>&lt;subclass&gt;</literal> ou <literal>&lt;"
+"joined-subclass&gt;</literal>. Para a maioria dos casos, o valor padrão "
+"<literal>polymorphism=\"implicit\"</literal>, é apropriado. Polimorfismo "
+"explicito é útil quando duas classes distintas estão mapeadas para a mesma "
+"tabela. Isso aceita uma classe \"peso leve\" que contém um subconjunto de "
+"colunas da tabela. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>persister</literal> attribute lets you customize the "
+"persistence strategy used for the class. You can, for example, specify your "
+"own subclass of <literal>org.hibernate.persister.EntityPersister</literal>, "
+"or you can even provide a completely new implementation of the interface "
+"<literal>org.hibernate.persister.ClassPersister</literal> that implements, "
+"for example, persistence via stored procedure calls, serialization to flat "
+"files or LDAP. See <literal>org.hibernate.test.CustomPersister</literal> for "
+"a simple example of \"persistence\" to a <literal>Hashtable</literal>."
+msgstr ""
+"O atributo <literal>persister</literal> deixa você customizar a estratégia "
+"de persistência utilizada para a classe. Você pode, por exemplo, especificar "
+"sua própria subclasse do <literal>org.hibernate.persister.EntityPersister</"
+"literal> ou você pode criar uma implementação completamente nova da "
+"interface <literal>org.hibernate.persister.ClassPersister</literal> que "
+"implementa a persistência através de, por exemplo, chamadas a procedimentos "
+"armazenados, serialização de arquivos planos ou LDAP. Veja <literal>org."
+"hibernate.test.CustomPersister</literal> para um exemplo simples de "
+"\"persistência\" para uma <literal>Hashtable</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>dynamic-update</literal> and <literal>dynamic-insert</literal> "
+"settings are not inherited by subclasses, so they can also be specified on "
+"the <literal>&lt;subclass&gt;</literal> or <literal>&lt;joined-subclass&gt;</"
+"literal> elements. Although these settings can increase performance in some "
+"cases, they can actually decrease performance in others."
+msgstr ""
+"Observe que as configurações <literal>dynamic-update</literal> e "
+"<literal>dynamic-insert</literal> não são herdadas pelas subclasses e assim "
+"podem também ser especificadas em elementos <literal>&lt;subclass&gt;</"
+"literal> ou <literal>&lt;joined-subclass&gt;</literal>. Estas configurações "
+"podem incrementar o desempenho em alguns casos, mas podem realmente diminuir "
+"o desempenho em outras. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Use of <literal>select-before-update</literal> will usually decrease "
+"performance. It is useful to prevent a database update trigger being called "
+"unnecessarily if you reattach a graph of detached instances to a "
+"<literal>Session</literal>."
+msgstr ""
+"O uso de <literal>select-before-update</literal> geralmente irá diminuir o "
+"desempenho. Ela é muito útil para prevenir que um trigger de atualização no "
+"banco de dados seja ativado desnecessariamente, se você reconectar um nó de "
+"uma instância desconectada em uma <literal>Session</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you enable <literal>dynamic-update</literal>, you will have a choice of "
+"optimistic locking strategies:"
+msgstr ""
+"Se você ativar <literal>dynamic-update</literal>, você terá de escolher a "
+"estratégia de bloqueio otimista:"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>version</literal>: check the version/timestamp columns"
+msgstr "<literal>version</literal>: verifica as colunas de versão/timestamp"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>all</literal>: check all columns"
+msgstr "<literal>all</literal>: verifica todas as colunas"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>dirty</literal>: check the changed columns, allowing some "
+"concurrent updates"
+msgstr ""
+"<literal>dirty</literal>: verifica as colunas modificadas, permitindo "
+"algumas atualizações concorrentes"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>none</literal>: do not use optimistic locking"
+msgstr "<literal>none</literal>: não utiliza o bloqueio otimista"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is <emphasis>strongly</emphasis> recommended that you use version/"
+"timestamp columns for optimistic locking with Hibernate. This strategy "
+"optimizes performance and correctly handles modifications made to detached "
+"instances (i.e. when <literal>Session.merge()</literal> is used)."
+msgstr ""
+"Nós <emphasis>realmente</emphasis> recomendamos que você utilize as colunas "
+"de versão/timestamp para o bloqueio otimista com o Hibernate. Esta é a "
+"melhor estratégia em relação ao desempenho e é a única estratégia que trata "
+"corretamente as modificações efetuadas em instâncias desconectadas (por "
+"exemplo, quando <literal>Session.merge()</literal> é utilizado)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"There is no difference between a view and a base table for a Hibernate "
+"mapping. This is transparent at the database level, although some DBMS do "
+"not support views properly, especially with updates. Sometimes you want to "
+"use a view, but you cannot create one in the database (i.e. with a legacy "
+"schema). In this case, you can map an immutable and read-only entity to a "
+"given SQL subselect expression:"
+msgstr ""
+"Não há diferença entre uma visão e uma tabela para o mapeamento do "
+"Hibernate, e como esperado isto é transparente no nível do banco de dados, "
+"mesmo que alguns bancos de dados não suportam visões apropriadamente, "
+"especialmente com atualizações. Algumas vezes, você quer utilizar uma visão, "
+"mas não pode criá-la no banco de dados (por exemplo, com um esquema legado). "
+"Neste caso, você pode mapear uma entidade imutável e de somente leitura, "
+"para uma dada expressão de subseleção SQL: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Declare the tables to synchronize this entity with, ensuring that auto-flush "
+"happens correctly and that queries against the derived entity do not return "
+"stale data. The <literal>&lt;subselect&gt;</literal> is available both as an "
+"attribute and a nested mapping element."
+msgstr ""
+"Declare as tabelas para sincronizar com esta entidade, garantindo que a auto-"
+"liberação ocorra corretamente, e que as consultas para esta entidade "
+"derivada não retornem dados desatualizados. O <literal>&lt;subselect&gt;</"
+"literal> está disponível tanto como um atributo como um elemento mapeado "
+"aninhado."
+
+#. Tag: title
+#, no-c-format
+msgid "id"
+msgstr "id"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Mapped classes <emphasis>must</emphasis> declare the primary key column of "
+"the database table. Most classes will also have a JavaBeans-style property "
+"holding the unique identifier of an instance. The <literal>&lt;id&gt;</"
+"literal> element defines the mapping from that property to the primary key "
+"column."
+msgstr ""
+"Classes mapeadas <emphasis>devem</emphasis> declarar a coluna de chave "
+"primária da tabela do banco de dados. Muitas classes irão também ter uma "
+"propriedade ao estilo Java-Beans declarando o identificador único de uma "
+"instância. O elemento <literal>&lt;id&gt;</literal> define o mapeamento "
+"desta propriedade para a chave primária."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal> (optional): the name of the identifier property."
+msgstr "<literal>name</literal> (opcional): O nome da propriedade do identificador."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>type</literal> (optional): a name that indicates the Hibernate type."
+msgstr "<literal>type</literal> (opcional): um nome que indica o tipo de Hibernate."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional - defaults to the property name): the "
+"name of the primary key column."
+msgstr ""
+"<literal>column</literal> (opcional – padrão para o nome da propridade): O "
+"nome coluna chave primária."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unsaved-value</literal> (optional - defaults to a \"sensible\" "
+"value): an identifier property value that indicates an instance is newly "
+"instantiated (unsaved), distinguishing it from detached instances that were "
+"saved or loaded in a previous session."
+msgstr ""
+"<literal>unsaved-value</literal> (opcional - padrão para um valor \"sensível"
+"\"): O valor da propriedade de identificação que indica que a instância foi "
+"novamente instanciada (unsaved), diferenciando de instâncias desconectadas "
+"que foram salvas ou carregadas em uma sessão anterior. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>access</literal> (optional - defaults to <literal>property</"
+"literal>): the strategy Hibernate should use for accessing the property "
+"value."
+msgstr ""
+"<literal>access</literal> (opcional - padrão para <literal>property</"
+"literal>): A estratégia que o Hiberante deve utilizar para acessar o valor "
+"da propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the <literal>name</literal> attribute is missing, it is assumed that the "
+"class has no identifier property."
+msgstr ""
+"Se a função <literal>name</literal> não for declarada, considera-se que a "
+"classe não tem a propriedade de identificação."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>unsaved-value</literal> attribute is almost never needed in "
+"Hibernate3."
+msgstr ""
+"A função <literal>unsaved-value</literal> não é mais necessária no Hibernate "
+"3."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"There is an alternative <literal>&lt;composite-id&gt;</literal> declaration "
+"that allows access to legacy data with composite keys. Its use is strongly "
+"discouraged for anything else."
+msgstr ""
+"Há uma declaração alternativa <literal>&lt;composite-id&gt;</literal> que "
+"permite o acesso à dados legados com chaves compostas. Nós realmente "
+"desencorajamos o uso deste para qualquer outra função."
+
+#. Tag: title
+#, no-c-format
+msgid "Generator"
+msgstr "Gerador"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <literal>&lt;generator&gt;</literal> child element names a Java "
+"class used to generate unique identifiers for instances of the persistent "
+"class. If any parameters are required to configure or initialize the "
+"generator instance, they are passed using the <literal>&lt;param&gt;</"
+"literal> element."
+msgstr ""
+"O elemento filho opcional <literal>&lt;generator&gt;</literal> nomeia uma "
+"classe Java usada para gerar identificadores únicos para instâncias de uma "
+"classe persistente. Se algum parâmetro é requerido para configurar ou "
+"inicializar a instância geradora, eles são passados utilizando o elemento "
+"<literal>&lt;param&gt;</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"All generators implement the interface <literal>org.hibernate.id."
+"IdentifierGenerator</literal>. This is a very simple interface. Some "
+"applications can choose to provide their own specialized implementations, "
+"however, Hibernate provides a range of built-in implementations. The "
+"shortcut names for the built-in generators are as follows:"
+msgstr ""
+"Todos os geradores implementam a interface <literal>org.hibernate.id."
+"IdentifierGenerator</literal>. Esta é uma interface bem simples. Algumas "
+"aplicações podem prover suas próprias implementações especializadas, "
+"entretanto, o Hibernate disponibiliza um conjunto de implementações "
+"internamente. Há nomes de atalhos para estes geradores internos, conforme "
+"segue abaixo: "
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>increment</literal>"
+msgstr "<literal>increment</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"generates identifiers of type <literal>long</literal>, <literal>short</"
+"literal> or <literal>int</literal> that are unique only when no other "
+"process is inserting data into the same table. <emphasis>Do not use in a "
+"cluster.</emphasis>"
+msgstr ""
+"gera identificadores dos tipos <literal>long</literal>, <literal>short</"
+"literal> ou <literal>int</literal> que são únicos apenas quando nenhum outro "
+"processo está inserindo dados na mesma tabela. <emphasis>Não utilize em "
+"ambientes de cluster.</emphasis>"
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>identity</literal>"
+msgstr "<literal>identity</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"supports identity columns in DB2, MySQL, MS SQL Server, Sybase and "
+"HypersonicSQL. The returned identifier is of type <literal>long</literal>, "
+"<literal>short</literal> or <literal>int</literal>."
+msgstr ""
+"suporta colunas de identidade em DB2, MySQL, Servidor MS SQL, Sybase e "
+"HypersonicSQL. O identificador retornado é do tipo <literal>long</literal>, "
+"<literal>short</literal> ou <literal>int</literal>."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>sequence</literal>"
+msgstr "<literal>sequence</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"uses a sequence in DB2, PostgreSQL, Oracle, SAP DB, McKoi or a generator in "
+"Interbase. The returned identifier is of type <literal>long</literal>, "
+"<literal>short</literal> or <literal>int</literal>"
+msgstr ""
+"utiliza uma seqüência em DB2, PostgreSQL, Oracle, SAP DB, McKoi ou um "
+"gerador no Interbase. O identificador de retorno é do tipo <literal> long</"
+"literal>, <literal>short</literal> ou <literal>int</literal>."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>hilo</literal>"
+msgstr "<literal>hilo</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"uses a hi/lo algorithm to efficiently generate identifiers of type "
+"<literal>long</literal>, <literal>short</literal> or <literal>int</literal>, "
+"given a table and column (by default <literal>hibernate_unique_key</literal> "
+"and <literal>next_hi</literal> respectively) as a source of hi values. The "
+"hi/lo algorithm generates identifiers that are unique only for a particular "
+"database."
+msgstr ""
+"utiliza um algoritmo hi/lo para gerar de forma eficiente identificadores do "
+"tipo <literal>long</literal>, <literal>short</literal> ou <literal>int</"
+"literal>, a partir de uma tabela e coluna fornecida (por padrão "
+"<literal>hibernate_unique_key</literal> e <literal>next_hi</literal>) como "
+"fonte para os valores hi. O algoritmo hi/lo gera identificadores que são "
+"únicos apenas para um banco de dados específico."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>seqhilo</literal>"
+msgstr "<literal>seqhilo</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"uses a hi/lo algorithm to efficiently generate identifiers of type "
+"<literal>long</literal>, <literal>short</literal> or <literal>int</literal>, "
+"given a named database sequence."
+msgstr ""
+"utiliza um algoritmo hi/lo para gerar de forma eficiente identificadores do "
+"tipo <literal>long</literal>, <literal>short</literal> ou <literal>int</"
+"literal>, a partir de uma seqüência de banco de dados fornecida."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>uuid</literal>"
+msgstr "<literal>uuid</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"uses a 128-bit UUID algorithm to generate identifiers of type string that "
+"are unique within a network (the IP address is used). The UUID is encoded as "
+"a string of 32 hexadecimal digits in length."
+msgstr ""
+"utiliza um algorítimo UUID de 128-bits para gerar identificadores do tipo "
+"string, únicos em uma rede (o endereço IP é utilizado). O UUID é codificado "
+"como um string de dígitos hexadecimais de tamanho 32."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>guid</literal>"
+msgstr "<literal>guid</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "uses a database-generated GUID string on MS SQL Server and MySQL."
+msgstr "utiliza um string GUID gerado pelo banco de dados no Servidor MS SQL e MySQL."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>native</literal>"
+msgstr "<literal>native</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"selects <literal>identity</literal>, <literal>sequence</literal> or "
+"<literal>hilo</literal> depending upon the capabilities of the underlying "
+"database."
+msgstr ""
+"seleciona entre <literal>identity</literal>, <literal>sequence</literal>ou "
+"<literal>hilo</literal> dependendo das capacidades do banco de dados "
+"utilizado."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>assigned</literal>"
+msgstr "<literal>assigned</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"lets the application assign an identifier to the object before <literal>save"
+"()</literal> is called. This is the default strategy if no <literal>&lt;"
+"generator&gt;</literal> element is specified."
+msgstr ""
+"deixa a aplicação definir um identificador para o objeto antes que o "
+"<literal>save()</literal> seja chamado. Esta é a estratégia padrão caso "
+"nenhum elemento <literal>&lt;generator&gt;</literal> seja especificado. "
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>select</literal>"
+msgstr "<literal>select</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"retrieves a primary key, assigned by a database trigger, by selecting the "
+"row by some unique key and retrieving the primary key value."
+msgstr ""
+"retorna a chave primária recuperada por um trigger do banco de dados, "
+"selecionando uma linha pela chave única e recuperando o valor da chave "
+"primária."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>foreign</literal>"
+msgstr "<literal>foreign</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"uses the identifier of another associated object. It is usually used in "
+"conjunction with a <literal>&lt;one-to-one&gt;</literal> primary key "
+"association."
+msgstr ""
+"utiliza o identificador de um outro objeto associado. Normalmente utilizado "
+"em conjunto com uma associação de chave primária do tipo <literal>&lt;one-to-"
+"one&gt;</literal>."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>sequence-identity</literal>"
+msgstr "<literal>sequence-identity</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"a specialized sequence generation strategy that utilizes a database sequence "
+"for the actual value generation, but combines this with JDBC3 "
+"getGeneratedKeys to return the generated identifier value as part of the "
+"insert statement execution. This strategy is only supported on Oracle 10g "
+"drivers targeted for JDK 1.4. Comments on these insert statements are "
+"disabled due to a bug in the Oracle drivers."
+msgstr ""
+"uma estratégia de geração de seqüência especializada que use uma seqüência "
+"de banco de dados para a geração de valor atual, mas combina isto com JDBC3 "
+"getGeneratedKeys para de fato retornar o valor do identificador gerado como "
+"parte da execução de instrução de inserção. Esta estratégia é somente "
+"conhecida para suportar drivers da Oracle 10g, focados em JDK 1.4. Note que "
+"os comentários sobre estas instruções de inserção estão desabilitados devido "
+"a um bug nos drivers da Oracle. "
+
+#. Tag: title
+#, no-c-format
+msgid "Hi/lo algorithm"
+msgstr "Algoritmo Hi/lo"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>hilo</literal> and <literal>seqhilo</literal> generators "
+"provide two alternate implementations of the hi/lo algorithm. The first "
+"implementation requires a \"special\" database table to hold the next "
+"available \"hi\" value. Where supported, the second uses an Oracle-style "
+"sequence."
+msgstr ""
+"Os geradores <literal>hilo</literal> e <literal>seqhilo</literal> fornecem "
+"duas implementações alternativas do algoritmo hi/lo, uma solução "
+"preferencial para a geração de identificadores. A primeira implementação "
+"requer uma tabela \"especial\" do banco de dados para manter o próximo valor "
+"\"hi\" disponível. A segunda utiliza uma seqüência do estilo Oracle (quando "
+"suportado)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Unfortunately, you cannot use <literal>hilo</literal> when supplying your "
+"own <literal>Connection</literal> to Hibernate. When Hibernate uses an "
+"application server datasource to obtain connections enlisted with JTA, you "
+"must configure the <literal>hibernate.transaction.manager_lookup_class</"
+"literal>."
+msgstr ""
+"Infelizmente, você não pode utilizar <literal>hilo</literal> quando estiver "
+"fornecendo sua própria <literal>Connection</literal> para o Hibernate. "
+"Quando o Hibernate estiver usando uma fonte de dados do servidor de "
+"aplicações para obter conexões suportadas com JTA, você precisará configurar "
+"adequadamente o <literal>hibernate.transaction.manager_lookup_class</"
+"literal>. "
+
+#. Tag: title
+#, no-c-format
+msgid "UUID algorithm"
+msgstr "Algoritmo UUID"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The UUID contains: IP address, startup time of the JVM that is accurate to a "
+"quarter second, system time and a counter value that is unique within the "
+"JVM. It is not possible to obtain a MAC address or memory address from Java "
+"code, so this is the best option without using JNI."
+msgstr ""
+"O UUID contém: o endereço IP, hora de início da JVM que é com precisão de um "
+"quarto de segundo, a hora do sistema e um valor contador que é único dentro "
+"da JVM. Não é possível obter o endereço MAC ou um endereço de memória do "
+"código Java, portanto este é o melhor que pode ser feito sem utilizar JNI."
+
+#. Tag: title
+#, no-c-format
+msgid "Identity columns and sequences"
+msgstr "Colunas de identidade e seqüências"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For databases that support identity columns (DB2, MySQL, Sybase, MS SQL), "
+"you can use <literal>identity</literal> key generation. For databases that "
+"support sequences (DB2, Oracle, PostgreSQL, Interbase, McKoi, SAP DB) you "
+"can use <literal>sequence</literal> style key generation. Both of these "
+"strategies require two SQL queries to insert a new object. For example:"
+msgstr ""
+"Para bancos de dados que suportam colunas de identidade (DB2, MySQL, Sybase, "
+"MS SQL), você pode utilizar uma geração de chave <literal>identity</"
+"literal>. Para bancos de dados que suportam sequencias (DB2, Oracle, "
+"PostgreSQL, Interbase, McKoi, SAP DB) você pode utilizar a geração de chaves "
+"no estilo <literal>sequence</literal>. As duas estratégias requerem duas "
+"consultas SQL para inserir um novo objeto. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For cross-platform development, the <literal>native</literal> strategy will, "
+"depending on the capabilities of the underlying database, choose from the "
+"<literal>identity</literal>, <literal>sequence</literal> and <literal>hilo</"
+"literal> strategies."
+msgstr ""
+"Para desenvolvimento multi-plataforma, a estratégia <literal>native</"
+"literal> irá escolher entre as estratégias <literal>identity</literal>, "
+"<literal>sequence</literal> e <literal>hilo</literal>, dependendo das "
+"capacidades do banco de dados utilizado."
+
+#. Tag: title
+#, no-c-format
+msgid "Assigned identifiers"
+msgstr "Identificadores atribuídos"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you want the application to assign identifiers, as opposed to having "
+"Hibernate generate them, you can use the <literal>assigned</literal> "
+"generator. This special generator uses the identifier value already assigned "
+"to the object's identifier property. The generator is used when the primary "
+"key is a natural key instead of a surrogate key. This is the default "
+"behavior if you do not specify a <literal>&lt;generator&gt;</literal> "
+"element."
+msgstr ""
+"Se você quiser que a aplicação especifique os identificadores, em vez do "
+"Hibernate gerá-los, você deve utilizar o gerador <literal>assigned</"
+"literal>. Este gerador especial irá utilizar o valor do identificador "
+"especificado para a propriedade de identificação do objeto. Este gerador é "
+"usado quando a chave primária é a chave natural em vez de uma chave "
+"substituta. Este é o comportamento padrão se você não especificar um "
+"elemento <literal>&lt;generator&gt;</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>assigned</literal> generator makes Hibernate use "
+"<literal>unsaved-value=\"undefined\"</literal>. This forces Hibernate to go "
+"to the database to determine if an instance is transient or detached, unless "
+"there is a version or timestamp property, or you define <literal>Interceptor."
+"isUnsaved()</literal>."
+msgstr ""
+"A escolha do gerador <literal>assigned</literal> faz com que o Hibernate "
+"utilize <literal>unsaved-value=\"undefined\"</literal>. Isto força o "
+"Hibernate ir até o banco de dados para determinar se uma instância está "
+"transiente ou desacoplada, a não ser que haja uma versão ou uma propriedade "
+"de timestamp, ou que você definia <literal>Interceptor.isUnsaved()</literal>."
+
+#. Tag: title
+#, no-c-format
+msgid "Primary keys assigned by triggers"
+msgstr "Chaves primárias geradas por triggers"
+
+#. Tag: para
+#, no-c-format
+msgid "Hibernate does not generate DDL with triggers. It is for legacy schemas only."
+msgstr "O Hibernate não gera DDL com triggers, apenas para sistemas legados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"In the above example, there is a unique valued property named "
+"<literal>socialSecurityNumber</literal>. It is defined by the class, as a "
+"natural key and a surrogate key named <literal>person_id</literal>, whose "
+"value is generated by a trigger."
+msgstr ""
+"No exemplo acima, há uma única propriedade com valor nomeada "
+"<literal>socialSecurityNumber</literal> definida pela classe, uma chave "
+"natural, e uma chave substituta nomeada <literal>person_id</literal> cujo "
+"valor é gerado por um trigger."
+
+#. Tag: title
+#, no-c-format
+msgid "Enhanced identifier generators"
+msgstr "Aprimoração dos geradores de identificador"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Starting with release 3.2.3, there are 2 new generators which represent a re-"
+"thinking of 2 different aspects of identifier generation. The first aspect "
+"is database portability; the second is optimization Optimization means that "
+"you do not have to query the database for every request for a new identifier "
+"value. These two new generators are intended to take the place of some of "
+"the named generators described above, starting in 3.3.x. However, they are "
+"included in the current releases and can be referenced by FQN."
+msgstr ""
+"Iniciando com a liberação 3.2.3, existem dois novos geradores que "
+"representam uma reavaliação de dois diferentes aspectos da geração "
+"identificadora. O primeiro aspecto é a portabilidade do banco de dados, o "
+"segundo é a otimização. A otimização significa que você não precisa "
+"questionar o banco de dados a cada solicitação para um novo valor de "
+"identificador. Estes dois geradores possuem por intenção substituir alguns "
+"dos geradores nomeados acima, começando em 3.3.x. No entanto, eles estão "
+"incluídos nas liberações atuais e podem ser referenciados pelo FQN."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The first of these new generators is <literal>org.hibernate.id.enhanced."
+"SequenceStyleGenerator</literal> which is intended, firstly, as a "
+"replacement for the <literal>sequence</literal> generator and, secondly, as "
+"a better portability generator than <literal>native</literal>. This is "
+"because <literal>native</literal> generally chooses between "
+"<literal>identity</literal> and <literal>sequence</literal> which have "
+"largely different semantics that can cause subtle issues in applications "
+"eyeing portability. <literal>org.hibernate.id.enhanced."
+"SequenceStyleGenerator</literal>, however, achieves portability in a "
+"different manner. It chooses between a table or a sequence in the database "
+"to store its incrementing values, depending on the capabilities of the "
+"dialect being used. The difference between this and <literal>native</"
+"literal> is that table-based and sequence-based storage have the same exact "
+"semantic. In fact, sequences are exactly what Hibernate tries to emulate "
+"with its table-based generators. This generator has a number of "
+"configuration parameters:"
+msgstr ""
+"A primeira destas novas gerações é a <literal>org.hibernate.id.enhanced."
+"SequenceStyleGenerator</literal> que primeiramente é uma substituição para o "
+"gerador <literal>sequence</literal> e, segundo, um melhor gerador de "
+"portabilidade que o <literal>native</literal>. Isto é devido ao "
+"<literal>native</literal> normalmente escolher entre <literal>identity</"
+"literal> e <literal>sequence</literal>, que são semânticas extremamente "
+"diferentes das quais podem causar problemas súbitos em portabilidade de "
+"observação de aplicativos. No entanto, o <literal>org.hibernate.id.enhanced."
+"SequenceStyleGenerator</literal> atinge a portabilidade numa maneira "
+"diferente. Ele escolhe entre uma tabela ou uma seqüência no banco de dados "
+"para armazenar seus valores de incrementação, dependendo nas capacidades do "
+"dialeto sendo usado. A diferença entre isto e o <literal>native</literal> é "
+"que o armazenamento baseado na tabela e seqüência possuem exatamente a mesma "
+"semântica. Na realidade, as seqüências são exatamente o que o Hibernate "
+"tenta imitar com os próprios geradores baseados na tabela. Este gerador "
+"possui um número de parâmetros de configuração: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>sequence_name</literal> (optional, defaults to "
+"<literal>hibernate_sequence</literal>): the name of the sequence or table to "
+"be used."
+msgstr ""
+"<literal>sequence_name</literal> (opcional - valor padrão "
+"<literal>hibernate_sequence</literal>) o nome da seqüência ou tabela a ser "
+"usada."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>initial_value</literal> (optional, defaults to <literal>1</"
+"literal>): the initial value to be retrieved from the sequence/table. In "
+"sequence creation terms, this is analogous to the clause typically named "
+"\"STARTS WITH\"."
+msgstr ""
+"<literal>initial_value</literal> (opcional - padrão para <literal>1</"
+"literal>) O valor inicial a ser restaurado a partir da seqüência/tabela. Em "
+"termos da criação de seqüência, isto é análogo à cláusula tipicamente "
+"nomeada \"STARTS WITH\"."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>increment_size</literal> (optional - defaults to <literal>1</"
+"literal>): the value by which subsequent calls to the sequence/table should "
+"differ. In sequence creation terms, this is analogous to the clause "
+"typically named \"INCREMENT BY\"."
+msgstr ""
+"<literal>increment_size</literal> (opcional - padrão para <literal>1</"
+"literal>): o valor pelo qual as chamadas para a seqüência/tabela devem "
+"diferenciar-se. Nos termos da criação da seqüência, isto é análogo à "
+"cláusula tipicamente nomeada \"INCREMENT BY\"."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>force_table_use</literal> (optional - defaults to <literal>false</"
+"literal>): should we force the use of a table as the backing structure even "
+"though the dialect might support sequence?"
+msgstr ""
+"<literal>force_table_use</literal> (opcional - padrão para <literal>false</"
+"literal>): devemos forçar o uso de uma tabela como uma estrutura de reforço, "
+"mesmo que o dialeto possa suportar a seqüência?"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>value_column</literal> (optional - defaults to <literal>next_val</"
+"literal>): only relevant for table structures, it is the name of the column "
+"on the table which is used to hold the value."
+msgstr ""
+"<literal>value_column</literal> (opcional - padrão para <literal>next_val</"
+"literal>): apenas relevante para estruturas de tabela, este é o nome da "
+"coluna onde na tabela que é usado para manter o valor."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimizer</literal> (optional - defaults to <literal>none</"
+"literal>): See <xref linkend=\"mapping-declaration-id-enhanced-optimizers\" /"
+">"
+msgstr ""
+"<literal>optimizer</literal> (opcional – padrão para <literal>none</"
+"literal>): Veja <xref linkend=\"mapping-declaration-id-enhanced-optimizers"
+"\" />"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The second of these new generators is <literal>org.hibernate.id.enhanced."
+"TableGenerator</literal>, which is intended, firstly, as a replacement for "
+"the <literal>table</literal> generator, even though it actually functions "
+"much more like <literal>org.hibernate.id.MultipleHiLoPerTableGenerator</"
+"literal>, and secondly, as a re-implementation of <literal>org.hibernate.id."
+"MultipleHiLoPerTableGenerator</literal> that utilizes the notion of "
+"pluggable optimizers. Essentially this generator defines a table capable of "
+"holding a number of different increment values simultaneously by using "
+"multiple distinctly keyed rows. This generator has a number of configuration "
+"parameters:"
+msgstr ""
+"O segundo destes novos geradores é o <literal>org.hibernate.id.enhanced."
+"TableGenerator</literal>, que primeiramente é uma substituição para o "
+"gerador <literal>table</literal>, mesmo que isto funcione muito mais como um "
+"<literal>org.hibernate.id.MultipleHiLoPerTableGenerator</literal>, e "
+"segundo, como uma reimplementação do <literal>org.hibernate.id."
+"MultipleHiLoPerTableGenerator</literal> que utiliza a noção dos otimizadores "
+"pugláveis. Basicamente, este gerador define uma tabela capacitada de manter "
+"um número de valores de incremento simultâneo pelo uso múltiplo de filas de "
+"chaves distintas. Este gerador possui um número de parâmetros de "
+"configuração."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>table_name</literal> (optional - defaults to "
+"<literal>hibernate_sequences</literal>): the name of the table to be used."
+msgstr ""
+"<literal>table_name</literal> (opcional - padrão para "
+"<literal>hibernate_sequences</literal>): O nome da tabela a ser usado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>value_column_name</literal> (optional - defaults to "
+"<literal>next_val</literal>): the name of the column on the table that is "
+"used to hold the value."
+msgstr ""
+"<literal>value_column_name</literal> (opcional - padrão para "
+"<literal>next_val</literal>): o nome da coluna na tabela que é usado para "
+"manter o valor."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>segment_column_name</literal> (optional - defaults to "
+"<literal>sequence_name</literal>): the name of the column on the table that "
+"is used to hold the \"segment key\". This is the value which identifies "
+"which increment value to use."
+msgstr ""
+"<literal>segment_column_name</literal> (opcional - padrão para "
+"<literal>sequence_name</literal>) O nome da coluna da tabela que é usado "
+"para manter a \"chave de segmento\". Este é o valor que identifica qual "
+"valor de incremento a ser usado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>segment_value</literal> (optional - defaults to <literal>default</"
+"literal>): The \"segment key\" value for the segment from which we want to "
+"pull increment values for this generator."
+msgstr ""
+"<literal>base</literal> (opcional - padrão para <literal>default</literal>) "
+"O valor da \"chave de segmento\" para o segmento pelo qual nós queremos "
+"obter os valores de incremento para este gerador."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>segment_value_length</literal> (optional - defaults to "
+"<literal>255</literal>): Used for schema generation; the column size to "
+"create this segment key column."
+msgstr ""
+"<literal>segment_value_length</literal> (opcional - padrão para "
+"<literal>255</literal>): Usado para a geração do esquema. O tamanho da "
+"coluna para criar esta coluna de chave de segmento."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>initial_value</literal> (optional - defaults to <literal>1</"
+"literal>): The initial value to be retrieved from the table."
+msgstr ""
+"<literal>initial_value</literal> (opcional - valor padrão para <literal>1</"
+"literal>): O valor inicial a ser restaurado a partir da tabela."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>increment_size</literal> (optional - defaults to <literal>1</"
+"literal>): The value by which subsequent calls to the table should differ."
+msgstr ""
+"<literal>increment_size</literal> (opcional - padrão para <literal>1</"
+"literal>): O valor pelo qual as chamadas subseqüentes para a tabela devem "
+"diferir-se."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimizer</literal> (optional - defaults to <literal></literal>): "
+"See <xref linkend=\"mapping-declaration-id-enhanced-optimizers\" />"
+msgstr ""
+"<literal>optimizer</literal> (opcional – padrão para <literal></literal>): "
+"Consulte <xref linkend=\"mapping-declaration-id-enhanced-optimizers\" />"
+
+#. Tag: title
+#, no-c-format
+msgid "Identifier generator optimization"
+msgstr "Otimização do Gerador de Identificação"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For identifier generators that store values in the database, it is "
+"inefficient for them to hit the database on each and every call to generate "
+"a new identifier value. Instead, you can group a bunch of them in memory and "
+"only hit the database when you have exhausted your in-memory value group. "
+"This is the role of the pluggable optimizers. Currently only the two "
+"enhanced generators (<xref linkend=\"mapping-declaration-id-enhanced\" /> "
+"support this operation."
+msgstr ""
+"Para os geradores de identificação que armazenam valores no banco de dados, "
+"é ineficiente para os mesmos atingirem o banco de dados em cada e toda "
+"chamada para gerar um valor de identificação novo. Ao invés disto, você pode "
+"agrupá-los na memória e apenas alcançar o banco de dados quando exceder o "
+"grupo de valor em memória. Esta é a função dos otimizadores pugláveis. "
+"Atualmente, apenas dois geradores aprimorados suportam esta operação. (<xref "
+"linkend=\"mapping-declaration-id-enhanced\"/>)"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>none</literal> (generally this is the default if no optimizer was "
+"specified): this will not perform any optimizations and hit the database for "
+"each and every request."
+msgstr ""
+"<literal>none</literal> (geralmente este é o padrão, caso nenhum otimizador "
+"for especificado): isto não executará quaisquer otimizações e alcançará o "
+"banco de dados para cada e toda solicitação."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>hilo</literal>: applies a hi/lo algorithm around the database "
+"retrieved values. The values from the database for this optimizer are "
+"expected to be sequential. The values retrieved from the database structure "
+"for this optimizer indicates the \"group number\". The "
+"<literal>increment_size</literal> is multiplied by that value in memory to "
+"define a group \"hi value\"."
+msgstr ""
+"<literal>hilo</literal>: aplica-se ao algoritmo em volta dos valores "
+"restaurados do banco de dados. Espera-se que os valores a partir do banco de "
+"dados para este otimizador sejam seqüenciais. Os valores restaurados a "
+"partir da estrutura do banco de dados para este otimizador indica um "
+"\"número de grupo\". O <literal>increment_size</literal> é multiplicado pelo "
+"valor em memória para definir um grupo \"hi value\"."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>pooled</literal>: as with the case of <literal>hilo</literal>, this "
+"optimizer attempts to minimize the number of hits to the database. Here, "
+"however, we simply store the starting value for the \"next group\" into the "
+"database structure rather than a sequential value in combination with an in-"
+"memory grouping algorithm. Here, <literal>increment_size</literal> refers to "
+"the values coming from the database."
+msgstr ""
+"<literal>pooled</literal>: assim como o caso do <literal>hilo</literal>, "
+"este otimizador tenta minimizar o número de tentativas no banco de dados. No "
+"entanto, nós simplesmente implementamos o valor de inicialização para o "
+"\"próximo grupo\" na estrutura do banco de dados ao invés do valor "
+"seqüencial na combinação com um algoritmo de agrupamento em memória. Neste "
+"caso, o <literal>increment_size</literal> refere-se aos valores de entrada a "
+"partir do banco de dados."
+
+#. Tag: title
+#, no-c-format
+msgid "composite-id"
+msgstr "Composição-id"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A table with a composite key can be mapped with multiple properties of the "
+"class as identifier properties. The <literal>&lt;composite-id&gt;</literal> "
+"element accepts <literal>&lt;key-property&gt;</literal> property mappings "
+"and <literal>&lt;key-many-to-one&gt;</literal> mappings as child elements."
+msgstr ""
+"Uma tabela com uma chave composta, pode ser mapeada com múltiplas "
+"propriedades da classe como propriedades de identificação. O elemento "
+"<literal>&lt;composite-id&gt;</literal> aceita o mapeamento da propriedade "
+"<literal>&lt;key-property&gt;</literal> e mapeamentos <literal>&lt;key-many-"
+"to-one&gt;</literal>como elementos filhos."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The persistent class <emphasis>must</emphasis> override <literal>equals()</"
+"literal> and <literal>hashCode()</literal> to implement composite identifier "
+"equality. It must also implement <literal>Serializable</literal>."
+msgstr ""
+"A classe persistente <emphasis>precisa</emphasis> substituir <literal>equals"
+"()</literal> e <literal>hashCode()</literal> para implementar "
+"identificadores compostos igualmente. E precisa também implementar "
+"<literal>Serializable</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Unfortunately, this approach means that a persistent object is its own "
+"identifier. There is no convenient \"handle\" other than the object itself. "
+"You must instantiate an instance of the persistent class itself and populate "
+"its identifier properties before you can <literal>load()</literal> the "
+"persistent state associated with a composite key. We call this approach an "
+"<emphasis>embedded</emphasis> composite identifier, and discourage it for "
+"serious applications."
+msgstr ""
+"Infelizmente, esta solução para um identificador composto significa que um "
+"objeto persistente é seu próprio identificador. Não há outro \"handle\" "
+"conveniente a não ser o próprio objeto. Você mesmo precisa instanciar uma "
+"instância de outra classe persistente e preencher suas propriedades de "
+"identificação antes que você possa dar um <literal>load()</literal> para o "
+"estado persistente associado com uma chave composta. Nós chamamos esta "
+"solução de identificador composto <emphasis>incorporado</emphasis> e não "
+"aconselhamos para aplicações sérias."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A second approach is what we call a <emphasis>mapped</emphasis> composite "
+"identifier, where the identifier properties named inside the <literal>&lt;"
+"composite-id&gt;</literal> element are duplicated on both the persistent "
+"class and a separate identifier class."
+msgstr ""
+"Uma segunda solução seria chamar de identificador composto <emphasis>mapped</"
+"emphasis> quando a propriedades de identificação nomeadas dentro do elemento "
+"<literal>&lt;composite-id&gt;</literal> estão duplicadas tanto na classe "
+"persistente como em uma classe de identificação separada."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"In this example, both the composite identifier class, <literal>MedicareId</"
+"literal>, and the entity class itself have properties named "
+"<literal>medicareNumber</literal> and <literal>dependent</literal>. The "
+"identifier class must override <literal>equals()</literal> and "
+"<literal>hashCode()</literal> and implement <literal>Serializable</literal>. "
+"The main disadvantage of this approach is code duplication."
+msgstr ""
+"No exemplo, ambas as classes de identificadores compostas, "
+"<literal>MedicareId</literal>, e a própria classe entidade possuem "
+"propriedades nomeadas <literal>medicareNumber</literal> e "
+"<literal>dependent</literal>. A classe identificadora precisa sobrepor "
+"<literal>equals()</literal> e <literal>hashCode()</literal> e implementar "
+"<literal>Serializable</literal>. A desvantagem desta solução é óbvia: "
+"duplicação de código."
+
+#. Tag: para
+#, no-c-format
+msgid "The following attributes are used to specify a mapped composite identifier:"
+msgstr ""
+"As seguintes funções são utilizadas para especificar o mapeamento de um "
+"identificador composto:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>mapped</literal> (optional - defaults to <literal>false</literal>): "
+"indicates that a mapped composite identifier is used, and that the contained "
+"property mappings refer to both the entity class and the composite "
+"identifier class."
+msgstr ""
+"<literal>mapped</literal> (opcional, <literal>false</literal> por padrão): "
+"Indica que um identificar composto mapeado é usado, e que as propriedades de "
+"mapeamento contidas refere-se tanto à classe entidade quanto à classe de "
+"identificação composta."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>class</literal> (optional - but required for a mapped composite "
+"identifier): the class used as a composite identifier."
+msgstr ""
+"<literal>class</literal> (opcional, mas requerida para um identificador "
+"composto mapeado): A classe usada como um identificador composto. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"We will describe a third, even more convenient approach, where the composite "
+"identifier is implemented as a component class in <xref linkend=\"components-"
+"compositeid\" />. The attributes described below apply only to this "
+"alternative approach:"
+msgstr ""
+"Descreveremos uma abordagem terciária e até mais conveniente, onde o "
+"identificador da composição é implementado como uma classe componente na "
+"<xref linkend=\"components-compositeid\"/>. Os atributos descritos abaixo "
+"aplicam-se apenas para esta abordagem: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>name</literal> (optional - required for this approach): a property "
+"of component type that holds the composite identifier. Please see chapter 9 "
+"for more information."
+msgstr ""
+"<literal>name</literal> (opcional, requerida para esta abordagem): Uma "
+"propriedade do tipo componente que armazena o identificador composto. Para "
+"maiores informações, por favor consulte o capítulo 9."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>access</literal> (optional - defaults to <literal>property</"
+"literal>): the strategy Hibernate uses for accessing the property value."
+msgstr ""
+"<literal>access</literal> (opcional - padrão  para <literal>property</"
+"literal>): A estratégia que o Hiberante deve utilizar para acessar o valor "
+"da propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>class</literal> (optional - defaults to the property type "
+"determined by reflection): the component class used as a composite "
+"identifier. Please see the next section for more information."
+msgstr ""
+"<literal>class</literal> (opcional - valor padrão para o tipo de propriedade "
+"determinando por reflexão): A classe componente utilizada como um "
+"identificador composto. Por favor consulte a próxima seção para maiores "
+"informações."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The third approach, an <emphasis>identifier component</emphasis>, is "
+"recommended for almost all applications."
+msgstr ""
+"Esta terceira abordagem, um <emphasis>componente identificador</emphasis>, é "
+"a que nós recomendamos para a maioria das aplicações. "
+
+#. Tag: title
+#, no-c-format
+msgid "Discriminator"
+msgstr "Discriminador "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;discriminator&gt;</literal> element is required for "
+"polymorphic persistence using the table-per-class-hierarchy mapping "
+"strategy. It declares a discriminator column of the table. The discriminator "
+"column contains marker values that tell the persistence layer what subclass "
+"to instantiate for a particular row. A restricted set of types can be used: "
+"<literal>string</literal>, <literal>character</literal>, <literal>integer</"
+"literal>, <literal>byte</literal>, <literal>short</literal>, "
+"<literal>boolean</literal>, <literal>yes_no</literal>, <literal>true_false</"
+"literal>."
+msgstr ""
+"O elemento <literal>&lt;discriminator&gt;</literal> é necessário para "
+"persistência polimórfica utilizando a estratégia de mapeamento de tabela-por-"
+"classe-hierárquica e declara uma coluna discriminadora da tabela. A coluna "
+"discriminadora contém valores de marcação que informam à camada de "
+"persistência qual subclasse instanciar para uma linha em específico. Um "
+"restrito conjunto de tipos que podem ser utilizados: <literal>string</"
+"literal>, <literal>character</literal>, <literal>integer</literal>, "
+"<literal>byte</literal>, <literal>short</literal>, <literal>boolean</"
+"literal>, <literal>yes_no</literal>, <literal>true_false</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional - defaults to <literal>class</literal>): "
+"the name of the discriminator column."
+msgstr ""
+"<literal>column</literal> (opcional - padrão para <literal>class</literal>): "
+"O nome da coluna discriminadora."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>type</literal> (optional - defaults to <literal>string</literal>): "
+"a name that indicates the Hibernate type"
+msgstr ""
+"<literal>type</literal> (opcional - padrão para <literal>string</literal>): "
+"O nome que indica o tipo Hibernate."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>force</literal> (optional - defaults to <literal>false</literal>): "
+"\"forces\" Hibernate to specify the allowed discriminator values, even when "
+"retrieving all instances of the root class."
+msgstr ""
+"<literal>force</literal> (opcional - valor padrão <literal>false</literal>): "
+"\"Força\" o Hibernate a especificar valores discriminadores permitidos mesmo "
+"quando recuperando todas as instâncias da classe raíz. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>insert</literal> (optional - defaults to <literal>true</literal>): "
+"set this to <literal>false</literal> if your discriminator column is also "
+"part of a mapped composite identifier. It tells Hibernate not to include the "
+"column in SQL <literal>INSERTs</literal>."
+msgstr ""
+"<literal>insert</literal> (opcional - valor padrão para <literal>true</"
+"literal>) Ajuste para <literal>false</literal> se sua coluna discriminadora "
+"também fizer parte do identificador composto mapeado. (Isto informa ao "
+"Hibernate para não incluir a coluna em comandos SQL <literal>INSERT</"
+"literal>s)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>formula</literal> (optional): an arbitrary SQL expression that is "
+"executed when a type has to be evaluated. It allows content-based "
+"discrimination."
+msgstr ""
+"<literal>formula</literal> (opcional): Uma expressão SQL arbitrária que é "
+"executada quando um tipo tem que ser avaliado. Permite discriminação baseada "
+"em conteúdo. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Actual values of the discriminator column are specified by the "
+"<literal>discriminator-value</literal> attribute of the <literal>&lt;"
+"class&gt;</literal> and <literal>&lt;subclass&gt;</literal> elements."
+msgstr ""
+"Valores atuais de uma coluna discriminada são especificados pela função "
+"<literal>discriminator-value</literal> da <literal>&lt;class&gt;</literal> e "
+"elementos da <literal>&lt;subclass&gt;</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>force</literal> attribute is only useful if the table contains "
+"rows with \"extra\" discriminator values that are not mapped to a persistent "
+"class. This will not usually be the case."
+msgstr ""
+"O atributo <literal>force</literal> é útil (apenas) em tabelas contendo "
+"linhas com valores discriminadores \"extras\" que não estão mapeados para "
+"uma classe persistente. Este não é geralmente o caso."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>formula</literal> attribute allows you to declare an arbitrary "
+"SQL expression that will be used to evaluate the type of a row. For example:"
+msgstr ""
+"Usando o atributo <literal>formula</literal> você pode declarar uma "
+"expressão SQL arbitrária que será utilizada para avaliar o tipo de uma "
+"linha. Por exemplo:"
+
+#. Tag: title
+#, no-c-format
+msgid "Version (optional)"
+msgstr "Versão (opcional) "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;version&gt;</literal> element is optional and indicates "
+"that the table contains versioned data. This is particularly useful if you "
+"plan to use <emphasis>long transactions</emphasis>. See below for more "
+"information:"
+msgstr ""
+"O elemento <literal>&lt;version&gt;</literal> é opcional e indica que a "
+"tabela possui dados versionados. Isto é particularmente útil se você planeja "
+"utilizar <emphasis>transações longas</emphasis>. Veja abaixo maiores "
+"informações: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional - defaults to the property name): the "
+"name of the column holding the version number."
+msgstr ""
+"<literal>column</literal> (opcional - tem como padrão o nome da propriedade "
+"name): O nome da coluna mantendo o número da versão."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal>: the name of a property of the persistent class."
+msgstr "<literal>name</literal>: O nome da propriedade da classe persistente. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>type</literal> (optional - defaults to <literal>integer</literal>): "
+"the type of the version number."
+msgstr ""
+"<literal>type</literal> (opcional - padrão para <literal>integer</literal>): "
+"O tipo do número da versão."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>access</literal> (optional - defaults to <literal>property</"
+"literal>): the strategy Hibernate uses to access the property value."
+msgstr ""
+"<literal>access</literal> (opcional - padrão para <literal>property</"
+"literal>): A estratégia que o Hiberante deve utilizar para acessar o valor "
+"da propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unsaved-value</literal> (optional - defaults to <literal>undefined</"
+"literal>): a version property value that indicates that an instance is newly "
+"instantiated (unsaved), distinguishing it from detached instances that were "
+"saved or loaded in a previous session. <literal>Undefined</literal> "
+"specifies that the identifier property value should be used."
+msgstr ""
+"<literal>unsaved-value</literal> (opcional – valor padrão para "
+"<literal>undefined </literal>): Um valor para a propriedade versão que "
+"indica que uma instância foi instanciada recentemente (unsaved), "
+"distinguindo de instâncias desconectadas que foram salvas ou carregadas em "
+"sessões anteriores. (<literal>undefined</literal> especifica que o valor da "
+"propriedade de identificação deve ser utilizado). "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>generated</literal> (optional - defaults to <literal>never</"
+"literal>): specifies that this version property value is generated by the "
+"database. See the discussion of <link linkend=\"mapping-generated"
+"\">generated properties</link> for more information."
+msgstr ""
+"<literal>generated</literal> (opcional - valor padrão <literal>never</"
+"literal>): Especifica que este valor de propriedade da versão é na verdade "
+"gerado pelo banco de dados. Veja o <link linkend=\"mapping-generated"
+"\">generated properties</link> "
+"para maiores informações. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>insert</literal> (optional - defaults to <literal>true</literal>): "
+"specifies whether the version column should be included in SQL insert "
+"statements. It can be set to <literal>false</literal> if the database column "
+"is defined with a default value of <literal>0</literal>."
+msgstr ""
+"<literal>insert</literal> (opcional - padrão para <literal>true</literal>): "
+"Especifica se a coluna de versão deve ser incluída na instrução de inserção "
+"do SQL. Pode ser configurado como <literal>false</literal> se a coluna do "
+"banco de dados estiver definida com um valor padrão de <literal>0</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Version numbers can be of Hibernate type <literal>long</literal>, "
+"<literal>integer</literal>, <literal>short</literal>, <literal>timestamp</"
+"literal> or <literal>calendar</literal>."
+msgstr ""
+"Números de versão podem ser dos tipos Hibernate <literal>long</literal>, "
+"<literal>integer</literal>, <literal>short</literal>, <literal>timestamp</"
+"literal> ou <literal>calendar</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A version or timestamp property should never be null for a detached "
+"instance. Hibernate will detect any instance with a null version or "
+"timestamp as transient, irrespective of what other <literal>unsaved-value</"
+"literal> strategies are specified. <emphasis>Declaring a nullable version or "
+"timestamp property is an easy way to avoid problems with transitive "
+"reattachment in Hibernate. It is especially useful for people using assigned "
+"identifiers or composite keys</emphasis>."
+msgstr ""
+"A versão ou timestamp de uma propriedade nunca deve ser nula para uma "
+"instância desconectada, assim o Hibernate irá identificar qualquer instância "
+"com uma versão nula ou timestamp como transiente, não importando qual outra "
+"estratégia <literal>unsaved-value</literal> tenha sido especificada. "
+"<emphasis>A declaração de uma versão nula ou a propriedade timestamp é um "
+"caminho fácil para tratar problemas com reconexões transitivas no Hibernate, "
+"especialmente úteis para pessoas utilizando identificadores atribuídos ou "
+"chaves compostas</emphasis>."
+
+#. Tag: title
+#, no-c-format
+msgid "Timestamp (optional)"
+msgstr "Timestamp (opcional) "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The optional <literal>&lt;timestamp&gt;</literal> element indicates that the "
+"table contains timestamped data. This provides an alternative to versioning. "
+"Timestamps are a less safe implementation of optimistic locking. However, "
+"sometimes the application might use the timestamps in other ways."
+msgstr ""
+"O elemento opcional <literal>&lt;timestamp&gt;</literal> indica que uma "
+"tabela contém dados em timestamp. Isso tem por objetivo dar uma alternativa "
+"para versionamento. Timestamps são por natureza uma implementação menos "
+"segura do bloqueio otimista. Entretanto, algumas vezes a aplicação pode usar "
+"timestamps em outros caminhos. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional - defaults to the property name): the "
+"name of a column holding the timestamp."
+msgstr ""
+"<literal>column</literal> (opcional - padrão para o nome da propriedade): O "
+"nome da coluna que mantém o timestamp."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>name</literal>: the name of a JavaBeans style property of Java type "
+"<literal>Date</literal> or <literal>Timestamp</literal> of the persistent "
+"class."
+msgstr ""
+"<literal>name</literal>: O nome da propriedade no estilo JavaBeans do tipo "
+"<literal>Date</literal> ou <literal>Timestamp</literal> da classe "
+"persistente."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unsaved-value</literal> (optional - defaults to <literal>null</"
+"literal>): a version property value that indicates that an instance is newly "
+"instantiated (unsaved), distinguishing it from detached instances that were "
+"saved or loaded in a previous session. <literal>Undefined</literal> "
+"specifies that the identifier property value should be used."
+msgstr ""
+"<literal>unsaved-value</literal> (opcional - padrão para <literal>null</"
+"literal>): Um valor de propriedade da versão que indica que uma instância "
+"foi recentemente instanciada (unsaved), distinguindo-a de instâncias "
+"desconectadas que foram salvas ou carregadas em sessões prévias. "
+"<literal>Undefined</literal> especifica que um valor de propriedade de "
+"identificação deve ser utilizado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>source</literal> (optional - defaults to <literal>vm</literal>): "
+"Where should Hibernate retrieve the timestamp value from? From the database, "
+"or from the current JVM? Database-based timestamps incur an overhead because "
+"Hibernate must hit the database in order to determine the \"next value\". It "
+"is safer to use in clustered environments. Not all <literal>Dialects</"
+"literal> are known to support the retrieval of the database's current "
+"timestamp. Others may also be unsafe for usage in locking due to lack of "
+"precision (Oracle 8, for example)."
+msgstr ""
+"<literal>source</literal> (opcional - padrão para <literal>vm</literal>): De "
+"onde o Hibernate deve recuperar o valor timestamp? Do banco de dados ou da "
+"JVM atual? Timestamps baseados em banco de dados levam a um overhead porque "
+"o Hibernate precisa acessar o banco de dados para determinar o \"próximo "
+"valor\", mas é mais seguro para uso em ambientes de cluster. Observe também, "
+"que nem todos os <literal>Dialects</literal> suportam a recuperação do "
+"carimbo de data e hora atual do banco de dados, enquanto outros podem não "
+"ser seguros para utilização em bloqueios, pela falta de precisão (Oracle 8, "
+"por exemplo)."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>generated</literal> (optional - defaults to <literal>never</"
+"literal>): specifies that this timestamp property value is actually "
+"generated by the database. See the discussion of <link linkend=\"mapping-"
+"generated\">generated properties</link> for more information."
+msgstr ""
+"<literal>generated</literal> (opcional - padrão para <literal>never</"
+"literal>): Especifica que o valor da propriedade timestamp é gerado pelo "
+"banco de dados. Veja a discussão do <link linkend=\"mapping-"
+"generated\">generated properties</link> "
+"para maiores informações. "
+
+#. Tag: title
+#, no-c-format
+msgid "Note"
+msgstr "Nota"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>&lt;Timestamp&gt;</literal> is equivalent to <literal>&lt;version "
+"type=\"timestamp\"&gt;</literal>. And <literal>&lt;timestamp source=\"db"
+"\"&gt;</literal> is equivalent to <literal>&lt;version type=\"dbtimestamp"
+"\"&gt;</literal>"
+msgstr ""
+"Observe que o <literal>&lt;timestamp&gt;</literal> é equivalente a "
+"<literal>&lt;version type=\"timestamp\"&gt;</literal>. E <literal>&lt;"
+"timestamp source=\"db\"&gt;</literal> é equivalente a <literal>&lt;version "
+"type=\"dbtimestamp\"&gt;</literal>."
+
+#. Tag: title
+#, no-c-format
+msgid "Property"
+msgstr "Propriedade "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;property&gt;</literal> element declares a persistent "
+"JavaBean style property of the class."
+msgstr ""
+"O elemento <literal>&lt;property&gt;</literal> declara uma propriedade de "
+"estilo JavaBean de uma classe."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>name</literal>: the name of the property, with an initial lowercase "
+"letter."
+msgstr ""
+"<literal>name</literal>: o nome da propriedade, iniciando com letra "
+"minúscula."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional - defaults to the property name): the "
+"name of the mapped database table column. This can also be specified by "
+"nested <literal>&lt;column&gt;</literal> element(s)."
+msgstr ""
+"<literal>column</literal> (opcional - padrão para o nome da propriedade): O "
+"nome da coluna mapeada do banco de dados. Isto pode também ser especificado "
+"pelo(s) elemento(s) <literal>&lt;column&gt;</literal> aninhados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>update, insert</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that the mapped columns should be included in SQL "
+"<literal>UPDATE</literal> and/or <literal>INSERT</literal> statements. "
+"Setting both to <literal>false</literal> allows a pure \"derived\" property "
+"whose value is initialized from some other property that maps to the same "
+"column(s), or by a trigger or other application."
+msgstr ""
+"<literal>update, insert</literal> (opcional - padrão para <literal>true</"
+"literal>): especifica que as colunas mapeadas devem ser incluídas nas "
+"instruções SQL de <literal>UPDATE</literal> e/ou <literal>INSERT</literal>. "
+"Ajustar ambas para <literal>false</literal> permite uma propridade \"derivada"
+"\" pura, cujo valor é inicializado de outra propriedade, que mapeie a mesma "
+"coluna(s) ou por uma disparo ou outra aplicação."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>formula</literal> (optional): an SQL expression that defines the "
+"value for a <emphasis>computed</emphasis> property. Computed properties do "
+"not have a column mapping of their own."
+msgstr ""
+"<literal>formula</literal> (opcional): uma instrução SQL que definie o valor "
+"para uma propriedade <emphasis>calculada</emphasis>. Propriedades calculadas "
+"não possuem uma coluna de mapeamento para elas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional - defaults to <literal>false</literal>): "
+"specifies that this property should be fetched lazily when the instance "
+"variable is first accessed. It requires build-time bytecode instrumentation."
+msgstr ""
+"<literal>lazy</literal> (opcional - padrão para <literal>false</literal>): "
+"Especifica que esta propriedade deve ser atingida de forma lenta quando a "
+"instância da variável é acessada pela primeira vez. Isto requer "
+"instrumentação bytecode em tempo de criação."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unique</literal> (optional): enables the DDL generation of a unique "
+"constraint for the columns. Also, allow this to be the target of a "
+"<literal>property-ref</literal>."
+msgstr ""
+"<literal>unique</literal> (opcional): Habilita a geração de DDL de uma única "
+"restrição para as colunas. Da mesma forma, permita que isto seja o alvo de "
+"uma <literal>property-ref</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>not-null</literal> (optional): enables the DDL generation of a "
+"nullability constraint for the columns."
+msgstr ""
+"<literal>not-null</literal> (opcional): Habilita a geração de DDL de uma "
+"restrição de nulidade para as colunas. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimistic-lock</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that updates to this property do or do not require "
+"acquisition of the optimistic lock. In other words, it determines if a "
+"version increment should occur when this property is dirty."
+msgstr ""
+"<literal>optimistic-lock</literal> (opcional - padrão para <literal>true</"
+"literal>): Especifica se mudanças para esta propriedade requerem ou não "
+"bloqueio otimista. Em outras palavras, determina se um incremento de versão "
+"deve ocorrer quando esta propriedade está suja."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>generated</literal> (optional - defaults to <literal>never</"
+"literal>): specifies that this property value is actually generated by the "
+"database. See the discussion of <link linkend=\"mapping-generated"
+"\">generated properties</link> for more information."
+msgstr ""
+"<literal>generated</literal> (opcional - padrão para <literal>never</"
+"literal>): Especifica que o valor da propriedade é na verdade gerado pelo "
+"banco de dados. Veja a discussão do <link linkend=\"mapping-generated"
+"\">generated properties</link> "
+"para maiores informações. "
+
+#. Tag: para
+#, no-c-format
+msgid "<emphasis>typename</emphasis> could be:"
+msgstr "<emphasis>typename</emphasis> pode ser:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The name of a Hibernate basic type: <literal>integer, string, character, "
+"date, timestamp, float, binary, serializable, object, blob</literal> etc."
+msgstr ""
+"O nome de um tipo básico de Hibernate: <literal>integer, string, character, "
+"date, timestamp, float, binary, serializable, object, blob</literal>, etc. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The name of a Java class with a default basic type: <literal>int, float, "
+"char, java.lang.String, java.util.Date, java.lang.Integer, java.sql.Clob</"
+"literal> etc."
+msgstr ""
+"O nome da classe Java com um tipo básico padrão: <literal>int, float, char, "
+"java.lang.String, java.util.Date, java.lang.Integer, java.sql.Clob</"
+"literal>, etc."
+
+#. Tag: para
+#, no-c-format
+msgid "The name of a serializable Java class."
+msgstr "O nome da classe Java serializável"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The class name of a custom type: <literal>com.illflow.type.MyCustomType</"
+"literal> etc."
+msgstr ""
+"O nome da classe de um tipo customizado: <literal>com.illflow.type."
+"MyCustomType</literal>, etc."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you do not specify a type, Hibernate will use reflection upon the named "
+"property and guess the correct Hibernate type. Hibernate will attempt to "
+"interpret the name of the return class of the property getter using, in "
+"order, rules 2, 3, and 4. In certain cases you will need the <literal>type</"
+"literal> attribute. For example, to distinguish between <literal>Hibernate."
+"DATE</literal> and <literal>Hibernate.TIMESTAMP</literal>, or to specify a "
+"custom type."
+msgstr ""
+"Se você não especificar um tipo, o Hibernate irá utilizar reflexão sobre a "
+"propriedade nomeada para ter uma idéia do tipo de Hibernate correto. O "
+"Hibernate tentará interpretar o nome da classe retornada, usando as regras "
+"2, 3 e 4 nesta ordem. Em certos casos, você ainda precisará do atributo "
+"<literal>type</literal>. Por exemplo, para distinguir entre "
+"<literal>Hibernate.DATE</literal> e <literal>Hibernate.TIMESTAMP</literal>, "
+"ou para especificar um tipo customizado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>access</literal> attribute allows you to control how Hibernate "
+"accesses the property at runtime. By default, Hibernate will call the "
+"property get/set pair. If you specify <literal>access=\"field\"</literal>, "
+"Hibernate will bypass the get/set pair and access the field directly using "
+"reflection. You can specify your own strategy for property access by naming "
+"a class that implements the interface <literal>org.hibernate.property."
+"PropertyAccessor</literal>."
+msgstr ""
+"A função <literal>access</literal> permite que você controle como o "
+"Hibernate irá acessar a propriedade em tempo de execução. Por padrão, o "
+"Hibernate irá chamar os métodos get/set da propriedades. Se você especificar "
+"<literal>access=\"field\"</literal>, o Hibernate irá bipassar os metodos get/"
+"set, acessando o campo diretamente, usando reflexão. Você pode especificar "
+"sua própria estratégia para acesso da propriedade criando uma classe que "
+"implemente a interface <literal>org.hibernate.property.PropertyAccessor</"
+"literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A powerful feature is derived properties. These properties are by definition "
+"read-only. The property value is computed at load time. You declare the "
+"computation as an SQL expression. This then translates to a <literal>SELECT</"
+"literal> clause subquery in the SQL query that loads an instance:"
+msgstr ""
+"Um recurso especialmente poderoso é o de propriedades derivadas. Estas "
+"propriedades são por definição somente leitura, e o valor da propriedade é "
+"calculado em tempo de execução. Você declara este cálculo como uma expressão "
+"SQL, que traduz para cláusula <literal>SELECT</literal> de uma subconsulta "
+"da consulta SQL que carrega a instância: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You can reference the entity table by not declaring an alias on a particular "
+"column. This would be <literal>customerId</literal> in the given example. "
+"You can also use the nested <literal>&lt;formula&gt;</literal> mapping "
+"element if you do not want to use the attribute."
+msgstr ""
+"Observe que você pode referenciar as entidades da própria tabela, através da "
+"não declaração de um alias para uma coluna particular. Isto seria o "
+"<literal>customerId</literal> no exemplo dado. Observe também que você pode "
+"usar o mapeamento de elemento aninhado <literal>&lt;formula&gt;</literal>, "
+"se você não gostar de usar o atributo. "
+
+#. Tag: title
+#, no-c-format
+msgid "Many-to-one"
+msgstr "Muitos-para-um "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An ordinary association to another persistent class is declared using a "
+"<literal>many-to-one</literal> element. The relational model is a many-to-"
+"one association; a foreign key in one table is referencing the primary key "
+"column(s) of the target table."
+msgstr ""
+"Uma associação ordinária para outra classe persistente é declarada usando o "
+"elemento <literal>many-to-one</literal>. O modelo relacional é uma "
+"associação muitos para um: uma chave exterior de uma tabela referenciando as "
+"colunas da chave primária da tabela destino."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal>: the name of the property."
+msgstr "<literal>name</literal>: O nome da propriedade. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>column</literal> (optional): the name of the foreign key column. "
+"This can also be specified by nested <literal>&lt;column&gt;</literal> "
+"element(s)."
+msgstr ""
+"<literal>column</literal> (opcional): O nome da coluna da chave exterior. "
+"Isto pode também ser especificado através de elementos aninhados "
+"<literal>&lt;column&gt;</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>class</literal> (optional - defaults to the property type "
+"determined by reflection): the name of the associated class."
+msgstr ""
+"<literal>class</literal> (opcional – padrão para o tipo de propriedade "
+"determinado pela reflexão): O nome da classe associada."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>cascade</literal> (optional): specifies which operations should be "
+"cascaded from the parent object to the associated object."
+msgstr ""
+"<literal>cascade</literal> (opcional): Especifica qual operação deve ser  "
+"cascateada do objeto pai para o objeto associado. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>fetch</literal> (optional - defaults to <literal>select</literal>): "
+"chooses between outer-join fetching or sequential select fetching."
+msgstr ""
+"<literal>fetch</literal> (opcional - padrão para <literal>select</literal>): "
+"Escolhe entre recuperação da união exterior ou recuperação seqüencial de "
+"seleção."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>update, insert</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that the mapped columns should be included in SQL "
+"<literal>UPDATE</literal> and/or <literal>INSERT</literal> statements. "
+"Setting both to <literal>false</literal> allows a pure \"derived\" "
+"association whose value is initialized from another property that maps to "
+"the same column(s), or by a trigger or other application."
+msgstr ""
+"<literal>update, insert</literal> (opcional - valor padrão <literal>true</"
+"literal>): especifica que as colunas mapeadas devem ser incluídas em "
+"instruções SQL de <literal>UPDATE</literal> e/ou <literal>INSERT</literal>. "
+"Com o ajuste de ambas para <literal>false</literal> você permite uma "
+"associação \"derivada\" pura cujos valores são inicializados de algumas "
+"outras propriedades que mapeiam a(s) mesma(s) coluna(s) ou por um trigger ou "
+"outra aplicação. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>property-ref</literal> (optional): the name of a property of the "
+"associated class that is joined to this foreign key. If not specified, the "
+"primary key of the associated class is used."
+msgstr ""
+"<literal>property-ref</literal>: (opcional) O nome de uma propriedade da "
+"classe associada que esteja unida à esta chave exterior. Se não for "
+"especificada, a chave primária da classe associada será utilizada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unique</literal> (optional): enables the DDL generation of a unique "
+"constraint for the foreign-key column. By allowing this to be the target of "
+"a <literal>property-ref</literal>, you can make the association multiplicity "
+"one-to-one."
+msgstr ""
+"<literal>unique</literal> (opcional): Habilita a geração DDL de uma "
+"restrição única para a coluna da chave exterior. Além disso, permite ser o "
+"alvo de uma <literal>property-ref</literal>. Isso torna a multiplicidade  da "
+"associação efetivamente um para um. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>not-null</literal> (optional): enables the DDL generation of a "
+"nullability constraint for the foreign key columns."
+msgstr ""
+"<literal>not-null</literal> (opcional): Habilita a geração DDL de uma  "
+"restrição de nulidade para as colunas de chaves exteriores."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional - defaults to <literal>proxy</literal>): "
+"by default, single point associations are proxied. <literal>lazy=\"no-proxy"
+"\"</literal> specifies that the property should be fetched lazily when the "
+"instance variable is first accessed. This requires build-time bytecode "
+"instrumentation. <literal>lazy=\"false\"</literal> specifies that the "
+"association will always be eagerly fetched."
+msgstr ""
+"<literal>lazy</literal>(opcional – padrão para <literal>proxy</literal>): "
+"Por padrão, associações de ponto único são envoltas em um proxie. "
+"<literal>lazy=\"no-proxy\"</literal> especifica que a propriedade deve ser "
+"trazida de forma tardia quando a instância da variável é acessada pela "
+"primeira vez. Isto requer instrumentação bytecode em tempo de criação. O "
+"<literal>lazy=\"false\"</literal> especifica que a associação será sempre "
+"procurada."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>not-found</literal> (optional - defaults to <literal>exception</"
+"literal>): specifies how foreign keys that reference missing rows will be "
+"handled. <literal>ignore</literal> will treat a missing row as a null "
+"association."
+msgstr ""
+"<literal>not-found</literal> (opcional - padrão para <literal>exception</"
+"literal>): Especifica como as chaves exteriores que informam que linhas que "
+"estejam faltando serão manuseadas. O <literal>ignore</literal> tratará a "
+"linha faltante como uma associação nula."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>entity-name</literal> (optional): the entity name of the associated "
+"class."
+msgstr ""
+"<literal>entity-name</literal> (opcional): O nome da entidade da classe "
+"associada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>formula</literal> (optional): an SQL expression that defines the "
+"value for a <emphasis>computed</emphasis> foreign key."
+msgstr ""
+"<literal>formula</literal> (optional): Uma instrução SQL que define um valor "
+"para uma chave exterior <emphasis>computed</emphasis>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Setting a value of the <literal>cascade</literal> attribute to any "
+"meaningful value other than <literal>none</literal> will propagate certain "
+"operations to the associated object. The meaningful values are divided into "
+"three categories. First, basic operations, which include: <literal>persist, "
+"merge, delete, save-update, evict, replicate, lock and refresh</literal>; "
+"second, special values: <literal>delete-orphan</literal>; and third,"
+"<literal>all</literal> comma-separated combinations of operation names: "
+"<literal>cascade=\"persist,merge,evict\"</literal> or <literal>cascade=\"all,"
+"delete-orphan\"</literal>. See <xref linkend=\"objectstate-transitive\" /> "
+"for a full explanation. Note that single valued, many-to-one and one-to-one, "
+"associations do not support orphan delete."
+msgstr ""
+"Ao ajustar o valor do atributo <literal>cascade</literal> para qualquer "
+"valor diferente de <literal>none</literal> irá propagar certas operações ao "
+"objeto associado. Os valores significativos são divididos em três "
+"categorias. A primeira, operações básicas, que inclui: <literal>persist, "
+"merge, delete, save-update, evict, replicate, lock and refresh</literal>. A "
+"segunda, valores especiais: <literal>delete-orphan</literal> e a terceira "
+"combinações de vírgula separada <literal>all</literal> dos nomes da "
+"operação: <literal>cascade=\"persist,merge,evict\"</literal> ou "
+"<literal>cascade=\"all,delete-orphan\"</literal>. Veja <xref linkend="
+"\"objectstate-transitive\"/> para uma completa explicação. Perceba que as "
+"associações de valores únicos, muitos-para-um e um-para-um, não suportam "
+"delete órfão: "
+
+#. Tag: para
+#, no-c-format
+msgid "Here is an example of a typical <literal>many-to-one</literal> declaration:"
+msgstr ""
+"Segue abaixo uma amostra de uma típica declaração <literal>many-to-one</"
+"literal>:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>property-ref</literal> attribute should only be used for "
+"mapping legacy data where a foreign key refers to a unique key of the "
+"associated table other than the primary key. This is a complicated and "
+"confusing relational model. For example, if the <literal>Product</literal> "
+"class had a unique serial number that is not the primary key. The "
+"<literal>unique</literal> attribute controls Hibernate's DDL generation with "
+"the SchemaExport tool."
+msgstr ""
+"O atributo <literal>property-ref</literal> deve apenas ser usado para mapear "
+"dados legados onde uma chave exterior se refere à uma chave exclusiva da "
+"tabela associada que não seja a chave primária. Este é um modelo relacional "
+"desagradável. Por exemplo, suponha que a classe <literal>Product</literal> "
+"tenha um número seqüencial exclusivo, que não seja a chave primária. O "
+"atributo <literal>unique</literal> controla a geração de DDL do Hibernate "
+"com a ferramenta SchemaExport."
+
+#. Tag: para
+#, no-c-format
+msgid "Then the mapping for <literal>OrderItem</literal> might use:"
+msgstr "Então o mapeamento para <literal>OrderItem</literal> poderia usar:"
+
+#. Tag: para
+#, no-c-format
+msgid "This is not encouraged, however."
+msgstr "No entanto, isto não é recomendável."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the referenced unique key comprises multiple properties of the associated "
+"entity, you should map the referenced properties inside a named <literal>&lt;"
+"properties&gt;</literal> element."
+msgstr ""
+"Se a chave exclusiva referenciada engloba múltiplas propriedades da entidade "
+"associada, você deve mapear as propriedades referenciadas dentro de um "
+"elemento chamado <literal>&lt;properties&gt;</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If the referenced unique key is the property of a component, you can specify "
+"a property path:"
+msgstr ""
+"Se a chave exclusiva referenciada é a propriedade de um componente, você "
+"pode especificar um caminho para a propriedade:"
+
+#. Tag: title
+#, no-c-format
+msgid "One-to-one"
+msgstr "Um-para-um "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A one-to-one association to another persistent class is declared using a "
+"<literal>one-to-one</literal> element."
+msgstr ""
+"Uma associação um-pra-um para outra classe persistente é declarada usando um "
+"elemento <literal>one-to-one </literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>constrained</literal> (optional): specifies that a foreign key "
+"constraint on the primary key of the mapped table and references the table "
+"of the associated class. This option affects the order in which <literal>save"
+"()</literal> and <literal>delete()</literal> are cascaded, and determines "
+"whether the association can be proxied. It is also used by the schema export "
+"tool."
+msgstr ""
+"<literal>constrained</literal> (opcional): Especifica que uma restrição de "
+"chave exterior na chave primária da tabela mapeada referencia a tabela da "
+"classe associada. Esta opção afeta a ordem em que <literal>save()</literal> "
+"e <literal>delete()</literal> são cascateadas, e determina se a associação "
+"pode sofrer o proxie. Isto também é usado pela ferramenta schema export. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>property-ref</literal> (optional): the name of a property of the "
+"associated class that is joined to the primary key of this class. If not "
+"specified, the primary key of the associated class is used."
+msgstr ""
+"<literal>property-ref</literal>(opcional): O nome da propriedade da classe "
+"associada que é ligada à chave primária desta classe. Se não for "
+"especificada, a chave primária da classe associada é utilizada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>formula</literal> (optional): almost all one-to-one associations "
+"map to the primary key of the owning entity. If this is not the case, you "
+"can specify another column, columns or expression to join on using an SQL "
+"formula. See <literal>org.hibernate.test.onetooneformula</literal> for an "
+"example."
+msgstr ""
+"<literal>formula</literal> (opcional): Quase todas associações um-pra-um "
+"mapeiam para a chave primária da entidade dona. Caso este não seja o caso, "
+"você pode especificar uma outra coluna, colunas ou expressões para unir "
+"utilizando uma fórmula SQL. Veja <literal>org.hibernate.test."
+"onetooneformula</literal> para exemplo. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional - defaults to <literal>proxy</literal>): "
+"by default, single point associations are proxied. <literal>lazy=\"no-proxy"
+"\"</literal> specifies that the property should be fetched lazily when the "
+"instance variable is first accessed. It requires build-time bytecode "
+"instrumentation. <literal>lazy=\"false\"</literal> specifies that the "
+"association will always be eagerly fetched. <emphasis>Note that if "
+"<literal>constrained=\"false\"</literal>, proxying is impossible and "
+"Hibernate will eagerly fetch the association</emphasis>."
+msgstr ""
+"<literal>lazy</literal> (opcional – valor padrão <literal>proxy</literal>): "
+"Por padrão, as associações de ponto único estão em proxy. <literal>lazy=\"no-"
+"proxy\"</literal> especifica que a propriedade deve ser recuperada de forma "
+"preguiçosa quando a variável da instância for acessada pela primeira vez. "
+"Isto requer instrumentação de bytecode de tempo de construção. <literal>lazy="
+"\"false\"</literal> especifica que a associação terá sempre uma busca "
+"antecipada (eager fetched). <emphasis> Note que se <literal>constrained="
+"\"false\"</literal>, será impossível efetuar o proxing e o Hibernate irá "
+"realizar uma busca antecipada na associação</emphasis>."
+
+#. Tag: para
+#, no-c-format
+msgid "There are two varieties of one-to-one associations:"
+msgstr "Existem duas variedades de associações um-pra-um: "
+
+#. Tag: para
+#, no-c-format
+msgid "primary key associations"
+msgstr "Associações de chave primária"
+
+#. Tag: para
+#, no-c-format
+msgid "unique foreign key associations"
+msgstr "Associações de chave exterior exclusiva"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Primary key associations do not need an extra table column. If two rows are "
+"related by the association, then the two table rows share the same primary "
+"key value. To relate two objects by a primary key association, ensure that "
+"they are assigned the same identifier value."
+msgstr ""
+"Associações de chave primária não necessitam de uma coluna extra de tabela. "
+"Se duas linhas forem relacionadas pela associação, então as duas linhas da "
+"tabela dividem o mesmo valor da chave primária. Assim, se você quiser que "
+"dois objetos sejam relacionados por uma associação de chave primária, você "
+"deve ter certeza que foram atribuídos com o mesmo valor identificador."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For a primary key association, add the following mappings to "
+"<literal>Employee</literal> and <literal>Person</literal> respectively:"
+msgstr ""
+"Para uma associação de chave primária, adicione os seguintes mapeamentos em "
+"<literal>Employee</literal> e <literal>Person</literal>, respectivamente:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Ensure that the primary keys of the related rows in the PERSON and EMPLOYEE "
+"tables are equal. You use a special Hibernate identifier generation strategy "
+"called <literal>foreign</literal>:"
+msgstr ""
+"Agora devemos assegurar que as chaves primárias de linhas relacionadas nas "
+"tabelas PERSON e EMPLOYEE são iguais. Nós usamos uma estratégia especial de "
+"geração de identificador do Hibernate chamada <literal>foreign</literal>:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A newly saved instance of <literal>Person</literal> is assigned the same "
+"primary key value as the <literal>Employee</literal> instance referred with "
+"the <literal>employee</literal> property of that <literal>Person</literal>."
+msgstr ""
+"Uma nova instância de <literal>Person</literal> é atribuída com o mesmo "
+"valor da chave primária da instância de <literal>Employee</literal> "
+"referenciada com a propriedade <literal>employee</literal> daquela "
+"<literal>Person</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Alternatively, a foreign key with a unique constraint, from "
+"<literal>Employee</literal> to <literal>Person</literal>, can be expressed "
+"as:"
+msgstr ""
+"Alternativamente, uma chave exterior com uma restrição única, de "
+"<literal>Employee</literal> para <literal>Person</literal>, pode ser "
+"expressada como:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This association can be made bidirectional by adding the following to the "
+"<literal>Person</literal> mapping:"
+msgstr ""
+"Esta associação pode ser feita de forma bi-direcional adicionando o seguinte "
+"no mapeamento de <literal>Person</literal>:"
+
+#. Tag: title
+#, no-c-format
+msgid "Natural-id"
+msgstr "Id Natural"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Although we recommend the use of surrogate keys as primary keys, you should "
+"try to identify natural keys for all entities. A natural key is a property "
+"or combination of properties that is unique and non-null. It is also "
+"immutable. Map the properties of the natural key inside the <literal>&lt;"
+"natural-id&gt;</literal> element. Hibernate will generate the necessary "
+"unique key and nullability constraints and, as a result, your mapping will "
+"be more self-documenting."
+msgstr ""
+"Embora recomendemos o uso das chaves substitutas como chaves primárias, você "
+"deve ainda identificar chaves naturais para todas as entidades. Uma chave "
+"natural é uma propriedade ou combinação de propriedades que é exclusiva e "
+"não nula. Mapeie as propriedades da chave natural dentro do elemento "
+"<literal>&lt;natural-id&gt;</literal>. O Hibernate irá gerar a chave "
+"exclusiva necessária e as restrições de anulabilidade, e seu mapeamento será "
+"apropriadamente auto documentado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is recommended that you implement <literal>equals()</literal> and "
+"<literal>hashCode()</literal> to compare the natural key properties of the "
+"entity."
+msgstr ""
+"Nós recomendamos com ênfase que você implemente <literal>equals()</literal> "
+"e <literal>hashCode()</literal> para comparar as propriedades da chave "
+"natural da entidade. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This mapping is not intended for use with entities that have natural primary "
+"keys."
+msgstr ""
+"Este mapeamento não pretende ser utilizado com entidades com chaves naturais "
+"primárias."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>mutable</literal> (optional - defaults to <literal>false</"
+"literal>): by default, natural identifier properties are assumed to be "
+"immutable (constant)."
+msgstr ""
+"<literal>mutable</literal> (opcional, padrão <literal>false</literal>): Por "
+"padrão, propriedades naturais identificadoras são consideradas imutáveis "
+"(constante)."
+
+#. Tag: title
+#, no-c-format
+msgid "Component and dynamic-component"
+msgstr "Componente e componente dinâmico"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;component&gt;</literal> element maps properties of a child "
+"object to columns of the table of a parent class. Components can, in turn, "
+"declare their own properties, components or collections. See the \"Component"
+"\" examples below:"
+msgstr ""
+"O elemento <literal>&lt;component&gt;</literal> mapeia propriedades de um "
+"objeto filho para colunas da tabela de uma classe pai. Os componentes podem, "
+"um após o outro, declarar suas próprias propriedades, componentes ou "
+"coleções. Veja \"Components\" abaixo:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>class</literal> (optional - defaults to the property type "
+"determined by reflection): the name of the component (child) class."
+msgstr ""
+"<literal>class</literal> (opcional – padrão para o tipo de propriedade "
+"determinada por reflection): O nome da classe (filha) do componente."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>insert</literal>: do the mapped columns appear in SQL "
+"<literal>INSERTs</literal>?"
+msgstr ""
+"<literal>insert</literal>: As colunas mapeadas aparecem nos SQL de "
+"<literal>INSERTs</literal>? "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>update</literal>: do the mapped columns appear in SQL "
+"<literal>UPDATEs</literal>?"
+msgstr ""
+"<literal>update</literal>: As colunas mapeadas aparecem nos SQL de "
+"<literal>UPDATEs</literal>? "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional - defaults to <literal>false</literal>): "
+"specifies that this component should be fetched lazily when the instance "
+"variable is first accessed. It requires build-time bytecode instrumentation."
+msgstr ""
+"<literal>lazy</literal> (opcional - padrão para <literal>false</literal>): "
+"Especifica que este componente deve ter uma busca lazy quando a função for "
+"acessada pela primeira vez. Isto requer instrumentação bytecode de tempo de "
+"construção."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimistic-lock</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that updates to this component either do or do not "
+"require acquisition of the optimistic lock. It determines if a version "
+"increment should occur when this property is dirty."
+msgstr ""
+"<literal>optimistic-lock</literal> (opcional – padrão para <literal>true</"
+"literal>): Especifica que atualizações para este componente requerem ou não "
+"aquisição de um bloqueio otimista. Em outras palavras, determina se uma "
+"versão de incremento deve ocorrer quando esta propriedade estiver suja."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unique</literal> (optional - defaults to <literal>false</literal>): "
+"specifies that a unique constraint exists upon all mapped columns of the "
+"component."
+msgstr ""
+"<literal>unique</literal> (opcional – valor padrão <literal>false</"
+"literal>): Especifica que existe uma unique restrição em todas as colunas "
+"mapeadas do componente. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The child <literal>&lt;property&gt;</literal> tags map properties of the "
+"child class to table columns."
+msgstr ""
+"A tag filha <literal>&lt;property&gt;</literal> acrescenta a propriedade de "
+"mapeamento da classe filha para colunas de uma tabela."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;component&gt;</literal> element allows a <literal>&lt;"
+"parent&gt;</literal> subelement that maps a property of the component class "
+"as a reference back to the containing entity."
+msgstr ""
+"O elemento <literal>&lt;component&gt;</literal> permite um sub-elemento "
+"<literal>&lt;parent&gt;</literal> mapeie uma propriedade da classe do "
+"componente como uma referencia de volta para a entidade que o contém."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;dynamic-component&gt;</literal> element allows a "
+"<literal>Map</literal> to be mapped as a component, where the property names "
+"refer to keys of the map. See <xref linkend=\"components-dynamic\" /> for "
+"more information."
+msgstr ""
+"O elemento <literal>&lt;dynamic-component&gt;</literal> permite que um "
+"<literal>Map</literal> possa ser mapeado como um componente onde os nomes "
+"das propriedades referem-se para as chaves no mapa. Consulte <xref linkend="
+"\"components-dynamic\"/> para maiores informações."
+
+#. Tag: title
+#, no-c-format
+msgid "Properties"
+msgstr "Propriedades"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;properties&gt;</literal> element allows the definition of a "
+"named, logical grouping of the properties of a class. The most important use "
+"of the construct is that it allows a combination of properties to be the "
+"target of a <literal>property-ref</literal>. It is also a convenient way to "
+"define a multi-column unique constraint. For example:"
+msgstr ""
+"O elemento <literal>&lt;properties&gt;</literal> permite a definição de um "
+"grupo com nome, lógico de propriedades de uma classe. A função mais "
+"importante do construtor é que ele permite que a combinação de propriedades "
+"seja o objetivo de uma <literal>property-ref</literal>. É também um modo "
+"conveninente para definir uma restrição única de múltiplas colunas. Por "
+"exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>name</literal>: the logical name of the grouping. It is "
+"<emphasis>not</emphasis> an actual property name."
+msgstr ""
+"<literal>name</literal>: O nome lógico do agrupamento. Isto <emphasis>não</"
+"emphasis> é o nome atual de propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimistic-lock</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that updates to these properties either do or do not "
+"require acquisition of the optimistic lock. It determines if a version "
+"increment should occur when these properties are dirty."
+msgstr ""
+"<literal>optimistic-lock</literal> (opcional – padrão para <literal>true</"
+"literal>): Especifica que atualizações para estes componentes requerem ou "
+"não aquisição de um bloqueio otimista. Em outras palavras, determina se uma "
+"versão de incremento deve ocorrer quando estas propriedades estiverem sujas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For example, if we have the following <literal>&lt;properties&gt;</literal> "
+"mapping:"
+msgstr ""
+"Por exemplo, se temos o seguinte mapeamento de <literal>&lt;properties&gt;</"
+"literal>:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You might have some legacy data association that refers to this unique key "
+"of the <literal>Person</literal> table, instead of to the primary key:"
+msgstr ""
+"Então podemos ter uma associação de dados legados que referem a esta chave "
+"exclusiva da tabela <literal>Person</literal>, ao invés de se referirem a "
+"chave primária:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The use of this outside the context of mapping legacy data is not "
+"recommended."
+msgstr ""
+"Nós não recomendamos o uso deste tipo de coisa fora do contexto de "
+"mapeamento de dados legados."
+
+#. Tag: title
+#, no-c-format
+msgid "Subclass"
+msgstr "Subclass"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Polymorphic persistence requires the declaration of each subclass of the "
+"root persistent class. For the table-per-class-hierarchy mapping strategy, "
+"the <literal>&lt;subclass&gt;</literal> declaration is used. For example:"
+msgstr ""
+"Finalmente, a persistência polimórfica requer a declaração de cada subclasse "
+"da classe raíz de persistência. Para a estratégia de mapeamento tabela-por-"
+"hierarquia-de-classe, deve-se utilizar a declaração <literal>&lt;subclass&gt;"
+"</literal>. Por exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal>: the fully qualified class name of the subclass."
+msgstr ""
+"<literal>name</literal>: O nome de classe completamente qualificada da "
+"subclasse. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>discriminator-value</literal> (optional - defaults to the class "
+"name): a value that distinguishes individual subclasses."
+msgstr ""
+"<literal>discriminator-value</literal> (opcional – padrão para o nome da "
+"classe): Um valor que distingue subclasses individuais."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>proxy</literal> (optional): specifies a class or interface used for "
+"lazy initializing proxies."
+msgstr ""
+"<literal>proxy</literal> (opcional): Especifica a classe ou interface que "
+"usará os proxies de inicialização lazy."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional - defaults to <literal>true</literal>): "
+"setting <literal>lazy=\"false\"</literal> disables the use of lazy fetching."
+msgstr ""
+"<literal>lazy</literal> (opcional, padrão para <literal>true</literal>): "
+"Configurar <literal>lazy=\"false\"</literal> desabilitará o uso de "
+"inicialização lazy."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Each subclass declares its own persistent properties and subclasses. "
+"<literal>&lt;version&gt;</literal> and <literal>&lt;id&gt;</literal> "
+"properties are assumed to be inherited from the root class. Each subclass in "
+"a hierarchy must define a unique <literal>discriminator-value</literal>. If "
+"this is not specified, the fully qualified Java class name is used."
+msgstr ""
+"Cada subclasse deve declarar suas próprias propriedades persistentes e "
+"subclasses. As propriedades <literal>&lt;version&gt;</literal> e "
+"<literal>&lt;id&gt;</literal> são configuradas para serem herdadas da classe "
+"raíz. Cada subclasse numa hierarquia deve definir um único "
+"<literal>discriminator-value</literal>. Se nenhum for especificado, será "
+"usado o nome da classe Java completamente qualificado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For information about inheritance mappings see <xref linkend=\"inheritance"
+"\" />."
+msgstr ""
+"Para informações sobre mapeamento de heranças. Consulte o <xref linkend="
+"\"inheritance\" />."
+
+#. Tag: title
+#, no-c-format
+msgid "Joined-subclass"
+msgstr "Subclasses Unidas "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Each subclass can also be mapped to its own table. This is called the table-"
+"per-subclass mapping strategy. An inherited state is retrieved by joining "
+"with the table of the superclass. To do this you use the <literal>&lt;joined-"
+"subclass&gt;</literal> element. For example:"
+msgstr ""
+"Alternativamente, cada subclasse pode ser mapeada para sua própria tabela. "
+"Isto é chamado estratégia de mapeamento de tabela-por-subclasse. O estado "
+"herdado é devolvido por associação com a tabela da superclasse. Nós usamos o "
+"elemento <literal>&lt;joined-subclass&gt;</literal>. Por exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>table</literal>: the name of the subclass table."
+msgstr "<literal>table</literal>: O nome da tabela da subclasse. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>proxy</literal> (optional): specifies a class or interface to use "
+"for lazy initializing proxies."
+msgstr ""
+"<literal>proxy</literal> (opcional): Especifica a classe ou interface que "
+"usará os proxies de inicialização lazy. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>lazy</literal> (optional, defaults to <literal>true</literal>): "
+"setting <literal>lazy=\"false\"</literal> disables the use of lazy fetching."
+msgstr ""
+"<literal>lazy</literal> (opcional, padrão para <literal>true</literal>): "
+"Configurar <literal>lazy=\"false\"</literal> desabilitará o uso de "
+"inicialização lazy."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A discriminator column is not required for this mapping strategy. Each "
+"subclass must, however, declare a table column holding the object identifier "
+"using the <literal>&lt;key&gt;</literal> element. The mapping at the start "
+"of the chapter would then be re-written as:"
+msgstr ""
+"A coluna discriminadora não é requerida para esta estratégia de mapeamento. "
+"Cada subclasse deve declarar uma coluna de tabela com o identificador do "
+"objeto usando o elemento <literal>&lt;key&gt;</literal>. O mapeamento no "
+"início do capítulo poderia ser re-escrito assim: "
+
+#. Tag: title
+#, no-c-format
+msgid "Union-subclass"
+msgstr "Subclasse de União"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A third option is to map only the concrete classes of an inheritance "
+"hierarchy to tables. This is called the table-per-concrete-class strategy. "
+"Each table defines all persistent states of the class, including the "
+"inherited state. In Hibernate, it is not necessary to explicitly map such "
+"inheritance hierarchies. You can map each class with a separate <literal>&lt;"
+"class&gt;</literal> declaration. However, if you wish use polymorphic "
+"associations (e.g. an association to the superclass of your hierarchy), you "
+"need to use the <literal>&lt;union-subclass&gt;</literal> mapping. For "
+"example:"
+msgstr ""
+"Uma terceira opção é mapear apenas as classes concretas de uma hierarquia de "
+"heranças para tabelas. Isto é chamado estratégia table-per-concrete-class. "
+"Cada tabela define todos os estados persistentes da classe, incluindo "
+"estados herdados. No Hibernate, não é absolutamente necessário mapear "
+"explicitamente como hierarquia de heranças. Você pode simplesmente mapear "
+"cada classe com uma declaração <literal>&lt;class&gt;</literal> separada. "
+"Porém, se você deseja usar associações polimórficas (por exemplo: uma "
+"associação para a superclasse de sua hierarquia), você precisa usar o "
+"mapeamento <literal>&lt;union-subclass&gt;</literal>. Por exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid "No discriminator column or key column is required for this mapping strategy."
+msgstr "A coluna discriminatória não é requerida para esta estratégia de mapeamento."
+
+#. Tag: title
+#, no-c-format
+msgid "Join"
+msgstr "União "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Using the <literal>&lt;join&gt;</literal> element, it is possible to map "
+"properties of one class to several tables that have a one-to-one "
+"relationship. For example:"
+msgstr ""
+"Usando o elemento <literal>&lt;join&gt;</literal>&gt;, é possível mapear "
+"propriedades de uma classe para várias tabelas que possuem uma relação um "
+"por um. Por exemplo:"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>table</literal>: the name of the joined table."
+msgstr "<literal>table</literal>: O nome da tabela associada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>fetch</literal> (optional - defaults to <literal>join</literal>): "
+"if set to <literal>join</literal>, the default, Hibernate will use an inner "
+"join to retrieve a <literal>&lt;join&gt;</literal> defined by a class or its "
+"superclasses. It will use an outer join for a <literal>&lt;join&gt;</"
+"literal> defined by a subclass. If set to <literal>select</literal> then "
+"Hibernate will use a sequential select for a <literal>&lt;join&gt;</literal> "
+"defined on a subclass. This will be issued only if a row represents an "
+"instance of the subclass. Inner joins will still be used to retrieve a "
+"<literal>&lt;join&gt;</literal> defined by the class and its superclasses."
+msgstr ""
+"<literal>fetch</literal>(opcional – valor padrão <literal>join</literal>): "
+"Se ajustado para <literal>join</literal>, o padrão, o Hibernate irá usar uma "
+"união interna para restaurar um <literal>join</literal> definido por uma "
+"classe ou suas subclasses e uma união externa para um <literal>join</"
+"literal> definido por uma subclasse. Se ajustado para <literal>select</"
+"literal>, então o Hibernate irá usar uma seleção seqüencial para um "
+"<literal>&lt;join&gt;</literal> definida numa subclasse, que será emitido "
+"apenas se uma linha representar uma instância da subclasse. Uniões internas "
+"ainda serão utilizadas para restaurar um <literal>&lt;join&gt;</literal> "
+"definido pela classe e suas superclasses. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>inverse</literal> (optional - defaults to <literal>false</"
+"literal>): if enabled, Hibernate will not insert or update the properties "
+"defined by this join."
+msgstr ""
+"<literal>inverse</literal> (opcional – padrão para <literal>false</"
+"literal>): Se habilitado, o Hibernate não tentará inserir ou atualizar as "
+"propriedades definidas por esta união."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optional</literal> (optional - defaults to <literal>false</"
+"literal>): if enabled, Hibernate will insert a row only if the properties "
+"defined by this join are non-null. It will always use an outer join to "
+"retrieve the properties."
+msgstr ""
+"<literal>optional</literal> (opcional – padrão para <literal>false</"
+"literal>): Se habilitado, o Hibernate irá inserir uma linha apenas se as "
+"propriedades, definidas por esta junção, não forem nulas. Isto irá sempre "
+"usar uma união externa para recuperar as propriedades."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For example, address information for a person can be mapped to a separate "
+"table while preserving value type semantics for all properties:"
+msgstr ""
+"Por exemplo, a informação de endereço para uma pessoa pode ser mapeada para "
+"uma tabela separada, enquanto preservando o valor da semântica de tipos para "
+"todas as propriedades:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"This feature is often only useful for legacy data models. We recommend fewer "
+"tables than classes and a fine-grained domain model. However, it is useful "
+"for switching between inheritance mapping strategies in a single hierarchy, "
+"as explained later."
+msgstr ""
+"Esta característica é útil apenas para modelos de dados legados. Nós "
+"recomendamos menos tabelas do que classes e um modelo de domínio fine-"
+"grained. Porém, é útil para ficar trocando entre estratégias de mapeamento "
+"de herança numa hierarquia simples, como explicaremos mais a frente."
+
+#. Tag: title
+#, no-c-format
+msgid "Key"
+msgstr "Key"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>&lt;key&gt;</literal> element has featured a few times within "
+"this guide. It appears anywhere the parent mapping element defines a join to "
+"a new table that references the primary key of the original table. It also "
+"defines the foreign key in the joined table:"
+msgstr ""
+"Vimos que o elemento <literal>&lt;key&gt;</literal> (chave) surgiu algumas "
+"vezes até agora. Ele aparece em qualquer lugar que o elemento pai define uma "
+"junção para a nova tabela, e define a chave exterior para a tabela "
+"associada. Ele também referencia a chave primária da tabela original:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>on-delete</literal> (optional - defaults to <literal>noaction</"
+"literal>): specifies whether the foreign key constraint has database-level "
+"cascade delete enabled."
+msgstr ""
+"<literal>on-delete</literal> (opcional, padrão para <literal>noaction</"
+"literal>): Especifica se a restrição da chave exterior no banco de dados "
+"está habilitada para o deletar cascade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>property-ref</literal> (optional): specifies that the foreign key "
+"refers to columns that are not the primary key of the original table. It is "
+"provided for legacy data."
+msgstr ""
+"<literal>property-ref</literal> (opcional): Especifica que a chave exterior "
+"se refere a colunas que não são chave primária da tabela original. Útil para "
+"os dados legados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>not-null</literal> (optional): specifies that the foreign key "
+"columns are not nullable. This is implied whenever the foreign key is also "
+"part of the primary key."
+msgstr ""
+"<literal>not-null</literal> (opcional): Especifica que a coluna da chave "
+"exterior não aceita valores nulos. Isto é implícito em qualquer momento que "
+"a chave exterior também fizer parte da chave primária."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>update</literal> (optional): specifies that the foreign key should "
+"never be updated. This is implied whenever the foreign key is also part of "
+"the primary key."
+msgstr ""
+"<literal>update</literal> (opcional): Especifica que a chave exterior nunca "
+"deve ser atualizada. Isto está implícito em qualquer momento que a chave "
+"exterior também fizer parte da chave primária."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>unique</literal> (optional): specifies that the foreign key should "
+"have a unique constraint. This is implied whenever the foreign key is also "
+"the primary key."
+msgstr ""
+"<literal>unique</literal> (opcional): Especifica que a chave exterior deve "
+"ter uma restrição única. Isto é, implícito em qualquer momento que a chave "
+"exterior também fizer parte da chave primária."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"For systems where delete performance is important, we recommend that all "
+"keys should be defined <literal>on-delete=\"cascade\"</literal>. Hibernate "
+"uses a database-level <literal>ON CASCADE DELETE</literal> constraint, "
+"instead of many individual <literal>DELETE</literal> statements. Be aware "
+"that this feature bypasses Hibernate's usual optimistic locking strategy for "
+"versioned data."
+msgstr ""
+"Nós recomendamos que para sistemas que o desempenho deletar seja importante, "
+"todas as chaves devem ser definidas <literal>on-delete=\"cascade\"</"
+"literal>. O Hibernate irá usar uma restrição a nível de banco de dados "
+"<literal>ON CASCADE DELETE</literal>, ao invés de muitas instruções "
+"<literal>DELETE</literal>. Esteja ciente que esta característica é um atalho "
+"da estratégia usual de bloqueio otimista do Hibernate para dados versionados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>not-null</literal> and <literal>update</literal> attributes are "
+"useful when mapping a unidirectional one-to-many association. If you map a "
+"unidirectional one-to-many association to a non-nullable foreign key, you "
+"<emphasis>must</emphasis> declare the key column using <literal>&lt;key not-"
+"null=\"true\"&gt;</literal>."
+msgstr ""
+"As funções <literal>not-null</literal> e <literal>update</literal> são úteis "
+"quando estamos mapeando uma associação unidirecional um para muitos. Se você "
+"mapear uma associação unidirecional um para muitos para uma chave exterior "
+"não-nula, você <emphasis>deve</emphasis> declarar a coluna chave usando "
+"<literal>&lt;key not-null=\"true\"&gt;</literal>."
+
+#. Tag: title
+#, no-c-format
+msgid "Column and formula elements"
+msgstr "Elementos coluna e fórmula "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Mapping elements which accept a <literal>column</literal> attribute will "
+"alternatively accept a <literal>&lt;column&gt;</literal> subelement. "
+"Likewise, <literal>&lt;formula&gt;</literal> is an alternative to the "
+"<literal>formula</literal> attribute. For example:"
+msgstr ""
+"Qualquer elemento de mapeamento que aceita uma função <literal>column</"
+"literal> irá aceitar alternativamente um sub-elemento <literal>&lt;column&gt;"
+"</literal>. Da mesma forma, <literal>&lt;formula&gt;</literal> é uma "
+"alternativa para a função <literal>formula</literal>."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Most of the attributes on <literal>column</literal> provide a means of "
+"tailoring the DDL during automatic schema generation. The <literal>read</"
+"literal> and <literal>write</literal> attributes allow you to specify custom "
+"SQL that Hibernate will use to access the column's value. For more on this, "
+"see the discussion of <link linkend=\"mapping-column-read-and-write\">column "
+"read and write expressions</link>."
+msgstr ""
+"A maioria das funções no <literal>column</literal> fornecem um significado de junção do DDL durante a geração automática do esquema. As funções <literal>read</"
+"literal> e <literal>write</literal> permitem que você especifique o SQL personalizado, do qual o Hibernate usará para acessar o valor da coluna. Consulte a discussão da <link linkend=\"mapping-column-read-and-write\">column "
+"read and write expressions</link> para maiores informações."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>column</literal> and <literal>formula</literal> elements can "
+"even be combined within the same property or association mapping to express, "
+"for example, exotic join conditions."
+msgstr ""
+"Os elementos <literal>column</literal> e <literal>formula</literal> podem até "
+"ser combinados dentro da mesma propriedade ou associação mapeando para "
+"expressar, por exemplo, condições de associações exóticas."
+
+#. Tag: title
+#, no-c-format
+msgid "Import"
+msgstr "Importar "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If your application has two persistent classes with the same name, and you "
+"do not want to specify the fully qualified package name in Hibernate "
+"queries, classes can be \"imported\" explicitly, rather than relying upon "
+"<literal>auto-import=\"true\"</literal>. You can also import classes and "
+"interfaces that are not explicitly mapped:"
+msgstr ""
+"Vamos supor que a sua aplicação tenha duas classes persistentes com o mesmo "
+"nome, e você não quer especificar o nome qualificado do pacote nas consultas "
+"do Hibernate. As Classes deverão ser \"importadas\" explicitamente, de "
+"preferência contando com <literal>auto-import=\"true\"</literal>. Você pode "
+"até importar classes e interfaces que não estão explicitamente mapeadas:"
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>class</literal>: the fully qualified class name of any Java class."
+msgstr ""
+"<literal>class</literal>: O nome qualificado do pacote de qualquer classe "
+"Java."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>rename</literal> (optional - defaults to the unqualified class "
+"name): a name that can be used in the query language."
+msgstr ""
+"<literal>rename</literal> (opcional – padrão para o nome da classe não "
+"qualificada): Um nome que pode ser usado numa linguagem de consulta."
+
+#. Tag: title
+#, no-c-format
+msgid "Any"
+msgstr "Any"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"There is one more type of property mapping. The <literal>&lt;any&gt;</"
+"literal> mapping element defines a polymorphic association to classes from "
+"multiple tables. This type of mapping requires more than one column. The "
+"first column contains the type of the associated entity. The remaining "
+"columns contain the identifier. It is impossible to specify a foreign key "
+"constraint for this kind of association. This is not the usual way of "
+"mapping polymorphic associations and you should use this only in special "
+"cases. For example, for audit logs, user session data, etc."
+msgstr ""
+"Existe mais um tipo de propriedade de mapeamento. O elemento de mapeamento "
+"<literal>&lt;any&gt;</literal> define uma associação polimórfica para "
+"classes de múltiplas tabelas. Este tipo de mapeamento sempre requer mais de "
+"uma coluna. A primeira coluna possui o tipo da entidade associada. A outra "
+"coluna restante possui o identificador. É impossível especificar uma "
+"restrição de chave exterior para este tipo de associação, portanto isto "
+"certamente não é visto como um caminho usual para associações (polimórficas) "
+"de mapeamento. Você deve usar este mapeamento apenas em casos muito "
+"especiais. Por exemplo: audit logs, dados de sessão do usuário, etc. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>meta-type</literal> attribute allows the application to specify "
+"a custom type that maps database column values to persistent classes that "
+"have identifier properties of the type specified by <literal>id-type</"
+"literal>. You must specify the mapping from values of the meta-type to class "
+"names."
+msgstr ""
+"A função <literal>meta-type</literal> permite que a aplicação especifique um "
+"tipo adaptado que mapeia valores de colunas de banco de dados para classes "
+"persistentes que possuem propriedades identificadoras do tipo especificado "
+"através do <literal>id-type</literal>. Você deve especificar o mapeamento de "
+"valores do meta-type para nome de classes. "
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>name</literal>: the property name."
+msgstr "<literal>name</literal>: o nome da propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid "<literal>id-type</literal>: the identifier type."
+msgstr "<literal>id-type</literal>: o tipo identificador."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>meta-type</literal> (optional - defaults to <literal>string</"
+"literal>): any type that is allowed for a discriminator mapping."
+msgstr ""
+"<literal>meta-type</literal> (opcional – padrão para <literal>string</"
+"literal>): Qualquer tipo que é permitido para um mapeamento discriminador."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>cascade</literal> (optional- defaults to <literal>none</literal>): "
+"the cascade style."
+msgstr ""
+"<literal>cascade</literal> (opcional – valor padrão <literal>none</"
+"literal>): o estilo cascata."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>optimistic-lock</literal> (optional - defaults to <literal>true</"
+"literal>): specifies that updates to this property either do or do not "
+"require acquisition of the optimistic lock. It defines whether a version "
+"increment should occur if this property is dirty."
+msgstr ""
+"<literal>optimistic-lock</literal> (opcional - valor padrão<literal>true</"
+"literal>): Especifica que as atualizações para esta propriedade requerem ou "
+"não aquisição da bloqueio otimista. Em outras palavras, define se uma versão "
+"de incremento deve ocorrer se esta propriedade for suja."
+
+#. Tag: title
+#, no-c-format
+msgid "Hibernate types"
+msgstr "Tipos do Hibernate "
+
+#. Tag: title
+#, no-c-format
+msgid "Entities and values"
+msgstr "Entidades e valores"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"In relation to the persistence service, Java language-level objects are "
+"classified into two groups:"
+msgstr ""
+"Os objetos de nível de linguagem Java são classificados em dois grupos, em "
+"relação ao serviço de persistência:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An <emphasis>entity</emphasis> exists independently of any other objects "
+"holding references to the entity. Contrast this with the usual Java model, "
+"where an unreferenced object is garbage collected. Entities must be "
+"explicitly saved and deleted. Saves and deletions, however, can be "
+"<emphasis>cascaded</emphasis> from a parent entity to its children. This is "
+"different from the ODMG model of object persistence by reachability and "
+"corresponds more closely to how application objects are usually used in "
+"large systems. Entities support circular and shared references. They can "
+"also be versioned."
+msgstr ""
+"Uma <emphasis>entidade</emphasis> existe independentemente de qualquer outro "
+"objeto guardando referências para a entidade. Em contraste com o modelo "
+"usual de Java que um objeto não referenciado é coletado pelo coletor de "
+"lixo. Entidades devem ser explicitamente salvas ou deletadas (exceto em "
+"operações de salvamento ou deleção que possam ser executada em "
+"<emphasis>cascata</emphasis> de uma entidade pai para seus filhos). Isto é "
+"diferente do modelo ODMG de persistência do objeto por acessibilidade e se "
+"refere mais à forma como os objetos de aplicações são geralmente usados em "
+"grandes sistemas. Entidades suportam referências circulares e comuns. Eles "
+"podem ser versionados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"An entity's persistent state consists of references to other entities and "
+"instances of <emphasis>value</emphasis> types. Values are primitives: "
+"collections (not what is inside a collection), components and certain "
+"immutable objects. Unlike entities, values in particular collections and "
+"components, <emphasis>are</emphasis> persisted and deleted by reachability. "
+"Since value objects and primitives are persisted and deleted along with "
+"their containing entity, they cannot be independently versioned. Values have "
+"no independent identity, so they cannot be shared by two entities or "
+"collections."
+msgstr ""
+"O estado persistente da entidade consiste de referências para outras "
+"entidades e instâncias de tipos de <emphasis>valor</emphasis>. Valores são "
+"primitivos: coleções (não o que tem dentro de uma coleção), componentes e "
+"certos objetos imutáveis. Entidades distintas, valores (em coleções e "
+"componentes particulares) <emphasis>são</emphasis> persistidos e apagados "
+"por acessibilidade. Visto que objetos de valor (e primitivos) são "
+"persistidos e apagados junto com as entidades que os contém e não podem ser "
+"versionados independentemente. Valores têm identidade não independente, "
+"assim eles não podem ser comuns para duas entidades ou coleções."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Until now, we have been using the term \"persistent class\" to refer to "
+"entities. We will continue to do that. Not all user-defined classes with a "
+"persistent state, however, are entities. A <emphasis>component</emphasis> is "
+"a user-defined class with value semantics. A Java property of type "
+"<literal>java.lang.String</literal> also has value semantics. Given this "
+"definition, all types (classes) provided by the JDK have value type "
+"semantics in Java, while user-defined types can be mapped with entity or "
+"value type semantics. This decision is up to the application developer. An "
+"entity class in a domain model will normally have shared references to a "
+"single instance of that class, while composition or aggregation usually "
+"translates to a value type."
+msgstr ""
+"Até agora, estivemos usando o termo \"classe persistente\" para referir às "
+"entidades. Continuaremos a fazer isto. No entanto, nem todas as classes "
+"definidas pelo usuário com estados persistentes são entidades. Um "
+"<emphasis>componente</emphasis> é uma classe de usuário definida com valores "
+"semânticos. Uma propriedade de Java de tipo <literal>java.lang.String</"
+"literal> também tem um valor semântico. Dada esta definição, nós podemos "
+"dizer que todos os tipos (classes) fornecidos pelo JDK têm tipo de valor "
+"semântico em Java, enquanto que tipos definidos pelo usuário, podem ser "
+"mapeados com entidade ou valor de tipo semântico. Esta decisão pertence ao "
+"desenvolvedor da aplicação. Uma boa dica para uma classe de entidade em um "
+"modelo de domínio são referências comuns para uma instância simples daquela "
+"classe, enquanto a composição ou agregação geralmente se traduz para um tipo "
+"de valor."
+
+#. Tag: para
+#, no-c-format
+msgid "We will revisit both concepts throughout this reference guide."
+msgstr "Iremos rever ambos os conceitos durante todo o guia de referência."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The challenge is to map the Java type system, and the developers' definition "
+"of entities and value types, to the SQL/database type system. The bridge "
+"between both systems is provided by Hibernate. For entities, <literal>&lt;"
+"class&gt;</literal>, <literal>&lt;subclass&gt;</literal> and so on are used. "
+"For value types we use <literal>&lt;property&gt;</literal>, <literal>&lt;"
+"component&gt;</literal>etc., that usually have a <literal>type</literal> "
+"attribute. The value of this attribute is the name of a Hibernate "
+"<emphasis>mapping type</emphasis>. Hibernate provides a range of mappings "
+"for standard JDK value types out of the box. You can write your own mapping "
+"types and implement your own custom conversion strategies."
+msgstr ""
+"O desafio é mapear o sistema de tipo de Java e a definição do desenvolvedor "
+"de entidades e tipos de valor para o sistema de tipo SQL/banco de dados. A "
+"ponte entre ambos os sistemas é fornecida pelo Hibernate. Para entidades que "
+"usam <literal>&lt;class&gt;</literal>, <literal>&lt; subclass&gt;</literal> "
+"e assim por diante. Para tipos de valores nós usamos <literal>&lt;"
+"property&gt;</literal>, <literal>&lt;component&gt;</literal>, etc, "
+"geralmente com uma função <literal>type</literal>. O valor desta função é o "
+"nome de um <emphasis>tipo de mapeamento</emphasis> do Hibernate. O Hibernate "
+"fornece muitos mapeamentos imediatos para tipos de valores do JDK padrão. "
+"Você pode escrever os seus próprios tipos de mapeamentos e implementar sua "
+"estratégia de conversão adaptada, como você."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"With the exception of collections, all built-in Hibernate types support null "
+"semantics."
+msgstr ""
+"Todos os tipos internos do hibernate exceto coleções, suportam semânticas "
+"nulas com a exceção das coleções."
+
+#. Tag: title
+#, no-c-format
+msgid "Basic value types"
+msgstr "Valores de tipos básicos"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The built-in <emphasis>basic mapping types</emphasis> can be roughly "
+"categorized into the following:"
+msgstr ""
+"Os <emphasis>tipos de mapeamento básicos</emphasis> fazem parte da "
+"categorização do seguinte:"
+
+#. Tag: term
+#, no-c-format
+msgid ""
+"<literal>integer, long, short, float, double, character, byte, boolean, "
+"yes_no, true_false</literal>"
+msgstr ""
+"<literal>integer, long, short, float, double, character, byte, boolean, "
+"yes_no, true_false</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings from Java primitives or wrapper classes to appropriate (vendor-"
+"specific) SQL column types. <literal>boolean, yes_no</literal> and "
+"<literal>true_false</literal> are all alternative encodings for a Java "
+"<literal>boolean</literal> or <literal>java.lang.Boolean</literal>."
+msgstr ""
+"Tipos de mapeamentos de classes primitivas ou wrapper Java específicos "
+"(vendor-specific) para tipos de coluna SQL. Boolean, <literal>boolean, "
+"yes_no</literal> são todas codificações alternativas para um "
+"<literal>boolean</literal> ou <literal>java.lang.Boolean</literal> do Java."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>string</literal>"
+msgstr "<literal>string</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A type mapping from <literal>java.lang.String</literal> to <literal>VARCHAR</"
+"literal> (or Oracle <literal>VARCHAR2</literal>)."
+msgstr ""
+"Um tipo de mapeamento de <literal>java.lang.String</literal> para "
+"<literal>VARCHAR</literal> (ou <literal>VARCHAR2</literal> no Oracle)."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>date, time, timestamp</literal>"
+msgstr "<literal>date, time, timestamp</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings from <literal>java.util.Date</literal> and its subclasses to "
+"SQL types <literal>DATE</literal>, <literal>TIME</literal> and "
+"<literal>TIMESTAMP</literal> (or equivalent)."
+msgstr ""
+"Tipos de mapeamento de <literal>java.util.Date</literal> e suas subclasses "
+"para os tipos SQL <literal>DATE</literal>, <literal>TIME</literal> e "
+"<literal>TIMESTAMP</literal> (ou equivalente)."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>calendar, calendar_date</literal>"
+msgstr "<literal>calendar, calendar_date</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings from <literal>java.util.Calendar</literal> to SQL types "
+"<literal>TIMESTAMP</literal> and <literal>DATE</literal> (or equivalent)."
+msgstr ""
+"Tipo de mapeamento de <literal>java.util.Calendar</literal> para os tipos "
+"SQL <literal>TIMESTAMP</literal> e <literal>DATE</literal> (ou equivalente)."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>big_decimal, big_integer</literal>"
+msgstr "<literal>big_decimal, big_integer</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings from <literal>java.math.BigDecimal</literal> and <literal>java."
+"math.BigInteger</literal> to <literal>NUMERIC</literal> (or Oracle "
+"<literal>NUMBER</literal>)."
+msgstr ""
+"Tipo de mapeamento de <literal>java.math.BigDecimal</literal> and "
+"<literal>java.math.BigInteger</literal> para <literal>NUMERIC</literal> (ou "
+"<literal>NUMBER</literal> no Oracle)."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>locale, timezone, currency</literal>"
+msgstr "<literal>locale, timezone, currency</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings from <literal>java.util.Locale</literal>, <literal>java.util."
+"TimeZone</literal> and <literal>java.util.Currency</literal> to "
+"<literal>VARCHAR</literal> (or Oracle <literal>VARCHAR2</literal>). "
+"Instances of <literal>Locale</literal> and <literal>Currency</literal> are "
+"mapped to their ISO codes. Instances of <literal>TimeZone</literal> are "
+"mapped to their <literal>ID</literal>."
+msgstr ""
+"Tipos de mapeamentos de <literal>java.util.Locale</literal>, <literal>java."
+"util.TimeZone</literal> e <literal>java.util.Currency</literal> para "
+"<literal>VARCHAR</literal> (ou <literal>VARCHAR2</literal> no Oracle). "
+"Instâncias de f <literal>Locale</literal> e <literal>Currency</literal> são "
+"mapeados para seus códigos ISO. Instâncias de <literal>TimeZone</literal> "
+"são mapeados para seu <literal>ID</literal>."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>class</literal>"
+msgstr "<literal>class</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"A type mapping from <literal>java.lang.Class</literal> to <literal>VARCHAR</"
+"literal> (or Oracle <literal>VARCHAR2</literal>). A <literal>Class</literal> "
+"is mapped to its fully qualified name."
+msgstr ""
+"Um tipo de mapeamento de <literal>java.lang.Class</literal> para "
+"<literal>VARCHAR</literal> (ou <literal>VARCHAR2</literal> no Oracle). Uma "
+"<literal>Class</literal> é mapeada pelo seu nome qualificado (completo)."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>binary</literal>"
+msgstr "<literal>binary</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid "Maps byte arrays to an appropriate SQL binary type."
+msgstr "Mapeia matrizes de bytes para um tipo binário de SQL apropriado."
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>text</literal>"
+msgstr "<literal>text</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Maps long Java strings to a SQL <literal>CLOB</literal> or <literal>TEXT</"
+"literal> type."
+msgstr ""
+"Mapeia strings de Java longos para um tipo SQL <literal>CLOB</literal> ou "
+"<literal>TEXT</literal>. "
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>serializable</literal>"
+msgstr "<literal>serializable</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Maps serializable Java types to an appropriate SQL binary type. You can also "
+"indicate the Hibernate type <literal>serializable</literal> with the name of "
+"a serializable Java class or interface that does not default to a basic type."
+msgstr ""
+"Mapeia tipos Java serializáveis para um tipo binário SQL apropriado. Você "
+"pode também indicar o tipo <literal>serializable</literal> do Hibernate com "
+"o nome da classe ou interface Java serializável que não é padrão para um "
+"tipo básico. "
+
+#. Tag: term
+#, no-c-format
+msgid "<literal>clob, blob</literal>"
+msgstr "<literal>clob, blob</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings for the JDBC classes <literal>java.sql.Clob</literal> and "
+"<literal>java.sql.Blob</literal>. These types can be inconvenient for some "
+"applications, since the blob or clob object cannot be reused outside of a "
+"transaction. Driver support is patchy and inconsistent."
+msgstr ""
+"Tipos de mapeamentos para as classes JDBC <literal>java.sql.Clob</literal> "
+"and <literal>java.sql.Blob</literal>. Estes tipos podem ser inconvenientes "
+"para algumas aplicações, visto que o objeto blob ou clob não pode ser "
+"reusado fora de uma transação. Além disso, o suporte de driver é imcompleto "
+"e inconsistente."
+
+#. Tag: term
+#, no-c-format
+msgid ""
+"<literal>imm_date, imm_time, imm_timestamp, imm_calendar, imm_calendar_date, "
+"imm_serializable, imm_binary</literal>"
+msgstr ""
+"<literal>imm_date, imm_time, imm_timestamp, imm_calendar, imm_calendar_date, "
+"imm_serializable, imm_binary</literal>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Type mappings for what are considered mutable Java types. This is where "
+"Hibernate makes certain optimizations appropriate only for immutable Java "
+"types, and the application treats the object as immutable. For example, you "
+"should not call <literal>Date.setTime()</literal> for an instance mapped as "
+"<literal>imm_timestamp</literal>. To change the value of the property, and "
+"have that change made persistent, the application must assign a new, "
+"nonidentical, object to the property."
+msgstr ""
+"Mapeamento de tipos para, os geralmente considerados, tipos mutáveis de "
+"Java. Isto é onde o Hibernate faz determinadas otimizações apropriadas "
+"somente para tipos imutáveis de Java, e a aplicação trata o objeto como "
+"imutável. Por exemplo, você não deve chamar <literal>Date.setTime()</"
+"literal> para uma instância mapeada como <literal>imm_timestamp</literal>. "
+"Para mudar o valor da propriedade, e ter a mudança feita persistente, a "
+"aplicação deve atribuir um novo objeto (nonidentical) à propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Unique identifiers of entities and collections can be of any basic type "
+"except <literal>binary</literal>, <literal>blob</literal> and <literal>clob</"
+"literal>. Composite identifiers are also allowed. See below for more "
+"information."
+msgstr ""
+"Identificadores únicos das entidades e coleções podem ser de qualquer tipo "
+"básico exceto <literal>binary</literal>, <literal>blob</literal> ou "
+"<literal>clob</literal>. (Identificadores compostos também são permitidos. "
+"Leia abaixo para maiores informações."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The basic value types have corresponding <literal>Type</literal> constants "
+"defined on <literal>org.hibernate.Hibernate</literal>. For example, "
+"<literal>Hibernate.STRING</literal> represents the <literal>string</literal> "
+"type."
+msgstr ""
+"Os tipos de valores básicos têm suas constantes <literal>Type</literal> "
+"correspondentes definidas em <literal>org.hibernate.Hibernate</literal>. Por "
+"exemplo, <literal>Hibernate.STRING</literal> representa o tipo "
+"<literal>string</literal>."
+
+#. Tag: title
+#, no-c-format
+msgid "Custom value types"
+msgstr "Tipos de valores personalizados"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is relatively easy for developers to create their own value types. For "
+"example, you might want to persist properties of type <literal>java.lang."
+"BigInteger</literal> to <literal>VARCHAR</literal> columns. Hibernate does "
+"not provide a built-in type for this. Custom types are not limited to "
+"mapping a property, or collection element, to a single table column. So, for "
+"example, you might have a Java property <literal>getName()</literal>/"
+"<literal>setName()</literal> of type <literal>java.lang.String</literal> "
+"that is persisted to the columns <literal>FIRST_NAME</literal>, "
+"<literal>INITIAL</literal>, <literal>SURNAME</literal>."
+msgstr ""
+"É relativamente fácil para desenvolvedores criarem seus próprios tipos de "
+"valores. Por exemplo, você pode querer persistir propriedades do tipo "
+"<literal>java.lang.BigInteger</literal> para colunas <literal>VARCHAR</"
+"literal>. O Hibernate não fornece um tipo correspondente para isso. Mas os "
+"tipos adaptados não são limitados a mapeamento de uma propriedade, ou "
+"elemento de coleção, a uma única coluna da tabela. Assim, por exemplo, você "
+"pode ter uma propriedade Java <literal>getName()</literal>/<literal>setName()"
+"</literal> do tipo <literal>java.lang.String</literal> que é persistido para "
+"colunas <literal>FIRST_NAME</literal>, <literal>INITIAL</literal>, "
+"<literal>SURNAME</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"To implement a custom type, implement either <literal>org.hibernate."
+"UserType</literal> or <literal>org.hibernate.CompositeUserType</literal> and "
+"declare properties using the fully qualified classname of the type. View "
+"<literal>org.hibernate.test.DoubleStringType</literal> to see the kind of "
+"things that are possible."
+msgstr ""
+"Para implementar um tipo personalizado, implemente <literal>org.hibernate."
+"UserType</literal> ou <literal>org.hibernate.CompositeUserType</literal> e "
+"declare propriedades usando o nome qualificado da classe do tipo. Veja "
+"<literal>org.hibernate.test.DoubleStringType</literal> para outras "
+"funcionalidades. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Notice the use of <literal>&lt;column&gt;</literal> tags to map a property "
+"to multiple columns."
+msgstr ""
+"Observe o uso da tag <literal>&lt;column&gt;</literal> para mapear uma "
+"propriedade para colunas múltiplas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>CompositeUserType</literal>, <literal>EnhancedUserType</"
+"literal>, <literal>UserCollectionType</literal>, and "
+"<literal>UserVersionType</literal> interfaces provide support for more "
+"specialized uses."
+msgstr ""
+"As interfaces <literal>CompositeUserType</literal>, "
+"<literal>EnhancedUserType</literal>, <literal>UserCollectionType</literal>, "
+"e <literal>UserVersionType</literal> fornecem suporte para usos mais "
+"especializados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You can even supply parameters to a <literal>UserType</literal> in the "
+"mapping file. To do this, your <literal>UserType</literal> must implement "
+"the <literal>org.hibernate.usertype.ParameterizedType</literal> interface. "
+"To supply parameters to your custom type, you can use the <literal>&lt;"
+"type&gt;</literal> element in your mapping files."
+msgstr ""
+"Você mesmo pode fornecer parâmetros a um <literal>UserType</literal> no "
+"arquivo de mapeamento. Para isto, seu <literal>UserType</literal> deve "
+"implementar a interface <literal>org.hibernate.usertype.ParameterizedType</"
+"literal>. Para fornecer parâmetros a seu tipo personalizado, você pode usar "
+"o elemento <literal>&lt;type&gt;</literal> em seus arquivos de mapeamento. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>UserType</literal> can now retrieve the value for the parameter "
+"named <literal>default</literal> from the <literal>Properties</literal> "
+"object passed to it."
+msgstr ""
+"O <literal>UserType</literal> pode agora recuperar o valor para o parâmetro "
+"chamado <literal>padrão</literal> da <literal>Propriedade</literal> do "
+"passado a ele."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"If you regularly use a certain <literal>UserType</literal>, it is useful to "
+"define a shorter name for it. You can do this using the <literal>&lt;"
+"typedef&gt;</literal> element. Typedefs assign a name to a custom type, and "
+"can also contain a list of default parameter values if the type is "
+"parameterized."
+msgstr ""
+"Se você usar freqüentemente um determinado <literal>UserType</literal>, pode "
+"ser útil definir um nome mais curto para ele. Você pode fazer isto usando o "
+"elemento <literal>&lt;typedef&gt;</literal>. Typedefs atribui um nome a um "
+"tipo personalizado, e pode também conter uma lista de valores de parâmetro "
+"padrão se o tipo for parametrizado."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is also possible to override the parameters supplied in a typedef on a "
+"case-by-case basis by using type parameters on the property mapping."
+msgstr ""
+"Também é possível substituir os parâmetros fornecidos em um tipo de "
+"definição em situações de caso a caso, utilizando tipos de parâmetros no "
+"mapeamento da propriedade."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Even though Hibernate's rich range of built-in types and support for "
+"components means you will rarely need to use a custom type, it is considered "
+"good practice to use custom types for non-entity classes that occur "
+"frequently in your application. For example, a <literal>MonetaryAmount</"
+"literal> class is a good candidate for a <literal>CompositeUserType</"
+"literal>, even though it could be mapped as a component. One reason for this "
+"is abstraction. With a custom type, your mapping documents would be "
+"protected against changes to the way monetary values are represented."
+msgstr ""
+"Apesar da rica variedade, os tipos construídos do Hibernate e suporte para "
+"componentes raramente irão utilizar  um tipo de padrão, no entanto, é "
+"considerado uma boa idéia, utilizar tipos customizados para classes não "
+"entidade que ocorrem com freqüência em seu aplicativo. Por exemplo, uma "
+"classe <literal>MonetaryAmount</literal> é um bom candidato para um "
+"<literal>CompositeUserType</literal>, apesar de poder ter sido mapeado "
+"facilmente como um componente. Uma motivação para isto é a abstração. Com um "
+"tipo padronizado, seus documentos de mapeamento seriam colocados à prova "
+"contra mudanças possíveis na forma de representação de valores monetários. "
+
+#. Tag: title
+#, no-c-format
+msgid "Mapping a class more than once"
+msgstr "Mapeando uma classe mais de uma vez"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"It is possible to provide more than one mapping for a particular persistent "
+"class. In this case, you must specify an <emphasis>entity name</emphasis> to "
+"disambiguate between instances of the two mapped entities. By default, the "
+"entity name is the same as the class name. Hibernate lets you specify the "
+"entity name when working with persistent objects, when writing queries, or "
+"when mapping associations to the named entity."
+msgstr ""
+"É possível fornecer mais de um mapeamento para uma classe persistente em "
+"específico. Neste caso, você deve especificar um <emphasis>nome de entidade</"
+"emphasis> para as instâncias das duas entidades mapeadas não se tornarem "
+"ambíguas. Por padrão, o nome da entidade é o mesmo do nome da classe. O "
+"Hibernate o deixa especificar o nome de entidade quando estiver trabalhando "
+"com objetos persistentes, quando escrever consultas, ou ao mapear "
+"associações para a entidade nomeada. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Associations are now specified using <literal>entity-name</literal> instead "
+"of <literal>class</literal>."
+msgstr ""
+"Note como as associações são agora especificadas utilizando o "
+"<literal>entity-name</literal> ao invés da <literal>class</literal>. "
+
+#. Tag: title
+#, no-c-format
+msgid "SQL quoted identifiers"
+msgstr "Identificadores quotados do SQL"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"You can force Hibernate to quote an identifier in the generated SQL by "
+"enclosing the table or column name in backticks in the mapping document. "
+"Hibernate will use the correct quotation style for the SQL <literal>Dialect</"
+"literal>. This is usually double quotes, but the SQL Server uses brackets "
+"and MySQL uses backticks."
+msgstr ""
+"Você poderá forçar o Hibernate a quotar um identificador no SQL gerado, "
+"anexando o nome da tabela ou coluna aos backticks no documento de "
+"mapeamento. O Hibernate usará o estilo de quotação correto para o SQL  "
+"<literal>Dialect</literal>. Geralmente são quotas dúplas, mas parênteses "
+"para o Servidor SQL e backticks para MeuSQL."
+
+#. Tag: title
+#, no-c-format
+msgid "Metadata alternatives"
+msgstr "Alternativas de Metadados"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"XML does not suit all users so there are some alternative ways to define O/R "
+"mapping metadata in Hibernate."
+msgstr ""
+"O XML não é para todos, e portanto existem algumas formas alternativas de "
+"defiinir o metadado de mapeamento no Hibernate. "
+
+#. Tag: title
+#, no-c-format
+msgid "Using XDoclet markup"
+msgstr "Usando a marcação XDoclet."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Many Hibernate users prefer to embed mapping information directly in "
+"sourcecode using XDoclet <literal>@hibernate.tags</literal>. We do not cover "
+"this approach in this reference guide since it is considered part of "
+"XDoclet. However, we include the following example of the <literal>Cat</"
+"literal> class with XDoclet mappings:"
+msgstr ""
+"Muitos usuários do Hibernate preferem encubar a informação de mapeamento "
+"diretamente no código de fonte utilizando o XDoclet <literal>@hibernate."
+"tags</literal>. Nós não falaremos sobre esta abordagem neste documento, uma "
+"vez que é estritamente considerado parte de um XDoclet. No entanto, "
+"incluímos os seguintes exemplos  da classe <literal>Cat</literal> com os "
+"mapeamentos de XDoclet:"
+
+#. Tag: para
+#, no-c-format
+msgid "See the Hibernate website for more examples of XDoclet and Hibernate."
+msgstr ""
+"Veja o web site do Hibernate para maiores detalhes sobre um XDoclet e "
+"Hibernate.  "
+
+#. Tag: title
+#, no-c-format
+msgid "Using JDK 5.0 Annotations"
+msgstr "Usando as anotações JDK 5.0"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"JDK 5.0 introduced XDoclet-style annotations at the language level that are "
+"type-safe and checked at compile time. This mechanism is more powerful than "
+"XDoclet annotations and better supported by tools and IDEs. IntelliJ IDEA, "
+"for example, supports auto-completion and syntax highlighting of JDK 5.0 "
+"annotations. The new revision of the EJB specification (JSR-220) uses JDK "
+"5.0 annotations as the primary metadata mechanism for entity beans. "
+"Hibernate3 implements the <literal>EntityManager</literal> of JSR-220 (the "
+"persistence API). Support for mapping metadata is available via the "
+"<emphasis>Hibernate Annotations</emphasis> package as a separate download. "
+"Both EJB3 (JSR-220) and Hibernate3 metadata is supported."
+msgstr ""
+"O JDK 5.0 introduziu as anotações estilo XDoclet em nível de linguagem, tipo "
+"seguro e checado em tempo de compilação. Este mecanismo é mais potente do "
+"que as anotações XDoclet e melhor suportado pelas ferramentas e IDEs. O "
+"IntelliJ IDEA por exemplo, suporta a auto complexão e destaque da sintaxe "
+"das anotações JDK 5.0. A nova revisão da especificação EJB (JSR-220) usa as "
+"anotações JDK 5.0 como mecanismos de metadados para beans de entidade. O "
+"Hibernate3 implementa o <literal>EntityManager</literal> do JSR-220 (o API "
+"de persistência). O suporte para mapear metadados está disponível através do "
+"pacote <emphasis>Anotações do Hibernate</emphasis>, como um download "
+"separado. Ambos os EJB3 (JSR-220) e o metadado Hibernate3 são suportados. "
+
+#. Tag: para
+#, no-c-format
+msgid "This is an example of a POJO class annotated as an EJB entity bean:"
+msgstr "Este é um exemplo de uma classe POJO anotado como um bean de entidade EJB:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Support for JDK 5.0 Annotations (and JSR-220) is currently under "
+"development. Please refer to the Hibernate Annotations module for more "
+"details."
+msgstr ""
+"Note que o suporte para Anotações JDK 5.0 (e JSR-220) ainda está em "
+"construção. Consulte o módulo de Anotações do Hibernate para maiores "
+"detalhes.  "
+
+#. Tag: title
+#, no-c-format
+msgid "Generated properties"
+msgstr "Propriedades geradas "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Generated properties are properties that have their values generated by the "
+"database. Typically, Hibernate applications needed to <literal>refresh</"
+"literal> objects that contain any properties for which the database was "
+"generating values. Marking properties as generated, however, lets the "
+"application delegate this responsibility to Hibernate. When Hibernate issues "
+"an SQL INSERT or UPDATE for an entity that has defined generated properties, "
+"it immediately issues a select afterwards to retrieve the generated values."
+msgstr ""
+"Propriedades Geradas são propriedades que possuem seus valores gerados pelo "
+"banco de dados. Como sempre, os aplicativos do Hibernate precisavam "
+"<literal>renovar</literal> objetos que contenham qualquer propriedade para "
+"qual o banco de dados estivesse gerando valores. No entanto, vamos permitir "
+"que o aplicativo delegue esta responsabilidade ao Hibernate. Essencialmente, "
+"quando o Hibernate edita um SQL INSERT ou UPDATE para uma entidade que tem "
+"propriedades geradas definidas, ele edita imediatamente depois uma seleção "
+"para recuperar os valores gerados."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Properties marked as generated must additionally be non-insertable and non-"
+"updateable. Only <link linkend=\"mapping-declaration-version\">versions</"
+"link>, <link linkend=\"mapping-declaration-timestamp\">timestamps</link>, "
+"and <link linkend=\"mapping-declaration-property\">simple properties</link>, "
+"can be marked as generated."
+msgstr ""
+"As propriedades marcadas como geradas devem ser não-inseríveis e não-"
+"atualizáveis. Somente <link linkend=\"mapping-declaration-version\">versions</"
+"link>, <link linkend=\"mapping-declaration-timestamp\">timestamps</link>, "
+"e <link linkend=\"mapping-declaration-property\">simple properties</link> podem ser marcadas como geradas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>never</literal> (the default): the given property value is not "
+"generated within the database."
+msgstr ""
+"<literal>never</literal> (padrão) - significa que o valor de propriedade "
+"dado não é gerado dentro do banco de dados.  "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>insert</literal>: the given property value is generated on insert, "
+"but is not regenerated on subsequent updates. Properties like created-date "
+"fall into this category. Even though <link linkend=\"mapping-declaration-"
+"version\">version</link> and <link linkend=\"mapping-declaration-timestamp"
+"\">timestamp</link> properties can be marked as generated, this option is "
+"not available."
+msgstr ""
+"<literal>insert</literal>: informa que o valor de propriedade dado é gerado "
+"ao inserir, mas não é novamente gerado nas próximas atualizações. "
+"Propriedades do tipo data criada, se encaixam nesta categoria. Note que "
+"embora as propriedades <link linkend=\"mapping-declaration-"
+"version\">version</link> e <link linkend=\"mapping-declaration-timestamp"
+"\">timestamp</link> podem ser marcadas como "
+"geradas, esta opção não está disponível."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"<literal>always</literal>: the property value is generated both on insert "
+"and on update."
+msgstr ""
+"<literal>always</literal> - informa que o valor da propriedade é gerado "
+"tanto ao inserir quanto ao atualizar. "
+
+#. Tag: title
+#, no-c-format
+msgid "Column read and write expressions"
+msgstr "Coluna de expressöes de gravação e leitura"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Hibernate allows you to customize the SQL it uses to read and write the "
+"values of columns mapped to <link linkend=\"mapping-declaration-property"
+"\">simple properties</link>. For example, if your database provides a set of "
+"data encryption functions, you can invoke them for individual columns like "
+"this: <programlisting role=\"XML\">&lt;property name=\"creditCardNumber"
+"\"&gt; &lt;column name=\"credit_card_num\" read=\"decrypt(credit_card_num)\" "
+"write=\"encrypt(?)\"/&gt; &lt;/property&gt;</programlisting>"
+msgstr ""
+"O Hibernate permite você personalizar o SQL utilizado para ler e gravar os valores da coluna mapeada ao <link linkend=\"mapping-declaration-property"
+"\">simple properties</link>. Por exemplo, caso o seu banco de dados fornecer um conjunto de funçöes encriptonados de dados, você poderá invocá-las para colunas individuais como: <programlisting role=\"XML\">&lt;property name=\"creditCardNumber"
+"\"&gt; &lt;column name=\"credit_card_num\" read=\"decrypt(credit_card_num)\" "
+"write=\"encrypt(?)\"/&gt; &lt;/property&gt;</programlisting>"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Hibernate applies the custom expressions automatically whenever the property "
+"is referenced in a query. This functionality is similar to a derived-"
+"property <literal>formula</literal> with two differences:"
+msgstr "O Hibernate aplica automaticamente as expressöes personalizadas a todo instante que a propriedade é referenciada numa consulta. Esta funcionalidade é parecida a uma <literal>formula</literal> de propriedade-derivada com duas diferenças:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The property is backed by one or more columns that are exported as part of "
+"automatic schema generation."
+msgstr "Esta propriedade é suportada por uma ou mais colunas que são exportadas como parte da geração do esquema automático."
+
+#. Tag: para
+#, no-c-format
+msgid "The property is read-write, not read-only."
+msgstr "Esta propriedade é de gravação-leitura, e não de leitura apenas."
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The <literal>write</literal> expression, if specified, must contain exactly "
+"one '?' placeholder for the value."
+msgstr "Caso a expressão <literal>write</literal>seja especificada, deverá conter um '?' para o valor."
+
+#. Tag: title
+#, no-c-format
+msgid "Auxiliary database objects"
+msgstr "Objetos de Banco de Dados Auxiliares "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Auxiliary database objects allow for the CREATE and DROP of arbitrary "
+"database objects. In conjunction with Hibernate's schema evolution tools, "
+"they have the ability to fully define a user schema within the Hibernate "
+"mapping files. Although designed specifically for creating and dropping "
+"things like triggers or stored procedures, any SQL command that can be run "
+"via a <literal>java.sql.Statement.execute()</literal> method is valid (for "
+"example, ALTERs, INSERTS, etc.). There are essentially two modes for "
+"defining auxiliary database objects:"
+msgstr ""
+"Permite o uso dos comandos CREATE e DROP para criar e remover os objetos de "
+"banco de dados arbitrários. Juntamente às ferramentas de evolução do esquema "
+"do Hibernate, eles possuem a habilidade de definir completamente um esquema "
+"de usuário dentro dos arquivos de mapeamento do Hibernate. Embora criado "
+"especificamente para criar e remover algo como trigger ou procedimento "
+"armazenado, qualquer comando SQL que pode rodar através de um método "
+"<literal>java.sql.Statement.execute()</literal> é válido. Existem dois "
+"módulos essenciais para definir objetos de banco de dados auxiliares:"
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The first mode is to explicitly list the CREATE and DROP commands in the "
+"mapping file:"
+msgstr ""
+"O primeiro módulo é para listar explicitamente os comandos CREATE e DROP no "
+"arquivo de mapeamento: "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"The second mode is to supply a custom class that constructs the CREATE and "
+"DROP commands. This custom class must implement the <literal>org.hibernate."
+"mapping.AuxiliaryDatabaseObject</literal> interface."
+msgstr ""
+"O segundo módulo é para fornecer uma classe padrão que sabe como construir "
+"os comandos CREATE e DROP. Esta classe padrão deve implementar a interface "
+"<literal>org.hibernate.mapping.AuxiliaryDatabaseObject</literal>. "
+
+#. Tag: para
+#, no-c-format
+msgid ""
+"Additionally, these database objects can be optionally scoped so that they "
+"only apply when certain dialects are used."
+msgstr ""
+"Além disso, estes objetos de banco de dados podem ter um escopo opcional que "
+"só será aplicado quando certos dialetos forem utilizados. "
+
