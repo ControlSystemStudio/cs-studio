@@ -87,7 +87,7 @@ public interface IAlarmService {
      * @return the new alarm resource
      */
     @Nonnull
-    IAlarmResource newAlarmResource(@CheckForNull List<String> topics,
-                                    @CheckForNull List<String> facilities,
-                                    @CheckForNull String filepath);
+    IAlarmResource createAlarmResource(@CheckForNull List<String> topics,
+                                       @CheckForNull List<String> facilities,
+                                       @CheckForNull String filepath);
 }

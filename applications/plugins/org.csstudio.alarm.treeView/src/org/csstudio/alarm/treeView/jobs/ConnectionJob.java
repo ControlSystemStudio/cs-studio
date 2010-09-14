@@ -60,11 +60,11 @@ public final class ConnectionJob extends Job {
     }
 
     @Nonnull
-    private IAlarmResource newAlarmResource() {
+    private IAlarmResource createNewAlarmResource() {
         // JMS: topics: default,    facilities: don't care,      filename: don't care
         // DAL: topics: don't care, facilities: from tree prefs, filename: ok
         final IAlarmResource alarmResource =
-            AlarmTreePlugin.getDefault().getAlarmService().newAlarmResource(null, AlarmPreference.getFacilityNames(), null);
+            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(null, AlarmPreference.getFacilityNames(), null);
         return alarmResource;
     }
 
@@ -78,7 +78,7 @@ public final class ConnectionJob extends Job {
                 throw new IllegalStateException("Listener of " +
                                                 AlarmTreeView.class.getName() + " mustn't be null.");
             }
-            final IAlarmResource alarmResource = newAlarmResource();
+            final IAlarmResource alarmResource = createNewAlarmResource();
             final AlarmTreeConnectionMonitor connectionMonitor =
                 new AlarmTreeConnectionMonitor(_view, _view.getRootNode());
             _connection.connectWithListenerForResource(connectionMonitor,

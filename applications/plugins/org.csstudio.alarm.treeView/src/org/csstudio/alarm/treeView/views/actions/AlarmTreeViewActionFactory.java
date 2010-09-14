@@ -25,7 +25,6 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.List;
 import java.util.Queue;
 
@@ -49,7 +48,6 @@ import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;

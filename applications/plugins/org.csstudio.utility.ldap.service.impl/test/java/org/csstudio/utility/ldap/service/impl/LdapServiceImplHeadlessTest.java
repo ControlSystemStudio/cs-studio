@@ -80,10 +80,30 @@ import org.junit.Test;
  */
 public class LdapServiceImplHeadlessTest {
 
+    /**
+     * Property holder for end of job test purpose.
+     *
+     * @author bknerr
+     * @author $Author: bknerr $
+     * @version $Revision: 1.7 $
+     * @since 14.09.2010
+     */
     private static class Holder<T> {
-        public T _value;
+
+        private T _value;
+        /**
+         * Constructor.
+         * @param val
+         */
         public Holder(@Nonnull final T val) {
             _value = val;
+        }
+        @Nonnull
+        public T getValue() {
+            return _value;
+        }
+        public void setValue(@Nonnull final T value) {
+            _value = value;
         }
     }
 
@@ -235,7 +255,7 @@ public class LdapServiceImplHeadlessTest {
                                                          new ILdapReadCompletedCallback() {
                                                             @Override
                                                             public void onLdapReadComplete() {
-                                                                read._value = Boolean.TRUE;
+                                                                read.setValue(Boolean.TRUE);
                                                             }
                                                         });
         job.schedule();
@@ -244,7 +264,7 @@ public class LdapServiceImplHeadlessTest {
         } catch (final InterruptedException e) {
             Assert.fail("Not supposed to be interrupted.");
         }
-        Assert.assertTrue(read._value);
+        Assert.assertTrue(read.getValue());
         Assert.assertEquals(4, result.getAnswerSet().size());
     }
 

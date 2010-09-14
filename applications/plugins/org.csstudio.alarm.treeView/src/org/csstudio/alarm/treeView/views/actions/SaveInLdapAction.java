@@ -80,9 +80,9 @@ public final class SaveInLdapAction extends Action {
                 final String summary = appliedMods.isEmpty() ? "No LDAP Modifications!" :
                                                                "Applied Modifications:\n" + appliedMods;
 
-                MessageDialog.openConfirm(_site.getShell(),
-                                          "LDAP persistence status of recent tree modification.",
-                                          summary);
+                MessageDialog.openInformation(_site.getShell(),
+                                              "LDAP persistence status of recent tree modification.",
+                                              summary);
 
                 setEnabled(false);
 

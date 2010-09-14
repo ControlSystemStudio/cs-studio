@@ -48,7 +48,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 03.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
+public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ContentModel.class);
 
