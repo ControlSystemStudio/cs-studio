@@ -1,6 +1,9 @@
 package org.csstudio.utility.pv.epics;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
@@ -9,25 +12,24 @@ import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
 import org.junit.Test;
 
-/** JUnit Test of the PV connect/disconnect.
- *  <p>
+/** JUnit Demo of the PV connect/disconnect.
+ *  
+ *  Runs forever, meant to be executed in JProfiler or while
+ *  watching memory usage of process in OS.
+ *  
  *  These tests require the soft-IOC database from lib/test.db,
  *  and soft IOC needs to be manually stopped, restarted.
- *  <p>
+ *  
  *  When using the JNI CA libs, one also needs ((DY)LD_LIBRARY_)PATH.
- *  <p>
- *  </pre>
+ *  
  *  @author Kay Kasemir
- *
- *  FIXME (kasemir) : commented sysos (showstopper for org.csstudio.testsuite) - use assertions anyway
  */
 @SuppressWarnings("nls")
-public class EPICS_V3_Connection_Test implements PVListener
+public class EPICS_V3_Connection_Demo implements PVListener
 {
-
-    private volatile int _timeout = 1000;
-    private static int _interval = 100;
-
+	/** Updates received from PV */
+    final AtomicInteger updates = new AtomicInteger(0);
+    
     /** Get a PV.
      *
      *  <b>This is where the implementation is hard-coded!</b>
@@ -39,20 +41,23 @@ public class EPICS_V3_Connection_Test implements PVListener
         PVContext.use_pure_java = true;
         System.setProperty("gov.aps.jca.jni.ThreadSafeContext.event_dispatcher",
                            "gov.aps.jca.event.DirectEventDispatcher");
-        //                   "gov.aps.jca.event.QueuedEventDispatcher");
+        //                 "gov.aps.jca.event.QueuedEventDispatcher");
         return new EPICS_V3_PV(name);
     }
 
+    // PVListener
     public void pvValueUpdate(final PV pv)
     {
         final IValue v = pv.getValue();
-        //System.out.println(pv.getName() + ": " + v);
+        System.out.println(pv.getName() + ": " + v);
         assertEquals(true, pv.isConnected());
+        updates.incrementAndGet();
     }
 
+    // PVListener
     public void pvDisconnected(final PV pv)
     {
-        //System.out.println(pv.getName() + " disconnected");
+    	System.out.println(pv.getName() + " disconnected");
         assertEquals(false, pv.isConnected());
     }
 
@@ -60,30 +65,24 @@ public class EPICS_V3_Connection_Test implements PVListener
     public void testConnections() throws Exception
     {
         Logger.getRootLogger().setLevel(Level.WARN);
-        boolean connected = false;
 
-        final PV pv = getPV("fred");
-        assertEquals(connected, pv.isConnected());
-        pv.addListener(this);
-        pv.start();
-
-        //System.out.println("Monitoring " + pv.getName() + ", polling isConnected()");
-        //System.out.println("Stop & restart the IOC and see what happens!");
-        int duration = 0;
         while (true)
         {
-            assertEquals(true, pv.isRunning());
-            final boolean state = pv.isConnected();
-            if (state != connected)
-            {
-                connected = state;
-                //System.out.println("PV isConnected() changed to " + connected);
-            }
-            duration += _interval;
-            if (duration >= _timeout) {
-                break;
-            }
-            Thread.sleep(_interval);
+	        updates.set(0);
+	        final PV pv = getPV("fred");
+        	System.out.println("Created PV " + pv.getName());
+	        pv.addListener(this);
+	        pv.start();
+	        // Wait for 2 values to arrive
+	        for (int sec=0; sec<10; ++sec)
+	        {
+	        	if (updates.get() >= 2)
+	        		break;
+	            Thread.sleep(1000);
+	        }
+	        assertTrue(updates.get() >= 2);
+	        pv.removeListener(this);
+	        pv.stop();
         }
     }
 }
