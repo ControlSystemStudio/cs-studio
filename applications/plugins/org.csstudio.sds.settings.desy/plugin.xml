@@ -287,5 +287,23 @@
                name="Störungs Bit">
          </parameterDescription>
       </rule>
+      <rule
+            class="org.csstudio.sds.cosyrules.color.FontWidthRule"
+            compatibleProperties="sds.font"
+            name="Font Width Rule"
+            ruleId="org.csstudio.sds.settings.desy.fontWidthRule">
+         <parameterDescription
+               name="Value">
+         </parameterDescription>
+         <parameterDescription
+               name="Max Width">
+         </parameterDescription>
+         <parameterDescription
+               name="Max height">
+         </parameterDescription>
+         <parameterDescription
+               name="Font">
+         </parameterDescription>
+      </rule>
    </extension>
 </plugin>

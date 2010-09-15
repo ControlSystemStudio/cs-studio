@@ -100,8 +100,12 @@ public class BIN_gn_gr_rt implements IRule {
     private boolean compareNo2Obj(final Number no1, final Object object2) {
         if (object2 instanceof String) {
             String val2 = (String) object2;
-            Double double2 = new Double(val2);
-            return double2 == no1.doubleValue();
+            try {
+                Double double2 = new Double(val2);
+                return double2 == no1.doubleValue();
+            }catch (NumberFormatException e) {
+                return false;
+            }
         }
         return false;
     }
