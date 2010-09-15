@@ -34,7 +34,7 @@ import org.junit.Test;
 /**
  * @author Joerg Rathlev
  */
-public class AlarmTest {
+public class AlarmUnitTest {
 
 	private final Date t1 = new Date(0);
 	private final Date t2 = new Date(1);

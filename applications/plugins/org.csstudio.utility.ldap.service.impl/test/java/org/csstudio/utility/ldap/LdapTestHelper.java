@@ -44,7 +44,11 @@ public final class LdapTestHelper {
 
     public static TestDataProvider PROV = createTestDataProvider();
 
+    public static Map<String, String> LDAP_TEST_PREFS = createLdapTestServicePrefs();
+
     public static ILdapService LDAP_SERVICE = createLdapTestConnection();
+
+
 
     @Nonnull
     private static TestDataProvider createTestDataProvider() {
@@ -63,15 +67,7 @@ public final class LdapTestHelper {
     @Nonnull
     private static ILdapService createLdapTestConnection() {
         try {
-            final String url = (String) PROV.get("ldap.url");
-            final String dn = (String) PROV.get("ldap.userDn");
-            final String pw = (String) PROV.get("ldap.userPassword");
-
-            // Hard-coded properties
-            final Map<String, String> map = new HashMap<String, String>(5);
-            map.put(Context.PROVIDER_URL, url);
-            map.put(Context.SECURITY_PRINCIPAL, dn);
-            map.put(Context.SECURITY_CREDENTIALS, pw);
+            final Map<String, String> map = createLdapTestServicePrefs();
 
             final ILdapService service = LdapActivator.getDefault().getLdapService();
             Assert.assertTrue(service.reInitializeLdapConnection(map));
@@ -81,6 +77,19 @@ public final class LdapTestHelper {
             Assert.fail("Unexpected exception");
         }
         return null; // Nonnull annotation is correct, due to assertion failure on service == null.
+    }
+
+    private static Map<String, String> createLdapTestServicePrefs() {
+        final String url = (String) PROV.get("ldap.url");
+        final String dn = (String) PROV.get("ldap.userDn");
+        final String pw = (String) PROV.get("ldap.userPassword");
+
+        // Hard-coded properties
+        final Map<String, String> map = new HashMap<String, String>(5);
+        map.put(Context.PROVIDER_URL, url);
+        map.put(Context.SECURITY_PRINCIPAL, dn);
+        map.put(Context.SECURITY_CREDENTIALS, pw);
+        return map;
     }
 
 

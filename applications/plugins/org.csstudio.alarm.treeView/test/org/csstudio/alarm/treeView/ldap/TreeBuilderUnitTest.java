@@ -39,7 +39,7 @@ import org.junit.Test;
 /**
  * @author Joerg Rathlev
  */
-public class TreeBuilderTest {
+public class TreeBuilderUnitTest {
 
     private static final String A = "a";
 	private static final String B = "b";

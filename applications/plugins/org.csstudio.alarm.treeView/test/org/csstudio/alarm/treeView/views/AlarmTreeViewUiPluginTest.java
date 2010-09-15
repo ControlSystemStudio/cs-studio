@@ -25,7 +25,10 @@ package org.csstudio.alarm.treeView.views;
 
 import junit.framework.Assert;
 
+import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.utility.ldap.LdapTestHelper;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -46,9 +49,17 @@ public class AlarmTreeViewUiPluginTest {
 
     private static AlarmTreeView VIEW;
     private static IWorkbenchPage ACTIVE_PAGE;
+    private static ILdapService LDAP_SERVICE;
 
     @BeforeClass
-    public static void openView() throws PartInitException {
+    public static void setUpViewAndService() throws PartInitException {
+
+        // Set the LDAP service to the LDAP test instance
+        LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
+        LDAP_SERVICE.reInitializeLdapConnection(LdapTestHelper.LDAP_TEST_PREFS);
+
+        // Set the alarm tree view preferences for the facilities to be displayed to the test facilities
+
 
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         ACTIVE_PAGE = window.getActivePage();
@@ -59,10 +70,6 @@ public class AlarmTreeViewUiPluginTest {
 
     }
 
-    @AfterClass
-    public static void closeView() {
-        ACTIVE_PAGE.hideView(VIEW);
-    }
 
     @Test
     public void testView() {
@@ -73,4 +80,8 @@ public class AlarmTreeViewUiPluginTest {
 
     }
 
+    @AfterClass
+    public static void closeView() {
+        ACTIVE_PAGE.hideView(VIEW);
+    }
 }

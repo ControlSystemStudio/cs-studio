@@ -162,7 +162,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 */
 	@Override
     public void updateAlarm(@Nonnull final Alarm alarm) {
-		if (alarm != null && alarm.occuredAfter(_activeAlarm)) {
+		if (alarm.occuredAfter(_activeAlarm)) {
 			_activeAlarm = alarm;
 			final Severity severityOfAlarm = alarm.getSeverity();
             final Severity severityOfHighestUnackAlarm = _highestUnacknowledgedAlarm.getSeverity();
