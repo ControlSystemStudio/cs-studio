@@ -19,22 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.treeView.ldap;
+package org.csstudio.utility.ldap.utils;
 
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
+
+import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
 import org.junit.Test;
 
+import com.google.common.collect.ImmutableList;
+
 
 /**
  * @author Joerg Rathlev
+ * @author Bastian Knerr
  */
 public class LdapNameUtilsTest {
 
@@ -53,6 +59,30 @@ public class LdapNameUtilsTest {
                                               "dc","com");
         final Rdn rdn = name.getRdn(name.size() - 1);
         assertEquals(RECORD, RECORD.getNodeTypeByNodeTypeName(rdn.getType()));
+    }
+
+    @Test
+    public void testRemoveRdns() throws InvalidNameException {
+
+        final LdapName name0 = LdapNameUtils.removeRdns(new LdapName(""), Collections.<Rdn>emptyList());
+        assertEquals(new LdapName(""), name0);
+
+        final LdapName name1 = LdapNameUtils.removeRdns(new LdapName("dc=com"), Collections.<Rdn>emptyList());
+        assertEquals(new LdapName("dc=com"), name1);
+
+        final LdapName name2 = LdapNameUtils.removeRdns(new LdapName("dc=com"), ImmutableList.of(new Rdn("dc", "com")));
+        assertEquals(new LdapName(""), name2);
+
+        final LdapName namex = createLdapName(RECORD.getNodeTypeName(), "foobar",
+                                              UNIT.getNodeTypeName(), "Test",
+                                              "dc", "example",
+                                              "dc","com");
+
+        final ImmutableList<Rdn> rdns = ImmutableList.of(new Rdn("dc", "example"), new Rdn(UNIT.getNodeTypeName(), "Test"));
+        final LdapName newName = LdapNameUtils.removeRdns(namex, rdns);
+
+        assertEquals(newName, createLdapName(RECORD.getNodeTypeName(), "foobar",
+                                             "dc","com"));
     }
 
 }

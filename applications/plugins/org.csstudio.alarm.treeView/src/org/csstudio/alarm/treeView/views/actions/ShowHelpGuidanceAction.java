@@ -20,8 +20,8 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -61,7 +61,7 @@ public final class ShowHelpGuidanceAction extends Action {
         final Object selected = selection.getFirstElement();
         if (selected instanceof IAlarmTreeNode) {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-            final String helpGuidance = node.getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE);
+            final String helpGuidance = node.getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE);
             if (helpGuidance != null) {
                 MessageDialog.openInformation(_site.getShell(),
                                               node.getName(),

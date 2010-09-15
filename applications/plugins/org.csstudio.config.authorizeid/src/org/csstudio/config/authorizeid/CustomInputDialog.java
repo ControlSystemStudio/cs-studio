@@ -109,7 +109,7 @@ public class CustomInputDialog extends Dialog {
     private final String _stringSearchRoot = "ou=Css,ou=EpicsAuthorize"; //$NON-NLS-1$
 
     private final LdapName _searchRoot = LdapUtils.createLdapName(OU.getNodeTypeName(), "Css",
-                                                                   UNIT.getNodeTypeName(), UNIT.getRootTypeValue()); //$NON-NLS-1$
+                                                                   UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()); //$NON-NLS-1$
 
 
     /**

@@ -59,7 +59,7 @@ public class PreferencePage extends FieldEditorPreferencePage
 		                               Messages.getString(Messages.PreferencePage_RECORD_ATTRIBUTE),
 		                               getFieldEditorParent()));
 		final StringFieldEditor searchRoot =
-		    new StringFieldEditor(UNIT.getNodeTypeName() + "=" + UNIT.getRootTypeValue(),
+		    new StringFieldEditor(UNIT.getNodeTypeName() + "=" + UNIT.getUnitTypeValue(),
 		                          Messages.getString(Messages.PreferencePage_SEARCH_ROOT),
 		                          getFieldEditorParent());
 
@@ -71,7 +71,8 @@ public class PreferencePage extends FieldEditorPreferencePage
 	/* (non-Javadoc)
 	 * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
 	 */
-	public void init(final IWorkbench workbench) {
+	@Override
+    public void init(final IWorkbench workbench) {
 	    // EMPTY
 	}
 

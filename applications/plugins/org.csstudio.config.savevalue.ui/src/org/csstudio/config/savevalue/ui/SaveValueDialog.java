@@ -308,7 +308,7 @@ public class SaveValueDialog extends Dialog {
 		}
 
 	    final ILdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
 	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
 	                                                  SearchControls.SUBTREE_SCOPE);
 

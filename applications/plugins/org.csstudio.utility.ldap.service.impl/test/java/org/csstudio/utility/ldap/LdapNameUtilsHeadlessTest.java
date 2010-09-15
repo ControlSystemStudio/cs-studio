@@ -23,7 +23,6 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.COUNTRY_FIELD_NAME;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.COUNTRY_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.ECON_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.EFAN_FIELD_VALUE;
@@ -41,7 +40,9 @@ import javax.naming.ldap.LdapName;
 
 import junit.framework.Assert;
 
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -66,14 +67,23 @@ public class LdapNameUtilsHeadlessTest {
                                    null,
                                    null);
 
+        final String[] oKeyValue = LdapFieldsAndAttributes.LDAP_ROOT.get(1).split(LdapFieldsAndAttributes.FIELD_ASSIGNMENT);
+        final String[] cKeyValue = LdapFieldsAndAttributes.LDAP_ROOT.get(0).split(LdapFieldsAndAttributes.FIELD_ASSIGNMENT);
+
         QUERY = createLdapName(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
-                                COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
-                                FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
-                                UNIT.getNodeTypeName(), UNIT.getRootTypeValue(),
-                                ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
-                                COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
+                               COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
+                               FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
+                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
+                               oKeyValue[0], oKeyValue[1],
+                               cKeyValue[0], cKeyValue[1]);
+
 
         RESULT.setNameInNamespace(QUERY.toString());
+
+
+        // access the test service, so that it is initialised to deliver an appropriate parser
+        @SuppressWarnings("unused")
+        final ILdapService service = LdapTestHelper.LDAP_SERVICE;
     }
 
     @Test

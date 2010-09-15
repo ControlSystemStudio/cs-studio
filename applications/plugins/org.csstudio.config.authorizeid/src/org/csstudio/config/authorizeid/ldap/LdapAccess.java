@@ -73,7 +73,7 @@ public final class LdapAccess {
         final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(createLdapName(ID_NAME.getNodeTypeName(), eain,
                                                                       OU.getNodeTypeName(), ou,
-                                                                      UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+                                                                      UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                       any(ID_ROLE.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
         if (result == null || result.getAnswerSet().isEmpty()) {
@@ -128,7 +128,7 @@ public final class LdapAccess {
 
         final ILdapSearchResult result =
             service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(OU.getNodeTypeName(), ou,
-                                                                                UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+                                                                                UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                       any(ID_NAME.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
            if (result == null || result.getAnswerSet().isEmpty()) {
@@ -168,7 +168,7 @@ public final class LdapAccess {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                       any(OU.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
 

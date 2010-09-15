@@ -66,7 +66,7 @@ public class LdapNameUtilsUnitTest {
         QUERY = createLdapName(IOC.getNodeTypeName(), ECON_FIELD_VALUE,
                                 COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                 FACILITY.getNodeTypeName(), EFAN_FIELD_VALUE,
-                                UNIT.getNodeTypeName(), UNIT.getRootTypeValue(),
+                                UNIT.getNodeTypeName(), UNIT.getUnitTypeValue(),
                                 ORGANIZATION_FIELD_NAME, O_FIELD_VALUE,
                                 COUNTRY_FIELD_NAME,COUNTRY_FIELD_VALUE);
     }

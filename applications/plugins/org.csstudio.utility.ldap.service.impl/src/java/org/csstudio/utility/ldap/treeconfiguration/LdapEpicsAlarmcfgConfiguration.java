@@ -19,13 +19,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.alarm.service.declaration;
+package org.csstudio.utility.ldap.treeconfiguration;
 
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECOM_FIELD_NAME;
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ECON_FIELD_NAME;
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EFAN_FIELD_NAME;
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.EREN_FIELD_NAME;
-import static org.csstudio.alarm.service.declaration.AlarmTreeLdapConstants.ESCO_FIELD_NAME;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
 import java.util.EnumSet;
@@ -53,6 +48,13 @@ import com.google.common.collect.Sets;
 public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<LdapEpicsAlarmcfgConfiguration> {
 
     /**
+     * The root for any tree structure. This node type does not have a pendant in LDAP, hence 'virtual'.
+     */
+    VIRTUAL_ROOT("virtual tree configuration",
+                 "vroot",
+                 ImmutableSet.<String>builder().build()),
+
+    /**
      * The root (invisible in the alarm tree view).
      */
     UNIT("organizationUnit",
@@ -63,31 +65,31 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      * The facility object class (efan).
      */
     FACILITY("epicsFacility",
-             EFAN_FIELD_NAME,
-             AlarmTreeNodePropertyId.getLdapAttributes()),
+             "efan",
+             EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()),
 
     /**
      * The component object class (ecom).
      */
     COMPONENT("epicsComponent",
-              ECOM_FIELD_NAME,
-              AlarmTreeNodePropertyId.getLdapAttributes()),
+              "ecom",
+              EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()),
 
     @Deprecated
     IOC("epicsIOC",
-        ECON_FIELD_NAME,
-        AlarmTreeNodePropertyId.getLdapAttributes()),
+        "econ",
+        EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()),
     @Deprecated
     SUBCOMPONENT("epicsSubComponent",
-                 ESCO_FIELD_NAME,
-                 AlarmTreeNodePropertyId.getLdapAttributes()),
+                 "esco",
+                 EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()),
 
     /**
      * The record object class (eren).
      */
     RECORD("epicsRecord",
-           EREN_FIELD_NAME,
-           AlarmTreeNodePropertyId.getLdapAttributes());
+           "eren",
+           EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes());
 
 
     private static final Map<String, LdapEpicsAlarmcfgConfiguration> CACHE_BY_NAME =
@@ -109,6 +111,8 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
         FACILITY._nestedClasses.addAll(COMPONENT._nestedClasses);
 
         UNIT._nestedClasses = EnumSet.of(FACILITY);
+
+        VIRTUAL_ROOT._nestedClasses = EnumSet.of(UNIT);
 
         for (final LdapEpicsAlarmcfgConfiguration oc : values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
@@ -202,8 +206,8 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      * {@inheritDoc}
      */
     @Override
-    public String getRootTypeValue() {
-        return AlarmTreeLdapConstants.EPICS_ALARM_CFG_FIELD_VALUE;
+    public String getUnitTypeValue() {
+        return "EpicsAlarmcfg";
     }
 
     /**

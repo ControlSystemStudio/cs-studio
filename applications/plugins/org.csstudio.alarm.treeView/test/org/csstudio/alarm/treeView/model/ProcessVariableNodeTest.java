@@ -27,10 +27,10 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -111,16 +111,16 @@ public class ProcessVariableNodeTest {
 
     @Test
 	public void testPropertiesAreNullByDefault() throws Exception {
-		for (final AlarmTreeNodePropertyId id : AlarmTreeNodePropertyId.values()) {
+		for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
 			assertNull(_node.getProperty(id));
 		}
 	}
 
     @Test
 	public void testPropertyInheritance() throws Exception {
-		_subtreeNode.setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, "foo");
-		assertEquals("foo", _node.getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY));
-		assertNull(_node.getOwnProperty(AlarmTreeNodePropertyId.CSS_DISPLAY));
+		_subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
+		assertEquals("foo", _node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+		assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
 	}
 
 }

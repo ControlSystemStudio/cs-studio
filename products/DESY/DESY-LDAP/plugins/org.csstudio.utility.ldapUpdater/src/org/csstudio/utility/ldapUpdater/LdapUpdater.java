@@ -182,7 +182,7 @@ public enum LdapUpdater {
                 LOG.warn("NO LDAP service available. Tidying cancelled.");
                 return;
             }
-            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             final String filter = any(IOC.getNodeTypeName());
             final ILdapSearchResult result =
                 service.retrieveSearchResultSynchronously(query,
@@ -236,7 +236,7 @@ public enum LdapUpdater {
                 return;
             }
 
-            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             final ILdapSearchResult searchResult =
                 service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),

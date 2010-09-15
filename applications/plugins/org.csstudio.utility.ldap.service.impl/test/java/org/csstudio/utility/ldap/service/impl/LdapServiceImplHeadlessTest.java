@@ -26,21 +26,18 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import javax.annotation.Nonnull;
-import javax.naming.Context;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
@@ -54,8 +51,7 @@ import javax.naming.ldap.Rdn;
 
 import junit.framework.Assert;
 
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -107,8 +103,6 @@ public class LdapServiceImplHeadlessTest {
         }
     }
 
-    private static TestDataProvider PROV;
-
     private static ILdapService LDAP_SERVICE;
 
     private static Random RANDOM = new Random(System.currentTimeMillis());
@@ -131,42 +125,14 @@ public class LdapServiceImplHeadlessTest {
 
     @BeforeClass
     public static void setUp() {
-        setUpCreateTestDataProvider();
 
-        setUpCreateLdapConnection();
+        LDAP_SERVICE = LdapTestHelper.LDAP_SERVICE;
 
         setUpCreateComponents();
     }
 
-    private static void setUpCreateTestDataProvider() {
-        try {
-            PROV = TestDataProvider.getInstance(LdapActivator.PLUGIN_ID);
-        } catch (final Exception e) {
-            Assert.fail("Unexpected exception");
-        }
-    }
 
-    /**
-     * Tests the method {@link ILdapService#reInitializeLdapConnection(Map)}
-     */
-    private static void setUpCreateLdapConnection() {
-        try {
-            final String url = (String) PROV.get("ldap.url");
-            final String dn = (String) PROV.get("ldap.userDn");
-            final String pw = (String) PROV.get("ldap.userPassword");
 
-            // Hard-coded properties
-            final Map<String, String> map = new HashMap<String, String>(5);
-            map.put(Context.PROVIDER_URL, url);
-            map.put(Context.SECURITY_PRINCIPAL, dn);
-            map.put(Context.SECURITY_CREDENTIALS, pw);
-
-            LDAP_SERVICE = LdapActivator.getDefault().getLdapService();
-            Assert.assertTrue(LDAP_SERVICE.reInitializeLdapConnection(map));
-        } catch (final Exception e) {
-            Assert.fail("Unexpected exception");
-        }
-    }
 
     /**
      * Tests the method {@link ILdapService#createComponent(LdapName, Attributes)}.
@@ -175,7 +141,7 @@ public class LdapServiceImplHeadlessTest {
         try {
             final LdapName name =
                 LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         ORGANIZATION_UNIT_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             Assert.assertTrue(LDAP_SERVICE.createComponent(name, EFAN_ATTRS));
 
 
@@ -194,7 +160,7 @@ public class LdapServiceImplHeadlessTest {
 
             final LdapName name2 =
                 LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         ORGANIZATION_UNIT_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
             name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
             Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
@@ -219,14 +185,14 @@ public class LdapServiceImplHeadlessTest {
     public void testLdapContentModelBuilder() {
         final LdapName name =
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
         final ILdapSearchResult result =
             LDAP_SERVICE.retrieveSearchResultSynchronously(name,
                                                            LdapUtils.any(RECORD.getNodeTypeName()),
                                                            SearchControls.SUBTREE_SCOPE);
         Assert.assertNotNull(result);
 
-        final ILdapContentModelBuilder builder = LDAP_SERVICE.getLdapContentModelBuilder(UNIT, result);
+        final ILdapContentModelBuilder builder = LDAP_SERVICE.getLdapContentModelBuilder(VIRTUAL_ROOT, result);
         Assert.assertNotNull(builder);
 
         try {
@@ -246,7 +212,7 @@ public class LdapServiceImplHeadlessTest {
     public void testLdapReaderJob() {
         final LdapName name =
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         final ILdapSearchResult result = new LdapSearchResult();
         final Holder<Boolean> read = new Holder<Boolean>(Boolean.FALSE);
@@ -274,7 +240,7 @@ public class LdapServiceImplHeadlessTest {
             LdapUtils.createLdapName(IOC.getNodeTypeName(), "TestEcon2",
                                      COMPONENT.getNodeTypeName(), "TestEcom2",
                                      FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     ORGANIZATION_UNIT_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         try {
             Attributes attrs = LDAP_SERVICE.getAttributes(name);
@@ -314,14 +280,14 @@ public class LdapServiceImplHeadlessTest {
                                      IOC.getNodeTypeName(), "TestEcon2",
                                      COMPONENT.getNodeTypeName(), "TestEcom2",
                                      FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     ORGANIZATION_UNIT_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         final LdapName name2 =
             LdapUtils.createLdapName(RECORD.getNodeTypeName(), "NedFlanders",
                                      IOC.getNodeTypeName(), "TestEcon2",
                                      COMPONENT.getNodeTypeName(), "TestEcom2",
                                      FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     ORGANIZATION_UNIT_FIELD_NAME, EPICS_CTRL_FIELD_VALUE);
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         try {
             LDAP_SERVICE.rename(name1, name2);
@@ -342,9 +308,9 @@ public class LdapServiceImplHeadlessTest {
 
         final LdapName name =
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                     UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
         try {
-            Assert.assertTrue(LDAP_SERVICE.removeComponent(UNIT, name));
+            Assert.assertTrue(LDAP_SERVICE.removeComponent(VIRTUAL_ROOT, name));
         } catch (final InvalidNameException e) {
             Assert.fail("Unexpected exception:\n" + e.getMessage());
         } catch (final CreateContentModelException e) {

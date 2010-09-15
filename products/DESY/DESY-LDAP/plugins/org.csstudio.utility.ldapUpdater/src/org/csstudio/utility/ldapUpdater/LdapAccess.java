@@ -85,7 +85,7 @@ public final class LdapAccess {
 
     static {
         try {
-            final Rdn ou = new Rdn(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+            final Rdn ou = new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             final List<Rdn> list = new ArrayList<Rdn>();
             list.add(ou);
             NAME_SUFFIX = new LdapName(list);
@@ -404,7 +404,7 @@ public final class LdapAccess {
                 (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(IOC.getNodeTypeName(), iocName));
 
             final LdapName fullLdapName =
-                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()));
+                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
 
             LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
 

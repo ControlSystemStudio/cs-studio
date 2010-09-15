@@ -166,7 +166,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         final LdapName query = createLdapName(IOC.getNodeTypeName(), iocName,
                                                COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                FACILITY.getNodeTypeName(), facilityName,
-                                               UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+                                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
         final ILdapService service = getLdapService();
         return service.retrieveSearchResultSynchronously(query,
@@ -222,7 +222,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         service.removeLeafComponent(createLdapName(IOC.getNodeTypeName(), iocName,
                                                     COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                     FACILITY.getNodeTypeName(), facilityName,
-                                                    UNIT.getNodeTypeName(), UNIT.getRootTypeValue()));
+                                                    UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
     }
 
     /**

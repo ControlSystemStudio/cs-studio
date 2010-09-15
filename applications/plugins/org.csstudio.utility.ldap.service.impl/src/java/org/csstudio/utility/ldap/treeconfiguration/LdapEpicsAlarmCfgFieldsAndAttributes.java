@@ -31,13 +31,6 @@ package org.csstudio.utility.ldap.treeconfiguration;
  */
 public final class LdapEpicsAlarmCfgFieldsAndAttributes {
 
-
-    // TODO (bknerr) : try to figure out whether enums could be used for distinct groups
-    public static final String ATTR_FIELD_ALARM_SEVERITY = "epicsAlarmSeverity";
-    public static final String ATTR_FIELD_ALARM_STATUS = "epicsAlarmStatus";
-    public static final String ATTR_FIELD_ALARM_TIMESTAMP = "epicsAlarmTimeStamp";
-    public static final String ATTR_FIELD_ALARM_HIGH_UNACK = "epicsAlarmHighUnAckn";
-
     /**
      * Don't instantiate.
      */

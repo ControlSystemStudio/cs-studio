@@ -30,10 +30,10 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -72,7 +72,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.UNIT);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT);
 
             for (final IAlarmTreeNode node : _alarmTreeNodes) {
                 createSubtree(model, node, model.getRoot());
@@ -114,7 +114,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
     private static Attributes getAttributesFromAlarmTreeNode(@Nonnull final IAlarmTreeNode alarmTreeNode) {
 
         final Attributes attributes = new BasicAttributes();
-        for (final AlarmTreeNodePropertyId propId : AlarmTreeNodePropertyId.values()) {
+        for (final EpicsAlarmcfgTreeNodeAttribute propId : EpicsAlarmcfgTreeNodeAttribute.values()) {
             final String property = alarmTreeNode.getProperty(propId);
             if (property != null) {
                 attributes.put(propId.getLdapAttribute(), property);

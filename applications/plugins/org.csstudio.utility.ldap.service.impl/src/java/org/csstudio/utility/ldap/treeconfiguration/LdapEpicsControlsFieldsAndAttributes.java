@@ -31,8 +31,9 @@ package org.csstudio.utility.ldap.treeconfiguration;
  */
 public class LdapEpicsControlsFieldsAndAttributes {
 
-    public static final String EPICS_CTRL_FIELD_VALUE = "EpicsControls";
+
     public static final String ECOM_EPICS_IOC_FIELD_VALUE = "EPICS-IOC";
+
     public static final String ATTR_FIELD_RESPONSIBLE_PERSON = "epicsResponsibleName";
     public static final String ATTR_FIELD_LAST_UPDATED = "lastUpdated";
     public static final String ATTR_FIELD_LAST_UPDATED_IN_MILLIS = "lastUpdatedInMillis";

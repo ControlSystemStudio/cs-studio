@@ -340,7 +340,7 @@ public class ChangelogViewPart extends ViewPart {
 				    return new Status(IStatus.ERROR, Activator.PLUGIN_ID, "LDAP Service currently unavailable."); //$NON-NLS-1$
 				}
 				final ILdapSearchResult result =
-				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+				    service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
 				                                              any(IOC.getNodeTypeName()),
 				                                              SearchControls.SUBTREE_SCOPE);
 

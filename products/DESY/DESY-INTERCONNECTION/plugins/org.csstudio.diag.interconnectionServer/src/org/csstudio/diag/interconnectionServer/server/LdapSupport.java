@@ -130,7 +130,8 @@ public enum LdapSupport {
         final ILdapService service = Activator.getDefault().getLdapService();
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(),
+                                                                               LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue()),
                                                       "(&(objectClass=epicsController)" +
                                                       "(|(epicsIPAddress=" + ipAddress.getHostAddress() + ")" +
                                                       "(epicsIPAddressR=" + ipAddress.getHostAddress() + ")))",
@@ -159,7 +160,8 @@ public enum LdapSupport {
         final Name cname = new CompositeName(entry.getName());
         final NameParser nameParser = service.getLdapNameParser();
         final LdapName ldapName = (LdapName) nameParser.parse(cname.get(0));
-        ldapName.add(0, new Rdn(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE));
+        ldapName.add(0, new Rdn(LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(),
+                                LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue()));
 
         if (answerSet.size() > 1) {
             LOG.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);

@@ -342,7 +342,7 @@ public class MainView extends ViewPart {
         final ILdapSearchParams params = new ILdapSearchParams() {
             @Override
             public LdapName getSearchRoot() {
-                return createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue());
+                return createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             }
             @Override
             public String getFilter() {

@@ -21,7 +21,7 @@
  */
  package org.csstudio.alarm.service.preferences;
 
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeQuotes;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.simpleName;
@@ -75,7 +75,7 @@ public class AddMountPointDlg extends Dialog {
 		}
 
 		final ILdapSearchResult result =
-		    service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+		    service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
 		                                              any(ATTR_FIELD_OBJECT_CLASS),
 		                                              SearchControls.ONELEVEL_SCOPE);
 

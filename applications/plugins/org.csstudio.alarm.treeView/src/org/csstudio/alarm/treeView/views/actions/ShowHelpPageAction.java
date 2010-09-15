@@ -24,9 +24,9 @@ import java.net.URL;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
@@ -63,7 +63,7 @@ public final class ShowHelpPageAction extends Action {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
             URL helpPage;
             try {
-                helpPage = new URL(node.getProperty(AlarmTreeNodePropertyId.HELP_PAGE));
+                helpPage = new URL(node.getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE));
             } catch (final MalformedURLException e1) {
                 LOG.warn("URL property of node " + node.getName() + " was malformed.");
                 helpPage = null;

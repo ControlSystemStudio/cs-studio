@@ -86,7 +86,7 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         _cacheByTypeAndLdapName = initCacheByType(clazz);
         _cacheByTypeAndSimpleName = initCacheByType(clazz);
 
-        final String rootTypeValue = objectClassRoot.getRootTypeValue();
+        final String rootTypeValue = objectClassRoot.getUnitTypeValue();
         final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootTypeValue);
         final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
 

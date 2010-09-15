@@ -23,8 +23,9 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
@@ -41,10 +42,10 @@ import javax.naming.directory.SearchControls;
 
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.ContentModelExporter;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -71,7 +72,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.UNIT);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT);
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating empty content model.", e);
         }
@@ -85,7 +86,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         for (final String facility : facilityNames) {
             final ILdapSearchResult result =
                 ldapService.retrieveSearchResultSynchronously(createLdapName(FACILITY.getNodeTypeName(), facility,
-                                                                             UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+                                                                             UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                                              any(ATTR_FIELD_OBJECT_CLASS),
                                                                              SearchControls.SUBTREE_SCOPE);
             if (result != null) {
@@ -109,7 +110,7 @@ public class AlarmConfigurationServiceImpl implements IAlarmConfigurationService
         throws CreateContentModelException, FileNotFoundException {
 
         final XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration> builder =
-            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(UNIT, new FileInputStream(filePath));
+            new XmlFileContentModelBuilder<LdapEpicsAlarmcfgConfiguration>(VIRTUAL_ROOT, new FileInputStream(filePath));
         builder.build();
         return builder.getModel();
     }

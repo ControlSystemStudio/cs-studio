@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
-package org.csstudio.alarm.service.declaration;
+package org.csstudio.utility.ldap.treeconfiguration;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -34,7 +34,8 @@ import com.google.common.collect.ImmutableSet.Builder;
  *
  * @author Joerg Rathlev
  */
-public enum AlarmTreeNodePropertyId {
+public enum EpicsAlarmcfgTreeNodeAttribute {
+    
 	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay",
 	                  "The CSS alarm display."),
 	CSS_DISPLAY("epicsCssDisplay",
@@ -51,7 +52,7 @@ public enum AlarmTreeNodePropertyId {
 
     static {
 	    final Builder<String> builder = ImmutableSet.builder();
-	    for (final AlarmTreeNodePropertyId id : values()) {
+	    for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
 	        builder.add(id.getLdapAttribute());
 	    }
 	    LDAP_ATTRIBUTES = builder.build();
@@ -67,8 +68,8 @@ public enum AlarmTreeNodePropertyId {
 	 *
 	 * CHECKSTYLE:Jsr305Annotations:OFF
 	 */
-	private AlarmTreeNodePropertyId(final String ldapAttribute,
-	                                final String description) {
+	private EpicsAlarmcfgTreeNodeAttribute(final String ldapAttribute,
+	                                       final String description) {
 	    _ldapAttribute = ldapAttribute;
 	    _description = description;
     }
@@ -83,8 +84,8 @@ public enum AlarmTreeNodePropertyId {
      * @return returns the enum object with the first match of its attribute
      */
 	@CheckForNull
-	public static AlarmTreeNodePropertyId getIdByLdapAttribute(@Nonnull final String attribute) {
-        for (final AlarmTreeNodePropertyId id : values()) {
+	public static EpicsAlarmcfgTreeNodeAttribute getIdByLdapAttribute(@Nonnull final String attribute) {
+        for (final EpicsAlarmcfgTreeNodeAttribute id : values()) {
             if (id.getLdapAttribute().equals(attribute)) {
                 return id;
             }

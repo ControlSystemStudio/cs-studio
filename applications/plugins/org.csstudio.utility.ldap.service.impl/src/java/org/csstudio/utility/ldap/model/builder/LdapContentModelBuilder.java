@@ -42,7 +42,6 @@ import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
-import org.csstudio.utility.ldap.utils.LdapNameUtils.Direction;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -129,9 +128,12 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
             try {
                 for (final SearchResult row : answerSet) {
                     final Attributes attributes = row.getAttributes();
+                    final LdapName parsedName = LdapNameUtils.parseSearchResult(row);
+                    final LdapName nameWithoutRoot = LdapNameUtils.removeRdns(parsedName,
+                                                                              LdapFieldsAndAttributes.LDAP_ROOT.getRdns());
                     createLdapComponent(model,
                                         attributes == null ? new BasicAttributes() : attributes,
-                                        LdapNameUtils.parseSearchResult(row),
+                                        nameWithoutRoot,
                                         root);
                 }
             } catch (final IndexOutOfBoundsException iooe) {
@@ -152,23 +154,18 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
                                      @Nonnull final ISubtreeNodeComponent<T> root) throws InvalidNameException {
         ISubtreeNodeComponent<T> parent = root;
 
-        // FIXME (bknerr) : this reference to 'efan' does not belong here - the LDapNames have to go completely into the model
-        final LdapName partialName = LdapNameUtils.removeRdns(fullName,
-                                                              "efan",
-                                                              Direction.FORWARD);
-
         final LdapName currentPartialName = new LdapName("");
 
 
-        for (int i = 0; i < partialName.size(); i++) {
+        for (int i = 0; i < fullName.size(); i++) {
 
-            final Rdn rdn = partialName.getRdn(i);
+            final Rdn rdn = fullName.getRdn(i);
             currentPartialName.add(rdn);
 
             // Check whether this component exists already
             final ISubtreeNodeComponent<T> childByLdapName = model.getChildByLdapName(currentPartialName.toString());
             if (childByLdapName != null) {
-                if (i < partialName.size() - 1) { // another name component follows => has children
+                if (i < fullName.size() - 1) { // another name component follows => has children
                     parent = childByLdapName;
                 }
                 continue; // YES
@@ -177,8 +174,9 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
 
             final T oc = _objectClassRoot.getNodeTypeByNodeTypeName(rdn.getType());
 
+            final String simpleName = (String) rdn.getValue();
             final ISubtreeNodeComponent<T> newChild =
-                new TreeNodeComponent<T>((String) rdn.getValue(),
+                new TreeNodeComponent<T>(simpleName,
                                         oc,
                                         parent,
                                         attributes,

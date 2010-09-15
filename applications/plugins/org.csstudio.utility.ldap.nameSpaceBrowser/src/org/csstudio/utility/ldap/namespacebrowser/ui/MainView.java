@@ -98,7 +98,7 @@ public class MainView extends ViewPart {
 		                nameSpaceLDAP,
 		                getSite(),
 		                defaultPVFilter,
-		                UNIT.getNodeTypeName() + FIELD_ASSIGNMENT + UNIT.getRootTypeValue(),
+		                UNIT.getNodeTypeName() + FIELD_ASSIGNMENT + UNIT.getUnitTypeValue(),
 		                headlines,
 		                0,
 		                searchResult);

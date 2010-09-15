@@ -53,9 +53,9 @@ public final class LdapFieldsAndAttributes {
     public static final String ORGANIZATION_FIELD_NAME = "o";
     public static final String ORGANIZATION_UNIT_FIELD_NAME = "ou";
 
-    public static final String FIELD_SEPARATOR = ",";
+    public static final String FIELD_SEPARATOR  = ",";
     public static final String FIELD_ASSIGNMENT = "=";
-    public static final String FIELD_WILDCARD = "*";
+    public static final String FIELD_WILDCARD   = "*";
 
     public static final String ATTR_FIELD_OBJECT_CLASS = "objectClass";
 
@@ -73,7 +73,7 @@ public final class LdapFieldsAndAttributes {
         try {
             rdns = Arrays.asList(new Rdn[] {new Rdn(COUNTRY_FIELD_NAME + FIELD_ASSIGNMENT + "DE"),
                                             new Rdn(ORGANIZATION_FIELD_NAME + FIELD_ASSIGNMENT + "DESY")});
-        LDAP_ROOT = new LdapName(rdns);
+            LDAP_ROOT = new LdapName(rdns);
         } catch (final InvalidNameException e) {
             LOG.error("LDAP ROOT variable could not be initialised.", e);
         }

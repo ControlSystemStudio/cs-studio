@@ -52,7 +52,13 @@ import com.google.common.collect.Sets;
 public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<LdapEpicsAuthorizeIdConfiguration> {
 
     /**
-     * The root (invisible in the alarm tree view).
+     * The root for any tree structure. This node type does not have a pendant in LDAP, hence 'virtual'.
+     */
+    VIRTUAL_ROOT("virtual tree configuration",
+                 "vroot",
+                 ImmutableSet.<String>builder().build()),
+    /**
+     * The factory aspect.
      */
     UNIT("organizationUnit",
          ORGANIZATION_UNIT_FIELD_NAME,
@@ -90,6 +96,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
         ID_NAME._nestedClasses = EnumSet.of(ID_ROLE);
         OU._nestedClasses = EnumSet.of(ID_NAME);
         UNIT._nestedClasses = EnumSet.of(OU);
+        VIRTUAL_ROOT._nestedClasses = EnumSet.of(UNIT);
 
         for (final LdapEpicsAuthorizeIdConfiguration oc : values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
@@ -174,7 +181,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
      */
     @Override
     @Nonnull
-    public String getRootTypeValue() {
+    public String getUnitTypeValue() {
         return "EpicsAuthorizeID";
     }
 

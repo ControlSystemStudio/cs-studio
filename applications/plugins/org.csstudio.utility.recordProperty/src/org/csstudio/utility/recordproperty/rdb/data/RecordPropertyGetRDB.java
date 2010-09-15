@@ -338,9 +338,10 @@ public class RecordPropertyGetRDB {
 	            return;
 	        }
 
-	        final ILdapSearchResult result = service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
-	                                                                                   RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
-	                                                                                   SearchControls.SUBTREE_SCOPE);
+	        final ILdapSearchResult result =
+	            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
+	                                                      RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(_record),
+	                                                      SearchControls.SUBTREE_SCOPE);
 	        if (!result.getAnswerSet().isEmpty()) {
 	            final SearchResult row = result.getAnswerSet().iterator().next();
 	            LdapName ldapName;

@@ -74,7 +74,7 @@ public class IocEnumeration implements IDynamicParameterValues {
         }
 
         final ILdapSearchResult result =
-            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getRootTypeValue()),
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
                                                       any(IOC.getNodeTypeName()),
                                                       SearchControls.SUBTREE_SCOPE);
         if (result == null) {

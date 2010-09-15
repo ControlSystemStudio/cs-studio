@@ -48,7 +48,12 @@ import com.google.common.collect.Sets;
  */
 public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<LdapEpicsControlsConfiguration> {
 
-    UNIT(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, "root"),
+    /**
+     * The root for any tree structure. This node type does not have a pendant in LDAP, hence 'virtual'.
+     */
+    VIRTUAL_ROOT("vroot", "virtual tree configuration root"),
+
+    UNIT(LdapFieldsAndAttributes.ORGANIZATION_UNIT_FIELD_NAME, "factory aspect"),
 
     /**
      * The facility object class (efan).
@@ -84,6 +89,8 @@ public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<Lda
         FACILITY._nestedClasses = EnumSet.of(COMPONENT);
 
         UNIT._nestedClasses = EnumSet.of(FACILITY);
+
+        VIRTUAL_ROOT._nestedClasses = EnumSet.of(UNIT);
 
         for (final LdapEpicsControlsConfiguration oc : LdapEpicsControlsConfiguration.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
@@ -170,8 +177,8 @@ public enum LdapEpicsControlsConfiguration implements ITreeNodeConfiguration<Lda
      */
     @Override
     @Nonnull
-    public String getRootTypeValue() {
-        return LdapEpicsControlsFieldsAndAttributes.EPICS_CTRL_FIELD_VALUE;
+    public String getUnitTypeValue() {
+        return "EpicsControls";
     }
 
     /**

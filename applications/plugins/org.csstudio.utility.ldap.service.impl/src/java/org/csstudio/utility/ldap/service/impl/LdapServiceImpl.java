@@ -268,8 +268,6 @@ public final class LdapServiceImpl implements ILdapService {
 
         LOG.debug("Remove entry incl. subtree:\n" + component.toString());
 
-        final Rdn rootRdn = new Rdn(configurationRoot.getNodeTypeName(), configurationRoot.getRootTypeValue());
-
         // get complete subtree of 'oldLdapName' and create model
         final LdapSearchResult result =
             retrieveSearchResultSynchronously(component,
@@ -287,15 +285,9 @@ public final class LdapServiceImpl implements ILdapService {
         builder.build();
         final ContentModel<T> model = builder.getModel();
 
-        // FIXME (bknerr) : the reference to a specific name 'efan' does not belong here - the model has to work with the full name
-        final LdapName nameInModel = removeRdns(component,
-                                                "efan",
-                                                Direction.FORWARD);
-
         // perform the removal of the subtree
         copyAndRemoveTreeComponent(null,
-                                   model.getChildByLdapName(nameInModel.toString()),
-                                   rootRdn,
+                                   model.getChildByLdapName(component.toString()),
                                    false);
         // perform the removal of the component itself
         removeLeafComponent(component);
@@ -335,13 +327,11 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     /**
-                                                       "efan",
      * Copies (if param <code>copy</code> set to true) the given subtree and removes it from the old location.
      *
      * @param <T>
      * @param ldapParentName the name of the new parent component in LDAP (may be null if copy is false)
      * @param treeParent
-     * @param rootRdn
      * @param copy if <code>true</code> a new component is created in LDAP.
      *             Otherwise only the removal is performed
      * @throws InvalidNameException
@@ -349,7 +339,6 @@ public final class LdapServiceImpl implements ILdapService {
     private <T extends Enum<T> & ITreeNodeConfiguration<T>>
         void copyAndRemoveTreeComponent(@CheckForNull final LdapName ldapParentName,
                                         @Nonnull final ISubtreeNodeComponent<T> treeParent,
-                                        @CheckForNull final Rdn rootRdn,
                                         final boolean copy) throws InvalidNameException {
 
         // process contents of model and build subtree below 'newLdapName'
@@ -364,12 +353,11 @@ public final class LdapServiceImpl implements ILdapService {
             }
 
             if (child.hasChildren()) {
-                copyAndRemoveTreeComponent(newChildLdapName, (ISubtreeNodeComponent<T>) child, rootRdn, copy);
+                copyAndRemoveTreeComponent(newChildLdapName, (ISubtreeNodeComponent<T>) child, copy);
             }
             // leaf node, remove it from ldap
 
-            final LdapName ldapName = new LdapName(child.getLdapName().getRdns());
-            removeLeafComponent((LdapName) ldapName.add(0, rootRdn));
+            removeLeafComponent(child.getLdapName());
         }
     }
 
@@ -422,8 +410,9 @@ public final class LdapServiceImpl implements ILdapService {
     }
 
     @Override
-    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
-                                                                                                                  @Nonnull final ILdapSearchResult searchResult) {
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+        getLdapContentModelBuilder(@Nonnull final T objectClassRoot,
+                                   @Nonnull final ILdapSearchResult searchResult) {
         return new LdapContentModelBuilder<T>(objectClassRoot, searchResult);
     }
     @Override

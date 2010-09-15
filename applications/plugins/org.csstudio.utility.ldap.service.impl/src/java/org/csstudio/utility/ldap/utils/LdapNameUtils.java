@@ -22,7 +22,10 @@
  */
 package org.csstudio.utility.ldap.utils;
 
+import java.util.List;
+
 import javax.annotation.CheckForNull;
+import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NameParser;
@@ -181,6 +184,7 @@ public final class LdapNameUtils {
      * @throws InvalidNameException
      */
     @Nonnull
+    @CheckReturnValue
     public static LdapName removeRdns(@Nonnull final LdapName fullName,
                                       @Nonnull final String fieldNamePrefix,
                                       @Nonnull final Direction dir) throws InvalidNameException {
@@ -200,5 +204,38 @@ public final class LdapNameUtils {
         }
 
         return name;
+    }
+
+    /**
+     * Creates and returns a copy of the given LDAP name and removes the list of given Rdns from the
+     * copy.
+     * If a given Rdn is not contained in the LDAP name, nothing happens.
+     *
+     * @param the name
+     * @param removeRdns the rdns to be removed
+     * @return the newly created (shortened) name
+     * @throws InvalidNameException
+     */
+    @Nonnull
+    @CheckReturnValue
+    public static LdapName removeRdns(@Nonnull final LdapName name,
+                                      @Nonnull final List<Rdn> removeRdns) throws InvalidNameException {
+
+
+        final LdapName result = new LdapName("");
+        for (final Rdn nameRdn : name.getRdns()) {
+            boolean add = true;
+            for (final Rdn removeRdn : removeRdns) {
+                if (nameRdn.equals(removeRdn)) {
+                    add = false;
+                    break;
+                }
+            }
+            if (add) {
+                result.add(nameRdn);
+            }
+        }
+
+        return result;
     }
 }

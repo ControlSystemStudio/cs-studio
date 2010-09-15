@@ -168,7 +168,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @Nonnull
-    public String getRootTypeValue() {
+    public String getUnitTypeValue() {
         return "TestOu";
     }
 
