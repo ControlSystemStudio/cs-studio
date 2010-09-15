@@ -63,6 +63,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.runtime" version="3.1.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.update.configurator" version="3.1.100" match="compatible"/>
+      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.commands" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.common" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.5.0" match="compatible"/>
@@ -77,6 +78,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.expressions" version="3.4.100" match="compatible"/>
       <import plugin="org.eclipse.jface.text" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.5.0" match="compatible"/>
+      <import plugin="org.eclipse.ui.ide" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.help" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.jface" version="3.6.0" match="compatible"/>
       <import plugin="org.eclipse.ui.workbench.texteditor" version="3.5.0" match="compatible"/>
@@ -84,6 +86,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.core.variables" version="3.2.0" match="compatible"/>
       <import plugin="org.hamcrest.core" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.junit" version="4.8.1" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.update.core" version="3.0.0" match="compatible"/>
       <import plugin="org.eclipse.core.runtime" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.core.net" version="1.0.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="compatible"/>
@@ -113,9 +116,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.swt" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.ide" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.core.filebuffers" version="3.5.0" match="compatible"/>
-      <import plugin="org.eclipse.core.resources" version="3.5.0" match="compatible"/>
       <import plugin="org.eclipse.equinox.preferences" version="3.2.200" match="compatible"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="compatible"/>
+      <import plugin="org.slf4j.api"/>
+      <import plugin="org.eclipse.core.net" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.registry" version="3.5.0" match="equivalent"/>
       <import plugin="org.eclipse.ui.intro" version="3.4.0" match="compatible"/>
       <import plugin="org.eclipse.ui.navigator" version="3.3.200" match="compatible"/>
@@ -141,6 +145,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.core.filesystem.win32.x86"
          os="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -228,6 +233,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.core.resources.win32.x86"
          os="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -330,6 +336,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.update.core.linux"
          os="linux"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -569,6 +576,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.core.net.linux.x86"
          os="linux"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -578,6 +586,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.core.net.win32.x86"
          os="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -637,6 +646,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    <plugin
          id="org.eclipse.equinox.security.win32.x86"
          os="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
@@ -668,6 +678,36 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          download-size="0"
          install-size="0"
          version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.filesystem.win32.x86_64"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.net.linux.x86_64"
+         os="linux"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
+         unpack="false"/>
+
+   <plugin
+         id="org.eclipse.core.net.win32.x86_64"
+         os="win32"
+         arch="x86_64"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         fragment="true"
          unpack="false"/>
 
 </feature>
