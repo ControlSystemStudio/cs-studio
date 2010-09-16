@@ -3,49 +3,39 @@ package org.csstudio.opibuilder.datadefinition;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.util.GUIRefreshThread;
 
-/**The element in the queue of {@link GUIRefreshThread}. 
- * It corresponds to the widget property change event. 
- * The old task in the queue could be ignored if there is a new task with same 
- * widget property arrived. For example, the task calling Gauge.setValue() is ignorable
- * since the widget only need to display the latest value.  
- * @author Xihui Chen
- *
+/** The element in the {@link GUIRefreshThread}'s task queue. 
+ *  It corresponds to a widget property change event. 
+ *  An existing task in the queue should be ignored when a new task arrives
+ *  that affects the same widget property.
+ *  For example, multiple tasks calling Gauge.setValue() are ignorable
+ *  since the widget only needs to display the latest value.  
+ *  @author Xihui Chen
+ *  @author Kay Kasemir Reviewed, made immutable
  */
 public class WidgetIgnorableUITask {
 
 	/**
 	 * The widget property.
 	 */
-	private AbstractWidgetProperty widgetProperty;
+	final private AbstractWidgetProperty widgetProperty;
 	
 	/**
 	 * The task which will be executed when widget property changed.
 	 */
-	private Runnable runnableTask;
+	final private Runnable runnableTask;
 	
 
-	public WidgetIgnorableUITask(AbstractWidgetProperty property, Runnable runnableTask){
+	public WidgetIgnorableUITask(final AbstractWidgetProperty property, final Runnable runnableTask){
 		this.widgetProperty = property;
 		this.runnableTask = runnableTask;
 	}
 
-	
-
-	/**
+		/**
 	 * @return the widgetProperty
 	 */
 	public AbstractWidgetProperty getWidgetProperty() {
 		return widgetProperty;
 	}
-
-
-	/**
-	 * @param widgetProperty the widgetProperty to set
-	 */
-	public void setWidgetProperty(AbstractWidgetProperty widgetProperty) {
-		this.widgetProperty = widgetProperty;
-	}
-
 
 	/**
 	 * @return the runnableTask
@@ -53,24 +43,16 @@ public class WidgetIgnorableUITask {
 	public Runnable getRunnableTask() {
 		return runnableTask;
 	}
-
-	/**
-	 * @param runnableTask the runnableTask to set
+	
+	/** @param obj Possible other {@link WidgetIgnorableUITask}
+	 *  @return <code>true</code> if other {@link WidgetIgnorableUITask}
+	 *          refers to the same {@link AbstractWidgetProperty}
 	 */
-	public void setRunnableTask(Runnable runnableTask) {
-		this.runnableTask = runnableTask;
-	}
-
-	
-	
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		if(obj instanceof WidgetIgnorableUITask)
 			return widgetProperty ==((WidgetIgnorableUITask)obj).getWidgetProperty();
 		else 
 			return false;
 	}
-	
-	
-	
 }
