@@ -31,28 +31,39 @@ public class AlarmBorderWidth implements IRule {
 	public Object evaluate(final Object[] arguments) {
 		int width = 0;
 		if ((arguments != null) && (arguments.length > 0)) {
-			double d = 300.0;
-			String s = "init";
-			if (arguments[0] instanceof Double) {
-				d = (Double) arguments[0];
-			} else if (arguments[0] instanceof Long) {
-				d = ((Long) arguments[0]).doubleValue();
-			} else if (arguments[0] instanceof String) {
-				s = (String) arguments[0];
-			}
+			for (int i = 0; i < arguments.length; i++) {
 
-			if ((Math.abs(d - 0.0) < 0.00001)
-					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
-				width = 0;
-			} else if ((Math.abs(d - 1.0) < 0.00001)
-					|| (s.equals(DynamicValueState.WARNING.toString()))) {
-				width = 3;
-			} else if ((Math.abs(d - 2.0) < 0.00001)
-					|| (s.equals(DynamicValueState.ALARM.toString()))) {
-				width = 3;
-			} else if (((d >= 3.0) && (d <= 255.0))
-					|| (s.equals(DynamicValueState.ERROR.toString()))) {
-				width = 3;
+				double d = 300.0;
+				String s = "init";
+				if (arguments[i] instanceof Double) {
+					d = (Double) arguments[i];
+				} else if (arguments[i] instanceof Long) {
+					d = ((Long) arguments[i]).doubleValue();
+				} else if (arguments[i] instanceof String) {
+					s = (String) arguments[i];
+				}
+
+				if ((Math.abs(d - 0.0) < 0.00001)
+						|| (s.equals(DynamicValueState.NORMAL.toString()))) {
+					if(width<0){
+						width = 0;
+					}
+				} else if ((Math.abs(d - 1.0) < 0.00001)
+						|| (s.equals(DynamicValueState.WARNING.toString()))) {
+					if(width<3){
+						width = 3;
+					}
+				} else if ((Math.abs(d - 2.0) < 0.00001)
+						|| (s.equals(DynamicValueState.ALARM.toString()))) {
+					if(width<3){
+						width = 3;
+					}
+				} else if (((d >= 3.0) && (d <= 255.0))
+						|| (s.equals(DynamicValueState.ERROR.toString()))) {
+					if(width<3){
+						width = 3;
+					}
+				}
 			}
 		}
 		return width;
@@ -63,8 +74,7 @@ public class AlarmBorderWidth implements IRule {
 	 */
 	@Override
 	public String getDescription() {
-		// TODO Auto-generated method stub
-		return null;
+		return "Liefert die Line width abhängig vom übergeben Wert.\r\n Es können mehrere Channel übergeben werden. Es wird die Line width für die höchste Prioirät genommen.\r\n Ist der Value größer 0 oder \"WARNING\",\"ALARM\",\"ERROR\",  wird 3 zurückgeben ansonsten 0";
 	}
 
 }
