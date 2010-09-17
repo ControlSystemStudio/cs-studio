@@ -7,6 +7,7 @@ Bundle-Activator: org.csstudio.sds.settings.desy.Activator
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.sds,
  org.eclipse.swt,
- org.csstudio.platform.ui;bundle-version="1.1.1"
+ org.csstudio.platform.ui;bundle-version="1.1.1",
+ org.junit4;bundle-version="4.8.1"
 Eclipse-LazyStart: true
 Export-Package: org.csstudio.sds.cosyrules.color
