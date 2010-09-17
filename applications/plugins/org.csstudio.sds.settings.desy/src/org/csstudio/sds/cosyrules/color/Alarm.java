@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.cosyrules.color;
 
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.IRule;
 import org.csstudio.sds.util.ColorAndFontUtil;
 import org.epics.css.dal.DynamicValueCondition;
@@ -55,6 +56,8 @@ public final class Alarm implements IRule {
      */
     public Object evaluate(final Object[] arguments) {
         DynamicValueState dvc = null;
+        // Wrong State violet
+        String color = "#8000FF"; 
         if ( (arguments != null) && (arguments.length > 0)) {
 
             if (arguments[0] instanceof Double) {
@@ -71,10 +74,12 @@ public final class Alarm implements IRule {
                 switch (dvc) {
                     case ALARM:
                         // RED
-                        return ColorAndFontUtil.toHex(253, 0, 0);
+                    	color = ColorAndFontUtil.toHex(253, 0, 0);
+                    	break;
                     case NORMAL:
                         // Green
-                        return ColorAndFontUtil.toHex(0, 216, 0);
+                    	color =  ColorAndFontUtil.toHex(0, 216, 0);
+                    	break;
                     case WARNING:
                         // Yellow
                         return ColorAndFontUtil.toHex(251, 243, 74);
@@ -83,13 +88,12 @@ public final class Alarm implements IRule {
                     case TIMEOUT:
                     case ERROR:
                         // white
-                        return ColorAndFontUtil.toHex(255, 255, 255);
+                    	color = ColorAndFontUtil.toHex(255, 255, 255);
                 }
             }
         }
-
-        // Wrong State violet
-        return "#8000FF";
+        System.out.println("Border color: "+color+"\r\n");
+        return color;
     }
 
     /**

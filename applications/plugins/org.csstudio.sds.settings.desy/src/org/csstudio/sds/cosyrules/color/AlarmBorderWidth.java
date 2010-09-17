@@ -1,13 +1,14 @@
 package org.csstudio.sds.cosyrules.color;
 
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.IRule;
 import org.epics.css.dal.DynamicValueState;
 
 /**
  * Rule to control the border width dependent on the severity.
- *
+ * 
  * @author jhatje
- *
+ * 
  */
 public class AlarmBorderWidth implements IRule {
 
@@ -28,6 +29,7 @@ public class AlarmBorderWidth implements IRule {
 	 * EPICS.SEVR.
 	 */
 	public Object evaluate(final Object[] arguments) {
+		int width = 0;
 		if ((arguments != null) && (arguments.length > 0)) {
 			double d = 300.0;
 			String s = "init";
@@ -41,32 +43,28 @@ public class AlarmBorderWidth implements IRule {
 
 			if ((Math.abs(d - 0.0) < 0.00001)
 					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
-				return 0;
-			}
-			if ((Math.abs(d - 1.0) < 0.00001)
+				width = 0;
+			} else if ((Math.abs(d - 1.0) < 0.00001)
 					|| (s.equals(DynamicValueState.WARNING.toString()))) {
-				return 3;
-			}
-			if ((Math.abs(d - 2.0) < 0.00001)
+				width = 3;
+			} else if ((Math.abs(d - 2.0) < 0.00001)
 					|| (s.equals(DynamicValueState.ALARM.toString()))) {
-				return 3;
-			}
-			if (((d >= 3.0) && (d <= 255.0))
+				width = 3;
+			} else if (((d >= 3.0) && (d <= 255.0))
 					|| (s.equals(DynamicValueState.ERROR.toString()))) {
-				return 3;
+				width = 3;
 			}
 		}
-
-		return 0;
+		return width;
 	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public String getDescription() {
-        // TODO Auto-generated method stub
-        return null;
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public String getDescription() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
 }
