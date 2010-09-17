@@ -23,12 +23,39 @@
  */
 package org.csstudio.alarm.treeView.views;
 
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
+
+import java.util.Random;
+
+import javax.annotation.Nonnull;
+import javax.naming.InvalidNameException;
+import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttributes;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+
 import junit.framework.Assert;
 
+import org.csstudio.alarm.service.AlarmServiceActivator;
+import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.utils.LdapUtils;
+import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -50,6 +77,26 @@ public class AlarmTreeViewUiPluginTest {
     private static AlarmTreeView VIEW;
     private static IWorkbenchPage ACTIVE_PAGE;
     private static ILdapService LDAP_SERVICE;
+    private static Random RANDOM = new Random(System.currentTimeMillis());
+    private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
+
+    private static Attributes EFAN_ATTRS = new BasicAttributes();
+    private static Attributes ECOM_ATTRS = new BasicAttributes();
+    private static Attributes EREN_ATTRS = new BasicAttributes();
+
+    private static final String ATTR_TEST_CONTENT = "TestContent";
+
+    static {
+        EFAN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_FAC_OBJECT_CLASS);
+        ECOM_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_COM_OBJECT_CLASS);
+        EREN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS);
+
+        for (final String attrID : EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()) {
+            ECOM_ATTRS.put(attrID, ATTR_TEST_CONTENT);
+            EREN_ATTRS.put(attrID, ATTR_TEST_CONTENT);
+        }
+    }
+
 
     @BeforeClass
     public static void setUpViewAndService() throws PartInitException {
@@ -58,8 +105,11 @@ public class AlarmTreeViewUiPluginTest {
         LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
         LDAP_SERVICE.reInitializeLdapConnection(LdapTestHelper.LDAP_TEST_PREFS);
 
-        // Set the alarm tree view preferences for the facilities to be displayed to the test facilities
+        // Set up the dynamic test alarm tree
+        setUpCreateComponents();
 
+        // Set up the just created test facility name in the preferences
+        setUpAlarmTreeViewPreferences(EFAN_NAME);
 
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         ACTIVE_PAGE = window.getActivePage();
@@ -67,7 +117,63 @@ public class AlarmTreeViewUiPluginTest {
         Assert.assertNotNull(ACTIVE_PAGE);
 
         VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
+    }
 
+    private static void setUpAlarmTreeViewPreferences(@Nonnull final String testValue) {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmServiceActivator.PLUGIN_ID);
+        prefs.put(AlarmPreference.ALARMSERVICE_FACILITIES.getKeyAsString(), testValue);
+    }
+
+
+    private static void setUpCreateComponents() {
+        try {
+            final LdapName name =
+                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
+                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EFAN_ATTRS));
+
+            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren1"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
+
+            name.remove(name.size() - 1);
+            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom1"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECOM_ATTRS));
+
+            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren2"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
+
+            name.remove(name.size() - 1);
+            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECOM_ATTRS));
+
+            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren3"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
+
+            name.remove(name.size() - 1);
+            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren4"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
+
+
+            final LdapName name2 =
+                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
+                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+
+            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom3"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
+
+            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom4"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
+
+            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren5"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
+
+            name2.remove(name2.size() - 1);
+            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren6"));
+            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
+
+        } catch (final InvalidNameException e) {
+            Assert.fail("LDAP name composition failed.");
+        }
     }
 
 
@@ -76,12 +182,39 @@ public class AlarmTreeViewUiPluginTest {
         final IAlarmSubtreeNode node = VIEW.getRootNode();
         Assert.assertNotNull(node);
 
-       // Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
+        final Job job = VIEW.createAndScheduleImportInitialConfiguration(node);
+        try {
+            job.join();
+        } catch (final InterruptedException e) {
+            Assert.fail("Import job interrupted.\n" + e.getMessage());
+        }
 
+        VIEW.refresh();
+        System.out.println("Pause");
+
+
+       // Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
     }
+
+
+
 
     @AfterClass
     public static void closeView() {
+        // Unset the just created test facility name in the preferences
+        setUpAlarmTreeViewPreferences(AlarmPreference.ALARMSERVICE_FACILITIES.getDefaultAsString());
+
         ACTIVE_PAGE.hideView(VIEW);
+
+        final LdapName name =
+            LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
+                                     UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+        try {
+            Assert.assertTrue(LDAP_SERVICE.removeComponent(VIRTUAL_ROOT, name));
+        } catch (final InvalidNameException e) {
+            Assert.fail("Unexpected exception:\n" + e.getMessage());
+        } catch (final CreateContentModelException e) {
+            Assert.fail("Content model could not be created:\n" + e.getMessage());
+        }
     }
 }

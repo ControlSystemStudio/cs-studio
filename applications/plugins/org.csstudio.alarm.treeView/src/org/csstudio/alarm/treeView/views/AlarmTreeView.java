@@ -285,8 +285,8 @@ public final class AlarmTreeView extends ViewPart {
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue(),
-                                            LdapEpicsAlarmcfgConfiguration.UNIT,
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT.getDescription(),
+                                            LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT,
                                             TreeNodeSource.ROOT).build();
     }
 
@@ -799,8 +799,10 @@ public final class AlarmTreeView extends ViewPart {
     /**
      * Starts a job which reads the contents of the directory in the background.
      * @param rootNode
+     * @return the created and already scheduled job
      */
-    public void createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
+    @Nonnull
+    public Job createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
         LOG.debug("Start import initial configuration.");
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
@@ -816,5 +818,6 @@ public final class AlarmTreeView extends ViewPart {
 
         // Start the directory reader job.
         progressService.schedule(importInitialConfigJob, 0, true);
+        return importInitialConfigJob;
     }
 }
