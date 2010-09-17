@@ -44,6 +44,15 @@ public class FilePathProperty extends AbstractWidgetProperty {
 	 */
 	private String[] fileExtensions;
 	
+	
+	/**File Path Property Constructor. The property value type is {@link IPath}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 * @param fileExtensions the allowed file extensions in the file open dialog.
+	 */
 	public FilePathProperty(String prop_id, String description,
 			WidgetPropertyCategory category, IPath defaultValue,
 			String[] fileExtensions) {

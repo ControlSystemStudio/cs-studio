@@ -42,11 +42,26 @@ public class FontProperty extends AbstractWidgetProperty {
 	 */
 	public static final String XML_ATTRIBUTE_FONT_STYLE = "style"; //$NON-NLS-1$
 	
+	
+	/**Font Property Constructor. The property value type is {@link OPIFont}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public FontProperty(String prop_id, String description,
 			WidgetPropertyCategory category, FontData defaultValue) {
 		super(prop_id, description, category, new OPIFont(defaultValue));
 	}
-	
+	/**Font Property Constructor. The property value type is {@link OPIFont}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created. 
+	 * It must be a exist font macro name in font file.
+	 */
 	public FontProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
 		super(prop_id, description, category, MediaService.getInstance().getOPIFont(defaultValue));

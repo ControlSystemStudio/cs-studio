@@ -59,7 +59,7 @@
          <attribute name="name" type="string" use="required">
             <annotation>
                <documentation>
-                  The name of the widget, which will be appeared in the palette.
+                  The name of the widget, which will appear in the palette.
                </documentation>
             </annotation>
          </attribute>
@@ -83,7 +83,7 @@
          <attribute name="model_class" type="string" use="required">
             <annotation>
                <documentation>
-                  the model of the widget
+                  The model of the widget
                </documentation>
                <appinfo>
                   <meta.attribute kind="java" basedOn="org.csstudio.opibuilder.model.AbstractWidgetModel:"/>
