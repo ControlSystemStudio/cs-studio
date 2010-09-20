@@ -42,13 +42,28 @@ public class IntegerProperty extends AbstractWidgetProperty {
 	 */
 	private int max;
 	
+	/**Integer Property Constructor. The property value type is integer.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public IntegerProperty(final String prop_id, final String description,
 			final WidgetPropertyCategory category, final int defaultValue) {
 		super(prop_id, description, category, Integer.valueOf(defaultValue));
 		min = Integer.MIN_VALUE;
 		max = Integer.MAX_VALUE;
 	}
-	
+	/**Integer Property Constructor. The property value type is integer.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 * @param minValue the minimum allowed integer value.
+	 * @param maxValue the maximum allowed integer value.
+	 */
 	public IntegerProperty(final String prop_id, final String description,
 			final WidgetPropertyCategory category, final int defaultValue,
 			final int minValue, final int maxValue) {

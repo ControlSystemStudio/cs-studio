@@ -13,6 +13,10 @@ import org.jdom.Element;
  */
 public class PVValueProperty extends AbstractWidgetProperty {
 
+	/**The property is used to store pv values. The value type is {@link IValue}.
+	 * @param prop_id the property ID.
+	 * @param defaultValue the default value.
+	 */
 	public PVValueProperty(String prop_id, IValue defaultValue) {
 		super(prop_id, "", null, defaultValue);
 		setVisibleInPropSheet(false);

@@ -266,6 +266,10 @@ public abstract class AbstractWidgetModel implements IAdaptable,
 		
 	}
 	
+	/**
+	 * Configure the properties of the widget. Subclass should add 
+	 * new properties in this method. 
+	 */
 	protected abstract void configureProperties();
 	
 	@SuppressWarnings("unchecked")

@@ -283,6 +283,8 @@ the interface of <code>IWidgetPropertyChangeHandler</code>. The <code>handleChan
 the property value change in which <code>oldValue</code> is the old property value, <code>newValue</code> is the 
 new property value, <code>figure</code> is the widget figure.
 </p>
+<p>The editpart of a widget is the <code>widgetController</code> in BOY javascript. You can add additional
+methods here for javascript use. </p>
 
 <h4>3.6 Register the widget with BOY</h4>
 <p>So far, we have finished the coding part. Now, we need to register this widget with BOY so that BOY can 
@@ -322,5 +324,16 @@ Simple Bar Graph widget in you CSS BOY palette! You can test it by setting
 
 <p>*This project zip file can be found at BOY Examples->Miscellaneous->CustomizedWidgetExample.zip. You can import it into your Eclipse
  workspace by selecting <code>File->Import...->Existing Project into workspace</code>.</p>
+
+<h4>3.8 Resources</h4>
+<p>There are lots of exist resources come with BOY, such as <code>linear scale</code>, 
+<code>round scale</code>, <code>AbstractBoolFigure</code>, <code>AbstractScaledWidgetFigure</code> and so on.
+They are included in the plugins of <code>org.csstudio.swt.widgets</code> and <code>org.csstudio.swt.xygraph</code>. 
+A draw2d figure can be composed of several other figures, so you can build your figure easily with these figure parts.
+For example, the Byte Monitor widget is composed of an array of LED figures.
+It is recommended to check if there are existing figure parts available for your new widget before
+you start to create your widget figure from scratch.</p>
+
 </body>
+
 </html>

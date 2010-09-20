@@ -269,43 +269,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 						pvConnectedStatusMap.put(sp.getPropertyID(), false);						
 						
 						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
-//						= new PVListener(){
-//							public void pvDisconnected(PV pv) {
-//								pvConnectedStatusMap.put(sp.getPropertyID(), false);
-//								markWidgetAsDisconnected(pv.getName());
-//							}
-//
-//							public synchronized void pvValueUpdate(PV pv) {
-//								if(pv == null)
-//									return;
-//								Boolean connected = pvConnectedStatusMap.get(sp.getPropertyID());
-//								
-//								//connection status
-//								if(connected != null && !connected){
-//									pvConnectedStatusMap.put(sp.getPropertyID(), true);
-//									widgetConnectionRecovered(pv.getName());
-//								}
-//								
-//								//write access
-//								if(controlPVPropId != null && 
-//										controlPVPropId.equals((String)sp.getPropertyID()) && 
-//										!writeAccessMarked && !pv.isWriteAllowed()){
-//									UIBundlingThread.getInstance().addRunnable(new Runnable(){
-//										public void run() {
-//											if(!writeAccessMarked){
-//												figure.setCursor(Cursors.NO);
-//												figure.setEnabled(false);
-//												preEnableState = false;		
-//												writeAccessMarked = true;
-//											}
-//										}
-//									});							
-//								}
-//								
-//								pvPropertyMap.get(sp).setPropertyValue(pv.getValue());		
-//								
-//							}							
-//						};
 						
 						pv.addListener(pvListener);						
 						pvMap.put(sp.getPropertyID(), pv);
