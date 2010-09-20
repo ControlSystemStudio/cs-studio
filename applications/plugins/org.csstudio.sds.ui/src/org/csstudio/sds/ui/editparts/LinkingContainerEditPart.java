@@ -67,7 +67,7 @@ public final class LinkingContainerEditPart extends AbstractContainerEditPart {
 	 * Constructor.
 	 */
 	public LinkingContainerEditPart() {
-		setChildrenSelectable(true);
+		setChildrenSelectable(false);
 	}
 
 	/**
