@@ -13,7 +13,13 @@ import org.jdom.Element;
 public final class BooleanProperty extends AbstractWidgetProperty {
 
 
-
+	/**Boolean Property Constructor
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public BooleanProperty(String propId, String description,
 			WidgetPropertyCategory category, boolean defaultValue) {
 		super(propId, description, category, Boolean.valueOf(defaultValue));

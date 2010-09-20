@@ -29,7 +29,7 @@ import org.csstudio.platform.management.IManagementCommand;
 
 /**
  * Management command which returns some statistics about the IOC connections.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class GetIocStatistics implements IManagementCommand {
@@ -37,8 +37,8 @@ public class GetIocStatistics implements IManagementCommand {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String result = IocConnectionManager.getInstance().getStatisticAsString();
+	public CommandResult execute(final CommandParameters parameters) {
+		final String result = IocConnectionManager.INSTANCE.getStatisticAsString();
 		return CommandResult.createMessageResult(result);
 	}
 

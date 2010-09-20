@@ -6,13 +6,14 @@ Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.csstudio.config.authorizeid.AuthorizeIdActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.csstudio.platform,
- org.csstudio.platform.ui,
- org.csstudio.utility.ldap,
- org.csstudio.utility.namespace.utility,
  org.eclipse.help,
+ org.csstudio.platform,
+ org.csstudio.utility.namespace.utility,
+ org.csstudio.platform.ui,
+ org.csstudio.utility.ldap.service;bundle-version="1.0.0",
  org.csstudio.utility.treemodel;bundle-version="1.3.0",
  org.csstudio.platform.libs.annotations;bundle-version="1.3.0",
- org.csstudio.platform.libs.guava
+ org.csstudio.platform.libs.guava,
+ org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6

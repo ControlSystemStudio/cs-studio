@@ -48,7 +48,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @since 03.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
+public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ContentModel.class);
 
@@ -86,7 +86,7 @@ public class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         _cacheByTypeAndLdapName = initCacheByType(clazz);
         _cacheByTypeAndSimpleName = initCacheByType(clazz);
 
-        final String rootTypeValue = objectClassRoot.getRootTypeValue();
+        final String rootTypeValue = objectClassRoot.getUnitTypeValue();
         final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootTypeValue);
         final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
 

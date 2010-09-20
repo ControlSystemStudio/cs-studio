@@ -19,7 +19,14 @@ public class MacrosProperty extends AbstractWidgetProperty {
 	 * XML ELEMENT name <code>INCLUDE_PARENT_MACROS</code>.
 	 */
 	public static final String XML_ELEMENT_INCLUDE_PARENT_MACROS = "include_parent_macros"; //$NON-NLS-1$
-
+	
+	/**Macros Property Constructor. The property value type is {@link MacrosInput}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param default_macros the default macros when the widget is first created.
+	 */
 	public MacrosProperty(String prop_id, String description,
 			WidgetPropertyCategory category, MacrosInput default_macros) {
 		super(prop_id, description, category, default_macros);

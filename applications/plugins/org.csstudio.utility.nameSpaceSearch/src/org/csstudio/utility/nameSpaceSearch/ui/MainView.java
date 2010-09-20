@@ -21,35 +21,39 @@
  */
 package org.csstudio.utility.nameSpaceSearch.ui;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_WILDCARD;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_WILDCARD;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
 
 import org.csstudio.platform.model.IControlSystemItem;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
-import org.csstudio.utility.ldap.reader.LDAPReader;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
-import org.csstudio.utility.ldap.reader.LDAPReader.IJobCompletedCallBack;
-import org.csstudio.utility.ldap.reader.LDAPReader.LdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
+import org.csstudio.utility.ldap.service.ILdapSearchParams;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceSearch.Activator;
 import org.csstudio.utility.nameSpaceSearch.Messages;
 import org.eclipse.core.runtime.Preferences;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -109,9 +113,9 @@ public class MainView extends ViewPart {
     private final HashMap<String, String> _headline = new HashMap<String, String>();
     private Image _workDisable;
     private Label _workIcon;
-    private LDAPReader _ldapr;
+    private Job _ldapr;
     private Display _disp;
-    private final LdapSearchResult _ldapSearchResult;
+    private final ILdapSearchResult _ldapSearchResult;
     /**
      * The search Button.
      */
@@ -127,10 +131,12 @@ public class MainView extends ViewPart {
      */
     class MyTableLabelProvider implements ITableLabelProvider {
         // No Image
+        @Override
         public Image getColumnImage(final Object element, final int columnIndex) {
             return null;
         }
 
+        @Override
         public String getColumnText(final Object element, final int columnIndex) {
             if (element instanceof ProcessVariable) {
                 final ProcessVariable pv = (ProcessVariable) element;
@@ -157,18 +163,22 @@ public class MainView extends ViewPart {
 
         }
 
+        @Override
         public void addListener(final ILabelProviderListener listener) {
             // EMPTY
         }
 
+        @Override
         public void dispose() {
             // EMPTY
         }
 
+        @Override
         public boolean isLabelProperty(final Object element, final String property) {
             return false;
         }
 
+        @Override
         public void removeListener(final ILabelProviderListener listener) {
             // EMPTY
         }
@@ -176,6 +186,7 @@ public class MainView extends ViewPart {
 
     class myContentProvider implements IStructuredContentProvider{
 
+        @Override
         @SuppressWarnings("unchecked")
 		public Object[] getElements(final Object inputElement) {
             if (inputElement instanceof ArrayList) {
@@ -184,10 +195,12 @@ public class MainView extends ViewPart {
             return (Object[])inputElement;
         }
 
+        @Override
         public void dispose() {
             // EMPTY
         }
 
+        @Override
         public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
             // EMPTY
         }
@@ -248,18 +261,21 @@ public class MainView extends ViewPart {
         // add Listeners
         _searchButton.addSelectionListener(new SelectionListener() {
 
+            @Override
             public void widgetSelected(final SelectionEvent e) {
                 _workIcon.setEnabled(true);
                 _searchButton.setEnabled(false);
 //              workIcon.setImage(world);
                 search(_searchText.getText());
             }
+            @Override
             public void widgetDefaultSelected(final SelectionEvent e) {}
 
         });
 
         _searchText.addKeyListener(new KeyListener() {
 
+            @Override
             public void keyReleased(final KeyEvent e) {
                 if(e.keyCode==SWT.CR){
                     _workIcon.setEnabled(true);
@@ -269,6 +285,7 @@ public class MainView extends ViewPart {
                 }
             }
 
+            @Override
             public void keyPressed(final KeyEvent e) {}
 
         });
@@ -309,10 +326,9 @@ public class MainView extends ViewPart {
         // ersetzt mehrfach vorkommende '*' durch einen. Da die LDAP abfrage damit nicht zurecht kommt.
         search = search.replaceAll("\\*\\**", FIELD_WILDCARD); //$NON-NLS-1$ //$NON-NLS-2$
 
-        String filter = RECORD.getNodeTypeName() +
-                        FIELD_ASSIGNMENT + search; //$NON-NLS-1$
+        String filter = RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + search; //$NON-NLS-1$
 
-        if(search.compareTo(FIELD_WILDCARD)!=0) {
+        if(search.compareTo(FIELD_WILDCARD) != 0) {
             filter = filter.concat(FIELD_WILDCARD); //$NON-NLS-1$
         }
 
@@ -322,24 +338,42 @@ public class MainView extends ViewPart {
             _headline.put(IOC.getNodeTypeName(), Messages.MainView_Controller); //$NON-NLS-1$ //$NON-NLS-2$
             _headline.put(RECORD.getNodeTypeName(), Messages.MainView_Record); //$NON-NLS-1$ //$NON-NLS-2$
         }
+        final String finalFilter = filter;
+        final ILdapSearchParams params = new ILdapSearchParams() {
+            @Override
+            public LdapName getSearchRoot() {
+                return createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+            }
+            @Override
+            public String getFilter() {
+                return finalFilter;
+            }
+            @Override
+            public int getScope() {
+                return SearchControls.SUBTREE_SCOPE;
+            }
+        };
 
-        final LdapSearchParams params = new LdapSearchParams(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
-                                                             filter);
         final ILdapService service = Activator.getDefault().getLdapService();
-        _ldapr = service.createLdapReaderJob(params,
-                                             _ldapSearchResult,
-                                             new IJobCompletedCallBack() {
-                                                 @Override
-                                                 public void onLdapReadComplete() {
-                                                     _disp.syncExec(new Runnable() {
-                                                         public void run() {
-                                                             getText();
-                                                         }
-                                                     });
-                                                 }
-                                             });
+        if (service != null) {
+            _ldapr = service.createLdapReaderJob(params,
+                                                 _ldapSearchResult,
+                                                 new ILdapReadCompletedCallback() {
+                @Override
+                public void onLdapReadComplete() {
+                    _disp.syncExec(new Runnable() {
+                        @Override
+                        public void run() {
+                            getText();
+                        }
+                    });
+                }
+            });
 
-        _ldapr.schedule();
+            _ldapr.schedule();
+        } else {
+            MessageDialog.openError(getSite().getShell(), "LDAP Access", "LDAP service unavailable. Retry later.");
+        }
         _resultTableView.getTable().layout();
     }
 
@@ -347,56 +381,6 @@ public class MainView extends ViewPart {
         _resultTableView.refresh(false);
         final ArrayList<IControlSystemItem> tableElements = new ArrayList<IControlSystemItem>();
 
-//        ArrayList<String> list = new ArrayList<String>();
-//        list.addAll(_ergebnisListe.getSimpleResultNames());
-
-        /*
-         * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
-         */
-//        String filter = "";
-//        String[] filters = list.get(0).split(",");
-//        for (int i=0;i<filters.length;i++){
-//            filter = filter.concat(filters[i].split("=")[0]+"=filter field,");
-//        }
-//        filter = filter.substring(0,filter.length()-1);
-//        list.add(0, filter);
-//
-//        TextCellEditor[] ces = new TextCellEditor[]{new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable()),new TextCellEditor(ergebnissTableView.getTable())};
-//        ergebnissTableView.setCellEditors(ces);
-//        ergebnissTableView.setCellModifier(new ICellModifier(){
-//
-//            public boolean canModify(Object element, String property) {
-//                System.out.println("canModify: "+element+" -- "+property);
-//                if (element instanceof ControlSystemItem) {
-//                    return true;
-//
-//                }
-//                return false;
-//            }
-//
-//            public Object getValue(Object element, String property) {
-//                System.out.println("getValue: "+element+" -- "+property);
-//                if (element instanceof ControlSystemItem) {
-//                    ControlSystemItem new_name = (ControlSystemItem) element;
-//                    return new_name.getPath();
-//
-//                }
-//                return null;
-//            }
-//
-//            public void modify(Object element, String property, Object value) {
-//                System.out.println("getValue: "+element+" -- "+property+" --- "+value);
-//                if (element instanceof ControlSystemItem) {
-//                    ControlSystemItem new_name = (ControlSystemItem) element;
-//                }
-//
-//            }
-//
-//        });
-        /*
-         * Ende
-         * Vorbereitung für die Nutzung der ersten Zeile als Filter Feld.
-         */
 
         int i=0;
         for (final SearchResult result : _ldapSearchResult.getAnswerSet()) {
@@ -404,7 +388,7 @@ public class MainView extends ViewPart {
             final String[] elements = row.split(","); //$NON-NLS-1$
             String path =""; //$NON-NLS-1$
             for(int j=0;j<elements.length;j++){
-                if((i==0)&&(j>=_resultTableView.getTable().getColumnCount())){
+                if(i==0&&j>=_resultTableView.getTable().getColumnCount()){
 //                  lastSort = new int[elements.length-1];
                     final TableColumn tc = new TableColumn(_resultTableView.getTable(),SWT.NONE);
                     tc.setResizable(true);
@@ -414,7 +398,9 @@ public class MainView extends ViewPart {
                     final int spalte = j;
                     tc.addSelectionListener(new SelectionListener(){
                         boolean backward = true;
+                        @Override
                         public void widgetDefaultSelected(final SelectionEvent e) {}
+                        @Override
                         public void widgetSelected(final SelectionEvent e) {
                                 backward=!backward;
                                 tc.setAlignment(SWT.LEFT);
@@ -447,7 +433,7 @@ public class MainView extends ViewPart {
                         temp=temp.concat(" ("+_ldapSearchResult.getAnswerSet().size()+")"); //$NON-NLS-1$ //$NON-NLS-2$
                     }
                     tc.setText(temp);
-                }else if((i==0)&&(j==0)){
+                }else if(i==0&&j==0){
                     String tmp = _resultTableView.getTable().getColumn(j).getText();
                     tmp = tmp.substring(0,tmp.lastIndexOf("(")+1)+_ldapSearchResult.getAnswerSet().size()+")"; //$NON-NLS-1$ //$NON-NLS-2$
                     _resultTableView.getTable().getColumn(j).setText(tmp);
@@ -456,7 +442,7 @@ public class MainView extends ViewPart {
             }
             // TODO: hier Stecken irgend wo die Infos um die Table head aus dem LDAP-Tree zu bekommen.
 //            System.out.println("Path: "+path);
-            if((elements.length==1)&&(elements[0].split("=").length==1)){
+            if(elements.length==1&&elements[0].split("=").length==1){
             	elements[0] = "="+elements[0];
             	for (int k = 1; k < elements.length; k++) {
 					elements[k] = elements[0];
@@ -484,6 +470,7 @@ public class MainView extends ViewPart {
         final MenuManager manager = new MenuManager("#PopupMenu"); //$NON-NLS-1$
         final Control contr = _resultTableView.getControl();
         manager.addMenuListener(new IMenuListener() {
+            @Override
             public void menuAboutToShow(final IMenuManager manager) {
                 manager.add(new Separator(IWorkbenchActionConstants.MB_ADDITIONS));
             }
@@ -516,7 +503,8 @@ public class MainView extends ViewPart {
             target.setTransfer(types);
 
             target.addDropListener(new DropTargetListener() {
-              public void dragEnter(final DropTargetEvent event) {
+              @Override
+            public void dragEnter(final DropTargetEvent event) {
                  if (event.detail == DND.DROP_DEFAULT) {
                      if ((event.operations & DND.DROP_COPY) != 0) {
                          event.detail = DND.DROP_COPY;
@@ -525,10 +513,12 @@ public class MainView extends ViewPart {
                      }
                  }
                }
-               public void dragOver(final DropTargetEvent event) {
+               @Override
+            public void dragOver(final DropTargetEvent event) {
                    // EMPTY
                }
-               public void dragOperationChanged(final DropTargetEvent event) {
+               @Override
+            public void dragOperationChanged(final DropTargetEvent event) {
                     if (event.detail == DND.DROP_DEFAULT) {
                         if ((event.operations & DND.DROP_COPY) != 0) {
                             event.detail = DND.DROP_COPY;
@@ -537,12 +527,15 @@ public class MainView extends ViewPart {
                         }
                     }
                 }
+                @Override
                 public void dragLeave(final DropTargetEvent event) {
                     // EMPTY
                 }
+                @Override
                 public void dropAccept(final DropTargetEvent event) {
                     // EMPTY
                 }
+                @Override
                 public void drop(final DropTargetEvent event) {
                     if (textTransfer.isSupportedType(event.currentDataType)) {
                        _searchText.insert((String)event.data);

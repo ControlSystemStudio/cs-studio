@@ -71,8 +71,6 @@ public class Axis extends LinearScale{
 	
 	private boolean dashGridLine = true;	
 	
-	private final static int GAP = 0;
-	
 	private double autoScaleThreshold =0.01;
 	
 	final private List<IAxisListener> listeners = new ArrayList<IAxisListener>();
@@ -145,6 +143,11 @@ public class Axis extends LinearScale{
 	}
 	
 	@Override
+	public void setVisible(boolean visible) {
+		super.setVisible(visible);
+		revalidate();
+	}
+	@Override
 	public void setForegroundColor(final Color color) {
 		super.setForegroundColor(color);
 		if(xyGraph != null)
@@ -161,15 +164,27 @@ public class Axis extends LinearScale{
 	@Override
 	public Dimension getPreferredSize(final int wHint, final int hHint) {
 	    final Dimension d = super.getPreferredSize(wHint, hHint);		
-		if(isHorizontal())
-			d.height += FigureUtilities.getTextExtents(title, titleFont).height + GAP;
-		else
-			d.width += FigureUtilities.getTextExtents(title, titleFont).height + GAP;
+		if (isVisible()) {	
+			if (isHorizontal())
+				d.height += FigureUtilities.getTextExtents(title, titleFont).height;
+			else
+				d.width += FigureUtilities.getTextExtents(title, titleFont).height;
+		}
+		else { // Not visible, flatten it to use zero height resp. width
+			if (isHorizontal())
+				d.height = 0;
+			else
+				d.width = 0;
+		}
 		return d;
 	}
 	
 	@Override
-	protected void paintClientArea(final Graphics graphics) {	
+	protected void paintClientArea(final Graphics graphics) {
+		// Don't do anything when hidden
+		if (!isVisible())
+			return;
+		
 		super.paintClientArea(graphics);
 		
 		graphics.pushState();

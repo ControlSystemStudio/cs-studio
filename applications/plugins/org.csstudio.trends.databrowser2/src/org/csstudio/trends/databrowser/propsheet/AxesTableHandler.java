@@ -40,8 +40,8 @@ import org.eclipse.swt.widgets.Table;
  */
 public class AxesTableHandler implements ILazyContentProvider
 {
-    final private ColorRegistry color_registry;
-    final OperationsManager operations_manager;
+	final private ColorRegistry color_registry;
+    final private OperationsManager operations_manager;
     final private TableViewer axes_table;
     private Model model;
     
@@ -113,6 +113,53 @@ public class AxesTableHandler implements ILazyContentProvider
     private void createColumns()
     {
         TableViewerColumn col;
+        
+        // Visible? Column ----------
+        col = AutoSizeColumn.make(axes_table, Messages.AxisVisibility, 80, 10);
+        col.setLabelProvider(new CellLabelProvider()
+        {
+            @Override
+            public void update(final ViewerCell cell)
+            {
+                final AxisConfig axis = (AxisConfig) cell.getElement();
+                if (axis.isVisible())
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
+                else
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
+            }
+        });
+        col.setEditingSupport(new EditSupportBase(axes_table)
+        {
+            @Override
+            protected CellEditor getCellEditor(final Object element)
+            {
+                return new CheckboxCellEditor(((TableViewer)getViewer()).getTable());
+            }
+
+            @Override
+            protected Object getValue(final Object element)
+            {
+                return ((AxisConfig) element).isVisible();
+            }
+
+            @Override
+            protected void setValue(final Object element, final Object value)
+            {
+                try
+                {
+                    final AxisConfig axis = (AxisConfig)element;
+                    final ChangeAxisConfigCommand command =
+                        new ChangeAxisConfigCommand(operations_manager, axis);
+                    axis.setVisible(((Boolean)value).booleanValue());
+                    command.rememberNewConfig();
+                }
+                catch (NumberFormatException ex)
+                {
+                    // NOP, leave as is
+                }
+            }
+        });
+        
         // Axis Name Column ----------
         col = AutoSizeColumn.make(axes_table, Messages.ValueAxisName, 100, 100);
         col.setLabelProvider(new CellLabelProvider()
@@ -271,9 +318,9 @@ public class AxesTableHandler implements ILazyContentProvider
             {
                 final AxisConfig axis = (AxisConfig) cell.getElement();
                 if (axis.isAutoScale())
-                    cell.setImage(Activator.getDefault().getImage("icons/checked.gif")); //$NON-NLS-1$
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_CHECKED));
                 else
-                    cell.setImage(Activator.getDefault().getImage("icons/unchecked.gif")); //$NON-NLS-1$
+                    cell.setImage(Activator.getDefault().getImage(Activator.ICON_UNCHECKED));
             }
         });
         col.setEditingSupport(new EditSupportBase(axes_table)

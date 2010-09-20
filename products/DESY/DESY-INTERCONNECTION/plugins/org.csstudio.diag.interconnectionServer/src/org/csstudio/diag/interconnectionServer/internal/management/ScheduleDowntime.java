@@ -24,6 +24,8 @@ package org.csstudio.diag.interconnectionServer.internal.management;
 
 import java.util.concurrent.TimeUnit;
 
+import javax.naming.NamingException;
+
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
@@ -35,7 +37,7 @@ import org.eclipse.core.runtime.Platform;
 
 /**
  * Management command which schedules a downtime for an IOC.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class ScheduleDowntime implements IManagementCommand {
@@ -43,21 +45,26 @@ public class ScheduleDowntime implements IManagementCommand {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
+	public CommandResult execute(final CommandParameters parameters) {
 		if (parameters == null) {
 			return CommandResult.createFailureResult("Paramters required");
 		}
-		String ioc = (String) parameters.get("ioc");
-		Integer duration = (Integer) parameters.get("duration");
+		final String ioc = (String) parameters.get("ioc");
+		final Integer duration = (Integer) parameters.get("duration");
 		if (ioc == null || duration == null) {
 			return CommandResult.createFailureResult("Parameters required");
 		}
 
-		int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
+		final int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		IocConnection iocConnection = IocConnectionManager.getInstance().getIocConnection( IocConnectionManager.getInstance().getIocInetAdressByName(ioc), dataPort);
+		IocConnection iocConnection;
+        try {
+            iocConnection = IocConnectionManager.INSTANCE.getIocConnection( IocConnectionManager.INSTANCE.getIocInetAdressByName(ioc), dataPort);
+        } catch (final NamingException e) {
+            return CommandResult.createFailureResult("LDAP name composition of IOC lookup failed for" + ioc);
+        }
 		iocConnection.scheduleDowntime(duration, TimeUnit.SECONDS);
-		
+
 		return CommandResult.createSuccessResult();
 	}
 

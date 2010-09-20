@@ -11,9 +11,9 @@ public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
 	private ArrayList<XmlChannel> channelsList;
 	 
-	public ChannelFinderViewContentProvider(ArrayList<XmlChannel> channelsList2) {
+	public ChannelFinderViewContentProvider(ArrayList<XmlChannel> channelsList) {
 		// TODO Auto-generated constructor stub
-		this.channelsList = channelsList2;
+		this.channelsList = channelsList;
 	}
 
 	@Override
@@ -37,7 +37,6 @@ public class ChannelFinderViewContentProvider implements
 	@Override
 	public void inputChanged(Viewer arg0, Object arg1, Object arg2) {
 		// TODO Auto-generated method stub
-		System.out.println("model changed......");
 	}
 
 }

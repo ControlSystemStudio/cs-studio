@@ -23,13 +23,14 @@ package org.csstudio.alarm.treeView.ldap;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 
 /**
@@ -41,8 +42,6 @@ import org.csstudio.utility.treemodel.CreateContentModelException;
  * @since 21.06.2010
  */
 public final class DeleteRecursivelyModificationItem extends AbstractTreeModificationItem {
-
-    private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
     private final LdapName _nodeName;
 
@@ -67,7 +66,12 @@ public final class DeleteRecursivelyModificationItem extends AbstractTreeModific
     public boolean apply() throws AlarmTreeModificationException {
         boolean result;
         try {
-            result = LDAP_SERVICE.removeComponent(LdapEpicsAlarmcfgConfiguration.ROOT, _nodeName);
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                throw new AlarmTreeModificationException("Removal failed due to unavailable LDAP service", null);
+            }
+
+            result = service.removeComponent(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT, _nodeName);
         } catch (final InvalidNameException e) {
             throw new AlarmTreeModificationException("New name could not be constructed as LDAP name.", e);
         } catch (final CreateContentModelException e) {

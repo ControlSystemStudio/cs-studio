@@ -28,10 +28,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
@@ -45,7 +43,8 @@ import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
@@ -82,8 +81,9 @@ import org.eclipse.ui.progress.PendingUpdateAdapter;
  * are visually marked in the view.
  *
  * @author Joerg Rathlev
+ * @author Bastian Knerr
  */
-public class AlarmTreeView extends ViewPart {
+public final class AlarmTreeView extends ViewPart {
 
     /**
      * The ID of this view.
@@ -279,16 +279,14 @@ public class AlarmTreeView extends ViewPart {
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
-    private final ILdapService _ldapService = AlarmTreePlugin.getDefault().getLdapService();
-
 
     /**
      * Constructor.
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue(),
-                                            LdapEpicsAlarmcfgConfiguration.ROOT,
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue(),
+                                            LdapEpicsAlarmcfgConfiguration.UNIT,
                                             TreeNodeSource.ROOT).build();
     }
 
@@ -450,7 +448,6 @@ public class AlarmTreeView extends ViewPart {
     @Nonnull
     private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
         final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
-                                                                       _ldapService,
                                                                        rootNode);
         importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
 
@@ -497,7 +494,7 @@ public class AlarmTreeView extends ViewPart {
 
         viewer.setContentProvider(new AlarmTreeContentProvider());
         viewer.setLabelProvider(new AlarmTreeLabelProvider());
-        viewer.setComparator(new ViewerComparator());
+        //viewer.setComparator(new ViewerComparator());
 
         final ISelectionChangedListener selectionChangedListener =
             new ISelectionChangedListener() {
@@ -662,7 +659,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
+            final String display = ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
             return display != null && display.matches(".+\\.css-sds");
         }
         return false;
@@ -676,7 +673,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_DISPLAY) != null;
+            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
         }
         return false;
     }
@@ -689,7 +686,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART) != null;
+            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
         }
         return false;
     }
@@ -703,7 +700,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpGuidance(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE) != null;
+            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
         }
         return false;
     }
@@ -717,7 +714,7 @@ public class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpPage(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(AlarmTreeNodePropertyId.HELP_PAGE) != null;
+            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
         }
         return false;
     }

@@ -21,10 +21,10 @@
  */
 package org.csstudio.config.savevalue.ui;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.net.SocketTimeoutException;
 import java.rmi.NotBoundException;
@@ -47,7 +47,7 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldap.utils.LdapUtils;
@@ -303,13 +303,16 @@ public class SaveValueDialog extends Dialog {
 		LOG.debug("Trying to find IOC for process variable: " + pv); //$NON-NLS-1$
 
 		final ILdapService service = Activator.getDefault().getLdapService();
+		if (service == null) {
+		    return "LDAP service unavailable. Try again later!";
+		}
 
-	    final LdapSearchResult result =
-	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
+	    final ILdapSearchResult result =
+	        service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
 	                                                  RECORD.getNodeTypeName() + FIELD_ASSIGNMENT + LdapUtils.pvNameToRecordName(pv),
 	                                                  SearchControls.SUBTREE_SCOPE);
 
-	    if ((result == null) || result.getAnswerSet().isEmpty()) {
+	    if (result == null || result.getAnswerSet().isEmpty()) {
 	        return Messages.SaveValueDialog_ERRMSG_DETAIL_NO_ENTRY;
 	    }
 	    final Set<SearchResult> answerSet = result.getAnswerSet();
@@ -319,7 +322,7 @@ public class SaveValueDialog extends Dialog {
 	            String iocs = "";
 	            for (final SearchResult row : answerSet) {
                     final String nameInNamespace = row.getNameInNamespace();
-                    iocs += ("\n" + nameInNamespace);
+                    iocs += "\n" + nameInNamespace;
 	            }
 	            return Messages.SaveValueDialog_ERRMSG_DETAIL_NOT_UNIQUE+ "\n" + iocs;
 	        }
@@ -433,7 +436,7 @@ public class SaveValueDialog extends Dialog {
 								final TableItem item = _resultsTable.getItem(index);
 								item.setText(1, resultCopy);
 								final int color = success[index] ? SWT.COLOR_DARK_GREEN
-										: (_services[index].isRequired()) ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
+										: _services[index].isRequired() ? SWT.COLOR_RED : SWT.COLOR_DARK_GRAY;
 								item.setForeground(Display.getCurrent().getSystemColor(color));
 								_resultsTable.showItem(item);
 							}

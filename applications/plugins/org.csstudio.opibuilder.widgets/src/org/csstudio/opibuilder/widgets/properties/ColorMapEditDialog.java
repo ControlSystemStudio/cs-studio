@@ -73,8 +73,9 @@ public class ColorMapEditDialog extends Dialog {
 	private double[] mapData;
 	private Label colorMapLabel;
 	private Image colorMapImage;
+	private double min, max;
 
-	public ColorMapEditDialog(Shell parentShell, ColorMap colorMap, String dialogTitle) {
+	public ColorMapEditDialog(Shell parentShell, ColorMap colorMap, String dialogTitle, double min, double max) {
 		super(parentShell);
 		setShellStyle(getShellStyle() | SWT.RESIZE);		
 		colorList = new LinkedList<ColorTuple>();
@@ -84,6 +85,11 @@ public class ColorMapEditDialog extends Dialog {
 		interpolate = colorMap.isInterpolate();
 		predefinedColorMap = colorMap.getPredefinedColorMap();
 		title = dialogTitle;
+		this.min = min;
+		this.max = max;
+		mapData = new double[256];
+		for(int j=0; j<256; j++)
+			mapData[j] = min + j*(max-min)/255.0;
 	}
 	
 	public ColorMap getOutput() {
@@ -205,18 +211,17 @@ public class ColorMapEditDialog extends Dialog {
 		autoScaleCheckBox.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false,false));
 		autoScaleCheckBox.setSelection(autoScale);
 		autoScaleCheckBox.setText("Auto Scale");
-		
+		autoScaleCheckBox.setToolTipText("Scale the color map values to the range of" +
+				" (" + min + ", " + max + ")." ); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		
 		Group group = new Group(rightComposite, SWT.None);
 		group.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
 		group.setLayout(new GridLayout(2, false));
-		group.setText("Output");
+		group.setText("Output" + " (" + min + "~" + max + ")" ); //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-3$
 		
 		colorMapLabel = new Label(group, SWT.None);
 		colorMapLabel.setLayoutData(new GridData(SWT.FILL, SWT.END, true, true));
-		mapData = new double[256];
-		for(int j=0; j<256; j++)
-			mapData[j] = j/255.0;
+		
 			
 		refreshGUI();
 		
@@ -260,8 +265,11 @@ public class ColorMapEditDialog extends Dialog {
 	 * Refresh GUI when color map data changed.
 	 */
 	private void refreshGUI() {
-		Image originalImage = new Image(Display.getCurrent(),
-				getOutput().drawImage(mapData, 256, 1, 1, 0));
+		
+		Image originalImage= new Image(Display.getCurrent(),
+				getOutput().drawImage(mapData, 256, 1, max, min));
+		
+			
 		if(colorMapImage != null && !colorMapImage.isDisposed()){
 			colorMapImage.dispose();
 			colorMapImage = null;

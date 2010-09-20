@@ -109,7 +109,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
 
     @Override
     @Nonnull
-    public final IAlarmResource newAlarmResource(@CheckForNull final List<String> topics,
+    public final IAlarmResource createAlarmResource(@CheckForNull final List<String> topics,
                                                  @CheckForNull final List<String> facilities,
                                                  @CheckForNull final String filepath) {
         return new AlarmResource(topics, facilities, filepath);

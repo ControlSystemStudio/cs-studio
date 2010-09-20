@@ -40,12 +40,26 @@ public class ColorProperty extends AbstractWidgetProperty {
 	 */
 	public static final String XML_ATTRIBUTE_BLUE = "blue"; //$NON-NLS-1$	
 	
-
+	/**Color Property Constructor. The property value type is {@link OPIColor}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public ColorProperty(String prop_id, String description,
 			WidgetPropertyCategory category, RGB defaultValue) {
 		super(prop_id, description, category, new OPIColor(defaultValue));
 	}
 	
+	/**Color Property Constructor. The property value type is {@link OPIColor}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created. It must be 
+	 * a color macro name in color file.
+	 */
 	public ColorProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String defaultValue) {
 		super(prop_id, description, category, 

@@ -21,8 +21,11 @@
  */
  package org.csstudio.utility.ldap.namespacebrowser;
 
+import javax.naming.ldap.InitialLdapContext;
+
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -38,7 +41,10 @@ public class Activator extends AbstractCssUiPlugin {
 	// The shared instance
 	private static Activator INSTANCE;
 
-	private ILdapService _ldapService;
+    private BundleContext _bundleContext;
+
+    private LdapServiceTracker _ldapServiceTracker;
+
 
 	/**
 	 * The constructor
@@ -50,24 +56,21 @@ public class Activator extends AbstractCssUiPlugin {
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
     public void doStart(final BundleContext context) throws Exception {
-//		super.start(context);
-	    _ldapService = getService(context, ILdapService.class);
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	/**
+	 * {@inheritDoc}
 	 */
 	@Override
-    public void doStop(final BundleContext context) throws Exception {
-//		super.stop(context);
-		INSTANCE = null; // TODO (bknerr) : ??? necessary for ???
+	public void doStop(final BundleContext context) throws Exception {
+	    _ldapServiceTracker.close();
 	}
 
 	/**
@@ -84,39 +87,10 @@ public class Activator extends AbstractCssUiPlugin {
 		return PLUGIN_ID;
 	}
 
-	/** Add informational message to the plugin log. */
-    public static void logInfo(final String message)
-    {
-        getDefault().log(IStatus.INFO, message, null);
-    }
-
-    /** Add error message to the plugin log. */
-    public static void logError(final String message)
-    {
-        getDefault().log(IStatus.ERROR, message, null);
-    }
-
-    /** Add an exception to the plugin log. */
-    public static void logException(final String message, final Exception e)
-    {
-        getDefault().log(IStatus.ERROR, message, e);
-    }
-
-    /** Add a message to the log.
-     * @param type
-     * @param message
-     */
-    private void log(final int type, final String message, final Exception e)
-    {
-        getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
-    }
-
-
-
     /**
      * @return the LDAP service
      */
     public ILdapService getLdapService() {
-        return _ldapService;
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 }

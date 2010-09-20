@@ -21,11 +21,11 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.sql.Date;
 import java.util.Collection;
@@ -33,12 +33,12 @@ import java.util.Collection;
 import javax.annotation.Nonnull;
 import javax.naming.NameNotFoundException;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
@@ -48,6 +48,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.INodeComponent;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -58,7 +59,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
  * On the {@link #build(SubtreeNode, IProgressMonitor)} method the full tree is
  * build including all nodes, whether they contain eren nodes or not.
  *
- * @author Joerg Rathlev, Jurij Kodre
+ * @author Bastian Knerr
  */
 public final class AlarmTreeBuilder {
 
@@ -67,7 +68,6 @@ public final class AlarmTreeBuilder {
      */
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeBuilder.class);
 
-    private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
     /**
      * Don't instantiate.
@@ -76,19 +76,25 @@ public final class AlarmTreeBuilder {
         // Empty
     }
 
-    private static void ensureTestFacilityExists() {
+    private static void ensureTestFacilityExists() throws ServiceUnavailableException {
         try {
-            final LdapName testFacilityName = createLdapQuery(FACILITY.getNodeTypeName(), "TEST",
-                                                              ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), "TEST",
+                                                             UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                throw new ServiceUnavailableException("LDAP Service not available. Check for existing test facility failed.");
+            }
 
             try {
-                LDAP_SERVICE.lookup(testFacilityName);
+                service.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(FACILITY.getNodeTypeName(), "TEST");
                 attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getDescription());
-                LDAP_SERVICE.createComponent(testFacilityName, attrs);
+
+                service.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
             LOG.error("Failed to create TEST facility in LDAP", e);
@@ -104,7 +110,6 @@ public final class AlarmTreeBuilder {
      * @return
      * @throws NamingException
      */
-    @SuppressWarnings("unchecked")
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
                                               @Nonnull final INodeComponent<LdapEpicsAlarmcfgConfiguration> modelNode,
                                               @Nonnull final IProgressMonitor monitor,
@@ -142,7 +147,7 @@ public final class AlarmTreeBuilder {
      * Retrieves the alarm tree information for the facilities given in the
      * preferences and builds the alarm tree view data structure.
      * Returns the cancellation status, i.e. true if the build process has been
-     * cancelled.
+     * canceled.
      *
      * @param rootNode the root node for the alarm tree
      * @param model the content model

@@ -31,10 +31,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
    </url>
 
    <includes
-         id="org.csstudio.sns.feature.alarm"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.sns.feature.optional.linux"
          version="0.0.0"
          os="linux"/>
@@ -43,6 +39,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
          id="org.csstudio.sns.feature.optional.win32"
          version="0.0.0"
          os="win32"/>
+
+   <includes
+         id="org.csstudio.alarm.beast.ui.feature"
+         version="0.0.0"/>
 
    <requires>
       <import plugin="org.junit4"/>
@@ -64,7 +64,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.team.ui" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.team.cvs.core" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.compare" version="3.3.0" match="compatible"/>
-      <import plugin="org.eclipse.ui.navigator.resources" version="3.2.0" match="compatible"/>
       <import plugin="org.eclipse.ui.navigator" version="3.3.0" match="compatible"/>
       <import plugin="org.eclipse.core.expressions" version="3.2.0" match="compatible"/>
       <import plugin="com.ibm.icu"/>

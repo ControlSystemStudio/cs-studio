@@ -26,7 +26,7 @@ public interface ISessionService {
 	 * registered, even when there is no session yet. Clients should call this
 	 * method to verify that the SessionService is connected before calling the
 	 * service's methods.
-	 * 
+	 *
 	 * @return <code>true</code> if a container has been set, <code>false</code>
 	 *         otherwise.
 	 */
@@ -42,7 +42,7 @@ public interface ISessionService {
 
 	/**
 	 * Registers a service as remote service for OSGi over ECF
-	 * 
+	 *
 	 * @param impl
 	 *            The object implementing the service.
 	 * @param serviceName
@@ -56,22 +56,27 @@ public interface ISessionService {
 	public void registerRemoteService(String serviceName, Object impl);
 
 	/**
-	 * 
-	 * @param idFilter
-	 *            The user id array for which the service should be unget
-	 * @param service
-	 *            The service interface class
-	 * @param filter
-	 * @throws ECFException
-	 */
-	public void ungetRemoteService(ID[] idFilter, String serviceName,
-			String filter) throws ECFException, InvalidSyntaxException;
+     * Unget a remote service. This operation should actually be called if a
+     * client disconnects. Ask ECF devs if this happens. If yes, delete this
+     * method.
+     *
+     * @param idFilter
+     *            The user id array for which the service should be unget
+     * @param service
+     *            The service interface class
+     * @param filter
+     * @throws ECFException
+     * @throws InvalidSyntaxException
+     */
+	public void ungetRemoteService(ID[] idFilter,
+	                               String serviceName,
+	                               String filter) throws ECFException, InvalidSyntaxException;
 
 	/**
 	 * Returns a list of remote service proxies for services of the specified
 	 * class. Use <code>filterIDs</code> to specify the remote containers from
 	 * which to get the services.
-	 * 
+	 *
 	 * @param <T>
 	 *            The service type.
 	 * @param clazz
@@ -99,7 +104,7 @@ public interface ISessionService {
 	 * Returns the remote services that implement the specified class. Use
 	 * <code>filterIDs</code> to specify the remote containers from which to get
 	 * the services.
-	 * 
+	 *
 	 * @param clazz
 	 *            the class of the remote services.
 	 * @param filterIDs
@@ -124,7 +129,7 @@ public interface ISessionService {
 	 * Returns the remote services that implement the specified class. Use
 	 * <code>filterIDs</code> to specify the remote containers from which to get
 	 * the services.
-	 * 
+	 *
 	 * @param clazz
 	 *            the class of the remote services.
 	 * @param filterIDs
@@ -157,7 +162,7 @@ public interface ISessionService {
 	 * convenient to use by callers that don't need the additional filter
 	 * string.
 	 * </p>
-	 * 
+	 *
 	 * @param clazz
 	 *            the class of the remote services.
 	 * @param filterIDs
@@ -173,7 +178,7 @@ public interface ISessionService {
 	 * Returns a list of remote service proxies for services of the specified
 	 * class. Use <code>filterIDs</code> to specify the remote containers from
 	 * which to get the services.
-	 * 
+	 *
 	 * @param <T>
 	 *            The service type.
 	 * @param clazz
@@ -208,7 +213,7 @@ public interface ISessionService {
 	 * more convenient to use by callers that don't need the additional filter
 	 * string.
 	 * </p>
-	 * 
+	 *
 	 * @param <T>
 	 *            The service type.
 	 * @param clazz

@@ -73,7 +73,7 @@ public class XmlFileContentModelBuilderTest {
     @Test
     public void testValid() {
         try {
-            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfigurator.ROOT);
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfigurator.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {
@@ -98,7 +98,7 @@ public class XmlFileContentModelBuilderTest {
     @Test
     public void testEmpty() {
         try {
-            TreeModelTestUtils.buildContentModel(RESOURCE_EMPTY, TestTreeConfigurator.ROOT);
+            TreeModelTestUtils.buildContentModel(RESOURCE_EMPTY, TestTreeConfigurator.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File contains parsing errors. Premature end of file.", e.getMessage());
@@ -112,7 +112,7 @@ public class XmlFileContentModelBuilderTest {
     @Test
     public void testInvalidXML() {
         try {
-            TreeModelTestUtils.buildContentModel(RESOURCE_INVALID, TestTreeConfigurator.ROOT);
+            TreeModelTestUtils.buildContentModel(RESOURCE_INVALID, TestTreeConfigurator.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File contains parsing errors. Element type \"ecock\" must be declared.", e.getMessage());

@@ -561,21 +561,25 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      */
     @Override
     public boolean equals(final Object obj) {
-        if (super.equals(obj)) {
-            return true;
+        // TODO (hrickens) : check whether this method does what is intended - do we need hashcode as well?
+        if (!super.equals(obj)) {
+            return false;
+        }
+        if (obj == null) {
+            return false;
         }
         if (obj instanceof AbstractNodeDBO ) {
 
-            final AbstractNodeDBO node = (AbstractNodeDBO) obj;
-            if(getId()==node.getId()) {
-                if(getId()>0) {
+            final AbstractNodeDBO other = (AbstractNodeDBO) obj;
+            if (getId() == other.getId()) {
+                if(getId() > 0) {
                     return true;
                 }
                 return false;
             }
         }
         return false;
-   }
+    }
 
     /**
      * @return Return only true when the node need to work a GSD-File!
@@ -583,5 +587,4 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
     public GSDFileTypes needGSDFile() {
         return GSDFileTypes.NONE;
     }
-
 }

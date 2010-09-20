@@ -26,13 +26,13 @@ import java.io.InterruptedIOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
-import java.util.GregorianCalendar;
+
+import javax.naming.NamingException;
 
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.internal.iocmessage.TagList;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.Platform;
 
 /**
@@ -49,7 +49,7 @@ public class IocCommandSender implements Runnable {
 	private String command = "NONE";
 	private int id = 0;
 	private static String IOC_NOT_REACHABLE = "IOC_NOT_REACHABLE";
-	private int statusMessageDelay = 0;
+	private final int statusMessageDelay = 0;
 	private boolean retry = false;
 	private final IocConnection iocConnection;
 
@@ -73,12 +73,18 @@ public class IocCommandSender implements Runnable {
 		// of this object having to search in in this way.
 		final int dataPort = Integer.parseInt(Platform.getPreferencesService().getString(Activator.getDefault().getPluginId(),
 				PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		iocConnection = IocConnectionManager.getInstance().getIocConnection(iocInetAddress, dataPort);
+		try {
+            iocConnection = IocConnectionManager.INSTANCE.getIocConnection(iocInetAddress, dataPort);
+        } catch (final NamingException e) {
+            CentralLogger.getInstance().fatal(this, "LDAP name could not be composed");
+            throw new IllegalArgumentException("LDAP name could not be composed", e);
+        }
 
-		if ((this.hostName == null) || this.hostName.equals(""))  {
+		if (this.hostName == null || this.hostName.equals(""))  {
 			// FIXME: This is not sufficient for error handling. The command
 			// will still be runnable! Throw an exception instead.
 			CentralLogger.getInstance().fatal(this, "Wrong HostName! Host: " + hostName);
+			throw new IllegalArgumentException("Wrong HostName! Host: " + hostName);
 		}
 	}
 
@@ -115,13 +121,15 @@ public class IocCommandSender implements Runnable {
 		 * wait some time and send the status messages afterwards
 		 */
 
-		if ( (this.command != null) && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
+		if ( this.command != null && this.command.equals(PreferenceProperties.COMMAND_SEND_ALL_ALARMS)) {
 
-			if ( (Engine.getInstance().getWriteVector().size() >=0) && (100*Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS)) {
-				statusMessageDelay = 100*Engine.getInstance().getWriteVector().size() + (int)((new GregorianCalendar().getTimeInMillis())%10000);
-			} else {
-				statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
-			}
+            // FIXME (jpenning, bknerr) : obsolete LDAP access stuff
+
+//			if ( (Engine.getInstance().getWriteVector().size() >=0) && (100*Engine.getInstance().getWriteVector().size() < PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS)) {
+//				statusMessageDelay = 100*Engine.getInstance().getWriteVector().size() + (int)((new GregorianCalendar().getTimeInMillis())%10000);
+//			} else {
+//				statusMessageDelay = PreferenceProperties.MAX_WAIT_UNTIL_SEND_ALL_ALARMS + (int)((new GregorianCalendar().getTimeInMillis())%10000);	// ~ 5 minutes + random
+//			}
 
 			CentralLogger.getInstance().info(this, "Waiting " + statusMessageDelay + " until sending " + PreferenceProperties.COMMAND_SEND_ALL_ALARMS + " to the IOC " + iocConnection.getLogicalIocName() + " (" + hostName+ ")");
 			try {
@@ -216,11 +224,15 @@ public class IocCommandSender implements Runnable {
 						 * yes - did set all channel to disconnect
 						 * we'll have to get all alarm-states from the IOC
 						 */
-						final IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
-						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
-						iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
-						iocConnection.setDidWeSetAllChannelToDisconnect(false);
-						CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+					    try {
+					        final IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
+					        InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
+					        iocConnection.setGetAllAlarmsOnSelectChange(false);	// we set the trigger to get the alarms...
+					        iocConnection.setDidWeSetAllChannelToDisconnect(false);
+					        CentralLogger.getInstance().info(this, "IOC Connected and selected again - previously channels were set to disconnect - get an update on all alarms!");
+					    } catch (final IllegalArgumentException e) {
+					        CentralLogger.getInstance().fatal(this, "Creation of command sender failed:\n" + e.getMessage());
+					    }
 					}
 					/*
 					 * send JMS message - we are selected
@@ -260,9 +272,9 @@ public class IocCommandSender implements Runnable {
 					 * - or (areWeConnectedLongerThenThreeBeaconTimeouts is FALSE) AND (isGetAllAlarmsOnSelectChange() is TRUE)
 					 * ==> take action -> send all alarms from IOC
 					 */
-					if ( (!iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts()) ||
-							(!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
-									iocConnection.isGetAllAlarmsOnSelectChange()) )  {
+					if ( !iocConnection.wasPreviousBeaconWithinThreeBeaconTimeouts() ||
+							!iocConnection.areWeConnectedLongerThenThreeBeaconTimeouts() &&
+									iocConnection.isGetAllAlarmsOnSelectChange() )  {
 						final IocCommandSender sendCommandToIoc = new IocCommandSender( iocInetAddress, port, PreferenceProperties.COMMAND_SEND_ALL_ALARMS);
 						InterconnectionServer.getInstance().getCommandExecutor().execute(sendCommandToIoc);
 						iocConnection.setGetAllAlarmsOnSelectChange(false); // one time is enough
@@ -305,7 +317,7 @@ public class IocCommandSender implements Runnable {
 					}
 					//remember we're not selected any more
 					iocConnection.setSelectState(false);
-			} else if ( (answerMessage != null) && answerMessage.equals(IOC_NOT_REACHABLE)) {
+			} else if ( answerMessage != null && answerMessage.equals(IOC_NOT_REACHABLE)) {
 				/*
 				 * we cannot reach the IOC
 				 * in case we were selected before - we'll have to create a JMS message

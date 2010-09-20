@@ -18,65 +18,71 @@ public class ECFActivator extends Plugin {
 	public static final String PLUGIN_ID = "org.remotercp.ecf";
 
 	// The shared instance
-	private static ECFActivator plugin;
-	
-	private static BundleContext bundleContext;
+	private static ECFActivator INSTANCE;
+
+	private static BundleContext _bundleContext;
+
 
 	/**
-	 * The constructor
+     * Don't instantiate.
+     * Called by framework.
 	 */
 	public ECFActivator() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+    public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
-		bundleContext = context;
+		_bundleContext = context;
 
 		this.registerServices(context);
 	}
 
-	private void registerServices(BundleContext context) {
-		Dictionary<String, Object> props = new Hashtable<String, Object>();
+	private void registerServices(final BundleContext context) {
+		final Dictionary<String, Object> props = new Hashtable<String, Object>();
 		props.put(Constants.SERVICE_VENDOR, "org.eclipsercp");
 		props.put(Constants.SERVICE_RANKING, Integer.MIN_VALUE);
 
-		context.registerService(ISessionService.class.getName(),
-				new SessionServiceImpl(), props);
+		context.registerService(ISessionService.class.getName(), new SessionServiceImpl(), props);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+	@Override
+    public void stop(final BundleContext context) throws Exception {
+		INSTANCE = null;
 		super.stop(context);
 	}
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static ECFActivator getDefault() {
-		return plugin;
+		return INSTANCE;
 	}
-	
+
 	/**
 	 * Returns the bundle context of this plug-in.
-	 * 
+	 *
 	 * @return the bundle context.
 	 */
 	public static BundleContext getBundleContext() {
-		return bundleContext;
+		return _bundleContext;
 	}
 
 }

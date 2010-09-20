@@ -82,7 +82,7 @@ public class BeaconWatchdog extends Thread {
 	 *
 	 */
 	private void checkForDisabledIOCs() {
-		final Enumeration<IocConnection> connections = IocConnectionManager.getInstance().connectionList.elements();
+		final Enumeration<IocConnection> connections = IocConnectionManager.INSTANCE._connectionList.elements();
 		while (connections.hasMoreElements()) {
 			final IocConnection connection = connections.nextElement();
 			if (connection.isDisabled()) {
@@ -106,7 +106,7 @@ public class BeaconWatchdog extends Thread {
 	 */
 	private void checkBeaconTimeout () {
 
-		final Enumeration<IocConnection> connections = IocConnectionManager.getInstance().connectionList.elements();
+		final Enumeration<IocConnection> connections = IocConnectionManager.INSTANCE._connectionList.elements();
 		 while (connections.hasMoreElements()) {
 			final IocConnection connection = connections.nextElement();
 			if (connection.isTimeoutError()) {

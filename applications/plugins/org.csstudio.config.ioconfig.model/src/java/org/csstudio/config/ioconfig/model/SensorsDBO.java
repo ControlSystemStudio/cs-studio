@@ -19,9 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id: Sensors.java,v 1.1 2009/08/26 07:08:58 hrickens Exp $
- */
 package org.csstudio.config.ioconfig.model;
 
 import javax.persistence.Column;
@@ -39,7 +36,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ddb_Sensors")
 public class SensorsDBO {
-    
+
     /**
      * Key ID.
      */
@@ -47,9 +44,9 @@ public class SensorsDBO {
     private String _ioName;
     private String _selection;
     private String _sensorID;
-    
+
     /**
-     * 
+     *
      * @return the Node key ID.
      */
     @Id
@@ -59,7 +56,7 @@ public class SensorsDBO {
     }
 
     /**
-     * 
+     *
      * @param id
      *            set the Node key ID.
      */
@@ -68,7 +65,7 @@ public class SensorsDBO {
     }
 
     /**
-     * 
+     *
      * @return the IO Name of this Channel.
      */
     public String getIoName() {
@@ -76,20 +73,20 @@ public class SensorsDBO {
     }
 
     /**
-     * 
+     *
      * @param ioName
      *            the IO Name of this Channel.
      */
-    public void setIoName(String ioName) {
+    public void setIoName(final String ioName) {
         this._ioName = ioName;
     }
-    
+
     @Column(length=32)
     public String getSelection() {
         return _selection;
     }
 
-    public void setSelection(String selection) {
+    public void setSelection(final String selection) {
         _selection = selection;
     }
 
@@ -98,7 +95,7 @@ public class SensorsDBO {
         return _sensorID;
     }
 
-    public void setSensorID(String sensorID) {
+    public void setSensorID(final String sensorID) {
         _sensorID = sensorID;
     }
 
@@ -110,5 +107,5 @@ public class SensorsDBO {
         return String.format("%1$3s : %2$3s", getSelection(),getSensorID());
     }
 
-    
+
 }

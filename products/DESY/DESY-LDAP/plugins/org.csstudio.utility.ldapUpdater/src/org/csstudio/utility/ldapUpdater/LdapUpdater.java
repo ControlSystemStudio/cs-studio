@@ -29,8 +29,8 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
@@ -42,13 +42,14 @@ import java.util.Calendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
@@ -56,11 +57,11 @@ import javax.naming.ldap.LdapName;
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
@@ -87,6 +88,7 @@ public enum LdapUpdater {
     public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
 
     public static final String DEFAULT_RESPONSIBLE_PERSON = "bastian.knerr@desy.de";
+
 
     /**
      * Converts milli seconds to a formatted date time string.
@@ -164,8 +166,9 @@ public enum LdapUpdater {
      * @throws InterruptedException
      * @throws InvalidNameException
      * @throws CreateContentModelException
+     * @throws ServiceUnavailableException
      */
-    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException {
+    public void tidyUpLdapFromIOCFiles() throws InvalidNameException, InterruptedException, CreateContentModelException, ServiceUnavailableException {
         if ( isBusy() ) {
             return;
         }
@@ -179,9 +182,9 @@ public enum LdapUpdater {
                 LOG.warn("NO LDAP service available. Tidying cancelled.");
                 return;
             }
-            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
             final String filter = any(IOC.getNodeTypeName());
-            final LdapSearchResult result =
+            final ILdapSearchResult result =
                 service.retrieveSearchResultSynchronously(query,
                                                           filter,
                                                           SearchControls.ONELEVEL_SCOPE);
@@ -195,8 +198,7 @@ public enum LdapUpdater {
                 return;
             }
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, result);
+            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, result);
             builder.build();
 
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -230,12 +232,12 @@ public enum LdapUpdater {
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
             if (service == null) {
-                LOG.info("No LDAP service present");
+                LOG.error("No LDAP service available.");
                 return;
             }
 
-            final LdapName query = LdapUtils.createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
-            final LdapSearchResult searchResult =
+            final LdapName query = LdapUtils.createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+            final ILdapSearchResult searchResult =
                 service.retrieveSearchResultSynchronously(query,
                                                           any(IOC.getNodeTypeName()),
                                                           SearchControls.SUBTREE_SCOPE);
@@ -259,11 +261,17 @@ public enum LdapUpdater {
     }
 
     private void createModelAndUpdateLdap(@Nonnull final HistoryFileContentModel historyFileModel,
-                                          @Nonnull final LdapSearchResult searchResult)
+                                          @Nonnull final ILdapSearchResult searchResult)
     throws CreateContentModelException, InterruptedException {
 
-        final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-            new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(LdapEpicsControlsConfiguration.ROOT, searchResult);
+        final ILdapService service = Activator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("No LDAP service available.");
+            return;
+        }
+
+        final ILdapContentModelBuilder builder =
+            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, searchResult);
         builder.build();
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
@@ -314,10 +322,10 @@ public enum LdapUpdater {
                                                       @Nonnull final String iocNameKey) {
         final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> ioc = ldapModel.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocNameKey);
         if (ioc != null) {
-            final Attribute personAttr = ioc.getAttribute(LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute personAttr = ioc.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             String person = DEFAULT_RESPONSIBLE_PERSON;
             try {
-                if ((personAttr != null) && (personAttr.get() != null)) {
+                if (personAttr != null && personAttr.get() != null) {
                     person = (String) personAttr.get();
                 }
                 if (!missingIOCsPerPerson.containsKey(person)) {
@@ -325,7 +333,7 @@ public enum LdapUpdater {
                 }
                 missingIOCsPerPerson.get(person).add(ioc.getName());
             } catch (final NamingException e) {
-                LOG.error("Attribute for " + LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
+                LOG.error("Attribute for " + LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON +
                           " in IOC " + ioc.getName() + "could not be retrieved.");
             }
         }

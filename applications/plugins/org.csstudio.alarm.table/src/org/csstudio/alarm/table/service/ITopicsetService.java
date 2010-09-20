@@ -17,6 +17,7 @@
  */
 package org.csstudio.alarm.table.service;
 
+
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.table.dataModel.MessageList;
@@ -33,26 +34,26 @@ import org.csstudio.alarm.table.preferences.TopicSet;
  * (createAndConnectForTopicSet).<br>
  * If the user switches to another topic set, the former connection is maintained, allowing for
  * switching back quickly (retrieveing the current message list using getMessageListForTopicSet).
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
  * @since 27.04.2010
  */
 public interface ITopicsetService {
-    
+
     /**
      * @param topicSet .
      * @return true, if topicSet is already known
      */
     boolean hasTopicSet(TopicSet topicSet);
-    
+
     /**
      * If the topic set is not known to this service, a connection is created for it. A listener to
      * the incoming messages will be registered too. As the destination for the listener the message
      * list must be given, it is registered at the given listener.<br>
      * Precondition: !hasTopicSet(topicSet)
-     * 
+     *
      * @param topicSet the topic set the connection is created for
      * @param messageList destination for the message listener
      * @param alarmListener callback for the messages
@@ -61,31 +62,31 @@ public interface ITopicsetService {
     void createAndConnectForTopicSet(TopicSet topicSet,
                                      MessageList messageList,
                                      IAlarmTableListener alarmListener) throws AlarmConnectionException;
-    
+
     /**
      * Precondition: hasTopicSet(topicSet)
-     * 
+     *
      * @param topicSet .
      * @return the message list for the given topicSet
      */
     MessageList getMessageListForTopicSet(TopicSet topicSet);
-    
+
     /**
      * Precondition: hasTopicSet(topicSet)
-     * 
+     *
      * @param topicSet .
      * @return the connection for the given topic set
      */
     IAlarmConnection getAlarmConnectionForTopicSet(TopicSet topicSet);
-    
+
     /**
      * Precondition: hasTopicSet(topicSet)
-     * 
+     *
      * @param topicSet .
      * @return the alarm table listener for the given topic set
      */
     IAlarmTableListener getAlarmTableListenerForTopicSet(TopicSet topicSet);
-    
+
     /**
      * This service is intended to be local to a view. It keeps track of the connections, so they
      * can be disconnected here at once. This is usually called from whithin the views dispose

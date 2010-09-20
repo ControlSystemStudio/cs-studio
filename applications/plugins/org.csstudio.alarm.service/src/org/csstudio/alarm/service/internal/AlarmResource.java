@@ -46,6 +46,12 @@ public class AlarmResource implements IAlarmResource {
     private final List<String> _facilities;
     private final String _filepath;
 
+    /**
+     * Constructor.
+     * @param topics
+     * @param facilities
+     * @param filepath
+     */
     public AlarmResource(@CheckForNull final List<String> topics,
                          @CheckForNull final List<String> facilities,
                          @CheckForNull final String filepath) {
@@ -54,16 +60,19 @@ public class AlarmResource implements IAlarmResource {
         _filepath = filepath == null ? AlarmPreference.getConfigFilename() : filepath;
     }
 
+    @Override
     @Nonnull
     public final List<String> getTopics() {
         return Collections.unmodifiableList(_topics);
     }
 
+    @Override
     @Nonnull
     public final List<String> getFacilities() {
         return Collections.unmodifiableList(_facilities);
     }
 
+    @Override
     @Nonnull
     public final String getFilepath() {
         return _filepath;

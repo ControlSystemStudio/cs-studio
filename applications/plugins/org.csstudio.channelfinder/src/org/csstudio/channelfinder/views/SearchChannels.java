@@ -1,26 +1,21 @@
 package org.csstudio.channelfinder.views;
 
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.TreeSet;
-
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 import gov.bnl.channelfinder.model.XmlChannel;
 import gov.bnl.channelfinder.model.XmlChannels;
 import gov.bnl.channelfinder.model.XmlProperty;
 import gov.bnl.channelfinder.model.XmlTag;
 
-import org.csstudio.channelfinder.Activator;
-import org.csstudio.channelfinder.preferences.PreferenceConstants;
+import java.util.Collection;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.TreeSet;
+
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
 import com.sun.jersey.core.util.MultivaluedMapImpl;
@@ -39,20 +34,12 @@ public class SearchChannels extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
-		IPreferencesService prefs = Platform.getPreferencesService();
-		System.out.println(prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.ChannelFinder_URL, "defaultURL", null));
-		buildSearchMap(searchPattern);
-		// final XmlChannels channels = client.getInstance().queryChannelsName(
-		// searchPattern);
 		final XmlChannels channels;
 		try {
 			channels = sort(ChannelFinderClient.getInstance().queryChannels(
 					buildSearchMap1(searchPattern)));
 			// final XmlChannels channels = testData(); // to use test data
-			//TODO incorrect call
-			// replace with PlatformUI.getWorkbench().getDisplay().asyncExec(task);
-			Display.getDefault().asyncExec(new Runnable() {
+			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
 					// return set of channels sorted by name

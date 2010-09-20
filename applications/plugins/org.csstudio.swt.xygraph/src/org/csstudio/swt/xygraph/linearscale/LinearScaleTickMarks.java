@@ -29,9 +29,9 @@ public class LinearScaleTickMarks extends Figure {
     protected static final int LINE_WIDTH = 1;
 
     /** the tick length */
-    public static final int MAJOR_TICK_LENGTH = 10;
+    public static final int MAJOR_TICK_LENGTH = 6;
     /** the tick length */
-    public static final int MINOR_TICK_LENGTH = 4;
+    public static final int MINOR_TICK_LENGTH = 3;
 
     private int minorGridStepInPixel;
     
@@ -309,12 +309,14 @@ public class LinearScaleTickMarks extends Figure {
 
 	private void drawYMinorTicks(Graphics gc, LabelSide tickLabelSide, int x,
 			int y) {
+		//there is a misillumiation 
+		int verticalMinorTickLength = MINOR_TICK_LENGTH -1;
 		if(tickLabelSide == LabelSide.Primary)               				
-			gc.drawLine(x + MAJOR_TICK_LENGTH - MINOR_TICK_LENGTH, y,
+			gc.drawLine(x + MAJOR_TICK_LENGTH - verticalMinorTickLength, y,
 				x + MAJOR_TICK_LENGTH, y);
 		else
 			gc.drawLine(x, y,
-				x + MINOR_TICK_LENGTH, y);
+				x + verticalMinorTickLength, y);
 	}
     
 

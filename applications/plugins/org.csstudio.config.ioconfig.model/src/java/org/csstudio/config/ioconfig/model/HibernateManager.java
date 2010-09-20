@@ -201,10 +201,10 @@ public final class HibernateManager {
 			.setProperty("c3p0.acquire_increment", "1")
 			.setProperty("c3p0.idel_test_period", "100") // sec
 			.setProperty("c3p0.max_statements", "1")
-				.setProperty("hibernate.show_sql", "false")
+				.setProperty("hibernate.show_sql", "false");
 //                .setProperty("hibernate.format_sql", "true")
 //                .setProperty("hibernate.use_sql_comments", "true")
-			.setProperty("hibernate.cache.use_second_level_cache", "true");
+//			.setProperty("hibernate.cache.use_second_level_cache", "true");
 		// .setProperty("hibernate.hbm2ddl.auto", "update");
         setTimeout(prefs.getInt(pluginId, DDB_TIMEOUT, 90, null));
 	}

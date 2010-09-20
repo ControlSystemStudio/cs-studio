@@ -22,34 +22,32 @@
 
 package org.csstudio.diag.interconnectionServer.server;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import java.net.InetAddress;
 import java.util.concurrent.TimeUnit;
 
-import org.csstudio.diag.interconnectionServer.internal.IIocDirectory;
 import org.csstudio.diag.interconnectionServer.internal.time.StubTimeSource;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 
 /**
  * @author Joerg Rathlev
  */
 public class IocConnectionTest {
-	
+
 	private IocConnection _conn;
 	private StubTimeSource _timeSource;
-	
+
 	@Before
 	public void setUp() throws Exception {
 		_timeSource = new StubTimeSource(10);
-		InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
-		IIocDirectory directory = Mockito.mock(IIocDirectory.class);
-		Mockito.when(directory.getLogicalIocName("127.0.0.1", "localhost"))
-			.thenReturn(new String[] {"logicalName", "ldapName"});
-		_conn = new IocConnection(ipAddress, 1234, _timeSource, directory);
+		final InetAddress ipAddress = InetAddress.getByName("127.0.0.1");
+
+		_conn = new IocConnection(ipAddress, 1234, _timeSource);
 	}
 
 	@Test
@@ -61,7 +59,7 @@ public class IocConnectionTest {
 		assertTrue(_conn.isGetAllAlarmsOnSelectChange());
 		assertFalse(_conn.isDidWeSetAllChannelToDisconnect());
 	}
-	
+
 	@Test
 	public void testGetAllAlarmsOnSelectChange() throws Exception {
 		_conn.setGetAllAlarmsOnSelectChange(false);
@@ -69,7 +67,7 @@ public class IocConnectionTest {
 		_conn.setGetAllAlarmsOnSelectChange(true);
 		assertTrue(_conn.isGetAllAlarmsOnSelectChange());
 	}
-	
+
 	@Test
 	public void testDidWeSetAllChannelsToDisconnect() throws Exception {
 		_conn.setDidWeSetAllChannelToDisconnect(true);
@@ -77,19 +75,19 @@ public class IocConnectionTest {
 		_conn.setDidWeSetAllChannelToDisconnect(false);
 		assertFalse(_conn.isDidWeSetAllChannelToDisconnect());
 	}
-	
+
 	@Test
 	public void testLogicalIocName() throws Exception {
 		_conn.setLogicalIocName("ioc-name-test");
 		assertEquals("ioc-name-test", _conn.getLogicalIocName());
 	}
-	
+
 	@Test
 	public void testLdapIocName() throws Exception {
 		_conn.setLdapIocName("ldap-ioc-name-test");
 		assertEquals("ldap-ioc-name-test", _conn.getLdapIocName());
 	}
-	
+
 	@Test
 	public void testConnectState() throws Exception {
 		_conn.setConnectState(true);
@@ -99,7 +97,7 @@ public class IocConnectionTest {
 		assertFalse(_conn.getConnectState());
 		assertEquals("disconnected", _conn.getCurrentConnectState());
 	}
-	
+
 	@Test
 	public void testSelectState() throws Exception {
 		_conn.setSelectState(true);
@@ -109,60 +107,60 @@ public class IocConnectionTest {
 		assertFalse(_conn.isSelectState());
 		assertEquals("NOT selected", _conn.getCurrentSelectState());
 	}
-	
+
 	@Test
 	public void testWasPreviousBeaconWithinThreeBeaconTimeouts() throws Exception {
-		long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
+		final long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
 		_timeSource.setTime(1000);
 		_conn.setBeaconTime();
 		_timeSource.setTime(1000 + 1 * beaconTimeout);
 		_conn.setBeaconTime();
 		_timeSource.setTime(1000 + 2 * beaconTimeout);
 		_conn.setBeaconTime();
-		
+
 		assertTrue(_conn.wasPreviousBeaconWithinThreeBeaconTimeouts());
-		
+
 		// Method does *not* depend on the current time!
 		_timeSource.setTime(1000 + 1000 * beaconTimeout);
 		assertTrue(_conn.wasPreviousBeaconWithinThreeBeaconTimeouts());
-		
+
 		_timeSource.setTime(1000 + 3 * beaconTimeout + 1);
 		_conn.setBeaconTime();
 		assertFalse(_conn.wasPreviousBeaconWithinThreeBeaconTimeouts());
 	}
-	
+
 	@Test
 	public void tesetAreWeConnectedLongerThenThreeBeaconTimeouts() throws Exception {
-		long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
+		final long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
 		_timeSource.setTime(1000);
 		_conn.setConnectState(true);
 		_conn.setTimeReConnected();
-		
+
 		assertFalse(_conn.areWeConnectedLongerThenThreeBeaconTimeouts());
 		_timeSource.setTime(1000 + 3 * beaconTimeout);
 		assertFalse(_conn.areWeConnectedLongerThenThreeBeaconTimeouts());
 		_timeSource.setTime(1000 + 3 * beaconTimeout + 1);
 		assertTrue(_conn.areWeConnectedLongerThenThreeBeaconTimeouts());
 	}
-	
+
 	@Test
 	public void testIsTimeoutError() throws Exception {
-		long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
+		final long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
 		_timeSource.setTime(1000);
 		_conn.setBeaconTime();
-		
+
 		_timeSource.setTime(1000 + beaconTimeout);
 		assertFalse(_conn.isTimeoutError());
 		_timeSource.setTime(1000+ beaconTimeout + 1);
 		assertTrue(_conn.isTimeoutError());
 	}
-	
+
 	@Test
 	public void testScheduledDowntime() throws Exception {
-		long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
+		final long beaconTimeout = PreferenceProperties.BEACON_TIMEOUT;
 		_timeSource.setTime(1000);
 		_conn.setBeaconTime();
-		
+
 		_conn.scheduleDowntime(600, TimeUnit.SECONDS);
 		_timeSource.setTime(1000 + beaconTimeout + 1);
 		assertFalse(_conn.isTimeoutError());

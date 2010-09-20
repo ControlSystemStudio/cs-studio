@@ -46,7 +46,7 @@ import com.google.common.collect.Sets;
  */
 public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfigurator> {
 
-    ROOT("ou", "root"),
+    UNIT("ou", "root"),
 
     /**
      * The facility object class (efan).
@@ -81,7 +81,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
 
         FACILITY._nestedClasses = EnumSet.of(COMPONENT);
 
-        ROOT._nestedClasses = EnumSet.of(FACILITY);
+        UNIT._nestedClasses = EnumSet.of(FACILITY);
 
         for (final TestTreeConfigurator oc : TestTreeConfigurator.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
@@ -168,7 +168,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @Nonnull
-    public String getRootTypeValue() {
+    public String getUnitTypeValue() {
         return "TestOu";
     }
 

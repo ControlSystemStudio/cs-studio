@@ -23,7 +23,6 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +30,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+
+import com.google.common.collect.Maps;
 
 /**
  * A tree node that is the root node of a subtree.
@@ -122,8 +123,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	                    @Nonnull final TreeNodeSource source) {
 	    super(name, configurationType, source);
 
-		_childrenPVMap = new HashMap<String, IAlarmProcessVariableNode>();
-		_childrenSubtreeMap = new HashMap<String, IAlarmSubtreeNode>();
+		_childrenPVMap = Maps.newLinkedHashMap();
+		_childrenSubtreeMap = Maps.newLinkedHashMap();
 		_highestChildSeverity = Severity.UNKNOWN;
 		_highestUnacknowledgedChildSeverity = Severity.UNKNOWN;
 	}

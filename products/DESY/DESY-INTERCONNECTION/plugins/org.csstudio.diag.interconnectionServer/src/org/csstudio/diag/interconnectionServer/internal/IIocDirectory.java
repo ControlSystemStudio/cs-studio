@@ -22,25 +22,28 @@
 
 package org.csstudio.diag.interconnectionServer.internal;
 
+import java.net.InetAddress;
+
+import javax.naming.NamingException;
+
 /**
  * Provides information about IOC names.
- * 
+ *
  * @author Joerg Rathlev
  */
 public interface IIocDirectory {
 
 	/**
 	 * Returns the logical name and the LDAP path of an IOC.
-	 * 
-	 * @param ipAddress
+	 *
+	 * @param iocInetAddress
 	 *            the IOC's IP address.
 	 * @param hostname
 	 *            the IOC's host name.
 	 * @return an array containing two strings, where the first string is the
 	 *         IOC's logical name and the second string is the LDAP path.
+	 * @throws NamingException
 	 */
-	// TODO: the parameters and return value of this method should be refactored
-	// to something that does not lead to spaghetti code.
-	String[] getLogicalIocName(String ipAddress, String hostname);
+	String[] getLogicalIocName(InetAddress iocInetAddress, String hostname) throws NamingException;
 
 }

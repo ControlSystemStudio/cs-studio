@@ -61,7 +61,7 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
      * @return the root value.
      */
     @Nonnull
-    String getRootTypeValue();
+    String getUnitTypeValue();
 
     /**
      * The tree items a tree item can contain.

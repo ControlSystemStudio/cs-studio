@@ -7,9 +7,10 @@ Bundle-Activator: org.csstudio.utility.recordproperty.Activator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.csstudio.platform.ui,
- org.csstudio.utility.ldap,
  org.csstudio.config.savevalue.service,
- org.csstudio.config.savevalue.ui
+ org.csstudio.config.savevalue.ui,
+ org.csstudio.utility.ldap.service;bundle-version="1.0.0",
+ org.csstudio.utility.ldap.service.impl;bundle-version="1.3.0"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .,
  lib/ojdbc14.jar

@@ -31,6 +31,7 @@ import org.csstudio.alarm.table.jms.AlarmConnectionMonitor;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 
+
 /**
  * Implementation of the topic set service. A map is maintained, keeping the alarm connection and
  * the message lists as values. The key is given by the name of the topic set.
@@ -60,12 +61,12 @@ public class TopicsetService implements ITopicsetService {
         assert messageList != null : "Failed: messageList != null";
         assert alarmTableListener != null : "Failed: alarmTableListener != null";
 
-        Element element = new Element();
+        final Element element = new Element();
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
         element._alarmTableListener.setMessageList(element._messageList);
-        IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().newAlarmResource(topicSet.getTopics(), null, null);
+        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().createAlarmResource(topicSet.getTopics(), null, null);
         element._connection.connectWithListenerForResource(new AlarmConnectionMonitor(),
                                                            element._alarmTableListener,
                                                            alarmResource);
@@ -80,7 +81,7 @@ public class TopicsetService implements ITopicsetService {
      */
     @Override
     public void disconnectAll() {
-        for (Element element : _topicSetMap.values()) {
+        for (final Element element : _topicSetMap.values()) {
             element._connection.disconnect();
         }
     }

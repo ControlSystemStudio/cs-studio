@@ -4,8 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
 	<classpathentry kind="src" path="src/java"/>
 	<classpathentry kind="src" path="test/java"/>
-	<classpathentry exported="true" kind="lib" path="lib/ejb3-persistence.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/hibernate3.jar" sourcepath="D:/Eclipse/Ext_SourceCode/hibernate-distribution-3.5.4-Final"/>
-	<classpathentry exported="true" kind="lib" path="lib/hibernate-annotations.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

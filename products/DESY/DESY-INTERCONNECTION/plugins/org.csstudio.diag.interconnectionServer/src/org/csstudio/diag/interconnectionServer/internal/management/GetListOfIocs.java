@@ -30,7 +30,7 @@ import org.csstudio.platform.management.IManagementCommand;
 /**
  * Management command to get the list of IOCs connected to the Interconnection
  * Server.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class GetListOfIocs implements IManagementCommand {
@@ -38,9 +38,9 @@ public class GetListOfIocs implements IManagementCommand {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String[] names = IocConnectionManager.getInstance().getNodeNameStatusArray();
-		StringBuilder builder = new StringBuilder();
+	public CommandResult execute(final CommandParameters parameters) {
+		final String[] names = IocConnectionManager.INSTANCE.getNodeNameStatusArray();
+		final StringBuilder builder = new StringBuilder();
 		for (int i = 0; i < names.length; i++) {
 			if (i != 0) {
 				builder.append("\n");

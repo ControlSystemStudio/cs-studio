@@ -106,8 +106,14 @@
                 <exclude name="**/classes/**"/>
             </fileset>
         </copy>
+    	<echo>Core Features</echo>
+        <copy todir="${build_dir}/features" overwrite="true">
+            <fileset dir="${repo_dir}/applications/features" includesfile="features.list">
+                 <exclude name="**/bin/**"/>
+                 <exclude name="**/classes/**"/>
+            </fileset>
+        </copy>
     </target>
-
 
     <!-- Zip all the source files 
          Use build dir, but don't include the  local.list

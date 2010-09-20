@@ -21,8 +21,11 @@
  */
 package org.csstudio.config.savevalue.ui;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -40,7 +43,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	private static Activator INSTANCE;
 
-	private ILdapService _ldapService;
+    private LdapServiceTracker _ldapServiceTracker;
 
 	/**
 	 * The constructor.
@@ -52,21 +55,19 @@ public class Activator extends AbstractCssUiPlugin {
         INSTANCE = this; // Antipattern is required by the framework!
     }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void doStart(final BundleContext context) throws Exception {
-		_ldapService = getService(context, ILdapService.class);
-	}
+    @Override
+    protected void doStart(final BundleContext context) throws Exception {
+        _ldapServiceTracker = new LdapServiceTracker(context);
+        _ldapServiceTracker.open();
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public final void doStop(final BundleContext context) throws Exception {
-		INSTANCE = null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    protected final void doStop(@Nonnull final BundleContext context) throws Exception {
+        _ldapServiceTracker.close();
+    }
 
 	/**
 	 * Returns the shared instance.
@@ -89,6 +90,6 @@ public class Activator extends AbstractCssUiPlugin {
      * @return the LDAP service
      */
     public ILdapService getLdapService() {
-        return _ldapService;
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 }

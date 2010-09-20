@@ -117,7 +117,7 @@ public final class ContentModelExporter {
 
 
         final Element rootElem = new Element(rootType.getNodeTypeName());
-        rootElem.setAttribute("name", rootType.getRootTypeValue());
+        rootElem.setAttribute("name", rootType.getUnitTypeValue());
 
         final Document doc = new Document(rootElem);
 

@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
+import org.csstudio.opibuilder.widgets.model.IntensityGraphModel;
 import org.csstudio.swt.widgets.datadefinition.ColorMap;
 import org.csstudio.swt.widgets.datadefinition.ColorMap.PredefinedColorMap;
 import org.eclipse.swt.graphics.RGB;
@@ -74,7 +75,7 @@ public class ColorMapProperty extends AbstractWidgetProperty {
 	
 	@Override
 	protected PropertyDescriptor createPropertyDescriptor() {
-		return new ColorMapPropertyDescriptor(prop_id, description);
+		return new ColorMapPropertyDescriptor(prop_id, description, (IntensityGraphModel) widgetModel);
 	}
 
 	@Override

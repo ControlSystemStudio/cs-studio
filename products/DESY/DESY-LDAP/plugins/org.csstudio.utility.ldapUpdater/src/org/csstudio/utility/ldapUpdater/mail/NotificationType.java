@@ -23,7 +23,7 @@ package org.csstudio.utility.ldapUpdater.mail;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
 
 /**
  * Mail templates for notification purposes of the LDAP update process.

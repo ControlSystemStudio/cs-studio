@@ -27,12 +27,12 @@ import static org.junit.Assert.assertEquals;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -62,7 +62,7 @@ public class TreeBuilderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		_tree = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue(), LdapEpicsAlarmcfgConfiguration.ROOT, TreeNodeSource.ROOT).build();
+		_tree = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue(), LdapEpicsAlarmcfgConfiguration.UNIT, TreeNodeSource.ROOT).build();
 		_a = new SubtreeNode.Builder(A, LdapEpicsAlarmcfgConfiguration.FACILITY, TreeNodeSource.LDAP).setParent(_tree).build();
 		_b = new SubtreeNode.Builder(B, LdapEpicsAlarmcfgConfiguration.COMPONENT, TreeNodeSource.LDAP).setParent(_a).build();
 		_c = new ProcessVariableNode.Builder(C, TreeNodeSource.LDAP).setParent(_b).build();
@@ -72,7 +72,7 @@ public class TreeBuilderTest {
 	@Test
 	public void testDirectoryNames() throws Exception {
 	    final LdapName aName = new LdapName("");
-	    aName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.ROOT.getNodeTypeName(), LdapEpicsAlarmcfgConfiguration.ROOT.getRootTypeValue()));
+	    aName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.UNIT.getNodeTypeName(), LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue()));
 	    aName.add(new Rdn(LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeName(), A));
         assertEquals(aName, _a.getLdapName());
 
