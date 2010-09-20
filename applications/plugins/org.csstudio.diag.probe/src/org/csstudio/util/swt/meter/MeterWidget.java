@@ -132,23 +132,29 @@ public class MeterWidget extends Canvas implements DisposeListener,
             this.min = min;
             this.max = max;
         }
-        this.low_alarm = low_alarm;
-        this.low_warning = low_warning;
-        this.high_warning = high_warning;
-        this.high_alarm = high_alarm;
-        // Correct limits that are outside the value range
-        if ((this.low_alarm < this.min) ||  (this.low_alarm > this.max)) {
-            this.low_alarm = this.min;
-        }
-        if ((this.low_warning < this.min) || (this.low_warning > this.max)) {
-            this.low_alarm = this.min;
-        }
-        if ((this.high_warning < this.min) || (this.high_warning > this.max)) {
+
+        // Check for limits that are outside the value range
+        // or NaN (since EPICS R3.14.11)
+        if (low_alarm > this.min  &&  low_alarm < this.max)
+        	this.low_alarm = low_alarm;
+        else
+        	this.low_alarm = this.min;
+        
+        if (low_warning > this.min  &&  low_warning < this.max)
+        	this.low_warning = low_warning;
+    	else
+            this.low_warning = this.low_alarm;
+
+        
+        if (high_alarm > this.min  &&  high_alarm < this.max)
+            this.high_alarm = high_alarm;
+        else
             this.high_alarm = this.max;
-        }
-        if ((this.high_alarm < this.min) || (this.high_alarm > this.max)) {
-            this.high_alarm = this.max;
-        }
+
+        if (high_warning > this.min  &&  high_warning < this.max)
+        	this.high_warning = high_warning;
+        else
+            this.high_warning = this.high_alarm;
 
         this.precision = precision;
         resetScale();
