@@ -398,6 +398,10 @@ public abstract class AbstractContainerEditPart extends AbstractBaseEditPart imp
 	public final void setChildrenSelectable(final boolean childrenSelectable) {
 		_childrenSelectable = childrenSelectable;
 	}
+	
+	public final boolean isChildrenSelectable() {
+		return _childrenSelectable;
+	}
 
 	/**
 	 * {@inheritDoc} Overidden, to set the selection behaviour of child
