@@ -43,15 +43,15 @@ record(calc, "janet")
 record(compress, "hist")
 {
    field(INP,  "janet")
-   field(NSAM, "50")
+   field(NSAM, "5000")
    field(ALG,  "Circular Buffer")
 }
 
 record(waveform, "longs")
 {
    field(INP,  "hist")
-   field(SCAN, "1 second")
-   field(NELM, "50")
+   field(SCAN, ".1 second")
+   field(NELM, "5000")
    field(FTVL, "LONG")
 }
 
