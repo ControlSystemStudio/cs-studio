@@ -60,7 +60,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -513,9 +512,6 @@ public final class AlarmTreeView extends ViewPart {
      */
     @Override
     public final void dispose() {
-        if (_connection != null) {
-            _connection.disconnect();
-        }
         super.dispose();
     }
 
@@ -588,15 +584,6 @@ public final class AlarmTreeView extends ViewPart {
     @CheckForNull
     public AlarmMessageListener getAlarmListener() {
         return _alarmListener;
-    }
-
-    /**
-     * Getter.
-     * @return the alarm connection
-     */
-    @CheckForNull
-    public IAlarmConnection getConnection() {
-        return _connection;
     }
 
     @Nonnull
@@ -781,12 +768,6 @@ public final class AlarmTreeView extends ViewPart {
      */
     private void createAndScheduleConnectionJob() {
         LOG.debug("Starting connection.");
-
-        if (_connection != null) {
-            // There is still an old connection. This shouldn't happen.
-            _connection.disconnect();
-            LOG.warn("There was an active connection when starting a new connection");
-        }
 
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);

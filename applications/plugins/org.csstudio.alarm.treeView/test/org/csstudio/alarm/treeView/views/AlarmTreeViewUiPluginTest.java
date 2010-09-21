@@ -34,6 +34,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
 import java.util.Random;
+import java.util.concurrent.Delayed;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
@@ -53,9 +54,9 @@ import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -116,7 +117,19 @@ public class AlarmTreeViewUiPluginTest {
 
         Assert.assertNotNull(ACTIVE_PAGE);
 
-        VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
+//        Display.getDefault().asyncExec(new Runnable() {
+//            @Override
+//            public void run() {
+//                try {
+                    VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
+//
+//                } catch (final PartInitException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//            }
+//        });
+
     }
 
     private static void setUpAlarmTreeViewPreferences(@Nonnull final String testValue) {
@@ -178,22 +191,26 @@ public class AlarmTreeViewUiPluginTest {
 
 
     @Test
-    public void testView() {
+    public void testView() throws InterruptedException {
+
+
+
+
+//        Display.getDefault().asyncExec(new Runnable() {
+//            @Override
+//            public void run() {
+//                VIEW.refresh();
+//            }
+//        });
+        Thread.currentThread();
+        Thread.sleep(20000);
+
         final IAlarmSubtreeNode node = VIEW.getRootNode();
         Assert.assertNotNull(node);
 
-        final Job job = VIEW.createAndScheduleImportInitialConfiguration(node);
-        try {
-            job.join();
-        } catch (final InterruptedException e) {
-            Assert.fail("Import job interrupted.\n" + e.getMessage());
-        }
 
-        VIEW.refresh();
-        System.out.println("Pause");
-
-
-       // Assert.fail("LAUNCH CONFIG TEST FOR HUDSON");
+//        final IAlarmTreeNode child = node.getChild(EFAN_NAME);
+//        Assert.assertNotNull(child);
     }
 
 
@@ -201,10 +218,18 @@ public class AlarmTreeViewUiPluginTest {
 
     @AfterClass
     public static void closeView() {
+
+
+
         // Unset the just created test facility name in the preferences
         setUpAlarmTreeViewPreferences(AlarmPreference.ALARMSERVICE_FACILITIES.getDefaultAsString());
 
-        ACTIVE_PAGE.hideView(VIEW);
+//        Display.getDefault().asyncExec(new Runnable() {
+//            @Override
+//            public void run() {
+//                ACTIVE_PAGE.hideView(VIEW);
+//            }
+//        });
 
         final LdapName name =
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
