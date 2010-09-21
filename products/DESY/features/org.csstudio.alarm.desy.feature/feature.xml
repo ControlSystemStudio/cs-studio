@@ -56,13 +56,6 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.jmsSender"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.alarm.treeView"
          download-size="0"
          install-size="0"
@@ -175,6 +168,41 @@ IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT HTTP://WWW.DESY.DE/LEGAL/L
 
    <plugin
          id="org.csstudio.dct.treemodelexporter"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.diag.jmssender"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.ldap.nameSpaceBrowser"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.ldap.service"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.ldap.service.impl"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.ldap.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
