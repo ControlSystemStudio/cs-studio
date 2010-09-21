@@ -232,4 +232,9 @@ public abstract class AbstractWidgetProperty {
 		return executionMode;
 	}
 	
+	@Override
+	public String toString() {
+		return widgetModel.getName() + " : " + prop_id;
+	}
+	
 }
