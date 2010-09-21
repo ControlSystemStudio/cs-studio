@@ -27,10 +27,16 @@ import org.csstudio.platform.libs.epics.EpicsPlugin.MonitorMask;
 public class PVContext
 {
     /** In principle, we like to close the context when it is no longer needed.
-     *  But as long as JCA with R3.14.8.2 causes
-     *  "pthread_create error Invalid argument" errors,
-     *  we keep the context open.
-     *  TODO Remove when JCA/R3.14.8.2 have been fixed.
+     *  
+     *  This is in fact required for CAJ to close all threads.
+     *  
+     *  For JCA, however, there are problems:
+     *  With R3.14.8.2 on Linux there were errors
+     *  "pthread_create error Invalid argument".
+     *  With R3.14.11 on OS X 10.5.8 the call to jca_context.destroy()
+     *  caused an "Invalid memory access ..." crash.
+     *  
+     *  -> We keep the context open.
      */
     final private static boolean cleanup = false;
     
