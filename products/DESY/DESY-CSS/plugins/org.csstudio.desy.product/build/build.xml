@@ -7,13 +7,17 @@
 	<target name="build" depends="tmp"/>
 	
 	<echo message="'workspaceLocation: ${workspaceLocation}"/>
+	<echo message="'e360TP: ${e360TP}"/>
 	<echo message="'buildDirectory: ${buildDirectory}"/>
 	<echo message="'hudsonbase: ${hudsonbase}"/>
+	<echo message="'base: ${base}"/>
+	<echo message="'tstamp: ${tstamp}"/>
 	<echo message="'hudsonjob: ${hudsonjob}"/>
 	<echo message="'BaseLocation: ${baseLocation}"/>
 	<echo message="'buckminsterLocation: ${buckminsterLocation}"/>
 	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
 	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
+    <echo message="${e360TP}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 
 	<!--
 	TMP target for simple build without tests and buckminster 
@@ -22,6 +26,21 @@
 
 		<copy todir="${workspaceLocation}/build">
 			<fileset dir="${workspaceLocation}/core"/>
+		</copy>
+				<copy todir="${workspaceLocation}/build">
+			<fileset dir="${workspaceLocation}/applications"/>
+		</copy>
+				<copy todir="${workspaceLocation}/build/features">
+			<fileset dir="${workspaceLocation}/products/DESY/features"/>
+		</copy>
+		<copy todir="${workspaceLocation}/build/plugins">
+			<fileset dir="${workspaceLocation}/products/DESY/plugins"/>
+		</copy>
+		<copy todir="${workspaceLocation}/build">
+			<fileset dir="${workspaceLocation}/products/DESY/DESY-CSS"/>
+		</copy>
+		<copy todir="${workspaceLocation}/build">
+			<fileset dir="D:/Java/hudson/EclipseTargetPlatform/e360"/>
 		</copy>
 		
 		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true">			
@@ -32,7 +51,7 @@
 			<arg value="-DbaseLocation=${e360TP}" />
 			<!--arg value="-Dtimestamp=${tstamp}" /-->
 			<classpath>
-				<pathelement location="${e360TP}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
+				<pathelement location="${eclipse360}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 			</classpath>
 		</java>
 	</target>
