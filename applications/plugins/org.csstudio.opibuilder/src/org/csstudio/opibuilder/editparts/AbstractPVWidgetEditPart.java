@@ -67,6 +67,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	protected Runnable timerTask;
 	private final static int UPDATE_SUPPRESS_TIME = 1000;
 	
+	/**
+	 * In most cases, old pv value in the valueChange() method of {@link IWidgetPropertyChangeHandler}
+	 * is not useful. Ignore the old pv value will help to reduce memory usage.
+	 */
+	private boolean ignoreOldPVValue =true;
+	
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
@@ -233,8 +239,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				}
 										
 			}
-			
-			getWidgetModel().getPVMap().get(getWidgetModel().
+			if(ignoreOldPVValue){
+				getWidgetModel().getPVMap().get(getWidgetModel().
+					getProperty(pvPropID)).setPropertyValue_IgnoreOldValue(pv.getValue());	
+			}else
+				getWidgetModel().getPVMap().get(getWidgetModel().
 					getProperty(pvPropID)).setPropertyValue(pv.getValue());		
 			
 		}
@@ -593,5 +602,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 */
 	public abstract Object getValue();
 	
+	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
+		this.ignoreOldPVValue = ignoreOldValue;
+	}
 	
 }
