@@ -310,20 +310,6 @@ public final class AlarmTreeView extends ViewPart {
                                dragAdapter.getTransfers(),
                                dragAdapter);
     }
-    /**
-     * Sets the input for the tree. The actual work will be done asynchronously in the UI thread.
-     *
-     * @param inputElement the new input element.
-     */
-    void asyncSetViewerInput(@Nonnull final IAlarmSubtreeNode inputElement) {
-        getSite().getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                _viewer.setInput(inputElement);
-            }
-        });
-    }
-
 
     /**
      * Returns whether the given selection contains at least one node with an unacknowledged alarm.
