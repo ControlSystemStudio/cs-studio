@@ -1,12 +1,9 @@
 package org.csstudio.opibuilder.util;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
-import org.csstudio.platform.ExecutionService;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -33,16 +30,18 @@ public final class GUIRefreshThread implements Runnable {
 	 */
 	private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
 	
-	private ScheduledFuture<?> thisTask;
+	private Thread thread;
+	
+	private int guiRefreshCycle = 100;
 
 	/**
 	 * Standard constructor.
 	 */
 	private GUIRefreshThread() {
 		tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
-		
-		thisTask = ExecutionService.getInstance().getScheduledExecutorService()
-				.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
+		reSchedule();
+		thread = new Thread(this, "OPI GUI Rrefresh Thread"); //$NON-NLS-1$
+		thread.start();
 	}
 
 	/**
@@ -61,31 +60,39 @@ public final class GUIRefreshThread implements Runnable {
 	/**
 	 * Reschedule this task upon the new GUI refresh cycle.
 	 */
-	public synchronized void reSchedule(){
-		if(!tasksQueue.isEmpty())
-			processQueue();
-		thisTask.cancel(false);		
-		thisTask = ExecutionService.getInstance().getScheduledExecutorService()
-		.scheduleWithFixedDelay(this, 100, PreferencesHelper.getGUIRefreshCycle(), TimeUnit.MILLISECONDS);
-
+	public void reSchedule(){
+		guiRefreshCycle = PreferencesHelper.getGUIRefreshCycle();
 	}
 
 	/**
 	 * {@inheritDoc}.
 	 */
 	public void run() {
-		if(!tasksQueue.isEmpty())
-			processQueue();
+		while (true) {		
+			if(!tasksQueue.isEmpty())
+					processQueue();			
+			try {
+				Thread.sleep(guiRefreshCycle);
+			} catch (InterruptedException e) {
+				//ignore
+			}
+		}
 	}
 
 	/**
 	 * Process the complete queue.
 	 */
-	private synchronized void processQueue() {
+	private void processQueue() {
 		Display display = PlatformUI.getWorkbench().getDisplay();
-		WidgetIgnorableUITask r;
-			while( (r=tasksQueue.poll()) != null){	
-				display.asyncExec(r.getRunnableTask());
+		Object[] tasksArray;
+		//copy the tasks queue.
+		synchronized (this) {
+			tasksArray = tasksQueue.toArray();
+			tasksQueue.clear();
+		}		
+		for(Object o : tasksArray){	
+				if(display!=null && !display.isDisposed())
+					display.syncExec(((WidgetIgnorableUITask) o).getRunnableTask());
 		}		
 	}
 
