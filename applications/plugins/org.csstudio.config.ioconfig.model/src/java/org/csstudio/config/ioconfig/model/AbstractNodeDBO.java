@@ -339,47 +339,48 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
      *
-     * @param toIndex
+     * @param toIdx
      *            the new sortIndex for this node.
      */
     public void moveSortIndex(final int toIndex) {
-        int direction = 1;
-        int index = this.getSortIndex();
-        if (toIndex == index) {
+        short direction = 1;
+        short index = this.getSortIndex();
+        short toIdx = (short) toIndex;
+        if (toIdx == index) {
             return;
         }
         if(getParent()==null) {
-            setSortIndexNonHibernate(toIndex);
+            setSortIndexNonHibernate(toIdx);
             return;
         }
         if (index == -1) {
             // Put a new Node in.
-            if (index > toIndex) {
+            if (index > toIdx) {
                 direction = -1;
             }
             AbstractNodeDBO node = this;
-            index = toIndex;
+            index = toIdx;
             do {
                 final AbstractNodeDBO nextNode = getParent().getChildrenAsMap().get(index);
 
                 node.setSortIndexNonHibernate(index);
                 node = nextNode;
-                index = index + direction;
+                index = (short) (index + direction);
             } while (node != null);
         } else {
             // Move a exist Node
             int start = index;
             final AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(index);
-            if (index > toIndex) {
+            if (index > toIdx) {
                 direction = -1;
             }
-            for (; start != toIndex; start+=direction) {
+            for (; start != toIdx; start+=direction) {
                 final AbstractNodeDBO nextNode = getParent().getChildrenAsMap().get((short)(start+direction));
                 if(nextNode!=null) {
                     nextNode.setSortIndexNonHibernate(start);
                 }
             }
-            moveNode.setSortIndexNonHibernate(toIndex);
+            moveNode.setSortIndexNonHibernate(toIdx);
         }
     }
 
