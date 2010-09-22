@@ -22,6 +22,7 @@
 
 package org.epics.css.dal.spi;
 
+import org.apache.log4j.Level;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LifecycleEvent;
 import org.epics.css.dal.context.LifecycleListener;
@@ -29,7 +30,6 @@ import org.epics.css.dal.context.PlugContext;
 import org.epics.css.dal.proxy.AbstractPlug;
 
 import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.naming.directory.DirContext;
 
@@ -80,7 +80,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 					plug.releaseInstance();
 			} catch (Throwable e) {
 				if (plug != null)
-					plug.getLogger().log(Level.WARNING, "Unable to release factory.",e);
+					plug.getLogger().log(Level.WARN, "Unable to release factory.",e);
 				else 
 					e.printStackTrace();
 			}
@@ -226,7 +226,7 @@ public abstract class AbstractFactorySupport implements AbstractFactory
 	 *
 	 * @return plug which is used for connection
 	 */
-	public PlugContext getPlug()
+	public AbstractPlug getPlug()
 	{
 		return getPlugInstance();
 	}

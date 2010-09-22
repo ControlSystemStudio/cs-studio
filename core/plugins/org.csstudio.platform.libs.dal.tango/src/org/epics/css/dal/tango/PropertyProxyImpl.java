@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.logging.Level;
 
 import org.epics.css.dal.AccessType;
 import org.epics.css.dal.CharacteristicInfo;
@@ -303,7 +302,7 @@ public abstract class PropertyProxyImpl<T> extends AbstractProxyImpl implements 
 				}
 			} catch (DevFailed e) {
 				setCondition(new DynamicValueCondition(EnumSet.of(DynamicValueState.ERROR),new Timestamp(System.currentTimeMillis(),0),null));
-				TangoPropertyPlug.getInstance().getLogger().log(Level.WARNING,"Could not load characteristics",e);
+				TangoPropertyPlug.getInstance().getLogger().warn("Could not load characteristics",e);
 				return new HashMap<String, Object>();
 			}
 		}

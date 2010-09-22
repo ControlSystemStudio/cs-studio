@@ -40,7 +40,7 @@ import org.epics.css.dal.spi.Plugs;
  * <code>plugs</code> extension point.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.1 $
  * 
  */
 final class PlugRegistry {
@@ -151,7 +151,7 @@ final class PlugRegistry {
 	 * Descriptor for extensions of the <code>plug</code> extension points.
 	 * 
 	 * @author Alexander Will
-	 * @version $Revision$
+	 * @version $Revision: 1.1 $
 	 * 
 	 */
 	private class PlugDescriptor {

@@ -30,7 +30,7 @@ import org.epics.css.dal.spi.Plugs;
  * point.
  * 
  * @author Alexander Will
- * @version $Revision$
+ * @version $Revision: 1.3 $
  * 
  */
 public class CssApplicationContext extends DefaultApplicationContext {

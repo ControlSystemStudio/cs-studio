@@ -17,6 +17,7 @@ import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 public class DataUtil {
+	public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
 	
 	public static <T> T castTo(Object arg, Class<T> type) {
 		
@@ -53,7 +54,11 @@ public class DataUtil {
 	
 	public static Number castToNumber(Object arg) {
 		if (arg instanceof Number) return (Number) arg;
-		if (arg instanceof String) return new Double((String) arg);
+		try {
+			if (arg instanceof String) return new Double((String) arg);
+		} catch (NumberFormatException e) {
+			return UNINITIALIZED_DOUBLE_VALUE;
+		}
 		if (arg instanceof double[]) return new Double(((double[]) arg)[0]);
 		if (arg instanceof long[]) return new Long(((long[]) arg)[0]);
 		if (arg instanceof String[]) return new Double(((String[]) arg)[0]);
