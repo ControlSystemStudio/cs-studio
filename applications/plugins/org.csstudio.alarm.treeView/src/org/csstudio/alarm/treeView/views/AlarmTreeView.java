@@ -29,7 +29,6 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
@@ -695,11 +694,6 @@ public final class AlarmTreeView extends ViewPart {
 
         // add menu items to the context menu when it is about to show
         menuMgr.addMenuListener(new IMenuListener() {
-            private String _test;
-            public void IMenuListener() {
-                _test = "TestListener";
-                System.out.println("Here we go.");
-            }
             @Override
             public void menuAboutToShow(@Nullable final IMenuManager manager) {
                 AlarmTreeView.this.fillContextMenu(manager);
@@ -729,11 +723,12 @@ public final class AlarmTreeView extends ViewPart {
     private void selectionChanged(@Nonnull final SelectionChangedEvent event) {
         final IStructuredSelection sel = (IStructuredSelection) event.getSelection();
         _acknowledgeAction.setEnabled(containsNodeWithUnackAlarm(sel));
-        _runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(sel.getFirstElement()));
-        _runCssDisplayAction.setEnabled(hasCssDisplay(sel.getFirstElement()));
-        _openCssStripChartAction.setEnabled(hasCssStripChart(sel.getFirstElement()));
-        _showHelpGuidanceAction.setEnabled(hasHelpGuidance(sel.getFirstElement()));
-        _showHelpPageAction.setEnabled(hasHelpPage(sel.getFirstElement()));
+        final Object firstElement = sel.getFirstElement();
+        _runCssAlarmDisplayAction.setEnabled(hasCssAlarmDisplay(firstElement));
+        _runCssDisplayAction.setEnabled(hasCssDisplay(firstElement));
+        _openCssStripChartAction.setEnabled(hasCssStripChart(firstElement));
+        _showHelpGuidanceAction.setEnabled(hasHelpGuidance(firstElement));
+        _showHelpPageAction.setEnabled(hasHelpPage(firstElement));
     }
 
     /**

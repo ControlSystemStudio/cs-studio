@@ -33,7 +33,9 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttribute
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
+import java.util.HashSet;
 import java.util.Random;
+import java.util.Set;
 import java.util.concurrent.Delayed;
 
 import javax.annotation.Nonnull;
@@ -52,15 +54,33 @@ import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.views.actions.AcknowledgeAction;
+import org.csstudio.alarm.treeView.views.actions.CreateComponentAction;
+import org.csstudio.alarm.treeView.views.actions.CreateRecordAction;
+import org.csstudio.alarm.treeView.views.actions.CssStripChartAction;
+import org.csstudio.alarm.treeView.views.actions.DeleteNodeAction;
+import org.csstudio.alarm.treeView.views.actions.RenameAction;
+import org.csstudio.alarm.treeView.views.actions.RunCssAlarmDisplayAction;
+import org.csstudio.alarm.treeView.views.actions.RunCssDisplayAction;
+import org.csstudio.alarm.treeView.views.actions.SaveAsXmlAction;
+import org.csstudio.alarm.treeView.views.actions.ShowHelpGuidanceAction;
+import org.csstudio.alarm.treeView.views.actions.ShowHelpPageAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.ActionContributionItem;
+import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.internal.win32.OS;
@@ -76,6 +96,8 @@ import org.eclipse.ui.PlatformUI;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.google.common.collect.ImmutableSet;
 
 /**
  * AlarmTreeView Test.
@@ -99,6 +121,33 @@ public class AlarmTreeViewUiPluginTest {
     private static Attributes EFAN_ATTRS = new BasicAttributes();
     private static Attributes ECOM_ATTRS = new BasicAttributes();
     private static Attributes EREN_ATTRS = new BasicAttributes();
+
+    private static Set<Class<? extends IAction>> COMMON_CONTEXT_MENU_ACTIONS =
+        ImmutableSet.<Class<? extends IAction>>builder().add(AcknowledgeAction.class)
+                                                       .add(RunCssAlarmDisplayAction.class)
+                                                       .add(RunCssDisplayAction.class)
+                                                       .add(CssStripChartAction.class)
+                                                       .add(ShowHelpGuidanceAction.class)
+                                                       .add(ShowHelpPageAction.class)
+                                                       .add(DeleteNodeAction.class)
+                                                       .build();
+    private static Set<Class<? extends IAction>> RECORD_CONTEXT_MENU_ACTIONS =
+        ImmutableSet.<Class<? extends IAction>>builder().addAll(COMMON_CONTEXT_MENU_ACTIONS)
+                                                       .add(RenameAction.class)
+                                                       .build();
+    private static Set<Class<? extends IAction>> COMPONENT_CONTEXT_MENU_ACTIONS =
+        ImmutableSet.<Class<? extends IAction>>builder().addAll(COMMON_CONTEXT_MENU_ACTIONS)
+                                                       .add(CreateRecordAction.class)
+                                                       .add(CreateComponentAction.class)
+                                                       .add(RenameAction.class)
+                                                       .build();
+    private static Set<Class<? extends IAction>> FACILITY_CONTEXT_MENU_ACTIONS =
+        ImmutableSet.<Class<? extends IAction>>builder().addAll(COMMON_CONTEXT_MENU_ACTIONS)
+                                                       .add(CreateRecordAction.class)
+                                                       .add(CreateComponentAction.class)
+                                                       .add(SaveAsXmlAction.class)
+                                                       .build();
+
 
     private static final String ATTR_TEST_CONTENT = "TestContent";
 
@@ -236,30 +285,89 @@ public class AlarmTreeViewUiPluginTest {
 
 
     @Test
-    public void testView() throws InterruptedException {
+    public void testViewAndRootNodePresent() throws InterruptedException {
 
-        final IAlarmSubtreeNode node = VIEW.getRootNode();
-        Assert.assertNotNull(node);
-//        final IAlarmTreeNode child = node.getChild(EFAN_NAME);
-//        Assert.assertNotNull(child);
+        Assert.assertNotNull(VIEW.getRootNode());
+    }
+
+    private void testContextMenuActions(final Set<Class<? extends IAction>> expActions, final IAlarmTreeNode node) {
+        final TreeViewer viewer = VIEW.getViewer();
+
+        viewer.setSelection(new StructuredSelection(new Object[] {node}), true);
+
+        final Menu menu = viewer.getTree().getMenu();
+        // notify the listeners (the anonymous listener that builds the entries of the context menu)
+        menu.notifyListeners(SWT.Show, new Event());
+
+        final Set<Class<? extends IAction>> menuActions = createExistingActionsSet(menu);
+
+        // check whether the sets' sizes are equal
+        Assert.assertEquals(expActions.size(), menuActions.size());
+        // remove any content that is not equal
+        menuActions.retainAll(expActions);
+        // and check the sizes again
+        Assert.assertEquals(expActions.size(), menuActions.size());
+
+    }
+
+
+    @Test
+    public void testContextMenuActionsPresentForFacilityNode() throws InterruptedException {
+        testContextMenuActions(FACILITY_CONTEXT_MENU_ACTIONS, getFacilityNode());
     }
 
     @Test
-    public void testRenameAction() {
-        final Menu menu = VIEW.getViewer().getTree().getMenu();
-        Listener[] listeners = menu.getListeners(SWT.Show);
-        for (final Listener listener : listeners) {
-            System.out.println("HUHU");
-            listener.handleEvent(new Event());
-        }
-        listeners = menu.getListeners(SWT.BUTTON3);
-        for (final Listener listener : listeners) {
-            System.out.println("HUHU");
-        }
+    public void testContextMenuActionsPresentForComponentNode() throws InterruptedException {
+        testContextMenuActions(COMPONENT_CONTEXT_MENU_ACTIONS, getComponentNode());
+    }
 
-        for (final MenuItem item : menu.getItems()) {
-            System.out.println("HAHA");
+    @Test
+    public void testContextMenuActionsPresentForRecordNode() throws InterruptedException {
+        testContextMenuActions(RECORD_CONTEXT_MENU_ACTIONS, getRecordNode());
+    }
+
+    @Nonnull
+    private IAlarmTreeNode getFacilityNode() {
+        //set a new selection on the root node
+        final IAlarmSubtreeNode unit = (IAlarmSubtreeNode) VIEW.getRootNode().getChild(UNIT.getUnitTypeValue());
+        Assert.assertNotNull(unit);
+        final IAlarmTreeNode efan = unit.getChild(EFAN_NAME);
+        Assert.assertNotNull(efan);
+        return efan;
+    }
+
+    @Nonnull
+    private IAlarmTreeNode getComponentNode() {
+        final IAlarmTreeNode efan = getFacilityNode();
+        final IAlarmTreeNode ecom = ((IAlarmSubtreeNode) efan).getChild("TestEcom1");
+        return ecom;
+    }
+    @Nonnull
+    private IAlarmTreeNode getRecordNode() {
+        final IAlarmTreeNode efan = getFacilityNode();
+        final IAlarmTreeNode eren = ((IAlarmSubtreeNode) efan).getChild("TestEren1");
+        return eren;
+    }
+
+
+
+    /**
+     * Creates a set of action class types that are contained in the context menu of the tree
+     * @param menu
+     * @return
+     */
+    @Nonnull
+    private Set<Class<? extends IAction>> createExistingActionsSet(@Nonnull final Menu menu) {
+        final MenuItem[] items = menu.getItems();
+        final Set<Class<? extends IAction>> menuActions = new HashSet<Class<? extends IAction>>();
+        for (final MenuItem menuItem : items) {
+            final Object data = menuItem.getData();
+            if (data instanceof ActionContributionItem) {
+                final IAction action = ((ActionContributionItem) data).getAction();
+                menuActions.add(action.getClass());
+            }
         }
+        return menuActions;
     }
 
 
