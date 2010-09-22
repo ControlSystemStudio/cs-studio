@@ -897,42 +897,50 @@ public class SlaveEditor extends AbstractNodeEditor {
     }
 
     /**
-     *
-     */
-    private void saveUserPrmData() {
-        TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = _slave.getGSDSlaveData().getExtUserPrmDataConst();
-        for (Object prmTextObject : _prmTextCV) {
-            if (prmTextObject instanceof ComboViewer) {
-              ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-              handleComboViewer(extUserPrmDataConst, prmTextCV);
-          } else if (prmTextObject instanceof Text) {
-              Text prmText = (Text) prmTextObject;
-              extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
-          }
-        }
-//        GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection) _moduleTypList.getSelection())
-//                .getFirstElement();
-//        if (mod != null) {
-////            _slave.setModuleNumber(mod.getModuleNumber());
-////            _moduleTypList.getTable().setData(mod.getModuleNumber());
+    *
+    */
+   private void saveUserPrmData() {
+       TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = _slave.getGSDSlaveData().getExtUserPrmDataConst();
+       List<ExtUserPrmDataRef> extUserPrmDataRefMap = _slave.getGSDSlaveData().getExtUserPrmDataRefMap();
+       if(extUserPrmDataRefMap.size()==_prmTextCV.size()) {
+           for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
+               ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
+               Object prmTextObject = _prmTextCV.get(i);
+               if (prmTextObject instanceof ComboViewer) {
+                   ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+                   handleComboViewer(extUserPrmDataConst, prmTextCV, ref.getValue());
+               } else if (prmTextObject instanceof Text) {
+                   Text prmText = (Text) prmTextObject;
+                   extUserPrmDataConst = handleText(extUserPrmDataConst, prmText, ref.getValue());
+               }
+           }
+
+       }else {
+           //TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht zu sammen
+       }
+//       GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection) _moduleTypList.getSelection())
+//               .getFirstElement();
+//       if (mod != null) {
+////           _slave.setModuleNumber(mod.getModuleNumber());
+////           _moduleTypList.getTable().setData(mod.getModuleNumber());
 //
-////            String[] extUserPrmDataConst = _module.getGsdModuleModel().getExtUserPrmDataConst()
-////                    .split(",");
+////           String[] extUserPrmDataConst = _module.getGsdModuleModel().getExtUserPrmDataConst()
+////                   .split(",");
 //
-//            String extUserPrmDataConst = _slave.getPrmUserData();
-//            for (Object prmTextObject : _prmTextCV) {
-//                if (prmTextObject instanceof ComboViewer) {
-//                    ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-////                    handleComboViewer(extUserPrmDataConst, prmTextCV);
-//                } else if (prmTextObject instanceof Text) {
-//                    Text prmText = (Text) prmTextObject;
-////                    extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
-//                }
-//            }
-////            _module.setConfigurationData(Arrays.toString(extUserPrmDataConst)
-////                    .replaceAll("[\\[\\]]", ""));
-//        }
-    }
+//           String extUserPrmDataConst = _slave.getPrmUserData();
+//           for (Object prmTextObject : _prmTextCV) {
+//               if (prmTextObject instanceof ComboViewer) {
+//                   ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+////                   handleComboViewer(extUserPrmDataConst, prmTextCV);
+//               } else if (prmTextObject instanceof Text) {
+//                   Text prmText = (Text) prmTextObject;
+////                   extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
+//               }
+//           }
+////           _module.setConfigurationData(Arrays.toString(extUserPrmDataConst)
+////                   .replaceAll("[\\[\\]]", ""));
+//       }
+   }
 
     /**
      * @param extUserPrmDataConst
@@ -954,30 +962,50 @@ public class SlaveEditor extends AbstractNodeEditor {
 
     /**
      * @param extUserPrmDataConst
+     * @param byteIndexString
      * @param prmTextObject
      */
-    private void handleComboViewer(final TreeMap<String,ExtUserPrmDataConst> extUserPrmDataConst, final ComboViewer prmTextCV) {
+    private void handleComboViewer(final TreeMap<String,ExtUserPrmDataConst> extUserPrmDataConst, final ComboViewer prmTextCV, final String byteIndexString) {
         if (!prmTextCV.getCombo().isDisposed()) {
-//            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-//            StructuredSelection selection = (StructuredSelection) prmTextCV
-//                    .getSelection();
-//
-//
-//            int index = ProfibusConfigXMLGenerator.getInt(input.getIndex());
-//            ExtUserPrmDataRef extUserPrmDataRef2 = _slave.getGSDSlaveData().getExtUserPrmDataRefMap().get(index);
-//            String extUserPrmDataRef =
-//                _module.getGsdModuleModel()
-//                    .getExtUserPrmDataRef(input.getIndex());
-//
-//            Integer bitValue = ((PrmText) selection.getFirstElement()).getValue();
-//            int index = ProfibusConfigXMLGenerator.getInt(extUserPrmDataRef);
-//            extUserPrmDataConst[index] = setValue2BitMask(input,
-//                                                          bitValue,
-//                                                          extUserPrmDataConst[index]);
-//            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement()
-//                    .toString());
-//            prmTextCV.getCombo().setData(indexOf);
+            int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
+            ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
+            StructuredSelection selection = (StructuredSelection) prmTextCV
+                    .getSelection();
+            Integer bitValue = ((PrmText) selection.getFirstElement()).getValue();
+            String newValue = setValue2BitMask(input, bitValue, _slave.getPrmUserDataList().get(byteIndex));
+            _slave.setPrmUserDataByte(byteIndex, newValue);
+            Integer indexOf = prmTextCV.getCombo().indexOf(selection.getFirstElement()
+                    .toString());
+            prmTextCV.getCombo().setData(indexOf);
         }
+    }
+
+    /**
+     * Change the a value on the Bit places, that is given from the input, to the bitValue.
+     *
+     * @param ranges
+     *            give the start and end Bit position.
+     * @param bitValue
+     *            the new Value for the given Bit position.
+     * @param value
+     *            the value was changed.
+     * @return the changed value as Hex String.
+     */
+    @Nonnull
+    private String setValue2BitMask(@Nonnull final ExtUserPrmData ranges,
+                                    @Nonnull final Integer bitValue,
+                                    @Nonnull final String value) {
+        int val = ProfibusConfigXMLGenerator.getInt(value);
+        int minBit = ranges.getMinBit();
+        int maxBit = ranges.getMaxBit();
+        if (maxBit < minBit) {
+            minBit = ranges.getMaxBit();
+            maxBit = ranges.getMinBit();
+        }
+        int mask = ~ ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+        val = val & mask;
+        val = val | (bitValue << minBit);
+        return String.format("%1$#04x", val);
     }
 
     /*
@@ -1072,19 +1100,23 @@ public class SlaveEditor extends AbstractNodeEditor {
             }
         });
 
-        // Current User Param Data
-        GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
-        List<ExtUserPrmDataRef> extUserPrmDataRefMap = gsdSlaveModel.getExtUserPrmDataRefMap();
-        if (extUserPrmDataRefMap!=null) {
-            for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
-                int val = 0;
-                String byteIndex = extUserPrmDataRef.getIndex();
-                ExtUserPrmData extUserPrmData = gsdSlaveModel.getExtUserPrmData(extUserPrmDataRef.getValue());
-                makeCurrentUserParamDataItem(currentUserParamDataComposite, extUserPrmData, val, byteIndex);
-            }
-        }
-        topGroup.layout();
-    }
+		// Current User Param Data
+		GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
+		if (gsdSlaveModel != null) {
+			List<ExtUserPrmDataRef> extUserPrmDataRefMap = gsdSlaveModel.getExtUserPrmDataRefMap();
+			if (extUserPrmDataRefMap != null) {
+				for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
+					int val = 0;
+					String byteIndex = extUserPrmDataRef.getIndex();
+					ExtUserPrmData extUserPrmData = gsdSlaveModel
+							.getExtUserPrmData(extUserPrmDataRef.getValue());
+					makeCurrentUserParamDataItem(currentUserParamDataComposite,
+							extUserPrmData, val, byteIndex);
+				}
+			}
+		}
+		topGroup.layout();
+	}
 
     /**
      *
