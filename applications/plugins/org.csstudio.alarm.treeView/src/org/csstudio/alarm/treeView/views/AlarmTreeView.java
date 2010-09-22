@@ -60,7 +60,6 @@ import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DND;
@@ -141,12 +140,6 @@ public final class AlarmTreeView extends ViewPart {
      * The message area above the tree viewer
      */
     private MessageArea _myMessageArea;
-
-    /**
-     * The subscriber to the alarm topic.
-     */
-    private IAlarmConnection _connection;
-
 
     /**
      * The callback for the alarm messages
@@ -285,8 +278,8 @@ public final class AlarmTreeView extends ViewPart {
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue(),
-                                            LdapEpicsAlarmcfgConfiguration.UNIT,
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT.getDescription(),
+                                            LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT,
                                             TreeNodeSource.ROOT).build();
     }
 
@@ -311,20 +304,6 @@ public final class AlarmTreeView extends ViewPart {
                                dragAdapter.getTransfers(),
                                dragAdapter);
     }
-    /**
-     * Sets the input for the tree. The actual work will be done asynchronously in the UI thread.
-     *
-     * @param inputElement the new input element.
-     */
-    void asyncSetViewerInput(@Nonnull final IAlarmSubtreeNode inputElement) {
-        getSite().getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
-            public void run() {
-                _viewer.setInput(inputElement);
-            }
-        });
-    }
-
 
     /**
      * Returns whether the given selection contains at least one node with an unacknowledged alarm.
@@ -513,9 +492,6 @@ public final class AlarmTreeView extends ViewPart {
      */
     @Override
     public final void dispose() {
-        if (_connection != null) {
-            _connection.disconnect();
-        }
         super.dispose();
     }
 
@@ -588,15 +564,6 @@ public final class AlarmTreeView extends ViewPart {
     @CheckForNull
     public AlarmMessageListener getAlarmListener() {
         return _alarmListener;
-    }
-
-    /**
-     * Getter.
-     * @return the alarm connection
-     */
-    @CheckForNull
-    public IAlarmConnection getConnection() {
-        return _connection;
     }
 
     @Nonnull
@@ -728,6 +695,11 @@ public final class AlarmTreeView extends ViewPart {
 
         // add menu items to the context menu when it is about to show
         menuMgr.addMenuListener(new IMenuListener() {
+            private String _test;
+            public void IMenuListener() {
+                _test = "TestListener";
+                System.out.println("Here we go.");
+            }
             @Override
             public void menuAboutToShow(@Nullable final IMenuManager manager) {
                 AlarmTreeView.this.fillContextMenu(manager);
@@ -745,7 +717,7 @@ public final class AlarmTreeView extends ViewPart {
     /**
      * Refreshes this view.
      */
-    public final void refresh() {
+    public void refresh() {
         _viewer.refresh();
     }
 
@@ -782,12 +754,6 @@ public final class AlarmTreeView extends ViewPart {
     private void createAndScheduleConnectionJob() {
         LOG.debug("Starting connection.");
 
-        if (_connection != null) {
-            // There is still an old connection. This shouldn't happen.
-            _connection.disconnect();
-            LOG.warn("There was an active connection when starting a new connection");
-        }
-
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
@@ -799,8 +765,10 @@ public final class AlarmTreeView extends ViewPart {
     /**
      * Starts a job which reads the contents of the directory in the background.
      * @param rootNode
+     * @return the created and already scheduled job
      */
-    public void createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
+    @Nonnull
+    public Job createAndScheduleImportInitialConfiguration(@Nonnull final IAlarmSubtreeNode rootNode) {
         LOG.debug("Start import initial configuration.");
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
@@ -816,5 +784,6 @@ public final class AlarmTreeView extends ViewPart {
 
         // Start the directory reader job.
         progressService.schedule(importInitialConfigJob, 0, true);
+        return importInitialConfigJob;
     }
 }

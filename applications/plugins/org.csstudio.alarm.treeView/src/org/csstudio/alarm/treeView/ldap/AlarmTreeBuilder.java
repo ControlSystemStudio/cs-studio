@@ -107,7 +107,7 @@ public final class AlarmTreeBuilder {
      * @param parentNode
      * @param modelNode
      * @param monitor
-     * @return
+     * @return cancel status, true if canceled, false otherwise
      * @throws NamingException
      */
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
@@ -152,7 +152,7 @@ public final class AlarmTreeBuilder {
      * @param rootNode the root node for the alarm tree
      * @param model the content model
      * @param monitor the progress monitor
-     * @return false if it has been canceled, true otherwise
+     * @return cancel status, true if it has been canceled, falseotherwise
      * @throws NamingException
      */
     public static boolean build(@Nonnull final IAlarmSubtreeNode rootNode,
@@ -162,8 +162,10 @@ public final class AlarmTreeBuilder {
         ensureTestFacilityExists();
 
         for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getRoot().getDirectChildren()) {
-            createAlarmSubtree(rootNode, node, monitor, source);
+            if (createAlarmSubtree(rootNode, node, monitor, source)) {
+                return true;
+            }
         }
-        return true;
+        return false;
     }
 }

@@ -73,9 +73,6 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         retrieveInitialStateSynchronously(_adapterRootNode);
 
-        // Set the viewer's input to the newly obtained tree
-        _alarmTreeView.asyncSetViewerInput(_adapterRootNode);
-
         final AlarmMessageListener alarmListener = _alarmTreeView.getAlarmListener();
 
         alarmListener.startUpdateProcessing();
@@ -85,7 +82,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
             public void run() {
                 final TreeViewer viewer = _alarmTreeView.getViewer();
                 if (viewer != null) {
-                    viewer.refresh();
+                    viewer.setInput(_adapterRootNode);
                 }
             }
         });
