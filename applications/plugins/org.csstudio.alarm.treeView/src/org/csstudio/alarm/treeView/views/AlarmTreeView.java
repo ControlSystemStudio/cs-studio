@@ -142,12 +142,6 @@ public final class AlarmTreeView extends ViewPart {
     private MessageArea _myMessageArea;
 
     /**
-     * The subscriber to the alarm topic.
-     */
-    private IAlarmConnection _connection;
-
-
-    /**
      * The callback for the alarm messages
      */
     private AlarmMessageListener _alarmListener;
@@ -701,6 +695,11 @@ public final class AlarmTreeView extends ViewPart {
 
         // add menu items to the context menu when it is about to show
         menuMgr.addMenuListener(new IMenuListener() {
+            private String _test;
+            public void IMenuListener() {
+                _test = "TestListener";
+                System.out.println("Here we go.");
+            }
             @Override
             public void menuAboutToShow(@Nullable final IMenuManager manager) {
                 AlarmTreeView.this.fillContextMenu(manager);
@@ -718,7 +717,7 @@ public final class AlarmTreeView extends ViewPart {
     /**
      * Refreshes this view.
      */
-    public final void refresh() {
+    public void refresh() {
         _viewer.refresh();
     }
 

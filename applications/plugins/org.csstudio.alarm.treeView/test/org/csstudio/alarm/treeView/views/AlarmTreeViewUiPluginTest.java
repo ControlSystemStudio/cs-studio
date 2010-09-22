@@ -38,6 +38,7 @@ import java.util.concurrent.Delayed;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.NamingException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
@@ -45,18 +46,29 @@ import javax.naming.ldap.Rdn;
 
 import junit.framework.Assert;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.AlarmServiceActivator;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Menu;
+import org.eclipse.swt.widgets.MenuItem;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
@@ -74,6 +86,9 @@ import org.junit.Test;
  * @since 24.06.2010
  */
 public class AlarmTreeViewUiPluginTest {
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(AlarmTreeViewUiPluginTest.class);
 
     private static AlarmTreeView VIEW;
     private static IWorkbenchPage ACTIVE_PAGE;
@@ -100,7 +115,7 @@ public class AlarmTreeViewUiPluginTest {
 
 
     @BeforeClass
-    public static void setUpViewAndService() throws PartInitException {
+    public static void setUpViewAndService() throws PartInitException, InterruptedException {
 
         // Set the LDAP service to the LDAP test instance
         LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
@@ -114,23 +129,53 @@ public class AlarmTreeViewUiPluginTest {
 
         final IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
         ACTIVE_PAGE = window.getActivePage();
-
         Assert.assertNotNull(ACTIVE_PAGE);
 
-//        Display.getDefault().asyncExec(new Runnable() {
-//            @Override
-//            public void run() {
-//                try {
-                    VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
-//
-//                } catch (final PartInitException e) {
-//                    // TODO Auto-generated catch block
-//                    e.printStackTrace();
-//                }
-//            }
-//        });
 
+        waitForJobs();
+        VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
+        waitForJobs();
+        delay(5000);
     }
+
+    /**
+     * Wait until all background tasks are complete.
+     * @throws InterruptedException
+     */
+    private static void waitForJobs() throws InterruptedException {
+       while (!Job.getJobManager().isIdle()) {
+           delay(1000);
+       }
+    }
+    /**
+     * Process UI input but do not return for the
+     * specified time interval.
+     *
+     * @param waitTimeMillis the number of milliseconds
+     */
+    private static void delay(final long waitTimeMillis) {
+        final Display display = Display.getCurrent();
+
+        // If this is the UI thread, then process input.
+        if (display != null) {
+            final long endTimeMillis = System.currentTimeMillis() + waitTimeMillis;
+            while (System.currentTimeMillis() < endTimeMillis) {
+                if (!display.readAndDispatch()) {
+                    display.sleep();
+                }
+            }
+            display.update();
+
+        } else {
+            try { // Otherwise, perform a simple sleep.
+                Thread.sleep(waitTimeMillis);
+            } catch (final InterruptedException e) {
+                // Ignored.
+                LOG.debug("Ignored interrupted exception from sleep thread.");
+            }
+        }
+    }
+
 
     private static void setUpAlarmTreeViewPreferences(@Nonnull final String testValue) {
         final IEclipsePreferences prefs = new DefaultScope().getNode(AlarmServiceActivator.PLUGIN_ID);
@@ -193,43 +238,40 @@ public class AlarmTreeViewUiPluginTest {
     @Test
     public void testView() throws InterruptedException {
 
-
-
-
-//        Display.getDefault().asyncExec(new Runnable() {
-//            @Override
-//            public void run() {
-//                VIEW.refresh();
-//            }
-//        });
-        Thread.currentThread();
-        Thread.sleep(20000);
-
         final IAlarmSubtreeNode node = VIEW.getRootNode();
         Assert.assertNotNull(node);
-
-
 //        final IAlarmTreeNode child = node.getChild(EFAN_NAME);
 //        Assert.assertNotNull(child);
     }
 
+    @Test
+    public void testRenameAction() {
+        final Menu menu = VIEW.getViewer().getTree().getMenu();
+        Listener[] listeners = menu.getListeners(SWT.Show);
+        for (final Listener listener : listeners) {
+            System.out.println("HUHU");
+            listener.handleEvent(new Event());
+        }
+        listeners = menu.getListeners(SWT.BUTTON3);
+        for (final Listener listener : listeners) {
+            System.out.println("HUHU");
+        }
 
+        for (final MenuItem item : menu.getItems()) {
+            System.out.println("HAHA");
+        }
+    }
 
 
     @AfterClass
-    public static void closeView() {
+    public static void closeView() throws InterruptedException {
 
-
+        waitForJobs();
 
         // Unset the just created test facility name in the preferences
         setUpAlarmTreeViewPreferences(AlarmPreference.ALARMSERVICE_FACILITIES.getDefaultAsString());
 
-//        Display.getDefault().asyncExec(new Runnable() {
-//            @Override
-//            public void run() {
-//                ACTIVE_PAGE.hideView(VIEW);
-//            }
-//        });
+        ACTIVE_PAGE.hideView(VIEW);
 
         final LdapName name =
             LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
@@ -241,5 +283,14 @@ public class AlarmTreeViewUiPluginTest {
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created:\n" + e.getMessage());
         }
+        try {
+            LDAP_SERVICE.lookup(name);
+        } catch (final NamingException e) {
+            Assert.assertEquals("[LDAP: error code 32 - No Such Object]", e.getMessage());
+            return;
+        } catch (final Exception e) {
+            Assert.fail("Unknown exception");
+        }
+        Assert.fail("NamingException for 'error code 32' not thrown!");
     }
 }
