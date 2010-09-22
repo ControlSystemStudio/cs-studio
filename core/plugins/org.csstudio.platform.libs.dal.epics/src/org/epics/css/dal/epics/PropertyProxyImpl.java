@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TimerTask;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
@@ -155,6 +156,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	
 	private ThreadPoolExecutor executor;
 	
+	private boolean initializeCharacteristicsRunning = false;
 	private boolean containsValue = false;
 	private boolean containsMetaData = false;
 	
@@ -254,7 +256,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	void addMonitor(MonitorProxyImpl monitor)
 	{
 		synchronized (monitors) {
-			monitors.add(monitor);
+			if (!monitors.contains(monitor)) monitors.add(monitor);
 		}
 	}
 	
@@ -423,7 +425,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			throw new RemoteException(this, "Proxy destroyed.");
 		try {
 			MonitorProxyImpl<T> m = new MonitorProxyImpl<T>(plug, this, callback, param);
-			monitors.add(m);
+			addMonitor(m);
 			return m;
 		} catch (Throwable th) {
 			throw new RemoteException(this, "Failed to create new monitor.", th);
@@ -452,16 +454,20 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		
 		condition = s;
 		String name = CharacteristicInfo.C_SEVERITY.getName();
-		if (characteristics.get(name) != null) {
-			characteristics.put(name, s);
-		}
-		name = CharacteristicInfo.C_STATUS.getName();
-		if (characteristics.get(name) != null) {
-			characteristics.put(name, DynamicValueConditionConverterUtil.extractStatusInfo(s));
-		}
-		name = CharacteristicInfo.C_TIMESTAMP.getName();
-		if (characteristics.get(name) != null) {
-			characteristics.put(name, DynamicValueConditionConverterUtil.extractTimestampInfo(s));
+		synchronized (characteristics) {
+			if (characteristics.size() != 0) {
+				if (characteristics.get(name) != null) {
+					characteristics.put(name, s);
+				}
+				name = CharacteristicInfo.C_STATUS.getName();
+				if (characteristics.get(name) != null) {
+					characteristics.put(name, DynamicValueConditionConverterUtil.extractStatusInfo(s));
+				}
+				name = CharacteristicInfo.C_TIMESTAMP.getName();
+				if (characteristics.get(name) != null) {
+					characteristics.put(name, DynamicValueConditionConverterUtil.extractTimestampInfo(s));
+				}
+			}
 		}
 		
 		fireCondition();
@@ -470,6 +476,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	
 	protected void fireCharacteristicsChanged(PropertyChangeEvent ev)
 	{
+		if (proxyListeners == null) {
+			return;
+		}
+		
 		ProxyListener[] l = (ProxyListener[])proxyListeners.toArray();
 
 		for (int i = 0; i < l.length; i++) {
@@ -537,6 +547,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	public  void getCompleted(GetEvent ev) {
 		if (ev.getStatus() == CAStatus.NORMAL)
 			createCharacteristics(ev.getDBR());
+		else if (ev.getDBR() == null) {
+			recoverFromNullDbr();
+		}
 		else
 			createDefaultCharacteristics();
 			
@@ -599,8 +612,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			characteristics.put(PatternPropertyCharacteristics.C_BIT_MASK, patternBitMask);
 			characteristics.put(PatternPropertyCharacteristics.C_BIT_DESCRIPTIONS, patternBitDescription);
 			
-			if (notify)
+			if (notify) {
 				characteristics.notifyAll();
+				initializeCharacteristicsRunning = false;
+			}
 		}
 	}
 
@@ -724,9 +739,10 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 			characteristics.put(CharacteristicInfo.C_META_DATA.getName(), DataUtil.createMetaData(characteristics));
 			containsMetaData = true;
-			setCondition(getCondition());
+			setCondition(condition);
 			
 			characteristics.notifyAll();
+			initializeCharacteristicsRunning = false;
 		}
 	}
 	
@@ -741,6 +757,9 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	{
 		if (channel.getConnectionState() != Channel.CONNECTED)
 			return;
+		
+		if (initializeCharacteristicsRunning) return;
+		initializeCharacteristicsRunning = true;
 		
 		elementCount = channel.getElementCount();
 		
@@ -1010,7 +1029,11 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				} else if (c == gov.aps.jca.Channel.ConnectionState.CONNECTED) {
 					setConnectionState(ConnectionState.CONNECTED);
 					if (plug.isInitializeCharacteristicsOnConnect()) {
-						initializeCharacteristics();
+						synchronized (characteristics) {
+							if (characteristics.size() == 0) {
+								initializeCharacteristics();
+							}
+						}
 					}
 				} else if (c == gov.aps.jca.Channel.ConnectionState.DISCONNECTED) {
 					setConnectionState(ConnectionState.CONNECTION_LOST);
@@ -1158,7 +1181,13 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					executor= new ThreadPoolExecutor(getPlug().getCoreThreads(),getPlug().getMaxThreads(),Long.MAX_VALUE, TimeUnit.NANOSECONDS,
 			                new LinkedBlockingQueue<Runnable>());
 					executor.prestartAllCoreThreads();
-				}				
+				}		
+				executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
+
+					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
+						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
+					}
+				});
 			}
 		}
 		return executor;
@@ -1172,6 +1201,45 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 			return false;
 		}
 		return s1.equals(s2);
+	}
+	
+	private boolean fallbackInProgress = false;
+	private GetListener fallbackListener = new GetListener() {
+
+		public void getCompleted(GetEvent ev) {
+			DBR dbr = ev.getDBR();
+			if (dbr == null) return;
+			
+			createCharacteristics(dbr);
+			T defaultValue = PlugUtilities.defaultValue(dataType);
+			
+			synchronized (monitors) {
+				for (MonitorProxyImpl<T> monitor : monitors) {
+					monitor.addFallbackResponse(defaultValue);
+				}
+			}
+			
+			fallbackInProgress = false;
+		}
+	};
+	
+	protected void recoverFromNullDbr() {
+		synchronized (fallbackListener) {
+			if (fallbackInProgress)	return;
+			fallbackInProgress = true;
+		}
+		getExecutor().execute(new Runnable() {
+			public void run() {
+		
+				try {
+					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
+					plug.flushIO();
+				} catch (CAException e) {
+					plug.getLogger().warn("Recovery from null DBR failed.", e);
+				}
+				
+			}
+		});
 	}
 	
 }

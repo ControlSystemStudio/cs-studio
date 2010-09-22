@@ -732,6 +732,56 @@ public final class PlugUtilities
 		return CommonDataTypes.UNKNOWN;
 	}
 	
+	/**
+	 * Returns a default value for a given java type.
+	 * @param javaType type to convert to.
+	 * @return default value for java type.
+	 */
+	public static <T> T defaultValue(Class<T> javaType)
+	{
+		if (javaType == null) {
+			throw new NullPointerException("javaType");
+		}
+
+		if (javaType.equals(Double.class)) {
+			return javaType.cast(Double.NaN);
+		}
+
+		if (javaType.equals(double[].class)) {
+			return javaType.cast(new double[] {Double.NaN});
+		}
+
+		if (javaType.equals(Long.class)) {
+			return javaType.cast(Long.MIN_VALUE);
+		}
+
+		if (javaType.equals(long[].class)) {
+			return javaType.cast(new long[] {Long.MIN_VALUE});
+		}
+
+		if (javaType.equals(String.class)) {
+			return javaType.cast("NaN");
+		}
+
+		if (javaType.equals(String[].class)) {
+			return javaType.cast(new String[] {"NaN"});
+		}
+
+		if (javaType.equals(BitSet.class)) {
+			return javaType.cast(fromLong(Long.MIN_VALUE));
+		}
+		
+		if (javaType.equals(Object.class)) {
+			return javaType.cast(Double.NaN);
+		}
+
+		if (javaType.equals(Object[].class)) {
+			return javaType.cast(new Object[] {Double.NaN});
+		}
+
+		return null;
+	}
+	
 }
 
 /* __oOo__ */

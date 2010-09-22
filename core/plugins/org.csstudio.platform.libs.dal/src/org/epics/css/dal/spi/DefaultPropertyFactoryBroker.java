@@ -9,9 +9,9 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LinkListener;
-import org.epics.css.dal.context.PlugContext;
 import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simulation.SimulatorPlug;
 
@@ -32,6 +32,13 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			final AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Borker Context");
 			manager.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
+		return manager;
+	}
+	
+	public static final DefaultPropertyFactoryBroker getInstance(AbstractApplicationContext ctx, LinkPolicy lp) {
+		if (ctx == null) return getInstance();
+		DefaultPropertyFactoryBroker manager = new DefaultPropertyFactoryBroker();
+		manager.initialize(ctx, lp);
 		return manager;
 	}
 
@@ -162,7 +169,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		return linkPolicy;
 	}
 
-	public PlugContext getPlug() {
+	public AbstractPlug getPlug() {
 		// has no sense
 		return null;
 	}

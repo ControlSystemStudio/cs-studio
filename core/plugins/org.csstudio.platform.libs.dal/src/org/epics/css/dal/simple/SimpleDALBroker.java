@@ -287,8 +287,7 @@ public class SimpleDALBroker {
 
 	private DefaultPropertyFactoryBroker getFactory() {
 		if (factory == null) {
-			factory = DefaultPropertyFactoryBroker.getInstance();
-			factory.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
+			factory = DefaultPropertyFactoryBroker.getInstance(ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
 		return factory;
 	}

@@ -3,7 +3,6 @@ package org.epics.css.dal.tango;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Properties;
-import java.util.logging.Level;
 
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
@@ -137,10 +136,10 @@ public class TangoPropertyPlug extends AbstractPlug {
 		try {
 			deviceProxies = new HashMap<String,fr.esrf.TangoApi.DeviceProxy>();
 			database = ApiUtil.get_db_obj();
-			getLogger().log(Level.FINE,database.get_info());
+			getLogger().debug(database.get_info());
 			ApiUtil.set_asynch_cb_sub_model(ApiDefs.PUSH_CALLBACK);			
 		} catch (DevFailed e) {
-			getLogger().log(Level.SEVERE,"Could not connect to the Tango database.",e);
+			getLogger().error("Could not connect to the Tango database.",e);
 		}
 	}
 
@@ -224,7 +223,7 @@ public class TangoPropertyPlug extends AbstractPlug {
 		try {
 			return ProxyUtilities.getPropertyImplementationClass(pn.getDeviceName(),pn.getPropertyName());
 		} catch (DevFailed e) {
-			getLogger().log(Level.WARNING, "Could not obtain property implementation class for '" + uniquePropertyName +"'.",e);
+			getLogger().warn("Could not obtain property implementation class for '" + uniquePropertyName +"'.",e);
 			return null;
 		}
 	}
@@ -239,7 +238,7 @@ public class TangoPropertyPlug extends AbstractPlug {
 		try {
 			return ProxyUtilities.getPropertyProxyImplementationClass(pn.getDeviceName(),pn.getPropertyName());
 		} catch (DevFailed e) {
-			getLogger().log(Level.WARNING, "Could not obtain property proxy implementation class for '" + uniquePropertyName +"'.",e);
+			getLogger().warn("Could not obtain property proxy implementation class for '" + uniquePropertyName +"'.",e);
 			return null;
 		}
 	}
@@ -271,7 +270,7 @@ public class TangoPropertyPlug extends AbstractPlug {
 		try {
 			impl = ProxyUtilities.getPropertyProxyImplementationClass(pn.getDeviceName(),pn.getPropertyName(), type);
 		} catch (DevFailed e) {
-			getLogger().log(Level.WARNING, "Could not obtain property proxy implementation class for '" + uniquePropertyName +"' of property type '" + implementationType +"'.",e);
+			getLogger().warn("Could not obtain property proxy implementation class for '" + uniquePropertyName +"' of property type '" + implementationType +"'.",e);
 		}
 			
 		if (impl == null) {

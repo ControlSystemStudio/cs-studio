@@ -10,9 +10,10 @@ Require-Bundle: org.eclipse.core.runtime,
  org.junit4;bundle-version="4.3.1",
  org.csstudio.platform.libs.tango;bundle-version="1.0.0",
  org.csstudio.platform;bundle-version="1.1.0",
- org.eclipse.ui;bundle-version="3.4.2"
+ org.eclipse.ui
 Eclipse-RegisterBuddy: org.csstudio.platform.libs.dal
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.platform.libs.dal.tango,
  org.epics.css.dal.tango
 Bundle-ClassPath: .
+Import-Package: org.eclipse.ui.plugin

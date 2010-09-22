@@ -546,6 +546,9 @@ public class GsdSlaveModel extends GsdGeneralModel {
     }
 
     public List<ExtUserPrmDataRef> getExtUserPrmDataRefMap() {
+        if(_extUserPrmDataRefMap==null){
+            _extUserPrmDataRefMap = new ArrayList<ExtUserPrmDataRef>();
+        }
         return _extUserPrmDataRefMap;
     }
     /**

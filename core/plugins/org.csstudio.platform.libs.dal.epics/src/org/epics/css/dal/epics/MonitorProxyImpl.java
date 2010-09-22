@@ -28,7 +28,6 @@ package org.epics.css.dal.epics;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Monitor;
 import gov.aps.jca.dbr.DBR;
-import gov.aps.jca.dbr.STS;
 import gov.aps.jca.dbr.TIME;
 import gov.aps.jca.event.MonitorEvent;
 import gov.aps.jca.event.MonitorListener;
@@ -351,6 +350,18 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 	
 	public void setParameters(Map<String, Object> param) throws RemoteException {
 		// not really supported, can we change parameters of existing monitor?
+	}
+
+	protected void addFallbackResponse(T defaultValue) {
+		
+		final ResponseImpl<T> r= response= new ResponseImpl<T>(proxy, this, defaultValue,
+				"value", true, null, proxy.getCondition(), new Timestamp(), false);
+
+		proxy.getExecutor().execute(new Runnable() {
+			public void run() {
+				addResponse(r);
+			}
+		});
 	}
 
 }

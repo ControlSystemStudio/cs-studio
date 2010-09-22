@@ -330,9 +330,9 @@ public class SlaveDBO extends AbstractNodeDBO {
     }
 
     public String getPrmUserData() {
-//        return _prmUserData;
         String string = _prmUserDataList.toString();
         string = string.substring(1,string.length()-1);
+        string = string.replaceAll("\\s+", "");
         return string;
     }
 
@@ -497,30 +497,31 @@ public class SlaveDBO extends AbstractNodeDBO {
      * Swap the SortIndex of two nodes. Is the given SortIndex in use the other node became the old
      * SortIndex of this node.
      *
-     * @param toIndex
+     * @param index
      *            the new sortIndex for this node.
      */
     @Override
     public void moveSortIndex(final int toIndex) {
-        if (toIndex == getSortIndex()) {
+    	short index = (short) toIndex;
+        if (index == getSortIndex()) {
             // no new Address don't move
             return;
         }
         if (getParent() == null) {
             // Have no Parent
-            setSortIndexNonHibernate(toIndex);
+            setSortIndexNonHibernate(index);
             CentralLogger.getInstance().warn(this, "Slave has no Parent!");
             return;
         }
-        if (toIndex < 0) {
-            throw new ArrayIndexOutOfBoundsException(toIndex);
+        if (index < 0) {
+            throw new ArrayIndexOutOfBoundsException(index);
         }
         // Move a exist Node
-        AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(toIndex);
+        AbstractNodeDBO moveNode = getParent().getChildrenAsMap().get(index);
         if (moveNode != null) {
-            moveNode.moveSortIndex((toIndex + 1));
+            moveNode.moveSortIndex((index + 1));
         }
-        setSortIndexNonHibernate(toIndex);
+        setSortIndexNonHibernate(index);
     }
 
     /**

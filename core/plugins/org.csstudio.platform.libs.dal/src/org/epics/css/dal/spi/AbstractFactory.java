@@ -4,6 +4,7 @@ import javax.naming.directory.DirContext;
 
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.PlugContext;
+import org.epics.css.dal.proxy.AbstractPlug;
 
 /**
  * This is interface with methods, which are common to <code>PropertyFacctory</code>
@@ -77,7 +78,7 @@ public interface AbstractFactory {
 	 *
 	 * @return plug which is used for connection
 	 */
-	public PlugContext getPlug();
+	public AbstractPlug getPlug();
 	
 	/**
 	 * Return <code>true</code> if this factory is sharing plug instance with other factories.

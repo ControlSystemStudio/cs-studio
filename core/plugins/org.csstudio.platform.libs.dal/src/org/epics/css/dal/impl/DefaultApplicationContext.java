@@ -22,12 +22,12 @@
 
 package org.epics.css.dal.impl;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.Identifier;
 import org.epics.css.dal.context.LifecycleReporterSupport;
 
 import java.util.Properties;
-import java.util.logging.Logger;
 
 
 /**
@@ -118,7 +118,7 @@ public class DefaultApplicationContext extends LifecycleReporterSupport
 	 */
 	public Logger getLogger() {
 		if (logger == null) {
-			return Logger.getLogger(getName());
+			return Logger.getLogger(getClass());
 		}
 		return logger;
 	}

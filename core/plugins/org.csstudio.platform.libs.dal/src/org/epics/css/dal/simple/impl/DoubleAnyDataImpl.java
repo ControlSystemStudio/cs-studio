@@ -4,7 +4,7 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
 	
-	public static final Double UNINITIALIZED_VALUE = Double.NaN;
+	public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
 	
 	public DoubleAnyDataImpl(DynamicValueProperty<Double> property) {
 		super(property,Long.MIN_VALUE);
@@ -26,7 +26,11 @@ public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
 	}
 
 	public double doubleValue() {
-		return response.getValue();
+		/*
+		 * beware: 		java.lang.Long cannot be cast to java.lang.Double
+		 * old: return response.getValue();
+		 */
+		return DataUtil.castTo(response.getValue(), Double.class);
 	}
 
 	public long[] longSeqValue() {
@@ -56,7 +60,7 @@ public final class DoubleAnyDataImpl extends AbstractAnyDataImpl<Double> {
 	@Override
 	protected Double confirmValue(Double value) {
 		if (value != null) return value;
-		return UNINITIALIZED_VALUE;
+		return UNINITIALIZED_DOUBLE_VALUE;
 	}
 
 }
