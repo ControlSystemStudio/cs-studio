@@ -37,8 +37,9 @@ import org.eclipse.jface.dialogs.IInputValidator;
  * @version $Revision$
  * @since 20.05.2010
  */
-public final class NodeNameInputValidator implements IInputValidator {
+public final class LdapNameInputValidator implements IInputValidator {
 
+    @Override
     @CheckForNull
     public String isValid(@Nonnull final String newText) {
         if (newText.equals("")) {

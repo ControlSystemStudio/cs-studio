@@ -28,7 +28,7 @@ import org.csstudio.alarm.treeView.ldap.DirectoryEditException;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
-import org.csstudio.alarm.treeView.views.NodeNameInputValidator;
+import org.csstudio.alarm.treeView.views.LdapNameInputValidator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -80,7 +80,7 @@ public final class RenameAction extends Action {
                                         "Rename",
                                         "Could not rename the entry: " + e.getMessage());
             }
-            _viewer.refresh(selected);
+            _viewer.update(selected, null);
         }
     }
 
@@ -90,7 +90,7 @@ public final class RenameAction extends Action {
                                                    "Rename",
                                                    "Name:",
                                                    oldName,
-                                                   new NodeNameInputValidator());
+                                                   new LdapNameInputValidator());
         if (Window.OK == dialog.open()) {
             return dialog.getValue();
         }

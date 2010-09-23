@@ -590,6 +590,15 @@ public final class AlarmTreeView extends ViewPart {
 
     /**
      * Getter.
+     * @return the rename action reference
+     */
+    @CheckForNull
+    public Action getRenameAction() {
+        return _renameAction;
+    }
+
+    /**
+     * Getter.
      * @return the save in LDAP action reference
      */
     @CheckForNull
