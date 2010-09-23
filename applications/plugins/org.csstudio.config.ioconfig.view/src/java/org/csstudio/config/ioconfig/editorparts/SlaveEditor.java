@@ -933,28 +933,32 @@ public class SlaveEditor extends AbstractNodeEditor {
     *
     */
 	private void saveUserPrmData() {
-		TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = _slave
-				.getGSDSlaveData().getExtUserPrmDataConst();
-		List<ExtUserPrmDataRef> extUserPrmDataRefMap = _slave.getGSDSlaveData()
-				.getExtUserPrmDataRefMap();
-		if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
-			for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
-				ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
-				Object prmTextObject = _prmTextCV.get(i);
-				if (prmTextObject instanceof ComboViewer) {
-					ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-					handleComboViewer(extUserPrmDataConst, prmTextCV,
-							ref.getValue());
-				} else if (prmTextObject instanceof Text) {
-					Text prmText = (Text) prmTextObject;
-					extUserPrmDataConst = handleText(extUserPrmDataConst,
-							prmText);
+		// Check have the Salve a GSD-File
+		if (_slave.getGSDSlaveData() != null) {
+			TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = _slave
+					.getGSDSlaveData().getExtUserPrmDataConst();
+			List<ExtUserPrmDataRef> extUserPrmDataRefMap = _slave
+					.getGSDSlaveData().getExtUserPrmDataRefMap();
+			if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
+				for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
+					ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
+					Object prmTextObject = _prmTextCV.get(i);
+					if (prmTextObject instanceof ComboViewer) {
+						ComboViewer prmTextCV = (ComboViewer) prmTextObject;
+						handleComboViewer(extUserPrmDataConst, prmTextCV,
+								ref.getValue());
+					} else if (prmTextObject instanceof Text) {
+						Text prmText = (Text) prmTextObject;
+						extUserPrmDataConst = handleText(extUserPrmDataConst,
+								prmText);
+					}
 				}
-			}
 
-		} else {
-			// TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht zu
-			// sammen
+			} else {
+				// TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht
+				// zu
+				// sammen
+			}
 		}
 		// GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection)
 		// _moduleTypList.getSelection())
