@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron, Member of the Helmholtz
  * Association, (DESY), HAMBURG, GERMANY.
- * 
+ *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS. WITHOUT WARRANTY OF ANY
  * KIND, EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
@@ -15,14 +15,15 @@
  * MODIFICATION, USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT
  * HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- * 
+ *
  * $Id$
  */
 package org.csstudio.alarm.service.declaration;
 
+
 /**
  * Is used by the AlarmService as callback when connection state changes.
- * 
+ *
  * @author jpenning
  * @author $Author$
  * @version $Revision$
@@ -33,7 +34,7 @@ public interface IAlarmConnectionMonitor {
      * Is called, when the connection is connected.
      */
     void onConnect();
-    
+
     /**
      * Is called, when the connection is disconnected.
      */
