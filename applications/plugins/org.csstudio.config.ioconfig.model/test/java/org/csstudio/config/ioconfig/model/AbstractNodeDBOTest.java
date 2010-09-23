@@ -29,11 +29,11 @@ public class AbstractNodeDBOTest {
     @Ignore("Need a correct TEST DB")
     public void loadNode() {
 
-        Collection<FacilityDBO> result = Repository.load(FacilityDBO.class);
+        final Collection<FacilityDBO> result = Repository.load(FacilityDBO.class);
 
         assertFalse(result.isEmpty());
 
-        for(FacilityDBO f: result) {
+        for(final FacilityDBO f: result) {
             assertNull(f.getParent());
             if (8061 == f.getId()) {
                 assertEquals("XMTS", f.getName());
@@ -48,11 +48,11 @@ public class AbstractNodeDBOTest {
     @Ignore("Need a correct TEST DB")
     public void loadIoc() {
 
-        Collection<IocDBO> result = Repository.load(IocDBO.class);
+        final Collection<IocDBO> result = Repository.load(IocDBO.class);
 
         assertFalse(result.isEmpty());
 
-        for(IocDBO ioc: result) {
+        for(final IocDBO ioc: result) {
             assertNotNull(ioc.getParent());
             if (8062== ioc.getId()) {
                 assertEquals("XMTS", ioc.getParent().getName());
@@ -64,21 +64,21 @@ public class AbstractNodeDBOTest {
     @Test
     @Ignore("Need a correct TEST DB")
     public void createDocument() throws PersistenceException {
-        Collection<DocumentDBO> result = Repository.load(DocumentDBO.class);
+        final Collection<DocumentDBO> result = Repository.load(DocumentDBO.class);
 
         assertFalse(result.isEmpty());
 
-        DocumentDBO first = result.iterator().next();
+        final DocumentDBO first = result.iterator().next();
 
-        Collection<FacilityDBO> facilitys = Repository.load(FacilityDBO.class);
-        FacilityDBO facility = facilitys.iterator().next();
+        final Collection<FacilityDBO> facilitys = Repository.load(FacilityDBO.class);
+        final FacilityDBO facility = facilitys.iterator().next();
 
         facility.addDocument(first);
 
 //        Repository.saveOrUpdate(facility);
         Repository.update(facility);
 
-        FacilityDBO load = Repository.load(FacilityDBO.class, facility.getId());
+        final FacilityDBO load = Repository.load(FacilityDBO.class, facility.getId());
         assertTrue(load.getDocuments().contains(first));
 
     }
@@ -89,12 +89,12 @@ public class AbstractNodeDBOTest {
     public void deletNode() throws PersistenceException {
 //        Collection<Facility> result = Repository.load(Facility.class);
 
-        FacilityDBO load = Repository.load(FacilityDBO.class, 8061);
-        IocDBO ioc = new IocDBO(load);
+        final FacilityDBO load = Repository.load(FacilityDBO.class, 8061);
+        final IocDBO ioc = new IocDBO(load);
         ioc.setName("unitest-"+System.currentTimeMillis());
         load.save();
 
-        ProfibusSubnetDBO profibusSubnet = new ProfibusSubnetDBO(ioc);
+        final ProfibusSubnetDBO profibusSubnet = new ProfibusSubnetDBO(ioc);
         ioc.save();
 
         load.removeChild(ioc);
@@ -109,7 +109,7 @@ public class AbstractNodeDBOTest {
     public static void setUp() {
         Repository.injectIRepository(new HibernateRepository());
 
-        Configuration cfg = new AnnotationConfiguration()
+        final Configuration cfg = new AnnotationConfiguration()
                 //.addPackage("org.csstudio.config.ioconfig.model")
         .addAnnotatedClass(NodeImageDBO.class)
         .addAnnotatedClass(ChannelDBO.class)

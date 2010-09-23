@@ -42,7 +42,7 @@ import org.junit.Test;
  * @version $Revision$
  * @since 14.06.2010
  */
-public class ProcessVariableNodeTest {
+public class ProcessVariableNodeUnitTest {
 
     private ProcessVariableNode _node;
     private SubtreeNode _subtreeNode;
@@ -101,6 +101,7 @@ public class ProcessVariableNodeTest {
         assertEquals(Severity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
+    // TODO (bknerr) : project: CSS-Applications - Tracker: Bug - [# 1631] Debug ProcessVariableNode#removeHighestUnacknowledgedAlarm
     @Test
 	public void testAcknowledgeAlarm() throws Exception {
 		_node.updateAlarm(new Alarm("", Severity.MAJOR, t1));

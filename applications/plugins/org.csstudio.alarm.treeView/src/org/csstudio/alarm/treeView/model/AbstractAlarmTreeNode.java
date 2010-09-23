@@ -157,15 +157,11 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     @CheckForNull
     public LdapName getLdapName() {
         try {
-            if (_configurationType == null) {
-                return new LdapName("");
-            }
-
             final LdapName result =
                 new LdapName(Collections.singletonList(new Rdn(_configurationType.getNodeTypeName(), _name)));
 
             final IAlarmSubtreeNode parent = getParent();
-            if (parent != null) {
+            if (parent != null && !parent.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT)) {
 
                 final LdapName ldapName = parent.getLdapName();
                 if (ldapName == null) {
