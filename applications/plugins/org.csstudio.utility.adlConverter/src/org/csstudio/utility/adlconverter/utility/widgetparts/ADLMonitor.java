@@ -24,10 +24,12 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -96,11 +98,13 @@ public class ADLMonitor extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){   // chan and rdbk means both the same. Readback channel. //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
                 if(_chan[0].contains("[")) {
                     uninit();
                 }
             }else if(row[0].trim().toLowerCase().equals("rdbk")){ //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLMonitor_WrongADLFormatException_Parameter_Begin+row[0]+Messages.ADLMonitor_WrongADLFormatException_Parameter_End+parameter);

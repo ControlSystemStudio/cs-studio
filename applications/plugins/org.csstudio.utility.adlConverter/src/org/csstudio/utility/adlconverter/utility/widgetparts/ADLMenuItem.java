@@ -41,6 +41,7 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.runtime.IPath;
@@ -201,6 +202,7 @@ public class ADLMenuItem extends WidgetPart {
                 OpenDataBrowserActionModelFactory factory = new OpenDataBrowserActionModelFactory();
                 OpenDataBrowserActionModel action = (OpenDataBrowserActionModel) factory.createWidgetActionModel();
                 action.getProperty(OpenDataBrowserActionModel.PROP_DESCRIPTION).setPropertyValue(_label.replace('"', ' ').trim());
+                DebugHelper.add(this, _args);
                 String[] cleanString = ADLHelper.cleanString(_args);
                 IPath path = new Path(_trendPath.concat(cleanString[0]));
                 action.getProperty(OpenDataBrowserActionModel.PROP_RESOURCE).setPropertyValue(path);
