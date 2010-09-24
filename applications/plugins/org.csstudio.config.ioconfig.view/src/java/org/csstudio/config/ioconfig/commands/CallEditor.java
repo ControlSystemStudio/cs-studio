@@ -33,9 +33,9 @@ import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
 import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
 import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
@@ -49,9 +49,8 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.handlers.HandlerUtil;
+import org.eclipse.ui.PlatformUI;
 
 /**
  * TODO (hrickens) :
@@ -68,13 +67,12 @@ public class CallEditor extends AbstractHandler {
     /**
      * (@inheritDoc)
      */
+    // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
     @CheckForNull
     public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
 
-        IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindow(event);
-        IWorkbenchPage page = window.getActivePage();
-
+        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
         AbstractNodeDBO obj = getCallerNode(page);
 
         NodeEditorInput input = new NodeEditorInput(obj);
@@ -101,12 +99,13 @@ public class CallEditor extends AbstractHandler {
         }
         return null;
     }
+    // CHECKSTYLE ON: CyclomaticComplexity
 
     /**
      * @return
      */
     @CheckForNull
-    private AbstractNodeDBO getCallerNode(final IWorkbenchPage page) {
+    private AbstractNodeDBO getCallerNode(@Nonnull final IWorkbenchPage page) {
         MainView view = (MainView) page.findView(MainView.ID);
         // Get the selection
         ISelection selection = view.getSite().getSelectionProvider().getSelection();

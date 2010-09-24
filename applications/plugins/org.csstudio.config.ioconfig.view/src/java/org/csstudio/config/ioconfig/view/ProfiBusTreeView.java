@@ -404,7 +404,7 @@ public class ProfiBusTreeView extends Composite {
         try {
             handlerService.executeCommand(CallEditor.ID, null);
         } catch (Exception ex) {
-            CentralLogger.getInstance().error(this, ex.getMessage());
+            CentralLogger.getInstance().error(this, ex.getMessage(), ex);
         }
         return;
     }

@@ -57,7 +57,6 @@ public class AlarmBorder implements IRule {
 			}
 		}
 		
-		System.out.println("Bordersyle: "+style+" : "+BorderStyleEnum.getEnumForIndex(style));
 		return style;
 	}
 
