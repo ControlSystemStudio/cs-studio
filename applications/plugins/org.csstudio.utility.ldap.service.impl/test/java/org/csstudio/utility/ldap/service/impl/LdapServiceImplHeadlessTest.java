@@ -28,11 +28,6 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
 import java.util.Map;
 import java.util.Random;
@@ -42,16 +37,15 @@ import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.directory.DirContext;
 import javax.naming.directory.ModificationItem;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.LdapTestHelper;
+import org.csstudio.utility.ldap.LdapTestTreeBuilder;
 import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapReadCompletedCallback;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -109,75 +103,12 @@ public class LdapServiceImplHeadlessTest {
     private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
 
 
-    private static Attributes EFAN_ATTRS = new BasicAttributes();
-    private static Attributes ECOM_ATTRS = new BasicAttributes();
-    private static Attributes ECON_ATTRS = new BasicAttributes();
-    private static Attributes EREN_ATTRS = new BasicAttributes();
-
-    static {
-        EFAN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_FAC_OBJECT_CLASS);
-        ECOM_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_COM_OBJECT_CLASS);
-        ECON_ATTRS.put(ATTR_FIELD_RESPONSIBLE_PERSON, "bastian.knerr@desy.de");
-        ECON_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_IOC_OBJECT_CLASS);
-        EREN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS);
-    }
-
-
     @BeforeClass
     public static void setUp() {
 
         LDAP_SERVICE = LdapTestHelper.LDAP_SERVICE;
 
-        setUpCreateComponents();
-    }
-
-
-
-
-    /**
-     * Tests the method {@link ILdapService#createComponent(LdapName, Attributes)}.
-     */
-    private static void setUpCreateComponents() {
-        try {
-            final LdapName name =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EFAN_ATTRS));
-
-
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom1"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECOM_ATTRS));
-
-            name.add(new Rdn(IOC.getNodeTypeName(), "TestEcon1"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECON_ATTRS));
-
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren1"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-            name.remove(name.size() - 1);
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren2"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-            final LdapName name2 =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
-
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
-
-            name2.add(new Rdn(IOC.getNodeTypeName(), "TestEcon2"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECON_ATTRS));
-
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren3"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
-
-            name2.remove(name2.size() - 1);
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren4"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
-
-        } catch (final InvalidNameException e) {
-            Assert.fail("LDAP name composition failed.");
-        }
+        LdapTestTreeBuilder.createLdapEpicsControlsTestTree(LDAP_SERVICE, EFAN_NAME);
     }
 
 

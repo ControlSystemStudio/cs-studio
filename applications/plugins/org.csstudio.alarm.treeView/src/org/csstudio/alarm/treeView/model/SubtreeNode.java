@@ -104,7 +104,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	    public SubtreeNode build() {
 	        final SubtreeNode node = new SubtreeNode(_name, _configurationType, _source);
 	        if (_parent != null) {
-	            _parent.addSubtreeChild(node);
+	            _parent.addChild(node);
 	        }
 	        return node;
 	    }
@@ -160,27 +160,23 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 * {@inheritDoc}
 	 */
     @Override
-    public boolean addPVChild(@Nonnull final IAlarmProcessVariableNode child) {
+    public boolean addChild(@Nonnull final IAlarmTreeNode child) {
         final String name = child.getName();
+
         if (_childrenPVMap.containsKey(name)) {
             return false;
         }
-        _childrenPVMap.put(name, child);
-        childSeverityChanged(child);
-        child.setParent(this);
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean addSubtreeChild(@Nonnull final IAlarmSubtreeNode child) {
-        final String name = child.getName();
         if (_childrenSubtreeMap.containsKey(name)) {
             return false;
         }
-        _childrenSubtreeMap.put(name, child);
+        if (child instanceof IAlarmProcessVariableNode) {
+            _childrenPVMap.put(name, (IAlarmProcessVariableNode) child);
+
+        } else if (child instanceof IAlarmSubtreeNode) {
+            _childrenSubtreeMap.put(name, (IAlarmSubtreeNode) child);
+        } else {
+            return false;
+        }
         childSeverityChanged(child);
         child.setParent(this);
         return true;

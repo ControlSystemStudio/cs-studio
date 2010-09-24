@@ -277,7 +277,7 @@ public final class AlarmTreeView extends ViewPart {
      * Creates an LDAP tree viewer.
      */
     public AlarmTreeView() {
-        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT.getDescription(),
+        _rootNode = new SubtreeNode.Builder(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT.getObjectClass(),
                                             LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT,
                                             TreeNodeSource.ROOT).build();
     }
@@ -586,6 +586,15 @@ public final class AlarmTreeView extends ViewPart {
     @CheckForNull
     public Action getReloadAction() {
         return _reloadAction;
+    }
+
+    /**
+     * Getter.
+     * @return the rename action reference
+     */
+    @CheckForNull
+    public Action getRenameAction() {
+        return _renameAction;
     }
 
     /**

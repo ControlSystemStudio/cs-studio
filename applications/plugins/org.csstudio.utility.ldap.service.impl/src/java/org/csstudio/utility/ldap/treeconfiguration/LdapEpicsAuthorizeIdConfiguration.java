@@ -145,7 +145,7 @@ public enum LdapEpicsAuthorizeIdConfiguration implements ITreeNodeConfiguration<
      */
     @Override
     @Nonnull
-    public String getDescription() {
+    public String getObjectClass() {
         return _description;
     }
 

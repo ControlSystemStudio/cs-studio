@@ -23,28 +23,20 @@
  */
 package org.csstudio.alarm.treeView.views;
 
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 
+import java.lang.reflect.Field;
 import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
-import java.util.concurrent.Delayed;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
-import javax.naming.directory.Attributes;
-import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import junit.framework.Assert;
 
@@ -67,9 +59,8 @@ import org.csstudio.alarm.treeView.views.actions.ShowHelpGuidanceAction;
 import org.csstudio.alarm.treeView.views.actions.ShowHelpPageAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.LdapTestHelper;
+import org.csstudio.utility.ldap.LdapTestTreeBuilder;
 import org.csstudio.utility.ldap.service.ILdapService;
-import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
-import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.eclipse.core.runtime.jobs.Job;
@@ -78,21 +69,22 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.internal.win32.OS;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.ObjectPluginAction;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -118,22 +110,20 @@ public class AlarmTreeViewUiPluginTest {
     private static Random RANDOM = new Random(System.currentTimeMillis());
     private static String EFAN_NAME = "Test" + String.valueOf(Math.abs(RANDOM.nextInt())) + "Efan1";
 
-    private static Attributes EFAN_ATTRS = new BasicAttributes();
-    private static Attributes ECOM_ATTRS = new BasicAttributes();
-    private static Attributes EREN_ATTRS = new BasicAttributes();
-
     private static Set<Class<? extends IAction>> COMMON_CONTEXT_MENU_ACTIONS =
         ImmutableSet.<Class<? extends IAction>>builder().add(AcknowledgeAction.class)
-                                                       .add(RunCssAlarmDisplayAction.class)
-                                                       .add(RunCssDisplayAction.class)
-                                                       .add(CssStripChartAction.class)
-                                                       .add(ShowHelpGuidanceAction.class)
-                                                       .add(ShowHelpPageAction.class)
-                                                       .add(DeleteNodeAction.class)
-                                                       .build();
+                                                        .add(RunCssAlarmDisplayAction.class)
+                                                        .add(RunCssDisplayAction.class)
+                                                        .add(CssStripChartAction.class)
+                                                        .add(ShowHelpGuidanceAction.class)
+                                                        .add(ShowHelpPageAction.class)
+                                                        .add(DeleteNodeAction.class)
+                                                        .build();
+    @SuppressWarnings("restriction")
     private static Set<Class<? extends IAction>> RECORD_CONTEXT_MENU_ACTIONS =
         ImmutableSet.<Class<? extends IAction>>builder().addAll(COMMON_CONTEXT_MENU_ACTIONS)
                                                        .add(RenameAction.class)
+                                                       .add(ObjectPluginAction.class) // An action supplied via plugin extensions
                                                        .build();
     private static Set<Class<? extends IAction>> COMPONENT_CONTEXT_MENU_ACTIONS =
         ImmutableSet.<Class<? extends IAction>>builder().addAll(COMMON_CONTEXT_MENU_ACTIONS)
@@ -149,20 +139,6 @@ public class AlarmTreeViewUiPluginTest {
                                                        .build();
 
 
-    private static final String ATTR_TEST_CONTENT = "TestContent";
-
-    static {
-        EFAN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_FAC_OBJECT_CLASS);
-        ECOM_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_COM_OBJECT_CLASS);
-        EREN_ATTRS.put(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS);
-
-        for (final String attrID : EpicsAlarmcfgTreeNodeAttribute.getLdapAttributes()) {
-            ECOM_ATTRS.put(attrID, ATTR_TEST_CONTENT);
-            EREN_ATTRS.put(attrID, ATTR_TEST_CONTENT);
-        }
-    }
-
-
     @BeforeClass
     public static void setUpViewAndService() throws PartInitException, InterruptedException {
 
@@ -171,7 +147,7 @@ public class AlarmTreeViewUiPluginTest {
         LDAP_SERVICE.reInitializeLdapConnection(LdapTestHelper.LDAP_TEST_PREFS);
 
         // Set up the dynamic test alarm tree
-        setUpCreateComponents();
+        LdapTestTreeBuilder.createLdapEpicsAlarmcfgTestTree(LDAP_SERVICE, EFAN_NAME);
 
         // Set up the just created test facility name in the preferences
         setUpAlarmTreeViewPreferences(EFAN_NAME);
@@ -180,11 +156,9 @@ public class AlarmTreeViewUiPluginTest {
         ACTIVE_PAGE = window.getActivePage();
         Assert.assertNotNull(ACTIVE_PAGE);
 
-
-        waitForJobs();
         VIEW = (AlarmTreeView) ACTIVE_PAGE.showView(AlarmTreeView.getID());
-        waitForJobs();
-        delay(5000);
+        waitForJobs(); // wait for the jobs to terminate (retrieval of data from LDAP and via JMS)
+        delay(5000); // wait for the tree to be displayed otherwise the actions can't be run
     }
 
     /**
@@ -232,65 +206,102 @@ public class AlarmTreeViewUiPluginTest {
     }
 
 
-    private static void setUpCreateComponents() {
-        try {
-            final LdapName name =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EFAN_ATTRS));
-
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren1"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-            name.remove(name.size() - 1);
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom1"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECOM_ATTRS));
-
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren2"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-            name.remove(name.size() - 1);
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, ECOM_ATTRS));
-
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren3"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-            name.remove(name.size() - 1);
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren4"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name, EREN_ATTRS));
-
-
-            final LdapName name2 =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), EFAN_NAME,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
-
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom3"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
-
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom4"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, ECOM_ATTRS));
-
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren5"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
-
-            name2.remove(name2.size() - 1);
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren6"));
-            Assert.assertTrue(LDAP_SERVICE.createComponent(name2, EREN_ATTRS));
-
-        } catch (final InvalidNameException e) {
-            Assert.fail("LDAP name composition failed.");
-        }
-    }
-
-
     @Test
     public void testViewAndRootNodePresent() throws InterruptedException {
 
         Assert.assertNotNull(VIEW.getRootNode());
     }
 
-    private void testContextMenuActions(final Set<Class<? extends IAction>> expActions, final IAlarmTreeNode node) {
+    /**
+     * Tests the rename action and modifies LDAP test data of first component.
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    public void testRenameAndSaveInLdapAction() throws InterruptedException {
+        final TreeViewer viewer = VIEW.getViewer();
+
+        // Trigger rename action on selection
+        viewer.setSelection(new StructuredSelection(new Object[] {getComponentNode()}), true);
+        final Action renameAction = VIEW.getRenameAction();
+        Display.getCurrent().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                renameAction.run();
+            }
+        });
+        // Get access to the newly opened input dialog and set the name value field reflectively
+        Display.getCurrent().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = findDialog();
+                Assert.assertTrue(dialog instanceof InputDialog);
+                try {
+                    final Field value = dialog.getClass().getDeclaredField("value");
+                    value.setAccessible(true);
+                    value.set(dialog, "EcomRenamed");
+                } catch (final Throwable e) {
+                    Assert.fail("Private field of input dialog could not be accessed for testing.");
+                    return;
+                }
+                dialog.close();
+            }
+        });
+        delay(1000); // wait for the window to be closed
+        // Persist the value in LDAP
+        final Action saveInLdapAction = VIEW.getSaveInLdapAction();
+        Display.getCurrent().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                saveInLdapAction.run();
+            }
+        });
+        Display.getCurrent().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = findDialog();
+                Assert.assertTrue(dialog instanceof MessageDialog);
+                dialog.close();
+            }
+        });
+        waitForJobs(); // wait for LDAP write established
+        delay(5000);
+        final IAlarmSubtreeNode efan = (IAlarmSubtreeNode) getFacilityNode();
+        try {
+            final IAlarmTreeNode child = efan.getChild("EcomRenamed");
+            Assert.assertNotNull(LDAP_SERVICE.lookup(child.getLdapName()));
+        } catch (final NamingException e) {
+            Assert.fail("Rename action had not been persisted.");
+        }
+    }
+
+    @Nonnull
+    public Dialog findDialog() {
+        final Shell shell = VIEW.getSite().getShell();
+        final Shell[] children = shell.getShells();
+        Assert.assertEquals(1, children.length);
+        final Object data = children[0].getData();
+        Assert.assertTrue(data instanceof Dialog);
+        return (Dialog) data;
+    }
+
+    @Test
+    public void testContextMenuActionsPresentForFacilityNode() throws InterruptedException {
+        testContextMenuActions(FACILITY_CONTEXT_MENU_ACTIONS, getFacilityNode());
+    }
+
+    @Test
+    public void testContextMenuActionsPresentForComponentNode() throws InterruptedException {
+        testContextMenuActions(COMPONENT_CONTEXT_MENU_ACTIONS, getComponentNode());
+    }
+
+    @Test
+    public void testContextMenuActionsPresentForRecordNode() throws InterruptedException {
+        testContextMenuActions(RECORD_CONTEXT_MENU_ACTIONS, getRecordNode());
+    }
+
+    private void testContextMenuActions(@Nonnull final Set<Class<? extends IAction>> expActions,
+                                        @Nonnull final IAlarmTreeNode node) {
         final TreeViewer viewer = VIEW.getViewer();
 
         viewer.setSelection(new StructuredSelection(new Object[] {node}), true);
@@ -308,22 +319,6 @@ public class AlarmTreeViewUiPluginTest {
         // and check the sizes again
         Assert.assertEquals(expActions.size(), menuActions.size());
 
-    }
-
-
-    @Test
-    public void testContextMenuActionsPresentForFacilityNode() throws InterruptedException {
-        testContextMenuActions(FACILITY_CONTEXT_MENU_ACTIONS, getFacilityNode());
-    }
-
-    @Test
-    public void testContextMenuActionsPresentForComponentNode() throws InterruptedException {
-        testContextMenuActions(COMPONENT_CONTEXT_MENU_ACTIONS, getComponentNode());
-    }
-
-    @Test
-    public void testContextMenuActionsPresentForRecordNode() throws InterruptedException {
-        testContextMenuActions(RECORD_CONTEXT_MENU_ACTIONS, getRecordNode());
     }
 
     @Nonnull

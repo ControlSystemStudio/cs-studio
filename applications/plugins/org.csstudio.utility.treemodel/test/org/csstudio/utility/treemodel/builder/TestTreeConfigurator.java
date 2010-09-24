@@ -127,7 +127,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @Nonnull
-    public String getDescription() {
+    public String getObjectClass() {
         return _description;
     }
 

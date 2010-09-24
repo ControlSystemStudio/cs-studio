@@ -92,7 +92,7 @@ public final class AlarmTreeBuilder {
                 LOG.info("TEST facility does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
                 attrs.put(FACILITY.getNodeTypeName(), "TEST");
-                attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getDescription());
+                attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getObjectClass());
 
                 service.createComponent(testFacilityName, attrs);
             }

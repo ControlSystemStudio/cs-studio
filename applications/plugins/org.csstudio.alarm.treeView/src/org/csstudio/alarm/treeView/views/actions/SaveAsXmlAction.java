@@ -73,7 +73,7 @@ public final class SaveAsXmlAction extends Action {
                 }
 
             } else {
-                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmcfgConfiguration.FACILITY.getDescription() + " type components.");
+                LOG.error("Saving XML file is only possible on " + LdapEpicsAlarmcfgConfiguration.FACILITY.getObjectClass() + " type components.");
                 MessageDialog.openError(_site.getShell(),
                                         "Save as XML file",
                                         "Internal error: XML files can only be saved for complete facility subtrees.");
