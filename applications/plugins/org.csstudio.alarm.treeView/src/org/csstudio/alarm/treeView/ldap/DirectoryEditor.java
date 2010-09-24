@@ -207,7 +207,7 @@ public final class DirectoryEditor {
         throws DirectoryEditException {
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getObjectClass());
 
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
@@ -313,7 +313,7 @@ public final class DirectoryEditor {
                 .getSource()).setParent(parent).build();
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());
 
         retrieveInitialStateSynchronously(node);
 
@@ -357,7 +357,7 @@ public final class DirectoryEditor {
 
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS,
-                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
+                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getObjectClass());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
