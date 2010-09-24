@@ -95,7 +95,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
         public ProcessVariableNode build() {
             final ProcessVariableNode node = new ProcessVariableNode(_name, _source);
             if (_parent != null) {
-                _parent.addPVChild(node);
+                _parent.addChild(node);
             }
             return node;
         }

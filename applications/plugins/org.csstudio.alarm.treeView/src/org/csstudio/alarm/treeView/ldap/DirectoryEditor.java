@@ -88,13 +88,21 @@ public final class DirectoryEditor {
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
 
         final ITreeModificationItem item;
+
+        final IAlarmSubtreeNode parent = node.getParent();
+        if (parent != null && parent.getChild(newName) != null) {
+            throw new DirectoryEditException("Either root node selected or name " + newName + " does already exist on this level.", null);
+        }
+
         if (node.getSource().equals(TreeNodeSource.LDAP)) {
             item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
         } else {
             item = null;
         }
 
-        node.setName(newName);
+        parent.removeChild(node);
+        node.setName(newName); // rename on tree item
+        parent.addChild(node);
 
         return item;
     }

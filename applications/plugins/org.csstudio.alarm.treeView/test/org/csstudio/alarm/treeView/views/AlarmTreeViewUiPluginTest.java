@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.Random;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
@@ -68,7 +69,9 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -231,12 +234,8 @@ public class AlarmTreeViewUiPluginTest {
         Display.getCurrent().asyncExec(new Runnable() {
             @Override
             public void run() {
-                final Shell shell = VIEW.getSite().getShell();
-                final Shell[] children = shell.getShells();
-                Assert.assertEquals(1, children.length);
-                final Object data = children[0].getData();
-                Assert.assertTrue(data instanceof InputDialog);
-                final InputDialog dialog = (InputDialog) data;
+                final Dialog dialog = findDialog();
+                Assert.assertTrue(dialog instanceof InputDialog);
                 try {
                     final Field value = dialog.getClass().getDeclaredField("value");
                     value.setAccessible(true);
@@ -257,6 +256,14 @@ public class AlarmTreeViewUiPluginTest {
                 saveInLdapAction.run();
             }
         });
+        Display.getCurrent().asyncExec(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = findDialog();
+                Assert.assertTrue(dialog instanceof MessageDialog);
+                dialog.close();
+            }
+        });
         waitForJobs(); // wait for LDAP write established
         delay(5000);
         final IAlarmSubtreeNode efan = (IAlarmSubtreeNode) getFacilityNode();
@@ -268,6 +275,15 @@ public class AlarmTreeViewUiPluginTest {
         }
     }
 
+    @Nonnull
+    public Dialog findDialog() {
+        final Shell shell = VIEW.getSite().getShell();
+        final Shell[] children = shell.getShells();
+        Assert.assertEquals(1, children.length);
+        final Object data = children[0].getData();
+        Assert.assertTrue(data instanceof Dialog);
+        return (Dialog) data;
+    }
 
     @Test
     public void testContextMenuActionsPresentForFacilityNode() throws InterruptedException {
