@@ -33,6 +33,8 @@ public final class GUIRefreshThread implements Runnable {
 	private Thread thread;
 	
 	private int guiRefreshCycle = 100;
+	
+	private long start;
 
 	/**
 	 * Standard constructor.
@@ -69,10 +71,14 @@ public final class GUIRefreshThread implements Runnable {
 	 */
 	public void run() {
 		while (true) {		
-			if(!tasksQueue.isEmpty())
-					processQueue();			
+			if(!tasksQueue.isEmpty()){
+					start = System.currentTimeMillis();
+					processQueue();		
+			}
 			try {
-				Thread.sleep(guiRefreshCycle);
+				long current = System.currentTimeMillis();
+				if(current - start < guiRefreshCycle)
+					Thread.sleep(guiRefreshCycle - (current -start));
 			} catch (InterruptedException e) {
 				//ignore
 			}
