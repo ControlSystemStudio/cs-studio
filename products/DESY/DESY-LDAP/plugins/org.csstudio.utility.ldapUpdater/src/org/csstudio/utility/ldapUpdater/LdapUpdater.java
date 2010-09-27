@@ -271,7 +271,7 @@ public enum LdapUpdater {
         }
 
         final ILdapContentModelBuilder builder =
-            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, searchResult);
+            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, searchResult);
         builder.build();
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
