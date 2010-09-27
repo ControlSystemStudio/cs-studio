@@ -163,7 +163,7 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * @return null or the old Node for the SortIndex Position.
      */
     public <T extends AbstractNodeDBO> AbstractNodeDBO addChild(final T child) {
-        int sortIndex = child.getSortIndex();
+        short sortIndex = child.getSortIndex();
         AbstractNodeDBO oldNode = getChildrenAsMap().get(sortIndex);
 
         if(oldNode!=null&&oldNode.equals(child)) {
@@ -210,14 +210,16 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      * Get the Children of the Node as Map. The Key is the Sort Index.
      * @return the children as map.
      */
-    @Transient
-    public Map<Short, ? extends AbstractNodeDBO> getChildrenAsMap() {
-        final Map<Short, AbstractNodeDBO> nodeMap = new TreeMap<Short, AbstractNodeDBO>();
-        for (final AbstractNodeDBO child : getChildren()) {
-            nodeMap.put(child.getSortIndex(), child);
-        }
-        return nodeMap;
-    }
+	@Transient
+	public Map<Short, ? extends AbstractNodeDBO> getChildrenAsMap() {
+		final Map<Short, AbstractNodeDBO> nodeMap = new TreeMap<Short, AbstractNodeDBO>();
+		if (hasChildren()) {
+			for (final AbstractNodeDBO child : getChildren()) {
+				nodeMap.put(child.getSortIndex(), child);
+			}
+		}
+		return nodeMap;
+	}
 
     /**
      *
@@ -248,9 +250,9 @@ public abstract class AbstractNodeDBO extends NamedDBClass implements Comparable
      *
      * @return have this Node one or more children then return true else false.
      */
-    public final boolean hasChildren() {
-        return _children.size() > 0;
-    }
+	public final boolean hasChildren() {
+		return (_children != null) && (_children.size() > 0);
+	}
 
 
     /**

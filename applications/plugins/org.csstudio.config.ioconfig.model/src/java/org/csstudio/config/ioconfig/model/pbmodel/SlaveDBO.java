@@ -36,9 +36,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.GSDFileTypes;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
-import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.NodeType;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GSD2Module;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdFactory;
@@ -338,7 +338,9 @@ public class SlaveDBO extends AbstractNodeDBO {
 
     public void setPrmUserData(final String prmUserData) {
 //        _prmUserData = prmUserData;
-        _prmUserDataList = Arrays.asList(prmUserData.split(","));
+		if (prmUserData != null) {
+			_prmUserDataList = Arrays.asList(prmUserData.split(","));
+		}
     }
 
     /**
