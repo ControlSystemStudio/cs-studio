@@ -30,6 +30,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.jms.MapMessage;
 
 import org.apache.log4j.Logger;
@@ -54,18 +56,18 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author jhatje
  *
  */
-public class SendAcknowledge extends Job {
+public final class SendAcknowledge extends Job {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(SendAcknowledge.class);
 
-    List<AlarmMessage> messagesToSend;
+    private List<AlarmMessage> messagesToSend;
     private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * @param msg
      *            JMSMessage to acknowledge
      */
-    private SendAcknowledge(final List<AlarmMessage> msg) {
+    private SendAcknowledge(@Nonnull final List<AlarmMessage> msg) {
         super("Send Ack"); //$NON-NLS-1$
         messagesToSend = msg;
     }
@@ -79,7 +81,8 @@ public class SendAcknowledge extends Job {
      *            the collection of messages to send.
      * @return the <code>SendAcknowledge</code> job.
      */
-    public static SendAcknowledge newFromProperties(
+    @Nonnull
+    public static SendAcknowledge newFromProperties(@Nonnull
             final Collection<Map<String, String>> messages) {
         final List<AlarmMessage> messagesToSend = new ArrayList<AlarmMessage>(messages
                 .size());
@@ -103,7 +106,8 @@ public class SendAcknowledge extends Job {
      *            the List of JMSMessage to send.
      * @return the <code>SendAcknowledge</code> job.
      */
-    public static SendAcknowledge newFromJMSMessage(final List<AlarmMessage> messages) {
+    @Nonnull
+    public static SendAcknowledge newFromJMSMessage(@Nonnull final List<AlarmMessage> messages) {
         return new SendAcknowledge(messages);
     }
 
@@ -113,7 +117,8 @@ public class SendAcknowledge extends Job {
      *
      */
     @Override
-    protected IStatus run(final IProgressMonitor monitor) {
+    @Nonnull
+    protected IStatus run(@Nullable final IProgressMonitor monitor) {
 
         final ISendMapMessage sender = JmsLogsPlugin.getDefault().getSendMapMessage();
 
