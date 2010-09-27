@@ -140,6 +140,10 @@
                <exclude name="**/bin/**"/>
                <exclude name="**/classes/**"/>
             </fileset>
+            <fileset dir="${repo_dir}/applications/features" includesfile="features.list">
+               <exclude name="**/bin/**"/>
+               <exclude name="**/classes/**"/>
+            </fileset>
         </zip>
     </target>
 

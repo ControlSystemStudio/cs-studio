@@ -29,10 +29,9 @@ import com.google.common.collect.ImmutableSet;
 
 
 /**
- * Node configuration interface for parametrisable content tree model.
+ * Node configuration interface for parameterizable content tree model.
  * (for LDAP based trees as alarms, controls, etc. and others)
  *
- * @author bknerr
  * @author $Author$
  * @version $Revision$
  * @since 03.05.2010
@@ -42,11 +41,11 @@ public interface ITreeNodeConfiguration<T extends Enum<T>> {
 
 
     /**
-     * Returns the description of this tree node configuration type .
-     * @return the description of this tree node configuration type .
+     * Returns the object class description of this tree node configuration type .
+     * @return the object class description.
      */
     @Nonnull
-    String getDescription();
+    String getObjectClass();
 
     /**
      * Returns the name of the tree node (the e.g. last RDN in LdapName).

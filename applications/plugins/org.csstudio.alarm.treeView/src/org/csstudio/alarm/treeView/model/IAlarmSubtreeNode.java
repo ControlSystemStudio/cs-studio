@@ -64,18 +64,8 @@ public interface IAlarmSubtreeNode extends IAlarmTreeNode {
      * @param child the child node to add.
      * @returns false, if the adding of the child did not succeed
      */
-    boolean addSubtreeChild(@Nonnull final IAlarmSubtreeNode child);
+    boolean addChild(@Nonnull final IAlarmTreeNode child);
 
-    /**
-     * Adds the specified child node to the list of this node's children. Note:
-     * it is not checked whether the parent node of the child is correctly set
-     * to this node. This method is intended to be called only by constructors
-     * of nodes.
-     *
-     * @param child the child node to add.
-     * @returns false, if the adding of the child did not succeed
-     */
-    boolean addPVChild(@Nonnull final IAlarmProcessVariableNode child);
 
     /**
      * Signals to this node that the alarm severity of one of its children

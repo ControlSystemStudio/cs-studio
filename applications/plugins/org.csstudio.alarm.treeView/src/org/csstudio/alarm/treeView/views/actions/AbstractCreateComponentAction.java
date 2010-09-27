@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
-import org.csstudio.alarm.treeView.views.NodeNameInputValidator;
+import org.csstudio.alarm.treeView.views.LdapNameInputValidator;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -84,7 +84,7 @@ public abstract class AbstractCreateComponentAction extends Action {
                                                    "Create New Component",
                                                    "Component name:",
                                                    null,
-                                                   new NodeNameInputValidator());
+                                                   new LdapNameInputValidator());
         if (Window.OK == dialog.open()) {
             return dialog.getValue();
         }

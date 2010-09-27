@@ -238,7 +238,7 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 			case NAME:
 				return _node.getName();
 			case OBJECT_CLASS:
-				return _node.getTreeNodeConfiguration().getDescription();
+				return _node.getTreeNodeConfiguration().getObjectClass();
 			default:
 				return null;
 			}

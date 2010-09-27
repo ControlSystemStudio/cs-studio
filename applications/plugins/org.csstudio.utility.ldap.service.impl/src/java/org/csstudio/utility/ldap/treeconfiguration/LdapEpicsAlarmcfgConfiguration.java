@@ -166,7 +166,7 @@ public enum LdapEpicsAlarmcfgConfiguration implements ITreeNodeConfiguration<Lda
      */
     @Override
     @Nonnull
-    public String getDescription() {
+    public String getObjectClass() {
         return _description;
     }
 

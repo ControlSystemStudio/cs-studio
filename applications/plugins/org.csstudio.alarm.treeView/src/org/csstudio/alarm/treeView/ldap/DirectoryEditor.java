@@ -88,13 +88,21 @@ public final class DirectoryEditor {
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
 
         final ITreeModificationItem item;
+
+        final IAlarmSubtreeNode parent = node.getParent();
+        if (parent != null && parent.getChild(newName) != null) {
+            throw new DirectoryEditException("Either root node selected or name " + newName + " does already exist on this level.", null);
+        }
+
         if (node.getSource().equals(TreeNodeSource.LDAP)) {
             item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
         } else {
             item = null;
         }
 
-        node.setName(newName);
+        parent.removeChild(node);
+        node.setName(newName); // rename on tree item
+        parent.addChild(node);
 
         return item;
     }
@@ -199,7 +207,7 @@ public final class DirectoryEditor {
         throws DirectoryEditException {
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getObjectClass());
 
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
@@ -305,7 +313,7 @@ public final class DirectoryEditor {
                 .getSource()).setParent(parent).build();
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());
 
         retrieveInitialStateSynchronously(node);
 
@@ -349,7 +357,7 @@ public final class DirectoryEditor {
 
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS,
-                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
+                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getObjectClass());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);
