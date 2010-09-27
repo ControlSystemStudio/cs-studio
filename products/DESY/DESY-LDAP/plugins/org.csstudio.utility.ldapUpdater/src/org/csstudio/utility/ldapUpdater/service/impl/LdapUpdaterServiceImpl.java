@@ -28,6 +28,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
@@ -193,7 +194,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         if (recordsSearchResult != null) {
 
             final ILdapContentModelBuilder builder =
-                service.getLdapContentModelBuilder(UNIT, recordsSearchResult);
+                service.getLdapContentModelBuilder(VIRTUAL_ROOT, recordsSearchResult);
 
             try {
                 builder.build();
@@ -239,7 +240,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             if (searchResult != null) {
                 final ILdapService service = getLdapService();
-                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(UNIT, searchResult);
+                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
