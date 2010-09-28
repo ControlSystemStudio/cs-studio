@@ -19,7 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-
 package org.csstudio.utility.ldapUpdater;
 
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.LDAP_AUTO_INTERVAL;
@@ -33,6 +32,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -86,6 +89,8 @@ public class LdapUpdaterServer implements IApplication {
         return INSTANCE;
     }
 
+    private final ScheduledExecutorService _updaterExecutor = Executors.newSingleThreadScheduledExecutor();
+
     /**
      * {@inheritDoc}
      */
@@ -112,7 +117,7 @@ public class LdapUpdaterServer implements IApplication {
 
         final String delayStr = new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
 
-        LOG.info("Autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
+        LOG.info("\nLDAP Updater autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
 
 
         final String username = getValueFromPreferences(XMPP_USER, "anonymous");
@@ -123,14 +128,20 @@ public class LdapUpdaterServer implements IApplication {
         HeadlessConnection.connect(username, password, server, ECFConstants.XMPP);
         ServiceLauncher.startRemoteServices();
 
-
-        new TimerProcessor(cal.getTime(), intervalSec * 1000);
-
+        final ScheduledFuture<?> taskHandle =
+            _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
+                                                 cal.getTimeInMillis()*1000,
+                                                 intervalSec,
+                                                 TimeUnit.SECONDS);
         synchronized (this) {
             while (!_stopped) {
                 wait();
             }
         }
+
+        taskHandle.cancel(true); // cancel the task, when it runs
+
+        _updaterExecutor.shutdown();
 
         return IApplication.EXIT_OK;
     }

@@ -49,6 +49,7 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
@@ -114,6 +115,7 @@ public enum LdapUpdater {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdater.class);
 
+    @GuardedBy("this")
     private boolean _busy;
 
     /**
