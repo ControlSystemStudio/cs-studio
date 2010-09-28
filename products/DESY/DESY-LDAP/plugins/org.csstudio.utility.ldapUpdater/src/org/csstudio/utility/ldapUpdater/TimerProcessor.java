@@ -97,8 +97,10 @@ public class TimerProcessor {
      * @param interval recurring interval
      */
     public TimerProcessor(@Nonnull final Date schedule, final long interval) {
-        _schedule = schedule;
-        _interval = interval;
+        //_schedule = schedule;
+        //_interval = interval;
+        _schedule = new Date(System.currentTimeMillis() + 5000);
+        _interval = 600000;
 
         execute();
     }
