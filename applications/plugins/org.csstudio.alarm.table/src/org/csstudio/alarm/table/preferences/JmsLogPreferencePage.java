@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.alarm.table.preferences;
+package org.csstudio.alarm.table.preferences;
 
 import java.util.StringTokenizer;
 
@@ -49,10 +49,9 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
-
 /**
  * Handling of preferences for Severity: Names, Colors, Sounds
- *
+ * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
@@ -62,8 +61,6 @@ public class JmsLogPreferencePage extends FieldEditorPreferencePage implements
 		IWorkbenchPreferencePage {
 
 	private CustomMediaFactory customMediaFactory;
-
-
 
 	public JmsLogPreferencePage() {
 		super(GRID);
@@ -79,196 +76,239 @@ public class JmsLogPreferencePage extends FieldEditorPreferencePage implements
 	}
 
 	public void init(@Nonnull final IWorkbench workbench) {
-        // Nothing to do
-    }
+		// Nothing to do
+	}
 
-    private void makeKeyWord() {
-		Group g1 = new Group(getFieldEditorParent(),SWT.NONE);
-		g1.setLayout(new GridLayout(5,false));
-		g1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,2,1));
+	@Override
+	public boolean performOk() {
+		boolean result = super.performOk();
+
+		if (result) {
+			IAlarmSoundService alarmSoundService = JmsLogsPlugin.getDefault()
+					.getAlarmSoundService();
+			if (alarmSoundService != null) {
+				alarmSoundService.reloadPreferences();
+			}
+		}
+		return result;
+	}
+
+	private void makeKeyWord() {
+		Group g1 = new Group(getFieldEditorParent(), SWT.NONE);
+		g1.setLayout(new GridLayout(5, false));
+		g1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 1));
 		g1.setText("SEVERITY"); //$NON-NLS-1$
-        String[] keys = defineKeys();
-        String[] values = defineValues();
-        String[] colors = defineColors();
-        String[] sounds = defineSounds();
+		String[] keys = defineKeys();
+		String[] values = defineValues();
+		String[] colors = defineColors();
+		String[] sounds = defineSounds();
 
-		Composite c1 = new Composite(g1,SWT.NONE);
-		c1.setLayout(new GridLayout(1,false));
-		c1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		new Label(c1,SWT.NONE).setText(Messages.JmsLogPreferencePage_key);
+		Composite c1 = new Composite(g1, SWT.NONE);
+		c1.setLayout(new GridLayout(1, false));
+		c1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		new Label(c1, SWT.NONE).setText(Messages.JmsLogPreferencePage_key);
 
-		Composite c2 = new Composite(g1,SWT.NONE);
-		c2.setLayout(new GridLayout(1,false));
-		c2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		new Label(c2,SWT.NONE).setText(Messages.JmsLogPreferencePage_value);
+		Composite c2 = new Composite(g1, SWT.NONE);
+		c2.setLayout(new GridLayout(1, false));
+		c2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		new Label(c2, SWT.NONE).setText(Messages.JmsLogPreferencePage_value);
 
-		Composite c3 = new Composite(g1,SWT.NONE);
-		c3.setLayout(new GridLayout(1,false));
-		c3.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		new Label(c3,SWT.NONE).setText(Messages.JmsLogPreferencePage_color);
+		Composite c3 = new Composite(g1, SWT.NONE);
+		c3.setLayout(new GridLayout(1, false));
+		c3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		new Label(c3, SWT.NONE).setText(Messages.JmsLogPreferencePage_color);
 
-		Composite c4 = new Composite(g1,SWT.NONE);
-		c4.setLayout(new GridLayout(1,false));
-		c4.setLayoutData(new GridData(SWT.FILL,SWT.FILL,true,true,1,1));
-		new Label(c4,SWT.NONE).setText(Messages.JmsLogPreferencePage_sound);
+		Composite c4 = new Composite(g1, SWT.NONE);
+		c4.setLayout(new GridLayout(1, false));
+		c4.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		new Label(c4, SWT.NONE).setText(Messages.JmsLogPreferencePage_sound);
 
-		Composite c5 = new Composite(g1,SWT.NONE);
-		c5.setLayout(new GridLayout(1,false));
-		c5.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		new Label(c5,SWT.NONE).setText("");
-		for(int i= 0;i<keys.length;i++){
+		Composite c5 = new Composite(g1, SWT.NONE);
+		c5.setLayout(new GridLayout(1, false));
+		c5.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		new Label(c5, SWT.NONE).setText("");
+		for (int i = 0; i < keys.length; i++) {
 			newRow(g1, keys[i], values[i], colors[i], sounds[i]);
 		}
 	}
 
-    @Nonnull
-    private String[] defineKeys() {
-        String[] keys = {JmsLogPreferenceConstants.KEY0, JmsLogPreferenceConstants.KEY1,
-                JmsLogPreferenceConstants.KEY2, JmsLogPreferenceConstants.KEY3,
-                JmsLogPreferenceConstants.KEY4, JmsLogPreferenceConstants.KEY5,
-                JmsLogPreferenceConstants.KEY6, JmsLogPreferenceConstants.KEY7,
-                JmsLogPreferenceConstants.KEY8, JmsLogPreferenceConstants.KEY9};
-        return keys;
-    }
-
-    @Nonnull
-    private String[] defineValues() {
-        String[] values = {JmsLogPreferenceConstants.VALUE0, JmsLogPreferenceConstants.VALUE1,
-                JmsLogPreferenceConstants.VALUE2, JmsLogPreferenceConstants.VALUE3,
-                JmsLogPreferenceConstants.VALUE4, JmsLogPreferenceConstants.VALUE5,
-                JmsLogPreferenceConstants.VALUE6, JmsLogPreferenceConstants.VALUE7,
-                JmsLogPreferenceConstants.VALUE8, JmsLogPreferenceConstants.VALUE9};
-        return values;
-    }
-
-    @Nonnull
-    private String[] defineColors() {
-        String[] colors = {JmsLogPreferenceConstants.COLOR0, JmsLogPreferenceConstants.COLOR1,
-                JmsLogPreferenceConstants.COLOR2, JmsLogPreferenceConstants.COLOR3,
-                JmsLogPreferenceConstants.COLOR4, JmsLogPreferenceConstants.COLOR5,
-                JmsLogPreferenceConstants.COLOR6, JmsLogPreferenceConstants.COLOR7,
-                JmsLogPreferenceConstants.COLOR8, JmsLogPreferenceConstants.COLOR9};
-        return colors;
-    }
-
-    @Nonnull
-    private String[] defineSounds() {
-        String[] sounds = {JmsLogPreferenceConstants.SOUND0, JmsLogPreferenceConstants.SOUND1,
-                JmsLogPreferenceConstants.SOUND2, JmsLogPreferenceConstants.SOUND3,
-                JmsLogPreferenceConstants.SOUND4, JmsLogPreferenceConstants.SOUND5,
-                JmsLogPreferenceConstants.SOUND6, JmsLogPreferenceConstants.SOUND7,
-                JmsLogPreferenceConstants.SOUND8, JmsLogPreferenceConstants.SOUND9};
-        return sounds;
-    }
-
-    @Nonnull
-    private Composite newRow(@Nonnull final Group parent,
-                             @Nonnull final String key,
-                             @Nonnull final String value,
-                             @Nonnull final String color,
-                             @Nonnull final String sounds) {
-
-	    makeNameColumn(parent, key);
-		makeColorColumns(parent, value, color);
-		final FileFieldEditor fileEditor = makeFilebrowserColumn(parent, sounds);
-        makePlaybuttonColumn(parent, fileEditor);
-
-        return parent;
+	@Nonnull
+	private String[] defineKeys() {
+		String[] keys = { JmsLogPreferenceConstants.KEY0,
+				JmsLogPreferenceConstants.KEY1, JmsLogPreferenceConstants.KEY2,
+				JmsLogPreferenceConstants.KEY3, JmsLogPreferenceConstants.KEY4,
+				JmsLogPreferenceConstants.KEY5, JmsLogPreferenceConstants.KEY6,
+				JmsLogPreferenceConstants.KEY7, JmsLogPreferenceConstants.KEY8,
+				JmsLogPreferenceConstants.KEY9 };
+		return keys;
 	}
 
-    private void makeColorColumns(@Nonnull final Group parent, @Nonnull final String value, @Nonnull final String color) {
-        final Composite c2 = new Composite(parent,SWT.NONE);
-		c2.setLayout(new GridLayout(1,false));
-		c2.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		final StringFieldEditor sfeValue = new StringFieldEditor(value, "",20, c2); //$NON-NLS-1$
-		StringTokenizer st = new StringTokenizer(getPreferenceStore().getString(color),","); //$NON-NLS-1$
-        sfeValue.getTextControl(c2)
-                .setBackground(new Color(getFieldEditorParent().getDisplay(), new RGB(Integer
-                        .parseInt(st.nextToken()), Integer.parseInt(st.nextToken()), Integer
-                        .parseInt(st.nextToken()))));
+	@Nonnull
+	private String[] defineValues() {
+		String[] values = { JmsLogPreferenceConstants.VALUE0,
+				JmsLogPreferenceConstants.VALUE1,
+				JmsLogPreferenceConstants.VALUE2,
+				JmsLogPreferenceConstants.VALUE3,
+				JmsLogPreferenceConstants.VALUE4,
+				JmsLogPreferenceConstants.VALUE5,
+				JmsLogPreferenceConstants.VALUE6,
+				JmsLogPreferenceConstants.VALUE7,
+				JmsLogPreferenceConstants.VALUE8,
+				JmsLogPreferenceConstants.VALUE9 };
+		return values;
+	}
+
+	@Nonnull
+	private String[] defineColors() {
+		String[] colors = { JmsLogPreferenceConstants.COLOR0,
+				JmsLogPreferenceConstants.COLOR1,
+				JmsLogPreferenceConstants.COLOR2,
+				JmsLogPreferenceConstants.COLOR3,
+				JmsLogPreferenceConstants.COLOR4,
+				JmsLogPreferenceConstants.COLOR5,
+				JmsLogPreferenceConstants.COLOR6,
+				JmsLogPreferenceConstants.COLOR7,
+				JmsLogPreferenceConstants.COLOR8,
+				JmsLogPreferenceConstants.COLOR9 };
+		return colors;
+	}
+
+	@Nonnull
+	private String[] defineSounds() {
+		String[] sounds = { JmsLogPreferenceConstants.SOUND0,
+				JmsLogPreferenceConstants.SOUND1,
+				JmsLogPreferenceConstants.SOUND2,
+				JmsLogPreferenceConstants.SOUND3,
+				JmsLogPreferenceConstants.SOUND4,
+				JmsLogPreferenceConstants.SOUND5,
+				JmsLogPreferenceConstants.SOUND6,
+				JmsLogPreferenceConstants.SOUND7,
+				JmsLogPreferenceConstants.SOUND8,
+				JmsLogPreferenceConstants.SOUND9 };
+		return sounds;
+	}
+
+	@Nonnull
+	private Composite newRow(@Nonnull final Group parent,
+			@Nonnull final String key, @Nonnull final String value,
+			@Nonnull final String color, @Nonnull final String sounds) {
+
+		makeNameColumn(parent, key);
+		makeColorColumns(parent, value, color);
+		final FileFieldEditor fileEditor = makeFilebrowserColumn(parent, sounds);
+		makePlaybuttonColumn(parent, fileEditor);
+
+		return parent;
+	}
+
+	private void makeColorColumns(@Nonnull final Group parent,
+			@Nonnull final String value, @Nonnull final String color) {
+		final Composite c2 = new Composite(parent, SWT.NONE);
+		c2.setLayout(new GridLayout(1, false));
+		c2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		final StringFieldEditor sfeValue = new StringFieldEditor(value,
+				"", 20, c2); //$NON-NLS-1$
+		StringTokenizer st = new StringTokenizer(getPreferenceStore()
+				.getString(color), ","); //$NON-NLS-1$
+		sfeValue.getTextControl(c2).setBackground(
+				new Color(getFieldEditorParent().getDisplay(), new RGB(Integer
+						.parseInt(st.nextToken()), Integer.parseInt(st
+						.nextToken()), Integer.parseInt(st.nextToken()))));
 		addField(sfeValue);
 
-		final Composite c3 = new Composite(parent,SWT.NONE);
-		c3.setLayout(new GridLayout(1,false));
-		c3.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
+		final Composite c3 = new Composite(parent, SWT.NONE);
+		c3.setLayout(new GridLayout(1, false));
+		c3.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
 		final ColorFieldEditor sfeColor = new ColorFieldEditor(color, "", c3); //$NON-NLS-1$
-		sfeColor.getColorSelector().addListener(new IPropertyChangeListener(){
+		sfeColor.getColorSelector().addListener(new IPropertyChangeListener() {
 			public void propertyChange(@Nonnull PropertyChangeEvent event) {
-				sfeColor.getColorSelector().setColorValue((RGB) event.getNewValue());
-				sfeValue.getTextControl(c2).setBackground(new Color(getFieldEditorParent().getDisplay(),(RGB) event.getNewValue()));
+				sfeColor.getColorSelector().setColorValue(
+						(RGB) event.getNewValue());
+				sfeValue.getTextControl(c2).setBackground(
+						new Color(getFieldEditorParent().getDisplay(),
+								(RGB) event.getNewValue()));
 			}
 		});
 		addField(sfeColor);
-    }
+	}
 
-    private void makeNameColumn(@Nonnull final Group parent, @Nonnull final String key) {
-        Composite c1 = new Composite(parent,SWT.NONE);
-		c1.setLayout(new GridLayout(1,false));
-		c1.setLayoutData(new GridData(SWT.FILL,SWT.FILL,false,true,1,1));
-		StringFieldEditor sfeKey = new StringFieldEditor(key, "",20, c1); //$NON-NLS-1$
+	private void makeNameColumn(@Nonnull final Group parent,
+			@Nonnull final String key) {
+		Composite c1 = new Composite(parent, SWT.NONE);
+		c1.setLayout(new GridLayout(1, false));
+		c1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
+		StringFieldEditor sfeKey = new StringFieldEditor(key, "", 20, c1); //$NON-NLS-1$
 		addField(sfeKey);
-    }
+	}
 
-    @Nonnull
-    private FileFieldEditor makeFilebrowserColumn(@Nonnull final Group parent, @Nonnull final String sounds) {
-        final Composite c4 = new Composite(parent,SWT.NONE);
-		c4.setLayout(new GridLayout(1,false));
+	@Nonnull
+	private FileFieldEditor makeFilebrowserColumn(@Nonnull final Group parent,
+			@Nonnull final String sounds) {
+		final Composite c4 = new Composite(parent, SWT.NONE);
+		c4.setLayout(new GridLayout(1, false));
 		c4.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, true, true, 1, 1));
-        final FileFieldEditor fileEditor = new MyFileFieldEditor(
-                sounds, "", c4);
-        fileEditor.setFileExtensions(new String[] {"*.mp3"});
-        addField(fileEditor);
-        return fileEditor;
-    }
+		final FileFieldEditor fileEditor = new MyFileFieldEditor(sounds, "", c4);
+		fileEditor.setFileExtensions(new String[] { "*.mp3" });
+		addField(fileEditor);
+		return fileEditor;
+	}
 
-    private void makePlaybuttonColumn(@Nonnull final Group parent, @Nonnull final FileFieldEditor fileEditor) {
-        final Composite c5 = new Composite(parent,SWT.NONE);
-        c5.setLayout(new GridLayout(1,false));
-        c5.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, true, 1, 1));
-        Button button = new Button(c5, SWT.PUSH);
-//        button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
-        button.setImage(customMediaFactory.getImageFromPlugin(JmsLogsPlugin.PLUGIN_ID, "icons/run_tool.gif"));
-        button.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                IAlarmSoundService alarmSoundService = JmsLogsPlugin.getDefault().getAlarmSoundService();
-                if (alarmSoundService.existsResource(fileEditor.getStringValue())) {
-                    alarmSoundService.playAlarmSoundFromResource(fileEditor.getStringValue());
-                }
-            }
-        });
-    }
-
-
+	private void makePlaybuttonColumn(@Nonnull final Group parent,
+			@Nonnull final FileFieldEditor fileEditor) {
+		final Composite c5 = new Composite(parent, SWT.NONE);
+		c5.setLayout(new GridLayout(1, false));
+		c5.setLayoutData(new GridData(SWT.FILL, SWT.BOTTOM, false, true, 1, 1));
+		Button button = new Button(c5, SWT.PUSH);
+		// button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+		// false));
+		button.setImage(customMediaFactory.getImageFromPlugin(
+				JmsLogsPlugin.PLUGIN_ID, "icons/run_tool.gif"));
+		button.addSelectionListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(@Nonnull final SelectionEvent e) {
+				IAlarmSoundService alarmSoundService = JmsLogsPlugin
+						.getDefault().getAlarmSoundService();
+				if (alarmSoundService.existsResource(fileEditor
+						.getStringValue())) {
+					alarmSoundService.playAlarmSoundFromResource(fileEditor
+							.getStringValue());
+				}
+			}
+		});
+	}
 
 	/**
-     * Overrides file field editor to handle check for existing resource relative in bundle or absolute in file system
-     */
-    private static class MyFileFieldEditor extends FileFieldEditor {
+	 * Overrides file field editor to handle check for existing resource
+	 * relative in bundle or absolute in file system
+	 */
+	private static class MyFileFieldEditor extends FileFieldEditor {
 
-        public MyFileFieldEditor(@Nonnull final String name, @Nonnull final String labelText, @Nonnull final Composite parent) {
-            super(name, labelText, false, FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
-        }
+		public MyFileFieldEditor(@Nonnull final String name,
+				@Nonnull final String labelText, @Nonnull final Composite parent) {
+			super(name, labelText, false,
+					FileFieldEditor.VALIDATE_ON_KEY_STROKE, parent);
+		}
 
-        @Override
-        protected boolean checkState() {
-            boolean result = false;
+		@Override
+		protected boolean checkState() {
+			boolean result = false;
 
-            final String text = getTextControl().getText();
-            result = text.isEmpty() || JmsLogsPlugin.getDefault().getAlarmSoundService().existsResource(text);
+			final String text = getTextControl().getText();
+			result = text.isEmpty()
+					|| JmsLogsPlugin.getDefault().getAlarmSoundService()
+							.existsResource(text);
 
-            handleErrorMessage(result);
-            return result;
-        }
+			handleErrorMessage(result);
+			return result;
+		}
 
-        private void handleErrorMessage(final boolean isOk) {
-            if (isOk) {
-                clearErrorMessage();
-            } else {
-                showErrorMessage(getErrorMessage());
-            }
-        }
-    }
-
+		private void handleErrorMessage(final boolean isOk) {
+			if (isOk) {
+				clearErrorMessage();
+			} else {
+				showErrorMessage(getErrorMessage());
+			}
+		}
+	}
 
 }
