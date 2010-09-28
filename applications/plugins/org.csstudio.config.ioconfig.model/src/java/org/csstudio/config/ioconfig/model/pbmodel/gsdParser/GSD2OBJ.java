@@ -615,7 +615,6 @@ public class GSD2OBJ {
         bool = selProperty.selectPropertyValue(gsdFile, "User_Prm_Data");
         if(bool.equals("Property not found")){
             bool = selProperty.selectPropertyValue(gsdFile, "Ext_User_Prm_Data_Const(0)");
-            System.out.println("Ext_User_Prm_Data_Const(0) = "+bool);
         }
         slaveStruct.setUserPrmData(bool);
 

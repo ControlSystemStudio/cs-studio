@@ -24,12 +24,14 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -104,8 +106,10 @@ public class ADLControl extends WidgetPart{
             }else if(row[0].trim().toLowerCase().equals("bclr")){ //$NON-NLS-1$
                 _bclr=row[1].trim();
             }else if(row[0].trim().toLowerCase().equals("chan")){ // chan and ctrl means both the same.  //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else if(row[0].trim().toLowerCase().equals("ctrl")){ //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);

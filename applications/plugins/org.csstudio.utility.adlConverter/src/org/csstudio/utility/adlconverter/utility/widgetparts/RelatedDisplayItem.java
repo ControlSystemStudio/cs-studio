@@ -40,6 +40,7 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -179,8 +180,13 @@ public class RelatedDisplayItem extends WidgetPart {
                                 + fileLine + "(" + display.getObjectNr() + ":" + display.getType()
                                 + ")[" + parameter + "]");
             }
-            String[] row = ADLHelper.cleanString(tmp);
             head = head.trim().toLowerCase();
+            /* XXX: Wenn es noch mal Probleme geben sollte mit Punkten im Dateinamen, sollte ein
+             *  eigener String-Cleaner für Pfade gemacht werden! Dafür muss das clean String in den
+             *  'if else block' und 'name' würde dann den neuen String-Path-Cleaner aufrufen. 
+             */ 
+            DebugHelper.add(this, head+" : "+tmp);
+            String[] row = ADLHelper.cleanString(tmp);
             if (head.equals("label")) { //$NON-NLS-1$
                 _label = row[0];
             } else if (head.equals("name")) { //$NON-NLS-1$
