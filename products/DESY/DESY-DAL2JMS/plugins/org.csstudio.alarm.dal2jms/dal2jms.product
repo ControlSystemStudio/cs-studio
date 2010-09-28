@@ -34,7 +34,7 @@
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.workspace"/>
-      <plugin id="org.csstudio.utility.ldap"/>
+      <plugin id="org.csstudio.utility.ldap" fragment=""/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.contenttype"/>
