@@ -34,6 +34,7 @@ import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -106,6 +107,7 @@ public class StripChart extends Widget {
              * clr=62
              */
             if(parameter.equals("chan")){
+            	DebugHelper.add(this, row[1]);
                 row = ADLHelper.cleanString(row[1]);
                 if(index==0){
                     _widget.setPrimarPv(row[1]);

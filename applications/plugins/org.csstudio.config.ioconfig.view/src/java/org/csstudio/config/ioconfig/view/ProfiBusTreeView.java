@@ -1237,7 +1237,7 @@ public class ProfiBusTreeView extends Composite {
 //            handlerService.executeCommand(cp, null);
             handlerService.executeCommand(editorID, null);
         } catch (Exception ex) {
-            CentralLogger.getInstance().error(this, ex.getMessage());
+            CentralLogger.getInstance().error(this, ex.getMessage(),ex);
         }
     }
 

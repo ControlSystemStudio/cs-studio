@@ -24,12 +24,14 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -108,8 +110,10 @@ public class ADLSensitive extends WidgetPart {
 //                throw new Exception("This "+parameter+" is a wrong ADL Menu Item");
 //            }
             if(row[0].trim().toLowerCase().equals("chan")){ //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _chan=ADLHelper.cleanString(row[1]);
             }else if(row[0].trim().toLowerCase().equals("sensitive_mode")){ //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 _sensitiveMode=ADLHelper.cleanString(row[1])[0];
             }else {
                 throw new WrongADLFormatException(Messages.ADLSensitive_WrongADLFormatException_Begin+fileLine+Messages.ADLSensitive_WrongADLFormatException_End);

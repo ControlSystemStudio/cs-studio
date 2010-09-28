@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DisplayModel;
@@ -33,6 +34,7 @@ import org.csstudio.sds.model.TextTypeEnum;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.swt.SWT;
@@ -73,6 +75,7 @@ public class Label extends Widget {
             //
             if(row[0].equals("textix")){ //$NON-NLS-1$
 //              <property type="sds.string" id="value.text" value="CMTB" />
+            	DebugHelper.add(this, row[1]);
                 String[] textit = ADLHelper.cleanString(row[1]);
                 _widget.setPropertyValue(LabelModel.PROP_TEXT_TYPE, TextTypeEnum.TYPE_TEXT);
                 if(textit[1].startsWith("$")&&textit.length>1){ //$NON-NLS-1$
