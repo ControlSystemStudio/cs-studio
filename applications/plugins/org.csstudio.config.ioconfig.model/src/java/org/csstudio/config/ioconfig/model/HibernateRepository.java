@@ -51,11 +51,14 @@ public class HibernateRepository implements IRepository {
             _ioName = ioName;
         }
 
-        public String execute(final Session session) {
+        @Override
+		public String execute(final Session session) {
             final Query query = session
-                    .createQuery("select channel.epicsAddressString from ?  as channel where channel.ioName like ?");
-            query.setString(0, ChannelDBO.class.getName()); // Zero-Based!
-            query.setString(1, _ioName); // Zero-Based!
+			// .createQuery("select channel.epicsAddressString from ?  as channel where channel.ioName like ?");
+					.createQuery("select channel.epicsAddressString from "
+							+ ChannelDBO.class.getName()
+							+ "  as channel where channel.ioName like '"
+							+ _ioName + "'");
 
             final List<String> channels = doQuery(query);
             if (channels.size() < 1) {
@@ -87,7 +90,8 @@ public class HibernateRepository implements IRepository {
             HibernateManager.doInDevDBHibernate(new HibernateCallback() {
                 private Session _session;
 
-                public GSDModuleDBO execute(final Session session) {
+                @Override
+				public GSDModuleDBO execute(final Session session) {
                     _session = session;
                     Set<ModuleChannelPrototypeDBO> values = gsdModule.getModuleChannelPrototypeNH();
                     _session.saveOrUpdate(gsdModule);
@@ -114,11 +118,13 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
+    @Override
+	public <T extends DBClass> T saveOrUpdate(final T dbClass) throws PersistenceException {
         try {
             HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-                public T execute(final Session session) {
+                @Override
+				public T execute(final Session session) {
                     session.saveOrUpdate(dbClass);
                     return dbClass;
                 }
@@ -136,11 +142,13 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public <T extends DBClass> T update(final T dbClass) {
+    @Override
+	public <T extends DBClass> T update(final T dbClass) {
 
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public T execute(final Session session) {
+            @Override
+			public T execute(final Session session) {
                 dbClass.setUpdatedOn(new Date());
                 session.update(dbClass);
                 session.flush();
@@ -154,9 +162,11 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public <T> List<T> load(final Class<T> clazz) {
+    @Override
+	public <T> List<T> load(final Class<T> clazz) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public List<T> execute(final Session session) {
                 final Query query = session.createQuery("from " + clazz.getName());
                 final List<T> nodes = query.list();
@@ -173,9 +183,11 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public <T> T load(final Class<T> clazz, final Serializable id) {
+    @Override
+	public <T> T load(final Class<T> clazz, final Serializable id) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public T execute(final Session session) {
                 final List<T> nodes = session.createQuery("select c from " + clazz.getName()
                         + " c where c.id = :id").setString("id", id.toString()).list();
@@ -193,10 +205,12 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public <T extends DBClass> void removeNode(final T dbClass) {
+    @Override
+	public <T extends DBClass> void removeNode(final T dbClass) {
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public Object execute(final Session session) {
+            @Override
+			public Object execute(final Session session) {
                 session.delete(dbClass);
                 return null;
             }
@@ -207,11 +221,13 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public GSDFileDBO save(final GSDFileDBO gsdFile) {
+    @Override
+	public GSDFileDBO save(final GSDFileDBO gsdFile) {
 
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public GSDFileDBO execute(final Session session) {
+            @Override
+			public GSDFileDBO execute(final Session session) {
                 session.saveOrUpdate(gsdFile);
                 return gsdFile;
             }
@@ -223,10 +239,12 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public void removeGSDFiles(final GSDFileDBO gsdFile) {
+    @Override
+	public void removeGSDFiles(final GSDFileDBO gsdFile) {
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public Object execute(final Session session) {
+            @Override
+			public Object execute(final Session session) {
                 session.delete(gsdFile);
                 return null;
             }
@@ -237,9 +255,11 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public List<DocumentDBO> loadDocument() {
+    @Override
+	public List<DocumentDBO> loadDocument() {
         return HibernateManager.doInDevDBHibernate(new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public List<DocumentDBO> execute(final Session session) {
                 final Query query = session.createQuery("from " + DocumentDBO.class.getName()
                         + " where length(image) > 0");
@@ -256,11 +276,13 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public DocumentDBO save(final DocumentDBO document) {
+    @Override
+	public DocumentDBO save(final DocumentDBO document) {
 
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public DocumentDBO execute(final Session session) {
+            @Override
+			public DocumentDBO execute(final Session session) {
                 session.saveOrUpdate(document);
                 session.flush();
                 return document;
@@ -273,11 +295,13 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public DocumentDBO update(final DocumentDBO document) {
+    @Override
+	public DocumentDBO update(final DocumentDBO document) {
 
         HibernateManager.doInDevDBHibernate(new HibernateCallback() {
 
-            public DocumentDBO execute(final Session session) {
+            @Override
+			public DocumentDBO execute(final Session session) {
                 document.setUpdateDate(new Date());
                 session.update(document);
                 session.flush();
@@ -296,7 +320,8 @@ public class HibernateRepository implements IRepository {
      *            the IO-Name.
      * @return the Epics Adress for the given IO-Name.
      */
-    public String getEpicsAddressString(final String ioName) {
+    @Override
+	public String getEpicsAddressString(final String ioName) {
         HibernateCallback hibernateCallback = new EpicsAddressHibernateCallback(ioName);
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
@@ -304,9 +329,11 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public List<String> getIoNames() {
+    @Override
+	public List<String> getIoNames() {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public List<String> execute(final Session session) {
                 final Query query = session.createQuery("select channel.ioName from "
                         + ChannelDBO.class.getName() + " as channel");
@@ -320,9 +347,11 @@ public class HibernateRepository implements IRepository {
     /**
      * {@inheritDoc}
      */
-    public List<String> getIoNames(final String iocName) {
+    @Override
+	public List<String> getIoNames(final String iocName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public List<String> execute(final Session session) {
                 final Query query = session.createQuery("select channel.ioName from "
                         + ChannelDBO.class.getName() + " as channel");
@@ -336,7 +365,8 @@ public class HibernateRepository implements IRepository {
     @Override
     public String getShortChannelDesc(final String ioName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public String execute(final Session session) {
                 final Query query = session.createQuery("select channel.description from "
                         + ChannelDBO.class.getName() + " as channel where channel.ioName like ?");
@@ -360,9 +390,11 @@ public class HibernateRepository implements IRepository {
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
 
-    public List<SensorsDBO> loadSensors(final String ioName) {
+    @Override
+	public List<SensorsDBO> loadSensors(final String ioName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public List<SensorsDBO> execute(final Session session) {
                 final Query query = session.createQuery("from " + SensorsDBO.class.getName()
                         + " as sensors where sensors.ioName like ?");
@@ -375,15 +407,16 @@ public class HibernateRepository implements IRepository {
         return HibernateManager.doInDevDBHibernate(hibernateCallback);
     }
 
-    public SensorsDBO loadSensor(final String ioName, final String selection) {
+    @Override
+	public SensorsDBO loadSensor(final String ioName, final String selection) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            @SuppressWarnings("unchecked")
+            @Override
+			@SuppressWarnings("unchecked")
             public SensorsDBO execute(final Session session) {
                 String statment = "select" + " s" + " from " + SensorsDBO.class.getName() + " s"
                         + ", " + ChannelDBO.class.getName() + " c" + " where c.currentValue like s.id"
                         + " and c.ioName like '" + ioName + "'";
                 final Query query = session.createQuery(statment);
-                // query.setString(0, ioName); // Zero-Based!
                 final List<SensorsDBO> sensors = query.list();
                 if ( (sensors == null) || (sensors.size() < 1)) {
                     return null;
@@ -396,7 +429,8 @@ public class HibernateRepository implements IRepository {
 
     public List<Integer> getRootPath(final int id) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            public List<Integer> execute(final Session session) {
+            @Override
+			public List<Integer> execute(final Session session) {
                 int level = 0;
                 int searchId = id;
                 String statment = "select node.parent_Id  from ddb_node node where node.id like ?";
@@ -422,7 +456,8 @@ public class HibernateRepository implements IRepository {
     @CheckForNull
     public ChannelDBO loadChannel(@Nullable final String ioName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            public ChannelDBO execute(final Session session) {
+            @Override
+			public ChannelDBO execute(final Session session) {
                 if(ioName==null) {
                     return null;
                 }
@@ -443,7 +478,8 @@ public class HibernateRepository implements IRepository {
     @CheckForNull
     public List<PV2IONameMatcherModelDBO> loadPV2IONameMatcher(@Nullable final Collection<String> pvName) {
         HibernateCallback hibernateCallback = new HibernateCallback() {
-            public List<PV2IONameMatcherModelDBO> execute(final Session session) throws HibernateException {
+            @Override
+			public List<PV2IONameMatcherModelDBO> execute(final Session session) throws HibernateException {
                 if ( (pvName == null) || (pvName.size() == 0)) {
                     return null;
                 }
