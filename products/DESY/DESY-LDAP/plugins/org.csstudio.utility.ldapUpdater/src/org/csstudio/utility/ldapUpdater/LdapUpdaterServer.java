@@ -100,11 +100,11 @@ public class LdapUpdaterServer implements IApplication {
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
         final Calendar cal = new GregorianCalendar(timeZone);
 
-//        System.out.println(cal.getTime());
+        System.out.println(cal.getTime());
 
-        final int hour = (startTimeSec) / 3600;
+        final int hour = startTimeSec / 3600;
         cal.set(Calendar.HOUR, hour);
-        final int minutes = (startTimeSec / 60) % 60;
+        final int minutes = startTimeSec / 60 % 60;
         cal.set(Calendar.MINUTE, minutes);
         final int seconds = startTimeSec % 3600;
         cal.set(Calendar.SECOND, seconds);
