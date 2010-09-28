@@ -89,8 +89,7 @@ public interface ILdapUpdaterService {
      * @throws ServiceUnavailableException
      */
     @CheckForNull
-    ILdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix,
-                                            @Nonnull LdapName fullName)
+    ILdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName)
             throws InterruptedException, InvalidNameException, ServiceUnavailableException;
 
 

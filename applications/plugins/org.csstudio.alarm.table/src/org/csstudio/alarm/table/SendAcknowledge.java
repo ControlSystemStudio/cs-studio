@@ -112,9 +112,7 @@ public final class SendAcknowledge extends Job {
     }
 
     /**
-     * Sends for the list of JMSMessages an acknowledge message to the jms- and
-     * ldap server.
-     *
+     * Sends for the list of JMSMessages an acknowledge message to the jms server.
      */
     @Override
     @Nonnull
@@ -123,6 +121,7 @@ public final class SendAcknowledge extends Job {
         final ISendMapMessage sender = JmsLogsPlugin.getDefault().getSendMapMessage();
 
     	try {
+    		// FIXME (jpenning)  why no more startSender?
             // sender.startSender(true);
 
             for (final BasicMessage message : messagesToSend) {
@@ -156,20 +155,9 @@ public final class SendAcknowledge extends Job {
                 mapMessage.setString(AlarmMessageKey.ACK.getDefiningName(), Boolean.TRUE.toString()); //$NON-NLS-1$ //$NON-NLS-2$
                 mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
 
-                // Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn",
-                // message.getName(), "ack"); epicsAlarmHighUnAckn
-
                 // FIXME (jpenning, bknerr)
-                // LDAP Write requests for acknowledging should be removed.
-                // Acknowledge action NOT via LDAP (and not with this bad Engine anyway)
-
-
-//                Engine.getInstance().addLdapWriteRequest(
-//                        "epicsAlarmAcknTimeStamp", message.getName(), time);
-//                Engine.getInstance().addLdapWriteRequest(
-//                        "epicsAlarmHighUnAckn", message.getName(), "");
-
-
+                // LDAP Write requests for acknowledging are removed.
+                // Acknowledge action is no longer stored in LDAP
 
                 if (user != null) {
                     String property = message.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
@@ -185,7 +173,8 @@ public final class SendAcknowledge extends Job {
             JmsLogsPlugin.logException("ACK not set", e);
             return Status.CANCEL_STATUS;
         } finally {
-            try {
+        	// FIXME (jpenning) cleanup finally block. why no more stopSender? 
+        	try {
                 // sender.stopSender();
                 System.out.println("stop sender!!!"); //$NON-NLS-1$
             } catch (final Exception e) {

@@ -44,7 +44,7 @@ import org.osgi.framework.Bundle;
 
 /**
  * Implementation of the alarm sound service.
- *
+ * 
  * @author jpenning
  * @author $Author$
  * @version $Revision$
@@ -52,215 +52,242 @@ import org.osgi.framework.Bundle;
  */
 public final class AlarmSoundService implements IAlarmSoundService {
 
-    private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(AlarmSoundService.class);
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			AlarmSoundService.class);
 
-    private Map<String, String> _severityToSoundfile;
+	private Map<String, String> _severityToSoundfile;
 
-    // Buffer for one sound. The String denotes the path, relative (contained in bundle) or absolute, to the sound resource.
-    private final ArrayBlockingQueue<String> _queue = new ArrayBlockingQueue<String>(1);
+	// Buffer for one sound. The String denotes the path, relative (contained in
+	// bundle) or absolute, to the sound resource.
+	private final ArrayBlockingQueue<String> _queue = new ArrayBlockingQueue<String>(
+			1);
 
-    private final Thread _playerThread;
+	private final Thread _playerThread;
 
-    private AlarmSoundService() {
-        mapSeverityToSoundfile();
-        _playerThread = new PlayerThread("AlarmSoundService");
-    }
+	private AlarmSoundService() {
+		mapSeverityToSoundfile();
+		_playerThread = new PlayerThread("AlarmSoundService");
+	}
 
-    // Helper for the construction
-    private void startPlayerThread() {
-        _playerThread.start();
-    }
+	/**
+	 * Read mapping of severities to sounds from preferences and put mapping in
+	 * a local HashMap. (Performance)
+	 */
+	private void mapSeverityToSoundfile() {
+		final IPreferenceStore store = new JmsLogPreferencePage()
+				.getPreferenceStore();
+		_severityToSoundfile = new HashMap<String, String>();
 
-    /**
-     * The alarm sound service is constructed via factory method. This is necessary to be able to start the player thread
-     * after full construction of the service.
-     *
-     * @return the alarm sound service
-     */
-    @Nonnull
-    public static AlarmSoundService newAlarmSoundService() {
-        // first fully construct the alarm sound service object
-        final AlarmSoundService result = new AlarmSoundService();
-        // then start the thread
-        result.startPlayerThread();
-        return result;
-    }
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY0),
+				store.getString(JmsLogPreferenceConstants.SOUND0));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY1),
+				store.getString(JmsLogPreferenceConstants.SOUND1));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY2),
+				store.getString(JmsLogPreferenceConstants.SOUND2));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY3),
+				store.getString(JmsLogPreferenceConstants.SOUND3));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY4),
+				store.getString(JmsLogPreferenceConstants.SOUND4));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY5),
+				store.getString(JmsLogPreferenceConstants.SOUND5));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY6),
+				store.getString(JmsLogPreferenceConstants.SOUND6));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY7),
+				store.getString(JmsLogPreferenceConstants.SOUND7));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY8),
+				store.getString(JmsLogPreferenceConstants.SOUND8));
+		_severityToSoundfile.put(
+				store.getString(JmsLogPreferenceConstants.KEY9),
+				store.getString(JmsLogPreferenceConstants.SOUND9));
 
-    public void playAlarmSound(@Nonnull final String severityAsString) {
-        LOG.debug("playAlarmSound for severity " + severityAsString);
+	}
 
-        // Guard
-        if (!isMappingDefinedForSeverity(severityAsString)) {
-            LOG.debug("No mapping defined for severity " + severityAsString);
-            return;
-        }
+	/**
+	 * The alarm sound service is constructed via factory method. This is
+	 * necessary to be able to start the player thread after full construction
+	 * of the service.
+	 * 
+	 * @return the alarm sound service
+	 */
+	@Nonnull
+	public static AlarmSoundService newAlarmSoundService() {
+		// first fully construct the alarm sound service object
+		final AlarmSoundService result = new AlarmSoundService();
+		// then start the thread
+		result.startPlayerThread();
+		return result;
+	}
 
-        if (_queue.offer(getMp3Path(severityAsString))) {
-            LOG.debug("sound for severity " + severityAsString + " has been queued");
-        } else {
-            LOG.debug("sound for severity " + severityAsString + " has been ignored");
-        }
-    }
+	// Helper for the construction
+	private void startPlayerThread() {
+		_playerThread.start();
+	}
 
+	@Override
+	public void playAlarmSound(@Nonnull final String severityAsString) {
+		LOG.debug("playAlarmSound for severity " + severityAsString);
 
-    public void playAlarmSoundFromResource(@Nonnull String path) {
-        if (_queue.offer(path)) {
-            LOG.debug("sound from " + path + " has been queued");
-        } else {
-            LOG.debug("sound from " + path + " has been ignored");
-        }
-    }
+		// Guard
+		if (!isMappingDefinedForSeverity(severityAsString)) {
+			LOG.debug("No mapping defined for severity " + severityAsString);
+			return;
+		}
 
-    public boolean existsResource(@Nonnull final String text) {
-        boolean result = !text.isEmpty();
-        if (result) {
-            final Path path = new Path(text);
-            if (path.isAbsolute()) {
-                File file = new File(text);
-                result = file.exists();
-            } else {
-                Bundle bundle = JmsLogsPlugin.getDefault().getBundle();
-                result = bundle.getResource(text) != null;
-            }
-        }
-        return result;
-    }
+		if (_queue.offer(getMp3Path(severityAsString))) {
+			LOG.debug("sound for severity " + severityAsString
+					+ " has been queued");
+		} else {
+			LOG.debug("sound for severity " + severityAsString
+					+ " has been ignored");
+		}
+	}
 
+	private boolean isMappingDefinedForSeverity(@Nonnull final String severity) {
+		boolean result = _severityToSoundfile.containsKey(severity);
 
+		final String filename = _severityToSoundfile.get(severity);
+		result = result && (filename != null) && (filename.length() > 0);
 
-    @Nonnull
-    private String getMp3Path(@Nonnull final String severity) {
-        return _severityToSoundfile.get(severity);
-    }
+		return result;
+	}
 
-    private boolean isMappingDefinedForSeverity(@Nonnull final String severity) {
-        boolean result = _severityToSoundfile.containsKey(severity);
+	@Nonnull
+	private String getMp3Path(@Nonnull final String severity) {
+		return _severityToSoundfile.get(severity);
+	}
 
-        final String filename = _severityToSoundfile.get(severity);
-        result = result && (filename != null) && (filename.length() > 0);
+	@Override
+	public void playAlarmSoundFromResource(@Nonnull String path) {
+		if (_queue.offer(path)) {
+			LOG.debug("sound from " + path + " has been queued");
+		} else {
+			LOG.debug("sound from " + path + " has been ignored");
+		}
+	}
 
-        return result;
-    }
+	@Override
+	public boolean existsResource(@Nonnull final String text) {
+		boolean result = !text.isEmpty();
+		if (result) {
+			final Path path = new Path(text);
+			if (path.isAbsolute()) {
+				File file = new File(text);
+				result = file.exists();
+			} else {
+				Bundle bundle = JmsLogsPlugin.getDefault().getBundle();
+				result = bundle.getResource(text) != null;
+			}
+		}
+		return result;
+	}
 
-    /**
-     * Read mapping of severities to sounds from preferences and put mapping in a local HashMap.
-     * (Performance)
-     */
-    private void mapSeverityToSoundfile() {
-        final IPreferenceStore store = new JmsLogPreferencePage().getPreferenceStore();
-        _severityToSoundfile = new HashMap<String, String>();
+	@Override
+	public void reloadPreferences() {
+		mapSeverityToSoundfile();
+	}
 
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY0), store
-                .getString(JmsLogPreferenceConstants.SOUND0));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY1), store
-                .getString(JmsLogPreferenceConstants.SOUND1));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY2), store
-                .getString(JmsLogPreferenceConstants.SOUND2));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY3), store
-                .getString(JmsLogPreferenceConstants.SOUND3));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY4), store
-                .getString(JmsLogPreferenceConstants.SOUND4));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY5), store
-                .getString(JmsLogPreferenceConstants.SOUND5));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY6), store
-                .getString(JmsLogPreferenceConstants.SOUND6));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY7), store
-                .getString(JmsLogPreferenceConstants.SOUND7));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY8), store
-                .getString(JmsLogPreferenceConstants.SOUND8));
-        _severityToSoundfile.put(store.getString(JmsLogPreferenceConstants.KEY9), store
-                .getString(JmsLogPreferenceConstants.SOUND9));
+	/**
+	 * Class for the player thread
+	 */
+	private class PlayerThread extends Thread {
 
-    }
+		public PlayerThread(@Nonnull final String name) {
+			super(name);
+		}
 
-    /**
-     * Class for the player thread
-     */
-    private class PlayerThread extends Thread {
+		@SuppressWarnings("synthetic-access")
+		@Override
+		public void run() {
+			Player mp3Player = null;
+			BufferedInputStream bufferedInputStream = null;
 
-        public PlayerThread(@Nonnull final String name) {
-            super(name);
-        }
+			while (true) {
+				try {
+					// Remove entries which occurred during previous playtime
+					_queue.clear();
 
-        @Override
-        public void run() {
-            Player mp3Player = null;
-            BufferedInputStream bufferedInputStream = null;
+					// Wait for entry
+					final String path = _queue.take();
+					LOG.debug("player started");
 
-            while (true) {
-                try {
-                    // Remove entries which occurred during previous playtime
-                    _queue.clear();
+					final InputStream soundStream = getSoundStreamForPath(path);
+					if (soundStream != null) {
+						bufferedInputStream = new BufferedInputStream(
+								soundStream);
+						mp3Player = new Player(bufferedInputStream);
+						mp3Player.play();
+					}
+				} catch (final Exception e) {
+					LOG.warn("player stopped on error ", e);
+				} finally {
+					LOG.debug("player has finished");
+					tryToClose(mp3Player, bufferedInputStream);
+				}
+			}
+		}
 
-                    // Wait for entry
-                    final String path = _queue.take();
-                    LOG.debug("player started");
+		@SuppressWarnings("synthetic-access")
+		private void tryToClose(@CheckForNull final Player mp3Player,
+				@CheckForNull final BufferedInputStream bufferedInputStream) {
+			try {
+				if (bufferedInputStream != null) {
+					bufferedInputStream.close();
+				}
+				if (mp3Player != null) {
+					mp3Player.close();
+				}
+			} catch (final Exception e2) {
+				LOG.warn("error while closing resources", e2);
+				// can't help it
+			}
+		}
 
-                    final InputStream soundStream = getSoundStreamForPath(path);
-                    if (soundStream != null) {
-                        bufferedInputStream = new BufferedInputStream(soundStream);
-                        mp3Player = new Player(bufferedInputStream);
-                        mp3Player.play();
-                    }
-                } catch (final Exception e) {
-                    LOG.warn("player stopped on error ", e);
-                } finally {
-                    LOG.debug("player has finished");
-                    tryToClose(mp3Player, bufferedInputStream);
-                }
-            }
-        }
+		/**
+		 * @param relative
+		 *            or absolute path to sound resource
+		 * @return the stream
+		 * @throws IOException
+		 */
+		@CheckForNull
+		private InputStream getSoundStreamForPath(@Nonnull final String mp3Path)
+				throws IOException {
+			final URL url = getURLFromPath(mp3Path);
+			final InputStream result = url == null ? null : url.openStream();
+			return result;
+		}
 
-        private void tryToClose(@CheckForNull final Player mp3Player,
-                                @CheckForNull final BufferedInputStream bufferedInputStream) {
-            try {
-                if (bufferedInputStream != null) {
-                    bufferedInputStream.close();
-                }
-                if (mp3Player != null) {
-                    mp3Player.close();
-                }
-            } catch (final Exception e2) {
-                LOG.warn("error while closing resources", e2);
-                // can't help it
-            }
-        }
+		@CheckForNull
+		private URL getURLFromPath(@Nonnull final String mp3Path) {
+			URL result = null;
+			Path path = new Path(mp3Path);
+			if (path.isAbsolute()) {
+				result = getUrlForAbsolutePath(mp3Path);
+			} else {
+				result = FileLocator.find(JmsLogsPlugin.getDefault()
+						.getBundle(), path, null);
+			}
+			return result;
+		}
 
-        /**
-         * @param relative or absolute path to sound resource
-         * @return the stream
-         * @throws IOException
-         */
-        @CheckForNull
-        private InputStream getSoundStreamForPath(@Nonnull final String mp3Path) throws IOException {
-            final URL url = getURLFromPath(mp3Path);
-            final InputStream result = url == null ? null : url.openStream();
-            return result;
-        }
+		@CheckForNull
+		private URL getUrlForAbsolutePath(@Nonnull final String mp3Path) {
+			URL result = null;
+			try {
+				result = new File(mp3Path).toURI().toURL();
+			} catch (MalformedURLException e) {
+				result = null;
+			}
+			return result;
+		}
 
-        @CheckForNull
-        private URL getURLFromPath(@Nonnull final String mp3Path) {
-            URL result = null;
-            Path path = new Path(mp3Path);
-            if (path.isAbsolute()) {
-                result = getUrlForAbsolutePath(mp3Path);
-            } else {
-                result = FileLocator.find(JmsLogsPlugin.getDefault().getBundle(), path, null);
-            }
-            return result;
-        }
-
-        @CheckForNull
-        private URL getUrlForAbsolutePath(@Nonnull final String mp3Path) {
-            URL result = null;
-            try {
-                result = new File(mp3Path).toURI().toURL();
-            } catch (MalformedURLException e) {
-                result = null;
-            }
-            return result;
-        }
-
-    }
+	}
 }

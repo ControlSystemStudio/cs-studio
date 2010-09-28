@@ -81,10 +81,6 @@
 		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/plugin_customization.ini"/>
 		</copy>
-			<mkdir dir="${workspaceLocation}build/initmp/${archivePrefix}/MP3Files" />
-		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}/MP3Files">
-			<fileset dir="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/MP3Files"/>
-		</copy>
 		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-win32.win32.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
 	</target>
 

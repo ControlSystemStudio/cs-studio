@@ -21,13 +21,11 @@
  */
  package org.csstudio.utility.ldap.namespacebrowser;
 
-import javax.naming.ldap.InitialLdapContext;
+import javax.annotation.Nonnull;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.service.LdapServiceTracker;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -40,8 +38,6 @@ public class Activator extends AbstractCssUiPlugin {
 
 	// The shared instance
 	private static Activator INSTANCE;
-
-    private BundleContext _bundleContext;
 
     private LdapServiceTracker _ldapServiceTracker;
 
@@ -60,7 +56,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 * {@inheritDoc}
 	 */
 	@Override
-    public void doStart(final BundleContext context) throws Exception {
+    public void doStart(@Nonnull final BundleContext context) throws Exception {
         _ldapServiceTracker = new LdapServiceTracker(context);
         _ldapServiceTracker.open();
 	}
