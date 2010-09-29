@@ -45,20 +45,20 @@ import org.junit.Test;
  * @version $Revision$
  * @since 21.05.2010
  */
-public class XmlFileContentModelBuilderTest {
+public class XmlFileContentModelBuilderHeadlessTest {
 
     @SuppressWarnings("unused")
     private static final Logger LOG = CentralLogger.getInstance()
-            .getLogger(XmlFileContentModelBuilderTest.class);
+            .getLogger(XmlFileContentModelBuilderHeadlessTest.class);
 
     private static URL RESOURCE_VALID;
     private static URL RESOURCE_INVALID;
     private static URL RESOURCE_EMPTY;
-    public static final String TEST_VALID_XML = "testres/Test_Valid.xml";
-    private static final String TEST_EMPTY_XML = "testres/Test_Empty.xml";
-    private static final String TEST_INVALID_XML = "testres/Test_InvalidStructure.xml";
+    public static final String TEST_VALID_XML = "res-test/Test_Valid.xml";
+    private static final String TEST_EMPTY_XML = "res-test/Test_Empty.xml";
+    private static final String TEST_INVALID_XML = "res-test/Test_InvalidStructure.xml";
 
-    private ContentModel<TestTreeConfigurator> _model;
+    private ContentModel<TestTreeConfiguration> _model;
 
     @BeforeClass
     public static void buildResourcePath() {
@@ -73,7 +73,7 @@ public class XmlFileContentModelBuilderTest {
     @Test
     public void testValid() {
         try {
-            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfigurator.UNIT);
+            _model = TreeModelTestUtils.buildContentModel(RESOURCE_VALID, TestTreeConfiguration.VIRTUAL_ROOT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {
@@ -85,20 +85,20 @@ public class XmlFileContentModelBuilderTest {
 
 
     private void testSimpleNamesCache() {
-        Set<String> simpleNames = _model.getSimpleNames(TestTreeConfigurator.FACILITY);
+        Set<String> simpleNames = _model.getSimpleNames(TestTreeConfiguration.FACILITY);
         Assert.assertEquals(simpleNames.size(), 2);
-        simpleNames = _model.getSimpleNames(TestTreeConfigurator.COMPONENT);
+        simpleNames = _model.getSimpleNames(TestTreeConfiguration.COMPONENT);
         Assert.assertEquals(simpleNames.size(), 3);
-        simpleNames = _model.getSimpleNames(TestTreeConfigurator.IOC);
+        simpleNames = _model.getSimpleNames(TestTreeConfiguration.IOC);
         Assert.assertEquals(simpleNames.size(), 5);
-        simpleNames = _model.getSimpleNames(TestTreeConfigurator.RECORD);
+        simpleNames = _model.getSimpleNames(TestTreeConfiguration.RECORD);
         Assert.assertEquals(simpleNames.size(), 17);
     }
 
     @Test
     public void testEmpty() {
         try {
-            TreeModelTestUtils.buildContentModel(RESOURCE_EMPTY, TestTreeConfigurator.UNIT);
+            TreeModelTestUtils.buildContentModel(RESOURCE_EMPTY, TestTreeConfiguration.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File contains parsing errors. Premature end of file.", e.getMessage());
@@ -112,7 +112,7 @@ public class XmlFileContentModelBuilderTest {
     @Test
     public void testInvalidXML() {
         try {
-            TreeModelTestUtils.buildContentModel(RESOURCE_INVALID, TestTreeConfigurator.UNIT);
+            TreeModelTestUtils.buildContentModel(RESOURCE_INVALID, TestTreeConfiguration.UNIT);
         } catch (final CreateContentModelException e) {
             Assert.assertTrue((e.getCause() instanceof JDOMParseException));
             Assert.assertEquals("File contains parsing errors. Element type \"ecock\" must be declared.", e.getMessage());

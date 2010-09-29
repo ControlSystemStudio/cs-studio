@@ -161,7 +161,7 @@ public final class AlarmTreeBuilder {
                                 @Nonnull final TreeNodeSource source) throws NamingException {
         ensureTestFacilityExists();
 
-        for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getRoot().getDirectChildren()) {
+        for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getVirtualRoot().getDirectChildren()) {
             if (createAlarmSubtree(rootNode, node, monitor, source)) {
                 return true;
             }

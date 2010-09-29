@@ -75,7 +75,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
             model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT);
 
             for (final IAlarmTreeNode node : _alarmTreeNodes) {
-                createSubtree(model, node, model.getRoot());
+                createSubtree(model, node, model.getVirtualRoot());
             }
 
             return model;

@@ -151,10 +151,10 @@ public class DctContentModelBuilder extends AbstractContentModelBuilder<LdapEpic
      * @throws InvalidNameException
      */
     private void addFacility(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> contentModel, @Nonnull final String projectName) throws InvalidNameException {
-        final LdapName ldapName = new LdapName(contentModel.getRoot().getLdapName().getRdns());
+        final LdapName ldapName = new LdapName(contentModel.getVirtualRoot().getLdapName().getRdns());
         ldapName.add(new Rdn(FACILITY.getNodeTypeName(),_dctPoject.getName()));
 
-        final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel.getRoot();
+        final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> parent = contentModel.getVirtualRoot();
         ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> newChild;
         newChild = new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(projectName,
                                                                          FACILITY,

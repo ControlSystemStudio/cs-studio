@@ -126,11 +126,13 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             throw new CreateContentModelException("Component model could not be constructed. Invalid LDAP name for root element.", e);
         }
 
-        // Leave out the root element
-        final List<Element> elements = getChildrenElements(rootElement);
-        for (final Element child :  elements) {
-            processElement(model, child, model.getRoot());
-        }
+//        // Leave out the root element
+//        final List<Element> elements = getChildrenElements(rootElement);
+//        for (final Element child :  elements) {
+//            processElement(model, child, model.getVirtualRoot());
+//        }
+        processElement(model, rootElement, model.getVirtualRoot());
+
         return model;
     }
 
@@ -178,10 +180,10 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             ISubtreeNodeComponent<T> newLdapChild;
             try {
                 newLdapChild = new TreeNodeComponent<T>(name,
-                        oc,
-                        ldapParent,
-                        attributes,
-                        fullName);
+                                                        oc,
+                                                        ldapParent,
+                                                        attributes,
+                                                        fullName);
             } catch (final InvalidNameException e) {
                 throw new CreateContentModelException("Component model with LdapName " + fullName + " could not be constructed. Invalid LDAP name.", e);
 
