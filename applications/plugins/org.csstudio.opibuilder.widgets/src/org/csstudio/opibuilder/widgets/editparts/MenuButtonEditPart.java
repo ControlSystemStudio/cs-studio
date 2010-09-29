@@ -172,6 +172,7 @@ public final class MenuButtonEditPart extends AbstractPVWidgetEditPart {
 											WritePVAction action = new WritePVAction();
 											action.setPropertyValue(WritePVAction.PROP_PVNAME, getWidgetModel().getPVName());
 											action.setPropertyValue(WritePVAction.PROP_VALUE, writeValue);
+											action.setPropertyValue(WritePVAction.PROP_DESCRIPTION, writeValue);
 											actionsInput.getActionsList().add(action);
 										}
 										getWidgetModel().setPropertyValue(

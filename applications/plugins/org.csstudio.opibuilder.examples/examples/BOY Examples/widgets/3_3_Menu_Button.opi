@@ -7,6 +7,7 @@
     <my_name>Best OPI Yet</my_name>
   </macros>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>false</show_ruler>
   <height>600</height>
@@ -37,6 +38,7 @@
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>80</height>
     <border_width>1</border_width>
@@ -69,6 +71,7 @@
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>60</height>
     <border_width>1</border_width>
@@ -101,6 +104,7 @@
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -133,6 +137,7 @@
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -165,6 +170,7 @@
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -197,6 +203,7 @@
     <width>76</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -230,6 +237,7 @@ $(pv_value)</tooltip>
     <width>117</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
+    <rules />
     <scripts />
     <height>16</height>
     <border_width>1</border_width>
@@ -257,17 +265,17 @@ $(pv_value)</tooltip>
     <actions_from_pv>true</actions_from_pv>
     <scripts />
     <height>40</height>
-    <name>Menu Button</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Menu Button</name>
     <pv_name>EpicsDemo1.SCAN</pv_name>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
     <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="8" style="0" />
@@ -275,14 +283,15 @@ $(pv_value)</tooltip>
     <width>100</width>
     <border_style>6</border_style>
     <label />
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
     </border_color>
     <y>341</y>
-    <x>461</x>
     <tooltip>$(pv_name)
 $(pv_value)</tooltip>
+    <x>461</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.MenuButton" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -290,16 +299,16 @@ $(pv_value)</tooltip>
     <actions_from_pv>false</actions_from_pv>
     <scripts />
     <height>40</height>
-    <name>Menu Button_1</name>
     <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <foreground_color>
-      <color red="0" green="0" blue="0" />
-    </foreground_color>
+    <name>Menu Button_1</name>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <enabled>true</enabled>
+    <foreground_color>
+      <color red="0" green="0" blue="0" />
+    </foreground_color>
     <widget_type>Menu Button</widget_type>
+    <enabled>true</enabled>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <font>
       <fontdata fontName="Arial" height="10" style="1" />
@@ -307,6 +316,7 @@ $(pv_value)</tooltip>
     <width>100</width>
     <border_style>6</border_style>
     <label>Select Menu...</label>
+    <rules />
     <border_width>1</border_width>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -315,6 +325,7 @@ $(pv_value)</tooltip>
     <actions hook="false">
       <action type="EXECUTE_JAVASCRIPT">
         <path>../scripts/SimpleDialog.js</path>
+        <description>Open a simple dialog from Javascript</description>
       </action>
       <action type="OPEN_DISPLAY">
         <path>../10_widgets.opi</path>
@@ -322,33 +333,48 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
       <action type="WRITE_PV">
         <pv_name>loc://test</pv_name>
         <value>100</value>
+        <description />
       </action>
     </actions>
-    <x>251</x>
     <tooltip />
+    <x>251</x>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>../pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>558</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -357,15 +383,10 @@ $(pv_value)</tooltip>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>true</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>17</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>
