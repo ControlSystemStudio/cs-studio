@@ -52,12 +52,6 @@ public interface IAlarmResource {
     List<String> getTopics();
 
     /**
-     * @return list of facilities usable for ldap based retrieving of a content model
-     */
-    @Nonnull
-    List<String> getFacilities();
-
-    /**
      * @return path to xml file containing a content model
      */
     @Nonnull

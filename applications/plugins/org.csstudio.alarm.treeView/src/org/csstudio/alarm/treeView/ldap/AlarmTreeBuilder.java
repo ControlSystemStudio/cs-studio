@@ -77,8 +77,9 @@ public final class AlarmTreeBuilder {
     }
 
     private static void ensureTestFacilityExists() throws ServiceUnavailableException {
+        String facilityName = "Test";
         try {
-            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), "TEST",
+            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), facilityName,
                                                              UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
@@ -89,15 +90,15 @@ public final class AlarmTreeBuilder {
             try {
                 service.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
-                LOG.info("TEST facility does not exist in LDAP, creating it.");
+                LOG.info("Test facility named " + facilityName + " does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
-                attrs.put(FACILITY.getNodeTypeName(), "TEST");
+                attrs.put(FACILITY.getNodeTypeName(), facilityName);
                 attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getObjectClass());
 
                 service.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
-            LOG.error("Failed to create TEST facility in LDAP", e);
+            LOG.error("Failed to create test facility named " + facilityName + "in LDAP", e);
         }
     }
 

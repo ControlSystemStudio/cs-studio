@@ -8,8 +8,6 @@ import org.junit.Test;
 
 public class JMSAlarmMessageListTest {
 
-	String columnNames = "ACK,25;COUNT,52;TYPE,56;EVENTTIME,138;NAME,173;VALUE,100;HOST,100;FACILITY,100;TEXT,100;SEVERITY,100;STATUS,100;OVERWRITES,100;SEVERITY-MAX,100;SEVERITY-OLD,73;STATUS-OLD,178;USER,100;APPLICATION-ID,100;PROCESS-ID,100;CLASS,100;DOMAIN,100;LOCATION,100;DESTINATION,100";
-
 	static Integer _incrementedMilliSeconds = 100;
 
 	// Test case to reproduce an error 2008-01-06:
@@ -22,7 +20,7 @@ public class JMSAlarmMessageListTest {
 		final AlarmMessageList messageList = new AlarmMessageList();
 		final String eventtimeMajor = createAndIncrementDate();
 		final String eventtimeMinor = createAndIncrementDate();
-		// add 5 minors with the same name but later time
+
 		for(int i = 0; i < 5; i++) {
 		    messageList.addMessage(createJMSMessage("NAME_" + i, "MINOR", "event", false, eventtimeMinor));
 		}
@@ -32,23 +30,25 @@ public class JMSAlarmMessageListTest {
 		for(int i = 0; i < 5; i++) {
 		    messageList.addMessage(createJMSMessage("NAME_" + i, "MAJOR", "event", false, eventtimeMajor));
 		}
+		Assert.assertEquals(10, messageList.getJMSMessageList().size());
 		for(int i = 0; i < 5; i++) {
 		    Assert.assertEquals(true, checkForAlarm("NAME_" + i, "MAJOR", messageList));
 		    Assert.assertEquals(true, checkForAlarm("NAME_" + i, "MINOR", messageList));
 		}
 
-		Assert.assertEquals(10, messageList.getJMSMessageList().size());
-		//Send acknowledges
+		//Send acknowledges to minor
 		for(int i = 0; i < 5; i++) {
 		    messageList.addMessage(createJMSMessage("NAME_" + i, "MINOR", "event", true, eventtimeMinor));
 		}
 		for(int i = 0; i < 5; i++) {
-			Assert.assertEquals(true, checkForAlarm("NAME_" + i, "MINOR", messageList));
+			Assert.assertEquals(false, checkForAlarm("NAME_" + i, "MINOR", messageList));
 		}
 		for(int i = 0; i < 5; i++) {
 		    messageList.addMessage(createJMSMessage("NAME_" + i, "MAJOR", "event", true, eventtimeMajor));
 		}
-//		Assert.assertEquals(5, messageList.getJMSMessageList().size());
+		for(int i = 0; i < 5; i++) {
+		    Assert.assertEquals(true, checkForAlarm("NAME_" + i, "MAJOR", messageList));
+		}
 	}
 
 	@Test
@@ -111,6 +111,8 @@ public class JMSAlarmMessageListTest {
 
 	@Test
 	public void testInvalidMapMessages() {
+	    // This test ensures that only useful messages are added to the table.
+
 	    final AlarmMessageList messageList = new AlarmMessageList();
 
 	    // add empty message
@@ -120,6 +122,7 @@ public class JMSAlarmMessageListTest {
 		// property severity = null
 	    messageList.addMessage(createJMSMessage("NAME", null, "type", Boolean.TRUE, null));
 
+	    // if no type is given, only messages which ack TRUE will be processed
 		// property type = null and ack is not set
 		messageList.addMessage(createJMSMessage("NAME", "MAJOR", null, null, null));
 		Assert.assertEquals(0, messageList.getJMSMessageList().size());
