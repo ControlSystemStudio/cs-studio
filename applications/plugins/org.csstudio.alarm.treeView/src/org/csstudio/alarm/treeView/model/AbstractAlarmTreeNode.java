@@ -33,6 +33,7 @@ import javax.naming.ldap.Rdn;
 
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**
@@ -161,6 +162,8 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
                 new LdapName(Collections.singletonList(new Rdn(_configurationType.getNodeTypeName(), _name)));
 
             final IAlarmSubtreeNode parent = getParent();
+            // TODO (bknerr) : CR#1646 the name generation has to add explicitly the ou=EpicsAlarmcfg Rdn,
+            // since this node is not present in the tree anymore (workaround)
             if (parent != null && !parent.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT)) {
 
                 final LdapName ldapName = parent.getLdapName();
@@ -168,7 +171,12 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
                     return null;
                 }
                 result.addAll(0, ldapName);
+            } else if (parent.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT)) {
+             // TODO (bknerr) : CR#1646 has to be removed again
+                result.addAll(0, LdapUtils.createLdapName(LdapEpicsAlarmcfgConfiguration.UNIT.getNodeTypeName(),
+                                                          LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue()));
             }
+
             return result;
         } catch (final InvalidNameException e) {
             return null;

@@ -80,7 +80,6 @@ public final class RenameModificationItem extends AbstractTreeModificationItem {
             if (service == null) {
                 throw new AlarmTreeModificationException("Rename failed.", null);
             }
-
             service.rename(_oldLdapName, _newLdapName);
             setApplied(true);
         } catch (final InvalidNameException e) {

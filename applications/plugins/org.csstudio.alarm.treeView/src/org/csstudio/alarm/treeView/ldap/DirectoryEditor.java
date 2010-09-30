@@ -100,9 +100,15 @@ public final class DirectoryEditor {
             item = null;
         }
 
-        parent.removeChild(node);
+
+        if (parent != null) {
+            parent.removeChild(node);
+        }
         node.setName(newName); // rename on tree item
-        parent.addChild(node);
+
+        if (parent != null) {
+            parent.addChild(node);
+        }
 
         return item;
     }

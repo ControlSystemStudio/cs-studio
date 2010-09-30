@@ -172,7 +172,7 @@ public final class AlarmTreeBuilder {
         for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> ous : model.getVirtualRoot().getDirectChildren()) {
             // Level of ou=EpicsAlarmcfg
 
-            // TODO (bknerr) : ensure in the fix that on this level only one child exists -> case insensitivity of LDAP may still lead to problems
+            // TODO (bknerr) : CR#1646 ensure in the fix that on this level only one child exists -> case insensitivity of LDAP may still lead to problems
             // LDAP does not distinguish between EpicsAlarmCfg and EpicsAlarmcfg which is considered here as two separate nodes
             final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> efans =
                 ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) ous).getDirectChildren();
