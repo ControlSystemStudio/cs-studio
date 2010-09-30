@@ -145,14 +145,14 @@ public final class TestDataProvider {
     @Nonnull
     private static String createSiteSpecificName() throws IllegalArgumentException {
 
-        SiteKey site;
+        SiteId site;
         String siteProp = null;
         try {
             siteProp = System.getProperty("siteId");
             if (siteProp == null) {
-                site = SiteKey.SNS; // TODO (bknerr) : contact all site's main responsible developers how to handle the default
+                site = SiteId.SNS; // TODO (bknerr) : contact all site's main responsible developers how to handle the default
             } else {
-                site = SiteKey.valueOf(siteProp);
+                site = SiteId.valueOf(siteProp);
             }
         } catch (final IllegalArgumentException e) {
             throw new IllegalArgumentException("The site enum type for jvm arg -DsiteId="+ siteProp +" is unknown. ", e);

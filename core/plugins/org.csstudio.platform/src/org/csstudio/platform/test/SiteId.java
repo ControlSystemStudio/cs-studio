@@ -33,7 +33,7 @@ import javax.annotation.Nonnull;
  * @version $Revision$
  * @since 14.07.2010
  */
-public enum SiteKey {
+public enum SiteId {
     SNS("sns"),
     DESY("desy"),
     ITER("iter");
@@ -43,7 +43,7 @@ public enum SiteKey {
     /**
      * Constructor.
      */
-    private SiteKey(@Nonnull final String prefix) {
+    private SiteId(@Nonnull final String prefix) {
         _prefix = prefix;
     }
 

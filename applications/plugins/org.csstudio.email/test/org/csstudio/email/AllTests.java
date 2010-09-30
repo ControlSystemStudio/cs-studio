@@ -37,7 +37,7 @@ import org.junit.runners.Suite.SuiteClasses;
  */
 @RunWith(Suite.class)
 @SuiteClasses( {
-    EMailSenderTest.class,
+    EMailSenderHeadlessTest.class,
     EmailUtilsTest.class
 })
 public class AllTests {
