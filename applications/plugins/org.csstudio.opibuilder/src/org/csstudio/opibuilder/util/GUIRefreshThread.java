@@ -4,6 +4,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
@@ -73,15 +74,21 @@ public final class GUIRefreshThread implements Runnable {
 		while (true) {		
 			if(!tasksQueue.isEmpty()){
 					start = System.currentTimeMillis();
-					processQueue();		
-			}
-			try {
-				long current = System.currentTimeMillis();
-				if(current - start < guiRefreshCycle)
-					Thread.sleep(guiRefreshCycle - (current -start));
-			} catch (InterruptedException e) {
-				//ignore
-			}
+					processQueue();	
+				try {
+					long current = System.currentTimeMillis();
+					if(current - start < guiRefreshCycle)
+						Thread.sleep(guiRefreshCycle - (current -start));
+					} catch (InterruptedException e) {
+						//ignore
+					}
+			}else
+				try {					
+						Thread.sleep(guiRefreshCycle);
+					} catch (InterruptedException e) {
+						//ignore
+					}
+			
 		}
 	}
 
@@ -98,7 +105,11 @@ public final class GUIRefreshThread implements Runnable {
 		}		
 		for(Object o : tasksArray){	
 				if(display!=null && !display.isDisposed())
-					display.syncExec(((WidgetIgnorableUITask) o).getRunnableTask());
+					try {
+						display.syncExec(((WidgetIgnorableUITask) o).getRunnableTask());
+					} catch (Exception e) {
+						CentralLogger.getInstance().error(this, e);
+					}
 		}		
 	}
 
