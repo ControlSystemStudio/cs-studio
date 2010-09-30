@@ -203,7 +203,7 @@ public enum LdapUpdater {
                 return;
             }
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, result);
+            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
             builder.build();
 
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();

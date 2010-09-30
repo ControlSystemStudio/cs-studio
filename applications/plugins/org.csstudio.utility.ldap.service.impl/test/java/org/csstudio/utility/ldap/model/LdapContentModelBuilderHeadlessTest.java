@@ -37,8 +37,6 @@ import javax.naming.directory.SearchControls;
 
 import junit.framework.Assert;
 
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;

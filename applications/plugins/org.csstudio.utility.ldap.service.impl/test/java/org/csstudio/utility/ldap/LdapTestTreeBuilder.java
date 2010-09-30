@@ -21,12 +21,8 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.RECORD;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
+
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_COM_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_FAC_OBJECT_CLASS;
@@ -44,6 +40,8 @@ import junit.framework.Assert;
 
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.utils.LdapUtils;
 
 /**
@@ -100,39 +98,39 @@ public final class LdapTestTreeBuilder {
                                                        @Nonnull final String efanName) {
         try {
             final LdapName name =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), efanName,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+                LdapUtils.createLdapName(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName(), efanName,
+                                         LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(), LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue());
             Assert.assertTrue(service.createComponent(name, EC_EFAN_ATTRS));
 
 
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom1"));
+            name.add(new Rdn(LdapEpicsControlsConfiguration.COMPONENT.getNodeTypeName(), "TestEcom1"));
             Assert.assertTrue(service.createComponent(name, EC_ECOM_ATTRS));
 
-            name.add(new Rdn(IOC.getNodeTypeName(), "TestEcon1"));
+            name.add(new Rdn(LdapEpicsControlsConfiguration.IOC.getNodeTypeName(), "TestEcon1"));
             Assert.assertTrue(service.createComponent(name, EC_ECON_ATTRS));
 
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren1"));
+            name.add(new Rdn(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), "TestEren1"));
             Assert.assertTrue(service.createComponent(name, EC_EREN_ATTRS));
 
             name.remove(name.size() - 1);
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren2"));
+            name.add(new Rdn(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), "TestEren2"));
             Assert.assertTrue(service.createComponent(name, EC_EREN_ATTRS));
 
             final LdapName name2 =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), efanName,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+                LdapUtils.createLdapName(LdapEpicsControlsConfiguration.FACILITY.getNodeTypeName(), efanName,
+                                         LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(), LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue());
 
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
+            name2.add(new Rdn(LdapEpicsControlsConfiguration.COMPONENT.getNodeTypeName(), "TestEcom2"));
             Assert.assertTrue(service.createComponent(name2, EC_ECOM_ATTRS));
 
-            name2.add(new Rdn(IOC.getNodeTypeName(), "TestEcon2"));
+            name2.add(new Rdn(LdapEpicsControlsConfiguration.IOC.getNodeTypeName(), "TestEcon2"));
             Assert.assertTrue(service.createComponent(name2, EC_ECON_ATTRS));
 
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren3"));
+            name2.add(new Rdn(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), "TestEren3"));
             Assert.assertTrue(service.createComponent(name2, EC_EREN_ATTRS));
 
             name2.remove(name2.size() - 1);
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren4"));
+            name2.add(new Rdn(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName(), "TestEren4"));
             Assert.assertTrue(service.createComponent(name2, EC_EREN_ATTRS));
 
         } catch (final InvalidNameException e) {
@@ -145,47 +143,47 @@ public final class LdapTestTreeBuilder {
                                                        @Nonnull final String efanName) {
         try {
             final LdapName name =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), efanName,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+                LdapUtils.createLdapName(LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeName(), efanName,
+                                         LdapEpicsAlarmcfgConfiguration.UNIT.getNodeTypeName(), LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue());
             Assert.assertTrue(service.createComponent(name, EA_EFAN_ATTRS));
 
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren1"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren1"));
             Assert.assertTrue(service.createComponent(name, EA_EREN_ATTRS));
 
             name.remove(name.size() - 1);
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom1"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.COMPONENT.getNodeTypeName(), "TestEcom1"));
             Assert.assertTrue(service.createComponent(name, EA_ECOM_ATTRS));
 
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren2"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren2"));
             Assert.assertTrue(service.createComponent(name, EA_EREN_ATTRS));
 
             name.remove(name.size() - 1);
-            name.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom2"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.COMPONENT.getNodeTypeName(), "TestEcom2"));
             Assert.assertTrue(service.createComponent(name, EA_ECOM_ATTRS));
 
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren3"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren3"));
             Assert.assertTrue(service.createComponent(name, EA_EREN_ATTRS));
 
             name.remove(name.size() - 1);
-            name.add(new Rdn(RECORD.getNodeTypeName(), "TestEren4"));
+            name.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren4"));
             Assert.assertTrue(service.createComponent(name, EA_EREN_ATTRS));
 
 
             final LdapName name2 =
-                LdapUtils.createLdapName(FACILITY.getNodeTypeName(), efanName,
-                                         UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
+                LdapUtils.createLdapName(LdapEpicsAlarmcfgConfiguration.FACILITY.getNodeTypeName(), efanName,
+                                         LdapEpicsAlarmcfgConfiguration.UNIT.getNodeTypeName(), LdapEpicsAlarmcfgConfiguration.UNIT.getUnitTypeValue());
 
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom3"));
+            name2.add(new Rdn(LdapEpicsAlarmcfgConfiguration.COMPONENT.getNodeTypeName(), "TestEcom3"));
             Assert.assertTrue(service.createComponent(name2, EA_ECOM_ATTRS));
 
-            name2.add(new Rdn(COMPONENT.getNodeTypeName(), "TestEcom4"));
+            name2.add(new Rdn(LdapEpicsAlarmcfgConfiguration.COMPONENT.getNodeTypeName(), "TestEcom4"));
             Assert.assertTrue(service.createComponent(name2, EA_ECOM_ATTRS));
 
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren5"));
+            name2.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren5"));
             Assert.assertTrue(service.createComponent(name2, EA_EREN_ATTRS));
 
             name2.remove(name2.size() - 1);
-            name2.add(new Rdn(RECORD.getNodeTypeName(), "TestEren6"));
+            name2.add(new Rdn(LdapEpicsAlarmcfgConfiguration.RECORD.getNodeTypeName(), "TestEren6"));
             Assert.assertTrue(service.createComponent(name2, EA_EREN_ATTRS));
 
         } catch (final InvalidNameException e) {
