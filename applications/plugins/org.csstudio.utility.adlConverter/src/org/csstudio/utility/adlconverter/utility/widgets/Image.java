@@ -24,6 +24,7 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgets;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.components.model.ImageModel;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.utility.adlconverter.Activator;
@@ -31,6 +32,7 @@ import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 import org.eclipse.core.resources.IResource;
@@ -63,6 +65,7 @@ public class Image extends Widget {
             if(row[0].equals("type")){ //$NON-NLS-1$
                 ;// not used
             }else if(row[0].equals("\"image name\"")){ //$NON-NLS-1$
+            	DebugHelper.add(this, row[1]);
                 row[1] = ADLHelper.cleanString(row[1])[0];
                 IResource res = ResourcesPlugin.getWorkspace().getRoot();
                 String target = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);

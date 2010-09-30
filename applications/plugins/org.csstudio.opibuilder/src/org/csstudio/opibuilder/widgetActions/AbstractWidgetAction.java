@@ -6,6 +6,8 @@ import java.util.Set;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
+import org.csstudio.opibuilder.properties.StringProperty;
+import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.widgetActions.WidgetActionFactory.ActionType;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IAdaptable;
@@ -25,11 +27,13 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	private boolean enabled = true;
 	
 	private AbstractWidgetModel widgetModel;
-	
+	public static final String PROP_DESCRIPTION = "description";//$NON-NLS-1$
+
 	public AbstractWidgetAction() {
 		propertyMap = new LinkedHashMap<String, AbstractWidgetProperty>();
-		
 		configureProperties();
+		addProperty(new StringProperty(PROP_DESCRIPTION, "Description", 
+				WidgetPropertyCategory.Basic, ""));		//$NON-NLS-1$
 	}
 	
 	/**Add a property to the widget.
@@ -43,8 +47,15 @@ public abstract class AbstractWidgetAction implements IAdaptable {
 	
 	protected abstract void configureProperties();
 	
-	public String getDescription(){
+	public String getDefaultDescription(){
 		return getActionType().getDescription();
+	}
+	
+	public String getDescription(){
+		String description = (String)getPropertyValue(PROP_DESCRIPTION);
+		if(description.trim().length()==0)
+			description = getDefaultDescription();
+		return description;
 	}
 	
 	public abstract void run();

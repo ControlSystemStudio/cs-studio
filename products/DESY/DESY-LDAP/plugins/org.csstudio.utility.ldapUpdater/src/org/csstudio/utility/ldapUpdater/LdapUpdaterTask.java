@@ -18,33 +18,33 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
-package org.csstudio.utility.treemodel;
+package org.csstudio.utility.ldapUpdater;
 
-import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderTest;
-import org.junit.runner.RunWith;
-import org.junit.runners.Suite;
-import org.junit.runners.Suite.SuiteClasses;
-
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 
 /**
- * TODO (bknerr) : Das muss anders gehen.
- * Test database.
- */
-@RunWith(Suite.class)
-@SuiteClasses({XmlFileContentModelBuilderTest.class,
-               ContentModelExporterTest.class})
-
-/**
- * TODO (bknerr) : Das muss anders gehen.
+ * LDAP updater task
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 11.05.2010
+ * @author $Author: bknerr $
+ * @since 28.09.2010
  */
-public class AllTests {
-    // public? well, should be refactored anyway
+public class LdapUpdaterTask implements Runnable {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterTask.class);
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void run() {
+
+        try {
+            LdapUpdater.INSTANCE.updateLdapFromIOCFiles();
+        } catch (final Throwable t) {
+            LOG.error("Throwable " + t.getMessage() + " in LDAP Updater.");
+        }
+    }
 }

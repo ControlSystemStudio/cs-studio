@@ -43,6 +43,7 @@ import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -211,9 +212,10 @@ public final class AlarmTreeViewActionFactory {
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
             if (model != null) {
-                final Bundle bundle = Platform.getBundle("org.csstudio.utility.ldap.service");
+                final Bundle bundle = Platform.getBundle(LdapActivator.PLUGIN_ID);
                 final File loc = FileLocator.getBundleFile(bundle);
                 final String dtdFilePath = new File(loc, "./res/dtd/epicsAlarmCfg.dtd").toString();
+
                 configService.exportContentModelToXmlFile(filePath, model, dtdFilePath);
             }
 

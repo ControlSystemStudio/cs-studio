@@ -31,9 +31,7 @@ import static org.csstudio.utility.ldap.utils.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -81,24 +79,6 @@ import org.csstudio.utility.treemodel.TreeNodeComponent;
 public final class LdapAccess {
 
     public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
-    private static LdapName NAME_SUFFIX;
-
-    static {
-        try {
-            final Rdn ou = new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
-            final List<Rdn> list = new ArrayList<Rdn>();
-            list.add(ou);
-            NAME_SUFFIX = new LdapName(list);
-        } catch (final InvalidNameException e) {
-            LOG.warn("Name suffix for EpicsControls could not be created.");
-            e.printStackTrace();
-        }
-    }
-
-    @Nonnull
-    public static LdapName getNameSuffix() {
-        return NAME_SUFFIX;
-    }
 
 
     /**
@@ -278,7 +258,7 @@ public final class LdapAccess {
                 final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
                 newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
 
-                if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
+                if (!LDAP_UPDATER_SERVICE.createLdapRecord(newLdapName)) {
                     LOG.error("Error while updating LDAP record for " + recordName +
                     "\nProceed with next record.");
                 } else {
@@ -366,7 +346,7 @@ public final class LdapAccess {
             final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
             final ILdapSearchResult searchResult =
-                LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
+                LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(iocFromLdapName);
             if (searchResult != null) {
                 final ILdapContentModelBuilder builder =
                     LDAP_UPDATER_SERVICE.getLdapContentModelBuilder(model);

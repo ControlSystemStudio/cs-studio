@@ -44,7 +44,14 @@ import com.google.common.collect.Sets;
  * @version $Revision$
  * @since 01.06.2010
  */
-public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfigurator> {
+public enum TestTreeConfiguration implements ITreeNodeConfiguration<TestTreeConfiguration> {
+
+    /**
+     * The root for any tree structure. This node type does not have a pendant in LDAP, hence 'virtual'.
+     */
+    VIRTUAL_ROOT("vroot",
+                 "virtual tree configuration"),
+
 
     UNIT("ou", "root"),
 
@@ -69,11 +76,11 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
     RECORD("eren", "record");
 
 
-    private static final Map<String, TestTreeConfigurator> CACHE_BY_NAME =
+    private static final Map<String, TestTreeConfiguration> CACHE_BY_NAME =
         Maps.newHashMapWithExpectedSize(values().length);
 
     static {
-        RECORD._nestedClasses = EnumSet.noneOf(TestTreeConfigurator.class);
+        RECORD._nestedClasses = EnumSet.noneOf(TestTreeConfiguration.class);
 
         IOC._nestedClasses = EnumSet.of(RECORD);
 
@@ -83,7 +90,9 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
 
         UNIT._nestedClasses = EnumSet.of(FACILITY);
 
-        for (final TestTreeConfigurator oc : TestTreeConfigurator.values()) {
+        VIRTUAL_ROOT._nestedClasses = EnumSet.of(UNIT);
+
+        for (final TestTreeConfiguration oc : TestTreeConfiguration.values()) {
             CACHE_BY_NAME.put(oc.getNodeTypeName(), oc);
         }
     }
@@ -104,7 +113,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
     /**
      * The tree items that are nested into a container of this class.
      */
-    private Set<TestTreeConfigurator> _nestedClasses;
+    private Set<TestTreeConfiguration> _nestedClasses;
 
     /**
      * Creates a new object class.
@@ -116,7 +125,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
       *
       * CHECKSTYLE:Jsr305Annotations:OFF
      */
-    private TestTreeConfigurator(final String nodeTypeName,
+    private TestTreeConfiguration(final String nodeTypeName,
                                  final String description) {
         _nodeTypeName = nodeTypeName;
         _description = description;
@@ -145,7 +154,7 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @CheckForNull
-    public ImmutableSet<TestTreeConfigurator> getNestedContainerTypes() {
+    public ImmutableSet<TestTreeConfiguration> getNestedContainerTypes() {
         return Sets.immutableEnumSet(_nestedClasses);
     }
 
@@ -154,12 +163,12 @@ public enum TestTreeConfigurator implements ITreeNodeConfiguration<TestTreeConfi
      */
     @Override
     @CheckForNull
-    public TestTreeConfigurator getNodeTypeByNodeTypeName(@Nonnull final String name) {
+    public TestTreeConfiguration getNodeTypeByNodeTypeName(@Nonnull final String name) {
         return getNodeTypeByNodeNameStatic(name);
     }
 
     @CheckForNull
-    private static TestTreeConfigurator getNodeTypeByNodeNameStatic(@Nonnull final String name) {
+    private static TestTreeConfiguration getNodeTypeByNodeNameStatic(@Nonnull final String name) {
         return CACHE_BY_NAME.get(name);
     }
 

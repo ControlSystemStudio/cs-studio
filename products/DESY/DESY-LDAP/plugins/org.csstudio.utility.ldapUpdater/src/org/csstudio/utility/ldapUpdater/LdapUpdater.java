@@ -39,14 +39,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.concurrent.GuardedBy;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
@@ -98,10 +101,11 @@ public enum LdapUpdater {
      */
     @Nonnull
     public static String convertMillisToDateTimeString(final long millis, @Nonnull final String datetimeFormat) {
-        final Calendar calendar = Calendar.getInstance();
-        calendar.setTimeInMillis(millis);
+        final TimeZone timeZone = TimeZone.getTimeZone("ECT");
+        final Calendar cal = new GregorianCalendar(timeZone);
+        cal.setTimeInMillis(millis);
         final DateFormat formatter = new SimpleDateFormat(datetimeFormat);
-        final String now = formatter.format(calendar.getTime());
+        final String now = formatter.format(cal.getTime());
         return now;
     }
 
@@ -111,6 +115,7 @@ public enum LdapUpdater {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdater.class);
 
+    @GuardedBy("this")
     private boolean _busy;
 
     /**
@@ -198,7 +203,7 @@ public enum LdapUpdater {
                 return;
             }
             final Map<String, IOC> iocMapFromFS = IOCFilesDirTree.findIOCFiles(dumpPath, 1);
-            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, result);
+            final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, result);
             builder.build();
 
             final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -232,7 +237,7 @@ public enum LdapUpdater {
         try {
             final ILdapService service = Activator.getDefault().getLdapService();
             if (service == null) {
-                LOG.error("No LDAP service available.");
+                LOG.error("No LDAP service available. Updating canceled.");
                 return;
             }
 
@@ -249,7 +254,6 @@ public enum LdapUpdater {
             createModelAndUpdateLdap(historyFileModel, searchResult);
 
         } catch (final InterruptedException e) {
-            e.printStackTrace();
             Thread.currentThread().interrupt();
         } catch (final CreateContentModelException e) {
             LOG.error("Content model for search result (econ=*) could not be created. LDAP update cancelled.");
@@ -271,7 +275,7 @@ public enum LdapUpdater {
         }
 
         final ILdapContentModelBuilder builder =
-            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.UNIT, searchResult);
+            service.getLdapContentModelBuilder(LdapEpicsControlsConfiguration.VIRTUAL_ROOT, searchResult);
         builder.build();
         final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 

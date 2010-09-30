@@ -73,4 +73,9 @@ public interface ISubtreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguratio
 
     @Nonnull
     Map<String, INodeComponent<T>> getChildrenByType(@Nonnull T type);
+
+    /**
+     * Clears a subtree node of all its children.
+     */
+    void removeAllChildren();
 }

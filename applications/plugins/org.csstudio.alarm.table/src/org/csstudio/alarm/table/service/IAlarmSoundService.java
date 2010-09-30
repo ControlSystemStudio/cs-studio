@@ -55,4 +55,9 @@ public interface IAlarmSoundService {
      * @return true if path denotes a resource, false if no resource can be found
      */
     boolean existsResource(@Nonnull String path);
+
+	/**
+	 * The preferences are reloaded, this is useful after changes on the preference page.
+	 */
+	void reloadPreferences();
 }

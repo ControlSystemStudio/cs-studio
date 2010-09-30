@@ -16,7 +16,7 @@
   <!DOCTYPE ou SYSTEM "/epicsAlarmCfg.dtd">
  -->
 
-<ou name="EpicsAlarmCfg">
+<ou name="EpicsAlarmcfg">
   <efan name="Test">
     <ecom name="Test-IOC">
       <eren name="SawCalc0" />

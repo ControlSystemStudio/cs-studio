@@ -84,11 +84,31 @@ public abstract class AbstractMarkedWidgetEditPart extends AbstractScaledWidgetE
 									if(meta == null || !meta.equals(new_meta)){
 										meta = new_meta;
 										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MAX,	meta.getDisplayHigh());
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());					
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getWarnHigh());
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getWarnLow());
-										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getAlarmLow());
+										model.setPropertyValue(AbstractMarkedWidgetModel.PROP_MIN,	meta.getDisplayLow());	
+										if(Double.isNaN(meta.getWarnHigh()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, false);
+										else{
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HI, true);
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HI_LEVEL,	meta.getWarnHigh());
+										}
+										if(Double.isNaN(meta.getAlarmHigh()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, false);
+										else{
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_HIHI, true);
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_HIHI_LEVEL, meta.getAlarmHigh());
+										}
+										if(Double.isNaN(meta.getWarnLow()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, false);
+										else{
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LO, true);
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LO_LEVEL,	meta.getWarnLow());
+										}
+										if(Double.isNaN(meta.getAlarmLow()))
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, false);
+										else{
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_SHOW_LOLO, true);
+											model.setPropertyValue(AbstractMarkedWidgetModel.PROP_LOLO_LEVEL,	meta.getAlarmLow());
+										}
 									}
 								}
 							}					

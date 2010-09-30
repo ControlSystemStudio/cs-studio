@@ -35,8 +35,8 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.treemodel.builder.TestTreeConfigurator;
-import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderTest;
+import org.csstudio.utility.treemodel.builder.TestTreeConfiguration;
+import org.csstudio.utility.treemodel.builder.XmlFileContentModelBuilderHeadlessTest;
 import org.custommonkey.xmlunit.Diff;
 import org.custommonkey.xmlunit.ElementNameAndAttributeQualifier;
 import org.eclipse.core.runtime.FileLocator;
@@ -59,15 +59,15 @@ import org.xml.sax.SAXException;
  * @version $Revision$
  * @since 05.07.2010
  */
-public class ContentModelExporterTest {
+public class ContentModelExporterHeadlessTest {
     @SuppressWarnings("unused")
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ContentModelExporterTest.class);
+        CentralLogger.getInstance().getLogger(ContentModelExporterHeadlessTest.class);
 
     private static final String TEST_EXPORT_XML = "Test_Export.xml";
     private static final String TEST_DTD = "test.dtd";
 
-    private static ContentModel<TestTreeConfigurator> MODEL;
+    private static ContentModel<TestTreeConfiguration> MODEL;
     private static Document IMPORTED_DOC;
     private Document _exportedDoc;
 
@@ -78,11 +78,11 @@ public class ContentModelExporterTest {
     @BeforeClass
     public static final void buildResourcePath() {
 
-        final URL resource = TreeModelTestUtils.findResource(XmlFileContentModelBuilderTest.TEST_VALID_XML);
+        final URL resource = TreeModelTestUtils.findResource(XmlFileContentModelBuilderHeadlessTest.TEST_VALID_XML);
         Assert.assertNotNull(resource);
 
         try {
-            MODEL = TreeModelTestUtils.buildContentModel(resource, TestTreeConfigurator.UNIT);
+            MODEL = TreeModelTestUtils.buildContentModel(resource, TestTreeConfiguration.VIRTUAL_ROOT);
         } catch (final CreateContentModelException e) {
             Assert.fail("Content model could not be created. " + e.getLocalizedMessage());
         } catch (final IOException e) {

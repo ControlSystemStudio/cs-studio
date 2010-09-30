@@ -37,8 +37,6 @@ import javax.naming.directory.SearchControls;
 
 import junit.framework.Assert;
 
-import org.csstudio.platform.test.TestDataProvider;
-import org.csstudio.utility.ldap.LdapActivator;
 import org.csstudio.utility.ldap.LdapTestHelper;
 import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
@@ -133,13 +131,13 @@ public class LdapContentModelBuilderHeadlessTest {
 
     @Test
     public void testGetChildrenByTypeOnRootComponent() {
-        int size = MODEL_ONE.getRoot().getChildrenByType(FACILITY).size();
+        int size = MODEL_ONE.getVirtualRoot().getChildrenByType(FACILITY).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(FACILITY).intValue());
 
-        size = MODEL_ONE.getRoot().getChildrenByType(COMPONENT).size();
+        size = MODEL_ONE.getVirtualRoot().getChildrenByType(COMPONENT).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(COMPONENT).intValue());
 
-        size = MODEL_ONE.getRoot().getChildrenByType(IOC).size();
+        size = MODEL_ONE.getVirtualRoot().getChildrenByType(IOC).size();
         Assert.assertEquals(size, RESULT_CHILDREN_BY_TYPE.get(IOC).intValue());
     }
 

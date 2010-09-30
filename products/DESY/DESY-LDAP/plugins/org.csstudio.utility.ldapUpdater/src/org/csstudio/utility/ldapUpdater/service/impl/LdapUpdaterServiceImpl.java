@@ -28,6 +28,7 @@ import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfi
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
@@ -59,7 +60,6 @@ import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguratio
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.Activator;
-import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
@@ -136,15 +136,11 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
      */
     @Override
     @CheckForNull
-    public ILdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix,
-                                                   @Nonnull final LdapName fullIocName)
+    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
         throws InterruptedException, InvalidNameException, ServiceUnavailableException {
 
         if (fullIocName.size() > 0) {
             final LdapName query = new LdapName(fullIocName.getRdns());
-            if (ldapSuffix != null) {
-                query.addAll(0, ldapSuffix.getRdns());
-            }
             final ILdapService service = getLdapService();
             return service.retrieveSearchResultSynchronously(query,
                                                              any(RECORD.getNodeTypeName()),
@@ -193,7 +189,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
         if (recordsSearchResult != null) {
 
             final ILdapContentModelBuilder builder =
-                service.getLdapContentModelBuilder(UNIT, recordsSearchResult);
+                service.getLdapContentModelBuilder(VIRTUAL_ROOT, recordsSearchResult);
 
             try {
                 builder.build();
@@ -212,7 +208,6 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : records) {
                 final LdapName ldapName = record.getLdapName();
-                ldapName.addAll(0, LdapAccess.getNameSuffix());
 
                 service.removeLeafComponent(ldapName);
 
@@ -239,7 +234,7 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             if (searchResult != null) {
                 final ILdapService service = getLdapService();
-                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(UNIT, searchResult);
+                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
 
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
@@ -288,7 +283,6 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
             if (!validRecords.contains(new Record(record.getName()))) {
 
                 final LdapName ldapName = record.getLdapName();
-                ldapName.addAll(0, LdapAccess.getNameSuffix());
 
                 service.removeLeafComponent(ldapName);
                 LOG.info("Tidying: Record " + record.getName() + " removed.");

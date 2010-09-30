@@ -33,8 +33,6 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
-import javax.naming.ldap.LdapName;
-import javax.naming.ldap.Rdn;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
@@ -52,9 +50,15 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ContentModel.class);
 
+    /**
+     * A type object to give access to the type specific functionality of the tree components.
+     */
     private final T _configurationRoot;
 
-    private ISubtreeNodeComponent<T> _treeRoot;
+    /**
+     * The virtual tree root.
+     */
+    private ISubtreeNodeComponent<T> _virtualRoot;
 
     private Map<T, Map<String, ISubtreeNodeComponent<T>>> _cacheByTypeAndLdapName;
 
@@ -80,23 +84,17 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     private void initFields(@Nonnull final T objectClassRoot) throws InvalidNameException {
         _cacheByLdapName = new HashMap<String, ISubtreeNodeComponent<T>>();
 
-
         final Class<T> clazz = objectClassRoot.getDeclaringClass();
 
         _cacheByTypeAndLdapName = initCacheByType(clazz);
         _cacheByTypeAndSimpleName = initCacheByType(clazz);
 
-        final String rootTypeValue = objectClassRoot.getUnitTypeValue();
-        final Rdn rdn = new Rdn(objectClassRoot.getNodeTypeName(), rootTypeValue);
-        final LdapName ldapName = new LdapName(Collections.singletonList(rdn));
-
-
         try {
-            _treeRoot = new TreeNodeComponent<T>(rootTypeValue,
-                                                 objectClassRoot,
-                                                 null,
-                                                 null,
-                                                 ldapName);
+            _virtualRoot = new TreeNodeComponent<T>("VirtualRoot",
+                                                    objectClassRoot,
+                                                    null,
+                                                    null,
+                                                    null);
         } catch (final InvalidNameException e) {
             LOG.error("Error creating root node in content model.", e);
         }
@@ -109,11 +107,32 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
     }
 
 
+    /**
+     * Adds a child node to a parent node. If the parent node does not yet exist in the model, it is
+     * added below the virtual root. That may throw an IllegalArgumentException, if the <not yet present>
+     * parent node is not configured to be root (i.e. immediately below the virtual root in this model).
+     *
+     * @param parent
+     * @param newChild
+     */
     public void addChild(@Nonnull final ISubtreeNodeComponent<T> parent,
                          @Nonnull final ISubtreeNodeComponent<T> newChild) {
 
-        parent.addChild(newChild);
+        if (parent.equals(_virtualRoot)) {
+            parent.addChild(newChild);
+        } else {
+            final Map<String, ISubtreeNodeComponent<T>> byTypes = _cacheByTypeAndLdapName.get(parent.getType());
+            if (!byTypes.containsKey(parent.getLdapName().toString())) { // parent does not yet exist in the model
+                addChild(_virtualRoot, parent);               // add it first
+            } else {
+                parent.addChild(newChild); // add the child
+            }
+        }
 
+        cacheNewChild(newChild);
+    }
+
+    private void cacheNewChild(final ISubtreeNodeComponent<T> newChild) {
         // CACHING
         _cacheByLdapName.put(newChild.getLdapName().toString(), newChild);
 
@@ -188,14 +207,22 @@ public final class ContentModel<T extends Enum<T> & ITreeNodeConfiguration<T>> {
         return _cacheByTypeAndLdapName.get(type);
     }
 
-
+    /**
+     * Delivers the virtual root of this tree model. This root yields the entry point into the
+     * tree structure. It is not supposed to be depicted anywhere or to be structurally relevant for
+     * the modeled content.
+     * @return the virtual root of the model
+     */
     @Nonnull
-    public ISubtreeNodeComponent<T> getRoot() {
-        return _treeRoot;
+    public ISubtreeNodeComponent<T> getVirtualRoot() {
+        return _virtualRoot;
     }
 
+    /**
+     * Clears the caches and removes any children below the virtual root.
+     */
     public void clear() {
-        _treeRoot = null;
+        _virtualRoot.removeAllChildren();
         _cacheByLdapName.clear();
         _cacheByTypeAndLdapName.clear();
         _cacheByTypeAndSimpleName.clear();
