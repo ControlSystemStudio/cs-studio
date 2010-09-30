@@ -62,5 +62,6 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
         prefs.put(PreferenceConstants.FILTER_SEND_BOUND, "");
         prefs.put(PreferenceConstants.FILTER_MAX_SENT_MESSAGES , "");
         prefs.put(PreferenceConstants.STORE_EMPTY_VALUES , "false");
+        prefs.put(PreferenceConstants.DESCRIPTION , "I am a simple but happy application.");
     }
 }

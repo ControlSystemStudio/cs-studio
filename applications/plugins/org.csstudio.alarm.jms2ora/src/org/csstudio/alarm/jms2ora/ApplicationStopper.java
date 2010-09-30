@@ -101,10 +101,10 @@ public class ApplicationStopper
 
         // session = OsgiServiceLocatorUtil.getOSGiService(bundleContext, ISessionService.class);
 
-        // Get the Session Service from the Application Admin Service
         String serviceFilter = "(&(objectClass=" +
         ISessionService.class.getName() + "))";
-        
+
+        // Get the Session Service from the Application Admin Service
         ServiceTracker tracker = null;
         try {
             tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
@@ -328,11 +328,7 @@ public class ApplicationStopper
                 parameter = new CommandParameters();
                 parameter.set("Password", password);
                 
-                CommandResult retValue = null;
-                if(service != null) {
-                	retValue = service.execute(stopAction.getIdentifier(), parameter);
-                }
-                
+                CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
                 if(retValue != null)
                 {
                     returnValue = (String)retValue.getValue();

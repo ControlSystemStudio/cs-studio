@@ -231,13 +231,12 @@ public class MessageProcessor extends Thread implements MessageListener {
      *
      */
     
-    @Override
-	public void run() {
+    public void run() {
         
         MessageContent content = null;
         ReturnValue result;
         
-        logger.info("Started" + VersionInfo.getAll());        
+        logger.info("Started " + VersionInfo.getAll());        
         logger.info("Waiting for messages...");
         
         while(running) {

@@ -165,10 +165,14 @@ public class MessageContentCreator {
         boolean reload = false;
         boolean wrongFormat = false;
 
+        logger.debug("Enter MessageContentCreator.convertMapMessage()");
+        
         // Create a new MessageContent object for the content of the message
         msgContent = new MessageContent();
 
         if(mmsg == null) {
+            
+            logger.debug("Leaving MessageContentCreator.convertMapMessage()");
             return msgContent;
         }
         
@@ -199,6 +203,8 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
+                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -229,6 +235,8 @@ public class MessageContentCreator {
                 
                 msgContent.setDiscard(true);
                 
+                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -351,6 +359,8 @@ public class MessageContentCreator {
             logger.debug("Process it!");
         }
 
+        logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+
         return msgContent;
     }
     
@@ -446,7 +456,7 @@ public class MessageContentCreator {
         
         boolean result = false;
                 
-        logger.debug("readMessageProperties(): Reading message properties.");
+        logger.debug("Entering MessageContentCreator.readMessageProperties(): Reading message properties.");
         
         // Delete old hash table, if there are any
         if(msgProperty != null) {
@@ -463,6 +473,8 @@ public class MessageContentCreator {
             result = true;
         }
         
+        logger.debug("Leaving MessageContentCreator.readMessageProperties()");
+
         return result;
     }    
 }

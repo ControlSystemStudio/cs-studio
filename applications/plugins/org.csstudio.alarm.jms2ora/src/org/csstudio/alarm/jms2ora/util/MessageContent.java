@@ -132,7 +132,7 @@ public class MessageContent implements Serializable {
     }
     
     @Override
-	public String toString() {
+    public String toString() {
         
         String temp = null;
         String result = "{MessageContent";

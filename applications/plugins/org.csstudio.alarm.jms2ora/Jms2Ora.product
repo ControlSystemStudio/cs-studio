@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Jms2Ora" uid="jms2ora" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId" version="2.3.2" useFeatures="false" includeLaunchers="true">
+<product name="Jms2Ora" uid="jms2ora" id="org.csstudio.alarm.jms2ora.Jms2OraProduct" application="org.csstudio.alarm.jms2ora.Jms2OraApplicationId" version="2.3.4" useFeatures="true" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -75,15 +75,15 @@
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
-      <plugin id="org.eclipse.ecf.datashare" fragment=""/>
-      <plugin id="org.eclipse.ecf.discovery" fragment=""/>
+      <plugin id="org.eclipse.ecf.datashare"/>
+      <plugin id="org.eclipse.ecf.discovery"/>
       <plugin id="org.eclipse.ecf.filetransfer"/>
       <plugin id="org.eclipse.ecf.identity"/>
       <plugin id="org.eclipse.ecf.presence"/>
       <plugin id="org.eclipse.ecf.provider"/>
-      <plugin id="org.eclipse.ecf.provider.datashare" fragment=""/>
-      <plugin id="org.eclipse.ecf.provider.remoteservice" fragment=""/>
-      <plugin id="org.eclipse.ecf.provider.xmpp" fragment=""/>
+      <plugin id="org.eclipse.ecf.provider.datashare"/>
+      <plugin id="org.eclipse.ecf.provider.remoteservice"/>
+      <plugin id="org.eclipse.ecf.provider.xmpp"/>
       <plugin id="org.eclipse.ecf.remoteservice"/>
       <plugin id="org.eclipse.ecf.sharedobject"/>
       <plugin id="org.eclipse.ecf.ssl" fragment="true"/>
@@ -154,15 +154,19 @@
       <plugin id="org.eclipse.update.core.win32" fragment="true"/>
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
-      <plugin id="org.jivesoftware.smack" fragment=""/>
+      <plugin id="org.jivesoftware.smack"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.chat"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.contacts"/>
       <plugin id="org.remotercp.ecf"/>
-      <plugin id="org.remotercp.libs" fragment=""/>
+      <plugin id="org.remotercp.libs"/>
       <plugin id="org.remotercp.util"/>
    </plugins>
+
+   <features>
+      <feature id="org.csstudio.alarm.jms2ora.feature" version="1.0.0.qualifier"/>
+   </features>
 
 
 </product>

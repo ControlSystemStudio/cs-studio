@@ -157,7 +157,7 @@ public class Jms2OraApplication implements IApplication, Stoppable {
             synchronized(this) {
                 try {
                     this.wait(SLEEPING_TIME);
-                } catch(InterruptedException ie) {/* Can be ignored */}
+                } catch(InterruptedException ie) {}
             }
             
             SynchObject actSynch = new SynchObject(ApplicState.INIT, 0);
@@ -222,7 +222,7 @@ public class Jms2OraApplication implements IApplication, Stoppable {
                 
                 try {
                     messageProcessor.join(WAITFORTHREAD);
-                } catch(InterruptedException ie) {/* Can be ignored */ }
+                } catch(InterruptedException ie) { }
             } while(sync.getSynchStatus() == ApplicState.LEAVING);
             
             if(messageProcessor.stoppedClean()) {
