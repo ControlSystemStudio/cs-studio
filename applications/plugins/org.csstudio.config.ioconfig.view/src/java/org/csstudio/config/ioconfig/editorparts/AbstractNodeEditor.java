@@ -60,6 +60,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -103,6 +104,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.views.markers.TodoFiltersContributionParameters;
 import org.eclipse.ui.part.EditorPart;
 
 /**
@@ -148,8 +150,16 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 						+ "?");
 				if (openQuestion) {
 					setSaveButtonSaved();
-					getProfiBusTreeView().getTreeViewer().setSelection(getProfiBusTreeView()
-							.getTreeViewer().getSelection());
+//					ISelection selection = getProfiBusTreeView()
+//							.getTreeViewer().getSelection();
+					// if(selection.isEmpty()) {
+					
+					// hrickens (01.10.2010): Beim Cancel einer neuen Facility
+					// macht nur Perfrom close Sinn.
+					perfromClose();
+					// } else {
+					// getProfiBusTreeView().getTreeViewer().setSelection(selection);
+					// }
 				} else {
 					// TODO: do nothing or cancel?
 				}
@@ -710,6 +720,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		// update Header
 		getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
 		getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
+		getHeaderField(HeaderFields.DB_ID).setText(""+getNode().getId());
+		
 		// df = null;
 		// now = null;
 	}
@@ -1226,12 +1238,15 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		setHeaderField(HeaderFields.MODIFIED_ON, modifiedOn);
 		temp = "";
 
-		getNewLabel(header, "DataBase ID:");
+		final Label dbID = getNewLabel(header, "DataBase ID:");
 		/** The description field with the Version from GSD File. */
 		if (node != null) {
 			temp = node.getId() + "";
 		}
-		getNewText(header, temp);
+		
+		
+		final Text dbIdText = getNewText(header, temp);
+		setHeaderField(HeaderFields.DB_ID, dbIdText);
 
 		/**
 		 * GSD Version. The description field with the Version from GSD File. Only Master and Slave
