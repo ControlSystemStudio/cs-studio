@@ -87,3 +87,15 @@ source $TEMPFILE
 rm $TEMPFILE
 echo $buildId $archivePrefix $launchName
 
+cd $ABSOLUTE_DIR/build/BuildDirectory/I."$buildId"
+if [[ -f "$buildId"-linux.gtk.x86.zip ]]
+	then
+	echo "found linux"
+	patch_product "$buildId"-linux.gtk.x86.zip $archivePrefix $launchName "$buildId"-linux.gtk.x86.zip
+	fi
+if [[ -f "$buildId"-macosx.cocoa.x86.zip ]]
+	then
+	echo "found mac"
+	patch_product "$buildId"-macosx.cocoa.x86.zip $archivePrefix "$launchName".app/Contents/MacOS/"$launchName" "$buildId"-macosx.cocoa.x86.zip
+	fi
+cd $ABSOLUTE_DIR
