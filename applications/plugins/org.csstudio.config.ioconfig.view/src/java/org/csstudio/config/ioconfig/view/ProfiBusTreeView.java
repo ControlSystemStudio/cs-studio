@@ -37,8 +37,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.commands.CallEditor;
 import org.csstudio.config.ioconfig.commands.CallNewChildrenNodeEditor;
+import org.csstudio.config.ioconfig.commands.CallNewFacilityEditor;
 import org.csstudio.config.ioconfig.commands.CallNewSiblingNodeEditor;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
@@ -138,6 +140,9 @@ import org.eclipse.ui.part.DrillDownAdapter;
  */
 public class ProfiBusTreeView extends Composite {
 
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			ProfiBusTreeView.class);
+	
     /**
      * The ID of the View.
      */
@@ -299,10 +304,10 @@ public class ProfiBusTreeView extends Composite {
         _site.setSelectionProvider(_viewer);
         ColumnViewerToolTipSupport.enableFor(_viewer);
 
-        CentralLogger.getInstance().debug(this, "ID: " + _site.getId());
-        CentralLogger.getInstance().debug(this, "PlugIn ID: " + _site.getPluginId());
-        CentralLogger.getInstance().debug(this, "Name: " + _site.getRegisteredName());
-        CentralLogger.getInstance().debug(this, "SecID: " + _site.getSecondaryId());
+        LOG.debug("ID: " + _site.getId());
+        LOG.debug("PlugIn ID: " + _site.getPluginId());
+        LOG.debug("Name: " + _site.getRegisteredName());
+        LOG.debug("SecID: " + _site.getSecondaryId());
 
         // ---
         _viewer.setInput("Please wait a moment");
@@ -403,7 +408,7 @@ public class ProfiBusTreeView extends Composite {
         try {
             handlerService.executeCommand(CallEditor.ID, null);
         } catch (Exception ex) {
-            CentralLogger.getInstance().error(this, ex.getMessage(), ex);
+            LOG.error(ex.getMessage(), ex);
         }
         return;
     }
@@ -411,7 +416,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      *
      */
-    private void closeOpenEditor() {
+    protected void closeOpenEditor() {
         if (_openNodeEditor != null) {
             _openNodeEditor.perfromClose();
         }
@@ -652,18 +657,18 @@ public class ProfiBusTreeView extends Composite {
                 Object selectedNode = _selectedNode.getFirstElement();
                 if (selectedNode instanceof ProfibusSubnetDBO) {
                     ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Subnet: " + subnet);
+                    LOG.info("Create XML for Subnet: " + subnet);
                     makeXMLFile(path, subnet);
 
                 } else if (selectedNode instanceof IocDBO) {
                     IocDBO ioc = (IocDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Ioc: " + ioc);
+                    LOG.info("Create XML for Ioc: " + ioc);
                     for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
                         makeXMLFile(path, subnet);
                     }
                 } else if (selectedNode instanceof FacilityDBO) {
                     FacilityDBO facility = (FacilityDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + facility);
+                    LOG.info("Create XML for Facility: " + facility);
                     for (IocDBO ioc : facility.getIoc()) {
                         for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
                             makeXMLFile(path, subnet);
@@ -726,18 +731,18 @@ public class ProfiBusTreeView extends Composite {
                 Object selectedNode = _selectedNode.getFirstElement();
                 if (selectedNode instanceof ProfibusSubnetDBO) {
                     ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Subnet: " + subnet);
+                    LOG.info("Create XML for Subnet: " + subnet);
                     makeXMLFile(path, subnet);
 
                 } else if (selectedNode instanceof IocDBO) {
                     IocDBO ioc = (IocDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Ioc: " + ioc);
+                    LOG.info("Create XML for Ioc: " + ioc);
                     for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
                         makeXMLFile(path, subnet);
                     }
                 } else if (selectedNode instanceof FacilityDBO) {
                     FacilityDBO facility = (FacilityDBO) selectedNode;
-                    CentralLogger.getInstance().info(this, "Create XML for Facility: " + facility);
+                    LOG.info("Create XML for Facility: " + facility);
                     for (IocDBO ioc : facility.getIoc()) {
                         for (ProfibusSubnetDBO subnet : ioc.getProfibusSubnets()) {
                             makeXMLFile(path, subnet);
@@ -870,12 +875,13 @@ public class ProfiBusTreeView extends Composite {
             @Override
             public void run() {
                 closeOpenEditor();
-                IHandlerService handlerService = (IHandlerService) _site
+                IHandlerService handlerService = (IHandlerService) getSite()
                         .getService(IHandlerService.class);
                 try {
-                    handlerService.executeCommand(CallNewSiblingNodeEditor.getEditorID(), null);
+//                    handlerService.executeCommand(CallNewSiblingNodeEditor.getEditorID(), null);
+                    handlerService.executeCommand(CallNewFacilityEditor.ID, null);
                 } catch (Exception ex) {
-                    CentralLogger.getInstance().error(this, ex.getMessage());
+                    LOG.error(ex.getMessage(), ex);
                 }
             }
         };
@@ -1236,7 +1242,7 @@ public class ProfiBusTreeView extends Composite {
 //            handlerService.executeCommand(cp, null);
             handlerService.executeCommand(editorID, null);
         } catch (Exception ex) {
-            CentralLogger.getInstance().error(this, ex.getMessage(),ex);
+            LOG.error(ex.getMessage(),ex);
         }
     }
 
@@ -1330,24 +1336,20 @@ public class ProfiBusTreeView extends Composite {
     /**
      * @param abstractNodeEditor
      */
-    public void setOpenEditor(final AbstractNodeEditor openNodeEditor) {
+    public void setOpenEditor(@Nullable final AbstractNodeEditor openNodeEditor) {
         _openNodeEditor = openNodeEditor;
     }
-
-    //    public void setConfiguratorName(final String name) {
-    //        IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-    //        IWorkbenchPage page = window.getActivePage();
-    //        try {
-    //            IViewPart showView = page.showView(NodeConfigView.ID);
-    //            if (showView instanceof NodeConfigView) {
-    //                NodeConfigView nodeConfigView = (NodeConfigView) showView;
-    //                nodeConfigView.setPartName(name);
-    //            }
-    //        } catch (PartInitException e) {
-    //            // TODO Auto-generated catch block
-    //            e.printStackTrace();
-    //        }
-    //    }
+    
+    public void removeOpenEditor(@Nullable final AbstractNodeEditor openNodeEditor) {
+    	if(_openNodeEditor!=null && _openNodeEditor.equals(openNodeEditor)) {
+    		_openNodeEditor = null;
+    	}
+    }
+    
+    @CheckForNull
+    public AbstractNodeEditor  getOpenEditor() {
+    	return _openNodeEditor;
+    }
 
     /**
      *

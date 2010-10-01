@@ -30,6 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -112,6 +113,10 @@ import org.eclipse.ui.part.EditorPart;
  * @since 31.03.2010
  */
 public abstract class AbstractNodeEditor extends EditorPart implements INodeConfig {
+	
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			AbstractNodeEditor.class);
+	
 	/**
 	 *
 	 * @author hrickens
@@ -314,7 +319,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 					setSavebuttonEnabled("ModifyListenerCombo" + spinner.hashCode(),
 							(Short) spinner.getData() != spinner.getSelection());
 				} catch (final ClassCastException cce) {
-					CentralLogger.getInstance().error(this, spinner.toString(), cce);
+					LOG.error( spinner.toString(), cce);
 				}
 			}
 		}
@@ -643,18 +648,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		setSaveButton(null);
 		if (_saveButtonEvents != null) {
 			_saveButtonEvents.clear();
-
 		}
-		//        if (_FONT != null) {
-		//            _FONT.dispose();
-		//        }
-		//        if (_FONT_BOLD != null) {
-		//            _FONT_BOLD.dispose();
-		//        }
+		getProfiBusTreeView().removeOpenEditor(this);
 	}
 
-	// ---------------------------------------
-	// Node Editor View
 
 	/**
 	 * set the documents and Icon tab item.
@@ -1045,7 +1042,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 	 *            A exception to show in a Dialog,
 	 */
 	protected void openErrorDialog(@Nonnull final Exception exception) {
-		CentralLogger.getInstance().error(this, exception);
+		LOG.error( exception);
 		final Formatter f = new Formatter();
 		String message = exception.getLocalizedMessage();
 		if (message == null) {
@@ -1074,7 +1071,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 			setFocus();
 			handlerService.executeCommand("org.eclipse.ui.file.close", null);
 		} catch (final Exception ex) {
-			CentralLogger.getInstance().error(this, ex.getMessage());
+			LOG.error( ex);
 		}
 	}
 
@@ -1084,7 +1081,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		try {
 			handlerService.executeCommand("org.eclipse.ui.file.save", null);
 		} catch (final Exception ex) {
-			CentralLogger.getInstance().error(this, ex.getMessage());
+			LOG.error( ex);
 		}
 	}
 
