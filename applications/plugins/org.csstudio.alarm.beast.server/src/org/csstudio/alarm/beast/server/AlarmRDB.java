@@ -33,8 +33,8 @@ public class AlarmRDB
     /** Map of message strings and IDs in RDB */
     final private MessageMapping message_mapping;
 
+    // TODO: Use this in alarm server, then pass the actual server in
 	private AlarmServer server;
-
 
 	public AlarmRDB(final String url, final String user, final String password, final String root_name) throws Exception
     {

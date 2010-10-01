@@ -11,7 +11,6 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AlarmRDBTest
 {
-
 	private Properties getTestSettings() throws Exception
     {
         Properties settings = new Properties();
