@@ -142,9 +142,12 @@ public class AlarmServer
         {
             synchronized (this)
             {
-                for (AlarmLogic pv : pv_list)
-                    if (pv.getAlarmState().getSeverity() == SeverityLevel.INVALID)
-                        pv.acknowledge(true);
+                for (AlarmPV pv : pv_list)
+                {
+                	final AlarmLogic logic = pv.getAlarmLogic();
+                    if (logic.getAlarmState().getSeverity() == SeverityLevel.INVALID)
+                    	logic.acknowledge(true);
+                }
             }
         }
     }
@@ -155,7 +158,7 @@ public class AlarmServer
         System.out.println("== Alarm Server PV Snapshot ==");
         synchronized (this)
         {
-            for (AlarmLogic pv : pv_list)
+            for (AlarmPV pv : pv_list)
                 System.out.println(pv);
         }
 
@@ -432,10 +435,10 @@ public class AlarmServer
             final boolean enabled = result.getBoolean(2);
             final String filter = result.getString(7);
             pv.setDescription(result.getString(1));
-            pv.setAnnunciate(result.getBoolean(3));
-            pv.setLatching(result.getBoolean(4));
-            pv.setDelay(result.getInt(5));
-            pv.setCount(result.getInt(6));
+            pv.getAlarmLogic().setAnnunciate(result.getBoolean(3));
+            pv.getAlarmLogic().setLatching(result.getBoolean(4));
+            pv.getAlarmLogic().setDelay(result.getInt(5));
+            pv.getAlarmLogic().setCount(result.getInt(6));
             pv.setEnablement(enabled, filter);
             pv.start();
         }
@@ -451,9 +454,9 @@ public class AlarmServer
      */
     public void acknowledge(final String pv_name, final boolean acknowledge)
     {
-        final AlarmLogic pv = findPV(pv_name);
+        final AlarmPV pv = findPV(pv_name);
         if (pv != null)
-            pv.acknowledge(acknowledge);
+            pv.getAlarmLogic().acknowledge(acknowledge);
     }
 
     /** Locate alarm PV by name
