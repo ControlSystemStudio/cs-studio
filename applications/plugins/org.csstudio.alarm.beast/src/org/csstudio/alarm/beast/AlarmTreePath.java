@@ -41,7 +41,8 @@ public class AlarmTreePath
         {
             if (i > 0)
                 path.append(PATH_SEP);
-            path.append(path_items[i]);
+        	// Escape any path-seps inside item with backslashes
+            path.append(path_items[i].replace("/", "\\/"));
         }
         return path.toString();
     }
@@ -56,6 +57,10 @@ public class AlarmTreePath
     	// '(?<!x)' means 'not preceded by x',
     	// and in this case the x=\ must be escaped twice:
     	// Once to get into the Java string, once more to pass to the regex.
-        return path.split("(?<!\\\\)/");
+        final String[] items = path.split("(?<!\\\\)/");
+        // Un-escape any PATH_SEP that's inside each item
+        for (int i = 0; i < items.length; ++i)
+        	items[i] = items[i].replace("\\/", PATH_SEP);
+		return items;
     }
 }
