@@ -88,6 +88,9 @@ public interface ArchiveReader
      *  then use <code>getNamesByRegExp()</code>. But file globs
      *  can be a lot faster for some implementations, and are also known
      *  by more users, so a designated call appeared appropriate.
+     *  <p>
+     *  The search should be case-insensitive, but details can depend
+     *  on the implementation.
      *  
      *  @param key Key of archive to search.
      *  @param glob_pattern Pattern for channel name with '*' or '?'.
@@ -98,6 +101,9 @@ public interface ArchiveReader
         throws Exception;
     
     /** Find channel in given sub-archive via regular expression search.
+     *  <p>
+     *  The search should be case-insensitive, but details can depend
+     *  on the implementation.
      *  
      *  @param key Key of archive to search.
      *  @param reg_exp Regular Expression for channel name.

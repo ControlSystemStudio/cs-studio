@@ -21,7 +21,6 @@
  */
 package org.csstudio.config.ioconfig.commands;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
@@ -42,80 +41,45 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.view.MainView;
-import org.eclipse.core.commands.AbstractHandler;
-import org.eclipse.core.commands.ExecutionEvent;
-import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.PlatformUI;
 
 /**
  * TODO (hrickens) :
- *
+ * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.2 $
  * @since 01.04.2010
  */
-public class CallEditor extends AbstractHandler {
+public class CallEditor extends AbstractCallNodeEditor {
 
-    public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
+	public static final String ID = "org.csstudio.config.ioconfig.commands.callEditor";
 
-    /**
-     * (@inheritDoc)
-     */
-    // CHECKSTYLE OFF: CyclomaticComplexity
-    @Override
-    @CheckForNull
-    public Object execute(@Nonnull final ExecutionEvent event) throws ExecutionException {
+	// CHECKSTYLE OFF: CyclomaticComplexity
+	@Override
+	protected final void openNodeEditor(@Nonnull AbstractNodeDBO obj,
+			@Nonnull IWorkbenchPage page) throws PartInitException {
 
-        IWorkbenchPage page = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage();
-        AbstractNodeDBO obj = getCallerNode(page);
+		NodeEditorInput input = new NodeEditorInput(obj);
+		if (obj instanceof FacilityDBO) {
+			page.openEditor(input, FacilityEditor.ID);
+		} else if (obj instanceof IocDBO) {
+			page.openEditor(input, IocEditor.ID);
+		} else if (obj instanceof ProfibusSubnetDBO) {
+			page.openEditor(input, SubnetEditor.ID);
+		} else if (obj instanceof MasterDBO) {
+			page.openEditor(input, MasterEditor.ID);
+		} else if (obj instanceof SlaveDBO) {
+			page.openEditor(input, SlaveEditor.ID);
+		} else if (obj instanceof ModuleDBO) {
+			page.openEditor(input, ModuleEditor.ID);
+		} else if (obj instanceof ChannelDBO) {
+			page.openEditor(input, ChannelEditor.ID);
+		} else if (obj instanceof ChannelStructureDBO) {
+			page.openEditor(input, ChannelStructureEditor.ID);
+		}
 
-        NodeEditorInput input = new NodeEditorInput(obj);
-        try {
-            if (obj instanceof FacilityDBO) {
-                page.openEditor(input, FacilityEditor.ID);
-            } else if (obj instanceof IocDBO) {
-                page.openEditor(input, IocEditor.ID);
-            } else if (obj instanceof ProfibusSubnetDBO) {
-                page.openEditor(input, SubnetEditor.ID);
-            } else if (obj instanceof MasterDBO) {
-                page.openEditor(input, MasterEditor.ID);
-            } else if (obj instanceof SlaveDBO) {
-                page.openEditor(input, SlaveEditor.ID);
-            } else if (obj instanceof ModuleDBO) {
-                page.openEditor(input, ModuleEditor.ID);
-            } else if (obj instanceof ChannelDBO) {
-                page.openEditor(input, ChannelEditor.ID);
-            } else if (obj instanceof ChannelStructureDBO) {
-                page.openEditor(input, ChannelStructureEditor.ID);
-            }
-        } catch (PartInitException e) {
-            System.out.println(e.getStackTrace());
-        }
-        return null;
-    }
-    // CHECKSTYLE ON: CyclomaticComplexity
-
-    /**
-     * @return
-     */
-    @CheckForNull
-    private AbstractNodeDBO getCallerNode(@Nonnull final IWorkbenchPage page) {
-        MainView view = (MainView) page.findView(MainView.ID);
-        // Get the selection
-        ISelection selection = view.getSite().getSelectionProvider().getSelection();
-        if ( (selection != null) && (selection instanceof IStructuredSelection)) {
-            Object obj = ((IStructuredSelection) selection).getFirstElement();
-            // If we had a selection lets open the editor
-            if ( (obj != null) && (obj instanceof AbstractNodeDBO)) {
-                return (AbstractNodeDBO) obj;
-            }
-        }
-        return null;
-    }
+	}
+	// CHECKSTYLE ON: CyclomaticComplexity
 }

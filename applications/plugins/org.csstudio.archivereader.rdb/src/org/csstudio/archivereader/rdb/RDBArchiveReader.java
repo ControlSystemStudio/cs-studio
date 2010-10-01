@@ -215,7 +215,7 @@ public class RDBArchiveReader implements ArchiveReader
     }
     
     /** Perform channel search by name pattern
-     *  @param pattern Pattern
+     *  @param pattern Pattern, either SQL or Reg. Ex.
      *  @param sql_query SQL query that can handle the pattern
      *  @return Channel names
      *  @throws Exception on error

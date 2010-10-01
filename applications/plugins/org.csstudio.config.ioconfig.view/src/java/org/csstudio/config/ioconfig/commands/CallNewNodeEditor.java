@@ -27,16 +27,18 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
 import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -53,6 +55,9 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public class CallNewNodeEditor extends AbstractHandler {
 
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			CallNewNodeEditor.class);
+	
     private FacilityDBO _fac;
 
     /**
@@ -72,7 +77,7 @@ public class CallNewNodeEditor extends AbstractHandler {
             try {
                 page.openEditor(input, FacilityEditor.ID);
             } catch (PartInitException e) {
-                System.out.println(e.getStackTrace());
+            	LOG.error("Can't open Facility Editor", e);
             }
             node = getNode();
         }
@@ -87,7 +92,7 @@ public class CallNewNodeEditor extends AbstractHandler {
         InputDialog id = new InputDialog(Display.getDefault().getActiveShell(), "Create new " + nodeType,
                 "Enter the name of the " + nodeType, nameOffer, null);
         id.setBlockOnOpen(true);
-        if (id.open() == Dialog.OK) {
+        if (id.open() == Window.OK) {
             getNode().setName(id.getValue());
             getNode().setSortIndex(0);
             User user = SecurityFacade.getInstance().getCurrentUser();
@@ -103,6 +108,7 @@ public class CallNewNodeEditor extends AbstractHandler {
         return false;
     }
 
+    @Nonnull
     private FacilityDBO getNode() {
         if(_fac == null) {
             _fac = new FacilityDBO();

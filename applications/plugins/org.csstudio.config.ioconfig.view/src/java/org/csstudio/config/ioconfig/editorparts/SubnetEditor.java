@@ -742,7 +742,7 @@ public class SubnetEditor extends AbstractNodeEditor {
 
     /** {@inheritDoc} */
     @Override
-    public final GSDFileDBO getGSDFile() {
+    public final GSDFileDBO getGsdFile() {
         return null;
     }
 
