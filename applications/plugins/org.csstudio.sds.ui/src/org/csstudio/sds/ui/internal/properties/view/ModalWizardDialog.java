@@ -77,9 +77,11 @@ public final class ModalWizardDialog extends WizardDialog {
 		} else {
 			final Rectangle currentBounds = _instance.getShell() == null ? null
 					: _instance.getShell().getBounds();
-			_instance.close();
+			/*
+			 *  XXX: don't close the instance. Workaround for a Eclipse 3.6 Bug. Maybe make a memory leak.
+			 */
+//			_instance.close();
 			_instance = new ModalWizardDialog(parentShell, newWizard);
-
 			// if the dialog was previously closed, there was no old shell and
 			// no old bounds
 			if (currentBounds != null) {

@@ -111,7 +111,7 @@ public class ProfibusHelper_Test {
     @Test
     @Ignore("Does not compile!")
     public void textabc() {
-        final GsdModuleModel module = new GsdModuleModel("\"name\"2", new GsdSlaveModel());
+//        final GsdModuleModel module = new GsdModuleModel("\"name\"2", new GsdSlaveModel());
 //        final SlaveCfgData[] makeSlaveCfgData = ProfibusHelper.makeSlaveCfgData(module);
 //        assertEquals(0, makeSlaveCfgData[0].getNumber());
 //        assertEquals(17, makeSlaveCfgData[0].getSize());

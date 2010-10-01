@@ -36,6 +36,9 @@ package org.csstudio.config.ioconfig.editorparts;
 
 import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
@@ -47,10 +50,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Spinner;
+import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
+ * Editor for {@link IocDBO} node's
  *
  * @author hrickens
  * @author $Author: hrickens $
@@ -77,7 +82,7 @@ public class IocEditor extends AbstractNodeEditor {
      * {@inheritDoc}
      */
     @Override
-    public void createPartControl(final Composite parent) {
+    public void createPartControl(@Nonnull final Composite parent) {
         super.createPartControl(parent);
         _ioc = (IocDBO) getNode();
         if (_ioc == null) {
@@ -86,7 +91,10 @@ public class IocEditor extends AbstractNodeEditor {
         }
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("IOC");
-        getTabFolder().setSelection(0);
+        TabFolder tabFolder = getTabFolder();
+		if(tabFolder!=null) {
+        	tabFolder.setSelection(0);
+        }
     }
 
     /**
@@ -95,25 +103,33 @@ public class IocEditor extends AbstractNodeEditor {
      * @param head
      *            The headline of the tab.
      */
-    private void main(final String head) {
-        Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5,300,260);
-        comp.setLayout(new GridLayout(4, false));
+    private void main(@Nonnull final String head) {
+		TabFolder tabFolder = getTabFolder();
+		if (tabFolder != null) {
+			Composite comp = ConfigHelper.getNewTabItem(head, tabFolder,
+					5, 300, 260);
+			comp.setLayout(new GridLayout(4, false));
 
-        Group gName = new Group(comp, SWT.NONE);
-        gName.setText("Name");
-        gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
-        gName.setLayout(new GridLayout(3, false));
+			Group gName = new Group(comp, SWT.NONE);
+			gName.setText("Name");
+			gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+					5, 1));
+			gName.setLayout(new GridLayout(3, false));
 
-        Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
-        setText(nameText, _ioc.getName(), 255);
-        nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1));
-        setNameWidget(nameText);
+			Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
+			setText(nameText, _ioc.getName(), 255);
+			nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+					false, 1, 1));
+			setNameWidget(nameText);
 
-        setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _ioc, getMLSB(), "Index",
-                getProfiBusTreeView()));
-        getIndexSpinner().setMaximum(_ioc.getParent().getChildren().size() - 1);
+			Spinner indexSpinner = ConfigHelper.getIndexSpinner(gName, _ioc,
+					getMLSB(), "Index", getProfiBusTreeView());
+			setIndexSpinner(indexSpinner);
+			indexSpinner.setMaximum(
+					_ioc.getParent().getChildren().size() - 1);
 
-        makeDescGroup(comp,3);
+			makeDescGroup(comp, 3);
+		}
     }
 
     /*
@@ -124,7 +140,7 @@ public class IocEditor extends AbstractNodeEditor {
      * .config.ioconfig.model .pbmodel.GSDFile)
      */
     @Override
-    public boolean fill(final GSDFileDBO gsdFile) {
+    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
         return false;
     }
 
@@ -134,7 +150,7 @@ public class IocEditor extends AbstractNodeEditor {
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
      */
     @Override
-    public GSDFileDBO getGSDFile() {
+    public GSDFileDBO getGsdFile() {
         return null;
     }
 
@@ -146,8 +162,14 @@ public class IocEditor extends AbstractNodeEditor {
             if (text != null) {
                     text.setText("");
             }
-            getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
-            getNameWidget().setText((String) getNameWidget().getData());
+            Spinner indexSpinner = getIndexSpinner();
+            if(indexSpinner!=null) {
+            	indexSpinner.setSelection((Short) indexSpinner.getData());
+            }
+            Text nameWidget = getNameWidget();
+			if(nameWidget!=null) {
+            	nameWidget.setText((String) nameWidget.getData());
+            }
         }
         DocumentationManageView dMV = getDocumentationManageView();
         if (dMV != null) {
@@ -160,17 +182,26 @@ public class IocEditor extends AbstractNodeEditor {
      * {@inheritDoc}
      */
     @Override
-    public void doSave(final IProgressMonitor monitor) {
+    public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Main
-        _ioc.setName(getNameWidget().getText());
-        getNameWidget().setData(getNameWidget().getText());
+        Text nameWidget = getNameWidget();
+		if (nameWidget != null) {
+			_ioc.setName(nameWidget.getText());
+			nameWidget.setData(nameWidget.getText());
+		}
 
-        getIndexSpinner().setData(_ioc.getSortIndex());
+        Spinner indexSpinner = getIndexSpinner();
+        if(indexSpinner!=null) {
+        	indexSpinner.setData(_ioc.getSortIndex());
+        }
 
         // Document
-        Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-        _ioc.setDocuments(docs);
+        DocumentationManageView documentationManageView = getDocumentationManageView();
+		if(documentationManageView!=null) {
+        	Set<DocumentDBO> docs = documentationManageView.getDocuments();
+        	_ioc.setDocuments(docs);
+        }
 
         save();
     }
