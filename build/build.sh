@@ -25,7 +25,7 @@ else
     fi
   if [[ ! -f eclipse-3.5.2-delta-pack.zip ]]
   then
-    wget http://mirror.cc.vt.edu/pub/eclipse/eclipse/downloads/drops/R-3.5.2-201002111343/eclipse-3.5.2-delta-pack.zip
+    wget http://archive.eclipse.org/eclipse/downloads/drops/R-3.5.2-201002111343/eclipse-3.5.2-delta-pack.zip
   fi
   tar -xzvf eclipse-rcp-galileo-SR2-linux-gtk.tar.gz
   unzip -o eclipse-3.5.2-delta-pack.zip
