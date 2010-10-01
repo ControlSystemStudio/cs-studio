@@ -74,7 +74,7 @@ public final class LdapTestHelper {
 
             return service;
         } catch (final Exception e) {
-            Assert.fail("Unexpected exception");
+            Assert.fail("Unexpected exception:\n" + e.getMessage());
         }
         return null; // Nonnull annotation is correct, due to assertion failure on service == null.
     }
