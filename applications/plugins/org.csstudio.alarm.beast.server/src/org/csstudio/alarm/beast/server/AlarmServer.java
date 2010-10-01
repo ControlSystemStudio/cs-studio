@@ -387,7 +387,8 @@ public class AlarmServer
                     
                 // Ignoring config. time from result.getTimestamp(16)
                     
-                final AlarmPV pv = new AlarmPV(this, id, name, description,
+            	// TODO Use correct parent
+                final AlarmPV pv = new AlarmPV(this, null, id, name, description,
                         enabled, latch, annunciate, min_alarm_delay, count, filter,
                         current_severity, current_status, severity, status, value, timestamp);
                 tmp_pv_array.add(pv);

@@ -76,7 +76,9 @@ public class AlarmRDB
             if (parent != null)
                 throw new Exception("Root element " + root_name + " has parent");
             result.close();
-            return getAlarmTreeHierarchy(id, root_name);
+            final AlarmHierarchy root = new AlarmHierarchy(null, root_name, id);
+            root.setChildren(getAlarmTreeChildren(root));
+            return root;
         }
         finally
         {
@@ -85,24 +87,21 @@ public class AlarmRDB
         }
     }
 
-    /** Read alarm tree hierarchy, i.e. all elements from a given id/name on
-     *  @param parent_id ID of the parent entry
-     *  @param parent_name Name of the parent entry
-     *  @return The parent entry with all its children
+    /** Read alarm tree hierarchy, set all child elements and their child elements.
+     *  @param parent Parent entry
      *  @throws Exception on error
      */
-	private AlarmHierarchy getAlarmTreeHierarchy(final int parent_id, final String parent_name) throws Exception
+	private AlarmHierarchy[] getAlarmTreeChildren(final AlarmHierarchy parent) throws Exception
     {
 		// Get PVs under this parent
-		final List<AlarmHierarchy> children = getAlarmTreePVs(parent_id);
+		final List<AlarmHierarchy> children = getAlarmTreePVs(parent);
 
-		// Fetch subtree
-		// When trying to re-use this statement note the recursive access!
+		// Fetch non-PV children
         final PreparedStatement sel_items_by_parent =
             rdb.getConnection().prepareStatement(sql.sel_items_by_parent);
         try
         {
-            sel_items_by_parent.setInt(1, parent_id);
+            sel_items_by_parent.setInt(1, parent.getID());
             final ResultSet result = sel_items_by_parent.executeQuery();
             while (result.next())
             {
@@ -120,8 +119,9 @@ public class AlarmRDB
                 }
                 if (is_pv)
                 	continue;
-                // Recurse to children of child entry
-                children.add(getAlarmTreeHierarchy(child_id, child_name));
+                final AlarmHierarchy child = new AlarmHierarchy(parent, child_name, child_id);
+				children.add(child);
+				child.setChildren(getAlarmTreeChildren(child));
             }
             result.close();
         }
@@ -129,17 +129,19 @@ public class AlarmRDB
         {
             sel_items_by_parent.close();
         }
+
+        // Recurse to children
         final AlarmHierarchy[] child_array =
         	children.toArray(new AlarmHierarchy[children.size()]);
-		return new AlarmHierarchy(parent_name, parent_id, child_array);
+        return child_array;
     }
 	
-    /** Read configuration of PVs
-     *  @param parent Parent node ID.
+    /** Read PVs below a parent
+     *  @param parent Parent node
      *  @throws Exception on error
      *  @return PVs
      */
-    private List<AlarmHierarchy> getAlarmTreePVs(final int parent) throws Exception
+    private List<AlarmHierarchy> getAlarmTreePVs(final AlarmHierarchy parent) throws Exception
     {
 		final List<AlarmHierarchy> pvs = new ArrayList<AlarmHierarchy>();
 		// When trying to re-use this statement note the recursive access!
@@ -147,7 +149,7 @@ public class AlarmRDB
             rdb.getConnection().prepareStatement(sql.sel_pvs_by_parent);   
         try
         {
-            sel_pv_statement.setInt(1, parent);
+            sel_pv_statement.setInt(1, parent.getID());
             final ResultSet result = sel_pv_statement.executeQuery();
             while (result.next())
             {   // Easy results
@@ -208,7 +210,7 @@ public class AlarmRDB
                     
                 // Ignoring config. time from result.getTimestamp(16)
                     
-                final AlarmPV pv = new AlarmPV(server, id, name, description,
+                final AlarmPV pv = new AlarmPV(server, parent, id, name, description,
                         enabled, latch, annunciate, min_alarm_delay, count, filter,
                         current_severity, current_status, severity, status, value, timestamp);
                 pvs.add(pv);

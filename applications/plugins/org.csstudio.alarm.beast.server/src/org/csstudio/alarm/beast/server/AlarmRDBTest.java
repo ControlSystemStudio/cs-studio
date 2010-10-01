@@ -29,6 +29,6 @@ public class AlarmRDBTest
 				settings.getProperty("rdb_password"),
 				settings.getProperty("alarm_root"));
 		final AlarmHierarchy root = rdb.readConfiguration();
-		root.dump();
+		root.dump(System.out);
 	}
 }

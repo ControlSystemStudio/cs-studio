@@ -1,32 +1,63 @@
 package org.csstudio.alarm.beast.server;
 
+import java.io.PrintStream;
+
+import org.csstudio.alarm.beast.AlarmTreePath;
+
 /** Element of the alarm hierarchy
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
 public class AlarmHierarchy
 {
+	/** Parent element, <code>null</code> for root */
+	final private AlarmHierarchy parent;
+	
 	/** Name of the alarm */
 	final private String name;
 
 	/** RDB ID */
 	final private int id;
 	
-	final private AlarmHierarchy children[];
+    /** Full path name of this item. */
+    final private String path_name;
+	
+    /** Child entries in the alarm tree */
+	private AlarmHierarchy children[] = null;
 
-	public AlarmHierarchy(final String name, final int id)
+	/** Initialize
+	 *  @param parent Parent node
+	 *  @param name Name
+	 *  @param id RDB ID
+	 */
+	public AlarmHierarchy(final AlarmHierarchy parent, final String name, final int id)
     {
-		this(name, id, new AlarmHierarchy[0]);
-    }
-
-	public AlarmHierarchy(final String name, final int id, final AlarmHierarchy children[])
-    {
+		this.parent = parent;
 		this.name = name;
 		this.id = id;
-		this.children = children;
+		if (parent == null)
+			path_name = name;
+		else
+			path_name = AlarmTreePath.makePath(parent.getPathName(), name);
     }
+
+	/** @param children Child entries
+	 *  @throws Error when trying to set them more than once
+	 */
+	void setChildren(final AlarmHierarchy children[])
+	{
+		if (this.children != null)
+			throw new Error("Alarm tree error, sub-elements already set for " + path_name);
+		this.children = children;
+	}
 	
-    /** @return RDB ID for this alarm tree element */
+    /** @return Full path name to this item, including the item name itself */
+    public String getPathName()
+    {
+        return path_name;
+    }
+
+	/** @return RDB ID for this alarm tree element */
 	public int getID()
     {
 	    return id;
@@ -44,23 +75,20 @@ public class AlarmHierarchy
         return name;
     }
 
-	
-    public void dump()
+	/** Dump alarm hierarchy recursively for debugging 
+	 *  @param out PrintStream
+	 */
+    public void dump(final PrintStream out)
     {
-		dump("");
-    }
-
-	private void dump(final String indent)
-    {
-		final String child_indent = indent + "    ";
-		System.out.println(indent + toString());
+		out.println(toString());
 		for (AlarmHierarchy child : children)
-			child.dump(child_indent);
+			child.dump(out);
     }
 	
+    /** @return Debug representation */
 	@Override
 	public String toString()
 	{
-		return name;
+		return path_name;
 	}
 }

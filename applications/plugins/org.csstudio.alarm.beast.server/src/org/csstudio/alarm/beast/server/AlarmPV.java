@@ -73,7 +73,9 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
      *  @param timestamp 
      *  @throws Exception on error
      */
-    public AlarmPV(final AlarmServer server, final int id, final String name, 
+    public AlarmPV(final AlarmServer server,
+    		final AlarmHierarchy parent,
+    		final int id, final String name, 
             final String description,
             final boolean enabled,
             final boolean latching,
@@ -88,7 +90,9 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
             final String value,
             final ITimestamp timestamp) throws Exception
     {
-    	super(name, id);
+    	super(parent, name, id);
+    	// PV has no child entries
+    	setChildren(new AlarmHierarchy[0]);
     	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
               new AlarmState(severity, message, value, timestamp));
@@ -289,7 +293,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append(getName() + " [" + description + "] - ");
+        buf.append(getPathName() + " [" + description + "] - ");
         if (pv != null)
         {
 	        if (pv.isConnected())
