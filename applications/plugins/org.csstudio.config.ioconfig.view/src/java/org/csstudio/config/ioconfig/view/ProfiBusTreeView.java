@@ -134,7 +134,6 @@ import org.eclipse.ui.part.DrillDownAdapter;
 /**
  * @author hrickens
  * @author $Author: hrickens $
- * @version $Revision: 1.26 $
  * @since 19.06.2007
  */
 public class ProfiBusTreeView extends Composite {
@@ -291,7 +290,7 @@ public class ProfiBusTreeView extends Composite {
         ColumnViewerEditorActivationStrategy editorActivationStrategy = new ColumnViewerEditorActivationStrategy(_viewer);
         TreeViewerEditor.create(_viewer, editorActivationStrategy, TreeViewerEditor.DEFAULT);
         _drillDownAdapter = new DrillDownAdapter(_viewer);
-        _viewer.setContentProvider(new ProfibusTreeContentProvider(_site));
+        _viewer.setContentProvider(new ProfibusTreeContentProvider());
 
         _viewer.setLabelProvider(new ViewLabelProvider());
         _viewer.setSorter(new NameSorter());
@@ -1354,7 +1353,6 @@ public class ProfiBusTreeView extends Composite {
      *
      * @author hrickens
      * @author $Author: hrickens $
-     * @version $Revision: 1.26 $
      * @since 20.06.2007
      */
     class NameSorter extends ViewerSorter {
@@ -1386,7 +1384,6 @@ public class ProfiBusTreeView extends Composite {
      *
      * @author hrickens
      * @author $Author: hrickens $
-     * @version $Revision: 1.26 $
      * @since 20.06.2007
      */
     class ViewLabelProvider extends ColumnLabelProvider {

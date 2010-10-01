@@ -35,7 +35,7 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 /**
- * TODO (hrickens) :
+ * Identifier for the {@link AbstractNodeEditor} header fields.
  *
  * @author hrickens
  * @author $Author: hrickens $
