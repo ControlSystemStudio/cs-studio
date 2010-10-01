@@ -27,7 +27,7 @@ import org.eclipse.osgi.util.NLS;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
+public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVListener, FilterListener
 {
     /** Timer used to check for connections at some delay after 'start */
     final private static Timer connection_timer =
@@ -37,16 +37,8 @@ public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
     
     final private AlarmLogic logic;
     
-    /** Name of the alarm
-     *  @see #getName()
-     */
-    final private String name;
-
     /** Alarm server that handles this PV */
     final private AlarmServer server;
-    
-    /** RDB ID */
-    final private int id;
     
     /** Description of alarm, will be used to annunciation */
     private volatile String description;
@@ -63,7 +55,7 @@ public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
     private volatile Filter filter;
 
     /** Initialize alarm PV
-     *  @param server Alarm server that handles this PV 
+     *  @param server Alarm server that handles this PV. Within JUnit tests, this may be <code>null</code>.
      *  @param id RDB ID
      *  @param name Name of control system PV
      *  @param description Description of alarm, will be used to annunciation
@@ -96,37 +88,31 @@ public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
             final String value,
             final ITimestamp timestamp) throws Exception
     {
+    	super(name, id);
     	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
               new AlarmState(severity, message, value, timestamp));
         log = CentralLogger.getInstance().getLogger(this);
-        this.name = name;
         this.server = server;
-        this.id = id;
         setDescription(description);
-        pv = PVFactory.createPV(name);
-        setEnablement(enabled, filter);
+        if (server == null)
+        {	// Unit test, don't create a PV
+        	pv = null;
+        }
+        else
+        {
+	        pv = PVFactory.createPV(name);
+	        setEnablement(enabled, filter);
+        }
     }
 
-    /** @return RDB ID for this PV */
-    public int getID()
+    /** @return AlarmLogic used by this PV */
+    AlarmLogic getAlarmLogic()
     {
-        return id;
+        return logic;
     }
 
-    /** Get the alarm PV name.
-     *  This may differ a little from the actual underlying control system PV:
-     *  For example, the alarm name might be "Fred",
-     *  but since the control system defaults to "system://Fred", the actual
-     *  CS PV has a slightly different name.
-     *  @return Name that was used when constructing this AlarmPV
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /** @return Alarm description */
+	/** @return Alarm description */
     public String getDescription()
     {
         return description;
@@ -304,10 +290,13 @@ public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
     {
         final StringBuilder buf = new StringBuilder();
         buf.append(getName() + " [" + description + "] - ");
-        if (pv.isConnected())
-            buf.append("connected - ");
-        else
-            buf.append("disconnected - ");
+        if (pv != null)
+        {
+	        if (pv.isConnected())
+	            buf.append("connected - ");
+	        else
+	            buf.append("disconnected - ");
+        }
         if (! logic.isEnabled())
             buf.append("disabled - ");
         if (logic.isAnnunciating())
@@ -318,12 +307,7 @@ public class AlarmPV implements AlarmLogicListener, PVListener, FilterListener
             buf.append(logic.getDelay() + " sec delay - ");
         if (filter != null)
             buf.append(filter.toString() + " - ");
-        buf.append(super.toString());
+        buf.append(logic.toString());
         return buf.toString();
-    }
-
-	public AlarmLogic getAlarmLogic()
-    {
-	    return logic;
     }
 }
