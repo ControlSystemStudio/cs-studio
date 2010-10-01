@@ -10,10 +10,11 @@ package org.csstudio.alarm.beast;
 /** Helper for handling the path names of alarm tree elements.
  *  @author Kay Kasemir
  */
+@SuppressWarnings("nls")
 public class AlarmTreePath
 {
     /** Separator used to create path names to items in the alarm tree */
-    final private static String PATH_SEP = "/"; //$NON-NLS-1$
+    final private static String PATH_SEP = "/";
 
     /** Build path name
      *  @param path Parent path
@@ -22,7 +23,8 @@ public class AlarmTreePath
      */
     public static String makePath(final String path, final String item)
     {
-        return path + PATH_SEP + item;
+    	// Escape any path-seps inside item with backslashes
+        return path + PATH_SEP + item.replace("/", "\\/");
     }
 
     /** Build path name
@@ -50,6 +52,10 @@ public class AlarmTreePath
      */
     public static String[] splitPath(final String path)
     {
-        return path.split(PATH_SEP);
+    	// Split on '/', but only those that are NOT preceded by '\'.
+    	// '(?<!x)' means 'not preceded by x',
+    	// and in this case the x=\ must be escaped twice:
+    	// Once to get into the Java string, once more to pass to the regex.
+        return path.split("(?<!\\\\)/");
     }
 }
