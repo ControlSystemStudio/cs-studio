@@ -59,13 +59,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
  */
 public abstract class AbstractCallNodeEditor extends AbstractHandler {
 
-//    /**
-//     * Constructor.
-//     */
-//    public AbstractCallNodeEditor() {
-//        super();
-//    }
-
     /**
      * (@inheritDoc)
      */
@@ -79,7 +72,7 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         AbstractNodeDBO obj = getCallerNode(page);
 
         try {
-            abcde(obj, page);
+            openNodeEditor(obj, page);
         } catch (PartInitException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -87,19 +80,13 @@ public abstract class AbstractCallNodeEditor extends AbstractHandler {
         return null;
     }
 
-    /**
-     * @param page TODO
-     * @param obj
-     * @throws PartInitException
-     */
-    // TODO: (hrickens) Rename method name.
-    abstract protected void abcde(AbstractNodeDBO parentNode, IWorkbenchPage page) throws PartInitException;
+    protected abstract void openNodeEditor(@Nonnull AbstractNodeDBO parentNode,@Nonnull IWorkbenchPage page) throws PartInitException;
 
     /**
      * @return
      */
     @CheckForNull
-    private AbstractNodeDBO getCallerNode(final IWorkbenchPage page) {
+    private AbstractNodeDBO getCallerNode(@Nonnull final IWorkbenchPage page) {
         //TODO: I think that is not the right way to do this.
         MainView view = (MainView) page.findView(MainView.ID);
         // Get the selection

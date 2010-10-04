@@ -30,6 +30,7 @@ import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreference
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.TimeZone;
 import java.util.concurrent.Executors;
@@ -103,22 +104,12 @@ public class LdapUpdaterServer implements IApplication {
         final long intervalSec = Long.parseLong(intervalString);
 
         final TimeZone timeZone = TimeZone.getTimeZone("ECT");
-        final Calendar cal = new GregorianCalendar(timeZone);
+        final Calendar now = new GregorianCalendar(timeZone);
 
-        System.out.println(cal.getTime());
+        LOG.info(now.getTime());
 
-        final int hour = startTimeSec / 3600;
-        cal.set(Calendar.HOUR, hour);
-        final int minutes = startTimeSec / 60 % 60;
-        cal.set(Calendar.MINUTE, minutes);
-        final int seconds = startTimeSec % 3600;
-        cal.set(Calendar.SECOND, seconds);
-        cal.set(Calendar.MILLISECOND, 0);
-
-        final String delayStr = new SimpleDateFormat("HH:mm:ss").format(cal.getTime());
-
-        LOG.info("\nLDAP Updater autostart scheduled at " + delayStr +  " (ECT) every " + intervalSec + " seconds");
-
+        final long delaySec = getDelayInSeconds(startTimeSec, now);
+        logStartAndPeriod(startTimeSec, intervalSec, timeZone);
 
         final String username = getValueFromPreferences(XMPP_USER, "anonymous");
         final String password = getValueFromPreferences(XMPP_PASSWD, "anonymous");
@@ -130,7 +121,7 @@ public class LdapUpdaterServer implements IApplication {
 
         final ScheduledFuture<?> taskHandle =
             _updaterExecutor.scheduleAtFixedRate(new LdapUpdaterTask(),
-                                                 cal.getTimeInMillis()*1000,
+                                                 delaySec,
                                                  intervalSec,
                                                  TimeUnit.SECONDS);
         synchronized (this) {
@@ -144,6 +135,35 @@ public class LdapUpdaterServer implements IApplication {
         _updaterExecutor.shutdown();
 
         return IApplication.EXIT_OK;
+    }
+
+
+
+    private void logStartAndPeriod(final int startTimeSec,
+                                   final long intervalSec,
+                                   @Nonnull final TimeZone timeZone) {
+        final Calendar start = new GregorianCalendar(timeZone);
+        start.set(Calendar.SECOND, startTimeSec % 60);
+        start.set(Calendar.MINUTE, startTimeSec % 60 % 60);
+        start.set(Calendar.HOUR, startTimeSec / 3600);
+        final String startStr = new SimpleDateFormat("HH:mm:ss").format(start.getTime());
+
+        LOG.info("\nLDAP Updater autostart scheduled at " + startStr +  " (ECT) every " + intervalSec + " seconds");
+    }
+
+
+    private long getDelayInSeconds(final int startTimeSec, @Nonnull final Calendar now) {
+        final int s = now.get(Calendar.SECOND);
+        final int m = now.get(Calendar.MINUTE);
+        final int h = now.get(Calendar.HOUR_OF_DAY);
+
+        final long secondsSinceMidnight = s + m*60 + h*3600;
+
+        long delaySec = startTimeSec - secondsSinceMidnight;
+        if (delaySec < 0) {
+            delaySec = 3600*24 + delaySec; // turn over to new day
+        }
+        return delaySec;
     }
 
     /**

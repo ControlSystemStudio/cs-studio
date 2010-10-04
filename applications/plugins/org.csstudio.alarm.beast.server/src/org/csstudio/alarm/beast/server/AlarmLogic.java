@@ -36,7 +36,7 @@ import org.csstudio.platform.logging.CentralLogger;
  *  @see AlarmLogicTest
  *  @author Kay Kasemir
  */
-public abstract class AlarmLogic
+public class AlarmLogic
 {
     /** Timer for handling delayed alarms */
     private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
@@ -110,6 +110,9 @@ public abstract class AlarmLogic
     /** @see #getMaintenanceMode() */
     private static volatile boolean maintenance_mode = false;
 
+    /** Listener to notify on alarm state changes */
+    final private AlarmLogicListener listener;
+    
     /** Is logic enabled, or only following the 'current' PV state
      *  without actually alarming?
      */
@@ -127,6 +130,13 @@ public abstract class AlarmLogic
     
     /** Annunciate alarms? */
     private boolean annunciating;
+    
+    /** Does this alarm have priority in maintenance mode, i.e.
+     *  INVALID should still be annunciated in maintenance mode,
+     *  and the annunciator will not suppress it within a flurry of
+     *  alarms that are usually throttled/summarized
+     */
+    private boolean has_priority = false;
     
     /** Require minimum time [seconds] in alarm before indicating alarm */
     private int delay;
@@ -146,6 +156,7 @@ public abstract class AlarmLogic
     private volatile AlarmState disabled_state = null;
     
     /** Initialize
+     *  @param listener {@link AlarmLogicListener}
      *  @param latching Latch the highest received alarm severity?
      *  @param annunciating Annunciate alarms?
      *  @param delay Minimum time in alarm before indicating alarm [seconds]
@@ -153,12 +164,14 @@ public abstract class AlarmLogic
      *  @param current_state Current alarm state of PV
      *  @param alarm_state Alarm logic state
      */
-    public AlarmLogic(final boolean latching, final boolean annunciating,
+    public AlarmLogic(final AlarmLogicListener listener,
+    		final boolean latching, final boolean annunciating,
             final int delay,
             final int count,
             final AlarmState current_state,
             final AlarmState alarm_state)
     {
+    	this.listener = listener;
         this.latching = latching;
         this.annunciating = annunciating;
         this.delay = delay;
@@ -198,9 +211,10 @@ public abstract class AlarmLogic
         if (this.enabled == enable)
             return;
         this.enabled = enable;
-        fireEnablementUpdate();
+        listener.alarmEnablementChanged(this.enabled);
         if (!enabled)
         {   // Disabled
+        	final AlarmState current, alarm;
             synchronized (this)
             {   // Remember current PV state in case we're re-enabled
                 disabled_state = current_state;
@@ -209,8 +223,10 @@ public abstract class AlarmLogic
                 alarm_state = new AlarmState(SeverityLevel.OK,
                         Messages.AlarmMessageDisabled, "", //$NON-NLS-1$
                         TimestampFactory.now());
+                current = current_state;
+                alarm = alarm_state;
             }
-            fireStateUpdates();
+            listener.alarmStateChanged(current, alarm);
         }
         else
         {   // (Re-)enabled
@@ -229,7 +245,7 @@ public abstract class AlarmLogic
     }
     
     /** @param annunciating <code>true</code> to annunciate */
-    synchronized public void setAnnunciate(boolean annunciating)
+    synchronized public void setAnnunciate(final boolean annunciating)
     {
         this.annunciating = annunciating;
     }
@@ -240,7 +256,13 @@ public abstract class AlarmLogic
         return annunciating;
     }
 
-    /** @param latching <code>true</code> for latching behavior */
+    /** @param has_priority Does this alarm have priority in maintenance mode? */
+    synchronized public void setPriority(final boolean has_priority)
+    {
+    	this.has_priority = has_priority;
+    }
+
+	/** @param latching <code>true</code> for latching behavior */
     synchronized public void setLatching(boolean latching)
     {
         this.latching = latching;
@@ -283,16 +305,6 @@ public abstract class AlarmLogic
             alarm_history = new AlarmStateHistory(count);
         else
             alarm_history = null;
-    }
-
-    /** @return <code>true</code> if this is a 'priority' alarm
-     *          where INVALID should still be annunciated in maintenance mode,
-     *          and the annunciator will not suppress it within a flurry of
-     *          alarms that are usually throttled/summarized
-     */
-    public boolean isPriorityAlarm()
-    {
-        return false;
     }
 
     /** @return Current state of PV */
@@ -364,6 +376,7 @@ public abstract class AlarmLogic
                              final boolean with_delay)
     {
         SeverityLevel annunc_level = null;
+        final AlarmState current, alarm;
         synchronized (this)
         {
             // Update alarm state. If there is already an update pending,
@@ -401,19 +414,21 @@ public abstract class AlarmLogic
                     alarm_state = new_state;
                 }
             }
+            // In maint. mode, INVALID is automatically ack'ed and not annunciated,
+            // except for 'priority' alarms
+            if (maintenance_mode && 
+                !has_priority &&
+                alarm_state.getSeverity() == SeverityLevel.INVALID)
+            {
+                alarm_state = alarm_state.createAcknowledged(alarm_state);
+                annunc_level = null;
+            }
+            current = current_state;
+            alarm = alarm_state;
         }
-        // In maint. mode, INVALID is automatically ack'ed and not annunciated,
-        // except for 'priority' alarms
-        if (maintenance_mode && 
-            !isPriorityAlarm() &&
-            alarm_state.getSeverity() == SeverityLevel.INVALID)
-        {
-            alarm_state = alarm_state.createAcknowledged(alarm_state);
-            annunc_level = null;
-        }
-        fireStateUpdates();
+        listener.alarmStateChanged(current, alarm);
         if (annunc_level != null)
-            fireAnnunciation(annunc_level);
+            listener.annunciateAlarm(annunc_level);
     }
     
     /** Check if the new state adds up to 'count' alarms within 'delay'
@@ -465,6 +480,7 @@ public abstract class AlarmLogic
      */
     public void acknowledge(boolean acknowledge)
     {
+    	final AlarmState current, alarm;
         synchronized (this)
         {
             if (acknowledge)
@@ -476,25 +492,12 @@ public abstract class AlarmLogic
             }
             else
                 alarm_state = alarm_state.createUnacknowledged();
+            current = current_state;
+            alarm = alarm_state;
         }
-        fireStateUpdates();
+        listener.alarmStateChanged(current, alarm);
     }
 
-    /** Invoked when enablement changes.
-     *  @see #isEnabled()
-     */
-    abstract protected void fireEnablementUpdate();
-
-    /** Invoked on change in alarm state, current or latched,
-     *  to allow for notification of clients.
-     */
-    abstract protected void fireStateUpdates();
-    
-    /** Invoked when annunciation is required.
-     *  @param level Level to annunciate
-     */
-    abstract protected void fireAnnunciation(SeverityLevel level);
-    
     /** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override

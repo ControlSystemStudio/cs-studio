@@ -98,8 +98,8 @@ public class ExecuteJavaScriptAction extends AbstractWidgetAction {
 	
 	
 	@Override
-	public String getDescription() {
-		return super.getDescription() + " " + getPath(); //$NON-NLS-1$
+	public String getDefaultDescription() {
+		return super.getDefaultDescription() + " " + getPath(); //$NON-NLS-1$
 	}
 
 }

@@ -26,6 +26,7 @@ package org.csstudio.utility.treemodel;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -112,29 +113,37 @@ public final class ContentModelExporter {
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         Document createDOM(@Nonnull final ContentModel<T> model, @Nullable final String dtdFilePath) throws ExportContentModelException {
 
-        final ISubtreeNodeComponent<T> modelRootNode = model.getRoot();
-        final T rootType = modelRootNode.getType();
+        final ISubtreeNodeComponent<T> virtualRoot = model.getVirtualRoot();
 
+        final Collection<INodeComponent<T>> directChildren = virtualRoot.getDirectChildren();
+        if (directChildren.size() > 1) {
+            LOG.warn("Content model contains more than one root node. For DOM tree export only first root is chosen.");
+        }
+        final INodeComponent<T> root = directChildren.iterator().next();
+        if (root == null) {
+            LOG.warn("Content model is empty. Return empty document.");
+            return new Document();
+        }
 
-        final Element rootElem = new Element(rootType.getNodeTypeName());
-        rootElem.setAttribute("name", rootType.getUnitTypeValue());
+        final Element rootElem = new Element(root.getType().getNodeTypeName());
+        rootElem.setAttribute("name", root.getName());
 
         final Document doc = new Document(rootElem);
-
 
         if (dtdFilePath != null) {
             final DocType docType = new DocType(rootElem.getName(), dtdFilePath);
             doc.setDocType(docType);
         }
 
-        for (final INodeComponent<T> modelNode : modelRootNode.getDirectChildren()) {
-            createDOMElement(rootElem, modelNode);
+        if (root instanceof ISubtreeNodeComponent) {
+            for (final INodeComponent<T> child : ((ISubtreeNodeComponent<T>) root).getDirectChildren()) {
+                createDOMElement(rootElem, child);
+            }
         }
 
         return doc;
     }
 
-    @SuppressWarnings("unchecked")
     private static <T extends Enum<T> & ITreeNodeConfiguration<T>>
         void createDOMElement(@Nonnull final Element parentElem,
                               @Nonnull final INodeComponent<T> modelNode) throws ExportContentModelException {

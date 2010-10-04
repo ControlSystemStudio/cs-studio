@@ -42,14 +42,14 @@ import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
 import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
 import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
-import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 
@@ -76,8 +76,9 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
      * {@inheritDoc}
      * @throws PartInitException
      */
+    // CHECKSTYLE OFF: CyclomaticComplexity
     @Override
-    protected void abcde(final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
+    protected void openNodeEditor(@Nonnull final AbstractNodeDBO siblingNode,@Nonnull final IWorkbenchPage page) throws PartInitException {
         AbstractNodeDBO node = null;
         String id = null;
         String nodeType = "";
@@ -106,7 +107,7 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
             InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
                                                   "Enter the name of the " + nodeType, siblingNode.getName(), null);
             idialog.setBlockOnOpen(true);
-            if (idialog.open() == Dialog.OK) {
+            if (idialog.open() == Window.OK) {
                 node.setSortIndexNonHibernate(siblingNode.getSortIndex()+1);
                 if((idialog.getValue()!=null)&&!idialog.getValue().isEmpty()) {
                     node.setName(idialog.getValue());
@@ -120,5 +121,7 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
             }
         }
     }
+    // CHECKSTYLE ON: CyclomaticComplexity
+
 
 }

@@ -21,6 +21,8 @@
  */
 package org.csstudio.config.ioconfig.editorinputs;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -48,11 +50,12 @@ public class NodeEditorInput implements IEditorInput {
     /**
      * Constructor.
      */
-    public NodeEditorInput(final AbstractNodeDBO node, final boolean nevv) {
+    public NodeEditorInput(@Nonnull final AbstractNodeDBO node, final boolean nevv) {
         _node = node;
         _nevv = nevv;
     }
 
+    @Nonnull
     public AbstractNodeDBO getNode() {
         return _node;
     }

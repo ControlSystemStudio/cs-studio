@@ -82,7 +82,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
      * @param model the already filled model
      */
     public LdapContentModelBuilder(@Nonnull final ContentModel<T> model) {
-        _objectClassRoot = model.getRoot().getType();
+        _objectClassRoot = model.getVirtualRoot().getType();
         setModel(model);
     }
 
@@ -122,7 +122,7 @@ public final class LdapContentModelBuilder<T extends Enum<T> & ITreeNodeConfigur
                                             @Nullable final ILdapSearchResult searchResult) {
 
         if (searchResult != null) {
-            final ISubtreeNodeComponent<T> root = model.getRoot();
+            final ISubtreeNodeComponent<T> root = model.getVirtualRoot();
 
             final Set<SearchResult> answerSet = searchResult.getAnswerSet();
             try {

@@ -143,7 +143,7 @@ public class WritePVAction extends AbstractWidgetAction {
 
 	
 	@Override
-	public String getDescription() {
+	public String getDefaultDescription() {
 		return "Write " + getValue() + " to " + getPVName();
 	}
 

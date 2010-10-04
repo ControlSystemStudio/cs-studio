@@ -43,6 +43,7 @@ import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
@@ -126,7 +127,11 @@ public final class AlarmTreeBuilder {
             newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
 
         } else {
-            final SubtreeNode newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
+            IAlarmSubtreeNode newNode = (IAlarmSubtreeNode) parentNode.getChild(simpleName);
+            if (newNode == null) { // do not create a new subtree node if it already exists
+                newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
+            }
+
             if (modelNode instanceof ISubtreeNodeComponent) {
                 final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> children =
                     ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
@@ -137,6 +142,9 @@ public final class AlarmTreeBuilder {
                         return true;
                     }
                 }
+            } else {
+                throw new IllegalArgumentException("Node " + modelNode.getLdapName() + " is not an instance of " + ISubtreeNodeComponent.class.getName() +
+                                                   ", but not of tree node type " + RECORD.getNodeTypeName() + " either!");
             }
         }
 
@@ -162,9 +170,18 @@ public final class AlarmTreeBuilder {
                                 @Nonnull final TreeNodeSource source) throws NamingException {
         ensureTestFacilityExists();
 
-        for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> node : model.getRoot().getDirectChildren()) {
-            if (createAlarmSubtree(rootNode, node, monitor, source)) {
-                return true;
+        for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> ous : model.getVirtualRoot().getDirectChildren()) {
+            // Level of ou=EpicsAlarmcfg
+
+            // TODO (bknerr) : ensure in the fix that on this level only one child exists -> case insensitivity of LDAP may still lead to problems
+            // LDAP does not distinguish between EpicsAlarmCfg and EpicsAlarmcfg which is considered here as two separate nodes
+            final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> efans =
+                ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) ous).getDirectChildren();
+
+            for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> efan : efans) {
+                if (createAlarmSubtree(rootNode, efan, monitor, source)) {
+                    return true;
+                }
             }
         }
         return false;

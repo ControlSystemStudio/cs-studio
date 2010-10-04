@@ -62,7 +62,7 @@ public class StringValue extends Value implements IStringValue
 	@Override
     public final String format(Format how, int precision)
 	{
-		if (getSeverity().hasValue() == false)
+		if (getSeverity() != null && getSeverity().hasValue() == false)
 	        return Messages.NoValue;
 		if (values.length == 1)
             return values[0];
