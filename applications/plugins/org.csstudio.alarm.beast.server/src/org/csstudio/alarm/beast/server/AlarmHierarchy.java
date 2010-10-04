@@ -105,7 +105,21 @@ public class AlarmHierarchy
 		for (AlarmHierarchy child : children)
 			child.dump(out);
     }
-	
+
+	/** Perform hierarchy consistency check
+	 *  @throws Exception on error
+	 */
+    public void check() throws Exception
+    {
+    	// All subtree entries must point back to this as their parent
+		for (AlarmHierarchy child : children)
+		{
+			if (child.parent != this)
+				throw new Exception("Hierarchy error from " + child + " to " + this);
+			child.check();
+		}
+    }
+    
     /** @return Debug representation */
 	@Override
 	public String toString()

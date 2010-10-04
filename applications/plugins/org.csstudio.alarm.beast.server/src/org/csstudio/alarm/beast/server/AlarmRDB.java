@@ -95,6 +95,7 @@ public class AlarmRDB
             result.close();
             final AlarmHierarchy root = new AlarmHierarchy(null, root_name, id);
             root.setChildren(getAlarmTreeChildren(root));
+            root.check();
             return root;
         }
         finally
