@@ -899,6 +899,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 	public void init(@Nonnull final IEditorSite site, @Nonnull final IEditorInput input) throws PartInitException {
 		setSite(site);
 		setInput(input);
+		getProfiBusTreeView().closeOpenEditor();
 		_node = ((NodeEditorInput) input).getNode();
 		_new = ((NodeEditorInput) input).isNew();
 		setPartName(_node.getName());

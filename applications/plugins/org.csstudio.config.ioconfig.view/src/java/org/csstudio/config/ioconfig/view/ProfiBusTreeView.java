@@ -416,7 +416,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      *
      */
-    protected void closeOpenEditor() {
+    public void closeOpenEditor() {
         if (_openNodeEditor != null) {
             _openNodeEditor.perfromClose();
         }
