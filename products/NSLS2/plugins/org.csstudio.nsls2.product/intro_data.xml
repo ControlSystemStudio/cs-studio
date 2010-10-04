@@ -8,25 +8,4 @@
 		hidden.
 	-->
 <extensions>
-	<page id="whatsnew">
-		<group path="page-content/top-left">
-			<extension id="org.csstudio.sns.product.whatsnew"
-				importance="high" />
-		</group>
-	</page>
-	<page id="firststeps">
-		<group path="page-content/top-left">
-			<extension id="org.csstudio.trends.databrowser" importance="medium" />
-		</group>
-		<group path="page-content/top-right">
-			<extension id="org.csstudio.opibuilder" importance="medium" />
-		</group>
-	</page>
-	<page id="firststeps">
-		<group path="page-content/top-left">
-			<extension id="org.csstudio.nsls2.startup.intro-introExtension"
-				importance="high" />
-		</group>
-	</page>
-	
 </extensions>
