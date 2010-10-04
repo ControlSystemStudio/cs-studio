@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
 import java.io.PrintStream;
@@ -73,6 +80,20 @@ public class AlarmHierarchy
     public String getName()
     {
         return name;
+    }
+
+	/** @return Number of child nodes */
+    public int getChildCount()
+    {
+        return children.length;
+    }
+
+	/** @param index 0 ... <code>getChildCount()-1</code>
+     *  @return AlarmHierarchy child node
+     */
+    public AlarmHierarchy getChild(final int index)
+    {
+        return children[index];
     }
 
 	/** Dump alarm hierarchy recursively for debugging 

@@ -1,5 +1,13 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ *  All rights reserved. This program and the accompanying materials
+ *  are made available under the terms of the Eclipse Public License v1.0
+ *  which accompanies this distribution, and is available at
+ *  http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
@@ -19,11 +27,17 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
 @SuppressWarnings("nls")
 public class AlarmRDB
 {
+    /** Alarm Server */
+    final private AlarmServer server;
+ 
     /** Connection to storage for configuration/state */
 	final private RDBUtil rdb;
 
 	/** RDB SQL statements */
 	final private SQL sql;
+	
+    /** RDB connection. Used to check if the RDB reconnected */
+    private Connection connection;
 	
 	final private String root_name;
 	
@@ -33,13 +47,16 @@ public class AlarmRDB
     /** Map of message strings and IDs in RDB */
     final private MessageMapping message_mapping;
 
-    // TODO: Use this in alarm server, then pass the actual server in
-	private AlarmServer server;
-
-	public AlarmRDB(final String url, final String user, final String password, final String root_name) throws Exception
+    /** Lazily (re-)created statement for updating the alarm state of a PV */
+    private PreparedStatement updateStateStatement;
+    
+	public AlarmRDB(final AlarmServer server, final String url,
+			final String user, final String password, final String root_name) throws Exception
     {
+		this.server = server;
 		rdb = RDBUtil.connect(url, user, password, true);
 		sql = new SQL(rdb);
+        connection = rdb.getConnection();
 		this.root_name = root_name;
         // Disable auto-reconnect: Slightly faster, and we just connected OK.
         rdb.setAutoReconnect(false);
@@ -222,5 +239,111 @@ public class AlarmRDB
             sel_pv_statement.close();
         }
         return pvs;
+    }
+    
+    
+    /** Read configuration for PV, update it from RDB
+     *  @param pv AlarmPV to update
+     * 	@throws Exception on error
+     */
+    public void readConfigurationUpdate(final AlarmPV pv) throws Exception
+    {
+        final PreparedStatement statement =
+            rdb.getConnection().prepareStatement(sql.sel_pv_by_id);
+        try
+        {
+            statement.setInt(1, pv.getID());
+            final ResultSet result = statement.executeQuery();
+            if (! result.next())
+                throw new Exception("PV " + pv.getName() + " not found");
+            final boolean enabled = result.getBoolean(2);
+            final String filter = result.getString(7);
+            pv.setDescription(result.getString(1));
+            pv.getAlarmLogic().setAnnunciate(result.getBoolean(3));
+            pv.getAlarmLogic().setLatching(result.getBoolean(4));
+            pv.getAlarmLogic().setDelay(result.getInt(5));
+            pv.getAlarmLogic().setCount(result.getInt(6));
+            pv.setEnablement(enabled, filter);
+        }
+        finally
+        {
+            statement.close();
+        }
+    }
+
+    /** Write updated PV state to RDB
+     *  @param pv
+     *  @param current_severity
+     *  @param current_message
+     *  @param severity
+     *  @param message
+     *  @param value
+     *  @param timestamp
+     *  @throws Exception on error
+     */
+	public void writeStateUpdate(final AlarmPV pv, final SeverityLevel current_severity,
+            final String current_message, final SeverityLevel severity, final String message,
+            final String value, final ITimestamp timestamp) throws Exception
+    {
+        // According to JProfiler, this is the part of the code
+        // that uses most of the CPU:
+        // Compared to receiving updates from PVs and sending them
+        // to JMS clients, the (Oracle) RDB update dominates
+        // the combined time spent in CPU usage and network I/O.
+        
+        // These are usually quick accesses to local caches
+        final int current_severity_id = severity_mapping.getSeverityID(current_severity);
+        final int severity_id = severity_mapping.getSeverityID(severity);
+        final int current_message_id = message_mapping.findOrAddMessage(current_message);
+        final int message_id = message_mapping.findOrAddMessage(message);
+
+        // The isConnected() check in here is expensive, but what's
+        // the alternative if we want convenient auto-reconnect?
+        final Connection actual_connection = rdb.getConnection();
+        if (actual_connection != connection  ||  updateStateStatement == null)
+        {   // (Re-)create statement on new connection
+            connection = actual_connection;
+            updateStateStatement = null;
+            updateStateStatement = connection.prepareStatement(sql.update_pv_state);
+        }
+        // Bulk of the time is spent in execute() & commit
+        updateStateStatement.setInt(1, current_severity_id);
+        updateStateStatement.setInt(2, current_message_id);
+        updateStateStatement.setInt(3, severity_id);
+        updateStateStatement.setInt(4, message_id);
+        updateStateStatement.setString(5, value);
+        updateStateStatement.setTimestamp(6, TimeWarp.getSQLTimestamp(timestamp));
+        updateStateStatement.setInt(7, pv.getID());
+        updateStateStatement.execute();
+        connection.commit();
+    }
+
+	/** Write updated PV enablement to RDB
+     *  @param pv Alarm PV
+     *  @param enabled Enabled or not?
+	 *  @throws Exception on error
+     */
+	public void writeEnablementUpdate(final AlarmPV pv, final boolean enabled) throws Exception
+    {
+        final Connection connection = rdb.getConnection();
+        final PreparedStatement update_enablement_statement =
+            connection.prepareStatement(sql.update_pv_enablement);
+        try
+        {
+            update_enablement_statement.setBoolean(1, enabled);
+            update_enablement_statement.setInt(2, pv.getID());
+            update_enablement_statement.execute();
+            connection.commit();
+        }
+        finally
+        {
+            update_enablement_statement.close();
+        }
+    }
+
+	/** Must be called to release resources */
+    public void close()
+    {
+    	rdb.close();
     }
 }
