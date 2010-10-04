@@ -225,7 +225,6 @@ public class GUI implements AlarmClientModelListener
         l.setLayoutData(new GridData());
         
         error_message = new Label(box, 0);
-        error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         gd.grabExcessHorizontalSpace = true;
@@ -412,7 +411,7 @@ public class GUI implements AlarmClientModelListener
             if (! have_error_message)
                 return; // msg already cleared, GUI already enabled
             error_message.setText(""); //$NON-NLS-1$
-            error_message.setVisible(false);
+            error_message.setBackground(null);
             act_table.setEnabled(true);
             acknowledged_table_viewer.getTable().setEnabled(true);
             have_error_message = false;
@@ -420,7 +419,7 @@ public class GUI implements AlarmClientModelListener
         else
         {   // Update the message
             error_message.setText(error);
-            error_message.setVisible(true);
+            error_message.setBackground(display.getSystemColor(SWT.COLOR_MAGENTA));
             error_message.getParent().layout();
             if (have_error_message)
                 return; // GUI already disabled

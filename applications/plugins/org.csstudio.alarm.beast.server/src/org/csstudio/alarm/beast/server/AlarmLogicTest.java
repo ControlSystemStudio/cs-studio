@@ -24,9 +24,10 @@ public class AlarmLogicTest
 {
     private static final String OK = "OK";
 
-    /** Implementation of alarm logic that remembers update/annunc. actions */
-    class AlarmLogicDemo extends AlarmLogic
+    /** Alarm logic listener that remembers update/annunc. actions */
+    class AlarmLogicDemo implements AlarmLogicListener
     {
+    	final private AlarmLogic logic;
         boolean fired_enablement = false;
         boolean fired_update = false;
         boolean annunciated = false;
@@ -45,29 +46,35 @@ public class AlarmLogicTest
         AlarmLogicDemo(final boolean latching, final boolean annunciating,
                        final int delay, final int count)
         {
-            super(latching, annunciating, delay, count,
+        	logic = new AlarmLogic(this, latching, annunciating, delay, count,
                   AlarmState.createClearState(),
                   AlarmState.createClearState());
         }
 
-        @Override
-        protected void fireEnablementUpdate()
+        public void alarmEnablementChanged(final boolean is_enabled)
         {
+        	System.out.println(is_enabled ? "enabled" : "disabled");
             fired_enablement = true;
         }
 
-        @Override
-        protected void fireStateUpdates()
+        public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
         {
             fired_update = true;
         }
     
-        @Override
-        protected void fireAnnunciation(final SeverityLevel level)
+        public void annunciateAlarm(final SeverityLevel level)
         {
             annunciated = true;
         }
 
+        /** Check logic
+         *  @param update Did we expect an update?
+         *  @param annunciate Did we expect an annunciation?
+         *  @param current_sevr Expected 'current' severity
+         *  @param current_msg .. and message.
+         *  @param sevr Expected 'alarm' severity
+         *  @param msg .. and message.
+         */
         void check(final boolean update, final boolean annunciate,
                 final SeverityLevel current_sevr, final String current_msg,
                 final SeverityLevel sevr, final String msg)
@@ -75,13 +82,13 @@ public class AlarmLogicTest
             System.out.println(
                 (fired_update ? "new, " : "old, ") +
                 (annunciated ? "annunciate : " : "silent     : ") +
-                        toString());
+                logic.toString());
             assertEquals("Update", update, fired_update);
             assertEquals("Annunciation", annunciate, annunciated);
-            assertEquals("Current severity", current_sevr, getCurrentState().getSeverity());
-            assertEquals("Current message", current_msg, getCurrentState().getMessage());
-            assertEquals("Alarm severity", sevr, getAlarmState().getSeverity());
-            assertEquals("Alarm message", msg, getAlarmState().getMessage());
+            assertEquals("Current severity", current_sevr, logic.getCurrentState().getSeverity());
+            assertEquals("Current message", current_msg, logic.getCurrentState().getMessage());
+            assertEquals("Alarm severity", sevr, logic.getAlarmState().getSeverity());
+            assertEquals("Alarm message", msg, logic.getAlarmState().getMessage());
             // Reset
             fired_update = false;
             annunciated = false;
@@ -90,14 +97,49 @@ public class AlarmLogicTest
         void checkEnablementChange()
         {
             assertTrue("Enablement changed", fired_enablement);
-            System.out.println("Logic is " + (isEnabled() ? "enabled" : "disabled"));
+            System.out.println("Logic is " + (logic.isEnabled() ? "enabled" : "disabled"));
             fired_enablement = false;
         }
 
         public void computeNewState(final String value, final SeverityLevel sevr,
                 final String msg)
         {
-            computeNewState(new AlarmState(sevr, msg, value, TimestampFactory.now()));
+        	logic.computeNewState(new AlarmState(sevr, msg, value, TimestampFactory.now()));
+        }
+
+		public AlarmState getAlarmState()
+        {
+	        return logic.getAlarmState();
+        }
+
+		public void acknowledge(final boolean acknowledge)
+        {
+			logic.acknowledge(acknowledge);
+        }
+
+		public void computeNewState(final AlarmState received_state)
+        {
+			logic.computeNewState(received_state);
+        }
+
+		public void setCount(final int count)
+        {
+			logic.setCount(count);
+        }
+
+		public boolean isEnabled()
+        {
+	        return logic.isEnabled();
+        }
+
+		public void setEnabled(final boolean enable)
+        {
+			logic.setEnabled(enable);
+        }
+
+		public void setPriority()
+        {
+			logic.setPriority(true);
         }
     }
 
@@ -598,7 +640,7 @@ public class AlarmLogicTest
         AlarmLogicDemo logic = new AlarmLogicDemo(false, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         
-        AlarmLogicDemo.setMaintenanceMode(true);
+        AlarmLogic.setMaintenanceMode(true);
      
         // Normal alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");      
@@ -613,14 +655,8 @@ public class AlarmLogicTest
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         
         // -- Similar, but with 'priority' alarm --
-        logic = new AlarmLogicDemo(false, true)
-        {
-            @Override
-            public boolean isPriorityAlarm()
-            {
-                return true;
-            }
-        };
+        logic = new AlarmLogicDemo(false, true);
+        logic.setPriority();
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         
         // Normal alarm

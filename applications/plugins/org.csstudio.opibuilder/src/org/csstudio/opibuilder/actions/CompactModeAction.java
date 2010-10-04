@@ -19,7 +19,11 @@ import org.eclipse.ui.internal.WorkbenchWindow;
 @SuppressWarnings("restriction")
 public class CompactModeAction extends WorkbenchPartAction {
 	
-	public static final String ID = "org.csstudio.opibuilder.actions.compactMode";
+	private static final String COMPACT_MODE = "Compact Mode";
+
+	private static final String EXIT_COMPACT_MODE = "Exit Compact Mode";
+
+	public static final String ID = "org.csstudio.opibuilder.actions.compactMode"; //$NON-NLS-1$
 	
 	private ActionFactory.IWorkbenchAction toggleToolbarAction;
 	private Menu menuBar;
@@ -43,7 +47,15 @@ public class CompactModeAction extends WorkbenchPartAction {
 		 toggleToolbarAction = ActionFactory.TOGGLE_COOLBAR.create(window); 
 		 shell = part.getSite().getWorkbenchWindow().getShell();
 		 menuBar = shell.getMenuBar();
-		 setImageDescriptor(fullScreenImage);
+		if(window instanceof WorkbenchWindow && !((WorkbenchWindow) window).getCoolBarVisible()){
+			inFullScreenMode = true;
+			setImageDescriptor(exitFullScreenImage);
+			setText(EXIT_COMPACT_MODE);
+
+		}else{
+			setText(COMPACT_MODE);
+			setImageDescriptor(fullScreenImage);
+		}
 		 
 	}
 	
@@ -59,7 +71,6 @@ public class CompactModeAction extends WorkbenchPartAction {
 	 */
 	protected void init() {
 		super.init();
-		setText("Compact Mode");
 		setId(ID);
 		}
 	
@@ -72,7 +83,7 @@ public class CompactModeAction extends WorkbenchPartAction {
 				toggleToolbarAction.run();
 			shell.setMenuBar(menuBar);		
 			inFullScreenMode = false;
-			setText("Compact Mode");
+			setText(COMPACT_MODE);
 			setImageDescriptor(fullScreenImage);
 		}else {
 			if(window instanceof WorkbenchWindow && !((WorkbenchWindow) window).getCoolBarVisible()){
@@ -83,9 +94,13 @@ public class CompactModeAction extends WorkbenchPartAction {
 			}
 			shell.setMenuBar(null);		
 			inFullScreenMode = true;
-			setText("Exit Compact Mode");
+			setText(EXIT_COMPACT_MODE);
 			setImageDescriptor(exitFullScreenImage);
 		}
 	}
 
 }
+
+
+
+
