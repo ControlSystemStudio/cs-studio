@@ -34,8 +34,8 @@
 		*/
 package org.csstudio.utility.documentviewer;
 
-import org.csstudio.config.ioconfig.model.Node;
-import org.csstudio.config.ioconfig.model.pbmodel.Channel;
+import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
@@ -53,11 +53,11 @@ public class NodeLabelProvider extends LabelProvider {
      */
     @Override
     public String getText(final Object element) {
-        if (element instanceof Channel) {
-            Channel channel = (Channel) element;
+        if (element instanceof ChannelDBO) {
+        	ChannelDBO channel = (ChannelDBO) element;
             return channel.getIoName()+" : "+channel.getDocuments().size();
-        }else  if (element instanceof Node) {
-            Node node = (Node) element;
+        }else  if (element instanceof AbstractNodeDBO) {
+        	AbstractNodeDBO node = (AbstractNodeDBO) element;
             return node.getName()+" : "+node.getDocuments().size();
         }
         return super.getText(element);
