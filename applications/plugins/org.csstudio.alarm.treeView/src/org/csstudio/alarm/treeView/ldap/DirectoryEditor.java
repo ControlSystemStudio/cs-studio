@@ -36,6 +36,7 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
@@ -332,7 +333,7 @@ public final class DirectoryEditor {
 
 
     private static void retrieveInitialStateSynchronously(@Nonnull final IAlarmProcessVariableNode node) {
-        final List<PVNodeItem> initItems = Collections.singletonList(new PVNodeItem(node));
+        final List<IAlarmInitItem> initItems = Collections.singletonList((IAlarmInitItem) new PVNodeItem(node));
 
         final IAlarmService alarmService = AlarmTreePlugin.getDefault().getAlarmService();
         if (alarmService != null) {

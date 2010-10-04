@@ -30,6 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
@@ -78,7 +79,8 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
         alarmListener.startUpdateProcessing();
 
         _alarmTreeView.getSite().getShell().getDisplay().asyncExec(new Runnable() {
-            @Override
+            @SuppressWarnings("synthetic-access")
+			@Override
             public void run() {
                 final TreeViewer viewer = _alarmTreeView.getViewer();
                 if (viewer != null) {
@@ -92,7 +94,7 @@ public class RefreshAlarmTreeViewAdapter extends JobChangeAdapter {
 
         final List<IAlarmProcessVariableNode> pvNodes = rootNode.findAllProcessVariableNodes();
 
-        final List<PVNodeItem> initItems = new ArrayList<PVNodeItem>();
+        final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
 
         for (final IAlarmProcessVariableNode pvNode : pvNodes) {
             initItems.add(new PVNodeItem(pvNode));

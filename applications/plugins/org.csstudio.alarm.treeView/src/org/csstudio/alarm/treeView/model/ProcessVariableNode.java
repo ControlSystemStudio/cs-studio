@@ -140,10 +140,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	@Override
     @Nonnull
 	public Severity getUnacknowledgedAlarmSeverity() {
-		if (_highestUnacknowledgedAlarm != null) {
-			return _highestUnacknowledgedAlarm.getSeverity();
-		}
-        return Severity.NO_ALARM;
+		return _highestUnacknowledgedAlarm.getSeverity();
 	}
 
 	/**

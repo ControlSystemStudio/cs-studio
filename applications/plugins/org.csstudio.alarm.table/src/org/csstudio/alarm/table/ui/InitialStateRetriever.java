@@ -86,7 +86,7 @@ public class InitialStateRetriever {
             }
 
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
-            final List<PVItem> initItems = new ArrayList<PVItem>();
+            final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
 
             for (final String pvName : pvNames) {
                 initItems.add(new PVItem(pvName, _messageList));

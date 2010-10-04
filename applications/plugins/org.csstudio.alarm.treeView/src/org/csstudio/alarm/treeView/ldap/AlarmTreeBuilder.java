@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -78,8 +79,9 @@ public final class AlarmTreeBuilder {
     }
 
     private static void ensureTestFacilityExists() throws ServiceUnavailableException {
+        String facilityName = "Test";
         try {
-            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), "TEST",
+            final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), facilityName,
                                                              UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
             final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
@@ -90,15 +92,15 @@ public final class AlarmTreeBuilder {
             try {
                 service.lookup(testFacilityName);
             } catch (final NameNotFoundException e) {
-                LOG.info("TEST facility does not exist in LDAP, creating it.");
+                LOG.info("Test facility named " + facilityName + " does not exist in LDAP, creating it.");
                 final Attributes attrs = new BasicAttributes();
-                attrs.put(FACILITY.getNodeTypeName(), "TEST");
+                attrs.put(FACILITY.getNodeTypeName(), facilityName);
                 attrs.put(ATTR_FIELD_OBJECT_CLASS, FACILITY.getObjectClass());
 
                 service.createComponent(testFacilityName, attrs);
             }
         } catch (final NamingException e) {
-            LOG.error("Failed to create TEST facility in LDAP", e);
+            LOG.error("Failed to create test facility named " + facilityName + "in LDAP", e);
         }
     }
 
@@ -117,16 +119,15 @@ public final class AlarmTreeBuilder {
                                               @Nonnull final TreeNodeSource source) throws NamingException {
 
         final String simpleName = modelNode.getName();
+        IAlarmTreeNode newNode;
 
         if (RECORD.equals(modelNode.getType())) {
-            final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
+            newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
 
-            final Attributes attributes = modelNode.getAttributes();
-            AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
-            newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
+            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
 
         } else {
-            IAlarmSubtreeNode newNode = (IAlarmSubtreeNode) parentNode.getChild(simpleName);
+            newNode = parentNode.getChild(simpleName);
             if (newNode == null) { // do not create a new subtree node if it already exists
                 newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
             }
@@ -136,7 +137,7 @@ public final class AlarmTreeBuilder {
                     ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
 
                 for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> child : children) {
-                    createAlarmSubtree(newNode, child, monitor, source);
+                    createAlarmSubtree((IAlarmSubtreeNode) newNode, child, monitor, source);
                     if (monitor.isCanceled()) {
                         return true;
                     }
@@ -146,6 +147,10 @@ public final class AlarmTreeBuilder {
                                                    ", but not of tree node type " + RECORD.getNodeTypeName() + " either!");
             }
         }
+        
+        // Attributes will be set on nodes and leaves. They contain help pages, css displays and the like
+        final Attributes attributes = modelNode.getAttributes();
+        AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
 
         return false;
     }
