@@ -42,6 +42,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
+import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
@@ -118,35 +119,29 @@ public final class AlarmTreeBuilder {
                                               @Nonnull final TreeNodeSource source) throws NamingException {
 
         final String simpleName = modelNode.getName();
+        IAlarmTreeNode newNode;
 
         if (RECORD.equals(modelNode.getType())) {
-            final ProcessVariableNode newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
+            newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
 
-            final Attributes attributes = modelNode.getAttributes();
-            AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
-            newNode.updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
+            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
 
         } else {
-            IAlarmSubtreeNode newNode = (IAlarmSubtreeNode) parentNode.getChild(simpleName);
-            if (newNode == null) { // do not create a new subtree node if it already exists
-                newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
-            }
-
+            newNode = new SubtreeNode.Builder(simpleName, modelNode.getType(), source).setParent(parentNode).build();
             if (modelNode instanceof ISubtreeNodeComponent) {
                 final Collection<INodeComponent<LdapEpicsAlarmcfgConfiguration>> children =
                     ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
 
                 for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> child : children) {
-                    createAlarmSubtree(newNode, child, monitor, source);
+                    createAlarmSubtree((IAlarmSubtreeNode) newNode, child, monitor, source);
                     if (monitor.isCanceled()) {
                         return true;
                     }
                 }
-            } else {
-                throw new IllegalArgumentException("Node " + modelNode.getLdapName() + " is not an instance of " + ISubtreeNodeComponent.class.getName() +
-                                                   ", but not of tree node type " + RECORD.getNodeTypeName() + " either!");
             }
         }
+        final Attributes attributes = modelNode.getAttributes();
+        AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
 
         return false;
     }
