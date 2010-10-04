@@ -30,6 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.INodeConfig;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -59,6 +60,7 @@ import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.TableColumnLayout;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
@@ -102,6 +104,7 @@ import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.handlers.IHandlerService;
+import org.eclipse.ui.internal.views.markers.TodoFiltersContributionParameters;
 import org.eclipse.ui.part.EditorPart;
 
 /**
@@ -112,6 +115,10 @@ import org.eclipse.ui.part.EditorPart;
  * @since 31.03.2010
  */
 public abstract class AbstractNodeEditor extends EditorPart implements INodeConfig {
+	
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			AbstractNodeEditor.class);
+	
 	/**
 	 *
 	 * @author hrickens
@@ -143,8 +150,16 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 						+ "?");
 				if (openQuestion) {
 					setSaveButtonSaved();
-					getProfiBusTreeView().getTreeViewer().setSelection(getProfiBusTreeView()
-							.getTreeViewer().getSelection());
+//					ISelection selection = getProfiBusTreeView()
+//							.getTreeViewer().getSelection();
+					// if(selection.isEmpty()) {
+					
+					// hrickens (01.10.2010): Beim Cancel einer neuen Facility
+					// macht nur Perfrom close Sinn.
+					perfromClose();
+					// } else {
+					// getProfiBusTreeView().getTreeViewer().setSelection(selection);
+					// }
 				} else {
 					// TODO: do nothing or cancel?
 				}
@@ -314,7 +329,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 					setSavebuttonEnabled("ModifyListenerCombo" + spinner.hashCode(),
 							(Short) spinner.getData() != spinner.getSelection());
 				} catch (final ClassCastException cce) {
-					CentralLogger.getInstance().error(this, spinner.toString(), cce);
+					LOG.error( spinner.toString(), cce);
 				}
 			}
 		}
@@ -643,18 +658,10 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		setSaveButton(null);
 		if (_saveButtonEvents != null) {
 			_saveButtonEvents.clear();
-
 		}
-		//        if (_FONT != null) {
-		//            _FONT.dispose();
-		//        }
-		//        if (_FONT_BOLD != null) {
-		//            _FONT_BOLD.dispose();
-		//        }
+		getProfiBusTreeView().removeOpenEditor(this);
 	}
 
-	// ---------------------------------------
-	// Node Editor View
 
 	/**
 	 * set the documents and Icon tab item.
@@ -713,6 +720,8 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		// update Header
 		getHeaderField(HeaderFields.MODIFIED_ON).setText(df.format(now));
 		getHeaderField(HeaderFields.MODIFIED_BY).setText(ConfigHelper.getUserName());
+		getHeaderField(HeaderFields.DB_ID).setText(""+getNode().getId());
+		
 		// df = null;
 		// now = null;
 	}
@@ -1045,7 +1054,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 	 *            A exception to show in a Dialog,
 	 */
 	protected void openErrorDialog(@Nonnull final Exception exception) {
-		CentralLogger.getInstance().error(this, exception);
+		LOG.error( exception);
 		final Formatter f = new Formatter();
 		String message = exception.getLocalizedMessage();
 		if (message == null) {
@@ -1074,7 +1083,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 			setFocus();
 			handlerService.executeCommand("org.eclipse.ui.file.close", null);
 		} catch (final Exception ex) {
-			CentralLogger.getInstance().error(this, ex.getMessage());
+			LOG.error( ex);
 		}
 	}
 
@@ -1084,7 +1093,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		try {
 			handlerService.executeCommand("org.eclipse.ui.file.save", null);
 		} catch (final Exception ex) {
-			CentralLogger.getInstance().error(this, ex.getMessage());
+			LOG.error( ex);
 		}
 	}
 
@@ -1229,12 +1238,15 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		setHeaderField(HeaderFields.MODIFIED_ON, modifiedOn);
 		temp = "";
 
-		getNewLabel(header, "DataBase ID:");
+		final Label dbID = getNewLabel(header, "DataBase ID:");
 		/** The description field with the Version from GSD File. */
 		if (node != null) {
 			temp = node.getId() + "";
 		}
-		getNewText(header, temp);
+		
+		
+		final Text dbIdText = getNewText(header, temp);
+		setHeaderField(HeaderFields.DB_ID, dbIdText);
 
 		/**
 		 * GSD Version. The description field with the Version from GSD File. Only Master and Slave

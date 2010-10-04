@@ -46,7 +46,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 /**
- * TODO (hrickens) :
+ * TODO Wird diese Klasse noch gebraucht!?:
  *
  * @author hrickens
  * @author $Author: hrickens $
