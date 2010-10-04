@@ -108,6 +108,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
 	        pv = PVFactory.createPV(name);
 	        setEnablement(enabled, filter);
         }
+        alarm_severity = severity;
     }
 
     /** @return AlarmLogic used by this PV */
@@ -267,9 +268,12 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
                     current.getSeverity(), current.getMessage(),
                     alarm.getSeverity(), alarm.getMessage(),
                     alarm.getValue(), alarm.getTime());
+        // Update alarm tree 'upwards' from this leaf
+        alarm_severity = alarm.getSeverity();
+        parent.maximizeSeverity();
     }
 
-    /** {@inheritDoc} */
+	/** {@inheritDoc} */
     public void annunciateAlarm(final SeverityLevel level)
     {
         final String message;

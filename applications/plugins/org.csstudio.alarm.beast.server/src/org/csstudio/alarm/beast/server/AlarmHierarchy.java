@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast.server;
 import java.io.PrintStream;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.SeverityLevel;
 
 /** Element of the alarm hierarchy
  *  @author Kay Kasemir
@@ -18,7 +19,7 @@ import org.csstudio.alarm.beast.AlarmTreePath;
 public class AlarmHierarchy
 {
 	/** Parent element, <code>null</code> for root */
-	final private AlarmHierarchy parent;
+	final protected AlarmHierarchy parent;
 	
 	/** Name of the alarm */
 	final private String name;
@@ -30,7 +31,13 @@ public class AlarmHierarchy
     final private String path_name;
 	
     /** Child entries in the alarm tree */
-	private AlarmHierarchy children[] = null;
+	private AlarmHierarchy children[] = new AlarmHierarchy[0];
+
+	/** Alarm severity of this node
+	 *  Tree nodes update this in <code>maximizeSeverity()</code>,
+	 *  except AlarmPV leafs which update it in <code>alarmStateChanged</code>
+	 */
+	protected SeverityLevel alarm_severity = SeverityLevel.OK;
 
 	/** Initialize
 	 *  @param parent Parent node
@@ -53,9 +60,11 @@ public class AlarmHierarchy
 	 */
 	void setChildren(final AlarmHierarchy children[])
 	{
-		if (this.children != null)
+		if (this.children.length > 0)
 			throw new Error("Alarm tree error, sub-elements already set for " + path_name);
 		this.children = children;
+		// Set initial severity based on children that were just assigned
+		maximizeSeverity();
 	}
 	
     /** @return Full path name to this item, including the item name itself */
@@ -96,6 +105,41 @@ public class AlarmHierarchy
         return children[index];
     }
 
+    /** Recursively update alarm hierarchy:
+     *  Update this node's severity from children,
+     *  then trigger update of parent
+     */
+    protected void maximizeSeverity()
+    {
+    	final SeverityLevel old = alarm_severity;
+    	// Determine maximum severity of child entries
+    	SeverityLevel max = SeverityLevel.OK;
+    	for (AlarmHierarchy child : children)
+        {
+    		final SeverityLevel child_sev = child.getAlarmSeverity();
+	        if (child_sev.ordinal() > max.ordinal())
+	        	max = child_sev;
+        }
+    	if (max.equals(old))
+    		return;
+
+    	alarm_severity = max;
+
+    	// TODO Check if this node is configured to publish alarm updates
+    	// (after a timeout) and if so, do it.
+    	// System.out.println(getPathName() + " changes from " + old.name() + " to " + max.name());
+    	
+    	// Percolate change up to parent
+    	if (parent != null)
+    		parent.maximizeSeverity();
+    }
+
+    /** @return Alarm severity of this node */
+	private SeverityLevel getAlarmSeverity()
+    {
+	    return alarm_severity;
+    }
+
 	/** Dump alarm hierarchy recursively for debugging 
 	 *  @param out PrintStream
 	 */
@@ -124,6 +168,6 @@ public class AlarmHierarchy
 	@Override
 	public String toString()
 	{
-		return path_name;
+		return path_name + " Alarm: " + alarm_severity.name();
 	}
 }
