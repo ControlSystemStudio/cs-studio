@@ -41,8 +41,8 @@ public class DoubleValue extends Value implements IDoubleValue
 	 *  JProfiler tests showed that about _half_ of the string formatting
 	 *  is spent in creating the suitable NumberFormat,
 	 *  so they are cached for re-use.
-	 *  The key is the 'precision', where a precision > 0 means decimal format,
-	 *  and a precision < 0 means exponantial notation.
+	 *  The key is the 'precision', where a precision >= 0 means decimal format,
+	 *  and a precision < 0 means exponential notation.
 	 *  
 	 *  Access must sync on the hash, then sync on the format while using it.
 	 */
