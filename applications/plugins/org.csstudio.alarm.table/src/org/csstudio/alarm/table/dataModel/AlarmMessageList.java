@@ -43,298 +43,340 @@ import org.csstudio.platform.logging.CentralLogger;
 /**
  * List of alarm messages for alarm table. The class includes also the logic in
  * which case a message should be deleted, highlighted etc.
- *
+ * 
  * @author jhatje
- *
+ * 
  */
 public class AlarmMessageList extends AbstractMessageList {
 
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageList.class);
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			AlarmMessageList.class);
 
-    private final Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
+	private final Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
 
-    /** number of alarm status changes in the message with the same pv name. */
-    private int alarmStatusChanges = 0;
+	/** number of alarm status changes in the message with the same pv name. */
+	private int alarmStatusChanges = 0;
 
-    private final Vector<AlarmMessage> _messagesToRemove = new Vector<AlarmMessage>();
+	private final Vector<AlarmMessage> _messagesToRemove = new Vector<AlarmMessage>();
 
-    /**
-     * Add a new Message to the collection of Messages.
-     *
-     */
-    @Override
-    public synchronized void addMessage(@Nonnull final BasicMessage newBasicMessage) {
+	/**
+	 * Add a new Message to the collection of Messages.
+	 * 
+	 */
+	@Override
+	public synchronized void addMessage(
+			@Nonnull final BasicMessage newBasicMessage) {
 
-        final AlarmMessage newMessage = new AlarmMessage(newBasicMessage.getHashMap());
-        if (checkValidity(newMessage)) {
-            // An acknowledge message was received.
-            final String propAck = newMessage.getProperty(ACK.getDefiningName());
-            if ((propAck != null) && Boolean.valueOf(propAck)) {
-                final AlarmMessage jmsm = setAcknowledge(newMessage);
-                if (jmsm != null) {
-                    super.updateMessage(jmsm);
-                }
-                return;
-            }
-            final boolean msgExists = existsMessageWithSameName(newMessage);
-            // do not insert messages with type: 'status', unless there is a
-            // previous message with the same NAME in the table.
-            final String propType = newMessage.getProperty(TYPE.getDefiningName());
-            if ((propType != null) && propType.equalsIgnoreCase("status")) {
-                if (msgExists) {
-                    updateMessageInTableForDisconnected(newMessage);
-                }
-                return;
-            }
-            // is there an old message from same pv
-            // (deleteOrGrayOutEqualMessages == true) -> display new message
-            // anyway is new message NOT from Type NO_ALARM -> display message
-            final String propSev = newMessage.getProperty(SEVERITY.getDefiningName());
-            if (propSev == null) {
-                throw new IllegalStateException("Message without Severity found. Validity check failure!");
-            }
-            if (deleteOrGrayOutEqualMessages(newMessage) ||
-                !(propSev.equalsIgnoreCase(Severity.NO_ALARM.name()))) { //$NON-NLS-1$
-                if (!msgExists) {
-                    newMessage.setProperty("COUNT", "0");
-                } else {
-                    newMessage.setProperty("COUNT", String.valueOf(alarmStatusChanges + 1));
-                }
-                _messages.add(_messages.size(), newMessage);
-                super.addMessage(newMessage);
-            }
-        }
-    }
+		final AlarmMessage newMessage = new AlarmMessage(
+				newBasicMessage.getHashMap());
+		if (checkValidity(newMessage)) {
+			// An acknowledge message was received.
+			final String propAck = newMessage
+					.getProperty(ACK.getDefiningName());
+			if (Boolean.valueOf(propAck)) {
+				final AlarmMessage jmsm = setAcknowledge(newMessage);
+				if (jmsm != null) {
+					super.updateMessage(jmsm);
+				}
+				return;
+			}
 
-    /**
-     * Updates the existing message in the table with new properties for new
-     * status. If there are two existing messages in table delete the older one.
-     *
-     * @param newMessage
-     */
-    private void updateMessageInTableForDisconnected(@Nonnull final AlarmMessage newMessage) {
-        final String propStatus = newMessage.getProperty(STATUS.getDefiningName());
-        if (propStatus == null) {
-            return;
-        }
-        BasicMessage messageToRemove = null;
-        for (final AlarmMessage message : _messages) {
-            final String currentInList = message.getProperty(NAME.getDefiningName());
-            final String currentMessage = newMessage.getProperty(NAME.getDefiningName());
-            if ((currentInList != null) && currentInList.equalsIgnoreCase(currentMessage)) {
-                // the new status is disconnected, set severity to "offline"
-                if (propStatus.equalsIgnoreCase("DISCONNECTED")) {
-                    // if this message in table is an old one delete it
-                    if (message.isOutdated()) {
-                        messageToRemove = message;
-                    } else {
-                        message.setProperty(STATUS.getDefiningName(), "DISCONNECTED");
-                        updateMessage(message);
+			final boolean msgExists = existsMessageWithSameName(newMessage);
+			// do not insert messages with type: 'status', unless there is a
+			// previous message with the same NAME in the table.
+			final String propType = newMessage.getProperty(TYPE
+					.getDefiningName());
+			if ((propType != null) && propType.equalsIgnoreCase("status")) {
+				if (msgExists) {
+					updateMessageInTableForDisconnected(newMessage);
+				}
+				return;
+			}
+
+			// is there an old message from same pv
+			// (deleteOrGrayOutEqualMessages == true) -> display new message
+			// anyway is new message NOT from Type NO_ALARM -> display message
+			final String propSev = newMessage.getProperty(SEVERITY
+					.getDefiningName());
+			if (propSev == null) {
+				throw new IllegalStateException(
+						"Message without Severity found. Validity check failure!");
+			}
+			if (deleteOrGrayOutEqualMessages(newMessage)
+					|| !(propSev.equalsIgnoreCase(Severity.NO_ALARM.name()))) { //$NON-NLS-1$
+				if (msgExists) {
+					newMessage.setProperty("COUNT", String.valueOf(alarmStatusChanges + 1));
+				} else {
+					newMessage.setProperty("COUNT", "0");
+				}
+				_messages.add(_messages.size(), newMessage);
+				super.addMessage(newMessage);
+			}
+		}
+	}
+
+	/**
+	 * Updates the existing message in the table with new properties for new
+	 * status. If there are two existing messages in table delete the older one.
+	 * 
+	 * @param newMessage
+	 */
+	private void updateMessageInTableForDisconnected(
+			@Nonnull final AlarmMessage newMessage) {
+		final String propStatus = newMessage.getProperty(STATUS
+				.getDefiningName());
+		if (propStatus == null) {
+			return;
+		}
+		BasicMessage messageToRemove = null;
+		for (final AlarmMessage message : _messages) {
+			final String currentInList = message.getProperty(NAME
+					.getDefiningName());
+			final String currentMessage = newMessage.getProperty(NAME
+					.getDefiningName());
+			if ((currentInList != null)
+					&& currentInList.equalsIgnoreCase(currentMessage)) {
+				// the new status is disconnected, set severity to "offline"
+				if (propStatus.equalsIgnoreCase("DISCONNECTED")) {
+					// if this message in table is an old one delete it
+					if (message.isOutdated()) {
+						messageToRemove = message;
+					} else {
+						message.setProperty(STATUS.getDefiningName(),
+								"DISCONNECTED");
+						updateMessage(message);
+					}
+					// the new status is not disconnected update properties with
+					// values of the new message.
+				} else {
+					message.setProperty(SEVERITY.getDefiningName(),
+							newMessage.getProperty(SEVERITY.getDefiningName()));
+					message.setProperty(STATUS.getDefiningName(), propStatus);
+					message.setProperty("TIMESTAMP",
+							newMessage.getProperty("TIMESTMAP"));
+					updateMessage(message);
+				}
+			}
+		}
+		if (messageToRemove != null) {
+			removeMessage(messageToRemove);
+		}
+	}
+
+	/**
+	 * Remove a message from the list.
+	 */
+	@Override
+	public void removeMessage(@Nonnull final BasicMessage jmsm) {
+		_messages.remove(jmsm);
+		super.removeMessage(jmsm);
+	}
+
+	/**
+	 * Remove an array of messages from the list.
+	 */
+	@Override
+	public void removeMessages(@Nonnull final BasicMessage[] jmsm) {
+		for (final BasicMessage message : jmsm) {
+			_messages.remove(message);
+		}
+		super.removeMessages(jmsm);
+	}
+
+	@Override
+	public Vector<? extends BasicMessage> getMessageList() {
+		return _messages;
+	}
+
+	/**
+	 * Check if the new message is valid alarm message NAME and SEVERITY have to
+	 * exist TYPE may be omitted if there is prop ACK==TRUE (TODO (bknerr) :
+	 * refactor to be a type value 'TYPE==ACK'
+	 * 
+	 * @param newMessage
+	 */
+	private boolean checkValidity(@Nonnull final AlarmMessage newMessage) {
+		if (newMessage.getProperty(NAME.getDefiningName()) == null) {
+			return false;
+		}
+
+		if (newMessage.getProperty(SEVERITY.getDefiningName()) == null) {
+			return false;
+		}
+		if (newMessage.getProperty(TYPE.getDefiningName()) == null) {
+			final String propAck = newMessage
+					.getProperty(ACK.getDefiningName());
+			if (!Boolean.valueOf(propAck)) { // propAck null is ok
+				return false;
+			}
+		}
+		return true;
+	}
+
+	/**
+	 * 
+	 * @param newMessage
+	 */
+	@CheckForNull
+	protected AlarmMessage setAcknowledge(@Nonnull final AlarmMessage newMessage) {
+
+		final String newNameProp = newMessage.getProperty(NAME
+				.getDefiningName());
+		final String newTimeProp = newMessage.getProperty(EVENTTIME
+				.getDefiningName());
+		LOG.debug("AlarmView Ack message received, MsgName: " + newNameProp
+				+ " MsgTime: " + newTimeProp);
+
+		for (final AlarmMessage message : _messages) {
+			final String sevProp = message.getProperty(SEVERITY
+					.getDefiningName());
+			final String newSevProp = newMessage.getProperty(SEVERITY
+					.getDefiningName());
+			final String nameProp = message.getName();
+			if ((nameProp != null) && nameProp.equals(newNameProp)
+					&& sevProp.equals(newSevProp)) {
+				final String sevKeyProp = message.getProperty("SEVERITY_KEY");
+				if ((sevKeyProp != null)
+						&& (message.isOutdated()
+								|| sevKeyProp
+										.equalsIgnoreCase(Severity.NO_ALARM
+												.name()) || sevKeyProp
+								.equalsIgnoreCase(Severity.INVALID.name()))) {
+
+					_messagesToRemove.add(message);
+					LOG.debug("add message, removelist size: "
+							+ _messagesToRemove.size());
+				} else {
+					message.getHashMap().put("ACK_HIDDEN",
+							Boolean.TRUE.toString());
+					message.setProperty(ACK.getDefiningName(),
+							Boolean.TRUE.toString());
+					message.setAcknowledged(true);
+					return message;
+				}
+				break;
+			}
+		}
+		for (final BasicMessage message : _messagesToRemove) {
+			removeMessage(message);
+		}
+		_messagesToRemove.clear();
+		return null;
+	}
+
+	/**
+	 * Searching for a previous message in alarm table with the same NAME.
+	 * 
+	 * @param mm
+	 * @return boolean Is there a previous message
+	 */
+	private boolean existsMessageWithSameName(@Nonnull final AlarmMessage mm) {
+		boolean messageInTable = false;
+		final String name = mm.getProperty(NAME.getDefiningName());
+		for (final AlarmMessage message : _messages) {
+			final String currentName = message.getProperty(NAME
+					.getDefiningName());
+			if ((currentName != null) && currentName.equalsIgnoreCase(name)
+					&& !message.isOutdated()) {
+				messageInTable = true;
+				calculateAlarmChangeCount(message);
+				break;
+			}
+		}
+		return messageInTable;
+	}
+
+	private void calculateAlarmChangeCount(@Nonnull final AlarmMessage message) {
+		final String alarmChangeCount = message.getProperty("COUNT");
+		try {
+			alarmStatusChanges = Integer.parseInt(alarmChangeCount);
+		} catch (final NumberFormatException e) {
+			alarmStatusChanges = 0;
+		}
+	}
+
+	/**
+	 * Delete previous messages from the same pv and with the same severity Mark
+	 * messages from the same pv and with a different severity that the label
+	 * provider can set a brighter color. Test if the EVENTTIME of the new
+	 * message is really newer than an existing message. (It is important to use
+	 * the <code>removeMessage</code> method from <code>MessageList</code> that
+	 * the changeListeners on the model were updated.)
+	 * 
+	 * @param newMessage the new message
+	 * @return true, if there is a previous message in the list with the same pv name
+	 */
+    private boolean deleteOrGrayOutEqualMessages(@Nonnull final AlarmMessage newMessage) {
+
+		final String newPVName = newMessage.getProperty(NAME.getDefiningName());
+		final String newSeverity = newMessage.getProperty(SEVERITY.getDefiningName());
+		// guard: only a newMessage with name and severity is processed
+		if (!canProcessMessage(newPVName, newSeverity)) {
+			return false;
+		}
+
+		boolean equalPreviousMessage = false;
+		final List<AlarmMessage> messagesToRemove = new ArrayList<AlarmMessage>();
+		final List<AlarmMessage> messagesToAdd = new ArrayList<AlarmMessage>();
+
+		for (AlarmMessage message : _messages) {
+			final String pvNameFromList = message.getProperty(NAME.getDefiningName());
+			// TODO (jpenning) ML check with jh: why do we access this special key?
+			// the 'real' severity in map message we get from the JMSMessage via SEVERITY_KEY
+			final String severityFromList = message.getProperty("SEVERITY_KEY"); //$NON-NLS-1$
+			if (canProcessMessage(pvNameFromList, severityFromList)) {
+
+				// is there a previous alarm message from same pv?
+				if (newPVName.equalsIgnoreCase(pvNameFromList)) {
+					equalPreviousMessage = true;
+					messagesToRemove.add(message);
+
+                    if (isMessageOutdated(message, newSeverity, severityFromList)) {
+                        message.setOutdated(true);
+                        messagesToAdd.add(message);
                     }
-                    // the new status is not disconnected update properties with
-                    // values of the new message.
-                } else {
-                    message.setProperty(SEVERITY.getDefiningName(),
-                                        newMessage.getProperty(SEVERITY.getDefiningName()));
-                    message.setProperty(STATUS.getDefiningName(), propStatus);
-                    message.setProperty("TIMESTAMP", newMessage.getProperty("TIMESTMAP"));
-                    updateMessage(message);
-                }
-            }
-        }
-        if (messageToRemove != null) {
-            removeMessage(messageToRemove);
-        }
+				}
+			}
+		}
+
+		// clean up
+		addAndRemoveCollectedMessages(messagesToRemove, messagesToAdd);
+
+		return equalPreviousMessage;
+	}
+
+    private boolean canProcessMessage(@Nonnull final String pvName, @Nonnull final String severity) {
+        return (pvName != null) && (severity != null);
     }
 
-    /**
-     * Remove a message from the list.
-     */
-    @Override
-    public void removeMessage(@Nonnull final BasicMessage jmsm) {
-        _messages.remove(jmsm);
-        super.removeMessage(jmsm);
+    private boolean isMessageOutdated(@Nonnull final AlarmMessage message,
+                                      @Nonnull final String newSeverity,
+                                      @Nonnull final String severityFromList) {
+        return !message.isOutdated() && isNotEqualSeverity(newSeverity, severityFromList)
+                && isNotNoAlarm(severityFromList) && isNotHiddenAck(message);
     }
 
-    /**
-     * Remove an array of messages from the list.
-     */
-    @Override
-    public void removeMessages(@Nonnull final BasicMessage[] jmsm) {
-        for (final BasicMessage message : jmsm) {
-            _messages.remove(message);
-        }
-        super.removeMessages(jmsm);
+    private boolean isNotEqualSeverity(@Nonnull final String newSeverity, @Nonnull final String severityFromList) {
+        return !newSeverity.equalsIgnoreCase(severityFromList);
     }
 
-    @Override
-    public Vector<? extends BasicMessage> getMessageList() {
-        return _messages;
+    private boolean isNotNoAlarm(@Nonnull final String severityFromList) {
+        return !severityFromList.equalsIgnoreCase(Severity.NO_ALARM.name());
     }
 
-    /**
-     * Check if the new message is valid alarm message
-     * NAME and SEVERITY have to exist
-     * TYPE may be omitted if there is prop ACK==TRUE
-     * (TODO (bknerr) : refactor to be a type value 'TYPE==ACK'
-     *
-     * @param newMessage
-     */
-    private boolean checkValidity(@Nonnull final AlarmMessage newMessage) {
-        if (newMessage.getProperty(NAME.getDefiningName()) == null) {
-            return false;
-        }
-
-        if (newMessage.getProperty(SEVERITY.getDefiningName()) == null) {
-            return false;
-        }
-        if (newMessage.getProperty(TYPE.getDefiningName()) == null) {
-            final String propAck = newMessage.getProperty(ACK.getDefiningName());
-            if (!Boolean.valueOf(propAck)) { // propAck null is ok
-                return false;
-            }
-        }
-        return true;
+    private boolean isNotHiddenAck(@Nonnull AlarmMessage message) {
+        return !Boolean.valueOf(message.getProperty("ACK_HIDDEN"));
     }
 
-    /**
-     *
-     * @param newMessage
-     */
-    @CheckForNull
-    protected AlarmMessage setAcknowledge(@Nonnull final AlarmMessage newMessage) {
-
-        final String newNameProp = newMessage.getProperty(NAME.getDefiningName());
-        final String newTimeProp = newMessage.getProperty(EVENTTIME.getDefiningName());
-        LOG.debug("AlarmView Ack message received, MsgName: " +
-                  newNameProp + " MsgTime: " + newTimeProp);
-
-        for (final AlarmMessage message : _messages) {
-            final String sevProp = message.getProperty(SEVERITY.getDefiningName());
-            final String newSevProp = newMessage.getProperty(SEVERITY.getDefiningName());
-            final String nameProp = message.getName();
-            if ((nameProp != null) && nameProp.equals(newNameProp) && sevProp.equals(newSevProp)) {
-                final String sevKeyProp = message.getProperty("SEVERITY_KEY");
-                if ((sevKeyProp != null) &&
-                    (message.isOutdated() ||
-                    sevKeyProp.equalsIgnoreCase(Severity.NO_ALARM.name()) ||
-                    sevKeyProp.equalsIgnoreCase(Severity.INVALID.name()) )) {
-
-                    _messagesToRemove.add(message);
-                    LOG.debug("add message, removelist size: " + _messagesToRemove.size());
-                } else {
-                    message.getHashMap().put("ACK_HIDDEN", Boolean.TRUE.toString());
-                    message.setProperty(ACK.getDefiningName(), Boolean.TRUE.toString());
-                    message.setAcknowledged(true);
-                    return message;
-                }
-                break;
-            }
-        }
-        for (final BasicMessage message : _messagesToRemove) {
-            removeMessage(message);
-        }
-        _messagesToRemove.clear();
-        return null;
-    }
-
-    /**
-     * Searching for a previous message in alarm table with the same NAME.
-     *
-     * @param mm
-     * @return boolean Is there a previous message
-     */
-    private boolean existsMessageWithSameName(@Nonnull final AlarmMessage mm) {
-        boolean messageInTable = false;
-        final String name = mm.getProperty(NAME.getDefiningName());
-        for (final AlarmMessage message : _messages) {
-            final String currentName = message.getProperty(NAME.getDefiningName());
-            if ((currentName != null) && currentName.equalsIgnoreCase(name) && !message.isOutdated()) {
-                messageInTable = true;
-                final String alarmChangeCount = message.getProperty("COUNT");
-                try {
-                    alarmStatusChanges = Integer.parseInt(alarmChangeCount);
-                } catch (final NumberFormatException e) {
-                    alarmStatusChanges = 0;
-                }
-                break;
-            }
-        }
-        return messageInTable;
-    }
-
-    /**
-     * Delete previous messages from the same pv and with the same severity Mark
-     * messages from the same pv and with a different severity that the label
-     * provider can set a brighter color. Test if the EVENTTIME of the new
-     * message is really newer than an existing message. (It is important to use
-     * the <code>removeMessage</code> method from <code>MessageList</code> that
-     * the changeListeners on the model were updated.)
-     *
-     * @param mm
-     *            The new MapMessage
-     * @return Is there a previous message in the list with the same pv name
-     */
-    private boolean deleteOrGrayOutEqualMessages(@Nonnull final AlarmMessage mm) {
-
-        boolean equalPreviousMessage = false;
-        final List<AlarmMessage> jmsMessagesToRemove = new ArrayList<AlarmMessage>();
-        final List<AlarmMessage> jmsMessagesToRemoveAndAdd = new ArrayList<AlarmMessage>();
-        final String newPVName = mm.getProperty(NAME.getDefiningName());
-        final String newSeverity = mm.getProperty(SEVERITY.getDefiningName());
-
-        Iterator<AlarmMessage> it = _messages.listIterator();
-        if ((newPVName != null) && (newSeverity != null)) {
-            while (it.hasNext()) {
-                final AlarmMessage jmsm = it.next();
-                final String pvNameFromList = jmsm.getProperty(NAME.getDefiningName());
-                // the 'real' severity in map message we get from the
-                // JMSMessage via SEVERITY_KEY
-                final String severityFromList = jmsm.getProperty("SEVERITY_KEY"); //$NON-NLS-1$
-                if ((pvNameFromList != null) && (severityFromList != null)) {
-
-                    // is there a previous alarm message from same pv?
-                    if (newPVName.equalsIgnoreCase(pvNameFromList)) {
-                        equalPreviousMessage = true;
-
-                        // is old message gray, are both severities equal ->
-                        // remove
-                        if ((jmsm.isOutdated())
-                                || (newSeverity.equalsIgnoreCase(severityFromList))) {
-                            jmsMessagesToRemove.add(jmsm);
-
-                        } else {
-                            jmsMessagesToRemove.add(jmsm);
-                            // is old message not acknowledged or is
-                            // severity from old message not NO_ALARM ->
-                            // add message to list (not delete message)
-                            final String propAckHidden = jmsm.getProperty("ACK_HIDDEN");
-                            
-                            if (!severityFromList.equalsIgnoreCase(Severity.NO_ALARM.name())
-                                    && ( (propAckHidden == null) || (!Boolean
-                                            .valueOf(propAckHidden)))) {
-                                jmsm.setOutdated(true);
-                                jmsMessagesToRemoveAndAdd.add(jmsm);
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        it = jmsMessagesToRemove.listIterator();
-        while (it.hasNext()) {
-            removeMessage(it.next());
-        }
-
-        it = jmsMessagesToRemoveAndAdd.listIterator();
-        while (it.hasNext()) {
-            final AlarmMessage message = it.next();
-            _messages.add(message);
-            super.addMessage(message);
-        }
-        jmsMessagesToRemove.clear();
-        jmsMessagesToRemoveAndAdd.clear();
-        return equalPreviousMessage;
+    private void addAndRemoveCollectedMessages(@Nonnull final List<AlarmMessage> messagesToRemove,
+                                               @Nonnull final List<AlarmMessage> messagesToAdd) {
+        for (AlarmMessage message : messagesToRemove) {
+    		removeMessage(message);
+    	}
+    	for (AlarmMessage message : messagesToAdd) {
+    		_messages.add(message);
+    		super.addMessage(message);
+    	}
     }
 
 }
