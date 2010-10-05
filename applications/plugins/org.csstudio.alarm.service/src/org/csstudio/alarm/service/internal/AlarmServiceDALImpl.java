@@ -62,7 +62,7 @@ public class AlarmServiceDALImpl implements IAlarmService {
 
 
     @Override
-    public void retrieveInitialState(@Nonnull final List<? extends IAlarmInitItem> initItems) {
+    public void retrieveInitialState(@Nonnull final List<IAlarmInitItem> initItems) {
         // There is nothing to do in the DAL implementation. The usual listeners will take care of the state changes.
     }
 
@@ -71,9 +71,8 @@ public class AlarmServiceDALImpl implements IAlarmService {
      */
     @Override
     public final IAlarmResource createAlarmResource(@CheckForNull final List<String> topics,
-                                                    @CheckForNull final List<String> facilities,
                                                     @CheckForNull final String filepath) {
-        return new AlarmResource(topics, facilities, filepath);
+        return new AlarmResource(topics, filepath);
     }
 
 }

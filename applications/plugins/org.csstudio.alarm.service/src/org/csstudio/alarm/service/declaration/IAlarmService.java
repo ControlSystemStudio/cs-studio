@@ -65,7 +65,7 @@ public interface IAlarmService {
      * When the state could be retrieved, the init method of the init item is called from the service.
      * Handling of connections is done internally in the service.
      */
-    void retrieveInitialState(@Nonnull List<? extends IAlarmInitItem> initItems);
+    void retrieveInitialState(@Nonnull List<IAlarmInitItem> initItems);
 
     /**
      * Create an alarm resource.
@@ -74,20 +74,15 @@ public interface IAlarmService {
      * If you use the jms implementation you may want to specify the list of jms topics.
      * You can set this to null if you want to connect to the default as defined in the preferences of the alarm service.
      *
-     * If you use an ldap server, you may want to specify the list of facilities for ldap retrieval.
-     * You can set this to null if you want to use the default as defined in the preferences.
-     *
      * If you are not using an ldap server, you may want to specify a filepath to an xml configuration file for the set
      * of pvs to watch for. Again, you can set this to null if you want to use the default as defined in the preferences.
      *
      * @param topics
-     * @param facilities
      * @param filepath
      *
      * @return the new alarm resource
      */
     @Nonnull
     IAlarmResource createAlarmResource(@CheckForNull List<String> topics,
-                                       @CheckForNull List<String> facilities,
                                        @CheckForNull String filepath);
 }

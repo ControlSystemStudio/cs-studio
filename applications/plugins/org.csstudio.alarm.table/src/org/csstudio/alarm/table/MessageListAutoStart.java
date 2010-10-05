@@ -103,10 +103,6 @@ public class MessageListAutoStart implements IStartupServiceListener {
                             .createAndConnectForTopicSet(topicSet,
                                                          messageList,
                                                          new AlarmListener());
-                    if (topicSet.isRetrieveInitialState()) {
-                        retrieveInitialState(messageList);
-                    }
-
                 } catch (AlarmConnectionException e) {
                     LOG.error("Could not start log list for topic set " + topicSet.getName(), e);
                 }

@@ -196,7 +196,7 @@ public class AlarmMessageList extends MessageList {
         }
         if (newMessage.getProperty(TYPE.getDefiningName()) == null) {
             final String propAck = newMessage.getProperty(ACK.getDefiningName());
-            if ((propAck != null) && !Boolean.valueOf(propAck)) {
+            if (!Boolean.valueOf(propAck)) { // propAck null is ok
                 return false;
             }
         }
@@ -290,8 +290,6 @@ public class AlarmMessageList extends MessageList {
         final String newPVName = mm.getProperty(NAME.getDefiningName());
         final String newSeverity = mm.getProperty(SEVERITY.getDefiningName());
 
-
-
         Iterator<AlarmMessage> it = _messages.listIterator();
         if ((newPVName != null) && (newSeverity != null)) {
             while (it.hasNext()) {
@@ -318,10 +316,10 @@ public class AlarmMessageList extends MessageList {
                             // severity from old message not NO_ALARM ->
                             // add message to list (not delete message)
                             final String propAckHidden = jmsm.getProperty("ACK_HIDDEN");
-                            if ((propAckHidden != null) &&
-                                !Boolean.valueOf(propAckHidden) &&
-                                !severityFromList.equalsIgnoreCase(Severity.NO_ALARM.name())) {
-
+                            
+                            if (!severityFromList.equalsIgnoreCase(Severity.NO_ALARM.name())
+                                    && ( (propAckHidden == null) || (!Boolean
+                                            .valueOf(propAckHidden)))) {
                                 jmsm.setOutdated(true);
                                 jmsMessagesToRemoveAndAdd.add(jmsm);
                             }

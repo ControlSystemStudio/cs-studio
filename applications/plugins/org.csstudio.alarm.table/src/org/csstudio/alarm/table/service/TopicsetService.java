@@ -54,19 +54,20 @@ public class TopicsetService implements ITopicsetService {
      * {@inheritDoc}
      */
     @Override
-    public void createAndConnectForTopicSet(final TopicSet topicSet,
-                                            final MessageList messageList,
-                                            final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
+    public void createAndConnectForTopicSet(@Nonnull final TopicSet topicSet,
+    		@Nonnull final MessageList messageList,
+    		@Nonnull final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
         assert alarmTableListener != null : "Failed: alarmTableListener != null";
 
-        final Element element = new Element();
+        @SuppressWarnings("synthetic-access")
+		final Element element = new Element();
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
         element._alarmTableListener.setMessageList(element._messageList);
-        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().createAlarmResource(topicSet.getTopics(), null, null);
+        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().createAlarmResource(topicSet.getTopics(), null);
         element._connection.connectWithListenerForResource(new AlarmConnectionMonitor(),
                                                            element._alarmTableListener,
                                                            alarmResource);
@@ -90,7 +91,8 @@ public class TopicsetService implements ITopicsetService {
      * {@inheritDoc}
      */
     @Override
-    public IAlarmConnection getAlarmConnectionForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public IAlarmConnection getAlarmConnectionForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._connection;
     }
@@ -99,13 +101,15 @@ public class TopicsetService implements ITopicsetService {
      * {@inheritDoc}
      */
     @Override
-    public MessageList getMessageListForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public MessageList getMessageListForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._messageList;
     }
 
     @Override
-    public IAlarmTableListener getAlarmTableListenerForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public IAlarmTableListener getAlarmTableListenerForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._alarmTableListener;
     }
@@ -114,7 +118,7 @@ public class TopicsetService implements ITopicsetService {
      * {@inheritDoc}
      */
     @Override
-    public boolean hasTopicSet(final TopicSet topicSet) {
+    public boolean hasTopicSet(@Nonnull final TopicSet topicSet) {
         return _topicSetMap.containsKey(topicSet.getName());
     }
 
@@ -126,9 +130,12 @@ public class TopicsetService implements ITopicsetService {
     /**
      * Container for the value of the map. Used only internally.
      */
+    // CHECKSTYLE:OFF
     private static final class Element {
         IAlarmConnection _connection;
         MessageList _messageList;
         IAlarmTableListener _alarmTableListener;
     }
+    // CHECKSTYLE:ON
+
 }

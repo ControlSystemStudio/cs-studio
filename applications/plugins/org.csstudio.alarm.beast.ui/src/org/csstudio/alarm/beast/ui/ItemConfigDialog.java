@@ -13,6 +13,7 @@ import java.util.List;
 import org.csstudio.alarm.beast.AlarmTree;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.GDCDataStructure;
+import org.csstudio.apputil.formula.Formula;
 import org.csstudio.platform.ui.swt.stringtable.StringTableEditor;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.osgi.util.NLS;
@@ -255,16 +256,22 @@ public class ItemConfigDialog extends TitleAreaDialog
             gd.grabExcessHorizontalSpace = true;
             gd.horizontalAlignment = SWT.FILL;
             filter_text.setLayoutData(gd);
-            // When entering a filter, the manual 'enable' is always 'on'
             final ModifyListener filter_overrides_enablement = new ModifyListener()
             {
                 public void modifyText(ModifyEvent e)
                 {
-                    final boolean have_filter =
-                        filter_text.getText().trim().length() > 0;
+                    final String filter_spec = filter_text.getText().trim();
+					final boolean have_filter = filter_spec.length() > 0;
                     enable_button.setEnabled(!have_filter);
                     if (have_filter)
+                    {
+                        // When entering a filter, the manual 'enable' is always 'on'
                         enable_button.setSelection(true);
+                        if (isFilterSpecOK(filter_spec))
+                            setErrorMessage(null);
+                        else
+                        	setErrorMessage(Messages.ErrorInFilter);
+                    }
                 }
             };
             filter_text.addModifyListener(filter_overrides_enablement);
@@ -339,7 +346,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         
         return parent_composite;
     }
-    
+
     /** Convert list from GDC to plain strings for table editor
      *  @param gdc_list List of GDCDataStructure
      *  @return List of String[]
@@ -406,7 +413,24 @@ public class ItemConfigDialog extends TitleAreaDialog
         return getGDBList(displays_table_list);
     }
 
-    /** Save user values
+    /** Perform basic syntax check of filter formula
+     *  @param filter_spec Filter specification
+     *  @return <code>true</code> when OK
+     */
+    protected boolean isFilterSpecOK(final String filter_spec)
+    {
+        try
+        {
+        	new Formula(filter_spec, true);
+        	return true;
+        }
+        catch (Exception ex)
+        {
+    	    return false;
+        }
+    }
+
+	/** Save user values
      *  @see org.eclipse.jface.dialogs.Dialog#okPressed()
      */
     @Override
@@ -426,6 +450,11 @@ public class ItemConfigDialog extends TitleAreaDialog
             ? false : latch_button.getSelection();
         filter = filter_text == null
             ? "" : filter_text.getText().trim(); //$NON-NLS-1$
+        if (filter.length() > 0   &&   ! isFilterSpecOK(filter))
+        {
+        	setErrorMessage(Messages.ErrorInFilter);
+        	return;
+        }
         if (filter.length() > 0)
             enabled = true;
         try

@@ -116,7 +116,7 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         try {
             ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = _alarmConfigService.retrieveInitialContentModel(resource.getFacilities());
+                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
             } else {
                 model = _alarmConfigService.retrieveInitialContentModelFromFile(resource.getFilepath());
             }

@@ -24,7 +24,6 @@ package org.csstudio.alarm.treeView.jobs;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
-import org.csstudio.alarm.service.declaration.AlarmPreference;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
@@ -64,7 +63,7 @@ public final class ConnectionJob extends Job {
         // JMS: topics: default,    facilities: don't care,      filename: don't care
         // DAL: topics: don't care, facilities: from tree prefs, filename: ok
         final IAlarmResource alarmResource =
-            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(null, AlarmPreference.getFacilityNames(), null);
+            AlarmTreePlugin.getDefault().getAlarmService().createAlarmResource(null, null);
         return alarmResource;
     }
 

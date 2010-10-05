@@ -55,7 +55,7 @@ public class LdapNameUtilsUnitTest {
     public static final String COUNTRY_FIELD_NAME = "c";
     public static final String COUNTRY_FIELD_VALUE = "DE";
     public static final String ECON_FIELD_VALUE = "berndTest";
-    public static final String EFAN_FIELD_VALUE = "TEST";
+    public static final String EFAN_FIELD_VALUE = "Test";
     public static final String O_FIELD_VALUE = "DESY";
 
     private static LdapName QUERY;

@@ -86,7 +86,6 @@ public class AlarmView extends LogView {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
         setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews());
@@ -108,7 +107,7 @@ public class AlarmView extends LogView {
         logTableManagementComposite.setLayout(layout);
 
         addJmsTopicItems(logTableManagementComposite);
-        addAcknowledgeItems(canExecute, logTableManagementComposite);
+        addAcknowledgeItems(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
@@ -120,14 +119,14 @@ public class AlarmView extends LogView {
     private SelectionListener newSelectionListenerForPauseButton() {
         return new SelectionListener() {
 
-            @Override
+            @SuppressWarnings("synthetic-access")
+			@Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 if (_pauseButton.getSelection()) {
-                    _ackButton.setEnabled(false);
+                    disableAckButton();
                 } else {
-                    _ackButton.setEnabled(true);
+                    enableAckButtonIfPermitted();
                 }
-
             }
 
             @Override
@@ -135,6 +134,14 @@ public class AlarmView extends LogView {
                 // Nothing to do
             }
         };
+    }
+
+    private void enableAckButtonIfPermitted() {
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
+    }
+
+    private void disableAckButton() {
+        _ackButton.setEnabled(false);
     }
 
     /**
@@ -233,8 +240,7 @@ public class AlarmView extends LogView {
     }
 
     // CHECKSTYLE:OFF
-    private void addAcknowledgeItems(final boolean canExecute,
-                                     final Composite logTableManagementComposite) {
+    private void addAcknowledgeItems(final Composite logTableManagementComposite) {
 
         final Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
 
@@ -246,7 +252,7 @@ public class AlarmView extends LogView {
         _ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
         _ackButton.setLayoutData(new RowData(60, 21));
         _ackButton.setText(Messages.AlarmView_acknowledgeButton);
-        _ackButton.setEnabled(canExecute);
+        enableAckButtonIfPermitted();
         final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
         ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
         final IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();

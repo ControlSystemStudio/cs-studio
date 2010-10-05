@@ -6,7 +6,7 @@ Bundle-Version: 2.1.2.qualifier
 Bundle-Vendor: Kay Kasemir
 Require-Bundle: org.junit4,
  org.eclipse.core.runtime,
- org.csstudio.alarm.beast;bundle-version="2.1.0",
+ org.csstudio.alarm.beast;bundle-version="2.1.1",
  org.csstudio.platform,
  org.csstudio.apputil,
  org.csstudio.utility.pv,

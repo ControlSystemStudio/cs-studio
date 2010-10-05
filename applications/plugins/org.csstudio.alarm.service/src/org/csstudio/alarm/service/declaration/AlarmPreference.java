@@ -74,6 +74,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_WAIT_MSEC =
         new AlarmPreference<Integer>("pvChunkWaitMsec", 100);	// 200 -> 100
 
+    // TODO (jpenning) no longer in use
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 2000);
 
@@ -121,7 +122,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
      * The facility names are defined in a string like this: "CMTB;Flash;Test;", i.e. separated without blanks,
      * they are separated properly here.
      *
-     * If the preferences contain no facility names, an entry named 'TEST' will be returned according to specification.
+     * If the preferences contain no facility names, the name of a default entry (typically 'Test') will be returned.
      *
      * @return an unmodifiable list with the facility names
      */
