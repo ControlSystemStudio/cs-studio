@@ -745,7 +745,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         super.cancel();
         // Module
         getNameWidget().setText((String) getNameWidget().getData());
-        getIndexSpinner().setSelection((Integer) getIndexSpinner().getData());
+        getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
 
         try {
             GsdModuleModel gsdModuleModel = _module.getSlave().getGSDSlaveData().getGsdModuleList()
