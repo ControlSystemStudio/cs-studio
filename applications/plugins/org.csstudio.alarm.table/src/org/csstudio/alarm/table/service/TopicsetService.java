@@ -26,7 +26,7 @@ import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmConnectionMonitor;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
@@ -55,7 +55,7 @@ public class TopicsetService implements ITopicsetService {
      */
     @Override
     public void createAndConnectForTopicSet(@Nonnull final TopicSet topicSet,
-    		@Nonnull final MessageList messageList,
+    		@Nonnull final AbstractMessageList messageList,
     		@Nonnull final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
@@ -102,7 +102,7 @@ public class TopicsetService implements ITopicsetService {
      */
     @Override
     @Nonnull
-    public MessageList getMessageListForTopicSet(@Nonnull final TopicSet topicSet) {
+    public AbstractMessageList getMessageListForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._messageList;
     }
@@ -133,7 +133,7 @@ public class TopicsetService implements ITopicsetService {
     // CHECKSTYLE:OFF
     private static final class Element {
         IAlarmConnection _connection;
-        MessageList _messageList;
+        AbstractMessageList _messageList;
         IAlarmTableListener _alarmTableListener;
     }
     // CHECKSTYLE:ON

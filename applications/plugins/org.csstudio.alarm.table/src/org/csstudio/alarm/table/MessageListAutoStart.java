@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
@@ -132,7 +132,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
         }
     }
 
-    private void retrieveInitialState(@Nonnull final MessageList messageList) {
+    private void retrieveInitialState(@Nonnull final AbstractMessageList messageList) {
         InitialStateRetriever retriever = new InitialStateRetriever(messageList);
         Job job = retriever.newRetrieveInitialStateJob();
         job.setPriority(Job.LONG);

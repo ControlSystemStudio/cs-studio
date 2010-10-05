@@ -33,8 +33,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.jms.JMSException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
@@ -47,7 +47,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author jhatje
  *
  */
-public class AlarmMessageList extends MessageList {
+public class AlarmMessageList extends AbstractMessageList {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageList.class);
 
@@ -111,9 +111,8 @@ public class AlarmMessageList extends MessageList {
      * status. If there are two existing messages in table delete the older one.
      *
      * @param newMessage
-     * @throws JMSException
      */
-    private void updateMessageInTableForDisconnected(final AlarmMessage newMessage) {
+    private void updateMessageInTableForDisconnected(@Nonnull final AlarmMessage newMessage) {
         final String propStatus = newMessage.getProperty(STATUS.getDefiningName());
         if (propStatus == null) {
             return;
@@ -152,7 +151,7 @@ public class AlarmMessageList extends MessageList {
      * Remove a message from the list.
      */
     @Override
-    public void removeMessage(final BasicMessage jmsm) {
+    public void removeMessage(@Nonnull final BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
@@ -161,21 +160,16 @@ public class AlarmMessageList extends MessageList {
      * Remove an array of messages from the list.
      */
     @Override
-    public void removeMessageArray(final BasicMessage[] jmsm) {
+    public void removeMessages(@Nonnull final BasicMessage[] jmsm) {
         for (final BasicMessage message : jmsm) {
             _messages.remove(message);
         }
-        super.removeMessageArray(jmsm);
+        super.removeMessages(jmsm);
     }
 
     @Override
-    public Vector<? extends BasicMessage> getJMSMessageList() {
+    public Vector<? extends BasicMessage> getMessageList() {
         return _messages;
-    }
-
-    @Override
-    public void deleteAllMessages(final BasicMessage[] messages) {
-        removeMessageArray(messages);
     }
 
     /**
@@ -206,9 +200,8 @@ public class AlarmMessageList extends MessageList {
     /**
      *
      * @param newMessage
-     * @throws JMSException
-     * @throws JMSException
      */
+    @CheckForNull
     protected AlarmMessage setAcknowledge(@Nonnull final AlarmMessage newMessage) {
 
         final String newNameProp = newMessage.getProperty(NAME.getDefiningName());
@@ -251,7 +244,7 @@ public class AlarmMessageList extends MessageList {
      * @param mm
      * @return boolean Is there a previous message
      */
-    private boolean existsMessageWithSameName(final AlarmMessage mm) {
+    private boolean existsMessageWithSameName(@Nonnull final AlarmMessage mm) {
         boolean messageInTable = false;
         final String name = mm.getProperty(NAME.getDefiningName());
         for (final AlarmMessage message : _messages) {
@@ -344,8 +337,4 @@ public class AlarmMessageList extends MessageList {
         return equalPreviousMessage;
     }
 
-    @Override
-    public Integer getSize() {
-       return _messages.size();
-    }
 }

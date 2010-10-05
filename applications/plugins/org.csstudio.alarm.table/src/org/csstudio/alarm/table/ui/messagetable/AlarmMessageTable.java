@@ -8,7 +8,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -41,7 +41,7 @@ public class AlarmMessageTable extends MessageTable {
 
     private static final String SECURITY_ID = "operating";
 
-    public AlarmMessageTable(final TableViewer viewer, final String[] colNames, final MessageList j) {
+    public AlarmMessageTable(final TableViewer viewer, final String[] colNames, final AbstractMessageList j) {
         super(viewer, colNames, j);
     }
 

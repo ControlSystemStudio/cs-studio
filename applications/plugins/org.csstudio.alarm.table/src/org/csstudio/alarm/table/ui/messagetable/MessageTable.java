@@ -25,7 +25,7 @@ import java.util.Map;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -49,7 +49,7 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 /**
- * Holding {@link TableViewer} that displays messages from {@link MessageList}.
+ * Holding {@link TableViewer} that displays messages from {@link AbstractMessageList}.
  * Initializes table columns, set context menu and sorter.
  *
  * @author jhatje
@@ -73,7 +73,7 @@ public class MessageTable {
 
 	private boolean sort = false;
 
-	private final MessageList _messageList;
+	private final AbstractMessageList _messageList;
 
 	int[] columnWidth;
 
@@ -81,7 +81,7 @@ public class MessageTable {
 
 	MessageTableContentProvider _contentProvider;
 
-	public MessageTable(final TableViewer tViewer, final String[] colNames, final MessageList j) {
+	public MessageTable(final TableViewer tViewer, final String[] colNames, final AbstractMessageList j) {
 
 		_tableViewer = tViewer;
 		_table = _tableViewer.getTable();

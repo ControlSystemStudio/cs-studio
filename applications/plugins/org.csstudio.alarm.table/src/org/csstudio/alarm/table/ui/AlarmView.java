@@ -29,7 +29,7 @@ import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
@@ -202,7 +202,7 @@ public class AlarmView extends LogView {
             columnSetWithAck[i + 1] = columnSet[i];
         }
 
-        final MessageList messageList = getOrCreateCurrentMessageList();
+        final AbstractMessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck, messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
@@ -221,7 +221,7 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected final void retrieveInitialState(@Nonnull final MessageList messageList) {
+    protected final void retrieveInitialState(@Nonnull final AbstractMessageList messageList) {
         final InitialStateRetriever retriever = new InitialStateRetriever(messageList);
         final Job job = retriever.newRetrieveInitialStateJob();
 
@@ -233,7 +233,7 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected final MessageList createMessageList() {
+    protected final AbstractMessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();

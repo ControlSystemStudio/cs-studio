@@ -25,7 +25,7 @@ import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
 import org.csstudio.alarm.table.dataModel.IMessageViewer;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -41,14 +41,14 @@ public class MessageTableContentProvider implements IMessageViewer,
 
 	private final TableViewer _tableViewer;
 
-	private final MessageList _messageList;
+	private final AbstractMessageList _messageList;
 
 	/**
 	 * is message update for the table paused.
 	 */
 	boolean _pause = false;
 
-	public MessageTableContentProvider(final TableViewer tv, final MessageList jmsml) {
+	public MessageTableContentProvider(final TableViewer tv, final AbstractMessageList jmsml) {
 		_tableViewer = tv;
 		_messageList = jmsml;
 	}
@@ -184,15 +184,16 @@ public class MessageTableContentProvider implements IMessageViewer,
 
 	public void inputChanged(final Viewer viewer, final Object oldInput, final Object newInput) {
 		if (newInput != null) {
-            ((MessageList) newInput).addChangeListener(this);
+            ((AbstractMessageList) newInput).addChangeListener(this);
         }
 		if (oldInput != null) {
-            ((MessageList) oldInput).removeChangeListener(this);
+            ((AbstractMessageList) oldInput).removeChangeListener(this);
         }
 	}
 
+	@Override
 	public Object[] getElements(final Object inputElement) {
-		return _messageList.getJMSMessageList().toArray();
+		return _messageList.getMessageList().toArray();
 	}
 
 	public void setMessageUpdatePause(final boolean pause) {
