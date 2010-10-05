@@ -68,13 +68,20 @@ public class ValueTest
 		assertTrue(b.equals(a));
 		assertFalse(a.equals(c));
 		assertFalse(b.equals(c));
-        
+
+		// Check twice to assert the format cache is functional
         assertEquals("3.140", a.format());
+        assertEquals("3.140", a.format());
+        assertEquals("42.000", c.format());
         assertEquals("42.000", c.format());
 
         assertEquals("3.1400", a.format(IValue.Format.Decimal, 4));
+        assertEquals("3.1400", a.format(IValue.Format.Decimal, 4));
+        assertEquals("3", a.format(IValue.Format.Decimal, 0));
         assertEquals("3", a.format(IValue.Format.Decimal, 0));
         assertEquals("3.14E0", a.format(IValue.Format.Exponential, 2));
+        assertEquals("3.14E0", a.format(IValue.Format.Exponential, 2));
+        assertEquals("3.140E0", a.format(IValue.Format.Exponential, 3));
         assertEquals("3.140E0", a.format(IValue.Format.Exponential, 3));
         
         IEnumeratedMetaData enum_meta = ValueFactory.createEnumeratedMetaData(
