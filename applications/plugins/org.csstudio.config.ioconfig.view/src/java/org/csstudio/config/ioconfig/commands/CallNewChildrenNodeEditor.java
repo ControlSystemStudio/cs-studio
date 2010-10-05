@@ -106,23 +106,31 @@ public class CallNewChildrenNodeEditor extends AbstractCallNodeEditor {
             nodeType = "Module";
         }
 
+        	
         if((node != null) && (id != null)) {
-            InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
-                                                  "Enter the name of the " + nodeType, nodeType, null);
-            idialog.setBlockOnOpen(true);
-            if (idialog.open() == Window.OK) {
-                // TODO: (hrickens) set the right max station Address
-                node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
-                if((idialog.getValue()!=null)&&!idialog.getValue().isEmpty()) {
-                    node.setName(idialog.getValue());
-                } else {
-                    node.setName(nodeType);
-                }
-                NodeEditorInput input = new NodeEditorInput(node,true);
-                page.openEditor(input, id);
-            } else {
-                parentNode.removeChild(node);
-            }
+        	if(id.equals(ModuleEditor.ID)){
+        		node.setName("");
+        		node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+        		NodeEditorInput input = new NodeEditorInput(node,true);
+        		page.openEditor(input, id);
+        	} else {
+	        	InputDialog idialog = new InputDialog(null, "Create new " + nodeType,
+	                                                  "Enter the name of the " + nodeType, nodeType, null);
+	            idialog.setBlockOnOpen(true);
+	            if (idialog.open() == Window.OK) {
+	                // TODO: (hrickens) set the right max station Address
+	                node.setSortIndexNonHibernate(parentNode.getfirstFreeStationAddress(128));
+	                if((idialog.getValue()!=null)&&!idialog.getValue().isEmpty()) {
+	                    node.setName(idialog.getValue());
+	                } else {
+	                    node.setName(nodeType);
+	                }
+	                NodeEditorInput input = new NodeEditorInput(node,true);
+	                page.openEditor(input, id);
+	            } else {
+	                parentNode.removeChild(node);
+	            }
+        	}
         }
     }
     // CHECKSTYLE ON: CyclomaticComplexity

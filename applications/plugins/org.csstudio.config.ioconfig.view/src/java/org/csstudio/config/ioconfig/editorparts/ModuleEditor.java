@@ -515,7 +515,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
      */
-    private void makeCurrentUserParamData(@Nullable final Group topGroup) {
+    private void makeCurrentUserParamData(@Nonnull final Group topGroup) {
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }
@@ -745,7 +745,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         super.cancel();
         // Module
         getNameWidget().setText((String) getNameWidget().getData());
-        getIndexSpinner().setSelection((Integer) getIndexSpinner().getData());
+        getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
 
         try {
             GsdModuleModel gsdModuleModel = _module.getSlave().getGSDSlaveData().getGsdModuleList()

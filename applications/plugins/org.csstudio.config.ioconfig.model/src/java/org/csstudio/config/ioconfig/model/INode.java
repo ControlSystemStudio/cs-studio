@@ -21,6 +21,7 @@
  */
 package org.csstudio.config.ioconfig.model;
 
+import java.util.Set;
 
 
 /**
@@ -34,6 +35,8 @@ package org.csstudio.config.ioconfig.model;
 public interface INode {
 
     INode getParent();
+
+	Set<DocumentDBO> getDocuments();
 
     NodeType getNodeType();
 

@@ -141,6 +141,11 @@
             id="org.csstudio.config.ioconfig.commands.callNewChildrenEditor"
             name="Call new Children Editor">
       </command>
+      <command
+            defaultHandler="org.csstudio.config.ioconfig.commands.CallNewFacilityEditor"
+            id="org.csstudio.config.ioconfig.commands.callNewFacilityEditor"
+            name="Call New Facility Editor">
+      </command>
    </extension>
 
 </plugin>

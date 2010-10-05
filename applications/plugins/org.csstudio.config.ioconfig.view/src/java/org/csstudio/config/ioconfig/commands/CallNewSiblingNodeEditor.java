@@ -37,12 +37,14 @@ package org.csstudio.config.ioconfig.commands;
 import javax.annotation.Nonnull;
 
 import org.csstudio.config.ioconfig.editorinputs.NodeEditorInput;
+import org.csstudio.config.ioconfig.editorparts.FacilityEditor;
 import org.csstudio.config.ioconfig.editorparts.IocEditor;
 import org.csstudio.config.ioconfig.editorparts.MasterEditor;
 import org.csstudio.config.ioconfig.editorparts.ModuleEditor;
 import org.csstudio.config.ioconfig.editorparts.SlaveEditor;
 import org.csstudio.config.ioconfig.editorparts.SubnetEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
@@ -82,10 +84,17 @@ public class CallNewSiblingNodeEditor extends AbstractCallNodeEditor {
         AbstractNodeDBO node = null;
         String id = null;
         String nodeType = "";
+        if (siblingNode instanceof FacilityDBO) {
+//			FacilityDBO new_name = (FacilityDBO) siblingNode;
+			
+			id = FacilityEditor.ID;
+			node = new FacilityDBO();
+			nodeType = "Facility";
+		}
         if (siblingNode instanceof IocDBO) {
-            id = IocEditor.ID;
-            node = new IocDBO(((IocDBO)siblingNode).getFacility());
-            nodeType = "Ioc";
+        	id = IocEditor.ID;
+        	node = new IocDBO(((IocDBO)siblingNode).getFacility());
+        	nodeType = "Ioc";
         } else if (siblingNode instanceof ProfibusSubnetDBO) {
             id = SubnetEditor.ID;
             node = new ProfibusSubnetDBO(((ProfibusSubnetDBO)siblingNode).getIoc());

@@ -53,6 +53,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
+import org.csstudio.platform.security.Right;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -197,8 +198,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 		 */
 		@Override
 		public void dispose() {
-			if (getDefaultBackgroundColor() != null) {
-				getDefaultBackgroundColor().dispose();
+			Color defaultBackgroundColor = getDefaultBackgroundColor();
+			if (defaultBackgroundColor != null) {
+				defaultBackgroundColor.dispose();
 			}
 		}
 
@@ -295,7 +297,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 	public void createPartControl(@Nonnull final Composite parent) {
 		_slave = (SlaveDBO) getNode();
 		super.createPartControl(parent);
-		makeSlaveKonfiguration(parent);
+		makeSlaveKonfiguration();
 		getTabFolder().setSelection(0);
 	}
 
@@ -307,25 +309,25 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * @param slave
 	 *            the Profibus Slave to Configer.
 	 */
-	private void makeSlaveKonfiguration(final Composite parent) {
+	private void makeSlaveKonfiguration() {
 		boolean nevv = false;
-		if (_slave == null) {
-			if (!newNode("TODO")) {
-				// this.dispose();
-				setSaveButtonSaved();
-				getProfiBusTreeView().getTreeViewer().setSelection(
-						getProfiBusTreeView().getTreeViewer().getSelection());
-				return;
-			}
-			nevv = true;
-			_slave.setMinTsdr((short) 11);
-			_slave.setWdFact1((short) 100);
-		}
+//		if (_slave == null) {
+//			if (!newNode("TODO")) {
+//				// this.dispose();
+//				setSaveButtonSaved();
+//				getProfiBusTreeView().getTreeViewer().setSelection(
+//						getProfiBusTreeView().getTreeViewer().getSelection());
+//				return;
+//			}
+//			nevv = true;
+//			_slave.setMinTsdr((short) 11);
+//			_slave.setWdFact1((short) 100);
+//		}
 		setSavebuttonEnabled(null, getNode().isPersistent());
-		String[] heads = { "Basics", "Settings", "Overview" };
-		overview(heads[2]);
-		settings(heads[1]);
-		basics(heads[0]);
+		String[] heads = {"Basics", "Settings", "Overview" };
+		makeOverview(heads[2]);
+		makeSettings(heads[1]);
+		makeBasics(heads[0]);
 		if (_slave.getGSDFile() != null) {
 			fill(_slave.getGSDFile());
 		}
@@ -337,10 +339,13 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	@SuppressWarnings("unchecked")
-	private void overview(@Nonnull final String headline) {
+	private void makeOverview(@Nonnull final String headline) {
 		Composite comp = getNewTabItem(headline, 1);
 		comp.setLayout(new GridLayout(1, false));
-
+		List<TableColumn> columns = new ArrayList<TableColumn>();
+		String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address", "Desc", "Type", "DB Id"};
+		int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT};
+		
 		TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
 		overViewer.setContentProvider(new ArrayContentProvider());
@@ -349,27 +354,12 @@ public class SlaveEditor extends AbstractNodeEditor {
 		overViewer.getTable().setLinesVisible(true);
 		overViewer.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		TableColumn c0 = new TableColumn(overViewer.getTable(), SWT.RIGHT);
-		c0.setText("Adr");
-		TableColumn c0b = new TableColumn(overViewer.getTable(), SWT.RIGHT);
-		c0b.setText("Adr");
-		TableColumn c1 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		c1.setText("Name");
-		TableColumn c2 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		// c2.setWidth(200);
-		c2.setText("IO Name");
-		TableColumn c3 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		// c3.setWidth(200);
-		c3.setText("IO Epics Address");
-		TableColumn c4 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		// c4.setWidth(200);
-		c4.setText("Desc");
-		TableColumn c5 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		// c5.setWidth(60);
-		c5.setText("Type");
-		TableColumn c6 = new TableColumn(overViewer.getTable(), SWT.LEFT);
-		// c5.setWidth(60);
-		c6.setText("DB Id");
+		
+		for (int i = 0; i < headers.length && i < styles.length; i++) {
+			TableColumn c = new TableColumn(overViewer.getTable(), styles[i]);
+			c.setText(headers[i]);
+			columns.add(c);
+		}
 
 		overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -379,7 +369,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 				getProfiBusTreeView().getTreeViewer().setSelection(
 						event.getSelection(), true);
 			}
-
 		});
 
 		ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
@@ -399,170 +388,34 @@ public class SlaveEditor extends AbstractNodeEditor {
 			}
 		}
 		overViewer.setInput(children);
-		c0.pack();
-		c0b.pack();
-		c1.pack();
-		c2.pack();
-		c3.pack();
-		c4.pack();
-		c5.pack();
-		c6.pack();
+		for (TableColumn tableColumn : columns) {
+			tableColumn.pack();
+		}
 	}
 
 	/**
 	 * @param head
 	 *            The Tab text.
 	 */
-	private void basics(@Nonnull final String head) {
+	private void makeBasics(@Nonnull final String head) {
 
 		Composite comp = getNewTabItem(head, 2);
 
-		/*
-		 * Name
-		 */
-		Group gName = new Group(comp, SWT.NONE);
-		gName.setText("Name");
-		gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
-		gName.setLayout(new GridLayout(3, false));
+		makeBasicsName(comp);
 
-		Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
-		setText(nameText, _slave.getName(), 255);
-		nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
-				1));
-		setNameWidget(nameText);
+		makeBasicsSlaveInfo(comp);
 
-		// Label
-		Label slotIndexLabel = new Label(gName, SWT.NONE);
-		slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
-				false, 1, 1));
-		slotIndexLabel.setText("Station Adress:");
+		makeBasicsDPFDLAccess(comp);
 
-		_indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
-		_indexCombo.getCombo().setLayoutData(
-				new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
-		_indexCombo.setContentProvider(new ArrayContentProvider());
-		_indexCombo.setLabelProvider(new LabelProvider());
-		Collection<Short> freeStationAddress = _slave.getProfibusDPMaster()
-				.getFreeStationAddress();
-		Short sortIndex = _slave.getSortIndex();
-		if (sortIndex >= 0) {
-			if (!freeStationAddress.contains(sortIndex)) {
-				freeStationAddress.add(sortIndex);
-			}
-			_indexCombo.setInput(freeStationAddress);
-			_indexCombo.setSelection(new StructuredSelection(sortIndex));
-		} else {
-			_indexCombo.setInput(freeStationAddress);
-			_indexCombo.getCombo().select(0);
-			_slave.setSortIndexNonHibernate((Short) ((StructuredSelection) _indexCombo
-					.getSelection()).getFirstElement());
-		}
-		_indexCombo.getCombo().setData(
-				_indexCombo.getCombo().getSelectionIndex());
-		_indexCombo.getCombo().addModifyListener(getMLSB());
-		_indexCombo
-				.addSelectionChangedListener(new ISelectionChangedListener() {
+		makeBasicsIO(comp);
 
-					@Override
-					public void selectionChanged(
-							@Nonnull final SelectionChangedEvent event) {
-						short index = (Short) ((StructuredSelection) _indexCombo
-								.getSelection()).getFirstElement();
-						getNode().moveSortIndex(index);
-						if (getNode().getParent() != null) {
-							getProfiBusTreeView()
-									.refresh(getNode().getParent());
-						} else {
-							getProfiBusTreeView().refresh();
-						}
-					}
-				});
+		makeDescGroup(comp, 3);
+	}
 
-		// setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _slave,
-		// getMLSB(),
-		// "Station Adress:",getProfiBusTreeView()));
-		// _defaultBackgroundColor = getIndexSpinner().getBackground();
-
-		/*
-		 * Slave Information
-		 */
-		Group slaveInfoGroup = new Group(comp, SWT.NONE);
-		slaveInfoGroup.setText("Slave Information");
-		slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 1, 2));
-		slaveInfoGroup.setLayout(new GridLayout(4, false));
-		slaveInfoGroup.setTabList(new Control[0]);
-
-		_vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
-		_vendorText.setEditable(false);
-		_vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				4, 1));
-
-		_iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
-		_iDNo.setEditable(false);
-		_iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
-
-		Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
-		revisionsLable.setText("Revision:");
-
-		_revisionsText = new Text(slaveInfoGroup, SWT.SINGLE);
-		_revisionsText.setEditable(false);
-		_revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 1, 1));
-
-		new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
-		_maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
-		_maxSlots.setEditable(false);
-
-		/*
-		 * DP/FDL Access Group
-		 */
-		Group dpFdlAccessGroup = new Group(comp, SWT.NONE);
-		dpFdlAccessGroup.setText("DP / FDL Access");
-		dpFdlAccessGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-				false, 1, 1));
-		dpFdlAccessGroup.setLayout(new GridLayout(2, false));
-
-		Label stationAdrLabel = new Label(dpFdlAccessGroup, SWT.None);
-		stationAdrLabel.setText("Station Address");
-
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
-		gd.minimumWidth = 50;
-
-		_stationAddressActiveCButton = new Button(dpFdlAccessGroup, SWT.CHECK);
-		_stationAddressActiveCButton.setText("Active");
-		_stationAddressActiveCButton.setSelection(false);
-		_stationAddressActiveCButton.setData(false);
-		_stationAddressActiveCButton
-				.addSelectionListener(new SelectionListener() {
-
-					@Override
-					public void widgetDefaultSelected(
-							@Nonnull final SelectionEvent e) {
-						change();
-					}
-
-					@Override
-					public void widgetSelected(@Nonnull final SelectionEvent e) {
-						change();
-
-					}
-
-					private void change() {
-						setSavebuttonEnabled(
-								"Button:"
-										+ _stationAddressActiveCButton
-												.hashCode(),
-								(Boolean) _stationAddressActiveCButton
-										.getData() != _stationAddressActiveCButton
-										.getSelection());
-					}
-
-				});
-
-		/*
-		 * Input / Output Group
-		 */
+	/**
+	 * @param comp
+	 */
+	private void makeBasicsIO(@Nonnull Composite comp) {
 		Group ioGroup = new Group(comp, SWT.NONE);
 		ioGroup.setText("Inputs / Outputs");
 		ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
@@ -596,11 +449,154 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_outputsText = new Text(ioGroup, SWT.SINGLE);
 		_outputsText.setEditable(false);
 		_outputsText.setText(Integer.toString(output));
+	}
 
+	/**
+	 * @param comp
+	 */
+	private void makeBasicsDPFDLAccess(@Nonnull Composite comp) {
 		/*
-		 * Description Group
+		 * DP/FDL Access Group
 		 */
-		makeDescGroup(comp, 3);
+		Group dpFdlAccessGroup = new Group(comp, SWT.NONE);
+		dpFdlAccessGroup.setText("DP / FDL Access");
+		dpFdlAccessGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+				false, 1, 1));
+		dpFdlAccessGroup.setLayout(new GridLayout(2, false));
+
+		Label stationAdrLabel = new Label(dpFdlAccessGroup, SWT.None);
+		stationAdrLabel.setText("Station Address");
+
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, true, false, 1, 1);
+		gd.minimumWidth = 50;
+
+		setStationAddressActiveCButton(new Button(dpFdlAccessGroup, SWT.CHECK));
+		getStationAddressActiveCButton().setText("Active");
+		getStationAddressActiveCButton().setSelection(false);
+		getStationAddressActiveCButton().setData(false);
+		getStationAddressActiveCButton()
+				.addSelectionListener(new SelectionListener() {
+
+					@Override
+					public void widgetDefaultSelected(
+							@Nonnull final SelectionEvent e) {
+						change();
+					}
+
+					@Override
+					public void widgetSelected(@Nonnull final SelectionEvent e) {
+						change();
+
+					}
+
+					private void change() {
+						setSavebuttonEnabled(
+								"Button:"
+										+ getStationAddressActiveCButton()
+												.hashCode(),
+								(Boolean) getStationAddressActiveCButton()
+										.getData() != getStationAddressActiveCButton()
+										.getSelection());
+					}
+
+				});
+	}
+
+	/**
+	 * @param comp
+	 */
+	private void makeBasicsSlaveInfo(@Nonnull Composite comp) {
+		/*
+		 * Slave Information
+		 */
+		Group slaveInfoGroup = new Group(comp, SWT.NONE);
+		slaveInfoGroup.setText("Slave Information");
+		slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 2));
+		slaveInfoGroup.setLayout(new GridLayout(4, false));
+		slaveInfoGroup.setTabList(new Control[0]);
+
+		_vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
+		_vendorText.setEditable(false);
+		_vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+				4, 1));
+
+		_iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
+		_iDNo.setEditable(false);
+		_iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+
+		Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
+		revisionsLable.setText("Revision:");
+
+		_revisionsText = new Text(slaveInfoGroup, SWT.SINGLE);
+		_revisionsText.setEditable(false);
+		_revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 1));
+
+		new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
+		_maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
+		_maxSlots.setEditable(false);
+	}
+
+	/**
+	 * @param comp
+	 */
+	private void makeBasicsName(@Nonnull Composite comp) {
+		Group gName = new Group(comp, SWT.NONE);
+		gName.setText("Name");
+		gName.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 5, 1));
+		gName.setLayout(new GridLayout(3, false));
+
+		Text nameText = new Text(gName, SWT.BORDER | SWT.SINGLE);
+		setText(nameText, _slave.getName(), 255);
+		nameText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 1,
+				1));
+		setNameWidget(nameText);
+
+		// Label
+		Label slotIndexLabel = new Label(gName, SWT.NONE);
+		slotIndexLabel.setLayoutData(new GridData(SWT.RIGHT, SWT.CENTER, false,
+				false, 1, 1));
+		slotIndexLabel.setText("Station Adress:");
+
+		_indexCombo = new ComboViewer(gName, SWT.DROP_DOWN | SWT.READ_ONLY);
+		_indexCombo.getCombo().setLayoutData(
+				new GridData(SWT.RIGHT, SWT.RIGHT, false, false));
+		_indexCombo.setContentProvider(new ArrayContentProvider());
+		_indexCombo.setLabelProvider(new LabelProvider());
+		Collection<Short> freeStationAddress = _slave.getProfibusDPMaster()
+				.getFreeStationAddress();
+		Short sortIndex = _slave.getSortIndex();
+		if (!freeStationAddress.contains(sortIndex)) {
+			freeStationAddress.add(sortIndex);
+		}
+		_indexCombo.setInput(freeStationAddress);
+		_indexCombo.setSelection(new StructuredSelection(sortIndex));
+		_indexCombo.getCombo().setData(
+				_indexCombo.getCombo().getSelectionIndex());
+		_indexCombo.getCombo().addModifyListener(getMLSB());
+		_indexCombo
+				.addSelectionChangedListener(new ISelectionChangedListener() {
+
+					@Override
+					public void selectionChanged(
+							@Nonnull final SelectionChangedEvent event) {
+						short index = (Short) ((StructuredSelection) _indexCombo
+								.getSelection()).getFirstElement();
+						getNode().moveSortIndex(index);
+						if (getNode().getParent() != null) {
+							getProfiBusTreeView()
+									.refresh(getNode().getParent());
+						} else {
+							getProfiBusTreeView().refresh();
+						}
+					}
+				});
+
+		// setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _slave,
+		// getMLSB(),
+		// "Station Adress:",getProfiBusTreeView()));
+		// _defaultBackgroundColor = getIndexSpinner().getBackground();
 	}
 
 	/**
@@ -627,7 +623,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * @param head
 	 *            the tabItemName
 	 */
-	private void settings(@Nonnull final String head) {
+	private void makeSettings(@Nonnull final String head) {
 		Composite comp = getNewTabItem(head, 2);
 		comp.setLayout(new GridLayout(3, false));
 		// Operation Mode
@@ -642,6 +638,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_minStationDelayText = ProfibusHelper.getTextField(operationModeGroup,
 				true, _slave.getMinTsdr() + "", Ranges.WATCHDOG,
 				ProfibusHelper.VL_TYP_U16);
+		_minStationDelayText.addModifyListener(getMLSB());
+		
 		Label bitLabel = new Label(operationModeGroup, SWT.NONE);
 		bitLabel.setText("Bit");
 
@@ -683,24 +681,28 @@ public class SlaveEditor extends AbstractNodeEditor {
 			}
 		});
 		setFailButton(new Button(operationModeGroup, SWT.CHECK));
-		getFailButton().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-		getFailButton().addTraverseListener(ProfibusHelper.getNETL());
-		getFailButton().setText("Fail Save");
-		getFailButton().setEnabled(false);
-		getFailButton().setData(false);
-		getFailButton().addSelectionListener(new SelectionListener() {
+		final Button failButton = getFailButton();
+		if (failButton != null) {
+			failButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
+					false, 3, 1));
+			failButton.addTraverseListener(ProfibusHelper.getNETL());
+			failButton.setText("Fail Save");
+			failButton.setEnabled(false);
+			failButton.setData(false);
+			failButton.addSelectionListener(new SelectionListener() {
 
-			@Override
-			public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-				change(getFailButton());
-			}
+				@Override
+				public void widgetDefaultSelected(
+						@Nonnull final SelectionEvent e) {
+					change(failButton);
+				}
 
-			@Override
-			public void widgetSelected(@Nonnull final SelectionEvent e) {
-				change(getFailButton());
-			}
-		});
+				@Override
+				public void widgetSelected(@Nonnull final SelectionEvent e) {
+					change(failButton);
+				}
+			});
+		}
 		_watchDogButton = new Button(operationModeGroup, SWT.CHECK);
 		_watchDogButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
 				false, 1, 1));
@@ -876,6 +878,11 @@ public class SlaveEditor extends AbstractNodeEditor {
 	@Override
 	public final GSDFileDBO getGsdFile() {
 		return _slave.getGSDFile();
+	}
+
+	@Override
+	public final void setGsdFile(GSDFileDBO gsdFile) {
+		_slave.setGSDFile(gsdFile);
 	}
 
 	/**
@@ -1067,13 +1074,17 @@ public class SlaveEditor extends AbstractNodeEditor {
 	@Override
 	public void cancel() {
 		super.cancel();
+//		Text nameWidget = getNameWidget();
+//		if(nameWidget!=null) {
+//        	nameWidget.setText((String) nameWidget.getData());
+//        }
 		// getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
 		if (_indexCombo != null) {
 			_indexCombo.getCombo().select(
 					(Integer) _indexCombo.getCombo().getData());
 			getNameWidget().setText((String) getNameWidget().getData());
-			_stationAddressActiveCButton
-					.setSelection((Boolean) _stationAddressActiveCButton
+			getStationAddressActiveCButton()
+					.setSelection((Boolean) getStationAddressActiveCButton()
 							.getData());
 			_minStationDelayText.setText((String) _minStationDelayText
 					.getData());
@@ -1097,7 +1108,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 				} else {
 					getHeaderField(HeaderFields.VERSION).setText("");
 					_vendorText.setText("");
-					getNameWidget().setText("");
+//					getNameWidget().setText("");
 					_revisionsText.setText("");
 				}
 			} else {
@@ -1379,5 +1390,16 @@ public class SlaveEditor extends AbstractNodeEditor {
 	@CheckForNull
 	Button getFailButton() {
 		return _failButton;
+	}
+
+	protected void setStationAddressActiveCButton(
+			@Nonnull Button stationAddressActiveCButton) {
+		_stationAddressActiveCButton = stationAddressActiveCButton;
+	}
+
+	@Nonnull
+	protected Button getStationAddressActiveCButton() {
+		assert _stationAddressActiveCButton !=null : "Access to early. Button is null.";
+		return _stationAddressActiveCButton;
 	}
 }

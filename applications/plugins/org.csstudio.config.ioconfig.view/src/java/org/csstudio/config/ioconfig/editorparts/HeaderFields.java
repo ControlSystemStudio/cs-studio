@@ -46,5 +46,6 @@ public enum HeaderFields {
 
     VERSION,
     MODIFIED_ON,
-    MODIFIED_BY;
+    MODIFIED_BY,
+    DB_ID;
 }
