@@ -515,7 +515,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
      */
-    private void makeCurrentUserParamData(@Nullable final Group topGroup) {
+    private void makeCurrentUserParamData(@Nonnull final Group topGroup) {
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }

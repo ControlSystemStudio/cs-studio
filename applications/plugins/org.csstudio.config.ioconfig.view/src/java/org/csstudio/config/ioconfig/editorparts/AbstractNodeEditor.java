@@ -462,6 +462,13 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		return newText;
 	}
 
+	protected static void resetString(Text textField) {
+		String text = (String) textField.getData();
+		if(text!=null) {
+			textField.setText(text);
+		}
+	}
+
 	/**
 	 * A ModifyListener that set the save button enable to store the changes. Works with
 	 * {@link Text}, {@link Combo} and {@link Spinner}.
@@ -887,8 +894,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 	/**
 	 * @return the tabFolder
 	 */
-	@CheckForNull
+	@Nonnull
 	protected final TabFolder getTabFolder() {
+		assert _tabFolder!=null : "Tab folder not avaible!";
 		return _tabFolder;
 	}
 
@@ -1277,6 +1285,7 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		} else {
 			getSaveButton().setText("&Save");
 		}
+		setSavebuttonEnabled(null, _new);
 		getSaveButton().setLayoutData(labelGridData.create());
 		setSaveButtonSelectionListener(new SaveSelectionListener());
 		new Label(getParent(), SWT.NONE);
@@ -1315,8 +1324,9 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 		comboField.addModifyListener(getMLSB());
 	}
 
-	public void setDesc(@Nonnull final String desc) {
-		getDescText().setText(desc);
+	public void setDesc(@CheckForNull final String desc) {
+		String temp = desc!=null ? desc : "";
+		getDescText().setText(temp);
 	}
 
 	protected void setDescText(@Nullable final Text descText) {
@@ -1486,6 +1496,14 @@ public abstract class AbstractNodeEditor extends EditorPart implements INodeConf
 	@CheckForNull
 	protected GSDFileDBO getGsdFile() {
 		return _gsdFile;
+	}
+
+	protected static void resetSelection(Combo combo) {
+		Integer index = (Integer) combo.getData();
+		if(index!=null) {
+			combo.select(index);
+		}
+		
 	}
 
 }

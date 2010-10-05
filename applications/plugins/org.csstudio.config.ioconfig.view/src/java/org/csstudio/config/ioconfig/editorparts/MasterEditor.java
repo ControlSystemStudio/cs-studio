@@ -43,6 +43,7 @@ import java.util.TreeMap;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
+import org.apache.log4j.Logger;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
@@ -73,6 +74,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.Text;
 
 /**
@@ -85,6 +87,9 @@ import org.eclipse.swt.widgets.Text;
  */
 public class MasterEditor extends AbstractNodeEditor {
 
+	private static final Logger LOG = CentralLogger.getInstance().getLogger(
+			MasterEditor.class);
+	
     public static final String ID = "org.csstudio.config.ioconfig.view.editor.master";
 
     /*
@@ -166,28 +171,34 @@ public class MasterEditor extends AbstractNodeEditor {
     public void createPartControl(@Nonnull final Composite parent) {
         _master = (MasterDBO) getNode();
         super.createPartControl(parent);
-        if (_master == null) {
-            newNode();
-            _master.setMinSlaveInt(6);
-            _master.setPollTime(1000);
-            _master.setDataControlTime(100);
-        } else {
+//        if (_master == null) {
+//            newNode();
+//            _master.setMinSlaveInt(6);
+//            _master.setPollTime(1000);
+//            _master.setDataControlTime(100);
+//        } else {
             _gsdFile = _master.getGSDFile();
-        }
-        setSavebuttonEnabled(null, getNode().isPersistent());
-        String[] heads = { "Master", "GSD File List" };
+//        }
+//        setSavebuttonEnabled(null, getNode().isPersistent());
+//        setSavebuttonEnabled(null, getNode().isPersistent());
+        String[] heads = {"Master", "GSD File List" };
         master(heads[0]);
         if (_gsdFile != null) {
             fill(_gsdFile);
         }
-        getTabFolder().setSelection(0);
+        TabFolder tabFolder = getTabFolder();
+        if(tabFolder!=null) {
+        	tabFolder.setSelection(0);
+        }
     }
 
-    private void makeFmbSetGroup(@Nonnull final Composite parent) {
+    @SuppressWarnings("unused")
+	private void makeFmbSetGroup(@Nonnull final Composite parent) {
         final int limit = 13000;
         ModifyListener listener = new ModifyListener() {
 
-            public void modifyText(@Nonnull final ModifyEvent e) {
+            @Override
+			public void modifyText(@Nonnull final ModifyEvent e) {
                 int value = (Integer.parseInt(_maxSlaveInputLenText.getText()) + Integer
                         .parseInt(_maxSlaveOutputLenText.getText()))
                         * Integer.parseInt(_maxNrSlaveText.getText());
@@ -402,19 +413,22 @@ public class MasterEditor extends AbstractNodeEditor {
         _minSlaveIntervalText = ProfibusHelper.getTextField(gParameters, true, Integer
                 .toString(_master.getMinSlaveInt()), Ranges.getRangeValue(0, 10000, 6),
                 ProfibusHelper.VL_TYP_U16);
+        _minSlaveIntervalText.addModifyListener(getMLSB());
 
         // Poll Timeout
         new Label(gParameters, SWT.NONE).setText("[tBit]");
         new Label(gParameters, SWT.NONE).setText("Poll Timeout: ");
         _pollTimeOutText = ProfibusHelper.getTextField(gParameters, true, Integer.toString(_master
                 .getPollTime()), Ranges.getRangeValue(0, 100000, 1000), ProfibusHelper.VL_TYP_U16);
-
+        _pollTimeOutText.addModifyListener(getMLSB());
+        
         // Data Control Time
         new Label(gParameters, SWT.NONE).setText("[tBit]");
         new Label(gParameters, SWT.NONE).setText("Data Control Time: ");
         _dataControlTimeText = ProfibusHelper.getTextField(gParameters, true, Integer
                 .toString(_master.getDataControlTime()), Ranges.getRangeValue(0, 10000, 100),
                 ProfibusHelper.VL_TYP_U16);
+        _dataControlTimeText.addModifyListener(getMLSB());
 
         // Autoclear
         new Label(gParameters, SWT.NONE).setText("[tBit]");
@@ -639,7 +653,7 @@ public class MasterEditor extends AbstractNodeEditor {
     @Override
     public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
         if (gsdFile == null) {
-            CentralLogger.getInstance().error(this, "GSD File not available!");
+            LOG.error("GSD File not available!");
             return false;
         }
         GsdMasterModel masterModel = GsdFactory.makeGsdMaster(gsdFile.getGSDFile());
@@ -667,6 +681,11 @@ public class MasterEditor extends AbstractNodeEditor {
         return _master.getGSDFile();
     }
 
+    @Override
+    public final void setGsdFile(GSDFileDBO gsdFile) {
+        _master.setGSDFile(gsdFile);
+    }
+    
     /**
      *
      * {@inheritDoc}
