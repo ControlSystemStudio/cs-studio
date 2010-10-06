@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgets.actions;
 
+import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.commands.SetBoundsCommand;
