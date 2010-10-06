@@ -1,5 +1,5 @@
 instructions.configure=\
-  addRepository(type:0,name:Development CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
-  addRepository(type:1,name:Development CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
-  addRepository(type:0,name:CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
-  addRepository(type:1,name:CSS-NSLSII update-site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);
+  addRepository(type:0,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
+  addRepository(type:1,name:NSLS-II CSS dev update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/dev-updates,enabled:false);\
+  addRepository(type:0,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);\
+  addRepository(type:1,name:NSLS-II CSS update site,location:http${#58}//cs-studio.sourceforge.net/nsls2/updates,enabled:true);
