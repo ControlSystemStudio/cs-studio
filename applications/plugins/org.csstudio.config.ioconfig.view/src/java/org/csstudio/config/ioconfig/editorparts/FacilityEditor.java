@@ -133,7 +133,7 @@ public class FacilityEditor extends AbstractNodeEditor{
     private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
-        getProfiBusTreeView().refresh(getNode());
+        getProfiBusTreeView().refresh(getNode()); // TODO: denke dieser refresh ist Überflüssig
         // _tabFolder.pack();
     }
 

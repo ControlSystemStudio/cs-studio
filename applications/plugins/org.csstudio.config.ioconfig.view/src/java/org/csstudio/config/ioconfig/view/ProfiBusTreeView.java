@@ -806,9 +806,9 @@ public class ProfiBusTreeView extends Composite {
                         getTreeViewer().setSelection(getSelectedNode(), true);
                     } else {
                         if (dbClass == null) {
-                            getViewer().refresh();
+                        	refresh();
                         } else {
-                            getViewer().refresh(dbClass);
+                        	refresh(dbClass);
                         }
                     }
                     _editNodeAction.run();
@@ -1145,7 +1145,7 @@ public class ProfiBusTreeView extends Composite {
      * @param element
      *            Down at this element the tree are refreshed.
      */
-    public final void refresh(final Object element) {
+    public final void refresh(@Nullable final Object element) {
         getViewer().refresh(element, true);
     }
 
