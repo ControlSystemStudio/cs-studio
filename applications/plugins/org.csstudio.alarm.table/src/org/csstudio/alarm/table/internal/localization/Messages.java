@@ -87,6 +87,7 @@ public class Messages extends NLS {
     
     public static String AlarmViewerPreferencePage_column;
     
+    public static String AlarmViewerPreferencePage_columnsHint;
     public static String AlarmViewerPreferencePage_columnNamesMessageKeys;
     
     public static String AlarmViewerPreferencePage_enterColumnName;
@@ -95,6 +96,9 @@ public class Messages extends NLS {
     
     public static String column;
     
+    public static String fontHint;
+    
+    public static String columnsHint;
     public static String columnNamesMessageKeys;
     
     public static String ExpertSearchDialog_expertButton;
@@ -121,6 +125,7 @@ public class Messages extends NLS {
     
     public static String LogArchiveViewerPreferencePage_column;
     
+    public static String LogArchiveViewerPreferencePage_columnsHint;
     public static String LogArchiveViewerPreferencePage_columnNamesMessageKeys;
     
     public static String LogArchiveViewerPreferencePage_dateFormat;

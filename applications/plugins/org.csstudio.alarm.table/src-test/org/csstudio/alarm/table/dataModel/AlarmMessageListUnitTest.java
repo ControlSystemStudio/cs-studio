@@ -14,6 +14,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
+import org.csstudio.platform.AbstractPreference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,7 +33,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Override
     protected AlarmMessageList createMessageListForTest() {
-        return new AlarmMessageList();
+        return new AlarmMessageList(true);
     }
     
     @Override
@@ -98,7 +99,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     // -> only one message is removed.
     @Test
     public void testRemoveMessages() {
-        final AlarmMessageList messageList = new AlarmMessageList();
+        final AlarmMessageList messageList = createMessageListForTest();
         final String eventtimeMajor = createAndIncrementDate();
         final String eventtimeMinor = createAndIncrementDate();
         
@@ -150,7 +151,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Test
     public void testAddStatusDisconnected() {
-        final AlarmMessageList messageList = new AlarmMessageList();
+        final AlarmMessageList messageList = createMessageListForTest();
         messageList.addMessage(createJMSMessage("NAME",
                                                 "MAJOR",
                                                 "event",
@@ -231,7 +232,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Test
     public void testSimpleMessageSequence() {
-        final AlarmMessageList messageList = new AlarmMessageList();
+        final AlarmMessageList messageList = createMessageListForTest();
         
         // adding two equal messages gives only one entry
         messageList.addMessage(createJMSMessage("NAME", "MINOR", "event", false, null));
@@ -263,7 +264,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     public void testInvalidMapMessages() {
         // This test ensures that only useful messages are added to the table.
         
-        final AlarmMessageList messageList = new AlarmMessageList();
+        final AlarmMessageList messageList = createMessageListForTest();
         
         // add empty message
         messageList.addMessage(new BasicMessage());
@@ -284,7 +285,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Test
     public void testOutdatedMessageSequence() {
-        final AlarmMessageList messageList = new AlarmMessageList();
+        final AlarmMessageList messageList = createMessageListForTest();
         final String eventtime = createAndIncrementDate();
         
         // add a message

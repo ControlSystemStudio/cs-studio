@@ -31,11 +31,10 @@ import org.csstudio.alarm.table.dataModel.SeverityRegistry;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.ColumnDescription;
-import org.csstudio.alarm.table.preferences.ISeverityMapping;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.service.AlarmSoundService;
@@ -128,8 +127,8 @@ public class JmsLogsPlugin extends AbstractCssUiPlugin {
 				LogViewPreferenceConstants.P_STRING,
 				getColumnDescriptionsForLogViews());
 		_topicSetColumnServiceForAlarmViews = new TopicSetColumnService(
-				AlarmViewPreferenceConstants.TOPIC_SET,
-				AlarmViewPreferenceConstants.P_STRING_ALARM,
+				AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString(),
+				AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
 				getColumnDescriptionsForAlarmViews());
 		_topicSetColumnServiceForVerifyViews = new TopicSetColumnService(
 				AmsVerifyViewPreferenceConstants.TOPIC_SET,

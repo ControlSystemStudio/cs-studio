@@ -52,7 +52,6 @@ public class ArchiveViewPreferencePage extends FieldEditorPreferencePage
 	public ArchiveViewPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.LogArchiveViewerPreferencePage_columnNamesMessageKeys);
 	}
 
 	/**
@@ -63,7 +62,7 @@ public class ArchiveViewPreferencePage extends FieldEditorPreferencePage
 	public void createFieldEditors() {
 		PreferenceColumnTableEditor preferenceColumnTableEditor = new PreferenceColumnTableEditor();
         preferenceColumnTableEditor.init(ArchiveViewPreferenceConstants.P_STRINGArch,
-                                         "Column Settings",
+                                         "Column Settings - " + Messages.LogArchiveViewerPreferencePage_columnNamesMessageKeys,
                                          getFieldEditorParent());
 		// preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);

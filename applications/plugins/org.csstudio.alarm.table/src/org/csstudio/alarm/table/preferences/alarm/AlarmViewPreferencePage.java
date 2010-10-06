@@ -50,24 +50,26 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 
 	public AlarmViewPreferencePage() {
 		super(GRID);
+        // TODO (jpenning) ML old school pref store used here.
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys);
+		setDescription(Messages.AlarmViewerPreferencePage_columnsHint + "\n" + Messages.fontHint);
 	}
 
 	@Override
 	public void createFieldEditors() {
 		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(getColumnDescriptions());
-		preferenceTopicTableEditor.init(AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ", getFieldEditorParent());
+		preferenceTopicTableEditor.init(AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString(), "&Topic Sets: ", getFieldEditorParent());
 		addField(preferenceTopicTableEditor);
 		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
-        preferenceColumnTableEditor.init(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                         "Column Settings",
+        preferenceColumnTableEditor.init(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                         "Column Settings - " + Messages.AlarmViewerPreferencePage_columnNamesMessageKeys,
                                          getFieldEditorParent());
 		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);
 	}
 
-	public void init(@Nonnull final IWorkbench workbench) {
+	@Override
+    public void init(@Nonnull final IWorkbench workbench) {
         // Nothing to do
     }
 

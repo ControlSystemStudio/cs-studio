@@ -4,31 +4,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
-import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.AbstractMessageList;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
 import org.csstudio.platform.security.SecurityFacade;
-import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.FontData;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
-import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Difference to {@link MessageTable} for log messages is the listener for acknowledges by the user
@@ -51,22 +42,6 @@ public class AlarmMessageTable extends MessageTable {
         _tableViewer.setLabelProvider(new AlarmMessageTableLabelProvider(pureColumnNames));
 
         _tableViewer.setComparator(new AlarmMessageTableMessageSorter(_tableViewer));
-
-        final ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(),
-                JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
-        prefStore.addPropertyChangeListener(new IPropertyChangeListener() {
-
-            @Override
-            public void propertyChange(final PropertyChangeEvent event) {
-                if (event.getProperty().equals(AlarmViewPreferenceConstants.LOG_ALARM_FONT)) {
-                    final Font font = CustomMediaFactory.getInstance().getFont(
-                            new FontData(event.getNewValue().toString()));
-                    _tableViewer.getTable().setFont(font);
-                    _tableViewer.getTable().layout(true);
-                }
-
-            }
-        });
 
         final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
 

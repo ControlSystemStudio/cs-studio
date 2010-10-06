@@ -38,6 +38,8 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
+import org.csstudio.platform.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -49,16 +51,20 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class AlarmMessageList extends AbstractMessageList {
 
-	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			AlarmMessageList.class);
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmMessageList.class);
 
 	private final Vector<AlarmMessage> _messages = new Vector<AlarmMessage>();
 
 	/** number of alarm status changes in the message with the same pv name. */
 	private int alarmStatusChanges = 0;
 
-	private final Vector<AlarmMessage> _messagesToRemove = new Vector<AlarmMessage>();
+    private boolean _showOutdatedMessages;
 
+	public AlarmMessageList(final boolean showOutdatedMessages) {
+        _showOutdatedMessages = showOutdatedMessages;
+    }
+	
+	
 	/**
 	 * Add a new Message to the collection of Messages.
 	 * 
@@ -213,12 +219,14 @@ public class AlarmMessageList extends AbstractMessageList {
 		return true;
 	}
 
-	/**
+
+    /**
 	 * 
 	 * @param newMessage
 	 */
 	@CheckForNull
 	protected AlarmMessage setAcknowledge(@Nonnull final AlarmMessage newMessage) {
+	    Vector<AlarmMessage> messagesToRemove = new Vector<AlarmMessage>();
 
 		final String newNameProp = newMessage.getProperty(NAME
 				.getDefiningName());
@@ -243,9 +251,9 @@ public class AlarmMessageList extends AbstractMessageList {
 												.name()) || sevKeyProp
 								.equalsIgnoreCase(Severity.INVALID.name()))) {
 
-					_messagesToRemove.add(message);
+					messagesToRemove.add(message);
 					LOG.debug("add message, removelist size: "
-							+ _messagesToRemove.size());
+							+ messagesToRemove.size());
 				} else {
 					message.getHashMap().put("ACK_HIDDEN",
 							Boolean.TRUE.toString());
@@ -257,10 +265,10 @@ public class AlarmMessageList extends AbstractMessageList {
 				break;
 			}
 		}
-		for (final BasicMessage message : _messagesToRemove) {
+		for (final BasicMessage message : messagesToRemove) {
 			removeMessage(message);
 		}
-		_messagesToRemove.clear();
+		messagesToRemove.clear();
 		return null;
 	}
 
@@ -332,8 +340,12 @@ public class AlarmMessageList extends AbstractMessageList {
 					messagesToRemove.add(message);
 
                     if (isMessageOutdated(message, newSeverity, severityFromList)) {
+                        
+                        // TODO (jpenning) ML AAAAAAAAAAAAAAAAAAAAAA go on here
+                        if (_showOutdatedMessages) {
                         message.setOutdated(true);
                         messagesToAdd.add(message);
+                        }
                     }
 				}
 			}

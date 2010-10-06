@@ -35,6 +35,7 @@ import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.TopicSet;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.service.ITopicsetService;
 import org.csstudio.alarm.table.ui.InitialStateRetriever;
@@ -118,7 +119,7 @@ public class MessageListAutoStart implements IStartupServiceListener {
             if (topicSet.isStartUp()) {
                 try {
                     LOG.error("Start alarm list for topic set " + topicSet.getName());
-                    AlarmMessageList messageList = new AlarmMessageList();
+                    AlarmMessageList messageList = new AlarmMessageList(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
                     _topicsetForAlarmService.createAndConnectForTopicSet(topicSet,
                                                                          messageList,
                                                                          new AlarmListener());

@@ -27,13 +27,13 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
-import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
@@ -161,8 +161,8 @@ public class AlarmView extends LogView {
     protected void initializeMessageTable() {
         // Initialize JMS message list
         if (_columnMapping != null) {
-            _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                      AlarmViewPreferenceConstants.TOPIC_SET);
+            _columnMapping.saveColumn(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                      AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
             _columnMapping = null;
         }
         // is there already a MessageTable delete it and the message list.
@@ -209,8 +209,8 @@ public class AlarmView extends LogView {
 
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
                                                                            getCurrentTopicSetName());
-        addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                    AlarmViewPreferenceConstants.TOPIC_SET);
+        addControlListenerToColumns(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                    AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
         getSite().setSelectionProvider(_tableViewer);
         makeActions();
 
@@ -236,7 +236,7 @@ public class AlarmView extends LogView {
     protected final AbstractMessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
-        return new AlarmMessageList();
+        return new AlarmMessageList(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
     }
 
     // CHECKSTYLE:OFF
