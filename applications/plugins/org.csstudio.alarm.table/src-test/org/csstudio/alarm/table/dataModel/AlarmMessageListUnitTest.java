@@ -33,7 +33,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     
     @Override
     protected AlarmMessageList createMessageListForTest() {
-        return new AlarmMessageList(true);
+        return new AlarmMessageList();
     }
     
     @Override

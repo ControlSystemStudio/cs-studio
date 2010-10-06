@@ -96,6 +96,8 @@ public class Messages extends NLS {
     
     public static String column;
     
+    public static String showOutdatedMessages;
+
     public static String fontHint;
     
     public static String columnsHint;

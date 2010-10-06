@@ -121,5 +121,25 @@ public abstract class AbstractMessageList {
 	public int getMessageListSize() {
 		return getMessageList().size();
 	}
+	
+	
+	/**
+	 * Gives a hint if outdated messages are implemented in the message list
+	 * 
+	 * @return true, if outdated messages are handled by the message list
+	 */
+	public boolean canHandleOutdatedMessaged() {
+	    return false;
+	}
+	
+	/**
+	 * Message lists may keep outdated messages and display them. Here you can tell the list if this is wanted.
+	 * Default is to ignore this.
+	 * 
+	 * @param show
+	 */
+	public void showOutdatedMessages(final boolean show) {
+	    // ignore
+	}
 
 }

@@ -236,7 +236,7 @@ public class AlarmView extends LogView {
     protected final AbstractMessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
-        return new AlarmMessageList(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
+        return new AlarmMessageList();
     }
 
     // CHECKSTYLE:OFF

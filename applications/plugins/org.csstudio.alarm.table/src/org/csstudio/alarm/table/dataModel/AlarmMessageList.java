@@ -29,7 +29,6 @@ import static org.csstudio.alarm.service.declaration.AlarmMessageKey.STATUS;
 import static org.csstudio.alarm.service.declaration.AlarmMessageKey.TYPE;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
@@ -38,8 +37,6 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.Severity;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
-import org.csstudio.platform.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -60,8 +57,8 @@ public class AlarmMessageList extends AbstractMessageList {
 
     private boolean _showOutdatedMessages;
 
-	public AlarmMessageList(final boolean showOutdatedMessages) {
-        _showOutdatedMessages = showOutdatedMessages;
+	public AlarmMessageList() {
+	    // nothing to do
     }
 	
 	
@@ -194,6 +191,16 @@ public class AlarmMessageList extends AbstractMessageList {
 		return _messages;
 	}
 
+	@Override
+	public boolean canHandleOutdatedMessaged() {
+	    return true;
+	}
+	
+	@Override
+	public void showOutdatedMessages(boolean show) {
+        _showOutdatedMessages = show;
+	}
+	
 	/**
 	 * Check if the new message is valid alarm message NAME and SEVERITY have to
 	 * exist TYPE may be omitted if there is prop ACK==TRUE (TODO (bknerr) :
@@ -341,10 +348,9 @@ public class AlarmMessageList extends AbstractMessageList {
 
                     if (isMessageOutdated(message, newSeverity, severityFromList)) {
                         
-                        // TODO (jpenning) ML AAAAAAAAAAAAAAAAAAAAAA go on here
-                        if (_showOutdatedMessages) {
                         message.setOutdated(true);
-                        messagesToAdd.add(message);
+                        if (_showOutdatedMessages) {
+                            messagesToAdd.add(message);
                         }
                     }
 				}
