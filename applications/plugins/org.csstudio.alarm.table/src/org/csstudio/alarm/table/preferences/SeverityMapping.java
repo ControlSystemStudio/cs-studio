@@ -19,40 +19,43 @@ package org.csstudio.alarm.table.preferences;
 
 import java.util.HashMap;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.eclipse.jface.preference.IPreferenceStore;
 
+/**
+ * SeverityMapping defines two mappings: From key to value for the severity and from key to severity number. 
+ * 
+ * @author jpenning
+ * @author $Author: jpenning $
+ * @since 05.10.2010
+ */
 public class SeverityMapping implements ISeverityMapping {
 
 	private final HashMap<String, String> _severityKeyValueMapping = new HashMap<String, String>();
-
 	private final HashMap<String, Integer> _severityKeyNumberMapping = new HashMap<String, Integer>();
 
 	public SeverityMapping() {
 		IPreferenceStore preferenceStore = JmsLogsPlugin.getDefault()
 				.getPreferenceStore();
-
-		_severityKeyValueMapping.put(preferenceStore.getString("key 0"), preferenceStore.getString("value 0"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 1"), preferenceStore.getString("value 1"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 2"), preferenceStore.getString("value 2"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 3"), preferenceStore.getString("value 3"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 4"), preferenceStore.getString("value 4"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 5"), preferenceStore.getString("value 5"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 6"), preferenceStore.getString("value 6"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 7"), preferenceStore.getString("value 7"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 8"), preferenceStore.getString("value 8"));
-		_severityKeyValueMapping.put(preferenceStore.getString("key 9"), preferenceStore.getString("value 9"));
-
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 0"), 0);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 1"), 1);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 2"), 2);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 3"), 3);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 4"), 4);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 5"), 5);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 6"), 6);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 7"), 7);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 8"), 8);
-		_severityKeyNumberMapping.put(preferenceStore.getString("key 9"), 9);
+		enterValueAndNumberForKey(preferenceStore, "key 0", "value 0", 0);
+		enterValueAndNumberForKey(preferenceStore, "key 1", "value 1", 1);
+		enterValueAndNumberForKey(preferenceStore, "key 2", "value 2", 2);
+		enterValueAndNumberForKey(preferenceStore, "key 3", "value 3", 3);
+		enterValueAndNumberForKey(preferenceStore, "key 4", "value 4", 4);
+		enterValueAndNumberForKey(preferenceStore, "key 5", "value 5", 5);
+		enterValueAndNumberForKey(preferenceStore, "key 6", "value 6", 6);
+		enterValueAndNumberForKey(preferenceStore, "key 7", "value 7", 7);
+		enterValueAndNumberForKey(preferenceStore, "key 8", "value 8", 8);
+		enterValueAndNumberForKey(preferenceStore, "key 9", "value 9", 9);
+	}
+	
+	private void enterValueAndNumberForKey(
+			@Nonnull IPreferenceStore preferenceStore, @Nonnull String key,
+			@Nonnull String value, int number) {
+		_severityKeyValueMapping.put(preferenceStore.getString(key), preferenceStore.getString(value));
+		_severityKeyNumberMapping.put(preferenceStore.getString(key), number);
 	}
 
 
@@ -61,7 +64,9 @@ public class SeverityMapping implements ISeverityMapping {
      *
      * @return
      */
-    public String findSeverityValue(final String severityKey) {
+	@Nonnull
+	@Override
+    public String findSeverityValue(@Nonnull final String severityKey) {
     	String severityValue = _severityKeyValueMapping.get(severityKey);
         if (severityValue == null) {
             return "invalid severity";
@@ -76,7 +81,8 @@ public class SeverityMapping implements ISeverityMapping {
      *
      * @return
      */
-    public int getSeverityNumber(final String severityKey) {
+	@Override
+    public int getSeverityNumber(@Nonnull final String severityKey) {
     	Integer severityNumber = _severityKeyNumberMapping.get(severityKey);
     	//if there is no mapping return 10, that means the lowest severity
     	if (severityNumber == null) {

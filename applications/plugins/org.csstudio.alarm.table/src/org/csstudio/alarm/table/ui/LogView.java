@@ -27,7 +27,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.LogMessageList;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
@@ -217,7 +217,7 @@ public class LogView extends ViewPart {
         final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        final MessageList messageList = getOrCreateCurrentMessageList();
+        final AbstractMessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new MessageTable(_tableViewer, _topicSetColumnService
                 .getColumnSet(_currentTopicSetName), messageList);
         _messageTable.makeContextMenu(getSite());
@@ -285,7 +285,7 @@ public class LogView extends ViewPart {
      * @return the newly created message list
      */
     @Nonnull
-    protected MessageList createMessageList() {
+    protected AbstractMessageList createMessageList() {
         return new LogMessageList(getMaximumNumberOfMessages());
     }
 
@@ -311,12 +311,12 @@ public class LogView extends ViewPart {
      * @return the message list
      */
     @Nonnull
-    protected final MessageList getOrCreateCurrentMessageList() {
+    protected final AbstractMessageList getOrCreateCurrentMessageList() {
         final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
         if (!_topicsetService.hasTopicSet(topicSet)) {
             final IAlarmTableListener alarmTableListener = new AlarmListener();
             try {
-                final MessageList messageList = createMessageList();
+                final AbstractMessageList messageList = createMessageList();
                 _topicsetService.createAndConnectForTopicSet(topicSet,
                                                              messageList,
                                                              alarmTableListener);
@@ -348,7 +348,7 @@ public class LogView extends ViewPart {
      *
      * @param messageList
      */
-    protected void retrieveInitialState(@Nonnull final MessageList messageList) {
+    protected void retrieveInitialState(@Nonnull final AbstractMessageList messageList) {
         // LogView does no initialization
     }
 

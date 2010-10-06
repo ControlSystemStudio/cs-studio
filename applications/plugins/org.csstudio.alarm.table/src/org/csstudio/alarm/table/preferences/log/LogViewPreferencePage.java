@@ -49,7 +49,7 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 	public LogViewPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.columnNamesMessageKeys);
+	    setDescription(Messages.columnsHint + "\n" + Messages.fontHint);
 	}
 
 	@Override
@@ -61,7 +61,7 @@ public class LogViewPreferencePage extends FieldEditorPreferencePage
 		addField(preferenceTopicTableEditor);
 		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
         preferenceColumnTableEditor.init(LogViewPreferenceConstants.P_STRING,
-                                         "Column Settings",
+                                         "Column Settings - " + Messages.columnNamesMessageKeys,
                                          getFieldEditorParent());
 		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);

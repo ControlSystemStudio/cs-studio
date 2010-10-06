@@ -65,6 +65,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public String getDefaultTopicSet() {
         List<TopicSet> topicSets = readTopicSet();
@@ -83,6 +84,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public Font getFont(@Nonnull final String topicSetName) {
         int i = getTopicSetIndex(topicSetName);
@@ -93,6 +95,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public String[] getColumnSet(@Nonnull final String topicSet) {
         List<String[]> columnSets = readColumnSets();
@@ -110,6 +113,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public List<TopicSet> getTopicSets() {
         return readTopicSet();
@@ -118,6 +122,7 @@ public class TopicSetColumnService implements ITopicSetColumnService {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public TopicSet getJMSTopics(@Nonnull final String currentTopicSet) {
         List<TopicSet> topicSets = readTopicSet();
@@ -177,17 +182,22 @@ public class TopicSetColumnService implements ITopicSetColumnService {
         List<TopicSet> result = new ArrayList<TopicSet>();
         String[] topicSetsAsString = topicSetString.split(ITEM_SEPARATOR); //$NON-NLS-1$
         for (String topicSetAsString : topicSetsAsString) {
-            String[] topicSetItems = Arrays.copyOf(topicSetAsString
-                    .split(INNER_ITEM_SEPARATOR_AS_REGEX), ColumnDescription.values().length);
-            // Here the order of the inner items of a preferences string is defined
-            TopicSet topicSet = new TopicSet.Builder().setDefaultTopic(topicSetItems[0])
-                    .setTopics(topicSetItems[1]).setName(topicSetItems[2])
-                    .setPopUp(topicSetItems[3]).setStartUp(topicSetItems[4])
-                    .setFont(topicSetItems[5]).setRetrieveInitialState(topicSetItems[6]).build();
-
+            TopicSet topicSet = createTopicSetFromString(topicSetAsString);
             result.add(topicSet);
         }
         return result;
+    }
+
+    @Nonnull
+    private TopicSet createTopicSetFromString(@Nonnull String topicSetAsString) {
+        String[] topicSetItems = Arrays.copyOf(topicSetAsString
+                .split(INNER_ITEM_SEPARATOR_AS_REGEX), ColumnDescription.values().length);
+        // Here - and hopefully only here - the order of the inner items of a preferences string is defined
+        TopicSet topicSet = new TopicSet.Builder().setDefaultTopic(topicSetItems[0])
+                .setTopics(topicSetItems[1]).setName(topicSetItems[2])
+                .setPopUp(topicSetItems[3]).setStartUp(topicSetItems[4])
+                .setFont(topicSetItems[5]).setRetrieveInitialState(topicSetItems[6]).build();
+        return topicSet;
     }
 
 }

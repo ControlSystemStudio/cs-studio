@@ -17,19 +17,29 @@
 
 package org.csstudio.alarm.table.preferences;
 
-public interface ISeverityMapping {
-    /**
-     * returns the severity value for the severity key of this message.
-     *
-     * @return
-     */
-    public String findSeverityValue(String severityKey);
+import javax.annotation.Nonnull;
 
-    /**
-     * Returns the number of the severity. The number represents the level of
-     * the severity.
-     *
-     * @return
-     */
-    public int getSeverityNumber(String severityKey);
+/**
+ * Defines the access methods for the string-based mapping of the severity
+ * preferences.
+ * 
+ * @author jpenning
+ * @author $Author: bknerr $
+ * @since 04.10.2010
+ */
+public interface ISeverityMapping {
+
+	/**
+	 * @return the severity value for the given severity key
+	 */
+	@Nonnull
+	String findSeverityValue(@Nonnull String severityKey);
+
+	/**
+	 * Returns the number of the severity. The number represents the level of
+	 * the severity.
+	 * 
+	 * @return number of the severity for the given severity key
+	 */
+	int getSeverityNumber(@Nonnull String severityKey);
 }

@@ -30,6 +30,7 @@ import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.preferences.ColumnDescription;
 import org.csstudio.alarm.table.preferences.ExchangeablePreferenceColumnTableEditor;
 import org.csstudio.alarm.table.preferences.PreferenceTopicTableEditor;
+import org.eclipse.jface.preference.BooleanFieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
@@ -50,24 +51,31 @@ public class AlarmViewPreferencePage extends FieldEditorPreferencePage
 
 	public AlarmViewPreferencePage() {
 		super(GRID);
+        // TODO (jpenning) ML old school pref store used here.
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.AlarmViewerPreferencePage_columnNamesMessageKeys);
+		setDescription(Messages.AlarmViewerPreferencePage_columnsHint + "\n" + Messages.fontHint);
 	}
 
 	@Override
 	public void createFieldEditors() {
 		PreferenceTopicTableEditor preferenceTopicTableEditor = new PreferenceTopicTableEditor(getColumnDescriptions());
-		preferenceTopicTableEditor.init(AlarmViewPreferenceConstants.TOPIC_SET, "&Topic Sets: ", getFieldEditorParent());
+		preferenceTopicTableEditor.init(AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString(), "&Topic Sets: ", getFieldEditorParent());
 		addField(preferenceTopicTableEditor);
+		
+		addField(new BooleanFieldEditor(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getKeyAsString(), Messages.showOutdatedMessages,
+		                                getFieldEditorParent())); 
+
+		
 		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
-        preferenceColumnTableEditor.init(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                         "Column Settings",
+        preferenceColumnTableEditor.init(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                         "Column Settings - " + Messages.AlarmViewerPreferencePage_columnNamesMessageKeys,
                                          getFieldEditorParent());
 		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);
 	}
 
-	public void init(@Nonnull final IWorkbench workbench) {
+	@Override
+    public void init(@Nonnull final IWorkbench workbench) {
         // Nothing to do
     }
 

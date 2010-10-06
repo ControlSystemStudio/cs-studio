@@ -45,7 +45,7 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 	public AmsVerifyViewPreferencePage() {
 		super(GRID);
 		setPreferenceStore(JmsLogsPlugin.getDefault().getPreferenceStore());
-		setDescription(Messages.columnNamesMessageKeys);
+	    setDescription(Messages.columnsHint + "\n" + Messages.fontHint);
 	}
 
 	@Override
@@ -59,7 +59,7 @@ public class AmsVerifyViewPreferencePage extends FieldEditorPreferencePage
 
 		final ExchangeablePreferenceColumnTableEditor preferenceColumnTableEditor = new ExchangeablePreferenceColumnTableEditor();
         preferenceColumnTableEditor.init(AmsVerifyViewPreferenceConstants.P_STRING,
-                                         "Column Settings",
+                                         "Column Settings - " + Messages.columnNamesMessageKeys,
                                          getFieldEditorParent());
 		preferenceTopicTableEditor.setColumnTableReference(preferenceColumnTableEditor);
 		addField(preferenceColumnTableEditor);

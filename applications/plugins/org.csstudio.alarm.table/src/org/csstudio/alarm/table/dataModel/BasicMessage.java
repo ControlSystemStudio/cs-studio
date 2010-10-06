@@ -32,7 +32,7 @@ import javax.annotation.CheckReturnValue;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.alarm.table.preferences.ISeverityMapping;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.IProcessVariable;
 import org.eclipse.core.runtime.PlatformObject;
@@ -41,6 +41,8 @@ import org.eclipse.core.runtime.PlatformObject;
  * Message received from the JMS server. The properties of messages are not
  * restricted but the table will only display properties for which a column with
  * the same name is defined.
+ * 
+ * The BasicMessage utilizes an ISeverityMapping, which is retrieved by the SeverityRegistry.
  *
  * @author jhatje
  *
@@ -53,25 +55,24 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
 	private final Map<String, String> _messageProperties = new HashMap<String, String>();
 
 	private static final Logger LOG = CentralLogger.getInstance().getLogger(BasicMessage.class);
-
+	
 	/**
 	 * Default constructor
 	 */
 	public BasicMessage() {
-		super();
+		// Nothing to do
 	}
 
 	/**
 	 * Constructor with initial message properties of the table columns.
 	 */
-	public BasicMessage(final String[] propNames) {
-		this();
+	public BasicMessage(@Nonnull final String[] propNames) {
 		for (final String propName : propNames) {
 			_messageProperties.put(propName.split(",")[0], ""); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
 
-	public BasicMessage(final Map<String, String> messageProperties) {
+	public BasicMessage(@Nonnull final Map<String, String> messageProperties) {
 		_messageProperties.putAll(messageProperties);
 	}
 
@@ -100,13 +101,11 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
 			if (severityProp != null) { //$NON-NLS-1$
 				try {
 					final String severityValue =
-					    JmsLogsPlugin.getDefault().getSeverityMapping().findSeverityValue(severityProp);
+					    getSeverityMapping().findSeverityValue(severityProp);
 					return severityValue;
 				} catch (final Exception e) {
 					LOG.error("JmsLogsPlugin Service not available, " + e.toString());
 				}
-				// return SeverityMapping.findSeverityValue(_messageProperties
-				// .get(SEVERITY.getDefiningName()));
 			}
 		} else if (property.equals("SEVERITY_KEY")) { //$NON-NLS-1$
 		    // to get the severity key (the 'real' severity get from the map
@@ -121,8 +120,13 @@ public class BasicMessage extends PlatformObject implements IProcessVariable {
         return _messageProperties.get(property);
 	}
 
+	@Nonnull
+	private ISeverityMapping getSeverityMapping() {
+		return SeverityRegistry.getSeverityMapping();
+	}
+
 	public int getSeverityNumber() {
-		return JmsLogsPlugin.getDefault().getSeverityMapping()
+		return getSeverityMapping()
 				.getSeverityNumber(_messageProperties.get(SEVERITY.getDefiningName()));
 		// return SeverityMapping.getSeverityNumber(_messageProperties
 		// .get(SEVERITY.getDefiningName()));

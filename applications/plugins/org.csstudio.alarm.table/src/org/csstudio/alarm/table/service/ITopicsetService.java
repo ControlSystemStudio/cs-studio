@@ -22,7 +22,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 
@@ -62,7 +62,7 @@ public interface ITopicsetService {
      * @throws AlarmConnectionException
      */
     void createAndConnectForTopicSet(@Nonnull TopicSet topicSet,
-    		@Nonnull MessageList messageList,
+    		@Nonnull AbstractMessageList messageList,
     		@Nonnull IAlarmTableListener alarmListener) throws AlarmConnectionException;
 
     /**
@@ -72,7 +72,7 @@ public interface ITopicsetService {
      * @return the message list for the given topicSet
      */
     @Nonnull
-    MessageList getMessageListForTopicSet(@Nonnull TopicSet topicSet);
+    AbstractMessageList getMessageListForTopicSet(@Nonnull TopicSet topicSet);
 
     /**
      * Precondition: hasTopicSet(topicSet)
