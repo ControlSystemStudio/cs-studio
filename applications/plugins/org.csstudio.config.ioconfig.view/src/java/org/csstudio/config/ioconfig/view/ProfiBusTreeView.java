@@ -1230,7 +1230,7 @@ public class ProfiBusTreeView extends Composite {
     private void openEditor(@Nonnull final String editorID) {
         IHandlerService handlerService = (IHandlerService) _site
                 .getService(IHandlerService.class);
-        AbstractNodeDBO node = null;
+//        AbstractNodeDBO node = null;
         try {
 //            ParameterizedCommand cp = createParameterizedCommand(node);
 //            handlerService.executeCommand(cp, null);
@@ -1310,13 +1310,13 @@ public class ProfiBusTreeView extends Composite {
         infoDialog.open();
     }
 
-    private void openNewEmptyChildrenNode() {
-        Object node = getSelectedNode().getFirstElement();
+    protected void openNewEmptyChildrenNode() {
+//        Object node = getSelectedNode().getFirstElement();
         openEditor(CallNewChildrenNodeEditor.getEditorID());
     }
 
     private void openNewEmptySiblingNode() {
-        Object node = getSelectedNode().getFirstElement();
+//        Object node = getSelectedNode().getFirstElement();
         openEditor(CallNewSiblingNodeEditor.getEditorID());
     }
 

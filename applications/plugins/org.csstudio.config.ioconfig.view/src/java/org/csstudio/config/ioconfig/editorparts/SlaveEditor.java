@@ -311,19 +311,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 */
 	private void makeSlaveKonfiguration() {
 		boolean nevv = false;
-//		if (_slave == null) {
-//			if (!newNode("TODO")) {
-//				// this.dispose();
-//				setSaveButtonSaved();
-//				getProfiBusTreeView().getTreeViewer().setSelection(
-//						getProfiBusTreeView().getTreeViewer().getSelection());
-//				return;
-//			}
-//			nevv = true;
-//			_slave.setMinTsdr((short) 11);
-//			_slave.setWdFact1((short) 100);
-//		}
-		setSavebuttonEnabled(null, getNode().isPersistent());
 		String[] heads = {"Basics", "Settings", "Overview" };
 		makeOverview(heads[2]);
 		makeSettings(heads[1]);
