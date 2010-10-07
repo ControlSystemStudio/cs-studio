@@ -7,6 +7,11 @@ Bundle-Activator: org.csstudio.utility.pvmanager.Activator
 Bundle-Vendor: Brookhaven National Lab
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
- org.csstudio.libs.pvmanager;bundle-version="0.1.0"
+ org.csstudio.platform.libs.epics;bundle-version="1.1.2";resolution:=optional
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.epics.pvmanager,
+ org.epics.pvmanager.data,
+ org.epics.pvmanager.jca,
+ org.epics.pvmanager.sim,
+ org.epics.pvmanager.types
 Bundle-ActivationPolicy: lazy
