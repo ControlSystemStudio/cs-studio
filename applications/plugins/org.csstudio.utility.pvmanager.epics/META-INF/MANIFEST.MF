@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Epics DataSource
-Bundle-SymbolicName: org.csstudio.utility.pvmanager.epics
+Bundle-SymbolicName: org.csstudio.utility.pvmanager.epics;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.epics.Activator
 Bundle-Vendor: Brookhaven National Lab
