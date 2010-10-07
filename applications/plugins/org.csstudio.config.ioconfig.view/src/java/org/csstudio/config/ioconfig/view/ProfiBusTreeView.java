@@ -341,16 +341,21 @@ public class ProfiBusTreeView extends Composite {
 
         getViewer().addSelectionChangedListener(new ISelectionChangedListener() {
             @Override
-			public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
-                if (event.getSelection() instanceof StructuredSelection) {
-                    setSelectedNode((StructuredSelection) event.getSelection());
-                    if ( (getSelectedNode() != null) && !getSelectedNode().isEmpty()) {
-
-                        _editNodeAction.run();
-                    }
-                }
-            }
-        });
+					public void selectionChanged(
+							@Nonnull final SelectionChangedEvent event) {
+						if (event.getSelection() instanceof StructuredSelection) {
+							StructuredSelection selection = (StructuredSelection) event
+									.getSelection();
+							if (!selection.equals(getSelectedNode())) {
+								setSelectedNode(selection);
+								if ((getSelectedNode() != null)
+										&& !getSelectedNode().isEmpty()) {
+									_editNodeAction.run();
+								}
+							}
+						}
+					}
+				});
 
         this.addDisposeListener(new DisposeListener() {
 
