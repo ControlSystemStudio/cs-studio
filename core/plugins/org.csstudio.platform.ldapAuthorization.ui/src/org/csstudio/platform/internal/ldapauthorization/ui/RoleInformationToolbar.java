@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.platform.internal.ldapauthorization.LdapAuthorizationReader;
+import org.csstudio.platform.internal.ldapauthorization.ui.localization.Messages;
 import org.csstudio.platform.internal.usermanagement.IUserManagementListener;
 import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.security.IRight;
@@ -46,13 +47,18 @@ import org.csstudio.platform.security.RightSet;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
 import org.eclipse.jface.action.IContributionManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
 
 /**
@@ -119,14 +125,33 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
     @Override
     protected Control createControl(final Composite parent) {
         Composite composite = new Composite(parent, SWT.NONE);
-        composite.setLayout(new GridLayout(1, false));
-        User user = SecurityFacade.getInstance().getCurrentUser();
-        if (user != null) {
+        composite.setLayout(new GridLayout(3, false));
+		User user = SecurityFacade.getInstance().getCurrentUser();
+		if (user != null) {
+			List<String> roles = getRoles(user);
+			final StringBuilder sb = new StringBuilder();
+			sb.append(Messages.RoleInformationToolbar_Teaser);
+			for (String users : roles) {
+				sb.append(users);
+				sb.append("\r\n"); //$NON-NLS-1$
+			}
 
-            Combo combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-            combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-            combo.setItems(getRoles(user));
-            combo.select(0);
+			Button button = new Button(composite, SWT.PUSH);
+			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+					false));
+			button.setText(Messages.RoleInformationToolbar_ButtonText);
+			button.setToolTipText(sb.toString());
+			button.addSelectionListener(new SelectionListener() {
+
+				public void widgetSelected(SelectionEvent e) {
+					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
+				}
+
+				public void widgetDefaultSelected(SelectionEvent e) {
+					MessageDialog.openInformation(null, Messages.RoleInformationToolbar_Head, sb.toString());
+				}
+			});
+        	
         }
         createListener();
 
@@ -138,22 +163,21 @@ public class RoleInformationToolbar extends WorkbenchWindowControlContribution {
      *
      * @return the name of the currently logged in user.
      */
-    private String[] getRoles(final User user) {
+    private List<String> getRoles(final User user) {
         LdapAuthorizationReader reader = new LdapAuthorizationReader();
         ArrayList<String> rigthNames = new ArrayList<String>();
-        rigthNames.add("Rollen");
         RightSet rights = reader.getRights(user);
         if (rights != null) {
             List<IRight> rights2 = rights.getRights();
             for (IRight iRight : rights2) {
                 if (iRight instanceof Right) {
                     Right right = (Right) iRight;
-                    rigthNames.add(right.getGroup() + ":" + right.getRole());
+                    rigthNames.add(right.getGroup() + ":" + right.getRole()); //$NON-NLS-1$
                 }
 
             }
         }
-        return rigthNames.toArray(new String[0]);
+        return rigthNames;
     }
 
     /**
