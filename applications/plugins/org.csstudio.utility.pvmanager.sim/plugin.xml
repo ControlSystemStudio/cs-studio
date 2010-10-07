@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.csstudio.utility.pvmanager.datasource">
+      <datasource
+            datasource="org.epics.pvmanager.sim.SimulationDataSource"
+            prefix="sim">
+      </datasource>
+   </extension>
+
+</plugin>
