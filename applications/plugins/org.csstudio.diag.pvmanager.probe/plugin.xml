@@ -11,7 +11,7 @@
       <view
             name="PVManager Probe"
             icon="icons/sample.gif"
-            category="org.csstudio.diag.pvmanager.probe"
+            category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
             id="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe">
       </view>
