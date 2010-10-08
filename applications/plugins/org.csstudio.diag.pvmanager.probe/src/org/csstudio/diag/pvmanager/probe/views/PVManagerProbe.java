@@ -390,6 +390,11 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		}
 	}
 
+	/**
+	 * 
+	 * @param pvName
+	 * @return
+	 */
 	public boolean setPVName(String pvName) {
 		Activator.getLogger().debug("setPVName(" + pvName + ")");
 		// Reset rest of GUI
@@ -427,6 +432,8 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 			return false;
 		}
 		return true;
+		// TODO
+		// update the view to some initial value for the pv
 	}
 
 	private void updateStatus(final String text) {
@@ -448,12 +455,15 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	private void contributeToActionBars() {
 	}
 
+	@SuppressWarnings("unused")
 	private void fillLocalPullDown(IMenuManager manager) {
 	}
 
+	@SuppressWarnings("unused")
 	private void fillContextMenu(IMenuManager manager) {
 	}
 
+	@SuppressWarnings("unused")
 	private void fillLocalToolBar(IToolBarManager manager) {
 	}
 
@@ -463,6 +473,7 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	private void hookDoubleClickAction() {
 	}
 
+	@SuppressWarnings("unused")
 	private void showMessage(String message) {
 	}
 
@@ -482,40 +493,49 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		// System.out.println("Current thread " + Thread.currentThread());
 		// System.out.println("GUI thread " +
 		// PlatformUI.getWorkbench().getDisplay().getThread());
-		if (lbl_value.isDisposed()) {
-			return;
-		}
-		String strValue = pv.getValue().getValue() + " "
-				+ pv.getValue().getUnits();
-		lbl_value.setText(strValue);
 
-		new_value.setText(strValue);
+		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 
-		// final INumericMetaData meta = value.getNumericMetaData();
-		if (pv == null) {
-			meter.setEnabled(false);
-		} else { // Configure on first value from new channel
-			VDouble value = pv.getValue();
-			lbl_time.setText(value.getTimeStamp().asDate().toString());
-			if (new_channel) {
-				if (pv.getValue().getLowerDisplayLimit() < pv.getValue()
-						.getUpperDisplayLimit()) {
-					meter.configure(value.getLowerDisplayLimit(), value
-							.getLowerAlarmLimit(),
-							value.getLowerWarningLimit(), value
+			@Override
+			public void run() {
+
+				if (lbl_value.isDisposed()) {
+					return;
+				}
+				String strValue = pv.getValue().getValue() + " "
+						+ pv.getValue().getUnits();
+				lbl_value.setText(strValue);
+
+				new_value.setText(strValue);
+
+				//final INumericMetaData meta = value.getNumericMetaData();
+				if (pv == null) {
+					meter.setEnabled(false);
+				} else { // Configure on first value from new channel
+					VDouble value = pv.getValue();
+					lbl_time.setText(value.getTimeStamp().asDate().toString());
+					if (new_channel) {
+						if (pv.getValue().getLowerDisplayLimit() < pv
+								.getValue().getUpperDisplayLimit()) {
+							meter.configure(value.getLowerDisplayLimit(), value
+									.getLowerAlarmLimit(), value
+									.getLowerWarningLimit(), value
 									.getUpperWarningLimit(), value
 									.getUpperAlarmLimit(), value
 									.getUpperDisplayLimit(), 1);
-					meter.setEnabled(true);
-				} else {
-					meter.setEnabled(false);
+							meter.setEnabled(true);
+						} else {
+							meter.setEnabled(false);
+						}
+					}
+					meter.setValue(value.getValue());
 				}
+				Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
+						+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
+				new_channel = false;
 			}
-			meter.setValue(value.getValue());
-		}
-		Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
-				+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
-		new_channel = false;
+		});
+
 	}
 
 	/**
