@@ -397,6 +397,7 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		lbl_time.setText("");
 		new_value.setText("");
 		meter.setEnabled(false);
+		new_channel = true;
 
 		// Check the name
 		if ((pvName == null) || pvName.equals("")) {
@@ -406,8 +407,6 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		}
 
 		name_helper.addEntry(pvName);
-		cbo_name.setSelection(new StructuredSelection(CentralItemFactory
-				.createProcessVariable(pvName)));
 		// Update displayed name, unless it's already current
 		if (!(cbo_name.getCombo().getText().equals(pvName))) {
 			cbo_name.getCombo().setText(pvName);
