@@ -105,26 +105,29 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
 
+	private Group _currentUserParamDataGroup;
 	/**
-	 * The Slave which displayed.
+	 * Marker of Background Color for normal use. Get from widget by first use.
 	 */
-	private SlaveDBO _slave;
+	private Color _defaultBackgroundColor;
+	private Button _failButton;
+	private Button _freezeButton;
+	private int _groupIdent;
+	private int _groupIdentStored;
+	private Group _groupsRadioButtons;
 	/**
 	 * The GSD File of the Slave.
 	 */
 	private GSDFileDBO _gsdFile;
 	/**
-	 * The Text field for the Vendor.
-	 */
-	private Text _vendorText;
-	/**
 	 * Slave ID Number.
 	 */
 	private Text _iDNo;
+	private ComboViewer _indexCombo;
 	/**
-	 * The Text field for the Revision.
+	 * Inputs.
 	 */
-	private Text _revisionsText;
+	private Text _inputsText;
 	/**
 	 * The Module max size of this Slave.
 	 */
@@ -134,18 +137,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 */
 	private Text _maxSlots;
 	/**
-	 * List with User Prm Data's.
-	 */
-	private TableViewer _userPrmDataList;
-	/**
-	 * Inputs.
-	 */
-	private Text _inputsText;
-	/**
-	 * Outputs.
-	 */
-	private Text _outputsText;
-	/**
 	 * Die Bedeutung dieses Feldes ist noch unbekannt.
 	 */
 	// private Text _unbekannt;
@@ -154,139 +145,81 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 */
 	private Text _minStationDelayText;
 	/**
-	 * The Watchdog Time.
+	 * Outputs.
 	 */
-	private Text _watchDogText;
+	private Text _outputsText;
+	private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
 	/**
-	 * Marker of Background Color for normal use. Get from widget by first use.
+	 * The Text field for the Revision.
 	 */
-	private Color _defaultBackgroundColor;
+	private Text _revisionsText;
+	/**
+	 * The Slave which displayed.
+	 */
+	private SlaveDBO _slave;
 	/**
 	 * Check Button to de.-/activate Station Address.
 	 */
 	private Button _stationAddressActiveCButton;
-	private Button _freezeButton;
-	private Button _failButton;
-	private Button _watchDogButton;
 	private Button _syncButton;
-	private int _groupIdent;
-	private int _groupIdentStored;
-	private Group _groupsRadioButtons;
-	private ComboViewer _indexCombo;
-	private Group _currentUserParamDataGroup;
-	private final ArrayList<Object> _prmTextCV = new ArrayList<Object>();
-
 	/**
-	 * 
-	 * @author hrickens
-	 * @author $Author: hrickens $
-	 * @version $Revision: 1.3 $
-	 * @since 14.08.2007
+	 * List with User Prm Data's.
 	 */
-	class RowNumLabelProvider implements ITableLabelProvider {
+	private TableViewer _userPrmDataList;
+	/**
+	 * The Text field for the Vendor.
+	 */
+	private Text _vendorText;
+	private Button _watchDogButton;
+	/**
+	 * The Watchdog Time.
+	 */
+	private Text _watchDogText;
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void addListener(@Nullable final ILabelProviderListener listener) {
-			// handle no listener
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void dispose() {
-			Color defaultBackgroundColor = getDefaultBackgroundColor();
-			if (defaultBackgroundColor != null) {
-				defaultBackgroundColor.dispose();
+	@Override
+	public void cancel() {
+		super.cancel();
+//		Text nameWidget = getNameWidget();
+//		if(nameWidget!=null) {
+//        	nameWidget.setText((String) nameWidget.getData());
+//        }
+		// getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
+		if (_indexCombo != null) {
+			_indexCombo.getCombo().select(
+					(Integer) _indexCombo.getCombo().getData());
+			getNameWidget().setText((String) getNameWidget().getData());
+			getStationAddressActiveCButton()
+					.setSelection((Boolean) getStationAddressActiveCButton()
+							.getData());
+			_minStationDelayText.setText((String) _minStationDelayText
+					.getData());
+			_syncButton.setSelection((Boolean) _syncButton.getData());
+			getFailButton().setSelection((Boolean) getFailButton().getData());
+			_freezeButton.setSelection((Boolean) _freezeButton.getData());
+			_watchDogButton.setSelection((Boolean) _watchDogButton.getData());
+			_watchDogText.setEnabled(_watchDogButton.getSelection());
+			_watchDogText.setText((String) _watchDogText.getData());
+			_groupIdent = _groupIdentStored;
+			for (Control control : _groupsRadioButtons.getChildren()) {
+				if (control instanceof Button) {
+					Button button = (Button) control;
+					button.setSelection(Short.parseShort(button.getText()) == _groupIdentStored + 1);
+				}
 			}
-		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public boolean isLabelProperty(@Nullable final Object element,
-				@Nullable final String property) {
-			return false;
-		}
-
-		/**
-		 * {@inheritDoc}
-		 */
-		@Override
-		public void removeListener(
-				@Nullable final ILabelProviderListener listener) {
-			// handle no listener
-		}
-
-		@Override
-		public Image getColumnImage(@Nullable final Object element,
-				@Nullable final int columnIndex) {
-			return null;
-		}
-
-		@Override
-		public String getColumnText(@Nullable final Object element,
-				final int columnIndex) {
-			if (element instanceof SlaveDBO) {
-				SlaveDBO slave = (SlaveDBO) element;
-				return onSlave(slave, columnIndex);
-			} else if (element instanceof ModuleDBO) {
-				ModuleDBO module = (ModuleDBO) element;
-				return onModule(module, columnIndex);
+			if (_slave != null) {
+				if (_slave.getGSDFile() != null) {
+					fill(_slave.getGSDFile());
+				} else {
+					getHeaderField(HeaderFields.VERSION).setText("");
+					_vendorText.setText("");
+//					getNameWidget().setText("");
+					_revisionsText.setText("");
+				}
+			} else {
+				_gsdFile = null;
+				fill(_gsdFile);
 			}
-			return null;
-		}
-
-		/**
-		 * @param module
-		 * @param columnIndex
-		 */
-		@CheckForNull
-		private String onModule(@Nonnull final ModuleDBO module,
-				final int columnIndex) {
-			switch (columnIndex) {
-			case 0:
-				return module.getSortIndex().toString();
-			case 1:
-				return module.getName();
-			case 2:
-				return module.getExtUserPrmDataConst();
-
-			default:
-				break;
-			}
-			return null;
-		}
-
-		/**
-		 * @param slave
-		 */
-		@CheckForNull
-		private String onSlave(@Nonnull final SlaveDBO slave,
-				final int columnIndex) {
-			// TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst =
-			// slave.getGSDSlaveData()
-			// .getExtUserPrmDataConst();
-
-			switch (columnIndex) {
-			case 1:
-				return slave.getName();
-			case 2:
-				// StringBuffer sb = new StringBuffer();
-				// Set<String> keySet = extUserPrmDataConst.keySet();
-				// for (String key : keySet) {
-				// sb.append(extUserPrmDataConst.get(key).getValue());
-				// }
-				// return sb.toString();
-				return slave.getPrmUserData();
-			default:
-				break;
-			}
-			return null;
 		}
 	}
 
@@ -302,82 +235,180 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	/**
-	 * @param parent
-	 *            Parent Composite.
-	 * @param style
-	 *            Style of the Composite.
-	 * @param slave
-	 *            the Profibus Slave to Configer.
+	 * {@inheritDoc}
 	 */
-	private void makeSlaveKonfiguration() {
-		boolean nevv = false;
-		String[] heads = {"Basics", "Settings", "Overview" };
-		makeOverview(heads[2]);
-		makeSettings(heads[1]);
-		makeBasics(heads[0]);
-		if (_slave.getGSDFile() != null) {
-			fill(_slave.getGSDFile());
+	@Override
+	public void doSave(@Nullable final IProgressMonitor monitor) {
+		super.doSave(monitor);
+		// Name
+		_slave.setName(getNameWidget().getText());
+		getNameWidget().setData(getNameWidget().getText());
+
+		// _slave.moveSortIndex((short) getIndexSpinner().getSelection());
+		Short stationAddress = (Short) ((StructuredSelection) _indexCombo
+				.getSelection()).getFirstElement();
+		_slave.setSortIndexNonHibernate(stationAddress);
+		_slave.setFdlAddress(stationAddress);
+		_indexCombo.getCombo().setData(
+				_indexCombo.getCombo().getSelectionIndex());
+		short minTsdr = 0;
+		try {
+			minTsdr = Short.parseShort(_minStationDelayText.getText());
+		} catch (NumberFormatException e) {
+			// don't change the old Value when the new value a invalid.
+		}
+		_slave.setMinTsdr(minTsdr);
+
+		_slave.setGroupIdent(_groupIdent);
+		_groupIdentStored = _groupIdent;
+
+		_slave.setSlaveFlag((short) 192);
+		short wdFact = Short.parseShort(_watchDogText.getText());
+		_watchDogText.setData(_watchDogText.getText());
+		_slave.setWdFact1(wdFact);
+		_slave.setWdFact2((short) (wdFact / 10));
+
+		// Static Station status 136
+		_slave.setStationStatus((short) 136);
+
+		saveUserPrmData();
+
+		// GSD File
+		_slave.setGSDFile(_gsdFile);
+		fill(_gsdFile);
+
+		// Document
+		Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
+		_slave.setDocuments(docs);
+
+		_slave.update();
+		save();
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
+		// Read GSD-File
+		if (gsdFile == null) {
+			return false;
+		} else if (gsdFile.equals(_gsdFile)) {
+			return true;
 		}
 
-		getTabFolder().pack();
-		if (nevv) {
-			getTabFolder().setSelection(4);
+		_gsdFile = gsdFile;
+		GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
+
+		// setGSDData
+		HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(
+				_gsdFile, slaveModel);
+		slaveModel.setGsdModuleList(moduleList);
+		_slave.setGSDSlaveData(slaveModel);
+
+		// Head
+		getHeaderField(HeaderFields.VERSION).setText(
+				slaveModel.getGsdRevision() + "");
+
+		// Basic - Slave Discription (read only)
+		_vendorText.setText(slaveModel.getVendorName());
+		_iDNo.setText(String.format("0x%04X", slaveModel.getIdentNumber()));
+		_revisionsText.setText(slaveModel.getRevision());
+
+		// Basic - Inputs / Outputs (read only)
+
+		// Set all GSD-File Data to Slave.
+		_slave.setMinTsdr(_slave.getMinTsdr());
+		_slave.setModelName(slaveModel.getModelName());
+		_slave.setPrmUserData(slaveModel.getUserPrmData());
+		_slave.setProfibusPNoID(slaveModel.getIdentNumber());
+		_slave.setRevision(slaveModel.getRevision());
+
+		// Basic - DP / FDL Access
+
+		// Modules
+		_maxSize = slaveModel.getMaxModule();
+		setSlots();
+
+		// Settings - Operation Mode
+
+		// Settings - Groups
+
+		// Settings - USER PRM MODE
+		ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
+		nodes.add(_slave);
+		nodes.addAll(_slave.getChildrenAsMap().values());
+		_userPrmDataList.setInput(nodes);
+		TableColumn[] columns = _userPrmDataList.getTable().getColumns();
+		for (TableColumn tableColumn : columns) {
+			if (tableColumn != null) {
+				tableColumn.pack();
+			}
+		}
+		return true;
+	}
+
+	/** {@inheritDoc} */
+	@Override
+	public final GSDFileDBO getGsdFile() {
+		return _slave.getGSDFile();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public void setFocus() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public final void setGsdFile(GSDFileDBO gsdFile) {
+		_slave.setGSDFile(gsdFile);
+	}
+
+	/**
+	 * @param extUserPrmDataConst
+	 * @param byteIndexString
+	 * @param prmTextObject
+	 */
+	private void handleComboViewer(
+			@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
+			@Nonnull final ComboViewer prmTextCV,
+			@Nonnull final String byteIndexString) {
+		if (!prmTextCV.getCombo().isDisposed()) {
+			int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
+			ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
+			StructuredSelection selection = (StructuredSelection) prmTextCV
+					.getSelection();
+			Integer bitValue = ((PrmText) selection.getFirstElement())
+					.getValue();
+			String newValue = setValue2BitMask(input, bitValue, _slave
+					.getPrmUserDataList().get(byteIndex));
+			_slave.setPrmUserDataByte(byteIndex, newValue);
+			Integer indexOf = prmTextCV.getCombo().indexOf(
+					selection.getFirstElement().toString());
+			prmTextCV.getCombo().setData(indexOf);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	private void makeOverview(@Nonnull final String headline) {
-		Composite comp = getNewTabItem(headline, 1);
-		comp.setLayout(new GridLayout(1, false));
-		List<TableColumn> columns = new ArrayList<TableColumn>();
-		String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address", "Desc", "Type", "DB Id"};
-		int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT};
-		
-		TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
-		overViewer.setContentProvider(new ArrayContentProvider());
-		overViewer.setLabelProvider(new OverviewLabelProvider());
-		overViewer.getTable().setHeaderVisible(true);
-		overViewer.getTable().setLinesVisible(true);
-		overViewer.getTable().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
-		for (int i = 0; i < headers.length && i < styles.length; i++) {
-			TableColumn c = new TableColumn(overViewer.getTable(), styles[i]);
-			c.setText(headers[i]);
-			columns.add(c);
-		}
-
-		overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
-			@Override
-			public void selectionChanged(
-					@Nonnull final SelectionChangedEvent event) {
-				getProfiBusTreeView().getTreeViewer().setSelection(
-						event.getSelection(), true);
-			}
-		});
-
-		ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
-		Collection<ModuleDBO> modules = (Collection<ModuleDBO>) _slave
-				.getChildrenAsMap().values();
-		for (ModuleDBO module : modules) {
-			children.add(module);
-			Collection<ChannelStructureDBO> channelStructures = module
-					.getChannelStructsAsMap().values();
-			for (ChannelStructureDBO channelStructure : channelStructures) {
-				Collection<ChannelDBO> channels = channelStructure
-						.getChannelsAsMap().values();
-				for (ChannelDBO channel : channels) {
-					children.add(channel);
-				}
-
+	/**
+	 * @param extUserPrmDataConst
+	 * @param prmText
+	 * @return
+	 */
+	@Nonnull
+	private TreeMap<String, ExtUserPrmDataConst> handleText(
+			@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
+			@Nonnull final Text prmText) {
+		if (!prmText.isDisposed()) {
+			String value = (String) prmText.getData();
+			if (value != null) {
+				prmText.setText(value);
+				int val = Integer.parseInt(value);
+				// return new String[] {String.format("%1$#04x", val) };
 			}
 		}
-		overViewer.setInput(children);
-		for (TableColumn tableColumn : columns) {
-			tableColumn.pack();
-		}
+		return extUserPrmDataConst;
 	}
 
 	/**
@@ -397,45 +428,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 		makeBasicsIO(comp);
 
 		makeDescGroup(comp, 3);
-	}
-
-	/**
-	 * @param comp
-	 */
-	private void makeBasicsIO(@Nonnull Composite comp) {
-		Group ioGroup = new Group(comp, SWT.NONE);
-		ioGroup.setText("Inputs / Outputs");
-		ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
-				1));
-		ioGroup.setLayout(new GridLayout(3, false));
-		ioGroup.setTabList(new Control[0]);
-
-		int input = 0;
-		int output = 0;
-
-		if (_slave.hasChildren()) {
-			Iterator<ModuleDBO> iterator = _slave.getModules().iterator();
-			while (iterator.hasNext()) {
-				ModuleDBO module = iterator.next();
-				input += module.getInputSize();
-				output += module.getOutputSize();
-			}
-		}
-		Label inputLabel = new Label(ioGroup, SWT.RIGHT);
-		inputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
-				false, 2, 1));
-		inputLabel.setText("Inputs: ");
-		_inputsText = new Text(ioGroup, SWT.SINGLE);
-		_inputsText.setEditable(false);
-		_inputsText.setText(Integer.toString(input));
-
-		Label outputsLabel = new Label(ioGroup, SWT.RIGHT);
-		outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
-				false, false, 2, 1));
-		outputsLabel.setText("Outputs: ");
-		_outputsText = new Text(ioGroup, SWT.SINGLE);
-		_outputsText.setEditable(false);
-		_outputsText.setText(Integer.toString(output));
 	}
 
 	/**
@@ -492,37 +484,40 @@ public class SlaveEditor extends AbstractNodeEditor {
 	/**
 	 * @param comp
 	 */
-	private void makeBasicsSlaveInfo(@Nonnull Composite comp) {
-		/*
-		 * Slave Information
-		 */
-		Group slaveInfoGroup = new Group(comp, SWT.NONE);
-		slaveInfoGroup.setText("Slave Information");
-		slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 1, 2));
-		slaveInfoGroup.setLayout(new GridLayout(4, false));
-		slaveInfoGroup.setTabList(new Control[0]);
+	private void makeBasicsIO(@Nonnull Composite comp) {
+		Group ioGroup = new Group(comp, SWT.NONE);
+		ioGroup.setText("Inputs / Outputs");
+		ioGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1,
+				1));
+		ioGroup.setLayout(new GridLayout(3, false));
+		ioGroup.setTabList(new Control[0]);
 
-		_vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
-		_vendorText.setEditable(false);
-		_vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				4, 1));
+		int input = 0;
+		int output = 0;
 
-		_iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
-		_iDNo.setEditable(false);
-		_iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+		if (_slave.hasChildren()) {
+			Iterator<ModuleDBO> iterator = _slave.getModules().iterator();
+			while (iterator.hasNext()) {
+				ModuleDBO module = iterator.next();
+				input += module.getInputSize();
+				output += module.getOutputSize();
+			}
+		}
+		Label inputLabel = new Label(ioGroup, SWT.RIGHT);
+		inputLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+				false, 2, 1));
+		inputLabel.setText("Inputs: ");
+		_inputsText = new Text(ioGroup, SWT.SINGLE);
+		_inputsText.setEditable(false);
+		_inputsText.setText(Integer.toString(input));
 
-		Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
-		revisionsLable.setText("Revision:");
-
-		_revisionsText = new Text(slaveInfoGroup, SWT.SINGLE);
-		_revisionsText.setEditable(false);
-		_revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
-				false, 1, 1));
-
-		new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
-		_maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
-		_maxSlots.setEditable(false);
+		Label outputsLabel = new Label(ioGroup, SWT.RIGHT);
+		outputsLabel.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER,
+				false, false, 2, 1));
+		outputsLabel.setText("Outputs: ");
+		_outputsText = new Text(ioGroup, SWT.SINGLE);
+		_outputsText.setEditable(false);
+		_outputsText.setText(Integer.toString(output));
 	}
 
 	/**
@@ -562,8 +557,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_indexCombo.getCombo().setData(
 				_indexCombo.getCombo().getSelectionIndex());
 		_indexCombo.getCombo().addModifyListener(getMLSB());
-		_indexCombo
-				.addSelectionChangedListener(new ISelectionChangedListener() {
+		_indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					@Override
 					public void selectionChanged(
@@ -587,32 +581,189 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	/**
-     *
-     */
-	private void setSlots() {
-		Formatter slotFormarter = new Formatter();
-		slotFormarter.format(" %2d / %2d", _slave.getChildren().size(),
-				_maxSize);
-		_maxSlots.setText(slotFormarter.toString());
-		if (_maxSize < _slave.getChildren().size()) {
-			if (getDefaultBackgroundColor() == null) {
-				setDefaultBackgroundColor(Display.getDefault().getSystemColor(
-						SWT.COLOR_WIDGET_BACKGROUND));
-			}
-			_maxSlots.setBackground(WARN_BACKGROUND_COLOR);
-		} else {
-			_maxSlots.setBackground(getDefaultBackgroundColor());
-		}
-		slotFormarter = null;
+	 * @param comp
+	 */
+	private void makeBasicsSlaveInfo(@Nonnull Composite comp) {
+		/*
+		 * Slave Information
+		 */
+		Group slaveInfoGroup = new Group(comp, SWT.NONE);
+		slaveInfoGroup.setText("Slave Information");
+		slaveInfoGroup.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 2));
+		slaveInfoGroup.setLayout(new GridLayout(4, false));
+		slaveInfoGroup.setTabList(new Control[0]);
+
+		_vendorText = new Text(slaveInfoGroup, SWT.SINGLE | SWT.BORDER);
+		_vendorText.setEditable(false);
+		_vendorText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
+				4, 1));
+
+		_iDNo = new Text(slaveInfoGroup, SWT.SINGLE);
+		_iDNo.setEditable(false);
+		_iDNo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 2, 1));
+
+		Label revisionsLable = new Label(slaveInfoGroup, SWT.NONE);
+		revisionsLable.setText("Revision:");
+
+		_revisionsText = new Text(slaveInfoGroup, SWT.SINGLE);
+		_revisionsText.setEditable(false);
+		_revisionsText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				false, 1, 1));
+
+		new Label(slaveInfoGroup, SWT.None).setText("Max. available slots:");
+		_maxSlots = new Text(slaveInfoGroup, SWT.BORDER);
+		_maxSlots.setEditable(false);
 	}
 
 	/**
-	 * @param head
-	 *            the tabItemName
+	 * 
+	 * @param parent
+	 *            the Parent Composite.
+	 * @param value
+	 *            the Selected currentUserParamData Value.
+	 * @param extUserPrmData
+	 * @param prmTextMap
+	 * @param byteIndex
+	 * @return a ComboView for are currentUserParamData Property
 	 */
-	private void makeSettings(@Nonnull final String head) {
-		Composite comp = getNewTabItem(head, 2);
-		comp.setLayout(new GridLayout(3, false));
+	@Nonnull
+	private ComboViewer makeComboViewer(@Nonnull final Composite parent,
+			@Nullable final Integer value,
+			@Nonnull final ExtUserPrmData extUserPrmData,
+			@CheckForNull final HashMap<Integer, PrmText> prmTextMap,
+			@Nonnull final String byteIndex) {
+//		final int index = ProfibusConfigXMLGenerator.getInt(byteIndex);
+		Integer localValue = value;
+		ComboViewer prmTextCV = new ComboViewer(parent);
+		RowData data = new RowData();
+		data.exclude = false;
+		prmTextCV.getCombo().setLayoutData(data);
+		prmTextCV.setLabelProvider(new LabelProvider());
+		prmTextCV.setContentProvider(new ExtUserPrmDataContentProvider());
+		prmTextCV.getCombo().addModifyListener(getMLSB());
+		prmTextCV.setSorter(new PrmTextViewerSorter());
+
+		if (localValue == null) {
+			localValue = extUserPrmData.getDefault();
+		}
+		prmTextCV.setInput(extUserPrmData);
+
+		if (prmTextMap != null) {
+			PrmText prmText = prmTextMap.get(localValue);
+			if (prmText != null) {
+				prmTextCV.setSelection(new StructuredSelection(prmTextMap
+						.get(localValue)));
+			} else {
+				prmTextCV.getCombo().select(0);
+			}
+		} else {
+			prmTextCV.getCombo().select(localValue);
+		}
+		prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
+		setModify(prmTextCV);
+		return prmTextCV;
+	}
+
+	/**
+	 * 
+	 * @param topGroup
+	 *            The parent Group for the CurrentUserParamData content.
+	 */
+	private void makeCurrentUserParamData(@Nonnull final Composite topGroup) {
+		if (_currentUserParamDataGroup != null) {
+			_currentUserParamDataGroup.dispose();
+		}
+		// Current User Param Data Group
+		_currentUserParamDataGroup = new Group(topGroup, SWT.NONE);
+		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 3);
+		_currentUserParamDataGroup.setLayoutData(gd);
+		_currentUserParamDataGroup.setLayout(new FillLayout());
+		_currentUserParamDataGroup.setText("Current User Param Data:");
+		final ScrolledComposite scrollComposite = new ScrolledComposite(
+				_currentUserParamDataGroup, SWT.V_SCROLL);
+		final Composite currentUserParamDataComposite = new Composite(
+				scrollComposite, SWT.NONE);
+		RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
+		rowLayout.wrap = false;
+		rowLayout.fill = true;
+		currentUserParamDataComposite.setLayout(rowLayout);
+		scrollComposite.setContent(currentUserParamDataComposite);
+		scrollComposite.setExpandHorizontal(true);
+		scrollComposite.setExpandVertical(true);
+		_currentUserParamDataGroup.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(@Nonnull final ControlEvent e) {
+				Rectangle r = scrollComposite.getClientArea();
+				scrollComposite.setMinSize(scrollComposite.computeSize(r.width,
+						SWT.DEFAULT));
+			}
+		});
+		scrollComposite.addControlListener(new ControlAdapter() {
+			@Override
+			public void controlResized(@Nonnull final ControlEvent e) {
+				Rectangle r = scrollComposite.getClientArea();
+				scrollComposite.setMinSize(currentUserParamDataComposite
+						.computeSize(r.width, SWT.DEFAULT));
+			}
+		});
+
+		// Current User Param Data
+		GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
+		if (gsdSlaveModel != null) {
+			List<ExtUserPrmDataRef> extUserPrmDataRefMap = gsdSlaveModel
+					.getExtUserPrmDataRefMap();
+			if (extUserPrmDataRefMap != null) {
+				for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
+					int val = 0;
+					String byteIndex = extUserPrmDataRef.getIndex();
+					ExtUserPrmData extUserPrmData = gsdSlaveModel
+							.getExtUserPrmData(extUserPrmDataRef.getValue());
+					makeCurrentUserParamDataItem(currentUserParamDataComposite,
+							extUserPrmData, val, byteIndex);
+				}
+			}
+		}
+		topGroup.layout();
+	}
+
+	/**
+	 * 
+	 * @param currentUserParamDataGroup
+	 * @param extUserPrmData
+	 * @param value
+	 * @param byteIndex
+	 */
+	@SuppressWarnings("unused")
+	private void makeCurrentUserParamDataItem(
+			@Nonnull final Composite currentUserParamDataGroup,
+			@Nullable final ExtUserPrmData extUserPrmData, final Integer value,
+			final String byteIndex) {
+		HashMap<Integer, PrmText> prmTextMap = null;
+
+		Text text = new Text(currentUserParamDataGroup, SWT.SINGLE
+				| SWT.READ_ONLY);
+
+		if (extUserPrmData != null) {
+			text.setText(extUserPrmData.getText() + ":");
+			prmTextMap = extUserPrmData.getPrmText();
+			if ((extUserPrmData.getPrmText() == null)
+					&& (extUserPrmData.getMaxValue()
+							- extUserPrmData.getMinValue() > 10)) {
+				_prmTextCV.add(makeTextField(currentUserParamDataGroup, value,
+						extUserPrmData));
+			} else {
+				_prmTextCV.add(makeComboViewer(currentUserParamDataGroup,
+						value, extUserPrmData, prmTextMap, byteIndex));
+			}
+		}
+		new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
+	}
+
+	/**
+	 * @param comp
+	 */
+	private void makeOperationMode(@Nonnull Composite comp) {
 		// Operation Mode
 		Group operationModeGroup = new Group(comp, SWT.NONE);
 		GridData layoutData = new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1);
@@ -721,44 +872,85 @@ public class SlaveEditor extends AbstractNodeEditor {
 				_watchDogText.setEnabled(_watchDogButton.getSelection());
 			}
 		});
+	}
+
+	@SuppressWarnings("unchecked")
+	private void makeOverview(@Nonnull final String headline) {
+		Composite comp = getNewTabItem(headline, 1);
+		comp.setLayout(new GridLayout(1, false));
+		List<TableColumn> columns = new ArrayList<TableColumn>();
+		String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address", "Desc", "Type", "DB Id"};
+		int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT};
+		
+		TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		overViewer.setContentProvider(new ArrayContentProvider());
+		overViewer.setLabelProvider(new OverviewLabelProvider());
+		overViewer.getTable().setHeaderVisible(true);
+		overViewer.getTable().setLinesVisible(true);
+		overViewer.getTable().setLayoutData(
+				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		for (int i = 0; i < headers.length && i < styles.length; i++) {
+			TableColumn c = new TableColumn(overViewer.getTable(), styles[i]);
+			c.setText(headers[i]);
+			columns.add(c);
+		}
+
+		overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
+
+			@Override
+			public void selectionChanged(
+					@Nonnull final SelectionChangedEvent event) {
+				getProfiBusTreeView().getTreeViewer().setSelection(
+						event.getSelection(), true);
+			}
+		});
+
+		ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
+		Collection<ModuleDBO> modules = (Collection<ModuleDBO>) _slave
+				.getChildrenAsMap().values();
+		for (ModuleDBO module : modules) {
+			children.add(module);
+			Collection<ChannelStructureDBO> channelStructures = module
+					.getChannelStructsAsMap().values();
+			for (ChannelStructureDBO channelStructure : channelStructures) {
+				Collection<ChannelDBO> channels = channelStructure
+						.getChannelsAsMap().values();
+				for (ChannelDBO channel : channels) {
+					children.add(channel);
+				}
+
+			}
+		}
+		overViewer.setInput(children);
+		for (TableColumn tableColumn : columns) {
+			tableColumn.pack();
+		}
+	}
+
+	/**
+	 * @param head
+	 *            the tabItemName
+	 */
+	private void makeSettings(@Nonnull final String head) {
+		Composite comp = getNewTabItem(head, 2);
+		comp.setLayout(new GridLayout(3, false));
+		
+		makeOperationMode(comp);
 
 		makeCurrentUserParamData(comp);
 
 		makeUserPRMMode(comp);
+		
+		makeSettingsGroups(comp);
 
 	}
 
 	/**
 	 * @param comp
 	 */
-	private void makeUserPRMMode(@Nonnull final Composite comp) {
-		Group userPrmData = new Group(comp, SWT.V_SCROLL);
-		userPrmData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				1, 2));
-		userPrmData.setLayout(new GridLayout(2, false));
-		userPrmData.setTabList(new Control[0]);
-		userPrmData.setText("User PRM Mode");
-		_userPrmDataList = new TableViewer(userPrmData, SWT.BORDER
-				| SWT.V_SCROLL);
-
-		Table table = _userPrmDataList.getTable();
-		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 15));
-		table.setHeaderVisible(true);
-		table.setLinesVisible(true);
-
-		_userPrmDataList.setContentProvider(new ArrayContentProvider());
-		_userPrmDataList.setLabelProvider(new RowNumLabelProvider());
-
-		TableColumn tc = new TableColumn(table, SWT.RIGHT);
-		tc.setText("");
-		tc.setWidth(20);
-		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Name");
-		tc.setWidth(130);
-		tc = new TableColumn(table, SWT.LEFT);
-		tc.setText("Ext User Prm Data Const");
-		tc.setWidth(450);
-
+	private void makeSettingsGroups(final Composite comp) {
 		// Groups
 		_groupsRadioButtons = new Group(comp, SWT.NONE);
 		_groupsRadioButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
@@ -800,127 +992,97 @@ public class SlaveEditor extends AbstractNodeEditor {
 		}
 	}
 
-	/** {@inheritDoc} */
-	@Override
-	public final boolean fill(@Nullable final GSDFileDBO gsdFile) {
-		// Read GSD-File
-		if (gsdFile == null) {
-			return false;
-		} else if (gsdFile.equals(_gsdFile)) {
-			return true;
+	/**
+	 * @param parent
+	 *            Parent Composite.
+	 * @param style
+	 *            Style of the Composite.
+	 * @param slave
+	 *            the Profibus Slave to Configer.
+	 */
+	private void makeSlaveKonfiguration() {
+		boolean nevv = false;
+		String[] heads = {"Basics", "Settings", "Overview" };
+		makeOverview(heads[2]);
+		makeSettings(heads[1]);
+		makeBasics(heads[0]);
+		if (_slave.getGSDFile() != null) {
+			fill(_slave.getGSDFile());
 		}
 
-		_gsdFile = gsdFile;
-		GsdSlaveModel slaveModel = GsdFactory.makeGsdSlave(_gsdFile);
-
-		// setGSDData
-		HashMap<Integer, GsdModuleModel> moduleList = GSD2Module.parse(
-				_gsdFile, slaveModel);
-		slaveModel.setGsdModuleList(moduleList);
-		_slave.setGSDSlaveData(slaveModel);
-
-		// Head
-		getHeaderField(HeaderFields.VERSION).setText(
-				slaveModel.getGsdRevision() + "");
-
-		// Basic - Slave Discription (read only)
-		_vendorText.setText(slaveModel.getVendorName());
-		_iDNo.setText(String.format("0x%04X", slaveModel.getIdentNumber()));
-		_revisionsText.setText(slaveModel.getRevision());
-
-		// Basic - Inputs / Outputs (read only)
-
-		// Set all GSD-File Data to Slave.
-		_slave.setMinTsdr(_slave.getMinTsdr());
-		_slave.setModelName(slaveModel.getModelName());
-		_slave.setPrmUserData(slaveModel.getUserPrmData());
-		_slave.setProfibusPNoID(slaveModel.getIdentNumber());
-		_slave.setRevision(slaveModel.getRevision());
-
-		// Basic - DP / FDL Access
-
-		// Modules
-		_maxSize = slaveModel.getMaxModule();
-		setSlots();
-
-		// Settings - Operation Mode
-
-		// Settings - Groups
-
-		// Settings - USER PRM MODE
-		ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
-		nodes.add(_slave);
-		nodes.addAll(_slave.getChildrenAsMap().values());
-		_userPrmDataList.setInput(nodes);
-		TableColumn[] columns = _userPrmDataList.getTable().getColumns();
-		for (TableColumn tableColumn : columns) {
-			if (tableColumn != null) {
-				tableColumn.pack();
-			}
+		getTabFolder().pack();
+		if (nevv) {
+			getTabFolder().setSelection(4);
 		}
-		return true;
-	}
-
-	/** {@inheritDoc} */
-	@Override
-	public final GSDFileDBO getGsdFile() {
-		return _slave.getGSDFile();
-	}
-
-	@Override
-	public final void setGsdFile(GSDFileDBO gsdFile) {
-		_slave.setGSDFile(gsdFile);
 	}
 
 	/**
-	 * {@inheritDoc}
+	 * 
+	 * @param currentUserParamDataGroup
+	 * @param value
+	 * @param extUserPrmData
+	 * @return
 	 */
-	@Override
-	public void doSave(@Nullable final IProgressMonitor monitor) {
-		super.doSave(monitor);
-		// Name
-		_slave.setName(getNameWidget().getText());
-		getNameWidget().setData(getNameWidget().getText());
+	private Text makeTextField(final Composite currentUserParamDataGroup,
+			final Integer value, final ExtUserPrmData extUserPrmData) {
+		Integer localValue = value;
+		Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER
+				| SWT.SINGLE | SWT.RIGHT);
+		Formatter f = new Formatter();
+		f.format("Min: %d, Min: %d", extUserPrmData.getMinValue(),
+				extUserPrmData.getMaxValue());
+		prmText.setToolTipText(f.toString());
+		prmText.setTextLimit(Integer.toString(extUserPrmData.getMaxValue())
+				.length());
 
-		// _slave.moveSortIndex((short) getIndexSpinner().getSelection());
-		Short stationAddress = (Short) ((StructuredSelection) _indexCombo
-				.getSelection()).getFirstElement();
-		_slave.setSortIndexNonHibernate(stationAddress);
-		_slave.setFdlAddress(stationAddress);
-		_indexCombo.getCombo().setData(
-				_indexCombo.getCombo().getSelectionIndex());
-		short minTsdr = 0;
-		try {
-			minTsdr = Short.parseShort(_minStationDelayText.getText());
-		} catch (NumberFormatException e) {
-			// don't change the old Value when the new value a invalid.
+		if (localValue == null) {
+			localValue = extUserPrmData.getDefault();
 		}
-		_slave.setMinTsdr(minTsdr);
+		prmText.setText(localValue.toString());
+		prmText.setData(localValue.toString());
+		prmText.addModifyListener(getMLSB());
+		prmText.addVerifyListener(new VerifyListener() {
 
-		_slave.setGroupIdent(_groupIdent);
-		_groupIdentStored = _groupIdent;
+			public void verifyText(final VerifyEvent e) {
+				if (e.text.matches("^\\D+$")) {
+					e.doit = false;
+				}
+			}
 
-		_slave.setSlaveFlag((short) 192);
-		short wdFact = Short.parseShort(_watchDogText.getText());
-		_watchDogText.setData(_watchDogText.getText());
-		_slave.setWdFact1(wdFact);
-		_slave.setWdFact2((short) (wdFact / 10));
+		});
+		return prmText;
+	}
 
-		// Static Station status 136
-		_slave.setStationStatus((short) 136);
+	/**
+	 * @param comp
+	 */
+	private void makeUserPRMMode(@Nonnull final Composite comp) {
+		Group userPrmData = new Group(comp, SWT.V_SCROLL);
+		userPrmData.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
+				1, 2));
+		userPrmData.setLayout(new GridLayout(2, false));
+		userPrmData.setTabList(new Control[0]);
+		userPrmData.setText("User PRM Mode");
+		_userPrmDataList = new TableViewer(userPrmData, SWT.BORDER
+				| SWT.V_SCROLL);
 
-		saveUserPrmData();
+		Table table = _userPrmDataList.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 15));
+		table.setHeaderVisible(true);
+		table.setLinesVisible(true);
 
-		// GSD File
-		_slave.setGSDFile(_gsdFile);
-		fill(_gsdFile);
+		_userPrmDataList.setContentProvider(new ArrayContentProvider());
+		_userPrmDataList.setLabelProvider(new RowNumLabelProvider());
 
-		// Document
-		Set<DocumentDBO> docs = getDocumentationManageView().getDocuments();
-		_slave.setDocuments(docs);
-
-		_slave.update();
-		save();
+		TableColumn tc = new TableColumn(table, SWT.RIGHT);
+		tc.setText("");
+		tc.setWidth(20);
+		tc = new TableColumn(table, SWT.LEFT);
+		tc.setText("Name");
+		tc.setWidth(130);
+		tc = new TableColumn(table, SWT.LEFT);
+		tc.setText("Ext User Prm Data Const");
+		tc.setWidth(450);
 	}
 
 	/**
@@ -981,48 +1143,47 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	/**
-	 * @param extUserPrmDataConst
-	 * @param prmText
-	 * @return
+	 * 
+	 * @param prmTextCV
 	 */
-	@Nonnull
-	private TreeMap<String, ExtUserPrmDataConst> handleText(
-			@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-			@Nonnull final Text prmText) {
-		if (!prmText.isDisposed()) {
-			String value = (String) prmText.getData();
-			if (value != null) {
-				prmText.setText(value);
-				int val = Integer.parseInt(value);
-				// return new String[] {String.format("%1$#04x", val) };
-			}
-		}
-		return extUserPrmDataConst;
+	private void setModify(final ComboViewer prmTextCV) {
+		// PrmText prmText = (PrmText) ((StructuredSelection)
+		// prmTextCV.getSelection())
+		// .getFirstElement();
+		// ExtUserPrmData extUserPrmData = (ExtUserPrmData)
+		// prmTextCV.getInput();
+		// String index = extUserPrmData.getIndex();
+		// GsdModuleModel gsdModule = _slave.getGsdModuleModel();
+		// int bytePos =
+		// Integer.parseInt(gsdModule.getExtUserPrmDataRef(index));
+		// int bitMin = extUserPrmData.getMinBit();
+		// int bitMax = extUserPrmData.getMaxBit();
+		//
+		// int val = 0;
+		// if (prmText != null) {
+		// val = prmText.getValue();
+		// }
+		// gsdModule.addModify(bytePos, bitMin, bitMax, val);
 	}
 
 	/**
-	 * @param extUserPrmDataConst
-	 * @param byteIndexString
-	 * @param prmTextObject
-	 */
-	private void handleComboViewer(
-			@Nonnull final TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst,
-			@Nonnull final ComboViewer prmTextCV,
-			@Nonnull final String byteIndexString) {
-		if (!prmTextCV.getCombo().isDisposed()) {
-			int byteIndex = ProfibusConfigXMLGenerator.getInt(byteIndexString);
-			ExtUserPrmData input = (ExtUserPrmData) prmTextCV.getInput();
-			StructuredSelection selection = (StructuredSelection) prmTextCV
-					.getSelection();
-			Integer bitValue = ((PrmText) selection.getFirstElement())
-					.getValue();
-			String newValue = setValue2BitMask(input, bitValue, _slave
-					.getPrmUserDataList().get(byteIndex));
-			_slave.setPrmUserDataByte(byteIndex, newValue);
-			Integer indexOf = prmTextCV.getCombo().indexOf(
-					selection.getFirstElement().toString());
-			prmTextCV.getCombo().setData(indexOf);
+     *
+     */
+	private void setSlots() {
+		Formatter slotFormarter = new Formatter();
+		slotFormarter.format(" %2d / %2d", _slave.getChildren().size(),
+				_maxSize);
+		_maxSlots.setText(slotFormarter.toString());
+		if (_maxSize < _slave.getChildren().size()) {
+			if (getDefaultBackgroundColor() == null) {
+				setDefaultBackgroundColor(Display.getDefault().getSystemColor(
+						SWT.COLOR_WIDGET_BACKGROUND));
+			}
+			_maxSlots.setBackground(WARN_BACKGROUND_COLOR);
+		} else {
+			_maxSlots.setBackground(getDefaultBackgroundColor());
 		}
+		slotFormarter = null;
 	}
 
 	/**
@@ -1053,311 +1214,15 @@ public class SlaveEditor extends AbstractNodeEditor {
 		return String.format("%1$#04x", val);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.csstudio.config.ioconfig.config.view.NodeConfig#cancel()
-	 */
-	@Override
-	public void cancel() {
-		super.cancel();
-//		Text nameWidget = getNameWidget();
-//		if(nameWidget!=null) {
-//        	nameWidget.setText((String) nameWidget.getData());
-//        }
-		// getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
-		if (_indexCombo != null) {
-			_indexCombo.getCombo().select(
-					(Integer) _indexCombo.getCombo().getData());
-			getNameWidget().setText((String) getNameWidget().getData());
-			getStationAddressActiveCButton()
-					.setSelection((Boolean) getStationAddressActiveCButton()
-							.getData());
-			_minStationDelayText.setText((String) _minStationDelayText
-					.getData());
-			_syncButton.setSelection((Boolean) _syncButton.getData());
-			getFailButton().setSelection((Boolean) getFailButton().getData());
-			_freezeButton.setSelection((Boolean) _freezeButton.getData());
-			_watchDogButton.setSelection((Boolean) _watchDogButton.getData());
-			_watchDogText.setEnabled(_watchDogButton.getSelection());
-			_watchDogText.setText((String) _watchDogText.getData());
-			_groupIdent = _groupIdentStored;
-			for (Control control : _groupsRadioButtons.getChildren()) {
-				if (control instanceof Button) {
-					Button button = (Button) control;
-					button.setSelection(Short.parseShort(button.getText()) == _groupIdentStored + 1);
-				}
-			}
-
-			if (_slave != null) {
-				if (_slave.getGSDFile() != null) {
-					fill(_slave.getGSDFile());
-				} else {
-					getHeaderField(HeaderFields.VERSION).setText("");
-					_vendorText.setText("");
-//					getNameWidget().setText("");
-					_revisionsText.setText("");
-				}
-			} else {
-				_gsdFile = null;
-				fill(_gsdFile);
-			}
-		}
+	@CheckForNull
+	protected Color getDefaultBackgroundColor() {
+		return _defaultBackgroundColor;
 	}
 
-	void change(@Nonnull final Button button) {
-		setSavebuttonEnabled("Button:" + button.hashCode(),
-				(Boolean) button.getData() != button.getSelection());
-	}
-
-	/**
-	 * 
-	 * @param topGroup
-	 *            The parent Group for the CurrentUserParamData content.
-	 */
-	private void makeCurrentUserParamData(@Nonnull final Composite topGroup) {
-		if (_currentUserParamDataGroup != null) {
-			_currentUserParamDataGroup.dispose();
-		}
-		// Current User Param Data Group
-		_currentUserParamDataGroup = new Group(topGroup, SWT.NONE);
-		GridData gd = new GridData(SWT.FILL, SWT.FILL, false, true, 1, 3);
-		_currentUserParamDataGroup.setLayoutData(gd);
-		_currentUserParamDataGroup.setLayout(new FillLayout());
-		_currentUserParamDataGroup.setText("Current User Param Data:");
-		final ScrolledComposite scrollComposite = new ScrolledComposite(
-				_currentUserParamDataGroup, SWT.V_SCROLL);
-		final Composite currentUserParamDataComposite = new Composite(
-				scrollComposite, SWT.NONE);
-		RowLayout rowLayout = new RowLayout(SWT.VERTICAL);
-		rowLayout.wrap = false;
-		rowLayout.fill = true;
-		currentUserParamDataComposite.setLayout(rowLayout);
-		scrollComposite.setContent(currentUserParamDataComposite);
-		scrollComposite.setExpandHorizontal(true);
-		scrollComposite.setExpandVertical(true);
-		_currentUserParamDataGroup.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(@Nonnull final ControlEvent e) {
-				Rectangle r = scrollComposite.getClientArea();
-				scrollComposite.setMinSize(scrollComposite.computeSize(r.width,
-						SWT.DEFAULT));
-			}
-		});
-		scrollComposite.addControlListener(new ControlAdapter() {
-			@Override
-			public void controlResized(@Nonnull final ControlEvent e) {
-				Rectangle r = scrollComposite.getClientArea();
-				scrollComposite.setMinSize(currentUserParamDataComposite
-						.computeSize(r.width, SWT.DEFAULT));
-			}
-		});
-
-		// Current User Param Data
-		GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
-		if (gsdSlaveModel != null) {
-			List<ExtUserPrmDataRef> extUserPrmDataRefMap = gsdSlaveModel
-					.getExtUserPrmDataRefMap();
-			if (extUserPrmDataRefMap != null) {
-				for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
-					int val = 0;
-					String byteIndex = extUserPrmDataRef.getIndex();
-					ExtUserPrmData extUserPrmData = gsdSlaveModel
-							.getExtUserPrmData(extUserPrmDataRef.getValue());
-					makeCurrentUserParamDataItem(currentUserParamDataComposite,
-							extUserPrmData, val, byteIndex);
-				}
-			}
-		}
-		topGroup.layout();
-	}
-
-	/**
-	 * 
-	 * @param currentUserParamDataGroup
-	 * @param extUserPrmData
-	 * @param value
-	 * @param byteIndex
-	 */
-	private void makeCurrentUserParamDataItem(
-			@Nonnull final Composite currentUserParamDataGroup,
-			@Nullable final ExtUserPrmData extUserPrmData, final Integer value,
-			final String byteIndex) {
-		HashMap<Integer, PrmText> prmTextMap = null;
-
-		Text text = new Text(currentUserParamDataGroup, SWT.SINGLE
-				| SWT.READ_ONLY);
-
-		if (extUserPrmData != null) {
-			text.setText(extUserPrmData.getText() + ":");
-			prmTextMap = extUserPrmData.getPrmText();
-			if ((extUserPrmData.getPrmText() == null)
-					&& (extUserPrmData.getMaxValue()
-							- extUserPrmData.getMinValue() > 10)) {
-				_prmTextCV.add(makeTextField(currentUserParamDataGroup, value,
-						extUserPrmData));
-			} else {
-				_prmTextCV.add(makeComboViewer(currentUserParamDataGroup,
-						value, extUserPrmData, prmTextMap, byteIndex));
-			}
-		}
-		new Label(currentUserParamDataGroup, SWT.SEPARATOR | SWT.HORIZONTAL);// .setLayoutData(new
-	}
-
-	/**
-	 * 
-	 * @param currentUserParamDataGroup
-	 * @param value
-	 * @param extUserPrmData
-	 * @return
-	 */
-	private Text makeTextField(final Composite currentUserParamDataGroup,
-			final Integer value, final ExtUserPrmData extUserPrmData) {
-		Integer localValue = value;
-		Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER
-				| SWT.SINGLE | SWT.RIGHT);
-		Formatter f = new Formatter();
-		f.format("Min: %d, Min: %d", extUserPrmData.getMinValue(),
-				extUserPrmData.getMaxValue());
-		prmText.setToolTipText(f.toString());
-		prmText.setTextLimit(Integer.toString(extUserPrmData.getMaxValue())
-				.length());
-
-		if (localValue == null) {
-			localValue = extUserPrmData.getDefault();
-		}
-		prmText.setText(localValue.toString());
-		prmText.setData(localValue.toString());
-		prmText.addModifyListener(getMLSB());
-		prmText.addVerifyListener(new VerifyListener() {
-
-			public void verifyText(final VerifyEvent e) {
-				if (e.text.matches("^\\D+$")) {
-					e.doit = false;
-				}
-			}
-
-		});
-		return prmText;
-	}
-
-	/**
-	 * 
-	 * @param parent
-	 *            the Parent Composite.
-	 * @param value
-	 *            the Selected currentUserParamData Value.
-	 * @param extUserPrmData
-	 * @param prmTextMap
-	 * @param byteIndex
-	 * @return a ComboView for are currentUserParamData Property
-	 */
-	private ComboViewer makeComboViewer(final Composite parent,
-			final Integer value, final ExtUserPrmData extUserPrmData,
-			final HashMap<Integer, PrmText> prmTextMap, final String byteIndex) {
-		final int index = ProfibusConfigXMLGenerator.getInt(byteIndex);
-		Integer localValue = value;
-		ComboViewer prmTextCV = new ComboViewer(parent);
-		RowData data = new RowData();
-		data.exclude = false;
-		prmTextCV.getCombo().setLayoutData(data);
-		prmTextCV.setLabelProvider(new LabelProvider());
-		prmTextCV.setContentProvider(new IStructuredContentProvider() {
-
-			@Override
-			public Object[] getElements(@Nullable final Object inputElement) {
-				if (inputElement instanceof ExtUserPrmData) {
-					ExtUserPrmData eUPD = (ExtUserPrmData) inputElement;
-					HashMap<Integer, PrmText> prmText = eUPD.getPrmText();
-					if (prmText == null) {
-						PrmText[] prmTextArray = new PrmText[eUPD.getMaxValue()
-								- eUPD.getMinValue() + 1];
-						for (int i = eUPD.getMinValue(); i <= eUPD
-								.getMaxValue(); i++) {
-							prmTextArray[i] = new PrmText(Integer.toString(i),
-									i);
-						}
-						return prmTextArray;
-					}
-					return prmText.values().toArray();
-				}
-				return null;
-			}
-
-			public void dispose() {
-			}
-
-			public void inputChanged(final Viewer viewer,
-					final Object oldInput, final Object newInput) {
-			}
-		});
-		prmTextCV.getCombo().addModifyListener(getMLSB());
-		prmTextCV.setSorter(new ViewerSorter() {
-
-			@Override
-			public int compare(final Viewer viewer, final Object e1,
-					final Object e2) {
-				if ((e1 instanceof PrmText) && (e2 instanceof PrmText)) {
-					PrmText eUPD1 = (PrmText) e1;
-					PrmText eUPD2 = (PrmText) e2;
-					return eUPD1.getValue() - eUPD2.getValue();
-				}
-				return super.compare(viewer, e1, e2);
-			}
-
-		});
-
-		if (localValue == null) {
-			localValue = extUserPrmData.getDefault();
-		}
-		prmTextCV.setInput(extUserPrmData);
-		if (prmTextMap != null) {
-			PrmText prmText = prmTextMap.get(localValue);
-			if (prmText != null) {
-				prmTextCV.setSelection(new StructuredSelection(prmTextMap
-						.get(localValue)));
-			} else {
-				prmTextCV.getCombo().select(0);
-			}
-		} else {
-			prmTextCV.getCombo().select(localValue);
-		}
-		prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
-		setModify(prmTextCV);
-		return prmTextCV;
-	}
-
-	/**
-	 * 
-	 * @param prmTextCV
-	 */
-	private void setModify(final ComboViewer prmTextCV) {
-		// PrmText prmText = (PrmText) ((StructuredSelection)
-		// prmTextCV.getSelection())
-		// .getFirstElement();
-		// ExtUserPrmData extUserPrmData = (ExtUserPrmData)
-		// prmTextCV.getInput();
-		// String index = extUserPrmData.getIndex();
-		// GsdModuleModel gsdModule = _slave.getGsdModuleModel();
-		// int bytePos =
-		// Integer.parseInt(gsdModule.getExtUserPrmDataRef(index));
-		// int bitMin = extUserPrmData.getMinBit();
-		// int bitMax = extUserPrmData.getMaxBit();
-		//
-		// int val = 0;
-		// if (prmText != null) {
-		// val = prmText.getValue();
-		// }
-		// gsdModule.addModify(bytePos, bitMin, bitMax, val);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-
+	@Nonnull
+	protected Button getStationAddressActiveCButton() {
+		assert _stationAddressActiveCButton !=null : "Access to early. Button is null.";
+		return _stationAddressActiveCButton;
 	}
 
 	protected void setDefaultBackgroundColor(
@@ -1365,18 +1230,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_defaultBackgroundColor = defaultBackgroundColor;
 	}
 
-	@CheckForNull
-	protected Color getDefaultBackgroundColor() {
-		return _defaultBackgroundColor;
-	}
-
 	protected void setFailButton(@Nonnull Button failButton) {
 		_failButton = failButton;
-	}
-
-	@CheckForNull
-	Button getFailButton() {
-		return _failButton;
 	}
 
 	protected void setStationAddressActiveCButton(
@@ -1384,9 +1239,200 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_stationAddressActiveCButton = stationAddressActiveCButton;
 	}
 
-	@Nonnull
-	protected Button getStationAddressActiveCButton() {
-		assert _stationAddressActiveCButton !=null : "Access to early. Button is null.";
-		return _stationAddressActiveCButton;
+	void change(@Nonnull final Button button) {
+		setSavebuttonEnabled("Button:" + button.hashCode(),
+				(Boolean) button.getData() != button.getSelection());
+	}
+
+	@CheckForNull
+	Button getFailButton() {
+		return _failButton;
+	}
+
+	/**
+	 * TODO (hrickens) : 
+	 * 
+	 * @author hrickens
+	 * @author $Author: $
+	 * @since 08.10.2010
+	
+	 */
+	private final class ExtUserPrmDataContentProvider implements
+			IStructuredContentProvider {
+		/**
+		 * Constructor.
+		 */
+		public ExtUserPrmDataContentProvider() {
+			// TODO Auto-generated constructor stub
+		}
+
+		public void dispose() {
+		}
+
+		@Override
+		public Object[] getElements(@Nullable final Object inputElement) {
+			if (inputElement instanceof ExtUserPrmData) {
+				ExtUserPrmData eUPD = (ExtUserPrmData) inputElement;
+				HashMap<Integer, PrmText> prmText = eUPD.getPrmText();
+				if (prmText == null) {
+					PrmText[] prmTextArray = new PrmText[eUPD.getMaxValue()
+							- eUPD.getMinValue() + 1];
+					for (int i = eUPD.getMinValue(); i <= eUPD
+							.getMaxValue(); i++) {
+						prmTextArray[i] = new PrmText(Integer.toString(i),
+								i);
+					}
+					return prmTextArray;
+				}
+				return prmText.values().toArray();
+			}
+			return null;
+		}
+
+		public void inputChanged(final Viewer viewer,
+				final Object oldInput, final Object newInput) {
+		}
+	}
+
+	/**
+	 * TODO (hrickens) : 
+	 * 
+	 * @author hrickens
+	 * @author $Author: $
+	 * @since 08.10.2010
+	
+	 */
+	private final class PrmTextViewerSorter extends ViewerSorter {
+		/**
+		 * Constructor.
+		 */
+		public PrmTextViewerSorter() {
+			// TODO Auto-generated constructor stub
+		}
+
+		@Override
+		public int compare(final Viewer viewer, final Object e1,
+				final Object e2) {
+			if ((e1 instanceof PrmText) && (e2 instanceof PrmText)) {
+				PrmText eUPD1 = (PrmText) e1;
+				PrmText eUPD2 = (PrmText) e2;
+				return eUPD1.getValue() - eUPD2.getValue();
+			}
+			return super.compare(viewer, e1, e2);
+		}
+	}
+
+	/**
+	 * 
+	 * @author hrickens
+	 * @author $Author: hrickens $
+	 * @version $Revision: 1.3 $
+	 * @since 14.08.2007
+	 */
+	class RowNumLabelProvider implements ITableLabelProvider {
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void addListener(@Nullable final ILabelProviderListener listener) {
+			// handle no listener
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void dispose() {
+			Color defaultBackgroundColor = getDefaultBackgroundColor();
+			if (defaultBackgroundColor != null) {
+				defaultBackgroundColor.dispose();
+			}
+		}
+
+		@Override
+		public Image getColumnImage(@Nullable final Object element,
+				@Nullable final int columnIndex) {
+			return null;
+		}
+
+		@Override
+		public String getColumnText(@Nullable final Object element,
+				final int columnIndex) {
+			if (element instanceof SlaveDBO) {
+				SlaveDBO slave = (SlaveDBO) element;
+				return onSlave(slave, columnIndex);
+			} else if (element instanceof ModuleDBO) {
+				ModuleDBO module = (ModuleDBO) element;
+				return onModule(module, columnIndex);
+			}
+			return null;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public boolean isLabelProperty(@Nullable final Object element,
+				@Nullable final String property) {
+			return false;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public void removeListener(
+				@Nullable final ILabelProviderListener listener) {
+			// handle no listener
+		}
+
+		/**
+		 * @param module
+		 * @param columnIndex
+		 */
+		@CheckForNull
+		private String onModule(@Nonnull final ModuleDBO module,
+				final int columnIndex) {
+			switch (columnIndex) {
+			case 0:
+				return module.getSortIndex().toString();
+			case 1:
+				return module.getName();
+			case 2:
+				return module.getExtUserPrmDataConst();
+
+			default:
+				break;
+			}
+			return null;
+		}
+
+		/**
+		 * @param slave
+		 */
+		@CheckForNull
+		private String onSlave(@Nonnull final SlaveDBO slave,
+				final int columnIndex) {
+			// TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst =
+			// slave.getGSDSlaveData()
+			// .getExtUserPrmDataConst();
+
+			switch (columnIndex) {
+			case 1:
+				return slave.getName();
+			case 2:
+				// StringBuffer sb = new StringBuffer();
+				// Set<String> keySet = extUserPrmDataConst.keySet();
+				// for (String key : keySet) {
+				// sb.append(extUserPrmDataConst.get(key).getValue());
+				// }
+				// return sb.toString();
+				return slave.getPrmUserData();
+			default:
+				break;
+			}
+			return null;
+		}
 	}
 }
