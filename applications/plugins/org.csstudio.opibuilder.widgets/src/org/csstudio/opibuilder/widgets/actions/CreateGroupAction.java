@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.AddWidgetCommand;
 import org.csstudio.opibuilder.commands.OrphanChildCommand;
 import org.csstudio.opibuilder.commands.SetBoundsCommand;

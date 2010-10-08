@@ -18,7 +18,7 @@
 package org.csstudio.alarm.table.jms;
 
 import org.csstudio.alarm.service.declaration.IAlarmListener;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 
 /**
  * Listener for alarm tables use a message list as destination for the incoming messages. The
@@ -36,7 +36,7 @@ public interface IAlarmTableListener extends IAlarmListener {
      * 
      * @param messageList .
      */
-    public void setMessageList(final MessageList messageList);
+    public void setMessageList(final AbstractMessageList messageList);
     
     /**
      * Register an alarm listener, which is called when a message comes in.

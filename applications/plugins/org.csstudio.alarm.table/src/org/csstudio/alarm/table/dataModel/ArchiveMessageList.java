@@ -41,7 +41,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * @author jhatje
  *
  */
-public class ArchiveMessageList extends MessageList {
+public class ArchiveMessageList extends AbstractMessageList {
 
     private static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
     protected Vector<BasicMessage> _messages = new Vector<BasicMessage>();
@@ -58,25 +58,25 @@ public class ArchiveMessageList extends MessageList {
     /**
      * Add a new MessageList<HashMap> to the collection of Messages
      */
-    public void addMessageList(final ArrayList<HashMap<String, String>> messageList) {
-        final BasicMessage[] listOfNewMessages = new BasicMessage[messageList.size()];
+    public void addMessageList(@Nonnull final ArrayList<HashMap<String, String>> messageList) {
+        final BasicMessage[] newMessages = new BasicMessage[messageList.size()];
         int i = 0;
         for (final HashMap<String, String> messageProperties : messageList) {
             final BasicMessage newMessage = new BasicMessage(messageProperties);
             _messages.add(_messages.size(), newMessage);
-            listOfNewMessages[i] = newMessage;
+            newMessages[i] = newMessage;
             i++;
         }
-        super.addMessageList(listOfNewMessages);
+        addMessages(newMessages);
+        // TODO (jpenning) ML why is getResource called here?
         getClass().getResource("");
-//        JmsLogsPlugin.getDefault().getBundle().getResource(name)
     }
 
     /**
      * Remove a message from the list.
      */
     @Override
-    public void removeMessage(final BasicMessage jmsm) {
+    public void removeMessage(@Nonnull final BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
@@ -85,30 +85,20 @@ public class ArchiveMessageList extends MessageList {
      * Remove an array of messages from the list.
      */
     @Override
-    public void removeMessageArray(final BasicMessage[] jmsm) {
+    public void removeMessages(@Nonnull final BasicMessage[] jmsm) {
         for (final BasicMessage message : jmsm) {
             _messages.remove(message);
         }
-        super.removeMessageArray(jmsm);
+        super.removeMessages(jmsm);
     }
 
     @Override
-    public Vector<? extends BasicMessage> getJMSMessageList() {
+    public Vector<? extends BasicMessage> getMessageList() {
         return _messages;
     }
 
     public void deleteAllMessages() {
         _messages.clear();
-    }
-
-    @Override
-    public Integer getSize() {
-       return _messages.size();
-    }
-
-    @Override
-    public void deleteAllMessages(final BasicMessage[] messages) {
-        removeMessageArray(messages);
     }
 
     /**

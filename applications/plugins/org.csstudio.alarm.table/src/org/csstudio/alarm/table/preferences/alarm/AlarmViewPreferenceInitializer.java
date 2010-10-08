@@ -21,46 +21,31 @@
  */
 package org.csstudio.alarm.table.preferences.alarm;
 
+import java.util.List;
+
 import org.csstudio.alarm.table.JmsLogsPlugin;
+import org.csstudio.platform.AbstractPreference;
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.core.runtime.preferences.DefaultScope;
+import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 
 /**
  * Class used to initialize default preference values.
  */
 public class AlarmViewPreferenceInitializer extends AbstractPreferenceInitializer {
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public final void initializeDefaultPreferences() {
+        final IEclipsePreferences prefs = new DefaultScope().getNode(JmsLogsPlugin.PLUGIN_ID);
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @seeorg.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#
-	 * initializeDefaultPreferences()
-	 */
-	@Override
-    public void initializeDefaultPreferences() {
-		final IPreferenceStore store = JmsLogsPlugin.getDefault()
-				.getPreferenceStore();
+        final List<AbstractPreference<?>> preferences = AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getAllPreferences();
+        for (final AbstractPreference<?> preference : preferences) {
+            prefs.put(preference.getKeyAsString(), preference.getDefaultAsString());
+        }
+    }
 
-		store.setDefault(AlarmViewPreferenceConstants.P_STRING_ALARM,
-				"TYPE,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"EVENTTIME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"NAME,100" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"SEVERITY" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"STATUS" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"TEXT" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"USER" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"HOST" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"APPLICATION-ID" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"PROCESS-ID" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"CLASS" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"DOMAIN" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"FACILITY" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"LOCATION" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"VALUE" + ";" + //$NON-NLS-1$ //$NON-NLS-2$
-						"DESTINATION" //$NON-NLS-1$
-		);
-		store.setDefault(AlarmViewPreferenceConstants.TOPIC_SET,
-		                 "default?ALARM,ACK?Default?false?false?Tahoma,0,8?false;"); //$NON-NLS-1$
-	}
 }

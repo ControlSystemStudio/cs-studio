@@ -14,7 +14,6 @@ import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.figures.LabelFigure;
@@ -237,7 +236,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		if(getExecutionMode() == ExecutionMode.RUN_MODE)
 			value= getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
 		else
-			value = ValueFactory.createStringValue(null, null, null, null, new String[]{getValue()});
+			return;		
 		FormatEnum formatEnum = getWidgetModel().getFormat();
 		int precision = getWidgetModel().getPrecision();
 		if(getWidgetModel().isPrecisionFromDB())

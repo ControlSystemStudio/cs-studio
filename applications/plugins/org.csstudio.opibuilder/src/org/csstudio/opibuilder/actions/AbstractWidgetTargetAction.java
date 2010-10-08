@@ -1,10 +1,11 @@
-package org.csstudio.opibuilder.widgets.actions;
+package org.csstudio.opibuilder.actions;
 
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 
@@ -54,6 +55,13 @@ public abstract class AbstractWidgetTargetAction  implements IObjectActionDelega
 		if (selection instanceof IStructuredSelection) {
 			this.selection = (IStructuredSelection) selection;
 		}
+	}
+	
+	protected IStructuredSelection getSelection(){
+		if(selection !=null)
+			return selection;
+		else
+			 return  StructuredSelection.EMPTY;
 	}
 
 }

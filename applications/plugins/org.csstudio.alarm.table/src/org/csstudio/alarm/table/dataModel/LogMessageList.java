@@ -25,11 +25,11 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 
-public class LogMessageList extends MessageList {
+public class LogMessageList extends AbstractMessageList {
 
     private static final Logger LOG = Logger.getLogger(LogMessageList.class);
 
-    protected Vector<BasicMessage> _messages = new Vector<BasicMessage>();
+    private Vector<BasicMessage> _messages = new Vector<BasicMessage>();
 
     private final Integer _maximumNumberOfMessages;
 
@@ -120,7 +120,7 @@ public class LogMessageList extends MessageList {
      * Remove a message from the list.
      */
     @Override
-    public void removeMessage(final BasicMessage jmsm) {
+    public void removeMessage(@Nonnull final BasicMessage jmsm) {
         _messages.remove(jmsm);
         super.removeMessage(jmsm);
     }
@@ -129,21 +129,16 @@ public class LogMessageList extends MessageList {
      * Remove an array of messages from the list.
      */
     @Override
-    public void removeMessageArray(final BasicMessage[] jmsm) {
+    public void removeMessages(@Nonnull final BasicMessage[] jmsm) {
         for (final BasicMessage message : jmsm) {
             _messages.remove(message);
         }
-        super.removeMessageArray(jmsm);
+        super.removeMessages(jmsm);
     }
 
     @Override
-    public Vector<? extends BasicMessage> getJMSMessageList() {
+    public Vector<? extends BasicMessage> getMessageList() {
         return _messages;
-    }
-
-    @Override
-    public void deleteAllMessages(final BasicMessage[] messages) {
-        removeMessageArray(messages);
     }
 
     /**
@@ -157,8 +152,4 @@ public class LogMessageList extends MessageList {
         }
     }
 
-    @Override
-    public Integer getSize() {
-        return _messages.size();
-    }
 }

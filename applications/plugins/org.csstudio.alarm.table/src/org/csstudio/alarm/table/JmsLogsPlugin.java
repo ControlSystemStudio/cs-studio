@@ -27,14 +27,14 @@ import org.csstudio.alarm.dbaccess.archivedb.ILogMessageArchiveAccess;
 import org.csstudio.alarm.dbaccess.archivedb.IMessageTypes;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.alarm.table.dataModel.SeverityRegistry;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.jms.SendMapMessage;
 import org.csstudio.alarm.table.preferences.ColumnDescription;
-import org.csstudio.alarm.table.preferences.ISeverityMapping;
 import org.csstudio.alarm.table.preferences.ITopicSetColumnService;
 import org.csstudio.alarm.table.preferences.SeverityMapping;
 import org.csstudio.alarm.table.preferences.TopicSetColumnService;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.preferences.log.LogViewPreferenceConstants;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
 import org.csstudio.alarm.table.service.AlarmSoundService;
@@ -56,294 +56,278 @@ import org.osgi.framework.ServiceRegistration;
  */
 public class JmsLogsPlugin extends AbstractCssUiPlugin {
 
-    // The plug-in ID
-    public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.csstudio.alarm.table"; //$NON-NLS-1$
 
-    // The shared instance.
-    private static JmsLogsPlugin PLUGIN;
+	// The shared instance.
+	private static JmsLogsPlugin PLUGIN;
 
-    private IMessageTypes _messageTypes;
+	private IMessageTypes _messageTypes;
 
-    private ServiceReference _serviceReferenceMessageTypes;
+	private ServiceReference _serviceReferenceMessageTypes;
 
-    private ServiceReference _serviceReferenceArchiveAccess;
+	private ServiceReference _serviceReferenceArchiveAccess;
 
-    private ILogMessageArchiveAccess _archiveAccess;
+	private ILogMessageArchiveAccess _archiveAccess;
 
-    private ServiceReference _serviceReferenceSeverityMapping;
+	private ServiceReference _serviceReferenceSendMapMessage;
 
-    private ISeverityMapping _severityMapping;
+	private ISendMapMessage _sendMapMessage;
 
-    private ServiceReference _serviceReferenceSendMapMessage;
+	// Stateful services shared by the log views
+	private ITopicsetService _topicsetServiceForLogViews;
+	private ITopicSetColumnService _topicSetColumnServiceForLogViews;
 
-    private ISendMapMessage _sendMapMessage;
+	// Stateful services shared by the alarm views
+	private ITopicsetService _topicsetServiceForAlarmViews;
+	private ITopicSetColumnService _topicSetColumnServiceForAlarmViews;
 
-    // Stateful services shared by the log views
-    private ITopicsetService _topicsetServiceForLogViews;
-    private ITopicSetColumnService _topicSetColumnServiceForLogViews;
+	// Stateful services shared by the alarm views
+	private ITopicSetColumnService _topicSetColumnServiceForVerifyViews;
 
-    // Stateful services shared by the alarm views
-    private ITopicsetService _topicsetServiceForAlarmViews;
-    private ITopicSetColumnService _topicSetColumnServiceForAlarmViews;
+	// The alarm sound service
+	private IAlarmSoundService _alarmSoundService;
 
-    // Stateful services shared by the alarm views
-    private ITopicSetColumnService _topicSetColumnServiceForVerifyViews;
+	// The alarm service
+	private IAlarmService _alarmService;
 
-    // The alarm sound service
-    private IAlarmSoundService _alarmSoundService;
+	// The alarm configuration service
+	private IAlarmConfigurationService _alarmConfigurationService;
 
-    // The alarm service
-    private IAlarmService _alarmService;
+	/**
+	 * The constructor.
+	 */
+	public JmsLogsPlugin() {
+		if (PLUGIN != null) {
+			throw new IllegalStateException(
+					"Attempt to call plugin constructor more than once.");
+		}
+		PLUGIN = this;
+	}
 
-    // The alarm configuration service
-    private IAlarmConfigurationService _alarmConfigurationService;
+	@Override
+	public String getPluginId() {
+		return PLUGIN_ID;
+	}
 
-    /**
-     * The constructor.
-     */
-    public JmsLogsPlugin() {
-        if (PLUGIN != null) {
-            throw new IllegalStateException("Attempt to call plugin constructor more than once.");
-        }
-        PLUGIN = this;
-    }
+	/**
+	 * This method is called upon plug-in activation
+	 */
+	public void doStart(final BundleContext context) throws Exception {
+		_alarmService = getService(context, IAlarmService.class);
+		_alarmConfigurationService = getService(context,
+				IAlarmConfigurationService.class);
 
-    @Override
-    public String getPluginId() {
-        return PLUGIN_ID;
-    }
+		// Might be registered as OSGI services
+		_topicsetServiceForLogViews = new TopicsetService("for log views");
+		_topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
+		_alarmSoundService = AlarmSoundService.newAlarmSoundService();
+		_topicSetColumnServiceForLogViews = new TopicSetColumnService(
+				LogViewPreferenceConstants.TOPIC_SET,
+				LogViewPreferenceConstants.P_STRING,
+				getColumnDescriptionsForLogViews());
+		_topicSetColumnServiceForAlarmViews = new TopicSetColumnService(
+				AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString(),
+				AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+				getColumnDescriptionsForAlarmViews());
+		_topicSetColumnServiceForVerifyViews = new TopicSetColumnService(
+				AmsVerifyViewPreferenceConstants.TOPIC_SET,
+				AmsVerifyViewPreferenceConstants.P_STRING,
+				getColumnDescriptionsForVerifyViews());
 
-    /**
-     * This method is called upon plug-in activation
-     */
-    public void doStart(final BundleContext context) throws Exception {
-        _alarmService = getService(context, IAlarmService.class);
-        _alarmConfigurationService = getService(context, IAlarmConfigurationService.class);
+		SeverityRegistry.setSeverityMapping(new SeverityMapping());
 
-        // Might be registered as OSGI services
-        _topicsetServiceForLogViews = new TopicsetService("for log views");
-        _topicsetServiceForAlarmViews = new TopicsetService("for alarm views");
-        _alarmSoundService = AlarmSoundService.newAlarmSoundService();
-        _topicSetColumnServiceForLogViews = new TopicSetColumnService(LogViewPreferenceConstants.TOPIC_SET,
-                                                                      LogViewPreferenceConstants.P_STRING,
-                                                                      getColumnDescriptionsForLogViews());
-        _topicSetColumnServiceForAlarmViews = new TopicSetColumnService(AlarmViewPreferenceConstants.TOPIC_SET,
-                                                                        AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                                                        getColumnDescriptionsForAlarmViews());
-        _topicSetColumnServiceForVerifyViews = new TopicSetColumnService(AmsVerifyViewPreferenceConstants.TOPIC_SET,
-                                                                         AmsVerifyViewPreferenceConstants.P_STRING,
-                                                                         getColumnDescriptionsForVerifyViews());
+		final ISendMapMessage sendMapMessage = new SendMapMessage();
+		@SuppressWarnings("unused")
+		final ServiceRegistration sendMapMessageRegistration = context
+				.registerService(ISendMapMessage.class.getName(),
+						sendMapMessage, null);
 
+		_serviceReferenceSendMapMessage = context
+				.getServiceReference(ISendMapMessage.class.getName());
+		if (_serviceReferenceSendMapMessage != null) {
+			_sendMapMessage = (ISendMapMessage) context
+					.getService(_serviceReferenceSendMapMessage);
+		}
 
-        final ISeverityMapping severityMapping = new SeverityMapping();
+		_serviceReferenceMessageTypes = context
+				.getServiceReference(IMessageTypes.class.getName());
+		if (_serviceReferenceMessageTypes != null) {
+			_messageTypes = (IMessageTypes) context
+					.getService(_serviceReferenceMessageTypes);
+		}
+		_serviceReferenceArchiveAccess = context
+				.getServiceReference(ILogMessageArchiveAccess.class.getName());
+		if (_serviceReferenceArchiveAccess != null) {
+			_archiveAccess = (ILogMessageArchiveAccess) context
+					.getService(_serviceReferenceArchiveAccess);
+		}
+	}
 
-        @SuppressWarnings("unused")
-        final
-        ServiceRegistration severityMappingRegistration = context
-                .registerService(ISeverityMapping.class.getName(), severityMapping, null);
+	/**
+	 * This method is called when the plug-in is stopped
+	 */
+	public void doStop(final BundleContext context) throws Exception {
+		CentralLogger.getInstance().info(this, "doStop");
+		safelyDisconnect(_topicsetServiceForAlarmViews);
+		safelyDisconnect(_topicsetServiceForLogViews);
 
-        _serviceReferenceSeverityMapping = context.getServiceReference(ISeverityMapping.class
-                .getName());
-        if (_serviceReferenceSeverityMapping != null) {
-            _severityMapping = (ISeverityMapping) context
-                    .getService(_serviceReferenceSeverityMapping);
-        }
+		context.ungetService(_serviceReferenceMessageTypes);
+		context.ungetService(_serviceReferenceArchiveAccess);
+		context.ungetService(_serviceReferenceSendMapMessage);
+		PLUGIN = null;
+	}
 
-        final ISendMapMessage sendMapMessage = new SendMapMessage();
+	private void safelyDisconnect(final ITopicsetService topicsetService) {
+		try {
+			topicsetService.disconnectAll();
+		} catch (final RuntimeException e) {
+			CentralLogger.getInstance().error(this,
+					"Error while disconnecting " + topicsetService, e);
+		}
+	}
 
-        @SuppressWarnings("unused")
-        final
-        ServiceRegistration sendMapMessageRegistration = context
-                .registerService(ISendMapMessage.class.getName(), sendMapMessage, null);
+	/**
+	 * Returns the shared instance.
+	 */
+	public static JmsLogsPlugin getDefault() {
+		return PLUGIN;
+	}
 
-        _serviceReferenceSendMapMessage = context.getServiceReference(ISendMapMessage.class
-                .getName());
-        if (_serviceReferenceSendMapMessage != null) {
-            _sendMapMessage = (ISendMapMessage) context.getService(_serviceReferenceSendMapMessage);
-        }
+	/**
+	 * Returns an image descriptor for the image file at the given plug-in
+	 * relative path.
+	 * 
+	 * @param path
+	 *            the path
+	 * @return the image descriptor
+	 */
+	public static ImageDescriptor getImageDescriptor(final String path) {
+		return AbstractUIPlugin.imageDescriptorFromPlugin(
+				"org.csstudio.alarm.table", path); //$NON-NLS-1$
+	}
 
-        _serviceReferenceMessageTypes = context.getServiceReference(IMessageTypes.class.getName());
-        if (_serviceReferenceMessageTypes != null) {
-            _messageTypes = (IMessageTypes) context.getService(_serviceReferenceMessageTypes);
-        }
-        _serviceReferenceArchiveAccess = context.getServiceReference(ILogMessageArchiveAccess.class
-                .getName());
-        if (_serviceReferenceArchiveAccess != null) {
-            _archiveAccess = (ILogMessageArchiveAccess) context
-                    .getService(_serviceReferenceArchiveAccess);
-        }
-    }
+	/** Add informational message to the plugin log. */
+	public static void logInfo(final String message) {
+		getDefault().log(IStatus.INFO, message, null);
+	}
 
-    /**
-     * This method is called when the plug-in is stopped
-     */
-    public void doStop(final BundleContext context) throws Exception {
-        CentralLogger.getInstance().info(this, "doStop");
-        safelyDisconnect(_topicsetServiceForAlarmViews);
-        safelyDisconnect(_topicsetServiceForLogViews);
+	/** Add error message to the plugin log. */
+	public static void logError(final String message) {
+		getDefault().log(IStatus.ERROR, message, null);
+	}
 
-        context.ungetService(_serviceReferenceMessageTypes);
-        context.ungetService(_serviceReferenceArchiveAccess);
-        context.ungetService(_serviceReferenceSendMapMessage);
-        context.ungetService(_serviceReferenceSeverityMapping);
+	/** Add an exception to the plugin log. */
+	public static void logException(final String message, final Exception e) {
+		getDefault().log(IStatus.ERROR, message, e);
+	}
 
-        PLUGIN = null;
-    }
+	/**
+	 * Add a message to the log.
+	 * 
+	 * @param type
+	 * @param message
+	 */
+	private void log(final int type, final String message, final Exception e) {
+		getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
+	}
 
-    private void safelyDisconnect(final ITopicsetService topicsetService) {
-        try {
-            topicsetService.disconnectAll();
-        } catch (final RuntimeException e) {
-            CentralLogger.getInstance().error(this,
-                                              "Error while disconnecting " + topicsetService,
-                                              e);
-        }
-    }
+	public IMessageTypes getMessageTypes() {
+		return _messageTypes;
+	}
 
-    /**
-     * Returns the shared instance.
-     */
-    public static JmsLogsPlugin getDefault() {
-        return PLUGIN;
-    }
+	public ILogMessageArchiveAccess getArchiveAccess() {
+		return _archiveAccess;
+	}
 
-    /**
-     * Returns an image descriptor for the image file at the given plug-in relative path.
-     *
-     * @param path the path
-     * @return the image descriptor
-     */
-    public static ImageDescriptor getImageDescriptor(final String path) {
-        return AbstractUIPlugin.imageDescriptorFromPlugin("org.csstudio.alarm.table", path); //$NON-NLS-1$
-    }
+	public ISendMapMessage getSendMapMessage() {
+		return _sendMapMessage;
+	}
 
-    /** Add informational message to the plugin log. */
-    public static void logInfo(final String message) {
-        getDefault().log(IStatus.INFO, message, null);
-    }
+	/**
+	 * @return the topic set service to be shared by the log views (or null)
+	 */
+	public ITopicsetService getTopicsetServiceForLogViews() {
+		return _topicsetServiceForLogViews;
+	}
 
-    /** Add error message to the plugin log. */
-    public static void logError(final String message) {
-        getDefault().log(IStatus.ERROR, message, null);
-    }
+	public ITopicSetColumnService getTopicSetColumnServiceForLogViews() {
+		return _topicSetColumnServiceForLogViews;
+	}
 
-    /** Add an exception to the plugin log. */
-    public static void logException(final String message, final Exception e) {
-        getDefault().log(IStatus.ERROR, message, e);
-    }
+	public ITopicSetColumnService getTopicSetColumnServiceForAlarmViews() {
+		return _topicSetColumnServiceForAlarmViews;
+	}
 
-    /**
-     * Add a message to the log.
-     *
-     * @param type
-     * @param message
-     */
-    private void log(final int type, final String message, final Exception e) {
-        getLog().log(new Status(type, PLUGIN_ID, IStatus.OK, message, e));
-    }
+	public ITopicSetColumnService getTopicSetColumnServiceForVerifyViews() {
+		return _topicSetColumnServiceForVerifyViews;
+	}
 
-    public ISeverityMapping getSeverityMapping() {
-        return _severityMapping;
-    }
+	/**
+	 * @return the topic set service to be shared by the alarm views (or null)
+	 */
+	@CheckForNull
+	public ITopicsetService getTopicsetServiceForAlarmViews() {
+		return _topicsetServiceForAlarmViews;
+	}
 
-    public IMessageTypes getMessageTypes() {
-        return _messageTypes;
-    }
+	/**
+	 * @return the alarm sound service or null
+	 */
+	@CheckForNull
+	public IAlarmSoundService getAlarmSoundService() {
+		return _alarmSoundService;
+	}
 
-    public ILogMessageArchiveAccess getArchiveAccess() {
-        return _archiveAccess;
-    }
+	/**
+	 * @return the alarm service or null
+	 */
+	@CheckForNull
+	public IAlarmService getAlarmService() {
+		return _alarmService;
+	}
 
-    public ISendMapMessage getSendMapMessage() {
-        return _sendMapMessage;
-    }
+	/**
+	 * @return the alarm configuration service or null
+	 */
+	@CheckForNull
+	public IAlarmConfigurationService getAlarmConfigurationService() {
+		return _alarmConfigurationService;
+	}
 
-    /**
-     * @return the topic set service to be shared by the log views (or null)
-     */
-    public ITopicsetService getTopicsetServiceForLogViews() {
-        return _topicsetServiceForLogViews;
-    }
+	@Nonnull
+	private List<ColumnDescription> getColumnDescriptionsForLogViews() {
+		final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+		result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+		result.add(ColumnDescription.TOPIC_SET);
+		result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+		result.add(ColumnDescription.AUTO_START);
+		result.add(ColumnDescription.FONT);
+		return result;
+	}
 
-    public ITopicSetColumnService getTopicSetColumnServiceForLogViews() {
-        return _topicSetColumnServiceForLogViews;
-    }
+	@Nonnull
+	private List<ColumnDescription> getColumnDescriptionsForAlarmViews() {
+		final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+		result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+		result.add(ColumnDescription.TOPIC_SET);
+		result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+		result.add(ColumnDescription.AUTO_START);
+		result.add(ColumnDescription.RETRIEVE_INITIAL_STATE);
+		result.add(ColumnDescription.FONT);
+		return result;
+	}
 
-    public ITopicSetColumnService getTopicSetColumnServiceForAlarmViews() {
-        return _topicSetColumnServiceForAlarmViews;
-    }
+	@Nonnull
+	private List<ColumnDescription> getColumnDescriptionsForVerifyViews() {
 
-    public ITopicSetColumnService getTopicSetColumnServiceForVerifyViews() {
-        return _topicSetColumnServiceForVerifyViews;
-    }
-
-    /**
-     * @return the topic set service to be shared by the alarm views (or null)
-     */
-    @CheckForNull
-    public ITopicsetService getTopicsetServiceForAlarmViews() {
-        return _topicsetServiceForAlarmViews;
-    }
-
-    /**
-     * @return the alarm sound service or null
-     */
-    @CheckForNull
-    public IAlarmSoundService getAlarmSoundService() {
-        return _alarmSoundService;
-    }
-
-    /**
-     * @return the alarm service or null
-     */
-    @CheckForNull
-    public IAlarmService getAlarmService() {
-        return _alarmService;
-    }
-
-    /**
-     * @return the alarm configuration service or null
-     */
-    @CheckForNull
-    public IAlarmConfigurationService getAlarmConfigurationService() {
-        return _alarmConfigurationService;
-    }
-
-
-    @Nonnull
-    private List<ColumnDescription> getColumnDescriptionsForLogViews() {
-        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
-        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
-        result.add(ColumnDescription.TOPIC_SET);
-        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
-        result.add(ColumnDescription.AUTO_START);
-        result.add(ColumnDescription.FONT);
-        return result;
-    }
-
-    @Nonnull
-    private List<ColumnDescription> getColumnDescriptionsForAlarmViews() {
-        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
-        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
-        result.add(ColumnDescription.TOPIC_SET);
-        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
-        result.add(ColumnDescription.AUTO_START);
-        result.add(ColumnDescription.RETRIEVE_INITIAL_STATE);
-        result.add(ColumnDescription.FONT);
-        return result;
-    }
-
-    @Nonnull
-    private List<ColumnDescription> getColumnDescriptionsForVerifyViews() {
-
-        final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
-        result.add(ColumnDescription.IS_DEFAULT_ENTRY);
-        result.add(ColumnDescription.TOPIC_SET);
-        result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
-        result.add(ColumnDescription.AUTO_START);
-        result.add(ColumnDescription.FONT);
-        return result;
-    }
-
+		final List<ColumnDescription> result = new ArrayList<ColumnDescription>();
+		result.add(ColumnDescription.IS_DEFAULT_ENTRY);
+		result.add(ColumnDescription.TOPIC_SET);
+		result.add(ColumnDescription.NAME_FOR_TOPIC_SET);
+		result.add(ColumnDescription.AUTO_START);
+		result.add(ColumnDescription.FONT);
+		return result;
+	}
 
 }
