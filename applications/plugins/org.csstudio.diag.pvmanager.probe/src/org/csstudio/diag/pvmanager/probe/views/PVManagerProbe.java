@@ -494,48 +494,40 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		// System.out.println("GUI thread " +
 		// PlatformUI.getWorkbench().getDisplay().getThread());
 
-		PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
+		if (lbl_value.isDisposed()) {
+			return;
+		}
+		String strValue = pv.getValue().getValue() + " "
+				+ pv.getValue().getUnits();
+		lbl_value.setText(strValue);
 
-			@Override
-			public void run() {
+		new_value.setText(strValue);
 
-				if (lbl_value.isDisposed()) {
-					return;
-				}
-				String strValue = pv.getValue().getValue() + " "
-						+ pv.getValue().getUnits();
-				lbl_value.setText(strValue);
-
-				new_value.setText(strValue);
-
-				//final INumericMetaData meta = value.getNumericMetaData();
-				if (pv == null) {
-					meter.setEnabled(false);
-				} else { // Configure on first value from new channel
-					VDouble value = pv.getValue();
-					lbl_time.setText(value.getTimeStamp().asDate().toString());
-					if (new_channel) {
-						if (pv.getValue().getLowerDisplayLimit() < pv
-								.getValue().getUpperDisplayLimit()) {
-							meter.configure(value.getLowerDisplayLimit(), value
-									.getLowerAlarmLimit(), value
-									.getLowerWarningLimit(), value
+		// final INumericMetaData meta = value.getNumericMetaData();
+		if (pv == null) {
+			meter.setEnabled(false);
+		} else { // Configure on first value from new channel
+			VDouble value = pv.getValue();
+			lbl_time.setText(value.getTimeStamp().asDate().toString());
+			if (new_channel) {
+				if (pv.getValue().getLowerDisplayLimit() < pv.getValue()
+						.getUpperDisplayLimit()) {
+					meter.configure(value.getLowerDisplayLimit(), value
+							.getLowerAlarmLimit(),
+							value.getLowerWarningLimit(), value
 									.getUpperWarningLimit(), value
 									.getUpperAlarmLimit(), value
 									.getUpperDisplayLimit(), 1);
-							meter.setEnabled(true);
-						} else {
-							meter.setEnabled(false);
-						}
-					}
-					meter.setValue(value.getValue());
+					meter.setEnabled(true);
+				} else {
+					meter.setEnabled(false);
 				}
-				Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
-						+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
-				new_channel = false;
 			}
-		});
-
+			meter.setValue(value.getValue());
+		}
+		Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
+				+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
+		new_channel = false;
 	}
 
 	/**
