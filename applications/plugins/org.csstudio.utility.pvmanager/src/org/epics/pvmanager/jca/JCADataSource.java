@@ -9,11 +9,6 @@ import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.Context;
 import gov.aps.jca.JCALibrary;
-import gov.aps.jca.dbr.DBRType;
-import gov.aps.jca.dbr.DBR_CTRL_Double;
-import gov.aps.jca.dbr.DBR_CTRL_Int;
-import gov.aps.jca.dbr.DBR_TIME_Double;
-import gov.aps.jca.dbr.DBR_TIME_Int;
 import java.util.HashSet;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
@@ -35,23 +30,20 @@ import org.epics.pvmanager.data.VString;
  * @author carcassi
  */
 class JCADataSource extends DataSource {
-    private static final Logger logger = Logger.getLogger(DataSource.class.getName());
+    private static final Logger logger = Logger.getLogger(JCADataSource.class.getName());
     // Get the JCALibrary instance.
     private static JCALibrary jca = JCALibrary.getInstance();
-    private static Context ctxt = null;
+    private volatile Context ctxt = null;
 
     static final JCADataSource INSTANCE = new JCADataSource();
 
-    JCADataSource() {
-    }
-
     /*
-     * This Metod will initialize the jca context.
+     * This Metod will initialize the JCA context.
      */
     private void initContext(ExceptionHandler handler) {
-        // Create a context which uses pure channel access java with HARDCODED
-        // configuration
-        // values.
+        // Create a context which uses pure channel access java with the default
+        // (System) configuration values.
+
         // TDB create the context reading some configuration file????
         if (ctxt == null) {
             try {
@@ -71,6 +63,8 @@ class JCADataSource extends DataSource {
             try {
                 // If a context was created and is the last pv active,
                 // destroy the context.
+
+                // TODO Bug in JNI implementation that can't support this?
                 ctxt.destroy();
                 ctxt = null;
                 logger.fine("JCA context destroyed");
