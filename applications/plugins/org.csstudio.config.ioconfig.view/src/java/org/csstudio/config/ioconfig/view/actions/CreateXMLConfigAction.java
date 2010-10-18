@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -106,7 +106,7 @@ public class CreateXMLConfigAction extends Action {
 		// TODO: Multi Selection XML Create.
 		final String filterPathKey = "FilterPath";
 		final IEclipsePreferences pref = new DefaultScope()
-				.getNode(Activator.PLUGIN_ID);
+				.getNode(IOConifgActivator.PLUGIN_ID);
 		String filterPath = pref.get(filterPathKey, "");
 		final DirectoryDialog dDialog = new DirectoryDialog(_pbtv.getShell());
 		dDialog.setFilterPath(filterPath);

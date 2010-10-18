@@ -38,7 +38,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -217,7 +217,7 @@ public class ChannelEditor extends AbstractNodeEditor {
 //        assembleButton.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
         GridDataFactory gdf = GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.CENTER);
         assembleButton.setLayoutData(gdf.create());
-        assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID,
+        assembleButton.setImage(AbstractUIPlugin.imageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID,
                 "icons/refresh.gif").createImage());
         assembleButton.setToolTipText("Refresh the EPICS Address String\n and save it into the DB");
         assembleButton.addSelectionListener(new SelectionListenerImplementation());

@@ -44,7 +44,7 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
@@ -248,7 +248,7 @@ public class ProfiBusTreeView extends Composite {
      */
     public ProfiBusTreeView(@Nonnull final Composite parent, final int style,@Nonnull final IViewSite site) {
         super(parent, style);
-        new InstanceScope().getNode(Activator.getDefault().getPluginId())
+        new InstanceScope().getNode(IOConifgActivator.getDefault().getPluginId())
                 .addPreferenceChangeListener(new HibernateDBPreferenceChangeListener());
         _site = site;
 
@@ -484,7 +484,7 @@ public class ProfiBusTreeView extends Composite {
         getViewer().getControl().setMenu(menu);
         _site.registerContextMenu(popupMenuMgr, getViewer());
         ImageDescriptor iDesc = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/expand_all.gif");
         Action expandAllAction = new Action() {
             @Override
             public void run() {
@@ -497,7 +497,7 @@ public class ProfiBusTreeView extends Composite {
         _site.getActionBars().getToolBarManager().add(expandAllAction);
 
         iDesc = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/collapse_all.gif");
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/collapse_all.gif");
         Action collapseAllAction = new Action() {
             @Override
             public void run() {
@@ -584,7 +584,7 @@ public class ProfiBusTreeView extends Composite {
         _assembleEpicsAddressStringAction
                 .setToolTipText("Refesh from all childen the EPICS Address Strings");
         _assembleEpicsAddressStringAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
 
     }
 
@@ -752,7 +752,7 @@ public class ProfiBusTreeView extends Composite {
         _searchAction.setText("Search");
         _searchAction.setToolTipText("Search a Node");
         _searchAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/search.png"));
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/search.png"));
     }
 
     private void makeTreeNodeRenameAction() {
@@ -776,7 +776,7 @@ public class ProfiBusTreeView extends Composite {
         _refreshAction.setText("Reload");
         _refreshAction.setToolTipText("Reload from the DataBase.");
         _refreshAction.setImageDescriptor(CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, "icons/refresh.gif"));
     }
 
     /** refresh the Tree. Reload all Nodes */

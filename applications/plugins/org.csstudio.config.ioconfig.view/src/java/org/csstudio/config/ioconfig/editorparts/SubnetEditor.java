@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -342,7 +342,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      */
     private void general(final String head) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences prefNode = instanceScope.getNode(Activator.PLUGIN_ID);
+        IEclipsePreferences prefNode = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
 
         Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
         comp.setLayout(new GridLayout(4, false));

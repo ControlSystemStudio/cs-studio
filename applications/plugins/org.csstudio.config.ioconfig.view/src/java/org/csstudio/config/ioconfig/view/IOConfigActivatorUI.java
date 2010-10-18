@@ -7,7 +7,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class ActivatorUI extends AbstractCssUiPlugin{
+public class IOConfigActivatorUI extends AbstractCssUiPlugin{
 
 	/**
      * The plug-in ID.
@@ -17,13 +17,16 @@ public class ActivatorUI extends AbstractCssUiPlugin{
 	/** 
      *  The shared instance.
 	 */
-	private static ActivatorUI _plugin;
+	private static IOConfigActivatorUI INSTANCE;
 	
 	/**
 	 * The constructor.
 	 */
-	public ActivatorUI() {
-		_plugin = this;
+	public IOConfigActivatorUI() {
+		if (INSTANCE != null) { // ENSURE SINGLETON
+            throw new IllegalStateException("Class " + PLUGIN_ID + " already exists.");
+        }
+        INSTANCE = this;
 	}
 
 	/*
@@ -47,7 +50,6 @@ public class ActivatorUI extends AbstractCssUiPlugin{
      * @exception Exception The Thrown excepton
      */
 	public final void doStop(final BundleContext context) throws Exception {
-		_plugin = null;
 //		super.stop(context);
 	}
 
@@ -56,8 +58,8 @@ public class ActivatorUI extends AbstractCssUiPlugin{
 	 *
 	 * @return the shared instance
 	 */
-	public static ActivatorUI getDefault() {
-		return _plugin;
+	public static IOConfigActivatorUI getDefault() {
+		return INSTANCE;
 	}
 
 	/**

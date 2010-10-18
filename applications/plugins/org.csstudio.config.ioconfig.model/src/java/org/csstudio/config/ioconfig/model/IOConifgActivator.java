@@ -8,8 +8,8 @@ import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
-import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleChannelPrototypeDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.platform.AbstractCssPlugin;
@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle.
  */
-public class Activator extends AbstractCssPlugin{
+public class IOConifgActivator extends AbstractCssPlugin{
 
 	/**
 	 *  The plug-in ID.
@@ -28,15 +28,19 @@ public class Activator extends AbstractCssPlugin{
 	/**
 	 *  The shared instance
 	 */
-    private static Activator plugin;
+	private static IOConifgActivator INSTANCE;
 
     private List<Class<?>> _classes;
 
     /**
      * The constructor
      */
-    public Activator() {
-        plugin = this;
+    public IOConifgActivator() {
+		if (INSTANCE != null) { // ENSURE SINGLETON
+			throw new IllegalStateException("Class " + PLUGIN_ID
+					+ " already exists.");
+		}
+		INSTANCE = this;
     }
 
     /**
@@ -44,8 +48,8 @@ public class Activator extends AbstractCssPlugin{
      *
      * @return the shared instance
      */
-    public static Activator getDefault() {
-        return plugin;
+    public static IOConifgActivator getDefault() {
+		return INSTANCE;
     }
 
     /**

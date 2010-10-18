@@ -31,7 +31,7 @@ import javax.annotation.Nullable;
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
 import org.eclipse.core.runtime.IStatus;
@@ -348,7 +348,7 @@ public final class ProfibusHelper {
 					"N/A", node.getId());
 		}
 		OperationStatus status = new OperationStatus(IStatus.ERROR,
-				ActivatorUI.PLUGIN_ID, 3, format, e);
+				IOConfigActivatorUI.PLUGIN_ID, 3, format, e);
 		ErrorDialog.openError(shell, title, null, status);
 	}
 
