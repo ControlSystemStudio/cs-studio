@@ -3,8 +3,11 @@ package org.csstudio.alarm.table.dataModel;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Matchers.*;
-import static org.mockito.Mockito.*;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -14,7 +17,6 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.table.preferences.ISeverityMapping;
-import org.csstudio.platform.AbstractPreference;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -284,7 +286,7 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
     }
     
     @Test
-    public void testOutdatedMessageSequence() {
+    public void testMessageSequenceWithOutdated() {
         final AlarmMessageList messageList = createMessageListForTest();
         final String eventtime = createAndIncrementDate();
         
@@ -312,7 +314,36 @@ public class AlarmMessageListUnitTest extends AbstractMessageListUnitTest {
         assertTrue(alarmMessage0.isOutdated());
         assertEquals("MINOR", alarmMessage0.getProperty(AlarmMessageKey.SEVERITY.getDefiningName()));
         assertFalse(alarmMessage1.isOutdated());
-        assertEquals("INVALID", alarmMessage1.getProperty(AlarmMessageKey.SEVERITY.getDefiningName()));
+        assertEquals("INVALID",
+                     alarmMessage1.getProperty(AlarmMessageKey.SEVERITY.getDefiningName()));
+        
+    }
+    
+    @Test
+    public void testMessageSequenceNoOutdated() {
+        final AlarmMessageList messageList = createMessageListForTest();
+        messageList.showOutdatedMessages(false);
+        final String eventtime = createAndIncrementDate();
+        
+        // add a message
+        messageList.addMessage(createJMSMessage("NAME", "MAJOR", "event", false, eventtime));
+        assertEquals(1, messageList.getMessageListSize());
+        assertTrue(checkForAlarm("NAME", "MAJOR", messageList));
+        
+        // add a message with different severity -> old message is gone
+        messageList.addMessage(createJMSMessage("NAME", "MINOR", "event", false, eventtime));
+        assertEquals(1, messageList.getMessageListSize());
+        AlarmMessage alarmMessage0 = (AlarmMessage) messageList.getMessageList().get(0);
+        assertFalse(alarmMessage0.isOutdated());
+        assertEquals("MINOR", alarmMessage0.getProperty(AlarmMessageKey.SEVERITY.getDefiningName()));
+        
+        // add another message with different severity -> old message is gone
+        messageList.addMessage(createJMSMessage("NAME", "INVALID", "event", false, eventtime));
+        assertEquals(1, messageList.getMessageListSize());
+        alarmMessage0 = (AlarmMessage) messageList.getMessageList().get(0);
+        assertFalse(alarmMessage0.isOutdated());
+        assertEquals("INVALID",
+                     alarmMessage0.getProperty(AlarmMessageKey.SEVERITY.getDefiningName()));
         
     }
     

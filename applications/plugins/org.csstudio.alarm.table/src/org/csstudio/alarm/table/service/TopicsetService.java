@@ -87,6 +87,7 @@ public class TopicsetService implements ITopicsetService {
     }
 
     private void observePreferenceStore(@Nonnull final AbstractMessageList messagelist) {
+        // TODO (jpenning) ML this is old school: use preference service instead
         final ScopedPreferenceStore prefStore = createPreferenceStore();
         prefStore.addPropertyChangeListener(createPropertyChangeListener(messagelist));
     }
