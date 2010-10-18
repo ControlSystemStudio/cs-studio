@@ -38,7 +38,7 @@ import org.csstudio.utility.ldap.ui.Activator;
  */
 public final class Messages {
 
-	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(Activator.PLUGIN_ID);
+	private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(Activator.PLUGIN_ID + ".preference.messages");
 
 	/**
      * Constructor.
