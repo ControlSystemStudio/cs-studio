@@ -29,6 +29,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -125,12 +127,6 @@ public class SlaveDBO extends AbstractNodeDBO {
     private short _maxSize = 1;
 
     /**
-     * Date from GSD File. The user prm data.
-     */
-    @Transient
-    private String[] _userPrmData;
-
-    /**
      * Date from GSD File. The slot index number.
      */
     @Transient
@@ -177,6 +173,7 @@ public class SlaveDBO extends AbstractNodeDBO {
     /** @return the GSDFile. */
 
     @ManyToOne(fetch = FetchType.EAGER)
+	@CheckForNull
     public GSDFileDBO getGSDFile() {
         return _gsdFile;
     }
@@ -185,13 +182,15 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param gsdFile
      *            set the GSDFile.
      */
-    public void setGSDFile(final GSDFileDBO gsdFile) {
-        GSDFileDBO oldGDS = _gsdFile;
-        _gsdFile = gsdFile;
-        if (!fill()) {
-            _gsdFile = oldGDS;
-        }
-    }
+	public void setGSDFile(final GSDFileDBO gsdFile) {
+		if (!gsdFile.equals(_gsdFile)) {
+			GSDFileDBO oldGDS = _gsdFile;
+			_gsdFile = gsdFile;
+			if (!fill()) {
+				_gsdFile = oldGDS;
+			}
+		}
+	}
 
     /**
      *
@@ -333,11 +332,12 @@ public class SlaveDBO extends AbstractNodeDBO {
         String string = _prmUserDataList.toString();
         string = string.substring(1,string.length()-1);
         string = string.replaceAll("\\s+", "");
+		// System.out.println("prmUserData out: " + string);
         return string;
     }
 
-    public void setPrmUserData(final String prmUserData) {
-//        _prmUserData = prmUserData;
+	public void setPrmUserData(@Nonnull final String prmUserData) {
+		// System.out.println("prmUserData in:  " + prmUserData);
 		if (prmUserData != null) {
 			_prmUserDataList = Arrays.asList(prmUserData.split(","));
 		}
@@ -415,10 +415,6 @@ public class SlaveDBO extends AbstractNodeDBO {
             /*
              * Settings - Groups
              */
-            /*
-             * Settings - User Prm Data
-             */
-            _userPrmData = slaveModel.getUserPrmData().split(",");
 
             // setGSDData
             setGSDSlaveData(slaveModel);
@@ -435,11 +431,6 @@ public class SlaveDBO extends AbstractNodeDBO {
     @Transient
     public final int getMaxSize() {
         return _maxSize;
-    }
-
-    @Transient
-    public final String[] getUserPrmData() {
-        return _userPrmData;
     }
 
     @Transient

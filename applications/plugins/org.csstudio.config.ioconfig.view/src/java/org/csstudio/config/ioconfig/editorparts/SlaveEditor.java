@@ -36,8 +36,8 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.OverviewLabelProvider;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
+import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
@@ -53,7 +53,6 @@ import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdModuleModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.GsdSlaveModel;
 import org.csstudio.config.ioconfig.model.pbmodel.gsdParser.PrmText;
 import org.csstudio.config.ioconfig.model.xml.ProfibusConfigXMLGenerator;
-import org.csstudio.platform.security.Right;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ComboViewer;
@@ -175,6 +174,10 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * The Watchdog Time.
 	 */
 	private Text _watchDogText;
+
+	private Text _origUserPrmData;
+
+	private Text _aktUserPrmData;
 
 	@Override
 	public void cancel() {
@@ -318,7 +321,11 @@ public class SlaveEditor extends AbstractNodeEditor {
 		// Set all GSD-File Data to Slave.
 		_slave.setMinTsdr(_slave.getMinTsdr());
 		_slave.setModelName(slaveModel.getModelName());
-		_slave.setPrmUserData(slaveModel.getUserPrmData());
+//		_slave.setPrmUserData(slaveModel.getUserPrmData());
+		if(_slave.getPrmUserData()==null||_slave.getPrmUserData().isEmpty()) {
+			_slave.setPrmUserData(slaveModel.getUserPrmData());
+		}
+			
 		_slave.setProfibusPNoID(slaveModel.getIdentNumber());
 		_slave.setRevision(slaveModel.getRevision());
 
@@ -411,6 +418,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 		return extUserPrmDataConst;
 	}
 
+	
 	/**
 	 * @param head
 	 *            The Tab text.
@@ -652,8 +660,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		if (prmTextMap != null) {
 			PrmText prmText = prmTextMap.get(localValue);
 			if (prmText != null) {
-				prmTextCV.setSelection(new StructuredSelection(prmTextMap
-						.get(localValue)));
+				prmTextCV.setSelection(
+						new StructuredSelection(prmTextMap.get(localValue)));
 			} else {
 				prmTextCV.getCombo().select(0);
 			}
@@ -662,6 +670,14 @@ public class SlaveEditor extends AbstractNodeEditor {
 		}
 		prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
 		setModify(prmTextCV);
+		prmTextCV.addSelectionChangedListener(new ISelectionChangedListener() {
+			
+			@Override
+			public void selectionChanged(@Nonnull SelectionChangedEvent event) {
+				refreshUserPrmDate();
+			}
+
+		});
 		return prmTextCV;
 	}
 
@@ -707,7 +723,10 @@ public class SlaveEditor extends AbstractNodeEditor {
 						.computeSize(r.width, SWT.DEFAULT));
 			}
 		});
-
+		
+		// XXX: Only for test.
+		textAktUserPrmData(currentUserParamDataComposite);
+		
 		// Current User Param Data
 		GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
 		if (gsdSlaveModel != null) {
@@ -715,16 +734,45 @@ public class SlaveEditor extends AbstractNodeEditor {
 					.getExtUserPrmDataRefMap();
 			if (extUserPrmDataRefMap != null) {
 				for (ExtUserPrmDataRef extUserPrmDataRef : extUserPrmDataRefMap) {
-					int val = 0;
 					String byteIndex = extUserPrmDataRef.getIndex();
 					ExtUserPrmData extUserPrmData = gsdSlaveModel
 							.getExtUserPrmData(extUserPrmDataRef.getValue());
+					Integer val = getUserPrmDataValue(extUserPrmDataRef, extUserPrmData); // TODO: Set the saved value!!!
 					makeCurrentUserParamDataItem(currentUserParamDataComposite,
 							extUserPrmData, val, byteIndex);
 				}
 			}
 		}
 		topGroup.layout();
+	}
+
+	/**
+	 * @param extUserPrmDataRef
+	 * @param extUserPrmData 
+	 * @return
+	 */
+	private Integer getUserPrmDataValue(ExtUserPrmDataRef extUserPrmDataRef, ExtUserPrmData extUserPrmData) {
+		
+		List<String> prmUserDataList = _slave.getPrmUserDataList();
+		String value = extUserPrmDataRef.getValue();
+		int intVal = ProfibusConfigXMLGenerator.getInt(value);
+		String string = prmUserDataList.get(intVal);
+		int val = getValueFromBitMask(extUserPrmData, null, string);
+		extUserPrmData.getIndex();
+		return val;
+	}
+
+	/**
+	 * @param currentUserParamDataComposite
+	 */
+	private void textAktUserPrmData(@Nonnull
+			final Composite currentUserParamDataComposite) {
+		_origUserPrmData = new Text(currentUserParamDataComposite, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+//		origUserPrmData.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		
+		_aktUserPrmData = new Text(currentUserParamDataComposite, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
+//		aktUserPrmData.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
+		refreshUserPrmDate();
 	}
 
 	/**
@@ -1085,16 +1133,23 @@ public class SlaveEditor extends AbstractNodeEditor {
 		tc.setWidth(450);
 	}
 
+	private void refreshUserPrmDate() {
+		saveUserPrmData();
+		_origUserPrmData.setText(_slave.getGSDSlaveData().getUserPrmData());
+		_aktUserPrmData.setText(_slave.getPrmUserData());
+	}
+
 	/**
     *
     */
 	private void saveUserPrmData() {
 		// Check have the Salve a GSD-File
 		if (_slave.getGSDSlaveData() != null) {
-			TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst = _slave
-					.getGSDSlaveData().getExtUserPrmDataConst();
-			List<ExtUserPrmDataRef> extUserPrmDataRefMap = _slave
-					.getGSDSlaveData().getExtUserPrmDataRefMap();
+			TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst;
+			extUserPrmDataConst = _slave.getGSDSlaveData().getExtUserPrmDataConst();
+			List<ExtUserPrmDataRef> extUserPrmDataRefMap;
+			extUserPrmDataRefMap = _slave.getGSDSlaveData().getExtUserPrmDataRefMap();
+			
 			if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
 				for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
 					ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
@@ -1212,6 +1267,22 @@ public class SlaveEditor extends AbstractNodeEditor {
 		val = val & mask;
 		val = val | (bitValue << minBit);
 		return String.format("%1$#04x", val);
+	}
+
+	private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
+			@Nonnull final Integer bitValue, @Nonnull final String value) {
+		int val = ProfibusConfigXMLGenerator.getInt(value);
+		int minBit = ranges.getMinBit();
+		int maxBit = ranges.getMaxBit();
+		if (maxBit < minBit) {
+			minBit = ranges.getMaxBit();
+			maxBit = ranges.getMinBit();
+		}
+		int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+		val = val & mask;
+//		val = val | (bitValue << minBit);
+		return val;
+//		return String.format("%1$#04x", val);
 	}
 
 	@CheckForNull
