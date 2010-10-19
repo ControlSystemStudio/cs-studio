@@ -396,6 +396,7 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	 * @return
 	 */
 	public boolean setPVName(String pvName) {
+		// TODO Alarm severity.
 		Activator.getLogger().debug("setPVName(" + pvName + ")");
 		// Reset rest of GUI
 		lbl_value.setText("");
@@ -497,37 +498,54 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 		if (lbl_value.isDisposed()) {
 			return;
 		}
-		String strValue = pv.getValue().getValue() + " "
-				+ pv.getValue().getUnits();
-		lbl_value.setText(strValue);
-
-		new_value.setText(strValue);
-
 		// final INumericMetaData meta = value.getNumericMetaData();
 		if (pv == null) {
 			meter.setEnabled(false);
 		} else { // Configure on first value from new channel
-			VDouble value = pv.getValue();
-			lbl_time.setText(value.getTimeStamp().asDate().toString());
-			if (new_channel) {
-				if (pv.getValue().getLowerDisplayLimit() < pv.getValue()
-						.getUpperDisplayLimit()) {
-					meter.configure(value.getLowerDisplayLimit(), value
-							.getLowerAlarmLimit(),
-							value.getLowerWarningLimit(), value
-									.getUpperWarningLimit(), value
-									.getUpperAlarmLimit(), value
-									.getUpperDisplayLimit(), 1);
-					meter.setEnabled(true);
-				} else {
-					meter.setEnabled(false);
+			VDouble val = pv.getValue();
+			switch (val.getAlarmSeverity()) {
+			case UNDEFINED:
+				updateStatus(Messages.S_STATEDisconn + " "
+						+ val.getAlarmSeverity().toString() + " "
+						+ val.getAlarmStatus().toString());
+				break;
+			case INVALID:
+				updateStatus(Messages.S_STATEConn + " "
+						+ val.getAlarmSeverity().toString() + " "
+						+ val.getAlarmStatus().toString());
+				break;
+			default:
+				String strValue = pv.getValue().getValue() + " "
+						+ pv.getValue().getUnits();
+				lbl_value.setText(strValue);
+				new_value.setText(strValue);
+				lbl_time.setText(val.getTimeStamp().asDate().toString());
+				if (new_channel) {
+					if (pv.getValue().getLowerDisplayLimit() < pv.getValue()
+							.getUpperDisplayLimit()) {
+						meter.configure(val.getLowerDisplayLimit(), val
+								.getLowerAlarmLimit(), val
+								.getLowerWarningLimit(), val
+								.getUpperWarningLimit(), val
+								.getUpperAlarmLimit(), val
+								.getUpperDisplayLimit(), 1);
+						meter.setEnabled(true);
+					} else {
+						meter.setEnabled(false);
+					}
 				}
+				meter.setValue(val.getValue());
+				updateStatus(Messages.S_STATEConn + " "
+						+ val.getAlarmSeverity().toString() + " "
+						+ val.getAlarmStatus().toString());
+				Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
+						+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
+				new_channel = false;
+				break;
 			}
-			meter.setValue(value.getValue());
+
 		}
-		Activator.getLogger().debug("Probe displays " //$NON-NLS-1$
-				+ lbl_time.getText() + " " + lbl_value.getText()); //$NON-NLS-1$
-		new_channel = false;
+
 	}
 
 	/**
