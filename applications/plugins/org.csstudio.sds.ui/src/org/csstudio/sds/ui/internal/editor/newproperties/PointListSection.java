@@ -36,6 +36,9 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.ui.forms.events.HyperlinkAdapter;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.widgets.Hyperlink;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 
 public class PointListSection extends AbstractBaseSection<PointlistProperty> {
@@ -72,15 +75,17 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
 				new ColumnConfig("up", "Up", 30, -1, true));
 
 		// .. button to add new entries to the table
-		final Button addButton = getWidgetFactory().createButton(parent, "Add",
-				SWT.PUSH);
-		addButton.addSelectionListener(new SelectionAdapter() {
+		final Hyperlink addHyperLink = getWidgetFactory().createHyperlink(parent, "Add Point...", SWT.NONE);
+		addHyperLink.setUnderlined(false);
+
+		addHyperLink.addHyperlinkListener(new HyperlinkAdapter() {
+
 			@Override
-			public void widgetSelected(SelectionEvent e) {
+			public void linkActivated(HyperlinkEvent e) {
 				PointlistProperty property = getMainWidgetProperty();
 
 				if (property != null) {
-					PointDialog dialog = new PointDialog(addButton.getShell());
+					PointDialog dialog = new PointDialog(addHyperLink.getShell());
 					if (Window.OK == dialog.open()) {
 						Point point = dialog.getPoint();
 						PointList original = property.getPropertyValue();
@@ -127,7 +132,7 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
 				TableEditor deleteTableEditor = new TableEditor(tableViewer
 						.getTable());
 				Button deleteButton = new Button(tableViewer.getTable(),
-						SWT.PUSH);
+						SWT.FLAT);
 				deleteButton.setImage(CustomMediaFactory.getInstance()
 						.getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
 								"icons/delete.gif"));
@@ -147,7 +152,7 @@ public class PointListSection extends AbstractBaseSection<PointlistProperty> {
 				TableEditor upTableEditor = new TableEditor(tableViewer
 						.getTable());
 				final Button upButton = new Button(tableViewer.getTable(),
-						SWT.PUSH);
+						SWT.FLAT);
 				upButton.setImage(CustomMediaFactory.getInstance()
 						.getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
 								"icons/search_prev.gif"));
