@@ -21,6 +21,8 @@
  */
 package org.csstudio.utility.ldap.ui;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -41,7 +43,10 @@ public class Activator extends AbstractCssUiPlugin {
 	 * The constructor
 	 */
 	public Activator() {
-	    // EMPTY
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
 	}
 
 	/*
@@ -50,7 +55,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
     public void doStart(final BundleContext context) throws Exception {
-//		super.start(context);
+	    //
 	}
 
 	/*
@@ -60,7 +65,6 @@ public class Activator extends AbstractCssUiPlugin {
 	@Override
     public void doStop(final BundleContext context) throws Exception {
 		INSTANCE = null;
-//		super.stop(context);
 	}
 
 	/**
@@ -68,10 +72,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 *
 	 * @return the shared instance
 	 */
+	@Nonnull
 	public static Activator getDefault() {
-	    if (INSTANCE == null) {
-	        INSTANCE = new Activator();
-	    }
 		return INSTANCE;
 	}
 
