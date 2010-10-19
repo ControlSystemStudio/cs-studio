@@ -182,8 +182,10 @@ public class SlaveDBO extends AbstractNodeDBO {
      * @param gsdFile
      *            set the GSDFile.
      */
-	public void setGSDFile(final GSDFileDBO gsdFile) {
-		if (!gsdFile.equals(_gsdFile)) {
+	public void setGSDFile(@CheckForNull final GSDFileDBO gsdFile) {
+		if (gsdFile == null) {
+			_gsdFile = gsdFile;
+		} else if (!gsdFile.equals(_gsdFile)) {
 			GSDFileDBO oldGDS = _gsdFile;
 			_gsdFile = gsdFile;
 			if (!fill()) {

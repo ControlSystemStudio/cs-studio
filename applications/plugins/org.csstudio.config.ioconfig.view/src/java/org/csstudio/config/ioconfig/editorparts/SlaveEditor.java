@@ -104,6 +104,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	public static final String ID = "org.csstudio.config.ioconfig.view.editor.slave";
 
+	private Text _aktUserPrmData;
 	private Group _currentUserParamDataGroup;
 	/**
 	 * Marker of Background Color for normal use. Get from widget by first use.
@@ -143,6 +144,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * The minimum Station Delay Time.
 	 */
 	private Text _minStationDelayText;
+	private Text _origUserPrmData;
 	/**
 	 * Outputs.
 	 */
@@ -169,31 +171,28 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * The Text field for the Vendor.
 	 */
 	private Text _vendorText;
+
 	private Button _watchDogButton;
+
 	/**
 	 * The Watchdog Time.
 	 */
 	private Text _watchDogText;
 
-	private Text _origUserPrmData;
-
-	private Text _aktUserPrmData;
-
 	@Override
 	public void cancel() {
 		super.cancel();
-//		Text nameWidget = getNameWidget();
-//		if(nameWidget!=null) {
-//        	nameWidget.setText((String) nameWidget.getData());
-//        }
+		// Text nameWidget = getNameWidget();
+		// if(nameWidget!=null) {
+		// nameWidget.setText((String) nameWidget.getData());
+		// }
 		// getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
 		if (_indexCombo != null) {
 			_indexCombo.getCombo().select(
 					(Integer) _indexCombo.getCombo().getData());
 			getNameWidget().setText((String) getNameWidget().getData());
-			getStationAddressActiveCButton()
-					.setSelection((Boolean) getStationAddressActiveCButton()
-							.getData());
+			getStationAddressActiveCButton().setSelection(
+					(Boolean) getStationAddressActiveCButton().getData());
 			_minStationDelayText.setText((String) _minStationDelayText
 					.getData());
 			_syncButton.setSelection((Boolean) _syncButton.getData());
@@ -216,7 +215,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 				} else {
 					getHeaderField(HeaderFields.VERSION).setText("");
 					_vendorText.setText("");
-//					getNameWidget().setText("");
+					// getNameWidget().setText("");
 					_revisionsText.setText("");
 				}
 			} else {
@@ -316,29 +315,20 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_iDNo.setText(String.format("0x%04X", slaveModel.getIdentNumber()));
 		_revisionsText.setText(slaveModel.getRevision());
 
-		// Basic - Inputs / Outputs (read only)
-
 		// Set all GSD-File Data to Slave.
 		_slave.setMinTsdr(_slave.getMinTsdr());
 		_slave.setModelName(slaveModel.getModelName());
-//		_slave.setPrmUserData(slaveModel.getUserPrmData());
-		if(_slave.getPrmUserData()==null||_slave.getPrmUserData().isEmpty()) {
+		if (_slave.getPrmUserData() == null
+				|| _slave.getPrmUserData().isEmpty()) {
 			_slave.setPrmUserData(slaveModel.getUserPrmData());
 		}
-			
+
 		_slave.setProfibusPNoID(slaveModel.getIdentNumber());
 		_slave.setRevision(slaveModel.getRevision());
-
-		// Basic - DP / FDL Access
 
 		// Modules
 		_maxSize = slaveModel.getMaxModule();
 		setSlots();
-
-		// Settings - Operation Mode
-
-		// Settings - Groups
-
 		// Settings - USER PRM MODE
 		ArrayList<AbstractNodeDBO> nodes = new ArrayList<AbstractNodeDBO>();
 		nodes.add(_slave);
@@ -365,12 +355,41 @@ public class SlaveEditor extends AbstractNodeEditor {
 	@Override
 	public void setFocus() {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public final void setGsdFile(GSDFileDBO gsdFile) {
 		_slave.setGSDFile(gsdFile);
+	}
+
+	/**
+	 * @param extUserPrmDataRef
+	 * @param extUserPrmData
+	 * @return
+	 */
+	private int getUserPrmDataValue(
+			@Nonnull ExtUserPrmDataRef extUserPrmDataRef,
+			@Nonnull ExtUserPrmData extUserPrmData) {
+		List<String> prmUserDataList = _slave.getPrmUserDataList();
+		String value = extUserPrmDataRef.getValue();
+		int intVal = ProfibusConfigXMLGenerator.getInt(value);
+		String string = prmUserDataList.get(intVal);
+		int val = getValueFromBitMask(extUserPrmData, string);
+		return val;
+	}
+
+	private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
+			@Nonnull final String value) {
+		int val = ProfibusConfigXMLGenerator.getInt(value);
+		int minBit = ranges.getMinBit();
+		int maxBit = ranges.getMaxBit();
+		if (maxBit < minBit) {
+			minBit = ranges.getMaxBit();
+			maxBit = ranges.getMinBit();
+		}
+		int mask = ((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
+		val = (val & mask) >> ranges.getMinBit();
+		return val;
 	}
 
 	/**
@@ -418,7 +437,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 		return extUserPrmDataConst;
 	}
 
-	
 	/**
 	 * @param head
 	 *            The Tab text.
@@ -461,8 +479,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		getStationAddressActiveCButton().setText("Active");
 		getStationAddressActiveCButton().setSelection(false);
 		getStationAddressActiveCButton().setData(false);
-		getStationAddressActiveCButton()
-				.addSelectionListener(new SelectionListener() {
+		getStationAddressActiveCButton().addSelectionListener(
+				new SelectionListener() {
 
 					@Override
 					public void widgetDefaultSelected(
@@ -565,7 +583,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_indexCombo.getCombo().setData(
 				_indexCombo.getCombo().getSelectionIndex());
 		_indexCombo.getCombo().addModifyListener(getMLSB());
-		_indexCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+		_indexCombo
+				.addSelectionChangedListener(new ISelectionChangedListener() {
 
 					@Override
 					public void selectionChanged(
@@ -581,11 +600,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 						}
 					}
 				});
-
-		// setIndexSpinner(ConfigHelper.getIndexSpinner(gName, _slave,
-		// getMLSB(),
-		// "Station Adress:",getProfiBusTreeView()));
-		// _defaultBackgroundColor = getIndexSpinner().getBackground();
 	}
 
 	/**
@@ -641,13 +655,14 @@ public class SlaveEditor extends AbstractNodeEditor {
 			@Nonnull final ExtUserPrmData extUserPrmData,
 			@CheckForNull final HashMap<Integer, PrmText> prmTextMap,
 			@Nonnull final String byteIndex) {
-//		final int index = ProfibusConfigXMLGenerator.getInt(byteIndex);
 		Integer localValue = value;
+
 		ComboViewer prmTextCV = new ComboViewer(parent);
 		RowData data = new RowData();
 		data.exclude = false;
 		prmTextCV.getCombo().setLayoutData(data);
-		prmTextCV.setLabelProvider(new LabelProvider());
+		prmTextCV
+				.setLabelProvider(new PrmTextComboLabelProvider(extUserPrmData));
 		prmTextCV.setContentProvider(new ExtUserPrmDataContentProvider());
 		prmTextCV.getCombo().addModifyListener(getMLSB());
 		prmTextCV.setSorter(new PrmTextViewerSorter());
@@ -660,8 +675,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		if (prmTextMap != null) {
 			PrmText prmText = prmTextMap.get(localValue);
 			if (prmText != null) {
-				prmTextCV.setSelection(
-						new StructuredSelection(prmTextMap.get(localValue)));
+				prmTextCV.setSelection(new StructuredSelection(prmTextMap
+						.get(localValue)));
 			} else {
 				prmTextCV.getCombo().select(0);
 			}
@@ -669,9 +684,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 			prmTextCV.getCombo().select(localValue);
 		}
 		prmTextCV.getCombo().setData(prmTextCV.getCombo().getSelectionIndex());
-		setModify(prmTextCV);
 		prmTextCV.addSelectionChangedListener(new ISelectionChangedListener() {
-			
+
 			@Override
 			public void selectionChanged(@Nonnull SelectionChangedEvent event) {
 				refreshUserPrmDate();
@@ -723,10 +737,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 						.computeSize(r.width, SWT.DEFAULT));
 			}
 		});
-		
-		// XXX: Only for test.
-		textAktUserPrmData(currentUserParamDataComposite);
-		
+
 		// Current User Param Data
 		GsdSlaveModel gsdSlaveModel = _slave.getGSDSlaveData();
 		if (gsdSlaveModel != null) {
@@ -737,42 +748,14 @@ public class SlaveEditor extends AbstractNodeEditor {
 					String byteIndex = extUserPrmDataRef.getIndex();
 					ExtUserPrmData extUserPrmData = gsdSlaveModel
 							.getExtUserPrmData(extUserPrmDataRef.getValue());
-					Integer val = getUserPrmDataValue(extUserPrmDataRef, extUserPrmData); // TODO: Set the saved value!!!
+					Integer value = getUserPrmDataValue(extUserPrmDataRef,
+							extUserPrmData); // TODO: Set the saved value!!!
 					makeCurrentUserParamDataItem(currentUserParamDataComposite,
-							extUserPrmData, val, byteIndex);
+							extUserPrmData, value, byteIndex);
 				}
 			}
 		}
 		topGroup.layout();
-	}
-
-	/**
-	 * @param extUserPrmDataRef
-	 * @param extUserPrmData 
-	 * @return
-	 */
-	private Integer getUserPrmDataValue(ExtUserPrmDataRef extUserPrmDataRef, ExtUserPrmData extUserPrmData) {
-		
-		List<String> prmUserDataList = _slave.getPrmUserDataList();
-		String value = extUserPrmDataRef.getValue();
-		int intVal = ProfibusConfigXMLGenerator.getInt(value);
-		String string = prmUserDataList.get(intVal);
-		int val = getValueFromBitMask(extUserPrmData, null, string);
-		extUserPrmData.getIndex();
-		return val;
-	}
-
-	/**
-	 * @param currentUserParamDataComposite
-	 */
-	private void textAktUserPrmData(@Nonnull
-			final Composite currentUserParamDataComposite) {
-		_origUserPrmData = new Text(currentUserParamDataComposite, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
-//		origUserPrmData.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		
-		_aktUserPrmData = new Text(currentUserParamDataComposite, SWT.SINGLE | SWT.LEAD | SWT.READ_ONLY | SWT.BORDER);
-//		aktUserPrmData.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-		refreshUserPrmDate();
 	}
 
 	/**
@@ -825,7 +808,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 				true, _slave.getMinTsdr() + "", Ranges.WATCHDOG,
 				ProfibusHelper.VL_TYP_U16);
 		_minStationDelayText.addModifyListener(getMLSB());
-		
+
 		Label bitLabel = new Label(operationModeGroup, SWT.NONE);
 		bitLabel.setText("Bit");
 
@@ -835,18 +818,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_syncButton.addTraverseListener(ProfibusHelper.getNETL());
 		_syncButton.setText("Sync Request");
 		_syncButton.setData(false);
-		_syncButton.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-				change(_syncButton);
-			}
-
-			@Override
-			public void widgetSelected(@Nonnull final SelectionEvent e) {
-				change(_syncButton);
-			}
-		});
+		_syncButton
+				.addSelectionListener(new ButtonDirtyChangeSelectionListener(
+						_syncButton));
 		_freezeButton = new Button(operationModeGroup, SWT.CHECK);
 		_freezeButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
 				false, 3, 1));
@@ -854,40 +828,17 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_freezeButton.setText("Freeze Request");
 		_freezeButton.setSelection(false);
 		_freezeButton.setData(false);
-		_freezeButton.addSelectionListener(new SelectionListener() {
-
-			@Override
-			public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-				change(_freezeButton);
-			}
-
-			@Override
-			public void widgetSelected(@Nonnull final SelectionEvent e) {
-				change(_freezeButton);
-			}
-		});
+		_freezeButton.addSelectionListener(new ButtonDirtyChangeSelectionListener(
+						_freezeButton));
 		setFailButton(new Button(operationModeGroup, SWT.CHECK));
 		final Button failButton = getFailButton();
 		if (failButton != null) {
-			failButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
-					false, 3, 1));
+			failButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,false, 3, 1));
 			failButton.addTraverseListener(ProfibusHelper.getNETL());
 			failButton.setText("Fail Save");
 			failButton.setEnabled(false);
 			failButton.setData(false);
-			failButton.addSelectionListener(new SelectionListener() {
-
-				@Override
-				public void widgetDefaultSelected(
-						@Nonnull final SelectionEvent e) {
-					change(failButton);
-				}
-
-				@Override
-				public void widgetSelected(@Nonnull final SelectionEvent e) {
-					change(failButton);
-				}
-			});
+			failButton.addSelectionListener(new ButtonDirtyChangeSelectionListener(failButton));
 		}
 		_watchDogButton = new Button(operationModeGroup, SWT.CHECK);
 		_watchDogButton.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false,
@@ -897,9 +848,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		_watchDogButton.setSelection(true);
 		_watchDogButton.setData(true);
 		_watchDogText = ProfibusHelper.getTextField(operationModeGroup,
-				_watchDogButton.getSelection(),
-				Integer.toString(_slave.getWdFact1()), Ranges.TTR,
-				ProfibusHelper.VL_TYP_U32);
+				_watchDogButton.getSelection(),Integer.toString(_slave.getWdFact1()),
+				Ranges.TTR, ProfibusHelper.VL_TYP_U32);
 		_watchDogText.addModifyListener(getMLSB());
 		Label timeLabel = new Label(operationModeGroup, SWT.NONE);
 		timeLabel.setText("ms");
@@ -927,18 +877,19 @@ public class SlaveEditor extends AbstractNodeEditor {
 		Composite comp = getNewTabItem(headline, 1);
 		comp.setLayout(new GridLayout(1, false));
 		List<TableColumn> columns = new ArrayList<TableColumn>();
-		String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address", "Desc", "Type", "DB Id"};
-		int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT};
-		
-		TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+		String[] headers = new String[] {"Adr", "Adr", "Name", "IO Name", "IO Epics Address",
+				"Desc", "Type", "DB Id" };
+		int[] styles = new int[] {SWT.RIGHT, SWT.RIGHT, SWT.LEFT, SWT.LEFT, SWT.LEFT, SWT.LEFT,
+				SWT.LEFT, SWT.LEFT };
+
+		TableViewer overViewer = new TableViewer(comp, SWT.H_SCROLL | SWT.V_SCROLL | SWT.BORDER |
+				SWT.FULL_SELECTION);
 		overViewer.setContentProvider(new ArrayContentProvider());
 		overViewer.setLabelProvider(new OverviewLabelProvider());
 		overViewer.getTable().setHeaderVisible(true);
 		overViewer.getTable().setLinesVisible(true);
-		overViewer.getTable().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-		
+		overViewer.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+
 		for (int i = 0; i < headers.length && i < styles.length; i++) {
 			TableColumn c = new TableColumn(overViewer.getTable(), styles[i]);
 			c.setText(headers[i]);
@@ -946,29 +897,24 @@ public class SlaveEditor extends AbstractNodeEditor {
 		}
 
 		overViewer.addSelectionChangedListener(new ISelectionChangedListener() {
-
 			@Override
 			public void selectionChanged(
 					@Nonnull final SelectionChangedEvent event) {
-				getProfiBusTreeView().getTreeViewer().setSelection(
-						event.getSelection(), true);
+				getProfiBusTreeView().getTreeViewer().setSelection(event.getSelection(), true);
 			}
 		});
 
 		ArrayList<AbstractNodeDBO> children = new ArrayList<AbstractNodeDBO>();
-		Collection<ModuleDBO> modules = (Collection<ModuleDBO>) _slave
-				.getChildrenAsMap().values();
+		Collection<ModuleDBO> modules = (Collection<ModuleDBO>) _slave.getChildrenAsMap().values();
 		for (ModuleDBO module : modules) {
 			children.add(module);
 			Collection<ChannelStructureDBO> channelStructures = module
 					.getChannelStructsAsMap().values();
 			for (ChannelStructureDBO channelStructure : channelStructures) {
-				Collection<ChannelDBO> channels = channelStructure
-						.getChannelsAsMap().values();
+				Collection<ChannelDBO> channels = channelStructure.getChannelsAsMap().values();
 				for (ChannelDBO channel : channels) {
 					children.add(channel);
 				}
-
 			}
 		}
 		overViewer.setInput(children);
@@ -984,13 +930,13 @@ public class SlaveEditor extends AbstractNodeEditor {
 	private void makeSettings(@Nonnull final String head) {
 		Composite comp = getNewTabItem(head, 2);
 		comp.setLayout(new GridLayout(3, false));
-		
+
 		makeOperationMode(comp);
 
 		makeCurrentUserParamData(comp);
 
 		makeUserPRMMode(comp);
-		
+
 		makeSettingsGroups(comp);
 
 	}
@@ -998,7 +944,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 	/**
 	 * @param comp
 	 */
-	private void makeSettingsGroups(final Composite comp) {
+	private void makeSettingsGroups(@Nonnull final Composite comp) {
 		// Groups
 		_groupsRadioButtons = new Group(comp, SWT.NONE);
 		_groupsRadioButtons.setLayoutData(new GridData(SWT.FILL, SWT.FILL,
@@ -1018,6 +964,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 			}
 			b.addSelectionListener(new SelectionListener() {
 
+				@Override
 				public void widgetDefaultSelected(
 						@Nonnull final SelectionEvent e) {
 					check();
@@ -1071,8 +1018,11 @@ public class SlaveEditor extends AbstractNodeEditor {
 	 * @param extUserPrmData
 	 * @return
 	 */
-	private Text makeTextField(final Composite currentUserParamDataGroup,
-			final Integer value, final ExtUserPrmData extUserPrmData) {
+	@Nonnull
+	private Text makeTextField(
+			@Nonnull final Composite currentUserParamDataGroup,
+			@CheckForNull final Integer value,
+			@Nonnull final ExtUserPrmData extUserPrmData) {
 		Integer localValue = value;
 		Text prmText = new Text(currentUserParamDataGroup, SWT.BORDER
 				| SWT.SINGLE | SWT.RIGHT);
@@ -1091,7 +1041,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 		prmText.addModifyListener(getMLSB());
 		prmText.addVerifyListener(new VerifyListener() {
 
-			public void verifyText(final VerifyEvent e) {
+			@Override
+			public void verifyText(@Nonnull final VerifyEvent e) {
 				if (e.text.matches("^\\D+$")) {
 					e.doit = false;
 				}
@@ -1133,10 +1084,19 @@ public class SlaveEditor extends AbstractNodeEditor {
 		tc.setWidth(450);
 	}
 
-	private void refreshUserPrmDate() {
+	protected void refreshUserPrmDate() {
 		saveUserPrmData();
-		_origUserPrmData.setText(_slave.getGSDSlaveData().getUserPrmData());
-		_aktUserPrmData.setText(_slave.getPrmUserData());
+		String userPrmData = "no data";
+		if (_slave.getGSDSlaveData() != null
+				&& _slave.getGSDSlaveData().getUserPrmData() != null) {
+			userPrmData = _slave.getGSDSlaveData().getUserPrmData();
+		}
+		_origUserPrmData.setText(userPrmData);
+		String prmUserData = _slave.getPrmUserData();
+		if (prmUserData == null) {
+			prmUserData = "no data";
+		}
+		_aktUserPrmData.setText(prmUserData);
 	}
 
 	/**
@@ -1146,10 +1106,12 @@ public class SlaveEditor extends AbstractNodeEditor {
 		// Check have the Salve a GSD-File
 		if (_slave.getGSDSlaveData() != null) {
 			TreeMap<String, ExtUserPrmDataConst> extUserPrmDataConst;
-			extUserPrmDataConst = _slave.getGSDSlaveData().getExtUserPrmDataConst();
+			extUserPrmDataConst = _slave.getGSDSlaveData()
+					.getExtUserPrmDataConst();
 			List<ExtUserPrmDataRef> extUserPrmDataRefMap;
-			extUserPrmDataRefMap = _slave.getGSDSlaveData().getExtUserPrmDataRefMap();
-			
+			extUserPrmDataRefMap = _slave.getGSDSlaveData()
+					.getExtUserPrmDataRefMap();
+
 			if (extUserPrmDataRefMap.size() == _prmTextCV.size()) {
 				for (int i = 0; i < extUserPrmDataRefMap.size(); i++) {
 					ExtUserPrmDataRef ref = extUserPrmDataRefMap.get(i);
@@ -1167,58 +1129,9 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 			} else {
 				// TODO: throw extUserPrmDataRefMap und prmTextCV passen nicht
-				// zu
-				// sammen
+				// zusammen
 			}
 		}
-		// GsdModuleModel mod = (GsdModuleModel) ((StructuredSelection)
-		// _moduleTypList.getSelection())
-		// .getFirstElement();
-		// if (mod != null) {
-		// // _slave.setModuleNumber(mod.getModuleNumber());
-		// // _moduleTypList.getTable().setData(mod.getModuleNumber());
-		//
-		// // String[] extUserPrmDataConst =
-		// _module.getGsdModuleModel().getExtUserPrmDataConst()
-		// // .split(",");
-		//
-		// String extUserPrmDataConst = _slave.getPrmUserData();
-		// for (Object prmTextObject : _prmTextCV) {
-		// if (prmTextObject instanceof ComboViewer) {
-		// ComboViewer prmTextCV = (ComboViewer) prmTextObject;
-		// // handleComboViewer(extUserPrmDataConst, prmTextCV);
-		// } else if (prmTextObject instanceof Text) {
-		// Text prmText = (Text) prmTextObject;
-		// // extUserPrmDataConst = handleText(extUserPrmDataConst, prmText);
-		// }
-		// }
-		// // _module.setConfigurationData(Arrays.toString(extUserPrmDataConst)
-		// // .replaceAll("[\\[\\]]", ""));
-		// }
-	}
-
-	/**
-	 * 
-	 * @param prmTextCV
-	 */
-	private void setModify(final ComboViewer prmTextCV) {
-		// PrmText prmText = (PrmText) ((StructuredSelection)
-		// prmTextCV.getSelection())
-		// .getFirstElement();
-		// ExtUserPrmData extUserPrmData = (ExtUserPrmData)
-		// prmTextCV.getInput();
-		// String index = extUserPrmData.getIndex();
-		// GsdModuleModel gsdModule = _slave.getGsdModuleModel();
-		// int bytePos =
-		// Integer.parseInt(gsdModule.getExtUserPrmDataRef(index));
-		// int bitMin = extUserPrmData.getMinBit();
-		// int bitMax = extUserPrmData.getMaxBit();
-		//
-		// int val = 0;
-		// if (prmText != null) {
-		// val = prmText.getValue();
-		// }
-		// gsdModule.addModify(bytePos, bitMin, bitMax, val);
 	}
 
 	/**
@@ -1269,22 +1182,6 @@ public class SlaveEditor extends AbstractNodeEditor {
 		return String.format("%1$#04x", val);
 	}
 
-	private int getValueFromBitMask(@Nonnull final ExtUserPrmData ranges,
-			@Nonnull final Integer bitValue, @Nonnull final String value) {
-		int val = ProfibusConfigXMLGenerator.getInt(value);
-		int minBit = ranges.getMinBit();
-		int maxBit = ranges.getMaxBit();
-		if (maxBit < minBit) {
-			minBit = ranges.getMaxBit();
-			maxBit = ranges.getMinBit();
-		}
-		int mask = ~((int) (Math.pow(2, maxBit + 1) - Math.pow(2, minBit)));
-		val = val & mask;
-//		val = val | (bitValue << minBit);
-		return val;
-//		return String.format("%1$#04x", val);
-	}
-
 	@CheckForNull
 	protected Color getDefaultBackgroundColor() {
 		return _defaultBackgroundColor;
@@ -1292,7 +1189,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	@Nonnull
 	protected Button getStationAddressActiveCButton() {
-		assert _stationAddressActiveCButton !=null : "Access to early. Button is null.";
+		assert _stationAddressActiveCButton != null : "Access to early. Button is null.";
 		return _stationAddressActiveCButton;
 	}
 
@@ -1321,12 +1218,42 @@ public class SlaveEditor extends AbstractNodeEditor {
 	}
 
 	/**
-	 * TODO (hrickens) : 
+	 * TODO (hrickens) :
+	 * 
+	 * @author hrickens
+	 * @author $Author: $
+	 * @since 19.10.2010
+	 */
+	private final class ButtonDirtyChangeSelectionListener implements
+			SelectionListener {
+		private final Button _button;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param syncButton
+		 */
+		public ButtonDirtyChangeSelectionListener(@Nonnull Button button) {
+			_button = button;
+		}
+
+		@Override
+		public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
+			change(_button);
+		}
+
+		@Override
+		public void widgetSelected(@Nonnull final SelectionEvent e) {
+			change(_button);
+		}
+	}
+
+	/**
+	 * TODO (hrickens) :
 	 * 
 	 * @author hrickens
 	 * @author $Author: $
 	 * @since 08.10.2010
-	
 	 */
 	private final class ExtUserPrmDataContentProvider implements
 			IStructuredContentProvider {
@@ -1334,10 +1261,12 @@ public class SlaveEditor extends AbstractNodeEditor {
 		 * Constructor.
 		 */
 		public ExtUserPrmDataContentProvider() {
-			// TODO Auto-generated constructor stub
+			// Constructor.
 		}
 
+		@Override
 		public void dispose() {
+			// not to dispose
 		}
 
 		@Override
@@ -1348,10 +1277,8 @@ public class SlaveEditor extends AbstractNodeEditor {
 				if (prmText == null) {
 					PrmText[] prmTextArray = new PrmText[eUPD.getMaxValue()
 							- eUPD.getMinValue() + 1];
-					for (int i = eUPD.getMinValue(); i <= eUPD
-							.getMaxValue(); i++) {
-						prmTextArray[i] = new PrmText(Integer.toString(i),
-								i);
+					for (int i = eUPD.getMinValue(); i <= eUPD.getMaxValue(); i++) {
+						prmTextArray[i] = new PrmText(Integer.toString(i), i);
 					}
 					return prmTextArray;
 				}
@@ -1360,30 +1287,67 @@ public class SlaveEditor extends AbstractNodeEditor {
 			return null;
 		}
 
-		public void inputChanged(final Viewer viewer,
-				final Object oldInput, final Object newInput) {
+		@Override
+		public void inputChanged(@Nullable final Viewer viewer,
+				@Nullable final Object oldInput, @Nullable final Object newInput) {
+			// nothing to do.
 		}
 	}
 
 	/**
-	 * TODO (hrickens) : 
+	 * {@link PrmText} Label provider that mark the default selection with a
+	 * '*'. The {@link ExtUserPrmData} give the default.
+	 * 
+	 * @author hrickens
+	 * @author $Author: $
+	 * @since 18.10.2010
+	 */
+	private final class PrmTextComboLabelProvider extends LabelProvider {
+
+		private final ExtUserPrmData _extUserPrmData;
+
+		/**
+		 * Constructor.
+		 * 
+		 * @param extUserPrmData
+		 */
+		public PrmTextComboLabelProvider(@Nonnull ExtUserPrmData extUserPrmData) {
+			_extUserPrmData = extUserPrmData;
+		}
+
+		/**
+		 * {@inheritDoc}
+		 */
+		@Override
+		public String getText(@Nullable Object element) {
+			if (element instanceof PrmText) {
+				PrmText prmText = (PrmText) element;
+				if (prmText.getValue() == _extUserPrmData.getDefault()) {
+					return "*" + element.toString();
+				}
+			}
+			return super.getText(element);
+		}
+	}
+
+	/**
+	 * {@link PrmText} Sorter
 	 * 
 	 * @author hrickens
 	 * @author $Author: $
 	 * @since 08.10.2010
-	
 	 */
 	private final class PrmTextViewerSorter extends ViewerSorter {
 		/**
 		 * Constructor.
 		 */
 		public PrmTextViewerSorter() {
-			// TODO Auto-generated constructor stub
+			// Constructor.
 		}
 
 		@Override
-		public int compare(final Viewer viewer, final Object e1,
-				final Object e2) {
+		public int compare(@Nullable final Viewer viewer,
+				@Nullable final Object e1, @Nullable final Object e2) {
 			if ((e1 instanceof PrmText) && (e2 instanceof PrmText)) {
 				PrmText eUPD1 = (PrmText) e1;
 				PrmText eUPD2 = (PrmText) e2;
