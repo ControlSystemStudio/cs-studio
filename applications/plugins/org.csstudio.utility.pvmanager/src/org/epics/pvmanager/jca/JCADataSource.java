@@ -29,7 +29,7 @@ import org.epics.pvmanager.data.VString;
  *
  * @author carcassi
  */
-class JCADataSource extends DataSource {
+public class JCADataSource extends DataSource {
     private static final Logger logger = Logger.getLogger(JCADataSource.class.getName());
     // Get the JCALibrary instance.
     private static JCALibrary jca = JCALibrary.getInstance();
