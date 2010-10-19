@@ -20,7 +20,7 @@ class Scanner {
     private static Timer timer = new Timer("PV Monitor Scanner", true);
 
     static void scan(final Notifier notifier, long periodInMs) {
-        timer.scheduleAtFixedRate(new TimerTask() {
+        timer.schedule(new TimerTask() {
 
             @Override
             public void run() {

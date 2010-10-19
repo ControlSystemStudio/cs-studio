@@ -12,5 +12,5 @@ package org.epics.pvmanager.data;
  * 
  * @author carcassi
  */
-public interface VDouble extends Scalar<Double>, Alarm, Time, Display<Double> {
+public interface VDouble extends Scalar<Double>, Alarm, Time, Display {
 }

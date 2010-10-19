@@ -7,7 +7,7 @@ package org.epics.pvmanager.jca;
 import gov.aps.jca.CAException;
 import gov.aps.jca.Channel;
 import gov.aps.jca.dbr.DBRType;
-import gov.aps.jca.dbr.DBR_CTRL_Int;
+import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.ExceptionHandler;
@@ -18,7 +18,7 @@ import org.epics.pvmanager.data.VInt;
  *
  * @author carcassi
  */
-public class VIntProcessor extends SingleValueProcessor<VInt, DBR_TIME_Int, DBR_CTRL_Int> {
+class VIntProcessor extends SingleValueProcessor<VInt, DBR_TIME_Int, DBR_CTRL_Double> {
 
     public VIntProcessor(final Channel channel, Collector collector,
             ValueCache<VInt> cache, final ExceptionHandler handler)
@@ -28,7 +28,7 @@ public class VIntProcessor extends SingleValueProcessor<VInt, DBR_TIME_Int, DBR_
 
     @Override
     protected DBRType getMetaType() {
-        return DBR_CTRL_Int.TYPE;
+        return DBR_CTRL_Double.TYPE;
     }
 
     @Override
@@ -37,7 +37,7 @@ public class VIntProcessor extends SingleValueProcessor<VInt, DBR_TIME_Int, DBR_
     }
 
     @Override
-    protected VInt createValue(DBR_TIME_Int value, DBR_CTRL_Int metadata, boolean disconnected) {
+    protected VInt createValue(DBR_TIME_Int value, DBR_CTRL_Double metadata, boolean disconnected) {
         return new VIntFromDbr(value, metadata, disconnected);
     }
 }

@@ -20,6 +20,9 @@ public class DataRecipe {
     private final Map<Collector, Map<String, ValueCache>> channelsPerCollector;
     private final ExceptionHandler exceptionHandler = new ExceptionHandler();
 
+    /**
+     * Creates an empty data recipe.
+     */
     public DataRecipe() {
         channelsPerCollector = Collections.emptyMap();
     }

@@ -11,8 +11,8 @@ package org.epics.pvmanager;
  */
 public class PVManager {
 
-    private static volatile ThreadSwitch defaultOnThread = ThreadSwitch.onSwingEDT();
-    private static volatile DataSource defaultConnectionManager = null;
+    private static volatile ThreadSwitch defaultOnThread = ThreadSwitch.onTimerThread();
+    private static volatile DataSource defaultDataSource = null;
 
     /**
      * Changes the default thread on which notifications are going to be posted.
@@ -26,16 +26,17 @@ public class PVManager {
     /**
      * Changes the default source for data.
      *
-     * @param manager the data source
+     * @param dataSource the data source
      */
-    public static void setConnectionManager(DataSource manager) {
-        defaultConnectionManager = manager;
+    public static void setDefaultDataSource(DataSource dataSource) {
+        PVManager.defaultDataSource = dataSource;
     }
 
     /**
      * Reads the given expression. Will return the average of the values collected
      * at the scan rate.
      *
+     * @param <T> type of the pv value
      * @param pvExpression the expression to read
      * @return a pv manager expression
      */
@@ -46,6 +47,7 @@ public class PVManager {
     /**
      * Reads the given expression.
      *
+     * @param <T> type of the pv value
      * @param pvExpression the expression to read
      * @return a pv manager expression
      */
@@ -63,7 +65,7 @@ public class PVManager {
         private DesiredRateExpression<T> aggregatedPVExpression;
         // Initialize to defaults
         private ThreadSwitch onThread = defaultOnThread;
-        private DataSource source = defaultConnectionManager;
+        private DataSource source = defaultDataSource;
 
         private PVManagerExpression(DesiredRateExpression<T> aggregatedPVExpression) {
             this.aggregatedPVExpression = aggregatedPVExpression;
@@ -72,13 +74,13 @@ public class PVManager {
         /**
          * Defines which DataSource should be used to read the data.
          *
-         * @param connectionManager a connection manager
+         * @param dataSource a connection manager
          * @return this
          */
-        public PVManagerExpression<T> from(DataSource connectionManager) {
-            if (connectionManager == null)
-                throw new IllegalArgumentException("ConnectionManager can't be null");
-            source = connectionManager;
+        public PVManagerExpression<T> from(DataSource dataSource) {
+            if (dataSource == null)
+                throw new IllegalArgumentException("dataSource can't be null");
+            source = dataSource;
             return this;
         }
 
@@ -106,15 +108,15 @@ public class PVManager {
         public PV<T> atHz(double rate) {
             long scanPeriodMs = (long) (1000.0 * (1.0 / rate));
 
-            // Check that a connection manager has been specified
+            // Check that a data source has been specified
             if (source == null) {
                 throw new RuntimeException("You need to specify a source either " +
-                        "using PVManager.setDefaultConnectionManager or by using " +
-                        "read(...).from(ConnectionManager).");
+                        "using PVManager.setDefaultDataSource or by using " +
+                        "read(...).from(dataSource).");
             }
 
             // Create PV and connect
-            PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName(), aggregatedPVExpression.getFunction().getType());
+            PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName());
             DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
             Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
             Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread);

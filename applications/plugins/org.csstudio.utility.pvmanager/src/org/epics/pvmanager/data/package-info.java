@@ -4,7 +4,7 @@
  */
 
 /**
- * Common types for EPICS systems.
+ * Support for control system types.
  * <p>
  * This package contains the data definitions for all the EPICS types.
  * These are in terms of Java interfaces so that each data source can

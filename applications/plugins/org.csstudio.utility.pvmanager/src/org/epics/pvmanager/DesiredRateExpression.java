@@ -33,11 +33,20 @@ public class DesiredRateExpression<T> {
         if (!(collector instanceof Collector)){
             throw new IllegalArgumentException("collector must be of type Collector");
         }
-        this.recipe = expression.createMontiorRecipes((Collector) collector);
+        this.recipe = expression.createDataRecipe((Collector) collector);
         this.function = collector;
         this.defaultName = defaultName;
     }
 
+    /**
+     * Creates a new aggregated expression. Use this constructor when making
+     * a {@code DesiredRateExpression} that is a function of another
+     * {@code DesiredRateExpression}.
+     *
+     * @param expression the expression for the argument of the function
+     * @param function the function to calculate the new expression
+     * @param defaultName the name of the expression
+     */
     public DesiredRateExpression(DesiredRateExpression<?> expression, Function<T> function, String defaultName) {
         this.recipe = expression.recipe;
         this.function = function;
@@ -46,9 +55,10 @@ public class DesiredRateExpression<T> {
 
     /**
      * Creates a new aggregated expression. Use this constructor when making
-     * an aggregated expression out of different aggregated expressions.
+     * a {@code DesiredRateExpression} that is a function of a number of
+     * {@code DesiredRateExpression}s.
      *
-     * @param childExpressions expression on which the new expression depends on
+     * @param childExpressions expressions for the arguments of the function
      * @param function the function that calculates the value of the new expression
      * @param defaultName the display name of the expression
      */

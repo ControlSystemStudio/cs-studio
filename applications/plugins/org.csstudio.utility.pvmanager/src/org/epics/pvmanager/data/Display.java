@@ -18,10 +18,9 @@ import java.text.NumberFormat;
  * to a String.
  * <p>
  *
- * @param <T> a {@link java.lang.Number} type
  * @author carcassi
  */
-public interface Display<T extends Number> {
+public interface Display {
 
     /**
      * Lowest possible value to be displayed. Never null.
@@ -29,14 +28,14 @@ public interface Display<T extends Number> {
      * @return lower display limit
      */
     @Metadata
-    T getLowerDisplayLimit();
+    Double getLowerDisplayLimit();
 
     /**
      * Lowest possible value (included). Never null.
      * @return lower limit
      */
     @Metadata
-    T getLowerCtrlLimit();
+    Double getLowerCtrlLimit();
 
     /**
      * Lowest value before the alarm region. Never null.
@@ -44,7 +43,7 @@ public interface Display<T extends Number> {
      * @return lower alarm limit
      */
     @Metadata
-    T getLowerAlarmLimit();
+    Double getLowerAlarmLimit();
 
     /**
      * Lowest value before the warning region. Never null.
@@ -52,7 +51,7 @@ public interface Display<T extends Number> {
      * @return lower warning limit
      */
     @Metadata
-    T getLowerWarningLimit();
+    Double getLowerWarningLimit();
 
     /**
      * String representation of the units using for all values.
@@ -80,7 +79,7 @@ public interface Display<T extends Number> {
      * @return upper warning limit
      */
     @Metadata
-    T getUpperWarningLimit();
+    Double getUpperWarningLimit();
 
     /**
      * Highest value before the alarm region. Never null.
@@ -88,14 +87,14 @@ public interface Display<T extends Number> {
      * @return upper alarm limit
      */
     @Metadata
-    T getUpperAlarmLimit();
+    Double getUpperAlarmLimit();
 
     /**
      * Highest possible value (included). Never null.
      * @return upper limit
      */
     @Metadata
-    T getUpperCtrlLimit();
+    Double getUpperCtrlLimit();
 
     /**
      * Highest possible value to be displayed. Never null.
@@ -103,5 +102,5 @@ public interface Display<T extends Number> {
      * @return upper display limit
      */
     @Metadata
-    T getUpperDisplayLimit();
+    Double getUpperDisplayLimit();
 }

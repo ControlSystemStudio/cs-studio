@@ -83,8 +83,11 @@ class Notifier<T> {
         Object element = publishingQueue.poll();
         if (element == nullValue)
             return null;
-        else
-            return (T) element;
+        else {
+            @SuppressWarnings("unchecked")
+            T popped = (T) element;
+            return popped;
+        }
     }
 
     /**

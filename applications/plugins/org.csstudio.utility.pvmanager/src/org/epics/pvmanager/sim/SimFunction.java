@@ -124,7 +124,7 @@ public abstract class SimFunction<T> {
         if (task == null)
             throw new IllegalStateException("Must call initialize first");
 
-        timer.scheduleAtFixedRate(task, 0, intervalBetweenExecution);
+        timer.schedule(task, 0, intervalBetweenExecution);
         log.log(Level.FINE, "Synch starting {0} every " + intervalBetweenExecution + " ms", task);
     }
 

@@ -18,7 +18,7 @@ import org.epics.pvmanager.data.VDouble;
  *
  * @author carcassi
  */
-public class VDoubleProcessor extends SingleValueProcessor<VDouble, DBR_TIME_Double, DBR_CTRL_Double> {
+class VDoubleProcessor extends SingleValueProcessor<VDouble, DBR_TIME_Double, DBR_CTRL_Double> {
 
     public VDoubleProcessor(final Channel channel, Collector collector,
             ValueCache<VDouble> cache, final ExceptionHandler handler)

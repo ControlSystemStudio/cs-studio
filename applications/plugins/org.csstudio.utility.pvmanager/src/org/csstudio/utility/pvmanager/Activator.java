@@ -52,7 +52,7 @@ public class Activator extends Plugin {
 						composite.setDefaultDataSource(prefix);
 				}
 			}
-			PVManager.setConnectionManager(composite);
+			PVManager.setDefaultDataSource(composite);
 			// Set the thread on which to receive notifications
 			PVManager.setDefaultThread(SWTThread);
 		} catch (Exception e) {

@@ -18,7 +18,7 @@ import org.epics.pvmanager.data.VEnum;
  *
  * @author carcassi
  */
-public class VEnumProcessor extends SingleValueProcessor<VEnum, DBR_TIME_Enum, DBR_LABELS_Enum> {
+class VEnumProcessor extends SingleValueProcessor<VEnum, DBR_TIME_Enum, DBR_LABELS_Enum> {
 
     public VEnumProcessor(final Channel channel, Collector collector,
             ValueCache<VEnum> cache, final ExceptionHandler handler)

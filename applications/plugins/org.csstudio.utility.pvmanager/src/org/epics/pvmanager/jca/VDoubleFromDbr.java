@@ -7,8 +7,6 @@ package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Double;
-import gov.aps.jca.dbr.Severity;
-import gov.aps.jca.dbr.Status;
 import java.text.NumberFormat;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +18,7 @@ import org.epics.pvmanager.data.VDouble;
  *
  * @author carcassi
  */
-public class VDoubleFromDbr implements VDouble {
+class VDoubleFromDbr implements VDouble {
 
     private final DBR_TIME_Double dbrValue;
     private final DBR_CTRL_Double metadata;

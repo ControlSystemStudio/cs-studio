@@ -5,8 +5,6 @@
 
 package org.epics.pvmanager;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -21,14 +19,10 @@ import java.util.List;
  * is that the new calculation may not block the scanning and reading of the
  * values in the buffer.
  *
+ * @param <T> type being collected
  * @author carcassi
  */
 public abstract class Collector<T> extends Function<List<T>> {
-
-    @SuppressWarnings("unchecked")
-    public Collector() {
-        super((Class<List<T>>) (Class) List.class);
-    }
 
     /**
      * Calculates the next value and puts it in the queue.

@@ -87,7 +87,7 @@ public class ExpressionLanguage {
      * @return an expression representing the average of the expression
      */
     public static DesiredRateExpression<VDouble> averageOf(SourceRateExpression<VDouble> doublePv) {
-        DesiredRateExpression<List<VDouble>> queue = queueOf(doublePv);
+        DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
         Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
         return new DesiredRateExpression<VDouble>(queue,
                 new AverageAggregator(collector), "avg(" + doublePv.getDefaultName() + ")");
@@ -100,14 +100,14 @@ public class ExpressionLanguage {
      * @return an expression representing the statistical information of the expression
      */
     public static DesiredRateExpression<VStatistics> statisticsOf(SourceRateExpression<VDouble> doublePv) {
-        DesiredRateExpression<List<VDouble>> queue = queueOf(doublePv);
+        DesiredRateExpression<List<VDouble>> queue = newValuesOf(doublePv);
         Collector<VDouble> collector = (Collector<VDouble>) queue.getFunction();
         return new DesiredRateExpression<VStatistics>(queue,
                 new StatisticsDoubleAggregator(collector), "stats(" + doublePv.getDefaultName() + ")");
     }
 
     /**
-     * Applies {@link #statisticsOf(org.epics.pvmanager.SourceRateExpression) to all
+     * Applies {@link #statisticsOf(org.epics.pvmanager.SourceRateExpression)} to all
      * arguments.
      *
      * @param doubleExpressions a list of double expressions

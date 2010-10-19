@@ -19,7 +19,6 @@ class ListOfFunction extends Function<List> {
     List<Function> functions;
 
     public ListOfFunction(List<Function> functions) {
-        super(List.class);
         this.functions = functions;
     }
 

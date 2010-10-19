@@ -10,5 +10,5 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VStatistics extends Statistics, Alarm, Time, Display<Double> {
+public interface VStatistics extends Statistics, Alarm, Time, Display {
 }

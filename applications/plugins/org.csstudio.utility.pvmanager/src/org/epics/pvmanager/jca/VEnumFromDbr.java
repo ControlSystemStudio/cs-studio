@@ -18,7 +18,7 @@ import org.epics.pvmanager.data.VEnum;
  *
  * @author carcassi
  */
-public class VEnumFromDbr implements VEnum {
+class VEnumFromDbr implements VEnum {
 
     private final DBR_TIME_Enum dbrValue;
     private final DBR_LABELS_Enum metadata;

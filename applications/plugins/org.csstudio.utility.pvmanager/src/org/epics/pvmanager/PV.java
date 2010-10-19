@@ -36,7 +36,7 @@ public final class PV<T> {
      * @param clazz type of the new PV
      * @return a new PV
      */
-    static <E> PV<E> createPv(String name, Class<E> clazz) {
+    static <E> PV<E> createPv(String name) {
         return new PV<E>(name);
     }
 

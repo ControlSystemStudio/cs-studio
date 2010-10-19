@@ -18,7 +18,7 @@ import static org.epics.pvmanager.data.AlarmSeverity.*;
 class AverageAggregator extends Aggregator<VDouble, VDouble> {
 
     AverageAggregator(Collector<VDouble> collector) {
-        super(VDouble.class, collector);
+        super(collector);
     }
 
     @Override

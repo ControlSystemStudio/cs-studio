@@ -1,6 +1,5 @@
 package org.csstudio.utility.pvmanager.sim;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
 

@@ -9,6 +9,6 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VDoubleArray extends Array<Double>, Alarm, Time, Display<Double> {
+public interface VDoubleArray extends Array<Double>, Alarm, Time, Display {
     double[] getArray();
 }

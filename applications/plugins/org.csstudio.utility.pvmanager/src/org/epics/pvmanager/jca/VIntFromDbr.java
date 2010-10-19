@@ -5,7 +5,7 @@
 
 package org.epics.pvmanager.jca;
 
-import gov.aps.jca.dbr.DBR_CTRL_Int;
+import gov.aps.jca.dbr.DBR_CTRL_Double;
 import gov.aps.jca.dbr.DBR_TIME_Int;
 import java.text.NumberFormat;
 import java.util.List;
@@ -18,17 +18,17 @@ import org.epics.pvmanager.data.VInt;
  *
  * @author carcassi
  */
-public class VIntFromDbr implements VInt {
+class VIntFromDbr implements VInt {
 
     private final DBR_TIME_Int dbrValue;
-    private final DBR_CTRL_Int metadata;
+    private final DBR_CTRL_Double metadata;
     private final boolean disconnected;
 
-    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Int metadata) {
+    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata) {
         this(dbrValue, metadata, false);
     }
 
-    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Int metadata, boolean disconnected) {
+    public VIntFromDbr(DBR_TIME_Int dbrValue, DBR_CTRL_Double metadata, boolean disconnected) {
         this.dbrValue = dbrValue;
         this.metadata = metadata;
         this.disconnected = disconnected;
@@ -71,23 +71,23 @@ public class VIntFromDbr implements VInt {
     }
 
     @Override
-    public Integer getLowerDisplayLimit() {
-        return (Integer) metadata.getLowerDispLimit();
+    public Double getLowerDisplayLimit() {
+        return (Double) metadata.getLowerDispLimit();
     }
 
     @Override
-    public Integer getLowerCtrlLimit() {
-        return (Integer) metadata.getLowerCtrlLimit();
+    public Double getLowerCtrlLimit() {
+        return (Double) metadata.getLowerCtrlLimit();
     }
 
     @Override
-    public Integer getLowerAlarmLimit() {
-        return (Integer) metadata.getLowerAlarmLimit();
+    public Double getLowerAlarmLimit() {
+        return (Double) metadata.getLowerAlarmLimit();
     }
 
     @Override
-    public Integer getLowerWarningLimit() {
-        return (Integer) metadata.getLowerWarningLimit();
+    public Double getLowerWarningLimit() {
+        return (Double) metadata.getLowerWarningLimit();
     }
 
     @Override
@@ -102,23 +102,23 @@ public class VIntFromDbr implements VInt {
     }
 
     @Override
-    public Integer getUpperWarningLimit() {
-        return (Integer) metadata.getUpperWarningLimit();
+    public Double getUpperWarningLimit() {
+        return (Double) metadata.getUpperWarningLimit();
     }
 
     @Override
-    public Integer getUpperAlarmLimit() {
-        return (Integer) metadata.getUpperAlarmLimit();
+    public Double getUpperAlarmLimit() {
+        return (Double) metadata.getUpperAlarmLimit();
     }
 
     @Override
-    public Integer getUpperCtrlLimit() {
-        return (Integer) metadata.getUpperCtrlLimit();
+    public Double getUpperCtrlLimit() {
+        return (Double) metadata.getUpperCtrlLimit();
     }
 
     @Override
-    public Integer getUpperDisplayLimit() {
-        return (Integer) metadata.getUpperDispLimit();
+    public Double getUpperDisplayLimit() {
+        return (Double) metadata.getUpperDispLimit();
     }
 
 }

@@ -24,19 +24,33 @@ public abstract class DataSource {
      * It takes care of locking the collector and calling the disconnect
      * when appropriate.
      *
-     * @param <T>
+     * @param <P> event payload type
+     * @param <V> requested value type
      */
-    public static abstract class ValueProcessor<T, E> {
+    public static abstract class ValueProcessor<P, V> {
 
         private final WeakReference<Collector> collectorRef;
-        private final ValueCache<E> cache;
+        private final ValueCache<V> cache;
 
-        public ValueProcessor(Collector collector, ValueCache<E> cache) {
+        /**
+         * Creates a value processor using the collector and the value cache
+         * given.
+         *
+         * @param collector collector to notify of updates
+         * @param cache cache where to put the new data
+         */
+        public ValueProcessor(Collector collector, ValueCache<V> cache) {
             collectorRef = new WeakReference<Collector>(collector);
             this.cache = cache;
         }
 
-        public void processValue(T payload) {
+        /**
+         * Processes the given payload, by locking the collector, updating the
+         * cache and notifying the collector.
+         * 
+         * @param payload payload for the data source specific event
+         */
+        public final void processValue(P payload) {
             // Get the collector. If it was garbage collected,
             // remove the connect
             Collector c = collectorRef.get();
@@ -69,7 +83,7 @@ public abstract class DataSource {
          * @param cache the cache to update
          * @return true if an update is needed; false if not
          */
-        public abstract boolean updateCache(T payload, ValueCache<E> cache);
+        public abstract boolean updateCache(P payload, ValueCache<V> cache);
 
     }
 

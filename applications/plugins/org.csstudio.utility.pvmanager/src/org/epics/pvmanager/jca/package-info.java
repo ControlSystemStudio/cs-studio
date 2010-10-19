@@ -4,7 +4,6 @@
  */
 
 /**
- * Support for standard java types, including collections.
+ * Support for Epics 3 data source.
  */
-package org.epics.pvmanager.types;
-
+package org.epics.pvmanager.jca;

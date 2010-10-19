@@ -38,7 +38,6 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
      */
     @SuppressWarnings("unchecked")
     public SynchronizedVDoubleAggregator(List<String> names, List<Function<List<VDouble>>> collectors, TimeDuration tolerance) {
-        super(VMultiDouble.class);
         if (tolerance.equals(TimeDuration.ms(0)))
             throw new IllegalArgumentException("Tolerance between samples must be non-zero");
         this.tolerance = tolerance;

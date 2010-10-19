@@ -16,7 +16,7 @@ import org.epics.pvmanager.data.VString;
  *
  * @author carcassi
  */
-public class VStringFromDbr implements VString {
+class VStringFromDbr implements VString {
 
     private final DBR_TIME_String dbrValue;
     private final boolean disconnected;

@@ -283,34 +283,34 @@ public class ValueFactory {
     public static VInt newEInt(final Integer value, final AlarmSeverity alarmSeverity,
             final Set<String> alarmStatus, final List<String> possibleAlarms, final TimeStamp timeStamp,
             final Integer timeUserTag,
-            final Integer lowerDisplayLimit, final Integer lowerAlarmLimit, final Integer lowerWarningLimit,
-            final String units, final NumberFormat numberFormat, final Integer upperWarningLimit,
-            final Integer upperAlarmLimit, final Integer upperDisplayLimit,
-            final Integer lowerCtrlLimit, final Integer upperCtrlLimit) {
+            final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
+            final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
+            final Double upperAlarmLimit, final Double upperDisplayLimit,
+            final Double lowerCtrlLimit, final Double upperCtrlLimit) {
         return new VInt() {
 
             @Override
-            public Integer getLowerCtrlLimit() {
+            public Double getLowerCtrlLimit() {
                 return lowerCtrlLimit;
             }
 
             @Override
-            public Integer getUpperCtrlLimit() {
+            public Double getUpperCtrlLimit() {
                 return upperCtrlLimit;
             }
 
             @Override
-            public Integer getLowerDisplayLimit() {
+            public Double getLowerDisplayLimit() {
                 return lowerDisplayLimit;
             }
 
             @Override
-            public Integer getLowerAlarmLimit() {
+            public Double getLowerAlarmLimit() {
                 return lowerAlarmLimit;
             }
 
             @Override
-            public Integer getLowerWarningLimit() {
+            public Double getLowerWarningLimit() {
                 return lowerWarningLimit;
             }
 
@@ -325,17 +325,17 @@ public class ValueFactory {
             }
 
             @Override
-            public Integer getUpperWarningLimit() {
+            public Double getUpperWarningLimit() {
                 return upperWarningLimit;
             }
 
             @Override
-            public Integer getUpperAlarmLimit() {
+            public Double getUpperAlarmLimit() {
                 return upperAlarmLimit;
             }
 
             @Override
-            public Integer getUpperDisplayLimit() {
+            public Double getUpperDisplayLimit() {
                 return upperDisplayLimit;
             }
 

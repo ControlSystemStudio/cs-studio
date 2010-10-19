@@ -10,6 +10,6 @@ package org.epics.pvmanager.data;
  *
  * @author carcassi
  */
-public interface VMultiDouble extends MultiScalar<VDouble>, Alarm, Time, Display<Double> {
+public interface VMultiDouble extends MultiScalar<VDouble>, Alarm, Time, Display {
 
 }

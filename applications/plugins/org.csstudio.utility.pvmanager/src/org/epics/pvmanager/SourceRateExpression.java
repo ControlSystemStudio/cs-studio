@@ -14,6 +14,7 @@ import java.util.Map;
  * Objects of this class are not created directly but through the operators defined
  * in {@link PVExpressionLanguage}.
  *
+ * @param <T> type returned by the expression
  * @author carcassi
  */
 public class SourceRateExpression<T> {
@@ -51,19 +52,42 @@ public class SourceRateExpression<T> {
         this.defaultName = defaultName;
     }
 
+    /**
+     * Name representation of the expression.
+     * <p>
+     * TODO: is this really needed?
+     *
+     * @return a name
+     */
     public String getDefaultName() {
         return defaultName;
     }
 
-    public Map<String, ValueCache> getCaches() {
+    /**
+     * Returns all the {@link ValueCache}s required by this expression.
+     *
+     * @return the value caches for this expression
+     */
+    private Map<String, ValueCache> getCaches() {
         return caches;
     }
 
+    /**
+     * Returns the function represented by this expression.
+     *
+     * @return the function
+     */
     public Function<T> getFunction() {
         return function;
     }
 
-    DataRecipeBuilder createMontiorRecipes(Collector collector) {
+    /**
+     * Creates a data recipe for the given expression.
+     *
+     * @param collector the collector to be notified by changes in this expression
+     * @return a data recipe
+     */
+    DataRecipeBuilder createDataRecipe(Collector collector) {
         DataRecipeBuilder recipe = new DataRecipeBuilder();
         recipe.addCollector(collector, caches);
         return recipe;

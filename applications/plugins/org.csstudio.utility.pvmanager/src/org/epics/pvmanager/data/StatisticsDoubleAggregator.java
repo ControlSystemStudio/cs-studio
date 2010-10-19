@@ -30,7 +30,7 @@ import static org.epics.pvmanager.data.AlarmSeverity.*;
 class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
 
     StatisticsDoubleAggregator(Collector<VDouble> collector) {
-        super(VStatistics.class, collector);
+        super(collector);
     }
 
     @Override
