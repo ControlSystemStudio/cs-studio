@@ -28,7 +28,6 @@ import java.util.List;
 
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.platform.ui.util.LayoutUtil;
 import org.csstudio.sds.internal.runmode.RunModeBoxInput;
 import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.internal.actions.OpenScreenshotAction;
@@ -48,14 +47,16 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.ScrolledComposite;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -69,7 +70,7 @@ import org.eclipse.ui.PlatformUI;
  * displays.
  * 
  * @author Sven Wende
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  */
 public final class ShellRunModeBox extends AbstractRunModeBox {
 
@@ -107,35 +108,39 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 
 		_shell.setText(title);
 		_shell.setLocation(x, y);
-		_shell.setLayout(LayoutUtil.createGridLayout(1, 0, 0, 0, 0, 0, 0));
+		_shell.setLayout(new FillLayout());
 		_shell.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/sds.gif"));
+		_shell.setSize(width + SCROLLBAR_WIDTH + 20, height + SCROLLBAR_WIDTH + 60);
 
+		final ScrolledComposite scrollComposite = new ScrolledComposite(_shell, SWT.V_SCROLL | SWT.H_SCROLL);
+		scrollComposite.setExpandHorizontal(true);
+		scrollComposite.setExpandVertical(true);
+		scrollComposite.setSize(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 20);
+		
 		// create a parent composite that fills the whole shell
-		GridData gd = new GridData();
-		gd.verticalAlignment = 1;
-		gd.horizontalAlignment = 1;
-		gd.grabExcessHorizontalSpace = true;
-		gd.grabExcessVerticalSpace = true;
-		gd.horizontalAlignment = SWT.FILL;
-		gd.verticalAlignment = SWT.FILL;
-		gd.widthHint = width + SCROLLBAR_WIDTH;
-		gd.heightHint = height + SCROLLBAR_WIDTH;
-		Composite parent = new Composite(_shell, SWT.NONE);
-		parent.setLayout(LayoutUtil.createGridLayout(1, 0, 0, 0, 0, 0, 0));
-		parent.setLayoutData(LayoutUtil.createGridDataForFillingCell(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 20));
+		final Composite parent = new Composite(scrollComposite, SWT.NONE);
+		GridLayout layout = new GridLayout(1, false);
+		layout.marginBottom = 0;
+		layout.marginTop = 0;
+		layout.marginLeft = 0;
+		layout.marginRight = 0;
+		layout.horizontalSpacing = 0;
+		layout.verticalSpacing = 0;
+		parent.setLayout(layout);
+		parent.setSize(width, height + 20);
 
 		// create a composite for the graphical viewer
-		Composite c = new Composite(parent, SWT.None);
+		Composite c = new Composite(parent, SWT.NONE);
 		c.setLayout(new FillLayout());
-		c.setLayoutData(LayoutUtil.createGridDataForFillingCell());
+		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 
 		// create a composite for path and navigation information
 		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
 
 		if (predecessors.size() > 0) {
-			Composite navigation = new Composite(parent, SWT.None);
-			navigation.setLayout(LayoutUtil.createGridLayout(predecessors.size() * 2, 5, 5, 0, 0, 0, 0));
-			navigation.setLayoutData(LayoutUtil.createGridDataForHorizontalFillingCell(20));
+			Composite navigation = new Composite(parent, SWT.NONE);
+			navigation.setLayout(new GridLayout(1, false));
+			navigation.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
 
 			for (int i = 0; i < predecessors.size(); i++) {
 				new LinkLabel(navigation, predecessors.get(i));
@@ -146,8 +151,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 			}
 
 			Composite filler = new Composite(navigation, SWT.NONE);
-			filler.setLayoutData(LayoutUtil.createGridDataForFillingCell());
-
+			filler.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		}
 
 		// configure a graphical viewer
@@ -174,8 +178,7 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		
 		// provide a toolbar
 		createToolbar(_shell, graphicalViewer);
-
-		_shell.pack();
+		scrollComposite.setContent(parent);
 
 		// add dispose listener
 		_shell.addDisposeListener(new DisposeListener() {
