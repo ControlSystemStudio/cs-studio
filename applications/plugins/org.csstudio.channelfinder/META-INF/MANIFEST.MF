@@ -9,8 +9,10 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.ui;bundle-version="1.1.1",
  org.eclipse.core.expressions;bundle-version="3.4.101",
  org.csstudio.platform.libs.channelfinderAPI;bundle-version="1.0.0",
- org.csstudio.platform.libs.jersey;bundle-version="1.0.0"
+ org.csstudio.platform.libs.jersey;bundle-version="1.0.0",
+ org.csstudio.utility.channel;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.csstudio.platform.ui.security
 Bundle-ClassPath: .
+Export-Package: org.csstudio.channelfinder.views

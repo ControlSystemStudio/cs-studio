@@ -94,13 +94,13 @@ public class SearchChannels extends Job {
 			} else {
 				// this is a property or tag
 				String key = words[index].split("=")[0];
-				String[] values = words[index].split("=")[1].split(",");
+				String values = words[index].split("=")[1];
 				if (key.equals("Tags")) {
-					for (int i = 0; i < values.length; i++)
-						map.put("~tag", values[i]);
+					map.put(key, values);
+//					for (int i = 0; i < values.length; i++)
+//						map.put("~tag", values[i]);
 				} else {
-					for (int i = 0; i < values.length; i++)
-						map.put(key, values[i]);
+					map.put(key, values);
 				}
 			}
 		}
