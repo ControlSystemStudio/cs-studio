@@ -323,4 +323,31 @@
             widgetId="org.csstudio.sds.components.StripChart">
       </widgetPropertyPostProcessor>
    </extension>
+   <extension
+         point="org.csstudio.sds.widgetPropertyPostProcessors">
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.PolyModelPositionPostProcessor"
+            propertyId="position.y"
+            skipOnLoad="true"
+            widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.PolyModelPositionPostProcessor"
+            propertyId="position.x"
+            skipOnLoad="true"
+            widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.PolyModelSizePostProcessor"
+            propertyId="width"
+            skipOnLoad="true"
+            widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
+      </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.PolyModelSizePostProcessor"
+            propertyId="height"
+            skipOnLoad="true"
+            widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
+      </widgetPropertyPostProcessor>
+   </extension>
    </plugin>
