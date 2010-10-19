@@ -103,10 +103,7 @@ public class Messages extends NLS
     public static String MoveItemMsg;
     public static String NormalModeTT;
     public static String Preferences_CommandDirectory;
-    public static String Preferences_JMS_AlarmServerTopic;
-    public static String Preferences_JMS_AlarmClientTopic;
     public static String Preferences_JMS_IdleTimeout;
-    public static String Preferences_JMS_TalkTopic;
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;
     public static String Preferences_JMS_Password;
