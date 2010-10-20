@@ -56,11 +56,8 @@ public class PreferencePage extends FieldEditorPreferencePage
     {
         final Composite parent = getFieldEditorParent();
 
-        // Overall configuration name, JMS topics
+        // Overall configuration name
         addField(new StringFieldEditor(Preferences.ROOT_COMPONENT, Messages.Preferences_RootComponent, parent));
-        addField(new StringFieldEditor(Preferences.JMS_ALARM_SERVER_TOPIC, Messages.Preferences_JMS_AlarmServerTopic, parent));
-        addField(new StringFieldEditor(Preferences.JMS_ALARM_CLIENT_TOPIC, Messages.Preferences_JMS_AlarmClientTopic, parent));
-        addField(new StringFieldEditor(Preferences.JMS_TALK_TOPIC, Messages.Preferences_JMS_TalkTopic, parent));
         
         // RDB Server
         addField(new StringFieldEditor(Preferences.RDB_URL, Messages.Preferences_RDB_URL, parent));

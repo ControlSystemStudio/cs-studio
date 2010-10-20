@@ -37,9 +37,6 @@ public class Preferences
     final public static String JMS_URL = "jms_url";
     final public static String JMS_USER = "jms_user";
     final public static String JMS_PASSWORD = "jms_password";
-    final public static String JMS_ALARM_SERVER_TOPIC = "jms_alarm_server_topic";
-    final public static String JMS_ALARM_CLIENT_TOPIC = "jms_alarm_client_topic";
-    final public static String JMS_TALK_TOPIC = "jms_talk_topic";
     final public static String JMS_IDLE_TIMEOUT = "jms_idle_timeout";
     final public static String PV_START_DELAY = "pv_start_delay";
     final public static String CONNECTION_GRACE_PERIOD = "connection_grace_period";
@@ -122,19 +119,19 @@ public class Preferences
     /** @return JMS topic used for alarm messages from server */
     public static String getJMS_AlarmServerTopic()
     {
-        return getString(JMS_ALARM_SERVER_TOPIC);
+        return getAlarmTreeRoot() + "_SERVER";
     }
 
     /** @return JMS topic used for alarm messages form clients */
     public static String getJMS_AlarmClientTopic()
     {
-        return getString(JMS_ALARM_CLIENT_TOPIC);
+        return getAlarmTreeRoot() + "_CLIENT";
     }
     
     /** @return JMS topic used to annunciate alarm messages */
     public static String getJMS_TalkTopic()
     {
-        return getString(JMS_TALK_TOPIC);
+        return getAlarmTreeRoot() + "_TALK";
     }
 
     /** @return Delay in seconds between expected idle messages */
