@@ -376,6 +376,15 @@
            id="org.csstudio.sds.ui.displayRunAsView"
            name="RunAsView">
      </command>
+     <command
+           defaultHandler="org.csstudio.sds.ui.internal.actions.MoveWidegtlHandler"
+           id="org.csstudio.sds.ui.moveWidgetCommand"
+           name="Move Widget">
+     </command>
+     <category
+           id="org.csstudio.sds.ui.editorCategory"
+           name="SDS Editor Category">
+     </category>
   </extension>
   <extension
         point="org.eclipse.ui.bindings">
@@ -448,6 +457,26 @@
             contextId="org.eclipse.ui.contexts.dialogAndWindow"
             sequence="M2+INSERT"
             schemeId="de.smartpls.platform.ui.acceleratorScheme" />
+      <key
+            commandId="org.csstudio.sds.ui.moveWidgetCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_LEFT">
+      </key>
+      <key
+            commandId="org.csstudio.sds.ui.moveWidgetCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_UP">
+      </key>
+      <key
+            commandId="org.csstudio.sds.ui.moveWidgetCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_DOWN">
+      </key>
+      <key
+            commandId="org.csstudio.sds.ui.moveWidgetCommand"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+ARROW_RIGHT">
+      </key>
    </extension>
   <extension
         point="org.eclipse.ui.popupMenus">
@@ -600,5 +629,13 @@
                 category="default">
           </propertyCategory>
        </propertyContributor>
+    </extension>
+    <extension
+          point="org.eclipse.ui.contexts">
+       <context
+             id="org.csstudio.sds.ui.sdsEditor"
+             name="SDS Editor Context"
+             parentId="org.eclipse.ui.contexts.window">
+       </context>
     </extension>
 </plugin>
