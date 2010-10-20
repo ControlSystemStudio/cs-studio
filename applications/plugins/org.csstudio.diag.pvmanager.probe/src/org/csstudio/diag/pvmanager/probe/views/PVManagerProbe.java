@@ -1,43 +1,41 @@
 package org.csstudio.diag.pvmanager.probe.views;
 
+import static org.epics.pvmanager.data.ExpressionLanguage.vDouble;
+
 import org.csstudio.diag.pvmanager.probe.Activator;
 import org.csstudio.diag.pvmanager.probe.Messages;
-import org.csstudio.platform.data.IMetaData;
-import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.model.CentralItemFactory;
+import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.util.swt.meter.MeterWidget;
-import org.eclipse.swt.widgets.Button;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.MessageBox;
-import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.part.*;
-import org.eclipse.core.commands.Command;
-import org.eclipse.core.runtime.Plugin;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.jface.action.*;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.ui.*;
-import org.eclipse.swt.widgets.Menu;
-import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IMemento;
+import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.part.ViewPart;
 import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
 import org.epics.pvmanager.data.VDouble;
-import static org.epics.pvmanager.data.ExpressionLanguage.*;
 
 /**
  *
@@ -554,5 +552,30 @@ public class PVManagerProbe extends ViewPart implements PVValueChangeListener {
 	@Override
 	public void dispose() {
 		pv.close();
+	}
+
+	/**
+	 * Open PVManagerProbe initialised to the given PV
+	 * 
+	 * @param pvName
+	 * @return
+	 */
+	public static boolean activateWithPV(IProcessVariable pvName) {
+		 try
+	        {
+	            final IWorkbench workbench = PlatformUI.getWorkbench();
+	            final IWorkbenchWindow window = workbench.getActiveWorkbenchWindow();
+	            final IWorkbenchPage page = window.getActivePage();
+	            final PVManagerProbe probe = (PVManagerProbe) page.showView(ID, createNewInstance(),
+	                                                IWorkbenchPage.VIEW_ACTIVATE);
+	            probe.setPVName(pvName.getName());
+	            return true;
+	        }
+	        catch (final Exception e)
+	        {
+//	            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
+	            e.printStackTrace();
+	        }
+	        return false;
 	}
 }
