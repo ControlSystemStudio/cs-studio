@@ -45,15 +45,6 @@ public class ChannelFinderPreferencePage extends FieldEditorPreferencePage
 		// no need to override checkstate
 		// urlField.setEmptyStringAllowed(false);
 		addField(urlField);
-
-//		truststoreField = new FileFieldEditor(
-//				PreferenceConstants.TrustStore_Location, "Truststore:",
-//				getFieldEditorParent());
-//		addField(truststoreField);		
-//	
-//		addField(new PasswordFieldEditor(PreferenceConstants.TrustPass,
-//				"Truststore passpharse: ", getFieldEditorParent(),
-//				Activator.PLUGIN_ID));		
 	
 		addField(new StringFieldEditor(PreferenceConstants.Username, 
 			    "username:", getFieldEditorParent()));
