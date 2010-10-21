@@ -47,7 +47,10 @@ public class SNSPVUtilData implements PVUtilDataAPI
         final String deviceSelect = " select distinct dvc_id from epics.dvc " +
         "where upper(dvc_id) like upper(?)" +
         "and ( bl_dvc_ind = 'Y'" +
-        "	or dvc_type_id in ('IOC') )" +
+        "	or dvc_type_id in (select distinct a.dvc_type_id from epics.dvc a, epics.ioc_dvc b" +
+        "						where a.dvc_id = b.dvc_id union " +
+        "						select distinct a.dvc_type_id from epics.dvc a, epics.ics_comm_dvc b" +
+        "						where a.dvc_id = b.dvc_id) )" +
         "order by dvc_id";
          
         final PreparedStatement select = 
@@ -87,11 +90,12 @@ public class SNSPVUtilData implements PVUtilDataAPI
         if (deviceID == "") deviceID = iocNetNm = WILDCARD;
         else iocNetNm = deviceID.replaceAll("([_:])", "-").toLowerCase();
         
-        if (filterPV == "")  filterPV = WILDCARD;
+        if (filterPV.length() <= 0)  filterPV = WILDCARD;
 
+        
         String likeClause;
-        if (filterPV.contains("%")) likeClause = "like ?";
-        else likeClause = "= ?";
+        if (filterPV.contains("%")) likeClause = "like upper(?)";
+        else likeClause = "= upper(?)";
         
 
 		Logger logger = CentralLogger.getInstance().getLogger(this);
@@ -99,10 +103,10 @@ public class SNSPVUtilData implements PVUtilDataAPI
 		if (deviceID == WILDCARD  && filterPV != WILDCARD)
         {
             String pvSelect = "select distinct sgnl_id,rec_type_id ||' record associated with: ' || ioc_nm as info " +
-            		"from epics.sgnl_fld_v where sgnl_id ";
+            		"from epics.sgnl_fld_v where upper(sgnl_id) ";
             pvSelect += likeClause;
             pvSelect += " union ";
-            pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where sgnl_id ";
+            pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where upper(sgnl_id) ";
             pvSelect += likeClause;
             logger.debug("1: PV Filter - No Device");
             select = connection.prepareStatement(pvSelect);
@@ -124,10 +128,10 @@ public class SNSPVUtilData implements PVUtilDataAPI
         else if (filterPV != WILDCARD && deviceID != WILDCARD )
         {
             String pvSelect = "select distinct sgnl_id,rec_type_id ||' record associated with: ' || ioc_nm as info " +
-            		"from epics.sgnl_fld_v where ioc_nm = ? and sgnl_id ";
+            		"from epics.sgnl_fld_v where ioc_nm = ? and upper(sgnl_id) ";
             pvSelect += likeClause;
             pvSelect += " union ";
-            pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where dvc_id = ? and sgnl_id ";
+            pvSelect += "select distinct sgnl_id,rec_type_id ||' record associated with: ' || dvc_id as info from epics.sgnl_rec where dvc_id = ? and upper(sgnl_id) ";
             pvSelect += likeClause;
             logger.debug("3: PV Filter and Device Filter ioc " + iocNetNm + "dvc " + deviceID + "rec " + filterPV);
             select = connection.prepareStatement(pvSelect);

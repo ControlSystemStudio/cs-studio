@@ -19,6 +19,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.List;
 import org.eclipse.swt.widgets.Table;
@@ -41,6 +42,7 @@ public class GUI implements PVUtilListener
     public List deviceList;
     public ListViewer deviceListViewer;
     private TableViewer pv_table;
+    private Label curDVCFilter, curPVFilter;
     
     /** Enumerator that dictates what text elements to manipulate when a button is pressed */
     public enum ItemIndex {
@@ -142,11 +144,41 @@ public class GUI implements PVUtilListener
         clearPVButton = new Button(container, SWT.PUSH | SWT.CENTER);
         clearPVButton.setText("Clear PV");
         clearPVButton.setLayoutData(new GridData());
+        
+        Group readoutContainer = new Group(container, SWT.NULL);
+		GridLayout readoutLayout = new GridLayout();
+        readoutLayout.numColumns = 4;
+        readoutContainer.setLayout(readoutLayout);
+		gd = new GridData(GridData.FILL, GridData.CENTER, true, false);
+		gd.horizontalSpan = 2;
+		readoutContainer.setLayoutData(gd);
+        
+        l = new Label(readoutContainer, 0);
+        l.setText("Current Device: ");
+        gd = new GridData();
+        l.setLayoutData(gd);
+        
+        curDVCFilter = new Label(readoutContainer, 0);
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        gd.grabExcessHorizontalSpace = true;
+        curDVCFilter.setLayoutData(gd);
+        
+        l = new Label(readoutContainer, 0);
+        l.setText("PV Filter: ");
+        gd = new GridData();
+        l.setLayoutData(gd);
+        
+        curPVFilter = new Label(readoutContainer, 0);
+        gd = new GridData();
+        gd.horizontalAlignment = SWT.FILL;
+        gd.grabExcessHorizontalSpace = true;
+        curPVFilter.setLayoutData(gd);
 
         clearAllButton = new Button(container, SWT.PUSH | SWT.CENTER);
         clearAllButton.setText("Reset All");
         gd = new GridData(GridData.HORIZONTAL_ALIGN_END);
-        gd.horizontalSpan = 3;
+        gd.horizontalSpan = 1;
         clearAllButton.setLayoutData(gd);
 
         // Rest: PV Table
@@ -210,6 +242,7 @@ public class GUI implements PVUtilListener
             {
         		final String[] dvc = deviceList.getSelection();
         		model.setFECName(dvc[0]);
+        		setCurrentDeviceFilter(dvc[0]);
             }
         });
 
@@ -226,6 +259,7 @@ public class GUI implements PVUtilListener
                 if (e.detail == SWT.TRAVERSE_RETURN)
                 {
                     final String pvFilter = recPVFilterEntry.getText().trim();
+                    setCurrentPVFilter(pvFilter);
                     model.setPVFilter(pvFilter);
                  }
             }
@@ -242,6 +276,7 @@ public class GUI implements PVUtilListener
             {
             	model.setObjectClear(ItemIndex.FEC);
                 fecEntry.setText("");
+                curDVCFilter.setText("");
                 deviceList.deselectAll();
             }
         });
@@ -255,6 +290,7 @@ public class GUI implements PVUtilListener
             public void widgetSelected(SelectionEvent event)
             {
             	model.setObjectClear(ItemIndex.PV);
+            	curPVFilter.setText("");
                 recPVFilterEntry.setText("");
             }
         });
@@ -270,6 +306,8 @@ public class GUI implements PVUtilListener
             	model.setObjectClear(ItemIndex.All);
                 recPVFilterEntry.setText("");
                 fecEntry.setText("");
+                curDVCFilter.setText("");
+                curPVFilter.setText("");
                 deviceList.deselectAll();
                 reInitialize();
             }
@@ -357,6 +395,23 @@ public class GUI implements PVUtilListener
         model.setPVFilter("");
     }
 
+    /**
+     * Resets the Filters used by the control 
+     */
+    public void setCurrentDeviceFilter(final String dvcString)
+    {
+        curDVCFilter.setText(dvcString);
+    }
+
+    /**
+     * Resets the Filters used by the control 
+     */
+    public void setCurrentPVFilter(final String pvString)
+    {
+    	curPVFilter.setText(pvString);
+    }
+
+    
     public void setFocus()
     {
         // Set focus FEC Filter

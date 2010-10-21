@@ -26,8 +26,8 @@ public class PVUtilModel
 	/** PVUtilDataAPI that provides actual data, obtained via extension point */
     private final PVUtilDataAPI api;
     
-    /** Current FEC filter */
-    private String fec_filter = "";
+    /** Current FEC name */
+    private String fec_name = "";
 
     /** Current PV filter */
     private String pv_filter = "";
@@ -77,7 +77,6 @@ public class PVUtilModel
 	 */
     public void setFECFilter(final String fec_filter)
     {
-        this.fec_filter = fec_filter;
         startFECLookup(fec_filter);
     }
 
@@ -86,7 +85,8 @@ public class PVUtilModel
      */
     public void setFECName(final String fec_name)
     {
-        startPVLookup(fec_name, pv_filter);
+    	this.fec_name = fec_name;
+    	startPVLookup(fec_name, pv_filter);
     }
 
     /** Set the FEC filter and trigger a FEC list refresh.
@@ -95,7 +95,7 @@ public class PVUtilModel
     public void setPVFilter(final String pv_filter)
     {
         this.pv_filter = pv_filter;
-        startPVLookup(fec_filter, pv_filter);
+        startPVLookup(fec_name, pv_filter);
     }
     
 	/** When one of the clear buttons is pressed then that enum value
@@ -108,13 +108,13 @@ public class PVUtilModel
         switch (what)
         {
         case FEC:
-            fec_filter = "";
+            fec_name = "";
             break;
         case PV:
             pv_filter = "";
             break;
         default:
-            fec_filter = "";
+            fec_name = "";
             pv_filter = "";
         }
     }
