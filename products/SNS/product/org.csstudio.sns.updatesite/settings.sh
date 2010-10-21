@@ -2,7 +2,7 @@
 #
 # Kay Kasemir
 
-export VERSION=2.3.0
+export VERSION=2.3.1
 
 # Use only the date as qualifier?
 # With default, the time is included and then the same plugin for
@@ -10,7 +10,7 @@ export VERSION=2.3.0
 QUALIFIER=`date "+%Y%m%d"`
 
 # OS X
-export ECLIPSE_BASE=/Kram/Eclipse/3_6/rcp
+export ECLIPSE_BASE=/Kram/Eclipse/3_6_1/rcp
 export WORKSPACE=/Kram/Eclipse/Workspace
 export TOP=/Kram/MerurialRepos/cs-studio/products/SNS/product
 
