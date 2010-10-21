@@ -17,4 +17,4 @@ Bundle-ClassPath: lib/cmu_time_awb.jar,
  lib/jsapi.jar,
  .
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS

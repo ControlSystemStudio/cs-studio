@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Headless JMS Sender
 Bundle-SymbolicName: org.csstudio.utility.jmssendcmd;singleton:=true
 Bundle-Version: 1.2.0.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.4.0",
  org.csstudio.apputil;bundle-version="1.0.6",
