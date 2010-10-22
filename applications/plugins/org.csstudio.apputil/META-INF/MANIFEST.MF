@@ -8,6 +8,7 @@ Export-Package: org.csstudio.apputil.args,
  org.csstudio.apputil.formula,
  org.csstudio.apputil.macros,
  org.csstudio.apputil.ringbuffer,
+ org.csstudio.apputil.test,
  org.csstudio.apputil.text,
  org.csstudio.apputil.time,
  org.csstudio.apputil.xml
