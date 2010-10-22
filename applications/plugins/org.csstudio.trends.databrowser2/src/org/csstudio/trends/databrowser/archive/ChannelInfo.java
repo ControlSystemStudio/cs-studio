@@ -56,6 +56,7 @@ public class ChannelInfo implements IProcessVariableWithArchive
         return null;
     }
     
+    /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj)
     {
@@ -63,6 +64,16 @@ public class ChannelInfo implements IProcessVariableWithArchive
             return false;
         final ChannelInfo other = (ChannelInfo) obj;
         return other.name.equals(name) && other.getArchiveDataSource().equals(archive);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = prime + name.hashCode();
+	    result = prime * result + archive.hashCode();
+	    return result;
     }
     
     /** @return String representation for debugging */
