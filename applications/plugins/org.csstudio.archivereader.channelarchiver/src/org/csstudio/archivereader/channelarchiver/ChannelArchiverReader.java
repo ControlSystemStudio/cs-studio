@@ -156,13 +156,15 @@ public class ChannelArchiverReader implements ArchiveReader
             final ITimestamp start, final ITimestamp end,
             final boolean optimized, final int count) throws Exception
     {
+    	final ValueRequest request;
         synchronized (this)
         {
             current_request =
                 new ValueRequest(this, key, name, start, end, optimized, count);
+            request = current_request;
         }
-        current_request.read(xmlrpc);
-        final IValue result[] = current_request.getSamples();
+        request.read(xmlrpc);
+        final IValue result[] = request.getSamples();
         synchronized (this)
         {
             current_request = null;

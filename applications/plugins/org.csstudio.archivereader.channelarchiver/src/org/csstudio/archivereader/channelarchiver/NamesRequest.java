@@ -31,7 +31,7 @@ public class NamesRequest
 		try
 		{
 			final Vector<Object> params = new Vector<Object>();
-			params.add(new Integer(key));
+			params.add(Integer.valueOf(key));
 			params.add(pattern);
 			result = (Vector<?>) xmlrpc.execute("archiver.names", params);
 		}

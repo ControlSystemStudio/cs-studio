@@ -111,7 +111,7 @@ final class ServerInfoRequest
     /** @return Returns the severity infos. */
 	public SeverityImpl getSeverity(int severity)
 	{
-        final SeverityImpl sev = severities.get(new Integer(severity));
+        final SeverityImpl sev = severities.get(Integer.valueOf(severity));
         if (sev != null)
             return sev;
         return new SeverityImpl(
