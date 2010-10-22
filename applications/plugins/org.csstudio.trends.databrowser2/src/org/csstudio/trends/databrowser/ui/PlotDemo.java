@@ -37,43 +37,40 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class PlotTest
+public class PlotDemo
 {
-    // FIXME (kasemir) : remove sysos - use assertions
-
     private boolean run = true;
 
     final private PlotListener listener = new PlotListener()
     {
         public void scrollRequested(final boolean enable_scrolling)
         {
-            //System.outprintln("Scroll enabled: " + enable_scrolling);
-
+        	System.out.println("Scroll enabled: " + enable_scrolling);
         }
 
         public void timeConfigRequested()
         {
-            //System.outprintln("Time Config requested");
+        	System.out.println("Time Config requested");
         }
 
         public void timeAxisChanged(final long start_ms, final long end_ms)
         {
-            //System.outprintln("Time axis: " + start_ms + " ... " + end_ms);
+        	System.out.println("Time axis: " + start_ms + " ... " + end_ms);
         }
 
         public void valueAxisChanged(final int index, final double lower, final double upper)
         {
-            //System.outprintln("Value axis " + index + ": " + lower + " ... " + upper);
+            System.out.println("Value axis " + index + ": " + lower + " ... " + upper);
         }
 
         public void droppedName(final String name)
         {
-            //System.outprintln("Name dropped: " + name);
+            System.out.println("Name dropped: " + name);
         }
 
         public void droppedPVName(final String name, final IArchiveDataSource archive)
         {
-            //System.outprintln("PV Name dropped: " + name);
+            System.out.println("PV Name dropped: " + name);
         }
     };
 
@@ -150,14 +147,11 @@ public class PlotTest
         shell.open();
 
         final Display display = Display.getDefault();
-//        while (run  &&  !shell.isDisposed())
-//        {
-//            if (!display.readAndDispatch()) {
-//                display.sleep();
-//            }
-//        }
-
-        // FIXME (kasemir) : please shell dialog contents with assertions and close shell again
+        while (run  &&  !shell.isDisposed())
+        {
+            if (!display.readAndDispatch())
+                display.sleep();
+        }
         shell.close();
     }
 }
