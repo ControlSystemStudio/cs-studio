@@ -129,7 +129,7 @@ public class MessageRDB
                     props = new HashMap<String, String>();
                     id = next_id;
                     datum = next_datum;
-                    props.put(Message.DATUM, Message.date_format.format(datum));
+                    props.put(Message.DATUM, Message.format(datum));
                 }
                 // Get Prop/Value from MESSAGE table
                 int res_idx = 3;
