@@ -28,7 +28,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public class Message implements IPropertySource
 {
     /** Suggested time stamp format */
-    final public static SimpleDateFormat date_format =
+    final private static SimpleDateFormat date_format =
         new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");         //$NON-NLS-1$
 
     /** Property for sequential message number */
@@ -68,6 +68,14 @@ public class Message implements IPropertySource
         this.sequence = sequence;
         this.id = id;
         this.properties = properties;
+    }
+    
+    public static String format(final Date date)
+    {
+    	synchronized (date_format)
+        {
+        	return date_format.format(date);
+        }
     }
 
     /** Set 'delta'.

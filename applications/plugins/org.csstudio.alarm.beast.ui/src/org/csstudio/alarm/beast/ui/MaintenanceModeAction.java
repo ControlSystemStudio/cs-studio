@@ -33,11 +33,7 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
     public MaintenanceModeAction(final AlarmClientModel model)
     {
         super(Messages.MaintenanceMode, AuthIDs.CONFIGURE, false);
-        if (image_on == null)
-        {
-            image_on = Activator.getImageDescriptor("icons/maintenance_act.gif"); //$NON-NLS-1$
-            image_off = Activator.getImageDescriptor("icons/operate.gif"); //$NON-NLS-1$
-        }
+        getIcons();
         this.model = model;
         
         //authorization
@@ -63,6 +59,15 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
             public void newAlarmTree(AlarmClientModel model) { /* Ignore */ }
             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv) { /* Ignore */ }
         });
+    }
+    
+    /** Assert that icons are loaded */
+    private static void getIcons()
+    {
+        if (image_off != null)
+        	return;
+        image_on = Activator.getImageDescriptor("icons/maintenance_act.gif"); //$NON-NLS-1$
+        image_off = Activator.getImageDescriptor("icons/operate.gif"); //$NON-NLS-1$
     }
     
     /** Update button show show current model mode */

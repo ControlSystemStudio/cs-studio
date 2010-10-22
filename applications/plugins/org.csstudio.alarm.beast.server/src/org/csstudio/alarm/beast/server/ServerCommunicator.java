@@ -62,6 +62,14 @@ public class ServerCommunicator extends JMSAlarmCommunicator
         // Send initial idle message right away; more via timer
         sendIdleMessage();
     }    
+    
+    /** Start the communicator */
+    @Override
+    public void start()
+    {
+    	super.start();
+    	idle_timer.start();
+    }
 
     /** {@inheritDoc} */
     @Override

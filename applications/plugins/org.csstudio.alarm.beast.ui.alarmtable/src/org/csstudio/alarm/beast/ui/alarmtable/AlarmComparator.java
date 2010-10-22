@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtable;
 
+import java.io.Serializable;
 import java.util.Comparator;
 
 import org.csstudio.alarm.beast.AlarmTreePV;
@@ -15,9 +16,12 @@ import org.csstudio.alarm.beast.ui.alarmtable.AlarmTableLabelProvider.ColumnInfo
 /** ViewerComparator (= table sorter) that compares one column of an alarm.
  *  @author Kay Kasemir
  */
-public class AlarmComparator implements Comparator<AlarmTreePV>
+public class AlarmComparator implements Comparator<AlarmTreePV>, Serializable
 {
-    final private ColumnInfo col_info;
+    /** Serializable... */
+    private static final long serialVersionUID = 1L;
+    
+	final private ColumnInfo col_info;
     final private boolean up;
 
     /** Initialize

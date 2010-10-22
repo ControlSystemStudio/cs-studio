@@ -361,7 +361,7 @@ public class AlarmLogic
                     delayed_check.cancel();
             }
         }
-        updateState(received_state, delay > 0);
+        updateState(received_state, getDelay() > 0);
     }
     
     /** Compute the new alarm state based on current state and new data from

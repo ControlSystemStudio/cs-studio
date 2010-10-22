@@ -51,10 +51,15 @@ public class QueueManager implements Runnable
         // Handle queue in background thread
         thread = new Thread(this, "Annunciation QueueManager");
         thread.setDaemon(true);
+    }
+
+    /** Start the queue manager thread */
+    public void start()
+    {
         thread.start();      
     }
-   
-    /** method run is the code to be executed by new thread */
+
+	/** method run is the code to be executed by new thread */
     public void run()
     {
         // The main application will NOT exit when this thread exits.

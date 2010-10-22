@@ -97,6 +97,7 @@ public class AlarmClientModel
         // Communicator will queue received events until we
         // read the whole configuration.
         communicator = new AlarmClientCommunicator(allow_write, this);
+        communicator.start();
         
         new ReadConfigJob(this).schedule();
     }
@@ -114,6 +115,12 @@ public class AlarmClientModel
             instance = new AlarmClientModel();
         ++instance.references;
         return instance;
+    }
+    
+    /** Release the 'instance' */
+    private static void releaseInstance()
+    {
+    	instance = null;
     }
 
     /** Must be called to release model when no longer used.
@@ -150,7 +157,7 @@ public class AlarmClientModel
         {
             CentralLogger.getInstance().getLogger(this).warn(ex);
         }
-        instance = null;
+        releaseInstance();
     }
 
     /** @return <code>true</code> if model allows write access
@@ -252,8 +259,13 @@ public class AlarmClientModel
         final Logger logger = CentralLogger.getInstance().getLogger(this);
         if (logger.isInfoEnabled())
         {
-            final int count = config_tree.getElementCount();
-            final int pv_count = config_tree.getPVCount();
+            final int count;
+            final int pv_count;
+        	synchronized (this)
+            {
+                count = config_tree.getElementCount();
+                pv_count = config_tree.getPVCount();
+            }
             logger.info(String.format(
                 "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
                 count, pv_count, timer.getSeconds(),

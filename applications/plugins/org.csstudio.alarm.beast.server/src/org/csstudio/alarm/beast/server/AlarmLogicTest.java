@@ -25,7 +25,7 @@ public class AlarmLogicTest
     private static final String OK = "OK";
 
     /** Alarm logic listener that remembers update/annunc. actions */
-    class AlarmLogicDemo implements AlarmLogicListener
+    static class AlarmLogicDemo implements AlarmLogicListener
     {
     	final private AlarmLogic logic;
         boolean fired_enablement = false;

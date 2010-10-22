@@ -143,6 +143,7 @@ class AlarmClientCommunicator extends JMSAlarmCommunicator
                             Preferences.getJMS_AlarmServerTopic(),
               true);
         this.model = model;
+        timeout_timer.start();
     }
     
     /** Dispatch queued events,

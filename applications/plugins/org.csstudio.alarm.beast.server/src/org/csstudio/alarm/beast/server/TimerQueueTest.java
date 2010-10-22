@@ -18,7 +18,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class TimerQueueTest
 {
-    class Check extends TimerTask
+    static class Check extends TimerTask
     {
         final double delay;
         

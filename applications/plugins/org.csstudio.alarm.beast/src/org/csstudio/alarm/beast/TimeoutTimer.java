@@ -42,7 +42,6 @@ abstract public class TimeoutTimer extends Thread
         this.timeout = timeout < GRANULARITY ? GRANULARITY : timeout;
         setDaemon(true);
         reset();
-        start();
     }
     
     /** @return <code>true</code> while timed out */
