@@ -133,11 +133,10 @@ public class AlarmServer
         	alarm_tree.dump(System.out);
         }
 
-        // Log memory usage
-        final double MB = 1024.0*1024.0;
-        final double free = Runtime.getRuntime().freeMemory() / MB;
-        final double total = Runtime.getRuntime().totalMemory() / MB;
-        final double max = Runtime.getRuntime().maxMemory() / MB;
+        // Log memory usage in MB
+        final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
+        final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);
+        final double max = Runtime.getRuntime().maxMemory() / (1024.0*1024.0);
         
         final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
         System.out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
@@ -211,7 +210,7 @@ public class AlarmServer
     {
     	// Read alarm hierarchy
         final BenchmarkTimer timer = new BenchmarkTimer();
-        
+        final int pv_count;
         synchronized (this)
         {
         	alarm_tree = rdb.readConfiguration();
@@ -234,11 +233,12 @@ public class AlarmServer
             pv_map = new HashMap<String, AlarmPV>();
             for (AlarmPV pv : pv_list)
                 pv_map.put(pv.getName(), pv);
+            pv_count = pv_list.length;
         }
         timer.stop();
         // LDAP results: Read 12614 PVs in 2.69 seconds, 4689.0 PVs/sec
         System.out.format("Read %d PVs in %.2f seconds: %.1f PVs/sec\n",
-                pv_list.length, timer.getSeconds(), pv_list.length/timer.getSeconds());
+        		pv_count, timer.getSeconds(), pv_count/timer.getSeconds());
     }
 
     /** Recursively locate AlarmPVs in alarm hierarchy
