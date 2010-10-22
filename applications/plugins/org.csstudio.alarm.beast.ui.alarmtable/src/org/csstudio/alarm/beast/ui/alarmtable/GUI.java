@@ -205,6 +205,8 @@ public class GUI implements AlarmClientModelListener
                 acknowledged_table_viewer.setSelection(null, true);
             }
         });
+        
+        gui_update.start();
     }
 
     /** Add the sash element for active alarms
