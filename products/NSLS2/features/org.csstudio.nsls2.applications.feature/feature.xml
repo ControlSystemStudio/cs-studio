@@ -2,7 +2,8 @@
 <feature
       id="org.csstudio.nsls2.applications.feature"
       label="nsls2-applications"
-      version="1.0.0.qualifier">
+      version="1.0.0.qualifier"
+      provider-name="NSLS2">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -21,31 +22,21 @@
    </url>
 
    <includes
-         id="org.csstudio.databrowser.nsls2.feature"
+         id="org.csstudio.nsls2.basic.applications.feature"
          version="0.0.0"
          optional="true"/>
-
-   <includes
-         id="org.csstudio.opi.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
-         id="org.csstudio.diag.probe.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
-         id="org.csstudio.display.pvtable.feature"
-         version="0.0.0"
-         optional="true"/>
-
-   <includes
-         id="org.csstudio.diag.epics.pvtree.nsls2.feature"
-         version="0.0.0"/>
 
    <includes
          id="org.csstudio.channelfinder.feature"
+         version="0.0.0"
+         optional="true"/>
+
+   <includes
+         id="org.csstudio.nsls2.databrowser.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.nsls2.opibuilder.feature"
          version="0.0.0"/>
 
 </feature>

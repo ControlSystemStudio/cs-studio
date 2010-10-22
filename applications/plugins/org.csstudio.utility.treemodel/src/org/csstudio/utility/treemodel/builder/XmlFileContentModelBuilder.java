@@ -107,15 +107,15 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
     private ContentModel<T> createContentModelFromFile(@Nonnull final Document doc)
         throws CreateContentModelException {
 
-        final Element rootElement = doc.getRootElement();
+        final Element xmlRootElement = doc.getRootElement();
 
         ContentModel<T> model = null;
         try {
-            final String attributeValue = rootElement.getAttributeValue("name");
-            if ((attributeValue == null) || (attributeValue.length() == 0)) {
+            final String attributeValue = xmlRootElement.getAttributeValue("name");
+            if (attributeValue == null || attributeValue.length() == 0) {
                 throw new CreateContentModelException("Root element has not a valid name attribute.", null);
             }
-            final String typeValue = _configurationRoot.getRootTypeValue();
+            final String typeValue = _configurationRoot.getUnitTypeValue();
             if (!attributeValue.equals(typeValue)) {
                 throw new CreateContentModelException("Root element does not match root type value=" + typeValue + " in Enum " + _configurationRoot.name(), null);
             }
@@ -126,11 +126,8 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             throw new CreateContentModelException("Component model could not be constructed. Invalid LDAP name for root element.", e);
         }
 
-        // Leave out the root element
-        final List<Element> elements = getChildrenElements(rootElement);
-        for (final Element child :  elements) {
-            processElement(model, child, model.getRoot());
-        }
+        processElement(model, xmlRootElement, model.getVirtualRoot());
+
         return model;
     }
 
@@ -178,10 +175,10 @@ public class XmlFileContentModelBuilder<T extends Enum<T> & ITreeNodeConfigurati
             ISubtreeNodeComponent<T> newLdapChild;
             try {
                 newLdapChild = new TreeNodeComponent<T>(name,
-                        oc,
-                        ldapParent,
-                        attributes,
-                        fullName);
+                                                        oc,
+                                                        ldapParent,
+                                                        attributes,
+                                                        fullName);
             } catch (final InvalidNameException e) {
                 throw new CreateContentModelException("Component model with LdapName " + fullName + " could not be constructed. Invalid LDAP name.", e);
 

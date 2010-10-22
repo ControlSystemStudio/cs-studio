@@ -24,6 +24,9 @@ package org.epics.css.dal.spi;
 
 import java.util.Properties;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Logger;
+import org.apache.log4j.varia.NullAppender;
 import org.epics.css.dal.simulation.SimulatorUtilities;
 
 
@@ -37,6 +40,32 @@ import org.epics.css.dal.simulation.SimulatorUtilities;
  */
 public final class Plugs
 {
+	
+	/*
+	 * 
+	 * STATIC DECLARATIONS, COMMON TO ALL PLUGS OBJECTS
+	 * 
+	 */
+	
+	/** 
+	 * Keyword used in System properties to configure DAL logging. 
+	 * Valie values are:
+	 * <ul>
+	 * <li>true - DAL will call basic log4j configuration, which enables logging to console.</li>
+	 * <li>false - DAL will not configure logging to console.</li>
+	 * </ul>
+	 * 
+	 * By default true is assumed and logging will be configured.
+	 * 
+	 * <p>
+	 * Regardless of this setting an application can configure own appenders for DAL logging.
+	 * See {@link Plugs#getLogger()} for details.
+	 * </p>  
+	 *  
+	 * @see #getLogger()
+	 */
+	public static final String PLUGS_LOGGING = "dal.logging";
+
 	/**
 	 * Keyword for list of plugs. Plugs in list must be separated with
 	 * comman.
@@ -81,8 +110,8 @@ public final class Plugs
 	public static final long DEFAULT_INITIAL_CONNECTION_TIMEOUT = 1000;
 
 	private static Plugs plugs;
-	private Properties properties;
 	
+
 	/**
 	 * Returns an instance of <code>Plugs</code> with System <code>Properties</code> as storage.
 	 * @return an instance of <code>Plugs</code> with System <code>Properties</code> as storage
@@ -112,23 +141,6 @@ public final class Plugs
 	}
 	
 	/**
-	 * Gets the <code>Properties</code> of this <code>Plug</code>.
-	 * @return the <code>Properties</code>
-	 */
-	public Properties getProperties() {
-		return properties;
-	}
-	
-	/**
-	     *
-	     */
-	private Plugs(Properties properties)
-	{
-		this.properties = properties;
-		SimulatorUtilities.configureSimulatorPlug(properties);
-	}
-
-	/**
 	 * Returns array with plug names defined in provided properties.
 	 *
 	 * @param prop properties
@@ -150,18 +162,6 @@ public final class Plugs
 		}
 
 		return r;
-	}
-
-	/**
-	 * Returns array with plug names defined in System properties.
-	 *
-	 * @return array with plug names
-	 */
-	public /*static*/ String[] getPlugNames()
-	{
-//		return getPlugNames(System.getProperties());
-		// TODO is this OK?
-		return getPlugNames(properties);
 	}
 
 	/**
@@ -203,21 +203,6 @@ public final class Plugs
 	}
 
 	/**
-	 * Returns property factory class for plug name. Class name is
-	 * obtained from system properties.
-	 *
-	 * @param name plug name
-	 *
-	 * @return property factory class
-	 */
-	public /*static*/ Class getPropertyFactoryClassForPlug(String name)
-	{
-//		return getPropertyFactoryClassForPlug(name, System.getProperties());
-		// TODO is this OK?
-		return getPropertyFactoryClassForPlug(name, properties);
-	}
-
-	/**
 	 * Returns device factory class for plug name. Class name is
 	 * obtained from provided configuration.
 	 *
@@ -253,21 +238,6 @@ public final class Plugs
 
 		throw new IllegalArgumentException(
 		    "No factory class defined for plug '" + name + "'.");
-	}
-
-	/**
-	 * Returns device factory class for plug name. Class name is
-	 * obtained from system properties.
-	 *
-	 * @param name plug name
-	 *
-	 * @return device factory class
-	 */
-	public /*static*/ Class getDeviceFactoryClassForPlug(String name)
-	{
-//		return getDeviceFactoryClassForPlug(name, System.getProperties());
-		// TODO is this OK?
-		return getDeviceFactoryClassForPlug(name, properties);
 	}
 
 	/**
@@ -464,6 +434,122 @@ public final class Plugs
 	public static final long getInitialConnectionTimeout(Properties p)
 	{
 		return getInitialConnectionTimeout(p, DEFAULT_INITIAL_CONNECTION_TIMEOUT);
+	}
+	
+	/**
+	 * Return logger, which is parent for all DAL plug loggers.
+	 * 
+	 * <p>
+	 * DAL Plug loggers collect and distribute messages, which are intended for general plublic.
+	 * E.g. application which is not interested in internal structure, but wants to display progress when some channel 
+	 * was connected or some user initiated action failed.
+	 * </p>
+	 * 
+	 * <p>
+	 * Parent DAL logger name is 'DAL'. Names of plug loggers are 'DAL.PLUG_NAME', for example 'DAL.EPICS'.
+	 * </p>
+	 * 
+	 * <p>
+	 * Default configuration of appenders is controlled with System parameter {@link Plugs#PLUGS_LOGGING}.
+	 * </p>
+	 *    
+	 * @return parent logger for all DAL plug loggers.
+	 * 
+	 * @see #PLUGS_LOGGING
+	 * @see #getPlugLogger(String)
+	 */
+	public static final Logger getLogger() {
+		if (logger == null) {
+			logger = Logger.getLogger("DAL");
+			
+			boolean log= Boolean.parseBoolean(System.getProperty(PLUGS_LOGGING, Boolean.TRUE.toString()));
+			
+			if (log) {
+				BasicConfigurator.configure();
+			} else {
+				// supresses log4j warning about nonconfigured logging  
+				logger.addAppender(new NullAppender());
+			}			
+		}
+		return logger;
+	}
+	
+	/**
+	 * Returns logger for particular DAL plug, this logger shuld be used for general messages about plug activity.
+	 *  
+	 * @param plugName the name ov the plug for which logger is to be obtained.
+	 * 
+	 * @return logger for DAL plug
+	 * 
+	 */
+	public static final Logger getPlugLogger(String plugName) {
+		return getLogger().getLogger("DAL."+plugName);
+	}
+
+	
+	
+	
+	
+	/*
+	 * 
+	 * INSTANCE SPECIFIC ONLY DECLARATIONS 
+	 * 
+	 */
+	
+	private Properties properties;
+	private static Logger logger;
+	
+	/**
+	 * Gets the <code>Properties</code> of this <code>Plug</code>.
+	 * @return the <code>Properties</code>
+	 */
+	public Properties getProperties() {
+		return properties;
+	}
+	
+	/**
+	     *
+	     */
+	private Plugs(Properties properties)
+	{
+		this.properties = properties;
+		SimulatorUtilities.configureSimulatorPlug(properties);
+	}
+
+	/**
+	 * Returns array with plug names defined in properties for this Plugs instance.
+	 *
+	 * @return array with plug names
+	 */
+	public String[] getPlugNames()
+	{
+		return getPlugNames(properties);
+	}
+
+	/**
+	 * Returns property factory class for plug name. Class name is
+	 * obtained from properties.
+	 *
+	 * @param name plug name
+	 *
+	 * @return property factory class
+	 */
+	public Class getPropertyFactoryClassForPlug(String name)
+	{
+		return getPropertyFactoryClassForPlug(name, properties);
+	}
+
+	/**
+	 * Returns device factory class for plug name. Class name is
+	 * obtained from properties.
+	 *
+	 * @param name plug name
+	 *
+	 * @return device factory class
+	 */
+	public Class getDeviceFactoryClassForPlug(String name)
+	{
+		return getDeviceFactoryClassForPlug(name, properties);
 	}
 	
 	public long getInitialConnectionTimeout() {

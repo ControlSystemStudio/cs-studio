@@ -27,14 +27,16 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
 import javax.naming.directory.Attributes;
 import javax.naming.ldap.LdapName;
+
+import com.google.common.collect.Maps;
 
 /**
  * Structural component for the content model tree.
@@ -50,8 +52,7 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
 
     private final Set<T> _subComponentTypes;
 
-    private final Map<String, INodeComponent<T>> _children =
-        new HashMap<String, INodeComponent<T>>();
+    private final Map<String, INodeComponent<T>> _children = Maps.newLinkedHashMap();
 
     /**
      * Constructor.
@@ -89,7 +90,9 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
     public void addChild(@Nonnull final INodeComponent<T> child) {
 
         if(!_subComponentTypes.contains(child.getType())) {
-            throw new IllegalArgumentException("The child type " + child.getType() + " is not permitted for this component!");
+            throw new IllegalArgumentException("The child type " + child.getType() + " of node " +
+                                               child.getName() + " is not permitted for this component " +
+                                               getName() + "!");
         }
 
         final String nameKey = child.getName();
@@ -157,6 +160,14 @@ public class TreeNodeComponent<T extends Enum<T> & ITreeNodeConfiguration<T>> ex
         if (_children.containsKey(name)) {
             _children.remove(name);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void removeAllChildren() {
+        _children.clear();
     }
 
 }

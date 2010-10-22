@@ -33,7 +33,12 @@ public class ScriptProperty extends AbstractWidgetProperty {
 
 	public static final String XML_ATTRIBUTE_TRIGGER = "trig"; //$NON-NLS-1$
 
-	
+	/**Script Property Constructor. The property value type is {@link ScriptsInput}.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 */
 	public ScriptProperty(String prop_id, String description,
 			WidgetPropertyCategory category) {
 		super(prop_id, description, category, new ScriptsInput());

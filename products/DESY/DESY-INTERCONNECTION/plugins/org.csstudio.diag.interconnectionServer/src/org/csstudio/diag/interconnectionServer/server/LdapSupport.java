@@ -21,11 +21,35 @@ package org.csstudio.diag.interconnectionServer.server;
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Set;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.naming.CompositeName;
+import javax.naming.InvalidNameException;
+import javax.naming.Name;
+import javax.naming.NameParser;
+import javax.naming.NamingException;
+import javax.naming.directory.SearchControls;
+import javax.naming.directory.SearchResult;
+import javax.naming.ldap.LdapName;
+import javax.naming.ldap.Rdn;
+
+import org.apache.log4j.Logger;
+import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 
 /**
  * Helper class for local LDAP support.
@@ -38,57 +62,116 @@ public enum LdapSupport {
     // Modern singleton pattern with synchronization and serialization safety for free.
     INSTANCE;
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapSupport.class);
+
 	private LdapSupport() {
 		// EMPTY
 	}
 
+
 	/**
 	 *
 	 * @param ipAddress
-	 * @param ipName
+	 * @param hostName
 	 * @param ldapIocName
 	 * @return 1. Param = logicalIocName; 2. Param = ldapIocName
+	 * @throws NamingException
 	 */
-	public String[] getLogicalIocName ( final String ipAddress, final String ipName) {
+	@Nonnull
+	public String[] getLogicalIocName (@Nonnull final InetAddress ipAddress,
+	                                   @Nonnull final String hostName) throws NamingException {
 
 		final String[] stringReturnArray = new String[2];
-		String logicalIocName, ldapIocName = null;
 
-		/*
-		 * error handling
-		 */
-		if ( ipAddress.length() < 8) {
-			/*
-			 * can't be a valid IP address
-			 */
-			return new String[]{"invalid logical address","invalid ldap name"};
-		}
+		final LdapName ldapIocEntry = getLogicalNameFromIPAdr(ipAddress);
 
-		ldapIocName = Engine.getInstance().getLogicalNameFromIPAdr(ipAddress);
-		System.out.println("LdapSupport:  ldapIocName = " + ldapIocName);
-		if ( ldapIocName != null) {
+
+		final String hostAddress = ipAddress.getHostAddress();
+        if (ldapIocEntry != null) {
+		    LOG.info("Identified IOC entry = " + ldapIocEntry + " for IP address " + hostAddress);
 			/*
 			 * fortunately a valid name was found
 			 * the string returned looks like: econ=iocName, ....
-			 * make sure the string is a valid LDAP address - must contain "econ"
+			 * make sure the string is a valid LDAP address - must start with "econ"
 			 */
-			if ( ldapIocName.contains("econ") ) {
-				logicalIocName = ldapIocName.substring( ldapIocName.indexOf("econ=")+5,ldapIocName.indexOf(","));
-				System.out.println("logicalIocName = " + logicalIocName);
-				stringReturnArray[0] = logicalIocName;
-				stringReturnArray[1] = ldapIocName;
-				return stringReturnArray;
-			}
-            System.out.println("ldapIocName = " + ldapIocName);
-            stringReturnArray[0] = ldapIocName;
-            stringReturnArray[1] = ldapIocName;
-            return stringReturnArray;
+		    final int pos = ldapIocEntry.size() - 1;
+		    final Rdn rdn = ldapIocEntry.getRdn(pos);
+		    if (rdn.getType().equals(LdapEpicsControlsConfiguration.IOC.getNodeTypeName())) {
+		        final String iocName =  (String) rdn.getValue();
+
+
+		        LOG.info("logicalIocName = " + iocName);
+		        stringReturnArray[0] = iocName;
+		        stringReturnArray[1] = ldapIocEntry.get(pos);
+		        return stringReturnArray;
+		    }
 		}
-        CentralLogger.getInstance().warn(this,
-        		"No logical name configured in LDAP for IOC: " +
-        		ipName + " [" + ipAddress + "]");
-        return new String[]{"~" + ipName + "~","~" + ipName + "~"};
+        LOG.warn("No logical name configured in LDAP for IOC: " + hostName + " [" + hostAddress + "]");
+
+        return new String[]{"~" + hostName + "~","~" + hostName + "~"};
 	}
+
+    /**
+     * Returns the distinguished name of an IOC in the LDAP directory. If no IOC
+     * with the given IP address is configured in the LDAP directory, returns
+     * <code>null</code>.
+     *
+     * @param ipAddress
+     *            the IP address of the IOC.
+     * @return The LDAP distinguished name of the IOC with the given IP address.
+     * @throws NamingException
+     */
+	@CheckForNull
+    synchronized public LdapName getLogicalNameFromIPAdr(@CheckForNull final InetAddress ipAddress) throws NamingException {
+        if (ipAddress == null) {
+            return null;
+        }
+
+        final ILdapService service = Activator.getDefault().getLdapService();
+
+        final ILdapSearchResult result =
+            service.retrieveSearchResultSynchronously(LdapUtils.createLdapName(LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(),
+                                                                               LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue()),
+                                                      "(&(objectClass=epicsController)" +
+                                                      "(|(epicsIPAddress=" + ipAddress.getHostAddress() + ")" +
+                                                      "(epicsIPAddressR=" + ipAddress.getHostAddress() + ")))",
+                                                      SearchControls.SUBTREE_SCOPE);
+
+        Set<SearchResult> answerSet;
+        if (result == null ) {
+            LOG.info("No search result for this ip address " + ipAddress);
+            return null;
+        } else {
+            answerSet = result.getAnswerSet();
+        }
+
+        if (answerSet.isEmpty()) {
+            LOG.info("No search result for this ip address " + ipAddress);
+            return null;
+        }
+        final SearchResult entry = answerSet.iterator().next();
+
+        // The relative name of the search result is relative to
+        // ou=EpicsControls, but the ou=EpicsControls part should
+        // be contained in the returned result, so this code adds
+        // it back to the name. Wrapping/unwrapping in CompositeName
+        // ensures proper escaping/unescaping of LDAP and JNDI
+        // special characters.
+        final Name cname = new CompositeName(entry.getName());
+        final NameParser nameParser = service.getLdapNameParser();
+        final LdapName ldapName = (LdapName) nameParser.parse(cname.get(0));
+        ldapName.add(0, new Rdn(LdapEpicsControlsConfiguration.UNIT.getNodeTypeName(),
+                                LdapEpicsControlsConfiguration.UNIT.getUnitTypeValue()));
+
+        if (answerSet.size() > 1) {
+            LOG.warn("More than one IOC entry in LDAP directory for IP address: " + ipAddress);
+        }
+        return ldapName;
+    }
+
+
+
+
 	/*
 	 * TODO
 	 * MCL - 2010-06-10
@@ -197,7 +280,7 @@ public enum LdapSupport {
 //		 */
 //	}
 
-	public void setAllRecordsToConnected ( final String ldapIocName) {
+	public void setAllRecordsToConnected ( final String ldapIocName) throws InvalidNameException {
 		/*
 		 * just a convenience method
 		 */
@@ -205,7 +288,7 @@ public enum LdapSupport {
         final String status = "ONLINE";
         final String severity = "NO_ALARM";
 
-		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToConnected");
+		LOG.debug("IocChangeState: setAllRecordsToConnected");
 		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
 
 	}
@@ -216,7 +299,7 @@ public enum LdapSupport {
 		 */
         final String status = "DISCONNECTED";
         final String severity = "INVALID";
-		CentralLogger.getInstance().debug(this,"IocChangeState: setAllRecordsToDisconnected");
+		LOG.debug("IocChangeState: setAllRecordsToDisconnected");
 		setAllRecordsInLdapServerAndJms ( ldapIocName, status, severity);
 
 	}
@@ -226,7 +309,14 @@ public enum LdapSupport {
 	 * started. But they will write in parallel to the LDAP server - but in sequence!
 	 * This will (partly) avoid congestion on the send queue in addLdapWriteRequest()
 	 */
-	synchronized private void setAllRecordsInLdapServerAndJms (final String ldapIocName, final String status, final String severity) {
+	synchronized private void setAllRecordsInLdapServerAndJms (@CheckForNull final String ldapIocName,
+	                                                           final String status,
+	                                                           final String severity) {
+
+	    if (ldapIocName == null) {
+	        return;
+	    }
+
 	    String logicalIocName = ldapIocName;
 		/*
 		 * find all records belonging to the IOC: logicalIocName
@@ -238,29 +328,27 @@ public enum LdapSupport {
 
 		//
 		// create time stamp written to epicsAlarmTimeStamp
-		// this is a copy from the class ClientRequest
+		// this is a copy from the class ClientRequest - na grosssartig!
 		//
 		final SimpleDateFormat sdf = new SimpleDateFormat( PreferenceProperties.JMS_DATE_FORMAT);
-        final java.util.Date currentDate = new java.util.Date();
+        final Date currentDate = new Date();
         final String eventTime = sdf.format(currentDate);
 
-		final ArrayList<String> allRecordList = Engine.getInstance().getAllRecordsOfIOC(ldapIocName, severity, status, eventTime);
-		
+		final List<String> allRecordsList = getAllRecordsOfIOC(ldapIocName, severity, status, eventTime);
+
 		//
 		// check for a valid record list
 		//
-		if (allRecordList == null) {
-			CentralLogger.getInstance().warn(this, "IOC OFFLINE - NO channels found in LDAP for : "+ldapIocName);
+		if (allRecordsList == null) {
+			LOG.warn( "IOC OFFLINE - NO channels found in LDAP for : "+ldapIocName);
 			return;
 		}
 
-        if(logicalIocName==null){
-            return;
-        }else if(logicalIocName.contains("=")){
+        if(logicalIocName.contains("=")){
             logicalIocName  = logicalIocName.split("[=,]")[1];
         }
-        for (final String channelName : allRecordList) {
-            CentralLogger.getInstance().debug(this, "Found Channelname: "+channelName);
+        for (final String channelName : allRecordsList) {
+            LOG.debug( "Found Channelname: "+channelName);
             if(channelName!=null){
             	/*
             	 * set values in LDAP and create JMS message
@@ -271,13 +359,88 @@ public enum LdapSupport {
     }
 
 
+
+    /**
+     * Set the severity, status and eventTime to a record.
+     *
+     * @param ldapPath
+     *            the LDAP-Path to the record.
+     * @param severity
+     *            the severity to set.
+     * @param status
+     *            the status to set.
+     * @param eventTime
+     *            the event time to set.
+     * @return List to receive all channel of a IOC. the List is observable. TODO (bknerr) : Really?!
+     */
+    public List<String> getAllRecordsOfIOC(@Nonnull final String ldapPath,
+                                           final String severity,
+                                           final String status,
+                                           final String eventTime) {
+
+        LdapName ldapName;
+        try {
+            ldapName = new LdapName(ldapPath);
+        } catch (final InvalidNameException e) {
+            LOG.error("LDAP path name not valid: " + ldapPath, e);
+            return Collections.emptyList();
+        }
+
+        final String ldapIocPrefix = LdapEpicsControlsConfiguration.IOC.getNodeTypeName() + LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+        if (!ldapName.get(ldapName.size() -1 ).startsWith(ldapIocPrefix)) {
+            LOG.error("Unknown LDAP Path! Path is " + ldapPath);
+            return Collections.emptyList();
+        }
+
+        try {
+            if (ldapName.get(0).equals(LdapFieldsAndAttributes.LDAP_ROOT.get(0))) {
+                ldapName.remove(0);
+            } // remove country rdn
+            if (ldapName.get(0).equals(LdapFieldsAndAttributes.LDAP_ROOT.get(1))) {
+                ldapName.remove(0); // remove organization rdn
+            }
+        } catch (final InvalidNameException e) {
+            LOG.error("LDAP name modification failed" + ldapPath);
+            return Collections.emptyList();
+        }
+
+        final ILdapService service = Activator.getDefault().getLdapService();
+        if (service == null) {
+            LOG.error("LDAP service unavailable.");
+            return Collections.emptyList();
+        }
+        final ILdapSearchResult result =
+            service.retrieveSearchResultSynchronously(ldapName,
+                                                      LdapUtils.any(LdapEpicsControlsConfiguration.RECORD.getNodeTypeName()),
+                                                      SearchControls.ONELEVEL_SCOPE);
+        Set<SearchResult> answerSet;
+        if (result == null) {
+            LOG.info("No search result for LDAP query.");
+            return Collections.emptyList();
+        } else {
+            answerSet = result.getAnswerSet();
+            if (answerSet.isEmpty()) {
+                LOG.info("No search result for LDAP query.");
+                return Collections.emptyList();
+            }
+        }
+        final List<String> list = new ArrayList<String>(answerSet.size());
+        for (final SearchResult row : answerSet) {
+            final String name = row.getName() + "," + ldapPath;
+            list.add(name);
+        }
+        return list;
+    }
+
+
+
 	private void setSingleChannel ( String channelName,
 	                                final String status,
 	                                final String severity,
 	                                final String eventTime,
 	                                final String logicalIocName) {
         if(channelName==null){
-        	CentralLogger.getInstance().error(this, "no channel name set");
+        	LOG.error( "no channel name set");
             return;
         }
         /*
@@ -285,9 +448,9 @@ public enum LdapSupport {
          * remove all the alarm updates into LDAP from here
          * we do NOT persist alarm states any more in LDAP!
          */
-        
+
 //        /*
-//         * TODO:
+//         * TODO (mclausen):
 //         * addLdapWriteRequest does NOT support the usage of the full qualifies LDAP string
 //         * So we remove it - for now until it's supported
 //         */
@@ -297,7 +460,7 @@ public enum LdapSupport {
 //
 //        if(severity!=null){
 //            Engine.getInstance().addLdapWriteRequest( LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY, channelName, severity);
-//            CentralLogger.getInstance().debug(this, "Set SEVERITY: " + severity + " for channel: " + channelName);
+//            LOG.debug( "Set SEVERITY: " + severity + " for channel: " + channelName);
 //        }
 //        if(status!=null){
 //            Engine.getInstance().addLdapWriteRequest( LdapFieldsAndAttributes.ATTR_FIELD_ALARM_STATUS, channelName, status);

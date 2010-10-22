@@ -26,9 +26,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Properties;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -42,6 +41,7 @@ import org.epics.css.dal.device.AbstractDevice;
 import org.epics.css.dal.impl.PropertyUtilities;
 import org.epics.css.dal.spi.AbstractFactory;
 import org.epics.css.dal.spi.AbstractFactorySupport;
+import org.epics.css.dal.spi.Plugs;
 
 import com.cosylab.util.ListenerList;
 
@@ -150,6 +150,8 @@ public abstract class AbstractPlug implements PlugContext
 		} else {
 			this.configuration = (Properties)configuration.clone();
 		}
+		
+		getLogger().info("'"+getPlugType()+"' started.");
 	}
 
 	/**
@@ -229,7 +231,7 @@ public abstract class AbstractPlug implements PlugContext
 	 * creates  proxies for particular communication layer.<p>For
 	 * example plug that connects to EPICS device my return string "EPICS".</p>
 	 *
-	 * @return plug destingushing type name
+	 * @return plug distinguishing type name
 	 */
 	public abstract String getPlugType();
 
@@ -281,30 +283,42 @@ public abstract class AbstractPlug implements PlugContext
 		if (uniqueName == null) {
 			throw new NullPointerException("uniqueName");
 		}
-
-		PropertyProxy<?> p;
-		if (PropertyProxy.class.equals(type)) {
-			p= getPropertyProxyFromCache(uniqueName);
-		} else {
-			p= getPropertyProxyFromCache(uniqueName,type);
-		}
-
-		if (p != null) {
-			if (!type.isInstance(p)) {
-				throw new ConnectionException(this,
-				    "PropertyProxy in cache for '" + uniqueName
-				    + "' is of type '" + p.getClass().getName()
-				    + "' and not of expected type '" + type.getName() + "'.");
+		try {
+	
+			PropertyProxy<?> p;
+			if (PropertyProxy.class.equals(type)) {
+				p= getPropertyProxyFromCache(uniqueName);
+			} else {
+				p= getPropertyProxyFromCache(uniqueName,type);
 			}
+			
+			if (p != null) {
+				if (!type.isInstance(p)) {
+					throw new ConnectionException(this,
+					    "PropertyProxy in cache for '" + uniqueName
+					    + "' is of type '" + p.getClass().getName()
+					    + "' and not of expected type '" + type.getName() + "'.");
+				}
+	
+				getLogger().debug("'"+uniqueName+"' taken from connection cache (t:"+type.getName()+").");
+				return type.cast(p);
+			}
+		
+			TT pp = createNewPropertyProxy(uniqueName, type);
+			
+			getLogger().info("'"+uniqueName+"' created (t:"+type.getName()+").");
 
-			return type.cast(p);
+			putPropertyProxyToCache(pp);
+
+			return pp;
+		} catch (ConnectionException e) {
+			getLogger().warn("'"+uniqueName+"' failed to connect (t:"+type.getName()+").", e);
+			throw e;
+		} catch (Exception e) {
+			getLogger().error("'"+uniqueName+"' failed to connect, internal error possible (t:"+type.getName()+").", e);
+			throw new ConnectionException(this, "Internal error while connecting to '"+uniqueName+"'.", e);
 		}
 
-		TT pp = createNewPropertyProxy(uniqueName, type);
-
-		putPropertyProxyToCache(pp);
-
-		return pp;
 	}
 
 	/**
@@ -402,9 +416,12 @@ public abstract class AbstractPlug implements PlugContext
 		if (canDestroy) {
 			try {
 				proxy.destroy();
+				getLogger().info("'"+proxy.getUniqueName()+"' destroyed (t:"+proxy.getClass().getName()+").");
 			} catch (Exception e) {
-				getLogger().log(Level.WARNING, "Unable to release proxy '" + proxy.getUniqueName() + "'.", e);
+				getLogger().warn("'"+proxy.getUniqueName()+"' destroyed with error (t:"+proxy.getClass().getName()+").",e);
 			}
+		} else {
+			getLogger().debug("'"+proxy.getUniqueName()+"' release indicated (t:"+proxy.getClass().getName()+").");
 		}
 	}
 
@@ -1300,8 +1317,7 @@ public abstract class AbstractPlug implements PlugContext
 	 */
 	public Logger getLogger() {
 		if (logger == null) {
-			logger = Logger.getLogger("DAL-" + getPlugType());
-			logger.setLevel(Level.ALL);
+			logger = Plugs.getPlugLogger(getPlugType());
 		}
 		return logger;
 	}

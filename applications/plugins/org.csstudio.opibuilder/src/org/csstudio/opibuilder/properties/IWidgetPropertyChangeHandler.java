@@ -42,8 +42,7 @@ public interface IWidgetPropertyChangeHandler {
 	 *            The new property value.
 	 * @param figure
 	 *            The figure to apply graphical operations to.
-	 * @return true, if the figure needs to be repainted after the
-	 *         property change handling.
+	 * @return Not used. Reserved for future use.
 	 */
 	boolean handleChange(Object oldValue, Object newValue,
 			IFigure figure);

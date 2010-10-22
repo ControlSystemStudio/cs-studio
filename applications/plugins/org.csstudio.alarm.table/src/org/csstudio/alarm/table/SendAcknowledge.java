@@ -27,9 +27,11 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.jms.MapMessage;
 
 import org.apache.log4j.Logger;
@@ -41,11 +43,11 @@ import org.csstudio.platform.CSSPlatformInfo;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
-import org.csstudio.utility.ldap.engine.Engine;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+
 
 /**
  * This class gets a list of JMSMessages that should be acknowledged. The
@@ -54,18 +56,18 @@ import org.eclipse.core.runtime.jobs.Job;
  * @author jhatje
  *
  */
-public class SendAcknowledge extends Job {
+public final class SendAcknowledge extends Job {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(SendAcknowledge.class);
 
-    List<AlarmMessage> messagesToSend;
+    private List<AlarmMessage> messagesToSend;
     private static String JMS_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss.SSS";
 
     /**
      * @param msg
      *            JMSMessage to acknowledge
      */
-    private SendAcknowledge(final List<AlarmMessage> msg) {
+    private SendAcknowledge(@Nonnull final List<AlarmMessage> msg) {
         super("Send Ack"); //$NON-NLS-1$
         messagesToSend = msg;
     }
@@ -79,7 +81,8 @@ public class SendAcknowledge extends Job {
      *            the collection of messages to send.
      * @return the <code>SendAcknowledge</code> job.
      */
-    public static SendAcknowledge newFromProperties(
+    @Nonnull
+    public static SendAcknowledge newFromProperties(@Nonnull
             final Collection<Map<String, String>> messages) {
         final List<AlarmMessage> messagesToSend = new ArrayList<AlarmMessage>(messages
                 .size());
@@ -103,21 +106,22 @@ public class SendAcknowledge extends Job {
      *            the List of JMSMessage to send.
      * @return the <code>SendAcknowledge</code> job.
      */
-    public static SendAcknowledge newFromJMSMessage(final List<AlarmMessage> messages) {
+    @Nonnull
+    public static SendAcknowledge newFromJMSMessage(@Nonnull final List<AlarmMessage> messages) {
         return new SendAcknowledge(messages);
     }
 
     /**
-     * Sends for the list of JMSMessages an acknowledge message to the jms- and
-     * ldap server.
-     *
+     * Sends for the list of JMSMessages an acknowledge message to the jms server.
      */
     @Override
-    protected IStatus run(final IProgressMonitor monitor) {
+    @Nonnull
+    protected IStatus run(@Nullable final IProgressMonitor monitor) {
 
         final ISendMapMessage sender = JmsLogsPlugin.getDefault().getSendMapMessage();
 
     	try {
+    		// FIXME (jpenning)  why no more startSender?
             // sender.startSender(true);
 
             for (final BasicMessage message : messagesToSend) {
@@ -151,12 +155,10 @@ public class SendAcknowledge extends Job {
                 mapMessage.setString(AlarmMessageKey.ACK.getDefiningName(), Boolean.TRUE.toString()); //$NON-NLS-1$ //$NON-NLS-2$
                 mapMessage.setString("ACK_TIME", time); //$NON-NLS-1$
 
-                // Engine.getInstance().addLdapWriteRequest("epicsAlarmAckn",
-                // message.getName(), "ack"); epicsAlarmHighUnAckn
-                Engine.getInstance().addLdapWriteRequest(
-                        "epicsAlarmAcknTimeStamp", message.getName(), time);
-                Engine.getInstance().addLdapWriteRequest(
-                        "epicsAlarmHighUnAckn", message.getName(), "");
+                // FIXME (jpenning, bknerr)
+                // LDAP Write requests for acknowledging are removed.
+                // Acknowledge action is no longer stored in LDAP
+
                 if (user != null) {
                     String property = message.getProperty(AlarmMessageKey.EVENTTIME.getDefiningName());
                     property = property == null ? "<set to null>" : property;
@@ -171,7 +173,8 @@ public class SendAcknowledge extends Job {
             JmsLogsPlugin.logException("ACK not set", e);
             return Status.CANCEL_STATUS;
         } finally {
-            try {
+        	// FIXME (jpenning) cleanup finally block. why no more stopSender? 
+        	try {
                 // sender.stopSender();
                 System.out.println("stop sender!!!"); //$NON-NLS-1$
             } catch (final Exception e) {

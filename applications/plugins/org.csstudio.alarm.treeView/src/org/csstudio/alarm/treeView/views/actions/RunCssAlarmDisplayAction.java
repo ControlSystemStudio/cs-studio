@@ -24,11 +24,11 @@ import java.util.Map;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.ui.runmode.RunModeService;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.action.Action;
@@ -66,7 +66,7 @@ public final class RunCssAlarmDisplayAction extends Action {
         final Object selected = selection.getFirstElement();
         if (selected instanceof IAlarmTreeNode) {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-            final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY));
+            final IPath path = new Path(node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY));
             final Map<String, String> aliases = new HashMap<String, String>();
             if (node instanceof ProcessVariableNode) {
                 aliases.put("channel", node.getName());

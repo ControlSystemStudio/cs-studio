@@ -34,7 +34,6 @@ import javax.naming.directory.Attribute;
 import javax.naming.directory.Attributes;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.Alarm;
@@ -42,7 +41,7 @@ import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 
 
 /**
@@ -57,6 +56,11 @@ public final class AlarmTreeNodeModifier {
      * The logger that is used by this class.
      */
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeNodeModifier.class);
+
+ // TODO (bknerr) : try to figure out whether enums could be used for distinct groups
+    private static final String ATTR_FIELD_ALARM_SEVERITY = "epicsAlarmSeverity";
+    private static final String ATTR_FIELD_ALARM_TIMESTAMP = "epicsAlarmTimeStamp";
+    private static final String ATTR_FIELD_ALARM_HIGH_UNACK = "epicsAlarmHighUnAckn";
 
 	/**
 	 * Private constructor.
@@ -95,42 +99,42 @@ public final class AlarmTreeNodeModifier {
                                           @Nonnull final Attributes attrs) throws NamingException {
 
 
-        final String alarmDsp = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY);
+        final String alarmDsp = extractAttribute(attrs, EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
         if (alarmDsp != null) {
-            node.setProperty(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, alarmDsp);
+            node.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY, alarmDsp);
         }
 
-        final String helpPage = extractAttribute(attrs, AlarmTreeNodePropertyId.HELP_PAGE);
-        if ((helpPage != null) && helpPage.matches("^http://.+")) {
+        final String helpPage = extractAttribute(attrs, EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE);
+        if (helpPage != null && helpPage.matches("^http://.+")) {
             try {
-                node.setProperty(AlarmTreeNodePropertyId.HELP_PAGE, new URL(helpPage).toString());
+                node.setProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE, new URL(helpPage).toString());
             } catch (final MalformedURLException e) {
-                LOG.warn(AlarmTreeNodePropertyId.HELP_PAGE.getLdapAttribute() +
+                LOG.warn(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE.getLdapAttribute() +
                          " attribute for node " + node + " contains a malformed URL");
             }
         }
 
-        final String help = extractAttribute(attrs, AlarmTreeNodePropertyId.HELP_GUIDANCE);
+        final String help = extractAttribute(attrs, EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE);
         if (help != null) {
-            node.setProperty(AlarmTreeNodePropertyId.HELP_GUIDANCE, help);
+            node.setProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE, help);
         }
 
 
-        final String display = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_DISPLAY);
+        final String display = extractAttribute(attrs, EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY);
         if (display != null) {
-            node.setProperty(AlarmTreeNodePropertyId.CSS_DISPLAY, display);
+            node.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, display);
         }
 
 
-        final String chart = extractAttribute(attrs, AlarmTreeNodePropertyId.CSS_STRIP_CHART);
+        final String chart = extractAttribute(attrs, EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART);
         if (chart != null) {
-            node.setProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART, chart);
+            node.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART, chart);
         }
     }
 
     @CheckForNull
     private static String extractAttribute(@Nonnull final Attributes attrs,
-                                           @Nonnull final AlarmTreeNodePropertyId id) throws NamingException {
+                                           @Nonnull final EpicsAlarmcfgTreeNodeAttribute id) throws NamingException {
 
         final Attribute attr = attrs.get(id.getLdapAttribute());
         if (attr != null) {
@@ -151,11 +155,11 @@ public final class AlarmTreeNodeModifier {
                                      @Nonnull final Attributes attrs)
             throws NamingException {
 
-        final Attribute severityAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_SEVERITY);
-        final Attribute eventtimeAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_TIMESTAMP);
+        final Attribute severityAttr = attrs.get(ATTR_FIELD_ALARM_SEVERITY);
+        final Attribute eventtimeAttr = attrs.get(ATTR_FIELD_ALARM_TIMESTAMP);
         setSeverityAndTimestamp(node, severityAttr, eventtimeAttr);
 
-        final Attribute highUnAcknAttr = attrs.get(LdapFieldsAndAttributes.ATTR_FIELD_ALARM_HIGH_UNACK);
+        final Attribute highUnAcknAttr = attrs.get(ATTR_FIELD_ALARM_HIGH_UNACK);
         setHighestUnackAlarm(node, highUnAcknAttr);
     }
 

@@ -27,13 +27,15 @@ import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 
+import javax.naming.NamingException;
+
 /**
  * Sends messages to an IOC via a datagram socket.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SocketMessageSender implements IIocMessageSender {
-	
+
 	private final InetAddress _address;
 	private final DatagramSocket _socket;
 	private final int _port;
@@ -41,7 +43,7 @@ public class SocketMessageSender implements IIocMessageSender {
 	/**
 	 * Creates a new message sender which will send messages to the specified
 	 * address over the specified socket.
-	 * 
+	 *
 	 * @param address
 	 *            the destination address for messages.
 	 * @param port
@@ -49,8 +51,8 @@ public class SocketMessageSender implements IIocMessageSender {
 	 * @param socket
 	 *            the socket.
 	 */
-	public SocketMessageSender(InetAddress address, int port,
-			DatagramSocket socket) {
+	public SocketMessageSender(final InetAddress address, final int port,
+			final DatagramSocket socket) {
 		_address = address;
 		_socket = socket;
 		_port = port;
@@ -58,19 +60,20 @@ public class SocketMessageSender implements IIocMessageSender {
 
 	/**
 	 * {@inheritDoc}
+	 * @throws NamingException
 	 */
-	public void send(String message) {
-		byte[] networkMessage = (message + "\0").getBytes();
-		DatagramPacket packet = new DatagramPacket(networkMessage,
+	public void send(final String message) throws NamingException {
+		final byte[] networkMessage = (message + "\0").getBytes();
+		final DatagramPacket packet = new DatagramPacket(networkMessage,
 				networkMessage.length, _address, _port);
 		try {
 			_socket.send(packet);
-			
+
 			// TODO: should not have to call getter here. Refactor!
-			IocConnectionManager.getInstance().getIocConnection(_address, _port).setTime(false); // false = sent
-		} catch (IOException e) {
+			IocConnectionManager.INSTANCE.getIocConnection(_address, _port).setTime(false); // false = sent
+		} catch (final IOException e) {
 			// XXX: Is this enough error handling?
-			IocConnectionManager.getInstance().getIocConnection(_address, _port).incrementErrorCounter();
+			IocConnectionManager.INSTANCE.getIocConnection(_address, _port).incrementErrorCounter();
 		}
 	}
 

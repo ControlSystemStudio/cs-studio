@@ -24,26 +24,32 @@ public class ContactsActivator extends AbstractUIPlugin {
 	public static final String PLUGIN_ID = "org.remotercp.contacts";
 
 	// The shared instance
-	private static ContactsActivator plugin;
+	private static ContactsActivator INSTANCE;
 
-	private static BundleContext bundlecontext;
+	private static BundleContext _bundleContext;
 
 	/**
-	 * The constructor
+     * Don't instantiate.
+     * Called by framework.
 	 */
 	public ContactsActivator() {
+        if (INSTANCE != null) {
+            throw new IllegalStateException("Activator " + PLUGIN_ID + " does already exist.");
+        }
+        INSTANCE = this; // Antipattern is required by the framework!
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
+	@Override
+    public void start(final BundleContext context) throws Exception {
 		super.start(context);
-		plugin = this;
+		INSTANCE = this;
 
-		bundlecontext = context;
+		_bundleContext = context;
 
 		this.registerListener();
 	}
@@ -52,7 +58,7 @@ public class ContactsActivator extends AbstractUIPlugin {
 	 * Register listener for incoming chat events. Check if this is the
 	 * appropriate place to register a listener. The listener has to be
 	 * registered on start up, otherwise the chat editor will never be opened.
-	 * 
+	 *
 	 * FIXME: I commented out the code below because it is not the appropriate
 	 * place to register a listener. If the SessionService is not available yet
 	 * by the time this method is called, it would cause the activiation of this
@@ -93,25 +99,26 @@ public class ContactsActivator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
-	public void stop(BundleContext context) throws Exception {
-		plugin = null;
+	@Override
+    public void stop(final BundleContext context) throws Exception {
+		INSTANCE = null;
 		super.stop(context);
 	}
 
 	/**
 	 * Returns the shared instance
-	 * 
+	 *
 	 * @return the shared instance
 	 */
 	public static ContactsActivator getDefault() {
-		return plugin;
+		return INSTANCE;
 	}
 
 	public static BundleContext getBundleContext() {
-		return bundlecontext;
+		return _bundleContext;
 	}
 
 }

@@ -23,7 +23,6 @@
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -31,8 +30,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+
+import com.google.common.collect.Maps;
 
 /**
  * A tree node that is the root node of a subtree.
@@ -103,7 +104,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	    public SubtreeNode build() {
 	        final SubtreeNode node = new SubtreeNode(_name, _configurationType, _source);
 	        if (_parent != null) {
-	            _parent.addSubtreeChild(node);
+	            _parent.addChild(node);
 	        }
 	        return node;
 	    }
@@ -122,8 +123,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	                    @Nonnull final TreeNodeSource source) {
 	    super(name, configurationType, source);
 
-		_childrenPVMap = new HashMap<String, IAlarmProcessVariableNode>();
-		_childrenSubtreeMap = new HashMap<String, IAlarmSubtreeNode>();
+		_childrenPVMap = Maps.newLinkedHashMap();
+		_childrenSubtreeMap = Maps.newLinkedHashMap();
 		_highestChildSeverity = Severity.UNKNOWN;
 		_highestUnacknowledgedChildSeverity = Severity.UNKNOWN;
 	}
@@ -131,7 +132,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
     /**
      * {@inheritDoc}
      */
-	public void removeChild(@Nonnull final IAlarmTreeNode child) {
+	@Override
+    public void removeChild(@Nonnull final IAlarmTreeNode child) {
 		final String childName = child.getName();
         if (_childrenPVMap.containsKey(childName)) {
 		    _childrenPVMap.remove(childName);
@@ -144,7 +146,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeChildren() {
+	@Override
+    public void removeChildren() {
 	    for (final IAlarmTreeNode child : getChildren()) {
 	        if (child instanceof IAlarmSubtreeNode) {
 	            ((IAlarmSubtreeNode) child).removeChildren();
@@ -156,35 +159,35 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * {@inheritDoc}
 	 */
-    public void addPVChild(@Nonnull final IAlarmProcessVariableNode child) {
-        final String name = child.getName();
-        if (_childrenPVMap.containsKey(name)) {
-            return;
-        }
-        _childrenPVMap.put(name, child);
-        childSeverityChanged(child);
-        child.setParent(this);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void addSubtreeChild(@Nonnull final IAlarmSubtreeNode child) {
-        final String name = child.getName();
-        if (_childrenSubtreeMap.containsKey(name)) {
-            return;
-        }
-        _childrenSubtreeMap.put(name, child);
-        childSeverityChanged(child);
-        child.setParent(this);
-    }
-
-
-    /**
-     * {@inheritDoc}
-     */
-    @CheckForNull
     @Override
+    public boolean addChild(@Nonnull final IAlarmTreeNode child) {
+        final String name = child.getName();
+
+        if (_childrenPVMap.containsKey(name)) {
+            return false;
+        }
+        if (_childrenSubtreeMap.containsKey(name)) {
+            return false;
+        }
+        if (child instanceof IAlarmProcessVariableNode) {
+            _childrenPVMap.put(name, (IAlarmProcessVariableNode) child);
+
+        } else if (child instanceof IAlarmSubtreeNode) {
+            _childrenSubtreeMap.put(name, (IAlarmSubtreeNode) child);
+        } else {
+            return false;
+        }
+        childSeverityChanged(child);
+        child.setParent(this);
+        return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
     public Severity getAlarmSeverity() {
 		return _highestChildSeverity;
 	}
@@ -195,6 +198,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 *
 	 * @return the unacknowledged alarm severity for this node.
 	 */
+    @Override
     @CheckForNull
     public Severity getUnacknowledgedAlarmSeverity() {
 		return _highestUnacknowledgedChildSeverity;
@@ -211,7 +215,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
     /**
      * {@inheritDoc}
      */
-	@Nonnull
+	@Override
+    @Nonnull
 	public List<IAlarmTreeNode> getChildren() {
 	    final List<IAlarmTreeNode> children =
 	        new ArrayList<IAlarmTreeNode>(_childrenPVMap.size() + _childrenSubtreeMap.size());
@@ -230,7 +235,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * {@inheritDoc}
 	 */
-	public void childSeverityChanged(@Nonnull final IAlarmTreeNode child) {
+	@Override
+    public void childSeverityChanged(@Nonnull final IAlarmTreeNode child) {
 		boolean thisNodeChanged = false;
 
 		// If the severity is higher than the current highest severity, simply
@@ -259,7 +265,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 
 		// Notify parent if this node changed
 		final IAlarmSubtreeNode parent = getParent();
-		if (thisNodeChanged && (parent != null)) {
+		if (thisNodeChanged && parent != null) {
 			parent.childSeverityChanged(this);
 		}
 	}
@@ -274,7 +280,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 		thisNodeChanged |= refreshHighestUnacknowledgedSeverity();
 
 		final IAlarmSubtreeNode parent = getParent();
-		if (thisNodeChanged && (parent != null)) {
+		if (thisNodeChanged && parent != null) {
 			parent.childSeverityChanged(this);
 		}
 	}
@@ -349,7 +355,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 * @param name the name of the child.
 	 * @return the direct child with the specified name.
 	 */
-	@CheckForNull
+	@Override
+    @CheckForNull
 	public IAlarmTreeNode getChild(@Nonnull final String name) {
 	    if (_childrenPVMap.containsKey(name)) {
 	        return _childrenPVMap.get(name);
@@ -360,7 +367,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * {@inheritDoc}
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public List<IAlarmProcessVariableNode> findProcessVariableNodes(@Nonnull final String name) {
 
 	    final List<IAlarmProcessVariableNode> result =
@@ -383,7 +391,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * {@inheritDoc}
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public List<IAlarmProcessVariableNode> findAllProcessVariableNodes() {
 
 	    final List<IAlarmProcessVariableNode> result = new ArrayList<IAlarmProcessVariableNode>();
@@ -402,7 +411,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 *
 	 * @return a collection of the PV nodes with unacknowledged alarms.
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public Collection<IAlarmProcessVariableNode> collectUnacknowledgedAlarms() {
 
 	    final Collection<IAlarmProcessVariableNode> result = new ArrayList<IAlarmProcessVariableNode>();
@@ -423,7 +433,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * Removes all children, and resets all internal states.
 	 */
-	public void clearChildren() {
+	@Override
+    public void clearChildren() {
 	    _childrenPVMap.clear();
 	    _childrenSubtreeMap.clear();
 	    _highestChildSeverity = Severity.UNKNOWN;

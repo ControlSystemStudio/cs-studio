@@ -18,8 +18,6 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
 package org.csstudio.utility.treemodel.builder;
 
@@ -40,20 +38,25 @@ import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
  * @since 21.05.2010
  * @param <T> the object class type for which a tree shall be created
  */
-public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> {
+public abstract class AbstractContentModelBuilder<T extends Enum<T> & ITreeNodeConfiguration<T>> implements IContentModelBuilder {
 
     private ContentModel<T> _model;
-
-
 
     @CheckForNull
     protected abstract ContentModel<T> createContentModel() throws CreateContentModelException;
 
-
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     public void build() throws CreateContentModelException {
         _model = createContentModel();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @CheckForNull
     public ContentModel<T> getModel() {
         return _model;

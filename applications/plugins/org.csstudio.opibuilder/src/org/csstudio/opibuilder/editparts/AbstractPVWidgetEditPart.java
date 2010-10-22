@@ -67,6 +67,12 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	protected Runnable timerTask;
 	private final static int UPDATE_SUPPRESS_TIME = 1000;
 	
+	/**
+	 * In most cases, old pv value in the valueChange() method of {@link IWidgetPropertyChangeHandler}
+	 * is not useful. Ignore the old pv value will help to reduce memory usage.
+	 */
+	private boolean ignoreOldPVValue =true;
+	
 	private interface AlarmSeverity extends ISeverity{
 		public void copy(ISeverity severity);
 	}
@@ -233,8 +239,11 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 				}
 										
 			}
-			
-			getWidgetModel().getPVMap().get(getWidgetModel().
+			if(ignoreOldPVValue){
+				getWidgetModel().getPVMap().get(getWidgetModel().
+					getProperty(pvPropID)).setPropertyValue_IgnoreOldValue(pv.getValue());	
+			}else
+				getWidgetModel().getPVMap().get(getWidgetModel().
 					getProperty(pvPropID)).setPropertyValue(pv.getValue());		
 			
 		}
@@ -269,43 +278,6 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 						pvConnectedStatusMap.put(sp.getPropertyID(), false);						
 						
 						PVListener pvListener = new WidgetPVListener(sp.getPropertyID());
-//						= new PVListener(){
-//							public void pvDisconnected(PV pv) {
-//								pvConnectedStatusMap.put(sp.getPropertyID(), false);
-//								markWidgetAsDisconnected(pv.getName());
-//							}
-//
-//							public synchronized void pvValueUpdate(PV pv) {
-//								if(pv == null)
-//									return;
-//								Boolean connected = pvConnectedStatusMap.get(sp.getPropertyID());
-//								
-//								//connection status
-//								if(connected != null && !connected){
-//									pvConnectedStatusMap.put(sp.getPropertyID(), true);
-//									widgetConnectionRecovered(pv.getName());
-//								}
-//								
-//								//write access
-//								if(controlPVPropId != null && 
-//										controlPVPropId.equals((String)sp.getPropertyID()) && 
-//										!writeAccessMarked && !pv.isWriteAllowed()){
-//									UIBundlingThread.getInstance().addRunnable(new Runnable(){
-//										public void run() {
-//											if(!writeAccessMarked){
-//												figure.setCursor(Cursors.NO);
-//												figure.setEnabled(false);
-//												preEnableState = false;		
-//												writeAccessMarked = true;
-//											}
-//										}
-//									});							
-//								}
-//								
-//								pvPropertyMap.get(sp).setPropertyValue(pv.getValue());		
-//								
-//							}							
-//						};
 						
 						pv.addListener(pvListener);						
 						pvMap.put(sp.getPropertyID(), pv);
@@ -630,5 +602,8 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 */
 	public abstract Object getValue();
 	
+	public void setIgnoreOldPVValue(boolean ignoreOldValue) {
+		this.ignoreOldPVValue = ignoreOldValue;
+	}
 	
 }

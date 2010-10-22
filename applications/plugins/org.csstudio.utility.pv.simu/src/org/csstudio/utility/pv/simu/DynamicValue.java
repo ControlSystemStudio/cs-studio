@@ -192,6 +192,17 @@ abstract public class DynamicValue extends Value implements Runnable
                 Quality.Original, new double[] { number }));
     }
 
+    protected void setValue(final double[] doubleArray){
+    	 final ITimestamp time = TimestampFactory.now();
+         final ISeverity severity;
+         final String status;
+         severity = ValueFactory.createOKSeverity();
+         status = severity.toString();        
+         setValue(ValueFactory.createDoubleValue(time, severity, status, meta,
+                 Quality.Original, doubleArray));
+    }
+    
+    
     /** To be implemented by derived class.
      *  Will be called by periodic thread.
      *  Must compute new number and call {@link #setValue(double)}

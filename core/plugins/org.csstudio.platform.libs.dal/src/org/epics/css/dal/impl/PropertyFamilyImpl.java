@@ -79,14 +79,17 @@ public class PropertyFamilyImpl
 
 		for (DynamicValueProperty<?> p : props) {
 			PropertyProxy<?> proxy = ((DataAccessImpl<?>)p).getProxy();
-			plug.releaseProxy(proxy);
-			proxy.destroy();
 			if (!(proxy instanceof DirectoryProxy)) {
 				DirectoryProxy dp = ((SimplePropertyImpl<?>)p).getDirectoryProxy();
-				plug.releaseProxy(dp);
-				dp.destroy();
+				if (dp != null) {
+					plug.releaseProxy(dp);
+					dp.destroy();
+				}
 			}
-			
+			if (p instanceof DynamicValuePropertyImpl<?>) {
+				((DynamicValuePropertyImpl<?>) p).releaseProxy(true);
+			}
+			plug.releaseProxy(proxy);
 		}
 	}
 

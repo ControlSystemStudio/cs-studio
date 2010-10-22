@@ -58,8 +58,8 @@ public class OpenWebpageAction extends AbstractWidgetAction {
 	
 	
 	@Override
-	public String getDescription() {
-		return super.getDescription() + " " + getHyperLink(); //$NON-NLS-1$
+	public String getDefaultDescription() {
+		return super.getDefaultDescription() + " " + getHyperLink(); //$NON-NLS-1$
 	}
 
 }

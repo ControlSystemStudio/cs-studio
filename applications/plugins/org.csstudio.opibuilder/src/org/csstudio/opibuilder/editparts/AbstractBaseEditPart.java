@@ -191,6 +191,9 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		}
 	}
 	
+	/**Create and initialize the widget figure with the property values in model.
+	 * @return the widget figure
+	 */
 	protected abstract IFigure doCreateFigure();
 
 	private Map<String, PV> pvMap = new HashMap<String, PV>();
@@ -552,8 +555,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	}
 	
 	/**
-	 * Register the property change handlers. Widget's editpart should override
-	 * this to register its properties.
+	 * Register the property change handlers. Subclass should register its property change
+	 * handlers in this method.
 	 */
 	protected abstract void registerPropertyChangeHandlers();
 	

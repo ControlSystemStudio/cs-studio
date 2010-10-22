@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.treeView.model;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import java.util.Set;
 
@@ -40,13 +40,13 @@ import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.WorkbenchWindowHelper;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
 import org.csstudio.platform.util.StringUtil;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertySource2;
@@ -75,8 +75,6 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 * The descriptors of the properties provided by this source.
 	 */
 	private static final IPropertyDescriptor[] PROPERTY_DESCRIPTORS;
-
-	private static final ILdapService LDAP_SERVICE = AlarmTreePlugin.getDefault().getLdapService();
 
 	/**
 	 * The node for which this property source provides properties.
@@ -120,28 +118,28 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		PROPERTY_DESCRIPTORS[1] = descriptor;
 
 		// help page
-		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_PAGE, "help page");
-		descriptor.setDescription(AlarmTreeNodePropertyId.HELP_PAGE.getDescription());
+		descriptor = new TextPropertyDescriptor(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE, "help page");
+		descriptor.setDescription(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE.getDescription());
 		PROPERTY_DESCRIPTORS[2] = descriptor;
 
 		// help guidance
-		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.HELP_GUIDANCE, "help guidance");
-		descriptor.setDescription(AlarmTreeNodePropertyId.HELP_GUIDANCE.getDescription());
+		descriptor = new TextPropertyDescriptor(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE, "help guidance");
+		descriptor.setDescription(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE.getDescription());
 		PROPERTY_DESCRIPTORS[3] = descriptor;
 
 		// CSS alarm display
-		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY, "alarm display");
-		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_ALARM_DISPLAY.getDescription());
+		descriptor = new TextPropertyDescriptor(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY, "alarm display");
+		descriptor.setDescription(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY.getDescription());
 		PROPERTY_DESCRIPTORS[4] = descriptor;
 
 		// CSS display
-		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_DISPLAY, "display");
-		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_DISPLAY.getDescription());
+		descriptor = new TextPropertyDescriptor(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "display");
+		descriptor.setDescription(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY.getDescription());
 		PROPERTY_DESCRIPTORS[5] = descriptor;
 
 		// CSS strip chart
-		descriptor = new TextPropertyDescriptor(AlarmTreeNodePropertyId.CSS_STRIP_CHART, "strip chart");
-		descriptor.setDescription(AlarmTreeNodePropertyId.CSS_STRIP_CHART.getDescription());
+		descriptor = new TextPropertyDescriptor(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART, "strip chart");
+		descriptor.setDescription(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART.getDescription());
 		PROPERTY_DESCRIPTORS[6] = descriptor;
 	}
 
@@ -169,13 +167,20 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
         final String simpleName = node.getName();
         final LdapName ldapName = node.getLdapName();
 
-        LdapSearchResult result = null;
+        ILdapSearchResult result = null;
         try {
             ldapName.remove(ldapName.size() - 1); // remove simple name part
+
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                return null;
+            }
+
             result =
-                LDAP_SERVICE.retrieveSearchResultSynchronously(ldapName,
-                                                               node.getTreeNodeConfiguration().getNodeTypeName() + FIELD_ASSIGNMENT + simpleName,
-                                                               SearchControls.ONELEVEL_SCOPE);
+                service.retrieveSearchResultSynchronously(ldapName,
+                                                          node.getTreeNodeConfiguration().getNodeTypeName() + FIELD_ASSIGNMENT + simpleName,
+                                                          SearchControls.ONELEVEL_SCOPE);
         } catch (final InvalidNameException e) {
             exitWithErrorDialog("LDAP Access",
                                 "LDAP name for node " + node.getLdapName().toString() +
@@ -233,18 +238,18 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 			case NAME:
 				return _node.getName();
 			case OBJECT_CLASS:
-				return _node.getTreeNodeConfiguration().getDescription();
+				return _node.getTreeNodeConfiguration().getObjectClass();
 			default:
 				return null;
 			}
-		} else if (id instanceof AlarmTreeNodePropertyId) {
-		    return extractValueFromAttributes((AlarmTreeNodePropertyId) id, _attributes);
+		} else if (id instanceof EpicsAlarmcfgTreeNodeAttribute) {
+		    return extractValueFromAttributes((EpicsAlarmcfgTreeNodeAttribute) id, _attributes);
 		}
 		return null;
 	}
 
 	@CheckForNull
-    private String extractValueFromAttributes(@Nonnull final AlarmTreeNodePropertyId id,
+    private String extractValueFromAttributes(@Nonnull final EpicsAlarmcfgTreeNodeAttribute id,
                                               @Nonnull final Attributes attributes) {
         final String ldapAttrName = id.getLdapAttribute();
         final Attribute attr = attributes.get(ldapAttrName);
@@ -288,8 +293,8 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 				// this source does not have the specified property
 				return false;
 			}
-		} else if (id instanceof AlarmTreeNodePropertyId) {
-			return _node.getOwnProperty((AlarmTreeNodePropertyId) id) != null;
+		} else if (id instanceof EpicsAlarmcfgTreeNodeAttribute) {
+			return _node.getOwnProperty((EpicsAlarmcfgTreeNodeAttribute) id) != null;
 		}
 		return false;
 	}
@@ -299,16 +304,21 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	@Override
     public final void resetPropertyValue(@Nullable final Object id) {
-		if (id instanceof AlarmTreeNodePropertyId) {
+		if (id instanceof EpicsAlarmcfgTreeNodeAttribute) {
 		    //_node.setProperty((AlarmTreeNodePropertyId) id, null);
-		    final AlarmTreeNodePropertyId propId = (AlarmTreeNodePropertyId) id;
+		    final EpicsAlarmcfgTreeNodeAttribute propId = (EpicsAlarmcfgTreeNodeAttribute) id;
             final ModificationItem item = new ModificationItem(DirContext.REMOVE_ATTRIBUTE,
                                                                new BasicAttribute(propId.getLdapAttribute()));
             try {
-                LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+                final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+                if (service == null) {
+                    exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                    return;
+                }
+                service.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
             } catch (final NamingException e) {
-                // TODO (bknerr) : give nice user feedback
-                e.printStackTrace();
+                exitWithErrorDialog("LDAP Access", "Naming exception for node " + _node.getName());
+                return;
             }
 		}
 	}
@@ -318,8 +328,8 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	@Override
     public final void setPropertyValue(@Nullable final Object id, @Nullable final Object value) {
-		if (id instanceof AlarmTreeNodePropertyId) {
-		    final AlarmTreeNodePropertyId propId = (AlarmTreeNodePropertyId) id;
+		if (id instanceof EpicsAlarmcfgTreeNodeAttribute) {
+		    final EpicsAlarmcfgTreeNodeAttribute propId = (EpicsAlarmcfgTreeNodeAttribute) id;
 
 		    final String oldLdapValue = extractValueFromAttributes(propId, _attributes);
 
@@ -347,7 +357,7 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	}
 
     private void replaceAttributeValueInLdap(@Nullable final Object value,
-                                             @Nonnull final AlarmTreeNodePropertyId propId) {
+                                             @Nonnull final EpicsAlarmcfgTreeNodeAttribute propId) {
 
         if (StringUtil.isBlank((String) value)) {
             resetPropertyValue(propId);
@@ -357,7 +367,13 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
         try {
             final ModificationItem item = new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
                                                                new BasicAttribute(propId.getLdapAttribute(), value));
-            LDAP_SERVICE.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
+
+            final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
+            if (service == null) {
+                exitWithErrorDialog("LDAP Access", "LDAP service unavailable, try again later.");
+                return;
+            }
+            service.modifyAttributes(_node.getLdapName(), new ModificationItem[] {item});
 
         } catch (final NamingException e) {
             exitWithErrorDialog("Write property value to LDAP failed.",
@@ -371,6 +387,6 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 	 */
 	@Override
     public final boolean isPropertyResettable(@Nullable final Object id) {
-	    return id instanceof AlarmTreeNodePropertyId;
+	    return id instanceof EpicsAlarmcfgTreeNodeAttribute;
 	}
 }

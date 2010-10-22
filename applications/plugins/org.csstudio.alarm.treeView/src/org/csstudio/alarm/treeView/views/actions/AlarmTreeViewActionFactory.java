@@ -33,20 +33,23 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.ldap.AlarmTreeContentModelBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.LdapActivator;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ExportContentModelException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -172,7 +175,8 @@ public final class AlarmTreeViewActionFactory {
         final Action exportXmlFileAction = new ExportXmlFileAction(rootNode, site);
         exportXmlFileAction.setText("Export XML...");
         exportXmlFileAction.setToolTipText("Export XML");
-        exportXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/exportxml.png"));
+        exportXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                                  "/exportxml.png"));
         return exportXmlFileAction;
     }
 
@@ -189,7 +193,8 @@ public final class AlarmTreeViewActionFactory {
                                                                    viewer);
         importXmlFileAction.setText("Import XML...");
         importXmlFileAction.setToolTipText("Import XML");
-        importXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/importxml.gif"));
+        importXmlFileAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                                  "/importxml.gif"));
 
         return importXmlFileAction;
     }
@@ -207,9 +212,10 @@ public final class AlarmTreeViewActionFactory {
             final IAlarmConfigurationService configService = AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
             if (model != null) {
-                final Bundle bundle = AlarmTreePlugin.getDefault().getBundle();
+                final Bundle bundle = Platform.getBundle(LdapActivator.PLUGIN_ID);
                 final File loc = FileLocator.getBundleFile(bundle);
-                final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();
+                final String dtdFilePath = new File(loc, "./res/dtd/epicsAlarmCfg.dtd").toString();
+
                 configService.exportContentModelToXmlFile(filePath, model, dtdFilePath);
             }
 
@@ -349,7 +355,8 @@ public final class AlarmTreeViewActionFactory {
         final Action reloadAction = new ReloadFromLdapAction(site, viewer, alarmListener, modificationItems, directoryReaderJob);
         reloadAction.setText("Reload from LDAP");
         reloadAction.setToolTipText("Reload from LDAP");
-        reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/refresh.gif"));
+        reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                           "/refresh.gif"));
 
         return reloadAction;
     }
@@ -371,7 +378,8 @@ public final class AlarmTreeViewActionFactory {
         final Action toggleFilterAction = new ToggleFilterAction("Show Only Alarms", IAction.AS_CHECK_BOX, alarmTreeView, currentAlarmFilter, viewer);
         toggleFilterAction.setToolTipText("Show Only Alarms");
         toggleFilterAction.setChecked(alarmTreeView.getIsFilterActive().booleanValue());
-        toggleFilterAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/no_alarm_filter.png"));
+        toggleFilterAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                                 "/no_alarm_filter.png"));
 
         return toggleFilterAction;
     }
@@ -390,7 +398,8 @@ public final class AlarmTreeViewActionFactory {
 
         final Action saveInLdapAction = new SaveInLdapAction(site, modifications);
         saveInLdapAction.setToolTipText("Save in LDAP");
-        saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor("./icons/saveinldap.gif"));
+        saveInLdapAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
+                                                                               "/saveinldap.gif"));
         saveInLdapAction.setEnabled(false);
         return saveInLdapAction;
     }

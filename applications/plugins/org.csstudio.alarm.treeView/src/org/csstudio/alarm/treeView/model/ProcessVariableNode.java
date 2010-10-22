@@ -27,9 +27,9 @@ import java.sql.Date;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.platform.model.IProcessVariable;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
 /**
  * A tree node that represents a process variable.
@@ -95,7 +95,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
         public ProcessVariableNode build() {
             final ProcessVariableNode node = new ProcessVariableNode(_name, _source);
             if (_parent != null) {
-                _parent.addPVChild(node);
+                _parent.addChild(node);
             }
             return node;
         }
@@ -116,7 +116,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public String getTypeId() {
 		return IProcessVariable.TYPE_ID;
 	}
@@ -124,7 +125,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public Severity getAlarmSeverity() {
 		if (_activeAlarm != null) {
 			return _activeAlarm.getSeverity();
@@ -135,7 +137,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
     /**
      * {@inheritDoc}
      */
-	@Nonnull
+	@Override
+    @Nonnull
 	public Severity getUnacknowledgedAlarmSeverity() {
 		if (_highestUnacknowledgedAlarm != null) {
 			return _highestUnacknowledgedAlarm.getSeverity();
@@ -147,7 +150,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 * {@inheritDoc}
 	 */
 	public boolean hasAlarm() {
-		return (_activeAlarm != null) || (_highestUnacknowledgedAlarm != null);
+		return _activeAlarm != null || _highestUnacknowledgedAlarm != null;
 	}
 
 	/**
@@ -157,8 +160,9 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 *
 	 * @param alarm the new alarm.
 	 */
-	public void updateAlarm(@Nonnull final Alarm alarm) {
-		if ((alarm != null) && alarm.occuredAfter(_activeAlarm)) {
+	@Override
+    public void updateAlarm(@Nonnull final Alarm alarm) {
+		if (alarm.occuredAfter(_activeAlarm)) {
 			_activeAlarm = alarm;
 			final Severity severityOfAlarm = alarm.getSeverity();
             final Severity severityOfHighestUnackAlarm = _highestUnacknowledgedAlarm.getSeverity();
@@ -177,7 +181,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
     /**
      * {@inheritDoc}
      */
-	@Nonnull
+	@Override
+    @Nonnull
 	public Alarm getAlarm() {
 		return _activeAlarm;
 	}
@@ -185,7 +190,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	@Nonnull
+	@Override
+    @Nonnull
 	public Alarm getHighestUnacknowledgedAlarm() {
 		return _highestUnacknowledgedAlarm;
 	}
@@ -193,7 +199,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	public void setHighestUnacknowledgedAlarm(@Nonnull final Alarm alarm) {
+	@Override
+    public void setHighestUnacknowledgedAlarm(@Nonnull final Alarm alarm) {
 		_highestUnacknowledgedAlarm = alarm;
 		final IAlarmSubtreeNode parent = getParent();
 		if (parent != null) {
@@ -204,7 +211,8 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	/**
 	 * {@inheritDoc}
 	 */
-	public void removeHighestUnacknowledgedAlarm() {
+	@Override
+    public void removeHighestUnacknowledgedAlarm() {
 	        _highestUnacknowledgedAlarm = new Alarm(_highestUnacknowledgedAlarm.getObjectName(), Severity.UNKNOWN, new Date(0L));
 	        final IAlarmSubtreeNode parent = getParent();
 	        if (parent != null) {

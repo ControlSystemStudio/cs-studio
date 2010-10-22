@@ -21,7 +21,7 @@
  */
 package org.csstudio.alarm.treeView.ldap;
 
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 
 import java.util.Collections;
 import java.util.List;
@@ -36,9 +36,7 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
@@ -49,6 +47,8 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
 /**
  * Editor for the alarm tree in the LDAP directory. The methods of this class
@@ -88,13 +88,21 @@ public final class DirectoryEditor {
         final LdapName newLdapName = new LdapName(oldLdapName.getRdns());
 
         final ITreeModificationItem item;
+
+        final IAlarmSubtreeNode parent = node.getParent();
+        if (parent != null && parent.getChild(newName) != null) {
+            throw new DirectoryEditException("Either root node selected or name " + newName + " does already exist on this level.", null);
+        }
+
         if (node.getSource().equals(TreeNodeSource.LDAP)) {
             item = new RenameModificationItem(node, newName, newLdapName, oldLdapName);
         } else {
             item = null;
         }
 
-        node.setName(newName);
+        parent.removeChild(node);
+        node.setName(newName); // rename on tree item
+        parent.addChild(node);
 
         return item;
     }
@@ -180,6 +188,7 @@ public final class DirectoryEditor {
         return item;
     }
 
+
     /**
      * Creates a copy of a node under a new subtree node. If the node to be
      * copied is a subtree node, all of its children will be copied into the new
@@ -198,7 +207,7 @@ public final class DirectoryEditor {
         throws DirectoryEditException {
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, node.getTreeNodeConfiguration().getObjectClass());
 
         IAlarmTreeNode copy;
         if (node instanceof IAlarmProcessVariableNode) {
@@ -280,7 +289,7 @@ public final class DirectoryEditor {
      */
     private static void copyProperties(@Nonnull final IAlarmTreeNode source,
                                        @Nonnull final IAlarmTreeNode destination) {
-        for (final AlarmTreeNodePropertyId id : AlarmTreeNodePropertyId.values()) {
+        for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
             final String value = source.getOwnProperty(id);
             destination.setProperty(id, value);
         }
@@ -304,7 +313,7 @@ public final class DirectoryEditor {
                 .getSource()).setParent(parent).build();
 
         final Attributes attrs = new BasicAttributes();
-        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getDescription());
+        attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());
 
         retrieveInitialStateSynchronously(node);
 
@@ -348,7 +357,7 @@ public final class DirectoryEditor {
 
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS,
-                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getDescription());
+                  LdapEpicsAlarmcfgConfiguration.COMPONENT.getObjectClass());
 
         if (parent.getSource().equals(TreeNodeSource.LDAP)) {
             return new CreateLdapEntryModificationItem(node.getLdapName(), attrs);

@@ -624,6 +624,7 @@ public class IntensityGraphFigure extends Figure implements Introspectable {
 	 */
 	public final void setDataArray(double[] dataArray) {
 		this.dataArray = dataArray;
+		croppedDataArray = null;
 		dataDirty = true;
 		graphArea.repaint();
 	}

@@ -35,7 +35,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * Management command to send a command to an IOC.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class SendCommandToIoc implements IManagementCommand {
@@ -43,23 +43,28 @@ public class SendCommandToIoc implements IManagementCommand {
 	/**
 	 * {@inheritDoc}
 	 */
-	public CommandResult execute(CommandParameters parameters) {
-		String ioc = (String) parameters.get("ioc");
-		int port = commandPort();
-		String command = (String) parameters.get("command");
-		
-		IocCommandSender sender = new IocCommandSender(IocConnectionManager.getInstance().getIocInetAdressByName(ioc), port, command);
-		InterconnectionServer.getInstance().getCommandExecutor().execute(sender);
+	public CommandResult execute(final CommandParameters parameters) {
+		final String ioc = (String) parameters.get("ioc");
+		final int port = commandPort();
+		final String command = (String) parameters.get("command");
+
+		try {
+		    final IocCommandSender sender =
+		        new IocCommandSender(IocConnectionManager.INSTANCE.getIocInetAdressByName(ioc), port, command);
+		    InterconnectionServer.getInstance().getCommandExecutor().execute(sender);
+		} catch (final IllegalArgumentException e) {
+		    return CommandResult.createFailureResult("Creation of command sender failed:\n" + e.getMessage());
+		}
 		return CommandResult.createSuccessResult();
 	}
 
 	/**
 	 * Returns the command port from the preferences.
-	 * 
+	 *
 	 * @return the port.
 	 */
 	private int commandPort() {
-		IPreferencesService prefs = Platform.getPreferencesService();
+		final IPreferencesService prefs = Platform.getPreferencesService();
 		return prefs.getInt(Activator.PLUGIN_ID,
 				PreferenceConstants.COMMAND_PORT_NUMBER, 0, null);
 	}

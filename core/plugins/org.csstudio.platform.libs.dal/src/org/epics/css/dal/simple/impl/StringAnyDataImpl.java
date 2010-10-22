@@ -4,7 +4,8 @@ import org.epics.css.dal.DynamicValueProperty;
 
 public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	
-	public static final String UNINITIALIZED_VALUE = "";
+	public static final String UNINITIALIZED_STRING_VALUE = "NaN";
+	public static final Double UNINITIALIZED_DOUBLE_VALUE = Double.NaN;
 	
 	public StringAnyDataImpl(DynamicValueProperty<String> property, long beamID) {
 		super(property,beamID);
@@ -67,12 +68,18 @@ public final class StringAnyDataImpl extends AbstractAnyDataImpl<String> {
 	}
 
 	public String stringValue() {
-		return response.getValue();
+		// return response.toString(); returns the response object 'as String'
+		// return response.getValue(); does not work if value is Long!
+		try {
+			return DataUtil.castTo(response.getValue(), String.class);
+		} catch (Exception e) {
+			return UNINITIALIZED_STRING_VALUE; // TODO any better idea?
+		}
 	}
 	@Override
 	protected String confirmValue(String value) {
 		if (value != null) return value;
-		return UNINITIALIZED_VALUE;
+		return UNINITIALIZED_STRING_VALUE;
 	}
 
 }

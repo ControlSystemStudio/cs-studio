@@ -2,6 +2,13 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
+         point="org.csstudio.sds.widgetModelInitializers">
+      <controlSystemSchema
+            class="org.csstudio.sds.components.epics.EpicsSchema"
+            description="%epics"
+            schemaId="schema.epics"/>
+   </extension>
+   <extension
          point="org.eclipse.help.toc">
       <toc
             file="toc.xml"

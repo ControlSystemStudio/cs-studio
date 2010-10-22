@@ -1,5 +1,8 @@
 package org.csstudio.sds.cosyrules.color;
 
+import javax.swing.text.Style;
+
+import org.csstudio.sds.model.BorderStyleEnum;
 import org.csstudio.sds.model.IRule;
 import org.epics.css.dal.DynamicValueState;
 
@@ -28,6 +31,7 @@ public class AlarmBorder implements IRule {
 	 * EPICS.SEVR.
 	 */
 	public Object evaluate(final Object[] arguments) {
+		int style = 0;
 		if ((arguments != null) && (arguments.length > 0)) {
 			double d = 300.0;
 			String s = "init";
@@ -38,26 +42,22 @@ public class AlarmBorder implements IRule {
 			} else if (arguments[0] instanceof String) {
 				s = (String) arguments[0];
 			}
-
 			if ((Math.abs(d - 0.0) < 0.00001)
 					|| (s.equals(DynamicValueState.NORMAL.toString()))) {
-				return 0;
-			}
-			if ((Math.abs(d - 1.0) < 0.00001)
+				style = BorderStyleEnum.NONE.getIndex();
+			} else if ((Math.abs(d - 1.0) < 0.00001)
 					|| (s.equals(DynamicValueState.WARNING.toString()))) {
-				return 1;
-			}
-			if ((Math.abs(d - 2.0) < 0.00001)
+				style = BorderStyleEnum.LINE.getIndex();
+			} else if ((Math.abs(d - 2.0) < 0.00001)
 					|| (s.equals(DynamicValueState.ALARM.toString()))) {
-				return 1;
-			}
-			if (((d >= 3.0) && (d <= 255.0))
+				style = BorderStyleEnum.LINE.getIndex();
+			} else if (((d >= 3.0) && (d <= 255.0))
 					|| (s.equals(DynamicValueState.ERROR.toString()))) {
-				return 1;
+				style = BorderStyleEnum.LINE.getIndex();
 			}
 		}
-
-		return 0;
+		
+		return style;
 	}
 
     /**
@@ -65,8 +65,8 @@ public class AlarmBorder implements IRule {
      */
     @Override
     public String getDescription() {
-        // TODO Auto-generated method stub
-        return null;
+        String desc= "Only if the given arument a String "+DynamicValueState.NORMAL.toString()+" (DynamicValueState.NORMAL) or the argument is a Number between +- 0.00001 retrun a None-Border otherwise return a Line-Border.";
+        return desc;
     }
 
 }

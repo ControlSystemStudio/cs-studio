@@ -21,24 +21,25 @@
  */
  package org.csstudio.alarm.service.preferences;
 
-import static org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.removeQuotes;
 import static org.csstudio.utility.ldap.utils.LdapNameUtils.simpleName;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.ArrayList;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.naming.NamingEnumeration;
-import javax.naming.directory.DirContext;
 import javax.naming.directory.SearchControls;
 import javax.naming.directory.SearchResult;
 
-import org.csstudio.utility.ldap.engine.Engine;
+import org.csstudio.alarm.service.AlarmServiceActivator;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapService;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -60,46 +61,36 @@ public class AddMountPointDlg extends Dialog {
 		super(parentShell);
 	}
 
-	private DirContext _connection;
 	private List _mountPoints;
 	private String[] _result = new String[0];
 
-	private void initializeConnection() throws Exception {
-		_connection = Engine.getInstance().getLdapDirContext();
-	}
-
 	@Nonnull
 	private String[] getSubDirs() {
-		final ArrayList<String> strcoll = new ArrayList<String>();
-		try {
-			initializeConnection();
-			final SearchControls ctrl = new SearchControls();
-			String name,rname;
-			ctrl.setSearchScope(SearchControls.ONELEVEL_SCOPE); //set to search the whole tree
-			//remove when you solve the size limit problem or TODO: workaround
+		final java.util.List<String> strcoll = new ArrayList<String>();
 
-			final NamingEnumeration<SearchResult> enumr =
-			    _connection.search(createLdapQuery(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()),
-			                       any(ATTR_FIELD_OBJECT_CLASS),
-			                       ctrl);
-			while (enumr.hasMore()){
-				final SearchResult result = enumr.next();
-				rname = result.getName();
-				//only getName gives you name without 'o=DESY, c=DE'
-				rname = removeQuotes(rname);
-				name = simpleName(rname);
-				strcoll.add(name);
-			}
-		} catch (final Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		final ILdapService service = AlarmServiceActivator.getDefault().getLdapService();
+		if (service == null) {
+		    MessageDialog.openError(getParentShell(), "LDAP Access", "LDAP service unavailable. Retry later.");
+		    return _result;
 		}
-		try {
-			return (strcoll.toArray(new String[strcoll.size()]));
-		} catch (final Exception e){
-			e.printStackTrace();
-			return new String[0];
+
+		final ILdapSearchResult result =
+		    service.retrieveSearchResultSynchronously(createLdapName(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()),
+		                                              any(ATTR_FIELD_OBJECT_CLASS),
+		                                              SearchControls.ONELEVEL_SCOPE);
+
+		if (result == null || result.getAnswerSet().isEmpty())  {
+		    MessageDialog.openInformation(getParentShell(), "LDAP subdir retrieval", "No subdirs found in LDAP.");
+		    return _result;
 		}
+		String name, rname;
+		for (final SearchResult row : result.getAnswerSet()) {
+		    rname = row.getName();
+		    rname = removeQuotes(rname);
+		    name = simpleName(rname);
+		    strcoll.add(name);
+		}
+		return strcoll.toArray(new String[0]);
 	}
 
 	@Override
@@ -115,7 +106,7 @@ public class AddMountPointDlg extends Dialog {
 	    final GridLayout layout = new GridLayout();
 	    layout.numColumns = 1;
 	    composite.setLayout(layout);
-	    (new Label(composite, 0)).setText("Select mount point to add:");
+	    new Label(composite, 0).setText("Select mount point to add:");
 
 	    _mountPoints = new List(composite, SWT.SINGLE | SWT.V_SCROLL);
 	    _mountPoints.setItems(getSubDirs());

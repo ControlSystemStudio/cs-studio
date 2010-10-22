@@ -24,12 +24,14 @@
  */
 package org.csstudio.utility.adlconverter.utility.widgetparts;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.sds.internal.rules.ParameterDescriptor;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlconverter.internationalization.Messages;
 import org.csstudio.utility.adlconverter.utility.ADLHelper;
 import org.csstudio.utility.adlconverter.utility.ADLWidget;
+import org.csstudio.utility.adlconverter.utility.DebugHelper;
 import org.csstudio.utility.adlconverter.utility.FileLine;
 import org.csstudio.utility.adlconverter.utility.WrongADLFormatException;
 
@@ -117,6 +119,7 @@ public class ADLDynamicAttribute extends WidgetPart{
                 continue;
             }
             String head = parameter.getLine().split("=")[0]; //$NON-NLS-1$
+            DebugHelper.add(this, parameter.getLine().substring(head.length()+1));
             String[] row=ADLHelper.cleanString(parameter.getLine().substring(head.length()+1));
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$

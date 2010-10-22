@@ -38,13 +38,25 @@ public class ActionsProperty extends AbstractWidgetProperty {
 	
 	private boolean showHookOption;
 	
+	/**Widget Property Constructor
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 */
 	public ActionsProperty(String prop_id, String description,
 			WidgetPropertyCategory category) {
 		super(prop_id, description, category, new ActionsInput());
 		showHookOption = true;
 	}
 
-	
+	/**Widget Property Constructor
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param showHookOption true if the hook option is visible in the dialog.
+	 */
 	public ActionsProperty(String prop_id, String description,
 			WidgetPropertyCategory category, boolean showHookOption) {
 		super(prop_id, description, category, new ActionsInput());

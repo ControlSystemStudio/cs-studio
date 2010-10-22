@@ -9,9 +9,9 @@ import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.context.AbstractApplicationContext;
 import org.epics.css.dal.context.LinkListener;
-import org.epics.css.dal.context.PlugContext;
 import org.epics.css.dal.context.PropertyFamily;
 import org.epics.css.dal.impl.DefaultApplicationContext;
+import org.epics.css.dal.proxy.AbstractPlug;
 import org.epics.css.dal.simple.RemoteInfo;
 import org.epics.css.dal.simulation.SimulatorPlug;
 
@@ -32,6 +32,13 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			final AbstractApplicationContext ctx = new DefaultApplicationContext("Default Property Factory Borker Context");
 			manager.initialize(ctx, LinkPolicy.ASYNC_LINK_POLICY);
 		}
+		return manager;
+	}
+	
+	public static final DefaultPropertyFactoryBroker getInstance(AbstractApplicationContext ctx, LinkPolicy lp) {
+		if (ctx == null) return getInstance();
+		DefaultPropertyFactoryBroker manager = new DefaultPropertyFactoryBroker();
+		manager.initialize(ctx, lp);
 		return manager;
 	}
 
@@ -121,8 +128,8 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	public <P extends DynamicValueProperty<?>> P getProperty(final String uniqueName,
-			final Class<P> type, final LinkListener<?> l) throws InstantiationException,
-			RemoteException {
+	                                                         final Class<P> type,
+	                                                         final LinkListener<?> l) throws InstantiationException, RemoteException {
 		return getProperty(
 				RemoteInfo.fromString(uniqueName,RemoteInfo.DAL_TYPE_PREFIX+defaultPlugType),
 				type,
@@ -130,8 +137,8 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 	}
 
 	public <P extends DynamicValueProperty<?>> P getProperty(final RemoteInfo ri,
-			final Class<P> type, final LinkListener<?> l) throws InstantiationException,
-			RemoteException {
+	                                                         final Class<P> type,
+	                                                         final LinkListener<?> l) throws InstantiationException, RemoteException {
 		return getPropertyFactory(ri.getPlugType()).getProperty(ri, type, l);
 	}
 
@@ -162,7 +169,7 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 		return linkPolicy;
 	}
 
-	public PlugContext getPlug() {
+	public AbstractPlug getPlug() {
 		// has no sense
 		return null;
 	}
@@ -189,5 +196,5 @@ public class DefaultPropertyFactoryBroker implements PropertyFactoryBroker {
 			}
 		}
 	}
-	
+
 }

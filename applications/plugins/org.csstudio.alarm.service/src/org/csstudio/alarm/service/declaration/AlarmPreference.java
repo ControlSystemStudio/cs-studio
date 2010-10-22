@@ -60,7 +60,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<Boolean>("configViaLdap", true);
 
     public static final AlarmPreference<String> ALARMSERVICE_CONFIG_FILENAME =
-        new AlarmPreference<String>("configFileName", "resource/alarmServiceConfig.xml");
+        new AlarmPreference<String>("configFileName", "res/alarmServiceConfig.xml");
 
     public static final AlarmPreference<String> ALARMSERVICE_TOPICS =
         new AlarmPreference<String>("topics", "ALARM;ACK;");
@@ -139,7 +139,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     }
 
     private static boolean hasNoFacilityNames(@Nonnull final String[] result) {
-        return (result.length == 0) || ((result.length == 1) && (result[0].isEmpty()));
+        return result.length == 0 || result.length == 1 && result[0].isEmpty();
     }
 
     /**

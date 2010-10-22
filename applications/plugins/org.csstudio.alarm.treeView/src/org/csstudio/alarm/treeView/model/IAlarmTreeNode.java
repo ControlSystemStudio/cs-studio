@@ -25,9 +25,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
 
 /**
@@ -95,7 +95,7 @@ public interface IAlarmTreeNode {
      *         set on this node or a parent node.
      */
     @CheckForNull
-    String getProperty(@Nonnull final AlarmTreeNodePropertyId property);
+    String getProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
 
     /**
      * Returns the property value that is set on this node. The value is not
@@ -107,14 +107,14 @@ public interface IAlarmTreeNode {
      *         set on this node.
      */
     @CheckForNull
-    String getOwnProperty(@Nonnull AlarmTreeNodePropertyId property);
+    String getOwnProperty(@Nonnull EpicsAlarmcfgTreeNodeAttribute property);
 
     /**
      * Sets the property to the given value.
      * @param property .
      * @param value the value, if <code>null</code> is passed, the property is removed
      */
-    void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value);
+    void setProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property, @CheckForNull final String value);
 
     /**
      * Returns the highest severity of the alarms in the subtree below this

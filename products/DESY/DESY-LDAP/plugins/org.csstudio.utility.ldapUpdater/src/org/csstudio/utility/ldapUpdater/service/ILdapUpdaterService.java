@@ -30,10 +30,14 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.treemodel.ContentModel;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
  * Provides access to LdapService for specific LdapUpdater methods.
@@ -49,16 +53,18 @@ public interface ILdapUpdaterService {
      * Creates a new Record in LDAP.
      * @param newLdapName the new complete ldap name of the record
      * @return true if the new record could be created, false otherwise
+     * @throws ServiceUnavailableException if the LDAP service is not available
      */
-    boolean createLdapRecord(@Nonnull LdapName newLdapName);
+    boolean createLdapRecord(@Nonnull LdapName newLdapName) throws ServiceUnavailableException;
 
     /**
      * Creates a new IOC in LDAP
      * @param newLdapName the new complete name of the IOC
      * @param gregorianCalendar
      * @return true if the new ioc could be created, false otherwise
+     * @throws ServiceUnavailableException
      */
-    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable GregorianCalendar gregorianCalendar);
+    boolean createLdapIoc(@Nonnull LdapName newLdapName, @Nullable GregorianCalendar gregorianCalendar) throws ServiceUnavailableException;
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -67,10 +73,12 @@ public interface ILdapUpdaterService {
      * @return the seach result
      *
      * @throws InterruptedException
+     * @throws ServiceUnavailableException
      */
     @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nonnull String facilityName,
-                                           @Nonnull String iocName) throws InterruptedException;
+    ILdapSearchResult retrieveRecordsForIOC(@Nonnull String facilityName,
+                                            @Nonnull String iocName)
+            throws InterruptedException, ServiceUnavailableException;
 
     /**
      * Retrieves the LDAP entries for the records belonging to the given facility and IOC.
@@ -78,10 +86,11 @@ public interface ILdapUpdaterService {
      *
      * @throws InterruptedException
      * @throws InvalidNameException
+     * @throws ServiceUnavailableException
      */
     @CheckForNull
-    LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix,
-                                           @Nonnull LdapName fullName) throws InterruptedException, InvalidNameException;
+    ILdapSearchResult retrieveRecordsForIOC(@Nonnull LdapName fullName)
+            throws InterruptedException, InvalidNameException, ServiceUnavailableException;
 
 
     /**
@@ -89,8 +98,10 @@ public interface ILdapUpdaterService {
      * @param iocName .
      * @param facilityName .
      * @param validRecords .
+     * @throws ServiceUnavailableException
      */
-    void tidyUpIocEntryInLdap(@Nonnull String iocName, @Nonnull String facilityName, @Nonnull Set<Record> validRecords);
+    void tidyUpIocEntryInLdap(@Nonnull String iocName, @Nonnull String facilityName, @Nonnull Set<Record> validRecords)
+            throws ServiceUnavailableException;
 
     /**
      * Removes the IOC entry from the LDAP context.
@@ -98,7 +109,20 @@ public interface ILdapUpdaterService {
      * @param facilityName .
      * @throws InvalidNameException
      * @throws InterruptedException
+     * @throws ServiceUnavailableException
      */
     void removeIocEntryFromLdap(@Nonnull String iocName,
-                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException;
+                                @Nonnull String facilityName) throws InvalidNameException, InterruptedException, ServiceUnavailableException;
+
+    /**
+     * Returns the ldap content model builder for the specified parameters
+     * @param model an already existing model which shall be enriched with
+     * @param <T> the tree configuration type of the content model
+     * @return the content model builder
+     * @throws ServiceUnavailableException
+     */
+    @Nonnull
+    <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException;
+
 }

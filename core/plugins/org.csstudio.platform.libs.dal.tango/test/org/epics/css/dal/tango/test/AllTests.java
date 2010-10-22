@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  *
- * $Id$
+ * $Id: AllTests.java,v 1.1 2010/07/06 12:51:30 bknerr Exp $
  */
 package org.epics.css.dal.tango.test;
 
@@ -31,8 +31,8 @@ import org.junit.runners.Suite.SuiteClasses;
  * TODO (bknerr) :
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
+ * @author $Author: bknerr $
+ * @version $Revision: 1.1 $
  * @since 06.07.2010
  */
 @RunWith(Suite.class)

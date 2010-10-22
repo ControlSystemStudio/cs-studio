@@ -34,6 +34,14 @@ public class ComboProperty extends AbstractWidgetProperty {
 	
 	private String[] labelsArray;
 
+	/**Combo Property Constructor. The property value type is integer.
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param labelsArray the array of labels in combo's drop box.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public ComboProperty(String prop_id, String description,
 			WidgetPropertyCategory category, String[] labelsArray,
 			int defaultValue) {		

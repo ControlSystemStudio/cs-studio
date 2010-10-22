@@ -219,17 +219,18 @@ public class EPICSPlug extends AbstractPlug
 
 	private static final Double DEFAULT_PENDIO_TIMEOUT_VALUE = 1.0;
 	
-	/**
-	 * PendIO timeout.
-	 * it is configurable now
-	 * MCL 2010-07-20
-	 * configurable would be a great idea!
-	 * 5 seconds is too much ANY ioc will respond within 1 sec at most!
-	 * Changed from 5 to 1 sec
+	/*
+	 * Timeout for calling PendIO. 
+	 * Units are seconds.
 	 */
 	private double pendIOTimeout = DEFAULT_PENDIO_TIMEOUT_VALUE;
 	
-	private double timeout = 1.0;
+	/*
+	 * Timeout for various operations.
+	 * It is configured trough system property defined by org.epics.css.dal.spi.Plugs.CONNECTION_TIMEOUT.
+	 * Units are seconds.
+	 */
+	private double timeout = 5.0;
 
 	/**
 	 * Context.
@@ -715,6 +716,7 @@ public class EPICSPlug extends AbstractPlug
 
 	/**
 	 * Get timeout parameter (in seconds).
+	 * It is configured trough system property defined by org.epics.css.dal.spi.Plugs.CONNECTION_TIMEOUT.
 	 * @return timeout (in seconds)
 	 */
 	public double getTimeout() {

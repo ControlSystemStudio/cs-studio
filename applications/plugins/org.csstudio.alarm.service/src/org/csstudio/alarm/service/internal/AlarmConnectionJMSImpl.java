@@ -116,6 +116,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
             this._alarmListener = alarmListener;
         }
 
+        @Override
         public void onMessage(@Nonnull final Message message) {
             if (AlarmMessageJMSImpl.canCreateAlarmMessageFrom(message)) {
                 _alarmListener.onMessage(AlarmMessageJMSImpl.newAlarmMessage(message));
@@ -143,10 +144,12 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
             this._monitor = monitor;
         }
 
+        @Override
         public void onConnected() {
             _monitor.onConnect();
         }
 
+        @Override
         public void onDisconnected() {
             _monitor.onDisconnect();
         }

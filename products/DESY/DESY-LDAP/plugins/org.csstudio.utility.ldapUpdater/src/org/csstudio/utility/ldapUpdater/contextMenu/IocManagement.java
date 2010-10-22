@@ -25,13 +25,14 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.management.CommandParameters;
 import org.csstudio.platform.management.CommandResult;
 import org.csstudio.platform.management.IManagementCommand;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.contextMenu.CommandEnumeration.IocModificationCommand;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
@@ -88,6 +89,8 @@ public class IocManagement implements IManagementCommand {
         } catch (final InterruptedException e) {
             LOG.error("Interrupted.", e);
             Thread.currentThread().interrupt();
+        } catch (final ServiceUnavailableException e) {
+            LOG.error("LDAP service not available.", e);
         }
     }
 

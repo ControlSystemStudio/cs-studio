@@ -31,8 +31,8 @@ import javax.naming.InvalidNameException;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.eclipse.core.runtime.PlatformObject;
 
 /**
@@ -46,7 +46,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	/**
 	 * The properties of this node.
 	 */
-	private final Map<AlarmTreeNodePropertyId, String> _properties;
+	private final Map<EpicsAlarmcfgTreeNodeAttribute, String> _properties;
 
 	/**
 	 * The parent node of this node.
@@ -78,7 +78,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	    _name = name;
 	    _configurationType = oc;
 	    _source = source;
-		_properties = new EnumMap<AlarmTreeNodePropertyId, String>(AlarmTreeNodePropertyId.class);
+		_properties = new EnumMap<EpicsAlarmcfgTreeNodeAttribute, String>(EpicsAlarmcfgTreeNodeAttribute.class);
 	}
 
 	/**
@@ -90,7 +90,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
 	 *            the value.
 	 */
 	@Override
-    public final void setProperty(@Nonnull final AlarmTreeNodePropertyId property, @CheckForNull final String value) {
+    public final void setProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property, @CheckForNull final String value) {
 
         if (value != null) {
             _properties.put(property, value);
@@ -130,7 +130,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
      */
     @Override
     @CheckForNull
-    public final String getProperty(@Nonnull final AlarmTreeNodePropertyId property) {
+    public final String getProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property) {
         String result = _properties.get(property);
         if (result == null) {
             final IAlarmSubtreeNode parent = getParent();
@@ -146,7 +146,7 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
      */
     @Override
     @CheckForNull
-    public final String getOwnProperty(@Nonnull final AlarmTreeNodePropertyId property) {
+    public final String getOwnProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property) {
         return _properties.get(property);
     }
 
@@ -157,15 +157,11 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
     @CheckForNull
     public LdapName getLdapName() {
         try {
-            if (_configurationType == null) {
-                return new LdapName("");
-            }
-
             final LdapName result =
                 new LdapName(Collections.singletonList(new Rdn(_configurationType.getNodeTypeName(), _name)));
 
             final IAlarmSubtreeNode parent = getParent();
-            if (parent != null) {
+            if (parent != null && !parent.getTreeNodeConfiguration().equals(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT)) {
 
                 final LdapName ldapName = parent.getLdapName();
                 if (ldapName == null) {

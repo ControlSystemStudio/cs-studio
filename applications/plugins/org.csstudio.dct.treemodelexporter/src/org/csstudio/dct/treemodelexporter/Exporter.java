@@ -67,6 +67,7 @@ public class Exporter implements IExporter {
         } catch (final IOException e) {
             LOG.error("Cannot resolve bundle, " + e.getMessage());
         }
+
         final String dtdFilePath = new File(loc, "dtd/epicsAlarmCfg.dtd").toString();
         String xmlFile = null;
         try {

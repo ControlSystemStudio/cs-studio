@@ -46,7 +46,7 @@ public class LinearScale extends AbstractScale {
         VERTICAL
     }
 
-	private static final int SPACE_BTW_MARK_LABEL = 3;
+	private static final int SPACE_BTW_MARK_LABEL = 2;
     
     /** scale direction, no meaning for round scale */
     private Orientation orientation = Orientation.HORIZONTAL;

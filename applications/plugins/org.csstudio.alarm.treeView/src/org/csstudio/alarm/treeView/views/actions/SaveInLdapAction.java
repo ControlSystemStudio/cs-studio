@@ -20,12 +20,15 @@ package org.csstudio.alarm.treeView.views.actions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -40,6 +43,8 @@ import org.eclipse.ui.IWorkbenchPartSite;
  * @since 17.06.2010
  */
 public final class SaveInLdapAction extends Action {
+
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(SaveInLdapAction.class);
 
     private final IWorkbenchPartSite _site;
     private final Queue<ITreeModificationItem> _ldapModifications;
@@ -66,23 +71,24 @@ public final class SaveInLdapAction extends Action {
                   Note: although a concurrent queue is utilised, it has to be explicitly inhibited
                   that items are added, removed, or modified by any other thread during the following
                   queue traversal for the 'save in LDAP' action.
-                  Hence, a synchronised block is necessary on the queue - that still leaves a tiny time window in between the
+                  Hence, a synchronised block is necessary on the queue - that nonetheless leaves a tiny time window in between the
                   the user's 'save in LDAP' activation and the start of this block for the queue to be
                   modified!
                  */
                 while (!_ldapModifications.isEmpty()) {
-                    final ITreeModificationItem item = _ldapModifications.poll();
+                    final ITreeModificationItem item = _ldapModifications.peek();
                     failedMod = item.getDescription();
                     item.apply();
                     appliedMods.add(item.getDescription() + "\n");
+                    _ldapModifications.remove();
                 }
 
                 final String summary = appliedMods.isEmpty() ? "No LDAP Modifications!" :
                                                                "Applied Modifications:\n" + appliedMods;
 
-                MessageDialog.openConfirm(_site.getShell(),
-                                          "LDAP persistence status of recent tree modification.",
-                                          summary);
+                MessageDialog.openInformation(_site.getShell(),
+                                              "LDAP persistence status of recent tree modification.",
+                                              summary);
 
                 setEnabled(false);
 
@@ -94,8 +100,8 @@ public final class SaveInLdapAction extends Action {
                 MessageDialog.openInformation(_site.getShell(),
                                               "LDAP persistence status of recent tree modification.",
                                               "Applied Modifications:\n" + appliedMods + "\n\nFailed Modification:\n" + failedMod + "\n\nNot Applied Modifications:\n\n" + notAppliedMods);
-
-
+            } catch (final NoSuchElementException e) {
+                LOG.error("Removal of first element in LDAP modification queue failed - empty queue?");
             }
         }
     }

@@ -23,6 +23,7 @@ package org.csstudio.utility.nameSpaceSearch;
 
 import org.csstudio.platform.ui.AbstractCssUiPlugin;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.service.LdapServiceTracker;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -36,7 +37,7 @@ public class Activator extends AbstractCssUiPlugin {
 	// The shared instance
 	private static Activator INSTANCE;
 
-	private ILdapService _ldapService;
+	private LdapServiceTracker _ldapServiceTracker;
 
 	/**
 	 * The constructor
@@ -54,7 +55,8 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
     public void doStart(final BundleContext context) throws Exception {
-	    _ldapService = getService(context, ILdapService.class);
+	    _ldapServiceTracker = new LdapServiceTracker(context);
+	    _ldapServiceTracker.open();
 	}
 
 	/*
@@ -63,7 +65,7 @@ public class Activator extends AbstractCssUiPlugin {
 	 */
 	@Override
     public void doStop(final BundleContext context) throws Exception {
-		INSTANCE = null;
+		_ldapServiceTracker.close();
 	}
 
 	/**
@@ -84,7 +86,7 @@ public class Activator extends AbstractCssUiPlugin {
      * @return the LDAP service
      */
     public ILdapService getLdapService() {
-        return _ldapService;
+        return (ILdapService) _ldapServiceTracker.getService();
     }
 
 }

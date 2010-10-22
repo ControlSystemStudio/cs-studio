@@ -23,18 +23,18 @@
  */
 package org.csstudio.utility.ldapUpdater.service.impl;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_VAL_RECORD_OBJECT_CLASS;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.VIRTUAL_ROOT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_FIELD_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_IOC_OBJECT_CLASS;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ATTR_VAL_REC_OBJECT_CLASS;
 import static org.csstudio.utility.ldap.utils.LdapUtils.any;
 import static org.csstudio.utility.ldap.utils.LdapUtils.attributesForLdapEntry;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -45,24 +45,26 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attributes;
 import javax.naming.directory.SearchControls;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.Activator;
-import org.csstudio.utility.ldapUpdater.LdapAccess;
 import org.csstudio.utility.ldapUpdater.service.ILdapUpdaterService;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
+import org.csstudio.utility.treemodel.ITreeNodeConfiguration;
 
 /**
  * Implements access to LDAP Service for LdapUpdater application.
@@ -78,30 +80,41 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(LdapUpdaterServiceImpl.class);
 
-    private final ILdapService _ldapService = Activator.getDefault().getLdapService();
 
+    @Nonnull
+    private ILdapService getLdapService() throws ServiceUnavailableException {
+        final ILdapService service = Activator.getDefault().getLdapService();
+        if (service == null) {
+            throw new ServiceUnavailableException("LDAP service is unavailable.");
+        }
+        return service;
+    }
 
     /**
      * {@inheritDoc}
+     * @throws ServiceUnavailableException
      */
     @Override
-    public boolean createLdapRecord(@Nonnull final LdapName newLdapName) {
+    public boolean createLdapRecord(@Nonnull final LdapName newLdapName) throws ServiceUnavailableException {
 
         final String recordName =
             LdapNameUtils.getValueOfRdnType(newLdapName, RECORD.getNodeTypeName());
 
         final Attributes afe =
-            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_RECORD_OBJECT_CLASS,
+            attributesForLdapEntry(ATTR_FIELD_OBJECT_CLASS, ATTR_VAL_REC_OBJECT_CLASS,
                                    RECORD.getNodeTypeName(), recordName);
 
-        return _ldapService.createComponent(newLdapName, afe);
+        final ILdapService service = getLdapService();
+        return service.createComponent(newLdapName, afe);
     }
+
 
     /**
      * {@inheritDoc}
+     * @throws ServiceUnavailableException
      */
     @Override
-    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final GregorianCalendar cal) {
+    public boolean createLdapIoc(@Nonnull final LdapName newLdapName, @Nullable final GregorianCalendar cal) throws ServiceUnavailableException {
 
 //        final String time = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(cal.getTime());
 
@@ -112,26 +125,26 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 //                                   ATTR_FIELD_LAST_UPDATED, time,
 //                                   ATTR_FIELD_LAST_UPDATED_IN_MILLIS, String.valueOf(cal.getTimeInMillis()));
 
-        return _ldapService.createComponent(newLdapName, afe);
+        final ILdapService service = getLdapService();
+        return service.createComponent(newLdapName, afe);
     }
 
 
     /**
      * {@inheritDoc}
+     * @throws ServiceUnavailableException
      */
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveRecordsForIOC(@Nullable final LdapName ldapSuffix, @Nonnull final LdapName fullIocName)
-        throws InterruptedException, InvalidNameException {
+    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final LdapName fullIocName)
+        throws InterruptedException, InvalidNameException, ServiceUnavailableException {
 
         if (fullIocName.size() > 0) {
             final LdapName query = new LdapName(fullIocName.getRdns());
-            if (ldapSuffix != null) {
-                query.addAll(0, ldapSuffix.getRdns());
-            }
-            return _ldapService.retrieveSearchResultSynchronously(query,
-                                                                  any(RECORD.getNodeTypeName()),
-                                                                  SearchControls.ONELEVEL_SCOPE);
+            final ILdapService service = getLdapService();
+            return service.retrieveSearchResultSynchronously(query,
+                                                             any(RECORD.getNodeTypeName()),
+                                                             SearchControls.ONELEVEL_SCOPE);
 
         }
         return null;
@@ -139,20 +152,22 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     /**
      * {@inheritDoc}
+     * @throws ServiceUnavailableException
      */
     @Override
     @CheckForNull
-    public LdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
-                                                  @Nonnull final String iocName) throws InterruptedException {
+    public ILdapSearchResult retrieveRecordsForIOC(@Nonnull final String facilityName,
+                                                   @Nonnull final String iocName) throws InterruptedException, ServiceUnavailableException {
 
-        final LdapName query = createLdapQuery(IOC.getNodeTypeName(), iocName,
-                                               COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+        final LdapName query = createLdapName(IOC.getNodeTypeName(), iocName,
+                                               COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                FACILITY.getNodeTypeName(), facilityName,
-                                               ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
+                                               UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
 
-        return _ldapService.retrieveSearchResultSynchronously(query,
-                                                              any(RECORD.getNodeTypeName()),
-                                                              SearchControls.ONELEVEL_SCOPE);
+        final ILdapService service = getLdapService();
+        return service.retrieveSearchResultSynchronously(query,
+                                                         any(RECORD.getNodeTypeName()),
+                                                         SearchControls.ONELEVEL_SCOPE);
     }
 
 
@@ -160,17 +175,22 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
      * {@inheritDoc}
      * @throws InvalidNameException
      * @throws InterruptedException
+     * @throws ServiceUnavailableException
      */
     @Override
     public void removeIocEntryFromLdap(@Nonnull final String iocName,
                                        @Nonnull final String facilityName) throws InvalidNameException,
-                                                                                  InterruptedException {
+                                                                                  InterruptedException,
+                                                                                  ServiceUnavailableException {
 
-        final LdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
+        final ILdapSearchResult recordsSearchResult = retrieveRecordsForIOC(iocName, facilityName);
 
+        final ILdapService service = getLdapService();
         if (recordsSearchResult != null) {
-            final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, recordsSearchResult);
+
+            final ILdapContentModelBuilder builder =
+                service.getLdapContentModelBuilder(VIRTUAL_ROOT, recordsSearchResult);
+
             try {
                 builder.build();
             } catch (final CreateContentModelException e) {
@@ -188,33 +208,34 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
             for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : records) {
                 final LdapName ldapName = record.getLdapName();
-                ldapName.addAll(0, LdapAccess.getNameSuffix());
 
-                _ldapService.removeLeafComponent(ldapName);
+                service.removeLeafComponent(ldapName);
 
             }
         }
 
-        _ldapService.removeLeafComponent(createLdapQuery(IOC.getNodeTypeName(), iocName,
-                                                         COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
-                                                         FACILITY.getNodeTypeName(), facilityName,
-                                                         ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
+        service.removeLeafComponent(createLdapName(IOC.getNodeTypeName(), iocName,
+                                                    COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
+                                                    FACILITY.getNodeTypeName(), facilityName,
+                                                    UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
     }
 
     /**
      * {@inheritDoc}
+     * @throws ServiceUnavailableException
      */
     @Override
     public void tidyUpIocEntryInLdap(@Nonnull final String iocName,
                                      @Nonnull final String facilityName,
-                                     @Nonnull final Set<Record> validRecords) {
+                                     @Nonnull final Set<Record> validRecords) throws ServiceUnavailableException {
 
         try {
-            final LdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
+            final ILdapSearchResult searchResult = retrieveRecordsForIOC(facilityName, iocName);
 
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(ROOT, searchResult);
+                final ILdapService service = getLdapService();
+                final ILdapContentModelBuilder builder = service.getLdapContentModelBuilder(VIRTUAL_ROOT, searchResult);
+
                 builder.build();
                 final ContentModel<LdapEpicsControlsConfiguration> model = builder.getModel();
 
@@ -236,18 +257,34 @@ public enum LdapUpdaterServiceImpl implements ILdapUpdaterService {
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public <T extends Enum<T> & ITreeNodeConfiguration<T>> ILdapContentModelBuilder
+        getLdapContentModelBuilder(@Nonnull final ContentModel<T> model) throws ServiceUnavailableException {
+
+        final ILdapService service = getLdapService();
+        return service.getLdapContentModelBuilder(model);
+    }
+
     private void removeLeafComponents(@Nonnull final Set<Record> validRecords,
-                                      @Nonnull final ContentModel<LdapEpicsControlsConfiguration> model) throws InvalidNameException {
+                                      @Nonnull final ContentModel<LdapEpicsControlsConfiguration> model)
+            throws InvalidNameException,
+                   ServiceUnavailableException {
+
         final Map<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>> recordsInLdap =
             model.getChildrenByTypeAndSimpleName(RECORD);
+
+        final ILdapService service = getLdapService();
 
         for (final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> record : recordsInLdap.values()) {
             if (!validRecords.contains(new Record(record.getName()))) {
 
                 final LdapName ldapName = record.getLdapName();
-                ldapName.addAll(0, LdapAccess.getNameSuffix());
 
-                _ldapService.removeLeafComponent(ldapName);
+                service.removeLeafComponent(ldapName);
                 LOG.info("Tidying: Record " + record.getName() + " removed.");
             }
         }

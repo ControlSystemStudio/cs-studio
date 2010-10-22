@@ -48,12 +48,14 @@ public abstract class AbstractTreeModificationItem implements ITreeModificationI
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public abstract String getDescription();
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean hasBeenApplied() {
         return _applied;
     }
@@ -61,6 +63,7 @@ public abstract class AbstractTreeModificationItem implements ITreeModificationI
     /**
      * {@inheritDoc}
      */
+    @Override
     public void setApplied(final boolean applied) {
         _applied = applied;
     }

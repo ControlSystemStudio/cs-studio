@@ -4,11 +4,12 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import javax.naming.InvalidNameException;
+import javax.naming.ServiceUnavailableException;
+
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdGRManagement;
 import org.csstudio.config.authorizeid.ldap.AuthorizationIdManagement;
-import org.csstudio.config.authorizeid.ldap.LdapEain;
-import org.csstudio.config.authorizeid.ldap.LdapGroups;
-import org.csstudio.config.authorizeid.ldap.LdapProp;
+import org.csstudio.config.authorizeid.ldap.LdapAccess;
 import org.csstudio.config.authorizeid.ldap.ObjectClass1;
 import org.csstudio.config.authorizeid.ldap.ObjectClass2;
 import org.csstudio.platform.security.SecurityFacade;
@@ -16,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -48,7 +50,7 @@ import org.eclipse.ui.part.ViewPart;
 public class AuthorizeIdView extends ViewPart {
 
 	public static final String ID = "org.csstudio.config.authorizeid";//$NON-NLS-1$
-	
+
 	private Label label;
 	private Combo combo;
 	private TableViewer tableViewer1;
@@ -64,10 +66,10 @@ public class AuthorizeIdView extends ViewPart {
 	 * Creates a view for the plugin.
 	 */
 	@Override
-	public void createPartControl(Composite parent) {
+	public void createPartControl(final Composite parent) {
 		parent.setLayout(new GridLayout(1, false));
 
-		Group g = new Group(parent, SWT.NONE);
+		final Group g = new Group(parent, SWT.NONE);
 		g.setText(Messages.AuthorizeIdView_SELECT_GROUP);
 		g.setLayout(new FillLayout(SWT.HORIZONTAL));
 
@@ -76,26 +78,26 @@ public class AuthorizeIdView extends ViewPart {
 
 		combo = new Combo(g, SWT.NONE | SWT.READ_ONLY);
 
-		LdapGroups ld = new LdapGroups();
-
 		String[] groups = new String[] { Messages.AuthorizeIdView_MessageWrong1 };
 
 			try {
-				groups = ld.getGroups();
-			} catch (Exception e) {
+				groups = LdapAccess.getGroups();
+			} catch (final Exception e) {
 				e.printStackTrace();
 			}
-	
-			for (int i = 0; i < groups.length; i++) {
-				combo.add(groups[i]);
+
+			for (final String group : groups) {
+				combo.add(group);
 			}
 
 		combo.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				refreshTable1();
 				table2.removeAll();
 				table2.clearAll();
@@ -104,26 +106,28 @@ public class AuthorizeIdView extends ViewPart {
 
 		});
 
-		Composite composite = new Composite(parent, SWT.NONE);
+		final Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new RowLayout());
 
-		Composite c1 = new Composite(composite, SWT.FILL);
+		final Composite c1 = new Composite(composite, SWT.FILL);
 		createTableViewer1(c1);
 		tableViewer1.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 
 		table1.addSelectionListener(new SelectionListener() {
 
-			public void widgetDefaultSelected(SelectionEvent e) {
+			@Override
+            public void widgetDefaultSelected(final SelectionEvent e) {
 			}
 
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				refreshTable2();
 			}
 
 		});
 
-		Composite c2 = new Composite(composite, SWT.NONE);
+		final Composite c2 = new Composite(composite, SWT.NONE);
 		c2.setLayout(new FillLayout(SWT.VERTICAL));
 		createButtons1(c2);
 
@@ -131,14 +135,15 @@ public class AuthorizeIdView extends ViewPart {
 		// is used to create empty space between first set of buttons and
 		// second table
 		@SuppressWarnings("unused") //$NON-NLS-1$
+        final
 		Composite emptySpace = new Composite(composite, SWT.NONE);
 
-		Composite c3 = new Composite(composite, SWT.NONE);
+		final Composite c3 = new Composite(composite, SWT.NONE);
 		createTableViewer2(c3);
 		tableViewer2.getTable().setLayoutData(
 				new GridData(SWT.FILL, SWT.FILL, true, true));
 
-		Composite c4 = new Composite(composite, SWT.NONE);
+		final Composite c4 = new Composite(composite, SWT.NONE);
 		c4.setLayout(new FillLayout(SWT.VERTICAL));
 		createButtons2(c4);
 
@@ -153,7 +158,7 @@ public class AuthorizeIdView extends ViewPart {
 	 * Creates a first table.
 	 * @param parent a composite
 	 */
-	private void createTableViewer1(Composite parent) {
+	private void createTableViewer1(final Composite parent) {
 		tableViewer1 = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		tableViewer1.setColumnProperties(new String[] { Messages.AuthorizeIdView_EAIN});
@@ -165,24 +170,25 @@ public class AuthorizeIdView extends ViewPart {
 		table1.setHeaderVisible(true);
 		table1.setLinesVisible(true);
 
-		TableColumn column = new TableColumn(table1, SWT.LEFT, 0);
+		final TableColumn column = new TableColumn(table1, SWT.LEFT, 0);
 		column.setText(Messages.AuthorizeIdView_EAIN);
 		column.setWidth(180);
 
 		column.addListener(SWT.Selection, new Listener() {
-			public void handleEvent(Event e) {
+			@Override
+            public void handleEvent(final Event e) {
 				// sort column 1
 				TableItem[] items = table1.getItems();
-				Collator collator = Collator.getInstance(Locale.getDefault());
+				final Collator collator = Collator.getInstance(Locale.getDefault());
 				for (int i = 1; i < items.length; i++) {
-					String value1 = items[i].getText(0);
+					final String value1 = items[i].getText(0);
 					for (int j = 0; j < i; j++) {
-						String value2 = items[j].getText(0);
+						final String value2 = items[j].getText(0);
 						if (collator.compare(value1, value2) < 0) {
-							String[] values = { items[i].getText(0),
+							final String[] values = { items[i].getText(0),
 									items[i].getText(1) };
 							items[i].dispose();
-							TableItem item = new TableItem(table1, SWT.NONE, j);
+							final TableItem item = new TableItem(table1, SWT.NONE, j);
 							item.setText(values);
 							items = table1.getItems();
 							break;
@@ -202,14 +208,15 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "New" button for the first table.
 		 */
-	    boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
-		Button _new = new Button(parent, SWT.PUSH);
+	    final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+		final Button _new = new Button(parent, SWT.PUSH);
 		_new.setText(Messages.AuthorizeIdView_NEW);
 		_new.setEnabled(canExecute);
 		_new.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 				if (combo.getText().equals("")) { //$NON-NLS-1$
-					Status status = new Status(IStatus.ERROR, Messages.AuthorizeIdView_Error,
+					final Status status = new Status(IStatus.ERROR, Messages.AuthorizeIdView_Error,
 							0, Messages.AuthorizeIdView_InvalidGroup, null);
 
 					ErrorDialog.openError(
@@ -217,19 +224,31 @@ public class AuthorizeIdView extends ViewPart {
 							Messages.AuthorizeIdView_GroupError, Messages.AuthorizeIdView_GroupErrorDesc,
 							status);
 				} else {
-					InputDialog dialog = new InputDialog(Display.getCurrent()
+					final InputDialog dialog = new InputDialog(Display.getCurrent()
 							.getActiveShell(), Messages.AuthorizeIdView_NEW,
 							Messages.AuthorizeIdView_Name, "", //$NON-NLS-1$
 							new NewDataValidator());
 					if (dialog.open() == Window.OK) {
 
-						String _name = dialog.getValue();
-						String _group = combo.getText();
+						final String _name = dialog.getValue();
+						final String _group = combo.getText();
 
-						ObjectClass1 oclass = ObjectClass1.AUTHORIZEID;
+						final ObjectClass1 oclass = ObjectClass1.AUTHORIZEID;
 
-						AuthorizationIdManagement nd = new AuthorizationIdManagement();
-						nd.insertNewData(_name, _group, oclass);
+						final AuthorizationIdManagement nd = new AuthorizationIdManagement();
+						try {
+                            nd.insertNewData(_name, _group, oclass);
+	                    } catch (final ServiceUnavailableException e1) {
+	                        MessageDialog.openError(getSite().getShell(),
+	                                                "LDAP error.",
+	                                                "LDAP service unavailable, try again later or start the LDAP service manually.");
+	                        return;
+	                    } catch (final InvalidNameException e1) {
+	                        MessageDialog.openError(getSite().getShell(),
+	                                                "LDAP naming error.",
+	                                                "LDAP action failed.\n" + e1.getMessage());
+	                        return;
+	                    }
 
 						refreshTable1();
 					}
@@ -240,44 +259,57 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "Edit" button for the first table.
 		 */
-		Button _edit = new Button(parent, SWT.PUSH);
+		final Button _edit = new Button(parent, SWT.PUSH);
 		_edit.setText(Messages.AuthorizeIdView_EDIT);
 		_edit.setEnabled(canExecute);
 		_edit.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String name = table1.getSelection()[0].getText();
-				String _group = combo.getText();
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
+				final String name = table1.getSelection()[0].getText();
+				final String _group = combo.getText();
 
-				InputDialog dialog = new InputDialog(Display.getCurrent()
+				final InputDialog dialog = new InputDialog(Display.getCurrent()
 						.getActiveShell(), Messages.AuthorizeIdView_EDIT, Messages.AuthorizeIdView_NameEdit, name,
 						new NewDataValidator());
 				if (dialog.open() == Window.OK) {
 
-					String _name = dialog.getValue();
+					final String _name = dialog.getValue();
 
-					ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
-					AuthorizationIdGRManagement ndGr = new AuthorizationIdGRManagement();
+					final ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
+					final AuthorizationIdGRManagement ndGr = new AuthorizationIdGRManagement();
 
-					ArrayList<String> eaig = new ArrayList<String>();
-					ArrayList<String> eair = new ArrayList<String>();
+					final ArrayList<String> eaig = new ArrayList<String>();
+					final ArrayList<String> eair = new ArrayList<String>();
 
-					for (int i = 0; i < table2.getItemCount(); i++) {
-						eaig.add(table2.getItem(i).getText(0));
-						eair.add(table2.getItem(i).getText(1));
+					try {
+					    for (int i = 0; i < table2.getItemCount(); i++) {
+					        eaig.add(table2.getItem(i).getText(0));
+					        eair.add(table2.getItem(i).getText(1));
 
-						ndGr.deleteData(name, eair.get(i), eaig.get(i), _group);
-					}
+					        ndGr.deleteData(name, eair.get(i), eaig.get(i), _group);
+					    }
 
-					ObjectClass1 oclass = ObjectClass1.AUTHORIZEID;
+					    final ObjectClass1 oclass = ObjectClass1.AUTHORIZEID;
 
-					AuthorizationIdManagement nd = new AuthorizationIdManagement();
-					nd.deleteData(name, _group);
-					nd.insertNewData(_name, _group, oclass);
+					    final AuthorizationIdManagement nd = new AuthorizationIdManagement();
+					    nd.deleteData(name, _group);
+					    nd.insertNewData(_name, _group, oclass);
 
-					for (int i = 0; i < table2.getItemCount(); i++) {
+					    for (int i = 0; i < table2.getItemCount(); i++) {
 
-						ndGr.insertNewData(_name, _group, oclass2, eair.get(i),
-								eaig.get(i));
+					        ndGr.insertNewData(_name, _group, oclass2, eair.get(i),
+					                           eaig.get(i));
+					    }
+					} catch (final ServiceUnavailableException e1) {
+					    MessageDialog.openError(getSite().getShell(),
+					                            "LDAP error.",
+					                            "LDAP service unavailable, try again later or start the LDAP service manually.");
+					    return;
+					} catch (final InvalidNameException e1) {
+					    MessageDialog.openError(getSite().getShell(),
+					                            "LDAP naming error.",
+					                            "LDAP action failed.\n" + e1.getMessage());
+					    return;
 					}
 
 					refreshTable1();
@@ -289,28 +321,41 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "Delete" button for the first table.
 		 */
-		Button _delete = new Button(parent, SWT.PUSH);
+		final Button _delete = new Button(parent, SWT.PUSH);
 		_delete.setText(Messages.AuthorizeIdView_DELETE);
 		_delete.setEnabled(canExecute);
 		_delete.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
 
-				String _name = table1.getSelection()[0].getText();
-				String _group = combo.getText();
+				final String _name = table1.getSelection()[0].getText();
+				final String _group = combo.getText();
 
-				MessageBox messageBox = new MessageBox(Display.getCurrent()
+				final MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox
 						.setMessage(Messages.AuthorizeIdView_DelWarn
 								+ Messages.AuthorizeIdView_DelWarn2);
 				messageBox.setText(Messages.AuthorizeIdView_DelEntry);
-				int response = messageBox.open();
+				final int response = messageBox.open();
 				if (response == SWT.YES) {
 
 					deleteWholeTable2(_name, _group);
 
-					AuthorizationIdManagement aim = new AuthorizationIdManagement();
-					aim.deleteData(_name, _group);
+					final AuthorizationIdManagement aim = new AuthorizationIdManagement();
+					try {
+                        aim.deleteData(_name, _group);
+                    } catch (final ServiceUnavailableException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP error.",
+                                                "LDAP service unavailable, try again later or start the LDAP service manually.");
+                        return;
+                    } catch (final InvalidNameException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP naming error.",
+                                                "LDAP action failed.\n" + e1.getMessage());
+                        return;
+                    }
 
 					refreshTable1();
 					refreshTable2();
@@ -323,7 +368,7 @@ public class AuthorizeIdView extends ViewPart {
 	 * Creates a second table.
 	 * @param parenta composite
 	 */
-	private void createTableViewer2(Composite parent) {
+	private void createTableViewer2(final Composite parent) {
 		tableViewer2 = new TableViewer(parent, SWT.SINGLE | SWT.H_SCROLL
 				| SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
 		tableViewer2.setColumnProperties(new String[] { "2", "3" }); //$NON-NLS-1$ //$NON-NLS-2$
@@ -333,13 +378,13 @@ public class AuthorizeIdView extends ViewPart {
 		table2.setHeaderVisible(true);
 		table2.setLinesVisible(true);
 
-		TableColumn column1 = new TableColumn(table2, SWT.LEFT, COL_EAIG);
+		final TableColumn column1 = new TableColumn(table2, SWT.LEFT, COL_EAIG);
 		column1.setText(Messages.AuthorizeIdView_EAIG);
 		column1.setWidth(180);
 
 		column1.addListener(SWT.Selection, new MyListener(0));
 
-		TableColumn column2 = new TableColumn(table2, SWT.LEFT, COL_EAIR);
+		final TableColumn column2 = new TableColumn(table2, SWT.LEFT, COL_EAIR);
 		column2.setText(Messages.AuthorizeIdView_EAIR);
 		column2.setWidth(180);
 
@@ -352,14 +397,15 @@ public class AuthorizeIdView extends ViewPart {
 	 */
 	private class MyListener implements Listener {
 
-		private int i;
+		private final int i;
 
-		public MyListener(int i) {
+		public MyListener(final int i) {
 			super();
 			this.i = i;
 		}
 
-		public void handleEvent(Event event) {
+		@Override
+        public void handleEvent(final Event event) {
 			sortColumn(i);
 		}
 	}
@@ -368,18 +414,18 @@ public class AuthorizeIdView extends ViewPart {
 	 * Sorts column alphabetically, when clicking on it's "header".
 	 * @param colNum the number of column in table (starts with 0)
 	 */
-	private void sortColumn(int colNum) {
+	private void sortColumn(final int colNum) {
 		TableItem[] items = table2.getItems();
-		Collator collator = Collator.getInstance(Locale.getDefault());
+		final Collator collator = Collator.getInstance(Locale.getDefault());
 		for (int i = 1; i < items.length; i++) {
-			String value1 = items[i].getText(colNum);
+			final String value1 = items[i].getText(colNum);
 			for (int j = 0; j < i; j++) {
-				String value2 = items[j].getText(colNum);
+				final String value2 = items[j].getText(colNum);
 				if (collator.compare(value1, value2) < 0) {
-					String[] values = { items[i].getText(0),
+					final String[] values = { items[i].getText(0),
 							items[i].getText(1) };
 					items[i].dispose();
-					TableItem item = new TableItem(table2, SWT.NONE, j);
+					final TableItem item = new TableItem(table2, SWT.NONE, j);
 					item.setText(values);
 					items = table2.getItems();
 					break;
@@ -390,35 +436,48 @@ public class AuthorizeIdView extends ViewPart {
 
 	/**
 	 * Creates second set of buttons.
-	 * 
+	 *
 	 * @param parent
 	 *            a composite
 	 */
-	private void createButtons2(Composite parent) {
+	private void createButtons2(final Composite parent) {
 		/**
 		 * "New" button for second table.
 		 */
-	    boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
-		Button _new = new Button(parent, SWT.PUSH);
+	    final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, false);
+		final Button _new = new Button(parent, SWT.PUSH);
 		_new.setText(Messages.AuthorizeIdView_NEW);
 		_new.setEnabled(canExecute);
 		_new.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String _name = table1.getSelection()[0].getText();
-				CustomInputDialog dialog = new CustomInputDialog(Display
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
+				final String _name = table1.getSelection()[0].getText();
+				final CustomInputDialog dialog = new CustomInputDialog(Display
 						.getCurrent().getActiveShell(), Messages.AuthorizeIdView_NEW,
 						Messages.AuthorizeIdView_SelGroup,
 						Messages.AuthorizeIdView_SelRole, null,null);
-				
+
 				if (dialog.open() == Window.OK) {
-					String _group = combo.getText();
-					String _eaig = dialog.getValue();
-					String _eair = dialog.getValue2();
+					final String _group = combo.getText();
+					final String _eaig = dialog.getValue();
+					final String _eair = dialog.getValue2();
 
-					ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
+					final ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
 
-					AuthorizationIdGRManagement nd = new AuthorizationIdGRManagement();
-					nd.insertNewData(_name, _group, oclass2, _eair, _eaig);
+					final AuthorizationIdGRManagement nd = new AuthorizationIdGRManagement();
+					try {
+                        nd.insertNewData(_name, _group, oclass2, _eair, _eaig);
+                    } catch (final ServiceUnavailableException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP error.",
+                                                "LDAP service unavailable, try again later or start the LDAP service manually.");
+                        return;
+                    } catch (final InvalidNameException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP naming error.",
+                                                "LDAP action failed.\n" + e1.getMessage());
+                        return;
+                    }
 
 					refreshTable2();
 
@@ -429,28 +488,41 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "Edit" button for second table.
 		 */
-		Button _edit = new Button(parent, SWT.PUSH);
+		final Button _edit = new Button(parent, SWT.PUSH);
 		_edit.setText(Messages.AuthorizeIdView_EDIT);
 		_edit.setEnabled(canExecute);
 		_edit.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String _name = table1.getSelection()[0].getText();
-				String eaigSel = table2.getSelection()[0].getText(0); 
-				String eairSel = table2.getSelection()[0].getText(1); 
-				CustomInputDialog dialog = new CustomInputDialog(Display
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
+				final String _name = table1.getSelection()[0].getText();
+				final String eaigSel = table2.getSelection()[0].getText(0);
+				final String eairSel = table2.getSelection()[0].getText(1);
+				final CustomInputDialog dialog = new CustomInputDialog(Display
 						.getCurrent().getActiveShell(), Messages.AuthorizeIdView_EDIT,
 						Messages.AuthorizeIdView_GroupEdit, Messages.AuthorizeIdView_RoleEdit, eaigSel,eairSel );
 				if (dialog.open() == Window.OK) {
-					String _group = combo.getText();
-					String _eaig = dialog.getValue();
-					String _eair = dialog.getValue2();
+					final String _group = combo.getText();
+					final String _eaig = dialog.getValue();
+					final String _eair = dialog.getValue2();
 
-					ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
+					final ObjectClass2 oclass2 = ObjectClass2.AUTHORIZEID;
 
-					AuthorizationIdGRManagement nd = new AuthorizationIdGRManagement();
-					nd.deleteData(_name, eairSel, eaigSel, _group);
-					nd.insertNewData(_name, _group, oclass2, _eair, _eaig);
+					final AuthorizationIdGRManagement nd = new AuthorizationIdGRManagement();
+					try {
+                        nd.deleteData(_name, eairSel, eaigSel, _group);
 
+                        nd.insertNewData(_name, _group, oclass2, _eair, _eaig);
+                    } catch (final ServiceUnavailableException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP error.",
+                                                "LDAP service unavailable, try again later or start the LDAP service manually.");
+                        return;
+                    } catch (final InvalidNameException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP naming error.",
+                                                "LDAP action failed.\n" + e1.getMessage());
+                        return;
+                    }
 					refreshTable2();
 
 				}
@@ -460,25 +532,38 @@ public class AuthorizeIdView extends ViewPart {
 		/**
 		 * "Delete" button for second table.
 		 */
-		Button _delete = new Button(parent, SWT.PUSH);
+		final Button _delete = new Button(parent, SWT.PUSH);
 		_delete.setText(Messages.AuthorizeIdView_DELETE);
 		_delete.setEnabled(canExecute);
 		_delete.addSelectionListener(new SelectionAdapter() {
-			public void widgetSelected(SelectionEvent e) {
-				String _name = table1.getSelection()[0].getText();
-				String _eaig = table2.getSelection()[0].getText();
-				String _eair = table2.getSelection()[0].getText(1);
-				String _group = combo.getText();
+			@Override
+            public void widgetSelected(final SelectionEvent e) {
+				final String _name = table1.getSelection()[0].getText();
+				final String _eaig = table2.getSelection()[0].getText();
+				final String _eair = table2.getSelection()[0].getText(1);
+				final String _group = combo.getText();
 
-				MessageBox messageBox = new MessageBox(Display.getCurrent()
+				final MessageBox messageBox = new MessageBox(Display.getCurrent()
 						.getActiveShell(), SWT.ICON_QUESTION | SWT.YES | SWT.NO);
 				messageBox
 						.setMessage(Messages.AuthorizeIdView_DelWarn);
 				messageBox.setText(Messages.AuthorizeIdView_DelEntry);
-				int response = messageBox.open();
+				final int response = messageBox.open();
 				if (response == SWT.YES) {
-					AuthorizationIdGRManagement aim = new AuthorizationIdGRManagement();
-					aim.deleteData(_name, _eair, _eaig, _group);
+					final AuthorizationIdGRManagement aim = new AuthorizationIdGRManagement();
+					try {
+                        aim.deleteData(_name, _eair, _eaig, _group);
+                    } catch (final ServiceUnavailableException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP error.",
+                                                "LDAP service unavailable, try again later or start the LDAP service manually.");
+                        return;
+                    } catch (final InvalidNameException e1) {
+                        MessageDialog.openError(getSite().getShell(),
+                                                "LDAP naming error.",
+                                                "LDAP action failed.\n" + e1.getMessage());
+                        return;
+                    }
 					refreshTable2();
 				}
 			}
@@ -489,16 +574,15 @@ public class AuthorizeIdView extends ViewPart {
 	 * Deletes all data and fills the first table again.
 	 */
 	private void refreshTable1() {
-		LdapEain le = new LdapEain();
-		String[] items = le.getEain(combo.getText());
+		final String[] items = LdapAccess.getEain(combo.getText());
 
 		table1.removeAll();
 		table1.clearAll();
 
-		for (int i = 0; i < items.length; i++) {
+		for (final String item2 : items) {
 
-			TableItem item = new TableItem(table1, SWT.NONE);
-			item.setText(items[i]);
+			final TableItem item = new TableItem(table1, SWT.NONE);
+			item.setText(item2);
 
 		}
 	}
@@ -510,10 +594,8 @@ public class AuthorizeIdView extends ViewPart {
 		table2.removeAll();
 		table2.clearAll();
 
-		LdapProp lp = new LdapProp();
-
-		AuthorizeIdEntry[] entries = lp.getProp(table1.getSelection()[0]
-				.getText(), combo.getText());
+		final AuthorizeIdEntry[] entries =
+		    LdapAccess.getProp(table1.getSelection()[0].getText(), combo.getText());
 
 		tableViewer2.setInput(entries);
 
@@ -524,17 +606,29 @@ public class AuthorizeIdView extends ViewPart {
 	 * @param name
 	 * @param group
 	 */
-	private void deleteWholeTable2(String name, String group) {
-		AuthorizationIdGRManagement aim2 = new AuthorizationIdGRManagement();
+	private void deleteWholeTable2(final String name, final String group) {
+		final AuthorizationIdGRManagement aim2 = new AuthorizationIdGRManagement();
 
 		for (int i = 0; i < table2.getItemCount(); i++) {
 			if (table2.getItem(i).getText(0).equals("")) { //$NON-NLS-1$
 				break;
 			}
 
-			String _eaig = table2.getItem(i).getText(0);
-			String _eair = table2.getItem(i).getText(1);
-			aim2.deleteData(name, _eair, _eaig, group);
+			final String _eaig = table2.getItem(i).getText(0);
+			final String _eair = table2.getItem(i).getText(1);
+			try {
+                aim2.deleteData(name, _eair, _eaig, group);
+            } catch (final ServiceUnavailableException e1) {
+                MessageDialog.openError(getSite().getShell(),
+                                        "LDAP error.",
+                                        "LDAP service unavailable, try again later or start the LDAP service manually.");
+                return;
+            } catch (final InvalidNameException e1) {
+                MessageDialog.openError(getSite().getShell(),
+                                        "LDAP naming error.",
+                                        "LDAP action failed.\n" + e1.getMessage());
+                return;
+            }
 
 		}
 	}

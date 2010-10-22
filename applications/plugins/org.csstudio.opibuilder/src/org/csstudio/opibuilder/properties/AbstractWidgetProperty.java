@@ -35,6 +35,13 @@ public abstract class AbstractWidgetProperty {
 	
 	protected AbstractWidgetModel widgetModel;
 	
+	/**Widget Property Constructor
+	 * @param prop_id the property id which should be unique in a widget model.
+	 * @param description the description of the property,
+	 * which will be shown as the property name in property sheet.
+	 * @param category the category of the widget.
+	 * @param defaultValue the default value when the widget is first created.
+	 */
 	public AbstractWidgetProperty(String prop_id, String description,
 			WidgetPropertyCategory category, Object defaultValue) {
 		this.prop_id = prop_id;
@@ -150,6 +157,19 @@ public abstract class AbstractWidgetProperty {
 		propertyValue = newValue;
 		firePropertyChange(oldValue, newValue);				
 	}
+	
+	/**Set property value and fire the listeners on the property.oldValue will
+	 * be set as null. 
+	 * @param value
+	 */
+	public void setPropertyValue_IgnoreOldValue(Object value) {
+		//do conversion and legally check
+		Object newValue = checkValue(value);
+		if(newValue == null || newValue.equals(propertyValue))
+			return;
+		propertyValue = newValue;
+		firePropertyChange(null, newValue);				
+	}
 		
 	/**Set the property value.
 	 * @param value the value to be set.
@@ -223,6 +243,11 @@ public abstract class AbstractWidgetProperty {
 	
 	public ExecutionMode getExecutionMode() {
 		return executionMode;
+	}
+	
+	@Override
+	public String toString() {
+		return widgetModel.getName() + " : " + prop_id;
 	}
 	
 }

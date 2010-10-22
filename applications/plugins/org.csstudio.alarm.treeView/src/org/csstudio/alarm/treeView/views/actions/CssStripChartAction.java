@@ -21,9 +21,9 @@ package org.csstudio.alarm.treeView.views.actions;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.platform.ui.util.EditorUtil;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
@@ -63,7 +63,7 @@ public final class CssStripChartAction extends Action {
     public void run() {
         final IAlarmTreeNode node = getSelectedNode();
         if (node != null) {
-            final IPath path = new Path(node.getProperty(AlarmTreeNodePropertyId.CSS_STRIP_CHART));
+            final IPath path = new Path(node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART));
 
             // The following code assumes that the path is relative to
             // the Eclipse workspace.

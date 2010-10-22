@@ -8,7 +8,6 @@ import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.properties.BooleanProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.MacrosProperty;
-import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.properties.WidgetPropertyCategory;
 import org.csstudio.opibuilder.runmode.DisplayOpenManager;
 import org.csstudio.opibuilder.runmode.OPIRunner;
@@ -36,7 +35,6 @@ import org.eclipse.ui.PlatformUI;
 public class OpenDisplayAction extends AbstractWidgetAction {
 	
 	
-	public static final String PROP_DESCRIPTION = "description";//$NON-NLS-1$
 	public static final String PROP_PATH = "path";//$NON-NLS-1$
 	public static final String PROP_MACROS = "macros";//$NON-NLS-1$
 	public static final String PROP_REPLACE = "replace";//$NON-NLS-1$
@@ -50,7 +48,6 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 		addProperty(new MacrosProperty(PROP_MACROS, "Macros", WidgetPropertyCategory.Basic, 
 				new MacrosInput(new LinkedHashMap<String, String>(), true)));
 		addProperty(new BooleanProperty(PROP_REPLACE, "Replace", WidgetPropertyCategory.Basic, true));
-		addProperty(new StringProperty(PROP_DESCRIPTION, "Description", WidgetPropertyCategory.Basic, ""));
 	}
 
 	@Override
@@ -150,9 +147,8 @@ public class OpenDisplayAction extends AbstractWidgetAction {
 
 
 	@Override
-	public String getDescription() {
-		String description = (String)getPropertyValue(PROP_DESCRIPTION);	
-		return "Open " + (description.trim().length()<=0? getPath() : description);
+	public String getDefaultDescription() {
+		return "Open " + getPath();
 	}
 	
 }

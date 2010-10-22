@@ -23,8 +23,10 @@
 
 import java.util.List;
 
+import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.sds.model.AbstractWidgetModel;
 import org.csstudio.sds.model.properties.actions.AbstractWidgetActionModel;
+import org.csstudio.sds.ui.SdsUiPlugin;
 import org.csstudio.sds.ui.editparts.AbstractBaseEditPart;
 import org.csstudio.sds.ui.widgetactionhandler.WidgetActionHandlerService;
 import org.eclipse.core.runtime.Platform;
@@ -38,6 +40,7 @@ import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
 /**
@@ -89,15 +92,20 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 	 */
 	@Override
 	public void buildContextMenu(final IMenuManager menu) {
+		menu.add(new Separator("actions"));
+//		cssMenu.add(new Separator("additions"));
+		this.addWidgetActionToMenu(menu);
+//		MenuManager cssMenu = new MenuManager("CSS", "css");
+//		menu.add(cssMenu);
+		
+//		menu.add(new Separator("css"));
 		IAction closeAction = _actionRegistry.getAction(CLOSE_ACTION_ID);
+		GEFActionConstants.addStandardActionGroups(menu);
 		if (closeAction!=null) {
+			ImageDescriptor close = CustomMediaFactory.getInstance().getImageDescriptorFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/delete.gif");
+			closeAction.setImageDescriptor(close);
 			menu.add(closeAction);
 		}
-		GEFActionConstants.addStandardActionGroups(menu);
-		this.addWidgetActionToMenu(menu);
-		MenuManager cssMenu = new MenuManager("CSS", "css");
-		cssMenu.add(new Separator("additions"));
-		menu.add(cssMenu);
 	}
 	
 	/**
@@ -114,13 +122,28 @@ public final class RunModeContextMenuProvider extends ContextMenuProvider {
 				
 				List<AbstractWidgetActionModel> widgetActions = widget.getActionData().getWidgetActions();
 				if (!widgetActions.isEmpty()) {
-					MenuManager actionMenu = new MenuManager("Actions", "actions");
-					for (AbstractWidgetActionModel action : widgetActions) {
-						actionMenu.add(new MenuAction(widget, action));
+					if(widgetActions.size()>3) {
+						MenuManager actionMenu = new MenuManager("Actions", "actions");
+						fillMenu(actionMenu, widget, widgetActions);
+						menu.add(actionMenu);
+					} else {
+						fillMenu(menu, widget, widgetActions);
 					}
-					menu.add(actionMenu);
 				}
 			}
+		}
+	}
+
+	/**
+	 * @param menu
+	 * @param widget
+	 * @param widgetActions
+	 */
+	private void fillMenu(final IMenuManager menu, AbstractWidgetModel widget,
+			List<AbstractWidgetActionModel> widgetActions) {
+		for (AbstractWidgetActionModel action : widgetActions) {
+//						actionMenu.add(new MenuAction(widget, action));
+			menu.add(new MenuAction(widget, action));
 		}
 	}
 	

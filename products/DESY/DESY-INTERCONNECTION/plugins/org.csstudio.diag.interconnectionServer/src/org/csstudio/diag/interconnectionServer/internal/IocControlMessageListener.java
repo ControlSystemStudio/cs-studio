@@ -29,7 +29,9 @@ import javax.jms.JMSException;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageListener;
+import javax.naming.NamingException;
 
+import org.apache.log4j.Logger;
 import org.csstudio.diag.interconnectionServer.Activator;
 import org.csstudio.diag.interconnectionServer.preferences.PreferenceConstants;
 import org.csstudio.diag.interconnectionServer.server.IocConnection;
@@ -40,57 +42,61 @@ import org.eclipse.core.runtime.Platform;
 /**
  * Listens to IOC control messages and performs the required state changes in
  * reaction to receiving the messages.
- * 
+ *
  * @author Joerg Rathlev
  */
 public class IocControlMessageListener implements MessageListener {
-	
-	private static CentralLogger _log = CentralLogger.getInstance();
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(IocControlMessageListener.class);
 
 	/**
 	 * {@inheritDoc}
 	 */
-	public void onMessage(Message m) {
-		_log.debug(this, "Received IOC control message: " + m.toString());
+    public void onMessage(final Message m) {
+		LOG.debug("Received IOC control message: " + m.toString());
 		if (m instanceof MapMessage) {
-			MapMessage msg = (MapMessage) m;
+			final MapMessage msg = (MapMessage) m;
 			try {
 				if (isIcsCommand(msg)) {
 					processIcsCommand(msg);
 				}
-			} catch (JMSException e) {
-				_log.error(this, "Error processing IOC control message: " + m, e);
-			}
+			} catch (final JMSException e) {
+				LOG.error("Error processing IOC control message: " + m, e);
+			} catch (final NamingException e) {
+                LOG.error("LDAP naming error on processing message " + m, e);
+            }
 		} else {
-			_log.warn(this, "IOC control message is not a MapMessage, ignoring: " + m);
+			LOG.warn("IOC control message is not a MapMessage, ignoring: " + m);
 		}
 	}
 
 	/**
 	 * Returns whether the message is a command for an interconnection server.
-	 * 
+	 *
 	 * @param m
 	 *            the message.
 	 * @return <code>true</code> if the message is an interconnection server
 	 *         command, <code>false</code> otherwise.
 	 */
-	private boolean isIcsCommand(MapMessage m) throws JMSException {
-		String type = m.getString("TYPE");
-		String destination = m.getString("DESTINATION");
+	private boolean isIcsCommand(final MapMessage m) throws JMSException {
+		final String type = m.getString("TYPE");
+		final String destination = m.getString("DESTINATION");
 		return "command".equals(type)
 				&& "interconnectionServer".equals(destination);
 	}
 
 	/**
 	 * Process a command sent to the interconnection server.
-	 * 
+	 *
 	 * @param m
 	 *            the command message.
+	 * @throws NamingException
 	 */
-	private void processIcsCommand(MapMessage m) throws JMSException {
-		String command = m.getString("NAME");
-		String args = m.getString("TEXT");
-		_log.info(this, "Received IOC control command (command=" + command +
+	private void processIcsCommand(final MapMessage m) throws JMSException, NamingException {
+		final String command = m.getString("NAME");
+		final String args = m.getString("TEXT");
+		LOG.info("Received IOC control command (command=" + command +
 				", args=" + args);
 		if ("disableIoc".equals(command)) {
 			setIocEnabled(args, false);
@@ -101,31 +107,33 @@ public class IocControlMessageListener implements MessageListener {
 		} else if ("refreshLogicalIocName".equals(command)) {
 			refreshLogicalIocName(args);
 		} else {
-			_log.warn(this, "Received unknown IOC control command: " + command);
+			LOG.warn("Received unknown IOC control command: " + command);
 		}
 	}
 
 	/**
 	 * Refreshes the logical name of an IOC.
-	 * 
+	 *
 	 * @param args
 	 *            the name of the IOC.
+	 * @throws NamingException
 	 */
-	private void refreshLogicalIocName(String args) {
-		IocConnectionManager.getInstance().refreshIocNameDefinition(args);
+	private void refreshLogicalIocName(final String args) throws NamingException {
+		IocConnectionManager.INSTANCE.refreshIocNameDefinition(args);
 	}
 
 	/**
 	 * Schedules a downtime for an IOC.
-	 * 
+	 *
 	 * @param args
 	 *            the arguments of the command.
+	 * @throws NamingException
 	 */
-	private void scheduleDowntime(String args) {
-		String[] splittedArgs = args.split(",");
-		int duration = Integer.parseInt(splittedArgs[0]);
-		String hostname = splittedArgs[1];
-		IocConnection ioc = getIocFromHostname(hostname);
+	private void scheduleDowntime(final String args) throws NamingException {
+		final String[] splittedArgs = args.split(",");
+		final int duration = Integer.parseInt(splittedArgs[0]);
+		final String hostname = splittedArgs[1];
+		final IocConnection ioc = getIocFromHostname(hostname);
 		if (ioc != null) {
 			ioc.scheduleDowntime(duration, TimeUnit.SECONDS);
 		}
@@ -133,14 +141,15 @@ public class IocControlMessageListener implements MessageListener {
 
 	/**
 	 * Enables and disables the processing of messages from an IOC.
-	 * 
+	 *
 	 * @param args
 	 *            the name of the IOC.
 	 * @param enabled
 	 *            enable or disable.
+	 * @throws NamingException
 	 */
-	private void setIocEnabled(String args, boolean enabled) {
-		IocConnection ioc = getIocFromHostname(args);
+	private void setIocEnabled(final String args, final boolean enabled) throws NamingException {
+		final IocConnection ioc = getIocFromHostname(args);
 		if (ioc != null) {
 			ioc.setDisabled(!enabled);
 		}
@@ -148,22 +157,23 @@ public class IocControlMessageListener implements MessageListener {
 
 	/**
 	 * Returns the IOC connection object for the IOC with the given hostname.
-	 * 
+	 *
 	 * @param hostname
 	 *            the hostname of the IOC.
 	 * @return the IocConnection.
+	 * @throws NamingException
 	 */
-	private IocConnection getIocFromHostname(String hostname) {
-		int dataPort = Integer.parseInt(
+	private IocConnection getIocFromHostname(final String hostname) throws NamingException {
+		final int dataPort = Integer.parseInt(
 				Platform.getPreferencesService().getString(
 						Activator.getDefault().getPluginId(),
 						PreferenceConstants.DATA_PORT_NUMBER, "", null));
-		InetAddress iocInetAddress =
-			IocConnectionManager.getInstance().getIocInetAdressByName(hostname);
+		final InetAddress iocInetAddress =
+			IocConnectionManager.INSTANCE.getIocInetAdressByName(hostname);
 		if (iocInetAddress != null) {
-			IocConnection ioc = IocConnectionManager.getInstance().getIocConnection(
-					iocInetAddress, dataPort);
-			return ioc;
+			final IocConnection conn =
+			    IocConnectionManager.INSTANCE.getIocConnection(iocInetAddress, dataPort);
+			return conn;
 		} else {
 			return null;
 		}

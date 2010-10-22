@@ -21,29 +21,26 @@
  */
 package org.csstudio.utility.ldapUpdater;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.COMPONENT;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.FACILITY;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.IOC;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.RECORD;
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE;
-import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapQuery;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.RECORD;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 import static org.csstudio.utility.ldap.utils.LdapUtils.filterLDAPNames;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferenceKey.IOC_DBL_DUMP_PATH;
 import static org.csstudio.utility.ldapUpdater.preferences.LdapUpdaterPreferences.getValueFromPreferences;
 
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.InvalidNameException;
 import javax.naming.NamingException;
+import javax.naming.ServiceUnavailableException;
 import javax.naming.directory.Attribute;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
@@ -52,10 +49,11 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.util.StringUtil;
 import org.csstudio.utility.ldap.model.IOC;
-import org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration;
 import org.csstudio.utility.ldap.model.Record;
-import org.csstudio.utility.ldap.model.builder.LdapContentModelBuilder;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.service.ILdapContentModelBuilder;
+import org.csstudio.utility.ldap.service.ILdapSearchResult;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsFieldsAndAttributes;
 import org.csstudio.utility.ldap.utils.LdapNameUtils;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileAccess;
 import org.csstudio.utility.ldapUpdater.files.HistoryFileContentModel;
@@ -81,24 +79,6 @@ import org.csstudio.utility.treemodel.TreeNodeComponent;
 public final class LdapAccess {
 
     public static final Logger LOG = CentralLogger.getInstance().getLogger(LdapAccess.class);
-    private static LdapName NAME_SUFFIX;
-
-    static {
-        try {
-            final Rdn ou = new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue());
-            final List<Rdn> list = new ArrayList<Rdn>();
-            list.add(ou);
-            NAME_SUFFIX = new LdapName(list);
-        } catch (final InvalidNameException e) {
-            LOG.warn("Name suffix for EpicsControls could not be created.");
-            e.printStackTrace();
-        }
-    }
-
-    @Nonnull
-    public static LdapName getNameSuffix() {
-        return NAME_SUFFIX;
-    }
 
 
     /**
@@ -176,9 +156,10 @@ public final class LdapAccess {
      * @throws InterruptedException
      * @throws InvalidNameException
      * @throws CreateContentModelException
+     * @throws ServiceUnavailableException
      */
     public static void tidyUpLDAPFromIOCList(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> contentModel,
-                                             @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException, CreateContentModelException{
+                                             @Nonnull final Map<String, IOC> iocMapFromFS) throws InvalidNameException, InterruptedException, CreateContentModelException, ServiceUnavailableException{
 
         final Set<Entry<String, ISubtreeNodeComponent<LdapEpicsControlsConfiguration>>> childrenByTypeSet =
             contentModel.getChildrenByTypeAndSimpleName(IOC).entrySet();
@@ -263,7 +244,7 @@ public final class LdapAccess {
                                           @Nonnull final String iocName,
                                           final int numOfRecsWritten,
                                           @Nonnull final StringBuilder forbiddenRecords,
-                                          @Nonnull final Record record) throws InvalidNameException {
+                                          @Nonnull final Record record) throws InvalidNameException, ServiceUnavailableException {
         final String recordName = record.getName();
         int number = numOfRecsWritten;
         final ISubtreeNodeComponent<LdapEpicsControlsConfiguration> recordComponent =
@@ -277,7 +258,7 @@ public final class LdapAccess {
                 final LdapName newLdapName = new LdapName(iocFromLDAP.getLdapName().getRdns());
                 newLdapName.add(new Rdn(RECORD.getNodeTypeName(), recordName));
 
-                if (!LDAP_UPDATER_SERVICE.createLdapRecord((LdapName) newLdapName.addAll(0, NAME_SUFFIX))) {
+                if (!LDAP_UPDATER_SERVICE.createLdapRecord(newLdapName)) {
                     LOG.error("Error while updating LDAP record for " + recordName +
                     "\nProceed with next record.");
                 } else {
@@ -297,9 +278,9 @@ public final class LdapAccess {
                                                        @Nonnull final String iocName,
                                                        @Nonnull final StringBuilder forbiddenRecords) throws NamingException {
         if (forbiddenRecords.length() > 0) {
-            final Attribute attr = iocFromLDAP.getAttribute(ATTR_FIELD_RESPONSIBLE_PERSON);
+            final Attribute attr = iocFromLDAP.getAttribute(LdapEpicsControlsFieldsAndAttributes.ATTR_FIELD_RESPONSIBLE_PERSON);
             String person;
-            if ((attr != null) && !StringUtil.hasLength((String) attr.get())) {
+            if (attr != null && !StringUtil.hasLength((String) attr.get())) {
                 person = (String) attr.get();
             } else {
                 person = LdapUpdater.DEFAULT_RESPONSIBLE_PERSON;
@@ -364,11 +345,11 @@ public final class LdapAccess {
         if (iocFromLdap != null) {
             final LdapName iocFromLdapName = iocFromLdap.getLdapName();
 
-            final LdapSearchResult searchResult =
-                LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(NAME_SUFFIX, iocFromLdapName);
+            final ILdapSearchResult searchResult =
+                LDAP_UPDATER_SERVICE.retrieveRecordsForIOC(iocFromLdapName);
             if (searchResult != null) {
-                final LdapContentModelBuilder<LdapEpicsControlsConfiguration> builder =
-                    new LdapContentModelBuilder<LdapEpicsControlsConfiguration>(model);
+                final ILdapContentModelBuilder builder =
+                    LDAP_UPDATER_SERVICE.getLdapContentModelBuilder(model);
                 builder.setSearchResult(searchResult);
                 builder.build();
             }
@@ -384,9 +365,11 @@ public final class LdapAccess {
     }
 
     @CheckForNull
-    private static ISubtreeNodeComponent<LdapEpicsControlsConfiguration> getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
-                                                                                                @Nonnull final Entry<String, IOC> iocFromFS,
-                                                                                                @Nonnull final String iocName) throws InvalidNameException {
+    private static ISubtreeNodeComponent<LdapEpicsControlsConfiguration>
+        getOrCreateIocFromLdap(@Nonnull final ContentModel<LdapEpicsControlsConfiguration> model,
+                               @Nonnull final Entry<String, IOC> iocFromFS,
+                               @Nonnull final String iocName)  throws InvalidNameException, ServiceUnavailableException {
+
         ISubtreeNodeComponent<LdapEpicsControlsConfiguration> iocFromLdap =
             model.getByTypeAndSimpleName(LdapEpicsControlsConfiguration.IOC, iocName);
 
@@ -394,14 +377,14 @@ public final class LdapAccess {
         if (iocFromLdap == null) {
             LOG.info("IOC " + iocName + " (from file system) does not yet exist in LDAP - added to facility MISC.\n");
 
-            final LdapName middleName = createLdapQuery(COMPONENT.getNodeTypeName(), ECOM_EPICS_IOC_FIELD_VALUE,
+            final LdapName middleName = createLdapName(COMPONENT.getNodeTypeName(), LdapEpicsControlsFieldsAndAttributes.ECOM_EPICS_IOC_FIELD_VALUE,
                                                         FACILITY.getNodeTypeName(), UpdaterLdapConstants.FACILITY_MISC_FIELD_VALUE);
 
             iocFromLdapName =
                 (LdapName) new LdapName(middleName.getRdns()).add(new Rdn(IOC.getNodeTypeName(), iocName));
 
             final LdapName fullLdapName =
-                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(ROOT.getNodeTypeName(), ROOT.getRootTypeValue()));
+                (LdapName) new LdapName(iocFromLdapName.getRdns()).add(0, new Rdn(UNIT.getNodeTypeName(), UNIT.getUnitTypeValue()));
 
             LDAP_UPDATER_SERVICE.createLdapIoc(fullLdapName, iocFromFS.getValue().getLastUpdated());
 

@@ -23,9 +23,8 @@
 package org.epics.css.dal.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
+import org.apache.log4j.Logger;
 import org.epics.css.dal.DynamicValueProperty;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -368,7 +367,7 @@ public class DeviceBean extends AbstractDeviceImpl implements Connectable
 			try {
 				asyncConnect();
 			} catch (Exception e) {
-				Logger.getLogger(this.getClass().getName()).log(Level.INFO, "Auto connect failed.",e);
+				deviceFactory.getPlug().getLogger().info("'"+getUniqueName()+"' failed to autoconnect.",e);
 			}
 	}
 

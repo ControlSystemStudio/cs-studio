@@ -45,5 +45,4 @@ Bundle-ClassPath: lib/jaxen-core.jar,
  lib/commons-beanutils-1.8.0.jar,
  lib/commons-logging-1.1.1.jar,
  lib/JbcParser.jar
-Import-Package: org.jdom
 

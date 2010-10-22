@@ -1,8 +1,0 @@
-<?xml version="1.0"?>
- <smackProviders>
-     <iqProvider>
-         <elementName>message</elementName>
-         <namespace>jabber:iq:xmpp:message</namespace>
-         <className>org.csstudio.platform.libs.xmpp.impl.XmppMessage</className>
-     </iqProvider>
- </smackProviders>

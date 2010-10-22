@@ -87,7 +87,7 @@ public class ModelReadWriteTest
         model.setTimespan(60*60 + 10);
         model.enableScrolling(true);
 
-        model.addAxis(new AxisConfig("Value", new RGB(0, 0, 255), 0, 10, false, false));
+        model.addAxis(new AxisConfig(true, "Value", new RGB(0, 0, 255), 0, 10, false, false));
 
         final PVItem pv = new PVItem("fred", 1.0);
         pv.addArchiveDataSource(new ArchiveDataSource("abcd://some/url", 1, "Archive"));

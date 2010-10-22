@@ -18,8 +18,6 @@
  * USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
- *
- * $Id$
  */
 package org.csstudio.alarm.treeView.ldap;
 
@@ -32,10 +30,11 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 import javax.naming.ldap.Rdn;
 
-import org.csstudio.alarm.service.declaration.AlarmTreeNodePropertyId;
-import org.csstudio.alarm.service.declaration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
+import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.csstudio.utility.ldap.utils.LdapUtils;
 import org.csstudio.utility.treemodel.ContentModel;
 import org.csstudio.utility.treemodel.CreateContentModelException;
 import org.csstudio.utility.treemodel.ISubtreeNodeComponent;
@@ -74,16 +73,39 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
         ContentModel<LdapEpicsAlarmcfgConfiguration> model;
         try {
-            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.ROOT);
+            model = new ContentModel<LdapEpicsAlarmcfgConfiguration>(LdapEpicsAlarmcfgConfiguration.VIRTUAL_ROOT);
+
+            final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> ouNode = createAndAddSingleOuNode(model);
 
             for (final IAlarmTreeNode node : _alarmTreeNodes) {
-                createSubtree(model, node, model.getRoot());
+                createSubtree(model, node, ouNode);
             }
 
             return model;
         } catch (final InvalidNameException e) {
             throw new CreateContentModelException("Error creating content model from alarm tree.", e);
         }
+    }
+
+    /**
+     * Creates mandatory ou field for LDAP model structure - these nodes are not present in the alarm tree view model
+     * @param model
+     * @return
+     * @throws InvalidNameException
+     */
+    @Nonnull
+    private ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>
+        createAndAddSingleOuNode(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model) throws InvalidNameException {
+
+        final LdapEpicsAlarmcfgConfiguration type = LdapEpicsAlarmcfgConfiguration.UNIT;
+        final ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration> ouNode =
+            new TreeNodeComponent<LdapEpicsAlarmcfgConfiguration>(type.getUnitTypeValue(),
+                                                                  type,
+                                                                  model.getVirtualRoot(),
+                                                                  new BasicAttributes(),
+                                                                  LdapUtils.createLdapName(type.getNodeTypeName(), type.getUnitTypeValue()));
+            model.addChild(model.getVirtualRoot(), ouNode);
+        return ouNode;
     }
 
     private static void createSubtree(@Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
@@ -116,7 +138,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
     private static Attributes getAttributesFromAlarmTreeNode(@Nonnull final IAlarmTreeNode alarmTreeNode) {
 
         final Attributes attributes = new BasicAttributes();
-        for (final AlarmTreeNodePropertyId propId : AlarmTreeNodePropertyId.values()) {
+        for (final EpicsAlarmcfgTreeNodeAttribute propId : EpicsAlarmcfgTreeNodeAttribute.values()) {
             final String property = alarmTreeNode.getProperty(propId);
             if (property != null) {
                 attributes.put(propId.getLdapAttribute(), property);

@@ -21,13 +21,13 @@
  */
 package org.csstudio.utility.ldap.namespacebrowser.ui;
 
-import static org.csstudio.utility.ldap.model.LdapEpicsControlsConfiguration.ROOT;
-import static org.csstudio.utility.ldap.utils.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
+import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.FIELD_ASSIGNMENT;
 
 import org.csstudio.utility.ldap.namespacebrowser.Activator;
 import org.csstudio.utility.ldap.namespacebrowser.utility.LDAP2Automat;
 import org.csstudio.utility.ldap.namespacebrowser.utility.NameSpaceLDAP;
-import org.csstudio.utility.ldap.reader.LdapSearchResult;
+import org.csstudio.utility.ldap.utils.LdapSearchResult;
 import org.csstudio.utility.nameSpaceBrowser.ui.CSSView;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.ScrolledComposite;
@@ -98,7 +98,7 @@ public class MainView extends ViewPart {
 		                nameSpaceLDAP,
 		                getSite(),
 		                defaultPVFilter,
-		                ROOT.getNodeTypeName() + FIELD_ASSIGNMENT + ROOT.getRootTypeValue(),
+		                UNIT.getNodeTypeName() + FIELD_ASSIGNMENT + UNIT.getUnitTypeValue(),
 		                headlines,
 		                0,
 		                searchResult);

@@ -101,6 +101,13 @@ public final class GroupingContainerEditPart extends AbstractContainerEditPart {
 		GroupingContainerFigure groupingContainerFigure = new GroupingContainerFigure();
 		GroupingContainerModel model = (GroupingContainerModel) this.getCastedModel();
 		groupingContainerFigure.setTransparent(model.getTransparent());
+		boolean parentsChildrenSelectable = true;
+		if (getParent() instanceof AbstractContainerEditPart) {
+			AbstractContainerEditPart abep = (AbstractContainerEditPart) getParent();
+			parentsChildrenSelectable=  abep.isChildrenSelectable();
+		}
+//		setChildrenSelectable(parentsChildrenSelectable && model.isLive());
+		setChildrenSelectable(parentsChildrenSelectable);
 		return groupingContainerFigure;
 	}
 

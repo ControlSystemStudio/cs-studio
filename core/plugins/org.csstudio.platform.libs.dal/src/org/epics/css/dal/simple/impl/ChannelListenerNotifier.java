@@ -56,7 +56,7 @@ public class ChannelListenerNotifier {
 		
 		public void conditionChange(DynamicValueEvent event) {
 			DynamicValueCondition cond = event.getCondition();
-			if (initialStateUpdate && cond != null && lastCondition != null && lastCondition.areStatesEqual(cond)) {
+			if (initialStateUpdate && cond != null && lastCondition != null && lastCondition.areStatesEqual(cond) && lastCondition.hasValue() == cond.hasValue()) {
 				return;
 			}
 			lastCondition = cond;
