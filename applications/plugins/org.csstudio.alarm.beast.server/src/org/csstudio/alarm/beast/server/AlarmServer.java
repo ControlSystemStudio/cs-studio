@@ -86,6 +86,7 @@ public class AlarmServer
         		Preferences.getAlarmTreeRoot());
         this.talker = talker;
         this.messenger = new ServerCommunicator(this, work_queue);
+        this.messenger.start();
         readConfiguration();
     }
     

@@ -97,6 +97,7 @@ public class AlarmClientModel
         // Communicator will queue received events until we
         // read the whole configuration.
         communicator = new AlarmClientCommunicator(allow_write, this);
+        communicator.start();
         
         new ReadConfigJob(this).schedule();
     }

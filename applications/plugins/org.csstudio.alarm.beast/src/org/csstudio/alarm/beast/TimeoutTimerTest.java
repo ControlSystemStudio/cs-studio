@@ -32,7 +32,7 @@ public class TimeoutTimerTest
                 System.out.println("Received timeout");
             }
         };
-        
+        timeout.start();
         timeout.reset();
         Thread.sleep(500);
         assertEquals(0, timed_out);

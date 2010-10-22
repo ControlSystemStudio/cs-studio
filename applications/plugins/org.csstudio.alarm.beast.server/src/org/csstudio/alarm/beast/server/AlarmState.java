@@ -166,6 +166,18 @@ public class AlarmState
                other.time.equals(time);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = message.hashCode();
+	    result = prime * result + severity.hashCode();
+	    result = prime * result + time.hashCode();
+	    result = prime * result + value.hashCode();
+	    return result;
+    }
+    
     @SuppressWarnings("nls")
     @Override
     public String toString()

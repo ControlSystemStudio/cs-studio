@@ -20,8 +20,10 @@ public class AlarmRDBTest
 {
 	private Properties getTestSettings() throws Exception
     {
-        Properties settings = new Properties();
-    	settings.load(new FileInputStream("/Kram/Eclipse/Workspace/CustomizationFiles/tests.ini"));
+    	final FileInputStream stream = new FileInputStream("/Kram/Eclipse/Workspace/CustomizationFiles/tests.ini");
+        final Properties settings = new Properties();
+		settings.load(stream);
+		stream.close();
         return settings;
     }
 

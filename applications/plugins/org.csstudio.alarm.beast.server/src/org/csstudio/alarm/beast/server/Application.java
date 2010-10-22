@@ -51,6 +51,7 @@ public class Application implements IApplication
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic());
         
         final Talker talker = new Talker();
+        talker.start();
         final WorkQueue work_queue = new WorkQueue();
         try
         {

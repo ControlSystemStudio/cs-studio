@@ -118,7 +118,14 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
         this.write_with_readback = write_with_readback;
         thread = new Thread(this, "JMS Alarm Communicator"); //$NON-NLS-1$
         thread.setDaemon(true);
-        thread.start();
+    }
+    
+    /** Start the communication thread
+     *  @see #close()
+     */
+    public void start()
+    {
+    	thread.start();
     }
     
     /** Update the configuration
