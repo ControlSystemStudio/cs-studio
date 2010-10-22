@@ -126,6 +126,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
     {
         // Initialize the QueueManager.
         queuemanager = new QueueManager(listener, queue, translations, threshold);
+        queuemanager.start();
  	     
         // Add a startup message to the queue
         queue.add(Severity.forInfo(), "Annunciator started");

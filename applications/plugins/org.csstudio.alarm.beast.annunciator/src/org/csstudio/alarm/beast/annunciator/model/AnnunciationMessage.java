@@ -70,8 +70,29 @@ public class AnnunciationMessage implements Comparable<AnnunciationMessage>
     {
         return other.getSeverity().compareTo(severity);
     }
+    
+    /** Compare by Severity
+     *  {@inheritDoc}
+     */
+	@Override
+    public boolean equals(Object obj)
+    {
+		if (! (obj instanceof AnnunciationMessage))
+			return false;
+	    AnnunciationMessage other = (AnnunciationMessage) obj;
+	    return other.getSeverity().equals(severity);
+    }
 
-    /** @return String representation for debugging */
+    /** Compare by Severity
+     *  {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+    	return severity.hashCode();
+    }
+
+	/** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString()

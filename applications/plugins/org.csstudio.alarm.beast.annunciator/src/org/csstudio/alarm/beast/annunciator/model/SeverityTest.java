@@ -45,12 +45,14 @@ public class SeverityTest
         assertEquals("MAJOR", major.getName());
         // Check comparison
         assertTrue(major.compareTo(minor) > 0);
+        assertTrue(! major.equals(minor));
         assertTrue(info.compareTo(major) < 0);
         assertTrue(minor.compareTo(info) > 0);
         assertTrue(error.compareTo(info) > 0);
         assertTrue(unknown.compareTo(debug) < 0);
         // Check identity
         assertTrue(info == info2);
+        assertTrue(info.equals(info2));
     }
 }
 

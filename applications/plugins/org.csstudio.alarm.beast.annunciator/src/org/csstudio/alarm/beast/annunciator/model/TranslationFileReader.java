@@ -77,6 +77,7 @@ class TranslationFileReader
 						strLine.length());
 				trans_arr.add(new Translation(pattern, replacement));
 			}
+			br.close();
 		}
 		finally
 		{

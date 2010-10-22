@@ -104,7 +104,28 @@ public class Severity implements Comparable<Severity>
         return level - other.level;
     }
 
-    /** @return String representation for debugging */
+    /** Compare Severities by level
+     *  {@inheritDoc}
+     */
+	@Override
+    public boolean equals(final Object obj)
+    {
+		if (! (obj instanceof Severity))
+			return false;
+	    Severity other = (Severity) obj;
+	    return level == other.level;
+    }
+
+    /** Compare Severities by level
+     *  {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+    	return 31 * level;
+    }
+
+	/** @return String representation for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString()
