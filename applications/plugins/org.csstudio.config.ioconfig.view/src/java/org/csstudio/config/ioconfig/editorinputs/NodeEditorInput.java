@@ -21,6 +21,9 @@
  */
 package org.csstudio.config.ioconfig.editorinputs;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
@@ -48,11 +51,12 @@ public class NodeEditorInput implements IEditorInput {
     /**
      * Constructor.
      */
-    public NodeEditorInput(final AbstractNodeDBO node, final boolean nevv) {
+    public NodeEditorInput(@Nonnull final AbstractNodeDBO node, final boolean nevv) {
         _node = node;
         _nevv = nevv;
     }
 
+    @Nonnull
     public AbstractNodeDBO getNode() {
         return _node;
     }
@@ -101,7 +105,7 @@ public class NodeEditorInput implements IEditorInput {
      * (@inheritDoc)
      */
     @Override
-    public Object getAdapter(final Class adapter) {
+    public Object getAdapter(@Nullable final Class adapter) {
         return null;
     }
 
@@ -111,10 +115,11 @@ public class NodeEditorInput implements IEditorInput {
         /* Idee es wäre schön wenn generell nur ein Editor pro Facility geöffnet sein könnte und der
          * Editor gewechslet wird innerhalb einer Faclilty!
          */
-        return hashCode()==obj.hashCode();
+        return obj!=null ? hashCode()==obj.hashCode() : false;
     }
 
     @Override
+    @Nonnull
     public int hashCode() {
         return _node.hashCode();
     }

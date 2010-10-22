@@ -26,7 +26,7 @@ package org.csstudio.alarm.treeView.model;
 import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * This node is displayed in the alarm tree view.
  *
  * @author bknerr
  * @author $Author$
@@ -43,6 +43,7 @@ public interface IAlarmProcessVariableNode extends IAlarmTreeNode {
 
     /**
      * Removes the highest unacknowledged alarm from this node.
+     * This happens when the alarm is acknowledged.
      */
     void removeHighestUnacknowledgedAlarm();
 

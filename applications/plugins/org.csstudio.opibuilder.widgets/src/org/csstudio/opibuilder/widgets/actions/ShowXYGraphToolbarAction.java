@@ -1,4 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
+import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.commands.SetWidgetPropertyCommand;
 import org.csstudio.opibuilder.widgets.editparts.XYGraphEditPart;
 import org.csstudio.opibuilder.widgets.model.XYGraphModel;

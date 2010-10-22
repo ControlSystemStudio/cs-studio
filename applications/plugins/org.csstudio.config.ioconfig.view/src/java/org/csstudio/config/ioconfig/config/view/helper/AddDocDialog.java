@@ -5,7 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.GregorianCalendar;
 
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.preference.PreferenceConstants;
@@ -58,7 +58,7 @@ public class AddDocDialog extends Dialog {
     @Override
     protected Control createDialogArea(final Composite parent) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences node = instanceScope.getNode(Activator.PLUGIN_ID);
+        IEclipsePreferences node = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
         _date = new GregorianCalendar();
         GridData gridData = (GridData) parent.getLayoutData();
         gridData.minimumWidth = 400;

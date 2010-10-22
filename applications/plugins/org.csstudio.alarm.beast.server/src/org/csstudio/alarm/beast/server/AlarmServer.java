@@ -7,10 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -18,19 +14,17 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
-import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
-import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /** Alarm Server
  *  
@@ -51,44 +45,33 @@ public class AlarmServer
     /** Work queue in main thread of application */
     final private WorkQueue work_queue;
 
-    /** Connection to storage for configuration/state */
-    final private RDBUtil rdb;
+    /** RDB for configuration/state */
+    final private AlarmRDB rdb;
     
-    /** RDB SQL statements */
-    final private SQL sql;
-
-    /** RDB connection. Used to check if the RDB reconnected */
-    private Connection connection;
-
-    /** Map of severities and severity IDs in RDB */
-    final private SeverityMapping severity_mapping;
-
-    /** Map of message strings and IDs in RDB */
-    final private MessageMapping message_mapping;
-
     /** Talker which can annunciate messages */
     final private Talker talker;
 
     /** Messenger to communicate with clients */
     final private ServerCommunicator messenger;
 
-    /** All the PVs in the model, sorted by name
-     *  <B>NOTE: Access to PV list and map must synchronize on 'this'</B>
+    /** Hierarchical alarm configuration
+     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
+     */
+	private AlarmHierarchy alarm_tree;
+    
+    /** All the PVs in the alarm_tree, sorted by name
+     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
     private AlarmPV pv_list[] = new AlarmPV[0];
     
     /** All the PVs in the model, mapping PV name (not path name!) to AlarmPV
-     *  <B>NOTE: Access to PV list and map must synchronize on 'this'</B>
-     *  
-     *  Use ConcurrentHashMap ?
+     *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
-    private HashMap<String, AlarmPV> pv_map = new HashMap<String, AlarmPV>();
+    private Map<String, AlarmPV> pv_map = new HashMap<String, AlarmPV>();
 
-    /** Lazily (re-)created statement for updating the alarm state of a PV */
-    private PreparedStatement updateStateStatement;
-    
     /** Indicator for communication errors */
     private volatile boolean had_RDB_error = false;
+
 
     /** Initialize
      *  @param talker Talker that'll be used to annunciate
@@ -98,21 +81,9 @@ public class AlarmServer
     public AlarmServer(final Talker talker, final WorkQueue work_queue) throws Exception
     {
         this.work_queue = work_queue;
-        rdb = RDBUtil.connect(Preferences.getRDB_Url(), 
-        		Preferences.getRDB_User(), Preferences.getRDB_Password(), true);
-        sql = new SQL(rdb);
-        connection = rdb.getConnection();
-        // Disable auto-reconnect: Slightly faster, and we just connected OK.
-        rdb.setAutoReconnect(false);
-        try
-        {
-            severity_mapping = new SeverityMapping(rdb, sql);
-            message_mapping = new MessageMapping(rdb, sql);
-        }
-        finally
-        {
-            rdb.setAutoReconnect(true);
-        }
+        rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
+        		Preferences.getRDB_User(), Preferences.getRDB_Password(),
+        		Preferences.getAlarmTreeRoot());
         this.talker = talker;
         this.messenger = new ServerCommunicator(this, work_queue);
         readConfiguration();
@@ -142,9 +113,12 @@ public class AlarmServer
         {
             synchronized (this)
             {
-                for (AlarmLogic pv : pv_list)
-                    if (pv.getAlarmState().getSeverity() == SeverityLevel.INVALID)
-                        pv.acknowledge(true);
+                for (AlarmPV pv : pv_list)
+                {
+                	final AlarmLogic logic = pv.getAlarmLogic();
+                    if (logic.getAlarmState().getSeverity() == SeverityLevel.INVALID)
+                    	logic.acknowledge(true);
+                }
             }
         }
     }
@@ -155,8 +129,7 @@ public class AlarmServer
         System.out.println("== Alarm Server PV Snapshot ==");
         synchronized (this)
         {
-            for (AlarmLogic pv : pv_list)
-                System.out.println(pv);
+        	alarm_tree.dump(System.out);
         }
 
         // Log memory usage
@@ -235,35 +208,19 @@ public class AlarmServer
      */
     private void readConfiguration() throws Exception
     {
-        final ArrayList<AlarmPV> tmp_pv_array = new ArrayList<AlarmPV>();
+    	// Read alarm hierarchy
         final BenchmarkTimer timer = new BenchmarkTimer();
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_item_by_name);
-        // Disabling the auto-reconnect is about 15% faster, and we don't
-        // expect a timeout while we read the configuration.
-        rdb.setAutoReconnect(false);
-        try
-        {
-            statement.setString(1, root_name);
-            final ResultSet result = statement.executeQuery();
-            if (!result.next())
-                throw new Exception("Unknown alarm tree root " + root_name);
-            final int id = result.getInt(1);
-            final Object parent = result.getObject(2);
-            if (parent != null)
-                throw new Exception("Root element " + root_name + " has parent");
-            result.close();
-            getAlarmTreeChildren(id, tmp_pv_array);
-        }
-        finally
-        {
-            statement.close();
-            rdb.setAutoReconnect(true);
-        }
+        
         synchronized (this)
         {
+        	alarm_tree = rdb.readConfiguration();
+        	
+        	// Determine PVs
+            final ArrayList<AlarmPV> tmp_pv_array = new ArrayList<AlarmPV>();
+            findPVs(alarm_tree, tmp_pv_array);
             // Turn into plain array
             pv_list = tmp_pv_array.toArray(new AlarmPV[tmp_pv_array.size()]);
+            tmp_pv_array.clear();
             // Sort PVs by name
             Arrays.sort(pv_list, new Comparator<AlarmPV>()
             {
@@ -283,118 +240,19 @@ public class AlarmServer
                 pv_list.length, timer.getSeconds(), pv_list.length/timer.getSeconds());
     }
 
-    /** Read configuration for child elements
-     *  @param parent Parent node ID.
-     *  @param tmp_pv_array Array into which to read the PVs
-     *  @throws Exception on error
+    /** Recursively locate AlarmPVs in alarm hierarchy
+     *  @param node Start node
+     *  @param pvs Array to which located AlarmPVs are added
      */
-    private void getAlarmTreeChildren(final int parent, final ArrayList<AlarmPV> tmp_pv_array) throws Exception
+    private void findPVs(final AlarmHierarchy node, final List<AlarmPV> pvs)
     {
-        // When trying to re-use this statement note the recursive access!
-        final PreparedStatement sel_items_by_parent =
-            rdb.getConnection().prepareStatement(sql.sel_items_by_parent);
-        try
-        {
-            sel_items_by_parent.setInt(1, parent);
-            final ResultSet result = sel_items_by_parent.executeQuery();
-            while (result.next())
-            {
-                // Recurse to children of child entry
-                final int id = result.getInt(1);
-                getAlarmTreeChildren(id, tmp_pv_array);
-            }
-            result.close();
-        }
-        finally
-        {
-            sel_items_by_parent.close();
-        }
-        getAlarmTreePVs(parent, tmp_pv_array);
-    }
-    
-    /** Read configuration of PVs
-     *  @param parent Parent node ID.
-     *  @param tmp_pv_array Array into which to read the PVs
-     *  @throws Exception on error
-     */
-    private void getAlarmTreePVs(final int parent, final ArrayList<AlarmPV> tmp_pv_array) throws Exception
-    {
-        final PreparedStatement sel_pv_statement =
-            rdb.getConnection().prepareStatement(sql.sel_pvs_by_parent);   
-        try
-        {
-            sel_pv_statement.setInt(1, parent);
-            final ResultSet result = sel_pv_statement.executeQuery();
-            while (result.next())
-            {   // Easy results
-                final int id = result.getInt(1);
-                if (result.wasNull())
-                    throw new Exception("NULL PV ID");
-                final String name = result.getString(2);
-                if (result.wasNull())
-                    throw new Exception("NULL PV Name");
-                String description = result.getString(3);
-                // Description should not be empty
-                if (result.wasNull() || description == null || description.length() <= 0)
-                    description = name;
-                // Default to most features turned 'on'
-                boolean enabled = result.getBoolean(4);
-                if (result.wasNull())
-                    enabled = true;
-                boolean annunciate = result.getBoolean(5);
-                if (result.wasNull())
-                    annunciate = true;
-                boolean latch = result.getBoolean(6);
-                if (result.wasNull())
-                    latch = true;
-                // 0/null/empty disables these features
-                final int min_alarm_delay = result.getInt(7);
-                final int count = result.getInt(8);
-                final String filter = result.getString(9);
-                
-                // Decode current severity/status IDs, handling NULL as "Ok"
-                int severity_id = result.getInt(10);
-                final SeverityLevel current_severity = result.wasNull()
-                    ? SeverityLevel.OK
-                    : severity_mapping.getSeverityLevel(severity_id);
-                
-                int status_id = result.getInt(11);
-                final String current_status = result.wasNull()
-                    ? ""
-                    : message_mapping.findMessageById(status_id);
-
-                // Alarm severity/status
-                severity_id = result.getInt(12);
-                final SeverityLevel severity = result.wasNull()
-                    ? SeverityLevel.OK
-                    : severity_mapping.getSeverityLevel(severity_id);
-                
-                status_id = result.getInt(13);
-                final String status = result.wasNull()
-                    ? ""
-                    : message_mapping.findMessageById(status_id);
-                
-                // Alarm value, time
-                final String value = result.getString(14);
-                    
-                final Timestamp time = result.getTimestamp(15);
-                final ITimestamp timestamp = result.wasNull()
-                    ? TimestampFactory.now()
-                    : TimeWarp.getCSSTimestamp(time);
-                    
-                // Ignoring config. time from result.getTimestamp(16)
-                    
-                final AlarmPV pv = new AlarmPV(this, id, name, description,
-                        enabled, latch, annunciate, min_alarm_delay, count, filter,
-                        current_severity, current_status, severity, status, value, timestamp);
-                tmp_pv_array.add(pv);
-            }
-            result.close();
-        }
-        finally
-        {
-            sel_pv_statement.close();
-        }
+    	if (node instanceof AlarmPV)
+    	{
+    		pvs.add((AlarmPV) node);
+    		return;
+    	}
+    	for (int i=0; i<node.getChildCount(); ++i)
+    		findPVs(node.getChild(i), pvs);
     }
 
     /** Read updated configuration for PV from RDB
@@ -420,29 +278,9 @@ public class AlarmServer
             return;
         }
         // Known PV
-        final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_pv_by_id);
-        try
-        {
-            statement.setInt(1, pv.getID());
-            final ResultSet result = statement.executeQuery();
-            if (! result.next())
-                throw new Exception("PV " + path_name + " not found");
-            pv.stop();
-            final boolean enabled = result.getBoolean(2);
-            final String filter = result.getString(7);
-            pv.setDescription(result.getString(1));
-            pv.setAnnunciate(result.getBoolean(3));
-            pv.setLatching(result.getBoolean(4));
-            pv.setDelay(result.getInt(5));
-            pv.setCount(result.getInt(6));
-            pv.setEnablement(enabled, filter);
-            pv.start();
-        }
-        finally
-        {
-            statement.close();
-        }
+        pv.stop();
+        rdb.readConfigurationUpdate(pv);
+        pv.start();
     }
 
     /** (Un-)acknowledge alarm.
@@ -451,9 +289,9 @@ public class AlarmServer
      */
     public void acknowledge(final String pv_name, final boolean acknowledge)
     {
-        final AlarmLogic pv = findPV(pv_name);
+        final AlarmPV pv = findPV(pv_name);
         if (pv != null)
-            pv.acknowledge(acknowledge);
+            pv.getAlarmLogic().acknowledge(acknowledge);
     }
 
     /** Locate alarm PV by name
@@ -494,38 +332,8 @@ public class AlarmServer
             {
                 try
                 {
-                    // According to JProfiler, this is the part of the code
-                    // that uses most of the CPU:
-                    // Compared to receiving updates from PVs and sending them
-                    // to JMS clients, the (Oracle) RDB update dominates
-                    // the combined time spent in CPU usage and network I/O.
-                    
-                    // These are usually quick accesses to local caches
-                    final int current_severity_id = severity_mapping.getSeverityID(current_severity);
-                    final int severity_id = severity_mapping.getSeverityID(severity);
-                    final int current_message_id = message_mapping.findOrAddMessage(current_message);
-                    final int message_id = message_mapping.findOrAddMessage(message);
-
-                    // The isConnected() check in here is expensive, but what's
-                    // the alternative if we want convenient auto-reconnect?
-                    final Connection actual_connection = rdb.getConnection();
-                    if (actual_connection != connection  ||  updateStateStatement == null)
-                    {   // (Re-)create statement on new connection
-                        connection = actual_connection;
-                        updateStateStatement = null;
-                        updateStateStatement = connection.prepareStatement(sql.update_pv_state);
-                    }
-                    // Bulk of the time is spent in execute() & commit
-                    updateStateStatement.setInt(1, current_severity_id);
-                    updateStateStatement.setInt(2, current_message_id);
-                    updateStateStatement.setInt(3, severity_id);
-                    updateStateStatement.setInt(4, message_id);
-                    updateStateStatement.setString(5, value);
-                    updateStateStatement.setTimestamp(6, TimeWarp.getSQLTimestamp(timestamp));
-                    updateStateStatement.setInt(7, pv.getID());
-                    updateStateStatement.execute();
-                    connection.commit();
-                    
+                	rdb.writeStateUpdate(pv, current_severity, current_message,
+                			severity, message, value, timestamp);
                     recoverFromRDBErrors();
                 }
                 catch (Exception ex)
@@ -552,21 +360,8 @@ public class AlarmServer
             {
                 try
                 {
-                    final Connection connection = rdb.getConnection();
-                    final PreparedStatement update_enablement_statement =
-                        connection.prepareStatement(sql.update_pv_enablement);
-                    try
-                    {
-                        update_enablement_statement.setBoolean(1, enabled);
-                        update_enablement_statement.setInt(2, pv.getID());
-                        update_enablement_statement.execute();
-                        connection.commit();
-                        recoverFromRDBErrors();
-                    }
-                    finally
-                    {
-                        update_enablement_statement.close();
-                    }
+                	rdb.writeEnablementUpdate(pv, enabled);
+                    recoverFromRDBErrors();
                 }
                 catch (Exception ex)
                 {

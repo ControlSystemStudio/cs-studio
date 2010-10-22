@@ -22,7 +22,7 @@
 package org.csstudio.alarm.table.ui.messagetable;
 
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -34,10 +34,10 @@ import org.eclipse.ui.PlatformUI;
 public class DeleteAllMessagesAction extends Action {
 	private MessageTable _messageTable;
 
-	private MessageList _messageList;
+	private AbstractMessageList _messageList;
 
 	public DeleteAllMessagesAction(final MessageTable messageTable,
-			final MessageList msgList) {
+			final AbstractMessageList msgList) {
 		_messageList = msgList;
 		_messageTable = messageTable;
 		setText("Delete All");
@@ -72,6 +72,6 @@ public class DeleteAllMessagesAction extends Action {
 						"Unknown object in selection!");
 			}
 		}
-		_messageList.deleteAllMessages(messages);
+		_messageList.removeMessages(messages);
 	}
 }

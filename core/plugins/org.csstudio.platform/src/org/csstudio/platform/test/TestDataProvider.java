@@ -42,8 +42,8 @@ import org.osgi.framework.Bundle;
  * Specify your site in your eclipse launch configuration in the VM arguments list with e.g.:
  * -DsiteId=DESY
  *
- * In your plugin create an ini file, e.g. desyTestConfiguration.ini, whereas by convention the file
- * name prefix is the lowercase string of your SiteKey enum (DESY->desy) and the file name main part
+ * In your plugin create an ini file, e.g. desyTestConfiguration.ini, where the file
+ * name prefix is the configured in the SiteId configuration and the file name main part
  * is TestConfiguration.ini
  *
  * @author bknerr
@@ -66,7 +66,7 @@ public final class TestDataProvider {
      * Constructor.
      * @throws IOException
      */
-    private TestDataProvider(@Nonnull final String pluginId) throws IOException{
+    private TestDataProvider(@Nonnull final String pluginId) throws IOException {
         _pluginId = pluginId;
         PROPERTIES = new Properties();
     }
@@ -145,15 +145,14 @@ public final class TestDataProvider {
     @Nonnull
     private static String createSiteSpecificName() throws IllegalArgumentException {
 
-        SiteKey site;
-        String siteProp = null;
+        final String siteProp = System.getProperty("siteId");
+        if (siteProp == null) {
+            throw new IllegalArgumentException("There isn't any jvm arg -DsiteId=xxx configured. Please do so in your launch configuration.");
+        }
+
+        SiteId site;
         try {
-            siteProp = System.getProperty("siteId");
-            if (siteProp == null) {
-                site = SiteKey.SNS; // TODO (bknerr) : contact all site's main responsible developers how to handle the default
-            } else {
-                site = SiteKey.valueOf(siteProp);
-            }
+            site = SiteId.valueOf(siteProp);
         } catch (final IllegalArgumentException e) {
             throw new IllegalArgumentException("The site enum type for jvm arg -DsiteId="+ siteProp +" is unknown. ", e);
         }

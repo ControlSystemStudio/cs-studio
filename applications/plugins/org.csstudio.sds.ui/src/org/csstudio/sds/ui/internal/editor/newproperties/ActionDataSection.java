@@ -186,7 +186,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 				TableEditor deleteTableEditor = new TableEditor(tableViewer
 						.getTable());
 				Button deleteButton = new Button(tableViewer.getTable(),
-						SWT.PUSH);
+						SWT.FLAT);
 				deleteButton.setImage(CustomMediaFactory.getInstance()
 						.getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
 								"icons/delete.gif"));
@@ -206,7 +206,7 @@ public class ActionDataSection extends AbstractBaseSection<ActionDataProperty> {
 
 				TableEditor upTableEditor = new TableEditor(tableViewer
 						.getTable());
-				final Button upButton = new Button(tableViewer.getTable(), SWT.PUSH);
+				final Button upButton = new Button(tableViewer.getTable(), SWT.FLAT);
 				upButton.setImage(CustomMediaFactory.getInstance()
 						.getImageFromPlugin(SdsUiPlugin.PLUGIN_ID,
 								"icons/search_prev.gif"));

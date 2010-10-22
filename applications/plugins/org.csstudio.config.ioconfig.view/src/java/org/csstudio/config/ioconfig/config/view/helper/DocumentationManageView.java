@@ -36,7 +36,7 @@ import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.IDocument;
 import org.csstudio.config.ioconfig.model.IDocumentable;
 import org.csstudio.config.ioconfig.model.Repository;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ColumnViewerEditor;
 import org.eclipse.jface.viewers.ColumnViewerEditorActivationStrategy;
@@ -220,7 +220,7 @@ public class DocumentationManageView extends Composite {
 
         Button refreshButton = new Button(chosserComposite, SWT.FLAT);
         refreshButton.setLayoutData(new GridData(SWT.CENTER, SWT.BEGINNING, false, false));
-        refreshButton.setImage(ActivatorUI.getImageDescriptor("icons/refresh.gif").createImage());
+        refreshButton.setImage(IOConfigActivatorUI.getImageDescriptor("icons/refresh.gif").createImage());
         refreshButton.setToolTipText("Refresh List of Documents");
         refreshButton.addSelectionListener(new SelectionListener() {
 

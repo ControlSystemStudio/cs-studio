@@ -27,11 +27,15 @@ import org.csstudio.platform.internal.usermanagement.UserManagementEvent;
 import org.csstudio.platform.securestore.SecureStore;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
+import org.csstudio.platform.ui.internal.localization.Messages;
 import org.eclipse.jface.action.IContributionManager;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -45,7 +49,9 @@ import org.eclipse.ui.menus.WorkbenchWindowControlContribution;
  */
 public class LoginInformationToolbar extends WorkbenchWindowControlContribution {
 
-    /**
+    private static final String LS = System.getProperty("line.separator"); //$NON-NLS-1$
+
+	/**
      * Listens for user management events and processes them by updating the
      * text in the status bar.
      */
@@ -71,7 +77,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
         }
     }
 
-    private static final String XMPP_USER_NAME = "xmpp.username";
+    private static final String XMPP_USER_NAME = "xmpp.username"; //$NON-NLS-1$
 
     /**
      * Listens for the user management events.
@@ -106,13 +112,28 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
         //Check if xmpp is available in the installation.
         String xmppName = checkForXmpp();
         if (xmppName != null) {
-            String[] usernames = new String[] {"Username","CSS : " + getUsername(), "Xmpp : "+xmppName,
-                    "System : " + System.getProperty("user.name") };
+            final StringBuilder sb = new StringBuilder();
+            sb.append(Messages.LoginInformationToolbar_Teaser).append(LS).append(LS)
+            .append(Messages.LoginInformationToolbar_CSS).append(getUsername()).append(LS)
+            .append(Messages.LoginInformationToolbar_Xmpp).append(xmppName).append(LS)
+            .append(Messages.LoginInformationToolbar_System).append(System.getProperty("user.name")); //$NON-NLS-2$
+            
+            Button button = new Button(composite, SWT.PUSH);
+			button.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false,
+					false));
+			button.setText(Messages.LoginInformationToolbar_ButtonText);
+			button.setToolTipText(sb.toString());
+			button.addSelectionListener(new SelectionListener() {
 
-            Combo combo = new Combo(composite, SWT.DROP_DOWN | SWT.READ_ONLY);
-            combo.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-            combo.setItems(usernames);
-            combo.select(1);
+				public void widgetSelected(SelectionEvent e) {
+					MessageDialog.openInformation(null,Messages.LoginInformationToolbar_Title , sb.toString());
+				}
+
+				public void widgetDefaultSelected(SelectionEvent e) {
+					MessageDialog.openInformation(null, Messages.LoginInformationToolbar_Title, sb.toString());
+				}
+			});
+        	
         } else {
             Label label = new Label(composite, SWT.NONE);
             label.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
@@ -149,7 +170,7 @@ public class LoginInformationToolbar extends WorkbenchWindowControlContribution 
      */
     private String getUsername() {
         User user = SecurityFacade.getInstance().getCurrentUser();
-        final String username = (user != null) ? user.getUsername() : "Not logged in";
+        final String username = (user != null) ? user.getUsername() : "Not logged in"; //$NON-NLS-1$
         return username;
     }
 

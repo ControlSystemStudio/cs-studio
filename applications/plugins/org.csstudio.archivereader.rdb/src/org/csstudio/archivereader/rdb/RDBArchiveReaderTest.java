@@ -95,6 +95,28 @@ public class RDBArchiveReaderTest
     /** Locate channels by pattern */
     @Ignore
     @Test
+    public void testChannelByCaseInsensitvePattern() throws Exception
+    {
+        final ArchiveReader archive = new RDBArchiveReader(
+                URL, USER, PASSWORD, STORED_PROCEDURE);
+        try
+        {
+            System.out.println("Channels matching a pattern:");
+            final String names[] = archive.getNamesByPattern(1, "ccl_llrf:ioc?:load");
+            for (String name : names)
+                System.out.println(name);
+            assertEquals(4, names.length);
+        }
+        finally
+        {
+            archive.close();
+        }
+    }
+
+    
+    /** Locate channels by pattern */
+    @Ignore
+    @Test
     public void testChannelByRegExp() throws Exception
     {
         final ArchiveReader archive = new RDBArchiveReader(
@@ -229,6 +251,7 @@ public class RDBArchiveReaderTest
     }
 
     /** Get optimized data for scalar */
+    @Ignore
     @Test
     public void testStoredProcedureOptimizedScalarData() throws Exception
     {

@@ -43,20 +43,16 @@ import org.csstudio.alarm.service.declaration.IAlarmResource;
 public class AlarmResource implements IAlarmResource {
 
     private final List<String> _topics;
-    private final List<String> _facilities;
     private final String _filepath;
 
     /**
      * Constructor.
      * @param topics
-     * @param facilities
      * @param filepath
      */
     public AlarmResource(@CheckForNull final List<String> topics,
-                         @CheckForNull final List<String> facilities,
                          @CheckForNull final String filepath) {
         _topics = topics == null ? AlarmPreference.getTopicNames() : topics;
-        _facilities = facilities == null ? AlarmPreference.getFacilityNames() : facilities;
         _filepath = filepath == null ? AlarmPreference.getConfigFilename() : filepath;
     }
 
@@ -68,18 +64,12 @@ public class AlarmResource implements IAlarmResource {
 
     @Override
     @Nonnull
-    public final List<String> getFacilities() {
-        return Collections.unmodifiableList(_facilities);
-    }
-
-    @Override
-    @Nonnull
     public final String getFilepath() {
         return _filepath;
     }
 
     @Override
     public final String toString() {
-        return "topics: " + _topics + ", facilities: " + _facilities + ", file: " + _filepath;
+        return "topics: " + _topics + ", file: " + _filepath;
     }
 }

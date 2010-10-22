@@ -103,7 +103,19 @@ public final class Messages extends NLS {
     public static String LoginDialog_USER_NAME;
     public static String LoginDialog_PASSWORD;
 
-    public static String Console_CONSOLE_TITLE;
+    public static String LoginInformationToolbar_ButtonText;
+
+	public static String LoginInformationToolbar_CSS;
+
+	public static String LoginInformationToolbar_System;
+
+	public static String LoginInformationToolbar_Teaser;
+
+	public static String LoginInformationToolbar_Title;
+
+	public static String LoginInformationToolbar_Xmpp;
+
+	public static String Console_CONSOLE_TITLE;
 
     public static String JmsAppenderPreferencePage_PAGE_TITLE;
     public static String JmsAppenderPreferencePage_LOG_LEVEL;

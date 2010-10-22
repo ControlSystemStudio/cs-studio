@@ -35,7 +35,7 @@ import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -62,9 +62,9 @@ public class InitialStateRetriever {
             .getLogger(InitialStateRetriever.class);
 
     // destination for the initialization
-    private final MessageList _messageList;
+    private final AbstractMessageList _messageList;
 
-    public InitialStateRetriever(@Nonnull final MessageList messageList) {
+    public InitialStateRetriever(@Nonnull final AbstractMessageList messageList) {
         _messageList = messageList;
     }
 
@@ -86,7 +86,7 @@ public class InitialStateRetriever {
             }
 
             final Set<String> pvNames = model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
-            final List<PVItem> initItems = new ArrayList<PVItem>();
+            final List<IAlarmInitItem> initItems = new ArrayList<IAlarmInitItem>();
 
             for (final String pvName : pvNames) {
                 initItems.add(new PVItem(pvName, _messageList));
@@ -133,10 +133,10 @@ public class InitialStateRetriever {
      */
     private static class PVItem implements IAlarmInitItem {
         // Destination for the messages
-        private final MessageList _messageList;
+        private final AbstractMessageList _messageList;
         private final String _pvName;
 
-        protected PVItem(@Nonnull final String pvName, @Nonnull final MessageList messageList) {
+        protected PVItem(@Nonnull final String pvName, @Nonnull final AbstractMessageList messageList) {
             _pvName = pvName;
             _messageList = messageList;
         }

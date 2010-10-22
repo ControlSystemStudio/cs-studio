@@ -45,7 +45,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.MasterDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.security.User;
@@ -398,7 +398,7 @@ public final class ConfigHelper {
 
     public static Image getImageMaxSize(final String imagePath, final int width, final int height) {
         ImageData imageData = CustomMediaFactory.getInstance()
-                .getImageDescriptorFromPlugin(ActivatorUI.PLUGIN_ID, imagePath).getImageData();
+                .getImageDescriptorFromPlugin(IOConfigActivatorUI.PLUGIN_ID, imagePath).getImageData();
         if ((width > 0) && (height > 0)) {
             int width2 = imageData.width;
             int height2 = imageData.height;

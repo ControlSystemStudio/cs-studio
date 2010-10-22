@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: System Monitor
 Bundle-SymbolicName: org.csstudio.utility.sysmon; singleton:=true
 Bundle-Version: 1.0.6.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,

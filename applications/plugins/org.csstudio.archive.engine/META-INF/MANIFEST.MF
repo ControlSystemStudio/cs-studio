@@ -4,7 +4,7 @@ Bundle-Name: Engine Plug-in
 Bundle-SymbolicName: org.csstudio.archive.engine;singleton:=true
 Bundle-Version: 1.2.3.qualifier
 Bundle-Activator: org.csstudio.archive.engine.Activator
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.eclipse.core.runtime,
  org.junit4,
  javax.servlet,

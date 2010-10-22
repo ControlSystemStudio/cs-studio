@@ -87,7 +87,8 @@ public class Messages extends NLS
     public static String EditGDCItemDialog_Detail;
     public static String EditGDCItemDialog_Title;
     public static String Error;
-    public static String Filter;
+    public static String ErrorInFilter;
+	public static String Filter;
     public static String FilterTT;
     public static String MaintenanceMode;
     public static String MaintenanceModeDisableMsg;
@@ -102,10 +103,7 @@ public class Messages extends NLS
     public static String MoveItemMsg;
     public static String NormalModeTT;
     public static String Preferences_CommandDirectory;
-    public static String Preferences_JMS_AlarmServerTopic;
-    public static String Preferences_JMS_AlarmClientTopic;
     public static String Preferences_JMS_IdleTimeout;
-    public static String Preferences_JMS_TalkTopic;
     public static String Preferences_JMS_URL;
     public static String Preferences_JMS_User;
     public static String Preferences_JMS_Password;
@@ -136,8 +134,7 @@ public class Messages extends NLS
     public static String Unselect;
     public static String UnselectTT;
     public static String WaitingForServer;
-    
-    static
+	static
     {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

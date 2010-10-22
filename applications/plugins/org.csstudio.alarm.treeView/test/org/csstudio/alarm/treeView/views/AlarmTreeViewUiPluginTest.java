@@ -271,7 +271,7 @@ public class AlarmTreeViewUiPluginTest {
             final IAlarmTreeNode child = efan.getChild("EcomRenamed");
             Assert.assertNotNull(LDAP_SERVICE.lookup(child.getLdapName()));
         } catch (final NamingException e) {
-            Assert.fail("Rename action had not been persisted.");
+            Assert.fail("Rename action had not been persisted.\n" + e.getMessage());
         }
     }
 
@@ -324,9 +324,7 @@ public class AlarmTreeViewUiPluginTest {
     @Nonnull
     private IAlarmTreeNode getFacilityNode() {
         //set a new selection on the root node
-        final IAlarmSubtreeNode unit = (IAlarmSubtreeNode) VIEW.getRootNode().getChild(UNIT.getUnitTypeValue());
-        Assert.assertNotNull(unit);
-        final IAlarmTreeNode efan = unit.getChild(EFAN_NAME);
+        final IAlarmSubtreeNode efan = (IAlarmSubtreeNode) VIEW.getRootNode().getChild(EFAN_NAME);
         Assert.assertNotNull(efan);
         return efan;
     }
@@ -334,13 +332,18 @@ public class AlarmTreeViewUiPluginTest {
     @Nonnull
     private IAlarmTreeNode getComponentNode() {
         final IAlarmTreeNode efan = getFacilityNode();
-        final IAlarmTreeNode ecom = ((IAlarmSubtreeNode) efan).getChild("TestEcom1");
+        IAlarmTreeNode ecom = ((IAlarmSubtreeNode) efan).getChild("TestEcom3");
+        if (ecom == null) {
+            ecom = ((IAlarmSubtreeNode) efan).getChild("EcomRenamed");
+        }
+        Assert.assertNotNull(ecom);
         return ecom;
     }
     @Nonnull
     private IAlarmTreeNode getRecordNode() {
         final IAlarmTreeNode efan = getFacilityNode();
         final IAlarmTreeNode eren = ((IAlarmSubtreeNode) efan).getChild("TestEren1");
+        Assert.assertNotNull(eren);
         return eren;
     }
 

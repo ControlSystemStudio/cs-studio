@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.config.ioconfig.config.view.helper.Baudrates;
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.DocumentDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
@@ -306,8 +306,10 @@ public class SubnetEditor extends AbstractNodeEditor {
         // Cancel General
 
         getNameWidget().setText((String) getNameWidget().getData());
-
-        getIndexSpinner().setSelection((Integer) getIndexSpinner().getData());
+        resetSelection(_facilityViewer.getCombo());
+        
+        getIndexSpinner().setSelection(((Short) getIndexSpinner().getData()));
+        
 
         // Net Setting
         _subnet.setHsa(Short.valueOf(_hSAddress.getItem(_hSAddress.getSelectionIndex())));
@@ -316,25 +318,19 @@ public class SubnetEditor extends AbstractNodeEditor {
         _baudList.getCombo().select((Integer) _baudList.getCombo().getData());
 
         // -- Busparameter
-        _tslotInit.setText((String) _tslotInit.getData());
-
-        _maxTsdr.setText((String) _maxTsdr.getData());
-
-        _minTsdr.setText((String) _minTsdr.getData());
-
-        _tset.setText((String) _tset.getData());
-
-        _tqui.setText((String) _tqui.getData());
-
-        _gapCombo.select((Integer) _gapCombo.getData());
+        resetString(_maxTsdr);
+        resetString(_tslotInit);
+        resetString(_minTsdr);
+        resetString(_tset);
+        resetString(_tqui);
+        resetSelection(_gapCombo);
 
         _subnet.setRepeaterNumber(Short.parseShort(_retrayCombo.getItem(_retrayCombo
                 .getSelectionIndex()))); // repeater Number ???
-        _retrayCombo.select((Integer) _retrayCombo.getData());
 
-        _ttr.setText((String) _ttr.getData());
-
-        _watchdog.setText((String) _watchdog.getData());
+        resetSelection(_retrayCombo);
+        resetString(_ttr);
+        resetString(_watchdog);
 
         // Document
 
@@ -346,7 +342,7 @@ public class SubnetEditor extends AbstractNodeEditor {
      */
     private void general(final String head) {
         InstanceScope instanceScope = new InstanceScope();
-        IEclipsePreferences prefNode = instanceScope.getNode(Activator.PLUGIN_ID);
+        IEclipsePreferences prefNode = instanceScope.getNode(IOConifgActivator.PLUGIN_ID);
 
         Composite comp = ConfigHelper.getNewTabItem(head, getTabFolder(), 5, 470, 260);
         comp.setLayout(new GridLayout(4, false));
@@ -742,7 +738,7 @@ public class SubnetEditor extends AbstractNodeEditor {
 
     /** {@inheritDoc} */
     @Override
-    public final GSDFileDBO getGSDFile() {
+    public final GSDFileDBO getGsdFile() {
         return null;
     }
 

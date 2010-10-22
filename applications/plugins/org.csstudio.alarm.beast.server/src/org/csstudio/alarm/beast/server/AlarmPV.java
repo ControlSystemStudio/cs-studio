@@ -27,7 +27,7 @@ import org.eclipse.osgi.util.NLS;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
+public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVListener, FilterListener
 {
     /** Timer used to check for connections at some delay after 'start */
     final private static Timer connection_timer =
@@ -35,24 +35,13 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     
     final private Logger log;
     
-    /** Name of the alarm
-     *  @see #getName()
-     */
-    final private String name;
-
+    final private AlarmLogic logic;
+    
     /** Alarm server that handles this PV */
     final private AlarmServer server;
     
-    /** RDB ID */
-    final private int id;
-    
     /** Description of alarm, will be used to annunciation */
     private volatile String description;
-
-    /** Is this a 'priority' message?
-     *  @see #isPriorityAlarm()
-     */
-    private boolean has_priority;
 
     /** Control system PV */
     final private PV pv;
@@ -66,7 +55,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     private volatile Filter filter;
 
     /** Initialize alarm PV
-     *  @param server Alarm server that handles this PV 
+     *  @param server Alarm server that handles this PV. Within JUnit tests, this may be <code>null</code>.
      *  @param id RDB ID
      *  @param name Name of control system PV
      *  @param description Description of alarm, will be used to annunciation
@@ -84,7 +73,9 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
      *  @param timestamp 
      *  @throws Exception on error
      */
-    public AlarmPV(final AlarmServer server, final int id, final String name, 
+    public AlarmPV(final AlarmServer server,
+    		final AlarmHierarchy parent,
+    		final int id, final String name, 
             final String description,
             final boolean enabled,
             final boolean latching,
@@ -99,37 +90,34 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
             final String value,
             final ITimestamp timestamp) throws Exception
     {
-        super(latching, annunciating, min_alarm_delay, count,
+    	super(parent, name, id);
+    	// PV has no child entries
+    	setChildren(new AlarmHierarchy[0]);
+    	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
               new AlarmState(severity, message, value, timestamp));
         log = CentralLogger.getInstance().getLogger(this);
-        this.name = name;
         this.server = server;
-        this.id = id;
         setDescription(description);
-        pv = PVFactory.createPV(name);
-        setEnablement(enabled, filter);
+        if (server == null)
+        {	// Unit test, don't create a PV
+        	pv = null;
+        }
+        else
+        {
+	        pv = PVFactory.createPV(name);
+	        setEnablement(enabled, filter);
+        }
+        alarm_severity = severity;
     }
 
-    /** @return RDB ID for this PV */
-    public int getID()
+    /** @return AlarmLogic used by this PV */
+    AlarmLogic getAlarmLogic()
     {
-        return id;
+        return logic;
     }
 
-    /** Get the alarm PV name.
-     *  This may differ a little from the actual underlying control system PV:
-     *  For example, the alarm name might be "Fred",
-     *  but since the control system defaults to "system://Fred", the actual
-     *  CS PV has a slightly different name.
-     *  @return Name that was used when constructing this AlarmPV
-     */
-    public String getName()
-    {
-        return name;
-    }
-
-    /** @return Alarm description */
+	/** @return Alarm description */
     public String getDescription()
     {
         return description;
@@ -145,13 +133,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
             basic_description = description.substring(Messages.BasicAnnunciationPrefix.length()).trim();
         else
             basic_description = description.trim();
-        has_priority = basic_description.startsWith("!");
-    }
-
-    @Override
-    public boolean isPriorityAlarm()
-    {
-        return has_priority;
+        logic.setPriority(basic_description.startsWith("!"));
     }
 
     /** Set enablement.
@@ -165,13 +147,13 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     {
         if (pv.isRunning())
             throw new Exception("Cannot change enablement while running");
-        synchronized (this)
+        synchronized (logic)
         {
             if (filter == null  ||  filter.length() <= 0)
                 this.filter = null;
             else
                 this.filter = new Filter(filter, this);
-            setEnabled(enabled);
+            logic.setEnabled(enabled);
         }
     }
 
@@ -217,7 +199,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
         if (log.isDebugEnabled())
             log.debug(getName() + " filter " + 
                       (new_enable_state ? "enables" : "disables"));
-        setEnabled(new_enable_state);
+        logic.setEnabled(new_enable_state);
 	}
 
     /** Invoked by <code>connection_timer</code> when PV fails to connect
@@ -228,7 +210,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
 	    
 	    final AlarmState received = new AlarmState(SeverityLevel.INVALID,
                Messages.AlarmMessageNotConnected, "", TimestampFactory.now());
-	    computeNewState(received);
+	    logic.computeNewState(received);
     }
 
     /** @see PVListener */
@@ -239,7 +221,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     		return;
         final AlarmState received = new AlarmState(SeverityLevel.INVALID,
                 Messages.AlarmMessageDisconnected, "", TimestampFactory.now());
-        computeNewState(received);
+        logic.computeNewState(received);
     }
     
     /** @see PVListener */
@@ -251,7 +233,7 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
         final String new_message = value.getStatus();
         final AlarmState received = new AlarmState(new_severity, new_message,
                 value.format(), value.getTime());
-        computeNewState(received);
+        logic.computeNewState(received);
     }
 
     /** Decode a value's severity
@@ -271,34 +253,28 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     }
 
     /** {@inheritDoc} */
-    @Override
-    protected void fireEnablementUpdate()
+    public void alarmEnablementChanged(final boolean is_enabled)
     {
-        server.sendEnablementUpdate(this, isEnabled());
+        server.sendEnablementUpdate(this, is_enabled);
     }
 
     /** {@inheritDoc} */
-    @Override
-    protected void fireStateUpdates()
+    public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
         if (log.isDebugEnabled())
             log.debug(getName() + " changes to " + super.toString());
-        final AlarmState current, alarm;
-        synchronized (this)
-        {
-            current = getCurrentState();
-            alarm = getAlarmState();
-        }
         if (server != null)
             server.sendStateUpdate(this,
                     current.getSeverity(), current.getMessage(),
                     alarm.getSeverity(), alarm.getMessage(),
                     alarm.getValue(), alarm.getTime());
+        // Update alarm tree 'upwards' from this leaf
+        alarm_severity = alarm.getSeverity();
+        parent.maximizeSeverity();
     }
 
-    /** {@inheritDoc} */
-    @Override
-    protected void fireAnnunciation(final SeverityLevel level)
+	/** {@inheritDoc} */
+    public void annunciateAlarm(final SeverityLevel level)
     {
         final String message;
         // For annunciation texts like "* Some Message" where
@@ -321,22 +297,25 @@ public class AlarmPV extends AlarmLogic implements PVListener, FilterListener
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append(getName() + " [" + description + "] - ");
-        if (pv.isConnected())
-            buf.append("connected - ");
-        else
-            buf.append("disconnected - ");
-        if (! isEnabled())
+        buf.append(getPathName() + " [" + description + "] - ");
+        if (pv != null)
+        {
+	        if (pv.isConnected())
+	            buf.append("connected - ");
+	        else
+	            buf.append("disconnected - ");
+        }
+        if (! logic.isEnabled())
             buf.append("disabled - ");
-        if (isAnnunciating())
+        if (logic.isAnnunciating())
             buf.append("annunciating - ");
-        if  (isLatching())
+        if  (logic.isLatching())
             buf.append("latching - ");
-        if (getDelay() > 0)
-            buf.append(getDelay() + " sec delay - ");
+        if (logic.getDelay() > 0)
+            buf.append(logic.getDelay() + " sec delay - ");
         if (filter != null)
             buf.append(filter.toString() + " - ");
-        buf.append(super.toString());
+        buf.append(logic.toString());
         return buf.toString();
     }
 }

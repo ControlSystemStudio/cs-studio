@@ -24,16 +24,19 @@
  */
 package org.csstudio.config.ioconfig.config.view.helper;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.DBClass;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.pbmodel.Ranges.Value;
-import org.csstudio.config.ioconfig.view.ActivatorUI;
+import org.csstudio.config.ioconfig.view.IOConfigActivatorUI;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.commands.operations.OperationStatus;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.TraverseEvent;
 import org.eclipse.swt.events.TraverseListener;
@@ -47,7 +50,7 @@ import org.eclipse.swt.widgets.Text;
 
 /**
  * This Class help handel the Unsign Datatyp from Profibus.
- *
+ * 
  * @author hrickens
  * @author $Author: hrickens $
  * @version $Revision: 1.4 $
@@ -55,6 +58,70 @@ import org.eclipse.swt.widgets.Text;
  */
 public final class ProfibusHelper {
 
+	/**
+	 * 
+	 * TODO (hrickens) :
+	 * 
+	 * @author hrickens
+	 * @author $Author: $
+	 * @since 05.10.2010
+	 */
+	private static final class NumberVerifyListenerImplementation implements
+			VerifyListener {
+		private final long _min;
+
+		NumberVerifyListenerImplementation(long min) {
+			_min = min;
+		}
+
+		@Override
+		public void verifyText(@Nonnull final VerifyEvent e) {
+			// check != Digit
+			boolean b1 = e.text.matches("\\D+");
+			// check is first char
+			boolean b2 = e.start == 0;
+			// check is an '-'
+			boolean b3;
+			if (_min < 0) {
+				b3 = e.text.matches("^[\\-]?$");
+			} else {
+				b3 = false;
+			}
+
+			// check is a Digit or is first char an '-'
+			if (b1 && !(b2 && b3)) {
+				e.doit = false;
+			}
+			// // check ob value more then one Digit for range check (see
+			// // below)
+			// if ((e.start > 0) || !b3) {
+			// // e.display.getCurrent().
+			// String text = ((Text) e.getSource()).getText();
+			// String temp = text.substring(0, e.start) + e.text;
+			// if (text.length() >= e.end) {
+			// temp = temp.concat(text.substring(e.end));
+			// }
+			// // long s =0;
+			// // if(temp.trim().length()>0){
+			// // s = Long.valueOf(temp);
+			// // }
+			// // Es gibt konflikte mit dem Verifiy Listernr
+			// // // check ob Value in range (min-max) is !
+			// // if((max<s||s<min)&&temp.trim().length()>0) {
+			// // Shell shell = Display.getCurrent().getActiveShell();
+			// // MessageBox box = new MessageBox(shell, SWT.ICON_ERROR);
+			// // String msg =
+			// //
+			// String.format("Min(%d) oder Max(%d) Range Überschritten!",min,max);
+			// // box.setMessage(msg);
+			// // box.open();
+			// // e.doit = false;
+			// // }
+			// }
+		}
+	}
+
+	private static final int CHARSIZE = 8;
 	/** Verify Listener Type ID VL_TYP_U08. */
 	public static final int VL_TYP_U08 = 8;
 	/** Verify Listener Type ID VL_TYP_U16. */
@@ -62,14 +129,15 @@ public final class ProfibusHelper {
 	/** Verify Listener Type ID VL_TYP_U32. */
 	public static final int VL_TYP_U32 = 32;
 	/** A VerifyListener to check U8 type. */
-	private static VerifyListener _checkOfU8;
+	private static VerifyListener _CHECK_OF_U8;
 	/** A VerifyListener to check U16 type. */
-	private static VerifyListener _checkOfU16;
+	private static VerifyListener _CHECK_OF_U16;
 	/** A VerifyListener to check U32 type. */
-	private static VerifyListener _checkOfU32;
+	private static VerifyListener _CHECK_OF_U32;
 	/** A TraverseListener to jump per enter to the next field. */
-	private static TraverseListener _nETL = new TraverseListener() {
-		public void keyTraversed(final TraverseEvent e) {
+	private static TraverseListener _NE_TL = new TraverseListener() {
+		@Override
+		public void keyTraversed(@Nonnull final TraverseEvent e) {
 			if (e.detail == SWT.TRAVERSE_RETURN) {
 				e.detail = SWT.TRAVERSE_TAB_NEXT;
 			}
@@ -78,63 +146,65 @@ public final class ProfibusHelper {
 
 	/** The default Constructor. */
 	private ProfibusHelper() {
+		// The default Constructor.
 	}
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U8 (0-255).
-	 *
+	 * 
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
 	 *         U8 (0-255)
 	 */
+	@Nonnull
 	public static VerifyListener getVerifyListenerCheckOfU8(
-			final Point toolTipPos) {
-		if (_checkOfU8 == null) {
-			_checkOfU8 = getNumberVerifyListener(0, 255, toolTipPos);
+			@Nonnull final Point toolTipPos) {
+		if (_CHECK_OF_U8 == null) {
+			_CHECK_OF_U8 = getNumberVerifyListener(0, 255, toolTipPos);
 		}
-		return _checkOfU8;
+		return _CHECK_OF_U8;
 	}
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U16 (0-65535).
-	 *
+	 * 
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
 	 *         U16 (0-65535)
 	 */
-
+	@Nonnull
 	public static VerifyListener getVerifyListenerCheckOfU16(
-			final Point toolTipPos) {
-		if (_checkOfU16 == null) {
-			_checkOfU16 = getNumberVerifyListener(0, 65535, toolTipPos);
+			@Nonnull final Point toolTipPos) {
+		if (_CHECK_OF_U16 == null) {
+			_CHECK_OF_U16 = getNumberVerifyListener(0, 65535, toolTipPos);
 		}
-		return _checkOfU16;
+		return _CHECK_OF_U16;
 	}
 
 	/**
 	 * Verify input at Text field is confirm with a Profibus U16 (0-2^32).
-	 *
+	 * 
 	 * @param toolTipPos
 	 *            Position for the Tool tip.
 	 * @return a VerifyListener to check a Text field is confirm with a Profibus
 	 *         U16 (0-2^32)
 	 */
-
+	@Nonnull
 	public static VerifyListener getVerifyListenerCheckOfU32(
-			final Point toolTipPos) {
-		if (_checkOfU32 == null) {
+			@Nonnull final Point toolTipPos) {
+		if (_CHECK_OF_U32 == null) {
 			long max = (long) Math.pow(2, 31);
-			_checkOfU32 = getNumberVerifyListener(0, max, toolTipPos);
+			_CHECK_OF_U32 = getNumberVerifyListener(0, max, toolTipPos);
 		}
-		return _checkOfU32;
+		return _CHECK_OF_U32;
 	}
 
 	/**
 	 * Verify input at Text field is confirm with a Number that is in range Min
 	 * - Max.
-	 *
+	 * 
 	 * @param min
 	 *            the min Value was accept at Text field.
 	 * @param max
@@ -144,70 +214,30 @@ public final class ProfibusHelper {
 	 * @return a VerifyListener to check a Text field is confirm with a Number
 	 *         that is in range Min - Max.
 	 */
-
+	@Nonnull
 	public static VerifyListener getNumberVerifyListener(final long min,
-			final long max, final Point toolTipPos) {
-		return new VerifyListener() {
-			public void verifyText(final VerifyEvent e) {
-				// check != Digit
-				boolean b1 = e.text.matches("\\D+");
-				// check is first char
-				boolean b2 = e.start == 0;
-				// check is an '-'
-				boolean b3;
-				if (min < 0) {
-					b3 = e.text.matches("^[\\-]?$");
-				} else {
-					b3 = false;
-				}
-
-				// check is a Digit or is first char an '-'
-				if (b1 && !(b2 && b3)) {
-					e.doit = false;
-				}
-				// check ob value more then one Digit for range check (see
-				// below)
-				if ((e.start > 0) || !b3) {
-					// e.display.getCurrent().
-					String text = ((Text) e.getSource()).getText();
-					String temp = text.substring(0, e.start) + e.text;
-					if (text.length() >= e.end) {
-						temp = temp.concat(text.substring(e.end));
-					}
-					// long s =0;
-					// if(temp.trim().length()>0){
-					// s = Long.valueOf(temp);
-					// }
-					// Es gibt konflikte mit dem Verifiy Listernr
-					// // check ob Value in range (min-max) is !
-					// if((max<s||s<min)&&temp.trim().length()>0) {
-					// Shell shell = Display.getCurrent().getActiveShell();
-					// MessageBox box = new MessageBox(shell, SWT.ICON_ERROR);
-					// String msg =
-					// String.format("Min(%d) oder Max(%d) Range Überschritten!",min,max);
-					// box.setMessage(msg);
-					// box.open();
-					// e.doit = false;
-					// }
-				}
-			}
-		};
+			final long max, @Nonnull final Point toolTipPos) {
+		return new NumberVerifyListenerImplementation(min);
 	}
 
+	@Nonnull
 	public static VerifyListener getDigitVerifyListener() {
 		return new VerifyListener() {
-			public void verifyText(final VerifyEvent e) {
+			@Override
+			public void verifyText(@Nonnull final VerifyEvent e) {
 				e.doit = !e.text.matches("\\D+");
 			}
 		};
 	}
 
-	public static Text getTextField(final Composite parent, final String text) {
+	@Nonnull
+	public static Text getTextField(@Nonnull final Composite parent,
+			@Nullable final String text) {
 		return getTextField(parent, false, text, null, 0);
 	}
 
 	/**
-	 *
+	 * 
 	 * @param parent
 	 *            The parent composite.
 	 * @param edit
@@ -220,13 +250,23 @@ public final class ProfibusHelper {
 	 * @return a Text field whit ranges and verify listener.
 	 */
 	@Nonnull
-	public static Text getTextField(@Nonnull final Composite parent, final boolean edit,
-			@Nullable final String value,@Nonnull final Value ranges, final int verifyListenerTyp) {
+	public static Text getTextField(@Nonnull final Composite parent,
+			final boolean edit, @Nullable final String value,
+			@CheckForNull final Value ranges, final int verifyListenerTyp) {
 
 		Text textField = new Text(parent, SWT.SINGLE | SWT.TRAIL | SWT.BORDER);
-		textField.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false,
-				1, 1));
-		textField.addTraverseListener(_nETL);
+		int size = 20;
+		if (ranges != null) {
+			size = CHARSIZE * Long.toString(ranges.getMax()).length();
+			textField.addFocusListener(new CheckNumFocusListener(ranges));
+			textField.setToolTipText("The Range is between " + ranges.getMin()
+					+ " and " + ranges.getMax());
+
+		}
+		GridData gdl = GridDataFactory.fillDefaults().grab(true, false)
+				.minSize(size, SWT.DEFAULT).create();
+		textField.setLayoutData(gdl);
+		textField.addTraverseListener(_NE_TL);
 		textField.setEditable(edit);
 		if (value != null) {
 			textField.setText(value);
@@ -253,19 +293,22 @@ public final class ProfibusHelper {
 			default:
 				break;
 			}
-			textField.addFocusListener(new CheckNumFocusListener(ranges));
-			textField.setToolTipText("The Range is between " + ranges.getMin()
-					+ " and " + ranges.getMax());
+//			if (ranges != null) {
+//				textField.addFocusListener(new CheckNumFocusListener(ranges));
+//				textField.setToolTipText("The Range is between "
+//						+ ranges.getMin() + " and " + ranges.getMax());
+//			}
 		}
 		return textField;
 	}
 
 	/**
-	 *
+	 * 
 	 * @return A TraverseListener to jump per enter to the next field.
 	 */
+	@Nonnull
 	public static TraverseListener getNETL() {
-		return _nETL;
+		return _NE_TL;
 	}
 
 	/**
@@ -274,11 +317,14 @@ public final class ProfibusHelper {
 	 * and DB Id).<br>
 	 * If the {@link DBClass} a {@link NamedDBClass} then give three Parameters
 	 * (Class Name, Object name and DB Id).<br>
-	 *
-	 * @param shell
-	 *            the parent Shell.
+	 * 
+	 * @param parent
+	 *            the parent shell of the dialog, or <code>null</code> if none
 	 * @param title
-	 *            the Dialog title.
+	 *            the title to use for this dialog, or <code>null</code> to
+	 *            indicate that the default title should be used
+	 * @param status
+	 *            the error to show to the user
 	 * @param errMsg
 	 *            the error message.
 	 * @param node
@@ -286,10 +332,12 @@ public final class ProfibusHelper {
 	 * @param e
 	 *            the thrown Exception.
 	 */
-	public static void openErrorDialog(final Shell shell, final String title,
-			final String errMsg, final DBClass node, final Exception e) {
+	public static void openErrorDialog(@Nullable final Shell shell,
+			@Nullable final String title, @Nonnull final String errMsg,
+			@Nonnull final DBClass node, @Nonnull final Exception e) {
 		String format;
-		CentralLogger.getInstance().error(ProfibusHelper.class.getSimpleName(), e);
+		CentralLogger.getInstance().error(ProfibusHelper.class.getSimpleName(),
+				e);
 		if (node instanceof NamedDBClass) {
 			NamedDBClass nameNode = (NamedDBClass) node;
 			format = String.format(errMsg, nameNode.getClass().getSimpleName(),
@@ -299,8 +347,8 @@ public final class ProfibusHelper {
 			format = String.format(errMsg, node.getClass().getSimpleName(),
 					"N/A", node.getId());
 		}
-		OperationStatus status = new OperationStatus(OperationStatus.ERROR,
-		        ActivatorUI.PLUGIN_ID, 3, format, e);
+		OperationStatus status = new OperationStatus(IStatus.ERROR,
+				IOConfigActivatorUI.PLUGIN_ID, 3, format, e);
 		ErrorDialog.openError(shell, title, null, status);
 	}
 

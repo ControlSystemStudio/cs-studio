@@ -4,7 +4,7 @@ Bundle-Name: Alarm Tree UI
 Bundle-SymbolicName: org.csstudio.alarm.beast.ui.alarmtree;singleton:=true
 Bundle-Version: 2.1.0.qualifier
 Bundle-Localization: plugin
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Require-Bundle: org.junit4,
  org.eclipse.jface,
  org.eclipse.core.runtime,

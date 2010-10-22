@@ -24,6 +24,7 @@ package org.csstudio.config.ioconfig.editorparts;
 import java.util.Set;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.DocumentationManageView;
@@ -39,7 +40,7 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
+ * Editor for {@link FacilityDBO} node's
  *
  * @author hrickens
  * @author $Author: hrickens $
@@ -100,7 +101,7 @@ public class FacilityEditor extends AbstractNodeEditor{
      * (@inheritDoc)
      */
     @Override
-    public void doSave(final IProgressMonitor monitor) {
+    public void doSave(@Nonnull final IProgressMonitor monitor) {
         super.doSave(monitor);
         // Main
         _facility.setName(getNameWidget().getText());
@@ -132,7 +133,7 @@ public class FacilityEditor extends AbstractNodeEditor{
     private void buildGui() {
         setSavebuttonEnabled(null, getNode().isPersistent());
         main("Facility");
-        getProfiBusTreeView().refresh(getNode());
+        getProfiBusTreeView().refresh(getNode()); // TODO: denke dieser refresh ist Überflüssig
         // _tabFolder.pack();
     }
 
@@ -169,7 +170,7 @@ public class FacilityEditor extends AbstractNodeEditor{
      * .config.ioconfig.model.pbmodel.GSDFile)
      */
     @Override
-    public boolean fill(final GSDFileDBO gsdFile) {
+    public boolean fill(@Nullable final GSDFileDBO gsdFile) {
         return false;
     }
 
@@ -200,7 +201,7 @@ public class FacilityEditor extends AbstractNodeEditor{
      * @return null.
      */
     @Override
-    public GSDFileDBO getGSDFile() {
+    public GSDFileDBO getGsdFile() {
         return null;
     }
 }

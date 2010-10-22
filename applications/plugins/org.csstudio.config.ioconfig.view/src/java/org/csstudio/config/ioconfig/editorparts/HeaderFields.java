@@ -35,7 +35,7 @@
 package org.csstudio.config.ioconfig.editorparts;
 
 /**
- * TODO (hrickens) :
+ * Identifier for the {@link AbstractNodeEditor} header fields.
  *
  * @author hrickens
  * @author $Author: hrickens $
@@ -46,5 +46,6 @@ public enum HeaderFields {
 
     VERSION,
     MODIFIED_ON,
-    MODIFIED_BY;
+    MODIFIED_BY,
+    DB_ID;
 }

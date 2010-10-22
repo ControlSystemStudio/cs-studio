@@ -10,5 +10,5 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.ecf,
  org.remotercp.common;bundle-version="1.0.0",
  org.remotercp.util.ui;bundle-version="1.0.0",
- org.eclipse.ecf.filetransfer;bundle-version="4.0.0"
+ org.eclipse.ecf.filetransfer;bundle-version="3.0.0"
 Bundle-ActivationPolicy: lazy

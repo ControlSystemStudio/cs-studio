@@ -41,6 +41,7 @@ import javax.annotation.Nullable;
 
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ChannelDBO;
+import org.csstudio.config.ioconfig.model.pbmodel.ChannelStructureDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.GSDFileDBO;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.swt.SWT;
@@ -53,7 +54,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 /**
- * TODO (hrickens) :
+ * Editor for {@link ChannelStructureDBO} node's
  *
  * @author hrickens
  * @author $Author: hrickens $
@@ -68,7 +69,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
      * System Line separator
      */
     private static final String LS = System.getProperty("line.separator");
-    private AbstractNodeDBO _channelStructure;
+    private ChannelStructureDBO _channelStructure;
     private Text _ioNameList;
 
     /**
@@ -76,7 +77,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        _channelStructure = getNode();
+        _channelStructure = (ChannelStructureDBO) getNode();
         super.createPartControl(parent);
         setSaveButtonSaved();
         Composite newTabItem = getNewTabItem("Main", 2);
@@ -94,7 +95,21 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
         _ioNameList = new Text(newTabItem, SWT.MULTI | SWT.LEAD | SWT.BORDER);
         _ioNameList.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
         ArrayList<StyleRange> styleRanges = new ArrayList<StyleRange>();
-        if (_channelStructure.hasChildren()) {
+        
+        createChildren(text, styleRanges);
+        
+        _ioNameList.addModifyListener(getMLSB());
+        _ioNameList.setFocus();
+        getTabFolder().setSelection(0);
+    }
+
+	/**
+	 * @param text
+	 * @param styleRanges
+	 */
+	private void createChildren(@Nonnull StyledText text,
+			@Nonnull ArrayList<StyleRange> styleRanges) {
+		if (_channelStructure.hasChildren()) {
             StringBuilder sbIOName = new StringBuilder();
             StringBuilder sbDesc = new StringBuilder();
             for (AbstractNodeDBO node : _channelStructure.getChildrenAsMap().values()) {
@@ -127,10 +142,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
             StyleRange[] array = styleRanges.toArray(new StyleRange[0]);
             text.setStyleRanges(array);
         }
-        _ioNameList.addModifyListener(getMLSB());
-        _ioNameList.setFocus();
-        getTabFolder().setSelection(0);
-    }
+	}
 
     /* (non-Javadoc)
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#fill(org.csstudio.config.ioconfig.model.pbmodel.GSDFile)
@@ -144,7 +156,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
      * @see org.csstudio.config.ioconfig.config.view.NodeConfig#getGSDFile()
      */
     @Override
-    public GSDFileDBO getGSDFile() {
+    public GSDFileDBO getGsdFile() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -153,7 +165,7 @@ public class ChannelStructureEditor extends AbstractNodeEditor {
      * {@inheritDoc}
      */
     @Override
-    public void doSave(final IProgressMonitor monitor) {
+    public void doSave(@Nullable final IProgressMonitor monitor) {
         super.doSave(monitor);
         String text = _ioNameList.getText();
         String[] ioNames = text.split(LS);

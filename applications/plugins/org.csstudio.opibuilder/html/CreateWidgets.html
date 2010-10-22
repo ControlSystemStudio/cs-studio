@@ -8,10 +8,10 @@
 </head>
 <body>
 
-<h2>Creating Custom BOY Widgets</h2>
+<h2>Creating Customized Widget</h2>
 <h3>1. Introduction</h3>
 <p>
-BOY is able to load custom widgets using Eclipse Plugin mechanism, so user can implements their own widgets by 
+BOY is able to load customized widgets using Eclipse Plugin mechanism, so user can implements their own widgets by 
 creating a new Eclipse plugin without touching BOY code. If you do think your widget can benefit other people,
 you can send your widget code to <a href="mailto:chenx1@ornl.gov">chenx1@ornl.gov</a> so we can integrate it into BOY as a native BOY widget.
 This chapter will give you the concept of BOY widget and a step-by-step example. Before start, you should have 
@@ -335,6 +335,78 @@ A draw2d figure can be composed of several other figures, so you can build your 
 For example, the Byte Monitor widget is composed of an array of LED figures.
 It is recommended to check if there are existing figure parts available for your new widget before
 you start to create your widget figure from scratch.</p>
+
+<h3>4. Advanced Topics</h3>
+<h4>4.1 Create Popup Menu for the Widget</h4>
+<p>The selected widgets in edit mode or the widget on which the context menu was actived in run mode
+is the editpart of the widget. So it is easy to add a popup menu to this widget by 
+adding an <code>objectContribution</code>.
+<p>
+<img alt = "Popup Menu Extension" src = "img/PopupMenuExtension.PNG">
+</p>
+
+<p>
+The Action Class can simply extend 
+<code>org.csstudio.opibuilder.actions.AbstractWidgetTargetAction</code>, which provided method <code>getSelection()</code>
+to get the selected widgets.  
+</p>
+<pre class = "example_code">
+public class WidgetContextMenuExample extends AbstractWidgetTargetAction{
+
+	public void run(IAction action) {
+		MessageDialog.openInformation(null, getSelectedWidget().getWidgetModel().getName(),
+				"This dialog is opened from the Context menu of SimpleBar Graph.");
+		
+	}	
+	
+	/**
+	 * @return the selected widget. In runmode, it is the editpart of the 
+	 * widget on which the context menu was activated.
+	 */
+	protected final SimpleBarGraphEditpart getSelectedWidget() {
+		return (SimpleBarGraphEditpart)getSelection().getFirstElement();
+	}
+}
+</pre>
+
+<p>
+If you want the action can be Undoable/Redoable in editing mode, you need to create your <code>org.eclipse.gef.commands.Command
+</code> and execute the command by calling <code>execute(Command command)</code>. Please see
+<code>org.csstudio.opibuilder.widgets.actions.AddTabAfterAction.java</code> for example.
+</p>
+
+<p>
+You can also make the popup menu only visible for editing mode or run mode by adding a <code>objectState</code> visibility.
+To make it only visible in editing mode, set name to <code>executionMode</code> and value to <code>EDIT_MODE</code>. 
+To make it only visible in run mode, set name to <code>executionMode</code> and value to <code>RUN_MODE</code>.
+Here is the result of this example:
+</p>
+<p>
+<img alt = "Popup Menu Example" src = "img/PopupMenuExample.PNG">
+</p>
+
+<h4>4.2 Customized Graphical Feedback</h4>
+<p>
+If you need some special behavior on the widget in editing mode, for example, keep the size of 
+the widget in fixed ratio when user is resizing it, you can create you own customized graphical feedback by
+extending the extension point <code>org.csstudio.opibuilder.graphicalFeedbackFactory</code>. The class must 
+implement <code>org.csstudio.opibuilder.feedback.IGraphicalFeedbackFactory</code>. Two abstract 
+graphical feedback factory are provided in <code>org.csstudio.opibuilder.widgets</code>.
+<code>org.csstudio.opibuilder.widgets.feedback.AbstractFixRatioSizeFeedbackFactory
+</code> will provide the fixed size ratio behavior when user resizes it.
+<code>org.csstudio.opibuilder.widgets.feedback.AbstractPolyFeedbackFactory
+</code> will provide the behavior like Polyline or Polygon widgets.
+</p>
+<p>
+<img alt = "Graphical Feedback Factory" src = "img/GraphicalFeedbackFactory.PNG">
+</p>
+
+<p><b>Note: </b>It is not recommended to give widget customized graphical feedback or 
+implement your own <code>IGraphicalFeedbackFactory</code> if it is not super necessary,
+because the details are very complicated and need lots of GEF knowledge.  If it is not desinged carefully, 
+it is very possible to have bugs introduced.
+</p>
+
 
 </body>
 

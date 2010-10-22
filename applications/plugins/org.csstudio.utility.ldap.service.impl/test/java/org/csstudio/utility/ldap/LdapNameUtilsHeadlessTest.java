@@ -23,15 +23,12 @@
  */
 package org.csstudio.utility.ldap;
 
-import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.COUNTRY_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.ECON_FIELD_VALUE;
 import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.EFAN_FIELD_VALUE;
-import static org.csstudio.utility.ldap.LdapNameUtilsUnitTest.O_FIELD_VALUE;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.COMPONENT;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.FACILITY;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.IOC;
 import static org.csstudio.utility.ldap.treeconfiguration.LdapEpicsControlsConfiguration.UNIT;
-import static org.csstudio.utility.ldap.treeconfiguration.LdapFieldsAndAttributes.ORGANIZATION_FIELD_NAME;
 import static org.csstudio.utility.ldap.utils.LdapUtils.createLdapName;
 
 import javax.naming.NamingException;

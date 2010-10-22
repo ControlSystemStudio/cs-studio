@@ -171,7 +171,7 @@ public class StringMapSection extends AbstractBaseSection<StringMapProperty> {
 				final TableItem item = items[i];
 
 				TableEditor tableEditor = new TableEditor(tableViewer.getTable());
-				Button button = new Button(tableViewer.getTable(), SWT.PUSH);
+				Button button = new Button(tableViewer.getTable(), SWT.FLAT);
 				button.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/delete.gif"));
 				button.pack();
 				tableEditor.minimumWidth = button.getSize().x;

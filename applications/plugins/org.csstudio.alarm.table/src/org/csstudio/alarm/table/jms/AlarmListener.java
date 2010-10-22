@@ -26,8 +26,9 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
+import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.dataModel.BasicMessage;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -43,7 +44,7 @@ public class AlarmListener implements IAlarmTableListener {
     /**
      * This is the destination for the messages
      */
-    private MessageList _messageList;
+    private AbstractMessageList _messageList;
 
     /**
      * Registered listeners will be notified when a message comes in
@@ -92,7 +93,7 @@ public class AlarmListener implements IAlarmTableListener {
      * {@inheritDoc}
      */
     @Override
-    public final void setMessageList(@Nonnull final MessageList messageList) {
+    public final void setMessageList(@Nonnull final AbstractMessageList messageList) {
         _messageList = messageList;
     }
 

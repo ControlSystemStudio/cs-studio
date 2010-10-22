@@ -18,9 +18,11 @@
 package org.csstudio.alarm.table.service;
 
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
 
@@ -46,7 +48,7 @@ public interface ITopicsetService {
      * @param topicSet .
      * @return true, if topicSet is already known
      */
-    boolean hasTopicSet(TopicSet topicSet);
+    boolean hasTopicSet(@Nonnull TopicSet topicSet);
 
     /**
      * If the topic set is not known to this service, a connection is created for it. A listener to
@@ -59,33 +61,36 @@ public interface ITopicsetService {
      * @param alarmListener callback for the messages
      * @throws AlarmConnectionException
      */
-    void createAndConnectForTopicSet(TopicSet topicSet,
-                                     MessageList messageList,
-                                     IAlarmTableListener alarmListener) throws AlarmConnectionException;
+    void createAndConnectForTopicSet(@Nonnull TopicSet topicSet,
+    		@Nonnull AbstractMessageList messageList,
+    		@Nonnull IAlarmTableListener alarmListener) throws AlarmConnectionException;
 
     /**
      * Precondition: hasTopicSet(topicSet)
      *
-     * @param topicSet .
+     * @param topicSet
      * @return the message list for the given topicSet
      */
-    MessageList getMessageListForTopicSet(TopicSet topicSet);
+    @Nonnull
+    AbstractMessageList getMessageListForTopicSet(@Nonnull TopicSet topicSet);
 
     /**
      * Precondition: hasTopicSet(topicSet)
      *
-     * @param topicSet .
+     * @param topicSet
      * @return the connection for the given topic set
      */
-    IAlarmConnection getAlarmConnectionForTopicSet(TopicSet topicSet);
+    @Nonnull
+    IAlarmConnection getAlarmConnectionForTopicSet(@Nonnull TopicSet topicSet);
 
     /**
      * Precondition: hasTopicSet(topicSet)
      *
-     * @param topicSet .
+     * @param topicSet
      * @return the alarm table listener for the given topic set
      */
-    IAlarmTableListener getAlarmTableListenerForTopicSet(TopicSet topicSet);
+    @Nonnull
+    IAlarmTableListener getAlarmTableListenerForTopicSet(@Nonnull TopicSet topicSet);
 
     /**
      * This service is intended to be local to a view. It keeps track of the connections, so they

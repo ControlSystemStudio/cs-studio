@@ -29,40 +29,16 @@ public class WebBrowserFigure extends AbstractSWTWidgetFigure {
 		super(composite, parentModel);
 		this.runmode = runmode;
 		if(runmode){
-			browserViewer = new BrowserViewer(composite, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR);
+			browserViewer = new BrowserViewer(
+					composite, BrowserViewer.BUTTON_BAR | BrowserViewer.LOCATION_BAR){
+				@Override
+				public void setBounds(int x, int y, int width,
+						int height) {
+					super.setBounds(x, y, width, height);
+					layout();
+				}
+			};
 			browser = browserViewer.getBrowser();
-//			toolbarArmedBrowser = new Composite(composite, SWT.None);
-//			toolbarArmedBrowser.setLayout(new GridLayout(3, false));
-//			ToolBar toolbar = new ToolBar(toolbarArmedBrowser, SWT.NONE);
-//			ToolItem itemBack = new ToolItem(toolbar, SWT.PUSH);
-//			itemBack.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
-//					Activator.PLUGIN_ID, "icons/nav_backward.gif"));
-//			ToolItem itemForward = new ToolItem(toolbar, SWT.PUSH);
-//			itemForward.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
-//					Activator.PLUGIN_ID, "icons/nav_forward.gif"));
-//			ToolItem itemStop = new ToolItem(toolbar, SWT.PUSH);
-//			itemStop.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
-//					Activator.PLUGIN_ID, "icons/nav_stop.gif"));
-//			ToolItem itemRefresh = new ToolItem(toolbar, SWT.PUSH);
-//			itemRefresh.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
-//					Activator.PLUGIN_ID, "icons/nav_refresh.gif"));
-//		
-//			
-//			GridData data = new GridData();
-//			toolbar.setLayoutData(data);
-//			
-//			final Text location = new Text(toolbarArmedBrowser, SWT.BORDER);
-//			data = new GridData();
-//			data.horizontalAlignment = GridData.FILL;
-//			data.grabExcessHorizontalSpace = true;
-//			location.setLayoutData(data);
-//			
-//			Button goButton = new Button(toolbarArmedBrowser, SWT.PUSH);
-//			goButton.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(
-//					Activator.PLUGIN_ID, "icons/nav_go.gif"));
-//
-//			browser = new Browser(toolbarArmedBrowser, SWT.NONE);
-//			browser.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
 		}
 	}
 

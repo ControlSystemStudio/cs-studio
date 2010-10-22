@@ -24,7 +24,7 @@ import java.text.SimpleDateFormat;
 import javax.jms.MapMessage;
 
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.ISendMapMessage;
 import org.csstudio.alarm.table.preferences.verifier.AmsVerifyViewPreferenceConstants;
@@ -139,7 +139,7 @@ public class AmsVerifyView extends LogView {
         final GridData gridData2 = new GridData(GridData.FILL, GridData.FILL, true, true);
         _tableViewer.getTable().setLayoutData(gridData2);
 
-        final MessageList messageList = getOrCreateCurrentMessageList(); // Uses LogMessageList
+        final AbstractMessageList messageList = getOrCreateCurrentMessageList(); // Uses LogMessageList
         _messageTable = new MessageTable(_tableViewer, getTopicSetColumnService()
                                          .getColumnSet(getCurrentTopicSetName()), messageList);
         _messageTable.makeContextMenu(getSite());

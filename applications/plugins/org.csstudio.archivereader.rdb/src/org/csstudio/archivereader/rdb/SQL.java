@@ -52,12 +52,13 @@ public class SQL
         
         // 'channel' table
         if (dialect == RDBUtil.Dialect.Oracle)
-        {   // '\\' because Java swallows one '\'   
-            channel_sel_by_like = "SELECT name FROM " + prefix + "channel WHERE name LIKE ? ESCAPE '\\' ORDER BY name";
+        {   // '\\' because Java swallows one '\', be case-insensitive by using all lowercase
+            channel_sel_by_like = "SELECT name FROM " + prefix + "channel WHERE LOWER(name) LIKE LOWER(?) ESCAPE '\\' ORDER BY name";
+            // Use case-insensitive REGEXP_LIKE
             channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE REGEXP_LIKE(name, ?, 'i') ORDER BY name";
         }
         else
-        {   // MySQL uses '\' by default
+        {   // MySQL uses '\' by default, and everything is  by default case-insensitive
             channel_sel_by_like = "SELECT name FROM " + prefix + "channel WHERE name LIKE ? ORDER BY name";
             channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
         }

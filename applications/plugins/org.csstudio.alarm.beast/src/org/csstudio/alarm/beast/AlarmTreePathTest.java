@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
@@ -32,5 +32,29 @@ public class AlarmTreePathTest
         // New PV
         assertEquals("path/to/another",
                      AlarmTreePath.makePath(new_path, "another"));
+    }
+
+    @Test
+    public void testSpecialChars()
+    {
+    	String path = AlarmTreePath.makePath("path", "to");
+    	assertEquals("path/to", path);
+
+    	path = AlarmTreePath.makePath(path, "sim://sine");
+    	// String is really "path/to/sim:\/\/sine",
+    	// but to get the '\' into the string,
+    	// it itself needs to be escaped
+    	assertEquals("path/to/sim:\\/\\/sine", path);
+
+    	// Split
+    	final String[] items = AlarmTreePath.splitPath(path);
+    	assertEquals(3, items.length);
+    	assertEquals("path", items[0]);
+    	assertEquals("to", items[1]);
+    	assertEquals("sim://sine", items[2]);
+    	
+    	// Re-assemble
+    	path = AlarmTreePath.makePath(items, items.length);
+    	assertEquals("path/to/sim:\\/\\/sine", path);
     }
 }

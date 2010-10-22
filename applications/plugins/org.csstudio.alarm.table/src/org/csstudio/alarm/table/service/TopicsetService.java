@@ -26,11 +26,15 @@ import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.MessageList;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.jms.AlarmConnectionMonitor;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.TopicSet;
-
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
+import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.preferences.ScopedPreferenceStore;
 
 /**
  * Implementation of the topic set service. A map is maintained, keeping the alarm connection and
@@ -42,40 +46,71 @@ import org.csstudio.alarm.table.preferences.TopicSet;
  * @since 27.04.2010
  */
 public class TopicsetService implements ITopicsetService {
-
+    
     private final Map<String, Element> _topicSetMap = new HashMap<String, Element>();
     private final String _name;
-
+    
     public TopicsetService(@Nonnull final String name) {
         _name = name;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public void createAndConnectForTopicSet(final TopicSet topicSet,
-                                            final MessageList messageList,
-                                            final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
+    public void createAndConnectForTopicSet(@Nonnull final TopicSet topicSet,
+                                            @Nonnull final AbstractMessageList messageList,
+                                            @Nonnull final IAlarmTableListener alarmTableListener) throws AlarmConnectionException {
         assert !hasTopicSet(topicSet) : "Failed: !hasTopicSet(" + topicSet.getName() + ")";
         assert messageList != null : "Failed: messageList != null";
         assert alarmTableListener != null : "Failed: alarmTableListener != null";
-
+        
+        @SuppressWarnings("synthetic-access")
         final Element element = new Element();
         element._connection = JmsLogsPlugin.getDefault().getAlarmService().newAlarmConnection();
         element._messageList = messageList;
         element._alarmTableListener = alarmTableListener;
         element._alarmTableListener.setMessageList(element._messageList);
-        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService().createAlarmResource(topicSet.getTopics(), null, null);
+        final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService()
+                .createAlarmResource(topicSet.getTopics(), null);
         element._connection.connectWithListenerForResource(new AlarmConnectionMonitor(),
                                                            element._alarmTableListener,
                                                            alarmResource);
-
+        
         _topicSetMap.put(topicSet.getName(), element);
-
+        
+        if (messageList.canHandleOutdatedMessaged()) {
+            observePreferenceStore(messageList);
+        }
+        
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
     }
 
+    private void observePreferenceStore(@Nonnull final AbstractMessageList messagelist) {
+        // TODO (jpenning) ML this is old school: use preference service instead
+        final ScopedPreferenceStore prefStore = createPreferenceStore();
+        prefStore.addPropertyChangeListener(createPropertyChangeListener(messagelist));
+    }
+
+    @Nonnull
+    private IPropertyChangeListener createPropertyChangeListener(@Nonnull final AbstractMessageList messagelist) {
+        return new IPropertyChangeListener() {
+            
+            @Override
+            public void propertyChange(@Nonnull final PropertyChangeEvent event) {
+                if (event.getProperty().equals(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getKeyAsString())) {
+                    messagelist.showOutdatedMessages(AlarmViewPreference.ALARMVIEW_SHOW_OUTDATED_MESSAGES.getValue());
+                }
+            }
+        };
+    }
+
+    @Nonnull
+    private ScopedPreferenceStore createPreferenceStore() {
+        return new ScopedPreferenceStore(new InstanceScope(),
+                                         JmsLogsPlugin.getDefault().getBundle().getSymbolicName());
+    }
+    
     /**
      * {@inheritDoc}
      */
@@ -84,51 +119,58 @@ public class TopicsetService implements ITopicsetService {
         for (final Element element : _topicSetMap.values()) {
             element._connection.disconnect();
         }
+        // TODO (jpenning) ML removePropertyChangeListener else there is a memory leak
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public IAlarmConnection getAlarmConnectionForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public IAlarmConnection getAlarmConnectionForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._connection;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public MessageList getMessageListForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public AbstractMessageList getMessageListForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._messageList;
     }
-
+    
     @Override
-    public IAlarmTableListener getAlarmTableListenerForTopicSet(final TopicSet topicSet) {
+    @Nonnull
+    public IAlarmTableListener getAlarmTableListenerForTopicSet(@Nonnull final TopicSet topicSet) {
         assert hasTopicSet(topicSet) : "Failed: hasTopicSet(" + topicSet.getName() + ")";
         return _topicSetMap.get(topicSet.getName())._alarmTableListener;
     }
-
+    
     /**
      * {@inheritDoc}
      */
     @Override
-    public boolean hasTopicSet(final TopicSet topicSet) {
+    public boolean hasTopicSet(@Nonnull final TopicSet topicSet) {
         return _topicSetMap.containsKey(topicSet.getName());
     }
-
+    
     @Override
     public String toString() {
         return "Topicset-Service " + _name;
     }
-
+    
     /**
      * Container for the value of the map. Used only internally.
      */
+    // CHECKSTYLE:OFF
     private static final class Element {
         IAlarmConnection _connection;
-        MessageList _messageList;
+        AbstractMessageList _messageList;
         IAlarmTableListener _alarmTableListener;
     }
+    // CHECKSTYLE:ON
+    
 }

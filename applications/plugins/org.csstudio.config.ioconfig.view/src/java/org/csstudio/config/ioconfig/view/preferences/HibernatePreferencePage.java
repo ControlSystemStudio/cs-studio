@@ -11,7 +11,7 @@ import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.HIBERNATE_CONNECTION_URL;
 import static org.csstudio.config.ioconfig.model.preference.PreferenceConstants.SHOW_SQL;
 
-import org.csstudio.config.ioconfig.model.Activator;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.preference.BooleanFieldEditor;
@@ -79,7 +79,7 @@ public class HibernatePreferencePage extends FieldEditorPreferencePage implement
 
     public HibernatePreferencePage() {
         super(GRID);
-        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), Activator
+        ScopedPreferenceStore prefStore = new ScopedPreferenceStore(new InstanceScope(), IOConifgActivator
                 .getDefault().getBundle().getSymbolicName());
         setPreferenceStore(prefStore);
         setDescription("Settings for the IO Configurator.");

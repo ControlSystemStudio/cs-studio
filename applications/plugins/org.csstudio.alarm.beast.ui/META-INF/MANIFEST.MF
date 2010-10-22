@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Shared Alarm UI components
 Bundle-SymbolicName: org.csstudio.alarm.beast.ui;singleton:=true
-Bundle-Version: 2.1.1.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Version: 2.2.0.qualifier
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.junit4;bundle-version="4.3.1",
  org.eclipse.core.runtime,
@@ -17,7 +17,7 @@ Require-Bundle: org.junit4;bundle-version="4.3.1",
  org.csstudio.logbook,
  org.csstudio.apputil.ui,
  org.csstudio.platform.ui;bundle-version="1.1.1",
- org.csstudio.alarm.beast;bundle-version="1.2.1"
+ org.csstudio.alarm.beast;bundle-version="2.2.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.clientmodel

@@ -23,6 +23,8 @@
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.INumericMetaData;
@@ -34,7 +36,19 @@ import org.csstudio.platform.data.ITimestamp;
  */
 public class DoubleValue extends Value implements IDoubleValue
 {
-    /** The values. */
+	/** Map of NumberFormats by precision.
+	 * 
+	 *  JProfiler tests showed that about _half_ of the string formatting
+	 *  is spent in creating the suitable NumberFormat,
+	 *  so they are cached for re-use.
+	 *  The key is the 'precision', where a precision >= 0 means decimal format,
+	 *  and a precision < 0 means exponential notation.
+	 *  
+	 *  Access must sync on the hash, then sync on the format while using it.
+	 */
+	final private static Map<Integer, NumberFormat> fmt_cache = new HashMap<Integer, NumberFormat>();
+
+	/** The values. */
 	final private double values[];
 	
     /** Constructor from pieces. */
@@ -84,13 +98,24 @@ public class DoubleValue extends Value implements IDoubleValue
 		
 		NumberFormat fmt;
         if (how == Format.Exponential)
-        {   // Is there a better way to get this silly format?
-            StringBuffer pattern = new StringBuffer(10);
-            pattern.append("0."); //$NON-NLS-1$
-            for (int i=0; i<precision; ++i)
-                pattern.append('0');
-            pattern.append("E0"); //$NON-NLS-1$
-            fmt = new DecimalFormat(pattern.toString());
+        {
+        	// Assert positive precision
+        	precision = Math.abs(precision);
+        	synchronized (fmt_cache)
+            {
+            	// Exponential notation itentified as 'negative' precision in cached
+        		fmt = fmt_cache.get(-precision);
+        		if (fmt == null)
+        		{	// Is there a better way to get this silly format?
+	            	final StringBuffer pattern = new StringBuffer(10);
+	                pattern.append("0."); //$NON-NLS-1$
+	                for (int i=0; i<precision; ++i)
+	                    pattern.append('0');
+	                pattern.append("E0"); //$NON-NLS-1$
+	                fmt = new DecimalFormat(pattern.toString());
+	                fmt_cache.put(-precision, fmt);
+        		}
+            }
         }
         else
         {
@@ -112,9 +137,17 @@ public class DoubleValue extends Value implements IDoubleValue
             }
             else
             {
-                fmt = NumberFormat.getNumberInstance();
-                fmt.setMinimumFractionDigits(precision);
-                fmt.setMaximumFractionDigits(precision);
+            	synchronized (fmt_cache)
+                {
+                	fmt = fmt_cache.get(precision);
+                	if (fmt == null)
+                	{
+    	                fmt = NumberFormat.getNumberInstance();
+    	                fmt.setMinimumFractionDigits(precision);
+    	                fmt.setMaximumFractionDigits(precision);
+    	                fmt_cache.put(precision, fmt);
+                	}
+                }
             }
         }
         buf.append(formatDouble(fmt, values[0]));
@@ -143,7 +176,10 @@ public class DoubleValue extends Value implements IDoubleValue
             return Messages.NaN;
         if (fmt == null)
             return Double.toString(d);
-        return fmt.format(d);
+        synchronized (fmt)
+        {
+            return fmt.format(d);
+        }
     }
 	
     /** {@inheritDoc} */

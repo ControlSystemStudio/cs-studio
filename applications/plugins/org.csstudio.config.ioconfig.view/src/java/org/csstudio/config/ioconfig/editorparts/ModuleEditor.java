@@ -432,7 +432,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         _moduleTypList.getTable().setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 2, 3));
         _moduleTypList.setContentProvider(new ComboContentProvider());
         _moduleTypList.setLabelProvider(new ModuleListLabelProvider(_moduleTypList.getTable(),
-                                                                    getGSDFile()));
+                                                                    getGsdFile()));
         _moduleTypList.addFilter(new ViewerFilter() {
 
             @Override
@@ -462,7 +462,7 @@ public class ModuleEditor extends AbstractNodeEditor {
                     if (element instanceof GsdModuleModel) {
                         GsdModuleModel gmm = (GsdModuleModel) element;
                         int selectedModuleNo = gmm.getModuleNumber();
-                        GSDModuleDBO module = getGSDFile().getGSDModule(selectedModuleNo);
+                        GSDModuleDBO module = getGsdFile().getGSDModule(selectedModuleNo);
                         return module != null;
                     }
                 }
@@ -492,7 +492,7 @@ public class ModuleEditor extends AbstractNodeEditor {
                 .addSelectionChangedListener(new ISelectionChangedListenerForModuleTypeList(topGroup));
 
         SlaveDBO slave = _module.getSlave();
-        if (getGSDFile() != null) {
+        if (getGsdFile() != null) {
             HashMap<Integer, GsdModuleModel> gsdModuleList = slave.getGSDSlaveData()
                     .getGsdModuleList();
             _moduleTypList.setInput(gsdModuleList);
@@ -515,7 +515,7 @@ public class ModuleEditor extends AbstractNodeEditor {
      * @param topGroup
      *            The parent Group for the CurrentUserParamData content.
      */
-    private void makeCurrentUserParamData(@Nullable final Group topGroup) {
+    private void makeCurrentUserParamData(@Nonnull final Group topGroup) {
         if (_currentUserParamDataGroup != null) {
             _currentUserParamDataGroup.dispose();
         }
@@ -745,7 +745,7 @@ public class ModuleEditor extends AbstractNodeEditor {
         super.cancel();
         // Module
         getNameWidget().setText((String) getNameWidget().getData());
-        getIndexSpinner().setSelection((Integer) getIndexSpinner().getData());
+        getIndexSpinner().setSelection((Short) getIndexSpinner().getData());
 
         try {
             GsdModuleModel gsdModuleModel = _module.getSlave().getGSDSlaveData().getGsdModuleList()
@@ -787,7 +787,7 @@ public class ModuleEditor extends AbstractNodeEditor {
 
     /** {@inheritDoc} */
     @Override
-    public final GSDFileDBO getGSDFile() {
+    public final GSDFileDBO getGsdFile() {
         return _module.getSlave().getGSDFile();
     }
 

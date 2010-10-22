@@ -1,4 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
+import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.editor.OPIEditor;
 import org.csstudio.opibuilder.widgets.editparts.TabEditPart;
 import org.eclipse.gef.commands.Command;

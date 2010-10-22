@@ -2,8 +2,8 @@
 <feature
       id="org.csstudio.sns.feature.snscore"
       label="Core CSS Components specific to SNS"
-      version="2.3.0.qualifier"
-      provider-name="SNS, Kay Kasemir">
+      version="2.4.0.qualifier"
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt;, Xihui Chen &lt;chenx1@ornl.gov&gt; - SNS">
 
    <description>
       Core CSS components for SNS used by many applications:
@@ -46,10 +46,10 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.startuphelper" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.sns.startuphelper" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.workspace" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.ui" version="3.4.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
    </requires>
 
    <plugin

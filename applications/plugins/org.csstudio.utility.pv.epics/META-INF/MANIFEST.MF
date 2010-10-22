@@ -4,7 +4,7 @@ Bundle-Name: Epics PV Plug-in
 Bundle-SymbolicName: org.csstudio.utility.pv.epics;singleton:=true
 Bundle-Version: 1.1.0.qualifier
 Bundle-Activator: org.csstudio.utility.pv.epics.Activator
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Bundle-Localization: plugin
 Require-Bundle: org.junit4,
  org.csstudio.utility.pv;bundle-version="1.1.0",

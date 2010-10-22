@@ -27,13 +27,13 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.table.JmsLogsPlugin;
 import org.csstudio.alarm.table.SendAcknowledge;
+import org.csstudio.alarm.table.dataModel.AbstractMessageList;
 import org.csstudio.alarm.table.dataModel.AlarmMessage;
 import org.csstudio.alarm.table.dataModel.AlarmMessageList;
-import org.csstudio.alarm.table.dataModel.MessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
 import org.csstudio.alarm.table.preferences.JmsLogPreferenceConstants;
-import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreferenceConstants;
+import org.csstudio.alarm.table.preferences.alarm.AlarmViewPreference;
 import org.csstudio.alarm.table.service.IAlarmSoundService;
 import org.csstudio.alarm.table.ui.messagetable.AlarmMessageTable;
 import org.csstudio.platform.logging.CentralLogger;
@@ -86,7 +86,6 @@ public class AlarmView extends LogView {
      */
     @Override
     public void createPartControl(@Nonnull final Composite parent) {
-        final boolean canExecute = SecurityFacade.getInstance().canExecute(SECURITY_ID, true);
         _parent = parent;
 
         setTopicSetColumnService(JmsLogsPlugin.getDefault().getTopicSetColumnServiceForAlarmViews());
@@ -108,7 +107,7 @@ public class AlarmView extends LogView {
         logTableManagementComposite.setLayout(layout);
 
         addJmsTopicItems(logTableManagementComposite);
-        addAcknowledgeItems(canExecute, logTableManagementComposite);
+        addAcknowledgeItems(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
@@ -120,14 +119,14 @@ public class AlarmView extends LogView {
     private SelectionListener newSelectionListenerForPauseButton() {
         return new SelectionListener() {
 
-            @Override
+            @SuppressWarnings("synthetic-access")
+			@Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 if (_pauseButton.getSelection()) {
-                    _ackButton.setEnabled(false);
+                    disableAckButton();
                 } else {
-                    _ackButton.setEnabled(true);
+                    enableAckButtonIfPermitted();
                 }
-
             }
 
             @Override
@@ -135,6 +134,14 @@ public class AlarmView extends LogView {
                 // Nothing to do
             }
         };
+    }
+
+    private void enableAckButtonIfPermitted() {
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
+    }
+
+    private void disableAckButton() {
+        _ackButton.setEnabled(false);
     }
 
     /**
@@ -154,8 +161,8 @@ public class AlarmView extends LogView {
     protected void initializeMessageTable() {
         // Initialize JMS message list
         if (_columnMapping != null) {
-            _columnMapping.saveColumn(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                      AlarmViewPreferenceConstants.TOPIC_SET);
+            _columnMapping.saveColumn(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                      AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
             _columnMapping = null;
         }
         // is there already a MessageTable delete it and the message list.
@@ -195,15 +202,15 @@ public class AlarmView extends LogView {
             columnSetWithAck[i + 1] = columnSet[i];
         }
 
-        final MessageList messageList = getOrCreateCurrentMessageList();
+        final AbstractMessageList messageList = getOrCreateCurrentMessageList();
         _messageTable = new AlarmMessageTable(_tableViewer, columnSetWithAck, messageList);
         _messageTable.makeContextMenu(getSite());
         setCurrentTimeToRunningSince(messageList.getStartTime());
 
         _columnMapping = new AlarmExchangeableColumnWidthPreferenceMapping(_tableViewer,
                                                                            getCurrentTopicSetName());
-        addControlListenerToColumns(AlarmViewPreferenceConstants.P_STRING_ALARM,
-                                    AlarmViewPreferenceConstants.TOPIC_SET);
+        addControlListenerToColumns(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
+                                    AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
         getSite().setSelectionProvider(_tableViewer);
         makeActions();
 
@@ -214,7 +221,7 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected final void retrieveInitialState(@Nonnull final MessageList messageList) {
+    protected final void retrieveInitialState(@Nonnull final AbstractMessageList messageList) {
         final InitialStateRetriever retriever = new InitialStateRetriever(messageList);
         final Job job = retriever.newRetrieveInitialStateJob();
 
@@ -226,15 +233,14 @@ public class AlarmView extends LogView {
     }
 
     @Override
-    protected final MessageList createMessageList() {
+    protected final AbstractMessageList createMessageList() {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();
     }
 
     // CHECKSTYLE:OFF
-    private void addAcknowledgeItems(final boolean canExecute,
-                                     final Composite logTableManagementComposite) {
+    private void addAcknowledgeItems(final Composite logTableManagementComposite) {
 
         final Group acknowledgeItemGroup = new Group(logTableManagementComposite, SWT.NONE);
 
@@ -246,7 +252,7 @@ public class AlarmView extends LogView {
         _ackButton = new Button(acknowledgeItemGroup, SWT.PUSH);
         _ackButton.setLayoutData(new RowData(60, 21));
         _ackButton.setText(Messages.AlarmView_acknowledgeButton);
-        _ackButton.setEnabled(canExecute);
+        enableAckButtonIfPermitted();
         final Combo ackCombo = new Combo(acknowledgeItemGroup, SWT.SINGLE);
         ackCombo.add(Messages.AlarmView_acknowledgeAllDropDown);
         final IPreferenceStore prefs = JmsLogsPlugin.getDefault().getPreferenceStore();

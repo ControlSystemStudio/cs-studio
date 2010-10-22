@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: RDB Archive library
 Bundle-SymbolicName: org.csstudio.archive.rdb;singleton:=true
 Bundle-Version: 1.2.3.qualifier
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform,
  org.csstudio.platform.utility.rdb;visibility:=reexport,

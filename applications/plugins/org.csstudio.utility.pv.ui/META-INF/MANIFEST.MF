@@ -5,7 +5,7 @@ Bundle-SymbolicName: org.csstudio.utility.pv.ui; singleton:=true
 Bundle-Version: 1.0.1.qualifier
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Localization: plugin
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov>, Xihui Chen <chenx1@ornl.gov> - SNS
 Require-Bundle: org.eclipse.equinox.preferences,
  org.eclipse.jface,
  org.eclipse.ui.workbench,

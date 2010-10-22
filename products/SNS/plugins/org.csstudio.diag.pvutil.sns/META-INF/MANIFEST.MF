@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: SNS PV Utility SNSRDB Data
 Bundle-SymbolicName: org.csstudio.diag.pvutil.sns;singleton:=true
-Bundle-Version: 1.0.3.qualifier
+Bundle-Version: 1.0.4.qualifier
 Require-Bundle: org.eclipse.swt,
  org.eclipse.jface,
  org.eclipse.core.runtime,

@@ -21,6 +21,15 @@
  */
 package org.csstudio.alarm.table.dataModel;
 
+import javax.annotation.Nonnull;
+
+/**
+ * IMessageViewer defines, what the content provider for the message table has to do, i.e. adding, updating and removing messages.
+ * 
+ * @author jpenning
+ * @author $Author: bknerr $
+ * @since 04.10.2010
+ */
 public interface IMessageViewer {
 
 	/**
@@ -29,7 +38,7 @@ public interface IMessageViewer {
 	 * 
 	 * @param jmsm
 	 */
-	public void addJMSMessage(BasicMessage jmsm);
+	void addJMSMessage(@Nonnull BasicMessage jmsm);
 
 	/**
 	 * Update the view to reflect the fact that an array of JMSMessages was
@@ -37,7 +46,7 @@ public interface IMessageViewer {
 	 * 
 	 * @param jmsm
 	 */
-	public void addJMSMessages(BasicMessage[] jmsm);
+	void addJMSMessages(@Nonnull BasicMessage[] jmsm);
 
 	/**
 	 * Update the view to reflect the fact that a JMSMessage was removed from
@@ -45,7 +54,7 @@ public interface IMessageViewer {
 	 * 
 	 * @param jmsm
 	 */
-	public void removeJMSMessage(BasicMessage jmsm);
+	void removeJMSMessage(@Nonnull BasicMessage jmsm);
 
 	/**
 	 * Update the view to reflect the fact that an array of JMSMessages was
@@ -53,12 +62,13 @@ public interface IMessageViewer {
 	 * 
 	 * @param jmsm
 	 */
-	public void removeJMSMessage(BasicMessage[] jmsm);
+	void removeJMSMessage(@Nonnull BasicMessage[] jmsm);
 
 	/**
 	 * Update the view to reflect the fact that properties of a JMSMessages was
 	 * updated
 	 * 
+	 * @param jmsm
 	 */
-	public void updateJMSMessage(BasicMessage jmsm);
+	void updateJMSMessage(@Nonnull BasicMessage jmsm);
 }

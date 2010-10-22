@@ -212,10 +212,16 @@ public class ProfibusConfigXMLGenerator {
      * @param slave
      *            The Profibus Slave.
      */
-    private void addSlave(final SlaveDBO slave) {
-        XmlSlave xmlSlave = new XmlSlave(slave);
-        _slaveList.add(xmlSlave);
-        _slaveFldAdrs.add(slave.getFdlAddress());
+	private void addSlave(final SlaveDBO slave) {
+		/*
+		 * Has the Slave no GSD File is the Slave a bus Passive node. Don't need
+		 * a configuration on the IOC.
+		 */
+		if (slave.getGSDFile() != null) {
+			XmlSlave xmlSlave = new XmlSlave(slave);
+			_slaveList.add(xmlSlave);
+			_slaveFldAdrs.add(slave.getFdlAddress());
+		}
     }
 
     /**

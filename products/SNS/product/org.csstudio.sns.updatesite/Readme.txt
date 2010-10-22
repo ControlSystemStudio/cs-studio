@@ -19,8 +19,9 @@ Web page is in a separate JEE Project.
   all versions but then there came https://bugs.eclipse.org/bugs/show_bug.cgi?id=279480
 
 ** Prerequisites
-- Install Eclipse 3.5 and the matching 'RCP delta pack', obtained by looking
+- Install Eclipse and the matching 'RCP delta pack', obtained by looking
   for Eclipse, Downloads by topic, RCP, correct version, "Delta Pack".
+  Check settings.sh for the required versions.
   On my first attempt, versions didn't match and voila, it didn't work.
   The delta pack is needed for the headless build as well as cross-builds.
   0.  Unzip the delta pack into the IDE installation for the headless build.

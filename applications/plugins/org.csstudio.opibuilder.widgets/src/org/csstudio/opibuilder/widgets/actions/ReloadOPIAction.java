@@ -1,4 +1,5 @@
 package org.csstudio.opibuilder.widgets.actions;
+import org.csstudio.opibuilder.actions.AbstractWidgetTargetAction;
 import org.csstudio.opibuilder.properties.AbstractWidgetProperty;
 import org.csstudio.opibuilder.widgets.editparts.LinkingContainerEditpart;
 import org.csstudio.opibuilder.widgets.model.LinkingContainerModel;
