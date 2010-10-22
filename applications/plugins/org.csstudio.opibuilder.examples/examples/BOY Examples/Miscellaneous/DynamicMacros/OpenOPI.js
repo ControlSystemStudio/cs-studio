@@ -8,6 +8,8 @@ if(widgetController.getExternalObject(flagName) == null){
 
 	var macroInput = DataUtil.createMacrosInput(true);
 	macroInput.put("pv", PVUtil.getString(pvArray[0]));		
+	
+	//Open an OPI with the new Macro Input.
 	ScriptUtil.openOPI(widgetController, "embeddedOPI.opi", false, macroInput);
 
 }
