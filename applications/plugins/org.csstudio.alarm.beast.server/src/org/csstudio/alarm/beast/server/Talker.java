@@ -31,7 +31,7 @@ public class Talker extends JMSAlarmCommunicator
     public Talker() throws Exception
     {
         super(Preferences.getAlarmTreeRoot(),
-              Preferences.getJMS_TalkTopic(), null, false);
+              Preferences.getJMS_TalkTopic(Preferences.getAlarmTreeRoot()), null, false);
     }
     
     /** Send message to annunciator

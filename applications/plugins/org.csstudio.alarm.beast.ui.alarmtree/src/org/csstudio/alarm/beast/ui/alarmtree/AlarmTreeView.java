@@ -78,7 +78,10 @@ public class AlarmTreeView extends ViewPart
         if (model.isWriteAllowed())
         {
         	if (Preferences.isConfigChangeAllowed())
+        	{
         		toolbar.add(new ChangeConfigurationAction(model));
+        		toolbar.add(new Separator());
+        	}
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
             toolbar.add(new InfoAction(model));

@@ -3,6 +3,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuCreator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -25,7 +26,7 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator
 
 	public ChangeConfigurationAction(final AlarmClientModel model)
     {
-		super("Config", Action.AS_DROP_DOWN_MENU);
+		super(model.getConfigurationName(), IAction.AS_DROP_DOWN_MENU);
 		this.model = model;
 		setMenuCreator(this);
     }
@@ -78,7 +79,9 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator
 						@Override
                         public void widgetSelected(final SelectionEvent e)
                         {	// Use item text to set model name
-							model.setConfigurationName(item.getText());
+							final String new_config = item.getText();
+							ChangeConfigurationAction.this.setText(new_config);
+							model.setConfigurationName(new_config);
                         }
 					});
 			}

@@ -85,7 +85,7 @@ public class AlarmClientModel
         new CopyOnWriteArrayList<AlarmClientModelListener>();
 
     /** Send events? */
-    private volatile boolean notify_listeners = true;
+    private boolean notify_listeners = true;
 
     /** @return <code>true</code> for read-only model */
     final private boolean allow_write = ! Preferences.isReadOnly();
@@ -148,7 +148,11 @@ public class AlarmClientModel
             // Don't lock the model while closing the communicator
             // because communicator could right now be in a model
             // update which in turn already locks the model -> deadlock
-            communicator.close();
+            if (communicator != null)
+            {
+            	communicator.close();
+            	communicator = null;
+            }
             synchronized (this)
             {
                 if (config != null)
@@ -183,8 +187,33 @@ public class AlarmClientModel
     
     public void setConfigurationName(final String new_root_name)
     {
+    	if (new_root_name.equals(root_name))
+    		return;
+    	
     	root_name = new_root_name;
-    	// TODO load new configuration, fire events, ...
+    	
+    	// TODO Move communicator handling inside the ReadConfigJob thread, i.e. readConfiguration?
+    	
+    	// JMS communicator must connect to new topics based on configuration name.
+    	// Close old communicator
+    	communicator.close();
+    	communicator = null;
+    	
+        // New communicator will queue received events until we
+        // read the whole configuration.
+    	try
+    	{
+	    	communicator = new AlarmClientCommunicator(allow_write, this);
+	        communicator.start();
+    	}
+    	catch (Exception ex)
+    	{
+    		CentralLogger.getInstance().getLogger(this).error("Cannot start AlarmClientCommunicator", ex); //$NON-NLS-1$
+    		return;
+    	}
+
+        // Load new configuration, fire events, ...
+    	new ReadConfigJob(this).schedule();
     }
     
     /** @return <code>true</code> if model allows write access
@@ -220,6 +249,7 @@ public class AlarmClientModel
         // While we read the RDB, new alarms could arrive.
         // To avoid missing them, we assert that we are connected to JMS,
         // and put the JMS communicator in 'queue' mode.
+        // TODO Check if we need to create a NEW communicator
         communicator.setQueueMode(true);
         int wait = 0;
         while (!communicator.isConnected())
@@ -241,12 +271,12 @@ public class AlarmClientModel
         }
 
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
-        // Prevent a flurry of events while items with alarms are added
-        notify_listeners = false;
         try
         {
             synchronized (this)
             {
+                // Prevent a flurry of events while items with alarms are added
+                notify_listeners = false;
                 if (config != null)
                     config.close();
                 active_alarms.clear();
@@ -273,6 +303,9 @@ public class AlarmClientModel
             {
                 config = new_config;
                 config_tree = config.getAlarmTree();
+                // active_alarms & acknowledged_alarms already populated
+                // because fireNewAlarmState() was called while building
+                // the alarm tree
             }
         }
         catch (Exception ex)
@@ -301,13 +334,14 @@ public class AlarmClientModel
 
         // After we received configuration, handle updates that might
         // have accumulated.
-        communicator.setConfigurationName(root_name);
         communicator.setQueueMode(false);
         // Re-enable events, send a single notification.
-        notify_listeners = true;
+        synchronized (this)
+        {
+            notify_listeners = true;
+        }
         fireNewConfig();
         monitor.done();
-        
     }
     
     /** @return Name of JMS server or some text that indicates
@@ -679,7 +713,7 @@ public class AlarmClientModel
                 return;
             }
         }
-        // TODO Can this result in out-of-memory?!
+        // Can this result in out-of-memory?!
         // First glance: No, since we just log & return.
         // Is there a memory leak in the logger?
         // The update comes from JMS, and the logger may also

@@ -101,7 +101,6 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
      *  @param configuration Configuration name (root element name)
      *  @param write_topic JMS Topic for writing. <code>null</code> if read-only
      *  @param read_topic JMS Topic for reading. <code>null</code> if write-only
-     * @param string 
      *  @param write_with_readback Also subscribe to the write_topic to read
      *                             messages from there?
      *  @see #queueJMSCommunication(Runnable)
@@ -120,7 +119,18 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
         thread.setDaemon(true);
     }
     
-    /** Start the communication thread
+    /** @return Debug representation */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
+    {
+	    return "JMSAlarmCommunicator " +
+	    		"write_topic=" + write_topic + (write_with_readback ? " (with readback)" : "") + 
+	    		", read_topic=" + read_topic +
+	            ", jms_server=" + jms_server;
+    }
+
+	/** Start the communication thread
      *  @see #close()
      */
     public void start()
@@ -128,14 +138,6 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
     	thread.start();
     }
     
-    /** Update the configuration
-     *  @param configuration New config (root element) name
-     */
-    public void setConfigurationName(String configuration)
-    {
-        this.configuration = configuration;
-    }
-
     /** @return Name of JMS server or some text that indicates
      *          disconnected state. For information, not to determine
      *          exact connection state.
@@ -165,7 +167,7 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
      */
     public boolean isConnected()
     {
-        return is_connected ;
+        return is_connected;
     }
 
     /** Communicator thread Runnable */

@@ -47,8 +47,8 @@ public class ServerCommunicator extends JMSAlarmCommunicator
     public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue) throws Exception
     {
         super(server.getRootName(),
-              Preferences.getJMS_AlarmServerTopic(),
-              Preferences.getJMS_AlarmClientTopic(), false);
+              Preferences.getJMS_AlarmServerTopic(server.getRootName()),
+              Preferences.getJMS_AlarmClientTopic(server.getRootName()), false);
         this.server = server;
         this.work_queue = work_queue;
         idle_timer = new TimeoutTimer(Preferences.getJMS_IdleTimeout()*1000)

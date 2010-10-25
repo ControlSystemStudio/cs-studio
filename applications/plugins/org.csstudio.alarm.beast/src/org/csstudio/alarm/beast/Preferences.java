@@ -88,7 +88,7 @@ public class Preferences
         return getString(RDB_URL);
     }
 
-    /** @return Name of alarm tree root component */
+    /** @return Configuration Name, i.e. name of alarm tree root component */
     public static String getAlarmTreeRoot()
     {
         return getString(ROOT_COMPONENT);
@@ -124,22 +124,28 @@ public class Preferences
         return getSecureString(RDB_PASSWORD);
     }
 
-    /** @return JMS topic used for alarm messages from server */
-    public static String getJMS_AlarmServerTopic()
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for alarm messages from server
+     */
+    public static String getJMS_AlarmServerTopic(final String config)
     {
-        return getAlarmTreeRoot() + "_SERVER";
+        return config + "_SERVER";
     }
 
-    /** @return JMS topic used for alarm messages form clients */
-    public static String getJMS_AlarmClientTopic()
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used for alarm messages form clients
+     */
+    public static String getJMS_AlarmClientTopic(final String config)
     {
-        return getAlarmTreeRoot() + "_CLIENT";
+        return config + "_CLIENT";
     }
     
-    /** @return JMS topic used to annunciate alarm messages */
-    public static String getJMS_TalkTopic()
+    /** @param config Alarm configuration name (root)
+     *  @return JMS topic used to annunciate alarm messages
+     */
+    public static String getJMS_TalkTopic(final String config)
     {
-        return getAlarmTreeRoot() + "_TALK";
+        return config + "_TALK";
     }
 
     /** @return Delay in seconds between expected idle messages */
