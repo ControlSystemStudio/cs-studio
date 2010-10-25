@@ -65,6 +65,16 @@ public class TestProperties
 		return settings.getProperty(key);
     }
 
+	/** Get test property as string
+	 *  @param key Property name
+	 *  @param default_value Default value to use if no setting found
+	 *  @return String value or <code>default_value</code> if not set
+	 */
+	public String getString(final String key, final String default_value)
+    {
+		return settings.getProperty(key, default_value);
+    }
+	
 	/** Get test property as Integer
 	 *  @param key Property name
 	 *  @return Integer value or <code>null</code> if not set
@@ -78,6 +88,21 @@ public class TestProperties
 		return Integer.valueOf(text);
     }
 
+	/** Get test property as Integer
+	 *  @param key Property name
+	 *  @param default_value Default value to use if no setting found
+	 *  @return Integer value or <code>default_value</code> if not set
+	 *  @exception NumberFormatException if the value is set but cannot be parsed as an integer
+	 */
+	public Integer getInteger(final String key, final int default_value)
+    {
+		final String text = getString(key);
+		if (text == null)
+			return default_value;
+		return Integer.valueOf(text);
+    }
+
+	
 	@SuppressWarnings("unchecked")
     public Enumeration<String> getKeys()
     {
