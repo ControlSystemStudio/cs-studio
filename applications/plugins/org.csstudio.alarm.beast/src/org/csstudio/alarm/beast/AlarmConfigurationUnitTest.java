@@ -58,12 +58,11 @@ public class AlarmConfigurationUnitTest
     public void listConfigurations() throws Exception
     {
     	System.out.println("-------------------listConfigurations-----------------------");
-    	if (url == null)
-    	{
-    		System.out.println("Skipping test: no alarm_rdb_* settings found.");
-    		return;
-    	}
-    	final String names[] = AlarmConfiguration.listConfigurations(url, user, password);
+        final AlarmConfiguration config = getConfiguration(false);
+        if (config == null)
+        	return;
+    	final String names[] = config.listConfigurations();
+    	System.out.println("Configurations:");
     	for (String name : names)
     		System.out.println(" '" + name + "'");
     }
@@ -82,6 +81,8 @@ public class AlarmConfigurationUnitTest
     	System.out.println("-------------------testRDBRead-----------------------");
     	final BenchmarkTimer timer = new BenchmarkTimer();
         final AlarmConfiguration config = getConfiguration(false);
+        if (config == null)
+        	return;
         // Quirk: Without 'flush', you don't see anything.
         // With 'close', System.out is actually closed ...
         
