@@ -16,11 +16,11 @@ import java.util.List;
 import org.csstudio.platform.data.TimestampFactory;
 import org.junit.Test;
 
-/** JUnit plug-in Test of AlarmTreeItem
+/** JUnit Test of AlarmTreeItem
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
-public class AlarmTreeItemTest
+public class AlarmTreeItemUnitTest
 {
     @Test
     public void testAlarmTreeItem() throws Exception

@@ -14,6 +14,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -26,25 +27,32 @@ import org.junit.Test;
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
-public class AlarmConfigurationTest
+public class AlarmConfigurationUnitTest
 {
-    //MySQL4
-	// final static String URL = "jdbc:mysql://ics-web.sns.ornl.gov/ALARM";
+	final private String url, user, password, root;
+    final private File filename;
     
-    //MySQL5
-	//final static String URL =
-	//      "jdbc:mysql://localhost/ALARM";
-    
-    //Oracle
-    final static String URL = "jdbc:oracle:thin:@(DESCRIPTION=(ADDRESS_LIST=(LOAD_BALANCE=OFF)(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.138)(PORT=1521))(ADDRESS=(PROTOCOL=TCP)(HOST=172.31.75.141)(PORT=1521)))(CONNECT_DATA=(SERVICE_NAME=ics_prod_lba)))";
-	
-	final static String USER = "sns_reports"; //"root";
-	final static String PASSWORD = "sns";
-	
-    final private static String TEST_ROOT = "DEVL";
+    /** Initialize from TestProperties */
+    public AlarmConfigurationUnitTest() throws Exception
+    {
+    	final TestProperties settings = new TestProperties();
+    	url = settings.getString("alarm_rdb_url");
+		user = settings.getString("alarm_rdb_user");
+		password = settings.getString("alarm_rdb_password");
+    	root = settings.getString("alarm_root");
+    	filename = new File(settings.getString("temp_path", "/tmp"), root + ".xml");
+    }
 
-    //please change the file path in your computer environment
-    final private static File filename = new File("/tmp", TEST_ROOT + ".xml");
+    /** @return AlarmConfiguration or <code>null</code> if lacking settings */
+    private AlarmConfiguration getConfiguration(final boolean writable) throws Exception
+    {
+    	if (url == null  ||  root == null)
+    	{
+    		System.out.println("Skipping test: no alarm_rdb_* settings found.");
+    		return null;
+    	}
+		return new AlarmConfiguration(url, user, password, root, writable);
+    }
 
     /** Alarm config readout test/demo
      *  <p>
@@ -58,7 +66,7 @@ public class AlarmConfigurationTest
     {
     	System.out.println("-------------------testRDBRead-----------------------");
     	final BenchmarkTimer timer = new BenchmarkTimer();
-        final AlarmConfiguration config = new AlarmConfiguration(URL, USER, PASSWORD, TEST_ROOT, false);
+        final AlarmConfiguration config = getConfiguration(false);
         // Quirk: Without 'flush', you don't see anything.
         // With 'close', System.out is actually closed ...
         
@@ -80,7 +88,9 @@ public class AlarmConfigurationTest
     {
     	System.out.println("-------------------testRDBWrite-----------------------");
         //read TEST_ROOT AlarmTree from RDB
-    	final AlarmConfiguration config = new AlarmConfiguration(URL,USER, PASSWORD, TEST_ROOT, true);
+    	final AlarmConfiguration config = getConfiguration(true);
+    	if (config == null)
+    		return;
         final AlarmTreeRoot root = config.getAlarmTree();
         //print TEST_ROOT AlarmTree to console
         root.dump();
@@ -112,7 +122,9 @@ public class AlarmConfigurationTest
     public void testXMLWriteToFile() throws Exception
     {
         System.out.println("-------------------testXMLWriteToFile-----------------------");
-        final AlarmConfiguration config = new AlarmConfiguration(URL , USER, PASSWORD, TEST_ROOT, false);
+        final AlarmConfiguration config = getConfiguration(false);
+    	if (config == null)
+    		return;
         final FileWriter file = new FileWriter(filename);
         config.getAlarmTree().writeXML(new PrintWriter(file));
         file.close();
@@ -134,7 +146,9 @@ public class AlarmConfigurationTest
     public void testXMLFileReadback() throws Exception
     {
     	System.out.println("-------------------testXMLFileReadback-----------------------");
-        final AlarmConfiguration config = new AlarmConfiguration(URL , USER, PASSWORD, TEST_ROOT, true);
+        final AlarmConfiguration config = getConfiguration(true);
+    	if (config == null)
+    		return;
         System.out.println("******* Configuration read from RDB: ******");
         config.getAlarmTree().dump();
         config.removeAllItems();

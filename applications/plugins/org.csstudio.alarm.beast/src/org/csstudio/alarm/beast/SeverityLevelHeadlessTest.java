@@ -11,18 +11,19 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-/** JUnit Pplug-in test of alarm severities
+/** JUnit Plug-in test [headless] of alarm severities
+ *  (must be plug-in to obtain colors for severities)
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SeverityLevelTest
+public class SeverityLevelHeadlessTest
 {
     @Test
     public void testPreferences()
     {
         final SeverityLevel sevr = SeverityLevel.MAJOR;
         // Could change with preference settings,
-        // but assume MAJOR is somewhat read and called major
+        // but assume MAJOR is somewhat red in color, and called major
         assertTrue(sevr.getRed() > 200);
         assertTrue(sevr.getDisplayName().equalsIgnoreCase("Major"));
     }

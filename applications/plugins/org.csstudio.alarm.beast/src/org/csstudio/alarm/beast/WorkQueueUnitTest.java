@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class WorkQueueTest
+public class WorkQueueUnitTest
 {
     private String result = "";
     

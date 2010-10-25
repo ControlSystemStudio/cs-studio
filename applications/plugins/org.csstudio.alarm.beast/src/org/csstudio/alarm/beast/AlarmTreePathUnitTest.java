@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmTreePathTest
+public class AlarmTreePathUnitTest
 {
     @Test
     public void testMakePath()

@@ -16,7 +16,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TimeoutTimerTest
+public class TimeoutTimerUnitTest
 {
     protected int timed_out = 0;
 
