@@ -113,9 +113,6 @@ public class AlarmConfiguration
     }
     
     /** List all configuration 'root' element names
-     *  @param url RDB URL
-     *  @param user	RDB user name
-     *  @param password RDB password
      *  @return Array of 'root' elements
      *  @throws Exception on error
      */

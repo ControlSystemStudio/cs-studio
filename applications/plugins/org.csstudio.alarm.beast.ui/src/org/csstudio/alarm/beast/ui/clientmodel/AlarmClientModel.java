@@ -44,6 +44,9 @@ public class AlarmClientModel
 
     /** Reference count for instance */
     private volatile int references = 0;
+
+    /** Name of this configuration, i.e. root element of the configuration tree */
+	private String root_name;
     
     /** Have we recently heard from the server? */
     private volatile boolean server_alive = false;
@@ -85,11 +88,13 @@ public class AlarmClientModel
     private volatile boolean notify_listeners = true;
 
     /** @return <code>true</code> for read-only model */
-    final private boolean allow_write = ! Preferences.getReadOnly();
+    final private boolean allow_write = ! Preferences.isReadOnly();
 
     /** Initialize client model */
     private AlarmClientModel() throws Exception
     {
+    	root_name = Preferences.getAlarmTreeRoot();
+
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
         
@@ -160,6 +165,28 @@ public class AlarmClientModel
         releaseInstance();
     }
 
+    /** List all configuration 'root' element names, i.e. names
+     *  of all possible configurations, including the current one.
+     *  @return Array of 'root' elements
+     *  @throws Exception on error
+     */
+    public String[] listConfigurations() throws Exception
+    {
+    	return config.listConfigurations();
+    }
+
+    /** @return Name of this configuration, i.e. name of its root element */
+    public String getConfigurationName()
+    {
+    	return root_name;
+    }
+    
+    public void setConfigurationName(final String new_root_name)
+    {
+    	root_name = new_root_name;
+    	// TODO load new configuration, fire events, ...
+    }
+    
     /** @return <code>true</code> if model allows write access
      *          (acknowledge, update config)
      */
@@ -190,7 +217,6 @@ public class AlarmClientModel
         final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
-        final String root_name = Preferences.getAlarmTreeRoot();
         // While we read the RDB, new alarms could arrive.
         // To avoid missing them, we assert that we are connected to JMS,
         // and put the JMS communicator in 'queue' mode.

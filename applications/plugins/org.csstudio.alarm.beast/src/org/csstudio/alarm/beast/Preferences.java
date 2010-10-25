@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
 public class Preferences
 {
     final public static String READONLY = "readonly";
+    final public static String ALLOW_CONFIG_CHANGE = "allow_config_change";
     final public static String AnonyACK = "allow_anonymous_acknowledge";
     final public static String RDB_URL = "rdb_url";
     final public static String RDB_USER = "rdb_user";
@@ -61,10 +62,17 @@ public class Preferences
     }
 
     /** @return <code>true</code> for read-only operation */
-    public static boolean getReadOnly()
+    public static boolean isReadOnly()
     {
         final IPreferencesService service = Platform.getPreferencesService();
         return service.getBoolean(Activator.ID, READONLY, true, null);
+    }
+
+    /** @return <code>true</code> for read-only operation */
+    public static boolean isConfigChangeAllowed()
+    {
+        final IPreferencesService service = Platform.getPreferencesService();
+        return service.getBoolean(Activator.ID, ALLOW_CONFIG_CHANGE, true, null);
     }
     
     /** @return <code>true</code> for allow_anonymous_acknowledge operation */
