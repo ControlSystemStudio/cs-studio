@@ -37,8 +37,8 @@ public class AlarmConfigurationUnitTest
     {
     	final TestProperties settings = new TestProperties();
     	url = settings.getString("alarm_rdb_url");
-		user = settings.getString("alarm_rdb_user");
-		password = settings.getString("alarm_rdb_password");
+		user = settings.getString("alarm_rdb_user", "");
+		password = settings.getString("alarm_rdb_password", "");
     	root = settings.getString("alarm_root");
     	filename = new File(settings.getString("temp_path", "/tmp"), root + ".xml");
     }
@@ -54,6 +54,21 @@ public class AlarmConfigurationUnitTest
 		return new AlarmConfiguration(url, user, password, root, writable);
     }
 
+    @Test
+    public void listConfigurations() throws Exception
+    {
+    	System.out.println("-------------------listConfigurations-----------------------");
+    	if (url == null)
+    	{
+    		System.out.println("Skipping test: no alarm_rdb_* settings found.");
+    		return;
+    	}
+    	final String names[] = AlarmConfiguration.listConfigurations(url, user, password);
+    	for (String name : names)
+    		System.out.println(" '" + name + "'");
+    }
+
+    
     /** Alarm config readout test/demo
      *  <p>
      *  'CUB' on my Linux PC: 3 .. 3.2 seconds

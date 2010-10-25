@@ -57,8 +57,38 @@ public class AlarmConfiguration
         sel_pv_by_id_statement, sel_pvs_by_parent_statement,
         sel_guidance_statement, sel_displays_statement, sel_commands_statement;
 
-    
-    /** Initialize
+    /** List all configuration 'root' element names
+     *  @param url RDB URL
+     *  @param user	RDB user name
+     *  @param password RDB password
+     *  @return Array of 'root' elements
+     *  @throws Exception on error
+     */
+    public static String[] listConfigurations(final String url, final String user,
+            final String password) throws Exception
+    {
+        // No need to auto-reconnect
+    	final RDBUtil rdb = RDBUtil.connect(url, user, password, false);
+    	final SQL sql = new SQL(rdb);
+    	// List configuration names
+		final List<String> names = new ArrayList<String>();
+    	try
+    	{
+    		final Statement statement = rdb.getConnection().createStatement();
+    		final ResultSet result = statement.executeQuery(sql.sel_configurations);
+    		while (result.next())
+    			names.add(result.getString(1));
+    		statement.close();
+    	}
+    	finally
+    	{
+    		rdb.close();
+    	}
+    	// Convert to plain array
+        return names.toArray(new String[names.size()]);
+    }
+
+	/** Initialize
      *  @param url RDB URL
      *  @param root_name Name of root element
      *  @throws Exception on error
