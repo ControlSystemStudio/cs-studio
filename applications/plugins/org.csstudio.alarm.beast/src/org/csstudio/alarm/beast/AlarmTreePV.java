@@ -288,7 +288,6 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     }
 
     /** @see IProcessVariable */
-    @SuppressWarnings("unchecked")
     public Object getAdapter(Class adapter)
     {
         return null;
