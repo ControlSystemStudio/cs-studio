@@ -57,7 +57,6 @@ public class AlarmConfiguration
         sel_pv_by_id_statement, sel_pvs_by_parent_statement,
         sel_guidance_statement, sel_displays_statement, sel_commands_statement;
 
-    
     /** Initialize
      *  @param url RDB URL
      *  @param root_name Name of root element
@@ -113,7 +112,29 @@ public class AlarmConfiguration
         rdb.setAutoReconnect(true);
     }
     
-    /** Must be called to release resources */
+    /** List all configuration 'root' element names
+     *  @return Array of 'root' elements
+     *  @throws Exception on error
+     */
+    public String[] listConfigurations() throws Exception
+    {
+		final Statement statement = rdb.getConnection().createStatement();
+    	final List<String> names = new ArrayList<String>();
+    	try
+    	{
+    		final ResultSet result = statement.executeQuery(sql.sel_configurations);
+    		while (result.next())
+    			names.add(result.getString(1));
+    	}
+    	finally
+    	{
+    		statement.close();
+    	}
+    	// Convert to plain array
+        return names.toArray(new String[names.size()]);
+    }
+
+	/** Must be called to release resources */
     public void close()
     {
         closeStatements();

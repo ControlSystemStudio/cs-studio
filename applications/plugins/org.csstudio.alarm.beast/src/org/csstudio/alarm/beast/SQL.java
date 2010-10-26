@@ -19,7 +19,9 @@ public class SQL
     /** Schema prefix. Required for SNS Oracle. Set to "" for MySQL */
     final public String schema_prefix;
 
-    final public String sel_item_by_name;
+    final public String sel_configurations;
+
+	final public String sel_item_by_name;
 	final public String sel_guidance_by_id;
 	final public String sel_displays_by_id;
 	final public String sel_commands_by_id;
@@ -61,8 +63,8 @@ public class SQL
     final public String message_table = "STATUS";
     final public String message_id_col = "STATUS_ID";
     final public String message_name_col = "NAME";
-    
-    /** Initialize
+
+	/** Initialize
      *  @param rdb RDBUtil
      */
     public SQL(final RDBUtil rdb) throws Exception
@@ -73,6 +75,8 @@ public class SQL
             schema_prefix = "ALARM.";
         else
         	throw new Exception("This database is not supported");
+        
+        sel_configurations = "SELECT NAME FROM "+ schema_prefix + "ALARM_TREE WHERE PARENT_CMPNT_ID IS NULL";
         
         sel_item_by_name = "SELECT COMPONENT_ID, PARENT_CMPNT_ID FROM " + schema_prefix + "ALARM_TREE WHERE NAME=?";
         sel_guidance_by_id = 

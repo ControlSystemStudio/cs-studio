@@ -37,8 +37,8 @@ public class AlarmConfigurationUnitTest
     {
     	final TestProperties settings = new TestProperties();
     	url = settings.getString("alarm_rdb_url");
-		user = settings.getString("alarm_rdb_user");
-		password = settings.getString("alarm_rdb_password");
+		user = settings.getString("alarm_rdb_user", "");
+		password = settings.getString("alarm_rdb_password", "");
     	root = settings.getString("alarm_root");
     	filename = new File(settings.getString("temp_path", "/tmp"), root + ".xml");
     }
@@ -54,6 +54,20 @@ public class AlarmConfigurationUnitTest
 		return new AlarmConfiguration(url, user, password, root, writable);
     }
 
+    @Test
+    public void listConfigurations() throws Exception
+    {
+    	System.out.println("-------------------listConfigurations-----------------------");
+        final AlarmConfiguration config = getConfiguration(false);
+        if (config == null)
+        	return;
+    	final String names[] = config.listConfigurations();
+    	System.out.println("Configurations:");
+    	for (String name : names)
+    		System.out.println(" '" + name + "'");
+    }
+
+    
     /** Alarm config readout test/demo
      *  <p>
      *  'CUB' on my Linux PC: 3 .. 3.2 seconds
@@ -67,6 +81,8 @@ public class AlarmConfigurationUnitTest
     	System.out.println("-------------------testRDBRead-----------------------");
     	final BenchmarkTimer timer = new BenchmarkTimer();
         final AlarmConfiguration config = getConfiguration(false);
+        if (config == null)
+        	return;
         // Quirk: Without 'flush', you don't see anything.
         // With 'close', System.out is actually closed ...
         

@@ -42,13 +42,14 @@ public class Application implements IApplication
         final String version = (String)
             context.getBrandingBundle().getHeaders().get("Bundle-Version");
         final String app_info = context.getBrandingName() + " " + version;
-        CentralLogger.getInstance().getLogger(this).info(app_info +
-            " started for '" + Preferences.getAlarmTreeRoot() + "' configuration");
+        final String config_name = Preferences.getAlarmTreeRoot();
+		CentralLogger.getInstance().getLogger(this).info(app_info +
+            " started for '" + config_name + "' configuration");
         System.out.println(app_info);
-        System.out.println("Configuration Root: " + Preferences.getAlarmTreeRoot());
-        System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic());
-        System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic());
-        System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic());
+        System.out.println("Configuration Root: " + config_name);
+        System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name));
+        System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name));
+        System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name));
         
         final Talker talker = new Talker();
         talker.start();
