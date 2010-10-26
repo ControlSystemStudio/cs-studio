@@ -1,6 +1,7 @@
 package org.csstudio.alarm.beast.ui.alarmtree;
 
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
+import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModelConfigListener;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
@@ -19,7 +20,7 @@ import org.eclipse.swt.widgets.ToolItem;
  *  and allows selection of a different alarm configuration
  *  @author Kay Kasemir
  */
-public class ChangeConfigurationAction extends Action implements IMenuCreator
+public class ChangeConfigurationAction extends Action implements IMenuCreator, AlarmClientModelConfigListener
 {
 	final private AlarmClientModel model;
 	private Menu menu;
@@ -72,18 +73,24 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator
 				final MenuItem item = new MenuItem(menu, SWT.RADIO);
 				item.setText(name);
 				if (current.equals(name))
+				{	// Display current config. as selected, but no function
 					item.setSelection(true);
+				}
 				else
+				{	// Selecting _other_ config updates the model's config name
 					item.addSelectionListener(new SelectionAdapter()
 					{
 						@Override
                         public void widgetSelected(final SelectionEvent e)
-                        {	// Use item text to set model name
+                        {
+							// Prohibit more changes while loading new config
+							ChangeConfigurationAction.this.setEnabled(false);
+							// Use item text to set model name
 							final String new_config = item.getText();
-							ChangeConfigurationAction.this.setText(new_config);
-							model.setConfigurationName(new_config);
+							model.setConfigurationName(new_config, ChangeConfigurationAction.this);
                         }
 					});
+				}
 			}
 		}
 		catch (Exception ex)
@@ -108,5 +115,12 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator
     public void dispose()
     {
     	disposeMenu();
+    }
+
+    /** @see AlarmClientModelConfigListener */
+	public void newAlarmConfiguration(final AlarmClientModel model)
+    {
+		setText(model.getConfigurationName());
+		setEnabled(true);
     }
 }

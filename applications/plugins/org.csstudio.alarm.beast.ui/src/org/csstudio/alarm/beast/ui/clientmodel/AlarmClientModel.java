@@ -189,7 +189,14 @@ public class AlarmClientModel
     	return root_name;
     }
     
-    public void setConfigurationName(final String new_root_name)
+    /** Load a new alarm configuration.
+     *  Ignored if the 'new' configuration name matches the current name.
+     *  
+     *  @param new_root_name Name of configuration to load
+     *  @param listener Listener that's notified when done
+     */
+    public void setConfigurationName(final String new_root_name,
+    		final AlarmClientModelConfigListener listener)
     {
     	if (new_root_name.equals(root_name))
     		return;
@@ -214,7 +221,7 @@ public class AlarmClientModel
         
         // Load new configuration:
         // Create new JMS communicator, read from RDB, fire events, ...
-    	new ReadConfigJob(this).schedule();
+    	new ReadConfigJob(this, listener).schedule();
     }
     
     /** @return <code>true</code> if model allows write access

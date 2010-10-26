@@ -56,12 +56,10 @@ public abstract class AlarmTree
     final private int hash_code;
 
     /** Sub-tree elements of this item */
-    final private ArrayList<AlarmTree> children =
-        new ArrayList<AlarmTree>();
+    final private List<AlarmTree> children = new ArrayList<AlarmTree>();
     
     /** Sub-tree elements of this item which are currently in alarm */
-    final private ArrayList<AlarmTree> alarm_children =
-        new ArrayList<AlarmTree>();
+    final private List<AlarmTree> alarm_children = new ArrayList<AlarmTree>();
     
     /** Guidance messages */
     private List<GDCDataStructure> guidance = new ArrayList<GDCDataStructure>();
