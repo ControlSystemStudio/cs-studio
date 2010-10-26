@@ -166,7 +166,6 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
 
    <features>
       <feature id="org.csstudio.desy.epics.feature" version="1.0.0.qualifier"/>
-      <feature id="org.csstudio.desy.platform.eclipse.feature" version="1.0.0.qualifier"/>
    </features>
 
 
