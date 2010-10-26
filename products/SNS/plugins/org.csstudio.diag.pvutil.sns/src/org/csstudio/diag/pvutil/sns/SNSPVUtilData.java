@@ -38,27 +38,41 @@ public class SNSPVUtilData implements PVUtilDataAPI
 	 */
 	public FEC[] getFECs(String filter) throws Exception {		
 
-		filter = "%" + filter + "%";
+		filter = filter.trim();
+		
+		//filter = "%" + filter + "%";
 		final ArrayList<FEC> fecs = new ArrayList<FEC>();
 		final Connection connection = rdbutil.getConnection();
-        
 		// This looks for beam line devices and FECs.  
 		// Other device types will have to be added if appropriate.
-        final String deviceSelect = " select distinct dvc_id from epics.dvc " +
-        "where upper(dvc_id) like upper(?)" +
-        "and ( bl_dvc_ind = 'Y'" +
-        "	or dvc_type_id in (select distinct a.dvc_type_id from epics.dvc a, epics.ioc_dvc b" +
-        "						where a.dvc_id = b.dvc_id union " +
-        "						select distinct a.dvc_type_id from epics.dvc a, epics.ics_comm_dvc b" +
-        "						where a.dvc_id = b.dvc_id) )" +
-        "order by dvc_id";
-         
+        String deviceSelect = " select 'bad sql happening' as dvc from dual";
+        if (filter.length() <= 0) {
+        	deviceSelect = "select distinct dvc_id from epics.dvc " +
+        			"where bl_dvc_ind = 'Y' " +
+        			"union " +
+        			"select distinct dvc_id from  epics.ics_netreg_dvc_v " +
+        			"order by dvc_id";
+        }
+        else {
+        	deviceSelect = "select distinct dvc_id from epics.dvc  " +
+        			"     where upper(dvc_id) like upper('%"+filter+"%')" +
+        			"       and ( bl_dvc_ind = 'Y'" +
+        			"            or dvc_type_id in (select distinct a.dvc_type_id from epics.dvc a, epics.ioc_dvc b" +
+        			"                                where a.dvc_id = b.dvc_id union" +
+        			"                                select distinct a.dvc_type_id from epics.dvc a, epics.ics_comm_dvc b" +
+        			"                                where a.dvc_id = b.dvc_id) )" +
+        			"        order by dvc_id";
+        }
+        
+        System.out.println("Filter is: " + filter);
+        System.out.println(deviceSelect);
+		         
         final PreparedStatement select = 
             connection.prepareStatement
             (deviceSelect,ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
         try
         {
-	        select.setString(1, filter);
+	        //select.setString(1, filter);
 	        final ResultSet rset = select.executeQuery();
 	        while (rset.next())
 	        	fecs.add(new FEC(rset.getString(1)));
