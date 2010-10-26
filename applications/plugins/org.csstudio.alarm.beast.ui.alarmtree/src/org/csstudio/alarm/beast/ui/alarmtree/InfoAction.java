@@ -30,7 +30,8 @@ public class InfoAction extends Action
     public void run()
     {
         final StringBuilder info = new StringBuilder();
-        info.append("JMS Server: " + model.getJMSServerName() + "\n");
+        info.append("Configuration: " + model.getConfigurationName() + "\n");
+        info.append("JMS Server: " + model.getJMSServerInfo() + "\n");
         info.append("Alarm Server alive: " + model.isServerAlive() + "\n");
         info.append("'Write' allowed: " + model.isWriteAllowed() + "\n");
         info.append("PV Count: " + model.getConfigTree().getPVCount() + "\n");

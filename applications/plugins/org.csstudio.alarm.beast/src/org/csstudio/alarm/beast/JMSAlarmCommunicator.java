@@ -124,10 +124,9 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
     @Override
     public String toString()
     {
-	    return "JMSAlarmCommunicator " +
-	    		"write_topic=" + write_topic + (write_with_readback ? " (with readback)" : "") + 
-	    		", read_topic=" + read_topic +
-	            ", jms_server=" + jms_server;
+	    return "Server=" + jms_server +
+	    	   ", write topic=" + write_topic + (write_with_readback ? " (with readback)" : "") + 
+	    		", read topic=" + read_topic;
     }
 
 	/** Start the communication thread
