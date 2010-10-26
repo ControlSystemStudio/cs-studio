@@ -17,34 +17,23 @@
    </license>
 
    <includes
-         id="org.csstudio.platform.island.feature.product"
+         id="org.csstudio.alarm.desy.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.sds.feature"
+         id="org.csstudio.desy.epics.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.diag.controlsystemtools.feature"
+         id="org.csstudio.desy.platform.eclipse.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.configuration.epics.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.platform.eclipse.feature"
+         id="org.csstudio.desy.sds.feature"
          version="0.0.0"/>
 
    <plugin
-         id="org.csstudio.testsuite"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.samples"
+         id="org.csstudio.island.product"
          download-size="0"
          install-size="0"
          version="0.0.0"
