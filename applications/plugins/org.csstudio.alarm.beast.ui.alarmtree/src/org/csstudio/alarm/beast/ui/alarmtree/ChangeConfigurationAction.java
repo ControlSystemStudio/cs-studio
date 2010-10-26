@@ -64,38 +64,44 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
     {
 		disposeMenu();
 		menu = new Menu(parent);
-		try
+		// GUI shows menu even when the action is disabled.
+		// Hack around this by showing an empty menu
+		if (isEnabled())
 		{
-			final String current = model.getConfigurationName();
-			final String names[] = model.listConfigurations();
-			for (String name : names)
-			{	// Note item text later used to set model config
-				final MenuItem item = new MenuItem(menu, SWT.RADIO);
-				item.setText(name);
-				if (current.equals(name))
-				{	// Display current config. as selected, but no function
-					item.setSelection(true);
-				}
-				else
-				{	// Selecting _other_ config updates the model's config name
-					item.addSelectionListener(new SelectionAdapter()
-					{
-						@Override
-                        public void widgetSelected(final SelectionEvent e)
-                        {
-							// Prohibit more changes while loading new config
-							ChangeConfigurationAction.this.setEnabled(false);
-							// Use item text to set model name
-							final String new_config = item.getText();
-							model.setConfigurationName(new_config, ChangeConfigurationAction.this);
-                        }
-					});
+			try
+			{
+				final String current = model.getConfigurationName();
+				final String names[] = model.listConfigurations();
+				for (String name : names)
+				{	// Note item text later used to set model config
+					final MenuItem item = new MenuItem(menu, SWT.RADIO);
+					item.setText(name);
+					if (current.equals(name))
+					{	// Display current config. as selected, but no function
+						item.setSelection(true);
+					}
+					else
+					{	// Selecting _other_ config updates the model's config name
+						item.addSelectionListener(new SelectionAdapter()
+						{
+							@Override
+	                        public void widgetSelected(final SelectionEvent e)
+	                        {
+								// Prohibit more changes while loading new config
+								ChangeConfigurationAction.this.setEnabled(false);
+								// Use item text to set model name
+								final String new_config = item.getText();
+								model.setConfigurationName(new_config, ChangeConfigurationAction.this);
+	                        }
+						});
+					}
 				}
 			}
-		}
-		catch (Exception ex)
-		{
-			CentralLogger.getInstance().getLogger(this).error(ex);
+			catch (Exception ex)
+			{
+				ex.printStackTrace();
+				CentralLogger.getInstance().getLogger(this).error(ex);
+			}
 		}
 	    return menu;
     }

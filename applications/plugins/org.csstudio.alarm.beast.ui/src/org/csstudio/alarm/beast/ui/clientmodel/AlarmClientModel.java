@@ -178,8 +178,10 @@ public class AlarmClientModel
      *  @return Array of 'root' elements
      *  @throws Exception on error
      */
-    public String[] listConfigurations() throws Exception
+    public synchronized String[] listConfigurations() throws Exception
     {
+    	if (config == null)
+    		return new String[0];
     	return config.listConfigurations();
     }
 
@@ -379,12 +381,12 @@ public class AlarmClientModel
      *          disconnected state. For information, not to determine
      *          exact connection state.
      */
-    public String getJMSServerName()
+    public String getJMSServerInfo()
     {
         synchronized (communicator_lock)
         {
         	if (communicator != null)
-        		return communicator.getJMSServerName();
+        		return communicator.toString();
         }
         return "No Communicator"; //$NON-NLS-1$
     }
