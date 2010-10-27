@@ -46,9 +46,12 @@ public class AlarmClientModel
     private volatile int references = 0;
 
     /** Name of this configuration, i.e. root element of the configuration tree */
-	private String root_name;
+	private String config_name;
     
-    /** Have we recently heard from the server? */
+    /** Names of all available configuration, i.e. all root elements */
+    private String config_names[];
+
+	/** Have we recently heard from the server? */
     private volatile boolean server_alive = false;
 
     /** Do we think the server is in maintenance mode? */
@@ -100,7 +103,7 @@ public class AlarmClientModel
 	/** Initialize client model */
     private AlarmClientModel() throws Exception
     {
-    	root_name = Preferences.getAlarmTreeRoot();
+    	config_name = Preferences.getAlarmTreeRoot();
 
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
@@ -180,15 +183,13 @@ public class AlarmClientModel
      */
     public synchronized String[] listConfigurations() throws Exception
     {
-    	if (config == null)
-    		return new String[0];
-    	return config.listConfigurations();
+    	return config_names;
     }
 
     /** @return Name of this configuration, i.e. name of its root element */
-    public String getConfigurationName()
+    public synchronized String getConfigurationName()
     {
-    	return root_name;
+    	return config_name;
     }
     
     /** Load a new alarm configuration.
@@ -200,11 +201,14 @@ public class AlarmClientModel
     public void setConfigurationName(final String new_root_name,
     		final AlarmClientModelConfigListener listener)
     {
-    	if (new_root_name.equals(root_name))
-    		return;
-    	
-    	// Update config. name
-    	root_name = new_root_name;
+    	synchronized (this)
+        {
+        	if (new_root_name.equals(config_name))
+        		return;
+        	
+        	// Update config. name
+        	config_name = new_root_name;
+        }
     	
     	// Update GUI with 'empty' model
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
@@ -322,7 +326,7 @@ public class AlarmClientModel
             final AlarmConfiguration new_config =
                 new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
                 					   Preferences.getRDB_Password(),
-                                       root_name,false)
+                                       config_name,false)
             {
                 @Override
                 protected AlarmTreeRoot createAlarmTreeRoot(int id,
@@ -332,10 +336,14 @@ public class AlarmClientModel
                                                     AlarmClientModel.this);
                 }
             };
+            // Read names of available configurations
+            final String new_root_names[] = new_config.listConfigurations();
+            // Update model with newly received data
             synchronized (this)
             {
                 config = new_config;
                 config_tree = config.getAlarmTree();
+                config_names = new_root_names;
                 // active_alarms & acknowledged_alarms already populated
                 // because fireNewAlarmState() was called while building
                 // the alarm tree

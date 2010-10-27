@@ -14,6 +14,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.ToolBar;
 import org.eclipse.swt.widgets.ToolItem;
 
 /** (Toolbar) action that shows the currently selected alarm configuration name
@@ -24,6 +25,7 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
 {
 	final private AlarmClientModel model;
 	private Menu menu;
+	private ToolBar toolbar;
 
 	public ChangeConfigurationAction(final AlarmClientModel model)
     {
@@ -62,6 +64,8 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
 	 */
 	public Menu getMenu(final Control parent)
     {
+		if (parent instanceof ToolBar)
+			toolbar = (ToolBar) parent;
 		disposeMenu();
 		menu = new Menu(parent);
 		// GUI shows menu even when the action is disabled.
@@ -126,7 +130,27 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
     /** @see AlarmClientModelConfigListener */
 	public void newAlarmConfiguration(final AlarmClientModel model)
     {
-		setText(model.getConfigurationName());
-		setEnabled(true);
+		if (toolbar == null  ||  toolbar.isDisposed())
+			return;
+		toolbar.getDisplay().asyncExec(new Runnable()
+		{
+			public void run()
+			{
+				if (toolbar == null  ||  toolbar.isDisposed())
+					return;
+				setText(model.getConfigurationName());
+				setEnabled(true);
+				// Since the toolbar item's text changed,
+				// a re-layout of the toolbar could be required.
+				// Tried all these to no avail: The item resizes
+				// and might push other toolbar items out of the
+				// window, but the toolbar does not properly re-layout.
+//				toolbar.changed(toolbar.getChildren());
+//				toolbar.pack();
+//				toolbar.getParent().pack();
+//				toolbar.getParent().getParent().pack();
+//				toolbar.getParent().changed(new Control[] { toolbar });
+			}
+		});
     }
 }
