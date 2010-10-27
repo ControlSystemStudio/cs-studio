@@ -28,6 +28,8 @@
 	 the empty build directory.
 	-->
 	<target name="copyPlugins">
+		<delete dir="${base}/win" />
+		<mkdir dir="${base}/win" />
 		<delete dir="${workspaceLocation}/build" />
 		<mkdir dir="${workspaceLocation}/build" />
 		<copy todir="${workspaceLocation}/build">
@@ -59,6 +61,7 @@
 			<arg value="org.eclipse.ant.core.antRunner" />
 			<arg value="-buildfile" />
 			<arg value="${base}/productBuild.xml" />
+			<arg value="-DbuildDirectory=${base}/win" />
 			<arg value="-DbaseLocation=${e360TP}" />
 			<classpath>
 				<pathelement location="${eclipse360}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
@@ -77,17 +80,17 @@
 		Copy plugincustomization and MP3 files to product
 	-->
 	<target name="updateConfiguration"><!-- depends="checkBuildFilePresent" if="buildfile.present">-->
-		<mkdir dir="${workspaceLocation}build/initmp/${archivePrefix}" />
-		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
+		<mkdir dir="${base}/win/initmp/${archivePrefix}" />
+		<copy todir="${base}/win/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-win32.win32.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
+		<zip destfile="${base}/win/build/${buildLabel}/${buildId}-win32.win32.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
 	</target>
 
 	<!--
 		Copy product to artifact folder from hudson
 	-->
 	<target name="hudsonUpdate">
-		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-win32.win32.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
+		<copy file="${base}/win/build/${buildLabel}/${buildId}-win32.win32.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
 	</target>
 </project>
