@@ -63,8 +63,9 @@
 		<delete file="${workspaceLocation}/build/*.xml"/>	
 		<delete file="${workspaceLocation}/build/*.properties"/>	
 		<delete file="${workspaceLocation}/build/*.sh"/>	
-		<delete file="${workspaceLocation}/build/*.secure_storage"/>	
+		<delete file="${workspaceLocation}/build/secure_storage"/>	
 		<delete dir="${workspaceLocation}/build/I.CSSHead_"/>	
+		<delete dir="${workspaceLocation}/build/initmp"/>	
 	</target>
 			
 	<!--
