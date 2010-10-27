@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.csstudio.desy.epics.feature"
-      label="Epics Feature"
+      id="org.csstudio.desy.island.feature"
+      label="Feature"
       version="1.0.0.qualifier"
-      provider-name="Desy">
+      provider-name="DESY">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,19 +18,19 @@
    </license>
 
    <includes
-         id="org.csstudio.desy.platform.eclipse.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.desy.pv.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.desy.alarm.feature"
          version="0.0.0"/>
 
    <includes
          id="org.csstudio.desy.dct.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.platform.eclipse.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.pv.feature"
          version="0.0.0"/>
 
    <includes
@@ -42,13 +42,6 @@
          version="0.0.0"/>
 
    <plugin
-         id="org.csstudio.desy.epics.product"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.startup"
          download-size="0"
          install-size="0"
@@ -57,6 +50,13 @@
 
    <plugin
          id="org.csstudio.startuphelper"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.desy.island.product"
          download-size="0"
          install-size="0"
          version="0.0.0"
