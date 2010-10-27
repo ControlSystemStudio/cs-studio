@@ -3,6 +3,7 @@ package org.csstudio.apputil.ui.time;
 import java.text.SimpleDateFormat;
 
 import org.csstudio.apputil.time.RelativeTime;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -11,7 +12,7 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class StartEndDialogTest
+public class StartEndDialogDemo
 {
     public void updatedTime(RelativeTimeWidget source, RelativeTime time)
     {
@@ -28,7 +29,7 @@ public class StartEndDialogTest
         shell.open();
 
         StartEndDialog dlg = new StartEndDialog(shell);
-        if (dlg.open() == StartEndDialog.OK)
+        if (dlg.open() == Window.OK)
         {
             System.out.println("Start: '" + dlg.getStartSpecification() + "'");
             System.out.println("End: '" + dlg.getEndSpecification() + "'");
@@ -46,6 +47,6 @@ public class StartEndDialogTest
     
     public static void main(String[] args)
     {
-        new StartEndDialogTest().run();
+        new StartEndDialogDemo().run();
     }
 }

@@ -1,9 +1,6 @@
 package org.csstudio.apputil.ui.time;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
+import org.csstudio.apputil.time.RelativeTime;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
@@ -12,14 +9,11 @@ import org.eclipse.swt.widgets.Shell;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class CalendarWidgetTest implements CalendarWidgetListener
+public class RelativeTimeWidgetDemo implements RelativeTimeWidgetListener
 {
-    private static DateFormat format =
-        new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-
-    public void updatedCalendar(CalendarWidget source, Calendar calendar)
+    public void updatedTime(RelativeTimeWidget source, RelativeTime time)
     {
-        System.out.println("Time: " + format.format(calendar.getTime()));
+        System.out.println("Time: " + time);
     }
 
     public void run()
@@ -28,7 +22,7 @@ public class CalendarWidgetTest implements CalendarWidgetListener
         Shell shell = new Shell(display);
         shell.setLayout(new FillLayout());
         
-        CalendarWidget w = new CalendarWidget(shell, 0);
+        RelativeTimeWidget w = new RelativeTimeWidget(shell, 0);
         w.addListener(this);
 
         shell.pack();
@@ -44,6 +38,6 @@ public class CalendarWidgetTest implements CalendarWidgetListener
     
     public static void main(String[] args)
     {
-        new CalendarWidgetTest().run();
+        new RelativeTimeWidgetDemo().run();
     }
 }
