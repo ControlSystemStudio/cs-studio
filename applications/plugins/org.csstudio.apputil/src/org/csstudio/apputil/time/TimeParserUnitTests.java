@@ -15,10 +15,17 @@ import junit.framework.TestCase;
 
 import org.junit.Test;
 
+/** JUnit tests of the TimeParser
+ * 
+ *  The tests "work", but everything relative to 'now' could
+ *  fail around times of daylight saving transitions.
+ *  
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
-public class TimeParserTests extends TestCase
+public class TimeParserUnitTests extends TestCase
 {
-    private static final DateFormat format = 
+    private final DateFormat format = 
                       new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
     
     @Test
@@ -247,7 +254,11 @@ public class TimeParserTests extends TestCase
         start_diff_sec = now - start_end.getStart().getTimeInMillis()/1000;
         end_diff_sec = now - start_end.getEnd().getTimeInMillis()/1000;
         assertEquals(0.0, start_diff_sec, 10.0);
-        assertEquals(-60.0*24.0*60*60.0, end_diff_sec, 10.0);
+        final double error = end_diff_sec + 60.0*24.0*60*60.0;
+        if (error == -60.0 * 60.0)
+        	System.out.println("Looks like we crossed daylight saving time");
+        // An "error" of one hour is allowed in this test in case we cross daylight saving time
+        assertEquals(-60.0*24.0*60*60.0, end_diff_sec, 10.0 + 60.0*60.0);
         
         // rel, now
         start = "-6h";
@@ -306,10 +317,10 @@ public class TimeParserTests extends TestCase
         final String end = "now";
         final int N = 1000;
         BenchmarkTimer bench = new BenchmarkTimer();
-        for (int i=0; i<N; ++i)
+        int i;
+        for (i=0; i<N; ++i)
         {
-            @SuppressWarnings("unused")
-            StartEndTimeParser start_end = new StartEndTimeParser(start, end);
+            new StartEndTimeParser(start, end);
         }
         bench.stop();
         System.out.println("Parse and eval: "
@@ -317,7 +328,7 @@ public class TimeParserTests extends TestCase
 
         StartEndTimeParser start_end = new StartEndTimeParser(start, end);
         bench.start();
-        for (int i=0; i<N; ++i)
+        for (i=0; i<N; ++i)
         {
             start_end.eval();
         }

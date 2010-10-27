@@ -17,7 +17,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class FormulaTest extends TestCase
+public class FormulaUnitTest extends TestCase
 {
     private final static double epsilon = 0.001;
     

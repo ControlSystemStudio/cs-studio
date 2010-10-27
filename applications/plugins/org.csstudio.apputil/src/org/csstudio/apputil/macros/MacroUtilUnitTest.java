@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Xihui Chen, Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class MacroUtilTest
+public class MacroUtilUnitTest
 {
 	@Test
 	public void testReplacemacros() throws Exception

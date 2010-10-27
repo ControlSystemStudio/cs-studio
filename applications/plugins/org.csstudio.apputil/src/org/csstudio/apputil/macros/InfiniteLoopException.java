@@ -18,7 +18,7 @@ public class InfiniteLoopException extends Exception {
 	 */
 	private static final long serialVersionUID = 569430280936384743L;
 
-	public InfiniteLoopException() {
+	public InfiniteLoopException() { // NOP
 	}
 
 	public InfiniteLoopException(String message) {

@@ -19,7 +19,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RegExHelperTest
+public class RegExHelperUnitTest
 {
     @Test
     public void testRegexFromGlob()

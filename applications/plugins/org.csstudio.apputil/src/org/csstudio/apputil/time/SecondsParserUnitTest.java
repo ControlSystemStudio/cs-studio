@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class SecondsParserTest  extends TestCase
+public class SecondsParserUnitTest  extends TestCase
 {
     @Test
     public void testParseSeconds() throws Exception

@@ -10,7 +10,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TestPropertiesTest
+public class TestPropertiesUnitTest
 {
     private static final String TEST_SETTINGS = "test_settings";
 

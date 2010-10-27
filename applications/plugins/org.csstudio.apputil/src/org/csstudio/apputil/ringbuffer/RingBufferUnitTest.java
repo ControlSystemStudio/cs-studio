@@ -14,7 +14,7 @@ import org.junit.Test;
 /** JUnit test of the RingBuffer
  *  @author Kay Kasemir
  */
-public class RingBufferTest
+public class RingBufferUnitTest
 {
     @Test
     public void testRingBuffer() throws Exception
@@ -25,7 +25,7 @@ public class RingBufferTest
         // Add/remove one item
         ring.add(1);
         assertFalse(ring.isEmpty());
-        assertEquals(new Integer(1), ring.remove());
+        assertEquals(Integer.valueOf(1), ring.remove());
         assertNull(ring.remove());
         assertTrue(ring.isEmpty());
         
@@ -34,21 +34,21 @@ public class RingBufferTest
             ring.add(i);
         dump(ring);
         assertEquals(5, ring.size());
-        assertEquals(new Integer(5), ring.get(0));
-        assertEquals(new Integer(9), ring.get(4));
+        assertEquals(Integer.valueOf(5), ring.get(0));
+        assertEquals(Integer.valueOf(9), ring.get(4));
 
         // Changing the capacity will preserve those items
         final int cap = ring.getCapacity() * 2;
         ring.setCapacity(cap);
         assertEquals(cap, ring.getCapacity());
         assertEquals(5, ring.size());
-        assertEquals(new Integer(5), ring.get(0));
-        assertEquals(new Integer(9), ring.get(4));
+        assertEquals(Integer.valueOf(5), ring.get(0));
+        assertEquals(Integer.valueOf(9), ring.get(4));
         // .. but now we can add more
         ring.add(10);
         assertEquals(6, ring.size());
-        assertEquals(new Integer(5), ring.get(0));
-        assertEquals(new Integer(10), ring.get(5));
+        assertEquals(Integer.valueOf(5), ring.get(0));
+        assertEquals(Integer.valueOf(10), ring.get(5));
 
         Integer item = ring.remove();
         while (item != null)

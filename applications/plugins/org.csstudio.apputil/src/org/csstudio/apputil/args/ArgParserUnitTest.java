@@ -14,7 +14,7 @@ import static org.junit.Assert.*;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ArgsTest
+public class ArgParserUnitTest
 {
     // Simulated arguments that would come from main() or
     // context.getArguments().get("application.args")

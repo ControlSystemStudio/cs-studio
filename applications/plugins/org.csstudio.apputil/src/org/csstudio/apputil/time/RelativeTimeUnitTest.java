@@ -15,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class RelativeTimeTest
+public class RelativeTimeUnitTest
 {
     @Test
     public void testRelativeTimeDoubleArray()

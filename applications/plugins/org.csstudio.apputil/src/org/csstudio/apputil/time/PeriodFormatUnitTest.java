@@ -14,7 +14,7 @@ import org.junit.Test;
 /** Unit test of the <code>PeriodParser</code>
  *  @author Kay Kasemir
  */
-public class PeriodFormatTest
+public class PeriodFormatUnitTest
 {
     @SuppressWarnings("nls")
     @Test

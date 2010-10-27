@@ -27,7 +27,7 @@ import java.util.Properties;
  *  
  *  Test code should be written such that it handles missing properties.
  *  
- *  @see TestPropertiesTest
+ *  @see TestPropertiesUnitTest
  *  
  *  @author Kay Kasemir
  */

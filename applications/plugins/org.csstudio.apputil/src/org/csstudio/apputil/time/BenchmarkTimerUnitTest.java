@@ -14,7 +14,7 @@ import org.junit.Test;
 /** JUnit test/demo of the BenchmarkTimer
  *  @author Kay Kasemir
  */
-public class BenchmarkTimerTest
+public class BenchmarkTimerUnitTest
 {
     @Test
     public void testTimer() throws Exception
