@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.alarmtree;
 
+import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.ui.AcknowledgeAction;
 import org.csstudio.alarm.beast.ui.ConfigureItemAction;
 import org.csstudio.alarm.beast.ui.MaintenanceModeAction;
@@ -76,6 +77,11 @@ public class AlarmTreeView extends ViewPart
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
+        	if (Preferences.isConfigChangeAllowed())
+        	{
+        		toolbar.add(new ChangeConfigurationAction(model));
+        		toolbar.add(new Separator());
+        	}
             toolbar.add(new MaintenanceModeAction(model));
             toolbar.add(new Separator());
             toolbar.add(new InfoAction(model));
