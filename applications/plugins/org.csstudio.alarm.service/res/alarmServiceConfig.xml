@@ -16,13 +16,17 @@
   <!DOCTYPE ou SYSTEM "/epicsAlarmCfg.dtd">
  -->
 
-<ou name="EpicsAlarmCfg">
+<ou name="EpicsAlarmcfg">
   <efan name="Test">
+
+<!-- you may enable this for local tests
     <ecom name="Test-IOC">
       <eren name="SawCalc0" />
       <eren name="ConstantPV" />
       <eren name="NotExistent" />
     </ecom>
+-->
+
   </efan>
 </ou>
 
