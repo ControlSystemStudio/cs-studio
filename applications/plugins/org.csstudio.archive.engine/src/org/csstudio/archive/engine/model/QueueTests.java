@@ -43,7 +43,7 @@ public class QueueTests
         int i = 0;
         while (run > System.currentTimeMillis())
         {
-            queue.add(new Integer(i));
+            queue.add(Integer.valueOf(i));
             final Integer val = queue.take();
             assertEquals(i, val.intValue());
             ++i;
@@ -68,7 +68,7 @@ public class QueueTests
         {
             synchronized (queue)
             {
-                queue.add(new Integer(i));
+                queue.add(Integer.valueOf(i));
             }
             synchronized (queue)
             {
@@ -97,12 +97,12 @@ public class QueueTests
         {
             synchronized (queue)
             {
-                queue.add(new Integer(i));
+                queue.add(Integer.valueOf(i));
             }
             synchronized (queue)
             {
-                final Integer val = queue.size() > 0 ? queue.remove(0) : null;
-                assertEquals(i, val.intValue());
+                final int val = queue.size() > 0 ? queue.remove(0) : -1;
+                assertEquals(i, val);
             }
             ++i;
         }

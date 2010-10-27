@@ -11,7 +11,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DeltaArchiveChannelTest
+public class DeltaArchiveChannelHeadlessTest
 {
     @Test
     public void testHandleNewValue() throws Exception

@@ -10,7 +10,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ThrottledLoggerTest
+public class ThrottledLoggerUnitTest
 {
     @Test
     public void testLogInfo() throws Exception

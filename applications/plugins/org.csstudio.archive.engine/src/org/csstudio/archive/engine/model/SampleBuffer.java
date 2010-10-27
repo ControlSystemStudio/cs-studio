@@ -89,7 +89,7 @@ public class SampleBuffer
         if (size >= capacity)
         {   // Note start of overruns, then drop older sample
             if (start_of_overruns == null)
-                start_of_overruns = new Integer(stats.getOverruns());
+                start_of_overruns = Integer.valueOf(stats.getOverruns());
             samples.poll();
             stats.addOverrun();
         }

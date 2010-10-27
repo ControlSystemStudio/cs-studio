@@ -3,7 +3,10 @@ package org.csstudio.util.stats;
 import org.junit.Test;
 import static org.junit.Assert.*;
 
-public class AverageTest
+/** JUnit test of {@link Average}
+ *  @author Kay Kasemir
+ */
+public class AverageUnitTest
 {
     private static final double EPS = 0.001;
 

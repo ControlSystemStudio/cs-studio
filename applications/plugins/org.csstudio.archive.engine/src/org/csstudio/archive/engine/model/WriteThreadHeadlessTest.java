@@ -1,8 +1,8 @@
 package org.csstudio.archive.engine.model;
 
 
+import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.TestSetup;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -11,20 +11,37 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.junit.Test;
 
-/** Write thread tests, writing from a queue with fake samples.
+/** [Headless] JUnit write thread tests, writing from a queue with fake samples.
  *  @author Kay Kasemir
  */
-public class WriteThreadTest
+public class WriteThreadHeadlessTest
 {
     @SuppressWarnings("nls")
     @Test
     public void testWriteThread() throws Exception
     {
-        // Setup buffer
-        final SampleBuffer buffer = new SampleBuffer("DoubleSample", 1000);
+    	// Get test configuration
+    	final TestProperties settings = new TestProperties();
+    	final String url = settings.getString("archive_rdb_url");
+    	if (url == null)
+    	{
+    		System.out.println("Skipping, no archive test settings");
+    		return;
+    	}
+    	final String user = settings.getString("archive_rdb_user");
+    	final String password = settings.getString("archive_rdb_password");
+    	final String channel = settings.getString("archive_write_channel");
+    	if (channel == null)
+    	{
+    		System.out.println("Skipping, no name for write_channel");
+    		return;
+    	}
+
+    	// Setup buffer
+        final SampleBuffer buffer = new SampleBuffer(channel, 1000);
 
         // Connect writer to it
-        final RDBArchive archive = RDBArchive.connect(TestSetup.URL);
+        final RDBArchive archive = RDBArchive.connect(url, user, password);
         final WriteThread writer = new WriteThread(archive);
         writer.addSampleBuffer(buffer);
 

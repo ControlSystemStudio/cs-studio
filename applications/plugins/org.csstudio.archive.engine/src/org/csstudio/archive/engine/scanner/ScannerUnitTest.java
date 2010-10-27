@@ -11,13 +11,13 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class ScannerTest
+public class ScannerUnitTest
 {
-    final double period = 3.0;
-    final double fast_period = 1.0;
+    final private static double period = 3.0;
+    final private static double fast_period = 1.0;
 
     /** Scannable item that counts invocations */
-    class ScanItem implements Runnable
+    static class ScanItem implements Runnable
     {
         final String name;
         int scans = 0;
