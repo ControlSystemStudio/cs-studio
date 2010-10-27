@@ -3,8 +3,12 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
-	
+	<target name="build" depends="cleanup"/> <!--copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
+-->	
+<!--	
+	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, hudsonUpdateWin"/>
+	<target name="buildLinux" depends="cleanup, pdeBuildLin, updateConfigLin, hudsonUpdateLin"/>
+-->
 	<!--
 		Debug output
 	-->
@@ -50,6 +54,17 @@
 		</copy>
 	</target>
 		
+	
+	
+	<!--
+	Headless Eclipse Build.
+	-->
+	<target name="cleanup">
+		<delete>
+			<fileset file="${workspaceLocation}/build/*.xml"/>	
+		</delete>
+	</target>
+			
 	<!--
 	Headless Eclipse Build.
 	-->
