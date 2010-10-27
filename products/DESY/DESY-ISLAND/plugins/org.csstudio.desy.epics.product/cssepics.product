@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS" uid="csstudioDESY" id="org.csstudio.desy.epics.product.product" application="org.csstudio.desy.epics.product.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="true">
+<product name="CSS" uid="csstudioDESY" id="org.csstudio.desy.epics.product.product" application="org.csstudio.desy.epics.product.application" version="1.3.0.qualifier" useFeatures="true" includeLaunchers="false">
 
    <aboutInfo>
       <text>

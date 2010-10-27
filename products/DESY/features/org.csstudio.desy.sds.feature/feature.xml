@@ -151,20 +151,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.startup"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.startuphelper"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.utility.quickstart"
          download-size="0"
          install-size="0"
@@ -229,6 +215,13 @@
 
    <plugin
          id="de.desy.language.libraries"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.samples"
          download-size="0"
          install-size="0"
          version="0.0.0"
