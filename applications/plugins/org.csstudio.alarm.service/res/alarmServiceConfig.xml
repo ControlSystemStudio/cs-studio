@@ -12,21 +12,13 @@
 	]>
 
 <!--
-  Currently the path to the dtd is unknown, so we use an internal dtd. 
-  <!DOCTYPE ou SYSTEM "/epicsAlarmCfg.dtd">
+  We are using an internal dtd so we don't have to care for its path. 
+  <!DOCTYPE ou SYSTEM "somepath/epicsAlarmCfg.dtd">
  -->
 
 <ou name="EpicsAlarmcfg">
-  <efan name="Test">
-
-<!-- you may enable this for local tests
-    <ecom name="Test-IOC">
-      <eren name="SawCalc0" />
-      <eren name="ConstantPV" />
-      <eren name="NotExistent" />
-    </ecom>
--->
-
+  <efan name="Example">
+    <eren name="add your pv here (create record on parent node)" />
   </efan>
 </ou>
 
