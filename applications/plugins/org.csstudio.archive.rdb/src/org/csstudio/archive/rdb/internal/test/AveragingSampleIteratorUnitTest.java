@@ -21,10 +21,10 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AveragingSampleIteratorTest
+public class AveragingSampleIteratorUnitTest
 {
     /** SampleIterator that provides a sine-wave. */
-    class SinewaveSamples implements SampleIterator
+    static class SinewaveSamples implements SampleIterator
     {
         /** Total sequence length in seconds */
         final public static int LENGTH = 100;
@@ -81,7 +81,7 @@ public class AveragingSampleIteratorTest
     }
     
     /** SampleIterator that provides text and ennum. */
-    class NonNumericSamples implements SampleIterator
+    static class NonNumericSamples implements SampleIterator
     {
         final private ArrayList<IValue> samples = new ArrayList<IValue>();
 
@@ -155,7 +155,7 @@ public class AveragingSampleIteratorTest
             ++count;
         }
         System.out.println("Samples: " + count);
-        assertEquals(SinewaveSamples.LENGTH / SinewaveSamples.PERIOD, count);
+        assertEquals(SinewaveSamples.LENGTH / SinewaveSamples.PERIOD, count, 0.1);
     }
 
     /** Basic Average over the 5 second half-wave, should give positive and
@@ -189,7 +189,7 @@ public class AveragingSampleIteratorTest
             ++count;
         }
         System.out.println("Samples: " + count);
-        assertEquals(SinewaveSamples.LENGTH / SinewaveSamples.PERIOD * 2, count);
+        assertEquals(SinewaveSamples.LENGTH / SinewaveSamples.PERIOD * 2, count, 0.1);
     }
     
     /** Average over 1 second, i.e. there's only one sample per period.
@@ -232,7 +232,7 @@ public class AveragingSampleIteratorTest
         // 10 sine waves.
         // For each we get 0, invalid, high avg, invalid, low avg
         System.out.println("Samples: " + count);
-        assertEquals(5 * SinewaveSamples.LENGTH / SinewaveSamples.PERIOD, count);
+        assertEquals(5 * SinewaveSamples.LENGTH / SinewaveSamples.PERIOD, count, 0.1);
     }
 
     /** ... with some 'disconnected' samples */

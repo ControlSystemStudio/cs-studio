@@ -1,6 +1,5 @@
 package org.csstudio.archive.rdb.engineconfig;
 
-import java.net.URL;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -28,7 +27,7 @@ public class SampleEngineHelper
      *  @return SampleEngineInfo
      *  @throws Exception on error
      */
-    public SampleEngineConfig add(final String name, final String description, final URL url)
+    public SampleEngineConfig add(final String name, final String description, final String url)
         throws Exception
     {
         final Connection connection = archive.getRDB().getConnection();
@@ -141,7 +140,7 @@ public class SampleEngineHelper
             final ResultSet res = statement.executeQuery();
             if (res.next())
                 return new SampleEngineConfig(archive, res.getInt(1), name,
-                        res.getString(2), new URL(res.getString(3)));
+                        res.getString(2), res.getString(3));
         }
         finally
         {
@@ -165,7 +164,7 @@ public class SampleEngineHelper
             final ResultSet res = statement.executeQuery();
             if (res.next())
                 return new SampleEngineConfig(archive, engine_id, res.getString(1),
-                        res.getString(2), new URL(res.getString(3)));
+                        res.getString(2), res.getString(3));
         }
         finally
         {

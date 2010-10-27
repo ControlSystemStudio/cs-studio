@@ -1,7 +1,6 @@
 package org.csstudio.archive.rdb.engineconfig;
 
 import java.io.InputStream;
-import java.net.URL;
 
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -9,7 +8,6 @@ import javax.xml.parsers.SAXParserFactory;
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.Retention;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.platform.logging.CentralLogger;
 import org.xml.sax.Attributes;
@@ -23,7 +21,7 @@ import org.xml.sax.helpers.DefaultHandler;
 @SuppressWarnings("nls")
 public class XMLImport extends DefaultHandler
 {
-    private static final String DEFAULT_RETENTION = "Forever";
+    // private static final String DEFAULT_RETENTION = "Forever";
 
     /** XML tag */
     final private static String TAG_GROUP = "group";
@@ -56,9 +54,6 @@ public class XMLImport extends DefaultHandler
     
     /** Engine info entry */
     final private SampleEngineConfig engine;
-    
-    /** Retention used for all channels */
-    final private Retention retention;
     
     /** Sample modes */
     final private SampleMode monitor_mode, scan_mode;
@@ -114,7 +109,7 @@ public class XMLImport extends DefaultHandler
     public XMLImport(final String RDB_URL,
             final String user, final String password,
             final String engine_name,
-            final String engine_description, final URL engine_url,
+            final String engine_description, final String engine_url,
             final boolean replace_existing_engineconfig,
             final boolean steal_channels)
         throws Exception
@@ -134,7 +129,7 @@ public class XMLImport extends DefaultHandler
         }
         
         engine = archive.addEngine(engine_name, engine_description, engine_url);
-        retention = archive.getRetention(DEFAULT_RETENTION);
+        // retention = archive.getRetention(DEFAULT_RETENTION);
         final SampleMode[] modes = archive.getSampleModes();
         monitor_mode = findSampleMode(modes, SampleMode.MONITOR);
         scan_mode = findSampleMode(modes, SampleMode.SCAN);
