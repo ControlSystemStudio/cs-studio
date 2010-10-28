@@ -65,7 +65,7 @@ public class SampleBufferUnitTest
 				buffer.add(TestValueFactory.getDouble(i));
 				try
                 {
-	                sleep(100);
+	                sleep(10);
                 }
                 catch (InterruptedException e)
                 {
@@ -96,7 +96,7 @@ public class SampleBufferUnitTest
 				assertEquals((double)expected, value, 0.1);
 				++expected;
 			}
-			Thread.sleep(500);
+			Thread.sleep(50);
 		}
 	}
 }

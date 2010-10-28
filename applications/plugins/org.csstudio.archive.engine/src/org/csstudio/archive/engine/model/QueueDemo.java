@@ -13,26 +13,25 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.junit.Test;
 
 /** Simple benchmark of queues for the SampleBuffer.
  *  <p>
- *  ArrayBlockingQueue is the safest approach, but ArrayList is
- *  twice as fast for simple inserts.
- *  Still, ArrayBlockingQueue already functions as ring-buffer,
- *  so in overwrite situations where speed really matters it's
- *  probably the better choice.
+ *  ArrayBlockingQueue was originally used as the safest approach,
+ *  but RingBuffer is about twice as fast.
  *  <p>
  *  <pre>
- * ArrayBlockingQueue:     27185109 values in 10.00 sec =    2718510.9 vals/sec
- * LinkedList        :     45739500 values in 10.00 sec =    4573950.0 vals/sec
- * ArrayList         :     50023429 values in 10.00 sec =    5002342.9 vals/sec
+ * ArrayBlockingQueue:     25915005 values in 10.00 sec =    2591500.5 vals/sec
+ * LinkedList        :     44003817 values in 10.00 sec =    4400381.7 vals/sec
+ * ArrayList         :     48088144 values in 10.00 sec =    4808814.4 vals/sec
+ * RingBuffer        :     48864698 values in 10.00 sec =    4886469.8 vals/sec
  *  </pre>
  *
  * @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class QueueTests
+public class QueueDemo
 {
     private static final long RUNTIME = 10 * 1000l;
 
@@ -119,4 +118,35 @@ public class QueueTests
                 "ArrayList         : %12d values in %.2f sec = %12.1f vals/sec\n",
                 i, secs, i / secs);
     }
+
+    /** Array list: Add to end, remove head */
+    @Test
+    public void testRingBuffer() throws Exception
+    {
+        final RingBuffer<Integer> queue = new RingBuffer<Integer>(100);
+
+        final long start = System.currentTimeMillis();
+        final long run = start + RUNTIME;
+        int i = 0;
+        while (run > System.currentTimeMillis())
+        {
+            synchronized (queue)
+            {
+                queue.add(Integer.valueOf(i));
+            }
+            synchronized (queue)
+            {
+                final Integer val = queue.remove();
+                final int number = val == null ? -1 : val.intValue();
+                assertEquals(i, number);
+            }
+            ++i;
+        }
+        final long end = System.currentTimeMillis();
+        final double secs = (end - start) / 1000.0;
+        System.out.format(
+                "RingBuffer        : %12d values in %.2f sec = %12.1f vals/sec\n",
+                i, secs, i / secs);
+    }
+
 }
