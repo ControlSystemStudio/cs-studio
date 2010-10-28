@@ -48,6 +48,14 @@ public class RingBuffer<T>
     {
         return size <= 0;
     }
+
+    /** @return <code>true</code> if ring buffer is full,
+     *          i.e. the next addition will override the oldest element
+     */
+    public boolean isFull()
+    {
+        return size >= capacity;
+    }
     
     /** @return Number of valid entries in ring buffer */
     public int size()
