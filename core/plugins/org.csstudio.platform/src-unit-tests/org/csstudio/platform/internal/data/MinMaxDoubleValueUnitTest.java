@@ -32,7 +32,7 @@ import static org.junit.Assert.*;
 /** Simple test of value formatting.
  *  @author Kay Kasemir
  */
-public class MinMaxDoubleValueTest
+public class MinMaxDoubleValueUnitTest
 {
     @SuppressWarnings("nls")
     @Test
