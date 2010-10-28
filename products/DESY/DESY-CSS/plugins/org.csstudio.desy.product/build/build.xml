@@ -60,12 +60,14 @@
 	Headless Eclipse Build.
 	-->
 	<target name="cleanup">
-		<delete file="${workspaceLocation}/build/*.xml"/>	
-		<delete file="${workspaceLocation}/build/*.properties"/>	
-		<delete file="${workspaceLocation}/build/*.sh"/>	
-		<delete file="${workspaceLocation}/build/secure_storage"/>	
-		<delete dir="${workspaceLocation}/build/I.CSSHead_"/>	
-		<delete dir="${workspaceLocation}/build/initmp"/>	
+		<mkdir dir="${workspaceLocation}/tmp"/>
+		<move file="${workspaceLocation}/build/plugins" tofile="${workspaceLocation}/tmp"/>
+		<move file="${workspaceLocation}/build/features" tofile="${workspaceLocation}/tmp"/>
+		<delete dir="${workspaceLocation}/build"/>
+		<mkdir dir="${workspaceLocation}/build"/>
+		<move file="${workspaceLocation}/tmp/plugins" tofile="${workspaceLocation}/build"/>
+		<move file="${workspaceLocation}/tmp/features" tofile="${workspaceLocation}/build"/>
+		<delete dir="${workspaceLocation}/tmp"/>
 	</target>
 			
 	<!--
