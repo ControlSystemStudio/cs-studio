@@ -4,8 +4,9 @@
 <product name="CSS-Island" uid="islandproduct" id="org.csstudio.desy.island.product.product" application="org.csstudio.desy.island.product.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="false">
 
    <aboutInfo>
+      <image path="/org.csstudio.desy.island.product/resources/css64x64.gif"/>
       <text>
-         Control System Studio HEAD
+         Control System Studio Island
 
 Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
 Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -33,17 +34,22 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </configIni>
 
    <launcherArgs>
+      <programArgs>-plugincustomization plugin_customization.ini</programArgs>
+      <vmArgs>-Xmx512m</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
-   <windowImages/>
+   <windowImages i16="/org.csstudio.desy.island.product/resources/css16x16.gif" i32="/org.csstudio.desy.island.product/resources/css32x32.gif" i48="/org.csstudio.desy.island.product/resources/css48x48.gif" i64="/org.csstudio.desy.island.product/resources/css64x64.gif" i128="/org.csstudio.desy.island.product/resources/css128x128.gif"/>
 
-   <launcher>
+
+   <launcher name="cssIsland">
       <solaris/>
-      <win useIco="false">
+      <win useIco="true">
+         <ico path="/org.csstudio.desy.product/resources/css.ico"/>
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
@@ -57,7 +63,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       <plugin id="org.apache.jasper"/>
       <plugin id="org.apache.lucene"/>
       <plugin id="org.apache.lucene.analysis"/>
-      <plugin id="org.csstudio.desy.epics.product"/>
+      <plugin id="org.csstudio.desy.epics.product" fragment=""/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
