@@ -33,7 +33,6 @@ public class SampleBuffer
     final private int capacity;
     
     // TODO Use LinkedList: Faster, but have to add synchronization
-    // TODO Add SampleBufferUnitTest
     /** The actual samples in a thread-save queue. */
     final private ArrayBlockingQueue<IValue> samples;
     
