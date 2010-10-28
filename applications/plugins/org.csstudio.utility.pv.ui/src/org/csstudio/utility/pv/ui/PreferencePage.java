@@ -26,7 +26,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         // i.e. they are specific to the workspace instance.
         final IPreferenceStore store =
             new ScopedPreferenceStore(new InstanceScope(),
-                                      org.csstudio.utility.pv.Plugin.ID);
+                                      org.csstudio.utility.pv.Activator.ID);
         setPreferenceStore(store);
         setMessage(Messages.PreferencePage_Message);
     }
