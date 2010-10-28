@@ -3,8 +3,12 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
-	
+	<target name="build" depends="cleanup"/> <!--copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
+-->	
+<!--	
+	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, hudsonUpdateWin"/>
+	<target name="buildLinux" depends="cleanup, pdeBuildLin, updateConfigLin, hudsonUpdateLin"/>
+-->
 	<!--
 		Debug output
 	-->
@@ -50,6 +54,22 @@
 		</copy>
 	</target>
 		
+	
+	
+	<!--
+	Headless Eclipse Build.
+	-->
+	<target name="cleanup">
+		<mkdir dir="${workspaceLocation}/tmp"/>
+		<move file="${workspaceLocation}/build/plugins" tofile="${workspaceLocation}/tmp"/>
+		<move file="${workspaceLocation}/build/features" tofile="${workspaceLocation}/tmp"/>
+		<delete dir="${workspaceLocation}/build"/>
+		<mkdir dir="${workspaceLocation}/build"/>
+		<move file="${workspaceLocation}/tmp/plugins" tofile="${workspaceLocation}/build"/>
+		<move file="${workspaceLocation}/tmp/features" tofile="${workspaceLocation}/build"/>
+		<delete dir="${workspaceLocation}/tmp"/>
+	</target>
+			
 	<!--
 	Headless Eclipse Build.
 	-->
