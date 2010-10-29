@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.utility.pv;
 
 import java.util.ArrayList;
@@ -6,6 +13,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.Platform;
 
@@ -91,14 +99,14 @@ public class PVFactory
             final String name = config.getAttribute("name");
             final String prefix = config.getAttribute("prefix");
             final IPVFactory factory = (IPVFactory) config.createExecutableExtension("class");
-            Plugin.getLogger().debug(plugin + " provides '" + name +
+            CentralLogger.getInstance().getLogger(PVFactory.class).debug(plugin + " provides '" + name +
                                      "', prefix '" + prefix + "'");
             pv_factory.put(prefix, factory);
         }
     }
 
     /** @return Supported PV type prefixes */
-    final public static String[] getSupportedPrefixes() throws Exception
+    final public static synchronized String[] getSupportedPrefixes() throws Exception
     {
         if (pv_factory == null)
             initialize();
@@ -117,7 +125,7 @@ public class PVFactory
      *  @return PV
      *  @exception Exception on error
      */
-    final public static PV createPV(String name) throws Exception
+    final public static synchronized PV createPV(String name) throws Exception
     {
         if (pv_factory == null)
             initialize();

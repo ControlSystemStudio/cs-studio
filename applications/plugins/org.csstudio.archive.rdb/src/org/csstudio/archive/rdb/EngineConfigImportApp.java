@@ -2,7 +2,6 @@ package org.csstudio.archive.rdb;
 
 import java.io.FileInputStream;
 import java.io.InputStream;
-import java.net.URL;
 
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
@@ -113,8 +112,7 @@ public class EngineConfigImportApp implements IApplication
                 return IApplication.EXIT_OK;
             }
 
-            final URL engine_url =
-                new URL("http://" + engine_host.get() + ":" + engine_port.get() + "/main");
+            final String engine_url = "http://" + engine_host.get() + ":" + engine_port.get() + "/main";
 
             // Dump options
             LOG.info("Importing     : " + filename.get());

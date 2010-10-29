@@ -33,7 +33,7 @@ import static org.junit.Assert.*;
 /** Tests of the {@link Timestamp} class.
  *  @author Kay Kasemir
  */
-public final class TimestampTests
+public final class TimestampUnitTest
 {
     /** Basic timestamp construction. */
     @SuppressWarnings("nls")

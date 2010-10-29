@@ -22,13 +22,13 @@ import org.junit.Test;
 public class RDBArchiveWriteTest
 {
     /** Duration of the 'main' test in seconds */
-    final private long runtime_secs = 30;
+    final private static long runtime_secs = 30;
 
     /** Archive to use */
     private static RDBArchive archive;
     
-    final private ISeverity severity = ValueFactory.createMinorSeverity();
-    final private String status = "Test";
+    final private static ISeverity severity = ValueFactory.createMinorSeverity();
+    final private static String status = "Test";
     
     final private INumericMetaData numeric_meta =
         ValueFactory.createNumericMetaData(-10.0, 10.0, -8.0, 8.0, -9.0, 9.0, 1, "Tests");

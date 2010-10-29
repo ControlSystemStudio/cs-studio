@@ -130,7 +130,7 @@ public final class TestDataProvider {
                 }
             }
 
-            if (INSTANCE._pluginId != pluginId) {
+            if (! INSTANCE._pluginId.equals(pluginId)) {
                 TestDataProvider.PROPERTIES.clear();
                 testConfigFileName = createSiteSpecificName();
                 loadProperties(pluginId, testConfigFileName);

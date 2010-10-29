@@ -1,3 +1,10 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
 
@@ -17,7 +24,7 @@ import org.junit.Test;
 public class WriteThreadHeadlessTest
 {
     @SuppressWarnings("nls")
-    @Test
+    @Test(timeout=20000)
     public void testWriteThread() throws Exception
     {
     	// Get test configuration
@@ -36,6 +43,7 @@ public class WriteThreadHeadlessTest
     		System.out.println("Skipping, no name for write_channel");
     		return;
     	}
+		System.out.println("Writing samples for channel " + channel);
 
     	// Setup buffer
         final SampleBuffer buffer = new SampleBuffer(channel, 1000);
@@ -54,13 +62,13 @@ public class WriteThreadHeadlessTest
         final String status = "Test";
         final INumericMetaData meta_data = 
             ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 9, 2, "Eggs");
-        for (int i=0; i<1; ++i)
+        for (int i=0; i<10; ++i)
         {
             final ITimestamp time = TimestampFactory.createTimestamp(seconds, i);
             buffer.add(ValueFactory.createDoubleValue(time,
                             severity, status, meta_data,
                             IValue.Quality.Original,
-                            new double[] { Double.NaN } ));
+                            new double[] { i } ));
             Thread.sleep(1);
         }
         

@@ -18,12 +18,6 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
  */
 public class ChannelConfig extends StringID
 {
-    /** Minimum sample period.
-     *  Must be > 0 to avoid div-0 error.
-     *  Also enforces some sampling sanity.
-     */
-    final public double MIN_SAMPLE_PERIOD = 1.0;
-
     /** Archive that holds this channel */
     final private RDBArchive archive;
     
@@ -50,9 +44,7 @@ public class ChannelConfig extends StringID
         this.group_id = group_id;
         this.sample_mode = sample_mode;
         this.sample_value = sample_value;
-        this.sample_period = sample_period;
-        if (this.sample_period < MIN_SAMPLE_PERIOD)
-            this.sample_period = MIN_SAMPLE_PERIOD;
+        this.sample_period = Math.max(sample_period, RDBArchivePreferences.getMinSamplePeriod());
     }
 
     /** @return Numeric group ID */
@@ -98,10 +90,11 @@ public class ChannelConfig extends StringID
      */
     public void setSampleMode(final SampleMode sample_mode,
             final double sample_value,
-            double period_secs) throws Exception
+            final double period_secs) throws Exception
     {
-        if (period_secs < MIN_SAMPLE_PERIOD)
-            period_secs = MIN_SAMPLE_PERIOD;
+    	this.sample_mode = sample_mode;
+    	this.sample_value = sample_value;
+        this.sample_period = Math.max(period_secs, RDBArchivePreferences.getMinSamplePeriod());
         final PreparedStatement statement =
             archive.getRDB().getConnection().prepareStatement(
                         archive.getSQL().channel_set_sampling);
@@ -109,7 +102,7 @@ public class ChannelConfig extends StringID
         {   // UPDATE channel SET smpl_mode_id=?,smpl_val=?,smpl_per=? WHERE channel_id=?
             statement.setInt(1, sample_mode.getId());
             statement.setDouble(2, sample_value);
-            statement.setDouble(3, period_secs);
+            statement.setDouble(3, sample_period);
             statement.setInt(4, getId());
             statement.executeUpdate();
         }

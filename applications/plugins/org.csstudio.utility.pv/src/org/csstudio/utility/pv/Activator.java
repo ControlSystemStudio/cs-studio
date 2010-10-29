@@ -7,16 +7,10 @@
  ******************************************************************************/
 package org.csstudio.utility.pv;
 
-/** Interface that implementors of the PVFactory extension point
- *  must provide.
+/** Plugin-activator for the PV.
  *  @author Kay Kasemir
  */
-public interface IPVFactory
+public class Activator extends org.eclipse.core.runtime.Plugin
 {
-    /** Create a PV for the given channel name.
-     *  @param name Name of the Process Variable
-     *  @return PV
-     *  @throws Exception on error
-     */
-    public PV createPV(String name) throws Exception;
+	public final static String ID = "org.csstudio.utility.pv"; //$NON-NLS-1$
 }

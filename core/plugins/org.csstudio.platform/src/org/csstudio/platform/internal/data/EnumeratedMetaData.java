@@ -21,6 +21,8 @@
  */
  package org.csstudio.platform.internal.data;
 
+import java.util.Arrays;
+
 import org.csstudio.platform.data.IEnumeratedMetaData;
 
 /** Implementation of {@link IEnumeratedMetaData}.
@@ -62,17 +64,16 @@ public class EnumeratedMetaData implements IEnumeratedMetaData
         if (! (obj instanceof IEnumeratedMetaData))
             return false;
         final IEnumeratedMetaData other = (IEnumeratedMetaData) obj;
-        final String[] other_states = other.getStates();
-        if (other_states.length != states.length)
-            return false;
-        for (int i=0; i<states.length; ++i)
-        {
-            if (!other_states[i].equals(states[i]))
-                return false;
-        }
-        return true;
+        return Arrays.equals(states, other.getStates());
     }
 
+    /** @return Hash code based on state strings */
+    @Override
+    public int hashCode()
+    {
+    	return Arrays.hashCode(states);
+    }
+    
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override

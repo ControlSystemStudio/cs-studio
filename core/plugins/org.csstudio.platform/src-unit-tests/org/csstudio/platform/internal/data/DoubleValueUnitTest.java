@@ -34,7 +34,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class DoubleValueTest
+public class DoubleValueUnitTest
 {
     @Test
     public void specialComparisons()

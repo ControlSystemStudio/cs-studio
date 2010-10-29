@@ -15,6 +15,7 @@ public class RDBArchivePreferences
     public static final String USER = "user";
     public static final String PASSWORD = "password";
     public static final String MAX_TEXT_SAMPLE_LENGTH = "max_text_sample_length";
+	public static final String MIN_SAMPLE_PERIOD = "min_sample_period";
     public static final String SQL_TIMEOUT = "sql_timeout";
 
     /** @return URL of RDB archive server */
@@ -55,7 +56,16 @@ public class RDBArchivePreferences
         return prefs.getInt(Activator.ID, MAX_TEXT_SAMPLE_LENGTH, 80, null);
     }
 
-    /** @return SQL Timeout in seconds */
+    /** @return Minimum sample period in seconds */
+    public static double getMinSamplePeriod()
+    {
+        final IPreferencesService prefs = Platform.getPreferencesService();
+        if (prefs == null)
+            return 0.1;
+        return prefs.getDouble(Activator.ID, MIN_SAMPLE_PERIOD, 0.1, null);
+    }
+
+	/** @return SQL Timeout in seconds */
     public static int getSQLTimeout()
     {
         final IPreferencesService prefs = Platform.getPreferencesService();

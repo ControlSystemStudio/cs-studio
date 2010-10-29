@@ -33,7 +33,7 @@ import org.csstudio.platform.data.ValueFactory;
 import org.junit.Test;
 
 @SuppressWarnings("nls")
-public class MetaDataTest
+public class MetaDataUnitTest
 {
     @Test
     public void compareEnum()

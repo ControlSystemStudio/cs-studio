@@ -33,10 +33,10 @@ import org.csstudio.platform.epicsdbfile.TokenTest;
 import org.csstudio.platform.internal.dal.DataAccessLayerTest1;
 import org.csstudio.platform.internal.dal.DataAccessLayerTest2;
 import org.csstudio.platform.internal.dal.DataAccessLayerTest3;
-import org.csstudio.platform.internal.data.DoubleValueTest;
-import org.csstudio.platform.internal.data.MetaDataTest;
-import org.csstudio.platform.internal.data.MinMaxDoubleValueTest;
-import org.csstudio.platform.internal.data.TimestampTests;
+import org.csstudio.platform.internal.data.DoubleValueUnitTest;
+import org.csstudio.platform.internal.data.MetaDataUnitTest;
+import org.csstudio.platform.internal.data.MinMaxDoubleValueUnitTest;
+import org.csstudio.platform.internal.data.TimestampUnitTest;
 import org.csstudio.platform.internal.management.CommandContributionTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceFactoryTest;
 import org.csstudio.platform.internal.model.ArchiveDataSourceTest;
@@ -60,7 +60,7 @@ import org.csstudio.platform.internal.simpledal.converters.ConverterTest;
 import org.csstudio.platform.internal.simpledal.dal.DalConnectorTest;
 import org.csstudio.platform.internal.simpledal.local.DataGeneratorInfosTest;
 import org.csstudio.platform.logging.CentralLoggerTest;
-import org.csstudio.platform.logging.JMSLogThreadTest;
+import org.csstudio.platform.logging.JMSLogThreadHeadlessTest;
 import org.csstudio.platform.management.CommandDescriptionTest;
 import org.csstudio.platform.management.CommandParameterDefinitionTest;
 import org.csstudio.platform.management.CommandParameterEnumValueTest;
@@ -88,10 +88,10 @@ import org.junit.runners.Suite.SuiteClasses;
         DataAccessLayerTest2.class,
         DataAccessLayerTest3.class,
 
-        DoubleValueTest.class,
-        MetaDataTest.class,
-        MinMaxDoubleValueTest.class,
-        TimestampTests.class,
+        DoubleValueUnitTest.class,
+        MetaDataUnitTest.class,
+        MinMaxDoubleValueUnitTest.class,
+        TimestampUnitTest.class,
 
         CommandContributionTest.class,
 
@@ -123,7 +123,7 @@ import org.junit.runners.Suite.SuiteClasses;
         SimpleDALTest.class,
 
         CentralLoggerTest.class,
-        JMSLogThreadTest.class,
+        JMSLogThreadHeadlessTest.class,
 
         CommandDescriptionTest.class,
         CommandParameterDefinitionTest.class,

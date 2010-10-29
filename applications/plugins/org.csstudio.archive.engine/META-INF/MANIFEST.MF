@@ -10,9 +10,9 @@ Require-Bundle: org.eclipse.core.runtime,
  javax.servlet,
  org.csstudio.platform,
  org.csstudio.platform.utility.rdb,
- org.csstudio.apputil;bundle-version="1.0.9",
+ org.csstudio.apputil;bundle-version="1.1.4",
  org.csstudio.archive.rdb;bundle-version="1.2.3",
- org.csstudio.utility.pv;bundle-version="1.0.8",
- org.csstudio.utility.httpd
+ org.csstudio.utility.pv;bundle-version="1.1.1",
+ org.csstudio.utility.httpd;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Bundle-ClassPath: .

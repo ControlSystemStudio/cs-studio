@@ -1,9 +1,11 @@
 package org.csstudio.platform.logging;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.concurrent.Semaphore;
+import java.util.concurrent.TimeUnit;
 
 import javax.jms.Connection;
 import javax.jms.ExceptionListener;
@@ -16,25 +18,46 @@ import javax.jms.Session;
 import javax.jms.Topic;
 
 import org.apache.log4j.Level;
+import org.csstudio.platform.CSSPlatformPlugin;
+import org.csstudio.platform.test.TestDataProvider;
 import org.csstudio.platform.utility.jms.JMSConnectionFactory;
-import org.junit.Ignore;
 import org.junit.Test;
 
-/** Stand-alone test of the JMSLogThread.
+/** [Headless] JUnit Plug-in test of the JMSLogThread.
+ * 
+ *  For this test to work, it needs the URL of a JMS server
+ *  and a test topic, both of which are site-specific and
+ *  obtained from the TestDataProvider.
+ *  
+ *  Without the TestDataProvider this could be a plain JUnit test.
+ *  
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class JMSLogThreadTest
+public class JMSLogThreadHeadlessTest
 {
     private static final int MESSAGE_COUNT = 3;
-    final private static String URL =
-        "failover:(tcp://ics-srv02.sns.ornl.gov:61616)";
-    final private static String TOPIC = "LOG";
+    final private String URL;
+    final private String TOPIC;
+    
+    public JMSLogThreadHeadlessTest() throws Exception
+    {
+    	TestDataProvider settings = TestDataProvider.getInstance(CSSPlatformPlugin.ID);
+    	URL = (String) settings.get("jms_url");
+    	TOPIC = (String) settings.get("jms_topic");
+    }
 
     /** JMS Receiver that runs until MESSAGE_COUNT messages were received */
     class Receiver extends Thread implements ExceptionListener, MessageListener
     {
         private int message_count = 0;
+        final private Semaphore connected = new Semaphore(0);
+        final private Semaphore done = new Semaphore(0);
+        
+        public boolean waitForStartup(final long seconds) throws Exception
+        {
+        	return connected.tryAcquire(seconds, TimeUnit.SECONDS);
+        }
         
         /** {@inheritDoc} */
         @Override
@@ -50,12 +73,12 @@ public class JMSLogThreadTest
                 final Topic topic = session.createTopic(TOPIC);
                 final MessageConsumer consumer = session.createConsumer(topic);
                 consumer.setMessageListener(this);
-                // Wait for notification
                 System.out.println("Receiver is listening...");
-                synchronized (this)
-                {
-                    wait();
-                }
+                connected.release();
+                
+                // Wait for messages to arrive
+                done.acquire();
+                
                 // Shutdown
                 consumer.close();
                 session.close();
@@ -101,12 +124,7 @@ public class JMSLogThreadTest
                 ex.printStackTrace();
             }
             if (++message_count >= MESSAGE_COUNT)
-            {
-                synchronized (this)
-                {
-                    notifyAll();
-                }
-            }
+            	done.release();
         }
 
         public int getMessageCount()
@@ -115,14 +133,22 @@ public class JMSLogThreadTest
         }
     }
     
-    @Test(timeout=1000)
-    @Ignore("This is an integration test which has to be fixed! (It does not terminate!)")
+    @Test(timeout=10000)
     public void testRun() throws Exception
     {
-        final Receiver receiver = new Receiver();
+    	if (URL == null   ||   TOPIC == null)
+    	{
+        	System.out.println("Missing JMS settings, skipping test");
+        	return;
+        }
+
+    	final Receiver receiver = new Receiver();
         receiver.start();
-        // Simplistic wait for the receiver to actually receive:
-        Thread.sleep(5000);        
+        if (!receiver.waitForStartup(5))
+        {
+        	System.out.println("Cannot connect to JMS, skipping test");
+        	return;
+        }
         
         final JMSLogThread log_thread = new JMSLogThread(URL, TOPIC, null, null);
         log_thread.start();
