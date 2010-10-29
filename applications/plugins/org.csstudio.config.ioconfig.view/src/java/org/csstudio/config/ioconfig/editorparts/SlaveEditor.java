@@ -1086,17 +1086,16 @@ public class SlaveEditor extends AbstractNodeEditor {
 
 	protected void refreshUserPrmDate() {
 		saveUserPrmData();
-		String userPrmData = "no data";
-		if (_slave.getGSDSlaveData() != null
-				&& _slave.getGSDSlaveData().getUserPrmData() != null) {
-			userPrmData = _slave.getGSDSlaveData().getUserPrmData();
-		}
-		_origUserPrmData.setText(userPrmData);
-		String prmUserData = _slave.getPrmUserData();
-		if (prmUserData == null) {
-			prmUserData = "no data";
-		}
-		_aktUserPrmData.setText(prmUserData);
+//		String userPrmData = "no data";
+//		if (_slave.getGSDSlaveData() != null
+//				&& _slave.getGSDSlaveData().getUserPrmData() != null) {
+//			userPrmData = _slave.getGSDSlaveData().getUserPrmData();
+//		}
+//		String prmUserData = _slave.getPrmUserData();
+//		if (prmUserData == null) {
+//			prmUserData = "no data";
+//		}
+//		_aktUserPrmData.setText(prmUserData);
 	}
 
 	/**

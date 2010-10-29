@@ -47,7 +47,6 @@ import org.csstudio.platform.logging.CentralLogger;
  */
 public class ProfibusConfigSiemensGenerator {
 
-    private final String _fileName;
     private final StringBuilder _fileInput;
     private int _slot;
     private static final String LINE_END = "\r\n";
@@ -56,9 +55,8 @@ public class ProfibusConfigSiemensGenerator {
      * Constructor.
      */
     public ProfibusConfigSiemensGenerator(@Nonnull final String fileName) {
-        _fileName = fileName;
         _fileInput = new StringBuilder(200);
-        _slot = 0;
+		_slot = 1;
     }
 
     /**
@@ -86,38 +84,53 @@ public class ProfibusConfigSiemensGenerator {
      *
      */
     private void createSlave(@Nonnull final SlaveDBO slave) {
+    	_slot = 1;
+        int normslaveParamDataSize = 0;
+        int posNormslaveParamDataSize = 0;
         int fdlAddress = slave.getFdlAddress();
         Map<Short, ? extends AbstractNodeDBO> childrenAsMap = slave.getChildrenAsMap();
         Set<Short> keySet = childrenAsMap.keySet();
-        _slot = 0;
         String modelName = slave.getModelName();
         if (modelName.length() > 24) {
             modelName = modelName.substring(0, 24);
         }
-        _fileInput.append("DPSUBSYSTEM 1, ").append("DPADDRESS ").append(fdlAddress + ", ")
-                .append("\"" + slave.getGSDFile().getName() + "\", ").append("\"" + modelName
-                        + "\"").append(LINE_END).append("BEGIN").append(LINE_END)
-                .append("  PNO_IDENT_NO ").append("\""
-                        + ProfibusConfigXMLGenerator.getInt(slave.getIDNo()) + "\"")
-                .append(LINE_END);
+        _fileInput.append("DPSUBSYSTEM 1, ").append("DPADDRESS ")
+        		  .append(fdlAddress).append(", \"")
+        		  .append(slave.getGSDFile().getName())
+        		  .append("\", \"").append(modelName)
+        		  .append("\"").append(LINE_END)
+        		  .append("BEGIN").append(LINE_END)
+                  .append("  PNO_IDENT_NO ").append("\"")
+                  .append(ProfibusConfigXMLGenerator.getInt(slave.getIDNo()))
+                  .append("\"").append(LINE_END);
         if (!slave.getPrmUserData().equals("Property not found")) {
-            _fileInput.append("  NORMSLAVE_PARAM_DATA ").append("\""
-                    + slave.getPrmUserData().replaceAll("(0x)", "").replaceAll(",", " "));
-            for (short key : keySet) {
-                ModuleDBO module = (ModuleDBO) childrenAsMap.get(key);
-                String configurationData = module.getConfigurationData();
-                if (configurationData != null) {
-                    _fileInput
-                            .append(configurationData.replaceAll("(0x)", "").replaceAll(",", " "))
-                            .append(" ");
-                }
-            }
+			String cleanPrmUserData = slave.getPrmUserData()
+					.replaceAll("(0x)", "")
+					.replaceAll(",", " ").trim();
+			_fileInput.append("  NORMSLAVE_PARAM_DATA ").append("\"");
+			posNormslaveParamDataSize = _fileInput.length();
+			normslaveParamDataSize+=slave.getPrmUserDataList().size();
+			_fileInput.append(" ").append(cleanPrmUserData).append(" ");
+			for (short key : keySet) {
+				ModuleDBO module = (ModuleDBO) childrenAsMap.get(key);
+				String configurationData = module.getConfigurationData();
+				if (configurationData != null) {
+					normslaveParamDataSize += configurationData.split(",").length;
+					String cleanConfigData = configurationData
+							.replaceAll("(0x)", "")
+							.replaceAll(",", "").trim();
+					_fileInput.append(cleanConfigData).append(" ");
+				}
+			}
+			_fileInput.deleteCharAt(_fileInput.length() - 1);
             _fileInput.append("\"").append(LINE_END);
         }
         _fileInput.append("END").append(LINE_END).append(LINE_END);
+        StringBuilder sb = new StringBuilder(5);
+        appendAs2HexString(sb, normslaveParamDataSize);
+        _fileInput.insert(posNormslaveParamDataSize, sb.toString());
         for (short key : keySet) {
-            ModuleDBO module = (ModuleDBO) childrenAsMap.get(key);
-            createModule(module, fdlAddress);
+            createModule((ModuleDBO) childrenAsMap.get(key), fdlAddress);
         }
     }
 
@@ -125,31 +138,41 @@ public class ProfibusConfigSiemensGenerator {
      * @param module
      */
     private void createModule(@Nonnull final ModuleDBO module, final int fdlAddress) {
-		_fileInput
-				.append("DPSUBSYSTEM 1, ")
-				.append("DPADDRESS ")
-				.append(fdlAddress + ", ")
-				.append("SLOT ")
-				.append(_slot++)
-				.append(", ")
+		String slaveCfgData = module.getGsdModuleModel().getValue()
+				.replaceAll("0x", "");
+		int length = slaveCfgData.split(",").length;
+		_fileInput.append("DPSUBSYSTEM 1, ")
+				.append("DPADDRESS ").append(fdlAddress + ", ")
+				.append("SLOT ").append(_slot++).append(", ")
 				.append("\"" + module.getGSDModule().getName() + "\"")
 				.append(LINE_END)
-				.append("BEGIN")
-				.append(LINE_END)
-				.append("  SLAVE_CFG_DATA ")
-				.append("\"01 00 ")
-				.append(module.getGsdModuleModel().getValue()
-						.replaceAll("0x", "")).append("\"").append(LINE_END)
+				.append("BEGIN").append(LINE_END)
+				.append("  SLAVE_CFG_DATA ").append("\"");
+		appendAs2HexString(_fileInput, length);
+		_fileInput.append(" ").append(slaveCfgData.replaceAll(",", " "))
+				.append("\"").append(LINE_END)
 				.append("  OBJECT_REMOVEABLE ").append("\"1\"")
 				.append(LINE_END).append("END").append(LINE_END).append(LINE_END);
     }
 
-    /**
-    *
-    * @param path
-    *            The target File Path.
-    * @throws IOException
-    */
+	/**
+	 * @param fileInput
+	 * @param length
+	 */
+	private void appendAs2HexString(@Nonnull StringBuilder fileInput, int length) {
+		String hexSize = String.format("%04X", length);
+				// lower Bytes of size
+		fileInput.append(hexSize.substring(2)).append(" ")
+				// higher Bytes of size
+				.append(hexSize.substring(0, 2));
+	}
+
+	/**
+	 * 
+	 * @param path
+	 *            The target File Path.
+	 * @throws IOException
+	 */
     public final void getXmlFile(@Nonnull final File path) throws IOException {
         FileWriter writer = new FileWriter(path);
         writer.append(_fileInput.toString());
