@@ -3,7 +3,7 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, buildWindows, buildLinux, buildMac"/> <!--copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
+	<target name="build" depends="copyPlugins, buildLinux"/><!--buildLinux64, buildMac, buildSolaris"/> copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
 -->	
 	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, hudsonUpdateWin"/>
 	<target name="buildLinux" depends="cleanup, pdeBuildLin, updateConfigLin, hudsonUpdateLin"/>
