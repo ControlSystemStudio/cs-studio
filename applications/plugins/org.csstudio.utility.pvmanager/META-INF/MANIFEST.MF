@@ -4,7 +4,7 @@ Bundle-Name: PVManager CSS Integration
 Bundle-SymbolicName: org.csstudio.utility.pvmanager;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.csstudio.utility.pvmanager.Activator
-Bundle-Vendor: Brookhaven National Lab
+Bundle-Vendor: Gabriele Carcassi <carcassi@bnl.gov>, Kunal Shroff <kshroff@bnl.gov> - Brookhaven National Lab
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.csstudio.platform.libs.epics;bundle-version="1.1.2";resolution:=optional
