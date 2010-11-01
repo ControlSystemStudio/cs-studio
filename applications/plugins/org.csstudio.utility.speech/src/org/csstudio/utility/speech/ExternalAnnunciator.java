@@ -26,7 +26,7 @@ class ExternalAnnunciator extends BaseAnnunciator
     private static final long TIMEOUT_MILLI = 60*1000;
 
     /** Helper for dumping any output of the command to stdout */
-    class StreamDumper extends Thread
+    static class StreamDumper extends Thread
     {
         final private InputStream stream;
         

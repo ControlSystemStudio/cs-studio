@@ -21,6 +21,8 @@
  */
  package org.csstudio.platform.internal.data;
 
+import java.util.Arrays;
+
 import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ISeverity;
@@ -84,20 +86,12 @@ public class StringValue extends Value implements IStringValue
 			return false;
 		final StringValue rhs = (StringValue) obj;
 		// compare strings
-		if (values.length != rhs.values.length)
-		    return false;
-		for (int i = 0; i < values.length; ++i)
-        {
-            if (! values[i].equals( rhs.values[i]))
-                return false;
-        }
-		return super.equals(obj);
+		return Arrays.equals(values, rhs.getValues());
 	}
-
-    /** {@inheritDoc} */
-	@Override
-	public final int hashCode()
-	{
-		return values.hashCode() + super.hashCode();
-	}
+	
+    @Override
+    public int hashCode()
+    {
+    	return Arrays.hashCode(values);
+    }
 }

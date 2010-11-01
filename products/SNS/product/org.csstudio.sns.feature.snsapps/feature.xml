@@ -3,7 +3,7 @@
       id="org.csstudio.sns.feature.snsapps"
       label="SNS Specific Applications"
       version="2.3.0.qualifier"
-      provider-name="SNS, Kay Kasemir">
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt;, Xihui Chen &lt;chenx1@ornl.gov&gt; - SNS">
 
    <description>
       CSS Applications that are specific to SNS: PV Fields Viewer, Message History, ...

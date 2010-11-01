@@ -36,6 +36,7 @@ public class GUIUpdateThrottleTest
                 events.incrementAndGet();
             }
         };
+        throttle.start();
         
         // Start without events
         assertEquals(0, events.get());

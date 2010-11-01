@@ -228,6 +228,8 @@ public class RuleData implements IAdaptable{
 			else
 				value = property.getPropertyValue();
 			
+			if(value == null)
+				return "null"; //$NON-NLS-1$
 			
 			if(property instanceof BooleanProperty){			
 				propValue = (Boolean)value? "true" : "false"; //$NON-NLS-1$ //$NON-NLS-2$

@@ -7,9 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-import java.io.FileInputStream;
-import java.util.Properties;
-
+import org.csstudio.apputil.test.TestProperties;
 import org.junit.Test;
 
 /** JUnit test of the alarm configuration reader
@@ -18,22 +16,22 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class AlarmRDBTest
 {
-	private Properties getTestSettings() throws Exception
-    {
-        Properties settings = new Properties();
-    	settings.load(new FileInputStream("/Kram/Eclipse/Workspace/CustomizationFiles/tests.ini"));
-        return settings;
-    }
-
 	@Test
 	public void readAlarmConfiguration() throws Exception
 	{
-		final Properties settings = getTestSettings();
-        final AlarmRDB rdb = new AlarmRDB(null,
-				settings.getProperty("rdb_url"),
-				settings.getProperty("rdb_user"),
-				settings.getProperty("rdb_password"),
-				settings.getProperty("alarm_root"));
+		final TestProperties settings = new TestProperties();
+        final String alarm_root = settings.getString("alarm_root");
+        if (alarm_root == null)
+        {
+        	System.out.println("Skipped, no configuration.");
+        	return;
+        }
+        
+		final AlarmRDB rdb = new AlarmRDB(null,
+				settings.getString("alarm_rdb_url"),
+				settings.getString("alarm_rdb_user"),
+				settings.getString("alarm_rdb_password"),
+				alarm_root);
 		final AlarmHierarchy root = rdb.readConfiguration();
 		root.dump(System.out);
 	}

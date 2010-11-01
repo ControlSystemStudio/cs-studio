@@ -22,7 +22,7 @@ import java.util.Calendar;
  *  
  *  @author Kay Kasemir
  */
-public class RelativeTime
+public class RelativeTime implements Cloneable
 {
     /** Constant to define 'now', i.e. the current wallclock date and time. */
     public static final String NOW = "now"; //$NON-NLS-1$
@@ -238,7 +238,15 @@ public class RelativeTime
     @Override
     public Object clone()
     {
-        RelativeTime copy = new RelativeTime();
+    	RelativeTime copy;
+        try
+        {
+	        copy = (RelativeTime) super.clone();
+        }
+        catch (CloneNotSupportedException e)
+        {
+        	return null;
+        }
         for (int i=0; i<rel_time.length; ++i)
             copy.rel_time[i] = rel_time[i]; 
         return copy;

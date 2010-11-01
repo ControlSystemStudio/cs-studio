@@ -16,6 +16,7 @@ import org.csstudio.opibuilder.properties.DoubleProperty;
 import org.csstudio.opibuilder.properties.FilePathProperty;
 import org.csstudio.opibuilder.properties.FontProperty;
 import org.csstudio.opibuilder.properties.IntegerProperty;
+import org.csstudio.opibuilder.properties.PVValueProperty;
 import org.csstudio.opibuilder.properties.StringProperty;
 import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
@@ -85,8 +86,7 @@ public class RuleDataEditDialog extends Dialog {
 		AbstractWidgetModel.PROP_WIDGET_TYPE,
 		AbstractWidgetModel.PROP_SCRIPTS,
 		AbstractWidgetModel.PROP_RULES,
-		AbstractContainerModel.PROP_MACROS,
-		AbstractPVWidgetModel.PROP_PVVALUE};
+		AbstractContainerModel.PROP_MACROS};
 	
 	public RuleDataEditDialog(Shell parentShell, RuleData ruleData) {
 		super(parentShell);
@@ -103,7 +103,8 @@ public class RuleDataEditDialog extends Dialog {
 			AbstractWidgetProperty prop = ruleData.getWidgetModel().getProperty(id);
 			if(prop instanceof BooleanProperty || prop instanceof DoubleProperty || prop instanceof IntegerProperty
 					|| prop instanceof ComboProperty || prop instanceof ColorProperty || prop instanceof StringProperty
-					|| prop instanceof FilePathProperty || prop instanceof FontProperty)
+					|| prop instanceof FilePathProperty || prop instanceof FontProperty
+					|| prop instanceof PVValueProperty)
 				continue;
 			else
 				propIDSet.remove(id);

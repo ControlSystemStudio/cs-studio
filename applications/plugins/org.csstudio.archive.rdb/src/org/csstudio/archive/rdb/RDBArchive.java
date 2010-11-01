@@ -1,6 +1,5 @@
 package org.csstudio.archive.rdb;
 
-import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
@@ -29,8 +28,8 @@ import org.csstudio.platform.data.IStringValue;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
+import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /**
  *  RDB Archive access
@@ -874,8 +873,8 @@ public class RDBArchive
      * @param url URL (host, port) where engine is supposed to run
      * @return SampleEngineInfo
      */
-    public SampleEngineConfig addEngine(String name, String description,
-            URL url) throws Exception
+    public SampleEngineConfig addEngine(final String name, final String description,
+            final String url) throws Exception
     {
         final SampleEngineHelper engines = new SampleEngineHelper(this);
         return engines.add(name, description, url);
@@ -885,7 +884,7 @@ public class RDBArchive
      *  @param name Engine name
      *  @return SampleEngineInfo or <code>null</code> if not found
      */
-    public SampleEngineConfig findEngine(String name) throws Exception
+    public SampleEngineConfig findEngine(final String name) throws Exception
     {
         final SampleEngineHelper engines = new SampleEngineHelper(this);
         return engines.find(name);

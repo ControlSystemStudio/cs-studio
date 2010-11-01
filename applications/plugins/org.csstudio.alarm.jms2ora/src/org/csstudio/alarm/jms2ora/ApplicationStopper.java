@@ -24,6 +24,7 @@
 
 package org.csstudio.alarm.jms2ora;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -43,11 +44,12 @@ import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.util.tracker.ServiceTracker;
 import org.remotercp.common.servicelauncher.ServiceLauncher;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.connection.HeadlessConnection;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * @author Markus Moeller
@@ -77,7 +79,6 @@ public class ApplicationStopper
      * @param user
      * @param password
      */
-    @SuppressWarnings("deprecation")
     public boolean stopExternInstance(BundleContext bundleContext, String applicationName, String host, String user)
     {
         Vector<IRosterItem> rosterItems = null;
@@ -98,7 +99,36 @@ public class ApplicationStopper
 
         connectToXMPPServer(xmppServer, xmppUser, xmppPassword);
 
-        session = OsgiServiceLocatorUtil.getOSGiService(bundleContext, ISessionService.class);
+        // session = OsgiServiceLocatorUtil.getOSGiService(bundleContext, ISessionService.class);
+
+        String serviceFilter = "(&(objectClass=" +
+        ISessionService.class.getName() + "))";
+
+        // Get the Session Service from the Application Admin Service
+        ServiceTracker tracker = null;
+        try {
+            tracker = new ServiceTracker(bundleContext, bundleContext.createFilter(serviceFilter), null);
+            tracker.open();
+        
+            Object[] allServices = tracker.getServices();
+            if(allServices != null) {
+                
+                List<Object> services = Arrays.asList(allServices);
+                ISessionService[] regApps = services.toArray(new ISessionService[0]);
+                
+                if(regApps.length > 0) {
+                    
+                    session = regApps[0];
+                    success = true;
+                }
+            } else {
+                success = false;
+            }
+            
+            tracker.close();
+        } catch(InvalidSyntaxException e) {
+            success = false;
+        }
 
         rosterItems = getRosterItems();
 
@@ -298,11 +328,7 @@ public class ApplicationStopper
                 parameter = new CommandParameters();
                 parameter.set("Password", password);
                 
-                CommandResult retValue = null;
-                if(service != null) {
-                	retValue = service.execute(stopAction.getIdentifier(), parameter);
-                }
-                
+                CommandResult retValue = service.execute(stopAction.getIdentifier(), parameter);
                 if(retValue != null)
                 {
                     returnValue = (String)retValue.getValue();

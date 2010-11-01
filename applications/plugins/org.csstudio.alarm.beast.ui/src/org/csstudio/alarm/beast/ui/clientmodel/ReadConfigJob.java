@@ -18,15 +18,26 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class ReadConfigJob extends Job
 {
-    private AlarmClientModel model;
+    final private AlarmClientModel model;
+    final private AlarmClientModelConfigListener listener;
 
     /** Initialize job. Caller still has to <code>schedule()</code>!
      *  @param model Model who's config. reader will be invoked.
      */
     public ReadConfigJob(final AlarmClientModel model)
     {
+    	this(model, null);
+    }
+
+    /** Initialize job. Caller still has to <code>schedule()</code>!
+     *  @param model Model who's config. reader will be invoked.
+     *  @param listener Listener to notify when done
+     */
+    public ReadConfigJob(final AlarmClientModel model, AlarmClientModelConfigListener listener)
+    {
         super(Messages.ReadConfigJobName);
         this.model = model;
+        this.listener = listener;
     }
 
     /** {@inheritDoc} */
@@ -34,6 +45,8 @@ public class ReadConfigJob extends Job
     protected IStatus run(final IProgressMonitor monitor)
     {
         model.readConfiguration(monitor);
+        if (listener != null)
+        	listener.newAlarmConfiguration(model);
         return Status.OK_STATUS;
     }
 }

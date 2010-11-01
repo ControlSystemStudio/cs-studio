@@ -52,8 +52,8 @@ import org.csstudio.utility.screenshot.desy.internal.localization.LogbookSenderM
 import org.csstudio.utility.screenshot.desy.preference.DestinationPreferenceConstants;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.ImageData;
 import org.eclipse.swt.graphics.PaletteData;
@@ -108,7 +108,7 @@ public class ImageProcessor implements IImageWorker
         LogbookSenderDialog dialog = new LogbookSenderDialog(parentShell);
         
         int value = dialog.open();
-        if((value == Dialog.OK) && (dialog.getLogbookEntry() != null))
+        if((value == Window.OK) && (dialog.getLogbookEntry() != null))
         {
             try
             {

@@ -32,13 +32,13 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class DeleteAllMessageFiles implements IManagementCommand
-{
+public class DeleteAllMessageFiles implements IManagementCommand {
+    
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
+        
         String result = "\n" + Integer.toString(MessageFileHandler.getInstance().deleteAllMessageFiles());
         
         return CommandResult.createMessageResult(result);

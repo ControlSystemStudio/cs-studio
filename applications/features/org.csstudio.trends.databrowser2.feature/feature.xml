@@ -3,7 +3,7 @@
       id="org.csstudio.trends.databrowser2.feature"
       label="Data Browser"
       version="2.3.0.qualifier"
-      provider-name="SNS, Kay Kasemir">
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS">
 
    <description>
       Data Browser, &quot;Strip Chart&quot; and archive data viewer

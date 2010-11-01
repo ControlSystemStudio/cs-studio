@@ -20,7 +20,7 @@
  */
 package org.csstudio.alarm.service.internal;
 
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.CheckForNull;
@@ -32,7 +32,6 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
-import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueAdapter;
@@ -42,7 +41,6 @@ import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
-import org.epics.css.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -79,21 +77,33 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
 
         // There may be more than a thousand pv for which the initial state is requested at once.
-        // Therefore the process of registering is performed in chunks with a delay.
-        // After each chunk the broker releases all pvs so all resources will be freed.
+        // Therefore the process of registering is performed in chunks with a delay
 
         int pvChunkSize = AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
         int pvChunkWaitMsec = AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
+        int pvRegisterWaitMsec = AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
 
-        ChunkableCollection<IAlarmInitItem> pvs = new ChunkableCollection<IAlarmInitItem>(initItems, pvChunkSize);
+        final List<Element> pvsUnderWay = new ArrayList<Element>();
 
-        for (Collection<IAlarmInitItem> currentChunk : pvs) {
-            SimpleDALBroker broker = SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
-            registerPVs(broker, currentChunk);
-            LOG.debug("retrieveInitialState about to wait for chunk");
-            waitFixedTime(pvChunkWaitMsec);
-            broker.releaseAll();
+        for (int i = 0; i < initItems.size(); i++) {
+            registerPV(pvsUnderWay, initItems.get(i));
+            if ( (i % pvChunkSize) == 0) {
+                waitFixedTime(pvChunkWaitMsec);
+            }
         }
+
+        LOG.debug("retrieveInitialState about to wait");
+        waitFixedTime(pvRegisterWaitMsec);
+
+        // The process of deregistering is also performed in chunks with a delay
+        LOG.debug("retrieveInitialState about to deregister " + pvsUnderWay.size() + " pvs");
+        for (int i = 0; i < pvsUnderWay.size(); i++) {
+            deregisterPV(pvsUnderWay.get(i));
+            if ( (i % pvChunkSize) == 0) {
+                waitFixedTime(pvChunkWaitMsec);
+            }
+        }
+
         LOG.debug("retrieveInitialState finished");
     }
 
@@ -104,6 +114,24 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         return new AlarmResource(topics, filepath);
     }
 
+    private void registerPV(@Nonnull final List<Element> pvsUnderWay,
+                            @Nonnull final IAlarmInitItem initItem) {
+        try {
+            final Element pvUnderWay = new Element();
+            pvUnderWay._connectionParameters = newConnectionParameters(initItem.getPVName());
+            // REVIEW (jpenning): hard coded type in connection parameter
+            pvUnderWay._listener = new DynamicValueListenerForInit<String, StringProperty>(initItem);
+            DalPlugin.getDefault().getSimpleDALBroker()
+                    .registerListener(pvUnderWay._connectionParameters,
+                                      pvUnderWay._listener);
+            pvsUnderWay.add(pvUnderWay);
+        } catch (final InstantiationException e) {
+            LOG.error("Error in registerPVs", e);
+        } catch (final CommonException e) {
+            LOG.error("Error in registerPVs", e);
+        }
+    }
+
     private void waitFixedTime(final int delayInMsec) {
         try {
             Thread.sleep(delayInMsec);
@@ -112,22 +140,16 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         }
     }
 
-    private void registerPVs(@Nonnull final SimpleDALBroker broker, @Nonnull final Collection<IAlarmInitItem> initItems) {
-        for (IAlarmInitItem initItem : initItems) {
-            try {
-                // REVIEW (jpenning): hard coded type in connection parameter
-                broker.registerListener(newConnectionParameters(initItem.getPVName()),
-                                        new DynamicValueListenerForInit<String, StringProperty>(initItem));
-            } catch (final InstantiationException e) {
-                handleRegistrationError(e, initItem);
-            } catch (final CommonException e) {
-                handleRegistrationError(e, initItem);
-            }
+    private void deregisterPV(@Nonnull final Element pvUnderWay) {
+        try {
+            DalPlugin.getDefault().getSimpleDALBroker()
+                    .deregisterListener(pvUnderWay._connectionParameters,
+                                        pvUnderWay._listener);
+        } catch (final InstantiationException e) {
+            LOG.error("Error in deregisterPVs", e);
+        } catch (final CommonException e) {
+            LOG.error("Error in deregisterPVs", e);
         }
-    }
-
-    private void handleRegistrationError(@Nonnull final Exception e, @Nonnull final IAlarmInitItem initItem) {
-        LOG.error("Error in registerPVs. PV " + initItem.getPVName() + " was not registered", e);
     }
 
     @Nonnull

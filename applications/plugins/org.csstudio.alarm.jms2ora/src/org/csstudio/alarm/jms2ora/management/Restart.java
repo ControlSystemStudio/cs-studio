@@ -36,34 +36,28 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * @author Markus Moeller
  *
  */
-public class Restart implements IManagementCommand
-{
+public class Restart implements IManagementCommand {
+    
     private static Stoppable objectToBeRestarted = null;
 
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
+        
         IPreferencesService prefs = Platform.getPreferencesService();
         String xmppShutdownPassword = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.XMPP_SHUTDOWN_PASSWORD, "", null);
 
-        String password = (String)parameters.get("Password");
-        if(password == null)
-        {
-            return CommandResult.createFailureResult("\nParameter not available.");
-        }
-
-        try
-        {
-            if(password.compareTo(xmppShutdownPassword) != 0)
-            {
-                return CommandResult.createFailureResult("\nInvalid password");
+        if(xmppShutdownPassword.length() > 0) {
+            
+            String password = (String)parameters.get("Password");        
+            try {
+                if(password.compareTo(xmppShutdownPassword) != 0) {
+                    return CommandResult.createFailureResult("\nInvalid password");
+                }
+            } catch(Exception e) {
+                return CommandResult.createFailureResult(e.getMessage());
             }
-        }
-        catch(Exception e)
-        {
-            return CommandResult.createFailureResult(e.getMessage());
         }
 
         objectToBeRestarted.setRestart();
@@ -71,8 +65,7 @@ public class Restart implements IManagementCommand
         return CommandResult.createMessageResult("\nRestarting Jms2Ora...");
     }
 
-    public static void staticInject(Stoppable obj)
-    {
+    public static void staticInject(Stoppable obj) {
         objectToBeRestarted = obj;
     }
 }

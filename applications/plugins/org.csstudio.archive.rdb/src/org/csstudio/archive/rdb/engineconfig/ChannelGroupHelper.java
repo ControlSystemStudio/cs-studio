@@ -40,7 +40,6 @@ public class ChannelGroupHelper
         final int id;
         if (found != null)
         {
-            id = found.getId();
             throw new Exception(
                     String.format("Group '%s' already exists under engine # %d", //$NON-NLS-1$
                             name, engine_id));

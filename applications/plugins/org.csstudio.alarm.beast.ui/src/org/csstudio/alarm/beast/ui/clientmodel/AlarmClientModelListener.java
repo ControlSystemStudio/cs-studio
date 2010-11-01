@@ -9,7 +9,9 @@ package org.csstudio.alarm.beast.ui.clientmodel;
 
 import org.csstudio.alarm.beast.AlarmTreePV;
 
-/** Listener to the AlarmClientModel
+/** Listener to the AlarmClientModel.
+ *  
+ *  @see AlarmClientModelConfigListener
  *  @author Kay Kasemir
  */
 public interface AlarmClientModelListener

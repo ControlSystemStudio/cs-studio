@@ -31,88 +31,67 @@ import java.util.Map;
  * @author Markus Moeller
  *
  */
-public class Hostname
-{
+public class Hostname {
+    
     private static Hostname instance = null;
     private String hostName;
     
-    private Hostname()
-    {
+    private Hostname() {
         hostName = null;
         init();
     }
     
-    public synchronized static Hostname getInstance()
-    {
-        if(instance == null)
-        {
+    public synchronized static Hostname getInstance() {
+        
+        if(instance == null) {
             instance = new Hostname();
         }
         
         return instance;
     }
     
-    private void init()
-    {
+    private void init() {
+        
         Map<String, String> env = null;
         String name = null;
         
-        try
-        {
+        try {
             name = InetAddress.getLocalHost().getHostName();
-            if(name != null)
-            {
+            if(name != null) {
                 hostName = name.trim().toLowerCase();
             }
-        }
-        catch(UnknownHostException uhe)
-        {
+        } catch(UnknownHostException uhe) {
             hostName = null;
         }
 
-        if(hostName == null)
-        {
-            env = System.getenv();
+        if(hostName == null) {
             
-            if(env.containsKey("COMPUTERNAME"))
-            {
+            env = System.getenv();
+            if(env.containsKey("COMPUTERNAME")) {
                 name = env.get("COMPUTERNAME");
-            }
-            else if(env.containsKey("computername"))
-            {
+            } else if(env.containsKey("computername")) {
                 name = env.get("computername");
-            }
-            else if(env.containsKey("HOSTNAME"))
-            {
+            } else if(env.containsKey("HOSTNAME")) {
                 name = env.get("HOSTNAME");
-            }
-            else if(env.containsKey("hostname"))
-            {
+            } else if(env.containsKey("hostname")) {
                 name = env.get("hostname");
-            }
-            else if(env.containsKey("HOST"))
-            {
+            } else if(env.containsKey("HOST")) {
                 name = env.get("HOST");
-            }
-            else if(env.containsKey("host"))
-            {
+            } else if(env.containsKey("host")) {
                 name = env.get("host");
             }
             
-            if(name != null)
-            {
+            if(name != null) {
                 hostName = name.trim().toLowerCase();
             }
         }
         
-        if(hostName == null)
-        {
+        if(hostName == null) {
             hostName = "unknown";
         }
     }
     
-    public String getHostname()
-    {
+    public String getHostname() {
         return hostName;
     }
 }

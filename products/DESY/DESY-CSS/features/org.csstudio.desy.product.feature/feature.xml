@@ -17,31 +17,19 @@
    </license>
 
    <includes
-         id="org.csstudio.platform.eclipse.feature"
-         version="0.0.0"/>
-
-   <includes
          id="org.csstudio.platform.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.configuration.epics.feature"
+         id="org.csstudio.desy.platform.eclipse.ecf.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.diag.controlsystemtools.feature"
+         id="org.csstudio.desy.platform.eclipse.feature"
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.sds.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.utility.desyutilities.feature"
-         version="0.0.0"/>
-
-   <includes
-         id="org.csstudio.alarm.desy.feature"
+         id="org.csstudio.desy.platform.eclipse.team.feature"
          version="0.0.0"/>
 
 </feature>

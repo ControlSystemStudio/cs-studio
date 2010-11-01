@@ -1,8 +1,16 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.engine.server;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +34,7 @@ class EnvironmentResponse extends AbstractResponse
     /** A comparable name-value pair, used to hold properties,
      *  so that we can sort them.
      */
-    class NameValue implements Comparable<NameValue>
+    static class NameValue implements Comparable<NameValue>
     {
         final String name;
         final String value;
@@ -51,6 +59,22 @@ class EnvironmentResponse extends AbstractResponse
         {
             return name.compareTo(other.name);
         }
+
+		@Override
+        public int hashCode()
+        {
+			return name.hashCode();
+        }
+
+		@Override
+        public boolean equals(final Object obj)
+        {
+	        if (this == obj) return true;
+	        if (! (obj instanceof NameValue))
+	        	return false;
+	        final NameValue other = (NameValue) obj;
+	        return name.equals(other.name);
+        }
     }
     
     EnvironmentResponse(final EngineModel model)
@@ -70,7 +94,7 @@ class EnvironmentResponse extends AbstractResponse
         // Get all properties into Array, ...
         final Properties properties = System.getProperties();
         final Enumeration<Object> keys = properties.keys();
-        final ArrayList<NameValue> prop_list = new ArrayList<NameValue>();
+        final List<NameValue> prop_list = new ArrayList<NameValue>();
         while (keys.hasMoreElements())
         {
             final String name = (String) keys.nextElement();

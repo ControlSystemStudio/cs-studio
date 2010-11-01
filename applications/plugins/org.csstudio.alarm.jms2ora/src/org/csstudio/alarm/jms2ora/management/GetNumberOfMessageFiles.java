@@ -32,13 +32,11 @@ import org.csstudio.platform.management.IManagementCommand;
  * @author Markus Moeller
  *
  */
-public class GetNumberOfMessageFiles implements IManagementCommand
-{
+public class GetNumberOfMessageFiles implements IManagementCommand {
     /* (non-Javadoc)
      * @see org.csstudio.platform.management.IManagementCommand#execute(org.csstudio.platform.management.CommandParameters)
      */
-    public CommandResult execute(CommandParameters parameters)
-    {
+    public CommandResult execute(CommandParameters parameters) {
         String result = null;
         
         result = Integer.toString(MessageFileHandler.getInstance().getMessageFilesNumber());

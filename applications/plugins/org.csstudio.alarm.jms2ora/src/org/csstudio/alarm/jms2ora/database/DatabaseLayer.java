@@ -195,8 +195,8 @@ public class DatabaseLayer
         }
         finally
         {
-            if(oos != null){try{oos.close();}catch(IOException ioe){/* Can be ignored */}}
-            if(fos != null){try{fos.close();}catch(IOException ioe){/* Can be ignored */}}
+            if(oos != null){try{oos.close();}catch(IOException ioe){}}
+            if(fos != null){try{fos.close();}catch(IOException ioe){}}
             
             oos = null;
             fos = null;            
@@ -235,8 +235,8 @@ public class DatabaseLayer
         }
         finally
         {
-            if(ois != null){try{ois.close();}catch(IOException ioe){/* Can be ignored */}}
-            if(fis != null){try{fis.close();}catch(IOException ioe){/* Can be ignored */}}
+            if(ois != null){try{ois.close();}catch(IOException ioe){}}
+            if(fis != null){try{fis.close();}catch(IOException ioe){}}
             
             ois = null;
             fis = null;            
@@ -397,10 +397,10 @@ public class DatabaseLayer
                 logger.error("*** Exception ***: createMessageEntry(): " + e.getMessage());
                 
                 msgId = -1;
-                if(pst!=null){try{pst.close();}catch(SQLException sqle){/* Can be ignored */}pst=null;}
+                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }  
             
-            if(pst!=null){try{pst.close();}catch(SQLException e){/* Can be ignored */}pst=null;}
+            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
         }
 
         close();
@@ -417,9 +417,9 @@ public class DatabaseLayer
      * 
      */
     
-    public synchronized boolean createMessageContentEntries(long msgId, MessageContent msgContent) {
-        
-    	Enumeration<?> lst = null;
+    public synchronized boolean createMessageContentEntries(long msgId, MessageContent msgContent)
+    {
+        Enumeration<?> lst = null;
         PreparedStatement pst = null;
         String  value = null;
         String sql = null;
@@ -428,7 +428,8 @@ public class DatabaseLayer
         long key;
         
         // Connect the database
-        if(connect() == false) {
+        if(connect() == false)
+        {
             return false;
         }
         
@@ -436,20 +437,20 @@ public class DatabaseLayer
         contentId = getNextId("message_content");
         
         // Did we get an valid ID?
-        if(contentId > 0) {
+        if(contentId > 0)
+        {
+            sql = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(?,?,?,?)";
             
-        	sql = "INSERT INTO message_content (id,message_id,msg_property_type_id,value) VALUES(?,?,?,?)";
-            
-            try {
-                
-            	pst = dbService.getConnection().prepareStatement(sql);
+            try
+            {
+                pst = dbService.getConnection().prepareStatement(sql);
                 
                 // First write the known message content
                 lst = msgContent.keys();
                 
-                while(lst.hasMoreElements()) {
-                    
-                	key = (Long)lst.nextElement();
+                while(lst.hasMoreElements())
+                {
+                    key = (Long)lst.nextElement();
                     value = msgContent.getPropertyValue(key);
     
                     // Replace a single ' with '' (then the entry could be stored into the database)
@@ -460,55 +461,69 @@ public class DatabaseLayer
                     pst.setLong(3, key);
                     pst.setString(4, value);
                     
-                    if(pst.executeUpdate() < 0) {
+                    if(pst.executeUpdate() < 0)
+                    {
                         result = false;
+                        
                         break;
-                    } else {
+                    }
+                    else
+                    {
                         result = true;
                     }
                     
                     contentId++;
                 }
-            } catch(Exception e) {
+            }
+            catch(Exception e)
+            {
                 logger.error("*** Exception ***: createMessageContentEntries(): Write known messages: " + e.getMessage());
+
                 result = false;
-                if(pst!=null){try{pst.close();}catch(SQLException sqle){/* Can be ignored */}pst=null;}
+                if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
             }            
             
             // Write the unknown properties, if we have some
-            if((result == true) && (msgContent.unknownPropertiesAvailable())) {
-                
-            	for(int i = 0;i < msgContent.countUnknownProperties();i++) {
-                    
-            		value = msgContent.getUnknownProperty(i);
+            if((result == true) && (msgContent.unknownPropertiesAvailable()))
+            {
+                for(int i = 0;i < msgContent.countUnknownProperties();i++)
+                {
+                    value = msgContent.getUnknownProperty(i);
 
                     // Replace a single ' with '' (then the entry could be stored into the database)
                     value = value.replace("'", "''");
                     
-                    try {
-                        
-                    	pst.setLong(1, contentId);
+                    try
+                    {
+                        pst.setLong(1, contentId);
                         pst.setLong(2, msgId);
                         pst.setLong(3, msgContent.getUnknownTableId());
                         pst.setString(4, value);
                         
-                        if(pst.executeUpdate() < 0) {
+                        if(pst.executeUpdate() < 0)
+                        {
                             result = false;
+                            
                             break;
-                        } else {
+                        }
+                        else
+                        {
                             result = true;
                         }
                         
                         contentId++;
-                    } catch(SQLException sqle) {
+                    }
+                    catch(SQLException sqle)
+                    {
                         logger.error("*** SQLException ***: createMessageContentEntries(): Write unknown properties: " + sqle.getMessage());
+
                         result = false;
-                        if(pst!=null){try{pst.close();}catch(SQLException e){/* Can be ignored */}pst=null;}
+                        if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
                     }            
                 }
             }
         
-            if(pst!=null){try{pst.close();}catch(SQLException e){/* Can be ignored */}pst=null;}
+            if(pst!=null){try{pst.close();}catch(SQLException e){}pst=null;}
         }
                 
         close();
@@ -519,59 +534,68 @@ public class DatabaseLayer
     /**
      * 
      */
-    private void createObjectFolder() {
-        
-    	File folder = new File(objectDir);
+    private void createObjectFolder()
+    {
+        File folder = new File(objectDir);
                 
         existsObjectFolder = true;
 
-        if(!folder.exists()) {
-            
-        	boolean result = folder.mkdir();
-            if(result) {
+        if(!folder.exists())
+        {
+            boolean result = folder.mkdir();
+            if(result)
+            {
                 logger.info("Folder " + objectDir + " was created.");
+                
                 existsObjectFolder = true;
-            } else {
+            }
+            else
+            {
                 logger.warn("Folder " + objectDir + " was NOT created.");
+                
                 existsObjectFolder = false;
             }
         }
     }
 
-    public synchronized Hashtable<String, Long> getMessageProperties() {
-        
-    	PreparedStatement pst = null;
+    public synchronized Hashtable<String, Long> getMessageProperties()
+    {
+        PreparedStatement pst = null;
         ResultSet rsProperty = null;
         Hashtable<String, Long> msgProperty = new Hashtable<String, Long>();
         
         // Connect the database
-        if(connect() == false) {
+        if(connect() == false)
+        {
             return msgProperty;
         }
 
-        try {
-            
-        	pst = dbService.getConnection().prepareStatement("SELECT * from MSG_PROPERTY_TYPE");
+        try
+        {
+            pst = dbService.getConnection().prepareStatement("SELECT * from MSG_PROPERTY_TYPE");
             
             // Execute the query to get all properties
             rsProperty = pst.executeQuery();
         
             // Check the result sets 
-            if(rsProperty != null) {
-                
-            	// Fill the hash table with the received data of the property table
-                while(rsProperty.next()) {
+            if(rsProperty != null)
+            {
+                // Fill the hash table with the received data of the property table
+                while(rsProperty.next())
+                {
                     msgProperty.put(rsProperty.getString(2), rsProperty.getLong(1));                 
                 }
             }
-        } catch(Exception e) {
+        }
+        catch(Exception e)
+        {
             logger.error("*** Exception *** : getMessageProperties(): " + e.getMessage());
+            
             msgProperty.clear();
-        } finally {
-            if(rsProperty!=null) {
-            	try{rsProperty.close();}catch(Exception e){/* Can be ignored */}
-            	rsProperty=null;
-            }
+        }
+        finally
+        {
+            if(rsProperty!=null){try{rsProperty.close();}catch(Exception e){}rsProperty=null;}
             
             // Close the database
             close();             
@@ -580,21 +604,22 @@ public class DatabaseLayer
         return msgProperty;
     }
     
-    public synchronized int getMaxNumberofValueBytes() {
-        
-    	PreparedStatement pst = null;
+    public synchronized int getMaxNumberofValueBytes()
+    {
+        PreparedStatement pst = null;
         ResultSetMetaData rsMetaData = null;
         ResultSet rs = null;
         int result = 0;
         
         // Connect the database
-        if(connect() == false) {
+        if(connect() == false)
+        {
             return result;
         }
 
-        try {
-            
-        	pst = dbService.getConnection().prepareStatement("SELECT * from message_content WHERE id=?");
+        try
+        {
+            pst = dbService.getConnection().prepareStatement("SELECT * from message_content WHERE id=?");
             pst.setLong(1, 1);
             rs = pst.executeQuery();
             rsMetaData = rs.getMetaData();
@@ -612,15 +637,17 @@ public class DatabaseLayer
                     }
                 }
             }
-        } catch(Exception e) {
+        }
+        catch(Exception e)
+        {
             logger.error("*** Exception *** : getMaxNumberofValueBytes(): " + e.getMessage());
+            
             result = 0;
-        } finally {
+        }
+        finally
+        {
             rsMetaData = null;
-            if(rs!=null) {
-            	try{rs.close();}catch(Exception e){/* Can be ignored */}
-            	rs=null;
-            }
+            if(rs!=null){try{rs.close();}catch(Exception e){}rs=null;}
             
             close();
         }
@@ -628,34 +655,33 @@ public class DatabaseLayer
         return result;
     }
 
-    public synchronized long getNextId(String tableName) {
-        
-    	PreparedStatement pst = null;
+    public synchronized long getNextId(String tableName)
+    {
+        PreparedStatement pst = null;
         ResultSet rsMsg = null;
         long result = -1;
         
-        try {
-            
-        	pst = dbService.getConnection().prepareStatement("SELECT MAX(ID) from " + tableName);
+        try
+        {
+            pst = dbService.getConnection().prepareStatement("SELECT MAX(ID) from " + tableName);
             rsMsg = pst.executeQuery();
 
-            if(rsMsg != null) {
+            if(rsMsg != null)
+            {
                 rsMsg.next();
                 result = rsMsg.getLong(1);                
                 result += 1;
             }
-        } catch(Exception e) {
+        }
+        catch(Exception e)
+        {
             logger.error("*** Exception *** : getNextId(): " + e.getMessage());
             result = -1;
-        } finally {
-            if(rsMsg!=null) {
-            	try{rsMsg.close();}catch(SQLException sqle){/* Can be ignored */}
-            	rsMsg=null;
-            }
-            if(pst!=null) {
-            	try{pst.close();}catch(SQLException sqle){/* Can be ignored */}
-            	pst=null;
-            }
+        }
+        finally
+        {
+            if(rsMsg!=null){try{rsMsg.close();}catch(SQLException sqle){}rsMsg=null;}
+            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
         }
         
         return result;
@@ -666,33 +692,30 @@ public class DatabaseLayer
      * 
      *  @param msgId The id of the message that has to be deleted.
      */
-    public synchronized void deleteMessage(long msgId) {
-        
-    	PreparedStatement pst = null;
+    public synchronized void deleteMessage(long msgId)
+    {
+        PreparedStatement pst = null;
         
         // Connect the database
-        if(connect() == false) {
+        if(connect() == false)
+        {
             return;
         }
 
-        try {
-            
-        	pst = dbService.getConnection().prepareStatement("DELETE FROM message_content WHERE message_id=?");
+        try
+        {
+            pst = dbService.getConnection().prepareStatement("DELETE FROM message_content WHERE message_id=?");
             pst.setLong(1, msgId);
             pst.executeUpdate();
-            if(pst!=null) {
-            	try{pst.close();}catch(SQLException sqle){/* Can be ignored */}
-            	pst=null;
-            }
+            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
 
             pst = dbService.getConnection().prepareStatement("DELETE FROM message WHERE id=?");
             pst.setLong(1, msgId);
             pst.executeUpdate();
-            if(pst!=null) {
-            	try{pst.close();}catch(SQLException sqle){/* Can be ignored */}
-            	pst=null;
-            }
-        } catch(Exception e) {
+            if(pst!=null){try{pst.close();}catch(SQLException sqle){}pst=null;}
+        }
+        catch(Exception e)
+        {
             logger.error("*** Exception *** : deleteMessage(): " + e.getMessage());
         }
 

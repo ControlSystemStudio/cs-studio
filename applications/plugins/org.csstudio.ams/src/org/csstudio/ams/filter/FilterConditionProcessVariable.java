@@ -1,3 +1,4 @@
+
 /* 
  * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron, 
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
@@ -19,7 +20,8 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY 
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
- package org.csstudio.ams.filter;
+
+package org.csstudio.ams.filter;
 
 import java.math.BigDecimal;
 import java.sql.Connection;
@@ -29,6 +31,7 @@ import org.csstudio.ams.Log;
 import org.csstudio.ams.dbAccess.HoldsAnDatabaseId;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableDAO;
 import org.csstudio.ams.dbAccess.configdb.FilterConditionProcessVariableTObject;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
 import org.csstudio.platform.model.pvs.ProcessVariableAdressFactory;
 import org.csstudio.platform.simpledal.ConnectionState;
@@ -182,9 +185,7 @@ public strictfp class FilterConditionProcessVariable implements
 			
 		}
 
-        public void valueChanged(T value)
-        {
-            // TODO Auto-generated method stub
+        public void valueChanged(T value) {
             
         }
 	}
@@ -206,11 +207,31 @@ public strictfp class FilterConditionProcessVariable implements
 			}
 		}),
 		
-
 		DOUBLE((short) 3, Double.class, Operator.values(),
 				new Parser<Double>() {
 			public Double parse(String dbString) {
-				return Double.valueOf(dbString);
+			    
+	             // TODO: If the string does not contain a long value, the method Long.valueOf()
+                //       throws a NumberFormatException. That causes an endless loop in the
+                //       AmsDistributor
+                Double result = null;
+                
+                try {
+                    result = Double.valueOf(dbString);
+                } catch(NumberFormatException nfe) {
+                    
+                    CentralLogger.getInstance().warn(this, "[*** NumberFormatException ***]: " + nfe.getMessage());
+                    result = NumberValidator.getCleanDouble(dbString);
+                    CentralLogger.getInstance().warn(this, "Extract from string '" + dbString + "' the value " + result);
+                    if(result == null) {
+                        
+                        // TODO: Sinnvoller Standardwert?
+                        result = new Double(0);
+                        CentralLogger.getInstance().warn(this, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
+                    }
+                }
+                
+                return result;
 			}
 
 			public String toDbString(Object value) {
@@ -222,7 +243,28 @@ public strictfp class FilterConditionProcessVariable implements
 		LONG((short) 2, Long.class, Operator.values(),
 				new Parser<Long>() {
 			public Long parse(String dbString) {
-				return Long.valueOf(dbString);
+			    
+			    // TODO: If the string does not contain a long value, the method Long.valueOf()
+			    //       throws a NumberFormatException. That causes an endless loop in the
+			    //       AmsDistributor
+			    Long result = null;
+			    
+			    try {
+			        result = Long.valueOf(dbString);
+			    } catch(NumberFormatException nfe) {
+			        
+			        CentralLogger.getInstance().warn(this, "[*** NumberFormatException ***]: " + nfe.getMessage());
+			        result = NumberValidator.getCleanLong(dbString);
+                    CentralLogger.getInstance().warn(this, "Extract from string '" + dbString + "' the value " + result);
+			        if(result == null) {
+			            
+			            // TODO: Sinnvoller Standardwert?
+			            result = new Long(0);
+	                    CentralLogger.getInstance().warn(this, "Cannot get a valid number from string '" + dbString + "'. Using default value " + result);
+			        }
+			    }
+			    
+				return result;
 			}
 
 			public String toDbString(Object value) {

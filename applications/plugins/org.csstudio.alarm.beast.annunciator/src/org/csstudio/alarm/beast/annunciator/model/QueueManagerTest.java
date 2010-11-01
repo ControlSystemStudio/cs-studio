@@ -40,6 +40,7 @@ public class QueueManagerTest
         Severity.initialize("MAJOR,MINOR,INFO");
         final SpeechPriorityQueue queue = new SpeechPriorityQueue();
         final QueueManager queue_manager = new QueueManager(listener, queue, null, 5);
+        queue_manager.start();
 
         // Allow QueueManager to start up
         Thread.sleep(3000);

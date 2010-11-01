@@ -113,7 +113,7 @@ public class SQL
                 statement.executeQuery(select_property_types);
             while (result.next())
             {
-                final Integer id = new Integer(result.getInt(1));
+                final Integer id = result.getInt(1);
                 final String name = result.getString(2);
                 content_properties_by_id.put(id, name);
                 content_properties_by_name.put(name, id);
@@ -158,7 +158,7 @@ public class SQL
      */
     public String getPropertyNameById(int id)
     {
-        return content_properties_by_id.get(new Integer(id));
+        return content_properties_by_id.get(Integer.valueOf(id));
     }
 
     /** For properties in MESSAGE_CONTENT, obtain their ID by name

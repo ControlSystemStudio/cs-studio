@@ -35,7 +35,11 @@ import java.io.ObjectOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import org.apache.log4j.Logger;
+import org.csstudio.alarm.jms2ora.Jms2OraPlugin;
+import org.csstudio.alarm.jms2ora.preferences.PreferenceConstants;
 import org.csstudio.platform.logging.CentralLogger;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 
 /**
  * 
@@ -43,42 +47,56 @@ import org.csstudio.platform.logging.CentralLogger;
  * @version 2.0
  */
 
-public class MessageFileHandler implements FilenameFilter
-{
+public class MessageFileHandler implements FilenameFilter {
+    
     /** Static instance reference */
     private static MessageFileHandler instance = null;
     
     /** Logger of this class */
-    private Logger logger = null;
+    private Logger logger;
 
     /** True if the folder 'nirvana' exists. This folder holds the stored message object content. */
-    private boolean existsObjectFolder = false;
+    private boolean existsObjectFolder;
  
     /** Name of the folder that holds the stored message content */
-    private final String objectDir = "./var/nirvana/";
+    private String objectDir;
 
     /** Prefix for the file names */
     private final String prefix = "message_";
     
-    private MessageFileHandler()
-    {
+    private MessageFileHandler() {
+        
+        IPreferencesService prefs = Platform.getPreferencesService();
+        String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORAGE_DIRECTORY, "./var/", null);
+        if(temp.endsWith("/") == false) {
+            temp += "/";
+        }
+        
+        objectDir = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.MESSAGE_DIRECTORY, "nirvana/", null);
+        objectDir = temp + objectDir;
+        
         logger = CentralLogger.getInstance().getLogger(this);
         
         createObjectFolder();
     }
 
-    public static synchronized MessageFileHandler getInstance()
-    {
-        if(instance == null)
-        {
+    /**
+     * 
+     * @return
+     */
+    public static synchronized MessageFileHandler getInstance() {
+        
+        if(instance == null) {
             instance = new MessageFileHandler();
         }
         
         return instance;
     }
     
-    public boolean accept(File dir, String name)
-    {
+    /**
+     * 
+     */
+    public boolean accept(File dir, String name) {
         return name.toLowerCase().matches(prefix + "\\d{8}_\\d{9}.ser");
     }
     
@@ -89,8 +107,8 @@ public class MessageFileHandler implements FilenameFilter
      * @return Number of MessageContent objects which were written to the database because of errors during
      *         processing the message content.
      */
-    public int getMessageFilesNumber()
-    {
+    public int getMessageFilesNumber() {
+        
         String[] fileList = null;
         File file = null;        
         int result = 0;
@@ -98,21 +116,19 @@ public class MessageFileHandler implements FilenameFilter
         file = new File(objectDir);
         fileList = file.list(this);
 
-        if(fileList != null)
-        {
+        if(fileList != null) {
             result = fileList.length;
         }
         
         return result;
     }
     
-    public String getMessageFileNamesAsString()
-    {
+    public String getMessageFileNamesAsString() {
+        
         StringBuffer result = new StringBuffer();
         String[] list = getMessageFileNames();
         
-        for(String s : list)
-        {
+        for(String s : list) {
             result.append(s + "\n");
         }
         
@@ -126,16 +142,16 @@ public class MessageFileHandler implements FilenameFilter
      * @return Array of String with the file names.
      */
     
-    public String[] getMessageFileNames()
-    {
+    public String[] getMessageFileNames() {
+        
         String[] result = null;
         File name = null;
         
         name = new File(objectDir);
         result = name.list(this);
-        System.out.println(result.length);
-        if(result.length == 0)
-        {
+
+        if(result.length == 0) {
+            
             result = null;
             result = new String[1];
             result[0] = "No message file names available.";
@@ -146,8 +162,8 @@ public class MessageFileHandler implements FilenameFilter
         return result;
     }
 
-    private String[] collectMessageFilesName()
-    {
+    private String[] collectMessageFilesName() {
+        
         String[] result = null;
         File name = null;
         
@@ -159,13 +175,12 @@ public class MessageFileHandler implements FilenameFilter
         return result;
     }
     
-    public String getMessageFileContentAsString()
-    {
+    public String getMessageFileContentAsString() {
+        
         StringBuffer result = new StringBuffer();
         String[] list = getMessageFileContent();
         
-        for(String s : list)
-        {
+        for(String s : list) {
             result.append(s + "\n");
         }
         
@@ -177,33 +192,28 @@ public class MessageFileHandler implements FilenameFilter
      * 
      * @return Array of String with the message content
      */
-    public String[] getMessageFileContent()
-    {
+    public String[] getMessageFileContent() {
+        
         MessageContent content = null;
         String[] result  = null;
         String[] name = null;
         
         name = this.collectMessageFilesName();
         
-        if(name != null)
-        {
-            if(name.length > 0)
-            {
+        if(name != null) {
+            
+            if(name.length > 0) {
+                
                 result = new String[name.length];
-                for(int i = 0;i < name.length;i++)
-                {
+                for(int i = 0;i < name.length;i++) {
                     content = this.readMessageContent(objectDir + name[i]);
                     result[i] = content.toString();
                 }
-            }
-            else
-            {
+            } else {
                 result = new String[1];
                 result[0] = "No message files found.";
             }
-        }
-        else
-        {
+        } else {
             result = new String[1];
             result[0] = "No message files found.";
         }
@@ -217,8 +227,8 @@ public class MessageFileHandler implements FilenameFilter
      * 
      * @return Number of deleted files.
      */
-    public int deleteAllMessageFiles()
-    {
+    public int deleteAllMessageFiles() {
+        
         String[] fileList = null;
         File list = null;
         File del = null;
@@ -227,18 +237,15 @@ public class MessageFileHandler implements FilenameFilter
         list = new File(objectDir);
         
         fileList = list.list(this);
-        if(fileList == null)
-        {
+        if(fileList == null) {
             list = null;
             return result;
         }
         
-        for(int i = 0;i < fileList.length;i++)
-        {
-            del = new File(objectDir + fileList[i]);
+        for(int i = 0;i < fileList.length;i++) {
             
-            if(del.delete())
-            {
+            del = new File(objectDir + fileList[i]);
+            if(del.delete()) {
                 result++;
             }
             
@@ -250,33 +257,27 @@ public class MessageFileHandler implements FilenameFilter
         return result;
     }
     
-    public boolean exitsObjectFolder()
-    {
+    public boolean exitsObjectFolder() {
         return existsObjectFolder;
     }
     
     /**
      * 
      */
-    private void createObjectFolder()
-    {
+    private void createObjectFolder() {
+        
         File folder = new File(objectDir);
         
         existsObjectFolder = true;
         
-        if(!folder.exists())
-        {
+        if(!folder.exists()) {
+            
             boolean result = folder.mkdir();
-            if(result)
-            {
+            if(result) {
                 logger.info("Folder " + objectDir + " was created.");
-                
                 existsObjectFolder = true;
-            }
-            else
-            {
+            } else {
                 logger.warn("Folder " + objectDir + " was NOT created.");
-                
                 existsObjectFolder = false;
             }
         }
@@ -288,49 +289,38 @@ public class MessageFileHandler implements FilenameFilter
      * @param content - The MessageContent object that have to be stored on disk.
      */
 
-    public void writeMessageContentToFile(MessageContent content)
-    {
+    public void writeMessageContentToFile(MessageContent content) {
+        
         SimpleDateFormat dfm = new SimpleDateFormat("yyyyMMdd_HHmmssSSS");
         GregorianCalendar cal = null;
         FileOutputStream fos = null;
         ObjectOutputStream oos = null;
         String fn = null;
 
-        if(!content.hasContent())
-        {
+        if(!content.hasContent()) {
             logger.info("Message does not contain content.");
-            
             return;
         }
 
-        if(existsObjectFolder == false)
-        {
+        if(existsObjectFolder == false) {
             logger.warn("Object folder '" + objectDir + "' does not exist. Message cannot be stored.");
-            
             return;
         }
         
         cal = new GregorianCalendar();
         fn  = prefix + dfm.format(cal.getTime());                
 
-        try
-        {
+        try {
             fos = new FileOutputStream(objectDir + fn + ".ser");
             oos = new ObjectOutputStream(fos);
             
             // Write the MessageContent object to disk
             oos.writeObject(content);            
-        }
-        catch(FileNotFoundException fnfe)
-        {
+        } catch(FileNotFoundException fnfe) {
             logger.error("FileNotFoundException : " + fnfe.getMessage());
-        }
-        catch(IOException ioe)
-        {
+        } catch(IOException ioe) {
             logger.error("IOException : " + ioe.getMessage());
-        }
-        finally
-        {
+        } finally {
             if(oos != null){try{oos.close();}catch(IOException ioe){/* Can be ignored */}}
             if(fos != null){try{fos.close();}catch(IOException ioe){/* Can be ignored */}}
             
@@ -339,37 +329,28 @@ public class MessageFileHandler implements FilenameFilter
         }
     }
     
-    private MessageContent readMessageContent(String fileName)
-    {
+    private MessageContent readMessageContent(String fileName) {
+        
         MessageContent content = null;
         FileInputStream fis = null;
         ObjectInputStream ois = null;
 
-        try
-        {
+        try {
             fis = new FileInputStream(fileName);
             ois = new ObjectInputStream(fis);
             
             // Write the MessageContent object to disk
             content = (MessageContent)ois.readObject();            
-        }
-        catch(FileNotFoundException fnfe)
-        {
+        } catch(FileNotFoundException fnfe) {
             logger.error("FileNotFoundException : " + fnfe.getMessage());
             content = null;
-        }
-        catch(IOException ioe)
-        {
+        } catch(IOException ioe) {
             logger.error("IOException : " + ioe.getMessage());
             content = null;
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             logger.error("ClassNotFoundException : " + e.getMessage());
             content = null;
-        }
-        finally
-        {
+        } finally {
             if(ois != null){try{ois.close();}catch(IOException ioe){/* Can be ignored */}}
             if(fis != null){try{fis.close();}catch(IOException ioe){/* Can be ignored */}}
             

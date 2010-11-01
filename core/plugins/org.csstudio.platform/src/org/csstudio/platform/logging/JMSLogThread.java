@@ -110,7 +110,11 @@ public class JMSLogThread extends Thread implements ExceptionListener
         // Limit the queue size
         if (queue.size() < MAX_QUEUE_SIZE)
         {
-            queue.offer(message);
+            if (! queue.offer(message))
+            {
+            	System.out.println("JMSLogThread cannot queue " + message.getText());
+            	return;
+            }
             queue_is_full = false;
             return;
         }
@@ -123,7 +127,11 @@ public class JMSLogThread extends Thread implements ExceptionListener
         		Level.ERROR.toString(),
                 now, now, null, null, null, null, null, null);
         LogLog.error(error.toString());
-        queue.offer(error);
+        if (! queue.offer(error))
+        {
+        	System.out.println("JMSLogThread cannot queue " + message.getText());
+        	return;
+        }
     }
     
     /** Ask thread to stop.
@@ -206,7 +214,11 @@ public class JMSLogThread extends Thread implements ExceptionListener
             {
                 connection.close();
             }
-            catch (Exception ex) { /* NOP */ }
+            catch (Exception ex)
+            {	// Really ignored since we're shutting down anyway,
+            	// and where to log since we're stopping the logging?
+            	ex.printStackTrace();
+        	}
             connection = null;
         }
         session = null;

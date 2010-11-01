@@ -13,11 +13,11 @@ public class SampleEngineConfig
     final private int id;
     final private String name;
     final private String description;
-    final private URL url;
+    final private String url;
 
     public SampleEngineConfig(final RDBArchive archive,
             final int id, final String name,
-            final String description, final URL url)
+            final String description, final String url)
     {
         this.archive = archive;
         this.id = id;
@@ -41,9 +41,9 @@ public class SampleEngineConfig
         return description;
     }
 
-    public URL getUrl()
+    public URL getUrl() throws Exception
     {
-        return url;
+        return new URL(url);
     }
 
     /** Add group of channels
@@ -74,6 +74,25 @@ public class SampleEngineConfig
                 name, id, description, url.toString());
     }
 
+    /** Hash based on id, name, description, URL but not archive
+     *  {@inheritDoc}
+     */
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = 1;
+	    result = prime * result
+	            + ((description == null) ? 0 : description.hashCode());
+	    result = prime * result + id;
+	    result = prime * result + ((name == null) ? 0 : name.hashCode());
+	    result = prime * result + ((url == null) ? 0 : url.hashCode());
+	    return result;
+    }
+
+    /** Check equality based on id, name, description, URL but not archive
+     *  {@inheritDoc}
+     */
     @Override
     public boolean equals(Object obj)
     {

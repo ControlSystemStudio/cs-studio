@@ -55,6 +55,11 @@
             id="org.csstudio.alarm.jms2ora.GetQueuedMessages"
             label="Get Queued Messages">
       </command>
+      <command
+            class="org.csstudio.alarm.jms2ora.management.GetDescription"
+            id="org.csstudio.alarm.jms2ora.GetDescription"
+            label="Get Description">
+      </command>
    </extension>
    <extension
          id="Jms2OraProduct"

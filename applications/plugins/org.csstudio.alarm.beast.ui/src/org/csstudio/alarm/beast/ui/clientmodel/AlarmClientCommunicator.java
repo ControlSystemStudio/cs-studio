@@ -138,11 +138,14 @@ class AlarmClientCommunicator extends JMSAlarmCommunicator
     public AlarmClientCommunicator(final boolean allow_write,
             final AlarmClientModel model) throws Exception
     {
-        super("-unknown-", //$NON-NLS-1$
-              allow_write ? Preferences.getJMS_AlarmClientTopic() : null,
-                            Preferences.getJMS_AlarmServerTopic(),
+        super(model.getConfigurationName(),
+              allow_write ? Preferences.getJMS_AlarmClientTopic(model.getConfigurationName()) : null,
+                            Preferences.getJMS_AlarmServerTopic(model.getConfigurationName()),
               true);
+        // System.out.println("Client communicator:" + toString());
+        
         this.model = model;
+        timeout_timer.start();
     }
     
     /** Dispatch queued events,

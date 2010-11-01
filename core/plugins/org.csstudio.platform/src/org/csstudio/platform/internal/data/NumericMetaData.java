@@ -86,9 +86,32 @@ public class NumericMetaData implements INumericMetaData
 	public String getUnits()
 	{	return units;	}
     
+    @Override
+    public int hashCode()
+    {
+	    final int prime = 31;
+	    int result = 1;
+	    long temp;
+	    temp = Double.doubleToLongBits(alarm_high);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    temp = Double.doubleToLongBits(alarm_low);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    temp = Double.doubleToLongBits(disp_high);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    temp = Double.doubleToLongBits(disp_low);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    result = prime * result + prec;
+	    result = prime * result + ((units == null) ? 0 : units.hashCode());
+	    temp = Double.doubleToLongBits(warn_high);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    temp = Double.doubleToLongBits(warn_low);
+	    result = prime * result + (int) (temp ^ (temp >>> 32));
+	    return result;
+    }
+
     /** @return <code>true</code> if given meta data equals this */
     @Override
-    public boolean equals(Object obj)
+    public boolean equals(final Object obj)
     {
         if (obj == this)
             return true;
@@ -111,7 +134,7 @@ public class NumericMetaData implements INumericMetaData
                other.getPrecision() == prec &&
                other.getUnits().equals(units);
     }
-
+    
     /** {@inheritDoc} */
     @Override
 	@SuppressWarnings("nls")

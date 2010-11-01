@@ -14,7 +14,7 @@ import org.junit.Test;
 public class ValueIteratorTest
 {
     /** Value iterator that produces demo samples 1 ... 10 */
-    class DemoDataIterator implements ValueIterator
+    static class DemoDataIterator implements ValueIterator
     {
         final private String name;
         final private int start_time;

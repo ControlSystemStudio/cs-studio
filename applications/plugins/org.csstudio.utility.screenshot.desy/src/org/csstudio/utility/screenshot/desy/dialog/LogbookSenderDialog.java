@@ -34,6 +34,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
@@ -58,9 +59,8 @@ import org.eclipse.swt.widgets.Text;
 
 public class LogbookSenderDialog extends Dialog implements SelectionListener
 {
-    private GregorianCalendar cal = null;
-    private SimpleDateFormat tempFormat = null;
-    private Shell parentShell = null;
+    private GregorianCalendar cal;
+    private Shell parentShell;
     private LogbookEntry logbookEntry = null;
     private Button buttonSend = null;
     private Button buttonCancel = null;
@@ -151,7 +151,8 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
      * 
      */
     
-    protected void configureShell(Shell shell)
+    @Override
+	protected void configureShell(Shell shell)
     {
         super.configureShell(shell);
         
@@ -162,7 +163,8 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
      * 
      */
     
-    protected void initializeBounds()
+    @Override
+	protected void initializeBounds()
     {
         Rectangle rect = parentShell.getBounds();        
 
@@ -173,7 +175,8 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
      * 
      */
     
-    protected Control createDialogArea(Composite parent)
+    @Override
+	protected Control createDialogArea(Composite parent)
     {
         String temp = null;
         GridData gd = null;        
@@ -419,11 +422,9 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
             }            
         };
         
-        cbKeyword.getCombo().addDisposeListener(new DisposeListener()
-        {
-            public void widgetDisposed(DisposeEvent e)
-            {
-                keywordHelper.saveSettings();
+        cbKeyword.getCombo().addDisposeListener(new DisposeListener() {
+            public void widgetDisposed(DisposeEvent e) {
+                getKeywordHelper().saveSettings();
             }
         });
         
@@ -487,7 +488,8 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         return parent;
     }
 
-    protected Control createButtonBar(Composite parent)
+    @Override
+	protected Control createButtonBar(Composite parent)
     {
         Label labelDummy = null;
         GridData gd = null;
@@ -535,12 +537,9 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         
         logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_IDENTIFYER, textIdentifyer.getText());
         
-        tempFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
-        
+        SimpleDateFormat tempFormat = new SimpleDateFormat(DATE_TIME_FORMAT);
         logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_ENTRYDATE, tempFormat.format(cal.getTime()));
-        
         logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_EVENTFROM, tempFormat.format(cal.getTime()));
-        
         tempFormat = null;
         
         logbookEntry.setLogbookProperty(LogbookEntry.PROPERTY_LOGSEVERITY, cbSeverity.getItem(cbSeverity.getSelectionIndex()));
@@ -596,24 +595,19 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         return id;
     }
 
-    private void initDateAndTimeFields(boolean newDate)
-    {
-        if(newDate)
-        {
+    private void initDateAndTimeFields(boolean newDate) {
+        
+    	if(newDate) {
             cal = null;
             cal = new GregorianCalendar();
         }
         
-        tempFormat = new SimpleDateFormat(DATE_FORMAT);
-        
+        SimpleDateFormat tempFormat = new SimpleDateFormat(DATE_FORMAT);
         textDate.setText(tempFormat.format(cal.getTime()));
-        
         tempFormat = null;
         
         tempFormat = new SimpleDateFormat(TIME_FORMAT);        
-        
         textTime.setText(tempFormat.format(cal.getTime()));
-
         tempFormat = null;
     }
 
@@ -633,6 +627,15 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
         keywordHelper.addEntry(keyword);
     }
 
+    /**
+     * 
+     * @return
+     */
+    public ComboHistoryHelper getKeywordHelper() {
+    
+    	return keywordHelper;
+    }
+    
     public void widgetDefaultSelected(SelectionEvent event)
     {
         widgetSelected(event);
@@ -648,13 +651,13 @@ public class LogbookSenderDialog extends Dialog implements SelectionListener
             {
                 createLogbookEntry();
                     
-                this.setReturnCode(Dialog.OK);
+                this.setReturnCode(Window.OK);
                                 
                 this.close();
             }
             else if(source.getText().compareToIgnoreCase(LogbookSenderMessages.getString("LogbookSenderDialog.BUTTON_CANCEL")) == 0)
             {
-                this.setReturnCode(Dialog.CANCEL);
+                this.setReturnCode(Window.CANCEL);
     
                 this.close();
             }

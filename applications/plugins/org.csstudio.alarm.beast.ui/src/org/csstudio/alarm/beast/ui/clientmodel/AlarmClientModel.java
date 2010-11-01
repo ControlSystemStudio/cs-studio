@@ -44,8 +44,14 @@ public class AlarmClientModel
 
     /** Reference count for instance */
     private volatile int references = 0;
+
+    /** Name of this configuration, i.e. root element of the configuration tree */
+	private String config_name;
     
-    /** Have we recently heard from the server? */
+    /** Names of all available configuration, i.e. all root elements */
+    private String config_names[];
+
+	/** Have we recently heard from the server? */
     private volatile boolean server_alive = false;
 
     /** Do we think the server is in maintenance mode? */
@@ -56,10 +62,17 @@ public class AlarmClientModel
      */
     private AlarmConfiguration config;
 
-    /** Connection to alarm updates */
-    private AlarmClientCommunicator communicator;
+    /** JMS Connection to server: alarm updates, send acknowledgment.
+     *  May be <code>null</code> when we (re-)read the configuration.
+     *  
+     *  SYNC: on communicator_lock for access.
+     */
+    private AlarmClientCommunicator communicator = null;
 
-    /** Root of the alarm tree.
+    /** Lock for <code>communicator</code> */
+    final private Object communicator_lock = new Object();
+    
+	/** Root of the alarm tree.
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      *  Usually this would be the same as config.getConfigTree(),
      *  but initially and after errors it will be a pseudo-alarm-tree
@@ -82,21 +95,18 @@ public class AlarmClientModel
         new CopyOnWriteArrayList<AlarmClientModelListener>();
 
     /** Send events? */
-    private volatile boolean notify_listeners = true;
+    private boolean notify_listeners = true;
 
     /** @return <code>true</code> for read-only model */
-    final private boolean allow_write = ! Preferences.getReadOnly();
+    final private boolean allow_write = ! Preferences.isReadOnly();
 
-    /** Initialize client model */
+	/** Initialize client model */
     private AlarmClientModel() throws Exception
     {
+    	config_name = Preferences.getAlarmTreeRoot();
+
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
-        
-        // Subscribe to alarm updates ASAP.
-        // Communicator will queue received events until we
-        // read the whole configuration.
-        communicator = new AlarmClientCommunicator(allow_write, this);
         
         new ReadConfigJob(this).schedule();
     }
@@ -114,6 +124,12 @@ public class AlarmClientModel
             instance = new AlarmClientModel();
         ++instance.references;
         return instance;
+    }
+    
+    /** Release the 'instance' */
+    private static void releaseInstance()
+    {
+    	instance = null;
     }
 
     /** Must be called to release model when no longer used.
@@ -136,7 +152,14 @@ public class AlarmClientModel
             // Don't lock the model while closing the communicator
             // because communicator could right now be in a model
             // update which in turn already locks the model -> deadlock
-            communicator.close();
+            synchronized (communicator_lock)
+            {
+                if (communicator != null)
+                {
+                	communicator.close();
+                	communicator = null;
+                }
+            }
             synchronized (this)
             {
                 if (config != null)
@@ -150,9 +173,63 @@ public class AlarmClientModel
         {
             CentralLogger.getInstance().getLogger(this).warn(ex);
         }
-        instance = null;
+        releaseInstance();
     }
 
+    /** List all configuration 'root' element names, i.e. names
+     *  of all possible configurations, including the current one.
+     *  @return Array of 'root' elements
+     *  @throws Exception on error
+     */
+    public synchronized String[] listConfigurations() throws Exception
+    {
+    	return config_names;
+    }
+
+    /** @return Name of this configuration, i.e. name of its root element */
+    public synchronized String getConfigurationName()
+    {
+    	return config_name;
+    }
+    
+    /** Load a new alarm configuration.
+     *  Ignored if the 'new' configuration name matches the current name.
+     *  
+     *  @param new_root_name Name of configuration to load
+     *  @param listener Listener that's notified when done
+     */
+    public void setConfigurationName(final String new_root_name,
+    		final AlarmClientModelConfigListener listener)
+    {
+    	synchronized (this)
+        {
+        	if (new_root_name.equals(config_name))
+        		return;
+        	
+        	// Update config. name
+        	config_name = new_root_name;
+        }
+    	
+    	// Update GUI with 'empty' model
+        createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
+        fireNewConfig();
+    	
+    	// Clear JMS communicator because it uses topics of the old config. name
+        synchronized (communicator_lock)
+        {
+	    	if (communicator != null)
+	    	{
+		    	// Close old communicator
+		    	communicator.close();
+		    	communicator = null;
+	    	}
+        }
+        
+        // Load new configuration:
+        // Create new JMS communicator, read from RDB, fire events, ...
+    	new ReadConfigJob(this, listener).schedule();
+    }
+    
     /** @return <code>true</code> if model allows write access
      *          (acknowledge, update config)
      */
@@ -183,13 +260,35 @@ public class AlarmClientModel
         final BenchmarkTimer timer = new BenchmarkTimer();
         monitor.beginTask(Messages.AlarmClientModel_ReadingConfiguration, IProgressMonitor.UNKNOWN);
 
-        final String root_name = Preferences.getAlarmTreeRoot();
         // While we read the RDB, new alarms could arrive.
-        // To avoid missing them, we assert that we are connected to JMS,
-        // and put the JMS communicator in 'queue' mode.
-        communicator.setQueueMode(true);
+        // To avoid missing them, we assert that we are connected to JMS.
+        // Check if we need to create a NEW communicator
+        final AlarmClientCommunicator comm;
+        synchronized (communicator_lock)
+        {
+	        if (communicator == null)
+	        {   // New communicator will queue received events until we
+		        // read the whole configuration.
+		    	try
+		    	{
+			    	communicator = new AlarmClientCommunicator(allow_write, this);
+			        communicator.start();
+		    	}
+		    	catch (Exception ex)
+		    	{
+		    		CentralLogger.getInstance().getLogger(this).error("Cannot start AlarmClientCommunicator", ex); //$NON-NLS-1$
+		    		return;
+		    	}
+	        }
+	        else
+	        {	// Switch existing communicator to queue mode
+	        	communicator.setQueueMode(true);
+	        }
+	        comm = communicator;
+        }        
+        // Wait for JMS connection
         int wait = 0;
-        while (!communicator.isConnected())
+        while (!comm.isConnected())
         {
             monitor.subTask(NLS.bind(Messages.AlarmClientModel_WaitingForJMSFmt, ++wait));
             try
@@ -207,13 +306,14 @@ public class AlarmClientModel
             }
         }
 
+        // Read RDB
         monitor.subTask(Messages.AlarmClientModel_ReadingRDB);
-        // Prevent a flurry of events while items with alarms are added
-        notify_listeners = false;
         try
         {
             synchronized (this)
             {
+                // Prevent a flurry of events while items with alarms are added
+                notify_listeners = false;
                 if (config != null)
                     config.close();
                 active_alarms.clear();
@@ -226,7 +326,7 @@ public class AlarmClientModel
             final AlarmConfiguration new_config =
                 new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
                 					   Preferences.getRDB_Password(),
-                                       root_name,false)
+                                       config_name,false)
             {
                 @Override
                 protected AlarmTreeRoot createAlarmTreeRoot(int id,
@@ -236,10 +336,17 @@ public class AlarmClientModel
                                                     AlarmClientModel.this);
                 }
             };
+            // Read names of available configurations
+            final String new_root_names[] = new_config.listConfigurations();
+            // Update model with newly received data
             synchronized (this)
             {
                 config = new_config;
                 config_tree = config.getAlarmTree();
+                config_names = new_root_names;
+                // active_alarms & acknowledged_alarms already populated
+                // because fireNewAlarmState() was called while building
+                // the alarm tree
             }
         }
         catch (Exception ex)
@@ -252,8 +359,13 @@ public class AlarmClientModel
         final Logger logger = CentralLogger.getInstance().getLogger(this);
         if (logger.isInfoEnabled())
         {
-            final int count = config_tree.getElementCount();
-            final int pv_count = config_tree.getPVCount();
+            final int count;
+            final int pv_count;
+        	synchronized (this)
+            {
+                count = config_tree.getElementCount();
+                pv_count = config_tree.getPVCount();
+            }
             logger.info(String.format(
                 "Read %d alarm tree items, %d PVs in %.2f seconds: %.1f items/sec, %.1f PVs/sec\n",
                 count, pv_count, timer.getSeconds(),
@@ -263,22 +375,28 @@ public class AlarmClientModel
 
         // After we received configuration, handle updates that might
         // have accumulated.
-        communicator.setConfigurationName(root_name);
-        communicator.setQueueMode(false);
+        comm.setQueueMode(false);
         // Re-enable events, send a single notification.
-        notify_listeners = true;
+        synchronized (this)
+        {
+            notify_listeners = true;
+        }
         fireNewConfig();
         monitor.done();
-        
     }
     
     /** @return Name of JMS server or some text that indicates
      *          disconnected state. For information, not to determine
      *          exact connection state.
      */
-    public String getJMSServerName()
+    public String getJMSServerInfo()
     {
-        return communicator.getJMSServerName();
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		return communicator.toString();
+        }
+        return "No Communicator"; //$NON-NLS-1$
     }
     
     /** Invoked by AlarmClientCommunicator whenever an 'IDLE'
@@ -322,8 +440,11 @@ public class AlarmClientModel
      */
     public void requestMaintenanceMode(final boolean maintenance)
     {
-        if (allow_write)
-            communicator.requestMaintenanceMode(maintenance);
+        synchronized (communicator_lock)
+        {
+        	if (allow_write  &&  communicator != null)
+        		communicator.requestMaintenanceMode(maintenance);
+        }
     }
 
     /** @return root of the alarm tree configuration */
@@ -368,7 +489,11 @@ public class AlarmClientModel
                 return;
             config.addComponent(root_or_component, name);
         }
-        communicator.sendConfigUpdate(AlarmTreePath.makePath(root_or_component.getPathName(), name));
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(AlarmTreePath.makePath(root_or_component.getPathName(), name));
+        }
     }
 
     /** Add a PV to the model and config storage (RDB)
@@ -388,8 +513,12 @@ public class AlarmClientModel
             config.addPV(component, name);
         }
         // Notify via JMS, then add to local model in response to notification.
-        communicator.sendConfigUpdate(
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+                communicator.sendConfigUpdate(
                         AlarmTreePath.makePath(component.getPathName(), name));
+        }
     }
 
     /** Change an items configuration in RDB.
@@ -411,7 +540,11 @@ public class AlarmClientModel
                 return;
             config.configureItem(item, guidance, displays, commands);
         }
-        communicator.sendConfigUpdate(item.getPathName());
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(item.getPathName());
+        }
     }
 
     /** Change a PV's configuration in RDB.
@@ -444,7 +577,11 @@ public class AlarmClientModel
                     latch, delay, count, filter,
                     guidance, displays, commands);
         }
-        communicator.sendConfigUpdate(pv.getPathName());
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(pv.getPathName());
+        }
     }
 
     /** Change item's name
@@ -462,7 +599,11 @@ public class AlarmClientModel
                 return;
             config.rename(item, new_name);
         }
-        communicator.sendConfigUpdate(null);
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(null);
+        }
     }
 
     /** Change item's location in alarm configuration hierarchy.
@@ -484,7 +625,11 @@ public class AlarmClientModel
                 return;
             config.move(item, new_path);
         }
-        communicator.sendConfigUpdate(null);
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(null);
+        }
     }
 
     /** Create new PV by copying existing PV
@@ -533,7 +678,11 @@ public class AlarmClientModel
         }
         // This will trigger an update the configuration of new_pv
         // in this model as well as other alarm system listeners
-        communicator.sendConfigUpdate(new_path_and_pv);
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(new_path_and_pv);
+        }
     }
 
     /** Remove item and all sub-items from alarm tree.
@@ -550,7 +699,11 @@ public class AlarmClientModel
                 return;
             config.remove(item);
         }
-        communicator.sendConfigUpdate(null);
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.sendConfigUpdate(null);
+        }
     }
 
     /** Update the configuration of a model item
@@ -641,7 +794,7 @@ public class AlarmClientModel
                 return;
             }
         }
-        // TODO Can this result in out-of-memory?!
+        // Can this result in out-of-memory?!
         // First glance: No, since we just log & return.
         // Is there a memory leak in the logger?
         // The update comes from JMS, and the logger may also
@@ -689,8 +842,11 @@ public class AlarmClientModel
      */
     public void acknowledge(final AlarmTreePV pv, final boolean acknowledge)
     {
-        if (allow_write)
-            communicator.requestAcknowledgement(pv, acknowledge);
+    	synchronized (communicator_lock)
+        {
+            if (allow_write  &&  communicator != null)
+                communicator.requestAcknowledgement(pv, acknowledge);
+        }
     }
 
     /** Create a pseudo alarm tree for the purpose of displaying a message
@@ -708,7 +864,11 @@ public class AlarmClientModel
     /** Send debug trigger to alarm server */
     public void triggerDebug()
     {
-        communicator.triggerDebugAction();
+        synchronized (communicator_lock)
+        {
+        	if (communicator != null)
+        		communicator.triggerDebugAction();
+        }
     }
 
     /** Inform listeners about server timeout */

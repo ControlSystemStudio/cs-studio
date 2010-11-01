@@ -349,5 +349,11 @@
             skipOnLoad="true"
             widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
       </widgetPropertyPostProcessor>
+      <widgetPropertyPostProcessor
+            class="org.csstudio.sds.components.model.eventing.PolyModelPointsPostProcessor"
+            propertyId="points"
+            skipOnLoad="true"
+            widgetId="org.csstudio.sds.components.Polygon,org.csstudio.sds.components.Polyline">
+      </widgetPropertyPostProcessor>
    </extension>
    </plugin>

@@ -30,7 +30,7 @@ public class RDBArchiveBatchTest
     private static RDBArchive archive;
     
     final private ISeverity severity = ValueFactory.createMinorSeverity();
-    final private String status = "Test";
+    final static private String status = "Test";
     
     final private INumericMetaData numeric_meta =
         ValueFactory.createNumericMetaData(-10.0, 10.0, -8.0, 8.0, -9.0, 9.0, 1, "Tests");

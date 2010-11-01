@@ -50,7 +50,6 @@ abstract public class GUIUpdateThrottle extends Thread
         this.initial_millis = initial_millis;
         this.suppression_millis = suppression_millis;
         setDaemon(true);
-        start();
     }
 
     /** Register an event trigger. Will result in throttled call to
@@ -110,9 +109,6 @@ abstract public class GUIUpdateThrottle extends Thread
     public void dispose()
     {
         run = false;
-        synchronized (this)
-        {
-            notifyAll();
-        }
+        trigger();
     }
 }

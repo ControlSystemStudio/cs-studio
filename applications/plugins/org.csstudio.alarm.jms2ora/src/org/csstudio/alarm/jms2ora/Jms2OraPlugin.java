@@ -32,9 +32,9 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class Jms2OraPlugin extends AbstractCssPlugin {
-    
-	/** The shared instance */
+public class Jms2OraPlugin extends AbstractCssPlugin
+{
+    /** The shared instance */
     private static Jms2OraPlugin plugin;
 
     /** The BundleContext instance */
@@ -49,21 +49,24 @@ public class Jms2OraPlugin extends AbstractCssPlugin {
     /**
 	 * The constructor
 	 */
-	public Jms2OraPlugin() {
+	public Jms2OraPlugin()
+	{
+	    plugin = this;
 	    
-		plugin = this;
 	    logger = CentralLogger.getInstance().getLogger(this);
 	}
 
     @Override
-    protected void doStart(BundleContext context) throws Exception {        
+    protected void doStart(BundleContext context) throws Exception
+    {        
         logger.info("Jms2Ora started...");
+        
         bundleContext = context;
     }
 
     @Override
-    protected void doStop(BundleContext context) throws Exception {
-    	// Do nothing
+    protected void doStop(BundleContext context) throws Exception
+    {
     }
 
     /**
@@ -71,7 +74,8 @@ public class Jms2OraPlugin extends AbstractCssPlugin {
      * 
      * @return
      */
-    public BundleContext getBundleContext() {
+    public BundleContext getBundleContext()
+    {
         return bundleContext;
     }
     
@@ -80,12 +84,14 @@ public class Jms2OraPlugin extends AbstractCssPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static Jms2OraPlugin getDefault() {
+	public static Jms2OraPlugin getDefault()
+	{
 		return plugin;
 	}
 
     @Override
-    public String getPluginId() {
+    public String getPluginId()
+    {
         return PLUGIN_ID;
     }
 }

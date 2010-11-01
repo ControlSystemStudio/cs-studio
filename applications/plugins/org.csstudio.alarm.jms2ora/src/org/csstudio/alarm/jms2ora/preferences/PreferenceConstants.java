@@ -51,4 +51,6 @@ public class PreferenceConstants {
     public static final String WATCHDOG_PERIOD = "watchdogPeriod";
     public static final String FILTER_SEND_BOUND = "filterSendBound";
     public static final String FILTER_MAX_SENT_MESSAGES = "filterMaxSentMessages";
+    public static final String STORE_EMPTY_VALUES = "storeEmptyValues";
+    public static final String DESCRIPTION = "description";
 }

@@ -2,8 +2,8 @@
 <feature
       id="org.csstudio.sns.feature.core"
       label="Core CSS Components"
-      version="2.3.0.qualifier"
-      provider-name="SNS, Kay Kasemir"
+      version="2.4.0.qualifier"
+      provider-name="Kay Kasemir &lt;kasemirk@ornl.gov&gt; - SNS"
       plugin="org.csstudio.sns.product">
 
    <description>
@@ -47,7 +47,6 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.eclipse.ui.navigator.resources"/>
       <import plugin="org.eclipse.ui.ide"/>
       <import plugin="org.csstudio.platform.libs.jdom" version="1.1.0" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.utility.pv" version="1.0.8" match="greaterOrEqual"/>
       <import plugin="org.junit"/>
       <import plugin="org.csstudio.platform" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.help.appserver"/>
@@ -56,6 +55,7 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.startup" version="1.1.2" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform" version="1.1.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.pv" version="1.0.8" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.preferences"/>
       <import plugin="org.eclipse.jface"/>
       <import plugin="org.eclipse.ui.workbench"/>
@@ -68,7 +68,8 @@ For details, see http://www.eclipse.org/legal/epl-v10.html
       <import plugin="org.csstudio.email" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.eclipse.equinox.security" version="1.0.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.apputil" version="1.0.11" match="greaterOrEqual"/>
-      <import plugin="org.eclipse.net4j.jms.api"/>
+      <import plugin="org.csstudio.utility.pv" version="1.1.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.epics" version="1.1.2" match="greaterOrEqual"/>
    </requires>
 
    <plugin

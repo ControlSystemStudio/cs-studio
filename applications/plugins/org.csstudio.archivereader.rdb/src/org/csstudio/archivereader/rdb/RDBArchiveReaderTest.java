@@ -321,6 +321,7 @@ public class RDBArchiveReaderTest
         assertTrue(result.next());
         final int channel_id = result.getInt(1);
         System.out.println(SCALAR_NAME + " ID = " + channel_id);
+        stmt.close();
         
         // Call stored procedure
         // Jeff's
@@ -378,6 +379,9 @@ public class RDBArchiveReaderTest
         final double secs_total = (bench_lap2 - bench_start) / 1000.0;
         System.out.println("Query: " + secs_query);
         System.out.println("Total: " + secs_total);
+        
+        statement.close();
+        rdb.close();
     }
 
     /** Directly call the stored procedure */
@@ -443,5 +447,7 @@ public class RDBArchiveReaderTest
         System.out.println(count + " samples");
         System.out.println("Query: " + secs_query);
         System.out.println("Total: " + secs_total);
+        statement.close();
+        rdb.close();
     }
 }

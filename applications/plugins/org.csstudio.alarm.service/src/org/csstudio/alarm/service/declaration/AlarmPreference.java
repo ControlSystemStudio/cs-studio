@@ -74,7 +74,6 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_WAIT_MSEC =
         new AlarmPreference<Integer>("pvChunkWaitMsec", 100);	// 200 -> 100
 
-    // TODO (jpenning) no longer in use
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 2000);
 

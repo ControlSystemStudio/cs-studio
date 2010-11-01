@@ -1,3 +1,4 @@
+
 package org.csstudio.nams.configurator.editor;
 
 import java.beans.PropertyChangeEvent;
@@ -35,13 +36,17 @@ import org.eclipse.core.databinding.observable.value.IObservableValue;
 import org.eclipse.jface.databinding.swt.SWTObservables;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ListViewer;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.events.KeyListener;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseListener;
+import org.eclipse.swt.events.VerifyEvent;
+import org.eclipse.swt.events.VerifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -61,10 +66,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			AbstractConfigurationBean<FilterTypeBean> {
 		private SupportedFilterTypes type;
 
+		@Override
 		public String getDisplayName() {
 			return "(internal bean for storing selcted filter type in filter condition editor)"; //$NON-NLS-1$
 		}
 
+		@Override
 		public int getID() {
 			return 0;
 		}
@@ -73,6 +80,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			return this.type;
 		}
 
+		@Override
 		public void setID(final int id) {
 			// Ignored.
 		}
@@ -88,6 +96,7 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 			// Kommt nicht vor...
 		}
 
+		@Override
 		public void setDisplayName(String name) {
 			// nothing to do here
 		}
@@ -301,19 +310,26 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				}
 			}
 
+			@Override
 			public void keyReleased(final KeyEvent e) {
+				// Not used yet
 			}
 		});
 		final Button buttonAdd = this.createButtonEntry(
 				this.stackComposites[2], Messages.FilterbedingungEditor_add_compare_value_button, true, 2);
 		buttonAdd.addMouseListener(new MouseListener() {
 
+			@Override
 			public void mouseDoubleClick(final MouseEvent e) {
+				// Not used yet
 			}
 
+			@Override
 			public void mouseDown(final MouseEvent e) {
+				// Not used yet
 			}
 
+			@Override
 			public void mouseUp(final MouseEvent e) {
 				FilterbedingungEditor.this
 						.addStringArrayCompareValue(arrayNewCompareValueText);
@@ -323,9 +339,12 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				Messages.FilterbedingungEditor_remove_compare_value_button, true, 2);
 		button.addMouseListener(new MouseListener() {
 
+			@Override
 			public void mouseDoubleClick(final MouseEvent e) {
+				// Not used yet
 			}
 
+			@Override
 			public void mouseDown(final MouseEvent e) {
 				if (FilterbedingungEditor.this.arrayCompareValueList
 						.getSelectionIndex() > -1) {
@@ -347,7 +366,9 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 				}
 			}
 
+			@Override
 			public void mouseUp(final MouseEvent e) {
+				// Not used yet
 			}
 		});
 		// PVComposite
@@ -360,19 +381,66 @@ public class FilterbedingungEditor extends AbstractEditor<FilterbedingungBean> {
 
 		final PVFilterConditionBean pvConfigurationBean = (PVFilterConditionBean) this.specificBeans
 				.get(SupportedFilterTypes.PV_CONDITION);
-		this.createTitledComboForEnumValues(this.stackComposites[3],
+		
+		// Combo box for the data type
+		ComboViewer suggestedTypeCombo = this.createTitledComboForEnumValues(this.stackComposites[3],
 				Messages.FilterbedingungEditor_suggested_type, SuggestedProcessVariableType.values(),
 				pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.suggestedType.name());
-
+		
+		// Clear the value field because if the suggested type changes, the value is invalid.
+		suggestedTypeCombo.addSelectionChangedListener(new ISelectionChangedListener() {
+            
+            @Override
+            public void selectionChanged(SelectionChangedEvent event) {
+                pvCompareValue.setText("");
+            }
+        });
+		
 		this.createTitledComboForEnumValues(this.stackComposites[3],
 				Messages.FilterbedingungEditor_operator, Operator.values(), pvConfigurationBean,
 				PVFilterConditionBean.PropertyNames.operator.name());
 
 		this.pvCompareValue = this.createTextEntry(this.stackComposites[3],
 				Messages.FilterbedingungEditor_compare_value, true);
+		
+		this.pvCompareValue.addVerifyListener(new VerifyListener() {
+            
+            @Override
+            public void verifyText(VerifyEvent e) {
+                
+                String string = e.text;
+                
+                SuggestedProcessVariableType t = pvConfigurationBean.getSuggestedType();
+                
+                System.out.println(string);
+                
+                char[] chars = new char[string.length()];
+                string.getChars(0, chars.length, chars, 0);
+                for (int i = 0; i < chars.length; i++) {
+                    
+                    if(t == SuggestedProcessVariableType.DOUBLE) {
+                        if((chars[i] < '0' || chars[i] > '9') && (chars[i] != '.')) {
+                            e.doit = false;
+                            return;
+                        }
+                    } else if(t == SuggestedProcessVariableType.LONG) {
+                        if (!('0' <= chars[i] && chars[i] <= '9')) {
+                            e.doit = false;
+                            return;
+                        }
+                    } else {
+                        e.doit = true;
+                        return;
+                    }
+                }
+
+            }
+        });
+		
 		final Button checkPVChannel = this.createButtonEntry(
 				this.stackComposites[3], Messages.FilterbedingungEditor_pv_connection_test, true, 2);
+		
 		checkPVChannel.addMouseListener(new MouseListener() {
 			public void mouseDoubleClick(final MouseEvent e) {
 			}

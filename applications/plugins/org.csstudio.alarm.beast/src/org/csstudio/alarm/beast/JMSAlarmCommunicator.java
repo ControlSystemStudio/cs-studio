@@ -42,7 +42,7 @@ import org.csstudio.platform.utility.jms.JMSConnectionListener;
 public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
                                              ExceptionListener, MessageListener
 {
-    private static final long CLOSE_TIMEOUT_MILLI = 10* 1000;
+    // private static final long CLOSE_TIMEOUT_MILLI = 10* 1000;
 
     final protected SimpleDateFormat date_format =
         new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
@@ -101,7 +101,6 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
      *  @param configuration Configuration name (root element name)
      *  @param write_topic JMS Topic for writing. <code>null</code> if read-only
      *  @param read_topic JMS Topic for reading. <code>null</code> if write-only
-     * @param string 
      *  @param write_with_readback Also subscribe to the write_topic to read
      *                             messages from there?
      *  @see #queueJMSCommunication(Runnable)
@@ -118,17 +117,26 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
         this.write_with_readback = write_with_readback;
         thread = new Thread(this, "JMS Alarm Communicator"); //$NON-NLS-1$
         thread.setDaemon(true);
-        thread.start();
     }
     
-    /** Update the configuration
-     *  @param configuration New config (root element) name
-     */
-    public void setConfigurationName(String configuration)
+    /** @return Debug representation */
+    @SuppressWarnings("nls")
+    @Override
+    public String toString()
     {
-        this.configuration = configuration;
+	    return "Server=" + jms_server +
+	    	   ", write topic=" + write_topic + (write_with_readback ? " (with readback)" : "") + 
+	    		", read topic=" + read_topic;
     }
 
+	/** Start the communication thread
+     *  @see #close()
+     */
+    public void start()
+    {
+    	thread.start();
+    }
+    
     /** @return Name of JMS server or some text that indicates
      *          disconnected state. For information, not to determine
      *          exact connection state.
@@ -158,7 +166,7 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
      */
     public boolean isConnected()
     {
-        return is_connected ;
+        return is_connected;
     }
 
     /** Communicator thread Runnable */
@@ -275,29 +283,30 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
 	 *  <p>
 	 *  Must be called to release resources when no longer used.
 	 */
-	@SuppressWarnings("nls")
     public void close()
 	{
 	    run = false;
 	    
 	    // Wait for the thread to exit so that we don't receive any
-	    // additional JMS updates.
+	    // additional JMS updates?
 	    // On the other hand, the tread might not exit at all if it's
 	    // still hung in the initial connect().
+	    // Wait with a timeout?
 	    
-	    // So wait with a timeout:
-	    try
-	    {
-	        thread.join(CLOSE_TIMEOUT_MILLI);
-	        // If thread won't stop, log that but otherwise continue
-	        if (thread.isAlive())
-	            throw new Exception("JMSAlarmCommunicator refuses to end");
-	    }
-        catch (Exception ex)
-        {
-            CentralLogger.getInstance().getLogger(this).warn(
-                    "JMS shutdown error " + ex.getMessage(), ex);
-        }
+	    // For now we don't wait at all for JMS thread to close down.
+	    
+//	    try
+//	    {
+//	        thread.join(CLOSE_TIMEOUT_MILLI);
+//	        // If thread won't stop, log that but otherwise continue
+//	        if (thread.isAlive())
+//	            throw new Exception("JMSAlarmCommunicator refuses to end");
+//	    }
+//        catch (Exception ex)
+//        {
+//            CentralLogger.getInstance().getLogger(this).warn(
+//                    "JMS shutdown error " + ex.getMessage(), ex);
+//        }
 	}
 
 	/** Add task to the work queue of the JMS communication thread.

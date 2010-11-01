@@ -41,7 +41,7 @@
  *
  * Copyright 1999 (C) Exoffice Technologies Inc. All Rights Reserved.
  *
- * $Id$
+ * $Id: CommandLine.java,v 1.1 2008/04/07 15:29:47 mmoeller Exp $
  *
  * Date         Author  Changes
  * 1/6/2000     jima    Created
@@ -93,7 +93,6 @@ public class CommandLine {
      * Default constructor which simply initialised the class
      */
     public CommandLine() {
-    	// Do nothing
     }
 
     /**

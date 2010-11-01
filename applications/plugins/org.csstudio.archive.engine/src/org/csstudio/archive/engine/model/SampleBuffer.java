@@ -1,8 +1,14 @@
+/*******************************************************************************
+ * Copyright (c) 2010 Oak Ridge National Laboratory.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ ******************************************************************************/
 package org.csstudio.archive.engine.model;
 
-import java.util.concurrent.ArrayBlockingQueue;
-
 import org.apache.log4j.Level;
+import org.csstudio.apputil.ringbuffer.RingBuffer;
 import org.csstudio.archive.engine.ThrottledLogger;
 import org.csstudio.platform.data.IValue;
 
@@ -22,11 +28,8 @@ public class SampleBuffer
      */
     final private String channel_name;
     
-    /** Max. number of samples in buffer. */
-    final private int capacity;
-    
     /** The actual samples in a thread-save queue. */
-    final private ArrayBlockingQueue<IValue> samples;
+    final private RingBuffer<IValue> samples;
     
     /** Statistics */
     final private BufferStats stats = new BufferStats();
@@ -47,8 +50,7 @@ public class SampleBuffer
     SampleBuffer(final String channel_name, final int capacity)
     {
         this.channel_name = channel_name;
-        this.capacity = capacity;
-        samples = new ArrayBlockingQueue<IValue>(capacity);
+        samples = new RingBuffer<IValue>(capacity);
     }
     
     /** @return channel name of this buffer */
@@ -60,13 +62,19 @@ public class SampleBuffer
     /** @return Queue capacity, i.e. maximum queue size. */
     public int getCapacity()
     {
-        return capacity;
+    	synchronized (samples)
+        {
+    		return samples.getCapacity();
+        }
     }
 
     /** @return Current queue size, i.e. number of samples in the queue. */
     public int getQueueSize()
     {
-        return samples.size();
+    	synchronized (samples)
+        {
+    		return samples.size();
+        }
     }
 
     /** @return <code>true</code> if currently experiencing write errors */
@@ -85,33 +93,37 @@ public class SampleBuffer
     @SuppressWarnings("nls")
     void add(final IValue value)
     {
-        final int size = samples.size();
-        if (size >= capacity)
-        {   // Note start of overruns, then drop older sample
-            if (start_of_overruns == null)
-                start_of_overruns = new Integer(stats.getOverruns());
-            samples.poll();
-            stats.addOverrun();
+    	synchronized (samples)
+        {
+            if (samples.isFull())
+            {   // Note start of overruns, then drop older sample
+                if (start_of_overruns == null)
+                    start_of_overruns = Integer.valueOf(stats.getOverruns());
+                stats.addOverrun();
+            }
+            else if (start_of_overruns != null)
+            {   // Ending a string of overruns. Maybe log it.
+                final int overruns = stats.getOverruns() - start_of_overruns;
+                overrun_msg.log(channel_name + ": " + overruns + " overruns");
+                start_of_overruns = null;
+            }
+            samples.add(value);
         }
-        else if (start_of_overruns != null)
-        {   // Ending a string of overruns. Maybe log it.
-            final int overruns = stats.getOverruns() - start_of_overruns;
-            overrun_msg.log(channel_name + ": " + overruns + " overruns");
-            start_of_overruns = null;
-        }
-        samples.add(value);
     }
     
     /** @return latest sample in queue or <code>null</code> if empty */
     IValue remove()
     {
-        return samples.poll();
+    	synchronized (samples)
+        {
+            return samples.remove();	        
+        }
     }
 
     /** Update stats with current values */
     void updateStats()
     {
-        stats.updateSizes(samples.size());
+        stats.updateSizes(getQueueSize());
     }
 
     /** @return Buffer statistics. */
@@ -134,7 +146,7 @@ public class SampleBuffer
         return String.format(
         "Sample buffer '%s': %d samples, %d samples max, %.1f samples average, %d overruns",
             channel_name,
-            samples.size(),
+            getQueueSize(),
             stats.getMaxSize(),
             stats.getAverageSize(),
             stats.getOverruns());

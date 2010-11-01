@@ -29,7 +29,6 @@
     <scripts>
       <path pathString="ChangeMacro.js">
         <pv trig="true">loc://macroValue</pv>
-        <pv trig="true">loc://runOPI</pv>
       </path>
     </scripts>
     <border_width>1</border_width>
@@ -177,6 +176,7 @@ $(pv_value)</tooltip>
       <action type="WRITE_PV">
         <pv_name>loc://runOPI</pv_name>
         <value>1</value>
+        <description />
       </action>
     </actions>
     <toggle_button>false</toggle_button>

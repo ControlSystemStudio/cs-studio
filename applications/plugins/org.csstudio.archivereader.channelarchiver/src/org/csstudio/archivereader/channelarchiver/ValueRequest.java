@@ -20,6 +20,39 @@ import org.csstudio.platform.data.ValueFactory;
 @SuppressWarnings("nls")
 public class ValueRequest implements AsyncCallback
 {
+	/** Helper for passing the result or an error from the XML-RPC callback
+	 *  to the ValueRequest that waits for it
+	 */
+	static class Result
+	{
+		boolean isSet = false;
+	    Vector<Object> xml_rpc_result = null;
+	    Exception xml_rpc_exception = null;
+	    
+		synchronized void clear()
+        {
+			notify(null, null);
+        }
+		
+		synchronized void setError(final Exception error)
+        {
+			notify(null, error);
+        }
+		
+		synchronized void setData(Vector<Object> data)
+        {
+			notify(data, null);
+        }
+
+		private void notify(final Vector<Object> data, final Exception error)
+        {
+			xml_rpc_result = data;
+			xml_rpc_exception = error;
+			isSet = true;
+			notifyAll();
+        }
+	};
+	
 	final private ChannelArchiverReader reader;
 	final private int key;
 	final private String channels[];
@@ -41,10 +74,10 @@ public class ValueRequest implements AsyncCallback
     final private static int TYPE_INT = 2;
     final private static int TYPE_DOUBLE = 3;
 
-    // The result of the query
-	private IValue samples[];
-    private Vector<Object> xml_rpc_result;
-    private Exception xml_rpc_exception;
+    final private Result result = new Result();
+    
+    /** The result of the query */
+    private IValue samples[];
 
 	/** Constructor for new value request.
 	 *  @param reader ChannelArchiverReader
@@ -73,7 +106,7 @@ public class ValueRequest implements AsyncCallback
             if (reader.getVersion() < 1)
             {   // Old server: Use plot-binning with bin count
                 how = reader.getRequestCode("plot-binning");
-                parms = new Object[] { new Integer(count) };
+                parms = new Object[] { Integer.valueOf(count) };
             }
             else
             {   // New server: Use min/max/average with seconds
@@ -81,7 +114,7 @@ public class ValueRequest implements AsyncCallback
                 if (secs < 1)
                     secs = 1;
                 how = reader.getRequestCode("average");
-                parms = new Object[] { new Integer((int)secs) };
+                parms = new Object[] { Integer.valueOf((int)secs) };
                 automatic_quality = true;
             }
         }
@@ -89,7 +122,7 @@ public class ValueRequest implements AsyncCallback
         {   // All others use 'Integer count'
             // Raw == Original, all else is somehow interpolated
             how = reader.getRequestCode("raw");
-            parms = new Object[] { new Integer(count) };
+            parms = new Object[] { Integer.valueOf(count) };
             quality = IValue.Quality.Original;
         }
 	}
@@ -98,32 +131,35 @@ public class ValueRequest implements AsyncCallback
     @SuppressWarnings("unchecked")
     public void read(XmlRpcClient xmlrpc) throws Exception
 	{
-        xml_rpc_result = null;
-        xml_rpc_exception = null;
-		final Vector<Object> params = new Vector<Object>(8);
-		params.add(new Integer(key));
+        final Vector<Object> params = new Vector<Object>(8);
+		params.add(Integer.valueOf(key));
 		params.add(channels);
-		params.add(new Integer((int)start.seconds()));
-		params.add(new Integer((int)start.nanoseconds()));
-		params.add(new Integer((int)end.seconds()));
-		params.add(new Integer((int)end.nanoseconds()));
+		params.add(Integer.valueOf((int)start.seconds()));
+		params.add(Integer.valueOf((int)start.nanoseconds()));
+		params.add(Integer.valueOf((int)end.seconds()));
+		params.add(Integer.valueOf((int)end.nanoseconds()));
         params.add(parms[0]);
-		params.add(new Integer(how));
+		params.add(Integer.valueOf(how));
 		// xmlrpc.execute("archiver.values", params);
         xmlrpc.executeAsync("archiver.values", params, this);
-		// Wait for AsynCallback to set the xml_rpc_result or .._exception
-		synchronized (this)
+        
+		// Wait for AsynCallback to set the result
+	    final Vector<Object> xml_rpc_result;
+		synchronized (result)
         {
-		    wait();
+			while (! result.isSet)
+				result.wait();
+			// Failed?
+			if (result.xml_rpc_exception != null)
+			    throw new Exception("archiver.values call failed: " + result.xml_rpc_exception.getMessage());
+			// Cancelled?
+			if (result.xml_rpc_result == null)
+			{
+			    samples = new IValue[0];
+			    return;
+			}
+			xml_rpc_result = result.xml_rpc_result;
         }
-		if (xml_rpc_exception != null)
-		    throw new Exception("archiver.values call failed: " + xml_rpc_exception.getMessage());
-		// Cancelled?
-		if (xml_rpc_result == null)
-		{
-		    samples = new IValue[0];
-		    return;
-		}
 		
 		// result := { string name,  meta, int32 type,
         //              int32 count,  values }[]
@@ -158,33 +194,20 @@ public class ValueRequest implements AsyncCallback
      */
 	public void cancel()
     {
-        synchronized (this)
-        {
-            xml_rpc_exception = null;
-            xml_rpc_result = null;
-            notifyAll();
-        }
+        result.clear();
     }
 
 	/** @see AsyncCallback */
     public void handleError(Exception error, URL arg1, String arg2)
     {
-        synchronized (this)
-        {
-            xml_rpc_exception = error;
-            notifyAll();
-        }
+        result.setError(error);
     }
 
     /** @see AsyncCallback */
     @SuppressWarnings("unchecked")
-    public void handleResult(Object result, URL arg1, String arg2)
+    public void handleResult(Object data, URL arg1, String arg2)
     {
-        synchronized (this)
-        {
-            xml_rpc_result = (Vector<Object>) result;
-            notifyAll();
-        }
+    	result.setData((Vector<Object>) data);
     }
 
     /** Parse the MetaData from the received XML-RPC response. 

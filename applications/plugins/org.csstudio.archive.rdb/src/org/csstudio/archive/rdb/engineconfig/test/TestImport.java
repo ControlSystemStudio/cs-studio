@@ -1,8 +1,8 @@
 package org.csstudio.archive.rdb.engineconfig.test;
 
-import static org.junit.Assert.*;
-
-import java.net.URL;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertSame;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
@@ -23,12 +23,12 @@ public class TestImport
         // Add engine
         final String engine_name = "LLRF Test";
         final SampleEngineConfig engine = archive.addEngine(
-                engine_name, "LLRF Engine Test", new URL("http://some_host:4812"));
+                engine_name, "LLRF Engine Test", "http://some_host:4812");
         System.out.println(engine);
 
         // This deletes the previous entry and all that's under it, then creates a new one
         final SampleEngineConfig engine2 = archive.addEngine(
-                engine_name, "LLRF Engine Test", new URL("http://some_host:4812"));
+                engine_name, "LLRF Engine Test", "http://some_host:4812");
         assertNotSame(engine, engine2);
 
         final SampleEngineConfig engine3 = archive.findEngine(engine_name);

@@ -9,6 +9,8 @@ package org.csstudio.alarm.beast.msghist.model;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.Semaphore;
+
 import org.junit.Test;
 
 /** JUnit test of the Model
@@ -17,21 +19,18 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class ModelTest implements ModelListener
 {
-    private static final long TIMEOUT_MILLI = 10*1000;
-
     private static final String URL = "jdbc:oracle:thin:@//172.31.75.138:1521/prod";
     private static final String USER = "css_msg_user";
     private static final String PASSWORD = "sns";
     private static final String SCHEMA = "MSG_LOG";
+    
+	private Semaphore got_response = new Semaphore(0);
 
     // ModelListener
     public void modelChanged(final Model model)
     {
         System.out.println("Received model update");
-        synchronized (this)
-        {
-            notifyAll();
-        }
+        got_response.release();
     }
 
     @Test
@@ -40,13 +39,9 @@ public class ModelTest implements ModelListener
         final Model model = new Model(URL, USER, PASSWORD, SCHEMA, 1000);
         model.addListener(this);
 
-
         System.out.println("Starting query");
         model.setTimerange("-1day", "now");
-        synchronized (this)
-        {
-            wait(TIMEOUT_MILLI);
-        }
+        got_response.acquire();
         final Message[] messages = model.getMessages();
         System.out.println("Got " + messages.length + " messages");
         assertTrue(messages.length > 0);

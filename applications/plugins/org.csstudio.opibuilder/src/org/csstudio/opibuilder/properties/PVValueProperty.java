@@ -1,6 +1,10 @@
 package org.csstudio.opibuilder.properties;
 
+import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
+import org.csstudio.platform.data.IValue.Quality;
 import org.eclipse.ui.views.properties.PropertyDescriptor;
 import org.jdom.Element;
 
@@ -18,7 +22,7 @@ public class PVValueProperty extends AbstractWidgetProperty {
 	 * @param defaultValue the default value.
 	 */
 	public PVValueProperty(String prop_id, IValue defaultValue) {
-		super(prop_id, "", null, defaultValue);
+		super(prop_id, prop_id, null, defaultValue);
 		setVisibleInPropSheet(false);
 	}
 
@@ -28,7 +32,24 @@ public class PVValueProperty extends AbstractWidgetProperty {
 			return null;
 		IValue acceptableValue = null;
 		if(value instanceof IValue)
-			acceptableValue = (IValue) value;		
+			acceptableValue = (IValue) value;
+		else if(value instanceof Double){
+	        final ISeverity severity = ValueFactory.createOKSeverity();
+			acceptableValue = ValueFactory.createDoubleValue(
+					TimestampFactory.now(), severity, severity.toString(), 
+					null, Quality.Original, new double[]{(Double)value});
+		}else if(value instanceof String){
+	        final ISeverity severity = ValueFactory.createOKSeverity();
+			acceptableValue = ValueFactory.createStringValue(
+					TimestampFactory.now(), severity, severity.toString(), 
+					Quality.Original, new String[]{(String)value});
+		}else if(value instanceof Long || value instanceof Integer){
+	        final ISeverity severity = ValueFactory.createOKSeverity();
+			acceptableValue = ValueFactory.createLongValue(
+					TimestampFactory.now(), severity, severity.toString(), 
+					null, Quality.Original, new long[]{(Long)value});
+		}
+		
 		return acceptableValue;
 	}
 

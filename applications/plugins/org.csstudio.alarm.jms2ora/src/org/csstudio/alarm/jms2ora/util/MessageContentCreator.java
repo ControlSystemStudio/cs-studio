@@ -45,46 +45,47 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *  @author Markus Moeller
  *
  */
-public class MessageContentCreator
-{
-    /** Vector object contains names of message types that should be discarded */
-    private Vector<String> discardTypes = null;
+public class MessageContentCreator {
     
     /** Vector object contains names of message types that should be discarded */
-    private Vector<String> discardNames = null;
+    private Vector<String> discardTypes;
+    
+    /** Vector object contains names of message types that should be discarded */
+    private Vector<String> discardNames;
 
     /** Hashtable with message properties. Key -> name, value -> database table id  */
-    private Hashtable<String, Long> msgProperty = null;
+    private Hashtable<String, Long> msgProperty;
     
     /** The logger */
-    private Logger logger = null;
+    private Logger logger;
     
     /** Object for database handling */
-    private DatabaseLayer dbLayer = null;
+    private DatabaseLayer dbLayer;
     
     /** Filter to avoid message storms */
-    private MessageFilter messageFilter = null;
+    private MessageFilter messageFilter;
 
     /** Number of bytes that can be stored in the column value of the table MESSAGE_CONTENT  */
-    private int valueLength = 0;
+    private int valueLength;
+    
+    /** Flag that indicates if empty property values should be stored */
+    private boolean storeEmptyValues;
 
     private final String formatStd = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{3}";
     private final String formatTwoDigits = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{2}";
     private final String formatOneDigit = "\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}\\.\\d{1}";
 
-    public MessageContentCreator(String dbUrl, String dbUser, String dbPassword)
-    {
+    public MessageContentCreator(String dbUrl, String dbUser, String dbPassword) {
+        
         IPreferencesService prefs = Platform.getPreferencesService();
 
         dbLayer = new DatabaseLayer(dbUrl, dbUser, dbPassword);
-        
         logger = CentralLogger.getInstance().getLogger(this);
         
         readMessageProperties();
 
         valueLength = dbLayer.getMaxNumberofValueBytes();
-        if(valueLength == 0)
-        {
+        if(valueLength == 0) {
             valueLength = prefs.getInt(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DEFAULT_VALUE_PRECISION, 300, null);
             logger.warn("Cannot read the precision of the table column 'value'. Assume " + valueLength + " bytes");
         }
@@ -93,50 +94,46 @@ public class MessageContentCreator
         initDiscardNames();
         
         messageFilter = MessageFilter.getInstance();
+        
+        String temp = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.STORE_EMPTY_VALUES,
+                                      "false", null);
+        storeEmptyValues = Boolean.parseBoolean(temp);
+        logger.info("Empty values will be stored: " + storeEmptyValues);
     }
     
-    private void initDiscardTypes()
-    {
+    private void initDiscardTypes() {
         IPreferencesService prefs = Platform.getPreferencesService();
 
         String temp = null;
-        
         discardTypes = new Vector<String>();
         
         String list[] = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_TYPES, "", null).split(",");
-        
-        if(list != null)
-        {
-            for(String s : list)
-            {
-                temp = s.trim().toLowerCase();
+        if(list != null) {
+            
+            for(String s : list) {
                 
-                if(temp.length() > 0)
-                {
+                temp = s.trim().toLowerCase();
+                if(temp.length() > 0) {
                     discardTypes.add(temp);
                 }
             }
         }
     }
 
-    private void initDiscardNames()
-    {
+    private void initDiscardNames() {
+        
         IPreferencesService prefs = Platform.getPreferencesService();
 
         String temp = null;
-        
         discardNames = new Vector<String>();
         
         String list[] = prefs.getString(Jms2OraPlugin.PLUGIN_ID, PreferenceConstants.DISCARD_NAMES, "", null).split(",");
-        
-        if(list != null)
-        {
-            for(String s : list)
-            {
-                temp = s.trim();
+        if(list != null) {
+            
+            for(String s : list) {
                 
-                if(temp.length() > 0)
-                {
+                temp = s.trim();
+                if(temp.length() > 0) {
                     discardNames.add(temp);
                 }
             }
@@ -148,18 +145,16 @@ public class MessageContentCreator
      * 
      *  @return true, if content is available, otherwise false
      */
-    public boolean arePropertiesAvailable()
-    {
+    public boolean arePropertiesAvailable() {
         return (!msgProperty.isEmpty());
     }
     
-    public synchronized void stopWorking()
-    {
+    public synchronized void stopWorking() {
         messageFilter.stopWorking();
     }
     
-    public synchronized MessageContent convertMapMessage(MapMessage mmsg)
-    {
+    public synchronized MessageContent convertMapMessage(MapMessage mmsg) {
+        
         MessageContent msgContent = null;
         Enumeration<?> lst = null;
         String name = null;
@@ -170,11 +165,14 @@ public class MessageContentCreator
         boolean reload = false;
         boolean wrongFormat = false;
 
+        logger.debug("Enter MessageContentCreator.convertMapMessage()");
+        
         // Create a new MessageContent object for the content of the message
         msgContent = new MessageContent();
 
-        if(mmsg == null)
-        {
+        if(mmsg == null) {
+            
+            logger.debug("Leaving MessageContentCreator.convertMapMessage()");
             return msgContent;
         }
         
@@ -182,34 +180,31 @@ public class MessageContentCreator
         //          löst eine Exception aus.
 
         // First get the message type
-        try
-        {
+        try {
+            
             // Does the message contain the key TYPE?
-            if(mmsg.itemExists("TYPE"))
-            {
+            if(mmsg.itemExists("TYPE")) {
                 // Get the value of the item TYPE
                 type = mmsg.getString("TYPE").toLowerCase();                
-            }
-            else
-            {
+            } else {
                 // The message does not contain the item TYPE. We set it to UNKNOWN
                 type = "unknown";                
             }
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             type = "unknown";
         }
         
         logger.debug("Message type: " + type);
         
         // Discard messages with the type 'simulator'
-        if(!discardTypes.isEmpty())
-        {
-            if(discardTypes.contains(type))
-            {
+        if(!discardTypes.isEmpty()) {
+            
+            if(discardTypes.contains(type)) {
+                
                 msgContent.setDiscard(true);
                 
+                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -217,34 +212,31 @@ public class MessageContentCreator
         }
         
         // Get the property 'NAME'
-        try
-        {
+        try {
+            
             // Does the message contain the key TYPE?
-            if(mmsg.itemExists("NAME"))
-            {
+            if(mmsg.itemExists("NAME")) {
                 // Get the value of the item TYPE
                 propName = mmsg.getString("NAME");                
-            }
-            else
-            {
+            } else {
                 // The message does not contain the item NAME.
                 propName = "";                
             }
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             propName = "";
         }
 
         logger.debug("Property NAME: " + propName);
 
         // Discard messages that contains the names of the defined list
-        if(!discardNames.isEmpty())
-        {
-            if(discardNames.contains(propName))
-            {
+        if(!discardNames.isEmpty()) {
+            
+            if(discardNames.contains(propName)) {
+                
                 msgContent.setDiscard(true);
                 
+                logger.debug("Leaving MessageContentCreator.convertMapMessage()");
+
                 // Return an object without content
                 // Call hasContent() to check whether or not content is available
                 return msgContent;
@@ -252,10 +244,10 @@ public class MessageContentCreator
         }
 
         // Now get the event time
-        try
-        {
-            if(mmsg.itemExists("EVENTTIME"))
-            {
+        try {
+            
+            if(mmsg.itemExists("EVENTTIME")) {
+                
                 // Yes. Get it
                 et = mmsg.getString("EVENTTIME");
 
@@ -263,29 +255,23 @@ public class MessageContentCreator
                 temp = checkDateString(et);
                 
                 // If there is something wrong with the format...
-                if(temp == null)
-                {
+                if(temp == null) {
+                    
                     logger.info("Property EVENTTIME contains invalid format: " + et);
                     wrongFormat = true;
                     
                     // ... create a new date string
                     et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
-                }
-                else
-                {
+                } else {
                     // ... otherwise 'temp' contains a valid date string
                     et = temp;
                 }
-            }
-            else
-            {
+            } else {
                 // Get the current date and time
                 // Format: 2006.07.26 12:49:12.345
                 et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
             }
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             et = getDateAndTimeString("yyyy-MM-dd HH:mm:ss.SSS");
         }
         
@@ -294,109 +280,94 @@ public class MessageContentCreator
         msgContent.put(msgProperty.get("EVENTTIME"), "EVENTTIME", et);
         msgContent.put(msgProperty.get("NAME"), "NAME", propName);
         
-        try
-        {
+        try {
             lst = mmsg.getMapNames();
-        }
-        catch(JMSException jmse)
-        {
+        } catch(JMSException jmse) {
             // Put the exception message into the message content
             msgContent.put(msgProperty.get("TEXT"), "TEXT", "[JMSException] " + jmse.getMessage());
-            
             lst = null;
         }
         
         // Copy the content of the message into the MessageContent object
-        if(lst != null)
-        {
+        if(lst != null) {
             while(lst.hasMoreElements())
             {
                 name = (String)lst.nextElement();
                 
                 // Get the value(String) and check its length
-                try
-                {
+                try {
                     temp = mmsg.getString(name);
-                }
-                catch(JMSException jmse)
-                {
+                    //temp = temp.trim();
+                } catch(JMSException jmse) {
                     temp = "[JMSException] Cannot read the element: " + jmse.getMessage();
                 }
                 
-                if(temp.length() > valueLength)
-                {
-                    temp = temp.substring(0, valueLength - 3) + "{*}";
+                if((temp.length() == 0) && storeEmptyValues == false) {
+                    continue;
                 }
 
+                if(temp.length() > valueLength) {
+                    temp = temp.substring(0, valueLength - 3) + "{*}";
+                }
+                
                 // Do not copy the TYPE, EVENTTIME and NAME properties
-                if((name.compareTo("TYPE") != 0) && (name.compareTo("EVENTTIME") != 0) && (name.compareTo("NAME") != 0))
-                {
-                    // If we know the property
-                    if(msgProperty.containsKey(name))
-                    {
+                if((name.compareTo("TYPE") != 0) 
+                        && (name.compareTo("EVENTTIME") != 0)
+                        && (name.compareTo("NAME") != 0)) {
+                    
+                    // If we know the property and the value is NOT empty
+                    if(msgProperty.containsKey(name)) {
                         // Get the ID of the property and store it into the hash table
                         msgContent.put(msgProperty.get(name), name, temp);
-                    }
-                    else
-                    {                        
+                    } else {                        
+                        
                         // Reload the tables if they are not reloaded
-                        if(!reload)
-                        {
-                            if(readMessageProperties())
-                            {
+                        if(!reload) {
+                            
+                            if(readMessageProperties()) {
+                                
                                 reload = true;
                                 
                                 // Check again
-                                if(msgProperty.containsKey(name))
-                                {
+                                if(msgProperty.containsKey(name)) {
                                     msgContent.put(msgProperty.get(name), name, temp);
-                                }
-                                else
-                                {
+                                } else {
                                     // ...so we have to store them seperately
                                     prepareAndSetUnknownProperty(msgContent, name, temp);
                                 }
-                            }
-                            else
-                            {
+                            } else {
                                 logger.error("Cannot read the message properties. Use the old set of properties.");
                                 prepareAndSetUnknownProperty(msgContent, name, temp);
                             }
-                        }
-                        else
-                        {
+                        } else {
                             prepareAndSetUnknownProperty(msgContent, name, temp);
                         }
                     }                    
                 }
             }
             
-            if(wrongFormat)
-            {
+            if(wrongFormat) {
                 logger.info(msgContent.toPrintableString());
                 wrongFormat = false;
             }
         }
         
-        if(messageFilter.shouldBeBlocked(msgContent))
-        {
+        if(messageFilter.shouldBeBlocked(msgContent)) {
             logger.debug("Block it!");
             msgContent.deleteContent();
-        }
-        else
-        {
+        } else {
             logger.debug("Process it!");
         }
+
+        logger.debug("Leaving MessageContentCreator.convertMapMessage()");
 
         return msgContent;
     }
     
-    private void prepareAndSetUnknownProperty(MessageContent msgContent, String name, String value)
-    {
+    private void prepareAndSetUnknownProperty(MessageContent msgContent, String name, String value) {
+        
         String temp = "[" + name + "] [" + value + "]";
-
-        if(temp.length() > valueLength)
-        {
+        if(temp.length() > valueLength) {
             temp = temp.substring(0, valueLength - 4) + "{*}]";
         }
         
@@ -404,13 +375,12 @@ public class MessageContentCreator
         msgContent.setUnknownTableId(msgProperty.get("UNKNOWN"));
     }
     
-    public String getDateAndTimeString()
-    {
+    public String getDateAndTimeString() {
         return getDateAndTimeString("[yyyy-MM-dd HH:mm:ss] ");
     }
 
-    public String getDateAndTimeString(String frm)
-    {
+    public String getDateAndTimeString(String frm) {
+        
         SimpleDateFormat    sdf = new SimpleDateFormat(frm);
         GregorianCalendar   cal = new GregorianCalendar();
         
@@ -427,20 +397,17 @@ public class MessageContentCreator
      * @throws ParseException If the date string does not match the source format
      * @return The converted date and time string
      */
-    public String convertDateString(String dateString, String sourceFormat, String destinationFormat) throws ParseException
-    {
+    public String convertDateString(String dateString, String sourceFormat, String destinationFormat)
+    throws ParseException {
+        
         SimpleDateFormat ssdf = new SimpleDateFormat(sourceFormat);
         SimpleDateFormat dsdf = new SimpleDateFormat(destinationFormat);
         String ds = null;
         
-        try
-        {
+        try {
             Date date = ssdf.parse(dateString);
-            
             ds = dsdf.format(date);
-        }
-        catch(ParseException pe)
-        {
+        } catch(ParseException pe) {
             throw new ParseException("String [" + dateString + "] is invalid: " + pe.getMessage(), pe.getErrorOffset());
         }
         
@@ -453,34 +420,24 @@ public class MessageContentCreator
      * @param dateString
      * @return The date and time string that uses the standard format.
      */
-    public String checkDateString(String dateString)
-    {
+    public String checkDateString(String dateString) {
+        
         String r = null;
         
-        if(dateString.matches(formatStd))
-        {
+        if(dateString.matches(formatStd)) {
             r = dateString;
-        }
-        else if(dateString.matches(formatTwoDigits))
-        {
-            try
-            {
+        } else if(dateString.matches(formatTwoDigits)) {
+            
+            try {
                 r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.SS", "yyyy-MM-dd HH:mm:ss.SSS");
-            }
-            catch(ParseException pe)
-            {
+            } catch(ParseException pe) {
                 r = null;
             }
-
-        }
-        else if(dateString.matches(formatOneDigit))
-        {
-            try
-            {
+        } else if(dateString.matches(formatOneDigit)) {
+            
+            try {
                 r = convertDateString(dateString, "yyyy-MM-dd HH:mm:ss.S", "yyyy-MM-dd HH:mm:ss.SSS");
-            }
-            catch(ParseException pe)
-            {
+            } catch(ParseException pe) {
                 r = null;
             }            
         }
@@ -495,15 +452,14 @@ public class MessageContentCreator
      *  @return true/false
      */
     
-    private boolean readMessageProperties()
-    {
+    private boolean readMessageProperties() {
+        
         boolean result = false;
                 
-        logger.debug("readMessageProperties(): Reading message properties.");
+        logger.debug("Entering MessageContentCreator.readMessageProperties(): Reading message properties.");
         
         // Delete old hash table, if there are any
-        if(msgProperty != null)
-        {
+        if(msgProperty != null) {
             msgProperty.clear();
             msgProperty = null;
         }
@@ -511,15 +467,14 @@ public class MessageContentCreator
         msgProperty = new Hashtable<String, Long>();
 
         msgProperty = dbLayer.getMessageProperties();
-        if(msgProperty.isEmpty())
-        {
+        if(msgProperty.isEmpty()) {
             result = false;
-        }
-        else
-        {
+        } else {
             result = true;
         }
         
+        logger.debug("Leaving MessageContentCreator.readMessageProperties()");
+
         return result;
     }    
 }
