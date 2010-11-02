@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="CSS-Island" uid="islandproduct" id="org.csstudio.desy.island.product.product" application="org.csstudio.desy.island.product.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="false">
+<product name="CSS-Island" uid="islandproduct" id="org.csstudio.desy.island.product.product" application="org.csstudio.desy.island.product.application" version="1.0.0.qualifier" useFeatures="true" includeLaunchers="true">
 
    <aboutInfo>
       <image path="/org.csstudio.desy.island.product/resources/css64x64.gif"/>
@@ -26,7 +26,7 @@ OR MODIFICATIONS.
 THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
 USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
 PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT 
-HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+http://www.desy.de/legal/license
       </text>
    </aboutInfo>
 
@@ -62,7 +62,7 @@ HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
    </vm>
 
    <license>
-        <url>HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM</url>
+        <url>http://www.desy.de/legal/license</url>
         <text>
    Control System Studio Island
 
@@ -84,7 +84,7 @@ OR MODIFICATIONS.
 THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
 USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
 PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT 
-HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
+http://www.desy.de/legal/license
          </text>
    </license>
 
