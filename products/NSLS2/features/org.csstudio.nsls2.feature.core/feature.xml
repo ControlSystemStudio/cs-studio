@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+      <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
    <plugin
@@ -252,6 +252,27 @@
 
    <plugin
          id="org.csstudio.utility.pv.ui"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.epics"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="org.csstudio.utility.pvmanager.sim"
          download-size="0"
          install-size="0"
          version="0.0.0"

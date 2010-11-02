@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+      <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
    <includes

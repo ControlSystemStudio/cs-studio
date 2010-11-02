@@ -9,11 +9,12 @@
             id="org.csstudio">
       </category>
       <view
-            name="PVManager Probe"
-            icon="icons/sample.gif"
+            allowMultiple="true"
             category="org.csstudio"
             class="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
-            id="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe">
+            icon="icons/sample.gif"
+            id="org.csstudio.diag.pvmanager.probe.views.PVManagerProbe"
+            name="PVManager Probe">
       </view>
    </extension>
    <extension
@@ -42,7 +43,7 @@
             label="CSS Action Set"
             visible="true">
          <action
-               class="org.csstudio.diag.pvmanager.probe.ShowProbeAction"
+               class="org.csstudio.diag.pvmanager.probe.ShowPVManagerProbeAction"
                id="org.csstudio.diag.pvmanager.probe.showaction"
                label="PVMgr Probe"
                menubarPath="css/diag/"
@@ -52,6 +53,28 @@
    </extension>
    <extension
          point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.diag.pvmanager.probe.popupMenu"
+            objectClass="org.csstudio.platform.model.IProcessVariable">
+         <menu
+               id="org.csstudio.popmenu"
+               label="CSS"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.diag.pvmanager.probe.PVPopupAction"
+               id="org.csstudio.diag.pvmanager.probe.PVpopupAction"
+               label="PvManager Probe"
+               menubarPath="org.csstudio.popmenu/content">
+         </action>
+      </objectContribution>
    </extension>
 
 </plugin>

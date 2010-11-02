@@ -9,7 +9,7 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
-public class ShowProbeAction implements IWorkbenchWindowActionDelegate {
+public class ShowPVManagerProbeAction implements IWorkbenchWindowActionDelegate {
 
 	@Override
 	public void dispose() {

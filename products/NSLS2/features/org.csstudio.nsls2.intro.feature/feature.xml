@@ -3,7 +3,7 @@
       id="org.csstudio.nsls2.intro.feature"
       label="nsls2 intro Feature"
       version="1.0.0.qualifier"
-      provider-name="NSLS2">
+      provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -18,7 +18,7 @@
    </license>
 
    <url>
-      <update url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
+      <update label="CSS dev update site" url="http://cs-studio.sourceforge.net/nsls2/dev-updates"/>
    </url>
 
    <plugin
