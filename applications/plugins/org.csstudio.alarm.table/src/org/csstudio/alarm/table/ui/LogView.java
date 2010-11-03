@@ -429,11 +429,8 @@ public class LogView extends ViewPart {
 
     void addSourceAccessItems(@Nonnull final Composite logTableManagementComposite) {
         if (AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
-            if (!AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                addXMLReloadItems(logTableManagementComposite);
-            }
-        }
-        else {
+            addReloadItems(logTableManagementComposite);
+        } else {
             addJmsTopicItems(logTableManagementComposite);
         }
     }
@@ -525,17 +522,19 @@ public class LogView extends ViewPart {
         });
     }
 
-    private void addXMLReloadItems(@Nonnull final Composite logTableManagementComposite) {
+    private void addReloadItems(@Nonnull final Composite logTableManagementComposite) {
         final Group reloadItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
+        String source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? " LDAP" : " XML";
+        reloadItemsGroup.setText(Messages.LogView_reloadPVsGroupTitle + source);
+        
         final RowLayout layout = new RowLayout();
         layout.type = SWT.HORIZONTAL;
         layout.spacing = 5;
         reloadItemsGroup.setLayout(layout);
         
-        Button reloadButton = new Button(reloadItemsGroup, SWT.TOGGLE);
+        Button reloadButton = new Button(reloadItemsGroup, SWT.PUSH);
         reloadButton.setLayoutData(new RowData(60, 21));
-        // TODO (jpenning) i18n button text
-        reloadButton.setText("Reload xml file");
+        reloadButton.setText(Messages.LogView_reloadPVsButtonText);
         reloadButton.addSelectionListener(new SelectionListener() {
             
             @Override

@@ -155,6 +155,10 @@ public class Messages extends NLS {
     public static String LogView_defaultMessageDescription;
     
     public static String LogView_runningSince;
+
+    public static String LogView_reloadPVsGroupTitle;
+
+    public static String LogView_reloadPVsButtonText;
     
     public static String LogViewArchive_3days;
     
