@@ -21,11 +21,17 @@
  */
 package org.csstudio.alarm.service.declaration;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -143,31 +149,34 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
     }
 
     /**
-     * It is assumed that the file is located in the plugin. The file name is thus given relative
-     * to the plugin, e.g. "resource/SomeFile.xml".
-     *
-     * Here the prefix for the plugin is added, so the caller needn't worry.
-     *
-     * If the filename is misspelled an IOException will occur. It is catched right here, because it is not known
-     * if the filename will be used at all. If it is used eventually, an io-error will occur and must be handled anyway.
+     * The default file is located in the plugin.
+     * Via preference page a file from the local filesystem may be set.
+     * The result is not null, but may not point to a valid file.  
      *
      * @return the full pathname
      */
     @Nonnull
     public static String getConfigFilename() {
-        final Bundle bundle = Platform.getBundle(AlarmServiceActivator.PLUGIN_ID);
-        final Path path = new Path(ALARMSERVICE_CONFIG_FILENAME.getValue());
-        final URL url = FileLocator.find(bundle, path, null);
-        String result = null;
-        try {
-            result = FileLocator.toFileURL(url).getPath();
-        } catch (final IOException e) {
-            result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
-            LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
-        }
-        assert result != null : "result must not be null";
-        return result;
+        return getStringFromPath(ALARMSERVICE_CONFIG_FILENAME.getValue());
     }
 
+    @CheckForNull
+    private static String getStringFromPath(@Nonnull final String pathAsString) {
+        String result = null;
+        Path path = new Path(pathAsString);
+        if (path.isAbsolute()) {
+            result = path.toOSString();
+        } else {
+            URL url = FileLocator.find(AlarmServiceActivator.getDefault()
+                    .getBundle(), path, null);
+            try {
+                result = FileLocator.toFileURL(url).getPath();
+            } catch (final IOException e) {
+                result = ALARMSERVICE_CONFIG_FILENAME.getValue(); // visible in log file
+                LOG.error("Error determining filename from value " + ALARMSERVICE_CONFIG_FILENAME.getValue() + ".");
+            }
+        }
+        return result;
+    }
 
 }

@@ -10,6 +10,12 @@
             name="Alarm-Service Preferences">
       </page>
    </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.csstudio.alarm.service.preferences.AlarmServicePreferenceInitializer">
+      </initializer>
+   </extension>
 
 
 </plugin>
