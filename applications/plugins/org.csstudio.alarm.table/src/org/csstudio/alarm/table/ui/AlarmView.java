@@ -106,44 +106,14 @@ public class AlarmView extends LogView {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addJmsTopicItems(logTableManagementComposite);
+        addSourceAccessItems(logTableManagementComposite);
         addAcknowledgeItems(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
         initializeMessageTable();
-        _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
-
     }
-    @Nonnull
-    private SelectionListener newSelectionListenerForPauseButton() {
-        return new SelectionListener() {
-
-            @SuppressWarnings("synthetic-access")
-			@Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                if (_pauseButton.getSelection()) {
-                    disableAckButton();
-                } else {
-                    enableAckButtonIfPermitted();
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                // Nothing to do
-            }
-        };
-    }
-
-    private void enableAckButtonIfPermitted() {
-        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
-    }
-
-    private void disableAckButton() {
-        _ackButton.setEnabled(false);
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -237,6 +207,20 @@ public class AlarmView extends LogView {
         // There is no maximum number of messages. The message list will not overflow, because
         // eventually all messages are contained within and will simply be exchanged.
         return new AlarmMessageList();
+    }
+
+    @Override
+    protected void doStartPause() {
+        _ackButton.setEnabled(false);
+    }
+
+    @Override
+    protected void doEndPause() {
+        enableAckButtonIfPermitted();
+    }
+
+    private void enableAckButtonIfPermitted() {
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
     }
 
     // CHECKSTYLE:OFF
