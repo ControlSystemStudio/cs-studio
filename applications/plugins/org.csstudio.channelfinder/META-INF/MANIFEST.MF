@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder
-Bundle-SymbolicName: org.csstudio.channelfinder; singleton:=true
+Bundle-SymbolicName: org.csstudio.display.channelfinderviewer;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.channelfinder.Activator
 Require-Bundle: org.eclipse.ui,
@@ -16,3 +16,4 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.csstudio.platform.ui.security
 Bundle-ClassPath: .
 Export-Package: org.csstudio.channelfinder.views
+Bundle-Vendor: Kunal Shroff <kshroff@bnl.gov>, Gabriele Carcassi <carcassi@bnl.gov> - Brookhaven National Lab
