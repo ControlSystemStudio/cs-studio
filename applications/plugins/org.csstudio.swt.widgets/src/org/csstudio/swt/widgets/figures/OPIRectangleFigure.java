@@ -142,7 +142,7 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	/**
 	 * @see Shape#outlineShape(Graphics)
 	 */
-	protected void outlineShape(Graphics graphics) {
+	protected void outlineShape(Graphics graphics) {	
 	    float lineInset = Math.max(1.0f, getLineWidth()) / 2.0f;
 	    int inset1 = (int)Math.floor(lineInset);
 	    int inset2 = (int)Math.ceil(lineInset);
@@ -152,10 +152,8 @@ public final class OPIRectangleFigure extends RectangleFigure implements Introsp
 	    r.y += inset1; 
 	    r.width -= inset1 + inset2;
 	    r.height -= inset1 + inset2;
-	    graphics.pushState();
 	    graphics.setForegroundColor(lineColor);
 	    graphics.drawRectangle(r);
-	    graphics.popState();
 	}
 	
 	public void setAntiAlias(boolean antiAlias) {
