@@ -3,7 +3,7 @@ package org.csstudio.opibuilder.widgets.editparts;
 
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.TextFigure;
 import org.eclipse.gef.GraphicalEditPart;
 import org.eclipse.gef.editparts.ZoomListener;
 import org.eclipse.gef.editparts.ZoomManager;
@@ -87,7 +87,7 @@ private void disposeScaledFont() {
 
 protected void initCellEditor() {
 	// update text
-	LabelFigure label = (LabelFigure) getEditPart().getAdapter(LabelFigure.class);
+	TextFigure label = (TextFigure) getEditPart().getAdapter(TextFigure.class);
 	AbstractWidgetModel labelModel = (AbstractWidgetModel) getEditPart().getModel();
 	getCellEditor().setValue(label.getText());
 	if(label.isOpaque()){

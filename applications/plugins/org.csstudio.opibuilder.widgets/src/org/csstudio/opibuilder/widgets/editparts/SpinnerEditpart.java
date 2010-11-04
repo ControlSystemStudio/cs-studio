@@ -14,10 +14,10 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.ValueUtil;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.swt.widgets.datadefinition.IManualValueChangeListener;
-import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
 import org.csstudio.swt.widgets.figures.SpinnerFigure;
-import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
 import org.csstudio.swt.widgets.figures.SpinnerFigure.NumericFormatType;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
@@ -37,7 +37,7 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	@Override
 	protected IFigure doCreateFigure() {
 		SpinnerFigure spinner = new SpinnerFigure();
-		LabelFigure labelFigure = spinner.getLabelFigure();
+		TextFigure labelFigure = spinner.getLabelFigure();
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
 				getWidgetModel().getFont().getFontData()));
 		labelFigure.setOpaque(!getWidgetModel().isTransparent());
@@ -302,10 +302,11 @@ public class SpinnerEditpart extends AbstractPVWidgetEditPart {
 	}
 
 	
-	@SuppressWarnings("unchecked")
+
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == LabelFigure.class)
+		if(key == TextFigure.class)
 			return ((SpinnerFigure)getFigure()).getLabelFigure();
 
 		return super.getAdapter(key);
