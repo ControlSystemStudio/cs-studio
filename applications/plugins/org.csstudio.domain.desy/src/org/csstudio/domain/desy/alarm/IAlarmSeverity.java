@@ -30,7 +30,8 @@ package org.csstudio.domain.desy.alarm;
  *
  * @author bknerr
  * @since 04.11.2010
+ * @param <T> the type of the severity
  */
-public interface IAlarmSeverity extends Comparable<IAlarmSeverity> {
-    // yet empty
+public interface IAlarmSeverity<T extends IAlarmSeverity<T>> extends Comparable<T> {
+    // Marker interface
 }

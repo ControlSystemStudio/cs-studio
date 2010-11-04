@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.EpicsSeverity;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.SimpleProperty;
@@ -288,18 +288,18 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
      * {@inheritDoc}
      */
     @Nonnull
-    public EpicsSeverity getSeverity() {
-        EpicsSeverity result = EpicsSeverity.UNKNOWN;
+    public EpicsAlarm getSeverity() {
+        EpicsAlarm result = EpicsAlarm.UNKNOWN;
 
         final DynamicValueCondition condition = getCondition();
         if (condition.isMajor()) {
-            result = EpicsSeverity.MAJOR;
+            result = EpicsAlarm.MAJOR;
         } else if (condition.isMinor()) {
-            result = EpicsSeverity.MINOR;
+            result = EpicsAlarm.MINOR;
         } else if (condition.isOK()) {
-            result = EpicsSeverity.NO_ALARM;
+            result = EpicsAlarm.NO_ALARM;
         } else if (condition.isInvalid()) {
-            result = EpicsSeverity.INVALID;
+            result = EpicsAlarm.INVALID;
         }
         return result;
     }

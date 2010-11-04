@@ -36,7 +36,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.EpicsSeverity;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -99,7 +99,7 @@ public class AlarmMessageList extends AbstractMessageList {
                 throw new IllegalStateException("Message without Severity found. Validity check failure!");
             }
             if (deleteOrGrayOutEqualMessages(newMessage)
-                    || ! (propSev.equalsIgnoreCase(EpicsSeverity.NO_ALARM.name()))) { //$NON-NLS-1$
+                    || ! (propSev.equalsIgnoreCase(EpicsAlarm.NO_ALARM.name()))) { //$NON-NLS-1$
                 if (msgExists) {
                     newMessage.setProperty("COUNT", String.valueOf(alarmStatusChanges + 1));
                 } else {
@@ -233,8 +233,8 @@ public class AlarmMessageList extends AbstractMessageList {
                 final String sevKeyProp = message.getProperty("SEVERITY_KEY");
                 if ( (sevKeyProp != null)
                         && (message.isOutdated()
-                                || sevKeyProp.equalsIgnoreCase(EpicsSeverity.NO_ALARM.name()) || sevKeyProp
-                                .equalsIgnoreCase(EpicsSeverity.INVALID.name()))) {
+                                || sevKeyProp.equalsIgnoreCase(EpicsAlarm.NO_ALARM.name()) || sevKeyProp
+                                .equalsIgnoreCase(EpicsAlarm.INVALID.name()))) {
                     
                     messagesToRemove.add(message);
                     LOG.debug("add message, removelist size: " + messagesToRemove.size());
@@ -354,7 +354,7 @@ public class AlarmMessageList extends AbstractMessageList {
     }
     
     private boolean isNotNoAlarm(@Nonnull final String severityFromList) {
-        return !severityFromList.equalsIgnoreCase(EpicsSeverity.NO_ALARM.name());
+        return !severityFromList.equalsIgnoreCase(EpicsAlarm.NO_ALARM.name());
     }
     
     private boolean isNotHiddenAck(@Nonnull AlarmMessage message) {

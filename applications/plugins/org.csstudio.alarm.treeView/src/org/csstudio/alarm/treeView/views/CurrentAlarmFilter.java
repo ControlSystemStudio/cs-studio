@@ -25,8 +25,8 @@ package org.csstudio.alarm.treeView.views;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerFilter;
 
@@ -47,7 +47,7 @@ class CurrentAlarmFilter extends ViewerFilter {
 	                      @CheckForNull final Object parentElement,
 	                      @Nullable final Object element) {
 		if (element instanceof IAlarmTreeNode) {
-			return ((IAlarmTreeNode) element).getAlarmSeverity() != EpicsSeverity.NO_ALARM;
+			return ((IAlarmTreeNode) element).getAlarmSeverity() != EpicsAlarm.NO_ALARM;
 		}
 
 		// If the element is not an IAlarmTreeNode, we don't know what it is,

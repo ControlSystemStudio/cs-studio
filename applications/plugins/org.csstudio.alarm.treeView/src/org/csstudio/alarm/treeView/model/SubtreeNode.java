@@ -30,7 +30,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.alarm.service.declaration.EpicsSeverity;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
 import com.google.common.collect.Maps;
@@ -56,12 +56,12 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	/**
 	 * The highest severity of the child nodes.
 	 */
-	private EpicsSeverity _highestChildSeverity;
+	private EpicsAlarm _highestChildSeverity;
 
 	/**
 	 * The highest unacknowledged severity of the child nodes.
 	 */
-	private EpicsSeverity _highestUnacknowledgedChildSeverity;
+	private EpicsAlarm _highestUnacknowledgedChildSeverity;
 
 
 	/**
@@ -125,8 +125,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 
 		_childrenPVMap = Maps.newLinkedHashMap();
 		_childrenSubtreeMap = Maps.newLinkedHashMap();
-		_highestChildSeverity = EpicsSeverity.UNKNOWN;
-		_highestUnacknowledgedChildSeverity = EpicsSeverity.UNKNOWN;
+		_highestChildSeverity = EpicsAlarm.UNKNOWN;
+		_highestUnacknowledgedChildSeverity = EpicsAlarm.UNKNOWN;
 	}
 
     /**
@@ -188,7 +188,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
      */
     @Override
     @CheckForNull
-    public EpicsSeverity getAlarmSeverity() {
+    public EpicsAlarm getAlarmSeverity() {
 		return _highestChildSeverity;
 	}
 
@@ -200,7 +200,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 */
     @Override
     @CheckForNull
-    public EpicsSeverity getUnacknowledgedAlarmSeverity() {
+    public EpicsAlarm getUnacknowledgedAlarmSeverity() {
 		return _highestUnacknowledgedChildSeverity;
 	}
 
@@ -247,16 +247,16 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 		// severity).
 
 		// Start with the active alarm severity
-		final EpicsSeverity changedChildSeverity = child.getAlarmSeverity();
-		if (changedChildSeverity.getLevel() > _highestChildSeverity.getLevel()) {
+		final EpicsAlarm changedChildSeverity = child.getAlarmSeverity();
+		if (changedChildSeverity.compareTo(_highestChildSeverity) > 0) {
 			_highestChildSeverity = changedChildSeverity;
 			thisNodeChanged = true;
 		} else {
 			thisNodeChanged |= refreshActiveSeverity();
 		}
 		// Now the highest unacknowledged severity
-		final EpicsSeverity unack = child.getUnacknowledgedAlarmSeverity();
-		if (unack.getLevel() > _highestUnacknowledgedChildSeverity.getLevel()) {
+		final EpicsAlarm unack = child.getUnacknowledgedAlarmSeverity();
+		if (unack.compareTo(_highestUnacknowledgedChildSeverity) > 0) {
 			_highestUnacknowledgedChildSeverity = unack;
 			thisNodeChanged = true;
 		} else {
@@ -293,7 +293,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 *         <code>false</code> otherwise.
 	 */
 	private boolean refreshActiveSeverity() {
-		final EpicsSeverity s = findHighestChildSeverity();
+		final EpicsAlarm s = findHighestChildSeverity();
 		if (!s.equals(_highestChildSeverity)) {
 			_highestChildSeverity = s;
 			return true;
@@ -309,7 +309,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 *         <code>false</code> otherwise.
 	 */
 	private boolean refreshHighestUnacknowledgedSeverity() {
-		final EpicsSeverity s = findHighestUnacknowledgedChildSeverity();
+		final EpicsAlarm s = findHighestUnacknowledgedChildSeverity();
 		if (!s.equals(_highestUnacknowledgedChildSeverity)) {
 			_highestUnacknowledgedChildSeverity = s;
 			return true;
@@ -322,11 +322,11 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 * @return the highest severity of the children of this node.
 	 */
 	@Nonnull
-	private EpicsSeverity findHighestChildSeverity() {
-		EpicsSeverity highest = EpicsSeverity.getLowest();
+	private EpicsAlarm findHighestChildSeverity() {
+		EpicsAlarm highest = EpicsAlarm.getLowest();
 
 		for (final IAlarmTreeNode node : getChildren()) {
-			if (node.getAlarmSeverity().getLevel() > highest.getLevel()) {
+			if (node.getAlarmSeverity().compareTo(highest) > 0) {
 				highest = node.getAlarmSeverity();
 			}
 		}
@@ -338,11 +338,11 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 * @return the highest unacknowledged severity of the children of this node.
 	 */
 	@Nonnull
-	private EpicsSeverity findHighestUnacknowledgedChildSeverity() {
-		EpicsSeverity highest = EpicsSeverity.getLowest();
+	private EpicsAlarm findHighestUnacknowledgedChildSeverity() {
+		EpicsAlarm highest = EpicsAlarm.getLowest();
 
 		for (final IAlarmTreeNode node : getChildren()) {
-			if (node.getUnacknowledgedAlarmSeverity().getLevel() > highest.getLevel()) {
+			if (node.getUnacknowledgedAlarmSeverity().compareTo(highest) > 0) {
 				highest = node.getUnacknowledgedAlarmSeverity();
 			}
 		}
@@ -421,7 +421,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 		    if (child instanceof IAlarmSubtreeNode) {
 		        result.addAll( ((IAlarmSubtreeNode) child).collectUnacknowledgedAlarms());
 		    } else if (child instanceof IAlarmProcessVariableNode) {
-		        if (child.getUnacknowledgedAlarmSeverity() != EpicsSeverity.NO_ALARM) {
+		        if (child.getUnacknowledgedAlarmSeverity() != EpicsAlarm.NO_ALARM) {
 		            result.add((IAlarmProcessVariableNode) child);
 		        }
 		    }
@@ -437,8 +437,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
     public void clearChildren() {
 	    _childrenPVMap.clear();
 	    _childrenSubtreeMap.clear();
-	    _highestChildSeverity = EpicsSeverity.UNKNOWN;
-	    _highestUnacknowledgedChildSeverity = EpicsSeverity.UNKNOWN;
+	    _highestChildSeverity = EpicsAlarm.UNKNOWN;
+	    _highestUnacknowledgedChildSeverity = EpicsAlarm.UNKNOWN;
 
 	}
 }
