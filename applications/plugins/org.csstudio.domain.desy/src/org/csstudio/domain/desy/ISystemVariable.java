@@ -21,6 +21,10 @@
  */
 package org.csstudio.domain.desy;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
@@ -29,13 +33,30 @@ import org.csstudio.domain.desy.common.id.Identifiable;
  * It is identifiable and features to any given time a unique value/state or a set of the same that
  * is unique to that time.
  *
- * features to any given time a to that time unique value/set of values or a
- * state/set of states that may represent an alarm characteristic. In other words any system
- * variable gives information about its current
+ * The state/value may represent an alarm according to some rules/ranges.
+ * In other words any system variable gives information about its current alarm state
+ * and <code>null</code> when its state is not an alarm.
  *
  * @author bknerr
  * @since 04.11.2010
  */
-public interface ISystemVariable extends Identifiable<SystemVariableId> {
-    // yet empty
+public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
+
+    /**
+     * The value/state or set of values/states of this system variable.
+     * @return the variable
+     */
+    @Nonnull
+    T getValue();
+
+    /**
+     * The state/value may represent an alarm according to some rules/ranges.
+     * In other words any system variable gives information about its current alarm state.
+     *
+     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
+     * implementation, hence <code>null</code> represents a possible return value.
+     * @return the alarm or <code>null</code>
+     */
+    @CheckForNull
+    IAlarm getAlarm();
 }

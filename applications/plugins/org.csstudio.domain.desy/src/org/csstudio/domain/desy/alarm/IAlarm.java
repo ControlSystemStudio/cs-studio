@@ -31,10 +31,11 @@ import javax.annotation.Nonnull;
  * ({@link IAlarmSeverity} according to a given rule set and/or value range set.
  * An alarm serves as the ultimate cause to propagate (alarm) notifications throughout the system.
  *
- * TODO (bknerr, jhatje, jpenning) : The 'identifiable system feature' may be
+ * Sidenote: Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
+ * implementation.
+ *
+ * TODO (bknerr, jhatje, jpenning, hrickens) : The 'identifiable system feature' may be
  * {@link IProcessVariable} or {@link IControlSystemItem} or any of the many others...
- *
- *
  *
  * @author bknerr
  * @since 04.11.2010
