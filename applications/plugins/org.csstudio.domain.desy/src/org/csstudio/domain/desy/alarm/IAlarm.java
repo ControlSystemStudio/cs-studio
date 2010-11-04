@@ -23,8 +23,6 @@ package org.csstudio.domain.desy.alarm;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.ISystemVariable;
-
 /**
  * Interface of an alarm.
  *
@@ -38,10 +36,9 @@ import org.csstudio.domain.desy.ISystemVariable;
  *
  * TODO (bknerr, jhatje, jpenning, hrickens) : The 'identifiable system feature' may be
  * {@link IProcessVariable} or {@link IControlSystemItem} or any of the many others. I introduced
- * {@link ISystemVariable} for now, was not sure which one if any to take.
+ * {@link org.csstudio.domain.desy.ISystemVariable} for now, was not sure which one if any to take.
  *
  * @author bknerr
- * @param <T>
  * @since 04.11.2010
  */
 public interface IAlarm {

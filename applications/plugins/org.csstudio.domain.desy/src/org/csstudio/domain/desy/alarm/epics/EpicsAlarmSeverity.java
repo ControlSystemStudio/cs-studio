@@ -19,46 +19,48 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.alarm.epics;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.alarm.IAlarm;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.alarm.IAlarmSeverity;
 
 /**
- * System variables are the fundamental atomic components of any system.
- * A system variable is a value or state (set of values/states) that describes the composed system.
- * It is identifiable and features to any given time a unique value/state or a set of the same that
- * is unique to that time.
+ * The epics alarm severity.
+ * Abstracted in simple integers.
  *
- * The state/value may represent an alarm according to some rules/ranges.
- * In other words any system variable gives information about its current alarm state
- * and <code>null</code> when its state is not an alarm.
+ * As any severity it shall not be used directly but always via the encapsulating
+ * {@link EpicsAlarm} class.
  *
  * @author bknerr
  * @since 04.11.2010
- *
- * @param <T> the type of the system variable
  */
-public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
+class EpicsAlarmSeverity implements IAlarmSeverity<EpicsAlarmSeverity> {
+
+
+    private final int _level;
 
     /**
-     * The value/state or set of values/states of this system variable.
-     * @return the variable
-     */
-    @Nonnull
-    T getValue();
-
-    /**
-     * The state/value may represent an alarm according to some rules/ranges.
-     * In other words any system variable gives information about its current alarm state.
+     * Constructor.
      *
-     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
-     * implementation, hence <code>null</code> represents a possible return value.
-     * @return the alarm or <code>null</code>
+     * @param severityLevel
      */
-    @CheckForNull
-    IAlarm getAlarm();
+    public EpicsAlarmSeverity(final int severityLevel) {
+        _level = severityLevel;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(final EpicsAlarmSeverity o) {
+        return _level - o.getLevel();
+    }
+
+    /**
+     * Epics severities have a strict ordering that is implemented in levels.
+     * @return the severity level
+     */
+    private int getLevel() {
+        return _level;
+    }
+
 }

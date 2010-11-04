@@ -137,6 +137,7 @@ public enum EpicsAlarm implements IAlarm {
     /**
      * {@inheritDoc}
      */
+    @SuppressWarnings("unchecked")
     @Override
     public EpicsAlarmSeverity getSeverity() {
         return _severity;
