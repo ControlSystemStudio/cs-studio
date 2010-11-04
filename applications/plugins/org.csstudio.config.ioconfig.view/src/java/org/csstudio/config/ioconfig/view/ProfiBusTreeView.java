@@ -56,7 +56,7 @@ import org.csstudio.config.ioconfig.model.pbmodel.ModuleDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.SlaveDBO;
 import org.csstudio.config.ioconfig.model.tools.NodeMap;
-import org.csstudio.config.ioconfig.view.actions.CreateSimensAction;
+import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
@@ -589,14 +589,14 @@ public class ProfiBusTreeView extends Composite {
     }
 
     private void makeCreateNewXMLConfigFile() {
-        _createNewXMLConfigFile = new CreateXMLConfigAction("Create Config", this);
+        _createNewXMLConfigFile = new CreateXMLConfigAction("Create EPICS", this);
         _createNewXMLConfigFile.setToolTipText("Action Create tooltip");
         _createNewXMLConfigFile
                 .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
     }
 
     private void makeCreateNewSiemensConfigFile() {
-        _createNewSiemensConfigFile = new CreateSimensAction("Create Siemens", this);
+        _createNewSiemensConfigFile = new CreateWinModAction("Create WinMod", this);
         _createNewSiemensConfigFile.setToolTipText("Action Create tooltip");
         _createNewSiemensConfigFile
         .setImageDescriptor(getSharedImageDescriptor(ISharedImages.IMG_OBJ_FILE));
