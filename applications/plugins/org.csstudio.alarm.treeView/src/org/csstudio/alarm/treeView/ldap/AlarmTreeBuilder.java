@@ -39,7 +39,7 @@ import javax.naming.directory.BasicAttributes;
 import javax.naming.ldap.LdapName;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
@@ -124,7 +124,7 @@ public final class AlarmTreeBuilder {
         if (RECORD.equals(modelNode.getType())) {
             newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
 
-            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, Severity.UNKNOWN, new Date(0L)));
+            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, EpicsSeverity.UNKNOWN, new Date(0L)));
 
         } else {
             newNode = parentNode.getChild(simpleName);

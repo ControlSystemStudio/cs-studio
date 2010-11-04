@@ -33,7 +33,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -122,8 +122,8 @@ public final class AlarmMessageJMSImpl implements IAlarmMessage {
     }
 
     @Nonnull
-    public Severity getSeverity() {
-        return Severity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
+    public EpicsSeverity getSeverity() {
+        return EpicsSeverity.parseSeverity(getString(AlarmMessageKey.SEVERITY));
     }
 
     @Override

@@ -22,7 +22,7 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
@@ -91,7 +91,7 @@ public abstract class AbstractPendingUpdate {
      */
     @Nonnull
     public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
-                                                          @Nonnull final Severity severity,
+                                                          @Nonnull final EpicsSeverity severity,
                                                           @Nonnull final Date eventtime,
                                                           @Nonnull final IAlarmSubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {

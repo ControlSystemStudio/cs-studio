@@ -30,14 +30,15 @@ import javax.annotation.Nonnull;
  *
  * @author Joerg Rathlev
  */
-public enum Severity {
+public enum EpicsSeverity {
     /**
      * Uninitialized or otherwise unknown state.
      */
     UNKNOWN(false, 0),
-	/**
-	 * Severity representing no alarm.
-	 */
+
+    /**
+     * Severity representing no alarm.
+     */
 	NO_ALARM(false, 1),
 
 	/**
@@ -56,12 +57,12 @@ public enum Severity {
 	INVALID(true, 4);
 
 
-    private static final Severity LOWEST_SEVERITY;
+    private static final EpicsSeverity LOWEST_SEVERITY;
 
     static {
         int level = Integer.MAX_VALUE;
-        Severity lowestSev = null;
-        for (final Severity sev : values()) {
+        EpicsSeverity lowestSev = null;
+        for (final EpicsSeverity sev : values()) {
             final int sevLevel = sev.getLevel();
             if (sevLevel < level) {
                 level = sevLevel;
@@ -84,7 +85,7 @@ public enum Severity {
     /**
      * Constructor.
      */
-    private Severity(final boolean isAlarm, final int level) {
+    private EpicsSeverity(final boolean isAlarm, final int level) {
         _isAlarm = isAlarm;
         _severityLevel = level;
     }
@@ -99,7 +100,7 @@ public enum Severity {
 	 * @return the severity represented by the given string.
 	 */
     @Nonnull
-	public static Severity parseSeverity(@CheckForNull final String severityString) {
+	public static EpicsSeverity parseSeverity(@CheckForNull final String severityString) {
 	    if (severityString == null) {
 	        return UNKNOWN;
 	    }
@@ -132,7 +133,7 @@ public enum Severity {
      * @return the Severity with the lowest level
      */
 	@Nonnull
-    public static Severity getLowest() {
+    public static EpicsSeverity getLowest() {
         return LOWEST_SEVERITY;
     }
 }

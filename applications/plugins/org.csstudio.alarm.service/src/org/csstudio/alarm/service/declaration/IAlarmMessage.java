@@ -47,7 +47,7 @@ public interface IAlarmMessage {
      * @return the severity
      */
     @Nonnull
-    Severity getSeverity();
+    EpicsSeverity getSeverity();
 
     /**
      * Tries to retrieve the event time and returns the date if it succeeds, else null.

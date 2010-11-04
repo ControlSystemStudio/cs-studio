@@ -26,7 +26,7 @@ import java.util.Date;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 
 
 /**
@@ -46,7 +46,7 @@ public final class Alarm {
 	/**
 	 * The severity of this alarm.
 	 */
-	private final Severity _severity;
+	private final EpicsSeverity _severity;
 
 	/**
 	 * The time at which this alarm event occured.
@@ -62,7 +62,7 @@ public final class Alarm {
 	 * @param eventtime the time at which the alarm event occured.
 	 */
 	public Alarm(@Nonnull final String objectName,
-	             @Nonnull final Severity severity,
+	             @Nonnull final EpicsSeverity severity,
 	             @Nonnull final Date eventtime) {
 		_objectName = objectName;
 		_severity = severity;
@@ -75,7 +75,7 @@ public final class Alarm {
 	 * @return the severity of this alarm.
 	 */
 	@Nonnull
-	public Severity getSeverity() {
+	public EpicsSeverity getSeverity() {
 		return _severity;
 	}
 

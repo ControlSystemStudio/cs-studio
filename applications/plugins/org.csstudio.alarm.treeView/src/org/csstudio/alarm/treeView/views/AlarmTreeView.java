@@ -29,7 +29,7 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
@@ -317,7 +317,7 @@ public final class AlarmTreeView extends ViewPart {
         // is selected (selectedElement == null), and during initialization,
         // when it is an instance of PendingUpdateAdapter.
         if (selectedElement instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != Severity.NO_ALARM;
+            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsSeverity.NO_ALARM;
         }
         return false;
     }

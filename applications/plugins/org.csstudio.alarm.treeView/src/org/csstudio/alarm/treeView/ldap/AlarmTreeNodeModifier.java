@@ -35,7 +35,7 @@ import javax.naming.directory.Attributes;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.EventtimeUtil;
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
@@ -169,7 +169,7 @@ public final class AlarmTreeNodeModifier {
         if (severityAttr != null) {
             final String severityVal = (String) severityAttr.get();
             if (severityVal != null) {
-                final Severity sev = Severity.parseSeverity(severityVal);
+                final EpicsSeverity sev = EpicsSeverity.parseSeverity(severityVal);
                 Date date = new Date();
                 if (eventtimeAttr != null) {
                     final String eventtimeStr = (String) eventtimeAttr.get();
@@ -184,11 +184,11 @@ public final class AlarmTreeNodeModifier {
 
     private static void setHighestUnackAlarm(@Nonnull final IAlarmProcessVariableNode node,
                                              @Nullable final Attribute highUnAcknAttr) throws NamingException {
-        Severity unack = Severity.NO_ALARM;
+        EpicsSeverity unack = EpicsSeverity.NO_ALARM;
         if (highUnAcknAttr != null) {
             final String severity = (String) highUnAcknAttr.get();
             if (severity != null) {
-                unack = Severity.parseSeverity(severity);
+                unack = EpicsSeverity.parseSeverity(severity);
             }
         }
         node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));

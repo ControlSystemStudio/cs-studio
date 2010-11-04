@@ -35,16 +35,16 @@ public class SeverityTest {
 
     @Test
     public void testGetLowest() {
-        Assert.assertEquals(Severity.UNKNOWN, Severity.getLowest());
+        Assert.assertEquals(EpicsSeverity.UNKNOWN, EpicsSeverity.getLowest());
     }
 
 	@Test
 	public void testIsAlarm() throws Exception {
 		// All severities except NO_ALARM are alarms.
-		assertFalse(Severity.NO_ALARM.isAlarm());
-		assertTrue(Severity.INVALID.isAlarm());
-		assertTrue(Severity.MINOR.isAlarm());
-		assertTrue(Severity.MAJOR.isAlarm());
+		assertFalse(EpicsSeverity.NO_ALARM.isAlarm());
+		assertTrue(EpicsSeverity.INVALID.isAlarm());
+		assertTrue(EpicsSeverity.MINOR.isAlarm());
+		assertTrue(EpicsSeverity.MAJOR.isAlarm());
 	}
 
 	@Test
@@ -55,35 +55,35 @@ public class SeverityTest {
 		// The order should be:
 		// INVALID >  MAJOR > MINOR > NO_ALARM
 
-		assertTrue(Severity.INVALID.compareTo(Severity.INVALID) == 0);
-		assertTrue(Severity.INVALID.compareTo(Severity.MAJOR) > 0);
-		assertTrue(Severity.INVALID.compareTo(Severity.MINOR) > 0);
-		assertTrue(Severity.INVALID.compareTo(Severity.NO_ALARM) > 0);
+		assertTrue(EpicsSeverity.INVALID.compareTo(EpicsSeverity.INVALID) == 0);
+		assertTrue(EpicsSeverity.INVALID.compareTo(EpicsSeverity.MAJOR) > 0);
+		assertTrue(EpicsSeverity.INVALID.compareTo(EpicsSeverity.MINOR) > 0);
+		assertTrue(EpicsSeverity.INVALID.compareTo(EpicsSeverity.NO_ALARM) > 0);
 
-		assertTrue(Severity.MAJOR.compareTo(Severity.INVALID) < 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.MAJOR) == 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.MINOR) > 0);
-		assertTrue(Severity.MAJOR.compareTo(Severity.NO_ALARM) > 0);
+		assertTrue(EpicsSeverity.MAJOR.compareTo(EpicsSeverity.INVALID) < 0);
+		assertTrue(EpicsSeverity.MAJOR.compareTo(EpicsSeverity.MAJOR) == 0);
+		assertTrue(EpicsSeverity.MAJOR.compareTo(EpicsSeverity.MINOR) > 0);
+		assertTrue(EpicsSeverity.MAJOR.compareTo(EpicsSeverity.NO_ALARM) > 0);
 
-		assertTrue(Severity.MINOR.compareTo(Severity.INVALID) < 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.MAJOR) < 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.MINOR) == 0);
-		assertTrue(Severity.MINOR.compareTo(Severity.NO_ALARM) > 0);
+		assertTrue(EpicsSeverity.MINOR.compareTo(EpicsSeverity.INVALID) < 0);
+		assertTrue(EpicsSeverity.MINOR.compareTo(EpicsSeverity.MAJOR) < 0);
+		assertTrue(EpicsSeverity.MINOR.compareTo(EpicsSeverity.MINOR) == 0);
+		assertTrue(EpicsSeverity.MINOR.compareTo(EpicsSeverity.NO_ALARM) > 0);
 
-		assertTrue(Severity.NO_ALARM.compareTo(Severity.INVALID) < 0);
-		assertTrue(Severity.NO_ALARM.compareTo(Severity.MAJOR) < 0);
-		assertTrue(Severity.NO_ALARM.compareTo(Severity.MINOR) < 0);
-		assertTrue(Severity.NO_ALARM.compareTo(Severity.NO_ALARM) == 0);
+		assertTrue(EpicsSeverity.NO_ALARM.compareTo(EpicsSeverity.INVALID) < 0);
+		assertTrue(EpicsSeverity.NO_ALARM.compareTo(EpicsSeverity.MAJOR) < 0);
+		assertTrue(EpicsSeverity.NO_ALARM.compareTo(EpicsSeverity.MINOR) < 0);
+		assertTrue(EpicsSeverity.NO_ALARM.compareTo(EpicsSeverity.NO_ALARM) == 0);
 	}
 
 	@Test
 	public void testParseSeverity() throws Exception {
-		assertSame(Severity.MAJOR, Severity.parseSeverity("MAJOR"));
-		assertSame(Severity.MINOR, Severity.parseSeverity("MINOR"));
-		assertSame(Severity.INVALID, Severity.parseSeverity("INVALID"));
-		assertSame(Severity.NO_ALARM, Severity.parseSeverity("NO_ALARM"));
+		assertSame(EpicsSeverity.MAJOR, EpicsSeverity.parseSeverity("MAJOR"));
+		assertSame(EpicsSeverity.MINOR, EpicsSeverity.parseSeverity("MINOR"));
+		assertSame(EpicsSeverity.INVALID, EpicsSeverity.parseSeverity("INVALID"));
+		assertSame(EpicsSeverity.NO_ALARM, EpicsSeverity.parseSeverity("NO_ALARM"));
 
 		// unknown strings will return UNKNOWN
-		assertSame(Severity.UNKNOWN, Severity.parseSeverity("foo"));
+		assertSame(EpicsSeverity.UNKNOWN, EpicsSeverity.parseSeverity("foo"));
 	}
 }

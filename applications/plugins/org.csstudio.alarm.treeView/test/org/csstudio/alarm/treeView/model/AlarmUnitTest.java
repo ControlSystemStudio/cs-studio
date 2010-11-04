@@ -27,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.Date;
 
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.junit.Test;
 
 
@@ -41,15 +41,15 @@ public class AlarmUnitTest {
 
 	@Test
 	public void testAlarm() throws Exception {
-		final Alarm alarm = new Alarm("foo", Severity.MINOR, t1);
+		final Alarm alarm = new Alarm("foo", EpicsSeverity.MINOR, t1);
 		assertEquals("foo", alarm.getObjectName());
-		assertEquals(Severity.MINOR, alarm.getSeverity());
+		assertEquals(EpicsSeverity.MINOR, alarm.getSeverity());
 	}
 
 	@Test
 	public void testEventtimeComparison() throws Exception {
-		final Alarm a1 = new Alarm("foo", Severity.MINOR, t1);
-		final Alarm a2 = new Alarm("foo", Severity.MINOR, t2);
+		final Alarm a1 = new Alarm("foo", EpicsSeverity.MINOR, t1);
+		final Alarm a2 = new Alarm("foo", EpicsSeverity.MINOR, t2);
 
 		assertTrue(a2.occuredAfter(a1));
 

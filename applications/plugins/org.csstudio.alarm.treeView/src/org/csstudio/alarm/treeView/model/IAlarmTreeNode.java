@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.alarm.service.declaration.Severity;
+import org.csstudio.alarm.service.declaration.EpicsSeverity;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
@@ -123,7 +123,7 @@ public interface IAlarmTreeNode {
      * @return the alarm severity for this node.
      */
     @Nonnull
-    Severity getAlarmSeverity();
+    EpicsSeverity getAlarmSeverity();
 
     /**
      * Returns the severity of the highest unacknowledged alarm for this node.
@@ -132,7 +132,7 @@ public interface IAlarmTreeNode {
      * @return the severity of the highest unacknowledged alarm for this node.
      */
     @Nonnull
-    Severity getUnacknowledgedAlarmSeverity();
+    EpicsSeverity getUnacknowledgedAlarmSeverity();
 
     /**
      * Returns whether this node has any children.
