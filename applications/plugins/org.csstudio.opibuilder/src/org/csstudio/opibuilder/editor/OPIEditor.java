@@ -360,7 +360,6 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		
 		action = new PasteWidgetsAction(this);
 		registry.registerAction(action);
-		getSelectionActions().add(action.getId());
 		
 		action = new CopyWidgetsAction(this);
 		registry.registerAction(action);
