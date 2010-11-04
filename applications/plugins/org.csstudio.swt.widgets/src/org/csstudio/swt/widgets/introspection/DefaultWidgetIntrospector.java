@@ -23,6 +23,7 @@ public class DefaultWidgetIntrospector {
 		"class",
 		"clientArea",
 		"coordinateSystem",
+		"clippingStrategy",
 		"focusTraversable",
 		"insets",
 		"layoutManager",
