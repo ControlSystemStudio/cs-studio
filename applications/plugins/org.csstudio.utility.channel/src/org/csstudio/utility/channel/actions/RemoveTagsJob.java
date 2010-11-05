@@ -3,8 +3,10 @@
  */
 package org.csstudio.utility.channel.actions;
 
+import static gov.bnl.channelfinder.api.ChannelUtil.getChannelNames;
+import static gov.bnl.channelfinder.api.Tag.Builder.tag;
+import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
-import gov.bnl.channelfinder.model.XmlChannels;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -20,10 +22,10 @@ import org.eclipse.core.runtime.jobs.Job;
  */
 public class RemoveTagsJob extends Job {
 
-	private XmlChannels channels;
+	private Collection<Channel> channels;
 	private Collection<String> selectedTags;
 	
-	public RemoveTagsJob(String name, XmlChannels channels,
+	public RemoveTagsJob(String name, Collection<Channel> channels,
 			Collection<String> selectedTags) {
 		super(name);
 		this.channels = channels;
@@ -39,7 +41,8 @@ public class RemoveTagsJob extends Job {
 		for (Iterator<String> iterator = selectedTags.iterator(); iterator.hasNext();) {
 			String tagName = iterator.next();
 			monitor.subTask("Removing tag "+tagName);
-			ChannelFinderClient.getInstance().removeTag(channels.getChannelNames(), tagName);
+//			ChannelFinderClient.getInstance().removeTag(channels.getChannelNames(), tagName);
+			ChannelFinderClient.getInstance().remove(tag(tagName), getChannelNames(channels) );
 			monitor.worked(1);
 		}
 		monitor.done();

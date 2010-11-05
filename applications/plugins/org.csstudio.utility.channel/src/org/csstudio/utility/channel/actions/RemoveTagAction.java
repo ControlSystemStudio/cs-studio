@@ -3,11 +3,11 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlTag;
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -28,15 +28,14 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 public class RemoveTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private XmlChannels channels;
-	private Collection<String> allTags = new TreeSet<String>();
+	private Collection<Channel> channels;
 
 	/**
 	 * 
 	 */
 	public RemoveTagAction() {
 		super();
-		this.channels = new XmlChannels();
+		this.channels = new HashSet<Channel>();
 	}
 
 	/*
@@ -58,21 +57,9 @@ public class RemoveTagAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void run(IAction action) {
-		Collection<String> allProperties = new TreeSet<String>();
-		allTags.clear();
 
-		try {
-			Iterator<XmlChannel> itr = channels.getChannels().iterator();
-			while (itr.hasNext()) {
-				XmlChannel element = itr.next();
-				allProperties.addAll(element.getPropertyNames());
-				allTags.addAll(element.getTagNames());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		ListSelectionDialog selectTags = new ListSelectionDialog(shell,
-				allTags, new allTagsContentProvider(),
+				ChannelUtil.getAllTagNames(channels), new allTagsContentProvider(),
 				new allTagsLabelProvider(), "Select Tags to be removed.");
 		if (selectTags.open() == Window.OK) {
 			Object[] selected = selectTags.getResult();
@@ -101,10 +88,10 @@ public class RemoveTagAction implements IObjectActionDelegate {
 
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			channels.getChannels().clear();
-			for (Iterator<XmlChannel> iterator = strucSelection.iterator(); iterator
+			channels.clear();
+			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.addChannel(iterator.next());
+				channels.add(iterator.next());
 			}
 		}
 	}

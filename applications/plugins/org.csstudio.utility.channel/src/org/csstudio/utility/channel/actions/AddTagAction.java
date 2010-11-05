@@ -1,9 +1,10 @@
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlTag;
+import gov.bnl.channelfinder.api.Channel;
+import static gov.bnl.channelfinder.api.Tag.Builder.*;
 
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
 import org.eclipse.core.runtime.Platform;
@@ -23,7 +24,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private XmlChannels channels;
+	private Collection<Channel> channels;
 	final private IPreferencesService prefs;
 
 	/**
@@ -31,7 +32,7 @@ public class AddTagAction implements IObjectActionDelegate {
 	 */
 	public AddTagAction() {
 		super();
-		this.channels = new XmlChannels();
+		this.channels = new HashSet<Channel>();
 		this.prefs = Platform.getPreferencesService();
 	}
 
@@ -60,7 +61,7 @@ public class AddTagAction implements IObjectActionDelegate {
 			String tagName = inputdialog.getValue();
 			String owner = prefs.getString("org.csstudio.channelfinder",
 					"user", null, null);
-			Job job = new AddTagsJob("addTags", channels, new XmlTag(tagName,
+			Job job = new AddTagsJob("addTags", channels, tag(tagName,
 					owner));
 			job.schedule();
 		}
@@ -75,10 +76,10 @@ public class AddTagAction implements IObjectActionDelegate {
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			channels.getChannels().clear();
-			for (Iterator<XmlChannel> iterator = strucSelection.iterator(); iterator
+			channels.clear();
+			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.addChannel(iterator.next());
+				channels.add(iterator.next());
 			}
 		}
 	}

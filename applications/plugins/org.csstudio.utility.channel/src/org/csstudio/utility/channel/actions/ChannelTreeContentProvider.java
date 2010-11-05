@@ -3,13 +3,13 @@
  */
 package org.csstudio.utility.channel.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
-
-import gov.bnl.channelfinder.model.XmlChannel;
 
 /**
  * @author shroffk
@@ -64,13 +64,13 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 		if(parentElement instanceof ChannelModel){
 			//return ((ChannelModel) parentElement).channelInfo.get("name").toArray();
 			return ((ChannelModel) parentElement).getChild().toArray();
-		}else if (parentElement instanceof XmlChannel){
-			XmlChannel channel = (XmlChannel) parentElement;
+		}else if (parentElement instanceof Channel){
+			Channel channel = (Channel) parentElement;
 			Object[] array = new Object[4];
 			array[0] = channel.getName();
 			array[1] = channel.getOwner();
-			array[2] = channel.getXmlProperties();
-			array[3] = channel.getXmlTags();
+			array[2] = channel.getProperties();
+			array[3] = channel.getTags();
 			return array;
 		}else if(parentElement instanceof Collection<?>){
 			return ((Collection<?>) parentElement).toArray();
@@ -104,7 +104,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 	public boolean hasChildren(Object element) {
 		if (element instanceof ChannelModel) {
 			return (((ChannelModel) element).getChild().size() > 0);
-		} else if (element instanceof XmlChannel) {
+		} else if (element instanceof Channel) {
 			return true;
 		} else if (element instanceof Collection<?>) {
 			return !((Collection<?>) element).isEmpty();

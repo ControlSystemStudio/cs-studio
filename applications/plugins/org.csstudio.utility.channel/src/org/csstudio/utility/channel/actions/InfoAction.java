@@ -3,19 +3,15 @@
  */
 package org.csstudio.utility.channel.actions;
 
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlProperty;
-import gov.bnl.channelfinder.model.XmlTag;
-
 import org.eclipse.jface.action.IAction;
-import org.eclipse.jface.dialogs.IMessageProvider;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
-import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
@@ -23,14 +19,12 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 
 /**
  * @author shroffk
@@ -39,8 +33,7 @@ import org.eclipse.ui.dialogs.CheckedTreeSelectionDialog;
 public class InfoAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private XmlChannels channels = new XmlChannels();
-
+	private Collection<Channel> channels = new HashSet<Channel>();
 	/**
 	 * 
 	 */
@@ -85,27 +78,27 @@ public class InfoAction implements IObjectActionDelegate {
 
 	}
 
-	private Object createTestChannelModel() {
-		ChannelModel root = new ChannelModel(0,null);
-		XmlChannel channel = new XmlChannel("name1", "owner1"); //$NON-NLS-1$ //$NON-NLS-2$
-		channel.addProperty(new XmlProperty("prop1a", "owner1", "VAL1a")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		channel.addProperty(new XmlProperty("prop1b", "owner1", "VAL1b")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		channel.addTag(new XmlTag("tag1", "owner1")); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		XmlChannel channel2 = new XmlChannel("name2", "owner2"); //$NON-NLS-1$ //$NON-NLS-2$
-		channel2.addProperty(new XmlProperty("prop2", "owner2", "VAL2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
-		channel2.addTag(new XmlTag("tag2", "owner2")); //$NON-NLS-1$ //$NON-NLS-2$
-		
-		root.getChild().add(channel);
-		root.getChild().add(channel2);
-		
-		return root;
-	}
+//	private Object createTestChannelModel() {
+//		ChannelModel root = new ChannelModel(0,null);
+//		XmlChannel channel = new XmlChannel("name1", "owner1"); //$NON-NLS-1$ //$NON-NLS-2$
+//		channel.addProperty(new XmlProperty("prop1a", "owner1", "VAL1a")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//		channel.addProperty(new XmlProperty("prop1b", "owner1", "VAL1b")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//		channel.addTag(new XmlTag("tag1", "owner1")); //$NON-NLS-1$ //$NON-NLS-2$
+//		
+//		XmlChannel channel2 = new XmlChannel("name2", "owner2"); //$NON-NLS-1$ //$NON-NLS-2$
+//		channel2.addProperty(new XmlProperty("prop2", "owner2", "VAL2")); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
+//		channel2.addTag(new XmlTag("tag2", "owner2")); //$NON-NLS-1$ //$NON-NLS-2$
+//		
+//		root.getChild().add(channel);
+//		root.getChild().add(channel2);
+//		
+//		return root;
+//	}
 
 	
-	private Object createChannelModel(XmlChannels channels){
-		ChannelModel root = new ChannelModel(0,null);
-		for (XmlChannel channel : channels.getChannels()) {
+	private Object createChannelModel(Collection<Channel> channels){
+		ChannelModel root = new ChannelModel(0,null);		
+		for (Channel channel : channels) {
 			root.getChild().add(channel);
 		}
 		return root;		
@@ -122,10 +115,10 @@ public class InfoAction implements IObjectActionDelegate {
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			channels.getChannels().clear();
-			for (Iterator<XmlChannel> iterator = strucSelection.iterator(); iterator
+			channels.clear();
+			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.addChannel(iterator.next());
+				channels.add(iterator.next());
 			}
 		}
 	}

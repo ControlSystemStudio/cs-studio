@@ -1,15 +1,16 @@
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.model.XmlChannel;
+import gov.bnl.channelfinder.api.Channel;
 
-import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class ChannelModel {
 	private ChannelModel parent;
-	private ArrayList<XmlChannel> child = new ArrayList<XmlChannel>();
+	private Collection<Channel> child = new HashSet<Channel>();
 	private int counter;
 
-	public ChannelModel(ArrayList<XmlChannel> child) {
+	public ChannelModel(Collection<Channel> child) {
 		this.child = child;
 	}
 
@@ -26,11 +27,11 @@ public class ChannelModel {
 		this.parent = parent;
 	}
 
-	public ArrayList<XmlChannel> getChild() {
+	public Collection<Channel> getChild() {
 		return child;
 	}
 
-	public void setChild(ArrayList<XmlChannel> child) {
+	public void setChild(Collection<Channel> child) {
 		this.child = child;
 	}
 
