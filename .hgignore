@@ -27,3 +27,5 @@ products/SNS/product/org.csstudio.sns.updatesite/config_build_*/build.log
 
 syntax: regexp
 ^applications/plugins/org\.csstudio\.diag\.pvmanager\.probe/\.settings$
+syntax: regexp
+^applications/plugins/org\.csstudio\.channelfinder/\.settings$
