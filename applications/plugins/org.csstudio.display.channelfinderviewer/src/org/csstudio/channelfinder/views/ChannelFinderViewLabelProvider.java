@@ -1,13 +1,11 @@
 package org.csstudio.channelfinder.views;
 
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.Property;
+import gov.bnl.channelfinder.api.Tag;
+
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlProperty;
-import gov.bnl.channelfinder.model.XmlTag;
 
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
@@ -15,13 +13,13 @@ import org.eclipse.swt.graphics.Image;
 
 public class ChannelFinderViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
-	private XmlChannels xmlchannels;
+	private Collection<Channel> channels;
 	private Collection<String> allProperties;
 	private Collection<String> allTags;
 
-	public ChannelFinderViewLabelProvider(XmlChannels channels) {
+	public ChannelFinderViewLabelProvider(Collection<Channel> channels) {
 		// TODO Auto-generated constructor stub
-		this.xmlchannels = channels;
+		this.channels = channels;
 	}
 
 	public ChannelFinderViewLabelProvider(Collection<String> allProperties,
@@ -33,14 +31,12 @@ public class ChannelFinderViewLabelProvider extends LabelProvider implements
 
 	@Override
 	public Image getColumnImage(Object arg0, int arg1) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public String getColumnText(Object element, int index) {
-		// TODO Auto-generated method stub
-		XmlChannel channel = (XmlChannel) element;
+		Channel channel = (Channel) element;
 		if (index == 0) {
 			return channel.getName();
 		} else if (index == 1) {
@@ -49,20 +45,18 @@ public class ChannelFinderViewLabelProvider extends LabelProvider implements
 			ArrayList<String> propertyNames = new ArrayList<String>(
 					allProperties);
 			String propertyName = propertyNames.get(index - 2);
-			for (Iterator<XmlProperty> itr = channel.getXmlProperties()
-					.iterator(); itr.hasNext();) {
-				XmlProperty item = itr.next();
-				if (item.getName().equals(propertyName)) {
-					return item.getValue();
+			
+			for (Property property : channel.getProperties()) {
+				if(property.getName().equals(propertyName)){
+					return property.getValue();
 				}
 			}
 		} else if ((index >= (allProperties.size() + 2))
 				&& (index < (allProperties.size() + allTags.size() + 2))) {
 			ArrayList<String> tagNames = new ArrayList<String>(allTags);
-			String tagName = tagNames.get(index - (allProperties.size() + 2));
-			for (Iterator<XmlTag> itr = channel.getXmlTags().iterator(); itr
-					.hasNext();) {
-				if(itr.next().getName().equals(tagName)){
+			String tagName = tagNames.get(index - (allProperties.size() + 2));			
+			for (Tag tag : channel.getTags()) {
+				if(tag.getName().equals(tagName)){
 					return "tagged";
 				}
 			}

@@ -1,17 +1,17 @@
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.model.XmlChannel;
+import gov.bnl.channelfinder.api.Channel;
 
-import java.util.ArrayList;
+import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
-	private ArrayList<XmlChannel> channelsList;
+	private Collection<Channel> channelsList;
 	 
-	public ChannelFinderViewContentProvider(ArrayList<XmlChannel> channelsList) {
+	public ChannelFinderViewContentProvider(Collection<Channel> channelsList) {
 		// TODO Auto-generated constructor stub
 		this.channelsList = channelsList;
 	}

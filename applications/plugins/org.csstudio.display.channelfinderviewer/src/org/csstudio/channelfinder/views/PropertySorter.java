@@ -3,12 +3,12 @@
  */
 package org.csstudio.channelfinder.views;
 
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.Property;
+
 import java.text.Collator;
 import java.util.Iterator;
 import java.util.regex.Pattern;
-
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlProperty;
 
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -33,12 +33,12 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		// TODO Auto-generated method stub
-		return compare((XmlChannel)e1, (XmlChannel)e2);
+		return compare((Channel)e1, (Channel)e2);
 	}
 
-	public int compare(XmlChannel d1, XmlChannel d2) {
-		XmlProperty prop1 = getProperty(d1, propertyName);
-		XmlProperty prop2 = getProperty(d2, propertyName);
+	public int compare(Channel d1, Channel d2) {
+		Property prop1 = getProperty(d1, propertyName);
+		Property prop2 = getProperty(d2, propertyName);
 		if ((prop1 == null) && (prop2 == null))
 			return 0;
 		else if (prop1 == null)
@@ -73,14 +73,14 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 	 * @param PropertyName
 	 * @return the XmlProperty with the matching name else null;
 	 */
-	private XmlProperty getProperty(XmlChannel channel, String PropertyName) {
-		Iterator<XmlProperty> itr = channel.getXmlProperties().iterator();
+	private Property getProperty(Channel channel, String PropertyName) {
+		Iterator<Property> itr = channel.getProperties().iterator();
 		while (itr.hasNext()) {
-			XmlProperty item = itr.next();
+			Property item = itr.next();
 			if (item.getName().equals(propertyName)) {
 				return item;
 			}
-		}
+		}		
 		return null;
 	}
 

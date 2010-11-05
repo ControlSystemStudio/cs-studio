@@ -1,10 +1,12 @@
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
+import gov.bnl.channelfinder.api.Channel;
+import gov.bnl.channelfinder.api.ChannelUtil;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
@@ -66,7 +68,7 @@ public class ChannelFinderView extends ViewPart {
 	private Button search;
 	private GridLayout layout;
 
-	private ArrayList<XmlChannel> channelsList = new ArrayList<XmlChannel>();
+	private Collection<Channel> channelsList = new HashSet<Channel>();
 	// union of all the properties/tags of all channels.
 	private Collection<String> allProperties = new TreeSet<String>();
 	private Collection<String> allTags = new TreeSet<String>();
@@ -269,22 +271,16 @@ public class ChannelFinderView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public synchronized void updateList(XmlChannels channels) {
+	public synchronized void updateList(Collection<Channel> channels) {
 		// Clear the channel list;
-		this.channelsList.clear();		
-		this.allProperties.clear();
-		this.allTags.clear();
-		try {
-			Iterator<XmlChannel> itr = channels.getChannels().iterator();
-			while (itr.hasNext()) {
-				XmlChannel element = itr.next();
-				this.channelsList.add(element);
-				allProperties.addAll(element.getPropertyNames());
-				allTags.addAll(element.getTagNames());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+		channelsList.clear();		
+		allProperties.clear();
+		allTags.clear();
+		
+		channelsList.addAll(channels);
+		allProperties.addAll(ChannelUtil.getPropertyNames(channels));
+		allTags.addAll(ChannelUtil.getAllTagNames(channels));
+		
 		// Remove all old columns
 		// TDB add the additional columns in the correct sorted order.
 		while (viewer.getTable().getColumnCount() > 2) {

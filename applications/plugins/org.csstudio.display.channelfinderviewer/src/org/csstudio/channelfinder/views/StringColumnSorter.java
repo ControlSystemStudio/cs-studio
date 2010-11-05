@@ -3,9 +3,9 @@
  */
 package org.csstudio.channelfinder.views;
 
-import java.text.Collator;
+import gov.bnl.channelfinder.api.Channel;
 
-import gov.bnl.channelfinder.model.XmlChannel;
+import java.text.Collator;
 
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
@@ -30,8 +30,8 @@ public class StringColumnSorter extends AbstractColumnViewerSorter {
 	 */
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return Collator.getInstance().compare(((XmlChannel) e1).getName(),
-				((XmlChannel) e2).getName());
+		return Collator.getInstance().compare(((Channel) e1).getName(),
+				((Channel) e2).getName());
 	}
 
 }

@@ -1,13 +1,13 @@
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.model.XmlTag;
+import gov.bnl.channelfinder.api.Property;
 
 import java.util.Comparator;
 
-public class XmlTagComparator implements Comparator<XmlTag> {
+public class PropertyComparator implements Comparator<Property> {
 
 	@Override
-	public int compare(XmlTag o1, XmlTag o2) {
+	public int compare(Property o1, Property o2) {
 		// TODO Auto-generated method stub
 		return o1.getName().compareTo(o2.getName());
 	}

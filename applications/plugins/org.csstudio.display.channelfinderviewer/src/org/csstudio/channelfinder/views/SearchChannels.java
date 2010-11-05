@@ -1,10 +1,9 @@
 package org.csstudio.channelfinder.views;
 
+import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlProperty;
-import gov.bnl.channelfinder.model.XmlTag;
+import gov.bnl.channelfinder.api.ChannelUtil;
+import gov.bnl.channelfinder.api.Property;
 
 import java.util.Collection;
 import java.util.Hashtable;
@@ -34,10 +33,12 @@ public class SearchChannels extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
-		final XmlChannels channels;
+		final Collection<Channel> channels;
 		try {
-			channels = sort(ChannelFinderClient.getInstance().queryChannels(
-					buildSearchMap1(searchPattern)));
+			// channels = sort(ChannelFinderClient.getInstance().findChannels(
+			// buildSearchMap1(searchPattern)));
+			channels = ChannelFinderClient.getInstance().findChannels(
+					buildSearchMap1(searchPattern));
 			// final XmlChannels channels = testData(); // to use test data
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
@@ -97,8 +98,8 @@ public class SearchChannels extends Job {
 				String values = words[index].split("=")[1];
 				if (key.equals("Tags")) {
 					map.put(key, values);
-//					for (int i = 0; i < values.length; i++)
-//						map.put("~tag", values[i]);
+					// for (int i = 0; i < values.length; i++)
+					// map.put("~tag", values[i]);
 				} else {
 					map.put(key, values);
 				}
@@ -107,77 +108,70 @@ public class SearchChannels extends Job {
 		return map;
 	}
 
-	private static XmlChannels paddedChannels(XmlChannels channels) {
-		XmlChannels chs = null;
-		// sorted with no duplicates
-		Collection<String> allProperties = new TreeSet<String>();
-		Collection<String> allTags = new TreeSet<String>();
-		// union of all the properties/tags of all channels.
-		Iterator<XmlChannel> itr = channels.getChannels().iterator();
-		while (itr.hasNext()) {
-			XmlChannel element = itr.next();
-			for (XmlProperty property : element.getXmlProperties()) {
-				allProperties.add(property.getName());
-			}
-			for (XmlTag tag : element.getXmlTags()) {
-				allTags.add(tag.getName());
-			}
-		}
-		// second iteration to pad all the channels
-		Iterator<XmlChannel> paditr = channels.getChannels().iterator();
-		while (paditr.hasNext()) {
-			XmlChannel element = itr.next();
-			// XmlProperty prop = new TreeSet();
-		}
-		return chs;
-	}
-
-	private static XmlChannel sort(XmlChannel channel) {
-		XmlChannel ch = new XmlChannel(channel.getName(), channel.getOwner());
-		Collection<XmlProperty> sortedProps = new TreeSet<XmlProperty>(
-				new XmlPropertyComparator());
-		sortedProps.addAll(channel.getXmlProperties());
-		ch.setXmlProperties(sortedProps);
-		Collection<XmlTag> sortedTags = new TreeSet<XmlTag>(
-				new XmlTagComparator());
-		sortedTags.addAll(channel.getXmlTags());
-		ch.setXmlTags(sortedTags);
-		return ch;
-	}
-
-	private static XmlChannels sort(XmlChannels channels) {
-		XmlChannels chs = new XmlChannels();
-		Collection<XmlChannel> sortedChannels = new TreeSet<XmlChannel>(
-				new XmlChannelComparator());
-		Iterator<XmlChannel> itr = channels.getChannels().iterator();
-		while (itr.hasNext()) {
-			sortedChannels.add(sort(itr.next()));
-		}
-		chs.setChannels(sortedChannels);
-		return chs;
-	}
-
-	public static XmlChannels testData() {
-		XmlChannels channels = new XmlChannels();
-		channels
-				.addChannel(getchannel("fff", "apple", "aProp", "aVal", "aTag"));
-		channels.addChannel(getchannel("bbb", "ball", "bProp", "bVal", "bTag"));
-		XmlChannel ch = getchannel("ccc", "egg", "cProp", "cVal", "cTag");
-		ch.addProperty(new XmlProperty("aProp", "egg", "aVal"));
-		ch.addProperty(new XmlProperty("bProp", "egg", "bVal"));
-		ch.addTag(new XmlTag("aTag", "kunal"));
-		channels.addChannel(ch);
-		channels.addChannel(getchannel("ddd", "dag", "dProp", "dVal", "dTag"));
-		channels.addChannel(getchannel("eee", "cat", "dProp", "dVal", "eTag"));
-		return channels;
-	}
-
-	private static XmlChannel getchannel(String name, String owner,
-			String prop, String val, String tag) {
-		XmlChannel ch = new XmlChannel(name, owner);
-		ch.addProperty(new XmlProperty(prop, owner, val));
-		ch.addTag(new XmlTag(tag, owner));
-		return ch;
-	}
+	//
+	// private static Collection<Channel> paddedChannels(Collection<Channel>
+	// channels) {
+	// Channels chs = null;
+	// // sorted with no duplicates
+	// Collection<String> allProperties = new TreeSet<String>();
+	// Collection<String> allTags = new TreeSet<String>();
+	// // union of all the properties/tags of all channels.
+	// allProperties.addAll(ChannelUtil.getPropertyNames(channels));
+	// allTags.addAll(ChannelUtil.getAllTagNames(channels));
+	// // second iteration to pad all the channels
+	// Iterator<XmlChannel> paditr = channels.getChannels().iterator();
+	// while (paditr.hasNext()) {
+	// XmlChannel element = itr.next();
+	// // XmlProperty prop = new TreeSet();
+	// }
+	// return chs;
+	// }
+//
+//	private static Channel sort(Channel channel) {
+//		Channel ch = new XmlChannel(channel.getName(), channel.getOwner());
+//		Collection<Property> sortedProps = new TreeSet<Property>(
+//				new PropertyComparator());
+//		sortedProps.addAll(channel.getProperties());
+//		ch.setXmlProperties(sortedProps);
+//		Collection<XmlTag> sortedTags = new TreeSet<XmlTag>(new TagComparator());
+//		sortedTags.addAll(channel.getXmlTags());
+//		ch.setXmlTags(sortedTags);
+//		return ch;
+//	}
+//
+//	private static XmlChannels sort(XmlChannels channels) {
+//		XmlChannels chs = new XmlChannels();
+//		Collection<XmlChannel> sortedChannels = new TreeSet<XmlChannel>(
+//				new ChannelComparator());
+//		Iterator<XmlChannel> itr = channels.getChannels().iterator();
+//		while (itr.hasNext()) {
+//			sortedChannels.add(sort(itr.next()));
+//		}
+//		chs.setChannels(sortedChannels);
+//		return chs;
+//	}
+//
+//	public static XmlChannels testData() {
+//		XmlChannels channels = new XmlChannels();
+//		channels
+//				.addChannel(getchannel("fff", "apple", "aProp", "aVal", "aTag"));
+//		channels.addChannel(getchannel("bbb", "ball", "bProp", "bVal", "bTag"));
+//		XmlChannel ch = getchannel("ccc", "egg", "cProp", "cVal", "cTag");
+//		ch.addProperty(new XmlProperty("aProp", "egg", "aVal"));
+//		ch.addProperty(new XmlProperty("bProp", "egg", "bVal"));
+//		ch.addTag(new XmlTag("aTag", "kunal"));
+//		channels.addChannel(ch);
+//		channels.addChannel(getchannel("ddd", "dag", "dProp", "dVal", "dTag"));
+//		channels.addChannel(getchannel("eee", "cat", "dProp", "dVal", "eTag"));
+//		return channels;
+//	}
+//
+//	private static XmlChannel getchannel(String name, String owner,
+//			String prop, String val, String tag) {
+//		XmlChannel ch = new XmlChannel(name, owner);
+//		ch.addProperty(new XmlProperty(prop, owner, val));
+//		ch.addTag(new XmlTag(tag, owner));
+//		return ch;
+//	}
 
 }

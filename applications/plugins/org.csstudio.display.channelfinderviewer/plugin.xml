@@ -30,29 +30,6 @@
       </perspectiveExtension>
    </extension>
    <extension
-         point="org.eclipse.ui.commands">
-      <command
-            defaultHandler="org.eclipse.ui.handlers.ShowViewHandler"
-            description="Opens Channel Finder Viewer"
-            id="org.csstudio.nsls2.channelviewer.openView"
-            name="Open ChannelFinderView">
-         <commandParameter
-               id="org.eclipse.ui.views.showView.viewId"
-               name="showView"
-               optional="true"
-               values="org.eclipse.ui.internal.registry.ViewParameterValues">
-         </commandParameter>
-      </command>
-      <command
-            id="org.csstudio.channelfinder.addtag"
-            name="add Tags">
-      </command>
-      <command
-            id="org.csstudio.channelfinder.removetag"
-            name="remove Tags">
-      </command>
-   </extension>
-   <extension
          point="org.eclipse.help.contexts">
       <contexts
             file="contexts.xml">
