@@ -11,18 +11,9 @@ import java.util.Iterator;
 import java.util.TreeSet;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IMenuManager;
-import org.eclipse.jface.action.IToolBarManager;
-import org.eclipse.jface.action.MenuManager;
-import org.eclipse.jface.action.Separator;
+import org.eclipse.jface.action.*;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.DoubleClickEvent;
-import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.*;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -39,19 +30,10 @@ import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 
+
+import static gov.bnl.channelfinder.api.ChannelUtil.*;
 /**
- * This sample class demonstrates how to plug-in a new workbench view. The view
- * shows data obtained from the model. The sample creates a dummy model on the
- * fly, but a real implementation would connect to the model available either in
- * this or another plug-in (e.g. the workspace). The view is connected to the
- * model using a content provider.
- * <p>
- * The view uses a label provider to define how model objects should be
- * presented in the view. Each view can present the same model objects using
- * different labels and icons, if needed. Alternatively, a single label provider
- * can be shared between views in order to ensure that objects of the same type
- * are presented in the same way everywhere.
- * <p>
+ * 
  */
 
 public class ChannelFinderView extends ViewPart {
@@ -70,8 +52,8 @@ public class ChannelFinderView extends ViewPart {
 
 	private Collection<Channel> channelsList = new HashSet<Channel>();
 	// union of all the properties/tags of all channels.
-	private Collection<String> allProperties = new TreeSet<String>();
-	private Collection<String> allTags = new TreeSet<String>();
+//	private Collection<String> allProperties = new TreeSet<String>();
+//	private Collection<String> allTags = new TreeSet<String>();
 
 
 	private Action doubleClickAction;
@@ -273,13 +255,8 @@ public class ChannelFinderView extends ViewPart {
 
 	public synchronized void updateList(Collection<Channel> channels) {
 		// Clear the channel list;
-		channelsList.clear();		
-		allProperties.clear();
-		allTags.clear();
-		
+		channelsList.clear();			
 		channelsList.addAll(channels);
-		allProperties.addAll(ChannelUtil.getPropertyNames(channels));
-		allTags.addAll(ChannelUtil.getAllTagNames(channels));
 		
 		// Remove all old columns
 		// TDB add the additional columns in the correct sorted order.
@@ -289,17 +266,17 @@ public class ChannelFinderView extends ViewPart {
 		}
 
 		// Add a new column for each property
-		for (String propertyName : allProperties) {
+		for (String propertyName : getPropertyNames(channelsList)) {
 			new PropertySorter(propertyName, viewer, createTableColumn(viewer,
 					propertyName, propertyName, SWT.DOWN, false));
 		}
 		// Add a new column for each Tag
-		for (String tagName : allTags) {
+		for (String tagName : getAllTagNames(channelsList)) {
 			new TagSorter(tagName, viewer, createTableColumn(viewer, tagName,
 					tagName, SWT.DOWN, false));
 		}
 
 		viewer.setLabelProvider(new ChannelFinderViewLabelProvider(
-				allProperties, allTags));
+				getPropertyNames(channelsList), getAllTagNames(channelsList)));
 	}
 }

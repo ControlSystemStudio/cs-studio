@@ -43,7 +43,7 @@ public class SearchChannels extends Job {
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
 				@Override
 				public void run() {
-					// return set of channels sorted by name
+					// TODO return set of channels sorted by name
 					// each channel has its properties and tags sorted by name.
 					channelFinderView.updateList(channels);
 				}
@@ -108,24 +108,6 @@ public class SearchChannels extends Job {
 		return map;
 	}
 
-	//
-	// private static Collection<Channel> paddedChannels(Collection<Channel>
-	// channels) {
-	// Channels chs = null;
-	// // sorted with no duplicates
-	// Collection<String> allProperties = new TreeSet<String>();
-	// Collection<String> allTags = new TreeSet<String>();
-	// // union of all the properties/tags of all channels.
-	// allProperties.addAll(ChannelUtil.getPropertyNames(channels));
-	// allTags.addAll(ChannelUtil.getAllTagNames(channels));
-	// // second iteration to pad all the channels
-	// Iterator<XmlChannel> paditr = channels.getChannels().iterator();
-	// while (paditr.hasNext()) {
-	// XmlChannel element = itr.next();
-	// // XmlProperty prop = new TreeSet();
-	// }
-	// return chs;
-	// }
 //
 //	private static Channel sort(Channel channel) {
 //		Channel ch = new XmlChannel(channel.getName(), channel.getOwner());
