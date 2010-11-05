@@ -162,7 +162,7 @@ public final class CloneCommand extends Command {
 			tempModel.addChild(widget, false);
 		}
 		
-		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
+		String xml = XMLUtil.widgetToXMLString(tempModel, false);
 		clipboard.setContents(new Object[] { xml },
 				new Transfer[] { OPIWidgetsTransfer.getInstance() });
 		

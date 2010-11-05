@@ -27,7 +27,7 @@ public class DropPVtoContainerEditPolicy extends DropPVtoPVWidgetEditPolicy {
 
 	@Override
 	public Command getCommand(Request request) {
-		if(request.getType() == DropPVRequest.REQ_DROP_PV){
+		if(request.getType() == DropPVRequest.REQ_DROP_PV && request instanceof DropPVRequest){
 			DropPVRequest dropPVRequest =(DropPVRequest)request; 
 			if(dropPVRequest.getTargetWidget() != null && 
 					dropPVRequest.getTargetWidget() instanceof AbstractContainerEditpart){

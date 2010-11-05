@@ -23,7 +23,7 @@ public class NewOPIFileWizardPage extends WizardNewFileCreationPage {
 	
 	@Override
 	protected InputStream getInitialContents() {
-		String s = XMLUtil.WidgetToXMLString(new DisplayModel(), true);
+		String s = XMLUtil.widgetToXMLString(new DisplayModel(), true);
 		InputStream result = new ByteArrayInputStream(s.getBytes());
 		return result;
 	}

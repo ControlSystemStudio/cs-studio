@@ -29,7 +29,7 @@ public class OPIColorPropertyDescriptor extends PropertyDescriptor {
 	}
 	
 	
-	private final class OPIColorLabelProvider extends LabelProvider{
+	private final static class OPIColorLabelProvider extends LabelProvider{
 		
 		@Override
 		public Image getImage(Object element) {
