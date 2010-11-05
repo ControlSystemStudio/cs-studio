@@ -13,12 +13,12 @@ import org.eclipse.draw2d.geometry.Point;
 import org.eclipse.draw2d.geometry.Rectangle;
 
 /**
- * A text figure for single line text display.
+ * A text figure without wrapping capability.
  *
  * @author Xihui Chen
  *
  */
-public class LabelFigure extends Figure implements Introspectable{	
+public class TextFigure extends Figure implements Introspectable{	
 	
 	
 	protected V_ALIGN verticalAlignment = V_ALIGN.TOP;
@@ -30,8 +30,10 @@ public class LabelFigure extends Figure implements Introspectable{
 	private String text = ""; //$NON-NLS-1$
 	private Point textLocation;
 	private Dimension textSize;
+	
+	private final Point POINT_ZERO = new Point(0,0);
 
-	public LabelFigure() {
+	public TextFigure() {
 		this(false);
 	}
 	
@@ -40,11 +42,15 @@ public class LabelFigure extends Figure implements Introspectable{
 	 * 
 	 * @param runMode true if this figure is in run mode; false if in edit mode.
 	 */
-	public LabelFigure(boolean runMode) {
+	public TextFigure(boolean runMode) {
 		this.runMode = runMode;		
 	}
 
 	protected void calculateTextLocation() {
+		if(verticalAlignment == V_ALIGN.TOP && horizontalAlignment == H_ALIGN.LEFT){
+			textLocation = POINT_ZERO;
+			return;
+		}
 		Rectangle clientArea = getClientArea();		
 		Dimension textSize = getTextSize();
 			int x=0;
@@ -85,7 +91,7 @@ public class LabelFigure extends Figure implements Introspectable{
 		return TextUtilities.INSTANCE.getTextExtents(text, getFont());
 	}
 	
-	protected void clearLocation(){
+	protected void clearLocationSize(){		
 		textLocation = null;
 		textSize = null;
 	}
@@ -134,7 +140,7 @@ public class LabelFigure extends Figure implements Introspectable{
 	
 	protected Point getTextLocation() {
 		if (textLocation != null)
-			return textLocation;
+			return textLocation;			
 		calculateTextLocation();
 		return textLocation;
 	}	
@@ -154,7 +160,7 @@ public class LabelFigure extends Figure implements Introspectable{
 
 	@Override
 	public void invalidate() {
-		clearLocation();
+		clearLocationSize();
 		super.invalidate();
 	}
 	
@@ -213,7 +219,7 @@ public class LabelFigure extends Figure implements Introspectable{
 		if (text.equals(s))
 			return;
 		text = s;
-		clearLocation();
+		clearLocationSize();
 		repaint();
 	}
 

@@ -2,11 +2,11 @@ package org.csstudio.swt.widgets.figures;
 import org.eclipse.draw2d.Figure;
 
 
-public class LabelFigureTest extends AbstractWidgetTest{
+public class TextFigureTest extends AbstractWidgetTest{
 
 	@Override
 	public Figure createTestWidget() {
-		return new LabelFigure();
+		return new TextFigure();
 	}
 	
 	

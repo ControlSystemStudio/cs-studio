@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.widgets.editparts;
 
-import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.gef.tools.CellEditorLocator;
 import org.eclipse.jface.viewers.CellEditor;
@@ -14,9 +14,9 @@ public class LabelCellEditorLocator
 		implements CellEditorLocator
 	{
 
-		private LabelFigure labelFigure;
+		private Figure labelFigure;
 	
-		public LabelCellEditorLocator(LabelFigure stickyNote) {
+		public LabelCellEditorLocator(Figure stickyNote) {
 			setLabel(stickyNote);
 		}
 	
@@ -34,7 +34,7 @@ public class LabelCellEditorLocator
 		/**
 		 * Returns the stickyNote figure.
 		 */
-		protected LabelFigure getLabel() {
+		protected Figure getLabel() {
 			return labelFigure;
 		}
 	
@@ -42,7 +42,7 @@ public class LabelCellEditorLocator
 		 * Sets the Sticky note figure.
 		 * @param stickyNote The stickyNote to set
 		 */
-		protected void setLabel(LabelFigure stickyNote) {
+		protected void setLabel(Figure stickyNote) {
 			this.labelFigure = stickyNote;
 		}
 

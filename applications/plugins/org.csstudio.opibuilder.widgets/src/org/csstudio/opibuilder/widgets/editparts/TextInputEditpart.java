@@ -11,9 +11,10 @@ import org.csstudio.opibuilder.widgets.model.TextInputModel;
 import org.csstudio.opibuilder.widgets.model.TextIndicatorModel.FormatEnum;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.swt.widgets.figures.LabelFigure;
+import org.csstudio.swt.widgets.figures.TextFigure;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVListener;
+import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -109,7 +110,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 					}else if(value instanceof IStringValue){
 					*/	
 					//}
-					((LabelFigure)figure).setText(text);
+					((TextFigure)figure).setText(text);
 					FormatEnum formatEnum = getWidgetModel().getFormat();
 						switch (formatEnum){
 						case STRING:
@@ -130,7 +131,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 								double max = getWidgetModel().getMaximum();
 								double coValue = Math.max(min, Math.min(value, max));
 								if(coValue != value)
-									((LabelFigure)figure).setText(format.format(coValue));
+									((TextFigure)figure).setText(format.format(coValue));
 								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, coValue);
 							} catch (ParseException e) {
 								setPVValue(AbstractPVWidgetModel.PROP_PVNAME, text);
@@ -175,7 +176,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 	
 	protected void performDirectEdit(){
 		new LabelEditManager(this, 
-				new LabelCellEditorLocator((LabelFigure)getFigure()), false).show();
+				new LabelCellEditorLocator((Figure)getFigure()), false).show();
 	}
 	
 	
