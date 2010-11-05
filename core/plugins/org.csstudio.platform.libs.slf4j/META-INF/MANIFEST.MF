@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Slf4j
+Bundle-SymbolicName: org.csstudio.platform.libs.slf4j
+Bundle-Version: 1.5.11
+Export-Package: org.slf4j,
+ org.slf4j.helpers,
+ org.slf4j.spi
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
