@@ -360,14 +360,9 @@ public final class ImageFigure extends Figure implements Introspectable {
 			switch (imageData.disposalMethod) {
 			case SWT.DM_FILL_BACKGROUND:
 				/* Fill with the background color before drawing. */
-				Color bgColor = null;
-//				if (useGIFBackground  && loader.backgroundPixel != -1) {
-//					bgColor = new Color(Display.getDefault(), imageData.palette.getRGB(loader.backgroundPixel));
-//				}
-				offScreenImageGC.setBackground(bgColor != null ? bgColor : getBackgroundColor());
+				offScreenImageGC.setBackground(getBackgroundColor());
 				offScreenImageGC.fillRectangle(
 						imageData.x, imageData.y, imageData.width, imageData.height);
-//				if (bgColor != null) bgColor.dispose();
 				break;
 			case SWT.DM_FILL_PREVIOUS:
 				/* Restore the previous image before drawing. */

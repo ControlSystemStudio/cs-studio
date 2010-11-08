@@ -671,13 +671,14 @@ public class ScrollbarFigure extends Figure implements Orientable, Introspectabl
 	 * @since 2.0
 	 */
 	public void setThumb(IFigure figure) {
-		figure.addMouseListener(new MouseListener.Stub(){
-			@Override
-			public void mousePressed(MouseEvent me) {
-				if(!hasFocus())
-					requestFocus();
-			}
-		});
+		if(figure != null)
+			figure.addMouseListener(new MouseListener.Stub(){
+				@Override
+				public void mousePressed(MouseEvent me) {
+					if(!hasFocus())
+						requestFocus();
+				}
+			});
 		if (thumb != null) {
 			thumb.removeMouseListener(thumbDragger);
 			thumb.removeMouseMotionListener(thumbDragger);

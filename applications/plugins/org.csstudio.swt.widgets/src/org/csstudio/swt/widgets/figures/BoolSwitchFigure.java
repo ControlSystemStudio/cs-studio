@@ -92,7 +92,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 				if(effect3D && support3D){
 					pattern = new Pattern(Display.getCurrent(), bigEndBounds.x, bigEndBounds.y,
 						bigEndBounds.x+bigEndBounds.width, bigEndBounds.y, 
-						BLACK_COLOR, booleanValue ? 10 : 10,
+						BLACK_COLOR, 10,
 						BLACK_COLOR, booleanValue ? 210 : 160);
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(smallEndBounds);
@@ -125,7 +125,7 @@ public class BoolSwitchFigure extends AbstractBoolControlFigure {
 					
 					pattern = new Pattern(Display.getCurrent(), ul.x, ul.y,
 						br.x, br.y, 
-						BLACK_COLOR, booleanValue ? 10 : 10, BLACK_COLOR, booleanValue ? 180 : 160);
+						BLACK_COLOR, 10, BLACK_COLOR, booleanValue ? 180 : 160);
 					
 					graphics.setBackgroundPattern(pattern);
 					graphics.fillOval(bigEndBounds);				

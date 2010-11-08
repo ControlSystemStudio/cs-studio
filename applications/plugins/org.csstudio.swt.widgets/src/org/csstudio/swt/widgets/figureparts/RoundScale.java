@@ -70,9 +70,9 @@ public class RoundScale extends AbstractScale {
     }
 	
 	private void calcEstimatedDonutWidth() {
-		estimatedDonutWidth = (int) Math.ceil(Math.max(FigureUtilities.getTextExtents(
+		estimatedDonutWidth = Math.max(FigureUtilities.getTextExtents(
 					format(getRange().getLower()),getFont()).width, 
-					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).width))
+					FigureUtilities.getTextExtents(format(getRange().getUpper()), getFont()).width)
 					+ SPACE_BTW_MARK_LABEL + RoundScaleTickMarks.MAJOR_TICK_LENGTH;
 	}
 	

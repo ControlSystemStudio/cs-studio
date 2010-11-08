@@ -78,11 +78,11 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			if (color == null) {
 				setBorder(null);
 			} else {
-				if (color != null) {
+//				if (color != null) {
 					setBorder(new LineBorder(color, thickness));
-				} else {
-					setBorder(new LineBorder(thickness));
-				}
+//				} else {
+//					setBorder(new LineBorder(thickness));
+//				}
 			}
 		}
 
@@ -174,12 +174,8 @@ public class ThumbWheelFigure extends Figure implements Introspectable{
 			this.color = color;
 			if (color == null) {
 				setBorder(null);
-			} else {
-				if (color != null) {
-					setBorder(new LineBorder(color, thickness));
-				} else {
-					setBorder(new LineBorder(thickness));
-				}
+			} else {				
+				setBorder(new LineBorder(color, thickness));				
 			}
 		}
 

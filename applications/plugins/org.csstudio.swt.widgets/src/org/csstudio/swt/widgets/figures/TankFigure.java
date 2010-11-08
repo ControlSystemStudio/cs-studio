@@ -226,7 +226,7 @@ public class TankFigure extends AbstractLinearMarkedFigure {
 		}
 
 
-	class TankLayout extends AbstractLayout {
+	static class TankLayout extends AbstractLayout {
 		
 		/** Used as a constraint for the scale. */
 		public static final String SCALE = "scale";   //$NON-NLS-1$
