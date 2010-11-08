@@ -23,15 +23,19 @@
  */
 package org.csstudio.platform.test;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Properties;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
+import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.Bundle;
 
@@ -53,7 +57,11 @@ import org.osgi.framework.Bundle;
  */
 public final class TestDataProvider {
 
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(TestDataProvider.class);
+
     private static final String CONFIGURATION_FILE_SUFFIX = "TestConfiguration.ini";
+
+    private static final String SENSITIVE_FILE_KEY = "sensitiveConfigFilePath";
 
     private static TestDataProvider INSTANCE;
 
@@ -81,16 +89,44 @@ public final class TestDataProvider {
                                        @Nonnull final String testConfigFileName)
         throws FileNotFoundException, IOException {
 
+        openStreamAndLoadProps(pluginId, testConfigFileName);
+        final String secretFile = findSensitiveDataFile();
+        if (secretFile != null) {
+            openStreamAndLoadProps(pluginId, secretFile);
+        }
+    }
+
+    /**
+     * @param pluginId
+     * @param fileName
+     * @return
+     */
+    @CheckForNull
+    private static String findSensitiveDataFile() {
+
+        if (PROPERTIES != null) {
+            final String secretFilePath = (String) PROPERTIES.get(SENSITIVE_FILE_KEY);
+            if (secretFilePath != null) {
+                return secretFilePath;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * @param pluginId
+     * @param testConfigFileName
+     * @throws MalformedURLException
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    private static void openStreamAndLoadProps(@Nonnull final String pluginId,
+                                               @Nonnull final String testConfigFileName)
+        throws MalformedURLException, FileNotFoundException, IOException {
+
         InputStream openStream = null;
         try {
-            final Bundle bundle = Platform.getBundle(pluginId);
-            final URL resource = bundle.getResource(testConfigFileName);
-
-            if (resource == null) {
-                throw new FileNotFoundException("Test configuration file for plugin " + pluginId +
-                                                " and file name " + testConfigFileName +
-                " does not exist");
-            }
+            final URL resource = locateResource(pluginId, testConfigFileName);
             openStream =  resource.openStream();
             PROPERTIES.load(openStream);
         } finally {
@@ -98,6 +134,37 @@ public final class TestDataProvider {
                 openStream.close();
             }
         }
+    }
+
+    /**
+     * @param pluginId
+     * @param testConfigFileName
+     * @return
+     * @throws MalformedURLException
+     * @throws FileNotFoundException
+     */
+    @Nonnull
+    private static URL locateResource(@Nonnull final String pluginId,
+                                      @Nonnull final String testConfigFileName) throws MalformedURLException,
+                                                                                       FileNotFoundException {
+        final Bundle bundle = Platform.getBundle(pluginId);
+        URL resource = null;
+        if (bundle == null) {
+            LOG.warn("Bundle could not be located. Try to find config file via current working dir.");
+
+            final String curDir = System.getProperty("user.dir");
+            final File configFile = new File(curDir + File.separator + testConfigFileName);
+            resource = configFile.toURL();
+        } else {
+            resource = bundle.getResource(testConfigFileName);
+        }
+
+        if (resource == null) {
+            throw new FileNotFoundException("Test configuration file for plugin " + pluginId +
+                                            " and file name " + testConfigFileName +
+            " does not exist");
+        }
+        return resource;
     }
 
     /**
