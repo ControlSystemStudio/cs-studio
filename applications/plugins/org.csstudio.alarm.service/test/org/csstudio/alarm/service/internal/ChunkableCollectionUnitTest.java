@@ -18,7 +18,7 @@ import org.junit.Test;
  * @version $Revision: 1.1 $
  * @since 31.08.2010
  */
-public class ChunkableCollectionTest {
+public class ChunkableCollectionUnitTest {
 
 	@SuppressWarnings("unused")
 	@Test(expected = AssertionError.class)

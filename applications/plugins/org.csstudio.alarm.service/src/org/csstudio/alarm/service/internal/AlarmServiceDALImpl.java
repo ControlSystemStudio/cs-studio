@@ -27,6 +27,7 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
+import org.csstudio.dal.DalPlugin;
 
 /**
  * DAL based implementation of the AlarmService.
@@ -57,7 +58,7 @@ public class AlarmServiceDALImpl implements IAlarmService {
      */
     @Override
     public final IAlarmConnection newAlarmConnection() {
-        return new AlarmConnectionDALImpl(_alarmConfigService);
+        return new AlarmConnectionDALImpl(_alarmConfigService, DalPlugin.getDefault().getSimpleDALBroker());
     }
 
 

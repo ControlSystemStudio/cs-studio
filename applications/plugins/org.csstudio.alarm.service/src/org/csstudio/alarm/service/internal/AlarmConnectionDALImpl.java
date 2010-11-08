@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -45,6 +46,7 @@ import org.epics.css.dal.SimpleProperty;
 import org.epics.css.dal.StringProperty;
 import org.epics.css.dal.simple.ConnectionParameters;
 import org.epics.css.dal.simple.RemoteInfo;
+import org.epics.css.dal.simple.SimpleDALBroker;
 
 import com.cosylab.util.CommonException;
 
@@ -56,7 +58,7 @@ import com.cosylab.util.CommonException;
  * @version $Revision$
  * @since 21.04.2010
  */
-public final class AlarmConnectionDALImpl implements IAlarmConnection {
+public class AlarmConnectionDALImpl implements IAlarmConnection {
 
     private static final Logger LOG = CentralLogger.getInstance()
             .getLogger(AlarmConnectionDALImpl.class);
@@ -65,16 +67,20 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
     private static final String COULD_NOT_CREATE_DAL_CONNECTION = "Could not create DAL connection";
     private static final String COULD_NOT_DEREGISTER_DAL_CONNECTION = "Could not deregister DAL connection";
 
-    private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
     private final IAlarmConfigurationService _alarmConfigService;
+    private SimpleDALBroker _simpleDALBroker;
+
+    private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
 
     /**
      * Constructor must be called only from the AlarmService.
      *
-     * @param alarmConfigService .
+     * @param alarmConfigService
+     * @param simpleDALBroker
      */
-    public AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService) {
+    public AlarmConnectionDALImpl(@Nonnull final IAlarmConfigurationService alarmConfigService, @Nonnull final SimpleDALBroker simpleDALBroker) {
         _alarmConfigService = alarmConfigService;
+        _simpleDALBroker = simpleDALBroker;
     }
 
     /**
@@ -93,10 +99,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         LOG.debug("Disconnecting from DAL.");
         for (final ListenerItem item : _listenerItems) {
             try {
-                DalPlugin.getDefault().getSimpleDALBroker()
-                        .deregisterListener(item._connectionParameters,
-                                            item._dynamicValueAdapter,
-                                            item._parameters);
+                _simpleDALBroker.deregisterListener(item._connectionParameters,
+                                                    item._dynamicValueAdapter,
+                                                    item._parameters);
             } catch (final InstantiationException e) {
                 LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
             } catch (final CommonException e) {
@@ -112,31 +117,44 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
                                                @Nonnull final IAlarmListener listener,
                                                @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
         LOG.info("Connecting to DAL for resource " + resource + ".");
+        
+        Set<String> simpleNames = getPVNamesFromResource(resource);
+        
+        for (final String recordName : simpleNames) {
+            LOG.debug("Connecting to " + recordName);
+            connectToPV(/*connectionMonitor, */listener, recordName);
+        }
+        
+        // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
+        connectionMonitor.onConnect();
+    }
 
+    /**
+     * This method encapsulates access to the framework. It may be overridden by a test so it is not necessary to run a plugin test. 
+     * 
+     * @param resource
+     * @return
+     * @throws AlarmConnectionException
+     */
+    @Nonnull
+    protected Set<String> getPVNamesFromResource(@Nonnull final IAlarmResource resource) throws AlarmConnectionException {
+        ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
         try {
-            ContentModel<LdapEpicsAlarmcfgConfiguration> model = null;
             if (AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue()) {
-                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference.getFacilityNames());
+                model = _alarmConfigService.retrieveInitialContentModel(AlarmPreference
+                        .getFacilityNames());
             } else {
-                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource.getFilepath());
+                model = _alarmConfigService.retrieveInitialContentModelFromFile(resource
+                        .getFilepath());
             }
-
-            for (final String recordName : model
-                    .getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD)) {
-                LOG.debug("Connecting to " + recordName);
-                connectToPV(/*connectionMonitor, */listener, recordName);
-            }
-
-            // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
-            connectionMonitor.onConnect();
-        } catch (final CreateContentModelException e) {
+        } catch (CreateContentModelException e) {
             LOG.error(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
             throw new AlarmConnectionException(COULD_NOT_RETRIEVE_INITIAL_CONTENT_MODEL, e);
-        } catch (final FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             LOG.error("Resource " + resource.getFilepath() + " could not be found.", e);
             throw new AlarmConnectionException("Resource " + resource.getFilepath() + " could not be found.", e);
         }
-
+        return model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
     }
 
     private void connectToPV(//@Nonnull final IAlarmConnectionMonitor connectionMonitor,
@@ -160,10 +178,9 @@ public final class AlarmConnectionDALImpl implements IAlarmConnection {
         item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
 
         try {
-            DalPlugin.getDefault().getSimpleDALBroker()
-                    .registerListener(item._connectionParameters,
-                                      item._dynamicValueAdapter,
-                                      item._parameters);
+            _simpleDALBroker.registerListener(item._connectionParameters,
+                                              item._dynamicValueAdapter,
+                                              item._parameters);
             _listenerItems.add(item);
         } catch (final InstantiationException e) {
             LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
