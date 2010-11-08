@@ -20,6 +20,7 @@ package org.csstudio.alarm.service.internal;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,7 +36,6 @@ import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.service.declaration.IAlarmConnectionMonitor;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmResource;
-import org.csstudio.dal.DalPlugin;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 import org.csstudio.utility.treemodel.ContentModel;
@@ -70,7 +70,10 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
     private final IAlarmConfigurationService _alarmConfigService;
     private SimpleDALBroker _simpleDALBroker;
 
-    private final List<ListenerItem> _listenerItems = new ArrayList<ListenerItem>();
+    private final Map<String, ListenerItem> _pv2listenerItem = new HashMap<String, AlarmConnectionDALImpl.ListenerItem>();
+    
+    // The listener is given once at connect
+    private IAlarmListener _listener;
 
     /**
      * Constructor must be called only from the AlarmService.
@@ -91,38 +94,18 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
         return false;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
-    public void disconnect() {
-        LOG.debug("Disconnecting from DAL.");
-        for (final ListenerItem item : _listenerItems) {
-            try {
-                _simpleDALBroker.deregisterListener(item._connectionParameters,
-                                                    item._dynamicValueAdapter,
-                                                    item._parameters);
-            } catch (final InstantiationException e) {
-                LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
-            } catch (final CommonException e) {
-                LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
-            }
-        }
-        _listenerItems.clear();
-
-    }
-
-    @Override
-    public void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                               @Nonnull final IAlarmListener listener,
-                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
+    public void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                        @Nonnull final IAlarmListener listener,
+                        @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
         LOG.info("Connecting to DAL for resource " + resource + ".");
         
+        _listener = listener;
         Set<String> simpleNames = getPVNamesFromResource(resource);
         
         for (final String recordName : simpleNames) {
             LOG.debug("Connecting to " + recordName);
-            connectToPV(/*connectionMonitor, */listener, recordName);
+            connectToPV(recordName);
         }
         
         // The DAL implementation sends connect here, because the DynamicValueListenerAdapter will not do so
@@ -157,35 +140,70 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
         return model.getSimpleNames(LdapEpicsAlarmcfgConfiguration.RECORD);
     }
 
-    private void connectToPV(//@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                             @Nonnull final IAlarmListener listener,
-                             @Nonnull final String pvName) {
+    @Override
+    public void registerPV(@Nonnull final String pvName) {
+        connectToPV(pvName);
+    }
 
+    private void connectToPV(@Nonnull final String pvName) {
         final RemoteInfo remoteInfo = new RemoteInfo(RemoteInfo.DAL_TYPE_PREFIX + "EPICS",
                                                      pvName,
                                                      null,
                                                      null);
-
         final ListenerItem item = new ListenerItem();
         // REVIEW (jpenning): hard coded type in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, String.class);
-        item._dynamicValueAdapter = new DynamicValueListenerAdapter<String, StringProperty>(listener
-//                ,
-//                                                                                            connectionMonitor
-                                                                                            );
+        item._dynamicValueAdapter = new DynamicValueListenerAdapter<String, StringProperty>(_listener);
         // TODO (jpenning) use constants for parameterization of expert mode
         item._parameters = new HashMap<String, Object>();
         item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
-
+        
         try {
             _simpleDALBroker.registerListener(item._connectionParameters,
                                               item._dynamicValueAdapter,
                                               item._parameters);
-            _listenerItems.add(item);
+            if (!_pv2listenerItem.containsKey(pvName)) {
+                _pv2listenerItem.put(pvName, item);
+            }
         } catch (final InstantiationException e) {
             LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
         } catch (final CommonException e) {
             LOG.error(COULD_NOT_CREATE_DAL_CONNECTION, e);
+        }
+    }
+
+    @Override
+    public void deregisterPV(@Nonnull final String pvName) {
+        ListenerItem item = _pv2listenerItem.remove(pvName);
+        if (item != null) {
+            disconnectItem(item);
+        } else {
+            LOG.warn("Trying to deregister a pv named '" + pvName + "' which was not registered.");
+        }
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void disconnect() {
+        LOG.debug("Disconnecting from DAL.");
+        for (final ListenerItem item : _pv2listenerItem.values()) {
+            disconnectItem(item);
+        }
+        _pv2listenerItem.clear();
+
+    }
+
+    private void disconnectItem(@Nonnull final ListenerItem item) {
+        try {
+            _simpleDALBroker.deregisterListener(item._connectionParameters,
+                                                item._dynamicValueAdapter,
+                                                item._parameters);
+        } catch (final InstantiationException e) {
+            LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
+        } catch (final CommonException e) {
+            LOG.error(COULD_NOT_DEREGISTER_DAL_CONNECTION, e);
         }
     }
 

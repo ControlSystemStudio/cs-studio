@@ -81,7 +81,7 @@ public final class ConnectionJob extends Job {
             final IAlarmResource alarmResource = createNewAlarmResource();
             final AlarmTreeConnectionMonitor connectionMonitor =
                 new AlarmTreeConnectionMonitor(_view, _view.getRootNode());
-            _connection.connectWithListenerForResource(connectionMonitor,
+            _connection.connect(connectionMonitor,
                                                        listener,
                                                        alarmResource);
 
