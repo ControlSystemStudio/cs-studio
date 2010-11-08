@@ -63,7 +63,7 @@ public class ByteMonitorEditPart extends AbstractPVWidgetEditPart {
 		fig.setOnColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_ON_COLOR)).getSWTColor() );
 		fig.setOffColor(((OPIColor)model.getPropertyValue(ByteMonitorModel.PROP_OFF_COLOR)).getSWTColor() );
 		fig.setEffect3D((Boolean)getPropertyValue(ByteMonitorModel.PROP_EFFECT3D));
-		fig.setValue(new Integer(0x1111));
+		fig.setValue(0x1111);
 		fig.drawValue();
 
 		return fig;

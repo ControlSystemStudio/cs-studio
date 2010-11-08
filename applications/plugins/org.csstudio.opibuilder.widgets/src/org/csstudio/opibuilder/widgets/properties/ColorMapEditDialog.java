@@ -4,6 +4,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
 import org.csstudio.opibuilder.util.OPIColor;
@@ -232,8 +233,8 @@ public class ColorMapEditDialog extends Dialog {
 					LinkedHashMap<Double, RGB> map = 
 						PredefinedColorMap.values()[preDefinedMapCombo.getSelectionIndex()].getMap();
 					colorList.clear();
-					for(Double value : map.keySet())
-						colorList.add(new ColorTuple(value, map.get(value)));
+					for(Entry<Double, RGB> entry : map.entrySet())
+						colorList.add(new ColorTuple(entry.getKey(), entry.getValue()));
 					colorListViewer.refresh();
 				}
 				refreshGUI();
@@ -511,7 +512,7 @@ public class ColorMapEditDialog extends Dialog {
 	}
 	
 	
-	private final class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
+	private final static class ColorListLabelProvider extends LabelProvider implements ITableLabelProvider{
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			if(columnIndex == 1 && element instanceof ColorTuple){

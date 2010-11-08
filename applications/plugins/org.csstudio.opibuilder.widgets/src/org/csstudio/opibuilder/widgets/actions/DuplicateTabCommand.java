@@ -22,7 +22,7 @@ public class DuplicateTabCommand extends Command {
 	public DuplicateTabCommand(TabEditPart tabEditPart) {
 		this.tabEditPart = tabEditPart;
 		this.tabIndex = tabEditPart.getActiveTabIndex()+1;
-		String xmlString = XMLUtil.WidgetToXMLString(tabEditPart.getGroupingContainer(tabIndex-1), false);
+		String xmlString = XMLUtil.widgetToXMLString(tabEditPart.getGroupingContainer(tabIndex-1), false);
 		try {
 			this.groupingContainer = (GroupingContainerModel) XMLUtil.XMLStringToWidget(xmlString);
 		} catch (Exception e) {
