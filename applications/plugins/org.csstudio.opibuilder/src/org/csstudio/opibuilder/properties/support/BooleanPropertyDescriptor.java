@@ -81,7 +81,7 @@ public final class BooleanPropertyDescriptor extends PropertyDescriptor {
 	 * @author Xihui Chen
 	 * 
 	 */
-	private final class BooleanLabelProvider extends LabelProvider {
+	private final static class BooleanLabelProvider extends LabelProvider {
 		/**
 		 * {@inheritDoc}
 		 */

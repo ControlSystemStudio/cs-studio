@@ -21,19 +21,20 @@ public class PrintDisplayAction extends WorkbenchPartAction {
 
 public static final String ID = "org.csstudio.opibuilder.actions.print";
 
+private PrinterData[] printers;
 /**
  * Constructor for PrintAction.
  * @param part The workbench part associated with this PrintAction
  */
 public PrintDisplayAction(IWorkbenchPart part) {
 	super(part);
+	printers = Printer.getPrinterList();
 }
 
 /**
  * @see org.eclipse.gef.ui.actions.WorkbenchPartAction#calculateEnabled()
  */
-protected boolean calculateEnabled() {
-	PrinterData[] printers = Printer.getPrinterList();
+protected boolean calculateEnabled() {	
 	return printers != null && printers.length > 0;
 }
 

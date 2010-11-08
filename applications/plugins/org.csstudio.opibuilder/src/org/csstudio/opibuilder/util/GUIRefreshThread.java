@@ -1,6 +1,6 @@
 package org.csstudio.opibuilder.util;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.LinkedHashSet;
 
 import org.csstudio.opibuilder.datadefinition.WidgetIgnorableUITask;
 import org.csstudio.opibuilder.preferences.PreferencesHelper;
@@ -26,24 +26,36 @@ public final class GUIRefreshThread implements Runnable {
 	private static GUIRefreshThread instance;
 
 	/**
-	 * A queue, which contains {@link WidgetIgnorableUITask}. 
-	 * It will be processed by this thread periodically. 
+	 * A LinkedHashset, which contains {@link WidgetIgnorableUITask}. 
+	 * It will be processed by this thread periodically. Use hashset 
+	 * can help to improve the performance. 
 	 */
-	private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
-	
+	//private ConcurrentLinkedQueue<WidgetIgnorableUITask> tasksQueue;
+	private LinkedHashSet<WidgetIgnorableUITask> tasksQueue;
 	private Thread thread;
 	
 	private int guiRefreshCycle = 100;
 	
-	private long start;
-
+	private long start;	
+	
+	private volatile boolean asyncEmpty = true;
+	
+	private Runnable resetAsyncEmpty;
+	
 	/**
 	 * Standard constructor.
 	 */
 	private GUIRefreshThread() {
-		tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
+		//tasksQueue = new ConcurrentLinkedQueue<WidgetIgnorableUITask>();
+		tasksQueue = new LinkedHashSet<WidgetIgnorableUITask>();
+		resetAsyncEmpty = new Runnable() {
+
+			public void run() {
+				asyncEmpty = true;
+			}
+		};
 		reSchedule();
-		thread = new Thread(this, "OPI GUI Rrefresh Thread"); //$NON-NLS-1$
+		thread = new Thread(this, "OPI GUI Refresh Thread"); //$NON-NLS-1$
 		thread.start();
 	}
 
@@ -71,8 +83,12 @@ public final class GUIRefreshThread implements Runnable {
 	 * {@inheritDoc}.
 	 */
 	public void run() {
-		while (true) {		
-			if(!tasksQueue.isEmpty()){
+		boolean isEmpty;
+		while (true) {			
+			synchronized (this){
+					isEmpty = tasksQueue.isEmpty();
+			}
+			if(!isEmpty){
 					start = System.currentTimeMillis();
 					processQueue();	
 				try {
@@ -96,6 +112,9 @@ public final class GUIRefreshThread implements Runnable {
 	 * Process the complete queue.
 	 */
 	private void processQueue() {
+		if(!asyncEmpty)
+			return;
+		asyncEmpty = false;
 		Display display = PlatformUI.getWorkbench().getDisplay();
 		Object[] tasksArray;
 		//copy the tasks queue.
@@ -106,11 +125,13 @@ public final class GUIRefreshThread implements Runnable {
 		for(Object o : tasksArray){	
 				if(display!=null && !display.isDisposed())
 					try {
-						display.syncExec(((WidgetIgnorableUITask) o).getRunnableTask());
+						display.asyncExec(((WidgetIgnorableUITask) o).getRunnableTask());
 					} catch (Exception e) {
 						CentralLogger.getInstance().error(this, e);
 					}
-		}		
+		}	
+		if(display!=null && !display.isDisposed())
+			display.asyncExec(resetAsyncEmpty);
 	}
 
 	/**
@@ -120,9 +141,9 @@ public final class GUIRefreshThread implements Runnable {
 	 *            the ignorable UI task.
 	 */
 	public synchronized void addIgnorableTask(final WidgetIgnorableUITask task) {
-		if(tasksQueue.contains(task))
-			tasksQueue.remove(task);
+		tasksQueue.remove(task);
 		tasksQueue.add(task);
+		
 	}
 
 	

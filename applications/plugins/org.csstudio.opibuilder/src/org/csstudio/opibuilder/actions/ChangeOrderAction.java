@@ -53,7 +53,7 @@ public class ChangeOrderAction extends SelectionAction {
 	}
 	
 	
-	class IndexedWidget implements Comparable<IndexedWidget>{
+	private static class IndexedWidget implements Comparable<IndexedWidget>{
 		
 		private Integer index;
 		
@@ -80,8 +80,35 @@ public class ChangeOrderAction extends SelectionAction {
 		
 		public int compareTo(IndexedWidget o) {
 			
-			return index.compareTo(o.getIndex());
+			return index.compareTo(Integer.valueOf(o.getIndex()));
 		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((index == null) ? 0 : index.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			IndexedWidget other = (IndexedWidget) obj;
+			if (index == null) {
+				if (other.index != null)
+					return false;
+			} else if (!index.equals(other.index))
+				return false;
+			return true;
+		}
+		
+		
 		
 	}
 	
@@ -105,9 +132,11 @@ public class ChangeOrderAction extends SelectionAction {
 		fillWidgetMap(widgetMap);
 		
 		//create compound command
-		for(AbstractContainerModel container : widgetMap.keySet()){
+		for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry 
+				: widgetMap.entrySet()){
 			//sort the list in map by the widget's original order in its container
-			List<IndexedWidget> widgetList = widgetMap.get(container);
+			AbstractContainerModel container = entry.getKey();
+			List<IndexedWidget> widgetList = entry.getValue();
 			Collections.sort(widgetList);		
 			
 			int newIndex;			
@@ -145,9 +174,10 @@ public class ChangeOrderAction extends SelectionAction {
 		CompoundCommand compoundCommand = new CompoundCommand(orderType.getLabel());
 		
 		//create compound command
-		for(AbstractContainerModel container : widgetMap.keySet()){
+		for(final Map.Entry<AbstractContainerModel, List<IndexedWidget>> entry : widgetMap.entrySet()){
 			//sort the list in map by the widget's original order in its container
-			List<IndexedWidget> widgetList = widgetMap.get(container);
+			AbstractContainerModel container = entry.getKey();
+			List<IndexedWidget> widgetList = entry.getValue();
 			Collections.sort(widgetList);		
 			
 			int newIndex;			

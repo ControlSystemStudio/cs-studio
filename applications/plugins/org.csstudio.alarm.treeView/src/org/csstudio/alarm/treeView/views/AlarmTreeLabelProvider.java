@@ -26,10 +26,10 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.preferences.AlarmTreePreference;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.GC;
@@ -85,7 +85,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the character that represents the given severity.
      */
     @Nonnull
-    private String getIconName(@Nonnull final Severity alarmSeverity) {
+    private String getIconName(@Nonnull final EpicsAlarm alarmSeverity) {
         switch (alarmSeverity) {
             case UNKNOWN:
                 return "grey";
@@ -112,8 +112,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      * @return the names of the icons.
      */
     @Nonnull
-    private String[] getIconNames(@Nonnull final Severity activeAlarmSeverity,
-                                  @Nonnull final Severity unacknowledgedAlarmSeverity) {
+    private String[] getIconNames(@Nonnull final EpicsAlarm activeAlarmSeverity,
+                                  @Nonnull final EpicsAlarm unacknowledgedAlarmSeverity) {
 
         final String iconName = getIconName(activeAlarmSeverity);
 
@@ -121,8 +121,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // If the active and unack severity are the same, only the active
             // alarm is displayed.
             return new String[] {iconName};
-        } else if (activeAlarmSeverity != Severity.NO_ALARM &&
-                   unacknowledgedAlarmSeverity == Severity.NO_ALARM) {
+        } else if (activeAlarmSeverity != EpicsAlarm.NO_ALARM &&
+                   unacknowledgedAlarmSeverity == EpicsAlarm.NO_ALARM) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {
@@ -156,8 +156,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
      */
     @Nonnull
     private Image getAlarmImageFor(@Nonnull final IAlarmTreeNode node) {
-        final Severity activeAlarmSeverity = node.getAlarmSeverity();
-        final Severity unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
+        final EpicsAlarm activeAlarmSeverity = node.getAlarmSeverity();
+        final EpicsAlarm unacknowledgedAlarmSeverity = node.getUnacknowledgedAlarmSeverity();
         final String[] iconNames = getIconNames(activeAlarmSeverity, unacknowledgedAlarmSeverity);
         return createImage(iconNames);
     }

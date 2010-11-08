@@ -65,7 +65,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 	private double value = 0;
 	
 	private ArrowButton buttonUp, buttonDown;
-	private LabelFigure labelFigure;
+	private TextFigure labelFigure;
 	private List<IManualValueChangeListener> spinnerListeners;
 	
 	private final static int BUTTON_WIDTH = 25;
@@ -108,7 +108,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 			});
 		
 		
-		labelFigure = new LabelFigure(){
+		labelFigure = new TextFigure(){
 			/**
 			 * If this button has focus, this method paints a focus rectangle.
 			 * 
@@ -211,7 +211,7 @@ public class SpinnerFigure extends Figure implements Introspectable {
 		return formatType;
 	}
 	
-	public LabelFigure getLabelFigure() {
+	public TextFigure getLabelFigure() {
 		return labelFigure;
 	}
 	

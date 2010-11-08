@@ -16,9 +16,9 @@ import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.IValue.Format;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.csstudio.swt.widgets.figures.LabelFigure;
-import org.csstudio.swt.widgets.figures.LabelFigure.H_ALIGN;
-import org.csstudio.swt.widgets.figures.LabelFigure.V_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure;
+import org.csstudio.swt.widgets.figures.TextFigure.H_ALIGN;
+import org.csstudio.swt.widgets.figures.TextFigure.V_ALIGN;
 import org.eclipse.draw2d.IFigure;
 import org.eclipse.gef.EditPolicy;
 import org.eclipse.gef.Request;
@@ -32,15 +32,33 @@ import org.eclipse.swt.widgets.Display;
 public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 
 	private static final String HEX_PREFIX = "0x"; //$NON-NLS-1$
+	
+	private TextIndicatorModel widgetModel;
+	private FormatEnum format;
+	private boolean isAutoSize;
+	private boolean isPrecisionFromDB;
+	private boolean isShowUnits;
+	private int precision;
+	
 
 	@Override
 	protected IFigure doCreateFigure() {
-		LabelFigure labelFigure = new LabelFigure();
+		
+		//Initialize frequently used variables.
+		widgetModel = getWidgetModel();		
+		format = widgetModel.getFormat();
+		isAutoSize = widgetModel.isAutoSize();
+		isPrecisionFromDB = widgetModel.isPrecisionFromDB();
+		isShowUnits = widgetModel.isShowUnits();
+		precision = widgetModel.getPrecision();
+		
+		
+		TextFigure labelFigure = new TextFigure(getExecutionMode() == ExecutionMode.RUN_MODE);
 		labelFigure.setFont(CustomMediaFactory.getInstance().getFont(
-				getWidgetModel().getFont().getFontData()));
-		labelFigure.setOpaque(!getWidgetModel().isTransparent());
-		labelFigure.setHorizontalAlignment(getWidgetModel().getHorizontalAlignment());
-		labelFigure.setVerticalAlignment(getWidgetModel().getVerticalAlignment());
+				widgetModel.getFont().getFontData()));
+		labelFigure.setOpaque(!widgetModel.isTransparent());
+		labelFigure.setHorizontalAlignment(widgetModel.getHorizontalAlignment());
+		labelFigure.setVerticalAlignment(widgetModel.getVerticalAlignment());
 		return labelFigure;
 	}
 	
@@ -54,9 +72,9 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	@Override
 	public void activate() {
 		super.activate();
-		((LabelFigure)getFigure()).setText(getWidgetModel().getText());
+		((TextFigure)getFigure()).setText(getWidgetModel().getText());
 		if(getWidgetModel().isAutoSize()){
-			getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+			getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 			figure.revalidate();
 		}
 	}
@@ -67,14 +85,15 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		IWidgetPropertyChangeHandler handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
-				((LabelFigure)figure).setText((String)newValue);
-				Display.getCurrent().timerExec(10, new Runnable() {					
-					public void run() {
-						if(getWidgetModel().isAutoSize())
-							performAutoSize(figure);
-					}
-				});
+				((TextFigure)figure).setText((String)newValue);
 				
+				if(isAutoSize){
+					Display.getCurrent().timerExec(10, new Runnable() {					
+						public void run() {						
+								performAutoSize(figure);
+						}
+					});
+				}
 				return true;
 			}
 		};
@@ -116,7 +135,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setOpaque(!(Boolean)newValue);
+				((TextFigure)figure).setOpaque(!(Boolean)newValue);
 				return true;
 			}
 		};
@@ -124,7 +143,8 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
-					IFigure figure) {				
+					IFigure figure) {
+				isAutoSize = (Boolean)newValue;
 				if((Boolean)newValue){
 					performAutoSize(figure);
 					figure.revalidate();
@@ -137,7 +157,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
+				((TextFigure)figure).setHorizontalAlignment(H_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -146,7 +166,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					IFigure figure) {
-				((LabelFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
+				((TextFigure)figure).setVerticalAlignment(V_ALIGN.values()[(Integer)newValue]);
 				return true;
 			}
 		};
@@ -166,6 +186,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
+				format = FormatEnum.values()[(Integer)newValue];
 				formatValue(newValue, TextIndicatorModel.PROP_FORMAT_TYPE, figure);
 				return true;
 			}		
@@ -175,6 +196,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
+				precision = (Integer)newValue;
 				formatValue(newValue, TextIndicatorModel.PROP_PRECISION, figure);
 				return true;
 			}		
@@ -184,6 +206,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
+				isPrecisionFromDB = (Boolean)newValue;
 				formatValue(newValue, TextIndicatorModel.PROP_PRECISION_FROM_DB, figure);
 				return true;
 			}		
@@ -193,6 +216,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 		handler = new IWidgetPropertyChangeHandler(){
 			public boolean handleChange(Object oldValue, Object newValue,
 					final IFigure figure) {
+				isShowUnits = (Boolean)newValue;
 				formatValue(newValue, TextIndicatorModel.PROP_SHOW_UNITS, figure);
 				return true;
 			}		
@@ -207,7 +231,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	protected void performDirectEdit(){
-		new LabelEditManager(this, new LabelCellEditorLocator((LabelFigure)getFigure())).show();
+		new LabelEditManager(this, new LabelCellEditorLocator((TextFigure)getFigure())).show();
 	}
 	
 	@Override
@@ -223,7 +247,7 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 * @param figure
 	 */
 	private void performAutoSize(IFigure figure) {
-		getWidgetModel().setSize(((LabelFigure)figure).getAutoSizeDimension());
+		getWidgetModel().setSize(((TextFigure)figure).getAutoSizeDimension());
 	}
 	
 	/**
@@ -232,35 +256,28 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 	 */
 	private void formatValue(Object newValue, String propId, IFigure figure) {
 		
+		
+		if(getExecutionMode() != ExecutionMode.RUN_MODE)
+			return;
 		IValue value = null;
-		if(getExecutionMode() == ExecutionMode.RUN_MODE)
-			value= getPVValue(AbstractPVWidgetModel.PROP_PVNAME);
-		else
-			return;		
-		FormatEnum formatEnum = getWidgetModel().getFormat();
-		int precision = getWidgetModel().getPrecision();
-		if(getWidgetModel().isPrecisionFromDB())
-			precision = -1;
-		boolean showUnit = getWidgetModel().isShowUnits();
+			
+
+		int tempPrecision = precision;
+		if(isPrecisionFromDB)
+			tempPrecision = -1;
+		
 		if(propId.equals(AbstractPVWidgetModel.PROP_PVVALUE))
 			value = (IValue)newValue;
-		else if(propId.equals(TextIndicatorModel.PROP_FORMAT_TYPE))
-			formatEnum = FormatEnum.values()[(Integer)newValue];
-		else if(propId.equals(TextIndicatorModel.PROP_PRECISION))
-			precision = (Integer)newValue;
-		else if(propId.equals(TextIndicatorModel.PROP_PRECISION_FROM_DB)){
-			precision = (Boolean)newValue ? -1 : precision;
-		}else if(propId.equals(TextIndicatorModel.PROP_SHOW_UNITS)){
-			showUnit = (Boolean)newValue;
-		}
+		else
+			value = getPVValue(AbstractPVWidgetModel.PROP_PVNAME);			
 		
 		String text;
-		switch (formatEnum) {		
+		switch (format) {		
 		case DECIAML:
-			text = value.format(Format.Decimal, precision);
+			text = value.format(Format.Decimal, tempPrecision);
 			break;
 		case EXP:
-			text = value.format(Format.Exponential, precision);
+			text = value.format(Format.Exponential, tempPrecision);
 			break;
 		case HEX:	
 			if(value instanceof IDoubleValue)
@@ -273,42 +290,42 @@ public class TextIndicatorEditPart extends AbstractPVWidgetEditPart {
 				text = value.format();			
 			break;
 		case STRING:			
-			text = value.format(Format.String, precision);
+			text = value.format(Format.String, tempPrecision);
 			break;
 		case DEFAULT:
 		default:		
-			text = value.format(Format.Default, precision);
+			text = value.format(Format.Default, tempPrecision);
 			break;
 		}		
 		
-		if(showUnit && value.getMetaData() instanceof INumericMetaData)
+		if(isShowUnits && value.getMetaData() instanceof INumericMetaData)
 			text = text + " " + ((INumericMetaData)value.getMetaData()).getUnits(); //$NON-NLS-1$ //$NON-NLS-2$	
 		
 		//synchronize the property value without fire listeners.
-		getWidgetModel().getProperty(
+		widgetModel.getProperty(
 				TextIndicatorModel.PROP_TEXT).setPropertyValue(text, false);
-		((LabelFigure)figure).setText(text);		
+		((TextFigure)figure).setText(text);		
 		
-		if(getWidgetModel().isAutoSize())
+		if(isAutoSize)
 			performAutoSize(figure);
 		
 	}
 
 	@Override
 	public String getValue() {
-		return ((LabelFigure)getFigure()).getText();
+		return ((TextFigure)getFigure()).getText();
 	}
 
 	@Override
 	public void setValue(Object value) {
-		((LabelFigure)getFigure()).setText(value.toString());
+		((TextFigure)getFigure()).setText(value.toString());
 	}
 	
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes")
 	@Override
 	public Object getAdapter(Class key) {
-		if(key == LabelFigure.class)
-			return ((LabelFigure)getFigure());
+		if(key == TextFigure.class)
+			return ((TextFigure)getFigure());
 
 		return super.getAdapter(key);
 	}

@@ -74,8 +74,8 @@ public class TextIndicatorModel extends LabelModel {
 		addProperty(new BooleanProperty(PROP_SHOW_UNITS, "Show Units", category, true));
 		
 		setPropertyValue(PROP_TEXT, "######");
-		setPropertyValue(PROP_ALIGN_H, 1);
-		setPropertyValue(PROP_ALIGN_V, 1);
+		setPropertyValue(PROP_ALIGN_H, 0);
+		setPropertyValue(PROP_ALIGN_V, 0);
 	}
 	
 	public FormatEnum getFormat(){

@@ -97,7 +97,9 @@ public final class MediaService {
 
 		colorFilePath = PreferencesHelper.getColorFilePath();		
 		if(colorFilePath == null || colorFilePath.isEmpty()){
-			CentralLogger.getInstance().warn(this, "No color definition file was found.");
+			String message = "No color definition file was found.";
+			CentralLogger.getInstance().warn(this, message);
+			ConsoleService.getInstance().writeWarning(message);
 			return;
 		}
 			
@@ -121,14 +123,18 @@ public final class MediaService {
 						
 						colorMap.put(name, new OPIColor(name, color, true));
 					}catch (DataFormatException e) {
-						CentralLogger.getInstance().error(this,"Failed to read color difinition file.", e);
+						String message = "Format error in color definition file.";
+						CentralLogger.getInstance().error(this,message, e);
+						ConsoleService.getInstance().writeError(message);	
 					}
 				}				
 			}
 			inputStream.close();
 			reader.close();
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, e);
+			String message = "Failed to read color difinition file.";
+			CentralLogger.getInstance().error(this,message, e);
+			ConsoleService.getInstance().writeError(message);	
 		}
 	}
 	
@@ -138,7 +144,9 @@ public final class MediaService {
 		Set<String> trimmedNameSet = new LinkedHashSet<String>();
 		fontFilePath = PreferencesHelper.getFontFilePath();		
 		if(fontFilePath == null){
-			CentralLogger.getInstance().warn(this, "No font definition file was found.");
+			String message = "No font definition file was found.";
+			CentralLogger.getInstance().warn(this, message);
+			ConsoleService.getInstance().writeWarning(message);			
 			return;
 		}
 			
@@ -168,14 +176,17 @@ public final class MediaService {
 									Display.getDefault().getSystemFont().getFontData()[0].getName());
 						rawFontMap.put(name, new OPIFont(trimmedName, fontdata));
 					}catch (DataFormatException e) {
-						CentralLogger.getInstance().error(this, "Failed to read font definition file.",e);
-					}
+						String message = "Format error in font definition file.";
+						CentralLogger.getInstance().error(this,message, e);
+						ConsoleService.getInstance().writeError(message);						}
 				}				
 			}
 			inputStream.close();
 			reader.close();
 		} catch (Exception e) {
-			CentralLogger.getInstance().error(this, e);
+			String message = "Failed to read font definition file.";
+			CentralLogger.getInstance().error(this,message, e);
+			ConsoleService.getInstance().writeError(message);	
 		}
 		
 		 String osname = getOSName();

@@ -31,7 +31,7 @@ public class MultiLineTextPropertyDescriptor extends TextPropertyDescriptor {
 		return editor;
 	}
 	
-	class MultiLineLabelProvider extends LabelProvider{
+	static class MultiLineLabelProvider extends LabelProvider{
 		@Override
 		public String getText(Object element) {
 			return element == null ? "" : element.toString().replaceAll("\n", " / ");//$NON-NLS-1$

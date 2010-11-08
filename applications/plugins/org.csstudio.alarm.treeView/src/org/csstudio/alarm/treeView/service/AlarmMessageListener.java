@@ -27,9 +27,9 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -208,7 +208,7 @@ public class AlarmMessageListener implements IAlarmListener {
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
 
-            final Severity severity = message.getSeverity();
+            final EpicsAlarm severity = message.getSeverity();
             final Date eventtime = message.getEventtimeOrCurrentTime();
 //            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
 //                    + eventtime);

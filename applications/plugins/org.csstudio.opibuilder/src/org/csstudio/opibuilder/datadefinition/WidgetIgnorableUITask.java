@@ -60,4 +60,10 @@ public class WidgetIgnorableUITask {
 	public String toString() {
 		return widgetProperty.toString();
 	}
+	
+	@Override
+	public int hashCode() {
+		return widgetProperty.hashCode();
+	}
+	
 }

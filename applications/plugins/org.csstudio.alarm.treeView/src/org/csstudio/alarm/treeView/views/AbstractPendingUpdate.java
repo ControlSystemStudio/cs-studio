@@ -22,10 +22,10 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.alarm.service.declaration.Severity;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -91,7 +91,7 @@ public abstract class AbstractPendingUpdate {
      */
     @Nonnull
     public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
-                                                          @Nonnull final Severity severity,
+                                                          @Nonnull final EpicsAlarm severity,
                                                           @Nonnull final Date eventtime,
                                                           @Nonnull final IAlarmSubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
