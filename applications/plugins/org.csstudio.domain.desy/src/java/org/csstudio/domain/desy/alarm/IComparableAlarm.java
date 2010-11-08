@@ -22,16 +22,14 @@
 package org.csstudio.domain.desy.alarm;
 
 /**
- * Interface for severity of an alarm.
+ * An alarm which alarm types are comparable, i.e. they have a consistent order.
  *
- * Any alarm features a severity describing its relevance for notification.
- * Common to all alarm severities is that they are comparable to each other according to a
- * consistent ordering.
+ * Note, if the implementing class is an enum, then the comparability comes for free with the
+ * order of declaration! So don't mess with order of declaration if you use an enum.
  *
  * @author bknerr
- * @since 04.11.2010
- * @param <T> the type of the severity
+ * @since 08.11.2010
  */
-public interface IAlarmSeverity<T extends IAlarmSeverity<T>> extends Comparable<T> {
-    // Marker interface
+public interface IComparableAlarm<T> extends IAlarm, Comparable<T> {
+    // Marker
 }
