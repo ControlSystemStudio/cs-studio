@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Slf4j-log4j12
+Bundle-SymbolicName: org.csstudio.platform.libs.slf4j-log4j12
+Bundle-Version: 1.6.1
+Export-Package: org.slf4j.impl;version="1.6.1"
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.csstudio.platform.libs.slf4j;bundle-version="1.6.1"
