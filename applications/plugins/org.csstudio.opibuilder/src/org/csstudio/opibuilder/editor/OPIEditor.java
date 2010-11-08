@@ -180,9 +180,9 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 						
 			Display.getDefault().asyncExec(new Runnable(){
 				public void run() {
-					try {
-						getSite().getPage().closeEditor(OPIEditor.this, false);
-					} catch (Exception e) {}	
+					
+					getSite().getPage().closeEditor(OPIEditor.this, false);
+					
 				}
 			});					
 		
@@ -272,16 +272,14 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 		
 		// configure zoom actions
 		ZoomManager zm = root.getZoomManager();
-
-		List<String> zoomLevels = new ArrayList<String>(3);
-		zoomLevels.add(ZoomManager.FIT_ALL);
-		zoomLevels.add(ZoomManager.FIT_WIDTH);
-		zoomLevels.add(ZoomManager.FIT_HEIGHT);
-		zm.setZoomLevelContributions(zoomLevels);
-
-		zm.setZoomLevels(createZoomLevels());
-
 		if (zm != null) {
+			
+			List<String> zoomLevels = new ArrayList<String>(3);
+			zoomLevels.add(ZoomManager.FIT_ALL);
+			zoomLevels.add(ZoomManager.FIT_WIDTH);
+			zoomLevels.add(ZoomManager.FIT_HEIGHT);
+			zm.setZoomLevelContributions(zoomLevels);	
+			zm.setZoomLevels(createZoomLevels());
 			IAction zoomIn = new ZoomInAction(zm);
 			IAction zoomOut = new ZoomOutAction(zm);
 			getActionRegistry().registerAction(zoomIn);
@@ -793,7 +791,7 @@ public class OPIEditor extends GraphicalEditorWithFlyoutPalette {
 	private void performSave() {
 		
 		try {			
-			String content = XMLUtil.XML_HEADER + XMLUtil.WidgetToXMLString(displayModel, true);
+			String content = XMLUtil.XML_HEADER + XMLUtil.widgetToXMLString(displayModel, true);
 			if (getEditorInput() instanceof FileEditorInput) {
 //				final PipedInputStream in = new PipedInputStream();		
 //				final PipedOutputStream out = new PipedOutputStream(in);

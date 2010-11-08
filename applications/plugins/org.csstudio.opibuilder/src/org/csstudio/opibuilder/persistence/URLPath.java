@@ -121,7 +121,7 @@ public class URLPath implements IPath {
 			return false;
 		}
 		boolean hasTrailing = 
-			new Character(url.charAt(url.length()-1)).equals(IPath.SEPARATOR);
+			Character.valueOf(url.charAt(url.length()-1)).equals(IPath.SEPARATOR);
 		return hasTrailing;
 	}
 
@@ -149,7 +149,7 @@ public class URLPath implements IPath {
 	}
 
 	public boolean isRoot() {
-		if(device != null & segmentCount()==0)
+		if(device != null && segmentCount()==0)
 			return true;
 		return false;
 	}

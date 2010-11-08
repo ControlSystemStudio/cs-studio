@@ -130,7 +130,7 @@ public class WidgetsSelectDialog extends Dialog {
 		return viewer;
 	}
 	
-	class WidgetsListLableProvider extends LabelProvider {
+	static class WidgetsListLableProvider extends LabelProvider {
 		@Override
 		public String getText(Object element) {
 			String typeID = (String)element;

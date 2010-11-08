@@ -49,7 +49,7 @@ public final class IntegerCellEditor extends TextCellEditor {
 	@Override
 	protected void doSetValue(final Object value) {
 		if (value==null) {
-			super.doSetValue(String.valueOf(new Integer(0)));
+			super.doSetValue(String.valueOf(Integer.valueOf(0)));
 		} else {
 			super.doSetValue(String.valueOf(value.toString()));
 		}

@@ -130,8 +130,8 @@ public class RuleData implements IAdaptable{
 		}			
 	}
 	
-	public void removePV(String pv){
-		pvList.remove(pv);
+	public void removePV(PVTuple pvTuple){
+		pvList.remove(pvTuple);
 	}	
 	
 	public String generateScript(){

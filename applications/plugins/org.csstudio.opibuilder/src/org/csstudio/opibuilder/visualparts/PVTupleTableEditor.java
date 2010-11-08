@@ -191,7 +191,7 @@ public class PVTupleTableEditor extends Composite {
 						&& selection.getFirstElement() instanceof PVTuple) {
 					pvTupleList.remove(selection.getFirstElement());
 					refreshTableViewerFromAction(null);
-					this.setEnabled(false);
+					super.setEnabled(false);
 				}
 			}
 		};
@@ -256,7 +256,7 @@ public class PVTupleTableEditor extends Composite {
 	}
 	
 	
-	private final class PVTupleLabelProvider extends LabelProvider implements ITableLabelProvider{
+	private final static class PVTupleLabelProvider extends LabelProvider implements ITableLabelProvider{
 
 		public Image getColumnImage(Object element, int columnIndex) {			
 			if (columnIndex == 1 && element instanceof PVTuple) {
@@ -280,7 +280,7 @@ public class PVTupleTableEditor extends Composite {
 		
 	}
 	
-	private final class PVColumnEditingSupport extends EditingSupport{
+	private final static class PVColumnEditingSupport extends EditingSupport{
 
 		private Table table;
 		public PVColumnEditingSupport(ColumnViewer viewer, Table table) {
@@ -318,7 +318,7 @@ public class PVTupleTableEditor extends Composite {
 	}
 	
 	
-	private final class TriggerColumnEditingSupport extends EditingSupport{
+	private final static class TriggerColumnEditingSupport extends EditingSupport{
 
 		private Table table;
 		public TriggerColumnEditingSupport(ColumnViewer viewer, Table table) {

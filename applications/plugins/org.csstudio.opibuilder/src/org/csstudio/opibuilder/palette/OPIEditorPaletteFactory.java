@@ -27,9 +27,9 @@ public class OPIEditorPaletteFactory {
 	private static void createPaletteContents(PaletteRoot palette){
 		Map<String, List<String>> categoriesMap = 
 			WidgetsService.getInstance().getAllCategoriesMap();
-		for(String category : categoriesMap.keySet()){
-			PaletteDrawer categoryDrawer = new PaletteDrawer(category);
-			for(String typeId : categoriesMap.get(category)){
+		for(final Map.Entry<String, List<String>> entry: categoriesMap.entrySet()){
+			PaletteDrawer categoryDrawer = new PaletteDrawer(entry.getKey());
+			for(String typeId : entry.getValue()){
 				WidgetDescriptor widgetDescriptor = 
 					WidgetsService.getInstance().getWidgetDescriptor(typeId);
 				ImageDescriptor icon = CustomMediaFactory.getInstance().

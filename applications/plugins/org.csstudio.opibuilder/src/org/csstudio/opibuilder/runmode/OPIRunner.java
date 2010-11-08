@@ -208,7 +208,8 @@ public class OPIRunner extends EditorPart {
 		setPartName(displayModel.getName());
 		// configure zoom actions
 		ZoomManager zm = root.getZoomManager();
-
+		
+		if (zm != null) {
 		List<String> zoomLevels = new ArrayList<String>(3);
 		zoomLevels.add(ZoomManager.FIT_ALL);
 		zoomLevels.add(ZoomManager.FIT_WIDTH);
@@ -216,12 +217,11 @@ public class OPIRunner extends EditorPart {
 		zm.setZoomLevelContributions(zoomLevels);
 
 		zm.setZoomLevels(createZoomLevels());
-
-		if (zm != null) {
-			IAction zoomIn = new ZoomInAction(zm);
-			IAction zoomOut = new ZoomOutAction(zm);
-			getActionRegistry().registerAction(zoomIn);
-			getActionRegistry().registerAction(zoomOut);
+		
+		IAction zoomIn = new ZoomInAction(zm);
+		IAction zoomOut = new ZoomOutAction(zm);
+		getActionRegistry().registerAction(zoomIn);
+		getActionRegistry().registerAction(zoomOut);
 		}
 
 		/* scroll-wheel zoom */

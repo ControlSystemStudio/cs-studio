@@ -62,7 +62,7 @@ public class CopyWidgetsAction extends SelectionAction {
 			tempModel.addChild(widget, false);
 		}
 		
-		String xml = XMLUtil.WidgetToXMLString(tempModel, false);
+		String xml = XMLUtil.widgetToXMLString(tempModel, false);
 		
 		((OPIEditor)getWorkbenchPart()).getClipboard()
 			.setContents(new Object[]{xml}, 

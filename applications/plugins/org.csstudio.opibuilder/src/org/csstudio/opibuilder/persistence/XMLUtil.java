@@ -40,7 +40,7 @@ public class XMLUtil {
 	public static String XMLATTR_VERSION = "version"; //$NON-NLS-1$
 	
 
-	public static Element WidgetToXMLElement(AbstractWidgetModel widgetModel){
+	public static Element widgetToXMLElement(AbstractWidgetModel widgetModel){
 		
 		Element result = new Element(widgetModel instanceof DisplayModel ? XMLTAG_DISPLAY : 
 			XMLTAG_WIDGET);
@@ -57,24 +57,24 @@ public class XMLUtil {
 		if(widgetModel instanceof AbstractContainerModel){
 			AbstractContainerModel containerModel = (AbstractContainerModel)widgetModel;
 			for(AbstractWidgetModel child : containerModel.getChildren()){
-				result.addContent(WidgetToXMLElement(child));
+				result.addContent(widgetToXMLElement(child));
 			}			
 		}
 		
 		return result;
 	}
 	
-	public static String WidgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
+	public static String widgetToXMLString(AbstractWidgetModel widgetModel, boolean prettyFormat){
 		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() : 
 			Format.getRawFormat());
-		return xmlOutputter.outputString(WidgetToXMLElement(widgetModel));
+		return xmlOutputter.outputString(widgetToXMLElement(widgetModel));
 	}
 	
-	public static void WidgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
+	public static void widgetToOutputStream(AbstractWidgetModel widgetModel, OutputStream out, boolean prettyFormat) throws IOException{
 		XMLOutputter xmlOutputter = new XMLOutputter(prettyFormat ? Format.getPrettyFormat() : 
 			Format.getRawFormat());
 		out.write(XML_HEADER.getBytes());
-		xmlOutputter.output(WidgetToXMLElement(widgetModel), out);
+		xmlOutputter.output(widgetToXMLElement(widgetModel), out);
 	}
 	
 	
@@ -133,7 +133,12 @@ public class XMLUtil {
 				ConsoleService.getInstance().writeError(errorMessage);
 				return null;
 			}	
+		}else {
+			String errorMessage = "Unknown Tag: " + element.getName();
+			ConsoleService.getInstance().writeError(errorMessage);
+			return null;
 		}
+			
 		
 			//throw new Exception("The element is not a widget");
 		

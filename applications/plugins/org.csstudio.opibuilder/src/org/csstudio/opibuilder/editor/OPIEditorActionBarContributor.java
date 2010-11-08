@@ -122,8 +122,8 @@ public class OPIEditorActionBarContributor extends ActionBarContributor {
 					if(dt != DistributeType.HORIZONTAL_GAP)
 						manager.add(getAction(dt.getActionID()));
 				}
-				
-				return manager.createContextMenu(parent);
+				menu = manager.createContextMenu(parent);
+				return menu;
 			}
 		
 			public void dispose() {
