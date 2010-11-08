@@ -21,6 +21,7 @@
  */
 package org.csstudio.alarm.treeView.jobs;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
@@ -87,8 +88,16 @@ public final class ConnectionJob extends Job {
         } catch (final AlarmConnectionException e) {
             throw new RuntimeException("Could not connect via alarm service", e);
         }
+        finally {
+            monitor.done();
+        }
         return Status.OK_STATUS;
 
+    }
+
+    @CheckForNull
+    public IAlarmConnection getConnection() {
+        return _connection;
     }
 
 }

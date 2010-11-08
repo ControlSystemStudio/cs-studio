@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.jobs.ConnectionJob;
 import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
@@ -44,7 +45,9 @@ import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IMenuListener;
 import org.eclipse.jface.action.IMenuManager;
@@ -89,6 +92,9 @@ public final class AlarmTreeView extends ViewPart {
     private static final String ID = "org.csstudio.alarm.treeView.views.AlarmTreeView";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(AlarmTreeView.class);
+
+    // The connection to the underlying implementation, be it DAL or JMS. Is null, if connectionJob failed.
+    private IAlarmConnection _connection;
 
     /**
      * Returns whether a list of nodes contains only ProcessVariableNodes.
@@ -406,8 +412,8 @@ public final class AlarmTreeView extends ViewPart {
     // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
 
     @Nonnull
-    private Job createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
-        final Job connectionJob = new ConnectionJob(alarmTreeView);
+    private ConnectionJob createConnectionJob(@Nonnull final AlarmTreeView alarmTreeView) {
+        final ConnectionJob connectionJob = new ConnectionJob(alarmTreeView);
 
         return connectionJob;
     }
@@ -474,8 +480,8 @@ public final class AlarmTreeView extends ViewPart {
         viewer.setLabelProvider(new AlarmTreeLabelProvider());
         //viewer.setComparator(new ViewerComparator());
 
-        final ISelectionChangedListener selectionChangedListener =
-            new ISelectionChangedListener() {
+        final ISelectionChangedListener selectionChangedListener = new ISelectionChangedListener() {
+            @SuppressWarnings({"synthetic-access" })
             @Override
             public void selectionChanged(@Nonnull final SelectionChangedEvent event) {
                 AlarmTreeView.this.selectionChanged(event);
@@ -491,6 +497,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     @Override
     public final void dispose() {
+        _connection.disconnect();
         super.dispose();
     }
 
@@ -761,8 +768,18 @@ public final class AlarmTreeView extends ViewPart {
         final IWorkbenchSiteProgressService progressService =
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
-        final Job connectionJob = createConnectionJob(this);
-
+        final ConnectionJob connectionJob = createConnectionJob(this);
+        
+        // Gain access to the connection
+        connectionJob.addJobChangeListener(new JobChangeAdapter() {
+            
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void done(IJobChangeEvent event) {
+                _connection = connectionJob.getConnection();
+            }
+        });
+        
         progressService.schedule(connectionJob, 0, true);
     }
 
