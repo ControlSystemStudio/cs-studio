@@ -13,11 +13,11 @@ import org.eclipse.swt.graphics.Image;
 
 public class ChannelFinderViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
-	private Collection<Channel> channels;
+	private Collection<ChannelItem> channels;
 	private Collection<String> allProperties;
 	private Collection<String> allTags;
 
-	public ChannelFinderViewLabelProvider(Collection<Channel> channels) {
+	public ChannelFinderViewLabelProvider(Collection<ChannelItem> channels) {
 		// TODO Auto-generated constructor stub
 		this.channels = channels;
 	}
@@ -36,7 +36,7 @@ public class ChannelFinderViewLabelProvider extends LabelProvider implements
 
 	@Override
 	public String getColumnText(Object element, int index) {
-		Channel channel = (Channel) element;
+		Channel channel = ((ChannelItem) element).getChannel();
 		if (index == 0) {
 			return channel.getName();
 		} else if (index == 1) {

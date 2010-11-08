@@ -3,18 +3,16 @@
  */
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.api.Channel;
-
 import java.util.Comparator;
 
 /**
  * @author shroffk
  *
  */
-public class ChannelComparator implements Comparator<Channel> {
+public class ChannelComparator implements Comparator<ChannelItem> {
 
 	@Override
-	public int compare(Channel o1, Channel o2) {
+	public int compare(ChannelItem o1, ChannelItem o2) {
 		// TODO Auto-generated method stub
 		return o1.getName().compareTo(o2.getName());
 	}

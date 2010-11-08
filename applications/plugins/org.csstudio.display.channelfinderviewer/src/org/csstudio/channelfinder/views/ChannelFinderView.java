@@ -1,19 +1,25 @@
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelUtil;
+import static gov.bnl.channelfinder.api.ChannelUtil.*;
 
-import java.util.ArrayList;
+import gov.bnl.channelfinder.api.Channel;
+
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.TreeSet;
 
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.jface.action.*;
+import org.eclipse.jface.action.Action;
+import org.eclipse.jface.action.IMenuManager;
+import org.eclipse.jface.action.IToolBarManager;
+import org.eclipse.jface.action.MenuManager;
+import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.*;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
@@ -29,9 +35,6 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
-
-
-import static gov.bnl.channelfinder.api.ChannelUtil.*;
 /**
  * 
  */
@@ -50,7 +53,8 @@ public class ChannelFinderView extends ViewPart {
 	private Button search;
 	private GridLayout layout;
 
-	private Collection<Channel> channelsList = new HashSet<Channel>();
+//	private Collection<Channel> channelsList = new HashSet<Channel>();
+	private Collection<ChannelItem> channelsList = new HashSet<ChannelItem>();
 	// union of all the properties/tags of all channels.
 //	private Collection<String> allProperties = new TreeSet<String>();
 //	private Collection<String> allTags = new TreeSet<String>();
@@ -130,8 +134,9 @@ public class ChannelFinderView extends ViewPart {
 		new StringColumnSorter(viewer, createTableColumn(viewer, "Owner",
 				"Owner Name", SWT.DOWN, false));
 
-		viewer.setContentProvider(new ChannelFinderViewContentProvider(
-				channelsList));
+//		viewer.setContentProvider(new ChannelFinderViewContentProvider(
+//				channelsList));
+		viewer.setContentProvider(new ChannelFinderViewContentProvider());
 		viewer.setInput(channelsList);
 		viewer.refresh();
 		
@@ -253,7 +258,7 @@ public class ChannelFinderView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public synchronized void updateList(Collection<Channel> channels) {
+	public synchronized void updateList(Collection<ChannelItem> channels) {
 		// Clear the channel list;
 		channelsList.clear();			
 		channelsList.addAll(channels);
@@ -266,7 +271,7 @@ public class ChannelFinderView extends ViewPart {
 		}
 
 		// Add a new column for each property
-		for (String propertyName : getPropertyNames(channelsList)) {
+		for (String propertyName : getAllPropertyNames(channelsList)) {
 			new PropertySorter(propertyName, viewer, createTableColumn(viewer,
 					propertyName, propertyName, SWT.DOWN, false));
 		}
@@ -277,6 +282,23 @@ public class ChannelFinderView extends ViewPart {
 		}
 
 		viewer.setLabelProvider(new ChannelFinderViewLabelProvider(
-				getPropertyNames(channelsList), getAllTagNames(channelsList)));
+				getAllPropertyNames(channelsList), getAllTagNames(channelsList)));
+	}
+	
+	private Collection<String> getAllTagNames(Collection<ChannelItem> channelItems){
+		Collection<String> tagNames = new HashSet<String>();
+		for (ChannelItem channelItem : channelItems) {
+			tagNames.addAll(getTagNames(channelItem.getChannel()));
+		}
+		return tagNames;
+		
+	}
+	
+	private Collection<String> getAllPropertyNames(Collection<ChannelItem> channelItems){
+		Collection<String> propertyNames = new HashSet<String>();
+		for (ChannelItem channelItem : channelItems) {
+			propertyNames.addAll(getPropertyNames(channelItem.getChannel()));
+		}
+		return propertyNames;
 	}
 }

@@ -3,7 +3,6 @@
  */
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Iterator;
@@ -35,10 +34,10 @@ public class TagSorter extends AbstractColumnViewerSorter {
 	 */
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return compare((Channel)e1, (Channel)e2);
+		return compare((ChannelItem)e1, (ChannelItem)e2);
 	}
 	
-	public int compare(Channel d1, Channel d2) {
+	public int compare(ChannelItem d1, ChannelItem d2) {
 		Tag tag1 = getTag(d1, tagName);
 		Tag tag2 = getTag(d2, tagName);
 		if ((tag1 == tag2))
@@ -52,12 +51,12 @@ public class TagSorter extends AbstractColumnViewerSorter {
 
 	/**
 	 * 
-	 * @param channel
+	 * @param channelItem
 	 * @param PropertyName
 	 * @return the XmlProperty with the matching name else null;
 	 */
-	private Tag getTag(Channel channel, String tagName) {
-		Iterator<Tag> itr = channel.getTags().iterator();
+	private Tag getTag(ChannelItem channelItem, String tagName) {
+		Iterator<Tag> itr = channelItem.getChannel().getTags().iterator();
 		while (itr.hasNext()) {
 			Tag item = itr.next();
 			if (item.getName().equals(tagName)) {

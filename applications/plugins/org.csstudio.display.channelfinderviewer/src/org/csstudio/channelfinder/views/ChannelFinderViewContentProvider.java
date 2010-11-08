@@ -1,7 +1,5 @@
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.api.Channel;
-
 import java.util.Collection;
 
 import org.eclipse.jface.viewers.IStructuredContentProvider;
@@ -9,18 +7,21 @@ import org.eclipse.jface.viewers.Viewer;
 
 public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
-	private Collection<Channel> channelsList;
+	
+	private Collection<ChannelItem> channelsList;
 	 
-	public ChannelFinderViewContentProvider(Collection<Channel> channelsList) {
-		// TODO Auto-generated constructor stub
+	public ChannelFinderViewContentProvider(Collection<ChannelItem> channelsList) {
 		this.channelsList = channelsList;
+	}
+	
+	public ChannelFinderViewContentProvider(){
+		
 	}
 
 	@Override
 	public Object[] getElements(Object arg0) {
 		try{
-			return channelsList.toArray();
-//			return channelslist.getChannels().getChannels().toArray();
+			return ((Collection<ChannelItem>)arg0).toArray();
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;

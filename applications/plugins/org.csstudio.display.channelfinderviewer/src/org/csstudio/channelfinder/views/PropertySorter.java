@@ -3,7 +3,6 @@
  */
 package org.csstudio.channelfinder.views;
 
-import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.Property;
 
 import java.text.Collator;
@@ -33,10 +32,10 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		// TODO Auto-generated method stub
-		return compare((Channel)e1, (Channel)e2);
+		return compare((ChannelItem)e1, (ChannelItem)e2);
 	}
 
-	public int compare(Channel d1, Channel d2) {
+	public int compare(ChannelItem d1, ChannelItem d2) {
 		Property prop1 = getProperty(d1, propertyName);
 		Property prop2 = getProperty(d2, propertyName);
 		if ((prop1 == null) && (prop2 == null))
@@ -69,12 +68,12 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 
 	/**
 	 * 
-	 * @param channel
+	 * @param channelItem
 	 * @param PropertyName
 	 * @return the XmlProperty with the matching name else null;
 	 */
-	private Property getProperty(Channel channel, String PropertyName) {
-		Iterator<Property> itr = channel.getProperties().iterator();
+	private Property getProperty(ChannelItem channelItem, String PropertyName) {
+		Iterator<Property> itr = channelItem.getChannel().getProperties().iterator();
 		while (itr.hasNext()) {
 			Property item = itr.next();
 			if (item.getName().equals(propertyName)) {
