@@ -240,14 +240,16 @@ public final class AlarmTreeViewActionFactory {
     /**
      * @param site
      * @param viewer
+     * @param alarmTreeView TODO
      * @param modificationItems
      * @return
      */
     @Nonnull
     public static Action createCreateRecordAction(@Nonnull final IWorkbenchPartSite site,
                                                   @Nonnull final TreeViewer viewer,
+                                                  @Nonnull final AlarmTreeView alarmTreeView,
                                                   @Nonnull final Queue<ITreeModificationItem> modificationItems) {
-        final Action createRecordAction = new CreateRecordAction(site, viewer, modificationItems);
+        final Action createRecordAction = new CreateRecordAction(site, viewer, alarmTreeView, modificationItems);
         createRecordAction.setText("Create Record...");
         return createRecordAction;
     }

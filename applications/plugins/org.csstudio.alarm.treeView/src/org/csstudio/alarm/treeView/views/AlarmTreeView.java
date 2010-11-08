@@ -389,7 +389,7 @@ public final class AlarmTreeView extends ViewPart {
 
         _createRecordAction = AlarmTreeViewActionFactory.createCreateRecordAction(site,
                                                                                   viewer,
-                                                                                  modificationItems);
+                                                                                  this, modificationItems);
 
         _createComponentAction = AlarmTreeViewActionFactory.createCreateComponentAction(site,
                                                                                         viewer,
@@ -637,6 +637,15 @@ public final class AlarmTreeView extends ViewPart {
     public TreeViewer getViewer() {
         return _viewer;
     }
+
+    /**
+     * @return the connection or null
+     */
+    @CheckForNull
+    public IAlarmConnection getConnection() {
+        return _connection;
+    }
+
 
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm

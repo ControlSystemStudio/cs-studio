@@ -73,7 +73,7 @@ public interface IAlarmConnection {
     /**
      * Disconnect from the underlying system, freeing resources. The connection monitor will be
      * removed before disconnection, so disconnect DOES NOT result in a call to the connection
-     * monitor.
+     * monitor. All registrations are removed.
      */
     void disconnect();
 

@@ -18,10 +18,7 @@
 package org.csstudio.alarm.service.internal;
 
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -150,6 +147,7 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
                                                      pvName,
                                                      null,
                                                      null);
+        @SuppressWarnings("synthetic-access")
         final ListenerItem item = new ListenerItem();
         // REVIEW (jpenning): hard coded type in connection parameter
         item._connectionParameters = new ConnectionParameters(remoteInfo, String.class);
@@ -159,6 +157,7 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
         item._parameters.put("EPICSPlug.monitor.mask", 4); // EPICSPlug.PARAMETER_MONITOR_MASK = Monitor.ALARM
         
         try {
+            // A pv is only registered once, the same listener is used for all pvs
             _simpleDALBroker.registerListener(item._connectionParameters,
                                               item._dynamicValueAdapter,
                                               item._parameters);
