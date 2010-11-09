@@ -19,79 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.businesslogic;
+package org.csstudio.domain.desy.common.channel;
 
-import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.domain.desy.common.channel.ChannelId;
-import org.csstudio.platform.data.IMetaData;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * TODO (bknerr) :
+ * Read only interface of a channel.
  *
  * @author bknerr
  * @since 09.11.2010
  */
-public class ArchiveChannelBLO implements IArchiveChannel {
-
-    private final ChannelId _id;
-
-    private int _groupId;
-
-    private SampleMode _sampleMode;
-
-    private double _sampleValue;
-
-    private double _samplePeriod;
-
-    /** The channel's meta data */
-    private IMetaData _metaData;
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public ChannelId getId() {
-        return _id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getGroupId() {
-        return _groupId;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public SampleMode getSampleMode() {
-        return _sampleMode;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getSampleValue() {
-        return _sampleValue;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public double getSamplePeriod() {
-        return _samplePeriod;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IMetaData getMetaData() {
-        return _metaData;
-    }
+public interface IChannel extends Identifiable<ChannelId> {
 
 }

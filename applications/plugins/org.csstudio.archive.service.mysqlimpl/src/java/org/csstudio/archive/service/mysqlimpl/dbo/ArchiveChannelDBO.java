@@ -26,8 +26,8 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.service.businesslogic.IArchiveChannel;
+import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.core.channel.ChannelId;
 import org.csstudio.platform.data.IMetaData;
 
 

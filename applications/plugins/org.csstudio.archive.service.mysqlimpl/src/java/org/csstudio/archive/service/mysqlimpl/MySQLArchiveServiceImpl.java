@@ -70,6 +70,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      */
     private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
 
+    // TODO (bknerr) : Dependency injection ???
+    private final IArchiveChannelDao _archiveChannelDao = new ArchiveChannelDaoImpl();
+
 
     /**
      * Constructor.
@@ -197,7 +200,8 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      */
     @Override
     public ArchiveChannelBLO getChannel(@Nonnull final String name) {
-        // TODO Auto-generated method stub
+
+        _archiveChannelDao.getChannel(_archiveConnection.get(), name);
 
     }
 

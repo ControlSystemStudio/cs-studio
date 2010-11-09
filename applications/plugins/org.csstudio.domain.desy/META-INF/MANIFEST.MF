@@ -9,4 +9,5 @@ Require-Bundle: org.csstudio.platform.libs.annotations;bundle-version="1.3.0"
 Export-Package: org.csstudio.domain.desy,
  org.csstudio.domain.desy.alarm,
  org.csstudio.domain.desy.alarm.epics,
+ org.csstudio.domain.desy.common.channel,
  org.csstudio.domain.desy.common.id
