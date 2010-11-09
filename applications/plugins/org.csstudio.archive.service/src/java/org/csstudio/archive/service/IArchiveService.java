@@ -26,6 +26,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.businesslogic.ArchiveChannelBLO;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -38,13 +39,29 @@ import org.csstudio.platform.data.IValue;
  */
 public interface IArchiveService {
 
+
+    /**
+     * Reconnects the service with archive API.
+     * @throws ArchiveConnectionException when the connection could not be established
+     */
+    void reconnect() throws ArchiveConnectionException;
+
+    /**
+     * Connects the service with the archive API.
+     * If a connection is present, it is closed.
+     *
+     * @param connectionPrefs the connection preferences
+     * @throws ArchiveConnectionException when the connection could not be established
+     */
+    void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException;
+
     /**
      * Configures the service to the user's needs.
      * For instance the ornl implementation needs knowledge about batch sizes etc.
      *
-     * @param prefs the preferences
+     * @param cfgPrefs the configuration preferences
      */
-    void configure(@Nonnull final Map<String, Object> prefs);
+    void configure(@Nonnull final Map<String, Object> cfgPrefs);
 
     /**
      * Writes the sample to the archive.
@@ -65,4 +82,13 @@ public interface IArchiveService {
      * @throws Exception
      */
     boolean writeSamples(final int channelId, final List<IValue> samples) throws Exception;
+
+    /**
+     * Retrieves the channel configuration from the archive with the given name.
+     *
+     * @param name the name of the channel
+     *
+     */
+    ArchiveChannelBLO getChannel(@Nonnull final String name);
+
 }
