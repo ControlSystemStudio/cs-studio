@@ -9,6 +9,7 @@ import java.text.Collator;
 import java.util.Iterator;
 import java.util.regex.Pattern;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -32,10 +33,10 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
 		// TODO Auto-generated method stub
-		return compare((ChannelItem)e1, (ChannelItem)e2);
+		return compare((ICSSChannel)e1, (ICSSChannel)e2);
 	}
 
-	public int compare(ChannelItem d1, ChannelItem d2) {
+	public int compare(ICSSChannel d1, ICSSChannel d2) {
 		Property prop1 = getProperty(d1, propertyName);
 		Property prop2 = getProperty(d2, propertyName);
 		if ((prop1 == null) && (prop2 == null))
@@ -72,7 +73,7 @@ public class PropertySorter extends AbstractColumnViewerSorter {
 	 * @param PropertyName
 	 * @return the XmlProperty with the matching name else null;
 	 */
-	private Property getProperty(ChannelItem channelItem, String PropertyName) {
+	private Property getProperty(ICSSChannel channelItem, String PropertyName) {
 		Iterator<Property> itr = channelItem.getChannel().getProperties().iterator();
 		while (itr.hasNext()) {
 			Property item = itr.next();

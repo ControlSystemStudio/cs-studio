@@ -7,17 +7,18 @@ import gov.bnl.channelfinder.api.Tag;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 public class ChannelFinderViewLabelProvider extends LabelProvider implements
 		ITableLabelProvider {
-	private Collection<ChannelItem> channels;
+	private Collection<ICSSChannel> channels;
 	private Collection<String> allProperties;
 	private Collection<String> allTags;
 
-	public ChannelFinderViewLabelProvider(Collection<ChannelItem> channels) {
+	public ChannelFinderViewLabelProvider(Collection<ICSSChannel> channels) {
 		// TODO Auto-generated constructor stub
 		this.channels = channels;
 	}
@@ -36,7 +37,7 @@ public class ChannelFinderViewLabelProvider extends LabelProvider implements
 
 	@Override
 	public String getColumnText(Object element, int index) {
-		Channel channel = ((ChannelItem) element).getChannel();
+		Channel channel = ((ICSSChannel) element).getChannel();
 		if (index == 0) {
 			return channel.getName();
 		} else if (index == 1) {

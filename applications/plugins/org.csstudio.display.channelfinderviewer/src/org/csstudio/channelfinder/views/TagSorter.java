@@ -7,6 +7,7 @@ import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Iterator;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -34,10 +35,10 @@ public class TagSorter extends AbstractColumnViewerSorter {
 	 */
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return compare((ChannelItem)e1, (ChannelItem)e2);
+		return compare((ICSSChannel)e1, (ICSSChannel)e2);
 	}
 	
-	public int compare(ChannelItem d1, ChannelItem d2) {
+	public int compare(ICSSChannel d1, ICSSChannel d2) {
 		Tag tag1 = getTag(d1, tagName);
 		Tag tag2 = getTag(d2, tagName);
 		if ((tag1 == tag2))
@@ -55,7 +56,7 @@ public class TagSorter extends AbstractColumnViewerSorter {
 	 * @param PropertyName
 	 * @return the XmlProperty with the matching name else null;
 	 */
-	private Tag getTag(ChannelItem channelItem, String tagName) {
+	private Tag getTag(ICSSChannel channelItem, String tagName) {
 		Iterator<Tag> itr = channelItem.getChannel().getTags().iterator();
 		while (itr.hasNext()) {
 			Tag item = itr.next();

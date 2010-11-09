@@ -5,6 +5,7 @@ package org.csstudio.channelfinder.views;
 
 import java.text.Collator;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.ColumnViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.jface.viewers.Viewer;
@@ -28,8 +29,8 @@ public class StringColumnSorter extends AbstractColumnViewerSorter {
 	 */
 	@Override
 	protected int doCompare(Viewer viewer, Object e1, Object e2) {
-		return Collator.getInstance().compare(((ChannelItem) e1).getName(),
-				((ChannelItem) e2).getName());
+		return Collator.getInstance().compare(((ICSSChannel) e1).getName(),
+				((ICSSChannel) e2).getName());
 	}
 
 }

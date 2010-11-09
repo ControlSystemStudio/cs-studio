@@ -2,15 +2,16 @@ package org.csstudio.channelfinder.views;
 
 import java.util.Collection;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
 public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
 	
-	private Collection<ChannelItem> channelsList;
+	private Collection<ICSSChannel> channelsList;
 	 
-	public ChannelFinderViewContentProvider(Collection<ChannelItem> channelsList) {
+	public ChannelFinderViewContentProvider(Collection<ICSSChannel> channelsList) {
 		this.channelsList = channelsList;
 	}
 	
@@ -21,7 +22,7 @@ public class ChannelFinderViewContentProvider implements
 	@Override
 	public Object[] getElements(Object arg0) {
 		try{
-			return ((Collection<ChannelItem>)arg0).toArray();
+			return ((Collection<ICSSChannel>)arg0).toArray();
 		}catch(Exception e){
 			e.printStackTrace();
 			return null;

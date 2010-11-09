@@ -35,6 +35,8 @@ import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+
+import org.csstudio.utility.channel.*;
 /**
  * 
  */
@@ -54,7 +56,8 @@ public class ChannelFinderView extends ViewPart {
 	private GridLayout layout;
 
 //	private Collection<Channel> channelsList = new HashSet<Channel>();
-	private Collection<ChannelItem> channelsList = new HashSet<ChannelItem>();
+//	private Collection<ChannelItem> channelsList = new HashSet<ChannelItem>();
+	private Collection<ICSSChannel> channelsList = new HashSet<ICSSChannel>();
 	// union of all the properties/tags of all channels.
 //	private Collection<String> allProperties = new TreeSet<String>();
 //	private Collection<String> allTags = new TreeSet<String>();
@@ -258,7 +261,7 @@ public class ChannelFinderView extends ViewPart {
 		viewer.getControl().setFocus();
 	}
 
-	public synchronized void updateList(Collection<ChannelItem> channels) {
+	public synchronized void updateList(Collection<ICSSChannel> channels) {
 		// Clear the channel list;
 		channelsList.clear();			
 		channelsList.addAll(channels);
@@ -285,18 +288,18 @@ public class ChannelFinderView extends ViewPart {
 				getAllPropertyNames(channelsList), getAllTagNames(channelsList)));
 	}
 	
-	private Collection<String> getAllTagNames(Collection<ChannelItem> channelItems){
+	private Collection<String> getAllTagNames(Collection<ICSSChannel> channelItems){
 		Collection<String> tagNames = new HashSet<String>();
-		for (ChannelItem channelItem : channelItems) {
+		for (ICSSChannel channelItem : channelItems) {
 			tagNames.addAll(getTagNames(channelItem.getChannel()));
 		}
 		return tagNames;
 		
 	}
 	
-	private Collection<String> getAllPropertyNames(Collection<ChannelItem> channelItems){
+	private Collection<String> getAllPropertyNames(Collection<ICSSChannel> channelItems){
 		Collection<String> propertyNames = new HashSet<String>();
-		for (ChannelItem channelItem : channelItems) {
+		for (ICSSChannel channelItem : channelItems) {
 			propertyNames.addAll(getPropertyNames(channelItem.getChannel()));
 		}
 		return propertyNames;

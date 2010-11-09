@@ -4,11 +4,13 @@ import gov.bnl.channelfinder.api.Channel;
 import gov.bnl.channelfinder.api.ChannelFinderClient;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Map;
 
+import org.csstudio.utility.channel.ICSSChannel;
+import org.csstudio.utility.channel.ICSSChannelFactory;
+import org.csstudio.utility.channel.nsls2.CSSChannelFactory;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,13 +33,14 @@ public class SearchChannels extends Job {
 	@Override
 	protected IStatus run(IProgressMonitor monitor) {
 		monitor.beginTask("Seaching channels ", IProgressMonitor.UNKNOWN);
-		final Collection<ChannelItem> channels = new HashSet<ChannelItem>();
+		final Collection<ICSSChannel> channels = new HashSet<ICSSChannel>();
 		try {
 			// channels = sort(ChannelFinderClient.getInstance().findChannels(
 			// buildSearchMap1(searchPattern)));
 			for (Channel channel : ChannelFinderClient.getInstance().findChannels(
 					buildSearchMap1(searchPattern))) {
-				channels.add(new ChannelItem(channel));
+				ICSSChannelFactory cssChannelFactory = CSSChannelFactory.getInstance();
+				channels.add(cssChannelFactory.getCSSChannel(channel));
 			}
 			// final XmlChannels channels = testData(); // to use test data
 			PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable() {
