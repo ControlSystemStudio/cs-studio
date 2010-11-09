@@ -7,6 +7,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
@@ -24,7 +25,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class AddTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private Collection<Channel> channels;
+	private Collection<ICSSChannel> channels;
 	final private IPreferencesService prefs;
 
 	/**
@@ -32,7 +33,7 @@ public class AddTagAction implements IObjectActionDelegate {
 	 */
 	public AddTagAction() {
 		super();
-		this.channels = new HashSet<Channel>();
+		this.channels = new HashSet<ICSSChannel>();
 		this.prefs = Platform.getPreferencesService();
 	}
 
@@ -77,7 +78,7 @@ public class AddTagAction implements IObjectActionDelegate {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			channels.clear();
-			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
+			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
 				channels.add(iterator.next());
 			}

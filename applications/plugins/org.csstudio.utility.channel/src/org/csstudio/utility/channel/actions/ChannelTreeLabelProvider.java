@@ -9,6 +9,7 @@ import gov.bnl.channelfinder.api.Tag;
 
 import java.util.Collection;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.LabelProvider;
 
 /**
@@ -21,8 +22,8 @@ public class ChannelTreeLabelProvider extends LabelProvider {
 	public String getText(Object element) {
 		if (element instanceof ChannelModel) {
 			return "Channels";
-		} else if (element instanceof Channel) {
-			return ((Channel) element).getName();
+		} else if (element instanceof ICSSChannel) {
+			return ((ICSSChannel) element).getName();
 		} else if (element instanceof Collection<?>) {
 			 if(((Collection) element).toArray().length != 0){
 				 if (((Collection) element).toArray()[0] instanceof Property) {

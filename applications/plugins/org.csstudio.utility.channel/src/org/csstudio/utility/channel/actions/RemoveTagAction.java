@@ -3,14 +3,14 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.api.Channel;
-import gov.bnl.channelfinder.api.ChannelUtil;
+import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-
 /**
  * @author shroffk
  * 
@@ -28,14 +27,14 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 public class RemoveTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private Collection<Channel> channels;
+	private Collection<ICSSChannel> channels;
 
 	/**
 	 * 
 	 */
 	public RemoveTagAction() {
 		super();
-		this.channels = new HashSet<Channel>();
+		this.channels = new HashSet<ICSSChannel>();
 	}
 
 	/*
@@ -59,7 +58,7 @@ public class RemoveTagAction implements IObjectActionDelegate {
 	public void run(IAction action) {
 
 		ListSelectionDialog selectTags = new ListSelectionDialog(shell,
-				ChannelUtil.getAllTagNames(channels), new allTagsContentProvider(),
+				getCSSChannelTagNames(channels), new allTagsContentProvider(),
 				new allTagsLabelProvider(), "Select Tags to be removed.");
 		if (selectTags.open() == Window.OK) {
 			Object[] selected = selectTags.getResult();
@@ -89,7 +88,7 @@ public class RemoveTagAction implements IObjectActionDelegate {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			channels.clear();
-			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
+			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
 				channels.add(iterator.next());
 			}

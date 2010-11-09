@@ -3,13 +3,12 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.api.Channel;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.viewers.ISelection;
@@ -33,7 +32,7 @@ import org.eclipse.ui.IWorkbenchPart;
 public class InfoAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private Collection<Channel> channels = new HashSet<Channel>();
+	private Collection<ICSSChannel> channels = new HashSet<ICSSChannel>();
 	/**
 	 * 
 	 */
@@ -96,9 +95,9 @@ public class InfoAction implements IObjectActionDelegate {
 //	}
 
 	
-	private Object createChannelModel(Collection<Channel> channels){
+	private Object createChannelModel(Collection<ICSSChannel> channels){
 		ChannelModel root = new ChannelModel(0,null);		
-		for (Channel channel : channels) {
+		for (ICSSChannel channel : channels) {
 			root.getChild().add(channel);
 		}
 		return root;		
@@ -116,7 +115,7 @@ public class InfoAction implements IObjectActionDelegate {
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
 			channels.clear();
-			for (Iterator<Channel> iterator = strucSelection.iterator(); iterator
+			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
 				channels.add(iterator.next());
 			}
