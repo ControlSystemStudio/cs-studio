@@ -139,7 +139,9 @@ public class AlarmConnectionDALImpl implements IAlarmConnection {
 
     @Override
     public void registerPV(@Nonnull final String pvName) {
-        connectToPV(pvName);
+        if (!_pv2listenerItem.containsKey(pvName)) {
+            connectToPV(pvName);
+        }
     }
 
     private void connectToPV(@Nonnull final String pvName) {

@@ -42,13 +42,10 @@ public class AlarmConnectionDALImplTest {
     public void testConnectDisconnectOne() throws Exception {
         SimpleDALBroker simpleDALBroker = mock(SimpleDALBroker.class);
         IAlarmConfigurationService alarmConfigService = mock(IAlarmConfigurationService.class);
-        
         AlarmConnectionDALImpl connectionUnderTest = new AlarmConnectionDALImplForTest(alarmConfigService, simpleDALBroker);
         
         IAlarmConnectionMonitor connectionMonitor = mock(IAlarmConnectionMonitor.class);
-        IAlarmListener listener = mock(IAlarmListener.class);
-        IAlarmResource resource = mock(IAlarmResource.class);
-        connectionUnderTest.connect(connectionMonitor, listener, resource);
+        connect(connectionUnderTest, connectionMonitor);
         verify(connectionMonitor, times(1)).onConnect();
         verify(simpleDALBroker, times(1)).registerListener((ConnectionParameters) any(), (DynamicValueListener) any(), (Map<String, Object>) any());
 
@@ -65,17 +62,18 @@ public class AlarmConnectionDALImplTest {
     public void testConnectAndRegister() throws Exception {
         SimpleDALBroker simpleDALBroker = mock(SimpleDALBroker.class);
         IAlarmConfigurationService alarmConfigService = mock(IAlarmConfigurationService.class);
-        
         AlarmConnectionDALImpl connectionUnderTest = new AlarmConnectionDALImplForTest(alarmConfigService, simpleDALBroker);
         
         IAlarmConnectionMonitor connectionMonitor = mock(IAlarmConnectionMonitor.class);
-        IAlarmListener listener = mock(IAlarmListener.class);
-        IAlarmResource resource = mock(IAlarmResource.class);
+        connect(connectionUnderTest, connectionMonitor);
 
-        connectionUnderTest.connect(connectionMonitor, listener, resource);
         verify(connectionMonitor, times(1)).onConnect();
         verify(simpleDALBroker, times(1)).registerListener((ConnectionParameters) any(), (DynamicValueListener) any(), (Map<String, Object>) any());
 
+        connectionUnderTest.registerPV("pv1");
+        verify(simpleDALBroker, times(2)).registerListener((ConnectionParameters) any(), (DynamicValueListener) any(), (Map<String, Object>) any());
+
+        // Registering the 2nd time is ignored, because the listener will deliver to all nodes in the tree
         connectionUnderTest.registerPV("pv1");
         verify(simpleDALBroker, times(2)).registerListener((ConnectionParameters) any(), (DynamicValueListener) any(), (Map<String, Object>) any());
         
@@ -88,6 +86,13 @@ public class AlarmConnectionDALImplTest {
         
         connectionUnderTest.disconnect();
         verify(simpleDALBroker, times(3)).deregisterListener((ConnectionParameters) any(), (DynamicValueListener) any(), (Map<String, Object>) any());
+    }
+
+    private void connect(@Nonnull final AlarmConnectionDALImpl connectionUnderTest,
+                         @Nonnull final IAlarmConnectionMonitor connectionMonitor) throws AlarmConnectionException {
+        IAlarmListener listener = mock(IAlarmListener.class);
+        IAlarmResource resource = mock(IAlarmResource.class);
+        connectionUnderTest.connect(connectionMonitor, listener, resource);
     }
 
     /**

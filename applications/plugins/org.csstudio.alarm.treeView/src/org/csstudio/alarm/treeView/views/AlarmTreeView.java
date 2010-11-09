@@ -36,6 +36,7 @@ import org.csstudio.alarm.treeView.jobs.ImportInitialConfigJob;
 import org.csstudio.alarm.treeView.jobs.ImportXmlFileJob;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
@@ -277,6 +278,9 @@ public final class AlarmTreeView extends ViewPart {
     private static final IAlarmConfigurationService CONFIG_SERVICE =
         AlarmTreePlugin.getDefault().getAlarmConfigurationService();
 
+    // Listener for the life cycle of the pv-nodes in the tree. Used for de/registering pvs at the underlying system.
+    private IProcessVariableNodeListener _processVariableNodeListener;
+
 
     /**
      * Constructor.
@@ -431,7 +435,8 @@ public final class AlarmTreeView extends ViewPart {
 
     @Nonnull
     private ImportXmlFileJob createImportXmlFileJob(@Nonnull final IAlarmSubtreeNode rootNode) {
-        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(CONFIG_SERVICE,
+        final ImportXmlFileJob importXmlFileJob = new ImportXmlFileJob(this,
+                                                                       CONFIG_SERVICE,
                                                                        rootNode);
         importXmlFileJob.addJobChangeListener(new RefreshAlarmTreeViewAdapter(this, rootNode));
 
@@ -638,6 +643,8 @@ public final class AlarmTreeView extends ViewPart {
         return _viewer;
     }
 
+    
+    // TODO (jpenning) remove connection, use listener concept instead
     /**
      * @return the connection or null
      */
@@ -646,6 +653,32 @@ public final class AlarmTreeView extends ViewPart {
         return _connection;
     }
 
+    @Nonnull
+    @SuppressWarnings("synthetic-access")
+    public IProcessVariableNodeListener getPVNodeListener() {
+        if (_processVariableNodeListener == null) {
+            _processVariableNodeListener = new IProcessVariableNodeListener() {
+                
+                @Override
+                public void wasAdded(@Nonnull final String pvName) {
+                    if (_connection != null) {
+                        _connection.registerPV(pvName);
+                        AlarmTreeView.LOG.trace("pv registered: " + pvName);
+                    }
+                }
+                
+                @Override
+                public void wasRemoved(@Nonnull final String pvName) {
+                    if (_connection != null) {
+                        _connection.deregisterPV(pvName);
+                        AlarmTreeView.LOG.trace("pv deregistered: " + pvName);
+                    }
+                }
+            };
+        }
+        return _processVariableNodeListener;
+    }
+    
 
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm

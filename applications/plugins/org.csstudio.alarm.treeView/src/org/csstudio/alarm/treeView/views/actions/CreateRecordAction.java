@@ -64,7 +64,7 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
     @Nonnull
     protected ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                     @Nonnull final String name) {
-        ITreeModificationItem result = DirectoryEditor.createProcessVariableRecord(parent, name);
+        ITreeModificationItem result = DirectoryEditor.createProcessVariableRecord(parent, name, _alarmTreeView.getPVNodeListener());
         IAlarmConnection connection = _alarmTreeView.getConnection();
         if (connection != null) {
             connection.registerPV(name);

@@ -60,6 +60,8 @@ public final class ImportInitialConfigJob extends Job {
     private final IAlarmSubtreeNode _rootNode;
     private final IAlarmConfigurationService _configService;
 
+    private final AlarmTreeView _alarmTreeView;
+
     /**
      * Constructor.
      * @param alarmTreeView
@@ -70,6 +72,7 @@ public final class ImportInitialConfigJob extends Job {
                                   @Nonnull final IAlarmSubtreeNode rootNode,
                                   @Nonnull final IAlarmConfigurationService service) {
         super("Initialize alarm tree job.");
+        _alarmTreeView = alarmTreeView;
         _configService = service;
         _rootNode = rootNode;
     }
@@ -93,7 +96,7 @@ public final class ImportInitialConfigJob extends Job {
 
             _rootNode.clearChildren(); // removes all nodes below the root node
 
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor, source);
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode, _alarmTreeView.getPVNodeListener(), model, monitor, source);
 
             if (canceled) {
                 return Status.CANCEL_STATUS;
