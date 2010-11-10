@@ -94,8 +94,8 @@ public final class GuideModel implements Serializable {
 		if (_position != position) {
 			int oldValue = _position;
 			_position = position;
-			_listeners.firePropertyChange(PROPERTY_POSITION_CHANGED, new Integer(oldValue), 
-					new Integer(_position));
+			_listeners.firePropertyChange(PROPERTY_POSITION_CHANGED, Integer.valueOf(oldValue), 
+					Integer.valueOf(_position));
 		}
 	}
 	
@@ -146,7 +146,7 @@ public final class GuideModel implements Serializable {
 		if (getMap().containsKey(model) && getAlignment(model) == alignment) {
 			return;
 		}
-		getMap().put(model, new Integer(alignment));
+		getMap().put(model, Integer.valueOf(alignment));
 		GuideUtil.getInstance().setGuide(model, this);
 		_listeners.firePropertyChange(PROPERTY_CHILDREN_CHANGED, null, model);
 	}

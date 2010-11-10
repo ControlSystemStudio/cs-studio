@@ -436,7 +436,7 @@ public class RoundScaledRamp extends Figure {
 	 * Hold the properties for each threshold.
 	 * @author Xihui Chen
 	 */
-	class ThresholdMarker {	
+	static class ThresholdMarker {	
 		
 		private double value;		
 		private Color color;		

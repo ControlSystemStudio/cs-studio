@@ -36,9 +36,9 @@ public class ProgressBarFigure extends AbstractLinearMarkedFigure {
 	private Color fillBackgroundColor = GRAY_COLOR;
 	
 	private boolean effect3D = true;
-	private boolean horizontal; 
+	private boolean horizontal = false; 
 	
-	private boolean indicatorMode;	
+	private boolean indicatorMode = false;	
 	
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE);

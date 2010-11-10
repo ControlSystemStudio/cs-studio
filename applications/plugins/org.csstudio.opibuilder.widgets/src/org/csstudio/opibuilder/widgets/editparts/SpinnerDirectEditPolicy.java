@@ -36,7 +36,7 @@ public class SpinnerDirectEditPolicy
 	}
 
 
-class SpinnerEditCommand extends Command	{
+static class SpinnerEditCommand extends Command	{
 	
 	private String newText, oldText;
 	private LabelModel label;

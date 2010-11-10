@@ -133,7 +133,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		if(effect3D && support3D) {
 			graphics.pushState();
 			graphics.setAntialias(SWT.ON);
-			final double R = area.width/2;
+			final double R = area.width/2.0d;
 			final double UD_FILL_PART = 9.5d/10d;
 			final double UP_DOWN_RATIO = 1d/2d;
 			final double LR_FILL_PART = 8.5d/10d;
@@ -201,7 +201,7 @@ public class GaugeFigure extends AbstractRoundRampedFigure {
 		return effect3D;
 	}
 	
-	class Needle extends Polygon {
+	static class Needle extends Polygon {
 		public Needle() {
 			setBackgroundColor(DEFAULT_NEEDLE_COLOR);
 		}

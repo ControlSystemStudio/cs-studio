@@ -85,7 +85,7 @@ public class EditADLHandler implements IHandler {
 				
 				TranslatorUtils.ConvertChildren(root.getObjects(), displayModel, colorMap);
 				
-				String s = XMLUtil.WidgetToXMLString(displayModel, true);
+				String s = XMLUtil.widgetToXMLString(displayModel, true);
 				InputStream is = new ByteArrayInputStream(s.getBytes());
 				try {
 					file.create(is, false, null);

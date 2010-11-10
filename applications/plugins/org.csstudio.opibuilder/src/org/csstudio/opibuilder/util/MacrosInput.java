@@ -77,6 +77,17 @@ public class MacrosInput {
 	}
 	
 	@Override
+	public int hashCode(){
+		 int result = HashCodeUtil.SEED;
+		 //collect the contributions of various fields
+		 result = HashCodeUtil.hash(result, include_parent_macros);
+		 result = HashCodeUtil.hash(result, macrosMap);
+		 result = HashCodeUtil.hash(result, macrosMap.keySet().toArray());
+		 return result;
+	}
+
+	
+	@Override
 	public boolean equals(Object obj) {
 		if(obj != null && obj instanceof MacrosInput){
 			MacrosInput input = (MacrosInput)obj;

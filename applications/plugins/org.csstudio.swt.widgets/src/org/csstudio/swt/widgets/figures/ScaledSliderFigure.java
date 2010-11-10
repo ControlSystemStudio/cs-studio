@@ -55,7 +55,7 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 	private Color thumbColor = CustomMediaFactory.getInstance().getColor(
 			new RGB(172,172, 172)); 
 	private boolean effect3D = true; 
-	private boolean horizontal;
+	private boolean horizontal = false;
 	private final static Color WHITE_COLOR = CustomMediaFactory.getInstance().getColor(
 			CustomMediaFactory.COLOR_WHITE); 
 	
@@ -734,8 +734,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 			Rectangle area = container.getClientArea().getCopy();		
 			area.x += ADDITIONAL_MARGIN;
 			area.width -= 2*ADDITIONAL_MARGIN;
-			Dimension scaleSize = new Dimension(0, 0);
-			Dimension markerSize = new Dimension(0, 0);
+			Dimension scaleSize;
+			Dimension markerSize;
 			
 			if(scale != null) {
 				scaleSize = scale.getPreferredSize(area.width, -1);
@@ -813,8 +813,8 @@ public class ScaledSliderFigure extends AbstractLinearMarkedFigure {
 		private void verticalLayout(IFigure container) {
 			Rectangle area = container.getClientArea();		
 			
-			Dimension scaleSize = new Dimension(0, 0);
-			Dimension markerSize = new Dimension(0, 0);
+			Dimension scaleSize;
+			Dimension markerSize;
 			
 			if(scale != null) {
 				scaleSize = scale.getPreferredSize(-1, area.height);

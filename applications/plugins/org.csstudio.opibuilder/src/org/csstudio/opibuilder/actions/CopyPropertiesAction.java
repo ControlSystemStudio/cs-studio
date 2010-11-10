@@ -78,7 +78,7 @@ public class CopyPropertiesAction extends SelectionAction {
 			List<String> propList = dialog.getOutput();
 			if(!propList.isEmpty()){
 				
-				Element widgetElement = XMLUtil.WidgetToXMLElement(getSelectedWidgetModels().get(0));
+				Element widgetElement = XMLUtil.widgetToXMLElement(getSelectedWidgetModels().get(0));
 				
 				Element propertisElement = new Element(PROPID_ELEMENT);
 				

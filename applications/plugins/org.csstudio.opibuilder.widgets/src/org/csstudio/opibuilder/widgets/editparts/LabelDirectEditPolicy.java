@@ -36,7 +36,7 @@ public class LabelDirectEditPolicy
 	}
 
 
-class LabelEditCommand extends Command	{
+static class LabelEditCommand extends Command	{
 	
 	private String newText, oldText;
 	private LabelModel label;

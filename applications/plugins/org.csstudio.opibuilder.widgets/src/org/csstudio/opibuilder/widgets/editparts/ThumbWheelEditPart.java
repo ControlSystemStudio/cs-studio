@@ -567,19 +567,19 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 
 			this.integerWheels = integerWheels;
 
-			String nines = "";
+			StringBuilder nines = new StringBuilder();
 			for (int i = 0; i < integerWheels; i++) {
-				nines += "9";
+				nines.append("9");
 			}
 
 			if (decimalWheels > 0) {
-				nines += ".";
+				nines.append(".");
 				for (int i = 0; i < decimalWheels; i++) {
-					nines += "9";
+					nines.append("9");
 				}
 			}
 
-			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+			wheelMax = new BigDecimal(nines.toString(), MathContext.UNLIMITED);
 			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
 		}
 
@@ -594,21 +594,21 @@ public class ThumbWheelEditPart extends AbstractPVWidgetEditPart {
 				return;
 			}
 			this.decimalWheels = decimalWheels;
-			String nines = "";
+			StringBuilder nines = new StringBuilder();
 			if (integerWheels > 0) {
 				for (int i = 0; i < integerWheels; i++) {
-					nines += "9";
+					nines.append("9");
 				}
 			} else {
-				nines += "0";
+				nines.append("0");
 			}
 
-			nines += ".";
+			nines.append(".");
 			for (int i = 0; i < decimalWheels; i++) {
-				nines += "9";
+				nines.append("9");
 			}
 
-			wheelMax = new BigDecimal(nines, MathContext.UNLIMITED);
+			wheelMax = new BigDecimal(nines.toString(), MathContext.UNLIMITED);
 			wheelMin = new BigDecimal("-" + nines, MathContext.UNLIMITED);
 		}
 

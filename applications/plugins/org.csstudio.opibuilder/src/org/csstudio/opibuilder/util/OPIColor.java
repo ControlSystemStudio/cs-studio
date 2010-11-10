@@ -199,15 +199,49 @@ public class OPIColor implements IAdaptable {
 		return getColorName();
 	}
 	
+	
+	
 	@Override
 	public boolean equals(Object obj) {
-		if(obj instanceof OPIColor){
-			OPIColor input = (OPIColor)obj;
-			return colorName.equals(input.getColorName()) && 
-				colorValue.equals(input.getRGBValue());
-		}
-		return false;
-		
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		OPIColor other = (OPIColor) obj;
+		if (colorName == null) {
+			if (other.colorName != null)
+				return false;
+		} else if (!colorName.equals(other.colorName))
+			return false;
+		if (colorValue == null) {
+			if (other.colorValue != null)
+				return false;
+		} else if (!colorValue.equals(other.colorValue))
+			return false;
+		return true;
+	}
+
+//	@Override
+//	public boolean equals(Object obj) {
+//		if(obj instanceof OPIColor){
+//			OPIColor input = (OPIColor)obj;
+//			return colorName.equals(input.getColorName()) && 
+//				colorValue.equals(input.getRGBValue());
+//		}
+//		return false;		
+//	}
+	
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((colorName == null) ? 0 : colorName.hashCode());
+		result = prime * result
+				+ ((colorValue == null) ? 0 : colorValue.hashCode());
+		return result;
 	}
 	
 	public OPIColor getCopy(){

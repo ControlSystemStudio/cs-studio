@@ -37,7 +37,7 @@ public class TextIndicatorDirectEditPolicy
 	}
 
 
-class TextIndicatorEditCommand extends Command	{
+static class TextIndicatorEditCommand extends Command	{
 	
 	private String newText, oldText;
 	private TextIndicatorModel label;

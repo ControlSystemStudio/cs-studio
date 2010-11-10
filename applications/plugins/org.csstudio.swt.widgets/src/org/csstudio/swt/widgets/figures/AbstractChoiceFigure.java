@@ -79,7 +79,7 @@ public abstract class AbstractChoiceFigure extends Figure implements Introspecta
 		return selectedColor;
 	}
 
-	public String getState(){
+	public synchronized String getState(){
 		return states.get(models.indexOf(buttonGroup.getSelected()));
 	}
 		

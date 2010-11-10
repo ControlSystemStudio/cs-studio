@@ -93,12 +93,12 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				Rectangle ledArea;
 				if(clientArea.width >=clientArea.height){
 					ledArea = new Rectangle(
-							(int) (clientArea.x + clientArea.width * LED_POSITION - ledDiameter/2),
-							clientArea.y + clientArea.height/2 - ledDiameter/2, ledDiameter, ledDiameter);
+							(int) (clientArea.x + clientArea.width * LED_POSITION - ledDiameter/2.0),
+							(int) (clientArea.y + clientArea.height/2.0 - ledDiameter/2.0), ledDiameter, ledDiameter);
 				}else{
 					ledArea = new Rectangle(
-							clientArea.x + clientArea.width/2 - ledDiameter/2,
-							(int) (clientArea.y + (1-LED_POSITION)*clientArea.height - ledDiameter/2), ledDiameter, ledDiameter);
+							(int) (clientArea.x + clientArea.width/2.0 - ledDiameter/2.0),
+							(int) (clientArea.y + (1-LED_POSITION)*clientArea.height - ledDiameter/2.0), ledDiameter, ledDiameter);
 				}
 				
 				// Fills the circle with solid bulb color
@@ -230,12 +230,12 @@ public class BoolButtonFigure extends AbstractBoolControlFigure {
 				Rectangle ledArea;
 				if(clientArea.width >=clientArea.height){
 					ledArea = new Rectangle(
-							(int) (clientArea.x + clientArea.width * LED_POSITION - ledDiameter/2),
-							clientArea.y + clientArea.height/2 - ledDiameter/2, ledDiameter, ledDiameter);
+							(int) (clientArea.x + clientArea.width * LED_POSITION - ledDiameter/2.0),
+							(int) (clientArea.y + clientArea.height/2.0 - ledDiameter/2.0), ledDiameter, ledDiameter);
 				}else{
 					ledArea = new Rectangle(
-							clientArea.x + clientArea.width/2 - ledDiameter/2,
-							(int) (clientArea.y + (1-LED_POSITION)*clientArea.height - ledDiameter/2), ledDiameter, ledDiameter);
+							(int) (clientArea.x + clientArea.width/2.0 - ledDiameter/2.0),
+							(int) (clientArea.y + (1-LED_POSITION)*clientArea.height - ledDiameter/2.0), ledDiameter, ledDiameter);
 				}
 				
 				// Fills the circle with solid bulb color

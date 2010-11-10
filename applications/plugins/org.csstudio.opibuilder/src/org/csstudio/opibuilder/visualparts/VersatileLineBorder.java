@@ -34,7 +34,7 @@ public class VersatileLineBorder extends LineBorder {
 	 */
 	public void paint(IFigure figure, Graphics graphics, Insets insets) {
 		tempRect.setBounds(getPaintRectangle(figure, insets));
-		if (getWidth() % 2 == 1) {
+		if ((getWidth() & 1) == 1) {
 			tempRect.width--;
 			tempRect.height--;
 		}

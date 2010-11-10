@@ -18,12 +18,13 @@ public class OPIEditorPerspective implements IPerspectiveFactory
 	/** ID of navigator view.
      *  This one is deprecated, but don't know what else to use.
      */
-    final String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
+    @SuppressWarnings("deprecation")
+	final static String ID_NAVIGATOR = IPageLayout.ID_RES_NAV;
 
     /** Create suggested OPI Editor layout:
      *  <pre>Navigator | Editor | Properties</pre>
      */
-    @SuppressWarnings("nls")
+    @SuppressWarnings({ "nls", "deprecation" })
     public void createInitialLayout(IPageLayout layout)
     {
         final String editor = layout.getEditorArea();

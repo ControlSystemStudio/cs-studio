@@ -245,8 +245,8 @@ public class ScrollbarEditPart extends AbstractPVWidgetEditPart {
 
 	@Override
 	public void setValue(Object value) {
-		if(value instanceof Double)
-			((ScrollbarFigure)getFigure()).setValue((Integer)value);
+		if(value instanceof Number)
+			((ScrollbarFigure)getFigure()).setValue(((Number)value).doubleValue());
 	}
 	
 	@Override

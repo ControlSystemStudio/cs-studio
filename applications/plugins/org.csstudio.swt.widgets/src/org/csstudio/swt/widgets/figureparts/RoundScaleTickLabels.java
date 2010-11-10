@@ -261,13 +261,13 @@ public class RoundScaleTickLabels extends Figure {
     		if(scale.getTickLablesSide() == LabelSide.Primary)	
     			lableRadius = (int) (scale.getRadius() + 
     					RoundScaleTickMarks.MAJOR_TICK_LENGTH + RoundScale.SPACE_BTW_MARK_LABEL +
-    						ls.width/2 * Math.abs(Math.cos(tickLabelPositions.get(i))) + 
-    						ls.height/2 * Math.abs(Math.sin(tickLabelPositions.get(i))));
+    						ls.width/2.0 * Math.abs(Math.cos(tickLabelPositions.get(i))) + 
+    						ls.height/2.0 * Math.abs(Math.sin(tickLabelPositions.get(i))));
     		else 		
     			lableRadius = (int) (scale.getRadius() - 
     					RoundScaleTickMarks.MAJOR_TICK_LENGTH - RoundScale.SPACE_BTW_MARK_LABEL -
-    						ls.width/2 * Math.abs(Math.cos(tickLabelPositions.get(i))) - 
-    						ls.height/2 * Math.abs(Math.sin(tickLabelPositions.get(i))));
+    						ls.width/2.0 * Math.abs(Math.cos(tickLabelPositions.get(i))) - 
+    						ls.height/2.0 * Math.abs(Math.sin(tickLabelPositions.get(i))));
     	
     		Point lp = new PolarPoint(lableRadius, tickLabelPositions.get(i)).toRelativePoint(
     				scale.getBounds());

@@ -232,7 +232,7 @@ public abstract class AbstractBoolEditPart extends AbstractPVWidgetEditPart {
 		if(getWidgetModel().getDataType() == 0)
 			figure.setValue(ValueUtil.getDouble((IValue)newValue));
 		else {
-			if(newValue !=null && newValue instanceof IValue && ValueUtil.getString((IValue)newValue).equals(
+			if(ValueUtil.getString((IValue)newValue).equals(
 					getWidgetModel().getOnState()))
 				figure.setValue(1);
 			else

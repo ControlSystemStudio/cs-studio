@@ -383,7 +383,7 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 	
 	}
 
-	class ThermoLayout extends AbstractLayout {
+	static class ThermoLayout extends AbstractLayout {
 		
 		/** Used as a constraint for the scale. */
 		public static final String SCALE = "scale";   //$NON-NLS-1$
@@ -422,9 +422,9 @@ public class ThermometerFigure extends AbstractLinearMarkedFigure {
 				area.height = spareHeight + scale.getMargin();			
 			}
 			Dimension unitSize = new Dimension(0, 0);
-			Dimension scaleSize = new Dimension(0, 0);
-			Dimension markerSize = new Dimension(0, 0);
-			Dimension pipeSize = new Dimension(0, 0);
+			Dimension scaleSize;
+			Dimension markerSize;
+			Dimension pipeSize;
 			if(unit != null && unit.isVisible()) {
 				unitSize = unit.getPreferredSize();			
 				unit.setBounds(new Rectangle(

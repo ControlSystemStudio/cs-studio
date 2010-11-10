@@ -48,8 +48,8 @@ public class ShowMacrosAction extends SelectionAction {
 		String message = NLS.bind("The predefined macros of {0}:\n", widget.getName());
 		StringBuilder sb = new StringBuilder(message);
 		Map<String, String> macroMap = OPIBuilderMacroUtil.getWidgetMacroMap(widget);
-		for(String key : macroMap.keySet()){
-			sb.append(key + "=" + macroMap.get(key) + "\n");
+		for(final Map.Entry<String, String> entry: macroMap.entrySet()){
+			sb.append(entry.getKey() + "=" + entry.getValue() + "\n");
 		}
 		ConsoleService.getInstance().writeInfo(sb.toString());
 		MessageDialog.openInformation(null, "Predefined Macros", sb.toString());

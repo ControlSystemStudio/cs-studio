@@ -118,7 +118,7 @@ public class TextInputEditpart extends TextIndicatorEditPart {
 							char[] textChars = text.toCharArray();
 							
 							for (int ii = 0; ii< text.length(); ii++){
-								iString[ii] = new Integer(textChars[ii]);
+								iString[ii] = Integer.valueOf(textChars[ii]);
 							}
 							setPVValue(AbstractPVWidgetModel.PROP_PVNAME, iString);
 							break;

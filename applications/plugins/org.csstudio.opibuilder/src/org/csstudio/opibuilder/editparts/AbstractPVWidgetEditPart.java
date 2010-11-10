@@ -212,7 +212,7 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 			markWidgetAsDisconnected(pv.getName());
 		}
 
-		public synchronized void pvValueUpdate(PV pv) {
+		public void pvValueUpdate(PV pv) {
 			if(pv == null)
 				return;
 			final AbstractPVWidgetModel widgetModel = getWidgetModel();
@@ -528,17 +528,20 @@ public abstract class AbstractPVWidgetEditPart extends AbstractWidgetEditPart
 	 * @param pvPropId
 	 * @param value
 	 */
-	public synchronized void setPVValue(String pvPropId, Object value){		
+	public void setPVValue(String pvPropId, Object value){		
 		final PV pv = pvMap.get(pvPropId);
 		if(pv != null){
 			try {				
 				if(pvPropId.equals(controlPVPropId) && controlPVValuePropId != null){ //activate suppress timer
-					if(updateSuppressTimer == null || timerTask == null)
-						initUpdateSuppressTimer();
-					if(!updateSuppressTimer.isDue())
-						updateSuppressTimer.reset();
-					else
-						startUpdateSuppressTimer();	
+					synchronized (this) {
+						if(updateSuppressTimer == null || timerTask == null)
+							initUpdateSuppressTimer();
+						if(!updateSuppressTimer.isDue())
+							updateSuppressTimer.reset();
+						else
+							startUpdateSuppressTimer();	
+					}
+					
 				}
 				pv.setValue(value);
 			} catch (final Exception e) {

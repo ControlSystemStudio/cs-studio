@@ -129,7 +129,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			@Override
 			protected Command createDeleteCommand(GroupRequest deleteRequest) {
 				Object containerModel = getHost().getParent().getModel();
-				Object widget = (AbstractWidgetModel)getHost().getModel();
+				Object widget = getHost().getModel();
 				
 				if(containerModel instanceof AbstractContainerModel && 
 						widget instanceof AbstractWidgetModel)
@@ -208,13 +208,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			//add listener to all properties.
 			for(String id : getWidgetModel().getAllPropertyIDs()){
 				
-				AbstractWidgetProperty property = getWidgetModel().getProperty(id); 
-				WidgetPropertyChangeListener listener = 
-					new WidgetPropertyChangeListener(this, property);
-				property.addPropertyChangeListener(
-					listener);
-				propertyListenerMap.put(id, listener);				
+				AbstractWidgetProperty property = getWidgetModel().getProperty(id); 				
 				if(property != null){
+					WidgetPropertyChangeListener listener = 
+					new WidgetPropertyChangeListener(this, property);
+					property.addPropertyChangeListener(listener);
+					propertyListenerMap.put(id, listener);			
+				
 					property.setExecutionMode(executionMode);
 					property.setWidgetModel(getWidgetModel());
 				}
@@ -313,11 +313,11 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 							@Override
 							protected IStatus run(IProgressMonitor monitor) {
 								//attempt to connect with all PVs repeatedly
-								String s = "";
+								StringBuilder s = new StringBuilder();
 								for(int i=0; i<pvArray.length; i++){
-									s+=pvArray[i].getName();
+									s.append(pvArray[i].getName());
 									if(i!= pvArray.length-1)
-										s+=", "; //$NON-NLS-1$
+										s.append(", "); //$NON-NLS-1$
 								}
 								monitor.beginTask("Connecting to PVs: " + s, connectAttempts);
 								while (connectAttempts-->=0) {
