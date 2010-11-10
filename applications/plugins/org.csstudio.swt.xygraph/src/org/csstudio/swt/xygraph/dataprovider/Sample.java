@@ -111,15 +111,73 @@ public class Sample implements ISample {
 	public String getInfo() {
 		return info;
 	}
+	
+	
+
+//    @Override
+//    public boolean equals(final Object obj) {
+//    	if(obj instanceof Sample)
+//    		return  (((Sample)obj).xValue == xValue && ((Sample)obj).yValue == yValue);
+//    	return false;
+//    }
 
     @Override
-    public boolean equals(final Object obj) {
-    	if(obj instanceof Sample)
-    		return  (((Sample)obj).xValue == xValue && ((Sample)obj).yValue == yValue);
-    	return false;
-    }
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((info == null) ? 0 : info.hashCode());
+		long temp;
+		temp = Double.doubleToLongBits(xMinusError);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(xPlusError);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(xValue);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(yMinusError);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(yPlusError);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(yValue);
+		result = prime * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
 
-    /** @return String representation, mostly for debugging */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Sample other = (Sample) obj;
+		if (info == null) {
+			if (other.info != null)
+				return false;
+		} else if (!info.equals(other.info))
+			return false;
+		if (Double.doubleToLongBits(xMinusError) != Double
+				.doubleToLongBits(other.xMinusError))
+			return false;
+		if (Double.doubleToLongBits(xPlusError) != Double
+				.doubleToLongBits(other.xPlusError))
+			return false;
+		if (Double.doubleToLongBits(xValue) != Double
+				.doubleToLongBits(other.xValue))
+			return false;
+		if (Double.doubleToLongBits(yMinusError) != Double
+				.doubleToLongBits(other.yMinusError))
+			return false;
+		if (Double.doubleToLongBits(yPlusError) != Double
+				.doubleToLongBits(other.yPlusError))
+			return false;
+		if (Double.doubleToLongBits(yValue) != Double
+				.doubleToLongBits(other.yValue))
+			return false;
+		return true;
+	}
+
+	/** @return String representation, mostly for debugging */
     @SuppressWarnings("nls")
     @Override
     public String toString() {
