@@ -24,8 +24,12 @@ package org.csstudio.archive.service.oracleimpl;
 import java.util.List;
 import java.util.Map;
 
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.service.ArchiveConnectionException;
+import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -63,20 +67,43 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
 
     /**
      * {@inheritDoc}
+     */
+    public void reconnect() throws ArchiveConnectionException {
+        try {
+            _archive.get().reconnect();
+        } catch (final Exception e) {
+            throw new ArchiveConnectionException("Archive reconnection failed.", e);
+        }
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void configure(final Map<String, Object> cfgPrefs) {
+        // Nothing to do yet
+    }
+
+    /**
+     * {@inheritDoc}
      *
      * <p>
      *  For performance reasons, this call actually only adds
      *  the sample to a 'batch'.
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
-    public boolean writeSamples(final int channelId, final List<IValue> samples) throws Exception { // TODO : Untyped exception? A catch would swallow ALL exceptions!
+    public boolean writeSamples(final int channelId, final List<IValue> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
 
-//        for (final IValue sample : samples) {
-//            _archive.get().batchSample(channelId, sample);
-//            // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
-//            // but that would break encapsulation...
-//        }
-//        _archive.get().commitBatch();
+        try {
+            for (final IValue sample : samples) {
+                _archive.get().batchSample(channelId, sample);
+                // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
+                // but that would break encapsulation...
+            }
+            _archive.get().commitBatch();
+        } catch (final Exception e) {
+            throw new ArchiveServiceException("Committing of sample batch failed.", e);
+        }
 
         return true;
     }
@@ -88,5 +115,22 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
 //        _archive.get().batchSample(channelId, sample);
 //        _archive.get().commitBatch();
         return true;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public ChannelConfig getChannel(final String name) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IMetaData writeMetaData(final ChannelConfig channel, final IValue sample) throws Exception {
+        _archive.get().writeMetaData(channel, sample);
+        return null;
     }
 }

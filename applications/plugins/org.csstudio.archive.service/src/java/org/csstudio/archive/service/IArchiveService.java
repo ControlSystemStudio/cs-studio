@@ -24,9 +24,12 @@ package org.csstudio.archive.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -70,7 +73,7 @@ public interface IArchiveService {
      * @return true, if the sample has been persisted
      * @throws ArchiveServiceException
      */
-    boolean writeSample(final int channelId, final IValue sample) throws ArchiveServiceException;
+    //boolean writeSample(final int channelId, final IValue sample) throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -89,6 +92,37 @@ public interface IArchiveService {
      * @throws ArchiveServiceException
      */
     ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
+     * FIXME (bknerr) : This structure seems severely broken:
+     * database accesses scattered all over the place and metadata abstraction not properly designed
+     *
+     * what happens originally:
+     *
+     * {@link WriteThread#write()} calls
+     * {@link ChannelConfig#batchSample(IValue)} calls
+     * {@link RDBArchive#batchSample(ChannelConfig, IValue)} in case <code>if (ChannelConfig#getMetaData() == null)</code> calls
+     * {@link RDBArchive#writeMetaData(ChannelConfig, IValue)} dispatches over <code>instanceof IValue</code> to
+     * {NumericMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)} which finally accesses the database with calls to
+     * <ol>
+     * <li>{NumericMetaDataHelper#get(RDBArchive, ChannelConfig)}</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} for deletion in table then return.</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} and {NumericMetaDataHelper#insert(RDBArchive, ChannelConfig)} for update</li>
+     * </ol>
+     * or the same to another table
+     * {EnumMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)}
+     *
+     * We have two tables enum_metadata, num_metadata - obviously it is possible that a channel configuration
+     * doesn't have the meta data stuff set, so that in that case any single sample has to asked about its metadata
+     *
+     *
+     * @param channel
+     * @param sample
+     * @return
+     * @throws Exception
+     */
+    @CheckForNull
+    IMetaData writeMetaData(@Nonnull ChannelConfig channel, @Nonnull final IValue sample) throws Exception;
 
 
 }

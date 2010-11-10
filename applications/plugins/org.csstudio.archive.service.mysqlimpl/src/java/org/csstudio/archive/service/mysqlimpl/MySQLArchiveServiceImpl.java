@@ -41,6 +41,7 @@ import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -61,7 +62,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 
     INSTANCE;
 
-    private static final String ARCHIVE_EXCEPTION_MSG = "Archive connection could not be established";
+    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
     private static Logger LOG =
         CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
@@ -160,13 +161,13 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
             propagateConnectionToDaos(null);
 
         } catch (final InstantiationException e) {
-            throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         } catch (final IllegalAccessException e) {
-            throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         } catch (final ClassNotFoundException e) {
-            throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         } catch (final SQLException e) {
-            throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
     }
 
@@ -194,7 +195,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
     @Override
-    public boolean writeSamples(final int channelId, @Nonnull final List<IValue> samples) throws Exception { // TODO : Untyped exception? A catch would swallow ALL exceptions!
+    public boolean writeSamples(final int channelId, @Nonnull final List<IValue> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
 
 //        for (final IValue sample : samples) {
 //            _archive.get().batchSample(channelId, sample);
@@ -203,16 +204,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 //        }
 //        _archive.get().commitBatch();
 
-        return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean writeSample(final int channelId, @Nonnull final IValue sample) throws Exception { // TODO : Untyped exception? A catch would swallow ALL exceptions!
-//        _archive.get().batchSample(channelId, sample);
-//        _archive.get().commitBatch();
         return true;
     }
 
@@ -234,6 +225,16 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 
 
         return ArchiveEngineAdapter.INSTANCE.adapt(name, channel, sampleMode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Deprecated
+    @Override
+    public IMetaData writeMetaData(@Nonnull final ChannelConfig channel, final IValue sample) {
+        // Don't do anything
+        return null;
     }
 
 }

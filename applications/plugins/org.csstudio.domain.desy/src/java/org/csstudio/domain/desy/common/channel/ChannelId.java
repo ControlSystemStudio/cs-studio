@@ -34,7 +34,7 @@ public class ChannelId extends Id<ChannelId> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Serves as "not set"-Id to avoid <code>null</code>.
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
     public static final ChannelId NONE = new ChannelId(-1L);
 
