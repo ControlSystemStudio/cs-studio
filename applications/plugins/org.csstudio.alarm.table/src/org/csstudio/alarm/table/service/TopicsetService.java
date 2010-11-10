@@ -73,7 +73,7 @@ public class TopicsetService implements ITopicsetService {
         element._alarmTableListener.setMessageList(element._messageList);
         final IAlarmResource alarmResource = JmsLogsPlugin.getDefault().getAlarmService()
                 .createAlarmResource(topicSet.getTopics(), null);
-        element._connection.connectWithListenerForResource(new AlarmConnectionMonitor(),
+        element._connection.connect(new AlarmConnectionMonitor(),
                                                            element._alarmTableListener,
                                                            alarmResource);
         

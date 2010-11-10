@@ -46,6 +46,7 @@ import org.csstudio.alarm.treeView.ldap.AlarmTreeBuilder;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
+import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.utility.ldap.service.ILdapSearchResult;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -71,17 +72,21 @@ public final class ImportXmlFileJob extends Job {
     private final IAlarmConfigurationService _configService;
     private final IAlarmSubtreeNode _rootNode;
     private String _filePath;
+    private final AlarmTreeView _alarmTreeView;
 
 
     /**
      * Constructor.
+     * @param alarmTreeView
      * @param configService
-     * @param ldapService
      * @param rootNode
+     * @param ldapService
      */
-    public ImportXmlFileJob(@Nonnull final IAlarmConfigurationService configService,
+    public ImportXmlFileJob(@Nonnull final AlarmTreeView alarmTreeView,
+                            @Nonnull final IAlarmConfigurationService configService,
                             @Nonnull final IAlarmSubtreeNode rootNode) {
         super("ImportFileJob");
+        _alarmTreeView = alarmTreeView;
         _configService = configService;
         _rootNode = rootNode;
     }
@@ -104,7 +109,7 @@ public final class ImportXmlFileJob extends Job {
                 return status;
             }
 
-            final boolean canceled = AlarmTreeBuilder.build(_rootNode, model, monitor, TreeNodeSource.XML);
+            final boolean canceled = AlarmTreeBuilder.build(_rootNode, _alarmTreeView.getPVNodeListener(), model, monitor, TreeNodeSource.XML);
             if (canceled) {
                 return Status.CANCEL_STATUS;
             }

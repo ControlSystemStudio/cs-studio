@@ -124,8 +124,8 @@ public final class AlarmTreeProcessVariableDropListener implements TransferDropT
         final SubtreeNode parent = (SubtreeNode) event.item.getData();
         final IProcessVariable[] droppedPVs = (IProcessVariable[]) event.data;
         for (final IProcessVariable pv : droppedPVs) {
-            // TODO (jpenning) This is slow for many pvs. Fix: Better give all pvs at once
-            final ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv.getName());
+            // FIXME (jpenning) This is slow for many pvs. Fix: Better give all pvs at once
+            final ITreeModificationItem item = DirectoryEditor.createProcessVariableRecord(parent, pv.getName(), _alarmTreeView.getPVNodeListener());
             if (item != null) {
                 _ldapModificationItems.add(item);
             }
