@@ -20,7 +20,7 @@ public class ChannelConfig extends StringID
 {
     /** Archive that holds this channel */
     final private RDBArchive archive;
-    
+
     protected int group_id;
 
     private SampleMode sample_mode;
@@ -31,7 +31,7 @@ public class ChannelConfig extends StringID
 
     /** The channel's meta data */
     private IMetaData meta = null;
-    
+
     /** Constructor from pieces */
     public ChannelConfig(final RDBArchive archive, final int id,
             final String name,
@@ -70,7 +70,7 @@ public class ChannelConfig extends StringID
     {
         return sample_period;
     }
-    
+
     /** @return Meta data or <code>null</code> */
     public IMetaData getMetaData()
     {
@@ -82,7 +82,7 @@ public class ChannelConfig extends StringID
     {
         this.meta = meta;
     }
-    
+
     /** Define the sample mode of this channel
      *  @param sample_mode SampleMode
      *  @param sample_value Sample mode configuration value
@@ -92,10 +92,10 @@ public class ChannelConfig extends StringID
             final double sample_value,
             final double period_secs) throws Exception
     {
-    	this.sample_mode = sample_mode;
-    	this.sample_value = sample_value;
-        this.sample_period = Math.max(period_secs, RDBArchivePreferences.getMinSamplePeriod());
-        final PreparedStatement statement =
+       this.sample_mode = sample_mode;
+       this.sample_value = sample_value;
+       this.sample_period = Math.max(period_secs, RDBArchivePreferences.getMinSamplePeriod());        
+       final PreparedStatement statement =
             archive.getRDB().getConnection().prepareStatement(
                         archive.getSQL().channel_set_sampling);
         try
@@ -111,7 +111,7 @@ public class ChannelConfig extends StringID
             statement.close();
         }
     }
-    
+
     /** Add a channel to this group.
      *  @param channel Channel to add
      *  @throws Exception on error
@@ -137,7 +137,7 @@ public class ChannelConfig extends StringID
             statement.close();
         }
     }
-    
+
     /** Get time range information.
      *  @return Last time stamp found for this channel,
      *          or <code>null</code>
@@ -166,7 +166,7 @@ public class ChannelConfig extends StringID
             statement.close();
         }
     }
-        
+
     /** Read (raw) samples from start to end time.
      *  @param start Retrieval starts at-or-before this time
      *  @param end Read up to and including this time
@@ -178,7 +178,7 @@ public class ChannelConfig extends StringID
     {
         return new RawSampleIterator(archive, this, start, end);
     }
-    
+
     /** Add a sample to the archive.
      *  <p>
      *  For performance reasons, this call actually only adds
@@ -190,9 +190,15 @@ public class ChannelConfig extends StringID
      */
     public void batchSample(final IValue sample) throws Exception
     {
-        archive.batchSample(this, sample);
+        // Need to write meta data?
+        if (getMetaData() == null) {
+            archive.writeMetaData(this, sample);
+        }
+        archive.batchSample(this.getId(), sample);
+
+        archive.debugBatch(this, sample);
     }
-    
+
     @Override
     @SuppressWarnings("nls")
     final public String toString()
