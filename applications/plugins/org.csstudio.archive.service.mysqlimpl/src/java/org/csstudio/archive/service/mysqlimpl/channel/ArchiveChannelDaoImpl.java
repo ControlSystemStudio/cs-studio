@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl;
+package org.csstudio.archive.service.mysqlimpl.channel;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;

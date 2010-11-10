@@ -34,6 +34,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.IArchiveService;
 import org.csstudio.archive.service.businesslogic.ArchiveChannelBLO;
+import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
+import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 

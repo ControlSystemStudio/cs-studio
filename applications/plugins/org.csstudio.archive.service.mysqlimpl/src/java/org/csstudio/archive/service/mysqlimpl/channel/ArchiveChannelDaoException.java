@@ -19,29 +19,26 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl;
+package org.csstudio.archive.service.mysqlimpl.channel;
 
-import java.sql.Connection;
-
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-
-import org.csstudio.archive.service.businesslogic.IArchiveChannel;
+import javax.annotation.Nullable;
 
 /**
- * Dao for archive channel configurations.
+ * Archive DAO exception.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 10.11.2010
  */
-public interface IArchiveChannelDao {
+public class ArchiveChannelDaoException extends Exception {
 
     /**
-     * @param connection
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
+     * Constructor.
+     *
+     * @param msg the exception message
+     * @param e the wrapped exception
      */
-    @CheckForNull
-    IArchiveChannel getChannel(@CheckForNull final Connection connection, @Nonnull final String name);
-
+    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }
