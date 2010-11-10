@@ -15,7 +15,7 @@ Bundle-ClassPath: .,
  libs/hibernate3.jar,
  libs/javassist-3.9.0.GA.jar,
  libs/jta-1.1.jar,
-  libs/hibernate-jpa-2.0-api-1.0.0.Final.jar
+ libs/hibernate-jpa-2.0-api-1.0.0.Final.jar
 Export-Package: antlr,
  antlr.ASdebug,
  antlr.actions.cpp,
