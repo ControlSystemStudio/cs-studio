@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.service.mysqlimpl.channel;
 
-import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -33,6 +32,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.service.businesslogic.IArchiveChannel;
+import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDao;
 
 import com.google.common.collect.Maps;
 
@@ -42,14 +42,14 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since 09.11.2010
  */
-public class ArchiveChannelDaoImpl implements IArchiveChannelDao {
+public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
     /**
      * Archive channel configuration cache.
      */
     private final Map<String, IArchiveChannel> _channelCache = Maps.newHashMap();
 
-    // FIXME (bknerr) : refactor this shit into CRUD commands
+    // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectChannelByNameStmt =
         "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per FROM archive.channel WHERE name=?";
 
@@ -58,7 +58,7 @@ public class ArchiveChannelDaoImpl implements IArchiveChannelDao {
      */
     @Override
     @CheckForNull
-    public IArchiveChannel getChannel(@CheckForNull final Connection connection, @Nonnull final String name) {
+    public IArchiveChannel getChannel(@Nonnull final String name) {
 
         IArchiveChannel channel = _channelCache.get(name);
         if (channel != null) {
@@ -67,11 +67,14 @@ public class ArchiveChannelDaoImpl implements IArchiveChannelDao {
         // Access database
         PreparedStatement stmt;
         try {
-            stmt = connection.prepareStatement(_selectChannelByNameStmt);
+            stmt = getConnection().prepareStatement(_selectChannelByNameStmt);
             stmt.setString(1, name);
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
+
                 final SampleMode sample_mode = archive.getSampleMode(result.getInt(3));
+
+
                 channel = new ChannelConfig(archive,
                                             result.getInt(1),
                                             name,
@@ -79,6 +82,7 @@ public class ArchiveChannelDaoImpl implements IArchiveChannelDao {
                                             sample_mode,
                                             result.getDouble(4),
                                             result.getDouble(5));
+
                 _channelCache.put(name, channel);
             }
 

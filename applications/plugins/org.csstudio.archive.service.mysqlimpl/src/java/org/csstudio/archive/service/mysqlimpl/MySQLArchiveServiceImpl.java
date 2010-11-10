@@ -34,7 +34,6 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.IArchiveService;
 import org.csstudio.archive.service.businesslogic.ArchiveChannelBLO;
-import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -72,9 +71,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      */
     private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
 
-    // TODO (bknerr) : Dependency injection ???
-    private final IArchiveChannelDao _archiveChannelDao = new ArchiveChannelDaoImpl();
-
+    private IArchiveChannelDao _archiveChannelDao;
 
     /**
      * Constructor.
@@ -133,17 +130,19 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
             connection = DriverManager.getConnection(_url, _user, _password);
 
             // Basic database info
-            if (LOG.isDebugEnabled()) {
+            if (LOG.isDebugEnabled()) { // TODO (bknerr) : refactor logging guard to slf4j fast API
                 final DatabaseMetaData meta = connection.getMetaData();
                 LOG.debug("MySQL connection: " +
                           meta.getDatabaseProductName() +
                           " " +
                           meta.getDatabaseProductVersion());
             }
-
             connection.setAutoCommit(false);
 
+            // Propagate the connection
             _archiveConnection.set(connection);
+
+            _archiveChannelDao.setConnection(connection);
 
         } catch (final InstantiationException e) {
             throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
