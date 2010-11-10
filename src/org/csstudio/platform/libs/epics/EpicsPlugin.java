@@ -74,10 +74,18 @@ public class EpicsPlugin extends Plugin
     public EpicsPlugin()
     {
         super();
-		plugin = this;
+        setPlugin(this);
 	}
     
-    /** @return <code>true</code> if preferences suggest the use
+    /** Set static plugin via static function to avoid FindBugs warning
+     *  about access to static var from non-static code
+     */
+    private static void setPlugin(final EpicsPlugin the_plugin)
+    {
+    	EpicsPlugin.plugin = the_plugin; 
+    }
+
+	/** @return <code>true</code> if preferences suggest the use
      *  of pure java CA.
      */
     public boolean usePureJava()
