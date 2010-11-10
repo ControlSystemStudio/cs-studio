@@ -26,7 +26,7 @@ import static org.mockito.Mockito.*;
  * @author jpenning
  * @since 08.11.2010
  */
-public class AlarmConnectionDALImplTest {
+public class AlarmConnectionDALImplUnitTest {
     
     @Test
     public void testCreate() throws Exception {
@@ -108,7 +108,7 @@ public class AlarmConnectionDALImplTest {
         }
         
         @Override
-        protected Set<String> getPVNamesFromResource(@Nonnull final IAlarmResource resource) throws AlarmConnectionException {
+        protected Set<String> getPVNamesFromResource() throws AlarmConnectionException {
             return Collections.singleton("mypv");
         }
         

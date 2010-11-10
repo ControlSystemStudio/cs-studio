@@ -69,12 +69,20 @@ public interface IAlarmConnection {
      */
     void deregisterPV(@Nonnull final String pvName);
     
+    /**
+     * If the resource has been changed after start, you may reload it.
+     * The currently registered pvs are deregistered at first, then the resource is read
+     * and the newly read pvs are registered.
+     */
+    void reloadPVsFromResource() throws AlarmConnectionException;
+    
     
     /**
-     * Disconnect from the underlying system, freeing resources. The connection monitor will be
+     * Disconnect from the underlying system, freeing resources by deregistering all pvs. The connection monitor will be
      * removed before disconnection, so disconnect DOES NOT result in a call to the connection
      * monitor. All registrations are removed.
      */
     void disconnect();
+
 
 }

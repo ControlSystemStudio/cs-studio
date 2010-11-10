@@ -100,7 +100,11 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         // Nothing to do in the JMS implementation
     }
 
-    
+    @Override
+    public void reloadPVsFromResource() {
+        // Nothing to do in the JMS implementation
+    }
+
     /**
      * {@inheritDoc}
      */

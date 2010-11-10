@@ -27,9 +27,11 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
 import org.csstudio.alarm.service.declaration.AlarmPreference;
+import org.csstudio.alarm.service.declaration.IAlarmConfigurationService;
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.table.JmsLogsPlugin;
-import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.dataModel.AbstractMessageList;
+import org.csstudio.alarm.table.dataModel.LogMessageList;
 import org.csstudio.alarm.table.internal.localization.Messages;
 import org.csstudio.alarm.table.jms.AlarmListener;
 import org.csstudio.alarm.table.jms.IAlarmTableListener;
@@ -108,6 +110,11 @@ public class LogView extends ViewPart {
      */
     private String _currentTopicSetName = null;
 
+    /**
+     * Service allowing to reload the pvs which are tracked
+     */
+    private final IAlarmConfigurationService _configService = JmsLogsPlugin.getDefault().getAlarmConfigurationService();
+    
     /**
      * Mapping of column widths from table to preferences.
      */
@@ -296,9 +303,14 @@ public class LogView extends ViewPart {
      *
      * @return the alarm table listener
      */
+    @CheckForNull
     protected IAlarmTableListener getAlarmTableListener() {
-        return _topicsetService.getAlarmTableListenerForTopicSet(_topicSetColumnService
-                .getJMSTopics(_currentTopicSetName));
+        IAlarmTableListener result = null;
+        TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+        if (_topicsetService.hasTopicSet(topicSet)) {
+            result = _topicsetService.getAlarmTableListenerForTopicSet(topicSet);
+        }
+        return result;
     }
 
     /**
@@ -328,9 +340,9 @@ public class LogView extends ViewPart {
                 LOG.error("Connecting for topicSet " + topicSet.getName() + " failed", e);
                 _messageArea
                         .showMessage(SWT.ICON_WARNING,
-                                     "Connection error",
-                                     "Some or all of the information displayed may be outdated. "
-                                             + "The alarm table is currently not connected to all alarm servers.");
+                                     Messages.LogView_connectionErrorTitle,
+                                     Messages.LogView_connectionErrorHint
+                                             + "\n" + e.getMessage());
                 // Returns a dummy message list which will never get any input
                 return createMessageList();
             }
@@ -535,20 +547,7 @@ public class LogView extends ViewPart {
         Button reloadButton = new Button(reloadItemsGroup, SWT.PUSH);
         reloadButton.setLayoutData(new RowData(60, 21));
         reloadButton.setText(Messages.LogView_reloadPVsButtonText);
-        reloadButton.addSelectionListener(new SelectionListener() {
-            
-            @Override
-            public void widgetSelected(@CheckForNull SelectionEvent e) {
-                // TODO (jpenning) AAAAAAAAAAAA nyi reload button
-                System.out.println("XXXXXXXXXXXXXXX Reload");
-            }
-            
-            @Override
-            public void widgetDefaultSelected(@CheckForNull SelectionEvent e) {
-                // Nothing to do
-            }
-        });
-        
+        reloadButton.addSelectionListener(new ReloadListener());
     }
 
     /**
@@ -561,7 +560,7 @@ public class LogView extends ViewPart {
                 try {
                     getSite().getPage().showView(PROPERTY_VIEW_ID);
                 } catch (final PartInitException e) {
-                    MessageDialog.openError(getSite().getShell(), "Alarm Tree", //$NON-NLS-1$
+                    MessageDialog.openError(getSite().getShell(), "Alarm Table", //$NON-NLS-1$
                                             e.getMessage());
                 }
             }
@@ -646,8 +645,42 @@ public class LogView extends ViewPart {
     }
 
     /**
+     * Listener for the reload button
+     */
+    private final class ReloadListener implements SelectionListener {
+
+        public ReloadListener() {
+            // Nothing to do
+        }
+
+        @Override
+        public void widgetSelected(@CheckForNull SelectionEvent event) {
+            try {
+                getConnection().reloadPVsFromResource();
+            } catch (AlarmConnectionException e) {
+                MessageDialog.openError(getSite().getShell(), Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
+                                        e.getMessage() + "\n" + Messages.LogView_reloadErrorHint);
+            }
+        }
+
+        @SuppressWarnings("synthetic-access")
+        @Nonnull
+        private IAlarmConnection getConnection() {
+            final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+            final IAlarmConnection connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
+            return connection;
+        }
+
+        @Override
+        public void widgetDefaultSelected(@CheckForNull SelectionEvent e) {
+            // Nothing to do
+        }
+        
+    }
+    
+    /**
      * Encapsulation of the message area. It is located below the tree view.<br>
-     * TODO (jpenning) This is a copy of the inner class of the AlarmTreeView.
+     * FIXME (jpenning) This is a copy of the inner class of the AlarmTreeView.
      */
     private static final class MessageArea {
         /**
