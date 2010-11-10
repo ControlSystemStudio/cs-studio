@@ -24,40 +24,45 @@ package org.csstudio.domain.desy.alarm.epics;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.alarm.IComparableAlarm;
 
 
 /**
- * Represents the severity of an alarm.
+ * Represents the EPICS alarm types.
+ *
+ * Note, if the implementing class is an enum as here, then the comparability comes for free with the
+ * order of declaration! So don't mess with order of declaration if you use an enum!
+
  *
  * @author Bastian Knerr
  */
-public enum EpicsAlarm implements IAlarm {
+public enum EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
 
     /**
      * Uninitialized or otherwise unknown state.
+     * TODO (bknerr) : to be replaced by null pattern
      */
-    UNKNOWN(false, 0),
+    UNKNOWN(false),
 
     /**
      * Severity representing no alarm.
      */
-    NO_ALARM(false, 1),
+    NO_ALARM(false),
 
     /**
      * Severity value for a minor alarm.
      */
-    MINOR(true, 2),
+    MINOR(true),
 
     /**
      * Severity value for a major alarm.
      */
-    MAJOR(true, 3),
+    MAJOR(true),
 
     /**
      * Severity representing an invalid alarm state.
      */
-    INVALID(true, 4);
+    INVALID(true);
 
 
     private static final EpicsAlarm ALARM_WITH_LOWEST_SEVERITY;
@@ -65,12 +70,9 @@ public enum EpicsAlarm implements IAlarm {
     static {
         // init
         EpicsAlarm lowestAlarm = EpicsAlarm.values()[0];
-        EpicsAlarmSeverity lowestSev = lowestAlarm.getSeverity();
         // run through
         for (final EpicsAlarm alarm : values()) {
-            final EpicsAlarmSeverity severity = alarm.getSeverity();
-            if (severity.compareTo(lowestSev) < 0) {
-                lowestSev = severity;
+            if (alarm.compareTo(lowestAlarm) < 0) {
                 lowestAlarm = alarm;
             }
         }
@@ -83,16 +85,10 @@ public enum EpicsAlarm implements IAlarm {
     private boolean _isAlarm;
 
     /**
-     * The severity.
-     */
-    private EpicsAlarmSeverity _severity;
-
-    /**
      * Constructor.
      */
-    private EpicsAlarm(final boolean isAlarm, final int level) {
+    private EpicsAlarm(final boolean isAlarm) {
         _isAlarm = isAlarm;
-        _severity = new EpicsAlarmSeverity(level);
     }
 
     /**
@@ -133,14 +129,4 @@ public enum EpicsAlarm implements IAlarm {
     public static EpicsAlarm getLowest() {
         return ALARM_WITH_LOWEST_SEVERITY;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public EpicsAlarmSeverity getSeverity() {
-        return _severity;
-    }
-
 }

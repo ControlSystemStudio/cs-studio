@@ -24,8 +24,12 @@ package org.csstudio.archive.service;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -39,12 +43,27 @@ import org.csstudio.platform.data.IValue;
 public interface IArchiveService {
 
     /**
+     * Reconnects the service with archive API.
+     * @throws ArchiveConnectionException when the connection could not be established
+     */
+    void reconnect() throws ArchiveConnectionException;
+
+    /**
+     * Connects the service with the archive API.
+     * If a connection is present, it is closed.
+     *
+     * @param connectionPrefs the connection preferences
+     * @throws ArchiveConnectionException when the connection could not be established
+     */
+    void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException;
+
+    /**
      * Configures the service to the user's needs.
      * For instance the ornl implementation needs knowledge about batch sizes etc.
      *
-     * @param prefs the preferences
+     * @param cfgPrefs the configuration preferences
      */
-    void configure(@Nonnull final Map<String, Object> prefs);
+    void configure(@Nonnull final Map<String, Object> cfgPrefs);
 
     /**
      * Writes the sample to the archive.
@@ -52,9 +71,9 @@ public interface IArchiveService {
      * @param channelId the id of the channel
      * @param sample the sample to be archived
      * @return true, if the sample has been persisted
-     * @throws Exception
+     * @throws ArchiveServiceException
      */
-    boolean writeSample(final int channelId, final IValue sample) throws Exception;
+    //boolean writeSample(final int channelId, final IValue sample) throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -62,7 +81,48 @@ public interface IArchiveService {
      * @param channelId the id of the channel
      * @param samples the samples to be archived
      * @return true, if the samples has been persisted
+     * @throws ArchiveServiceException
+     */
+    boolean writeSamples(final int channelId, final List<IValue> samples) throws ArchiveServiceException;
+
+    /**
+     * Retrieves the channel configuration from the archive with the given name.
+     *
+     * @param name the name of the channel
+     * @throws ArchiveServiceException
+     */
+    ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
+     * FIXME (bknerr) : This structure seems severely broken:
+     * database accesses scattered all over the place and metadata abstraction not properly designed
+     *
+     * what happens originally:
+     *
+     * {@link WriteThread#write()} calls
+     * {@link ChannelConfig#batchSample(IValue)} calls
+     * {@link RDBArchive#batchSample(ChannelConfig, IValue)} in case <code>if (ChannelConfig#getMetaData() == null)</code> calls
+     * {@link RDBArchive#writeMetaData(ChannelConfig, IValue)} dispatches over <code>instanceof IValue</code> to
+     * {NumericMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)} which finally accesses the database with calls to
+     * <ol>
+     * <li>{NumericMetaDataHelper#get(RDBArchive, ChannelConfig)}</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} for deletion in table then return.</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} and {NumericMetaDataHelper#insert(RDBArchive, ChannelConfig)} for update</li>
+     * </ol>
+     * or the same to another table
+     * {EnumMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)}
+     *
+     * We have two tables enum_metadata, num_metadata - obviously it is possible that a channel configuration
+     * doesn't have the meta data stuff set, so that in that case any single sample has to asked about its metadata
+     *
+     *
+     * @param channel
+     * @param sample
+     * @return
      * @throws Exception
      */
-    boolean writeSamples(final int channelId, final List<IValue> samples) throws Exception;
+    @CheckForNull
+    IMetaData writeMetaData(@Nonnull ChannelConfig channel, @Nonnull final IValue sample) throws Exception;
+
+
 }
