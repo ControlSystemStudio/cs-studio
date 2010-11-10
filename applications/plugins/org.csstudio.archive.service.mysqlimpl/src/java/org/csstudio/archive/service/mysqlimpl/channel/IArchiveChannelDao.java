@@ -24,7 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.channel;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.businesslogic.IArchiveChannel;
+import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.IArchiveDao;
 
 /**
@@ -38,9 +38,9 @@ public interface IArchiveChannelDao extends IArchiveDao {
     /**
      * @param name the name of the channel
      * @return the cached or freshly retrieved channel
+     * @throws ArchiveChannelDaoException when the retrieval fails
      */
     @CheckForNull
-    IArchiveChannel getChannel(@Nonnull final String name)
-        throws ArchiveChannelDaoException;
+    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException;
 
 }

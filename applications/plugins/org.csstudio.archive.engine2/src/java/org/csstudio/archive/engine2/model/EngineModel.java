@@ -504,7 +504,7 @@ public class EngineModel
                     enablement = Enablement.Enabling;
                 }
                 addChannel(channel_config.getName(), group, enablement,
-                        channel_config.getSampleMode().isMonitor(),
+                        channel_config.getSampleModeId().isMonitor(),
                         channel_config.getSampleValue(),
                         channel_config.getSamplePeriod());
             }

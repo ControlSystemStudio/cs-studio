@@ -19,30 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.channel;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.domain.desy.common.id.Id;
 
 /**
- * Archive channel DAO exception.
+ * Id object for Group.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 09.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
+public class GroupId extends Id<GroupId> {
 
     private static final long serialVersionUID = 1L;
 
     /**
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
+     */
+    public static final GroupId NONE = new GroupId(-1L);
+
+    /**
      * Constructor.
      *
-     * @param msg the exception message
-     * @param e the wrapped exception
+     * @param value the value
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
+    public GroupId(final long value) {
+        super(value);
     }
 }

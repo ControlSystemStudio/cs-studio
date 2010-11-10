@@ -19,30 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.mysqlimpl.samplemode;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.archive.service.mysqlimpl.IArchiveDao;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 
 /**
- * Archive channel DAO exception.
+ * Dao for archive sample modes.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
-
-    private static final long serialVersionUID = 1L;
+public interface IArchiveSampleModeDao extends IArchiveDao {
 
     /**
-     * Constructor.
-     *
-     * @param msg the exception message
-     * @param e the wrapped exception
+     * @param id the id of the sample mode
+     * @return the cached or freshly retrieved sample mode
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
-    }
+    @CheckForNull
+    IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId id)
+        throws ArchiveSampleModeDaoException;
 }

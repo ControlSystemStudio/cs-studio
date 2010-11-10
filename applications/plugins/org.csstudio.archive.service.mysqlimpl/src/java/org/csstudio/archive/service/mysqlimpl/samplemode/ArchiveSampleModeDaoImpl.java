@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.mysqlimpl.samplemode;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -27,70 +27,57 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.GroupId;
-import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
 import com.google.common.collect.Maps;
 
 /**
- * TODO (bknerr) :
+ * DAO implementation with simple cache (hashmap).
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 10.11.2010
  */
-public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
+public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArchiveSampleModeDao {
 
     /**
-     * Archive channel configuration cache.
+     * Archive sample mode cache.
      */
-    private final Map<String, IArchiveChannel> _channelCache = Maps.newHashMap();
+    private final Map<ArchiveSampleModeId, IArchiveSampleMode> _sampleModeCache = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
-    private final String _selectChannelByNameStmt =
-        "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per FROM archive.channel WHERE name=?";
+    private final String _selectSampleModebyId = "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
 
     /**
      * {@inheritDoc}
      */
     @Override
     @CheckForNull
-    public IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException {
+    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId id) throws ArchiveSampleModeDaoException {
 
-        IArchiveChannel channel = _channelCache.get(name);
-        if (channel != null) {
-            return channel;
+        IArchiveSampleMode mode = _sampleModeCache.get(id);
+        if (mode != null) {
+            return mode;
         }
-
         PreparedStatement stmt = null;
         try {
-            stmt = getConnection().prepareStatement(_selectChannelByNameStmt);
-            stmt.setString(1, name);
+            stmt = getConnection().prepareStatement(_selectSampleModebyId);
+            stmt.setInt(1, id.intValue());
 
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
 
-                final long id = result.getLong(1);
-                final long grpId = result.getLong(2);
-                final int sampleMode = result.getInt(3);
-                final double sampleVal = result.getDouble(4);
-                final double samplePer = result.getDouble(5);
+                final ArchiveSampleModeId newId = new ArchiveSampleModeId(result.getInt(1));
+                final String name = result.getString(2);
+                final String desc = result.getString(3);
+                mode = new ArchiveSampleModeDTO(newId, name, desc);
 
-                channel = new ArchiveChannelDTO(new ChannelId(id),
-                                                new GroupId(grpId),
-                                                new ArchiveSampleModeId(sampleMode),
-                                                sampleVal,
-                                                samplePer);
-
-                _channelCache.put(name, channel);
+                _sampleModeCache.put(mode.getId(), mode);
             }
-
         } catch (final SQLException e) {
-            throw new ArchiveChannelDaoException("Channel configuration retrieval from archive failed.", e);
+            throw new ArchiveSampleModeDaoException("Sample mode retrieval from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {
@@ -100,8 +87,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 }
             }
         }
-        return channel;
-    }
 
+        return mode;
+    }
 
 }

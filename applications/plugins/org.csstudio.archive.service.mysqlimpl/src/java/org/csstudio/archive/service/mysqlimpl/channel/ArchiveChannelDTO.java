@@ -19,57 +19,83 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.businesslogic;
+package org.csstudio.archive.service.mysqlimpl.channel;
 
-import org.csstudio.archive.rdb.SampleMode;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.service.channel.GroupId;
+import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.common.channel.ChannelId;
-import org.csstudio.platform.data.IMetaData;
 
 /**
- * TODO (bknerr) :
+ * Immutable data transfer object for DAOs.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 10.11.2010
  */
-public class ArchiveChannelBLO implements IArchiveChannel {
+public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final ChannelId _id;
 
-    private int _groupId;
+    private final GroupId _groupId;
 
-    private SampleMode _sampleMode;
+    private final ArchiveSampleModeId _sampleMode;
 
-    private double _sampleValue;
+    private final double _sampleValue;
 
-    private double _samplePeriod;
+    private final double _samplePeriod;
 
     /** The channel's meta data */
-    private IMetaData _metaData;
+    //private final IMetaData _metaData;
+
+    /**
+     * Constructor.
+     * @param id
+     * @param grpId
+     * @param sampleModeId
+     * @param smplVal
+     * @param smplPer
+    //* @param metaData
+     */
+    public ArchiveChannelDTO(@Nonnull final ChannelId id,
+                             @Nonnull final GroupId grpId,
+                             @Nonnull final ArchiveSampleModeId sampleModeId,
+                             final double smplVal,
+                             final double smplPer/*,
+                             @Nonnull final IMetaData metaData */) {
+        _id = id;
+        _groupId = grpId;
+        _sampleMode = sampleModeId;
+        _sampleValue = smplVal;
+        _samplePeriod = smplPer;
+        //_metaData = metaData;
+    }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public ChannelId getId() {
         return _id;
     }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public int getGroupId() {
+    @Nonnull
+    public GroupId getGroupId() {
         return _groupId;
     }
-
     /**
      * {@inheritDoc}
      */
     @Override
-    public SampleMode getSampleMode() {
+    @Nonnull
+    public ArchiveSampleModeId getSampleModeId() {
         return _sampleMode;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -77,7 +103,6 @@ public class ArchiveChannelBLO implements IArchiveChannel {
     public double getSampleValue() {
         return _sampleValue;
     }
-
     /**
      * {@inheritDoc}
      */
@@ -85,13 +110,13 @@ public class ArchiveChannelBLO implements IArchiveChannel {
     public double getSamplePeriod() {
         return _samplePeriod;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public IMetaData getMetaData() {
-        return _metaData;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    @Nonnull
+//    public IMetaData getMetaData() {
+//        return _metaData;
+//    }
 
 }

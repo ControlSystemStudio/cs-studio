@@ -19,30 +19,68 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.mysqlimpl.samplemode;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
 /**
- * Archive channel DAO exception.
+ * Immutable data transfer object for DAOs.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
+public class ArchiveSampleModeDTO implements IArchiveSampleMode {
 
-    private static final long serialVersionUID = 1L;
+    private final ArchiveSampleModeId _id;
+
+    private final String _name;
+
+    private final String _description;
 
     /**
      * Constructor.
      *
-     * @param msg the exception message
-     * @param e the wrapped exception
+     * @param id
+     * @param name
+     * @param description
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
+    public ArchiveSampleModeDTO(@Nonnull final ArchiveSampleModeId id,
+                                @Nonnull final String name,
+                                @Nonnull final String description) {
+
+        _id = id;
+        _name = name;
+        _description = description;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveSampleModeId getId() {
+        return _id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getDescription() {
+        return _description;
+    }
+
 }

@@ -19,41 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.businesslogic;
+package org.csstudio.archive.service.adapter;
 
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
-import org.csstudio.domain.desy.common.channel.ChannelId;
-import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.platform.data.IMetaData;
+import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
 /**
- * Read only interface of an channel configuration in the archive.
+ * Adapter interface to be implemented by the archive dao impls.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 10.11.2010
  */
-public interface IArchiveChannel extends Identifiable<ChannelId> {
+public interface IArchiveEngineAdapter {
 
     /**
-     * @return Channel group ID
+     * Maps the channel DTO from the DAO layer to the specific engine classes.
+     * @param channelDTO the dTO for the archive channel
+     * @param name the name of the channel
+     *
+     * @return the channel configuration engine object
      */
-    int getGroupId();
+    @Nonnull
+    public ChannelConfig adapt(@Nonnull final String name,
+                               @Nonnull final IArchiveChannel channelDTO,
+                               @Nonnull final IArchiveSampleMode sampleModeDTO);
 
     /**
-     * @return the sample mode (scan or monitor typically)
+     * Maps the sample mode DTO from the DAO layer to the specific engine classes.
+     * @param sampleModeDTO the sample mode dTO for the archive channel
+     *
+     * @return the sample mode engine class object
      */
-    SampleMode getSampleMode();
-
-    /**
-     * @return Sample mode configuration value, e.g. 'delta' for Monitor
-     */
-    double getSampleValue();
-
-    double getSamplePeriod();
-
-    /**
-     * @return Meta data or <code>null</code>
-     */
-    IMetaData getMetaData();
+    @Nonnull
+    public SampleMode adapt(@Nonnull final IArchiveSampleMode sampleModeDTO);
 
 }

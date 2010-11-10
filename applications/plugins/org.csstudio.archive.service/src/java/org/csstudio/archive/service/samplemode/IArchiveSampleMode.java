@@ -19,30 +19,29 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.samplemode;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * Archive channel DAO exception.
+ * Read only interface of a sample mode in the archive.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
-
-    private static final long serialVersionUID = 1L;
+public interface IArchiveSampleMode extends Identifiable<ArchiveSampleModeId> {
 
     /**
-     * Constructor.
-     *
-     * @param msg the exception message
-     * @param e the wrapped exception
+     * Returns the name of the sample mode.
+     * @return the name
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
-    }
+    @Nonnull String getName();
+
+    /**
+     * Returns the description of the sample mode.
+     * @return the description
+     */
+    @Nonnull String getDescription();
 }

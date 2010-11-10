@@ -29,12 +29,18 @@ import java.util.List;
 import java.util.Map;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
+import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
-import org.csstudio.archive.service.businesslogic.ArchiveChannelBLO;
+import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -71,7 +77,16 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      */
     private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
 
+    /**
+     * DAO.
+     * Don't forget to propagate the connection to the DAOs in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
+     */
     private IArchiveChannelDao _archiveChannelDao;
+    /**
+     * DAO.
+     * Don't forget to propagate the connection to the DAOs in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
+     */
+    private IArchiveSampleModeDao _archiveSampleModeDao;
 
     /**
      * Constructor.
@@ -118,6 +133,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
             Connection connection = _archiveConnection.get();
             if (connection != null) {
                 _archiveConnection.set(null);
+                propagateConnectionToDaos(null);
                 connection.close();
             }
             _url = (String) prefs.get(MySQLArchiveServicePreference.URL.getKeyAsString());
@@ -141,8 +157,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 
             // Propagate the connection
             _archiveConnection.set(connection);
-
-            _archiveChannelDao.setConnection(connection);
+            propagateConnectionToDaos(null);
 
         } catch (final InstantiationException e) {
             throw new ArchiveConnectionException(ARCHIVE_EXCEPTION_MSG, e);
@@ -155,6 +170,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
         }
     }
 
+    private void propagateConnectionToDaos(@Nullable final Connection connection) {
+        _archiveChannelDao.setConnection(connection);
+        _archiveSampleModeDao.setConnection(connection);
+
+    }
 
     /**
      * {@inheritDoc}
@@ -200,10 +220,20 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      * {@inheritDoc}
      */
     @Override
-    public ArchiveChannelBLO getChannel(@Nonnull final String name) {
+    public ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException {
 
-        _archiveChannelDao.getChannel(_archiveConnection.get(), name);
 
+        IArchiveChannel channel = null;
+        IArchiveSampleMode sampleMode = null;
+        try {
+            channel = _archiveChannelDao.getChannel(name);
+            sampleMode = _archiveSampleModeDao.getSampleModeById(channel.getSampleModeId());
+        } catch (final AbstractArchiveDaoException e) {
+            throw new ArchiveServiceException("Data retrieval failure for channel.", e);
+        }
+
+
+        return ArchiveEngineAdapter.INSTANCE.adapt(name, channel, sampleMode);
     }
 
 }

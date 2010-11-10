@@ -19,30 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.channel;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * Archive channel DAO exception.
+ * Read only interface of an channel configuration in the archive.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 09.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
-
-    private static final long serialVersionUID = 1L;
+public interface IArchiveChannel extends Identifiable<ChannelId> {
 
     /**
-     * Constructor.
-     *
-     * @param msg the exception message
-     * @param e the wrapped exception
+     * @return Channel group ID
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
-        super(msg, e);
-    }
+    @Nonnull
+    GroupId getGroupId();
+
+    /**
+     * @return the sample mode (int means scan or monitor typically)
+     */
+    @Nonnull
+    ArchiveSampleModeId getSampleModeId();
+
+    /**
+     * @return Sample mode configuration value, e.g. 'delta' for Monitor
+     * TODO (bknerr) : wtf
+     */
+    double getSampleValue();
+
+    double getSamplePeriod();
+
+//    /**
+//     * @return Meta data or <code>null</code>
+//     */
+//    IMetaData getMetaData();
+
 }

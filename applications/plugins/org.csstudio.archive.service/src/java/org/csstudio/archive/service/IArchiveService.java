@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.businesslogic.ArchiveChannelBLO;
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -38,7 +38,6 @@ import org.csstudio.platform.data.IValue;
  * @since 01.11.2010
  */
 public interface IArchiveService {
-
 
     /**
      * Reconnects the service with archive API.
@@ -69,9 +68,9 @@ public interface IArchiveService {
      * @param channelId the id of the channel
      * @param sample the sample to be archived
      * @return true, if the sample has been persisted
-     * @throws Exception
+     * @throws ArchiveServiceException
      */
-    boolean writeSample(final int channelId, final IValue sample) throws Exception;
+    boolean writeSample(final int channelId, final IValue sample) throws ArchiveServiceException;
 
     /**
      * Writes the samples to the archive.
@@ -79,16 +78,17 @@ public interface IArchiveService {
      * @param channelId the id of the channel
      * @param samples the samples to be archived
      * @return true, if the samples has been persisted
-     * @throws Exception
+     * @throws ArchiveServiceException
      */
-    boolean writeSamples(final int channelId, final List<IValue> samples) throws Exception;
+    boolean writeSamples(final int channelId, final List<IValue> samples) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel configuration from the archive with the given name.
      *
      * @param name the name of the channel
-     *
+     * @throws ArchiveServiceException
      */
-    ArchiveChannelBLO getChannel(@Nonnull final String name);
+    ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
+
 
 }

@@ -19,20 +19,18 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.mysqlimpl;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
-
 /**
- * Archive channel DAO exception.
+ * Abstract Dao exception.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
+public abstract class AbstractArchiveDaoException extends Exception {
 
     private static final long serialVersionUID = 1L;
 
@@ -42,7 +40,7 @@ public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
      * @param msg the exception message
      * @param e the wrapped exception
      */
-    public ArchiveChannelDaoException(@Nonnull final String msg, @Nullable final Exception e) {
+    public AbstractArchiveDaoException(@Nonnull final String msg, @Nullable final Exception e) {
         super(msg, e);
     }
 }
