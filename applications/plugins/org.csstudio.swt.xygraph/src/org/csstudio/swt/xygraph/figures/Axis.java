@@ -305,7 +305,8 @@ public class Axis extends LinearScale{
     		}
 
     		// Any change at all?
-    		if((tempMin == min && tempMax == max) || 
+    		if((Double.doubleToLongBits(tempMin) == Double.doubleToLongBits(min)
+    				&& Double.doubleToLongBits(tempMax) == Double.doubleToLongBits(max)) || 
     				Double.isInfinite(tempMin) || Double.isInfinite(tempMax) ||
     				Double.isNaN(tempMin) || Double.isNaN(tempMax))
     			return false;

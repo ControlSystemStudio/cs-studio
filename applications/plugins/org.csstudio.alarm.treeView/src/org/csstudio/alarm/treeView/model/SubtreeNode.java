@@ -136,7 +136,8 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
     public void removeChild(@Nonnull final IAlarmTreeNode child) {
 		final String childName = child.getName();
         if (_childrenPVMap.containsKey(childName)) {
-		    _childrenPVMap.remove(childName);
+		    IAlarmProcessVariableNode processVariableNode = _childrenPVMap.remove(childName);
+		    processVariableNode.wasRemoved();
 		} else if (_childrenSubtreeMap.containsKey(childName)) {
 		    _childrenSubtreeMap.remove(childName);
 		}
@@ -171,7 +172,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
         }
         if (child instanceof IAlarmProcessVariableNode) {
             _childrenPVMap.put(name, (IAlarmProcessVariableNode) child);
-
+            ((IAlarmProcessVariableNode) child).wasAdded();
         } else if (child instanceof IAlarmSubtreeNode) {
             _childrenSubtreeMap.put(name, (IAlarmSubtreeNode) child);
         } else {
@@ -435,6 +436,10 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 	 */
 	@Override
     public void clearChildren() {
+	    // Tell all the pv nodes, that they are going to be removed now
+	    for (IAlarmProcessVariableNode processVariableNode : _childrenPVMap.values()) {
+	        processVariableNode.wasRemoved();
+	    }
 	    _childrenPVMap.clear();
 	    _childrenSubtreeMap.clear();
 	    _highestChildSeverity = EpicsAlarm.UNKNOWN;

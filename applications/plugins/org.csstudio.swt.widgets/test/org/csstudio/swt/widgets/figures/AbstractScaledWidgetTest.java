@@ -3,6 +3,8 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.swt.xygraph.linearscale.Range;
+
 
 public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 
@@ -17,8 +19,7 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 		String[] scaleProps = new String[]{
 				"transparent",
 				"value",
-				"minimum",
-				"maximum",
+				"range",
 				"majorTickMarkStepHint",
 				"showMinorTicks",
 				"showScale",
@@ -33,6 +34,8 @@ public abstract class AbstractScaledWidgetTest extends AbstractWidgetTest {
 		if(seed !=null && seed instanceof Integer){			
 			if(pd.getName().equals("logScale"))
 				return super.generateTestData(pd, (Integer)seed  +1);
+			if(pd.getName().equals("range"))
+				return new Range(Math.random()*200-100, Math.random()*200-100);
 		}
 				return super.generateTestData(pd, seed);
 	}

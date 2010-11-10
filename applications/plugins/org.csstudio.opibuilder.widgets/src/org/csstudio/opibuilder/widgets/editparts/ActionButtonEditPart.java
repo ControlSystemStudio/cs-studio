@@ -42,42 +42,55 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 				model.getFont().getFontData()));
 		buttonFigure.setToggleStyle(model.isToggleButton());
 		buttonFigure.setImagePath(model.getImagePath());
-		updatePropSheet(model.isToggleButton());
-		if(getExecutionMode() == ExecutionMode.RUN_MODE){
-			buttonFigure.addActionListener(new ButtonActionListener(){
-				public void actionPerformed(int mouseEventState) {
-					
-					int actionIndex;
-					
-					if(getWidgetModel().isToggleButton()){
-						if(buttonFigure.isSelected()){
-							actionIndex = getWidgetModel().getActionIndex();
-						}else
-							actionIndex = getWidgetModel().getReleasedActionIndex();
-					}else
-						actionIndex = getWidgetModel().getActionIndex();
-					
-					if(actionIndex >= 0 && getWidgetModel().getActionsInput().getActionsList().size() > 
-						actionIndex){
-						AbstractWidgetAction action = 
-							getWidgetModel().getActionsInput().getActionsList().get(actionIndex);	
-						if(action instanceof OpenDisplayAction){
-							((OpenDisplayAction)action).setCtrlPressed(false);
-							((OpenDisplayAction)action).setShiftPressed(false);
-							if(mouseEventState == InputEvent.CONTROL){
-								((OpenDisplayAction)action).setCtrlPressed(true);
-							}else if (mouseEventState == InputEvent.SHIFT){
-								((OpenDisplayAction)action).setShiftPressed(true);
-							}
-						}
-						action.run();
-					}
-								
-				}
-			});
-		}
+		updatePropSheet(model.isToggleButton());	
 		markAsControlPV(AbstractPVWidgetModel.PROP_PVNAME, AbstractPVWidgetModel.PROP_PVVALUE);
 		return buttonFigure;
+	}
+	
+	@Override
+	protected void hookOpenDisplayAction() {
+
+		((ActionButtonFigure)getFigure()).addActionListener(new ButtonActionListener(){
+			public void actionPerformed(int mouseEventState) {					
+				OpenDisplayAction action = getDefaultOpenDisplayAction();
+				if(action!= null){
+						action.setCtrlPressed(false);
+						action.setShiftPressed(false);
+						if(mouseEventState == InputEvent.CONTROL){
+							action.setCtrlPressed(true);
+						}else if (mouseEventState == InputEvent.SHIFT){
+							action.setShiftPressed(true);
+						}						
+					action.run();
+				}
+							
+			}
+		});
+	}
+	
+	@Override
+	public OpenDisplayAction getDefaultOpenDisplayAction() {
+		int actionIndex;
+		
+		if(getWidgetModel().isToggleButton()){
+			if(((ActionButtonFigure)getFigure()).isSelected()){
+				actionIndex = getWidgetModel().getActionIndex();
+			}else
+				actionIndex = getWidgetModel().getReleasedActionIndex();
+		}else
+			actionIndex = getWidgetModel().getActionIndex();
+		
+		if(actionIndex >= 0 && 
+				getWidgetModel().getActionsInput().getActionsList().size() > actionIndex){
+			AbstractWidgetAction action = 
+				getWidgetModel().getActionsInput().getActionsList().get(actionIndex);	
+			if(action instanceof OpenDisplayAction){
+				return (OpenDisplayAction)action;
+			}
+		}
+		
+		return null;
+			
 	}
 
 	@Override

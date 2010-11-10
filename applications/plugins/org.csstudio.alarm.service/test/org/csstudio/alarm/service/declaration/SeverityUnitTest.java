@@ -32,7 +32,7 @@ import org.junit.Test;
 /**
  * @author Joerg Rathlev
  */
-public class SeverityTest {
+public class SeverityUnitTest {
 
     @Test
     public void testGetLowest() {

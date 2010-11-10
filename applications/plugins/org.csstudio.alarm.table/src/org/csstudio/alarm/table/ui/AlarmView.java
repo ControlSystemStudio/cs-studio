@@ -106,44 +106,14 @@ public class AlarmView extends LogView {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addJmsTopicItems(logTableManagementComposite);
+        addSourceAccessItems(logTableManagementComposite);
         addAcknowledgeItems(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
         initializeMessageTable();
-        _pauseButton.addSelectionListener(newSelectionListenerForPauseButton());
-
     }
-    @Nonnull
-    private SelectionListener newSelectionListenerForPauseButton() {
-        return new SelectionListener() {
-
-            @SuppressWarnings("synthetic-access")
-			@Override
-            public void widgetSelected(@Nonnull final SelectionEvent e) {
-                if (_pauseButton.getSelection()) {
-                    disableAckButton();
-                } else {
-                    enableAckButtonIfPermitted();
-                }
-            }
-
-            @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                // Nothing to do
-            }
-        };
-    }
-
-    private void enableAckButtonIfPermitted() {
-        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
-    }
-
-    private void disableAckButton() {
-        _ackButton.setEnabled(false);
-    }
-
+    
     /**
      * {@inheritDoc}
      */
@@ -239,6 +209,20 @@ public class AlarmView extends LogView {
         return new AlarmMessageList();
     }
 
+    @Override
+    protected void doStartPause() {
+        _ackButton.setEnabled(false);
+    }
+
+    @Override
+    protected void doEndPause() {
+        enableAckButtonIfPermitted();
+    }
+
+    private void enableAckButtonIfPermitted() {
+        _ackButton.setEnabled(SecurityFacade.getInstance().canExecute(SECURITY_ID, true));
+    }
+
     // CHECKSTYLE:OFF
     private void addAcknowledgeItems(final Composite logTableManagementComposite) {
 
@@ -300,6 +284,8 @@ public class AlarmView extends LogView {
              * Acknowledge button is pressed for all (selection 0) messages or messages with a
              * special severity (selection 1-3).
              */
+            @SuppressWarnings("synthetic-access")
+            @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 final List<AlarmMessage> msgList = new ArrayList<AlarmMessage>();
                 for (final TableItem ti : _tableViewer.getTable().getItems()) {
@@ -332,6 +318,7 @@ public class AlarmView extends LogView {
                 sendAck.schedule();
             }
 
+            @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
@@ -354,10 +341,13 @@ public class AlarmView extends LogView {
         _soundEnableButton.setSelection(true);
 
         _soundEnableButton.addSelectionListener(new SelectionListener() {
+            @SuppressWarnings("synthetic-access")
+            @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
             }
 
+            @Override
             public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
                 // Nothing to do
             }
@@ -406,6 +396,7 @@ public class AlarmView extends LogView {
                         // Nothing to do
                     }
 
+                    @SuppressWarnings("synthetic-access")
                     @Override
                     public void onMessage(@Nonnull final IAlarmMessage message) {
                         _alarmSoundService.playAlarmSound(message.getString(AlarmMessageKey.SEVERITY));
@@ -415,6 +406,7 @@ public class AlarmView extends LogView {
             return _soundPlayingListener;
         }
 
+        @SuppressWarnings("synthetic-access")
         public void enableSound(final boolean yes) {
             // Built in a robust way: Deregister always, register at the current alarm table
             // listener.
@@ -426,8 +418,10 @@ public class AlarmView extends LogView {
 
             if (yes) {
                 _currentAlarmTableListener = getAlarmTableListener();
-                _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
-                LOG.debug("Sound registered");
+                if (_currentAlarmTableListener != null) {
+                    _currentAlarmTableListener.registerAlarmListener(getSoundPlayingListener());
+                    LOG.debug("Sound registered");
+                }
             }
         }
 
