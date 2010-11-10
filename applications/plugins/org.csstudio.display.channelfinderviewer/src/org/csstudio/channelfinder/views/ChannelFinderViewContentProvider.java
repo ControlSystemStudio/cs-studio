@@ -6,6 +6,8 @@ import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.jface.viewers.IStructuredContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 
+import ca.odell.glazedlists.SortedList;
+
 public class ChannelFinderViewContentProvider implements
 		IStructuredContentProvider {
 	
@@ -21,12 +23,14 @@ public class ChannelFinderViewContentProvider implements
 
 	@Override
 	public Object[] getElements(Object arg0) {
-		try{
-			return ((Collection<ICSSChannel>)arg0).toArray();
-		}catch(Exception e){
-			e.printStackTrace();
-			return null;
-		}		
+//		try{
+//			return ((Collection<ICSSChannel>)arg0).toArray();
+//		}catch(Exception e){
+//			e.printStackTrace();
+//			return null;
+//		}
+		return channelsList.toArray();
+		
 //		return client.getInstance().getChannels().getChannels().toArray();
 	}
 

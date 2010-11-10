@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.ui,
  org.csstudio.platform.libs.jersey;bundle-version="1.0.0",
  org.csstudio.channelfinder;bundle-version="1.0.0",
  org.csstudio.utility.channel;bundle-version="1.0.0",
- org.junit4
+ org.junit4,
+ org.csstudio.platform.libs.guava;bundle-version="0.6.0",
+ org.csstudio.platform.libs.glazedlists;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.csstudio.platform.ui.security
