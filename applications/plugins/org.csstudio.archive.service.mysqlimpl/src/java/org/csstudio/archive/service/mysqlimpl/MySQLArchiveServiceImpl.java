@@ -158,7 +158,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 
             // Propagate the connection
             _archiveConnection.set(connection);
-            propagateConnectionToDaos(null);
+            propagateConnectionToDaos(connection);
 
         } catch (final InstantiationException e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
