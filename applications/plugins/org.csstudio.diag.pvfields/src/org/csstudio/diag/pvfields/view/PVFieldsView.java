@@ -133,8 +133,6 @@ public class PVFieldsView  extends ViewPart
             {
                 pv_name_helper.saveSettings();
             	field_value_helper.saveSettings();
-            	cbo_name.getCombo().dispose();
-            	field_value.getCombo().dispose();
             }
         });
 
