@@ -26,6 +26,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.csstudio.domain.desy.common.id.Identifiable;
+import org.joda.time.DateTime;
 
 /**
  * Read only interface of an channel configuration in the archive.
@@ -47,13 +48,22 @@ public interface IArchiveChannel extends Identifiable<ChannelId> {
     @Nonnull
     ArchiveSampleModeId getSampleModeId();
 
+    double getSamplePeriod();
+
     /**
      * @return Sample mode configuration value, e.g. 'delta' for Monitor
      * TODO (bknerr) : wtf
      */
     double getSampleValue();
 
-    double getSamplePeriod();
+    /**
+     * @return the timestamp of the latest archived sample for this channel
+     */
+    @Nonnull
+    DateTime getLatestTimestamp();
+
+
+
 
 //    /**
 //     * @return Meta data or <code>null</code>

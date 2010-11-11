@@ -39,7 +39,7 @@ public class ThrottledLogger
         double secs = 60.0;
         final IPreferencesService prefs = Platform.getPreferencesService();
         if (prefs != null) {
-            secs = prefs.getDouble(Activator.ID, preference_name, secs, null);
+            secs = prefs.getDouble(Activator.PLUGIN_ID, preference_name, secs, null);
         }
         this.throttle = new Throttle(secs);
     }

@@ -24,7 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.samplemode;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
  * Archive sample mode DAO exception.
@@ -32,7 +32,7 @@ import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveSampleModeDaoException extends AbstractArchiveDaoException {
+public class ArchiveSampleModeDaoException extends ArchiveDaoException {
 
     private static final long serialVersionUID = 1L;
 

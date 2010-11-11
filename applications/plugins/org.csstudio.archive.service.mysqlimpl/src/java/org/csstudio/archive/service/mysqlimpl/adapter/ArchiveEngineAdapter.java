@@ -28,6 +28,9 @@ import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.service.adapter.IArchiveEngineAdapter;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
+import org.joda.time.DateTime;
 
 /**
  * Adapter class to map mysql specific dao classes to dedicated engine classes.
@@ -67,6 +70,15 @@ public enum ArchiveEngineAdapter implements IArchiveEngineAdapter {
                                                    sampleModeDTO.getName(),
                                                    sampleModeDTO.getDescription());
         return smplMode;
+    }
+
+    /**
+     * @param latestTimestamp
+     * @return
+     */
+    @Override
+    public ITimestamp adapt(@Nonnull final DateTime time) {
+        return TimestampFactory.fromMillisecs(time.getMillis());
     }
 
 }

@@ -19,26 +19,24 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl;
-
-import java.sql.Connection;
+package org.csstudio.archive.service.mysqlimpl.dao;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * Archive Dao.
+ * Abstract archive Dao exception.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public interface IArchiveDao {
+public abstract class ArchiveDaoException extends Exception {
+    private static final long serialVersionUID = 1L;
 
     /**
-     * Sets the current connection.
-     * The old connection is <b>not</b> closed here, but by the invoker of this method!
-     *
-     * @param con the new connection
+     * Constructor.
      */
-    public void setConnection(@Nonnull final Connection con);
-
+    public ArchiveDaoException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }

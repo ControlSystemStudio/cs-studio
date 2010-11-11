@@ -27,6 +27,8 @@ import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.platform.data.ITimestamp;
+import org.joda.time.DateTime;
 
 /**
  * Adapter interface to be implemented by the archive dao impls.
@@ -56,5 +58,13 @@ public interface IArchiveEngineAdapter {
      */
     @Nonnull
     public SampleMode adapt(@Nonnull final IArchiveSampleMode sampleModeDTO);
+
+    /**
+     * Maps the joda time DateTime object to the ITimestamp type.
+     * @param time the joda time
+     * @return the css timestamp
+     */
+    @Nonnull
+    public ITimestamp adapt(@Nonnull final DateTime time);
 
 }

@@ -21,31 +21,28 @@
  */
 package org.csstudio.archive.service.mysqlimpl;
 
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.apache.log4j.Logger;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
-import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
-import org.csstudio.archive.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
-import org.csstudio.platform.logging.CentralLogger;
+import org.joda.time.DateTime;
 
-import com.google.common.collect.Maps;
+
 
 /**
  * Example archive service implementation to separate the processing and logic layer from
@@ -62,53 +59,22 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
 
     INSTANCE;
 
-    private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
-
-    private static Logger LOG =
-        CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
-
-
-    private String _url = MySQLArchiveServicePreference.URL.getValue();
-    private String _user = MySQLArchiveServicePreference.USER.getValue();
-    private String _password = MySQLArchiveServicePreference.PASSWORD.getValue();
-    private final Boolean _autoConnect = MySQLArchiveServicePreference.AUTO_CONNECT.getValue();
-
-    /**
-     * In case there'll be several WriteThreads later on.
-     */
-    private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
-
-    /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
-     */
-    private IArchiveChannelDao _archiveChannelDao;
-    /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
-     */
-    private IArchiveSampleModeDao _archiveSampleModeDao;
-
     /**
      * Constructor.
      *
      * Establishes connection to archive.
      */
     private MySQLArchiveServiceImpl() {
+        // EMPTY
+    }
 
-        if (_autoConnect) {
-            final Map<String, Object> prefs = Maps.newHashMap();
-            prefs.put(MySQLArchiveServicePreference.URL.getKeyAsString(), MySQLArchiveServicePreference.URL.getValue());
-            prefs.put(MySQLArchiveServicePreference.USER.getKeyAsString(), MySQLArchiveServicePreference.USER.getValue());
-            prefs.put(MySQLArchiveServicePreference.PASSWORD.getKeyAsString(), MySQLArchiveServicePreference.PASSWORD.getValue());
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException {
+        ArchiveDaoManager.INSTANCE.connect(connectionPrefs);
 
-            try {
-                connect(prefs);
-            } catch (final ArchiveConnectionException e) {
-                // FIXME (bknerr) : Cannot be propagated by enum constructor!
-                _archiveConnection.set(null);
-            }
-        }
     }
 
     /**
@@ -116,65 +82,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      */
     @Override
     public void reconnect() throws ArchiveConnectionException {
-        final Map<String, Object> prefs = Maps.newHashMap();
-        prefs.put(MySQLArchiveServicePreference.URL.getKeyAsString(), MySQLArchiveServicePreference.URL.getValue());
-        prefs.put(MySQLArchiveServicePreference.USER.getKeyAsString(), MySQLArchiveServicePreference.USER.getValue());
-        prefs.put(MySQLArchiveServicePreference.PASSWORD.getKeyAsString(), MySQLArchiveServicePreference.PASSWORD.getValue());
-
-        connect(prefs);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    synchronized public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
-
-        try {
-            Connection connection = _archiveConnection.get();
-            if (connection != null) {
-                _archiveConnection.set(null);
-                propagateConnectionToDaos(null);
-                connection.close();
-            }
-            _url = (String) prefs.get(MySQLArchiveServicePreference.URL.getKeyAsString());
-            _user = (String) prefs.get(MySQLArchiveServicePreference.USER.getKeyAsString());
-            _password = (String) prefs.get(MySQLArchiveServicePreference.PASSWORD.getKeyAsString());
-
-            // Get class loader to find the driver
-            Class.forName("com.mysql.jdbc.Driver").newInstance();
-
-            connection = DriverManager.getConnection(_url, _user, _password);
-
-            // Basic database info
-            if (LOG.isDebugEnabled()) { // TODO (bknerr) : refactor logging guard to slf4j fast API
-                final DatabaseMetaData meta = connection.getMetaData();
-                LOG.debug("MySQL connection: " +
-                          meta.getDatabaseProductName() +
-                          " " +
-                          meta.getDatabaseProductVersion());
-            }
-            connection.setAutoCommit(false);
-
-            // Propagate the connection
-            _archiveConnection.set(connection);
-            propagateConnectionToDaos(connection);
-
-        } catch (final InstantiationException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final IllegalAccessException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final ClassNotFoundException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        } catch (final SQLException e) {
-            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
-        }
-    }
-
-    private void propagateConnectionToDaos(@Nullable final Connection connection) {
-        _archiveChannelDao.setConnection(connection);
-        _archiveSampleModeDao.setConnection(connection);
-
+        ArchiveDaoManager.INSTANCE.reconnect();
     }
 
     /**
@@ -195,14 +103,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
     @Override
-    public boolean writeSamples(final int channelId, @Nonnull final List<IValue> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
+    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
 
-//        for (final IValue sample : samples) {
-//            _archive.get().batchSample(channelId, sample);
-//            // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
-//            // but that would break encapsulation...
-//        }
-//        _archive.get().commitBatch();
+        //        for (final IValue sample : samples) {
+        //            _archive.get().batchSample(channelId, sample);
+        //            // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
+        //            // but that would break encapsulation...
+        //        }
+        //        _archive.get().commitBatch();
 
         return true;
     }
@@ -217,12 +125,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
         IArchiveChannel channel = null;
         IArchiveSampleMode sampleMode = null;
         try {
-            channel = _archiveChannelDao.getChannel(name);
-            sampleMode = _archiveSampleModeDao.getSampleModeById(channel.getSampleModeId());
-        } catch (final AbstractArchiveDaoException e) {
+            channel = ArchiveDaoManager.INSTANCE.getChannelDao().getChannel(name);
+            sampleMode = ArchiveDaoManager.INSTANCE.getSampleModeDao().getSampleModeById(channel.getSampleModeId());
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Data retrieval failure for channel.", e);
         }
-
 
         return ArchiveEngineAdapter.INSTANCE.adapt(name, channel, sampleMode);
     }
@@ -236,5 +143,33 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
         // Don't do anything
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
+
+        IArchiveChannel cfg = null;
+        try {
+            cfg = ArchiveDaoManager.INSTANCE.getChannelDao().getChannel(name);
+            if (cfg != null) {
+                return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getLatestTimestamp());
+            }
+            // Access the sample table
+            final DateTime ltstSampleTime =
+                ArchiveDaoManager.INSTANCE.getSampleDao().getLatestSampleForChannel(cfg.getId());
+            if (ltstSampleTime != null) {
+                return ArchiveEngineAdapter.INSTANCE.adapt(ltstSampleTime);
+            }
+        } catch (final ArchiveDaoException e) {
+            throw new ArchiveServiceException("Channel information could not be retrieved.", e);
+        }
+        return null;
+    }
+
+
+
 
 }

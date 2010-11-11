@@ -19,65 +19,54 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.samplemode;
+package org.csstudio.archive.service.mysqlimpl.sample;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
+import java.sql.Timestamp;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-
-import com.google.common.collect.Maps;
+import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.joda.time.DateTime;
 
 /**
- * DAO implementation with simple cache (hashmap).
+ * Archive sample dao implementation.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 11.11.2010
  */
-public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArchiveSampleModeDao {
-
-    /**
-     * Archive sample mode cache.
-     */
-    private final Map<ArchiveSampleModeId, IArchiveSampleMode> _sampleModeCache = Maps.newHashMap();
+public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
-    private final String _selectSampleModebyId = "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
+    // TODO (bknerr) : parameterize the database schema name via dao call
+    private final String _selectLastSmplTimeByChannelIdStmt =
+        "SELECT MAX(smpl_time) FROM archive.sample WHERE channel_id=?";
 
     /**
      * {@inheritDoc}
      */
     @Override
     @CheckForNull
-    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId id) throws ArchiveSampleModeDaoException {
+    public DateTime getLatestSampleForChannel(@Nonnull final ChannelId id) throws ArchiveSampleDaoException {
 
-        IArchiveSampleMode mode = _sampleModeCache.get(id);
-        if (mode != null) {
-            return mode;
-        }
         PreparedStatement stmt = null;
         try {
-            stmt = getConnection().prepareStatement(_selectSampleModebyId);
+            stmt = getConnection().prepareStatement(_selectLastSmplTimeByChannelIdStmt);
             stmt.setInt(1, id.intValue());
 
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
 
-                final ArchiveSampleModeId newId = new ArchiveSampleModeId(result.getInt(1));
-                final String name = result.getString(2);
-                final String desc = result.getString(3);
-                mode = new ArchiveSampleModeDTO(newId, name, desc);
-
-                _sampleModeCache.put(mode.getId(), mode);
+                final Timestamp ltstSmplTime = result.getTimestamp(1);
+                return new DateTime(ltstSmplTime.getTime());
             }
+
         } catch (final SQLException e) {
-            throw new ArchiveSampleModeDaoException("Sample mode retrieval from archive failed.", e);
+            throw new ArchiveSampleDaoException("Channel configuration retrieval from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {
@@ -87,8 +76,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
                 }
             }
         }
-
-        return mode;
+        return null;
     }
 
 }

@@ -24,7 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.channel;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
  * Archive channel DAO exception.
@@ -32,7 +32,7 @@ import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDaoException;
  * @author bknerr
  * @since 10.11.2010
  */
-public class ArchiveChannelDaoException extends AbstractArchiveDaoException {
+public class ArchiveChannelDaoException extends ArchiveDaoException {
 
     private static final long serialVersionUID = 1L;
 

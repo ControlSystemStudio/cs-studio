@@ -19,28 +19,38 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.sample;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
+import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.joda.time.DateTime;
 
 /**
- * Dao for archive channel configurations.
+ * Read only interface of a sample value in the archive.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 11.11.2010
  */
-public interface IArchiveChannelDao extends IArchiveDao {
+public interface IArchiveSample<T> {
 
     /**
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
-     * @throws ArchiveChannelDaoException when the retrieval fails
+     * The id of the channel which this sample belongs to.
+     * @return the channel id
      */
-    @CheckForNull
-    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException;
+    public ChannelId getChannelId();
 
+    /**
+     * The sample value.
+     * @return the value
+     */
+    @Nonnull
+    public T getValue();
+
+    /**
+     * The timestamp of the sample value.
+     * @return the timestamp
+     */
+    @Nonnull
+    public DateTime getTimeStamp();
 }

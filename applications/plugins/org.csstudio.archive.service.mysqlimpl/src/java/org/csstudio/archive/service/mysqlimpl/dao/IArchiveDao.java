@@ -19,41 +19,22 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl;
+package org.csstudio.archive.service.mysqlimpl.dao;
 
-import java.sql.Connection;
-
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
 /**
- * Abstract implementation of an archive DAO holding the connection as {@link ThreadLocal<Connection>}.
+ * Archive Dao.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public abstract class AbstractArchiveDao implements IArchiveDao {
+public interface IArchiveDao {
 
-    /**
-     * In case there'll be several WriteThreads later on.
-     */
-    private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setConnection(@Nonnull final Connection con) {
-        _archiveConnection.set(con);
-    }
-
-    /**
-     * Returns the current connection for the dao implementation and its subclasses.
-     * @return the connection
-     */
-    @CheckForNull
-    protected Connection getConnection() {
-        return _archiveConnection.get();
-    }
+//    /**
+//     * Returns the current connection for the dao implementation and its subclasses.
+//     * @return the connection
+//     */
+//    @CheckForNull
+//    Connection getConnection();
 
 }

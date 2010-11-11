@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 08.11.2010
  */
-public class ArchiveConnectionException extends Exception {
+public class ArchiveConnectionException extends ArchiveServiceException {
 
     private static final long serialVersionUID = 1L;
 

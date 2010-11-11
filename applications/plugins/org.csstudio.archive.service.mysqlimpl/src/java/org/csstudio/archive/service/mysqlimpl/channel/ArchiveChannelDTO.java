@@ -27,6 +27,7 @@ import org.csstudio.archive.service.channel.GroupId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.joda.time.DateTime;
 
 /**
  * Immutable data transfer object for DAOs.
@@ -46,6 +47,8 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final double _samplePeriod;
 
+    private final DateTime _latestTimestamp;
+
     /** The channel's meta data */
     //private final IMetaData _metaData;
 
@@ -57,19 +60,22 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      * @param smplVal
      * @param smplPer
     //* @param metaData
+     * @param ltstTimestamp
      */
     public ArchiveChannelDTO(@Nonnull final ChannelId id,
                              @Nonnull final GroupId grpId,
                              @Nonnull final ArchiveSampleModeId sampleModeId,
                              final double smplVal,
-                             final double smplPer/*,
-                             @Nonnull final IMetaData metaData */) {
+                             final double smplPer,
+                             /* @Nonnull final IMetaData metaData */
+                             @Nonnull final DateTime ltstTimestamp) {
         _id = id;
         _groupId = grpId;
         _sampleMode = sampleModeId;
         _sampleValue = smplVal;
         _samplePeriod = smplPer;
         //_metaData = metaData;
+        _latestTimestamp = ltstTimestamp;
     }
 
     /**
@@ -118,5 +124,13 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 //    public IMetaData getMetaData() {
 //        return _metaData;
 //    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public DateTime getLatestTimestamp() {
+        return _latestTimestamp;
+    }
 
 }

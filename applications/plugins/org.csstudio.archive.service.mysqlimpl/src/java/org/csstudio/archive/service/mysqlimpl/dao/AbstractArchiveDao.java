@@ -19,28 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.mysqlimpl.dao;
+
+import java.sql.Connection;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
 
 /**
- * Dao for archive channel configurations.
+ * Abstract implementation of an archive DAO holding the connection as {@link ThreadLocal<Connection>}.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 10.11.2010
  */
-public interface IArchiveChannelDao extends IArchiveDao {
+public abstract class AbstractArchiveDao implements IArchiveDao {
 
     /**
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
-     * @throws ArchiveChannelDaoException when the retrieval fails
+     * Returns the current connection for the dao implementation and its subclasses.
+     * @return the connection
      */
     @CheckForNull
-    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException;
+    protected Connection getConnection() {
+        return ArchiveDaoManager.INSTANCE.getConnection();
+    }
 
 }

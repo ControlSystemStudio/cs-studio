@@ -24,7 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.samplemode;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.mysqlimpl.IArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 

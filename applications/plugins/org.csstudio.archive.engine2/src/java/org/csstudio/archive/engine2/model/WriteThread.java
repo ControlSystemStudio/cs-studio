@@ -13,8 +13,9 @@ import java.util.List;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.service.ArchiveConnectionException;
+import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -40,6 +41,32 @@ public class WriteThread implements Runnable
 {
     /** Minimum write period [seconds] */
     private static final double MIN_WRITE_PERIOD = 5.0;
+
+    private static final class ValueWithChannelId implements IValueWithChannelId {
+
+        private final IValue _value;
+        private final int _id;
+
+        /**
+         * Constructor.
+         */
+        public ValueWithChannelId(final IValue val, final int id) {
+            _value = val;
+            _id = id;
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public IValue getValue() {
+            return _value;
+        }
+        /**
+         * {@inheritDoc}
+         */
+        public int getChannelId() {
+            return _id;
+        }
+    }
 
     /** Server to which this thread writes. */
    // final private RDBArchive archive;
@@ -94,20 +121,21 @@ public class WriteThread implements Runnable
     }
 
     /** Start the write thread.
-     *  @param write_period Period between writes in seconds
-     *  @param batch_size Number of values to batch
+     *  @param p_write_period Period between writes in seconds
+     *  @param p_batch_size Number of values to batch
      */
     @SuppressWarnings("nls")
-    public void start(double write_period, final int batch_size)
+    public void start(final double p_write_period, final int p_batch_size)
     {
+        double write_period = p_write_period;
         if (write_period < MIN_WRITE_PERIOD)
         {
             CentralLogger.getInstance().getLogger(this).warn("Adjusting write period from "
-                    + write_period + " to " + MIN_WRITE_PERIOD);
+                    + p_write_period + " to " + MIN_WRITE_PERIOD);
             write_period = MIN_WRITE_PERIOD;
         }
         millisec_delay = (int)(1000.0 * write_period);
-        this.batch_size = batch_size;
+        batch_size = p_batch_size;
         thread = new Thread(this, "WriteThread");
         thread.start();
     }
@@ -183,7 +211,9 @@ public class WriteThread implements Runnable
                 timer.start();
                 // In case of a network problem, we can hang in here
                 // for a long time...
-                final long written = write();
+                long written;
+                written = write();
+
                 timer.stop();
                 last_write_stamp = TimestampFactory.now();
                 write_count.update(written);
@@ -196,7 +226,7 @@ public class WriteThread implements Runnable
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
-            } catch (final ArchiveConnectionException e) {
+            } catch (final ArchiveServiceException e) {
                 // Error in write() or the preceding reconnect()...
                 CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", e);
                 // Use max. delay
@@ -239,15 +269,17 @@ public class WriteThread implements Runnable
 
     /** Write right now until all sample buffers are empty
      *  @return number of samples written
+     * @throws OsgiServiceUnavailableException
+     * @throws ArchiveServiceException
      */
-    private long write() throws OsgiServiceUnavailableException
+    private long write() throws OsgiServiceUnavailableException, ArchiveServiceException
     {
         int total_count = 0;
-        int count = 0;
 
         final IArchiveService archiveService = Activator.getDefault().getArchiveService();
 
-        final List<IValue> samples = new ArrayList<IValue>(batch_size);
+        final List<IValueWithChannelId> samples =
+            new ArrayList<IValueWithChannelId>(batch_size);
 
         for (final SampleBuffer buffer : buffers) {
             // Update max buffer length etc. before we start to remove samples
@@ -261,9 +293,9 @@ public class WriteThread implements Runnable
             while (sample != null) {
 
                 // sample handling
-                samples.add(sample);
+                samples.add(new ValueWithChannelId(sample, channel.getId()));
                 if (samples.size() >= batch_size) {
-                    archiveService.writeSamples(channel.getId(), samples);
+                    archiveService.writeSamples(samples);
                     total_count += batch_size;
                     samples.clear();
                 }
@@ -281,27 +313,19 @@ public class WriteThread implements Runnable
                     // tool not for the archive.
 
                     // this service method is only provided for the compatibility for the original ORACLE setup
-                    final IMetaData metaData = archiveService.writeMetaData(channel.getId(), sample);
+                    final IMetaData metaData = archiveService.writeMetaData(channel, sample);
                     channel.setMetaData(metaData);
-                }
-
-                // Write one value
-                channel.batchSample(sample);
-                // Note: count across different sample buffers!
-                ++count;
-                if (count > batch_size)
-                {
-                    total_count += count;
-                    count = 0;
-                    archive.commitBatch();
                 }
                 // next
                 sample = buffer.remove();
             }
         }
-        // Flush remaining samples (less than batch_size)
-        archive.commitBatch();
-        total_count += count;
+        // remaining sample handling of this sample buffer
+        if (!samples.isEmpty()) {
+            archiveService.writeSamples(samples);
+            total_count += samples.size();
+            samples.clear();
+        }
 
 
         return total_count;

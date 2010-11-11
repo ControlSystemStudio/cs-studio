@@ -24,6 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.channel;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
@@ -31,14 +32,15 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.GroupId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.mysqlimpl.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.common.channel.ChannelId;
+import org.joda.time.DateTime;
 
 import com.google.common.collect.Maps;
 
 /**
- * TODO (bknerr) :
+ * DAO implementation with simple cache (hashmap).
  *
  * @author bknerr
  * @since 09.11.2010
@@ -51,8 +53,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     private final Map<String, IArchiveChannel> _channelCache = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
+    // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per FROM archive.channel WHERE name=?";
+        "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE name=?";
 
     /**
      * {@inheritDoc}
@@ -79,12 +82,13 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 final int sampleMode = result.getInt(3);
                 final double sampleVal = result.getDouble(4);
                 final double samplePer = result.getDouble(5);
-
+                final Timestamp ltstSmplTime = result.getTimestamp(6);
                 channel = new ArchiveChannelDTO(new ChannelId(id),
                                                 new GroupId(grpId),
                                                 new ArchiveSampleModeId(sampleMode),
                                                 sampleVal,
-                                                samplePer);
+                                                samplePer,
+                                                new DateTime(ltstSmplTime.getTime()));
 
                 _channelCache.put(name, channel);
             }

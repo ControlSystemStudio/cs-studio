@@ -15,6 +15,10 @@ import java.util.Map;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.engine2.scanner.ScanThread;
 import org.csstudio.archive.engine2.scanner.Scanner;
+import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
+import org.csstudio.archive.service.IArchiveService;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -321,10 +325,14 @@ public class EngineModel
             // See if there's already a sample in the archive,
             // because we won't be able to go back-in-time before that sample.
         	IValue last_sample = null;
-        	final ChannelConfig channel_id = archive.getChannel(name);
-        	if (channel_id != null)
+
+        	final IArchiveService archiveService = Activator.getDefault().getArchiveService();
+        	final ChannelConfig channelCfg = archiveService.getChannel(name);
+        	if (channelCfg != null)
         	{
-	            final ITimestamp last_stamp = channel_id.getLastTimestamp();
+        	    final ITimestamp last_stamp  =
+        	        archiveService.getLatestTimestampByChannel(channelCfg.getName());
+
 	            if (last_stamp != null) {
                     // Create fake string sample with that time
 	            	last_sample = ValueFactory.createStringValue(last_stamp,

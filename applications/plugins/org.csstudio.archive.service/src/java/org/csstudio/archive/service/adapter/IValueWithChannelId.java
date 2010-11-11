@@ -19,28 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.adapter;
 
-import javax.annotation.CheckForNull;
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
+import org.csstudio.platform.data.IValue;
 
 /**
- * Dao for archive channel configurations.
+ * Adapter interface to decouple archive engine from archive writer service.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 11.11.2010
  */
-public interface IArchiveChannelDao extends IArchiveDao {
+public interface IValueWithChannelId {
 
     /**
-     * @param name the name of the channel
-     * @return the cached or freshly retrieved channel
-     * @throws ArchiveChannelDaoException when the retrieval fails
+     * Returns the sample value.
+     * @return the value
      */
-    @CheckForNull
-    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException;
+    IValue getValue();
 
+    /**
+     * Returns the channel id.
+     * @return the channel id.
+     */
+    int getChannelId();
 }

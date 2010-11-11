@@ -29,7 +29,9 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
+import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
 /**
@@ -78,12 +80,15 @@ public interface IArchiveService {
     /**
      * Writes the samples to the archive.
      *
-     * @param channelId the id of the channel
-     * @param samples the samples to be archived
-     * @return true, if the samples has been persisted
+     * FIXME (bknerr, kasemir) : the signature with separated channel id and list of IValues is
+     * not cleanly defined, better having a collection of composite objects,
+     * e.g. Collection<IArchiveSample<T>>.
+     *
+     * @param samples the samples to be archived with their channel id
+     * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
-    boolean writeSamples(final int channelId, final List<IValue> samples) throws ArchiveServiceException;
+    boolean writeSamples(final List<IValueWithChannelId> samples) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel configuration from the archive with the given name.
@@ -118,11 +123,21 @@ public interface IArchiveService {
      *
      * @param channel
      * @param sample
-     * @return
-     * @throws Exception
+     * @return the meta data that has been written
+     * @throws ArchiveServiceException if the writing of meta data failed
      */
     @CheckForNull
-    IMetaData writeMetaData(@Nonnull ChannelConfig channel, @Nonnull final IValue sample) throws Exception;
+    IMetaData writeMetaData(@Nonnull final ChannelConfig channel, @Nonnull final IValue sample) throws ArchiveServiceException;
+
+    /**
+     * Retrieves the time stamp of the latest sample for the given channel.
+     *
+     * @param name the identifying channel name.
+     * @return the time stamp of the latest sample
+     * @throws ArchiveServiceException if the retrieval of the latest time stamp failed
+     */
+    @CheckForNull
+    ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException;
 
 
 }

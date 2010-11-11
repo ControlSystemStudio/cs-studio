@@ -15,7 +15,6 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.model.EngineModel;
 import org.csstudio.archive.engine2.server.EngineServer;
-import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -121,17 +120,18 @@ public class Application implements IApplication
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
-            RDBArchive archive;
-            try
-            {
-                archive = RDBArchive.connect(url, user, password);
-            }
-            catch (final Exception ex)
-            {
-                logger.fatal("Cannot connect to " + url, ex);
-                return EXIT_OK;
-            }
-            model = new EngineModel(archive);
+//            RDBArchive archive;
+//            try
+//            {
+//                archive = RDBArchive.connect(url, user, password);
+//            }
+//            catch (final Exception ex)
+//            {
+//                logger.fatal("Cannot connect to " + url, ex);
+//                return EXIT_OK;
+//            }
+//            model = new EngineModel(archive);
+            model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
             try
