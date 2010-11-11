@@ -29,7 +29,7 @@ public class PVFieldsModel
      *  1PV = One PV many Fields
      *  NPVs = many PVs on field
      */
-    private static boolean fullList  = true;
+    private boolean fullList  = true;
     
     /** Listeners */
     final private static CopyOnWriteArrayList<PVFieldsListener> listeners
@@ -174,7 +174,8 @@ public class PVFieldsModel
         return pvs;
     }
 
-    public synchronized static boolean alterColumnData(){
+    public synchronized boolean alterColumnData()
+    {
     	return fullList;
     }
     

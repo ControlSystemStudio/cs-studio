@@ -228,7 +228,8 @@ public class GUI implements PVFieldsListener
 			public void widgetDefaultSelected(SelectionEvent e) {
             	String pv = cbo_name.getCombo().getText().trim();
                 String field = field_value.getCombo().getText().trim();
-                if (field=="")field = null; 
+                if (field.length() <= 0)
+                	field = null; 
                 model.setPV(pv,field);
 			}
 
@@ -414,6 +415,7 @@ public class GUI implements PVFieldsListener
     /**
      * Clear the last text from the Fields table.
      */
+    @SuppressWarnings("nls")
     public void clearLastPV()
     {
     	pvLabel.setText("");
@@ -429,8 +431,7 @@ public class GUI implements PVFieldsListener
      * Set Column Headers for first two columns of Table
      */
     public void setTableColHead() {
-    	
-    	if (PVFieldsModel.alterColumnData()){
+    	if (model.alterColumnData()){
         	fields_table_widget.getColumn(0).setText("Field");
         	fields_table_widget.getColumn(1).setText("DBD Type");
         	}
