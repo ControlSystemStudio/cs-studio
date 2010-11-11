@@ -100,7 +100,7 @@
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>117</width>
+    <width>119</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
     <rules />
@@ -306,7 +306,7 @@ $(pv_value)</tooltip>
   <widget typeId="org.csstudio.opibuilder.widgets.TextInput" version="1.0">
     <border_alarm_sensitive>false</border_alarm_sensitive>
     <visible>true</visible>
-    <minimum>-Infinity</minimum>
+    <minimum>-1.7976931348623157E308</minimum>
     <vertical_alignment>1</vertical_alignment>
     <show_units>true</show_units>
     <auto_size>false</auto_size>
@@ -317,7 +317,7 @@ $(pv_value)</tooltip>
     <format_type>0</format_type>
     <precision_from_pv>true</precision_from_pv>
     <transparent>false</transparent>
-    <pv_name>loc://urlPV(https://ics-web.sns.ornl.gov/css/boy.html)</pv_name>
+    <pv_name>loc://urlPV(https://sourceforge.net/apps/trac/cs-studio/wiki/BOY)</pv_name>
     <background_color>
       <color red="255" green="255" blue="255" />
     </background_color>
@@ -326,7 +326,7 @@ $(pv_value)</tooltip>
     </foreground_color>
     <widget_type>Text Input</widget_type>
     <enabled>true</enabled>
-    <text>https://ics-web.sns.ornl.gov/css/boy.html</text>
+    <text>https://sourceforge.net/apps/trac/cs-studio/wiki/BOY</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
     <precision>0</precision>
     <font>
@@ -336,7 +336,7 @@ $(pv_value)</tooltip>
     <border_style>3</border_style>
     <rules />
     <border_width>1</border_width>
-    <maximum>Infinity</maximum>
+    <maximum>1.7976931348623157E308</maximum>
     <limits_from_pv>true</limits_from_pv>
     <border_color>
       <color red="0" green="128" blue="255" />
@@ -395,7 +395,7 @@ $(pv_value)</tooltip>
         <pv trig="true">loc://urlPV(https://ics-web.sns.ornl.gov/css/boy.html)</pv>
       </rule>
     </rules>
-    <url>https://ics-web.sns.ornl.gov/css/boy.html</url>
+    <url>https://sourceforge.net/apps/trac/cs-studio/wiki/BOY</url>
     <scripts />
     <height>352</height>
     <border_width>1</border_width>

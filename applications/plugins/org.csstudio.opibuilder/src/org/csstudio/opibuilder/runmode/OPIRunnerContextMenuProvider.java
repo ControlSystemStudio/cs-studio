@@ -85,14 +85,14 @@ public final class OPIRunnerContextMenuProvider extends ContextMenuProvider {
 				AbstractWidgetModel widget = editPart.getWidgetModel();
 				
 				//add menu Open, Open in New Tab and Open in New Window
-				OpenDisplayAction openDisplayAction = editPart.getDefaultOpenDisplayAction();
-				if(openDisplayAction != null){
+				AbstractWidgetAction hookedAction = editPart.getHookedAction();
+				if(hookedAction != null && hookedAction instanceof OpenDisplayAction){
 					menu.add(new OpenRelatedDisplayAction(
-							openDisplayAction, OPEN_DISPLAY_TARGET.DEFAULT));
+							(OpenDisplayAction) hookedAction, OPEN_DISPLAY_TARGET.DEFAULT));
 					menu.add(new OpenRelatedDisplayAction(
-							openDisplayAction, OPEN_DISPLAY_TARGET.TAB));
+							(OpenDisplayAction) hookedAction, OPEN_DISPLAY_TARGET.TAB));
 					menu.add(new OpenRelatedDisplayAction(
-							openDisplayAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
+							(OpenDisplayAction) hookedAction, OPEN_DISPLAY_TARGET.NEW_WINDOW));					
 				}
 				
 				ActionsInput ai = widget.getActionsInput();

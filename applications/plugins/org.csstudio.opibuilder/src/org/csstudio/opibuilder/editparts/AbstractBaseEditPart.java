@@ -228,7 +228,7 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				Set<String> allPropIds = getWidgetModel().getAllPropertyIDs();
 				if(allPropIds.contains(AbstractWidgetModel.PROP_ACTIONS) && 
 						allPropIds.contains(AbstractWidgetModel.PROP_ENABLED)){
-					hookOpenDisplayAction();
+					hookMouseClickAction();
 				}
 				
 				//script and rules execution
@@ -347,8 +347,8 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	/**
 	 * Hook the default {@link OpenDisplayAction} with mouse click.
 	 */
-	protected void hookOpenDisplayAction() {
-		final OpenDisplayAction action = getDefaultOpenDisplayAction();
+	protected void hookMouseClickAction() {
+		final AbstractWidgetAction action = getHookedAction();
 		if(getWidgetModel().isEnabled() && action != null){
 			figure.setCursor(Cursors.HAND);
 			figure.addMouseListener(new MouseListener.Stub(){
@@ -356,14 +356,16 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				@Override
 				public void mousePressed(MouseEvent me) {
 					if(me.button != 1)
-						return;								
-					action.setCtrlPressed(false);
-					action.setShiftPressed(false);
-					if(me.getState() == InputEvent.CONTROL){
-						action.setCtrlPressed(true);
-					}else if (me.getState() == InputEvent.SHIFT){
-						action.setShiftPressed(true);
-					}								
+						return;		
+					if(action instanceof OpenDisplayAction){
+						((OpenDisplayAction)action).setCtrlPressed(false);
+						((OpenDisplayAction)action).setShiftPressed(false);
+						if(me.getState() == InputEvent.CONTROL){
+							((OpenDisplayAction)action).setCtrlPressed(true);
+						}else if (me.getState() == InputEvent.SHIFT){
+							((OpenDisplayAction)action).setShiftPressed(true);
+						}	
+					}
 					action.run();	
 				}
 			});
@@ -680,16 +682,14 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 	
 	
 	/**
-	 * @return the default {@link OpenDisplayAction} when mouse click this widget.
+	 * @return the default {@link AbstractWidgetAction} when mouse click this widget.
 	 */
-	public OpenDisplayAction getDefaultOpenDisplayAction(){
+	public AbstractWidgetAction getHookedAction(){
 		if(getWidgetModel().getActionsInput() != null && 
 				getWidgetModel().getActionsInput().getActionsList().size() > 0 && 
 				getWidgetModel().getActionsInput().isHookedUpToWidget()){
-			AbstractWidgetAction action = 
-				getWidgetModel().getActionsInput().getActionsList().get(0);
-			if(action instanceof OpenDisplayAction)
-				return (OpenDisplayAction)action;
+			return getWidgetModel().getActionsInput().getActionsList().get(0);
+			
 		}
 		return null;
 			
