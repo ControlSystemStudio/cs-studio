@@ -5,6 +5,7 @@ import java.text.NumberFormat;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;
@@ -164,7 +165,7 @@ public class Probe extends ViewPart implements PVListener {
                 }
                 meter.setValue(value.getDouble());
             }
-            Plugin.getLogger().debug("Probe displays " //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).debug("Probe displays " //$NON-NLS-1$
                                 + lbl_time.getText()
                                 + " " + lbl_value.getText()); //$NON-NLS-1$
 
@@ -209,7 +210,7 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Exception e)
         {
-            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(Probe.class).error("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
         }
         return false;
@@ -428,7 +429,7 @@ public class Probe extends ViewPart implements PVListener {
 
         // Connect actions
         name_helper = new ComboHistoryHelper(
-                        Plugin.getDefault().getDialogSettings(),
+                        Activator.getDefault().getDialogSettings(),
                         PV_LIST_TAG, cbo_name)
         {
             @Override
@@ -442,7 +443,7 @@ public class Probe extends ViewPart implements PVListener {
         {
             public void widgetDisposed(final DisposeEvent e)
             {
-                disposeChannel();
+                setPV(null);
                 name_helper.saveSettings();
             }
         });
@@ -546,7 +547,7 @@ public class Probe extends ViewPart implements PVListener {
 			handlerService.executeCommand(cmd, null);
 		} catch (final ExecutionException e) {
 			// Execution of the command handler failed.
-			Plugin.getLogger().error("Error executing save value command.", e); //$NON-NLS-1$
+			CentralLogger.getInstance().getLogger(this).error("Error executing save value command.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocExecutionError);
@@ -554,7 +555,7 @@ public class Probe extends ViewPart implements PVListener {
 			// Thrown if the command or one of the parameters is undefined.
 			// This should never happen (the command id is defined in the
 			// platform). Log an error, disable the button, and return.
-			Plugin.getLogger().error("Save value command is not defined.", e); //$NON-NLS-1$
+			CentralLogger.getInstance().getLogger(this).error("Save value command is not defined.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotDefinedError);
@@ -678,12 +679,9 @@ public class Probe extends ViewPart implements PVListener {
     @SuppressWarnings("nls")
     public boolean setPVName(final String pv_name)
     {
-        Plugin.getLogger().debug("setPVName(" + pv_name + ")");
+        CentralLogger.getInstance().getLogger(this).debug("setPVName(" + pv_name + ")");
 
-        // Close a previous channel
-        disposeChannel();
-
-        // Reset rest of GUI
+        // Reset GUI
         lbl_value.setText("");
         lbl_time.setText("");
         value.reset();
@@ -696,10 +694,12 @@ public class Probe extends ViewPart implements PVListener {
         {
             cbo_name.getCombo().setText("");
             updateStatus(Messages.S_Waiting);
+            setPV(null);
             return false;
         }
 
         name_helper.addEntry(pv_name);
+        // Provide PV name for object contributions
         cbo_name.setSelection(
             new StructuredSelection(
                         CentralItemFactory.createProcessVariable(pv_name)));
@@ -712,13 +712,15 @@ public class Probe extends ViewPart implements PVListener {
         try
         {
             updateStatus(Messages.S_Searching);
-            pv = PVFactory.createPV(pv_name);
-            pv.addListener(this);
-            pv.start();
+
+            final PV new_pv = PVFactory.createPV(pv_name);
+            setPV(new_pv);
+            new_pv.addListener(this);
+            new_pv.start();
         }
         catch (final Exception ex)
         {
-            Plugin.getLogger().error(Messages.S_CreateError, ex);
+            CentralLogger.getInstance().getLogger(this).error(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
             return false;
         }
@@ -734,11 +736,11 @@ public class Probe extends ViewPart implements PVListener {
     // PVListener
     public void pvValueUpdate(final PV pv)
     {
-        Plugin.getLogger().debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
-        // We might receive events after the view is already disposed....
-        if (lbl_value.isDisposed()) {
+    	CentralLogger.getInstance().getLogger(this).debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+    	
+        // We might receive events after the view is already disposed or we're already looking at a different PV ....
+        if (pv != this.pv  ||  lbl_value.isDisposed())
             return;
-        }
         try
         {
             final IValue newVal = pv.getValue();
@@ -748,21 +750,23 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Exception e)
         {
-            Plugin.getLogger().error("pvValueUpdate error", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).error("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
         }
     }
 
-    /** Closes a channel and releases resource */
-    private void disposeChannel()
+    /** Update the PV, closing the previously used PV
+     *  @param new_pv New PV, may be <code>null</code>
+     */
+    private synchronized void setPV(final PV new_pv)
     {
-        if (pv != null)
-        {
-            Plugin.getLogger().debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
-            pv.removeListener(this);
-            pv.stop();
-            pv = null;
-        }
+    	if (pv != null)
+    	{
+        	CentralLogger.getInstance().getLogger(this).debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
+	        pv.removeListener(this);
+	        pv.stop();
+    	}
+    	pv = new_pv;
     }
 
     /** Updates the status bar with given string.
@@ -844,7 +848,7 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Throwable ex)
         {
-            Plugin.getLogger().error(Messages.S_AdjustFailed, ex);
+            CentralLogger.getInstance().getLogger(this).error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
     }
