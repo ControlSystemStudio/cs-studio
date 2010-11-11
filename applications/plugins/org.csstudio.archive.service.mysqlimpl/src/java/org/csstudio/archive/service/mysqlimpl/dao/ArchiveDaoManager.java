@@ -161,6 +161,19 @@ public enum ArchiveDaoManager {
     }
 
     /**
+     * @throws ArchiveConnectionException
+     */
+    public void disconnect() throws ArchiveConnectionException {
+        try {
+            _archiveConnection.get().close();
+        } catch (final SQLException e) {
+            throw new ArchiveConnectionException("Archive disconnection failed.", e);
+        }
+    }
+
+
+
+    /**
      * Returns the current connection for the owning thread.
      * This method is invoked by the dedicated daos to retrieve their connection.
      *
@@ -203,6 +216,4 @@ public enum ArchiveDaoManager {
         }
         return _archiveSampleDao;
     }
-
-
 }

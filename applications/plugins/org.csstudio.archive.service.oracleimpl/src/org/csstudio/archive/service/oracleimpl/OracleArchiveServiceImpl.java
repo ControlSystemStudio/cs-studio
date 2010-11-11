@@ -25,6 +25,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -35,7 +36,10 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
@@ -89,11 +93,19 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
     /**
      * {@inheritDoc}
      */
-    synchronized public void connect(final Map<String, Object> prefs) {
-        final RDBArchive rdbArchive = (RDBArchive) prefs.get(ARCHIVE_PREF_KEY);
-        if (rdbArchive == null) {
-            throw new IllegalArgumentException("RDBArchive is not set for ArchiveService.");
+    public void connect(final Map<String, Object> prefs) throws ArchiveConnectionException {
+
+        final String url = (String) prefs.get(RDBArchivePreferences.URL);
+        final String user = (String) prefs.get(RDBArchivePreferences.USER);
+        final String password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
+
+        RDBArchive rdbArchive = null;
+        try {
+            rdbArchive = RDBArchive.connect(url, user, password);
+        } catch (final Exception e) {
+            throw new ArchiveConnectionException("Archive connection failed.", e);
         }
+
         _archive.set(rdbArchive);
     }
 
@@ -107,6 +119,14 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
             throw new ArchiveConnectionException("Archive reconnection failed.", e);
         }
 
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public void disonnect() {
+        _archive.get().close();
     }
 
     /**
@@ -141,16 +161,6 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
 
         return true;
     }
-
-    /**
-     * {@inheritDoc}
-     */
-    public boolean writeSample(final int channelId, final IValue sample) throws Exception { // TODO : Untyped exception? A catch would swallow ALL exceptions!
-        //        _archive.get().batchSample(channelId, sample);
-        //        _archive.get().commitBatch();
-        return true;
-    }
-
 
     /**
      * {@inheritDoc}
@@ -192,7 +202,7 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
         try {
             _archive.get().writeMetaData(channel, sample);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
             throw new ArchiveServiceException("Writing of meta data failed.", e);
         }
         return null;
@@ -203,7 +213,7 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
      *
      * REDIRECTION NOT POSSIBLE:
      * Direct rdb access through {@link ChannelConfig#getLastTimestamp()}!
-     * Had to export package with SQL class in o.c.archive.rdb.
+     * Had to duplicate code statement code
      */
     @CheckForNull
     public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
@@ -233,7 +243,7 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
         } catch (final SQLException e) {
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
         } finally {
             if (statement != null) {
@@ -251,37 +261,14 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
      */
     @CheckForNull
     public SampleEngineConfig findEngine(final int id) throws ArchiveServiceException {
-
-        PreparedStatement statement = null;
+        // FIXME (kasemir) : data access object is created anew on every invocation?!
+        final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            final RDBArchive archive = _archive.get();
-            statement = archive.getRDB().getConnection().prepareStatement(archive.getSQL().smpl_eng_sel_by_id);
-            statement.setInt(1, id);
-
-            final ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                return new SampleEngineConfig(archive,
-                                              id,
-                                              res.getString(1),
-                                              res.getString(2),
-                                              res.getString(3));
-            }
-        } catch (final SQLException e) {
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            return engines.find(id);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
-
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Statement could not be closed properly.", e);
-                }
-            }
         }
-        return null;
     }
 
     /**
@@ -289,38 +276,27 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
      */
     @CheckForNull
     public SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException {
-
-        PreparedStatement statement = null;
+        // FIXME (kasemir) : data access object is created anew on every invocation?!
+        final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            final RDBArchive archive = _archive.get();
-            statement = archive.getRDB().getConnection().prepareStatement(archive.getSQL().smpl_eng_sel_by_name);
-            statement.setString(1, name);
-
-            final ResultSet res = statement.executeQuery();
-            if (res.next()) {
-                return new SampleEngineConfig(archive,
-                                              res.getInt(1),
-                                              name,
-                                              res.getString(2),
-                                              res.getString(3));
-            }
-        } catch (final SQLException e) {
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            return engines.find(name);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
-
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Statement could not be closed properly.", e);
-                }
-            }
         }
-        return null;
     }
 
-
+    /**
+     * {@inheritDoc}
+     */
+    public List<ChannelGroupConfig> getGroups(final int engineId) throws ArchiveServiceException {
+        // FIXME (kasemir) : data access object is created anew on every invocation?!
+        final ChannelGroupHelper groups = new ChannelGroupHelper(_archive.get());
+        try {
+            return Arrays.asList(groups.get(engineId));
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
+            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+        }
+    }
 }

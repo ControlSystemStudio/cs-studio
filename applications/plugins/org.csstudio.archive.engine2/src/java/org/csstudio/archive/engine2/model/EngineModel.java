@@ -66,7 +66,7 @@ public class EngineModel
      *  <p>
      *  @see channels about thread safety
      */
-    final List<ArchiveGroup> groups = new ArrayList<ArchiveGroup>();
+    final List<ArchiveGroup> groups = new ArrayList<ArchiveGroup>(); // Why not a hashmap?
 
     /** Scanner for scanned channels */
     final Scanner scanner = new Scanner();
@@ -500,7 +500,9 @@ public class EngineModel
         }
 
         // Get groups
-        final ChannelGroupConfig[] engine_groups = engine.getGroups();
+        final List<ChannelGroupConfig> engine_groups =
+            Activator.getDefault().getArchiveService().getGroups(engine.getId());
+
         for (final ChannelGroupConfig group_config : engine_groups)
         {
             final ArchiveGroup group = addGroup(group_config.getName());
@@ -513,9 +515,9 @@ public class EngineModel
                     enablement = Enablement.Enabling;
                 }
                 addChannel(channel_config.getName(), group, enablement,
-                        channel_config.getSampleModeId().isMonitor(),
-                        channel_config.getSampleValue(),
-                        channel_config.getSamplePeriod());
+                           channel_config.getSampleMode().isMonitor(),
+                           channel_config.getSampleValue(),
+                           channel_config.getSamplePeriod());
             }
         }
     }

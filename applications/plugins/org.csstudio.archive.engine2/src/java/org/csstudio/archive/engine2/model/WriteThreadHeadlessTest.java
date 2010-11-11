@@ -8,8 +8,13 @@
 package org.csstudio.archive.engine2.model;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.engine2.Activator;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.service.IArchiveService;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -48,19 +53,25 @@ public class WriteThreadHeadlessTest
     	// Setup buffer
         final SampleBuffer buffer = new SampleBuffer(channel, 1000);
 
-        // Connect writer to it
-        final RDBArchive archive = RDBArchive.connect(url, user, password);
-        final WriteThread writer = new WriteThread(archive);
+        // Connect writer to the service with the given prefs
+        final Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put(RDBArchivePreferences.URL, url);
+        prefs.put(RDBArchivePreferences.USER, user);
+        prefs.put(RDBArchivePreferences.PASSWORD, password);
+        final IArchiveService service = Activator.getDefault().getArchiveService();
+        service.connect(prefs);
+
+        final WriteThread writer = new WriteThread();
         writer.addSampleBuffer(buffer);
 
         // Trigger thread to write
         writer.start(5.0, 500);
-        
+
         // Add some samples
         final long seconds = TimestampFactory.now().seconds();
         final ISeverity severity = ValueFactory.createOKSeverity();
         final String status = "Test";
-        final INumericMetaData meta_data = 
+        final INumericMetaData meta_data =
             ValueFactory.createNumericMetaData(0, 10, 2, 8, 1, 9, 2, "Eggs");
         for (int i=0; i<10; ++i)
         {
@@ -71,14 +82,15 @@ public class WriteThreadHeadlessTest
                             new double[] { i } ));
             Thread.sleep(1);
         }
-        
+
         // Wait for the thread to write all the samples
-        while (buffer.getQueueSize() > 0)
+        while (buffer.getQueueSize() > 0) {
             Thread.sleep(500);
+        }
         writer.shutdown();
-        
-        archive.close();
-        
+
+        service.disonnect();
+
         // Show stats
         System.out.println(buffer);
     }

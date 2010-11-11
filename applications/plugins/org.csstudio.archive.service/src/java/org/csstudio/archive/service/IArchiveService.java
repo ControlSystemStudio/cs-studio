@@ -28,6 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
@@ -58,6 +59,12 @@ public interface IArchiveService {
      * @throws ArchiveConnectionException when the connection could not be established
      */
     void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException;
+
+    /**
+     * Closes the connection and may invoke cache clearing in DAO layer.
+     * @throws ArchiveConnectionException
+     */
+    void disonnect() throws ArchiveConnectionException;
 
     /**
      * Configures the service to the user's needs.
@@ -128,5 +135,13 @@ public interface IArchiveService {
      */
     @CheckForNull
     SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
+     * @param engineId
+     * @return
+     *  @throws ArchiveServiceException
+     */
+    @Nonnull
+    List<ChannelGroupConfig> getGroups(int engineId) throws ArchiveServiceException;
 
 }
