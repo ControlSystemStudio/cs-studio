@@ -48,19 +48,21 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	@Override
-	protected void hookOpenDisplayAction() {
+	protected void hookMouseClickAction() {
 
 		((ActionButtonFigure)getFigure()).addActionListener(new ButtonActionListener(){
 			public void actionPerformed(int mouseEventState) {					
-				OpenDisplayAction action = getDefaultOpenDisplayAction();
+				AbstractWidgetAction action = getHookedAction();
 				if(action!= null){
-						action.setCtrlPressed(false);
-						action.setShiftPressed(false);
+					if(action instanceof OpenDisplayAction){
+						((OpenDisplayAction) action).setCtrlPressed(false);
+						((OpenDisplayAction) action).setShiftPressed(false);
 						if(mouseEventState == InputEvent.CONTROL){
-							action.setCtrlPressed(true);
+							((OpenDisplayAction) action).setCtrlPressed(true);
 						}else if (mouseEventState == InputEvent.SHIFT){
-							action.setShiftPressed(true);
-						}						
+							((OpenDisplayAction) action).setShiftPressed(true);
+						}	
+					}
 					action.run();
 				}
 							
@@ -69,7 +71,7 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 	}
 	
 	@Override
-	public OpenDisplayAction getDefaultOpenDisplayAction() {
+	public AbstractWidgetAction getHookedAction() {
 		int actionIndex;
 		
 		if(getWidgetModel().isToggleButton()){
@@ -80,13 +82,10 @@ public final class ActionButtonEditPart extends AbstractPVWidgetEditPart {
 		}else
 			actionIndex = getWidgetModel().getActionIndex();
 		
-		if(actionIndex >= 0 && 
-				getWidgetModel().getActionsInput().getActionsList().size() > actionIndex){
-			AbstractWidgetAction action = 
-				getWidgetModel().getActionsInput().getActionsList().get(actionIndex);	
-			if(action instanceof OpenDisplayAction){
-				return (OpenDisplayAction)action;
-			}
+		if(actionIndex >= 0 && getWidgetModel().getActionsInput().
+				getActionsList().size() > actionIndex){
+			return getWidgetModel().getActionsInput().
+						getActionsList().get(actionIndex);			
 		}
 		
 		return null;
