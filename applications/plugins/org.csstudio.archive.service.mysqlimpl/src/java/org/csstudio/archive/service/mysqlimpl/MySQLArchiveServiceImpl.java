@@ -28,6 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
@@ -168,6 +169,27 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
         }
         return null;
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public SampleEngineConfig findEngine(final int id) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
 
 
 

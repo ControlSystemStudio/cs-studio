@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveService;
@@ -145,8 +146,8 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
      * {@inheritDoc}
      */
     public boolean writeSample(final int channelId, final IValue sample) throws Exception { // TODO : Untyped exception? A catch would swallow ALL exceptions!
-//        _archive.get().batchSample(channelId, sample);
-//        _archive.get().commitBatch();
+        //        _archive.get().batchSample(channelId, sample);
+        //        _archive.get().commitBatch();
         return true;
     }
 
@@ -161,12 +162,37 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
 
     /**
      * {@inheritDoc}
+     *
+     * FIXME (bknerr, kasemir) : This structure seems severely broken:
+     * database accesses scattered all over the place and metadata abstraction not properly designed
+     * Question: How are channel, sample, meta data defined?
+     *
+     * what happens originally:
+     *
+     * {@link WriteThread#write()} calls
+     * {@link ChannelConfig#batchSample(IValue)} calls
+     * {@link RDBArchive#batchSample(ChannelConfig, IValue)} in case <code>if (ChannelConfig#getMetaData() == null)</code> calls
+     * {@link RDBArchive#writeMetaData(ChannelConfig, IValue)} dispatches over <code>instanceof IValue</code> to
+     * {NumericMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)} which finally accesses the database with calls to
+     * <ol>
+     * <li>{NumericMetaDataHelper#get(RDBArchive, ChannelConfig)}</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} for deletion in table then return.</li>
+     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} and {NumericMetaDataHelper#insert(RDBArchive, ChannelConfig)} for update</li>
+     * </ol>
+     * or the same to another table
+     * {EnumMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)}
+     *
+     * We have two tables enum_metadata, num_metadata - obviously it is possible that a channel configuration
+     * doesn't have the meta data stuff set, so that in that case any single sample (IValue) has to asked about its metadata
+     * to set the information initially.
+     * IValue itself has to be cast via instanceof cascade to its implementing class to retrieve the 'value'-value.
+     * It's not possible to as
      */
     public IMetaData writeMetaData(final ChannelConfig channel, final IValue sample) throws ArchiveServiceException {
         try {
             _archive.get().writeMetaData(channel, sample);
         } catch (final Exception e) {
-         // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
             throw new ArchiveServiceException("Writing of meta data failed.", e);
         }
         return null;
@@ -188,11 +214,10 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
         }
 
         PreparedStatement statement = null;
-        try
-        {
+        try {
             statement =
                 _archive.get().getRDB().getConnection().prepareStatement(
-                        _archive.get().getSQL().channel_sel_last_time_by_id);
+                                                                         _archive.get().getSQL().channel_sel_last_time_by_id);
             statement.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
             statement.setInt(1, cfg.getId());
             final ResultSet rs = statement.executeQuery();
@@ -220,4 +245,82 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
             }
         }
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CheckForNull
+    public SampleEngineConfig findEngine(final int id) throws ArchiveServiceException {
+
+        PreparedStatement statement = null;
+        try {
+            final RDBArchive archive = _archive.get();
+            statement = archive.getRDB().getConnection().prepareStatement(archive.getSQL().smpl_eng_sel_by_id);
+            statement.setInt(1, id);
+
+            final ResultSet res = statement.executeQuery();
+            if (res.next()) {
+                return new SampleEngineConfig(archive,
+                                              id,
+                                              res.getString(1),
+                                              res.getString(2),
+                                              res.getString(3));
+            }
+        } catch (final SQLException e) {
+            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (final SQLException e) {
+                    LOG.warn("Statement could not be closed properly.", e);
+                }
+            }
+        }
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CheckForNull
+    public SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException {
+
+        PreparedStatement statement = null;
+        try {
+            final RDBArchive archive = _archive.get();
+            statement = archive.getRDB().getConnection().prepareStatement(archive.getSQL().smpl_eng_sel_by_name);
+            statement.setString(1, name);
+
+            final ResultSet res = statement.executeQuery();
+            if (res.next()) {
+                return new SampleEngineConfig(archive,
+                                              res.getInt(1),
+                                              name,
+                                              res.getString(2),
+                                              res.getString(3));
+            }
+        } catch (final SQLException e) {
+            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anyting, let getConnection throw typed ones
+            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+
+        } finally {
+            if (statement != null) {
+                try {
+                    statement.close();
+                } catch (final SQLException e) {
+                    LOG.warn("Statement could not be closed properly.", e);
+                }
+            }
+        }
+        return null;
+    }
+
+
 }

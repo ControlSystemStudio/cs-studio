@@ -487,7 +487,8 @@ public class EngineModel
     final public void readConfig(final String name, final int port) throws Exception
     {
         this.name = name;
-        final SampleEngineConfig engine = archive.findEngine(name);
+        final SampleEngineConfig engine =
+            Activator.getDefault().getArchiveService().findEngine(name);
         if (engine == null) {
             throw new Exception("Unknown engine '" + name + "'");
         }

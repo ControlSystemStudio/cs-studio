@@ -31,6 +31,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServiceImpl;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
@@ -58,9 +59,10 @@ public enum ArchiveDaoManager {
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";
 
-    private String _url = MySQLArchiveServicePreference.URL.getValue();
-    private String _user = MySQLArchiveServicePreference.USER.getValue();
-    private String _password = MySQLArchiveServicePreference.PASSWORD.getValue();
+    private String _url;
+    private String _user;
+    private String _password;
+
     private final Boolean _autoConnect = MySQLArchiveServicePreference.AUTO_CONNECT.getValue();
 
     /**
@@ -94,9 +96,9 @@ public enum ArchiveDaoManager {
 
         if (_autoConnect) {
             final Map<String, Object> prefs = Maps.newHashMap();
-            prefs.put(MySQLArchiveServicePreference.URL.getKeyAsString(), MySQLArchiveServicePreference.URL.getValue());
-            prefs.put(MySQLArchiveServicePreference.USER.getKeyAsString(), MySQLArchiveServicePreference.USER.getValue());
-            prefs.put(MySQLArchiveServicePreference.PASSWORD.getKeyAsString(), MySQLArchiveServicePreference.PASSWORD.getValue());
+            prefs.put(RDBArchivePreferences.URL, RDBArchivePreferences.getURL());
+            prefs.put(RDBArchivePreferences.USER, RDBArchivePreferences.getUser());
+            prefs.put(RDBArchivePreferences.PASSWORD, RDBArchivePreferences.getPassword());
 
             try {
                 connect(prefs);
@@ -115,17 +117,18 @@ public enum ArchiveDaoManager {
                 _archiveConnection.set(null);
                 connection.close();
             }
-            _url = (String) prefs.get(MySQLArchiveServicePreference.URL.getKeyAsString());
-            _user = (String) prefs.get(MySQLArchiveServicePreference.USER.getKeyAsString());
-            _password = (String) prefs.get(MySQLArchiveServicePreference.PASSWORD.getKeyAsString());
+            _url = (String) prefs.get(RDBArchivePreferences.URL);
+            _user = (String) prefs.get(RDBArchivePreferences.USER);
+            _password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
 
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
             connection = DriverManager.getConnection(_url, _user, _password);
 
+            // TODO (bknerr) : refactor logging guard to slf4j fast API
             // Basic database info
-            if (LOG.isDebugEnabled()) { // TODO (bknerr) : refactor logging guard to slf4j fast API
+            if (LOG.isDebugEnabled()) {
                 final DatabaseMetaData meta = connection.getMetaData();
                 LOG.debug("MySQL connection: " +
                           meta.getDatabaseProductName() +

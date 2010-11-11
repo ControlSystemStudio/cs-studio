@@ -7,6 +7,9 @@
  ******************************************************************************/
 package org.csstudio.archive.engine2;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
@@ -15,6 +18,7 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.model.EngineModel;
 import org.csstudio.archive.engine2.server.EngineServer;
+import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -25,9 +29,9 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class Application implements IApplication
 {
     /** Database URL, user, password */
-    private String url = MySQLArchiveServicePreference.URL.getValue(),
-                   user = MySQLArchiveServicePreference.USER.getValue(),
-                   password = MySQLArchiveServicePreference.PASSWORD.getValue();
+    private String url = RDBArchivePreferences.getURL(),
+                   user = RDBArchivePreferences.getUser(),
+                   password = RDBArchivePreferences.getPassword();
 
     /** HTTP Server port */
     private int port;
@@ -120,17 +124,10 @@ public class Application implements IApplication
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
-//            RDBArchive archive;
-//            try
-//            {
-//                archive = RDBArchive.connect(url, user, password);
-//            }
-//            catch (final Exception ex)
-//            {
-//                logger.fatal("Cannot connect to " + url, ex);
-//                return EXIT_OK;
-//            }
-//            model = new EngineModel(archive);
+            // connect the service with the given prefs
+            final Map<String, Object> prefs = createConnectionPrefsMap();
+            Activator.getDefault().getArchiveService().connect(prefs);
+
             model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
@@ -185,7 +182,6 @@ public class Application implements IApplication
                 model.clearConfig();
             }
 
-            archive.close();
             logger.info("ArchiveEngine stopped");
             server.stop();
         }
@@ -198,8 +194,15 @@ public class Application implements IApplication
         return EXIT_OK;
     }
 
+    private Map<String, Object> createConnectionPrefsMap() {
+        final Map<String, Object> prefs = new HashMap<String, Object>();
+        prefs.put(RDBArchivePreferences.URL, url);
+        prefs.put(RDBArchivePreferences.USER, user);
+        prefs.put(RDBArchivePreferences.PASSWORD, password);
+        return prefs;
+    }
+
     /** {@inheritDoc} */
-    @Override
     public void stop()
     {
         if (model != null) {

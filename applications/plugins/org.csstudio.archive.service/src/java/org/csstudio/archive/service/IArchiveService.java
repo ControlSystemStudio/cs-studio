@@ -28,7 +28,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.rdb.RDBArchive;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
@@ -68,21 +68,11 @@ public interface IArchiveService {
     void configure(@Nonnull final Map<String, Object> cfgPrefs);
 
     /**
-     * Writes the sample to the archive.
-     *
-     * @param channelId the id of the channel
-     * @param sample the sample to be archived
-     * @return true, if the sample has been persisted
-     * @throws ArchiveServiceException
-     */
-    //boolean writeSample(final int channelId, final IValue sample) throws ArchiveServiceException;
-
-    /**
      * Writes the samples to the archive.
      *
      * FIXME (bknerr, kasemir) : the signature with separated channel id and list of IValues is
      * not cleanly defined, better having a collection of composite objects,
-     * e.g. Collection<IArchiveSample<T>>.
+     * e.g. Collection<IArchiveSample<T>>. I've introduced such a composite as workaround.
      *
      * @param samples the samples to be archived with their channel id
      * @return true, if the samples have been persisted
@@ -99,27 +89,7 @@ public interface IArchiveService {
     ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
-     * FIXME (bknerr) : This structure seems severely broken:
-     * database accesses scattered all over the place and metadata abstraction not properly designed
-     *
-     * what happens originally:
-     *
-     * {@link WriteThread#write()} calls
-     * {@link ChannelConfig#batchSample(IValue)} calls
-     * {@link RDBArchive#batchSample(ChannelConfig, IValue)} in case <code>if (ChannelConfig#getMetaData() == null)</code> calls
-     * {@link RDBArchive#writeMetaData(ChannelConfig, IValue)} dispatches over <code>instanceof IValue</code> to
-     * {NumericMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)} which finally accesses the database with calls to
-     * <ol>
-     * <li>{NumericMetaDataHelper#get(RDBArchive, ChannelConfig)}</li>
-     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} for deletion in table then return.</li>
-     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} and {NumericMetaDataHelper#insert(RDBArchive, ChannelConfig)} for update</li>
-     * </ol>
-     * or the same to another table
-     * {EnumMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)}
-     *
-     * We have two tables enum_metadata, num_metadata - obviously it is possible that a channel configuration
-     * doesn't have the meta data stuff set, so that in that case any single sample has to asked about its metadata
-     *
+     * Writes metadata out of a sample for a channel.
      *
      * @param channel
      * @param sample
@@ -139,5 +109,24 @@ public interface IArchiveService {
     @CheckForNull
     ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException;
 
+    /**
+     * Retrieves the engine by id.
+     *
+     *  @param engine_id ID of engine to locate
+     *  @return SampleEngineInfo or <code>null</code> when not found
+     *  @throws ArchiveServiceException
+     */
+    @CheckForNull
+    SampleEngineConfig findEngine(final int id) throws ArchiveServiceException;
+
+    /**
+     * Retrieves the engine by id.
+     *
+     *  @param name name of engine to locate
+     *  @return SampleEngineInfo or <code>null</code> when not found
+     *  @throws ArchiveServiceException
+     */
+    @CheckForNull
+    SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException;
 
 }
