@@ -1,5 +1,6 @@
 package org.csstudio.opibuilder.widgetActions;
 
+import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -20,7 +21,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.progress.UIJob;
 
 /**An action which plays a .wav file. 
@@ -57,8 +57,13 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 		           }
 		           
 			       final InputStream in = ResourceUtil.pathToInputStream(absolutePath); 
-			       
-		           final AudioInputStream stream = AudioSystem.getAudioInputStream(in);
+			       final BufferedInputStream bis;
+			       if(!(in instanceof BufferedInputStream))
+			    	   bis = new BufferedInputStream(in);
+			       else
+			    	   bis = (BufferedInputStream) in;
+
+		           final AudioInputStream stream = AudioSystem.getAudioInputStream(bis);
 		           Clip clip = AudioSystem.getClip();
 		           clip.open(stream);         
 		           
@@ -67,7 +72,9 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 							if(event.getType() == LineEvent.Type.STOP){
 								try {
 									stream.close();
-									in.close();
+									bis.close();
+									if(in != bis)
+										in.close();
 								} catch (IOException e) {
 									CentralLogger.getInstance().error(this, e);
 								}
@@ -78,7 +85,6 @@ public class PlayWavFileAction extends AbstractWidgetAction {
 		          
 		        } catch (Exception e) {
 		        	String message = "Failed to play file " + getPath() + "\n" +  e.getMessage(); //$NON-NLS-2$         		
-		        	MessageDialog.openError(null, "Failed to play file", message);
 		        	CentralLogger.getInstance().error(this, message, e);
 		        	ConsoleService.getInstance().writeError(message);		        	
 		        }
