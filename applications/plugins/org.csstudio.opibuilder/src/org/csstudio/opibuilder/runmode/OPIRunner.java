@@ -204,8 +204,8 @@ public class OPIRunner extends EditorPart {
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
 		
-		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
-		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
+		//viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
+		//viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
 		
 		//this will make viewer as a selection provider
 		EditDomain editDomain = new DefaultEditDomain(this){
