@@ -50,6 +50,10 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 	 */
 	private Alarm _highestUnacknowledgedAlarm;
 
+    /**
+     * Allows tracking of life cycle and renaming
+     */
+    private IProcessVariableNodeListener _listener;
 
 	/**
      * ProcessVariableNode Builder.
@@ -63,6 +67,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
         private final String _name;
         private final TreeNodeSource _source;
         private IAlarmSubtreeNode _parent;
+        private IProcessVariableNodeListener _listener;
 
         /**
          * Creates a new node for a process variable as a child of the specified
@@ -87,13 +92,23 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
             return this;
         }
 
+        @Nonnull
+        public Builder setListener(@Nullable final IProcessVariableNodeListener listener) {
+            _listener = listener;
+            return this;
+        }
+
         /**
          * The final method to build the object instance
          * @return the newly built object
          */
+        @SuppressWarnings("synthetic-access")
         @Nonnull
         public ProcessVariableNode build() {
             final ProcessVariableNode node = new ProcessVariableNode(_name, _source);
+            if (_listener != null) {
+                node.setListener(_listener);
+            }
             if (_parent != null) {
                 _parent.addChild(node);
             }
@@ -114,6 +129,16 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 
 
 	/**
+	 * If a listener was given to the builder, the node will store it
+	 * 
+	 * @param listener
+	 */
+	void setListener(@Nonnull final IProcessVariableNodeListener listener) {
+        _listener = listener;
+    }
+
+
+    /**
 	 * {@inheritDoc}
 	 */
 	@Override
@@ -143,6 +168,20 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 		return _highestUnacknowledgedAlarm.getSeverity();
 	}
 
+	@Override
+	public void wasAdded() {
+	    if (_listener != null) {
+	        _listener.wasAdded(getName());
+	    }
+	}
+	
+	@Override
+	public void wasRemoved() {
+	    if (_listener != null) {
+	        _listener.wasRemoved(getName());
+	    }
+	}
+	
 	/**
 	 * {@inheritDoc}
 	 */

@@ -44,6 +44,7 @@ import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
@@ -108,21 +109,22 @@ public final class AlarmTreeBuilder {
      * Creates the initial alarm tree with all subtrees that end with records.
      * Can be canceled.
      * @param parentNode
+     * @param pvNodeListener TODO
      * @param modelNode
      * @param monitor
      * @return cancel status, true if canceled, false otherwise
      * @throws NamingException
      */
     private static boolean createAlarmSubtree(@Nonnull final IAlarmSubtreeNode parentNode,
+                                              @Nonnull final IProcessVariableNodeListener pvNodeListener,
                                               @Nonnull final INodeComponent<LdapEpicsAlarmcfgConfiguration> modelNode,
-                                              @Nonnull final IProgressMonitor monitor,
-                                              @Nonnull final TreeNodeSource source) throws NamingException {
+                                              @Nonnull final IProgressMonitor monitor, @Nonnull final TreeNodeSource source) throws NamingException {
 
         final String simpleName = modelNode.getName();
         IAlarmTreeNode newNode;
 
         if (RECORD.equals(modelNode.getType())) {
-            newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).build();
+            newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).setListener(pvNodeListener).build();
 
             ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, EpicsAlarm.UNKNOWN, new Date(0L)));
 
@@ -137,7 +139,7 @@ public final class AlarmTreeBuilder {
                     ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) modelNode).getDirectChildren();
 
                 for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> child : children) {
-                    createAlarmSubtree((IAlarmSubtreeNode) newNode, child, monitor, source);
+                    createAlarmSubtree((IAlarmSubtreeNode) newNode, pvNodeListener, child, monitor, source);
                     if (monitor.isCanceled()) {
                         return true;
                     }
@@ -163,15 +165,16 @@ public final class AlarmTreeBuilder {
      * canceled.
      *
      * @param rootNode the root node for the alarm tree
+     * @param pvNodeListener TODO
      * @param model the content model
      * @param monitor the progress monitor
      * @return cancel status, true if it has been canceled, falseotherwise
      * @throws NamingException
      */
     public static boolean build(@Nonnull final IAlarmSubtreeNode rootNode,
+                                @Nonnull final IProcessVariableNodeListener pvNodeListener,
                                 @Nonnull final ContentModel<LdapEpicsAlarmcfgConfiguration> model,
-                                @Nonnull final IProgressMonitor monitor,
-                                @Nonnull final TreeNodeSource source) throws NamingException {
+                                @Nonnull final IProgressMonitor monitor, @Nonnull final TreeNodeSource source) throws NamingException {
         ensureTestFacilityExists();
 
         for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> ous : model.getVirtualRoot().getDirectChildren()) {
@@ -183,7 +186,7 @@ public final class AlarmTreeBuilder {
                 ((ISubtreeNodeComponent<LdapEpicsAlarmcfgConfiguration>) ous).getDirectChildren();
 
             for (final INodeComponent<LdapEpicsAlarmcfgConfiguration> efan : efans) {
-                if (createAlarmSubtree(rootNode, efan, monitor, source)) {
+                if (createAlarmSubtree(rootNode, pvNodeListener, efan, monitor, source)) {
                     return true;
                 }
             }

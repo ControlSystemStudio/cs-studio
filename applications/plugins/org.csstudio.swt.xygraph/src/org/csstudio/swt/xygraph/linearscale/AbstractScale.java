@@ -347,7 +347,7 @@ public abstract class AbstractScale extends Figure{
 
         if (lower == upper) {
         	upper = lower +1;
-        	if(upper == lower || Double.isInfinite(upper))
+        	if(Double.isInfinite(upper))
                 throw new IllegalArgumentException("Illegal range: lower=" + lower + ", upper=" + upper);
         }
 

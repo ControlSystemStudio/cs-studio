@@ -66,6 +66,10 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 		return minimum;
 	}
 	
+	public Range getRange(){
+		return new Range(minimum, maximum);
+	}
+	
 	/**
 	 * @return the scale
 	 */
@@ -143,33 +147,19 @@ public abstract class AbstractScaledWidgetFigure extends Figure implements Intro
 		repaint();
 	}
 	/**
-	 * @param maximum the maximum to set
-	 */
-	public void setMaximum(double maximum) {
-		if(this.maximum == maximum)
-			return;		
-		scale.setRange(minimum, maximum);
-		this.maximum = scale.getRange().getUpper();
-		repaint();
-	}
-	/**
-	 * @param minimum the minimum to set
-	 */
-	public void setMinimum(double minimum) {
-		if(this.minimum == minimum)
-			return;		
-		scale.setRange(minimum, maximum);
-		this.minimum = scale.getRange().getLower();
-		repaint();
-	}
-	/**
 	 * set the range of the scale
 	 * @param min
 	 * @param max
 	 */
 	public void setRange(final double min, final double max) {
-		setMaximum(max);
-		setMinimum(min);
+		scale.setRange(min, max);
+		this.maximum = scale.getRange().getUpper();
+		this.minimum = scale.getRange().getLower();
+		repaint();
+	}
+	
+	public void setRange(Range range){
+		setRange(range.getLower(), range.getUpper());
 	}
 	/**
 	 * @param scale the scale to set

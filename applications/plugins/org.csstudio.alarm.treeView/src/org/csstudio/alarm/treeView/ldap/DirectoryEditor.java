@@ -42,6 +42,7 @@ import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
+import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
 import org.csstudio.alarm.treeView.model.PVNodeItem;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
@@ -311,13 +312,15 @@ public final class DirectoryEditor {
      *            the parent node.
      * @param recordName
      *            the name of the process variable record.
+     * @param pvNodeListener TODO
      */
     @CheckForNull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
-                                                                    @Nonnull final String recordName) {
+                                                                    @Nonnull final String recordName, 
+                                                                    @Nonnull final IProcessVariableNodeListener pvNodeListener) {
 
         final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName, parent
-                .getSource()).setParent(parent).build();
+                .getSource()).setParent(parent).setListener(pvNodeListener).build();
 
         final Attributes attrs = new BasicAttributes();
         attrs.put(ATTR_FIELD_OBJECT_CLASS, LdapEpicsAlarmcfgConfiguration.RECORD.getObjectClass());

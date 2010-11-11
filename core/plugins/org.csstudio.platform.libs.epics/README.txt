@@ -13,7 +13,7 @@ that uses the original EPICS libraries via JNI.
 
 jca-2.3.3.jar
 -------------
-Built from 2009/09/14 source snapshot from http://epics-jca.sourceforge.net.
+Built from 2010/09/14 source snapshot from http://epics-jca.sourceforge.net.
 
 Set EPICS_BASE_RELEASE, HOST_ARCH, EPICS_HOST_ARCH as required to build
 EPICS base.
@@ -78,24 +78,31 @@ g++ -shared -lpthread -lreadline  -lncurses -lm -lrt -Wl,-rpath,. -o libjca.so J
 readelf -d libjca.so 
 cp libjca.so ../../org.csstudio.platform.libs.epics/lib/linux/x86
   
-caj-1.1.6.jar
+caj-1.1.7.jar
 --------------
-Built from included 2009/09/13 source snapshot from http://epics-jca.sourceforge.net,
-where build.xml was changed to set debug="true" for javac,
-and src/com/cosylab/epics/caj/util/nif/InetAddressUtilV6.java was renamed to *.java6 to
-allow compilation with both Java 1.5 and 6.
+Built from 2010/11/10 source snapshot from http://epics-jca.sourceforge.net with the following adjustments:
 
-Created on Intel OS X 10.5.8, java 1.5.0_24.
+build.xml was changed to point to the previously generated JCA jar,
+and debug="true" to include debug information:
 
-tar vzxf org.csstudio.platform.libs.epics/lib/caj-1.1.6.tgz 
-cd caj-1.1.6
-# Maybe edit build.xml, adjust this section:
    <path id="build.classpath">
         <pathelement location="../org.csstudio.platform.libs.epics/lib/jca-2.3.2.jar"/>
    </path>
-ant
+ 
+	<target name="compile" depends="init">
+ 		<property name="build.compiler" value="modern"/>
+ 		<javac srcdir="${dir.src}" destdir="${dir.temp}" classpathref="build.classpath" source="1.4" debug="true">
+ 			<classpath refid="build.classpath"/>
+ 		</javac>
+ 	</target>
 
-Copy target/caj.jar ....../org.csstudio.platform.libs.epics/lib/caj-1.1.6.jar
+src/com/cosylab/epics/caj/util/nif/InetAddressUtilV6.java was renamed to *.java6 to
+allow compilation with both Java 1.5 and 6.
+
+Created on Intel OS X 10.5.8, java 1.5.0_24 by running
+
+ant
+cp target/caj.jar ....../org.csstudio.platform.libs.epics/lib/caj-1.1.7.jar
 
 
 

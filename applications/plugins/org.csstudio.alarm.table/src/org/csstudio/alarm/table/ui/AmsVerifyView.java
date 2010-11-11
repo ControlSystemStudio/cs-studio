@@ -88,7 +88,7 @@ public class AmsVerifyView extends LogView {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addJmsTopicItems(logTableManagementComposite);
+        addSourceAccessItems(logTableManagementComposite);
         addVerifyItems(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
