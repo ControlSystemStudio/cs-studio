@@ -42,7 +42,8 @@ import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveEngineConfigService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
@@ -68,7 +69,7 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum OracleArchiveServiceImpl implements IArchiveService {
+public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
 
     INSTANCE;
 
@@ -125,7 +126,7 @@ public enum OracleArchiveServiceImpl implements IArchiveService {
     /**
      * {@inheritDoc}
      */
-    public void disonnect() {
+    public void disconnect() {
         _archive.get().close();
     }
 

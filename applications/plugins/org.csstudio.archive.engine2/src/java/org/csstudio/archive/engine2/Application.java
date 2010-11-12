@@ -126,7 +126,7 @@ public class Application implements IApplication
         {
             // connect the service with the given prefs
             final Map<String, Object> prefs = createConnectionPrefsMap();
-            Activator.getDefault().getArchiveService().connect(prefs);
+            Activator.getDefault().getArchiveWriterService().connect(prefs);
 
             model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
@@ -149,7 +149,9 @@ public class Application implements IApplication
                 final BenchmarkTimer timer = new BenchmarkTimer();
                 try
                 {
+                    Activator.getDefault().getArchiveEngineConfigService().connect(prefs);
                     model.readConfig(engine_name, port);
+                    Activator.getDefault().getArchiveEngineConfigService().disconnect();
                 }
                 catch (final Exception ex)
                 {
@@ -181,7 +183,7 @@ public class Application implements IApplication
                 model.stop();
                 model.clearConfig();
             }
-            Activator.getDefault().getArchiveService().disonnect();
+            Activator.getDefault().getArchiveWriterService().disconnect();
 
             logger.info("ArchiveEngine stopped");
             server.stop();

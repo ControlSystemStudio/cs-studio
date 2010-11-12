@@ -25,10 +25,9 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.service.ArchiveServiceTracker;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveEngineConfigService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -40,7 +39,6 @@ public class Activator implements BundleActivator {
 
     private static Activator INSTANCE;
 
-    private ArchiveServiceTracker _archiveServiceTracker;
 
     /**
      * Don't instantiate.
@@ -69,17 +67,23 @@ public class Activator implements BundleActivator {
 	@Override
     public void start(final BundleContext context) throws Exception {
 
-	    final Dictionary<String, Object> props = new Hashtable<String, Object>();
-        props.put("service.vendor", "SNS");
-        props.put("service.description", "MySQL archive service implementation");
-        LOG.info("Register Oracle archive service");
+        final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
+        propsCfg.put("service.vendor", "DESY");
+        propsCfg.put("service.description", "MySQL archive engine config service implementation");
+        LOG.info("Register MySQL archive engine config service");
 
-        context.registerService(IArchiveService.class.getName(),
+        context.registerService(IArchiveEngineConfigService.class.getName(),
                                 MySQLArchiveServiceImpl.INSTANCE,
-                                props);
+                                propsCfg);
 
-        _archiveServiceTracker = new ArchiveServiceTracker(context);
-        _archiveServiceTracker.open();
+        final Dictionary<String, Object> propsWr = new Hashtable<String, Object>();
+        propsWr.put("service.vendor", "DESY");
+        propsWr.put("service.description", "MySQL archive writer service implementation");
+        LOG.info("Register MySQL archive writer service");
+
+        context.registerService(IArchiveWriterService.class.getName(),
+                                MySQLArchiveServiceImpl.INSTANCE,
+                                propsWr);
 	}
 
 	/*
@@ -88,24 +92,7 @@ public class Activator implements BundleActivator {
 	 */
 	@Override
     public void stop(final BundleContext bundleContext) throws Exception {
-	    // Service is automatically unregistered
 
-	    if (_archiveServiceTracker != null) {
-	        _archiveServiceTracker.close();
-	    }
+        // Services are automatically unregistered
 	}
-
-    /**
-     * Returns the archive service from the service tracker.
-     * @return the archive  service or <code>null</code> if not available.
-     * @throws OsgiServiceUnavailableException if the service cannot be retrieved
-     */
-    public IArchiveService getArchiveService() throws OsgiServiceUnavailableException
-    {
-        final IArchiveService service = (IArchiveService) _archiveServiceTracker.getService();
-        if (service == null) {
-            throw new OsgiServiceUnavailableException("Archive service tracker returned null.");
-        }
-        return service;
-    }
 }

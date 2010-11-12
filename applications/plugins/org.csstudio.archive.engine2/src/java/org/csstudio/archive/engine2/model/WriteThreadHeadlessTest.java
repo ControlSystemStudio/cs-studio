@@ -14,7 +14,7 @@ import java.util.Map;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -58,7 +58,7 @@ public class WriteThreadHeadlessTest
         prefs.put(RDBArchivePreferences.URL, url);
         prefs.put(RDBArchivePreferences.USER, user);
         prefs.put(RDBArchivePreferences.PASSWORD, password);
-        final IArchiveService service = Activator.getDefault().getArchiveService();
+        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
         service.connect(prefs);
 
         final WriteThread writer = new WriteThread();
@@ -89,7 +89,7 @@ public class WriteThreadHeadlessTest
         }
         writer.shutdown();
 
-        service.disonnect();
+        service.disconnect();
 
         // Show stats
         System.out.println(buffer);

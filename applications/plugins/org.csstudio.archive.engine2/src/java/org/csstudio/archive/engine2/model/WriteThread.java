@@ -14,7 +14,7 @@ import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.ArchiveServiceException;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
@@ -203,7 +203,7 @@ public class WriteThread implements Runnable
                 // If there was an error before...
                 if (write_error)
                 {   // .. try to reconnect
-                    Activator.getDefault().getArchiveService().reconnect();
+                    Activator.getDefault().getArchiveWriterService().reconnect();
                     // If we get here, all is OK so far ...
                     write_error = false;
                     // .. and we continue to write.
@@ -276,7 +276,7 @@ public class WriteThread implements Runnable
     {
         int total_count = 0;
 
-        final IArchiveService archiveService = Activator.getDefault().getArchiveService();
+        final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
 
         final List<IValueWithChannelId> samples =
             new ArrayList<IValueWithChannelId>(batch_size);
@@ -287,7 +287,7 @@ public class WriteThread implements Runnable
             // Gather samples for one channel
             final String name = buffer.getChannelName();
 
-            final ChannelConfig channel = archiveService.getChannel(name);
+            final ChannelConfig channel = writerService.getChannel(name);
 
             IValue sample = buffer.remove();
             while (sample != null) {
@@ -295,7 +295,7 @@ public class WriteThread implements Runnable
                 // sample handling
                 samples.add(new ValueWithChannelId(sample, channel.getId()));
                 if (samples.size() >= batch_size) {
-                    archiveService.writeSamples(samples);
+                    writerService.writeSamples(samples);
                     total_count += batch_size;
                     samples.clear();
                 }
@@ -313,7 +313,7 @@ public class WriteThread implements Runnable
                     // tool not for the archive.
 
                     // this service method is only provided for the compatibility for the original ORACLE setup
-                    final IMetaData metaData = archiveService.writeMetaData(channel, sample);
+                    final IMetaData metaData = writerService.writeMetaData(channel, sample);
                     channel.setMetaData(metaData);
                 }
                 // next
@@ -322,7 +322,7 @@ public class WriteThread implements Runnable
         }
         // remaining sample handling of this sample buffer
         if (!samples.isEmpty()) {
-            archiveService.writeSamples(samples);
+            writerService.writeSamples(samples);
             total_count += samples.size();
             samples.clear();
         }

@@ -16,7 +16,7 @@ import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the engine model
@@ -49,18 +49,21 @@ public class EngineModelHeadlessTest
         prefs.put(RDBArchivePreferences.URL, url);
         prefs.put(RDBArchivePreferences.USER, user);
         prefs.put(RDBArchivePreferences.PASSWORD, password);
-        final IArchiveService service = Activator.getDefault().getArchiveService();
+        final IArchiveEngineConfigService service = Activator.getDefault().getArchiveEngineConfigService();
         service.connect(prefs);
 
         final BenchmarkTimer timer = new BenchmarkTimer();
         final EngineModel model = new EngineModel();
         model.readConfig(config, port);
         timer.stop();
+
+        service.disconnect();
+
         final int count = model.getChannelCount();
         System.out.println("Channel count: " + count);
         System.out.println("Runtime      : " + timer);
         System.out.println("Channels/sec : " + count/timer.getSeconds());
-        service.disonnect();
+
         assertTrue(count > 0);
     }
 }

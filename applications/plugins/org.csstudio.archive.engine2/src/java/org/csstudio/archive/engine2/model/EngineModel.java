@@ -18,7 +18,8 @@ import org.csstudio.archive.engine2.scanner.Scanner;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveEngineConfigService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -326,12 +327,12 @@ public class EngineModel
             // because we won't be able to go back-in-time before that sample.
         	IValue last_sample = null;
 
-        	final IArchiveService archiveService = Activator.getDefault().getArchiveService();
-        	final ChannelConfig channelCfg = archiveService.getChannel(name);
+        	final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
+        	final ChannelConfig channelCfg = service.getChannel(name);
         	if (channelCfg != null)
         	{
         	    final ITimestamp last_stamp  =
-        	        archiveService.getLatestTimestampByChannel(channelCfg.getName());
+        	        service.getLatestTimestampByChannel(channelCfg.getName());
 
 	            if (last_stamp != null) {
                     // Create fake string sample with that time
@@ -487,8 +488,10 @@ public class EngineModel
     final public void readConfig(final String name, final int port) throws Exception
     {
         this.name = name;
-        final SampleEngineConfig engine =
-            Activator.getDefault().getArchiveService().findEngine(name);
+
+        final IArchiveEngineConfigService service = Activator.getDefault().getArchiveEngineConfigService();
+
+        final SampleEngineConfig engine = service.findEngine(name);
         if (engine == null) {
             throw new Exception("Unknown engine '" + name + "'");
         }
@@ -500,14 +503,17 @@ public class EngineModel
         }
 
         // Get groups
-        final List<ChannelGroupConfig> engine_groups =
-            Activator.getDefault().getArchiveService().getGroups(engine.getId());
+        final List<ChannelGroupConfig> engine_groups = service.getGroups(engine.getId());
 
         for (final ChannelGroupConfig group_config : engine_groups)
         {
             final ArchiveGroup group = addGroup(group_config.getName());
             // Add channels to group
             final ChannelConfig[] channel_configs = group_config.getChannels();
+            //final ChannelConfig[] channel_configs = service.getChannels(group_config);
+
+
+
             for (final ChannelConfig channel_config : channel_configs)
             {
                 Enablement enablement = Enablement.Passive;

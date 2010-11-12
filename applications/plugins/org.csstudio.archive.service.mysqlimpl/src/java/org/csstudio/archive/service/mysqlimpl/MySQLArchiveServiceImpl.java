@@ -32,7 +32,8 @@ import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
-import org.csstudio.archive.service.IArchiveService;
+import org.csstudio.archive.service.IArchiveEngineConfigService;
+import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
@@ -57,7 +58,7 @@ import org.joda.time.DateTime;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum MySQLArchiveServiceImpl implements IArchiveService {
+public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
 
     INSTANCE;
 
@@ -91,7 +92,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveService {
      * {@inheritDoc}
      */
     @Override
-    public void disonnect() throws ArchiveConnectionException {
+    public void disconnect() throws ArchiveConnectionException {
         ArchiveDaoManager.INSTANCE.disconnect();
     }
 
