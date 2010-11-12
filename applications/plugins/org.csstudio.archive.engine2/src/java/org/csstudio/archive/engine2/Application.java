@@ -181,6 +181,7 @@ public class Application implements IApplication
                 model.stop();
                 model.clearConfig();
             }
+            Activator.getDefault().getArchiveService().disonnect();
 
             logger.info("ArchiveEngine stopped");
             server.stop();
