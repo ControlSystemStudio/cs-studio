@@ -19,38 +19,32 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.sample;
+package org.csstudio.archive.service.channel;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
+import org.csstudio.domain.desy.common.id.Id;
 
 /**
- * Read only interface of a sample value in the archive.
+ * Id object for channel.
  *
  * @author bknerr
- * @since 11.11.2010
+ * @since 09.11.2010
  */
-public interface IArchiveSample<T> {
+public class ArchiveChannelId extends Id<ArchiveChannelId> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
-    public ArchiveChannelId getChannelId();
+    public static final ArchiveChannelId NONE = new ArchiveChannelId(-1L);
 
     /**
-     * The sample value.
-     * @return the value
+     * Constructor.
+     *
+     * @param value the value
      */
-    @Nonnull
-    public T getValue();
+    public ArchiveChannelId(final long value) {
+        super(value);
+    }
 
-    /**
-     * The timestamp of the sample value.
-     * @return the timestamp
-     */
-    @Nonnull
-    public DateTime getTimeStamp();
 }

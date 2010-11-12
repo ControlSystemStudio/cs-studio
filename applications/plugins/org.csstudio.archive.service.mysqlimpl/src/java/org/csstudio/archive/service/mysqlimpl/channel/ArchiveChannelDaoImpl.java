@@ -30,11 +30,10 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.GroupId;
+import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.joda.time.DateTime;
 
 import com.google.common.collect.Maps;
@@ -83,8 +82,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 final double sampleVal = result.getDouble(4);
                 final double samplePer = result.getDouble(5);
                 final Timestamp ltstSmplTime = result.getTimestamp(6);
-                channel = new ArchiveChannelDTO(new ChannelId(id),
-                                                new GroupId(grpId),
+                channel = new ArchiveChannelDTO(new ArchiveChannelId(id),
+                                                new ArchiveChannelGroup(grpId),
                                                 new ArchiveSampleModeId(sampleMode),
                                                 sampleVal,
                                                 samplePer,

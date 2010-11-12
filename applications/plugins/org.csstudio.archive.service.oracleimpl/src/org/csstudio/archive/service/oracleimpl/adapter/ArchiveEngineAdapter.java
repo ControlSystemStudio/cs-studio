@@ -19,60 +19,45 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service;
+package org.csstudio.archive.service.oracleimpl.adapter;
 
-import java.util.List;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
-import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
-import org.csstudio.archive.service.engine.ArchiveEngineId;
+import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.engine.IArchiveEngine;
 
 /**
- * Archive engine configuration methods.
+ * TODO (bknerr) :
  *
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveEngineConfigService extends IArchiveConnectionService {
+public enum ArchiveEngineAdapter {
+    INSTANCE;
 
     /**
-     * Retrieves the engine by id.
-     *
-     *  @param engine_id ID of engine to locate
-     *  @return SampleEngineInfo or <code>null</code> when not found
-     *  @throws ArchiveServiceException
+     * @param cfg the sample engine config
      */
-    @CheckForNull
-    IArchiveEngine findEngine(final int id) throws ArchiveServiceException;
+    public IArchiveEngine adapt(@Nonnull final SampleEngineConfig cfg) {
 
-    /**
-     * Retrieves the engine by id.
-     *
-     *  @param name name of engine to locate
-     *  @return SampleEngineInfo or <code>null</code> when not found
-     *  @throws ArchiveServiceException
-     */
-    @CheckForNull
-    IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException;
+        return new IArchiveEngine() {
+            @CheckForNull
+            public URL getUrl() throws MalformedURLException {
+                try {
+                    return cfg.getUrl();
+                } catch (final Exception e) {
+                    // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+                    throw new MalformedURLException();
+                }
+            }
 
-    /**
-     * @param engineId
-     * @return
-     *  @throws ArchiveServiceException
-     */
-    @Nonnull
-    List<IArchiveChannelGroup> getGroupsByEngineId(ArchiveEngineId id) throws ArchiveServiceException;
-
-    /**
-     * @param group_config
-     * @return the list of channels in this group
-     * @throws ArchiveServiceException
-     */
-    @Nonnull
-    List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException;
+            public int getId() {
+                return cfg.getId();
+            }
+        };
+    }
 }

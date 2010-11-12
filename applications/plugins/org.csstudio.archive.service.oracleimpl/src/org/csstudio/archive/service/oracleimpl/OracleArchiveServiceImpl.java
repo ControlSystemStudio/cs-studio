@@ -21,10 +21,6 @@
  */
 package org.csstudio.archive.service.oracleimpl;
 
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -38,34 +34,34 @@ import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
-import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
-import org.csstudio.platform.data.IMetaData;
+import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.oracleimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.csstudio.platform.utility.rdb.TimeWarp;
 
 /**
  * Example archive service implementation to separate the processing and logic layer from
  * the data access layer.
  *
- * IMPORTANT - PLEASE READ CAREFULLY - this service implementation is a stub to show the decoupling
- * of the engine from archive access!
- * A proper implementation of such a service with dedicated DAO layers can be found in
- * o.c.archive.service.mysqlimpl and later for cassandraimpl.
+ * IMPORTANT - PLEASE READ CAREFULLY - this service implementation is a stub to demonstrate the
+ * decoupling of the engine from the data (archive) access layer!
  *
- * This stub tries <b>always</b> to redirect to o.c.archive.rdb if possible, so that the SNS
- * developers can start to revise/refactor at familiar points.
- * If it is just not possible, as the archive.rdb methods are not accessible (not public and
- * exported), then the rdb access code is duplicated with a comment explaining where to look and why
- * a redirection wasn't possible.
+ * This stub <b>tries always</b> to redirect to o.c.archive.rdb if possible, so that the SNS
+ * developers can start to revise/refactor at familiar points in their own code.
+ * If this is not possible, as the archive.rdb methods are not accessible (not public and/or
+ * exported or at least not without much ado), then the rdb access code is duplicated with a comment
+ * explaining where to look and why a redirection wasn't possible.
  *
+ * (An example implementation of such a service with dedicated DAO layers can be found in
+ * o.c.archive.service.mysqlimpl).
+
  * @author bknerr
  * @since 01.11.2010
  */
@@ -73,6 +69,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
 
     INSTANCE;
 
+    @SuppressWarnings("unused")
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(OracleArchiveServiceImpl.class);
 
@@ -123,7 +120,6 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
 
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -170,56 +166,44 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
+    public ChannelConfig getChannel(@Nonnull final String channelName) throws ArchiveServiceException {
+        try {
+            return _archive.get().getChannel(channelName);
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            e.printStackTrace();
+            throw new ArchiveServiceException("Retrieval of channel failed.", e);
+        }
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @CheckForNull
+    public int getChannelId(@Nonnull final String channelName) throws ArchiveServiceException {
+        try {
+            final ChannelConfig channel = _archive.get().getChannel(channelName);
+            return channel != null ? channel.getId() : null;
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            e.printStackTrace();
+            throw new ArchiveServiceException("Retrieval of channel id failed.", e);
+        }
     }
 
     /**
      * {@inheritDoc}
-     *
-     * FIXME (bknerr, kasemir) : This structure seems severely broken:
-     * database accesses scattered all over the place and metadata abstraction not properly designed
-     * Question: How are channel, sample, meta data defined?
-     *
-     * what happens originally:
-     *
-     * {@link WriteThread#write()} calls
-     * {@link ChannelConfig#batchSample(IValue)} calls
-     * {@link RDBArchive#batchSample(ChannelConfig, IValue)} in case <code>if (ChannelConfig#getMetaData() == null)</code> calls
-     * {@link RDBArchive#writeMetaData(ChannelConfig, IValue)} dispatches over <code>instanceof IValue</code> to
-     * {NumericMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)} which finally accesses the database with calls to
-     * <ol>
-     * <li>{NumericMetaDataHelper#get(RDBArchive, ChannelConfig)}</li>
-     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} for deletion in table then return.</li>
-     * <li>{NumericMetaDataHelper#delete(RDBArchive, ChannelConfig)} and {NumericMetaDataHelper#insert(RDBArchive, ChannelConfig)} for update</li>
-     * </ol>
-     * or the same to another table
-     * {EnumMetaDataHelper#set(RDBArchive, ChannelConfig, IMetaData)}
-     *
-     * We have two tables enum_metadata, num_metadata - obviously it is possible that a channel configuration
-     * doesn't have the meta data stuff set, so that in that case any single sample (IValue) has to asked about its metadata
-     * to set the information initially.
-     * IValue itself has to be cast via instanceof cascade to its implementing class to retrieve the 'value'-value.
-     * It's not possible to as
      */
-    @Nonnull
-    public IMetaData writeMetaData(@Nonnull final ChannelConfig channel, @Nonnull final IValue sample) throws ArchiveServiceException {
+    public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
-            _archive.get().writeMetaData(channel, sample);
+            _archive.get().writeMetaData(getChannel(channelName), sample);
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Writing of meta data failed.", e);
         }
-        return null;
     }
 
     /**
      * {@inheritDoc}
-     *
-     * REDIRECTION NOT POSSIBLE:
-     * Direct rdb access through {@link ChannelConfig#getLastTimestamp()}!
-     * Had to duplicate code statement code
      */
     @CheckForNull
     public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
@@ -228,37 +212,11 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         if (cfg == null) {
             return null;
         }
-
-        PreparedStatement statement = null;
         try {
-            statement =
-                _archive.get().getRDB().getConnection().prepareStatement(
-                                                                         _archive.get().getSQL().channel_sel_last_time_by_id);
-            statement.setQueryTimeout(RDBArchivePreferences.getSQLTimeout());
-            statement.setInt(1, cfg.getId());
-            final ResultSet rs = statement.executeQuery();
-            if (!rs.next()) {
-                return null;
-            }
-            final Timestamp end = rs.getTimestamp(1);
-            // Channel without any samples?
-            if (end == null) {
-                return null;
-            }
-            return TimeWarp.getCSSTimestamp(end);
-        } catch (final SQLException e) {
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            return cfg.getLastTimestamp();
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
-        } finally {
-            if (statement != null) {
-                try {
-                    statement.close();
-                } catch (final SQLException e) {
-                    LOG.warn("Statement could not be closed properly.", e);
-                }
-            }
+            throw new ArchiveServiceException("Retrieval of last sample's time stamp failed.", e);
         }
     }
 
@@ -266,11 +224,11 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @CheckForNull
-    public SampleEngineConfig findEngine(final int id) throws ArchiveServiceException {
+    public IArchiveEngine findEngine(final int id) throws ArchiveServiceException {
         // FIXME (kasemir) : data access object is created anew on every invocation?!
         final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            return engines.find(id);
+            return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(id));
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of engine failed.", e);
@@ -281,11 +239,11 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @CheckForNull
-    public SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException {
+    public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         // FIXME (kasemir) : data access object is created anew on every invocation?!
         final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            return engines.find(name);
+            return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(name));
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of engine failed.", e);
@@ -296,7 +254,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public List<ChannelGroupConfig> getGroups(final int engineId) throws ArchiveServiceException {
+    public List<ChannelGroupConfig> getGroupsByEngineId(final int engineId) throws ArchiveServiceException {
         // FIXME (kasemir) : data access object is created anew on every invocation?!
         final ChannelGroupHelper groups = new ChannelGroupHelper(_archive.get());
         try {
@@ -311,7 +269,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public List<ChannelConfig> getChannels(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public List<ChannelConfig> getChannelsByGroupId(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
         try {
             return group_config.getChannels();
         } catch (final Exception e) {
@@ -319,4 +277,5 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             throw new ArchiveServiceException("Retrieval of channels failed.", e);
         }
     }
+
 }

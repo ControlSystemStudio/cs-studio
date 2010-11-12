@@ -13,5 +13,7 @@ Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
 Export-Package: org.csstudio.archive.service,
  org.csstudio.archive.service.adapter,
  org.csstudio.archive.service.channel,
+ org.csstudio.archive.service.channelgroup,
+ org.csstudio.archive.service.engine,
  org.csstudio.archive.service.sample,
  org.csstudio.archive.service.samplemode

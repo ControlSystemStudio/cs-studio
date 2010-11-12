@@ -28,7 +28,6 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
-import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -62,15 +61,21 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
     ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
+     * Retrieves the channel id for a given channel name.
+     * @param name the name of the channel
+     * @return the id
+     * @throws ArchiveServiceException
+     */
+    int getChannelId(@Nonnull final String name) throws ArchiveServiceException;
+
+    /**
      * Writes metadata out of a sample for a channel.
      *
-     * @param channel
-     * @param sample
-     * @return the meta data that has been written
+     * @param channelName the name of the channel
+     * @param sample the current sample
      * @throws ArchiveServiceException if the writing of meta data failed
      */
-    @CheckForNull
-    IMetaData writeMetaData(@Nonnull final ChannelConfig channel, @Nonnull final IValue sample) throws ArchiveServiceException;
+    void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
 
     /**
      * Retrieves the time stamp of the latest sample for the given channel.
@@ -81,5 +86,4 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
      */
     @CheckForNull
     ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException;
-
 }

@@ -29,8 +29,8 @@ import java.sql.Timestamp;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
-import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.joda.time.DateTime;
 
 /**
@@ -51,7 +51,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public DateTime getLatestSampleForChannel(@Nonnull final ChannelId id) throws ArchiveSampleDaoException {
+    public DateTime getLatestSampleForChannel(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException {
 
         PreparedStatement stmt = null;
         try {

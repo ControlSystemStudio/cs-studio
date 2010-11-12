@@ -19,31 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.channel;
+package org.csstudio.archive.service.channelgroup;
 
 import org.csstudio.domain.desy.common.id.Id;
 
 /**
- * Id object for Group.
+ * Id object for channel group.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 12.11.2010
  */
-public class GroupId extends Id<GroupId> {
+public class ArchiveChannelGroupId extends Id<ArchiveChannelGroupId> {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
-    public static final GroupId NONE = new GroupId(-1L);
+    public static final ArchiveChannelGroupId NONE = new ArchiveChannelGroupId(-1L);
 
     /**
      * Constructor.
      *
      * @param value the value
      */
-    public GroupId(final long value) {
+    public ArchiveChannelGroupId(final long value) {
         super(value);
     }
 }

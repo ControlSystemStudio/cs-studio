@@ -19,38 +19,29 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.sample;
+package org.csstudio.archive.service.engine;
+
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * Read only interface of a sample value in the archive.
+ * Read only interface of an engine in the archive.
  *
  * @author bknerr
- * @since 11.11.2010
+ * @since 12.11.2010
  */
-public interface IArchiveSample<T> {
+public interface IArchiveEngine extends Identifiable<ArchiveEngineId>{
 
     /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
-     */
-    public ArchiveChannelId getChannelId();
-
-    /**
-     * The sample value.
-     * @return the value
+     * Returns the engine URL.
+     * @return the URL
+     * @throws MalformedURLException
      */
     @Nonnull
-    public T getValue();
+    URL getUrl() throws MalformedURLException;
 
-    /**
-     * The timestamp of the sample value.
-     * @return the timestamp
-     */
-    @Nonnull
-    public DateTime getTimeStamp();
 }

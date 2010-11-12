@@ -12,11 +12,9 @@ import java.util.List;
 
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
-import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
-import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
@@ -285,15 +283,15 @@ public class WriteThread implements Runnable
             // Update max buffer length etc. before we start to remove samples
             buffer.updateStats();
             // Gather samples for one channel
-            final String name = buffer.getChannelName();
+            final String channelName = buffer.getChannelName();
 
-            final ChannelConfig channel = writerService.getChannel(name);
+            final int channelId = writerService.getChannelId(channelName);
 
             IValue sample = buffer.remove();
             while (sample != null) {
 
                 // sample handling
-                samples.add(new ValueWithChannelId(sample, channel.getId()));
+                samples.add(new ValueWithChannelId(sample, channelId));
                 if (samples.size() >= batch_size) {
                     writerService.writeSamples(samples);
                     total_count += batch_size;
@@ -301,21 +299,8 @@ public class WriteThread implements Runnable
                 }
 
                 // metadata handling
-                if (channel.getMetaData() == null) {
+                writerService.writeMetaData(channelName, sample);
 
-                    // FIXME (bknerr) : complete "meta data" concept seems broken.
-                    // Metadata are partly themselves record fields = channels, hence having channel configurations that have meta data and so on.
-                    //
-                    // Consider refactoring this stuff:
-                    // treat all channels = record fields exactly the same in the archiver, just as samples in the sample table
-                    // and let the archive reading clients handle the relations between the record fields (whether they
-                    // belong to the 'same' record or influence each other otherwise is only of interest for the archive reading
-                    // tool not for the archive.
-
-                    // this service method is only provided for the compatibility for the original ORACLE setup
-                    final IMetaData metaData = writerService.writeMetaData(channel, sample);
-                    channel.setMetaData(metaData);
-                }
                 // next
                 sample = buffer.remove();
             }
@@ -326,7 +311,6 @@ public class WriteThread implements Runnable
             total_count += samples.size();
             samples.clear();
         }
-
 
         return total_count;
     }

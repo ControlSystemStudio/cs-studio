@@ -19,38 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.sample;
+package org.csstudio.archive.service.channelgroup;
 
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
+import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * Read only interface of a sample value in the archive.
+ * Read only interface of an channel group in the archive.
  *
  * @author bknerr
- * @since 11.11.2010
+ * @since 12.11.2010
  */
-public interface IArchiveSample<T> {
+public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId>{
 
     /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
-     */
-    public ArchiveChannelId getChannelId();
-
-    /**
-     * The sample value.
-     * @return the value
+     * @return the channel group name
      */
     @Nonnull
-    public T getValue();
+    public String getName();
 
     /**
-     * The timestamp of the sample value.
-     * @return the timestamp
+     * @return the enabling channel id
      */
-    @Nonnull
-    public DateTime getTimeStamp();
+    public ArchiveChannelId getEnablingChannelId();
+
 }

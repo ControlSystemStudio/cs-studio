@@ -23,8 +23,8 @@ package org.csstudio.archive.service.channel;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.csstudio.domain.desy.common.id.Identifiable;
 import org.joda.time.DateTime;
 
@@ -34,40 +34,40 @@ import org.joda.time.DateTime;
  * @author bknerr
  * @since 09.11.2010
  */
-public interface IArchiveChannel extends Identifiable<ChannelId> {
+public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
+
+    /**
+     * @return the name of the channel
+     */
+    @Nonnull
+    public String getName();
 
     /**
      * @return Channel group ID
      */
     @Nonnull
-    GroupId getGroupId();
+    public ArchiveChannelGroupId getGroupId();
 
     /**
      * @return the sample mode (int means scan or monitor typically)
      */
     @Nonnull
-    ArchiveSampleModeId getSampleModeId();
+    public ArchiveSampleModeId getSampleModeId();
 
-    double getSamplePeriod();
+    /**
+     * @return
+     */
+    public double getSamplePeriod();
 
     /**
      * @return Sample mode configuration value, e.g. 'delta' for Monitor
-     * TODO (bknerr) : wtf
      */
-    double getSampleValue();
+    public double getSampleValue();
 
     /**
      * @return the timestamp of the latest archived sample for this channel
      */
     @Nonnull
-    DateTime getLatestTimestamp();
-
-
-
-
-//    /**
-//     * @return Meta data or <code>null</code>
-//     */
-//    IMetaData getMetaData();
+    public DateTime getLatestTimestamp();
 
 }

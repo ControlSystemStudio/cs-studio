@@ -23,10 +23,10 @@ package org.csstudio.archive.service.mysqlimpl.channel;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.GroupId;
+import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.common.channel.ChannelId;
 import org.joda.time.DateTime;
 
 /**
@@ -37,11 +37,11 @@ import org.joda.time.DateTime;
  */
 public class ArchiveChannelDTO implements IArchiveChannel {
 
-    private final ChannelId _id;
+    private final ArchiveChannelId _id;
 
-    private final GroupId _groupId;
+    private final ArchiveChannelGroupId _groupId;
 
-    private final ArchiveSampleModeId _sampleMode;
+    private final ArchiveSampleModeId _sampleModeId;
 
     private final double _sampleValue;
 
@@ -62,8 +62,8 @@ public class ArchiveChannelDTO implements IArchiveChannel {
     //* @param metaData
      * @param ltstTimestamp
      */
-    public ArchiveChannelDTO(@Nonnull final ChannelId id,
-                             @Nonnull final GroupId grpId,
+    public ArchiveChannelDTO(@Nonnull final ArchiveChannelId id,
+                             @Nonnull final ArchiveChannelGroupId grpId,
                              @Nonnull final ArchiveSampleModeId sampleModeId,
                              final double smplVal,
                              final double smplPer,
@@ -71,7 +71,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
                              @Nonnull final DateTime ltstTimestamp) {
         _id = id;
         _groupId = grpId;
-        _sampleMode = sampleModeId;
+        _sampleModeId = sampleModeId;
         _sampleValue = smplVal;
         _samplePeriod = smplPer;
         //_metaData = metaData;
@@ -83,7 +83,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      */
     @Override
     @Nonnull
-    public ChannelId getId() {
+    public ArchiveChannelId getId() {
         return _id;
     }
     /**
@@ -91,7 +91,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      */
     @Override
     @Nonnull
-    public GroupId getGroupId() {
+    public ArchiveChannelGroupId getGroupId() {
         return _groupId;
     }
     /**
@@ -100,7 +100,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
     @Override
     @Nonnull
     public ArchiveSampleModeId getSampleModeId() {
-        return _sampleMode;
+        return _sampleModeId;
     }
     /**
      * {@inheritDoc}

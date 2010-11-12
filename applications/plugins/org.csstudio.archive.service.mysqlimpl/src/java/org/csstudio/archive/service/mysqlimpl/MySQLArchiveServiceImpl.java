@@ -40,7 +40,6 @@ import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.joda.time.DateTime;
@@ -145,11 +144,36 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     /**
      * {@inheritDoc}
      */
+    @Override
+    public int getChannelId(final String name) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return 0;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     @Deprecated
     @Override
-    public IMetaData writeMetaData(@Nonnull final ChannelConfig channel, final IValue sample) {
-        // Don't do anything
-        return null;
+    public void writeMetaData(@Nonnull final String channelName, final IValue sample) {
+        // FIXME (bknerr) : complete "meta data" concept seems broken.
+        // Metadata are partly themselves record fields (for numerics), which might be again registered channels,
+        // hence having channel configurations that then have again meta data and so on.
+        //
+        // Consider refactoring:
+        // treat all channels = 'record fields' exactly the same in the archiver, just as samples in the sample table
+        // and let the archive reading clients handle the relations between the record fields (whether they
+        // belong to the 'same' record or influence each other in any way is only of interest for the archive reading
+        // tool not for the archive).
+        // How about that:
+        // Consider making the channel id in the rdb split into two columns, record and field.
+        // Hence, asking about a channel's VAL samples, e.g. <record>.<field>=kryoBox.VAL can easily be
+        // modified by the client to ask additionally, if channelType of kryoBox.VAL is numeric, get the samples for
+        // channel kryoBox.deadband, kryoBox.HIHI and kryoBox.LOLO as well. That can be called meta data or whatever.
+        // But the archiver wouldn't notice any difference.
+        //
+        // DESY has to take care as it is envisioned to have several control systems. Hence record and field might not
+        // be appropriate. Generify this idea.
     }
 
     /**
@@ -201,7 +225,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public List<ChannelGroupConfig> getGroups(final int engineId) throws ArchiveServiceException {
+    public List<ChannelGroupConfig> getGroupsByEngineId(final int engineId) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -210,7 +234,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public List<ChannelConfig> getChannels(final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public List<ChannelConfig> getChannelsByGroupId(final ChannelGroupConfig group_config) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }

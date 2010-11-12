@@ -19,38 +19,55 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.sample;
+package org.csstudio.archive.service.samplemode;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
-
 /**
- * Read only interface of a sample value in the archive.
+ * DTO for sample mode.
  *
  * @author bknerr
- * @since 11.11.2010
+ * @since 12.11.2010
  */
-public interface IArchiveSample<T> {
+public enum ArchiveSampleModeDTO implements IArchiveSampleMode {
+    MONITOR("Monitor mode"),
+    SCAN("Scanned mode");
+
+    private final String _description;
+
+    private final ArchiveSampleModeId _id;
 
     /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
+     * Constructor.
      */
-    public ArchiveChannelId getChannelId();
+    private ArchiveSampleModeDTO(@Nonnull final String desc) {
+        _description = desc;
+        // TODO (bknerr) : check whether this works... seems fishy as ordinal is called before
+        // the objects are completely initialised
+        _id = new ArchiveSampleModeId(ordinal());
+    }
 
     /**
-     * The sample value.
-     * @return the value
+     * {@inheritDoc}
      */
     @Nonnull
-    public T getValue();
+    public ArchiveSampleModeId getId() {
+        return _id;
+    }
 
     /**
-     * The timestamp of the sample value.
-     * @return the timestamp
+     * {@inheritDoc}
      */
     @Nonnull
-    public DateTime getTimeStamp();
+    public String getName() {
+        return name();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public String getDescription() {
+        return _description;
+    }
 }
