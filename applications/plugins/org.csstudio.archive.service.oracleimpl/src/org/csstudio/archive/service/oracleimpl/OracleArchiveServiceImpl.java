@@ -94,7 +94,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public void connect(final Map<String, Object> prefs) throws ArchiveConnectionException {
+    public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
 
         final String url = (String) prefs.get(RDBArchivePreferences.URL);
         final String user = (String) prefs.get(RDBArchivePreferences.USER);
@@ -104,6 +104,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             rdbArchive = RDBArchive.connect(url, user, password);
         } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveConnectionException("Archive connection failed.", e);
         }
 
@@ -133,7 +134,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public void configure(final Map<String, Object> cfgPrefs) {
+    public void configure(@Nonnull final Map<String, Object> cfgPrefs) {
         _archivePrefix.set((String) cfgPrefs.get(PREFIX_PREF_KEY));
         _sampleTable.set((String) cfgPrefs.get(SAMPLE_TB_PREF_KEY));
         _arrayValTable.set((String) cfgPrefs.get(ARRAYVAL_TB_PREF_KEY));
@@ -147,7 +148,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      *  the sample to a 'batch'.
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
-    public boolean writeSamples(final List<IValueWithChannelId> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
+    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples)
+        throws ArchiveServiceException {
 
         try {
             for (final IValueWithChannelId sample : samples) {
@@ -157,6 +159,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             }
             _archive.get().commitBatch();
         } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Committing of sample batch failed.", e);
         }
 
@@ -166,7 +169,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public ChannelConfig getChannel(final String name) throws ArchiveServiceException {
+    @Nonnull
+    public ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -199,11 +203,12 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * IValue itself has to be cast via instanceof cascade to its implementing class to retrieve the 'value'-value.
      * It's not possible to as
      */
-    public IMetaData writeMetaData(final ChannelConfig channel, final IValue sample) throws ArchiveServiceException {
+    @Nonnull
+    public IMetaData writeMetaData(@Nonnull final ChannelConfig channel, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
             _archive.get().writeMetaData(channel, sample);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Writing of meta data failed.", e);
         }
         return null;
@@ -244,7 +249,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         } catch (final SQLException e) {
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
         } finally {
             if (statement != null) {
@@ -267,8 +272,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             return engines.find(id);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of engine failed.", e);
         }
     }
 
@@ -282,22 +287,36 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             return engines.find(name);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of engine failed.", e);
         }
     }
 
     /**
      * {@inheritDoc}
      */
+    @Nonnull
     public List<ChannelGroupConfig> getGroups(final int engineId) throws ArchiveServiceException {
         // FIXME (kasemir) : data access object is created anew on every invocation?!
         final ChannelGroupHelper groups = new ChannelGroupHelper(_archive.get());
         try {
             return Arrays.asList(groups.get(engineId));
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, let getConnection throw typed ones
-            throw new ArchiveServiceException("Retrieval of latest timestamp failed.", e);
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of channel group configurations failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Nonnull
+    public ChannelConfig[] getChannels(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
+        try {
+            return group_config.getChannels();
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of channels failed.", e);
         }
     }
 }

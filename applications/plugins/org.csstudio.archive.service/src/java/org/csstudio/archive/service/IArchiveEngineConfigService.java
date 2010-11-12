@@ -26,6 +26,7 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 
@@ -64,4 +65,12 @@ public interface IArchiveEngineConfigService extends IArchiveConnectionService {
      */
     @Nonnull
     List<ChannelGroupConfig> getGroups(int engineId) throws ArchiveServiceException;
+
+    /**
+     * @param group_config
+     * @return the list of channels in this group
+     * @throws ArchiveServiceException
+     */
+    @Nonnull
+    ChannelConfig[] getChannels(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException;
 }

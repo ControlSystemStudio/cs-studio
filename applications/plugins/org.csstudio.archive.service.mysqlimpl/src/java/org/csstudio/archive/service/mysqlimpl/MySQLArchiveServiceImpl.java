@@ -51,9 +51,8 @@ import org.joda.time.DateTime;
  * Example archive service implementation to separate the processing and logic layer from
  * the data access layer.
  *
- * TODO: Gather here all accesses to the database (best via DAOs).
- *       Should be moved to another plugin that can be loaded/unloaded via
- *       OSGi dynamic services (tracker or declarative)
+ * Uses DAO design pattern with DaoManager to handle several connections in a pool (later) and
+ * facilite CRUD command infrastructure for proper multiple command transactions.
  *
  * @author bknerr
  * @since 01.11.2010
@@ -101,8 +100,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public void configure(@Nonnull final Map<String, Object> cfgPrefs) {
-        // TODO Auto-generated method stub
-
+        // nothing to configure for now
     }
 
     /**
@@ -131,7 +129,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException {
-
 
         IArchiveChannel channel = null;
         IArchiveSampleMode sampleMode = null;
@@ -205,6 +202,15 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public List<ChannelGroupConfig> getGroups(final int engineId) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ChannelConfig[] getChannels(final ChannelGroupConfig group_config) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }
