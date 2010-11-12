@@ -210,7 +210,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public ChannelConfig[] getChannels(final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public List<ChannelConfig> getChannels(final ChannelGroupConfig group_config) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }

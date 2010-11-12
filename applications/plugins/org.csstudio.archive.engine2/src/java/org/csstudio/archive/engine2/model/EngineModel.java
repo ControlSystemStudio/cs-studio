@@ -509,10 +509,7 @@ public class EngineModel
         {
             final ArchiveGroup group = addGroup(group_config.getName());
             // Add channels to group
-            final ChannelConfig[] channel_configs = group_config.getChannels();
-            //final ChannelConfig[] channel_configs = service.getChannels(group_config);
-
-
+            final List<ChannelConfig> channel_configs = service.getChannels(group_config);
 
             for (final ChannelConfig channel_config : channel_configs)
             {

@@ -311,7 +311,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public ChannelConfig[] getChannels(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public List<ChannelConfig> getChannels(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
         try {
             return group_config.getChannels();
         } catch (final Exception e) {
