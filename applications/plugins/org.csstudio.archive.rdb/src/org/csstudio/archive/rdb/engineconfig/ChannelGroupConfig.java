@@ -5,7 +5,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
@@ -44,7 +46,7 @@ public class ChannelGroupConfig extends StringID
     }
 
     /** @return Configuration of channels in this group */
-    public ChannelConfig[] getChannels() throws Exception
+    public List<ChannelConfig> getChannels() throws Exception
     {
         final ArrayList<ChannelConfig> channels = new ArrayList<ChannelConfig>();
         final Connection connection = archive.getRDB().getConnection();
@@ -71,21 +73,19 @@ public class ChannelGroupConfig extends StringID
         {
             statement.close();
         }
-        // Convert to array
-        final ChannelConfig chan_arr[] = new ChannelConfig[channels.size()];
-        channels.toArray(chan_arr);
+        
         // Sort by channel name in Java.
         // SQL should already give sorted result, but handling of upper/lowercase
         // names seems to differ between Oracle and MySQL, resulting in
         // files that were hard to compare
-        Arrays.sort(chan_arr, new Comparator<ChannelConfig>()
+        Collections.sort(channels, new Comparator<ChannelConfig>()
         {
             public int compare(ChannelConfig a, ChannelConfig b)
             {
                 return a.getName().compareTo(b.getName());
             }
         });
-        return chan_arr;
+        return channels;
     }
 
     /** Define the 'enabling' channel.
