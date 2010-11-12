@@ -4,7 +4,15 @@ Bundle-Name: Service
 Bundle-SymbolicName: org.csstudio.archive.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Require-Bundle: org.csstudio.platform;bundle-version="1.1.1",
- org.csstudio.platform.libs.annotations
-Export-Package: org.csstudio.archive.service
+ org.csstudio.platform.libs.annotations,
+ org.csstudio.platform.libs.jodatime;bundle-version="1.6.2",
+ org.csstudio.domain.desy;bundle-version="1.0.0",
+ org.csstudio.archive.rdb;bundle-version="1.2.4"
+Export-Package: org.csstudio.archive.service,
+ org.csstudio.archive.service.adapter,
+ org.csstudio.archive.service.businesslogic,
+ org.csstudio.archive.service.channel,
+ org.csstudio.archive.service.sample,
+ org.csstudio.archive.service.samplemode

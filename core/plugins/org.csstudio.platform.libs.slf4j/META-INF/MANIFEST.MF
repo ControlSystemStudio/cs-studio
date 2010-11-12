@@ -1,9 +1,17 @@
 Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: ceki
+Build-Jdk: 1.6.0_16
+Bundle-Description: The slf4j API
+Bundle-Version: 1.6.1
+Implementation-Version: 1.6.1
+Implementation-Title: slf4j-api
 Bundle-ManifestVersion: 2
-Bundle-Name: Slf4j
 Bundle-SymbolicName: org.csstudio.platform.libs.slf4j
-Bundle-Version: 1.5.11
-Export-Package: org.slf4j,
- org.slf4j.helpers,
- org.slf4j.spi
+Bundle-Name: slf4j.api
+Bundle-Vendor: SLF4J.ORG
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.slf4j;version=1.6.1, org.slf4j.spi;version=1.6.1, 
+ org.slf4j.helpers;version=1.6.1
+
