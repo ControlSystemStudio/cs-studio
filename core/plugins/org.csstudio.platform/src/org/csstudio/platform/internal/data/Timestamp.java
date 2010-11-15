@@ -229,7 +229,10 @@ public final class Timestamp implements ITimestamp
     @Override
     public int hashCode()
     {
-        return (int) (seconds + nanoseconds);
+	    final int prime = 31;
+	    int result = prime + (int) (nanoseconds ^ (nanoseconds >>> 32));
+	    result = prime * result + (int) (seconds ^ (seconds >>> 32));
+	    return result;
     }
 
     /**
