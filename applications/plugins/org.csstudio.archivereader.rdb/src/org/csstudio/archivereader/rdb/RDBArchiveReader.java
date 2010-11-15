@@ -15,10 +15,10 @@ import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.RDBUtil;
-import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
-/** ArchiveServer for RDB data
+/** ArchiveReader for RDB data
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 public class RDBArchiveReader implements ArchiveReader
@@ -68,10 +68,16 @@ public class RDBArchiveReader implements ArchiveReader
         timeout = Preferences.getTimeoutSecs();
         rdb = RDBUtil.connect(url, user, password, false);
         // Ignore the stored procedure for MySQL
-        if (rdb.getDialect() == Dialect.MySQL)
+        switch (rdb.getDialect())
+        {
+        case MySQL:
+        case PostgreSQL:
             this.stored_procedure = "";
-        else
+            break;
+        case Oracle:
+    	default:
             this.stored_procedure = stored_procedure;
+        }
         String schema = Preferences.getSchema();
         if (schema.length() > 0)
             schema = schema + ".";
