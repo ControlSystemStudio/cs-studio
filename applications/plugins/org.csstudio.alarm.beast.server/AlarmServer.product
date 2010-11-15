@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Alarm Server" id="org.csstudio.alarm.beast.server.product" application="org.csstudio.alarm.beast.server.application" version="2.1.0" useFeatures="false" includeLaunchers="true">
+<product name="Alarm Server" id="org.csstudio.alarm.beast.server.product" application="org.csstudio.alarm.beast.server.application" version="2.4.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -55,7 +55,6 @@
       <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
@@ -66,7 +65,6 @@
       <plugin id="org.eclipse.equinox.security"/>
       <plugin id="org.eclipse.equinox.security.macosx" fragment="true"/>
       <plugin id="org.eclipse.equinox.security.win32.x86" fragment="true"/>
-      <plugin id="org.eclipse.net4j.jms.api"/>
       <plugin id="org.eclipse.osgi"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.junit"/>
