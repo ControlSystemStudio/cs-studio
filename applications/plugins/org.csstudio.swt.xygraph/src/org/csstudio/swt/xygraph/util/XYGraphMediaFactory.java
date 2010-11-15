@@ -86,7 +86,7 @@ public final class XYGraphMediaFactory {
 		GRABBING;
 	}
 	
-	private static Cursor CURSOR_GRABBING;	
+	private volatile static Cursor CURSOR_GRABBING;	
 		
 	public void disposeResources(){
 		if(CURSOR_GRABBING!=null && !CURSOR_GRABBING.isDisposed())

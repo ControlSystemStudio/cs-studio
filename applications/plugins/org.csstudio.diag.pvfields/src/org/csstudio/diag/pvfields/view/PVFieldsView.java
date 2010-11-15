@@ -133,8 +133,6 @@ public class PVFieldsView  extends ViewPart
             {
                 pv_name_helper.saveSettings();
             	field_value_helper.saveSettings();
-            	cbo_name.getCombo().dispose();
-            	field_value.getCombo().dispose();
             }
         });
 
@@ -213,9 +211,10 @@ public class PVFieldsView  extends ViewPart
 
         private void setPVName(final String pv_name)
         {
-        	String field = gui.getFieldValue();
+        	String field = gui.getFieldValue().trim();
             field_value_helper.addEntry(field);
-            if (field=="")field = null; 
+            if (field.length() <= 0)
+            	field = null; 
         	gui.setPVName(pv_name,field);
             pv_name_helper.addEntry(pv_name);
         }

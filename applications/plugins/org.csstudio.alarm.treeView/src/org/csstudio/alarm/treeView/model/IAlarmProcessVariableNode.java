@@ -67,5 +67,15 @@ public interface IAlarmProcessVariableNode extends IAlarmTreeNode {
      * @param alarm the new alarm.
      */
     void updateAlarm(@Nonnull Alarm alarm);
+    
+    /**
+     * Is called from the parent after this node has been added.
+     */
+    void wasAdded();
+
+    /**
+     * Is called from the parent after this node has been removed.
+     */
+    void wasRemoved();
 
 }

@@ -104,7 +104,7 @@
       <fontdata fontName="Arial" height="10" style="1" />
     </font>
     <vertical_alignment>1</vertical_alignment>
-    <width>117</width>
+    <width>119</width>
     <border_style>0</border_style>
     <auto_size>true</auto_size>
     <rules />
@@ -269,12 +269,12 @@ $(pv_value)</tooltip>
       <include_parent_macros>true</include_parent_macros>
     </macros>
     <visible>true</visible>
-    <width>229</width>
+    <width>233</width>
     <border_style>13</border_style>
     <rules />
-    <lock_children>true</lock_children>
+    <lock_children>false</lock_children>
     <scripts />
-    <height>50</height>
+    <height>54</height>
     <border_width>1</border_width>
     <name>Bits</name>
     <border_color>
@@ -283,14 +283,14 @@ $(pv_value)</tooltip>
     <transparent>false</transparent>
     <show_scrollbar>true</show_scrollbar>
     <actions hook="false" />
-    <y>240</y>
+    <y>232</y>
     <foreground_color>
       <color red="192" green="192" blue="192" />
     </foreground_color>
     <background_color>
       <color red="240" green="240" blue="240" />
     </background_color>
-    <x>491</x>
+    <x>483</x>
     <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.LED" version="1.0">
       <border_alarm_sensitive>false</border_alarm_sensitive>
@@ -308,7 +308,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -354,7 +354,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -400,7 +400,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -446,7 +446,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -492,7 +492,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -538,7 +538,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -584,7 +584,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -630,7 +630,7 @@ $(pv_value)</tooltip>
       <off_color>
         <color red="0" green="100" blue="0" />
       </off_color>
-      <pv_name>loc://boolTest</pv_name>
+      <pv_name>sim://ramp(0,255,1,0.1)</pv_name>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
@@ -685,10 +685,12 @@ $(pv_value)</tooltip>
       <action type="WRITE_PV">
         <pv_name>loc://switch</pv_name>
         <value>1</value>
+        <description />
       </action>
       <action type="WRITE_PV">
         <pv_name>loc://switch</pv_name>
         <value>0</value>
+        <description />
       </action>
     </actions>
     <y>145</y>
@@ -897,59 +899,62 @@ $(pv_value)</tooltip>
     <x>470</x>
     <tooltip />
     <widget typeId="org.csstudio.opibuilder.widgets.thermometer" version="1.0">
-      <border_alarm_sensitive>false</border_alarm_sensitive>
       <level_lo>20.0</level_lo>
-      <visible>true</visible>
+      <border_alarm_sensitive>false</border_alarm_sensitive>
       <color_fillbackground>
         <color red="210" green="210" blue="210" />
       </color_fillbackground>
+      <visible>true</visible>
       <color_hihi>
         <color red="255" green="0" blue="0" />
       </color_hihi>
       <show_lo>true</show_lo>
       <scripts />
       <height>200</height>
-      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <major_tick_step_hint>50</major_tick_step_hint>
+      <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
       <background_color>
         <color red="240" green="240" blue="240" />
       </background_color>
-      <widget_type>Thermometer</widget_type>
       <enabled>true</enabled>
+      <widget_type>Thermometer</widget_type>
       <show_minor_ticks>true</show_minor_ticks>
       <width>100</width>
-      <border_style>0</border_style>
       <show_lolo>true</show_lolo>
+      <border_style>0</border_style>
       <effect_3d>true</effect_3d>
       <show_bulb>true</show_bulb>
       <show_markers>true</show_markers>
       <show_hi>true</show_hi>
-      <maximum>100.0</maximum>
       <border_width>1</border_width>
+      <maximum>100.0</maximum>
       <log_scale>false</log_scale>
       <minimum>0.0</minimum>
-      <show_scale>true</show_scale>
       <show_hihi>true</show_hihi>
+      <show_scale>true</show_scale>
       <color_lo>
         <color red="255" green="128" blue="0" />
       </color_lo>
       <name>Thermometer</name>
-      <pv_name>sim://noise</pv_name>
       <color_hi>
         <color red="255" green="128" blue="0" />
       </color_hi>
+      <pv_name>sim://noise</pv_name>
       <foreground_color>
         <color red="0" green="0" blue="0" />
       </foreground_color>
       <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
       <level_hi>80.0</level_hi>
+      <scale_font>
+        <opifont.name>Default</opifont.name>
+      </scale_font>
       <level_hihi>90.0</level_hihi>
-      <color_lolo>
-        <color red="255" green="0" blue="0" />
-      </color_lolo>
       <fill_color>
         <color red="255" green="0" blue="0" />
       </fill_color>
+      <color_lolo>
+        <color red="255" green="0" blue="0" />
+      </color_lolo>
       <rules />
       <unit>0</unit>
       <transparent_background>true</transparent_background>
@@ -957,12 +962,12 @@ $(pv_value)</tooltip>
       <border_color>
         <color red="0" green="128" blue="255" />
       </border_color>
-      <y>0</y>
-      <actions hook="false" />
       <level_lolo>10.0</level_lolo>
+      <actions hook="false" />
+      <y>0</y>
+      <x>139</x>
       <tooltip>$(pv_name)
 $(pv_value)</tooltip>
-      <x>139</x>
     </widget>
     <widget typeId="org.csstudio.opibuilder.widgets.groupingContainer" version="1.0">
       <enabled>true</enabled>

@@ -289,7 +289,11 @@ public class EPICS_V3_PV
 
     /** {@inheritDoc} */
     public void removeListener(final PVListener listener)
-    {   listeners.remove(listener);   }
+    { 
+    	listeners.remove(listener); 
+    	if (listeners.size() > 0)
+    		System.out.println("Didn't remove?!");
+    }
 
     /** Try to connect to the PV.
      *  OK to call more than once.
@@ -317,22 +321,31 @@ public class EPICS_V3_PV
      */
     private void disconnect()
     {
+    	// Releasing the _last_ channel will close the context,
+    	// which waits for the JCA Command thread to exit.
+    	// If a connection or update for the channel happens at that time,
+    	// the JCA command thread will send notifications to this PV,
+    	// which had resulted in dead lock:
+    	// This code locked the PV, then tried to join the JCA Command thread.
+    	// JCA Command thread tried to lock the PV, so it could not exit.
+    	// --> Don't lock while calling into the PVContext.
+ 		RefCountedChannel channel_ref_copy;
     	synchronized (this)
     	{
 	        // Never attempted a connection?
-	 		if (channel_ref == null) {
+			if (channel_ref == null)
                 return;
-            }
-	        try
-	        {
-	            PVContext.releaseChannel(channel_ref, this);
-	        }
-	        catch (final Throwable e)
-	        {
-	            e.printStackTrace();
-	        }
+			channel_ref_copy = channel_ref;
 	        channel_ref = null;
-		}
+    	}
+        try
+        {
+            PVContext.releaseChannel(channel_ref_copy, this);
+        }
+        catch (final Throwable e)
+        {
+            e.printStackTrace();
+        }
         fireDisconnected();
     }
 

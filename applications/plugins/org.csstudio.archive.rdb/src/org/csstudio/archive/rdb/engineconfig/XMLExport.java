@@ -1,5 +1,7 @@
 package org.csstudio.archive.rdb.engineconfig;
 
+import java.util.List;
+
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.platform.data.TimestampFactory;
@@ -44,7 +46,7 @@ public class XMLExport
     {
         System.out.println("  <group>");
         System.out.println("    <name>" + group.getName() + "</name>");
-        final ChannelConfig[] channels = group.getChannels();
+        final List<ChannelConfig> channels = group.getChannels();
         for (ChannelConfig channel : channels)
             dumpChannel(channel);
         System.out.println("  </group>");

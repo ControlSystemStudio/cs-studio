@@ -15,6 +15,7 @@ import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.apputil.ui.elog.SendToElogActionHelper;
 import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.swt.widgets.Shell;
 
@@ -84,7 +85,7 @@ public class ContextMenuHelper
         }
         // In case there are any PVs in alarm,
         // add action to acknowledge/un-acknowledge them
-        if (alarm_pvs.size() > 0)
+        if (alarm_pvs.size() > 0  &&  SendToElogActionHelper.isElogAvailable())
             manager.add(new SendToElogAction(shell, alarm_pvs));
         if (allow_write)
         {

@@ -67,6 +67,44 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         return true;
     }
 
+    @Override
+    public void connect(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
+                                               @Nonnull final IAlarmListener listener,
+                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
+        LOG.info("Connecting to JMS for topics " + resource.getTopics() + ".");
+    
+        try {
+            _listener = new AlarmListenerAdapter(listener);
+            _listenerSession = SharedJmsConnections.startMessageListener(_listener,
+                                                                         resource.getTopics().toArray(new String[0]),
+                                                                         Session.AUTO_ACKNOWLEDGE);
+    
+            _monitor = new AlarmConnectionMonitorAdapter(connectionMonitor);
+            _listenerSession.addMonitor(_monitor);
+            if (_listenerSession.isActive()) {
+                _monitor.onConnected();
+            }
+        } catch (final JMSException e) {
+            LOG.error(COULD_NOT_CREATE_LISTENER_SESSION);
+            throw new AlarmConnectionException(COULD_NOT_CREATE_LISTENER_SESSION, e);
+        }
+    }
+
+    @Override
+    public void registerPV(@Nonnull final String pvName) {
+        // Nothing to do in the JMS implementation
+    }
+    
+    @Override
+    public void deregisterPV(@Nonnull final String pvName) {
+        // Nothing to do in the JMS implementation
+    }
+
+    @Override
+    public void reloadPVsFromResource() {
+        // Nothing to do in the JMS implementation
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -82,29 +120,6 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
         _listener.getAlarmListener().stop();
     }
 
-    @Override
-    public void connectWithListenerForResource(@Nonnull final IAlarmConnectionMonitor connectionMonitor,
-                                               @Nonnull final IAlarmListener listener,
-                                               @Nonnull final IAlarmResource resource) throws AlarmConnectionException {
-        LOG.info("Connecting to JMS for topics " + resource.getTopics() + ".");
-
-        try {
-            _listener = new AlarmListenerAdapter(listener);
-            _listenerSession = SharedJmsConnections.startMessageListener(_listener,
-                                                                         resource.getTopics().toArray(new String[0]),
-                                                                         Session.AUTO_ACKNOWLEDGE);
-
-            _monitor = new AlarmConnectionMonitorAdapter(connectionMonitor);
-            _listenerSession.addMonitor(_monitor);
-            if (_listenerSession.isActive()) {
-                _monitor.onConnected();
-            }
-        } catch (final JMSException e) {
-            LOG.error(COULD_NOT_CREATE_LISTENER_SESSION);
-            throw new AlarmConnectionException(COULD_NOT_CREATE_LISTENER_SESSION, e);
-        }
-    }
-
     /**
      * Object based adapter. Adapts the IAlarmListener to the MessageListener expected by JMS.
      */
@@ -116,6 +131,7 @@ public final class AlarmConnectionJMSImpl implements IAlarmConnection {
             this._alarmListener = alarmListener;
         }
 
+        @SuppressWarnings("synthetic-access")
         @Override
         public void onMessage(@Nonnull final Message message) {
             if (AlarmMessageJMSImpl.canCreateAlarmMessageFrom(message)) {

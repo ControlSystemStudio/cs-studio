@@ -142,15 +142,18 @@ public class PVInfo extends PlatformObject  implements IProcessVariable
     /** @return String for first Column in table */
     public String getFirstColumn()
     {
-    	if (PVFieldsModel.alterColumnData()) {
-    		return field_name;}
+        final PVFieldsModel model = getModel();
+        if (model != null  && model.alterColumnData())
+    		return field_name;
         else return pv_name;
     }
 
     /** @return Type of this field */
     public String getSecondColumn()
     {
-    	if (PVFieldsModel.alterColumnData()) return field_type ;
+        final PVFieldsModel model = getModel();
+        if (model != null  && model.alterColumnData())
+        	return field_type;
         return field_name;
     }
 

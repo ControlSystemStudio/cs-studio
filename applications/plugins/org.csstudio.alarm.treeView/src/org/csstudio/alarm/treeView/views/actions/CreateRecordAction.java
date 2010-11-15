@@ -22,8 +22,10 @@ import java.util.Queue;
 
 import javax.annotation.Nonnull;
 
+import org.csstudio.alarm.service.declaration.IAlarmConnection;
 import org.csstudio.alarm.treeView.ldap.DirectoryEditor;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
+import org.csstudio.alarm.treeView.views.AlarmTreeView;
 import org.csstudio.alarm.treeView.views.ITreeModificationItem;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.ui.IWorkbenchPartSite;
@@ -38,16 +40,21 @@ import org.eclipse.ui.IWorkbenchPartSite;
  */
 public final class CreateRecordAction extends AbstractCreateComponentAction {
 
+    private final AlarmTreeView _alarmTreeView;
+
     /**
      * Constructor.
      * @param site
      * @param viewer
+     * @param connection TODO
      * @param modificationItems
      */
     CreateRecordAction(@Nonnull final IWorkbenchPartSite site,
                        @Nonnull final TreeViewer viewer,
+                       @Nonnull final AlarmTreeView alarmTreeView,
                        @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         super(site, viewer, modificationItems);
+        _alarmTreeView = alarmTreeView;
     }
 
     /**
@@ -57,6 +64,11 @@ public final class CreateRecordAction extends AbstractCreateComponentAction {
     @Nonnull
     protected ITreeModificationItem createComponent(@Nonnull final IAlarmSubtreeNode parent,
                                                     @Nonnull final String name) {
-        return DirectoryEditor.createProcessVariableRecord(parent, name);
+        ITreeModificationItem result = DirectoryEditor.createProcessVariableRecord(parent, name, _alarmTreeView.getPVNodeListener());
+        IAlarmConnection connection = _alarmTreeView.getConnection();
+        if (connection != null) {
+            connection.registerPV(name);
+        }
+        return result;
     }
 }

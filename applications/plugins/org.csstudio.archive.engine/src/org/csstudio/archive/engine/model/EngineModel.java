@@ -445,7 +445,7 @@ public class EngineModel
         {
             final ArchiveGroup group = addGroup(group_config.getName());
             // Add channels to group
-            final ChannelConfig[] channel_configs = group_config.getChannels();
+            final List<ChannelConfig> channel_configs = group_config.getChannels();
             for (ChannelConfig channel_config : channel_configs)
             {
                 Enablement enablement = Enablement.Passive;

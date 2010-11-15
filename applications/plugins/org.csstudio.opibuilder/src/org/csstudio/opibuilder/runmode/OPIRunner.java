@@ -28,13 +28,16 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
+import org.eclipse.gef.DragTracker;
 import org.eclipse.gef.EditDomain;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.MouseWheelHandler;
 import org.eclipse.gef.MouseWheelZoomHandler;
+import org.eclipse.gef.Request;
 import org.eclipse.gef.commands.CommandStack;
 import org.eclipse.gef.editparts.ScalableFreeformRootEditPart;
 import org.eclipse.gef.editparts.ZoomManager;
+import org.eclipse.gef.tools.DragEditPartsTracker;
 import org.eclipse.gef.ui.actions.ActionRegistry;
 import org.eclipse.gef.ui.actions.ZoomInAction;
 import org.eclipse.gef.ui.actions.ZoomOutAction;
@@ -184,16 +187,35 @@ public class OPIRunner extends EditorPart {
 	public void createPartControl(Composite parent) {
 		viewer = new PatchedScrollingGraphicalViewer();
 		
-		ScalableFreeformRootEditPart root = new PatchedScalableFreeformRootEditPart();
+		ScalableFreeformRootEditPart root = new PatchedScalableFreeformRootEditPart(){
+			
+			//In Run mode, clicking the Display or container should de-select all widgets. 
+			@Override
+			public DragTracker getDragTracker(Request req) {
+				return new DragEditPartsTracker(this);
+			}
+			
+			@Override
+			public boolean isSelectable() {
+				return false;
+			}
+		};
 		viewer.createControl(parent);
 		viewer.setRootEditPart(root);
 		viewer.setEditPartFactory(new WidgetEditPartFactory(ExecutionMode.RUN_MODE));
 		
-		viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
-		viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
+		//viewer.addDropTargetListener(new ProcessVariableNameTransferDropPVTargetListener(viewer));
+		//viewer.addDropTargetListener(new TextTransferDropPVTargetListener(viewer));
 		
 		//this will make viewer as a selection provider
-		EditDomain editDomain = new DefaultEditDomain(this);
+		EditDomain editDomain = new DefaultEditDomain(this){
+			
+		@Override
+		public void loadDefaultTool() {
+			setActiveTool(new RuntimePatchedSelectionTool());
+		}
+			
+		};
 		editDomain.addViewer(viewer);
 		
 		//connect the CSS menu

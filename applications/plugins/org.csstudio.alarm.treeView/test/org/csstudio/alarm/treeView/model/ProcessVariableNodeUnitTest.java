@@ -27,6 +27,8 @@ import static org.junit.Assert.assertSame;
 
 import java.util.Date;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
@@ -118,10 +120,38 @@ public class ProcessVariableNodeUnitTest {
 	}
 
     @Test
-	public void testPropertyInheritance() throws Exception {
-		_subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
-		assertEquals("foo", _node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
-		assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
-	}
+    public void testPropertyInheritance() throws Exception {
+        _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
+        assertEquals("foo", _node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+    }
+
+    @Test
+    public void testProcessVariableNodeListener() throws Exception {
+        final StringBuilder wasAddedString = new StringBuilder();
+        final StringBuilder wasRemovedString = new StringBuilder();
+        
+        SubtreeNode subtreeNode = new SubtreeNode.Builder("SubTree",
+                                                          LdapEpicsAlarmcfgConfiguration.UNIT,
+                                                          TreeNodeSource.XML).build();
+        ProcessVariableNode node = new ProcessVariableNode.Builder("A node", TreeNodeSource.XML)
+                .setParent(subtreeNode).setListener(new IProcessVariableNodeListener() {
+                    
+                    @Override
+                    public void wasAdded(@Nonnull final String newName) {
+                        wasAddedString.append(newName);
+                    }
+                    
+                    @Override
+                    public void wasRemoved(@Nonnull final String newName) {
+                        wasRemovedString.append(newName);
+                    }
+                }).build();
+        assertEquals("A node", wasAddedString.toString());
+        
+        subtreeNode.removeChild(node);
+        assertEquals("A node", wasRemovedString.toString());
+    }
+    
 
 }

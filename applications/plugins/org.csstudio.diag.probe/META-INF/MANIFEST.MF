@@ -2,8 +2,8 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Probe Plug-in
 Bundle-SymbolicName: org.csstudio.diag.probe; singleton:=true
-Bundle-Version: 1.0.12.qualifier
-Bundle-Activator: org.csstudio.diag.probe.Plugin
+Bundle-Version: 1.0.13.qualifier
+Bundle-Activator: org.csstudio.diag.probe.Activator
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -16,7 +16,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.views,
  org.csstudio.utility.pv,
  org.csstudio.platform.ui,
- org.csstudio.platform
+ org.csstudio.platform,
+ org.csstudio.apputil.ui;bundle-version="1.1.5"
 Bundle-ActivationPolicy: lazy
-Bundle-Vendor: Kay Kasemir
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

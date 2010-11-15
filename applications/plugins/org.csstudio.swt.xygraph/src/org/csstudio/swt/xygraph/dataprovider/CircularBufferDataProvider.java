@@ -449,7 +449,7 @@ public class CircularBufferDataProvider extends AbstractDataProvider{
 	 * @param updateDelay Delay in milliseconds between plot updates. This may help to reduce CPU
 	 * usage. The default value is 0ms.
 	 */
-	public void setUpdateDelay(int updateDelay) {
+	public synchronized void setUpdateDelay(int updateDelay) {
 		this.updateDelay = updateDelay;
 	}
 	

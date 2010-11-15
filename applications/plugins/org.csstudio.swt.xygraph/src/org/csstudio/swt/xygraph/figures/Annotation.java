@@ -178,8 +178,8 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		updateX0Y0Fromdxdy(size);	
 		//System.out.println(x0 +": " +y0 + " ");
 
-		Rectangle infoBounds = new Rectangle(currentPosition.x + (int)x0 - size.width/2, 
-				(int) (currentPosition.y +y0 - size.height/2), size.width, size.height);
+		Rectangle infoBounds = new Rectangle((int) (currentPosition.x + x0 - size.width/2.0), 
+				(int) (currentPosition.y +y0 - size.height/2.0), size.width, size.height);
 		
 		infoLabel.setBounds(infoBounds);		
 		
@@ -264,31 +264,31 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 			int w = size.width;
 			if(dy != 0){
 				//assume this is the intersection
-				y0 = dy-h/2;
+				y0 = dy-h/2.0;
 				x0 = (dx/dy)*y0;
 				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-						new Range(x0-w/2, x0 + w/2).inRange(dx))
+						new Range(x0-w/2.0, x0 + w/2.0).inRange(dx))
 					return;
 				
-				y0 = dy+h/2;
+				y0 = dy+h/2.0;
 				x0 = (dx/dy)*y0;
 				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-						new Range(x0-w/2, x0 + w/2).inRange(dx))
+						new Range(x0-w/2.0, x0 + w/2.0).inRange(dx))
 					return;
 			}else{
 				
 			}
 			if(dx!=0){
-				x0 = dx+w/2;
+				x0 = dx+w/2.0;
 				y0 = (dy/dx)*x0;
 				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-						new Range(y0-h/2, y0+h/2).inRange(dy))
+						new Range(y0-h/2.0, y0+h/2.0).inRange(dy))
 					return;
 				
-				x0 = dx-w/2;
+				x0 = dx-w/2.0;
 				y0 = (dy/dx)*x0;
 				if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-						new Range(y0-h/2, y0+h/2).inRange(dy))
+						new Range(y0-h/2.0, y0+h/2.0).inRange(dy))
 					return;
 			}
 		}else		
@@ -304,31 +304,31 @@ public class Annotation extends Figure implements IAxisListener, IDataProviderLi
 		int h = size.height;
 		int w = size.width;
 		if(y0 != 0){
-			dy = y0+h/2;
+			dy = y0+h/2.0;
 			dx = x0*dy/y0;
 			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(x0-w/2, x0 + w/2).inRange(dx))
+					new Range(x0-w/2.0, x0 + w/2.0).inRange(dx))
 				return;
 			
-			dy = y0-h/2;
+			dy = y0-h/2.0;
 			dx = x0*dy/y0;
 			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) &&
-					new Range(x0-w/2, x0 + w/2).inRange(dx))
+					new Range(x0-w/2.0, x0 + w/2.0).inRange(dx))
 				return;
 		}
 		else
 			dy=0;
 		if(x0 != 0){
-			dx = x0-size.width/2;
+			dx = x0-size.width/2.0;
 			dy = y0*dx/x0;
 			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) && 
-					new Range(y0-h/2, y0+h/2).inRange(dy))
+					new Range(y0-h/2.0, y0+h/2.0).inRange(dy))
 				return;
 			
-			dx = x0+size.width/2;
+			dx = x0+size.width/2.0;
 			dy = y0*dx/x0;
 			if(new Range(0, x0).inRange(dx) && new Range(0, y0).inRange(dy) &&
-					new Range(y0-h/2, y0+h/2).inRange(dy))
+					new Range(y0-h/2.0, y0+h/2.0).inRange(dy))
 				return;	
 		}else
 			dx=0;

@@ -222,40 +222,13 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 			}
 			registerBasePropertyChangeHandlers();
 			registerPropertyChangeHandlers();
-			
-	
-			
+						
 			if(executionMode == ExecutionMode.RUN_MODE){
-				//hook action
+				//hook open display action
 				Set<String> allPropIds = getWidgetModel().getAllPropertyIDs();
 				if(allPropIds.contains(AbstractWidgetModel.PROP_ACTIONS) && 
 						allPropIds.contains(AbstractWidgetModel.PROP_ENABLED)){
-					if(getWidgetModel().isEnabled() && 
-							getWidgetModel().getActionsInput().getActionsList().size() > 0 && 
-							getWidgetModel().getActionsInput().isHookedUpToWidget()){
-						figure.setCursor(Cursors.HAND);
-						final AbstractWidgetAction action = 
-							getWidgetModel().getActionsInput().getActionsList().get(0);
-						figure.addMouseListener(new MouseListener.Stub(){
-							
-							@Override
-							public void mousePressed(MouseEvent me) {
-								if(me.button != 1)
-									return;
-								
-								if(action instanceof OpenDisplayAction){
-									((OpenDisplayAction)action).setCtrlPressed(false);
-									((OpenDisplayAction)action).setShiftPressed(false);
-									if(me.getState() == InputEvent.CONTROL){
-										((OpenDisplayAction)action).setCtrlPressed(true);
-									}else if (me.getState() == InputEvent.SHIFT){
-										((OpenDisplayAction)action).setShiftPressed(true);
-									}
-								}
-								action.run();	
-							}
-						});
-					}
+					hookMouseClickAction();
 				}
 				
 				//script and rules execution
@@ -367,6 +340,36 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 				}
 			}
 		}		
+	}
+
+
+
+	/**
+	 * Hook the default {@link OpenDisplayAction} with mouse click.
+	 */
+	protected void hookMouseClickAction() {
+		final AbstractWidgetAction action = getHookedAction();
+		if(getWidgetModel().isEnabled() && action != null){
+			figure.setCursor(Cursors.HAND);
+			figure.addMouseListener(new MouseListener.Stub(){
+				
+				@Override
+				public void mousePressed(MouseEvent me) {
+					if(me.button != 1)
+						return;		
+					if(action instanceof OpenDisplayAction){
+						((OpenDisplayAction)action).setCtrlPressed(false);
+						((OpenDisplayAction)action).setShiftPressed(false);
+						if(me.getState() == InputEvent.CONTROL){
+							((OpenDisplayAction)action).setCtrlPressed(true);
+						}else if (me.getState() == InputEvent.SHIFT){
+							((OpenDisplayAction)action).setShiftPressed(true);
+						}	
+					}
+					action.run();	
+				}
+			});
+		}
 	}
 	
 
@@ -677,6 +680,20 @@ public abstract class AbstractBaseEditPart extends AbstractGraphicalEditPart{
 		return getWidgetModel().getPropertyValue(prop_id);
 	}
 	
+	
+	/**
+	 * @return the default {@link AbstractWidgetAction} when mouse click this widget.
+	 */
+	public AbstractWidgetAction getHookedAction(){
+		if(getWidgetModel().getActionsInput() != null && 
+				getWidgetModel().getActionsInput().getActionsList().size() > 0 && 
+				getWidgetModel().getActionsInput().isHookedUpToWidget()){
+			return getWidgetModel().getActionsInput().getActionsList().get(0);
+			
+		}
+		return null;
+			
+	}
 	
 	/**Run a widget action which is attached to the widget.
 	 * @param index the index of the action in the actions list.

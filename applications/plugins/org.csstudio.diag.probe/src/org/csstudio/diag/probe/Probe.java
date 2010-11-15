@@ -2,15 +2,16 @@ package org.csstudio.diag.probe;
 
 import java.text.NumberFormat;
 
+import org.csstudio.apputil.ui.swt.ComboHistoryHelper;
 import org.csstudio.platform.data.IMetaData;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.model.CentralItemFactory;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDragSource;
 import org.csstudio.platform.ui.internal.dataexchange.ProcessVariableDropTarget;
-import org.csstudio.util.swt.ComboHistoryHelper;
 import org.csstudio.util.swt.meter.MeterWidget;
 import org.csstudio.utility.pv.PV;
 import org.csstudio.utility.pv.PVFactory;
@@ -31,6 +32,9 @@ import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.action.Separator;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ComboViewer;
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.dnd.DropTargetEvent;
@@ -44,6 +48,7 @@ import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
@@ -72,7 +77,8 @@ import org.eclipse.ui.part.ViewPart;
  * @author Helge Rickens
  * @author Joerg Rathlev
  */
-public class Probe extends ViewPart implements PVListener {
+public class Probe extends ViewPart implements PVListener, ISelectionProvider
+{
     /** Multiple Probe views are allowed.
      *  Their ID has to be ID + ":<instance>"
      */
@@ -112,7 +118,7 @@ public class Probe extends ViewPart implements PVListener {
     private IMemento memento = null;
 
     // GUI
-    private ComboViewer cbo_name;
+    private Combo cbo_name;
     private ComboHistoryHelper name_helper;
     private Label lbl_value;
     private Label lbl_time;
@@ -164,7 +170,7 @@ public class Probe extends ViewPart implements PVListener {
                 }
                 meter.setValue(value.getDouble());
             }
-            Plugin.getLogger().debug("Probe displays " //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).debug("Probe displays " //$NON-NLS-1$
                                 + lbl_time.getText()
                                 + " " + lbl_value.getText()); //$NON-NLS-1$
 
@@ -209,7 +215,7 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Exception e)
         {
-            Plugin.getLogger().error("activateWithPV", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(Probe.class).error("activateWithPV", e); //$NON-NLS-1$
             e.printStackTrace();
         }
         return false;
@@ -242,7 +248,7 @@ public class Probe extends ViewPart implements PVListener {
     public void saveState(final IMemento memento)
     {
         super.saveState(memento);
-        memento.putString(PV_TAG, cbo_name.getCombo().getText());
+        memento.putString(PV_TAG, cbo_name.getText());
         memento.putString(METER_TAG,
                         Boolean.toString(show_meter.getSelection()));
     }
@@ -254,7 +260,7 @@ public class Probe extends ViewPart implements PVListener {
         createGUI(parent);
 
         // Enable 'Drop'
-        new ProcessVariableDropTarget(cbo_name.getControl())
+        new ProcessVariableDropTarget(cbo_name)
         {
             @Override
             public void handleDrop(final IProcessVariable name,
@@ -270,7 +276,7 @@ public class Probe extends ViewPart implements PVListener {
         // initiate a 'drag'.
         // Maybe it works on some OS? Maybe there's another magic
         // modifier key to force a 'drag'?
-        new ProcessVariableDragSource(cbo_name.getControl(), cbo_name);
+        new ProcessVariableDragSource(cbo_name, this);
 
         makeContextMenu();
     }
@@ -279,7 +285,7 @@ public class Probe extends ViewPart implements PVListener {
     @Override
     public void setFocus()
     {
-        cbo_name.getCombo().setFocus();
+        cbo_name.setFocus();
     }
 
     /** Construct GUI. */
@@ -311,12 +317,12 @@ public class Probe extends ViewPart implements PVListener {
 		label.setText(Messages.S_PVName);
 		label.setLayoutData(new GridData());
 
-        cbo_name = new ComboViewer(top_box, SWT.SINGLE | SWT.BORDER);
-        cbo_name.getCombo().setToolTipText(Messages.S_EnterPVName);
+        cbo_name = new Combo(top_box, SWT.SINGLE | SWT.BORDER);
+        cbo_name.setToolTipText(Messages.S_EnterPVName);
         GridData gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
-        cbo_name.getCombo().setLayoutData(gd);
+        cbo_name.setLayoutData(gd);
 
         final Button btn_info = new Button(top_box, SWT.PUSH);
         btn_info.setText(Messages.S_Info);
@@ -428,7 +434,7 @@ public class Probe extends ViewPart implements PVListener {
 
         // Connect actions
         name_helper = new ComboHistoryHelper(
-                        Plugin.getDefault().getDialogSettings(),
+                        Activator.getDefault().getDialogSettings(),
                         PV_LIST_TAG, cbo_name)
         {
             @Override
@@ -438,11 +444,11 @@ public class Probe extends ViewPart implements PVListener {
             }
         };
 
-        cbo_name.getCombo().addDisposeListener(new DisposeListener()
+        cbo_name.addDisposeListener(new DisposeListener()
         {
             public void widgetDisposed(final DisposeEvent e)
             {
-                disposeChannel();
+                setPV(null);
                 name_helper.saveSettings();
             }
         });
@@ -546,7 +552,7 @@ public class Probe extends ViewPart implements PVListener {
 			handlerService.executeCommand(cmd, null);
 		} catch (final ExecutionException e) {
 			// Execution of the command handler failed.
-			Plugin.getLogger().error("Error executing save value command.", e); //$NON-NLS-1$
+			CentralLogger.getInstance().getLogger(this).error("Error executing save value command.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocExecutionError);
@@ -554,7 +560,7 @@ public class Probe extends ViewPart implements PVListener {
 			// Thrown if the command or one of the parameters is undefined.
 			// This should never happen (the command id is defined in the
 			// platform). Log an error, disable the button, and return.
-			Plugin.getLogger().error("Save value command is not defined.", e); //$NON-NLS-1$
+			CentralLogger.getInstance().getLogger(this).error("Save value command is not defined.", e); //$NON-NLS-1$
 			MessageDialog.openError(getSite().getShell(),
 					Messages.S_ErrorDialogTitle,
 					Messages.S_SaveToIocNotDefinedError);
@@ -663,11 +669,10 @@ public class Probe extends ViewPart implements PVListener {
                                 IWorkbenchActionConstants.MB_ADDITIONS));
             }
         });
-        final Control control = cbo_name.getControl();
         //Control control = pv_label;
-        final Menu menu = manager.createContextMenu(control);
-        control.setMenu(menu);
-        getSite().registerContextMenu(manager, cbo_name);
+        final Menu menu = manager.createContextMenu(cbo_name);
+        cbo_name.setMenu(menu);
+        getSite().registerContextMenu(manager, this);
     }
 
     /** Update the PV name that is probed.
@@ -678,12 +683,9 @@ public class Probe extends ViewPart implements PVListener {
     @SuppressWarnings("nls")
     public boolean setPVName(final String pv_name)
     {
-        Plugin.getLogger().debug("setPVName(" + pv_name + ")");
+        CentralLogger.getInstance().getLogger(this).debug("setPVName(" + pv_name + ")");
 
-        // Close a previous channel
-        disposeChannel();
-
-        // Reset rest of GUI
+        // Reset GUI
         lbl_value.setText("");
         lbl_time.setText("");
         value.reset();
@@ -694,31 +696,30 @@ public class Probe extends ViewPart implements PVListener {
         // Check the name
         if ((pv_name == null) || pv_name.equals(""))
         {
-            cbo_name.getCombo().setText("");
+            cbo_name.setText("");
             updateStatus(Messages.S_Waiting);
+            setPV(null);
             return false;
         }
 
         name_helper.addEntry(pv_name);
-        cbo_name.setSelection(
-            new StructuredSelection(
-                        CentralItemFactory.createProcessVariable(pv_name)));
         // Update displayed name, unless it's already current
-        if (! (cbo_name.getCombo().getText().equals(pv_name))) {
-            cbo_name.getCombo().setText(pv_name);
-        }
-
+        if (! (cbo_name.getText().equals(pv_name)))
+            cbo_name.setText(pv_name);
+        
         // Create a new channel
         try
         {
             updateStatus(Messages.S_Searching);
-            pv = PVFactory.createPV(pv_name);
-            pv.addListener(this);
-            pv.start();
+
+            final PV new_pv = PVFactory.createPV(pv_name);
+            setPV(new_pv);
+            new_pv.addListener(this);
+            new_pv.start();
         }
         catch (final Exception ex)
         {
-            Plugin.getLogger().error(Messages.S_CreateError, ex);
+            CentralLogger.getInstance().getLogger(this).error(Messages.S_CreateError, ex);
             updateStatus(Messages.S_CreateError + ex.getMessage());
             return false;
         }
@@ -734,11 +735,11 @@ public class Probe extends ViewPart implements PVListener {
     // PVListener
     public void pvValueUpdate(final PV pv)
     {
-        Plugin.getLogger().debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
-        // We might receive events after the view is already disposed....
-        if (lbl_value.isDisposed()) {
+    	CentralLogger.getInstance().getLogger(this).debug("Probe pvValueUpdate: " + pv.getName()); //$NON-NLS-1$
+    	
+        // We might receive events after the view is already disposed or we're already looking at a different PV ....
+        if (pv != this.pv  ||  lbl_value.isDisposed())
             return;
-        }
         try
         {
             final IValue newVal = pv.getValue();
@@ -748,21 +749,23 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Exception e)
         {
-            Plugin.getLogger().error("pvValueUpdate error", e); //$NON-NLS-1$
+            CentralLogger.getInstance().getLogger(this).error("pvValueUpdate error", e); //$NON-NLS-1$
             updateStatus(e.getMessage());
         }
     }
 
-    /** Closes a channel and releases resource */
-    private void disposeChannel()
+    /** Update the PV, closing the previously used PV
+     *  @param new_pv New PV, may be <code>null</code>
+     */
+    private synchronized void setPV(final PV new_pv)
     {
-        if (pv != null)
-        {
-            Plugin.getLogger().debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
-            pv.removeListener(this);
-            pv.stop();
-            pv = null;
-        }
+    	if (pv != null)
+    	{
+        	CentralLogger.getInstance().getLogger(this).debug("Probe: disposeChannel " + pv.getName()); //$NON-NLS-1$
+	        pv.removeListener(this);
+	        pv.stop();
+    	}
+    	pv = new_pv;
     }
 
     /** Updates the status bar with given string.
@@ -844,8 +847,36 @@ public class Probe extends ViewPart implements PVListener {
         }
         catch (final Throwable ex)
         {
-            Plugin.getLogger().error(Messages.S_AdjustFailed, ex);
+            CentralLogger.getInstance().getLogger(this).error(Messages.S_AdjustFailed, ex);
             updateStatus(Messages.S_AdjustFailed + ex.getMessage());
         }
+    }
+
+    /** Minimal ISelectionProvider */
+	public void addSelectionChangedListener(ISelectionChangedListener listener)
+    {
+	    // Not implemented
+    }
+
+    /** Minimal ISelectionProvider */
+	public void removeSelectionChangedListener(
+            ISelectionChangedListener listener)
+    {
+	    // Not implemented
+    }
+
+    /** Provide PV name for context menu object contributions
+     *  ISelectionProvider
+     */
+	public ISelection getSelection()
+    {
+		return new StructuredSelection(
+                        CentralItemFactory.createProcessVariable(cbo_name.getText()));
+    }
+
+    /** ISelectionProvider */
+	public void setSelection(ISelection selection)
+    {
+	    // Not implemented
     }
 }
