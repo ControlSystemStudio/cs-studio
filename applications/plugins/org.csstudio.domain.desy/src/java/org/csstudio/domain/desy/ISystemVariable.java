@@ -23,19 +23,19 @@ package org.csstudio.domain.desy;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * System variables are the fundamental atomic components of any system.
- * A system variable is a value or state (set of values/states) that describes the composed system.
+ * A system variables is an entity in form of a value or state (set of values/states) to a given
+ * time instant.
+ * A complete system is composed of a non-empty set of system variables.
+ *
  * It is identifiable and features to any given time a unique value/state or a set of the same that
  * is unique to that time.
- *
- * The state/value may represent an alarm according to some rules/ranges.
- * In other words any system variable gives information about its current alarm state
- * and <code>null</code> when its state is not an alarm.
  *
  * @author bknerr
  * @since 04.11.2010
@@ -45,6 +45,12 @@ import org.csstudio.domain.desy.common.id.Identifiable;
 public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
 
     /**
+     * Sets the value/state or set of values/states of this system variable.
+     * @param the new value
+     */
+    void setValue(@Nonnull T value);
+
+    /**
      * The value/state or set of values/states of this system variable.
      * @return the variable
      */
@@ -52,13 +58,18 @@ public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
     T getValue();
 
     /**
-     * The state/value may represent an alarm according to some rules/ranges.
-     * In other words any system variable gives information about its current alarm state.
+     * Sets the timestamp for this system variable.
+     * @param timestamp the timestamp
+     */
+    void setTimestamp(@Nullable final TimeInstant timestamp);
+
+    /**
+     * Returns the time instant for this system variable.
      *
-     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
-     * implementation, hence <code>null</code> represents a possible return value.
-     * @return the alarm or <code>null</code>
+     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
      */
     @CheckForNull
-    IAlarm getAlarm();
+    TimeInstant getTimestamp();
+
+
 }

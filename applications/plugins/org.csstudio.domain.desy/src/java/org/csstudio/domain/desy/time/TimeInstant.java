@@ -19,32 +19,17 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.common.channel;
-
-import org.csstudio.domain.desy.common.id.Id;
+package org.csstudio.domain.desy.time;
 
 /**
- * Id object for channel.
+ * Immutable base time instant.
+ *
+ * TODO (bknerr) : consider the usage of Timestamp or a 'valid' supertype immutable, once it is
+ * defined.
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 16.11.2010
  */
-public class ChannelId extends Id<ChannelId> {
-
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
-     */
-    public static final ChannelId NONE = new ChannelId(-1L);
-
-    /**
-     * Constructor.
-     *
-     * @param value the value
-     */
-    public ChannelId(final long value) {
-        super(value);
-    }
+public class TimeInstant {
 
 }

@@ -19,16 +19,34 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.common.channel;
+package org.csstudio.domain.desy;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import javax.annotation.CheckForNull;
+
+import org.csstudio.domain.desy.alarm.IAlarm;
 
 /**
- * Read only interface of a channel.
+ * A system variable that features an alarm state.
+ *
+ * The system variable's state/value represents an alarm according to specified alarm rules.
+ * In other words any alarm system variable gives information about its current alarm state
+ * and <code>null</code> when (not if!) it's state does not represent an alarm.
+ *
+ * TODO (bknerr) : Does the alarm rule set for a alarm system variable belong to it?
  *
  * @author bknerr
- * @since 09.11.2010
+ * @since 16.11.2010
  */
-public interface IChannel extends Identifiable<ChannelId> {
+public interface IAlarmSystemVariable<T> extends ISystemVariable<T> {
 
+    /**
+     * The state/value may represent an alarm according to some rules/ranges.
+     * In other words any system variable gives information about its current alarm state.
+     *
+     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
+     * implementation, hence <code>null</code> represents a possible return value.
+     * @return the alarm object or <code>null</code>
+     */
+    @CheckForNull
+    IAlarm getAlarm();
 }
