@@ -26,7 +26,7 @@ OR MODIFICATIONS.
 THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
 USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
 PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT 
-http://www.desy.de/legal/license
+HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
       </text>
    </aboutInfo>
 
@@ -59,10 +59,13 @@ http://www.desy.de/legal/license
    <intro introId="org.eclipse.ui.intro.universal"/>
 
    <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
    <license>
-        <url>http://www.desy.de/legal/license</url>
+        <url>HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM</url>
         <text>
    Control System Studio Island
 
@@ -84,7 +87,7 @@ OR MODIFICATIONS.
 THE FULL LICENSE SPECIFYING FOR THE SOFTWARE THE REDISTRIBUTION, MODIFICATION,
 USAGE AND OTHER RIGHTS AND OBLIGATIONS IS INCLUDED WITH THE DISTRIBUTION OF THIS
 PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY AT 
-http://www.desy.de/legal/license
+HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
          </text>
    </license>
 
