@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.csstudio.apputil.time.PeriodFormat;
 import org.csstudio.archive.engine2.Messages;
+import org.csstudio.archive.engine2.RDBArchiveEnginePreferences;
 import org.csstudio.archive.engine2.model.ArchiveGroup;
 import org.csstudio.archive.engine2.model.EngineModel;
 import org.csstudio.archive.engine2.model.SampleBuffer;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
 import org.eclipse.core.runtime.Platform;
@@ -30,16 +30,16 @@ class MainResponse extends AbstractResponse
 {
     /** Avoid serialization errors */
     private static final long serialVersionUID = 1L;
-    
+
     /** Bytes in a MegaByte */
     final static double MB = 1024.0*1024.0;
 
     private static String host = null;
-    
+
     MainResponse(final EngineModel model)
     {
         super(model);
-    
+
         if (host == null)
         {
             try
@@ -47,26 +47,26 @@ class MainResponse extends AbstractResponse
                 final InetAddress localhost = InetAddress.getLocalHost();
                 host = localhost.getHostName();
             }
-            catch (Exception ex)
+            catch (final Exception ex)
             {
                 host = "localhost";
             }
         }
     }
-    
+
     @Override
     protected void fillResponse(final HttpServletRequest req,
                     final HttpServletResponse resp) throws Exception
     {
         final HTMLWriter html = new HTMLWriter(resp, Messages.HTTP_MainTitle);
         html.openTable(2, new String[] { "Summary" });
-        
+
         html.tableLine(new String[] { Messages.HTTP_Version, EngineModel.VERSION });
 
         html.tableLine(new String[] { Messages.HTTP_Description, model.getName() });
-        
+
         html.tableLine(new String[] { Messages.HTTP_Host, host + ":" + req.getLocalPort() });
-        
+
         html.tableLine(new String[] { Messages.HTTP_State, model.getState().name() });
         final ITimestamp start = model.getStartTime();
         if (start != null)
@@ -76,8 +76,8 @@ class MainResponse extends AbstractResponse
                 Messages.HTTP_StartTime,
                 start.format(ITimestamp.Format.DateTimeSeconds)
             });
-            
-            final double up_secs = 
+
+            final double up_secs =
                 TimestampFactory.now().toDouble() - start.toDouble();
             html.tableLine(new String[]
             {
@@ -85,7 +85,7 @@ class MainResponse extends AbstractResponse
                 PeriodFormat.formatSeconds(up_secs)
             });
         }
-        
+
         html.tableLine(new String[]
         {
             Messages.HTTP_Workspace,
@@ -101,8 +101,9 @@ class MainResponse extends AbstractResponse
             final int channel_count = group.getChannelCount();
             for (int j=0; j<channel_count; ++j)
             {
-                if (group.getChannel(j).isConnected())
+                if (group.getChannel(j).isConnected()) {
                     ++connect_count;
+                }
             }
             total_channel_count += channel_count;
         }
@@ -129,7 +130,7 @@ class MainResponse extends AbstractResponse
             Messages.HTTP_WritePeriod,
             model.getWritePeriod() + " sec"
         });
-        
+
         // Currently in 'Write Error' state?
         html.tableLine(new String[]
         {
@@ -138,7 +139,7 @@ class MainResponse extends AbstractResponse
              ? HTMLWriter.makeRedText(Messages.HTTP_WriteError)
              : "OK")
         });
-        
+
         final ITimestamp last_write_time = model.getLastWriteTime();
         html.tableLine(new String[]
         {
@@ -161,15 +162,15 @@ class MainResponse extends AbstractResponse
         html.tableLine(new String[]
         {
             Messages.HTTP_SQLTimeout,
-            PeriodFormat.formatSeconds(RDBArchivePreferences.getSQLTimeout())
+            PeriodFormat.formatSeconds(RDBArchiveEnginePreferences.getSQLTimeout())
         });
 
         html.tableLine(new String[]
         {
-            Messages.HTTP_Idletime, 
+            Messages.HTTP_Idletime,
             String.format("%.1f %%", model.getIdlePercentage())
         });
-        
+
         final Runtime runtime = Runtime.getRuntime();
         final double used_mem = runtime.totalMemory() / MB;
         final double max_mem = runtime.maxMemory() / MB;
@@ -181,9 +182,9 @@ class MainResponse extends AbstractResponse
             String.format("%.1f MB of %.1f MB used (%.1f %%)",
                           used_mem, max_mem, perc_mem)
         });
-        
+
         html.closeTable();
-        
+
         html.close();
     }
 }

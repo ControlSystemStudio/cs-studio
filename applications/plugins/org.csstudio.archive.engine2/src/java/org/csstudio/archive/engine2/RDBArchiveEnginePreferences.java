@@ -29,6 +29,7 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  * Access to engine related RDB archive preferences.
  *
  * Copied from archive.rdb.RDBArchivePreferences in order to decouple plugins.
+ *
  * FIXME (bknerr) : the prefs belong to the service implementation.
  *
  * @author bknerr

@@ -24,10 +24,12 @@ package org.csstudio.archive.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
+import org.csstudio.platform.data.ITimestamp;
 
 /**
  * Read only interface of a sample value in the archive.
+ *
+ * FIXME (bknerr) : NOT identifiable in its current design, see 'show create table sample' in rdb.
  *
  * @author bknerr
  * @since 11.11.2010
@@ -38,6 +40,7 @@ public interface IArchiveSample<T> {
      * The id of the channel which this sample belongs to.
      * @return the channel id
      */
+
     public ArchiveChannelId getChannelId();
 
     /**
@@ -52,6 +55,6 @@ public interface IArchiveSample<T> {
      * @return the timestamp
      */
     @Nonnull
-    public DateTime getTimeStamp();
+    public ITimestamp getTimeStamp();
 
 }

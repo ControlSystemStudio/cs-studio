@@ -21,8 +21,10 @@
  */
 package org.csstudio.archive.service.sample;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.joda.time.DateTime;
+import org.csstudio.platform.data.ITimestamp;
 
 /**
  * Immutable data transfer class for archive sample.
@@ -32,28 +34,44 @@ import org.joda.time.DateTime;
  */
 public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
 
+    private final ArchiveChannelId _channelId;
+    private final T _value;
+    private final ITimestamp _timestamp;
+
+    /**
+     * Constructor.
+     */
+    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId chanId,
+                            @Nonnull final T value,
+                            @Nonnull final ITimestamp ts) {
+        _channelId = chanId;
+        _value = value;
+        _timestamp = ts;
+    }
+
     /**
      * {@inheritDoc}
      */
+    @Override
     public ArchiveChannelId getChannelId() {
-        // TODO Auto-generated method stub
-        return null;
+        return _channelId;
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
+    @Nonnull
     public T getValue() {
-        // TODO Auto-generated method stub
-        return null;
+        return _value;
     }
 
     /**
      * {@inheritDoc}
      */
-    public DateTime getTimeStamp() {
-        // TODO Auto-generated method stub
-        return null;
+    @Override
+    public ITimestamp getTimeStamp() {
+        return _timestamp;
     }
 
 }

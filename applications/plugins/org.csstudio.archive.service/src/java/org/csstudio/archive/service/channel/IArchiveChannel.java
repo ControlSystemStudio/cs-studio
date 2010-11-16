@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.joda.time.DateTime;
+import org.csstudio.platform.data.ITimestamp;
 
 /**
  * Read only interface of an channel configuration in the archive.
@@ -68,6 +68,6 @@ public interface IArchiveChannel extends Identifiable<ArchiveChannelId> {
      * @return the timestamp of the latest archived sample for this channel
      */
     @Nonnull
-    public DateTime getLatestTimestamp();
+    public ITimestamp getLatestTimestamp();
 
 }

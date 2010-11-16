@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.service.oracleimpl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -32,6 +31,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
 import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineHelper;
@@ -60,7 +60,7 @@ import org.csstudio.platform.logging.CentralLogger;
  * decoupling of the engine from the data (archive) access layer!
  *
  * This stub <b>tries always</b> to redirect to o.c.archive.rdb if possible, so that the SNS
- * developers can start to revise/refactor at familiar points in their own code.
+ * developers can navigate for consideration to familiar points in their own code.
  * If this is not possible, as the archive.rdb methods are not accessible (not public and/or
  * exported or at least not without much ado), then the rdb access code is duplicated with a comment
  * explaining where to look and why a redirection wasn't possible.
@@ -121,6 +121,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             _archive.get().reconnect();
         } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveConnectionException("Archive reconnection failed.", e);
         }
 
@@ -149,6 +150,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      *  For performance reasons, this call actually only adds
      *  the sample to a 'batch'.
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
+     *
+     *  No transaction handling?
      */
     public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples)
         throws ArchiveServiceException {
@@ -162,29 +165,12 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             _archive.get().commitBatch();
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Committing of sample batch failed.", e);
+            throw new ArchiveServiceException("Committing of batch of samples failed.", e);
         }
 
         return true;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Nonnull
-    public IArchiveChannel getChannel(@Nonnull final String channelName) throws ArchiveServiceException {
-        return ArchiveEngineAdapter.INSTANCE.adapt(getChannelConfig(channelName));
-    }
-
-    @Nonnull
-    private ChannelConfig getChannelConfig(@Nonnull final String channelName) throws ArchiveServiceException {
-        try {
-            return _archive.get().getChannel(channelName);
-        } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of channel failed.", e);
-        }
-    }
 
     /**
      * {@inheritDoc}
@@ -196,53 +182,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             return channel != null ? channel.getId() : null;
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            e.printStackTrace();
-            throw new ArchiveServiceException("Retrieval of channel id failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
-        try {
-            _archive.get().writeMetaData(getChannel(channelName), sample);
-        } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Writing of meta data failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @CheckForNull
-    public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
-
-        final ChannelConfig cfg = getChannel(name);
-        if (cfg == null) {
-            return null;
-        }
-        try {
-            return cfg.getLastTimestamp();
-        } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of last sample's time stamp failed.", e);
-        }
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @CheckForNull
-    public IArchiveEngine findEngine(final int id) throws ArchiveServiceException {
-        // FIXME (kasemir) : data access object is created anew on every invocation?!
-        final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
-        try {
-            return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(id));
-        } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of engine failed.", e);
+            throw new ArchiveServiceException("Retrieval of channel id for channel " + channelName + " failed.", e);
         }
     }
 
@@ -257,52 +197,91 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(name));
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of engine failed.", e);
+            throw new ArchiveServiceException("Retrieval of engine for " + name + " failed.", e);
         }
     }
+
 
     /**
      * {@inheritDoc}
      */
     @Nonnull
-    public List<ChannelGroupConfig> getGroupsByEngineId(final int engineId) throws ArchiveServiceException {
+    public List<IArchiveChannelGroup> getGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
         // FIXME (kasemir) : data access object is created anew on every invocation?!
-        final ChannelGroupHelper groups = new ChannelGroupHelper(_archive.get());
+        final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
-            return Arrays.asList(groups.get(engineId));
+            final ChannelGroupConfig[] groups = groupHelper.get(id.intValue());
+            return ArchiveEngineAdapter.INSTANCE.adapt(groups);
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of channel group configurations failed.", e);
+            throw new ArchiveServiceException("Retrieval of channel group configurations for engine " + id .intValue() + " failed.", e);
         }
     }
 
-
-    /**
-     * {@inheritDoc}
-     */
-    public List<IArchiveChannelGroup> getGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    public List<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
+    @Nonnull
+    public List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
-
-            return group_config.getChannels();
+            final ChannelGroupConfig cfg = _archive.get().findGroup(groupId.intValue()); // cache in archive ???
+            return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getChannels());
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Retrieval of channels failed.", e);
+            throw new ArchiveServiceException("Retrieval of channels for " + groupId.intValue() + " failed.", e);
         }
-        // TODO Auto-generated method stub
-        return null;
     }
 
     /**
      * {@inheritDoc}
      */
-    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
+    @CheckForNull
+    public IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
+
+        SampleMode sampleMode;
+        try {
+            sampleMode = _archive.get().getSampleMode(sampleModeId.intValue());
+        } catch (final Exception e) {
+            throw new ArchiveServiceException("Retrieval of sample mode for " + sampleModeId.intValue() + " failed.", e);
+        }
+        return ArchiveEngineAdapter.INSTANCE.adapt(sampleMode);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
+        try {
+            _archive.get().writeMetaData(getChannelConfig(channelName), sample);
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Writing of meta data failed.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @CheckForNull
+    public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
+
+        final ChannelConfig cfg = getChannelConfig(name);
+        if (cfg == null) {
+            return null;
+        }
+        try {
+            return cfg.getLastTimestamp();
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of last sample's time stamp for channel " + name + " failed.", e);
+        }
+    }
+
+    @Nonnull
+    private ChannelConfig getChannelConfig(@Nonnull final String channelName) throws ArchiveServiceException {
+        try {
+            return _archive.get().getChannel(channelName);
+        } catch (final Exception e) {
+            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Retrieval of channel failed.", e);
+        }
     }
 
 }

@@ -27,7 +27,6 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
-import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -44,22 +43,13 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
      *
      * FIXME (bknerr, kasemir) : the signature with separated channel id and list of IValues is
      * not cleanly defined, better having a collection of composite objects,
-     * e.g. Collection<IArchiveSample<T>>. I've introduced such a composite as workaround.
+     * e.g. Collection<IArchiveSample<T>>. A workaround composite has been introduced.
      *
      * @param samples the samples to be archived with their channel id
      * @return true, if the samples have been persisted
      * @throws ArchiveServiceException
      */
     boolean writeSamples(final List<IValueWithChannelId> samples) throws ArchiveServiceException;
-
-    /**
-     * Retrieves the channel configuration from the archive with the given name.
-     *
-     * @param name the name of the channel
-     * @return the archive channel
-     * @throws ArchiveServiceException
-     */
-    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel id for a given channel name.

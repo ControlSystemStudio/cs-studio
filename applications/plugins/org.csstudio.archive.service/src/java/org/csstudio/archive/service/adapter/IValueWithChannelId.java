@@ -24,7 +24,8 @@ package org.csstudio.archive.service.adapter;
 import org.csstudio.platform.data.IValue;
 
 /**
- * Adapter interface to decouple archive engine from archive writer service.
+ * FIXME (bknerr) : Workaround adapter interface to decouple archive engine from archive writer
+ * service.
  *
  * @author bknerr
  * @since 11.11.2010

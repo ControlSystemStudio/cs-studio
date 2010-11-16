@@ -23,31 +23,44 @@ package org.csstudio.archive.service.oracleimpl.adapter;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Collections;
+import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.rdb.ChannelConfig;
+import org.csstudio.archive.rdb.SampleMode;
+import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
+import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.channel.ArchiveChannelDTO;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.oracleimpl.OracleArchiveServiceImpl;
+import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.ITimestamp;
 import org.joda.time.DateTime;
 
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
+
 /**
- * This adapter translates the originally used types in the archive.rdb to new interface types
- * that are as slim as possible. Data that is not used by the client (engine or writer) shall not
- * be present in the client.
+ * This adapter translates the originally used types in the archive.rdb to new interface types.
+ *
+ * These new types shall decouple the two layers AND be as slim as possible, so that data that is
+ * not used by the client (engine or writer) is not present in the client.
  *
  * @author bknerr
  * @since 12.11.2010
  */
 public enum ArchiveEngineAdapter {
+
     INSTANCE;
 
     /**
@@ -58,8 +71,9 @@ public enum ArchiveEngineAdapter {
 
         return new IArchiveEngine() {
 
-            public int getId() {
-                return cfg.getId();
+            @Nonnull
+            public ArchiveEngineId getId() {
+                return new ArchiveEngineId(cfg.getId());
             }
 
             @CheckForNull
@@ -77,27 +91,34 @@ public enum ArchiveEngineAdapter {
 
     /**
      * @param channel the archive.rdb channel configuration
-     * @return the service inteface for the channel configuration
-     * @throws Exception
+     * @return the service interface for the channel configuration
+     * @throws ArchiveServiceException
      */
     @Nonnull
-    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel) throws Exception {
+    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel) throws ArchiveServiceException {
 
-        final ITimestamp lastTimeStamp =
-            OracleArchiveServiceImpl.INSTANCE.getLatestTimestampByChannel(channel.getName());
+        ITimestamp lastTimestamp;
+        try {
+            lastTimestamp = channel.getLastTimestamp();
+        } catch (final Exception e) {
+            throw new ArchiveServiceException("Last timestamp for channel " + channel.getName() +
+                                              " could not be retrieved.", e);
+        }
 
         final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
+                                                          channel.getName(),
                                                           new ArchiveChannelGroupId(channel.getGroupId()),
                                                           new ArchiveSampleModeId(channel.getSampleMode().getId()),
                                                           channel.getSampleValue(),
                                                           channel.getSamplePeriod(),
-                                                          adapt(lastTimeStamp));
+                                                          lastTimestamp);
 
         return cfg;
     }
 
     /**
      * FIXME (bknerr) : apparently the allmighty jodatime cannot offer nano precision - find a replacement
+     * o.c.platform.data.Timestamp ??? or better another choice, Instant? Check for the requirements Kay mentioned!
      *
      * @param time the archive.rdb timestamp
      * @return the service interface type for a time instant
@@ -107,4 +128,80 @@ public enum ArchiveEngineAdapter {
 
         return new DateTime(time.seconds()*1000 + time.nanoseconds()/1000);
     }
+
+    /**
+     *
+     * @param cfg cfg the archive.rdb channel group config
+     * @return the service interface for this config
+     */
+    @Nonnull
+    public IArchiveChannelGroup adapt(@Nonnull final ChannelGroupConfig cfg) {
+        return new IArchiveChannelGroup() {
+            @Nonnull
+            public ArchiveChannelGroupId getId() {
+                return new ArchiveChannelGroupId(cfg.getId());
+            }
+            @CheckForNull
+            public String getName() {
+                return cfg.getName();
+            }
+            @CheckForNull
+            public ArchiveChannelId getEnablingChannelId() {
+                return new ArchiveChannelId(cfg.getId());
+            }
+        };
+    }
+
+    /**
+     * @param groups the list of archive.rdb group configurations
+     * @return the list of service interfaces for the group configs
+     */
+    @Nonnull
+    public List<IArchiveChannelGroup> adapt(@CheckForNull final ChannelGroupConfig[] groups) {
+        if (groups == null) {
+            return Collections.emptyList();
+        }
+        final List<ChannelGroupConfig> list = Lists.newArrayList(groups);
+
+        return Lists.transform(list,
+                               new Function<ChannelGroupConfig, IArchiveChannelGroup>() {
+                                @Nonnull
+                                public IArchiveChannelGroup apply(final ChannelGroupConfig from) {
+                                    return adapt(from);
+                                }
+                               });
+    }
+
+    /**
+     * @param channels the list of archive.rdb channels configurations
+     * @return the list of service interfaces for the channel configs
+     */
+    @Nonnull
+    public List<IArchiveChannel> adapt(@Nonnull final List<ChannelConfig> channels) {
+        return Lists.transform(channels,
+                               new Function<ChannelConfig, IArchiveChannel>() {
+                                    @Nonnull
+                                    public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
+                                        try {
+                                            return adapt(from);
+                                        } catch (final ArchiveServiceException e) {
+                                            // FIXME (bknerr) : How to propagate an exception from here???
+                                            return null;
+                                        }
+                                    }
+                               });
+    }
+
+    /**
+     * @param sampleMode
+     * @return
+     */
+    @CheckForNull
+    public IArchiveSampleMode adapt(@Nonnull final SampleMode sampleMode) {
+        for (final ArchiveSampleMode mode : ArchiveSampleMode.values()) {
+            sampleMode.getName().toUpperCase().equals(mode.name());
+        }
+        return null;
+    }
+
 }

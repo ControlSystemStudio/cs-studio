@@ -15,7 +15,7 @@ import java.util.Map;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.engine2.RDBArchiveEnginePreferences;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.junit.Test;
 
@@ -46,9 +46,9 @@ public class EngineModelHeadlessTest
 
         // Connect writer to the service with the given prefs
         final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchivePreferences.URL, url);
-        prefs.put(RDBArchivePreferences.USER, user);
-        prefs.put(RDBArchivePreferences.PASSWORD, password);
+        prefs.put(RDBArchiveEnginePreferences.URL, url);
+        prefs.put(RDBArchiveEnginePreferences.USER, user);
+        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
         final IArchiveEngineConfigService service = Activator.getDefault().getArchiveEngineConfigService();
         service.connect(prefs);
 

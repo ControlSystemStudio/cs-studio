@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.joda.time.DateTime;
+import org.csstudio.platform.data.ITimestamp;
 
 /**
  * Immutable data transfer object for DAOs.
@@ -37,6 +37,8 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final ArchiveChannelId _id;
 
+    private final String _name;
+
     private final ArchiveChannelGroupId _groupId;
 
     private final ArchiveSampleModeId _sampleModeId;
@@ -45,7 +47,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final double _samplePeriod;
 
-    private final DateTime _latestTimestamp;
+    private final ITimestamp _latestTimestamp;
 
     /** The channel's meta data */
     //private final IMetaData _metaData;
@@ -61,13 +63,15 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      * @param ltstTimestamp
      */
     public ArchiveChannelDTO(@Nonnull final ArchiveChannelId id,
+                             @Nonnull final String name,
                              @Nonnull final ArchiveChannelGroupId grpId,
                              @Nonnull final ArchiveSampleModeId sampleModeId,
                              final double smplVal,
                              final double smplPer,
                              /* @Nonnull final IMetaData metaData */
-                             @Nonnull final DateTime ltstTimestamp) {
+                             @Nonnull final ITimestamp ltstTimestamp) {
         _id = id;
+        _name = name;
         _groupId = grpId;
         _sampleModeId = sampleModeId;
         _sampleValue = smplVal;
@@ -83,6 +87,14 @@ public class ArchiveChannelDTO implements IArchiveChannel {
     @Nonnull
     public ArchiveChannelId getId() {
         return _id;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
     }
     /**
      * {@inheritDoc}
@@ -127,8 +139,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      */
     @Override
     @Nonnull
-    public DateTime getLatestTimestamp() {
+    public ITimestamp getLatestTimestamp() {
         return _latestTimestamp;
     }
-
 }

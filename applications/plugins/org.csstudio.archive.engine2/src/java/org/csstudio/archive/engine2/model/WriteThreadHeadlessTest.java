@@ -13,7 +13,7 @@ import java.util.Map;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.archive.engine2.Activator;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
+import org.csstudio.archive.engine2.RDBArchiveEnginePreferences;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
@@ -55,9 +55,9 @@ public class WriteThreadHeadlessTest
 
         // Connect writer to the service with the given prefs
         final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchivePreferences.URL, url);
-        prefs.put(RDBArchivePreferences.USER, user);
-        prefs.put(RDBArchivePreferences.PASSWORD, password);
+        prefs.put(RDBArchiveEnginePreferences.URL, url);
+        prefs.put(RDBArchiveEnginePreferences.USER, user);
+        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
         final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
         service.connect(prefs);
 

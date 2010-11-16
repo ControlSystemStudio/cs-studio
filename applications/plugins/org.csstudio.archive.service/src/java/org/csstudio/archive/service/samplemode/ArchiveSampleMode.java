@@ -30,26 +30,31 @@ import javax.annotation.Nonnull;
  * @since 12.11.2010
  */
 public enum ArchiveSampleMode implements IArchiveSampleMode {
-    MONITOR("Monitor mode"),
-    SCAN("Scanned mode");
+    MONITOR("Store every received update"),
+    SCAN("Periodic scan");
 
     private final String _description;
 
-    private final ArchiveSampleModeId _id;
+    private ArchiveSampleModeId _id;
+
+    static {
+        int id = 0;
+        for (final ArchiveSampleMode mode : values()) {
+            mode._id = new ArchiveSampleModeId(++id);
+        }
+    }
 
     /**
      * Constructor.
      */
     private ArchiveSampleMode(@Nonnull final String desc) {
         _description = desc;
-        // TODO (bknerr) : check whether this works... seems fishy as ordinal is called before
-        // the objects are completely initialised
-        _id = new ArchiveSampleModeId(ordinal());
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public ArchiveSampleModeId getId() {
         return _id;
@@ -58,6 +63,7 @@ public enum ArchiveSampleMode implements IArchiveSampleMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public String getName() {
         return name();
@@ -66,6 +72,7 @@ public enum ArchiveSampleMode implements IArchiveSampleMode {
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public String getDescription() {
         return _description;

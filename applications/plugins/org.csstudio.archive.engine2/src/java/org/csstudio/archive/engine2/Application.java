@@ -18,7 +18,6 @@ import org.csstudio.apputil.args.StringOption;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.model.EngineModel;
 import org.csstudio.archive.engine2.server.EngineServer;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -29,9 +28,9 @@ import org.eclipse.equinox.app.IApplicationContext;
 public class Application implements IApplication
 {
     /** Database URL, user, password */
-    private String url = RDBArchivePreferences.getURL(),
-                   user = RDBArchivePreferences.getUser(),
-                   password = RDBArchivePreferences.getPassword();
+    private String url = RDBArchiveEnginePreferences.getURL(),
+                   user = RDBArchiveEnginePreferences.getUser(),
+                   password = RDBArchiveEnginePreferences.getPassword();
 
     /** HTTP Server port */
     private int port;
@@ -199,9 +198,9 @@ public class Application implements IApplication
 
     private Map<String, Object> createConnectionPrefsMap() {
         final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchivePreferences.URL, url);
-        prefs.put(RDBArchivePreferences.USER, user);
-        prefs.put(RDBArchivePreferences.PASSWORD, password);
+        prefs.put(RDBArchiveEnginePreferences.URL, url);
+        prefs.put(RDBArchiveEnginePreferences.USER, user);
+        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
         return prefs;
     }
 

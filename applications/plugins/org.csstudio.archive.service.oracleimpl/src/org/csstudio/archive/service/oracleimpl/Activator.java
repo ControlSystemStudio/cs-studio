@@ -68,7 +68,6 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(@Nonnull final BundleContext context) throws Exception {
-
 	    final Dictionary<String, Object> propsCfg = new Hashtable<String, Object>();
         propsCfg.put("service.vendor", "SNS");
         propsCfg.put("service.description", "Oracle archive engine config service implementation");

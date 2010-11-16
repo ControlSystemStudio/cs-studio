@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.service.channelgroup;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
@@ -43,6 +44,7 @@ public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId
     /**
      * @return the enabling channel id
      */
+    @CheckForNull
     public ArchiveChannelId getEnablingChannelId();
 
 }

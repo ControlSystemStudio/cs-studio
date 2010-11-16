@@ -45,16 +45,6 @@ public interface IArchiveEngineConfigService extends IArchiveConnectionService {
     /**
      * Retrieves the engine by id.
      *
-     *  @param engine_id ID of engine to locate
-     *  @return SampleEngineInfo or <code>null</code> when not found
-     *  @throws ArchiveServiceException
-     */
-    @CheckForNull
-    IArchiveEngine findEngine(final int id) throws ArchiveServiceException;
-
-    /**
-     * Retrieves the engine by id.
-     *
      *  @param name name of engine to locate
      *  @return SampleEngineInfo or <code>null</code> when not found
      *  @throws ArchiveServiceException

@@ -505,14 +505,16 @@ public class EngineModel
         }
 
         // Get groups
-        final List<IArchiveChannelGroup> engine_groups = service.getGroupsByEngineId(engine.getId());
+        final List<IArchiveChannelGroup> engine_groups =
+            service.getGroupsByEngineId(engine.getId());
 
         for (final IArchiveChannelGroup group_config : engine_groups)
         {
             final ArchiveGroup group = addGroup(group_config.getName());
 
             // Add channels to group
-            final List<IArchiveChannel> channel_configs = service.getChannelsByGroupId(group_config.getId());
+            final List<IArchiveChannel> channel_configs =
+                service.getChannelsByGroupId(group_config.getId());
 
             for (final IArchiveChannel channel_config : channel_configs)
             {
@@ -522,12 +524,13 @@ public class EngineModel
                 }
                 // channel name
                 //
-                final IArchiveSampleMode mode = service.getSampleModeById(channel_config.getSampleModeId());
+                final IArchiveSampleMode mode =
+                    service.getSampleModeById(channel_config.getSampleModeId());
 
                 addChannel(channel_config.getName(),
                            group,
                            enablement,
-                           mode.equals(ArchiveSampleMode.MONITOR),
+                           ArchiveSampleMode.MONITOR.equals(mode),
                            channel_config.getSampleValue(),
                            channel_config.getSamplePeriod());
             }

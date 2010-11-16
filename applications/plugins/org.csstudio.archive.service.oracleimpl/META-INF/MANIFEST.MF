@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: Oracleimpl
+Bundle-Name: SNS impl for archive service (Oracle and embedded MySQL)
 Bundle-SymbolicName: org.csstudio.archive.service.oracleimpl
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.archive.service.oracleimpl.Activator
