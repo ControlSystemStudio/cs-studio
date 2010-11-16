@@ -88,6 +88,13 @@
                type="org.eclipse.ui.IActionFilter">
          </adapter>
       </factory>
+      <factory
+            adaptableType="org.eclipse.core.resources.IWorkspace"
+            class="org.csstudio.platform.ui.internal.workbench.UndoContextAdapterFactory">
+         <adapter
+               type="org.eclipse.core.commands.operations.IUndoContext">
+         </adapter>
+      </factory>
    </extension>
    <extension
          point="org.eclipse.ui.actionSets">

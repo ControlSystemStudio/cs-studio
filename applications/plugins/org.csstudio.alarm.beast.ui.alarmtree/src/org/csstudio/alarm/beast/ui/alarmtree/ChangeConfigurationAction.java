@@ -75,7 +75,7 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
 			try
 			{
 				final String current = model.getConfigurationName();
-				final String names[] = model.listConfigurations();
+				final String names[] = model.getConfigurationNames();
 				for (String name : names)
 				{	// Note item text later used to set model config
 					final MenuItem item = new MenuItem(menu, SWT.RADIO);

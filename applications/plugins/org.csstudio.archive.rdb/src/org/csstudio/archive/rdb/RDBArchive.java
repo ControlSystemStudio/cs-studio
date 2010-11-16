@@ -42,6 +42,7 @@ import org.csstudio.platform.utility.rdb.TimeWarp;
  *  TODO Split this into 3 pieces: Archive configuration, data readout, data writer.
  *
  * @author Kay Kasemir
+ * @author Lana Abadie (PostgreSQL)
  */
 public class RDBArchive
 {
@@ -596,7 +597,7 @@ public class RDBArchive
                 else
                     insert_double_array_sample.setDouble(4, dbl[i]);
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_double_array_sample.setInt(5, stamp.getNanos());
 
                 // Batch
@@ -657,7 +658,7 @@ public class RDBArchive
         insert_xx.setInt(3, severity.getId());
         insert_xx.setInt(4, status.getId());
         // MySQL nanosecs
-        if (rdb.getDialect() == Dialect.MySQL)
+        if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
             insert_xx.setInt(6, stamp.getNanos());
         // Batch
         insert_xx.addBatch();
@@ -808,7 +809,7 @@ public class RDBArchive
                 insert_double_sample.setInt(4, status.getId());
                 insert_double_sample.setDouble(5, dbl.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_double_sample.setInt(6, stamp.getNanos());
                 insert_double_sample.executeUpdate();
             }
@@ -823,7 +824,7 @@ public class RDBArchive
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_long_sample.setInt(6, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
@@ -838,7 +839,7 @@ public class RDBArchive
                 insert_long_sample.setInt(4, status.getId());
                 insert_long_sample.setLong(5, num.getValue());
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_long_sample.setInt(6, stamp.getNanos());
                 insert_long_sample.executeUpdate();
             }
@@ -851,7 +852,7 @@ public class RDBArchive
                 insert_txt_sample.setInt(4, status.getId());
                 insert_txt_sample.setString(5, txt);
                 // MySQL nanosecs
-                if (rdb.getDialect() == Dialect.MySQL)
+                if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
                     insert_txt_sample.setInt(6, stamp.getNanos());
                 insert_txt_sample.executeUpdate();
             }

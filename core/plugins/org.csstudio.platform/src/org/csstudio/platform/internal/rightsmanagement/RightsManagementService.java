@@ -114,7 +114,7 @@ public final class RightsManagementService {
 			final boolean defaultPermission) {
 		RightSet userRights = _rights.get(user);
 		RightSet actionRights = getRightsForAction(id);
-		if (actionRights.isEmpty()) {
+		if (user == null  ||  actionRights.isEmpty()) {
 			// If no rights are configured for the action, the default
 			// permission passed by the caller is used.
 			return defaultPermission;

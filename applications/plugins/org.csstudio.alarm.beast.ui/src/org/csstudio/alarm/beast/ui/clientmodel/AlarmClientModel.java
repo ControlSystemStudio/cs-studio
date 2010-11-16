@@ -49,7 +49,7 @@ public class AlarmClientModel
 	private String config_name;
     
     /** Names of all available configuration, i.e. all root elements */
-    private String config_names[];
+    private String config_names[] = new String[0];
 
 	/** Have we recently heard from the server? */
     private volatile boolean server_alive = false;
@@ -178,10 +178,10 @@ public class AlarmClientModel
 
     /** List all configuration 'root' element names, i.e. names
      *  of all possible configurations, including the current one.
-     *  @return Array of 'root' elements
-     *  @throws Exception on error
+     *  @return Array of 'root' elements.
+     *          May be empty but non-<code>null</code> while model is still reading from RDB.
      */
-    public synchronized String[] listConfigurations() throws Exception
+    public synchronized String[] getConfigurationNames()
     {
     	return config_names;
     }
