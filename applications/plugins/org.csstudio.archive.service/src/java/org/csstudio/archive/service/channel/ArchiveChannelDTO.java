@@ -19,12 +19,10 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.channel;
+package org.csstudio.archive.service.channel;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.joda.time.DateTime;

@@ -29,7 +29,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 12.11.2010
  */
-public enum ArchiveSampleModeDTO implements IArchiveSampleMode {
+public enum ArchiveSampleMode implements IArchiveSampleMode {
     MONITOR("Monitor mode"),
     SCAN("Scanned mode");
 
@@ -40,7 +40,7 @@ public enum ArchiveSampleModeDTO implements IArchiveSampleMode {
     /**
      * Constructor.
      */
-    private ArchiveSampleModeDTO(@Nonnull final String desc) {
+    private ArchiveSampleMode(@Nonnull final String desc) {
         _description = desc;
         // TODO (bknerr) : check whether this works... seems fishy as ordinal is called before
         // the objects are completely initialised

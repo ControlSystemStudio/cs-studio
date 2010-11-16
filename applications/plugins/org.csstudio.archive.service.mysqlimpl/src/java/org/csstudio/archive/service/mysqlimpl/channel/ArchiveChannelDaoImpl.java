@@ -30,6 +30,7 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.channel.ArchiveChannelDTO;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;

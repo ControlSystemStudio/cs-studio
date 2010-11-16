@@ -26,8 +26,8 @@ import java.util.List;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
@@ -56,9 +56,10 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
      * Retrieves the channel configuration from the archive with the given name.
      *
      * @param name the name of the channel
+     * @return the archive channel
      * @throws ArchiveServiceException
      */
-    ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException;
+    IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel id for a given channel name.

@@ -31,6 +31,8 @@ import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
 /**
  * Archive engine configuration methods.
@@ -75,4 +77,11 @@ public interface IArchiveEngineConfigService extends IArchiveConnectionService {
      */
     @Nonnull
     List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException;
+
+    /**
+     * @param sampleModeId
+     * @return the sample mode
+     */
+    @CheckForNull
+    IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException;
 }

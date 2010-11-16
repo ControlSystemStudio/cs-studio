@@ -40,8 +40,14 @@ import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
+import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
 import org.csstudio.archive.service.oracleimpl.adapter.ArchiveEngineAdapter;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -166,15 +172,20 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public ChannelConfig getChannel(@Nonnull final String channelName) throws ArchiveServiceException {
+    public IArchiveChannel getChannel(@Nonnull final String channelName) throws ArchiveServiceException {
+        return ArchiveEngineAdapter.INSTANCE.adapt(getChannelConfig(channelName));
+    }
+
+    @Nonnull
+    private ChannelConfig getChannelConfig(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
             return _archive.get().getChannel(channelName);
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
-            e.printStackTrace();
             throw new ArchiveServiceException("Retrieval of channel failed.", e);
         }
     }
+
     /**
      * {@inheritDoc}
      */
@@ -265,17 +276,33 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         }
     }
 
+
     /**
      * {@inheritDoc}
      */
-    @Nonnull
-    public List<ChannelConfig> getChannelsByGroupId(@Nonnull final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public List<IArchiveChannelGroup> getGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public List<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
+
             return group_config.getChannels();
         } catch (final Exception e) {
             // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channels failed.", e);
         }
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return null;
     }
 
 }

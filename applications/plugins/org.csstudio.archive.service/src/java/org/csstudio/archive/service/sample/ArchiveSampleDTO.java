@@ -21,37 +21,39 @@
  */
 package org.csstudio.archive.service.sample;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.joda.time.DateTime;
 
 /**
- * Read only interface of a sample value in the archive.
+ * Immutable data transfer class for archive sample.
  *
  * @author bknerr
- * @since 11.11.2010
+ * @since 15.11.2010
  */
-public interface IArchiveSample<T> {
+public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
 
     /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
+     * {@inheritDoc}
      */
-    public ArchiveChannelId getChannelId();
+    public ArchiveChannelId getChannelId() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
-     * The sample value.
-     * @return the value
+     * {@inheritDoc}
      */
-    @Nonnull
-    public T getValue();
+    public T getValue() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
     /**
-     * The timestamp of the sample value.
-     * @return the timestamp
+     * {@inheritDoc}
      */
-    @Nonnull
-    public DateTime getTimeStamp();
+    public DateTime getTimeStamp() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
 }

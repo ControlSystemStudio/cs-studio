@@ -27,11 +27,22 @@ import java.net.URL;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
+import org.csstudio.archive.service.channel.ArchiveChannelDTO;
+import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.oracleimpl.OracleArchiveServiceImpl;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.platform.data.ITimestamp;
+import org.joda.time.DateTime;
 
 /**
- * TODO (bknerr) :
+ * This adapter translates the originally used types in the archive.rdb to new interface types
+ * that are as slim as possible. Data that is not used by the client (engine or writer) shall not
+ * be present in the client.
  *
  * @author bknerr
  * @since 12.11.2010
@@ -40,11 +51,17 @@ public enum ArchiveEngineAdapter {
     INSTANCE;
 
     /**
-     * @param cfg the sample engine config
+     * @param cfg the archive.rdb type for sample engine config
+     * @return the service interface type for the engine
      */
     public IArchiveEngine adapt(@Nonnull final SampleEngineConfig cfg) {
 
         return new IArchiveEngine() {
+
+            public int getId() {
+                return cfg.getId();
+            }
+
             @CheckForNull
             public URL getUrl() throws MalformedURLException {
                 try {
@@ -55,9 +72,39 @@ public enum ArchiveEngineAdapter {
                 }
             }
 
-            public int getId() {
-                return cfg.getId();
-            }
         };
+    }
+
+    /**
+     * @param channel the archive.rdb channel configuration
+     * @return the service inteface for the channel configuration
+     * @throws Exception
+     */
+    @Nonnull
+    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel) throws Exception {
+
+        final ITimestamp lastTimeStamp =
+            OracleArchiveServiceImpl.INSTANCE.getLatestTimestampByChannel(channel.getName());
+
+        final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
+                                                          new ArchiveChannelGroupId(channel.getGroupId()),
+                                                          new ArchiveSampleModeId(channel.getSampleMode().getId()),
+                                                          channel.getSampleValue(),
+                                                          channel.getSamplePeriod(),
+                                                          adapt(lastTimeStamp));
+
+        return cfg;
+    }
+
+    /**
+     * FIXME (bknerr) : apparently the allmighty jodatime cannot offer nano precision - find a replacement
+     *
+     * @param time the archive.rdb timestamp
+     * @return the service interface type for a time instant
+     */
+    @Nonnull
+    public DateTime adapt(@Nonnull final ITimestamp time) {
+
+        return new DateTime(time.seconds()*1000 + time.nanoseconds()/1000);
     }
 }

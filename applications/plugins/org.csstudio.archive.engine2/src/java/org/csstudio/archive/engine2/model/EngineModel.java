@@ -20,7 +20,7 @@ import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeDTO;
+import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -527,7 +527,7 @@ public class EngineModel
                 addChannel(channel_config.getName(),
                            group,
                            enablement,
-                           mode.equals(ArchiveSampleModeDTO.MONITOR),
+                           mode.equals(ArchiveSampleMode.MONITOR),
                            channel_config.getSampleValue(),
                            channel_config.getSamplePeriod());
             }
