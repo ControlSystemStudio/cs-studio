@@ -21,6 +21,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Iterator over raw archive samples.
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 public class RawSampleIterator implements SampleIterator
@@ -291,7 +292,7 @@ public class RawSampleIterator implements SampleIterator
 	{
 	    final Timestamp stamp = res.getTimestamp(1);
 	    // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
-	    if (archive.getRDB().getDialect() == Dialect.MySQL)
+	    if (archive.getRDB().getDialect() == Dialect.MySQL || archive.getRDB().getDialect() == Dialect.PostgreSQL)
 	        stamp.setNanos(res.getInt(7));
 		final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
 		ISeverity severity = archive.getSeverity(res.getInt(2));
@@ -375,7 +376,7 @@ public class RawSampleIterator implements SampleIterator
 	    sel_array_samples.setInt(1, channel.getId());
 	    sel_array_samples.setTimestamp(2, stamp);
 	    // MySQL keeps nanoseconds in designated column, not TIMESTAMP
-	    if (archive.getRDB().getDialect() == Dialect.MySQL)
+	    if (archive.getRDB().getDialect() == Dialect.MySQL || archive.getRDB().getDialect() == Dialect.PostgreSQL)
 	        sel_array_samples.setInt(3, stamp.getNanos());
 	    
         // Assemble array of unknown size in ArrayList ....

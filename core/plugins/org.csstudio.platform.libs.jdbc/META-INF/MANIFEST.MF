@@ -2,12 +2,13 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: JDBC Plug-in
 Bundle-SymbolicName: org.csstudio.platform.libs.jdbc;singleton:=true
-Bundle-Version: 1.1.1.qualifier
+Bundle-Version: 1.2.0.qualifier
 Bundle-Activator: org.csstudio.platform.libs.jdbc.JdbcPlugin
 Require-Bundle: org.eclipse.core.runtime
 Eclipse-LazyStart: true
 Bundle-ClassPath: libs/ojdbc5_g.jar,
  libs/mysql-connector-java-5.0.4-bin.jar,
+ libs/postgresql-8.2-511.jdbc4.jar,
  .
 Export-Package: com.mysql.jdbc,
  com.mysql.jdbc.exceptions,
@@ -36,4 +37,5 @@ Export-Package: com.mysql.jdbc,
  oracle.sql,
  oracle.sql.converter,
  org.csstudio.platform.libs.jdbc,
- org.gjt.mm.mysql
+ org.gjt.mm.mysql,
+ org.postgresql

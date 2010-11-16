@@ -11,6 +11,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Value Iterator that reads from the SAMPLE table.
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 public class RawSampleIterator extends AbstractRDBValueIterator
 {
@@ -75,7 +76,7 @@ public class RawSampleIterator extends AbstractRDBValueIterator
                 // System.out.print("Start time corrected from " + start_stamp);
                 start_stamp = result.getTimestamp(1);
                 // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
-                if (reader.getRDB().getDialect() == Dialect.MySQL)
+                if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
                     start_stamp.setNanos(result.getInt(2));
                 // System.out.println(" to " + start_stamp);
             }

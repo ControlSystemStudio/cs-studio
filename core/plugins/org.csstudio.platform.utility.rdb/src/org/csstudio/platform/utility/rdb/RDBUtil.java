@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.utility.rdb.internal.MySQL_RDB;
 import org.csstudio.platform.utility.rdb.internal.OracleRDB;
+import org.csstudio.platform.utility.rdb.internal.PostgreSQL_RDB;
 
 /** Obtain database connection for various RDB systems.
  *  <p>
@@ -29,6 +30,7 @@ import org.csstudio.platform.utility.rdb.internal.OracleRDB;
  *
  *  @author Kay Kasemir
  *  @author Xihui Chen
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 abstract public class RDBUtil
@@ -37,6 +39,9 @@ abstract public class RDBUtil
 
     /** Start of MySQL URL */
     private static final String JDBC_MYSQL = "jdbc:mysql://";
+    
+    /** Start of PostgreSQL URL */
+    private static final String JDBC_POSTGRESQL = "jdbc:postgresql://";
 
     /** Start of Oracle URL */
     private static final String JDBC_ORACLE = "jdbc:oracle:";
@@ -66,7 +71,9 @@ abstract public class RDBUtil
         /** Database that understands MySQL commands */
         MySQL,
         /** Database that understands Oracle commands */
-        Oracle
+        Oracle,
+        /** Database that understands PostgreSQL commands */
+        PostgreSQL
     }
 
     /** @see Dialect */
@@ -134,6 +141,9 @@ abstract public class RDBUtil
         }
         if (url.startsWith(JDBC_ORACLE)) {
             return new OracleRDB(url, user, password, autoReconnect);
+        }
+        if (url.startsWith(JDBC_POSTGRESQL)) {
+        	return new PostgreSQL_RDB(url, user, password, autoReconnect);
         }
         throw new Exception("Unsupported database dialect " + url);
     }
