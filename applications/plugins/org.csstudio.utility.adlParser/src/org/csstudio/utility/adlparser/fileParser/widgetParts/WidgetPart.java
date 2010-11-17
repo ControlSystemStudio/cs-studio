@@ -54,7 +54,7 @@ public abstract class WidgetPart {
      */
     public WidgetPart(final ADLWidget widgetPart) throws WrongADLFormatException {
         init();
-        if (!widgetPart.getType().equals(getName())){
+        if (!widgetPart.getType().startsWith(getName())){
         	throw new WrongADLFormatException("part type does not match widget name(part type, widget name): (" 
         			+widgetPart.getType() + ", " + getName() + ")");
         }
