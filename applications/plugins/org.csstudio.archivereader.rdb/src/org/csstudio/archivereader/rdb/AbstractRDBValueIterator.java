@@ -25,6 +25,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** Base for ValueIterators that read from the RDB
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 abstract public class AbstractRDBValueIterator  implements ValueIterator
@@ -156,7 +157,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         // Get time stamp
         final Timestamp stamp = result.getTimestamp(1);
         // Oracle has nanoseconds in TIMESTAMP, MySQL in separate column 
-        if (reader.getRDB().getDialect() == Dialect.MySQL)
+        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
             stamp.setNanos(result.getInt(7));
         final ITimestamp time = TimeWarp.getCSSTimestamp(stamp);
         
@@ -307,7 +308,7 @@ abstract public class AbstractRDBValueIterator  implements ValueIterator
         sel_array_samples.setInt(1, channel_id);
         sel_array_samples.setTimestamp(2, stamp);
         // MySQL keeps nanoseconds in designated column, not TIMESTAMP
-        if (reader.getRDB().getDialect() == Dialect.MySQL)
+        if (reader.getRDB().getDialect() == Dialect.MySQL || reader.getRDB().getDialect() == Dialect.PostgreSQL)
             sel_array_samples.setInt(3, stamp.getNanos());
         
         // Assemble array of unknown size in ArrayList ....

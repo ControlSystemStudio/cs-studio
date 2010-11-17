@@ -32,6 +32,13 @@ public class ADLPlotcom extends WidgetPart {
 		super(widgetPart);
 	}
 
+	/**
+	 * Default constructor
+	 */
+	public ADLPlotcom(){
+		super();
+	}
+	
 	@Override
 	public Object[] getChildren() {
     	Object[] ret = new Object[5];

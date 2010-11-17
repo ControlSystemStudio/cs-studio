@@ -11,7 +11,9 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** SQL Helper for alarm configuration and status info in RDB.
- *  @author Kay Kasemir, Xihui Chen
+ *  @author Kay Kasemir
+ *  @author Xihui Chen
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 public class SQL
@@ -69,7 +71,7 @@ public class SQL
      */
     public SQL(final RDBUtil rdb) throws Exception
     {
-        if (rdb.getDialect() == Dialect.MySQL)
+        if (rdb.getDialect() == Dialect.MySQL || rdb.getDialect() == Dialect.PostgreSQL)
             schema_prefix = "";
         else if (rdb.getDialect() == Dialect.Oracle)
             schema_prefix = "ALARM.";
@@ -132,9 +134,14 @@ public class SQL
            
         sel_pv_by_id =
             "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";
-        insert_pv =
+    
+        if (rdb.getDialect() == Dialect.PostgreSQL)
+        	insert_pv =
+            "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,true)";
+        else
+        	insert_pv =
             "INSERT INTO " + schema_prefix + "PV(COMPONENT_ID, DESCR, ANNUNCIATE_IND, LATCH_IND,ENABLED_IND) VALUES (?,?,?,?,1)";
-       
+        
         update_pv_config =
             "UPDATE " + schema_prefix + "PV SET DESCR=?,ENABLED_IND=?,ANNUNCIATE_IND=?,LATCH_IND=?, DELAY=?,DELAY_COUNT=?,FILTER=? WHERE COMPONENT_ID=?";
         update_pv_state =

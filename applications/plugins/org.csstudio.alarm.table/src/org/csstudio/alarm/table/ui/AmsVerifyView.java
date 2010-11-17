@@ -88,7 +88,7 @@ public class AmsVerifyView extends LogView {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addSourceAccessItems(logTableManagementComposite);
+        addJmsTopicItems(logTableManagementComposite);
         addVerifyItems(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
@@ -148,7 +148,7 @@ public class AmsVerifyView extends LogView {
                                                                       getCurrentTopicSetName());
         setCurrentTimeToRunningSince(messageList.getStartTime());
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
         _parent.layout();
 
     }

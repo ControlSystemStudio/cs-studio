@@ -6,11 +6,11 @@
                   url="http://org.eclipse.ui.intro/showHelpTopic?id=/org.csstudio.desy.island.product/intro/css.html" >
 				<text>
 				  CSS is a collection of control system tools.
-				  This version of CSS helps to get you started.
+				  This version of CSS helps to get you started. It is called 'Island' because it does not
+				  require configuration or a lot of servers around.
 				  Without (at least with minimal) configuration you can connect to an EPICS-based control system.
-				  By clicking the above link you open the help pages, which give you an introduction into the use of
-				  CSS itself (managing views and the like) as well as providing examples of how to use the tools.
-				  Please take a look at the first steps page too. You will get introductions to the most important tools from there.
+				  Please proceed with the first steps page. The topic 'alarm' is most suited to get you started.
+				  By clicking the above link you open the help pages. 
 				  Have fun!
                 </text>
             </link>

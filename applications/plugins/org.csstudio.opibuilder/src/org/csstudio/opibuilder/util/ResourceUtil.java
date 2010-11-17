@@ -32,7 +32,7 @@ import org.eclipse.ui.ide.FileStoreEditorInput;
 import org.eclipse.ui.part.FileEditorInput;
 
 /**Utility functions for resources.
- * @author Xihui Chen
+ * @author Xihui Chen, Abadie Lana
  *
  */
 public class ResourceUtil {
@@ -158,7 +158,7 @@ public class ResourceUtil {
 	
 	
 	public static boolean isURL(String url){
-		return url.contains("://");
+		return url.contains(":/");
 	}
 	
 	/**Get screenshot image from GraphicalViewer

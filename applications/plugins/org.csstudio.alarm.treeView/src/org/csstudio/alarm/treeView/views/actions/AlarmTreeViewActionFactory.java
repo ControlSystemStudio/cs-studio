@@ -355,8 +355,8 @@ public final class AlarmTreeViewActionFactory {
                                             @Nonnull final TreeViewer viewer,
                                             @Nonnull final Queue<ITreeModificationItem> modificationItems) {
         final Action reloadAction = new ReloadFromLdapAction(site, viewer, alarmListener, modificationItems, directoryReaderJob);
-        reloadAction.setText("Reload from LDAP");
-        reloadAction.setToolTipText("Reload from LDAP");
+        reloadAction.setText("Reload");
+        reloadAction.setToolTipText("Reload");
         reloadAction.setImageDescriptor(AlarmTreePlugin.getImageDescriptor(AlarmTreePreference.RES_ICON_PATH.getValue() +
                                                                            "/refresh.gif"));
 

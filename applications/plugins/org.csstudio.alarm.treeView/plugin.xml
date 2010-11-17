@@ -50,7 +50,7 @@
             visible="true">
          <action
                class="org.csstudio.alarm.treeView.views.ShowTreeView"
-               icon="icons/alarm_tree.png"
+               icon="res/icons/alarm_tree.png"
                id="org.csstudio.alarm.treeView.action1"
                label="Alarm Tree"
                menubarPath="css/alarm/"

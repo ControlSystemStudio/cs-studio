@@ -26,6 +26,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
  *  @author Kay Kasemir
  *  @author Jan Hatje created the initial SQL in
  *          org.csstudio.alarm.dbaccess.SQLStatements
+ *  @author Lana Abadie added Postgresql
  */
 @SuppressWarnings("nls")
 public class SQL
@@ -237,7 +238,7 @@ public class SQL
             sel.append(" AND ROWNUM < ?");
         sel.append(" ORDER BY m.id DESC");
         // MySQL uses designated LIMIT statement instead.
-        if (rdb_util.getDialect() == Dialect.MySQL)
+        if (rdb_util.getDialect() == Dialect.MySQL || rdb_util.getDialect() == Dialect.PostgreSQL)
             sel.append(" LIMIT ?");
         
         return sel.toString();

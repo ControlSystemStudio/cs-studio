@@ -92,6 +92,13 @@ public class RelatedDisplayItem extends WidgetPart {
     }
 
     /**
+     * Default Constructor
+     */
+    public RelatedDisplayItem(){
+    	super();
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override

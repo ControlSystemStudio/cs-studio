@@ -5,6 +5,7 @@ import org.csstudio.platform.utility.rdb.RDBUtil.Dialect;
 
 /** SQL statements for RDB archive access
  *  @author Kay Kasemir
+ *  @author Lana Abadie (PostgreSQL)
  */
 @SuppressWarnings("nls")
 public class SQL
@@ -60,7 +61,10 @@ public class SQL
         else
         {   // MySQL uses '\' by default, and everything is  by default case-insensitive
             channel_sel_by_like = "SELECT name FROM " + prefix + "channel WHERE name LIKE ? ORDER BY name";
-            channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
+            if (dialect == RDBUtil.Dialect.PostgreSQL)
+            	channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name ~* ? ORDER BY name";
+            else
+            	channel_sel_by_reg_exp = "SELECT name FROM " + prefix + "channel WHERE name REGEXP ? ORDER BY name";
         }
 
         channel_sel_by_name = "SELECT channel_id FROM " + prefix + "channel WHERE name=?";

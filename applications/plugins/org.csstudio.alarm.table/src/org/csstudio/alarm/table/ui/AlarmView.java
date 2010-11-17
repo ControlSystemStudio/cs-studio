@@ -42,6 +42,7 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
@@ -106,7 +107,7 @@ public class AlarmView extends LogView {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addSourceAccessItems(logTableManagementComposite);
+        addJmsTopicItems(logTableManagementComposite);
         addAcknowledgeItems(logTableManagementComposite);
         addSoundButton(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
@@ -182,7 +183,7 @@ public class AlarmView extends LogView {
         addControlListenerToColumns(AlarmViewPreference.ALARMVIEW_P_STRING_ALARM.getKeyAsString(),
                                     AlarmViewPreference.ALARMVIEW_TOPIC_SET.getKeyAsString());
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
 
         _parent.layout();
 
@@ -340,16 +341,11 @@ public class AlarmView extends LogView {
         // Initial state for playing sounds is always activated on startup, operator must manually turn it off.
         _soundEnableButton.setSelection(true);
 
-        _soundEnableButton.addSelectionListener(new SelectionListener() {
+        _soundEnableButton.addSelectionListener(new SelectionAdapter() {
             @SuppressWarnings("synthetic-access")
             @Override
             public void widgetSelected(@Nonnull final SelectionEvent e) {
                 _soundHandler.enableSound(_soundEnableButton.getSelection());
-            }
-
-            @Override
-            public void widgetDefaultSelected(@Nonnull final SelectionEvent e) {
-                // Nothing to do
             }
         });
     }

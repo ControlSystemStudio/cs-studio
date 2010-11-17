@@ -96,6 +96,13 @@ public class ADLMenuItem extends WidgetPart {
     }
 
     /**
+     * Default constructor
+     */
+    public ADLMenuItem(){
+    	super();
+    }
+    
+    /**
      * {@inheritDoc}
      */
     final void init() {
