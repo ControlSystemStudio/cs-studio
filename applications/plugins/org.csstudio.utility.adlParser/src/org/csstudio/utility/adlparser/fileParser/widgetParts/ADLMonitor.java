@@ -71,6 +71,13 @@ public class ADLMonitor extends WidgetPart{
     }
 
     /**
+     * Default constructor
+     */
+    public ADLMonitor(){
+    	super();
+    }
+    
+    /**
      * {@inheritDoc}
      */
     @Override
