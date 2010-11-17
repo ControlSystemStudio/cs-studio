@@ -12,9 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.engine2.RDBArchiveEnginePreferences;
-import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -58,10 +56,8 @@ public class WriteThreadHeadlessTest
         prefs.put(RDBArchiveEnginePreferences.URL, url);
         prefs.put(RDBArchiveEnginePreferences.USER, user);
         prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
-        final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
-        service.connect(prefs);
 
-        final WriteThread writer = new WriteThread();
+        final WriteThread writer = new WriteThread(prefs);
         writer.addSampleBuffer(buffer);
 
         // Trigger thread to write
@@ -88,8 +84,6 @@ public class WriteThreadHeadlessTest
             Thread.sleep(500);
         }
         writer.shutdown();
-
-        service.disconnect();
 
         // Show stats
         System.out.println(buffer);

@@ -9,9 +9,12 @@ package org.csstudio.archive.engine2.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.engine2.Activator;
+import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
@@ -37,6 +40,8 @@ import org.csstudio.util.stats.Average;
  */
 public class WriteThread implements Runnable
 {
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(WriteThread.class);
+
     /** Minimum write period [seconds] */
     private static final double MIN_WRITE_PERIOD = 5.0;
 
@@ -55,12 +60,14 @@ public class WriteThread implements Runnable
         /**
          * {@inheritDoc}
          */
+        @Override
         public IValue getValue() {
             return _value;
         }
         /**
          * {@inheritDoc}
          */
+        @Override
         public int getChannelId() {
             return _id;
         }
@@ -99,11 +106,19 @@ public class WriteThread implements Runnable
     /** Thread the executes this.run() */
     private Thread thread;
 
-    /** Construct thread for writing to server
-     *  @param archive RDB to write to
+    private final Map<String, Object> connectionPrefs;
+
+    /**
+     * Construct thread for writing to server
+     *
+     * @param connectionPrefs connection preferences (could differ from the connection prefs of the engine config service)
+     * @throws ArchiveConnectionException on archive connection failure
+     * @throws OsgiServiceUnavailableException on service unavailability
      */
-    public WriteThread() {
-        // EMPTY
+    public WriteThread(final Map<String, Object> connectionPrefs)
+        throws OsgiServiceUnavailableException, ArchiveConnectionException {
+
+        this.connectionPrefs = connectionPrefs;
     }
 
     /** Add a channel's buffer that this thread reads */
@@ -128,7 +143,7 @@ public class WriteThread implements Runnable
         double write_period = p_write_period;
         if (write_period < MIN_WRITE_PERIOD)
         {
-            CentralLogger.getInstance().getLogger(this).warn("Adjusting write period from "
+            LOG.warn("Adjusting write period from "
                     + p_write_period + " to " + MIN_WRITE_PERIOD);
             write_period = MIN_WRITE_PERIOD;
         }
@@ -186,10 +201,23 @@ public class WriteThread implements Runnable
      *  we wait on a semaphore (wait_block), which
      *  can be notified in stop() to cause an ASAP exit.
      */
+    @Override
     @SuppressWarnings("nls")
     public void run()
     {
-        CentralLogger.getInstance().getLogger(this).info("WriteThread starts");
+        LOG.info("WriteThread starts");
+
+        // establish the connection to the archive.
+        try {
+            Activator.getDefault().getArchiveWriterService().connect(connectionPrefs);
+        } catch (final OsgiServiceUnavailableException e1) {
+            LOG.error("Archive Writer Service unavailable. Did you auto-start the service impl plugin in your launch cfg?");
+            return;
+        } catch (final ArchiveConnectionException e1) {
+            LOG.error("Archive Connection could not be established.");
+            return;
+        }
+
         final BenchmarkTimer timer = new BenchmarkTimer();
         boolean write_error = false;
         do_run = true;
@@ -220,13 +248,13 @@ public class WriteThread implements Runnable
                 delay = millisec_delay - timer.getMilliseconds();
             } catch (final OsgiServiceUnavailableException e) {
                 // Error in write() or the preceding reconnect()...
-                CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", e);
+                LOG.error("Error, will try to reconnect", e);
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
             } catch (final ArchiveServiceException e) {
                 // Error in write() or the preceding reconnect()...
-                CentralLogger.getInstance().getLogger(this).error("Error, will try to reconnect", e);
+                LOG.error("Error, will try to reconnect", e);
                 // Use max. delay
                 delay = millisec_delay;
                 write_error = true;
@@ -245,12 +273,21 @@ public class WriteThread implements Runnable
                     }
                     catch (final InterruptedException ex)
                     {
-                        CentralLogger.getInstance().getLogger(this).error("Interrupted wait", ex);
+                        LOG.error("Interrupted wait", ex);
                     }
                 }
             }
         }
-        CentralLogger.getInstance().getLogger(this).info("WriteThread exists");
+
+        try {
+            Activator.getDefault().getArchiveWriterService().disconnect();
+        } catch (final OsgiServiceUnavailableException e1) {
+            LOG.error("Archive Writer Service unavailable for disconnection. Ignored.");
+        } catch (final ArchiveConnectionException e1) {
+            LOG.error("Archive Disconnection could not be established. Ignored.");
+        }
+
+        LOG.info("WriteThread exists");
     }
 
     /** Stop the write thread, performing a final write. */
@@ -277,6 +314,7 @@ public class WriteThread implements Runnable
         final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
 
         // FIXME (bknerr) : workaround adapter interface for sample (value + channel id)
+        // Find a proper abstraction for IArchiveSample!
         final List<IValueWithChannelId> samples =
             new ArrayList<IValueWithChannelId>(batch_size);
 

@@ -15,6 +15,7 @@ import java.util.Map;
 import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.engine2.scanner.ScanThread;
 import org.csstudio.archive.engine2.scanner.Scanner;
+import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.csstudio.archive.service.IArchiveWriterService;
 import org.csstudio.archive.service.channel.IArchiveChannel;
@@ -27,6 +28,7 @@ import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.data.ValueFactory;
 import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.service.osgi.OsgiServiceUnavailableException;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 
@@ -110,50 +112,20 @@ public class EngineModel
     /** Buffer reserve (N times what's ideally needed) */
     private double buffer_reserve = 2.0;
 
-    /** Construct model that writes to archive */
-    public EngineModel()
+    /** Construct model that writes to archive
+     * @param prefs
+     * @throws ArchiveConnectionException
+     * @throws OsgiServiceUnavailableException */
+    public EngineModel(final Map<String, Object> connectionPrefs)
+        throws OsgiServiceUnavailableException, ArchiveConnectionException
     {
+        // connect to archive engine configuration service
+        // (could differ from the archive writer service connection)
+        Activator.getDefault().getArchiveEngineConfigService().connect(connectionPrefs);
+
         applyPreferences();
-        writer = new WriteThread();
 
-//        final CassandraHostConfigurator conf = new CassandraHostConfigurator("krykpcgasta.desy.de:9160");
-//        conf.setMaxActive(20);
-//        conf.setMaxIdle(5);
-//        conf.setCassandraThriftSocketTimeout(3000);
-//        conf.setMaxWaitTimeWhenExhausted(4000);
-//
-//        final Cluster cluster = HFactory.getOrCreateCluster("Test Cluster", conf);
-//
-//        final Keyspace keyspaceOperator = HFactory.createKeyspace("TestKeyspace", cluster);
-
-
-
-//        final StringSerializer stringSerializer = StringSerializer.get();
-//        try {
-//            final Mutator<String> mutator = HFactory.createMutator(keyspaceOperator, stringSerializer);
-//            mutator.insert("billing",
-//                           "Super1",
-//                           HFactory.createSuperColumn("jsmith", Arrays.asList(HFactory.createStringColumn("first", "John")),
-//                           stringSerializer,
-//                           stringSerializer,
-//                           stringSerializer));
-//
-//            final SuperColumnQuery<String, String, String, String> superColumnQuery =
-//                HFactory.createSuperColumnQuery(keyspaceOperator,
-//                                                stringSerializer,
-//                                                stringSerializer,
-//                                                stringSerializer,
-//                                                stringSerializer);
-//            superColumnQuery.setColumnFamily("Super1").setKey("billing").setSuperName("jsmith");
-//
-//            final QueryResult<HSuperColumn<String, String, String>> result = superColumnQuery.execute();
-//
-//            System.out.println("Read HSuperColumn from cassandra: " + result.get());
-//            System.out.println("Verify on CLI with:  get Keyspace1.Super1['billing']['jsmith'] ");
-//
-//        } catch (final HectorException e) {
-//            e.printStackTrace();
-//        }
+        writer = new WriteThread(connectionPrefs);
     }
 
     /** Read preference settings */
@@ -476,6 +448,10 @@ public class EngineModel
         // Flush all values out
         CentralLogger.getInstance().getLogger(this).info("Stopping writer");
         writer.shutdown();
+
+        // Close the engine config connection
+        Activator.getDefault().getArchiveEngineConfigService().disconnect();
+
         // Update state
         state = State.IDLE;
         start_time = null;
@@ -519,7 +495,7 @@ public class EngineModel
             for (final IArchiveChannel channel_config : channel_configs)
             {
                 Enablement enablement = Enablement.Passive;
-                if (group_config.getEnablingChannelId() == channel_config.getId()) {
+                if (group_config.getEnablingChannelId().equals(channel_config.getId())) {
                     enablement = Enablement.Enabling;
                 }
                 // channel name

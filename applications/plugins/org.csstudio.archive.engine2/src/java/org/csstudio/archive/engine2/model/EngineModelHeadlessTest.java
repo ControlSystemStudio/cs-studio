@@ -14,9 +14,7 @@ import java.util.Map;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archive.engine2.Activator;
 import org.csstudio.archive.engine2.RDBArchiveEnginePreferences;
-import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the engine model
@@ -49,15 +47,11 @@ public class EngineModelHeadlessTest
         prefs.put(RDBArchiveEnginePreferences.URL, url);
         prefs.put(RDBArchiveEnginePreferences.USER, user);
         prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
-        final IArchiveEngineConfigService service = Activator.getDefault().getArchiveEngineConfigService();
-        service.connect(prefs);
 
         final BenchmarkTimer timer = new BenchmarkTimer();
-        final EngineModel model = new EngineModel();
+        final EngineModel model = new EngineModel(prefs);
         model.readConfig(config, port);
         timer.stop();
-
-        service.disconnect();
 
         final int count = model.getChannelCount();
         System.out.println("Channel count: " + count);

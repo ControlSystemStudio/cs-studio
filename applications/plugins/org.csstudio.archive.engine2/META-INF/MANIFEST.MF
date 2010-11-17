@@ -3,8 +3,8 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Archive Engine 2
 Bundle-SymbolicName: org.csstudio.archive.engine2;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY, Kay Kasemir <kasemirk@ornl.gov> - SNS
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS, Bastian Knerr <bastian.knerr@desy.de> - DESY
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.junit4;bundle-version="4.8.1",
@@ -16,4 +16,4 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.6.0",
  org.csstudio.archive.service;bundle-version="1.0.0",
  org.csstudio.domain.desy;bundle-version="1.0.0"
 Bundle-ClassPath: .
-Bundle-Activator: java.org.csstudio.archive.engine2.Activator
+Bundle-Activator: org.csstudio.archive.engine2.Activator

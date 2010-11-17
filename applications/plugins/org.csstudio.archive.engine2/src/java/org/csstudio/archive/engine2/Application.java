@@ -101,6 +101,7 @@ public class Application implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
     public Object start(final IApplicationContext context) throws Exception
     {
@@ -123,11 +124,10 @@ public class Application implements IApplication
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
-            // connect the service with the given prefs
+            // create the connection archive connection prefs
             final Map<String, Object> prefs = createConnectionPrefsMap();
-            Activator.getDefault().getArchiveWriterService().connect(prefs);
 
-            model = new EngineModel();
+            model = new EngineModel(prefs);
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
             try
@@ -148,9 +148,7 @@ public class Application implements IApplication
                 final BenchmarkTimer timer = new BenchmarkTimer();
                 try
                 {
-                    Activator.getDefault().getArchiveEngineConfigService().connect(prefs);
                     model.readConfig(engine_name, port);
-                    Activator.getDefault().getArchiveEngineConfigService().disconnect();
                 }
                 catch (final Exception ex)
                 {
@@ -182,7 +180,6 @@ public class Application implements IApplication
                 model.stop();
                 model.clearConfig();
             }
-            Activator.getDefault().getArchiveWriterService().disconnect();
 
             logger.info("ArchiveEngine stopped");
             server.stop();
@@ -205,6 +202,7 @@ public class Application implements IApplication
     }
 
     /** {@inheritDoc} */
+    @Override
     public void stop()
     {
         if (model != null) {

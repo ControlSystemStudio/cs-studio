@@ -199,7 +199,9 @@ public enum ArchiveEngineAdapter {
     @CheckForNull
     public IArchiveSampleMode adapt(@Nonnull final SampleMode sampleMode) {
         for (final ArchiveSampleMode mode : ArchiveSampleMode.values()) {
-            sampleMode.getName().toUpperCase().equals(mode.name());
+            if (sampleMode.getName().toUpperCase().equals(mode.name())) {
+                return mode;
+            }
         }
         return null;
     }

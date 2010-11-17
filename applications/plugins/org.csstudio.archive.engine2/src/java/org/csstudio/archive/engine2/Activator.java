@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends Plugin
 {
     /** Plug-in ID defined in MANIFEST.MF */
-    public static final String PLUGIN_ID = "org.csstudio.archive.engine"; //$NON-NLS-1$
+    public static final String PLUGIN_ID = "org.csstudio.archive.engine2"; //$NON-NLS-1$
 
     /** The shared instance */
     private static Activator INSTANCE;
@@ -76,6 +76,8 @@ public class Activator extends Plugin
 
         super.stop(context);
     }
+
+    // FIXME (bknerr) : find out about proper dependency injection for osgi eclipse rcp
 
     /**
      * Returns the archive engine config service from the service tracker.

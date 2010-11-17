@@ -29,6 +29,8 @@
       <plugin id="org.csstudio.apputil"/>
       <plugin id="org.csstudio.archive.engine2"/>
       <plugin id="org.csstudio.archive.rdb"/>
+      <plugin id="org.csstudio.archive.service"/>
+      <plugin id="org.csstudio.domain.desy"/>
       <plugin id="org.csstudio.platform"/>
       <plugin id="org.csstudio.platform.libs.annotations"/>
       <plugin id="org.csstudio.platform.libs.dal"/>
@@ -36,6 +38,8 @@
       <plugin id="org.csstudio.platform.libs.jdbc"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
+      <plugin id="org.csstudio.platform.libs.jodatime"/>
+      <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.utility.rdb"/>
       <plugin id="org.csstudio.platform.workspace"/>
@@ -52,13 +56,11 @@
       <plugin id="org.eclipse.core.filesystem.linux.x86" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.linux.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.macosx" fragment="true"/>
-      <plugin id="org.eclipse.core.filesystem.qnx.x86" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.solaris.sparc" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.filesystem.win32.x86_64" fragment="true"/>
       <plugin id="org.eclipse.core.jobs"/>
       <plugin id="org.eclipse.core.resources"/>
-      <plugin id="org.eclipse.core.resources.compatibility" fragment="true"/>
       <plugin id="org.eclipse.core.resources.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>

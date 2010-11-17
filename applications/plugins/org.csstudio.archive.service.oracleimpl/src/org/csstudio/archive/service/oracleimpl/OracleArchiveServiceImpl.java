@@ -99,15 +99,17 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      */
     public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
 
+        // TODO (bknerr) : here the RDBArchivePreferences are used - there are still prefs in engine2 as well
+        // get that straight, prefs' keys belong here as well.
         final String url = (String) prefs.get(RDBArchivePreferences.URL);
         final String user = (String) prefs.get(RDBArchivePreferences.USER);
         final String password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
 
         RDBArchive rdbArchive = null;
         try {
-            rdbArchive = RDBArchive.connect(url, user, password);
+            rdbArchive = RDBArchive.connect(url, user, password); // creates a new archive connection instance everytime
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveConnectionException("Archive connection failed.", e);
         }
 
@@ -121,7 +123,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             _archive.get().reconnect();
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveConnectionException("Archive reconnection failed.", e);
         }
 
@@ -164,7 +166,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             }
             _archive.get().commitBatch();
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Committing of batch of samples failed.", e);
         }
 
@@ -181,7 +183,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             final ChannelConfig channel = _archive.get().getChannel(channelName);
             return channel != null ? channel.getId() : null;
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel id for channel " + channelName + " failed.", e);
         }
     }
@@ -191,12 +193,12 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      */
     @CheckForNull
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
-        // FIXME (kasemir) : data access object is created anew on every invocation?!
+        // FIXME (bknerr) : data access object is created anew on every invocation?!
         final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
             return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(name));
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of engine for " + name + " failed.", e);
         }
     }
@@ -207,13 +209,13 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      */
     @Nonnull
     public List<IArchiveChannelGroup> getGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
-        // FIXME (kasemir) : data access object is created anew on every invocation?!
+        // FIXME (bknerr) : data access object is created anew on every invocation?!
         final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
             final ChannelGroupConfig[] groups = groupHelper.get(id.intValue());
             return ArchiveEngineAdapter.INSTANCE.adapt(groups);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel group configurations for engine " + id .intValue() + " failed.", e);
         }
     }
@@ -224,7 +226,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             final ChannelGroupConfig cfg = _archive.get().findGroup(groupId.intValue()); // cache in archive ???
             return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getChannels());
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channels for " + groupId.intValue() + " failed.", e);
         }
     }
@@ -251,7 +253,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             _archive.get().writeMetaData(getChannelConfig(channelName), sample);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Writing of meta data failed.", e);
         }
     }
@@ -269,7 +271,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             return cfg.getLastTimestamp();
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of last sample's time stamp for channel " + name + " failed.", e);
         }
     }
@@ -279,7 +281,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         try {
             return _archive.get().getChannel(channelName);
         } catch (final Exception e) {
-            // FIXME (kasemir) : untyped exception swallows anything, use dedicated exception
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel failed.", e);
         }
     }
