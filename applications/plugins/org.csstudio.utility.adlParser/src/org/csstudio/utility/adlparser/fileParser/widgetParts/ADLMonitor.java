@@ -85,6 +85,7 @@ public class ADLMonitor extends WidgetPart{
         name = new String("monitor");
         set_isBackColorDefined(false);
         set_isForeColorDefined(false);
+        _chan = String.valueOf("");
     }
     
     /**
