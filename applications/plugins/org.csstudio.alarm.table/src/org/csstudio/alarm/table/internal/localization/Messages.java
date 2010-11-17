@@ -126,8 +126,8 @@ public final class Messages extends NLS {
     public static String LogView_defaultMessageText;
     public static String LogView_defaultMessageDescription;
     public static String LogView_runningSince;
-    public static String LogView_reloadPVsGroupTitle;
-    public static String LogView_reloadPVsButtonText;
+    public static String LogView_reloadText;
+    public static String LogView_reloadToolTip;
     public static String LogView_reloadErrorTitle;
     public static String LogView_reloadErrorHint;
 

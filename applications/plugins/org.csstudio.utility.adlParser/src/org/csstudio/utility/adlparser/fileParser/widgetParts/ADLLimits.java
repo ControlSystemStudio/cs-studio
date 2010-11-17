@@ -25,6 +25,13 @@ public class ADLLimits extends WidgetPart {
 		//TODO Strip out old code lines that refer to SDS implementations
 	}
 
+	/**
+	 * Default constructor
+	 */
+	public ADLLimits(){
+		super();
+	}
+	
 	@Override
 	public Object[] getChildren() {
     	Object[] ret = new Object[6];

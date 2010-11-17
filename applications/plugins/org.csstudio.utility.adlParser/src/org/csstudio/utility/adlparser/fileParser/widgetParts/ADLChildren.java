@@ -50,8 +50,15 @@ public class ADLChildren extends WidgetPart {
      */
     public ADLChildren(ADLWidget adlChildren) throws WrongADLFormatException {
     	super(adlChildren);
+    	assert adlChildren.isType("children");
     }
     
+    /**
+     * Default constructor
+     */
+    public ADLChildren(){
+    	super();
+    }
     /**
      * @return the ADL Grouping Container Children's.
      */
@@ -68,8 +75,9 @@ public class ADLChildren extends WidgetPart {
 
 	@Override
 	void init() {
-        name = new String("children");
- 	}
+        name = String.valueOf("children");
+        _childrens = new ArrayList<ADLWidget>();
+	}
 
 	@Override
 	void parseWidgetPart(ADLWidget adlChildren) throws WrongADLFormatException {

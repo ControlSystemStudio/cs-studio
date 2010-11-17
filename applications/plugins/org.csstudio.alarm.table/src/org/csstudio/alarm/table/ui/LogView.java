@@ -23,6 +23,7 @@ import java.util.Timer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmConnectionException;
@@ -44,14 +45,12 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -171,7 +170,7 @@ public class LogView extends ViewPart {
         layout.spacing = 15;
         logTableManagementComposite.setLayout(layout);
 
-        addSourceAccessItems(logTableManagementComposite);
+        addJmsTopicItems(logTableManagementComposite);
         // addMessageUpdateControl(logTableManagementComposite);
         addRunningSinceGroup(logTableManagementComposite);
 
@@ -235,7 +234,7 @@ public class LogView extends ViewPart {
         addControlListenerToColumns(LogViewPreferenceConstants.P_STRING,
                                     LogViewPreferenceConstants.TOPIC_SET);
         getSite().setSelectionProvider(_tableViewer);
-        makeActions();
+        createAndRegisterActions();
         _parent.layout();
 
     }
@@ -439,11 +438,12 @@ public class LogView extends ViewPart {
         _runningSinceLabel.setText(formater.format(time));
     }
 
-    void addSourceAccessItems(@Nonnull final Composite logTableManagementComposite) {
-        if (AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
-            addReloadItems(logTableManagementComposite);
-        } else {
-            addJmsTopicItems(logTableManagementComposite);
+    /**
+     * Must be called from createPartControl
+     */
+    protected void addJmsTopicItems(@Nonnull final Composite logTableManagementComposite) {
+        if (!AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
+            addJmsTopicItemsLocal(logTableManagementComposite);
         }
     }
 
@@ -453,7 +453,7 @@ public class LogView extends ViewPart {
      *
      * @param logTableManagementComposite
      */
-    private void addJmsTopicItems(@Nonnull final Composite logTableManagementComposite) {
+    private void addJmsTopicItemsLocal(@Nonnull final Composite logTableManagementComposite) {
         final Group jmsTopicItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
     
         jmsTopicItemsGroup.setText(Messages.LogView_monitoredJmsTopics);
@@ -478,8 +478,9 @@ public class LogView extends ViewPart {
         pauseButton.setText("Pause");
 
         topicSetsCombo.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
             @Override
-            public void widgetSelected(final SelectionEvent e) {
+            public void widgetSelected(@Nullable final SelectionEvent e) {
                 super.widgetSelected(e);
                 final String oldTopicSet = _currentTopicSetName;
                 _currentTopicSetName = _topicSetColumnService.getTopicSets().get(topicSetsCombo
@@ -492,15 +493,17 @@ public class LogView extends ViewPart {
             }
         });
     
-        pauseButton.addSelectionListener(new SelectionListener() {
-            public void widgetSelected(final SelectionEvent e) {
+        pauseButton.addSelectionListener(new SelectionAdapter() {
+            @SuppressWarnings("synthetic-access")
+            @Override
+            public void widgetSelected(@Nullable final SelectionEvent e) {
                 if (pauseButton.getSelection()) {
                     _messageTable.setMessageUpdatePause(true);
                     cancelTimerTask();
                     _timer = new Timer();
                     _timerTask = new PopUpTimerTask();
                     _timerTask.addExpirationListener(new IExpirationLisener() {
-    
+                        @Override
                         public void expired() {
                             pauseButton.setSelection(false);
                             _tableViewer.refresh();
@@ -518,9 +521,7 @@ public class LogView extends ViewPart {
                 }
             }
     
-            public void widgetDefaultSelected(final SelectionEvent e) {
-            }
-    
+            @SuppressWarnings("synthetic-access")
             private void cancelTimerTask() {
                 if (_timer != null) {
                     if (_timerTask != null) {
@@ -534,26 +535,58 @@ public class LogView extends ViewPart {
         });
     }
 
-    private void addReloadItems(@Nonnull final Composite logTableManagementComposite) {
-        final Group reloadItemsGroup = new Group(logTableManagementComposite, SWT.NONE);
-        String source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? " LDAP" : " XML";
-        reloadItemsGroup.setText(Messages.LogView_reloadPVsGroupTitle + source);
-        
-        final RowLayout layout = new RowLayout();
-        layout.type = SWT.HORIZONTAL;
-        layout.spacing = 5;
-        reloadItemsGroup.setLayout(layout);
-        
-        Button reloadButton = new Button(reloadItemsGroup, SWT.PUSH);
-        reloadButton.setLayoutData(new RowData(60, 21));
-        reloadButton.setText(Messages.LogView_reloadPVsButtonText);
-        reloadButton.addSelectionListener(new ReloadListener());
+    /**
+     * Must be called from createPartControl from this class or the subclasses resp.
+     */
+    protected void createAndRegisterActions() {
+        final IActionBars bars = getViewSite().getActionBars();
+
+        if (AlarmPreference.ALARMSERVICE_IS_DAL_IMPL.getValue()) {
+            createAndRegisterReloadAction(bars);
+        }
+        createAndRegisterPropertyViewAction(bars);
+        createAndRegisterMessageAreaToggleAction(bars);
     }
 
-    /**
-     * Creates action to call property view.
-     */
-    void makeActions() {
+    private void createAndRegisterReloadAction(@Nonnull final IActionBars bars) {
+        final Action reloadAction = new Action() {
+            @Override
+            public void run() {
+                try {
+                    IAlarmConnection connection = getConnection();
+                    if (connection != null) {
+                        connection.reloadPVsFromResource();
+                    } else {
+                        MessageDialog.openError(getSite().getShell(),
+                                                Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
+                                                Messages.LogView_reloadErrorHint);
+                    }
+                } catch (AlarmConnectionException e) {
+                    MessageDialog.openError(getSite().getShell(), Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
+                                            e.getMessage() + "\n" + Messages.LogView_reloadErrorHint);
+                }
+            }
+            @SuppressWarnings("synthetic-access")
+            @CheckForNull
+            private IAlarmConnection getConnection() {
+                IAlarmConnection connection = null;
+                final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
+                if (_topicsetService.hasTopicSet(topicSet)) {
+                    connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
+                }
+                return connection;
+            }
+        };
+        
+        final String source = AlarmPreference.ALARMSERVICE_CONFIG_VIA_LDAP.getValue() ? " LDAP" : " XML";
+        reloadAction.setText(Messages.LogView_reloadText + source);
+        reloadAction.setToolTipText(Messages.LogView_reloadToolTip + source);
+        reloadAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/refresh.gif"));
+
+        bars.getToolBarManager().add(reloadAction);
+    }
+    
+    private void createAndRegisterPropertyViewAction(@Nonnull final IActionBars bars) {
         final Action showPropertyViewAction = new Action() {
             @Override
             public void run() {
@@ -572,15 +605,13 @@ public class LogView extends ViewPart {
                 .getViewRegistry();
         final IViewDescriptor viewDesc = viewRegistry.find(PROPERTY_VIEW_ID);
         showPropertyViewAction.setImageDescriptor(viewDesc.getImageDescriptor());
-        final IActionBars bars = getViewSite().getActionBars();
 
         bars.getToolBarManager().add(showPropertyViewAction);
-
-        createMessageAreaToggleAction(bars);
     }
 
-    private void createMessageAreaToggleAction(final IActionBars bars) {
+    private void createAndRegisterMessageAreaToggleAction(@Nonnull final IActionBars bars) {
         final Action displayMessageAreaAction = new Action() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void run() {
                 if (_messageArea.isVisible()) {
@@ -592,9 +623,8 @@ public class LogView extends ViewPart {
         };
         displayMessageAreaAction.setText(Messages.LogView_messageArea);
         displayMessageAreaAction.setToolTipText(Messages.LogView_messageAreaToolTip);
-
-        final ImageDescriptor image = JmsLogsPlugin.getImageDescriptor("icons/details_view.gif");
-        displayMessageAreaAction.setImageDescriptor(image);
+        
+        displayMessageAreaAction.setImageDescriptor(JmsLogsPlugin.getImageDescriptor("icons/details_view.gif"));
         bars.getToolBarManager().add(displayMessageAreaAction);
     }
 
@@ -644,40 +674,6 @@ public class LogView extends ViewPart {
         _messageTable = null;
     }
 
-    /**
-     * Listener for the reload button
-     */
-    private final class ReloadListener implements SelectionListener {
-
-        public ReloadListener() {
-            // Nothing to do
-        }
-
-        @Override
-        public void widgetSelected(@CheckForNull SelectionEvent event) {
-            try {
-                getConnection().reloadPVsFromResource();
-            } catch (AlarmConnectionException e) {
-                MessageDialog.openError(getSite().getShell(), Messages.LogView_reloadErrorTitle, //$NON-NLS-1$
-                                        e.getMessage() + "\n" + Messages.LogView_reloadErrorHint);
-            }
-        }
-
-        @SuppressWarnings("synthetic-access")
-        @Nonnull
-        private IAlarmConnection getConnection() {
-            final TopicSet topicSet = _topicSetColumnService.getJMSTopics(_currentTopicSetName);
-            final IAlarmConnection connection = _topicsetService.getAlarmConnectionForTopicSet(topicSet);
-            return connection;
-        }
-
-        @Override
-        public void widgetDefaultSelected(@CheckForNull SelectionEvent e) {
-            // Nothing to do
-        }
-        
-    }
-    
     /**
      * Encapsulation of the message area. It is located below the tree view.<br>
      * FIXME (jpenning) This is a copy of the inner class of the AlarmTreeView.

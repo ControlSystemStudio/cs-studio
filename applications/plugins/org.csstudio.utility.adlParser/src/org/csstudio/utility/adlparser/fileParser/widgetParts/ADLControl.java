@@ -77,7 +77,14 @@ public class ADLControl extends WidgetPart{
     public ADLControl(final ADLWidget adlControl) throws WrongADLFormatException {
         super(adlControl);
     }
-    
+
+
+    /**
+     * Default constructor
+     */
+    public ADLControl() {
+    	super();
+    }
     /**
      * {@inheritDoc}
      */

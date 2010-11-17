@@ -86,19 +86,6 @@ public final class ParserADL {
                             storeDirtyLine = line;
                             lastDirtyLine = lineNumber;
                             continue;
-                        }else if(storeDirtyLine!=null){
-                        //    if(storeDirtyLine.contains("$(")){
-                        //        // replace all $(var_name) in a line with $var_name$
-                        //        String regex = "(\\$\\()([.[^\\(]]+)(\\))";
-                        //        storeDirtyLine = storeDirtyLine.replaceAll(regex, "\\$$2\\$");
-                        //    }
-                        //    children.addBody(new FileLine(storeDirtyLine,lastDirtyLine));
-                        //    storeDirtyLine=null;
-                        }
-                        if(line.contains("$(")){
-                            // replace all $(var_name) in a line with $var_name$
-                            //String regex = "(\\$\\()([.[^\\(]]+)(\\))";
-                            //line = line.replaceAll(regex, "\\$$2\\$");
                         }
                         children.addBody(new FileLine(line,lineNumber));
                     }

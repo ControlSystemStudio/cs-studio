@@ -75,11 +75,11 @@ public class ADLBasicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-        name = new String("basic attribute");
+        name = String.valueOf("basic attribute");
         _clr = 0;
     	_width = 0;
-    	_style =  new String("solid");
-    	_fill = new String("solid");
+    	_style =  String.valueOf("solid");
+    	_fill = String.valueOf("solid");
     	set_isColorDefined(false);
     }
     
@@ -93,7 +93,8 @@ public class ADLBasicAttribute extends WidgetPart{
         for (ADLWidget adlWidget : adlBasicAttribute.getObjects()) {
             if(adlWidget.getType().equals("attr")){
                 for (FileLine fileLine : adlWidget.getBody()) {
-                    adlBasicAttribute.addBody(fileLine);    
+                	//TODO Refactor this so that it is not necessary to copy the lines to from the attr object to the atrribute object
+                	adlBasicAttribute.addBody(fileLine);    
                 }
             }
         }
