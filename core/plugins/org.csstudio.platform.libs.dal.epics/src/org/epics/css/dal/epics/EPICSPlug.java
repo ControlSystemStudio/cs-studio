@@ -40,7 +40,9 @@ import gov.aps.jca.event.ContextVirtualCircuitExceptionEvent;
 import gov.aps.jca.event.QueuedEventDispatcher;
 import gov.aps.jca.jni.ThreadSafeContext;
 
+import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Properties;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -51,6 +53,8 @@ import java.util.concurrent.TimeUnit;
 import javax.naming.NamingException;
 import javax.naming.directory.DirContext;
 
+import org.csstudio.platform.logging.CentralLogger;
+import org.csstudio.platform.model.pvs.DALPropertyFactoriesProvider;
 import org.epics.css.dal.EventSystemListener;
 import org.epics.css.dal.RemoteException;
 import org.epics.css.dal.SimpleProperty;
@@ -119,7 +123,7 @@ public class EPICSPlug extends AbstractPlug
 	 * instance of JCA context is used.
 	 * Property defined in System properties take precedence before property in defined in configuration.
 	 */
-	public static final String USE_JNI = "EPICSPlug.use_jni";
+    public static final String USE_JNI = "EPICSPlug.use_jni";
 		
 	/**
 	 * Property name for use common executor flag: {@link #useCommonExecutor}
@@ -307,6 +311,10 @@ public class EPICSPlug extends AbstractPlug
 		return sharedInstance;
 	}
 	
+	public static boolean hasInstance(){
+		return sharedInstance!=null;
+	}
+	
 	public static AbstractPlug getInstance(AbstractApplicationContext ctx) throws RemoteException
 	{
 		return new EPICSPlug(ctx);
@@ -341,33 +349,14 @@ public class EPICSPlug extends AbstractPlug
 	 * @throws RemoteException 
 	 */
 	private void initialize() throws RemoteException {
-		initializeCharacteristicsOnConnect = true;
-		if (System.getProperties().containsKey(INITIALIZE_CHARACTERISTICS_ON_CONNECT)) {
-			initializeCharacteristicsOnConnect = new Boolean(System.getProperty(INITIALIZE_CHARACTERISTICS_ON_CONNECT, "true"));
-		} else {
-			initializeCharacteristicsOnConnect = new Boolean(getConfiguration().getProperty(INITIALIZE_CHARACTERISTICS_ON_CONNECT, "true"));
-		}
+	
+		initializeCharacteristicsOnConnect = getBooleanProperty(INITIALIZE_CHARACTERISTICS_ON_CONNECT, "true");
 		
-		useCommonExecutor = false;
-		if (System.getProperties().containsKey(PROPERTY_USE_COMMON_EXECUTOR)) {
-			useCommonExecutor = new Boolean(System.getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
-		} else {
-			useCommonExecutor = new Boolean(getConfiguration().getProperty(PROPERTY_USE_COMMON_EXECUTOR, "false"));
-		}
+		useCommonExecutor = getBooleanProperty(PROPERTY_USE_COMMON_EXECUTOR, "false");
 		
-		coreThreads = 2;
-		if (System.getProperties().containsKey(PROPERTY_CORE_THREADS)) {
-			coreThreads = new Integer(System.getProperty(PROPERTY_CORE_THREADS, "2"));
-		} else {
-			coreThreads = new Integer(getConfiguration().getProperty(PROPERTY_CORE_THREADS, "2"));
-		}
-		
-		maxThreads = 10;
-		if (System.getProperties().containsKey(PROPERTY_MAX_THREADS)) {
-			maxThreads = new Integer(System.getProperty(PROPERTY_MAX_THREADS, "10"));
-		} else {
-			maxThreads = new Integer(getConfiguration().getProperty(PROPERTY_MAX_THREADS, "10"));
-		}
+		coreThreads = getIntegerProperty(PROPERTY_CORE_THREADS, "2");
+
+		maxThreads =  getIntegerProperty(PROPERTY_MAX_THREADS, "10");
 		
 		// checks for coreThreads and maxThreads values
 		if (maxThreads == 0) { 
@@ -389,20 +378,11 @@ public class EPICSPlug extends AbstractPlug
 				System.out.println(maxThreads+".");
 			}
 		}
+
 		
-		if (System.getProperties().containsKey(DEFAULT_MONITOR_MASK)) {
-			defaultMonitorMask = new Integer(System.getProperty(DEFAULT_MONITOR_MASK, (new Integer(defaultMonitorMask)).toString()));
-		} else {
-			defaultMonitorMask = new Integer(getConfiguration().getProperty(DEFAULT_MONITOR_MASK, (new Integer(defaultMonitorMask)).toString()));
-		}
+		defaultMonitorMask =  getIntegerProperty(DEFAULT_MONITOR_MASK, Integer.toString(defaultMonitorMask));
 		
-		String className;
-		if (System.getProperties().containsKey(DEFAULT_PROPERTY_IMPL_CLASS)) {
-			className = System.getProperty(DEFAULT_PROPERTY_IMPL_CLASS);
-			
-		} else {
-			className = getConfiguration().getProperty(DEFAULT_PROPERTY_IMPL_CLASS);
-		}
+		String className = getStringProperty(DEFAULT_PROPERTY_IMPL_CLASS);
 		if (className != null) {
 			try {
 				defaultPropertyImplClass = (Class<? extends SimpleProperty<?>>) Class.forName(className);
@@ -411,12 +391,24 @@ public class EPICSPlug extends AbstractPlug
 			}
 		}
 		else defaultPropertyImplClass = DEFAULT_PROP_IMPL_CLASS;
-		
-		if (System.getProperties().containsKey(USE_JNI)) {
-			use_jni = new Boolean(System.getProperty(USE_JNI, "false"));
-		} else {
-			use_jni = new Boolean(getConfiguration().getProperty(USE_JNI, "false"));
+		Properties configuration = DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration();
+		Enumeration<Object> keys = System.getProperties().keys(); 
+		while (keys.hasMoreElements()) {
+			Object object = (Object) keys.nextElement();
+			System.out.println(object.toString());
 		}
+		
+		Enumeration<Object> keys2 = configuration.keys();
+		while (keys2.hasMoreElements()) {
+			String object = (String) keys2.nextElement();
+			System.out.println(object.toString() + " \t " + configuration.getProperty(object));
+		}
+		Enumeration<Object> keys3 = getConfiguration().keys();
+		while (keys3.hasMoreElements()) {
+			String object = (String) keys3.nextElement();
+			System.out.println(object.toString() + " \t " + getConfiguration().getProperty(object));
+		}
+		use_jni = getBooleanProperty(USE_JNI, "false");
 		
 		if (!use_jni) {
 			context = createJCAContext();
@@ -424,11 +416,7 @@ public class EPICSPlug extends AbstractPlug
 			System.out.println("> EPICSPlug using JNI");
 			context = createThreadSafeContext();
 			
-			if (System.getProperties().containsKey(JNI_FLUSH_TIMER_DELAY)) {
-				jniFlushTimerDelay = new Long(System.getProperty(JNI_FLUSH_TIMER_DELAY, (new Long(jniFlushTimerDelay)).toString()));
-			} else {
-				jniFlushTimerDelay = new Long(getConfiguration().getProperty(JNI_FLUSH_TIMER_DELAY, (new Long(jniFlushTimerDelay)).toString()));
-			}
+			jniFlushTimerDelay = getLongProperty(JNI_FLUSH_TIMER_DELAY, Long.toString(jniFlushTimerDelay));
 			
 			jniFlushTimer = new Timer();
 			jniFlushTimer.scheduleAtFixedRate(new TimerTask() {
@@ -450,16 +438,123 @@ public class EPICSPlug extends AbstractPlug
 		// initialize supported proxy implementation
 		PlugUtilities.initializeSupportedProxyImplementations(this);
 	
-		if (System.getProperties().containsKey(DEFAULT_PENDIO_TIMEOUT)) {
-			pendIOTimeout = new Double(System.getProperty(DEFAULT_PENDIO_TIMEOUT, DEFAULT_PENDIO_TIMEOUT_VALUE.toString()));
-		} else {
-			pendIOTimeout = new Double(getConfiguration().getProperty(DEFAULT_PENDIO_TIMEOUT, DEFAULT_PENDIO_TIMEOUT_VALUE.toString()));
-		}
+		pendIOTimeout = getDoubleProperty(DEFAULT_PENDIO_TIMEOUT, DEFAULT_PENDIO_TIMEOUT_VALUE.toString());
 		
 		timeout = Plugs.getConnectionTimeout(getConfiguration(), 10000)/1000.0;
 		
 	}
 
+	/**
+	 * 
+	 * @param key
+	 *            the Property key.
+	 * @param def
+	 *            set default null for non default or the default value.
+	 * @return if key exist return the Property, if a default set return the
+	 *         default otherwise null.
+	 */
+	public Boolean getBooleanProperty(String key, String def) {
+		String temp;
+		try {
+			if (System.getProperties().containsKey(key)) {
+				temp = System.getProperty(key, def);
+			} else {
+				temp = getConfiguration().getProperty(key,
+						def);
+			}
+		} catch (Exception e) {
+			temp = null;
+		}
+		if(temp==null){
+			return null;
+		}
+		return Boolean.valueOf(temp);
+	}
+
+	/**
+	 * 
+	 * @param key
+	 *            the Property key.
+	 * @param def
+	 *            set default null for non default or the default value.
+	 * @return if key exist return the Property, if a default set return the
+	 *         default otherwise null.
+	 */
+	public Double getDoubleProperty(String key, String def) {
+		Double temp;
+		try{
+			if (System.getProperties().containsKey(key)) {
+				temp = new Double(System.getProperty(key, def));
+			} else {
+				temp = new Double(getConfiguration().getProperty(key,
+						def));
+			}
+		} catch (NumberFormatException e) {
+			temp = null;
+		}
+
+		return temp;
+	}
+	
+	/**
+	 * 
+	 * @param key
+	 *            the Property key.
+	 * @param def
+	 *            set default null for non default or the default value.
+	 * @return if key exist return the Property, if a default set return the
+	 *         default otherwise null.
+	 */
+	public Integer getIntegerProperty(String key, String def) {
+		Integer temp;
+		try {
+			if (System.getProperties().containsKey(key)) {
+				temp = new Integer(System.getProperty(key, def));
+			} else {
+				temp = new Integer(getConfiguration().getProperty(key,
+						def));
+			}
+		} catch (NumberFormatException e) {
+			temp = null;
+		}
+		return temp;
+	}
+
+	/**
+	 * 
+	 * @param key
+	 *            the Property key.
+	 * @param def
+	 *            set default null for non default or the default value.
+	 * @return if key exist return the Property, if a default set return the
+	 *         default otherwise null.
+	 */
+	public Long getLongProperty(String key, String def) {
+		Long temp;
+		try {
+			if (System.getProperties().containsKey(key)) {
+				temp = new Long(System.getProperty(key, def));
+			} else {
+				temp = new Long(getConfiguration().getProperty(key,
+						def));
+			}
+		} catch (NumberFormatException e) {
+			temp = null;
+		}
+
+		return temp;
+	}
+
+	public String getStringProperty(String key) {
+		String temp;
+		if (System.getProperties().containsKey(key)) {
+			temp = System.getProperty(key);
+		} else {
+			temp = getConfiguration().getProperty(key);
+		}
+		return temp;
+	}
+	
 	/**
 	 * Timer lazy initialization pattern.
 	 * @return timer instance.
@@ -854,7 +949,12 @@ public class EPICSPlug extends AbstractPlug
 				iter.next().eventArrived(event);
 			}
 		}
-	}	
+	}
+	
+	@Override
+	public Properties getConfiguration() {
+		return DALPropertyFactoriesProvider.getInstance().getApplicationContext().getConfiguration();
+	}
 }
 
 
