@@ -33,12 +33,12 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 			if ( rdDisplays.length > 0){
 				ActionsInput ai = menuModel.getActionsInput();
 				for (int ii=0; ii< rdDisplays.length; ii++){
-					if (!(rdDisplays[ii].getName().replaceAll("\"", "").equals(""))){
+					if (!(rdDisplays[ii].getFileName().replaceAll("\"", "").equals(""))){
 						OpenDisplayAction odAction = new OpenDisplayAction();
 	
 						//Try to add the filename to the PROP_PATH
-						IPath fPath = new Path(rdDisplays[ii].getName().replaceAll("\"", "").replace(".adl", ".opi"));
-						System.out.println("Related display file: " + rdDisplays[ii].getName().replace(".adl", ".opi"));
+						IPath fPath = new Path(rdDisplays[ii].getFileName().replaceAll("\"", "").replace(".adl", ".opi"));
+						System.out.println("Related display file: " + rdDisplays[ii].getFileName().replace(".adl", ".opi"));
 						odAction.setPropertyValue(OpenDisplayAction.PROP_PATH, fPath);
 	
 						//Try to add macros
