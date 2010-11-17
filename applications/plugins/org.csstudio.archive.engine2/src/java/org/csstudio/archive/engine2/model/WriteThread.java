@@ -276,6 +276,7 @@ public class WriteThread implements Runnable
 
         final IArchiveWriterService writerService = Activator.getDefault().getArchiveWriterService();
 
+        // FIXME (bknerr) : workaround adapter interface for sample (value + channel id)
         final List<IValueWithChannelId> samples =
             new ArrayList<IValueWithChannelId>(batch_size);
 
