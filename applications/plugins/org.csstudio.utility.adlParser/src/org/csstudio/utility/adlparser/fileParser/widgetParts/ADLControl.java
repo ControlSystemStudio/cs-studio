@@ -24,11 +24,7 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-//**import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
@@ -41,23 +37,14 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 20.09.2007
  */
 public class ADLControl extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
-    /**
-     * The foreground color.
-     */
+    // The foreground color.
     private int _clr;
-    /**
-     * The background color.
-     */
+    // The background color.
     private int _bclr;
-    /**
-     * The channel.
-     */
+     // The channel.
     private String _chan;
-    /**
-     * If true backgroundColor get the ConnectionState.
-     * Default is false.
-     */
+    // If true backgroundColor get the ConnectionState.
+    // Default is false.
     private boolean _connectionState;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
