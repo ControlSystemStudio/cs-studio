@@ -45,6 +45,9 @@ public final class MySQLArchiveServicePreference<T> extends AbstractPreference<T
     public static final MySQLArchiveServicePreference<Boolean> AUTO_CONNECT =
         new MySQLArchiveServicePreference<Boolean>("auto_connect", Boolean.FALSE);
 
+    public static final MySQLArchiveServicePreference<Integer> SQL_TIMEOUT =
+        new MySQLArchiveServicePreference<Integer>("sql_timeout", 30*60);
+
     /**
      * Constructor.
      * @param keyAsString

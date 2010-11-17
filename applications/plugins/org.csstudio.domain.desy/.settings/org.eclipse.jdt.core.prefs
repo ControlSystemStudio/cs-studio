@@ -1,8 +1,4 @@
-<<<<<<< local
-#Mon Nov 08 10:46:18 CET 2010
-=======
-#Mon Nov 08 10:40:55 CET 2010
->>>>>>> other
+#Wed Nov 17 12:47:08 CET 2010
 eclipse.preferences.version=1
 org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.6

@@ -21,10 +21,8 @@
  */
 package org.csstudio.archive.service.sample;
 
-import javax.annotation.Nonnull;
-
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Read only interface of a sample value in the archive.
@@ -40,21 +38,9 @@ public interface IArchiveSample<T> {
      * The id of the channel which this sample belongs to.
      * @return the channel id
      */
-
     public ArchiveChannelId getChannelId();
 
-    /**
-     * The sample value.
-     * @return the value
-     */
-    @Nonnull
     public T getValue();
 
-    /**
-     * The timestamp of the sample value.
-     * @return the timestamp
-     */
-    @Nonnull
-    public ITimestamp getTimeStamp();
-
+    public TimeInstant getTimestamp();
 }

@@ -22,6 +22,7 @@
 package org.csstudio.domain.desy;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 
@@ -32,6 +33,10 @@ import org.csstudio.domain.desy.alarm.IAlarm;
  * In other words any alarm system variable gives information about its current alarm state
  * and <code>null</code> when (not if!) it's state does not represent an alarm.
  *
+ * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
+ * implementation, hence <code>null</code> represents a possible return value.
+ * @return the alarm object or <code>null</code>
+
  * TODO (bknerr) : Does the alarm rule set for a alarm system variable belong to it?
  *
  * @author bknerr
@@ -40,13 +45,14 @@ import org.csstudio.domain.desy.alarm.IAlarm;
 public interface IAlarmSystemVariable<T> extends ISystemVariable<T> {
 
     /**
-     * The state/value may represent an alarm according to some rules/ranges.
-     * In other words any system variable gives information about its current alarm state.
-     *
-     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
-     * implementation, hence <code>null</code> represents a possible return value.
-     * @return the alarm object or <code>null</code>
+     * Returns the alarm or <code>null</code>.
      */
     @CheckForNull
     IAlarm getAlarm();
+
+    /**
+     * Sets the alarm.
+     * @param alarm the alarm or <code>null</code>
+     */
+    void setAlarm(@Nullable final IAlarm alarm);
 }

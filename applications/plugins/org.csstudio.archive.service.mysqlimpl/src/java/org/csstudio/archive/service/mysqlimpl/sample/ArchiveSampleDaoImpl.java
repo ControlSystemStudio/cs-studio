@@ -25,13 +25,19 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.sample.IArchiveSample;
 import org.joda.time.DateTime;
+import org.joda.time.ReadableInstant;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 /**
  * Archive sample dao implementation.
@@ -41,10 +47,15 @@ import org.joda.time.DateTime;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
+
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectLastSmplTimeByChannelIdStmt =
         "SELECT MAX(smpl_time) FROM archive.sample WHERE channel_id=?";
+
+    private final String _insertSamplesStmt = "INSERT INTO archive.sample (channel_id, smpl_time, severity_id, status_id, float_val, nanosecs) VALUES ";
+
+    private static final DateTimeFormatter SAMPLE_TIME_FMT = DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss");
 
     /**
      * {@inheritDoc}
@@ -77,6 +88,44 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             }
         }
         return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertSamples(@Nonnull final Collection<IArchiveSample<?>> samples) {
+
+        final StringBuilder values = new StringBuilder();
+        values.append(_insertSamplesStmt);
+        for (final IArchiveSample<?> sample : samples) {
+            values.append("(" +
+                          sample.getChannelId().intValue() + "," +
+                          SAMPLE_TIME_FMT.print((ReadableInstant) sample.getTimestamp()) + "," +
+                          sample.getSeverityId() + "," +
+                          sample.getStatusId() + "," +
+                          sample.getValue().toString() + "," +
+                          sample.getTimestamp().getFractalSecondInNanos() +
+                          "),");
+        }
+        values.delete(values.length() - 1, values.length()); // deletes last comma
+
+        // TODO (bknerr) : LOG warning if single statement size is too large.
+        // and when com.mysql.jdbc.PacketTooBigException:
+        // Packet for query is too large (45804672 > 1048576).
+        // You can change this value on the server by setting the max_allowed_packet' variable.
+        PreparedStatement stmt = null;
+        try {
+            stmt = getConnection().prepareStatement(values.toString());
+            stmt.setQueryTimeout(MySQLArchiveServicePreference.SQL_TIMEOUT.getValue());
+            stmt.execute();
+            getConnection().commit();
+        } finally {
+            if (stmt != null) {
+                stmt.close();
+            }
+        }
+
     }
 
 }

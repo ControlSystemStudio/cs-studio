@@ -27,6 +27,7 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
@@ -39,10 +40,16 @@ import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.domain.desy.alarm.epics.EpicsSystemVariable;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
+import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.DateTime;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 
 
@@ -60,21 +67,18 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
     INSTANCE;
 
-    /**
-     * Constructor.
-     *
-     * Establishes connection to archive.
-     */
-    private MySQLArchiveServiceImpl() {
-        // EMPTY
-    }
+    @SuppressWarnings("unused")
+    private static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
+
+    private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+    private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException {
-        ArchiveDaoManager.INSTANCE.connect(connectionPrefs);
+        DAO_MGR.connect(connectionPrefs);
 
     }
 
@@ -83,7 +87,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public void reconnect() throws ArchiveConnectionException {
-        ArchiveDaoManager.INSTANCE.reconnect();
+        DAO_MGR.reconnect();
     }
 
     /**
@@ -91,7 +95,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public void disconnect() throws ArchiveConnectionException {
-        ArchiveDaoManager.INSTANCE.disconnect();
+        DAO_MGR.disconnect();
     }
 
     /**
@@ -111,14 +115,25 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
     @Override
-    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException { // TODO : Untyped exception? A catch would swallow ALL exceptions!
+    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException {
 
-        //        for (final IValue sample : samples) {
-        //            _archive.get().batchSample(channelId, sample);
-        //            // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
-        //            // but that would break encapsulation...
-        //        }
-        //        _archive.get().commitBatch();
+
+        // TODO (bknerr) : get rid of this IValueWithChannelId class...
+        DAO_MGR.getSampleDao().insertSamples(Lists.transform(samples,
+                                                             new Function<IValueWithChannelId, IArchiveSample<?>>() {
+                                                                @Override
+                                                                @Nonnull
+                                                                public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
+                                                                    // this line is only for demonstration purposes,
+                                                                    // once we get rid of any incomplete or workaround sys value abstractions,
+                                                                    // this line will vanish
+                                                                    final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
+
+                                                                    return ADAPT_MGR.adapt(sysVar);
+                                                                }
+
+        }));
+
 
         return true;
     }
@@ -127,18 +142,18 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public ChannelConfig getChannel(@Nonnull final String name) throws ArchiveServiceException {
+    public IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveServiceException {
 
         IArchiveChannel channel = null;
         IArchiveSampleMode sampleMode = null;
         try {
-            channel = ArchiveDaoManager.INSTANCE.getChannelDao().getChannel(name);
-            sampleMode = ArchiveDaoManager.INSTANCE.getSampleModeDao().getSampleModeById(channel.getSampleModeId());
+            channel = DAO_MGR.getChannelDao().getChannel(name);
+            sampleMode = DAO_MGR.getSampleModeDao().getSampleModeById(channel.getSampleModeId());
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Data retrieval failure for channel.", e);
         }
 
-        return ArchiveEngineAdapter.INSTANCE.adapt(name, channel, sampleMode);
+        return ADAPT_MGR.adapt(name, channel, sampleMode);
     }
 
     /**
@@ -185,15 +200,15 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
         IArchiveChannel cfg = null;
         try {
-            cfg = ArchiveDaoManager.INSTANCE.getChannelDao().getChannel(name);
+            cfg = DAO_MGR.getChannelDao().getChannel(name);
             if (cfg != null) {
-                return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getLatestTimestamp());
+                return ADAPT_MGR.adapt(cfg.getLatestTimestamp());
             }
             // Access the sample table
             final DateTime ltstSampleTime =
-                ArchiveDaoManager.INSTANCE.getSampleDao().getLatestSampleForChannel(cfg.getId());
+                DAO_MGR.getSampleDao().getLatestSampleForChannel(cfg.getId());
             if (ltstSampleTime != null) {
-                return ArchiveEngineAdapter.INSTANCE.adapt(ltstSampleTime);
+                return ADAPT_MGR.adapt(ltstSampleTime);
             }
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel information could not be retrieved.", e);

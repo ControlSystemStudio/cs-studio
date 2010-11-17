@@ -24,7 +24,7 @@ package org.csstudio.archive.service.sample;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Immutable data transfer class for archive sample.
@@ -36,14 +36,14 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;
-    private final ITimestamp _timestamp;
+    private final TimeInstant _timestamp;
 
     /**
      * Constructor.
      */
     public ArchiveSampleDTO(@Nonnull final ArchiveChannelId chanId,
                             @Nonnull final T value,
-                            @Nonnull final ITimestamp ts) {
+                            @Nonnull final TimeInstant ts) {
         _channelId = chanId;
         _value = value;
         _timestamp = ts;
@@ -70,7 +70,7 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
      * {@inheritDoc}
      */
     @Override
-    public ITimestamp getTimeStamp() {
+    public TimeInstant getTimestamp() {
         return _timestamp;
     }
 

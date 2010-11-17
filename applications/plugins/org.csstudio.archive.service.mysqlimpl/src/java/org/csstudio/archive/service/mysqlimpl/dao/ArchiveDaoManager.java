@@ -21,6 +21,11 @@
  */
 package org.csstudio.archive.service.mysqlimpl.dao;
 
+import static org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference.AUTO_CONNECT;
+import static org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
+import static org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference.URL;
+import static org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference.USER;
+
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -31,10 +36,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServiceImpl;
-import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
 import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
@@ -47,6 +50,8 @@ import com.google.common.collect.Maps;
 
 /**
  * The archive dao manager.
+ *
+ * Envisioned to handle connection pools and transactions with CRUD command abstraction.
  *
  * @author bknerr
  * @since 11.11.2010
@@ -63,10 +68,10 @@ public enum ArchiveDaoManager {
     private String _user;
     private String _password;
 
-    private final Boolean _autoConnect = MySQLArchiveServicePreference.AUTO_CONNECT.getValue();
+    private final Boolean _autoConnect = AUTO_CONNECT.getValue();
 
     /**
-     * In case there'll be several WriteThreads later on.
+     * Any thread owns a connection.
      */
     private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
 
@@ -95,10 +100,7 @@ public enum ArchiveDaoManager {
     private ArchiveDaoManager() {
 
         if (_autoConnect) {
-            final Map<String, Object> prefs = Maps.newHashMap();
-            prefs.put(RDBArchivePreferences.URL, RDBArchivePreferences.getURL());
-            prefs.put(RDBArchivePreferences.USER, RDBArchivePreferences.getUser());
-            prefs.put(RDBArchivePreferences.PASSWORD, RDBArchivePreferences.getPassword());
+            final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
 
             try {
                 connect(prefs);
@@ -113,31 +115,28 @@ public enum ArchiveDaoManager {
 
         try {
             Connection connection = _archiveConnection.get();
-            if (connection != null) {
+            if (connection != null) { // close existing connection
                 _archiveConnection.set(null);
                 connection.close();
             }
-            _url = (String) prefs.get(RDBArchivePreferences.URL);
-            _user = (String) prefs.get(RDBArchivePreferences.USER);
-            _password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
+            _url = (String) prefs.get(URL.getKeyAsString());
+            _user = (String) prefs.get(USER.getKeyAsString());
+            _password = (String) prefs.get(PASSWORD.getKeyAsString());
 
             // Get class loader to find the driver
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
             connection = DriverManager.getConnection(_url, _user, _password);
 
-            // TODO (bknerr) : refactor logging guard to slf4j fast API
-            // Basic database info
-            if (LOG.isDebugEnabled()) {
-                final DatabaseMetaData meta = connection.getMetaData();
-                LOG.debug("MySQL connection: " +
-                          meta.getDatabaseProductName() +
-                          " " +
-                          meta.getDatabaseProductVersion());
-            }
+            final DatabaseMetaData meta = connection.getMetaData();
+            LOG.debug("MySQL connection: " +
+                      meta.getDatabaseProductName() +
+                      " " +
+                      meta.getDatabaseProductVersion());
+
+            // allow for transactions ?!
             connection.setAutoCommit(false);
 
-            // Propagate the connection
             _archiveConnection.set(connection);
 
         } catch (final InstantiationException e) {
@@ -152,25 +151,31 @@ public enum ArchiveDaoManager {
     }
 
     public void reconnect() throws ArchiveConnectionException {
-        final Map<String, Object> prefs = Maps.newHashMap();
-        prefs.put(MySQLArchiveServicePreference.URL.getKeyAsString(), MySQLArchiveServicePreference.URL.getValue());
-        prefs.put(MySQLArchiveServicePreference.USER.getKeyAsString(), MySQLArchiveServicePreference.USER.getValue());
-        prefs.put(MySQLArchiveServicePreference.PASSWORD.getKeyAsString(), MySQLArchiveServicePreference.PASSWORD.getValue());
-
+        final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
         connect(prefs);
+    }
+
+    private Map<String, Object> createConnectionPrefsFromEclipsePrefs() {
+        final Map<String, Object> prefs = Maps.newHashMap();
+        prefs.put(URL.getKeyAsString(), URL.getValue());
+        prefs.put(USER.getKeyAsString(), USER.getValue());
+        prefs.put(PASSWORD.getKeyAsString(), PASSWORD.getValue());
+        return prefs;
     }
 
     /**
      * @throws ArchiveConnectionException
      */
     public void disconnect() throws ArchiveConnectionException {
-        try {
-            _archiveConnection.get().close();
-        } catch (final SQLException e) {
-            throw new ArchiveConnectionException("Archive disconnection failed.", e);
+        final Connection connection = _archiveConnection.get();
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (final SQLException e) {
+                throw new ArchiveConnectionException("Archive disconnection failed. Ignore.", e);
+            }
         }
     }
-
 
 
     /**

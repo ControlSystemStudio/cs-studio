@@ -21,11 +21,14 @@
  */
 package org.csstudio.archive.service.mysqlimpl.sample;
 
+import java.util.Collection;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
+import org.csstudio.archive.service.sample.IArchiveSample;
 import org.joda.time.DateTime;
 
 /**
@@ -44,5 +47,9 @@ public interface IArchiveSampleDao extends IArchiveDao {
     @CheckForNull
     DateTime getLatestSampleForChannel(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException;
 
-
+    /**
+     * Inserts the collection of sample objects into the db.
+     * @param samples the sample objects
+     */
+    void insertSamples(Collection<IArchiveSample<?>> samples);
 }
