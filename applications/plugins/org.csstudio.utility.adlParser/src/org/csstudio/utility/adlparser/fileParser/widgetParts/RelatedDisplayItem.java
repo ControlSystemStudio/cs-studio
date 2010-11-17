@@ -65,7 +65,7 @@ public class RelatedDisplayItem extends WidgetPart {
     /**
      * The display to open.
      */
-    private String _name;
+    private String _fileName;
     /**
      * the record for the new Display.
      */
@@ -88,7 +88,7 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     public RelatedDisplayItem(final ADLWidget display)
             throws WrongADLFormatException {
-        super(display);
+    		super(display);
     }
 
     /**
@@ -103,34 +103,37 @@ public class RelatedDisplayItem extends WidgetPart {
      */
     @Override
     final void init() {
-        name = new String("related display item");
-    	//_path = Activator.getDefault().getPreferenceStore().getString(ADLConverterPreferenceConstants.P_STRING_Path_Target);
+        name = String.valueOf("display");
+        _label = String.valueOf("");
+        _fileName = String.valueOf("");
+        _args = String.valueOf("");
+        _policy = String.valueOf("false");
     }
     
     
-    final String checkPath(String path, String name){
-    	path = path.trim();
-    	if(path.endsWith("/"))
-    		path = path.substring(0, path.length()-1);
-    	
-    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
-    	
-    	// Both file formats are checked, to ensure that if multiple displays are being
-    	// converted out of order, this method doesn't break by failing to find
-    	// the yet to be converted <filename>.adl display.
-    	File file1 = new File(path + "/" + name + ".adl");
-    	File file2 = new File(path + "/" + name + ".css-sds");
-    	Path path1 = new Path(path + "/" + name + ".adl");
-    	Path path2 = new Path(path + "/" + name + ".css-sds");
-    	
-    	if(file1.exists() || file2.exists())
-    		return path.replaceAll(root.getRawLocation().toString(), "");
-    	
-    	if(root.exists(path1) || root.exists(path2))
-    		return root.getFullPath().toString();
-    	 
-    	return null;
-    }
+//    final String checkPath(String path, String name){
+//    	path = path.trim();
+//    	if(path.endsWith("/"))
+//    		path = path.substring(0, path.length()-1);
+//    	
+//    	IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
+//    	
+//    	// Both file formats are checked, to ensure that if multiple displays are being
+//    	// converted out of order, this method doesn't break by failing to find
+//    	// the yet to be converted <filename>.adl display.
+//    	File file1 = new File(path + "/" + name + ".adl");
+//    	File file2 = new File(path + "/" + name + ".css-sds");
+//    	Path path1 = new Path(path + "/" + name + ".adl");
+//    	Path path2 = new Path(path + "/" + name + ".css-sds");
+//    	
+//    	if(file1.exists() || file2.exists())
+//    		return path.replaceAll(root.getRawLocation().toString(), "");
+//    	
+//    	if(root.exists(path1) || root.exists(path2))
+//    		return root.getFullPath().toString();
+//    	 
+//    	return null;
+//    }
     
     
 //**    /**
@@ -195,7 +198,7 @@ public class RelatedDisplayItem extends WidgetPart {
             if (head.equals("label")) { //$NON-NLS-1$
                 _label = row;
             } else if (head.equals("name")) { //$NON-NLS-1$
-                _name = row;
+                _fileName = row;
             } else if (head.equals("args")) { //$NON-NLS-1$
                   _args = row;
 //                _args = Arrays.copyOf(row, row.length+1);
@@ -302,8 +305,8 @@ public class RelatedDisplayItem extends WidgetPart {
      * 
      * @return the filename of the Related Display Item.
      */
-    public final String getName() {
-        return _name;
+    public final String getFileName() {
+        return _fileName;
     }
 
     /**
@@ -318,7 +321,7 @@ public class RelatedDisplayItem extends WidgetPart {
 public Object[] getChildren() {
 	Object[] ret = new Object[3];
 	ret[0] = new ADLResource(ADLResource.RD_LABEL, _label);
-	ret[1] = new ADLResource(ADLResource.RD_NAME, _name);
+	ret[1] = new ADLResource(ADLResource.RD_NAME, _fileName);
 	ret[2] = new ADLResource(ADLResource.RD_ARGS, _args);
 	
 	return ret;
