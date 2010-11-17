@@ -24,11 +24,7 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-//**import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-//import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
@@ -64,14 +60,6 @@ public class ADLDynamicAttribute extends WidgetPart{
      * The Color rule.
      */
     private String _colorRule;
-  //**    /**
-  //**     * The dynamic attribute for a boolean.
-  //**     */
-  //**    private DynamicsDescriptor _adlBooleanDynamicAttribute;
-  //**    /**
-  //**     * The dynamic attribute for a color.
-  //**     */
-  //**    private DynamicsDescriptor _adlColorDynamicAttribute;
     /**
      * If the Dynamic Attribute a boolean Attribute.
      */
