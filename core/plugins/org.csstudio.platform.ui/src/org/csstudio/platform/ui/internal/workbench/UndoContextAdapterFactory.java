@@ -12,7 +12,6 @@ import org.eclipse.ui.PlatformUI;
 public class UndoContextAdapterFactory implements IAdapterFactory {
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (adapterType == IUndoContext.class) {
         	return getUndoContext(adaptableObject);
@@ -21,7 +20,6 @@ public class UndoContextAdapterFactory implements IAdapterFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	@Override
 	public Class[] getAdapterList() {
         return new Class[] { IUndoContext.class };
     }

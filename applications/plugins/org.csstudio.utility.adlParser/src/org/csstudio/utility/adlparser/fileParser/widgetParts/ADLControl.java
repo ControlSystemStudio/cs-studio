@@ -24,11 +24,7 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-//**import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
@@ -41,28 +37,15 @@ import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
  * @since 20.09.2007
  */
 public class ADLControl extends WidgetPart{
-	//TODO Strip out old code lines that refer to SDS implementations
-    /**
-     * The foreground color.
-     */
+    // The foreground color.
     private int _clr;
-    /**
-     * The background color.
-     */
+    // The background color.
     private int _bclr;
-    /**
-     * The channel.
-     */
+     // The channel.
     private String _chan;
-    /**
-     * If true backgroundColor get the ConnectionState.
-     * Default is false.
-     */
+    // If true backgroundColor get the ConnectionState.
+    // Default is false.
     private boolean _connectionState;
-  //**    /**
-  //**     * The Record property/Feldname.
-  //**     */
-  //**    private String _postfix;
     private boolean _isBackColorDefined;
     private boolean _isForeColorDefined;
      
@@ -124,33 +107,12 @@ public class ADLControl extends WidgetPart{
             	//**                _chan=ADLHelper.cleanString(row[1]);
             }else if(FileLine.argEquals(row[0], "ctrl")){ //$NON-NLS-1$
             	_chan = FileLine.getTrimmedValue(row[1]);
-//**                _chan=ADLHelper.cleanString(row[1]);
             }else {
                 throw new WrongADLFormatException(Messages.ADLControl_WrongADLFormatException_Parameter_Begin+parameter+Messages.ADLControl_WrongADLFormatException_Parameter_End);
             }
         }
     }
 
-//**    /**
-  //**     * Generate all Elements from ADL Control Attributes.
-  //**     */
-  //**    @Override
-  //**    final void generateElements() {
-  //**        if(_clr!=null){
-  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, ADLHelper.getRGB(_clr));
-  //**        }
-  //**        if(_bclr!=null){
-  //**            _widgetModel.setColor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, ADLHelper.getRGB(_bclr));
-  //**            if(_connectionState){
-  //**                DynamicsDescriptor dynDis = new DynamicsDescriptor("rule.null"); //$NON-NLS-1$
-  //**                dynDis.addInputChannel(new ParameterDescriptor("$channel$","")); //$NON-NLS-1$
-  //**                _widgetModel.setDynamicsDescriptor("color.background", dynDis); //$NON-NLS-1$
-  //**            }
-  //**        }
-  //**        if(_chan!=null){
-  //**            _postfix = ADLHelper.setChan(_widgetModel,_chan);
-  //**        }
-  //**    }
     
     /**
      * @return the state of background color display the ConnectionState.
@@ -159,19 +121,6 @@ public class ADLControl extends WidgetPart{
         return _connectionState;
     }
 
-//**    /**
-  //**     * @param connectionState set background color display the ConnectionState.
-  //**     */
-  //**    public final void setConnectionState(final boolean connectionState) {
-  //**        _connectionState = connectionState;
-  //**    }
-
-//**    /**
-  //**     * @return the postfix (property/Feldname) of the record.
-  //**    */
-  //**    public final String getPostfix() {
-  //**        return _postfix;
-  //**    }
 
     /**
      * @return child objects

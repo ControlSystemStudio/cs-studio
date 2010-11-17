@@ -50,7 +50,6 @@ public class ADLChildren extends WidgetPart {
      */
     public ADLChildren(ADLWidget adlChildren) throws WrongADLFormatException {
     	super(adlChildren);
-    	assert adlChildren.isType("children");
     }
     
     /**
