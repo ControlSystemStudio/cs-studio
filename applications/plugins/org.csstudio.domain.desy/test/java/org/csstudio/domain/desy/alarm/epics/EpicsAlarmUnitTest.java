@@ -37,8 +37,8 @@ public class EpicsAlarmUnitTest {
     public void testOrderBySeverity() {
 
         Assert.assertEquals(EpicsAlarm.getLowest(), EpicsAlarm.UNKNOWN);
-        Assert.assertEquals(EpicsAlarm.UNKNOWN.compareAlarmTo(EpicsAlarm.NO_ALARM), -1);
-        Assert.assertEquals(EpicsAlarm.NO_ALARM.compareAlarmTo(EpicsAlarm.MINOR), -1);
+        Assert.assertEquals(EpicsAlarm.UNKNOWN.compareAlarmTo(EpicsAlarm.OK), -1);
+        Assert.assertEquals(EpicsAlarm.OK.compareAlarmTo(EpicsAlarm.MINOR), -1);
         Assert.assertEquals(EpicsAlarm.MINOR.compareAlarmTo(EpicsAlarm.MAJOR), -1);
         Assert.assertEquals(EpicsAlarm.MAJOR.compareAlarmTo(EpicsAlarm.INVALID), -1);
     }
@@ -47,7 +47,7 @@ public class EpicsAlarmUnitTest {
     public void testIsAlarm() {
 
        Assert.assertFalse(EpicsAlarm.UNKNOWN.isAlarm());
-       Assert.assertFalse(EpicsAlarm.NO_ALARM.isAlarm());
+       Assert.assertFalse(EpicsAlarm.OK.isAlarm());
        Assert.assertTrue(EpicsAlarm.MINOR.isAlarm());
        Assert.assertTrue(EpicsAlarm.MAJOR.isAlarm());
        Assert.assertTrue(EpicsAlarm.INVALID.isAlarm());

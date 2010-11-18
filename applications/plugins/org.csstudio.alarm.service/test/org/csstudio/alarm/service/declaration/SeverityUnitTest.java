@@ -42,7 +42,7 @@ public class SeverityUnitTest {
 	@Test
 	public void testIsAlarm() throws Exception {
 		// All severities except NO_ALARM are alarms.
-		assertFalse(EpicsAlarm.NO_ALARM.isAlarm());
+		assertFalse(EpicsAlarm.OK.isAlarm());
 		assertTrue(EpicsAlarm.INVALID.isAlarm());
 		assertTrue(EpicsAlarm.MINOR.isAlarm());
 		assertTrue(EpicsAlarm.MAJOR.isAlarm());
@@ -59,22 +59,22 @@ public class SeverityUnitTest {
 		assertTrue(EpicsAlarm.INVALID.compareTo(EpicsAlarm.INVALID) == 0);
 		assertTrue(EpicsAlarm.INVALID.compareTo(EpicsAlarm.MAJOR) > 0);
 		assertTrue(EpicsAlarm.INVALID.compareTo(EpicsAlarm.MINOR) > 0);
-		assertTrue(EpicsAlarm.INVALID.compareTo(EpicsAlarm.NO_ALARM) > 0);
+		assertTrue(EpicsAlarm.INVALID.compareTo(EpicsAlarm.OK) > 0);
 
 		assertTrue(EpicsAlarm.MAJOR.compareTo(EpicsAlarm.INVALID) < 0);
 		assertTrue(EpicsAlarm.MAJOR.compareTo(EpicsAlarm.MAJOR) == 0);
 		assertTrue(EpicsAlarm.MAJOR.compareTo(EpicsAlarm.MINOR) > 0);
-		assertTrue(EpicsAlarm.MAJOR.compareTo(EpicsAlarm.NO_ALARM) > 0);
+		assertTrue(EpicsAlarm.MAJOR.compareTo(EpicsAlarm.OK) > 0);
 
 		assertTrue(EpicsAlarm.MINOR.compareTo(EpicsAlarm.INVALID) < 0);
 		assertTrue(EpicsAlarm.MINOR.compareTo(EpicsAlarm.MAJOR) < 0);
 		assertTrue(EpicsAlarm.MINOR.compareTo(EpicsAlarm.MINOR) == 0);
-		assertTrue(EpicsAlarm.MINOR.compareTo(EpicsAlarm.NO_ALARM) > 0);
+		assertTrue(EpicsAlarm.MINOR.compareTo(EpicsAlarm.OK) > 0);
 
-		assertTrue(EpicsAlarm.NO_ALARM.compareTo(EpicsAlarm.INVALID) < 0);
-		assertTrue(EpicsAlarm.NO_ALARM.compareTo(EpicsAlarm.MAJOR) < 0);
-		assertTrue(EpicsAlarm.NO_ALARM.compareTo(EpicsAlarm.MINOR) < 0);
-		assertTrue(EpicsAlarm.NO_ALARM.compareTo(EpicsAlarm.NO_ALARM) == 0);
+		assertTrue(EpicsAlarm.OK.compareTo(EpicsAlarm.INVALID) < 0);
+		assertTrue(EpicsAlarm.OK.compareTo(EpicsAlarm.MAJOR) < 0);
+		assertTrue(EpicsAlarm.OK.compareTo(EpicsAlarm.MINOR) < 0);
+		assertTrue(EpicsAlarm.OK.compareTo(EpicsAlarm.OK) == 0);
 	}
 
 	@Test
@@ -82,7 +82,7 @@ public class SeverityUnitTest {
 		assertSame(EpicsAlarm.MAJOR, EpicsAlarm.parseAlarm("MAJOR"));
 		assertSame(EpicsAlarm.MINOR, EpicsAlarm.parseAlarm("MINOR"));
 		assertSame(EpicsAlarm.INVALID, EpicsAlarm.parseAlarm("INVALID"));
-		assertSame(EpicsAlarm.NO_ALARM, EpicsAlarm.parseAlarm("NO_ALARM"));
+		assertSame(EpicsAlarm.OK, EpicsAlarm.parseAlarm("NO_ALARM"));
 
 		// unknown strings will return UNKNOWN
 		assertSame(EpicsAlarm.UNKNOWN, EpicsAlarm.parseAlarm("foo"));

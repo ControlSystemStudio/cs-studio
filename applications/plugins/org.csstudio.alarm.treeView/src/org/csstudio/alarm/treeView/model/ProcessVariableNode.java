@@ -156,7 +156,7 @@ public final class ProcessVariableNode extends AbstractAlarmTreeNode
 		if (_activeAlarm != null) {
 			return _activeAlarm.getSeverity();
 		}
-        return EpicsAlarm.NO_ALARM;
+        return EpicsAlarm.OK;
 	}
 
     /**

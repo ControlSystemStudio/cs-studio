@@ -422,7 +422,7 @@ public final class SubtreeNode extends AbstractAlarmTreeNode implements IAlarmSu
 		    if (child instanceof IAlarmSubtreeNode) {
 		        result.addAll( ((IAlarmSubtreeNode) child).collectUnacknowledgedAlarms());
 		    } else if (child instanceof IAlarmProcessVariableNode) {
-		        if (child.getUnacknowledgedAlarmSeverity() != EpicsAlarm.NO_ALARM) {
+		        if (child.getUnacknowledgedAlarmSeverity() != EpicsAlarm.OK) {
 		            result.add((IAlarmProcessVariableNode) child);
 		        }
 		    }

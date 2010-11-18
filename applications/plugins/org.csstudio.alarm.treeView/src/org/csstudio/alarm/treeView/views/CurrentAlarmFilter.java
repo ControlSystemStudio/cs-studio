@@ -47,7 +47,7 @@ class CurrentAlarmFilter extends ViewerFilter {
 	                      @CheckForNull final Object parentElement,
 	                      @Nullable final Object element) {
 		if (element instanceof IAlarmTreeNode) {
-			return ((IAlarmTreeNode) element).getAlarmSeverity() != EpicsAlarm.NO_ALARM;
+			return ((IAlarmTreeNode) element).getAlarmSeverity() != EpicsAlarm.OK;
 		}
 
 		// If the element is not an IAlarmTreeNode, we don't know what it is,

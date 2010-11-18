@@ -89,7 +89,7 @@ public class AlarmTreeLabelProvider extends LabelProvider {
         switch (alarmSeverity) {
             case UNKNOWN:
                 return "grey";
-            case NO_ALARM:
+            case OK:
                 return "green";
             case INVALID:
                 return "blue";
@@ -121,8 +121,8 @@ public class AlarmTreeLabelProvider extends LabelProvider {
             // If the active and unack severity are the same, only the active
             // alarm is displayed.
             return new String[] {iconName};
-        } else if (activeAlarmSeverity != EpicsAlarm.NO_ALARM &&
-                   unacknowledgedAlarmSeverity == EpicsAlarm.NO_ALARM) {
+        } else if (activeAlarmSeverity != EpicsAlarm.OK &&
+                   unacknowledgedAlarmSeverity == EpicsAlarm.OK) {
             // There is an active alarm which is acknowledged.
             return new String[] {iconName, "checked"};
         } else {

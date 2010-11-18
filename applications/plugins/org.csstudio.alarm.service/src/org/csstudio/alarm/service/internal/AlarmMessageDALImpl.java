@@ -297,7 +297,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
         } else if (condition.isMinor()) {
             result = EpicsAlarm.MINOR;
         } else if (condition.isOK()) {
-            result = EpicsAlarm.NO_ALARM;
+            result = EpicsAlarm.OK;
         } else if (condition.isInvalid()) {
             result = EpicsAlarm.INVALID;
         }

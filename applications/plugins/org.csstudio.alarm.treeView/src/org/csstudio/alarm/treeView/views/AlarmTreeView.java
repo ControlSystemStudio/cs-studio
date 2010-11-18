@@ -327,7 +327,7 @@ public final class AlarmTreeView extends ViewPart {
         // is selected (selectedElement == null), and during initialization,
         // when it is an instance of PendingUpdateAdapter.
         if (selectedElement instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarm.NO_ALARM;
+            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarm.OK;
         }
         return false;
     }

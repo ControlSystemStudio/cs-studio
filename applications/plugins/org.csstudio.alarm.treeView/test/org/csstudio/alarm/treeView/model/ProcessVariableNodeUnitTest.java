@@ -98,8 +98,8 @@ public class ProcessVariableNodeUnitTest {
     @Test
 	public void testNoAlarmAfterAlarmKeepsUnacknowledged() throws Exception {
 		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarm.NO_ALARM, t2));
-        assertEquals(EpicsAlarm.NO_ALARM, _node.getAlarmSeverity());
+		_node.updateAlarm(new Alarm("", EpicsAlarm.OK, t2));
+        assertEquals(EpicsAlarm.OK, _node.getAlarmSeverity());
         assertEquals(EpicsAlarm.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
@@ -109,7 +109,7 @@ public class ProcessVariableNodeUnitTest {
 		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t1));
 		_node.removeHighestUnacknowledgedAlarm();
         assertEquals(EpicsAlarm.MAJOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
+        assertEquals(EpicsAlarm.OK, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test

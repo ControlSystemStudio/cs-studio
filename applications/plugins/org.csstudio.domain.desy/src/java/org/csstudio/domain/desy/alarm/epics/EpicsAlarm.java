@@ -43,7 +43,7 @@ public enum EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
     /**
      * Severity representing no alarm.
      */
-    NO_ALARM(false, 1),
+    OK(false, 1),
 
     /**
      * Severity value for a minor alarm.

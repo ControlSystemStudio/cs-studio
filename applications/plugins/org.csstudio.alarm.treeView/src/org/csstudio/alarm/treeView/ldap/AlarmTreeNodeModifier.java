@@ -184,7 +184,7 @@ public final class AlarmTreeNodeModifier {
 
     private static void setHighestUnackAlarm(@Nonnull final IAlarmProcessVariableNode node,
                                              @Nullable final Attribute highUnAcknAttr) throws NamingException {
-        EpicsAlarm unack = EpicsAlarm.NO_ALARM;
+        EpicsAlarm unack = EpicsAlarm.OK;
         if (highUnAcknAttr != null) {
             final String severity = (String) highUnAcknAttr.get();
             if (severity != null) {
