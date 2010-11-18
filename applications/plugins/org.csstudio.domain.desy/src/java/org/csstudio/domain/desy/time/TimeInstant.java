@@ -24,6 +24,7 @@ package org.csstudio.domain.desy.time;
 import javax.annotation.Nonnull;
 
 import org.joda.time.Instant;
+import org.joda.time.ReadableInstant;
 
 
 /**
@@ -41,7 +42,7 @@ public class TimeInstant {
 
     private static final Long MAX_MILLIS = Long.MAX_VALUE / 1000;
 
-    private final Instant _instant;
+    private final ReadableInstant _instant;
 
     /**
      * Fractal of a second in nanos.
@@ -54,7 +55,7 @@ public class TimeInstant {
      *
      * @param millis Milliseconds from start of epoch 1970-01-01T00:00:00Z.
      */
-    public TimeInstant(@Nonnull final long millis) {
+    private TimeInstant(@Nonnull final long millis) {
         if (millis < 0 || millis > MAX_MILLIS) {
             throw new IllegalArgumentException("Number of milliseconds for TimeInstant must be non-negative and smaller than Long.MAX_VALUE/1000.");
         }
@@ -67,7 +68,7 @@ public class TimeInstant {
      *
      * @param nanos Nanoseconds from start of epoch 1970-01-01T00:00:00Z.
      */
-    public TimeInstant(@Nonnull final Long nanos) {
+    private TimeInstant(@Nonnull final Long nanos) {
         if (nanos < 0) {
             throw new IllegalArgumentException("Number of nanos for TimeInstant must be non-negative.");
         }
@@ -75,23 +76,27 @@ public class TimeInstant {
         _fracSecInNanos = nanos % 1000000000;
     }
 
-    public Long getFractalSecondInNanos() {
+    @Nonnull
+    public static TimeInstant fromNanos(final long nanos) {
+        return new TimeInstant(Long.valueOf(nanos));
+    }
+    @Nonnull
+    public static TimeInstant fromMillis(final long millis) {
+        return new TimeInstant(millis);
+    }
+
+    @Nonnull
+    public ReadableInstant getInstant() {
+        return _instant;
+    }
+    public long getFractalSecondInNanos() {
         return _fracSecInNanos;
     }
-    public Long getMillis() {
-        return _instant.getMillis();
+    public long getMillis() {
+        return _instant.getMillis(); // delegate
     }
-    public Long getSeconds() {
+    public long getSeconds() {
         return getMillis() / 1000;
     }
-
-    /**
-     * @return
-     */
-    public String getFractalNanos() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
 
 }
