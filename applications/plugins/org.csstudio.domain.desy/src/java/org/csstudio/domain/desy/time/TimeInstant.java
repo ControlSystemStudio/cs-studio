@@ -40,7 +40,7 @@ import org.joda.time.ReadableInstant;
  */
 public class TimeInstant {
 
-    private static final Long MAX_MILLIS = Long.MAX_VALUE / 1000;
+    private static final Long MAX_MILLIS = Long.MAX_VALUE / 1000000;
 
     private final ReadableInstant _instant;
 
@@ -72,7 +72,7 @@ public class TimeInstant {
         if (nanos < 0) {
             throw new IllegalArgumentException("Number of nanos for TimeInstant must be non-negative.");
         }
-        _instant = new Instant(nanos / 1000);
+        _instant = new Instant(nanos / 1000000);
         _fracSecInNanos = nanos % 1000000000;
     }
 
