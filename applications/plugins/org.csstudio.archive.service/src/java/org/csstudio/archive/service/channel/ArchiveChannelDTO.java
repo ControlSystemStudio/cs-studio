@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * Immutable data transfer object for DAOs.
@@ -47,7 +47,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
 
     private final double _samplePeriod;
 
-    private final ITimestamp _latestTimestamp;
+    private final TimeInstant _latestTimestamp;
 
     /** The channel's meta data */
     //private final IMetaData _metaData;
@@ -69,7 +69,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
                              final double smplVal,
                              final double smplPer,
                              /* @Nonnull final IMetaData metaData */
-                             @Nonnull final ITimestamp ltstTimestamp) {
+                             @Nonnull final TimeInstant ltstTimestamp) {
         _id = id;
         _name = name;
         _groupId = grpId;
@@ -139,7 +139,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      */
     @Override
     @Nonnull
-    public ITimestamp getLatestTimestamp() {
+    public TimeInstant getLatestTimestamp() {
         return _latestTimestamp;
     }
 }

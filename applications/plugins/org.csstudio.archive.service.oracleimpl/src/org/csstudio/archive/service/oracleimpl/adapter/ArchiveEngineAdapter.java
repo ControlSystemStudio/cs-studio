@@ -28,6 +28,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.SampleMode;
@@ -41,11 +42,12 @@ import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.oracleimpl.OracleArchiveServiceImpl;
 import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.data.ITimestamp;
-import org.joda.time.DateTime;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -92,18 +94,10 @@ public enum ArchiveEngineAdapter {
     /**
      * @param channel the archive.rdb channel configuration
      * @return the service interface for the channel configuration
-     * @throws ArchiveServiceException
      */
     @Nonnull
-    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel) throws ArchiveServiceException {
-
-        ITimestamp lastTimestamp;
-        try {
-            lastTimestamp = channel.getLastTimestamp();
-        } catch (final Exception e) {
-            throw new ArchiveServiceException("Last timestamp for channel " + channel.getName() +
-                                              " could not be retrieved.", e);
-        }
+    public IArchiveChannel adapt(@Nonnull final ChannelConfig channel,
+                                 @Nullable final ITimestamp lastTimestamp) {
 
         final IArchiveChannel cfg = new ArchiveChannelDTO(new ArchiveChannelId(channel.getId()),
                                                           channel.getName(),
@@ -111,7 +105,7 @@ public enum ArchiveEngineAdapter {
                                                           new ArchiveSampleModeId(channel.getSampleMode().getId()),
                                                           channel.getSampleValue(),
                                                           channel.getSamplePeriod(),
-                                                          lastTimestamp);
+                                                          adapt(lastTimestamp));
 
         return cfg;
     }
@@ -124,9 +118,9 @@ public enum ArchiveEngineAdapter {
      * @return the service interface type for a time instant
      */
     @Nonnull
-    public DateTime adapt(@Nonnull final ITimestamp time) {
+    public TimeInstant adapt(@Nonnull final ITimestamp time) {
 
-        return new DateTime(time.seconds()*1000 + time.nanoseconds()/1000);
+        return TimeInstant.fromNanos(time.seconds()*1000000000 + time.nanoseconds());
     }
 
     /**
@@ -183,7 +177,21 @@ public enum ArchiveEngineAdapter {
                                     @Nonnull
                                     public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
                                         try {
-                                            return adapt(from);
+
+                                            ITimestamp lastTimestamp;
+                                            try {
+                                                // ATTENTION: obscured database access via
+                                                // lastTimestamp = channel.getLastTimestamp();
+                                                // Looks like a getter, but is a db call, perform via service for visibility:
+                                                lastTimestamp =
+                                                    OracleArchiveServiceImpl.INSTANCE.getLatestTimestampByChannel(from.getName());
+
+                                            } catch (final Exception e) {
+                                                throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
+                                                                                  " could not be retrieved.", e);
+                                            }
+
+                                            return adapt(from, lastTimestamp);
                                         } catch (final ArchiveServiceException e) {
                                             // FIXME (bknerr) : How to propagate an exception from here???
                                             return null;

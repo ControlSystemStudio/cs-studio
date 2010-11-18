@@ -224,7 +224,10 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     public List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
             final ChannelGroupConfig cfg = _archive.get().findGroup(groupId.intValue()); // cache in archive ???
+
+            // ATTENTION : in this adapt another database access is obscured (channel.getLastTimeStamp)
             return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getChannels());
+
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channels for " + groupId.intValue() + " failed.", e);
