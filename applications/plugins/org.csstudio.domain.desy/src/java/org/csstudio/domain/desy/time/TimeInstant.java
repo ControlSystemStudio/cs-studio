@@ -76,19 +76,27 @@ public class TimeInstant {
         _fracSecInNanos = nanos % 1000000000;
     }
 
+    /**
+     * Factory method for a time instant made from nanos (always UTC) from
+     * 1970/01/01 00:00:00.
+     * @param nanos nanos since epoch
+     * @return the time instant.
+     */
     @Nonnull
     public static TimeInstant fromNanos(final long nanos) {
         return new TimeInstant(Long.valueOf(nanos));
     }
+    /**
+     * Factory method for a time instant made from millis (always UTC) from
+     * 1970/01/01 00:00:00.
+     * @param millis millis since epoch
+     * @return the time instant
+     */
     @Nonnull
     public static TimeInstant fromMillis(final long millis) {
         return new TimeInstant(millis);
     }
 
-    @Nonnull
-    public ReadableInstant getInstant() {
-        return _instant;
-    }
     public long getFractalSecondInNanos() {
         return _fracSecInNanos;
     }
