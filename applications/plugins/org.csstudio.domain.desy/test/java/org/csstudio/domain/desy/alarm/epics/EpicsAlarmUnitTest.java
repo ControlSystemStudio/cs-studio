@@ -19,37 +19,37 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.alarm;
+package org.csstudio.domain.desy.alarm.epics;
 
-import javax.annotation.Nonnull;
+
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
- * An alarm which alarm types are comparable, i.e. they have a consistent order.
- *
- * Note, if the implementing class is an enum, then the comparability comes for free with the
- * order of declaration! So don't mess with order of declaration if you use an enum.
+ * Test class for {@link EpicsAlarm}.
  *
  * @author bknerr
- * @since 08.11.2010
+ * @since 18.11.2010
  */
-public interface IComparableAlarm<T> extends IAlarm {
+public class EpicsAlarmUnitTest {
 
-    /**
-     * Compares two alarms whether they have an ordering.
-     *
-     * Why not use interface Comparable<T>:
-     * As most alarm will end up to be enums (e.g. EpicsAlarm), the already have a compareTo
-     * method, which yields the 'natural' ordering, i.e. order of declaration.
-     * This method cannot be overridden as it has been defined final in the enum.
-     *
-     * But it is easily possible to either abstract alarm states, which are different but feature the
-     * same 'severity' (wouldn't work at all with the 'natural ordering', apparently), or to mess up
-     * the declaration order in an alarm enum by mistake (and completely forget to have test checking
-     * that).
-     *
-     *
-     * @param other
-     * @return -1 if this < other, 0 on equality, 1 on this > other
-     */
-    public int compareAlarmTo(@Nonnull final T other);
+    @Test
+    public void testOrderBySeverity() {
+
+        Assert.assertEquals(EpicsAlarm.getLowest(), EpicsAlarm.UNKNOWN);
+        Assert.assertEquals(EpicsAlarm.UNKNOWN.compareAlarmTo(EpicsAlarm.NO_ALARM), -1);
+        Assert.assertEquals(EpicsAlarm.NO_ALARM.compareAlarmTo(EpicsAlarm.MINOR), -1);
+        Assert.assertEquals(EpicsAlarm.MINOR.compareAlarmTo(EpicsAlarm.MAJOR), -1);
+        Assert.assertEquals(EpicsAlarm.MAJOR.compareAlarmTo(EpicsAlarm.INVALID), -1);
+    }
+
+    @Test
+    public void testIsAlarm() {
+
+       Assert.assertFalse(EpicsAlarm.UNKNOWN.isAlarm());
+       Assert.assertFalse(EpicsAlarm.NO_ALARM.isAlarm());
+       Assert.assertTrue(EpicsAlarm.MINOR.isAlarm());
+       Assert.assertTrue(EpicsAlarm.MAJOR.isAlarm());
+       Assert.assertTrue(EpicsAlarm.INVALID.isAlarm());
+    }
 }

@@ -31,7 +31,7 @@ import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * TODO (bknerr) :
+ * An EPICS system variable is tightly bound to EpicsAlarms
  *
  * @author bknerr
  * @since 17.11.2010
