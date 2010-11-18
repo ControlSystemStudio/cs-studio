@@ -33,12 +33,25 @@ class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
         super(collector);
     }
 
-    @Override
-    protected VStatistics calculate(List<VDouble> data) {
+    private static class Stats {
         double totalSum = 0;
         double totalSquareSum = 0;
         double min = Double.MAX_VALUE;
         double max = Double.MIN_VALUE;
+        int nElements = 0;
+
+        void includeValue(double value) {
+            totalSum += value;
+            totalSquareSum += value * value;
+            min = min(min, value);
+            max = max(min, value);
+            nElements++;
+        }
+    }
+
+    @Override
+    protected VStatistics calculate(List<VDouble> data) {
+        Stats stats = new Stats();
         AlarmSeverity statSeverity = null;
         for (VDouble vDouble : data) {
             switch(vDouble.getAlarmSeverity()) {
@@ -47,33 +60,39 @@ class StatisticsDoubleAggregator extends Aggregator<VStatistics, VDouble> {
                     // severity should be NONE
                     if (statSeverity != MINOR || statSeverity != MAJOR)
                         statSeverity = NONE;
+                    stats.includeValue(vDouble.getValue());
+                    break;
+
                 case MINOR:
                     // If severity was never MAJOR,
                     // set it to MINOR
                     if (statSeverity != MAJOR)
                         statSeverity = MINOR;
+                    stats.includeValue(vDouble.getValue());
+                    break;
+
                 case MAJOR:
                     statSeverity = MAJOR;
-                double value = vDouble.getValue();
-                totalSum += value;
-                totalSquareSum += value * value;
-                min = min(min, value);
-                max = max(min, value);
-                break;
+                    stats.includeValue(vDouble.getValue());
+                    break;
                 
                 case UNDEFINED:
                     if (statSeverity == null)
                         statSeverity = UNDEFINED;
+                    break;
                 
                 case INVALID:
                     if (statSeverity == null || statSeverity == UNDEFINED)
                         statSeverity = INVALID;
+                    break;
+                    
+                default:
             }
         }
-        return ValueFactory.newVStatistics(totalSum / data.size(),
-                sqrt(totalSquareSum / data.size() - (totalSum * totalSum) / (data.size() * data.size())),
-                min, max, data.size(),
-                statSeverity, Collections.<String>emptySet(), null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
+        return ValueFactory.newVStatistics(stats.totalSum / stats.nElements,
+                sqrt(stats.totalSquareSum / stats.nElements - (stats.totalSum * stats.totalSum) / (stats.nElements * stats.nElements)),
+                stats.min, stats.max, stats.nElements,
+                statSeverity, AlarmStatus.NONE, null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
     }
 
 }

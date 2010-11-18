@@ -19,8 +19,7 @@ class IVMultiDouble implements VMultiDouble {
     
     private final List<VDouble> values;
     private final AlarmSeverity alarmSeverity;
-    private final Set<String> alarmStatus;
-    private final List<String> possibleAlarms;
+    private final AlarmStatus alarmStatus;
     private final TimeStamp timeStamp;
     private final Integer timeUserTag;
     private final Double lowerDisplayLimit;
@@ -35,7 +34,7 @@ class IVMultiDouble implements VMultiDouble {
     private final Double upperDisplayLimit;
 
     IVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
-            Set<String> alarmStatus, List<String> possibleAlarms,
+            AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
@@ -43,7 +42,6 @@ class IVMultiDouble implements VMultiDouble {
         this.values = values;
         this.alarmSeverity = alarmSeverity;
         this.alarmStatus = alarmStatus;
-        this.possibleAlarms = possibleAlarms;
         this.timeStamp = timeStamp;
         this.timeUserTag = timeUserTag;
         this.lowerDisplayLimit = lowerDisplayLimit;
@@ -71,13 +69,8 @@ class IVMultiDouble implements VMultiDouble {
     }
 
     @Override
-    public Set<String> getAlarmStatus() {
+    public AlarmStatus getAlarmStatus() {
         return alarmStatus;
-    }
-
-    @Override
-    public List<String> getPossibleAlarms() {
-        return possibleAlarms;
     }
 
     @Override

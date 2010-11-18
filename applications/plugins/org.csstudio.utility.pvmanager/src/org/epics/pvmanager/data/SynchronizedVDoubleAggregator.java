@@ -64,8 +64,8 @@ class SynchronizedVDoubleAggregator extends Function<VMultiDouble> {
         if (log.isLoggable(Level.FINE)) {
             log.fine(buffer.toString());
         }
-        return ValueFactory.newVMultiDouble(values, AlarmSeverity.NONE, Collections.<String>emptySet(),
-                Collections.<String>emptyList(), reference, null,
+        return ValueFactory.newVMultiDouble(values, AlarmSeverity.NONE, AlarmStatus.NONE,
+                reference, null,
                 null, null, null, null, null, null, null, null, null, null);
     }
 

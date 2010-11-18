@@ -33,28 +33,37 @@ class AverageAggregator extends Aggregator<VDouble, VDouble> {
                     // severity should be NONE
                     if (statSeverity != MINOR || statSeverity != MAJOR)
                         statSeverity = NONE;
+                    totalSum += vDouble.getValue();
+                    break;
+
                 case MINOR:
                     // If severity was never MAJOR,
                     // set it to MINOR
                     if (statSeverity != MAJOR)
                         statSeverity = MINOR;
+                    totalSum += vDouble.getValue();
+                    break;
+
                 case MAJOR:
                     statSeverity = MAJOR;
-                double value = vDouble.getValue();
-                totalSum += value;
-                break;
+                    totalSum += vDouble.getValue();
+                    break;
 
                 case UNDEFINED:
                     if (statSeverity == null)
                         statSeverity = UNDEFINED;
+                    break;
 
                 case INVALID:
                     if (statSeverity == null || statSeverity == UNDEFINED)
                         statSeverity = INVALID;
+                    break;
+
+                default:
             }
         }
         return ValueFactory.newVDouble(totalSum / data.size(),
-                statSeverity, Collections.<String>emptySet(), null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
+                statSeverity, AlarmStatus.NONE, null, data.get(data.size() / 2).getTimeStamp(), data.get(0));
     }
 
 }

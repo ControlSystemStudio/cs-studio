@@ -4,7 +4,7 @@
    <extension
          point="org.csstudio.utility.pvmanager.datasource">
       <datasource
-            datasource="org.epics.pvmanager.jca.JCADataSource"
+            datasource="org.csstudio.utility.pvmanager.epics.Epics3DataSource"
             name="Epics DataSource"
             prefix="ca">
       </datasource>
