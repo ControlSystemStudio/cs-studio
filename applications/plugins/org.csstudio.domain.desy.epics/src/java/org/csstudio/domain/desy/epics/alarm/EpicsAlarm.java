@@ -49,11 +49,14 @@ import org.csstudio.domain.desy.alarm.IComparableAlarm;
  * NO_ALARM                    (->NO_ALARM) : (in principle, just learned there's an exception
  * LO, HI                      (->MINOR)
  * LOLO, HIHI                  (->MAJOR)
- * disconnected     (->?)      :used in the archiver code of
- * Archive_Disabled (?=Disable) (->?)      :TODO (bknerr) is 'Archive_Disabled' match any epics value, ask bernd.
+ * disconnected     (->?)                   :used in the archiver code of
+ * Archive_Disabled (?=DISABLE) (->?)       :TODO (bknerr) is 'Archive_Disabled' match any epics value, ask bernd.
+ *
+ * SoftAlarm
  *
  * For non-numerical data types LO,HI,LOLO,HIHI isn't defined, hence, not possible.
- * (TODO (bknerr) : Checked for plausibility  by the {@link EpicsSystemVariable<T>} on setting it's alarm.
+ * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting it's alarm.
+ *
  *
  * @author Bastian Knerr
  */
@@ -77,6 +80,15 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
     }
 
     /**
+     * Getter for severity.
+     * @return the severity.
+     */
+    @Nonnull
+    public EpicsAlarmSeverity getSeverity() {
+        return _severity;
+    }
+
+    /**
      * Getter for status.
      * @return the status.
      */
@@ -86,16 +98,6 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
     }
 
     /**
-     * Returns {@code true} if this severity is an actual alarm severity.
-     *
-     * @return whether this alarm is an actual alarm severity.
-     */
-//    public boolean isAlarm() {
-//        return _isAlarm;
-//    }
-
-
-    /**
      * {@inheritDoc}
      */
     @Override
@@ -103,5 +105,4 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
 
         return _severity.compareSeverityTo(other._severity);
     }
-
 }
