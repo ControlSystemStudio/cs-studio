@@ -26,7 +26,7 @@ import java.util.Date;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 
 
 /**
@@ -34,8 +34,10 @@ import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
  * <p>
  * Instances of this class are immutable for easy sharing between threads.
  *
+ * @deprecated use {@link org.csstudio.domain.desy.epics.alarm.EpicsAlarm} instead
  * @author Joerg Rathlev
  */
+@Deprecated
 public final class Alarm {
 
 	/**
@@ -46,7 +48,7 @@ public final class Alarm {
 	/**
 	 * The severity of this alarm.
 	 */
-	private final EpicsAlarm _severity;
+	private final EpicsAlarmSeverity _severity;
 
 	/**
 	 * The time at which this alarm event occured.
@@ -62,7 +64,7 @@ public final class Alarm {
 	 * @param eventtime the time at which the alarm event occured.
 	 */
 	public Alarm(@Nonnull final String objectName,
-	             @Nonnull final EpicsAlarm severity,
+	             @Nonnull final EpicsAlarmSeverity severity,
 	             @Nonnull final Date eventtime) {
 		_objectName = objectName;
 		_severity = severity;
@@ -75,7 +77,7 @@ public final class Alarm {
 	 * @return the severity of this alarm.
 	 */
 	@Nonnull
-	public EpicsAlarm getSeverity() {
+	public EpicsAlarmSeverity getSeverity() {
 		return _severity;
 	}
 
@@ -91,7 +93,7 @@ public final class Alarm {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean severityHigherThan(@CheckForNull final Alarm alarm) {
-		return (alarm == null) || (_severity.compareTo(alarm._severity) > 0);
+		return alarm == null || _severity.compareTo(alarm._severity) > 0;
 	}
 
 
@@ -105,7 +107,7 @@ public final class Alarm {
 	 *         <code>false</code> otherwise.
 	 */
 	public boolean occuredAfter(@CheckForNull final Alarm alarm) {
-		return (alarm == null) || _eventtime.after(alarm._eventtime);
+		return alarm == null || _eventtime.after(alarm._eventtime);
 	}
 
 
