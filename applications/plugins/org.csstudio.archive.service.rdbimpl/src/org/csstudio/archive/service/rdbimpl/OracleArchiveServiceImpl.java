@@ -39,18 +39,21 @@ import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.csstudio.archive.service.IArchiveWriterService;
+import org.csstudio.archive.service.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.rdbimpl.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
+
+import com.google.common.base.Function;
+import com.google.common.collect.Lists;
 
 /**
  * Example archive service implementation to separate the processing and logic layer from
@@ -79,6 +82,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(OracleArchiveServiceImpl.class);
 
+    private static final ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
+
     public static final String ARCHIVE_PREF_KEY = "archive";
     public static final String PREFIX_PREF_KEY = "prefix";
     public static final String SAMPLE_TB_PREF_KEY = "sampleTable";
@@ -89,9 +94,9 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      */
     private final ThreadLocal<RDBArchive> _archive = new ThreadLocal<RDBArchive>();
 
-    private final ThreadLocal<String> _archivePrefix = new ThreadLocal<String>();
-    private final ThreadLocal<String> _sampleTable = new ThreadLocal<String>();
-    private final ThreadLocal<String> _arrayValTable = new ThreadLocal<String>();
+//    private final ThreadLocal<String> _archivePrefix = new ThreadLocal<String>();
+//    private final ThreadLocal<String> _sampleTable = new ThreadLocal<String>();
+//    private final ThreadLocal<String> _arrayValTable = new ThreadLocal<String>();
 
 
     /**
@@ -100,7 +105,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
 
         // TODO (bknerr) : here the RDBArchivePreferences are used - there are still prefs in engine2 as well
-        // get that straight, prefs' keys belong here as well.
+        // get that straight, some prefs' should reside in this plugin.
         final String url = (String) prefs.get(RDBArchivePreferences.URL);
         final String user = (String) prefs.get(RDBArchivePreferences.USER);
         final String password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
@@ -140,9 +145,9 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     public void configure(@Nonnull final Map<String, Object> cfgPrefs) {
-        _archivePrefix.set((String) cfgPrefs.get(PREFIX_PREF_KEY));
-        _sampleTable.set((String) cfgPrefs.get(SAMPLE_TB_PREF_KEY));
-        _arrayValTable.set((String) cfgPrefs.get(ARRAYVAL_TB_PREF_KEY));
+//        _archivePrefix.set((String) cfgPrefs.get(PREFIX_PREF_KEY));
+//        _sampleTable.set((String) cfgPrefs.get(SAMPLE_TB_PREF_KEY));
+//        _arrayValTable.set((String) cfgPrefs.get(ARRAYVAL_TB_PREF_KEY));
     }
 
     /**
@@ -196,7 +201,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         // FIXME (bknerr) : data access object is created anew on every invocation?!
         final SampleEngineHelper engines = new SampleEngineHelper(_archive.get());
         try {
-            return ArchiveEngineAdapter.INSTANCE.adapt(engines.find(name));
+            return ADAPT_MGR.adapt(engines.find(name));
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of engine for " + name + " failed.", e);
@@ -213,7 +218,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
             final ChannelGroupConfig[] groups = groupHelper.get(id.intValue());
-            return ArchiveEngineAdapter.INSTANCE.adapt(groups);
+            return ADAPT_MGR.adapt(groups);
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel group configurations for engine " + id .intValue() + " failed.", e);
@@ -226,7 +231,38 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             final ChannelGroupConfig cfg = _archive.get().findGroup(groupId.intValue()); // cache in archive ???
 
             // ATTENTION : in this adapt another database access is obscured (channel.getLastTimeStamp)
-            return ArchiveEngineAdapter.INSTANCE.adapt(cfg.getChannels());
+            final List<ChannelConfig> channels = cfg.getChannels();
+
+            // Due to the internal service call, the transformation can't be hidden in the ArchiveEngineAdapter, (or
+            // alternatively, the archive.service plugin would need an activator and register for its own service)
+            final List<IArchiveChannel> moreChannels = Lists.transform(channels,
+                                   new Function<ChannelConfig, IArchiveChannel>() {
+                                        @CheckForNull
+                                        public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
+                                            try {
+                                                ITimestamp lastTimestamp;
+                                                try {
+                                                    // ATTENTION: obscured database access via
+                                                    // lastTimestamp = channel.getLastTimestamp();
+                                                    // Looks like a getter, but is a db call, perform via service:
+                                                    lastTimestamp =
+                                                        OracleArchiveServiceImpl.INSTANCE.getLatestTimestampByChannel(from.getName());
+
+                                                } catch (final Exception e) {
+                                                    throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
+                                                                                      " could not be retrieved.", e);
+                                                }
+
+                                                return ADAPT_MGR.adapt(from, lastTimestamp);
+
+                                            } catch (final ArchiveServiceException e) {
+                                                // FIXME (bknerr) : How to propagate an exception from here???
+                                                return null;
+                                            }
+                                        }
+                                   });
+
+            return moreChannels;
 
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
@@ -246,7 +282,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         } catch (final Exception e) {
             throw new ArchiveServiceException("Retrieval of sample mode for " + sampleModeId.intValue() + " failed.", e);
         }
-        return ArchiveEngineAdapter.INSTANCE.adapt(sampleMode);
+        return ADAPT_MGR.adapt(sampleMode);
     }
 
     /**

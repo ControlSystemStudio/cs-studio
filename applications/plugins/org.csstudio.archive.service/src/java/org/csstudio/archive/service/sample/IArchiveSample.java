@@ -21,6 +21,8 @@
  */
 package org.csstudio.archive.service.sample;
 
+import javax.annotation.Nonnull;
+
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -31,16 +33,16 @@ import org.csstudio.domain.desy.time.TimeInstant;
  *
  * @author bknerr
  * @since 11.11.2010
+ * @param <T> the type of the contained value
  */
-public interface IArchiveSample<T> {
+public interface IArchiveSample<T> /* extends Identifiable<ArchiveSampleId> */ {
 
-    /**
-     * The id of the channel which this sample belongs to.
-     * @return the channel id
-     */
-    public ArchiveChannelId getChannelId();
+    @Nonnull
+    ArchiveChannelId getChannelId();
 
-    public T getValue();
+    @Nonnull
+    T getValue();
 
-    public TimeInstant getTimestamp();
+    @Nonnull
+    TimeInstant getTimestamp();
 }
