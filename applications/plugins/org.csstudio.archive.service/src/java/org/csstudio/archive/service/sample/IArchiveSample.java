@@ -21,9 +21,11 @@
  */
 package org.csstudio.archive.service.sample;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -45,4 +47,7 @@ public interface IArchiveSample<T> /* extends Identifiable<ArchiveSampleId> */ {
 
     @Nonnull
     TimeInstant getTimestamp();
+
+    @CheckForNull
+    EpicsAlarm getAlarm();
 }

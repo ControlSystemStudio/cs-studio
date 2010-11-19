@@ -19,41 +19,34 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.sample;
+package org.csstudio.archive.service.engine;
 
-import javax.annotation.CheckForNull;
+import java.net.MalformedURLException;
+import java.net.URL;
+
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * Immutable data transfer class for archive sample.
+ * Archive engine data transfer object.
  *
  * @author bknerr
- * @since 15.11.2010
- * @param <T> data type of the contained value
+ * @since 19.11.2010
  */
-public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
+public class ArchiveEngineDTO implements IArchiveEngine {
 
-    private final ArchiveChannelId _channelId;
-    private final T _value;
-    private final TimeInstant _timestamp;
-    private final EpicsAlarm _alarm;
+    private final ArchiveEngineId _id;
+    private final URL _url;
 
     /**
      * Constructor.
+     * @param archiveEngineId
+     * @param url
      */
-    public ArchiveSampleDTO(@Nonnull final ArchiveChannelId chanId,
-                            @Nonnull final T value,
-                            @Nonnull final TimeInstant ts,
-                            @Nullable final EpicsAlarm alarm) {
-        _channelId = chanId;
-        _value = value;
-        _timestamp = ts;
-        _alarm = alarm;
+    public ArchiveEngineDTO(@Nonnull final ArchiveEngineId id,
+                            @Nonnull final URL url) {
+        _id = id;
+        _url = url;
     }
 
     /**
@@ -61,34 +54,16 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
      */
     @Override
     @Nonnull
-    public ArchiveChannelId getChannelId() {
-        return _channelId;
+    public ArchiveEngineId getId() {
+        return _id;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public T getValue() {
-        return _value;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public EpicsAlarm getAlarm() {
-        return _alarm;
+    public URL getUrl() throws MalformedURLException {
+        return _url;
     }
 
 }

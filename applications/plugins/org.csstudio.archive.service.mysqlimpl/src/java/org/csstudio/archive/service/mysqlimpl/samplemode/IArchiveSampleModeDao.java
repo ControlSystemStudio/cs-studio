@@ -24,9 +24,8 @@ package org.csstudio.archive.service.mysqlimpl.samplemode;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.mysqlimpl.dao.IArchiveDao;
-import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
 /**
  * Dao for archive sample modes.
@@ -34,13 +33,13 @@ import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
  * @author bknerr
  * @since 10.11.2010
  */
-public interface IArchiveSampleModeDao extends IArchiveDao {
+public interface IArchiveSampleModeDao {
 
     /**
      * @param id the id of the sample mode
      * @return the cached or freshly retrieved sample mode
      */
     @CheckForNull
-    IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId id)
+    IArchiveSampleMode retrieveSampleModeById(@Nonnull final ArchiveSampleModeId id)
         throws ArchiveSampleModeDaoException;
 }

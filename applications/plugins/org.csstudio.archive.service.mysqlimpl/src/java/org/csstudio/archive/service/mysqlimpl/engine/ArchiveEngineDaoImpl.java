@@ -19,87 +19,78 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.samplemode;
+package org.csstudio.archive.service.mysqlimpl.engine;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Map;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
+import org.csstudio.archive.service.engine.ArchiveEngineDTO;
+import org.csstudio.archive.service.engine.ArchiveEngineId;
+import org.csstudio.archive.service.engine.IArchiveEngine;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeDTO;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.logging.CentralLogger;
 
-import com.google.common.collect.Maps;
-
 /**
- * DAO implementation with simple cache (hashmap).
+ * DAO implementation for engine table.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 19.11.2010
  */
-public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArchiveSampleModeDao {
+public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchiveEngineDao {
 
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(ArchiveSampleModeDaoImpl.class);
+        CentralLogger.getInstance().getLogger(ArchiveEngineDaoImpl.class);
 
-    private static final String RETRIEVAL_FROM_ARCHIVE_FAILED = "Sample mode retrieval from archive failed.";
-
-    /**
-     * Archive sample mode cache.
-     */
-    private final Map<ArchiveSampleModeId, IArchiveSampleMode> _sampleModeCache = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
-    private final String _selectSampleModebyIdStmt = "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
+    private final String _selectEngineByNameStmt =
+        "SELECT eng_id, url FROM archive.smpl_eng WHERE name=?";
+
 
     /**
      * {@inheritDoc}
      */
     @Override
     @CheckForNull
-    public IArchiveSampleMode retrieveSampleModeById(final ArchiveSampleModeId id) throws ArchiveSampleModeDaoException {
+    public IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveEngineDaoException {
 
-        IArchiveSampleMode mode = _sampleModeCache.get(id);
-        if (mode != null) {
-            return mode;
-        }
-        PreparedStatement stmt = null;
+        PreparedStatement statement = null;
         try {
-            stmt = getConnection().prepareStatement(_selectSampleModebyIdStmt);
-            stmt.setInt(1, id.intValue());
-
-            final ResultSet result = stmt.executeQuery();
+            statement = getConnection().prepareStatement(_selectEngineByNameStmt);
+            statement.setString(1, name);
+            final ResultSet result = statement.executeQuery();
             if (result.next()) {
-
-                final ArchiveSampleModeId newId = new ArchiveSampleModeId(result.getInt(1));
-                final String name = result.getString(2);
-                final String desc = result.getString(3);
-                mode = new ArchiveSampleModeDTO(newId, name, desc);
-
-                _sampleModeCache.put(mode.getId(), mode);
+                final int id = result.getInt(1);
+                final String url = result.getString(2);
+                return new ArchiveEngineDTO(new ArchiveEngineId(id),
+                                            new URL(url));
             }
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
+            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
+            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
+        } catch (final MalformedURLException e) {
+            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
         } finally {
-            if (stmt != null) {
+            if (statement != null) {
                 try {
-                    stmt.close();
+                    statement.close();
                 } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectSampleModebyIdStmt + " failed.");
+                    // Ignore
+                    LOG.warn("Closing of statement " + _selectEngineByNameStmt + " failed.");
                 }
             }
         }
-
-        return mode;
+        return null;
     }
+
 
 }

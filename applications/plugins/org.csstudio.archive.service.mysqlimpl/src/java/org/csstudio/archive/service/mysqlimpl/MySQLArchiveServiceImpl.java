@@ -28,25 +28,29 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.rdb.ChannelConfig;
-import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
-import org.csstudio.archive.rdb.engineconfig.SampleEngineConfig;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.ArchiveServiceException;
 import org.csstudio.archive.service.IArchiveEngineConfigService;
 import org.csstudio.archive.service.IArchiveWriterService;
+import org.csstudio.archive.service.adapter.ArchiveEngineAdapter;
 import org.csstudio.archive.service.adapter.IValueWithChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.mysqlimpl.adapter.ArchiveEngineAdapter;
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
+import org.csstudio.archive.service.engine.ArchiveEngineId;
+import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
+import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
+import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.alarm.epics.EpicsSystemVariable;
+import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
-import org.joda.time.DateTime;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
@@ -117,15 +121,14 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     @Override
     public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException {
 
-
-        // TODO (bknerr) : get rid of this IValueWithChannelId class...
-        DAO_MGR.getSampleDao().insertSamples(Lists.transform(samples,
+        // FIXME (bknerr) : get rid of this IValueWithChannelId class...
+        DAO_MGR.getSampleDao().createSamples(Lists.transform(samples,
                                                              new Function<IValueWithChannelId, IArchiveSample<?>>() {
                                                                 @Override
                                                                 @Nonnull
                                                                 public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
                                                                     // this line is only for demonstration purposes,
-                                                                    // once we get rid of any incomplete or workaround sys value abstractions,
+                                                                    // once we get rid of any incomplete/workaround value abstractions,
                                                                     // this line will vanish
                                                                     final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
 
@@ -141,42 +144,17 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     /**
      * {@inheritDoc}
      */
-    @Override
-    public IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveServiceException {
-
-        IArchiveChannel channel = null;
-        IArchiveSampleMode sampleMode = null;
-        try {
-            channel = DAO_MGR.getChannelDao().getChannel(name);
-            sampleMode = DAO_MGR.getSampleModeDao().getSampleModeById(channel.getSampleModeId());
-        } catch (final ArchiveDaoException e) {
-            throw new ArchiveServiceException("Data retrieval failure for channel.", e);
-        }
-
-        return ADAPT_MGR.adapt(name, channel, sampleMode);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public int getChannelId(final String name) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return 0;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     @Deprecated
     @Override
     public void writeMetaData(@Nonnull final String channelName, final IValue sample) {
-        // FIXME (bknerr) : complete "meta data" concept seems broken.
-        // Metadata are partly themselves record fields (for numerics), which might be again registered channels,
-        // hence having channel configurations that then have again meta data and so on.
+        // FIXME (bknerr) : check the conception of meta data coming out of caj,jca or whatever
+
+        // Metadata are partly themselves record fields (for numerics), which might be again
+        // configured and registered channels, hence having channel configurations that then have
+        // again meta data and so on.
         //
-        // Consider refactoring:
-        // treat all channels = 'record fields' exactly the same in the archiver, just as samples in the sample table
+        // Question:
+        // could we treat all channels = 'record fields' exactly the same in the archiver, just as samples in the sample table
         // and let the archive reading clients handle the relations between the record fields (whether they
         // belong to the 'same' record or influence each other in any way is only of interest for the archive reading
         // tool not for the archive).
@@ -184,10 +162,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         // Consider making the channel id in the rdb split into two columns, record and field.
         // Hence, asking about a channel's VAL samples, e.g. <record>.<field>=kryoBox.VAL can easily be
         // modified by the client to ask additionally, if channelType of kryoBox.VAL is numeric, get the samples for
-        // channel kryoBox.deadband, kryoBox.HIHI and kryoBox.LOLO as well. That can be called meta data or whatever.
-        // But the archiver wouldn't notice any difference.
+        // channel kryoBox.deadband, kryoBox.HIHI and kryoBox.LOLO or how these are called. That can
+        // be called meta data or whatever. But the archivereader wouldn't notice any difference, and just
+        // deliver type safe sample collections.
         //
-        // DESY has to take care as it is envisioned to have several control systems. Hence record and field might not
+        // Sidenote; it is envisioned to have several control systems. Hence record and field might not
         // be appropriate. Generify this idea.
     }
 
@@ -198,15 +177,15 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     @CheckForNull
     public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
 
-        IArchiveChannel cfg = null;
+        IArchiveChannel channel = null;
         try {
-            cfg = DAO_MGR.getChannelDao().getChannel(name);
-            if (cfg != null) {
-                return ADAPT_MGR.adapt(cfg.getLatestTimestamp());
+            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
+            if (channel != null) {
+                return ADAPT_MGR.adapt(channel.getLatestTimestamp());
             }
             // Access the sample table
-            final DateTime ltstSampleTime =
-                DAO_MGR.getSampleDao().getLatestSampleForChannel(cfg.getId());
+            final TimeInstant ltstSampleTime =
+                DAO_MGR.getSampleDao().retrieveLatestSampleByChannelId(channel.getId());
             if (ltstSampleTime != null) {
                 return ADAPT_MGR.adapt(ltstSampleTime);
             }
@@ -220,8 +199,36 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public SampleEngineConfig findEngine(final int id) throws ArchiveServiceException {
+    public int getChannelId(@Nonnull final String name) throws ArchiveServiceException {
+
+        IArchiveChannel channel;
+        try {
+            channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
+        } catch (final ArchiveChannelDaoException e) {
+            throw new ArchiveServiceException("Channel Id information for " + name +
+                                              " could not be retrieved.", e);
+        }
+        return channel.getId().intValue();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
+        try {
+            return DAO_MGR.getEngineDao().retrieveEngineByName(name);
+        } catch (final ArchiveEngineDaoException e) {
+            throw new ArchiveServiceException("Engine information for " + name +
+                                              " could not be retrieved.", e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<IArchiveChannelGroup> getGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -230,8 +237,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    public SampleEngineConfig findEngine(@Nonnull final String name) throws ArchiveServiceException {
+    public List<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }
@@ -240,16 +246,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public List<ChannelGroupConfig> getGroupsByEngineId(final int engineId) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public List<ChannelConfig> getChannelsByGroupId(final ChannelGroupConfig group_config) throws ArchiveServiceException {
+    public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }

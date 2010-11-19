@@ -19,22 +19,66 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.dao;
+package org.csstudio.archive.service.samplemode;
+
+import javax.annotation.Nonnull;
 
 
 /**
- * Archive Dao.
+ * Immutable data transfer object for DAOs.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public interface IArchiveDao {
+public class ArchiveSampleModeDTO implements IArchiveSampleMode {
 
-//    /**
-//     * Returns the current connection for the dao implementation and its subclasses.
-//     * @return the connection
-//     */
-//    @CheckForNull
-//    Connection getConnection();
+    private final ArchiveSampleModeId _id;
+
+    private final String _name;
+
+    private final String _description;
+
+    /**
+     * Constructor.
+     *
+     * @param id
+     * @param name
+     * @param description
+     */
+    public ArchiveSampleModeDTO(@Nonnull final ArchiveSampleModeId id,
+                                @Nonnull final String name,
+                                @Nonnull final String description) {
+
+        _id = id;
+        _name = name;
+        _description = description;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public ArchiveSampleModeId getId() {
+        return _id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String getDescription() {
+        return _description;
+    }
 
 }

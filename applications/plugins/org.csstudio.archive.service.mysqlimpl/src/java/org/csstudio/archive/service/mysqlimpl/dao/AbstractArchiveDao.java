@@ -25,22 +25,32 @@ import java.sql.Connection;
 
 import javax.annotation.CheckForNull;
 
+import org.csstudio.archive.service.ArchiveConnectionException;
+
 
 /**
- * Abstract implementation of an archive DAO holding the connection as {@link ThreadLocal<Connection>}.
+ * Abstract implementation of an archive DAO.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public abstract class AbstractArchiveDao implements IArchiveDao {
+public abstract class AbstractArchiveDao {
+
+    protected static final ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
 
     /**
      * Returns the current connection for the dao implementation and its subclasses.
      * @return the connection
+     * @throws ArchiveConnectionException
      */
     @CheckForNull
-    protected Connection getConnection() {
-        return ArchiveDaoManager.INSTANCE.getConnection();
+    protected Connection getConnection() throws ArchiveConnectionException {
+
+        final Connection connection = DAO_MGR.getConnection();
+        if (connection == null) {
+            throw new ArchiveConnectionException("Archive connection is null.", null);
+        }
+        return connection;
     }
 
 }

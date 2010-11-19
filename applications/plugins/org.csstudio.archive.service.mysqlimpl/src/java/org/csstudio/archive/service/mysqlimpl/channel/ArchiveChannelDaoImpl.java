@@ -30,12 +30,16 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
+import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.channel.ArchiveChannelDTO;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
+import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.joda.time.DateTime;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Maps;
 
@@ -47,12 +51,15 @@ import com.google.common.collect.Maps;
  */
 public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiveChannelDao {
 
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(ArchiveChannelDaoImpl.class);
+
     /**
      * Archive channel configuration cache.
      */
     private final Map<String, IArchiveChannel> _channelCache = Maps.newHashMap();
 
-    // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
+    // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
         "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE name=?";
@@ -62,7 +69,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Override
     @CheckForNull
-    public IArchiveChannel getChannel(@Nonnull final String name) throws ArchiveChannelDaoException {
+    public IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveChannelDaoException {
 
         IArchiveChannel channel = _channelCache.get(name);
         if (channel != null) {
@@ -84,23 +91,26 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 final double samplePer = result.getDouble(5);
                 final Timestamp ltstSmplTime = result.getTimestamp(6);
                 channel = new ArchiveChannelDTO(new ArchiveChannelId(id),
-                                                new ArchiveChannelGroup(grpId),
+                                                name,
+                                                new ArchiveChannelGroupId(grpId),
                                                 new ArchiveSampleModeId(sampleMode),
                                                 sampleVal,
                                                 samplePer,
-                                                new DateTime(ltstSmplTime.getTime()));
+                                                TimeInstant.fromMillis(ltstSmplTime.getTime()));
 
                 _channelCache.put(name, channel);
             }
 
         } catch (final SQLException e) {
             throw new ArchiveChannelDaoException("Channel configuration retrieval from archive failed.", e);
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveChannelDaoException("Channel configuration retrieval from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (final SQLException e) {
-                    // Ignore
+                    LOG.warn("Closing of statement " + _selectChannelByNameStmt + " failed.");
                 }
             }
         }

@@ -19,68 +19,27 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.mysqlimpl.samplemode;
+package org.csstudio.archive.service.mysqlimpl.engine;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.archive.service.engine.IArchiveEngine;
 
 /**
- * Immutable data transfer object for DAOs.
+ * Dao for archive engine configurations.
  *
  * @author bknerr
- * @since 10.11.2010
+ * @since 19.11.2010
  */
-public class ArchiveSampleModeDTO implements IArchiveSampleMode {
-
-    private final ArchiveSampleModeId _id;
-
-    private final String _name;
-
-    private final String _description;
+public interface IArchiveEngineDao {
 
     /**
-     * Constructor.
-     *
-     * @param id
-     * @param name
-     * @param description
+     * @param name the name of the engine
+     * @return the archive engine
+     * @throws ArchiveEngineDaoException
      */
-    public ArchiveSampleModeDTO(@Nonnull final ArchiveSampleModeId id,
-                                @Nonnull final String name,
-                                @Nonnull final String description) {
-
-        _id = id;
-        _name = name;
-        _description = description;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public ArchiveSampleModeId getId() {
-        return _id;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getName() {
-        return _name;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public String getDescription() {
-        return _description;
-    }
+    @CheckForNull
+    IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveEngineDaoException;
 
 }

@@ -30,11 +30,15 @@ import java.util.Collection;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.apache.log4j.Logger;
+import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.sample.IArchiveSample;
-import org.joda.time.DateTime;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -47,6 +51,10 @@ import org.joda.time.format.DateTimeFormatter;
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
 
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(ArchiveSampleDaoImpl.class);
+
+    private static final String RETRIEVAL_ARCHIVE = "Channel configuration retrieval from archive failed.";
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
@@ -62,7 +70,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public DateTime getLatestSampleForChannel(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException {
+    public TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException {
 
         PreparedStatement stmt = null;
         try {
@@ -73,17 +81,19 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             if (result.next()) {
 
                 final Timestamp ltstSmplTime = result.getTimestamp(1);
-                return new DateTime(ltstSmplTime.getTime());
+                return TimeInstant.fromMillis(ltstSmplTime.getTime());
             }
 
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveSampleDaoException(RETRIEVAL_ARCHIVE, e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleDaoException("Channel configuration retrieval from archive failed.", e);
+            throw new ArchiveSampleDaoException(RETRIEVAL_ARCHIVE, e);
         } finally {
             if (stmt != null) {
                 try {
                     stmt.close();
                 } catch (final SQLException e) {
-                    // Ignore
+                    LOG.warn("Closing of statement " + _selectLastSmplTimeByChannelIdStmt + " failed.");
                 }
             }
         }
@@ -94,16 +104,21 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public void insertSamples(@Nonnull final Collection<IArchiveSample<?>> samples) {
+    public void createSamples(@Nonnull final Collection<IArchiveSample<?>> samples) {
 
         final StringBuilder values = new StringBuilder();
         values.append(_insertSamplesStmt);
         for (final IArchiveSample<?> sample : samples) {
+            final EpicsAlarm alarm = sample.getAlarm();
+
+            final int sevId = DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
+            final int statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
+
             values.append("(" +
                           sample.getChannelId().intValue() + "," +
                           SAMPLE_TIME_FMT.print((ReadableInstant) sample.getTimestamp()) + "," +
-                          sample.getSeverityId() + "," +
-                          sample.getStatusId() + "," +
+                          sevId + "," +
+                          statusId + "," +
                           sample.getValue().toString() + "," +
                           sample.getTimestamp().getFractalSecondInNanos() +
                           "),");

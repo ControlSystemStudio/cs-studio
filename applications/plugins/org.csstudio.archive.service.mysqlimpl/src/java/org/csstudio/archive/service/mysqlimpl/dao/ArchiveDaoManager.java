@@ -37,9 +37,10 @@ import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
-import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServiceImpl;
 import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
+import org.csstudio.archive.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoImpl;
@@ -78,21 +79,23 @@ public enum ArchiveDaoManager {
     /**
      * DAO.
      * Don't forget to propagate the connection to the DAOs
-     * in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
      */
     private IArchiveChannelDao _archiveChannelDao;
     /**
      * DAO.
      * Don't forget to propagate the connection to the DAOs
-     * in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
      */
     private IArchiveSampleModeDao _archiveSampleModeDao;
     /**
      * DAO.
      * Don't forget to propagate the connection to the DAOs
-     * in {@link MySQLArchiveServiceImpl#propagateConnectionToDaos(Connection)}
      */
     private IArchiveSampleDao _archiveSampleDao;
+    /**
+     * DAO.
+     * Don't forget to propagate the connection to the DAOs
+     */
+    private IArchiveEngineDao _archiveEngineDao;
 
     /**
      * Constructor.
@@ -164,6 +167,7 @@ public enum ArchiveDaoManager {
     }
 
     /**
+     * Disconnects the connection for the owning thread.
      * @throws ArchiveConnectionException
      */
     public void disconnect() throws ArchiveConnectionException {
@@ -220,5 +224,16 @@ public enum ArchiveDaoManager {
             _archiveSampleDao = new ArchiveSampleDaoImpl();
         }
         return _archiveSampleDao;
+    }
+
+    /**
+     * @return the archive engine dao
+     */
+    @Nonnull
+    public IArchiveEngineDao getEngineDao() {
+        if (_archiveEngineDao == null) {
+            _archiveEngineDao = new ArchiveEngineDaoImpl();
+        }
+        return _archiveEngineDao;
     }
 }

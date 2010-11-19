@@ -213,7 +213,8 @@ public enum ArchiveEngineAdapter {
     public <T> IArchiveSample<T> adapt(@Nonnull final EpicsSystemVariable<T> var) {
         return new ArchiveSampleDTO<T>(new ArchiveChannelId(var.getId().intValue()),
                                        var.getValue(),
-                                       var.getTimestamp());
+                                       var.getTimestamp(),
+                                       var.getAlarm());
     }
 
     /**
