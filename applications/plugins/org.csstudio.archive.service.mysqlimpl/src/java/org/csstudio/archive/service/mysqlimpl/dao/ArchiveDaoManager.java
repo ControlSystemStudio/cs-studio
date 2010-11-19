@@ -45,6 +45,10 @@ import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.sample.IArchiveSampleDao;
 import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.samplemode.IArchiveSampleModeDao;
+import org.csstudio.archive.service.mysqlimpl.severity.ArchiveSeverityDaoImpl;
+import org.csstudio.archive.service.mysqlimpl.severity.IArchiveSeverityDao;
+import org.csstudio.archive.service.mysqlimpl.status.ArchiveStatusDaoImpl;
+import org.csstudio.archive.service.mysqlimpl.status.IArchiveStatusDao;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Maps;
@@ -77,25 +81,14 @@ public enum ArchiveDaoManager {
     private final ThreadLocal<Connection> _archiveConnection = new ThreadLocal<Connection>();
 
     /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs
+     * DAOs.
      */
     private IArchiveChannelDao _archiveChannelDao;
-    /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs
-     */
     private IArchiveSampleModeDao _archiveSampleModeDao;
-    /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs
-     */
     private IArchiveSampleDao _archiveSampleDao;
-    /**
-     * DAO.
-     * Don't forget to propagate the connection to the DAOs
-     */
     private IArchiveEngineDao _archiveEngineDao;
+    private IArchiveSeverityDao _archiveSeverityDao;
+    private IArchiveStatusDao _archiveStatusDao;
 
     /**
      * Constructor.
@@ -235,5 +228,27 @@ public enum ArchiveDaoManager {
             _archiveEngineDao = new ArchiveEngineDaoImpl();
         }
         return _archiveEngineDao;
+    }
+
+    /**
+     * @return the archive severity dao
+     */
+    @Nonnull
+    public IArchiveSeverityDao getSeverityDao() {
+        if (_archiveSeverityDao == null) {
+            _archiveSeverityDao = new ArchiveSeverityDaoImpl();
+        }
+        return _archiveSeverityDao;
+    }
+
+    /**
+     * @return the archive status dao
+     */
+    @Nonnull
+    public IArchiveStatusDao getStatusDao() {
+        if (_archiveStatusDao == null) {
+            _archiveStatusDao = new ArchiveStatusDaoImpl();
+        }
+        return _archiveStatusDao;
     }
 }

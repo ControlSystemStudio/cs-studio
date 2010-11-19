@@ -54,7 +54,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private static final Logger LOG =
         CentralLogger.getInstance().getLogger(ArchiveSampleDaoImpl.class);
 
-    private static final String RETRIEVAL_ARCHIVE = "Channel configuration retrieval from archive failed.";
+    private static final String RETRIEVAL_FAILED = "Channel configuration retrieval from archive failed.";
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
@@ -85,9 +85,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             }
 
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_ARCHIVE, e);
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_ARCHIVE, e);
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
         } finally {
             if (stmt != null) {
                 try {

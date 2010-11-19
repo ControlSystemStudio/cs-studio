@@ -34,4 +34,5 @@ Export-Package: org.csstudio.archive.service;
  org.csstudio.archive.service.channelgroup;uses:="org.csstudio.domain.desy.common.id,org.csstudio.archive.service.channel",
  org.csstudio.archive.service.engine;uses:="org.csstudio.domain.desy.common.id",
  org.csstudio.archive.service.sample;uses:="org.joda.time,org.csstudio.archive.service.channel",
- org.csstudio.archive.service.samplemode;uses:="org.csstudio.domain.desy.common.id"
+ org.csstudio.archive.service.samplemode;uses:="org.csstudio.domain.desy.common.id",
+ org.csstudio.archive.service.severity
