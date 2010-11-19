@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.alarm.epics;
+package org.csstudio.domain.desy.epics.alarm;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -63,6 +63,7 @@ public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
         _name = name;
         _value = value;
         _timestamp = timestamp;
+        // TODO (bknerr) : Check for plausibility whether the contained status makes sense for type T.
         _alarm = alarm;
     }
 
@@ -132,7 +133,7 @@ public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
      */
     @Override
     @CheckForNull
-    public IAlarm getAlarm() {
+    public EpicsAlarm getAlarm() {
         return _alarm;
     }
 }

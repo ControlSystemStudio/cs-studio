@@ -42,7 +42,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -327,7 +327,7 @@ public final class AlarmTreeView extends ViewPart {
         // is selected (selectedElement == null), and during initialization,
         // when it is an instance of PendingUpdateAdapter.
         if (selectedElement instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarm.OK;
+            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarmSeverity.NO_ALARM;
         }
         return false;
     }
@@ -643,7 +643,7 @@ public final class AlarmTreeView extends ViewPart {
         return _viewer;
     }
 
-    
+
     // TODO (jpenning) remove connection, use listener concept instead
     /**
      * @return the connection or null
@@ -658,7 +658,7 @@ public final class AlarmTreeView extends ViewPart {
     public IProcessVariableNodeListener getPVNodeListener() {
         if (_processVariableNodeListener == null) {
             _processVariableNodeListener = new IProcessVariableNodeListener() {
-                
+
                 @Override
                 public void wasAdded(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -666,7 +666,7 @@ public final class AlarmTreeView extends ViewPart {
                         AlarmTreeView.LOG.trace("pv registered: " + pvName);
                     }
                 }
-                
+
                 @Override
                 public void wasRemoved(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -678,7 +678,7 @@ public final class AlarmTreeView extends ViewPart {
         }
         return _processVariableNodeListener;
     }
-    
+
 
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm
@@ -818,17 +818,17 @@ public final class AlarmTreeView extends ViewPart {
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
         final ConnectionJob connectionJob = createConnectionJob(this);
-        
+
         // Gain access to the connection
         connectionJob.addJobChangeListener(new JobChangeAdapter() {
-            
+
             @SuppressWarnings("synthetic-access")
             @Override
-            public void done(IJobChangeEvent event) {
+            public void done(final IJobChangeEvent event) {
                 _connection = connectionJob.getConnection();
             }
         });
-        
+
         progressService.schedule(connectionJob, 0, true);
     }
 

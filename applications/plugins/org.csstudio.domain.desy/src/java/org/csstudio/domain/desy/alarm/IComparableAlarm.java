@@ -38,15 +38,16 @@ public interface IComparableAlarm<T> extends IAlarm {
      * Compares two alarms whether they have an ordering.
      *
      * Why not use interface Comparable<T>:
-     * As most alarm will end up to be enums (e.g. EpicsAlarm), the already have a compareTo
-     * method, which yields the 'natural' ordering, i.e. order of declaration.
+     * As many alarm may end up to be enums in themselves, they will already have a compareTo
+     * method inherited from their enum type. But this method yields the 'natural' ordering, i.e.
+     * their order of declaration in the enum class.
      * This method cannot be overridden as it has been defined final in the enum.
      *
-     * But it is easily possible to either abstract alarm states, which are different but feature the
-     * same 'severity' (wouldn't work at all with the 'natural ordering', apparently), or to mess up
-     * the declaration order in an alarm enum by mistake (and completely forget to have test checking
-     * that).
-     *
+     * This situation is typically a problem, becuase it is easily possible to either abstract alarm
+     * states, which are different, but would feature equal 'severity', this wouldn't work with
+     * the 'natural ordering', apparently), or secondly to mess up the declaration order in an alarm
+     * enum by intent, because the enum types might be much easier to read and maintain in a different
+     * order, or, not to the least, simply by mistake on adding, removing, renaming types.
      *
      * @param other
      * @return -1 if this < other, 0 on equality, 1 on this > other

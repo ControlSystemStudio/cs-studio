@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.alarm.epics;
+package org.csstudio.domain.desy.epics.alarm;
 
 
 import org.junit.Assert;
@@ -31,25 +31,15 @@ import org.junit.Test;
  * @author bknerr
  * @since 18.11.2010
  */
-public class EpicsAlarmUnitTest {
+public class EpicsAlarmSeverityUnitTest {
 
     @Test
     public void testOrderBySeverity() {
 
-        Assert.assertEquals(EpicsAlarm.getLowest(), EpicsAlarm.UNKNOWN);
-        Assert.assertEquals(EpicsAlarm.UNKNOWN.compareAlarmTo(EpicsAlarm.OK), -1);
-        Assert.assertEquals(EpicsAlarm.OK.compareAlarmTo(EpicsAlarm.MINOR), -1);
-        Assert.assertEquals(EpicsAlarm.MINOR.compareAlarmTo(EpicsAlarm.MAJOR), -1);
-        Assert.assertEquals(EpicsAlarm.MAJOR.compareAlarmTo(EpicsAlarm.INVALID), -1);
-    }
-
-    @Test
-    public void testIsAlarm() {
-
-       Assert.assertFalse(EpicsAlarm.UNKNOWN.isAlarm());
-       Assert.assertFalse(EpicsAlarm.OK.isAlarm());
-       Assert.assertTrue(EpicsAlarm.MINOR.isAlarm());
-       Assert.assertTrue(EpicsAlarm.MAJOR.isAlarm());
-       Assert.assertTrue(EpicsAlarm.INVALID.isAlarm());
+        Assert.assertEquals(EpicsAlarmSeverity.getLowest(), EpicsAlarmSeverity.UNKNOWN);
+        Assert.assertEquals(EpicsAlarmSeverity.UNKNOWN.compareSeverityTo(EpicsAlarmSeverity.NO_ALARM), -1);
+        Assert.assertEquals(EpicsAlarmSeverity.NO_ALARM.compareSeverityTo(EpicsAlarmSeverity.MINOR), -1);
+        Assert.assertEquals(EpicsAlarmSeverity.MINOR.compareSeverityTo(EpicsAlarmSeverity.MAJOR), -1);
+        Assert.assertEquals(EpicsAlarmSeverity.MAJOR.compareSeverityTo(EpicsAlarmSeverity.INVALID), -1);
     }
 }
