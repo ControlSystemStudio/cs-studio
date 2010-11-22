@@ -290,9 +290,7 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public void removeListener(final PVListener listener)
     { 
-    	listeners.remove(listener); 
-    	if (listeners.size() > 0)
-    		System.out.println("Didn't remove?!");
+    	listeners.remove(listener);
     }
 
     /** Try to connect to the PV.
