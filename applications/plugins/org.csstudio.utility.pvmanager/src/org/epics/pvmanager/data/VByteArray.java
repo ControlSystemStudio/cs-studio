@@ -6,10 +6,10 @@
 package org.epics.pvmanager.data;
 
 /**
- * Double array with alarm, timestamp, display and control information.
+ * Byte array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */
-public interface VDoubleArray extends Array<Double>, Alarm, Time, Display {
-    double[] getArray();
+public interface VByteArray extends Array<Integer>, Alarm, Time, Display {
+    byte[] getArray();
 }

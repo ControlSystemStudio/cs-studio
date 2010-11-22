@@ -38,6 +38,26 @@ public class ExpressionLanguage {
     }
 
     /**
+     * A channel with the given name of type VFloatArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VFloatArray> vFloatArray(String name) {
+        return new SourceRateExpression<VFloatArray>(name, VFloatArray.class);
+    }
+
+    /**
+     * A channel with the given name of type VDoubleArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VDoubleArray> vDoubleArray(String name) {
+        return new SourceRateExpression<VDoubleArray>(name, VDoubleArray.class);
+    }
+
+    /**
      * A channel with the given name of type VInt.
      *
      * @param name the channel name; can't be null
@@ -48,6 +68,36 @@ public class ExpressionLanguage {
     }
 
     /**
+     * A channel with the given name of type VByteArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VByteArray> vByteArray(String name) {
+        return new SourceRateExpression<VByteArray>(name, VByteArray.class);
+    }
+
+    /**
+     * A channel with the given name of type VShortArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VShortArray> vShortArray(String name) {
+        return new SourceRateExpression<VShortArray>(name, VShortArray.class);
+    }
+
+    /**
+     * A channel with the given name of type VIntArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VIntArray> vIntArray(String name) {
+        return new SourceRateExpression<VIntArray>(name, VIntArray.class);
+    }
+
+    /**
      * A channel with the given name of type VString.
      *
      * @param name the channel name; can't be null
@@ -55,6 +105,16 @@ public class ExpressionLanguage {
      */
     public static SourceRateExpression<VString> vString(String name) {
         return new SourceRateExpression<VString>(name, VString.class);
+    }
+
+    /**
+     * A channel with the given name of type VStringArray.
+     *
+     * @param name the channel name; can't be null
+     * @return an expression representing the channel
+     */
+    public static SourceRateExpression<VStringArray> vStringArray(String name) {
+        return new SourceRateExpression<VStringArray>(name, VStringArray.class);
     }
 
     /**

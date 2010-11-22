@@ -42,6 +42,34 @@ public class TimeInterval {
         return new TimeInterval(start, end);
     }
 
+    /**
+     * Returns a new interval shifted backward in time by the given duration.
+     *
+     * @param duration a time duration
+     * @return the new shifted interval
+     */
+    public TimeInterval minus(TimeDuration duration) {
+        return between(start.minus(duration), end.minus(duration));
+    }
+
+    /**
+     * Initial value of the interval.
+     *
+     * @return the initial instant
+     */
+    public TimeStamp getStart() {
+        return start;
+    }
+
+    /**
+     * Final value of the interval.
+     *
+     * @return the final instant
+     */
+    public TimeStamp getEnd() {
+        return end;
+    }
+
     @Override
     public String toString() {
         return start.toString() + " - " + end.toString();

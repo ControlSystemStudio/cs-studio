@@ -19,6 +19,23 @@ import org.epics.pvmanager.TypeSupport;
  */
 class EpicsTypeSupport {
 
+    private static <T> TypeSupport<T> immutableTypeSupport(Class<T> clazz) {
+        return new TimedTypeSupport<T>() {
+
+            @Override
+            public Notification<T> prepareNotification(T oldValue, T newValue) {
+                if (NullUtils.equalsOrBothNull(oldValue, newValue))
+                    return new Notification<T>(false, null);
+                return new Notification<T>(true, newValue);
+            }
+
+            @Override
+            public TimeStamp extractTimestamp(T object) {
+                return ((Time) object).getTimeStamp();
+            }
+        };
+    }
+
     private static boolean installed = false;
 
     static void install() {
@@ -29,6 +46,7 @@ class EpicsTypeSupport {
         addScalar();
         addMultiScalar();
         addStatistics();
+        addArray();
         addList();
 
         installed = true;
@@ -36,52 +54,22 @@ class EpicsTypeSupport {
 
     private static void addScalar() {
         // Add support for all scalars: simply return the new value
-        TypeSupport.addTypeSupport(Scalar.class, new TimedTypeSupport<Scalar>() {
-            @Override
-            public Notification<Scalar> prepareNotification(Scalar oldValue, Scalar newValue) {
-                if (NullUtils.equalsOrBothNull(oldValue, newValue))
-                    return new Notification<Scalar>(false, null);
-                return new Notification<Scalar>(true, newValue);
-            }
-
-            @Override
-            public TimeStamp extractTimestamp(Scalar object) {
-                Time time = (Time) object;
-                return time.getTimeStamp();
-            }
-
-        });
+        TypeSupport.addTypeSupport(Scalar.class, immutableTypeSupport(Scalar.class));
     }
 
     private static void addMultiScalar() {
-        // Add support for all scalars: simply return the new value
-        TypeSupport.addTypeSupport(MultiScalar.class, new TimedTypeSupport<MultiScalar>() {
-            @Override
-            public Notification<MultiScalar> prepareNotification(MultiScalar oldValue, MultiScalar newValue) {
-                if (NullUtils.equalsOrBothNull(oldValue, newValue))
-                    return new Notification<MultiScalar>(false, null);
-                return new Notification<MultiScalar>(true, newValue);
-            }
+        // Add support for all multi scalars: simply return the new value
+        TypeSupport.addTypeSupport(MultiScalar.class, immutableTypeSupport(MultiScalar.class));
+    }
 
-            @Override
-            public TimeStamp extractTimestamp(MultiScalar object) {
-                Time time = (Time) object;
-                return time.getTimeStamp();
-            }
-
-        });
+    private static void addArray() {
+        // Add support for all arrays: simply return the new value
+        TypeSupport.addTypeSupport(Array.class, immutableTypeSupport(Array.class));
     }
 
     private static void addStatistics() {
         // Add support for statistics: simply return the new value
-        TypeSupport.addTypeSupport(Statistics.class, new TypeSupport<Statistics>() {
-            @Override
-            public Notification<Statistics> prepareNotification(Statistics oldValue, Statistics newValue) {
-                if (NullUtils.equalsOrBothNull(oldValue, newValue))
-                    return new Notification<Statistics>(false, null);
-                return new Notification<Statistics>(true, newValue);
-            }
-        });
+        TypeSupport.addTypeSupport(Statistics.class, immutableTypeSupport(Statistics.class));
     }
 
     private static void addList() {
