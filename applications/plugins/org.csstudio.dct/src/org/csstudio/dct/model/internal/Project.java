@@ -31,7 +31,7 @@ public final class Project extends Folder implements IProject {
 	 * @param name the name
 	 * @param id the id
 	 */
-	public Project(String name, UUID id) {
+	protected Project(String name, UUID id) {
 		super(name, id);
 		baseRecords = new HashMap<String, BaseRecord>();
 		databaseDefinition = null;

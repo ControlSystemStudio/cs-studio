@@ -11,6 +11,7 @@ import org.csstudio.dct.model.commands.AddPrototypeCommand;
 import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.internal.Prototype;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.junit.Before;
@@ -41,7 +42,7 @@ public final class RecordFinderTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		Project project = new Project("carproject", UUID.randomUUID());
+		Project project = ProjectFactory.createNewDCTProject("carproject");
 
 		// .. Motor Prototype (has 2 cylinders represented as records)
 		Prototype motorPrototype = new Prototype("motor", UUID.randomUUID());

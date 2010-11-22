@@ -20,6 +20,7 @@ import org.csstudio.dct.model.commands.AddRecordCommand;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.internal.Prototype;
 import org.csstudio.dct.model.internal.RecordFactory;
 import org.jdom.Document;
@@ -47,7 +48,7 @@ public final class ProjectToXmlTest {
 	public void setUp() throws Exception {
 		// project = UseCase.createProject();
 
-		project = new Project("project", UUID.randomUUID());
+		project = ProjectFactory.createNewDCTProject();
 
 		final IFolder f1 = new Folder("f1");
 		project.addMember(f1);

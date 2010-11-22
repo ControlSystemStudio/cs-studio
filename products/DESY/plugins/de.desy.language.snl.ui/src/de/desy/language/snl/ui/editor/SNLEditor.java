@@ -27,10 +27,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
@@ -577,7 +579,7 @@ public class SNLEditor extends LanguageEditor {
                 // We want the base directory (the project of the *.st file)
                 String basePath = baseDirectory.getLocation().toFile().getAbsolutePath();
 
-                String sourceFileName = extractFileName(sourceRessource);
+                IPath sourceFileName = sourceRessource.getRawLocation(); //extractFileName(sourceRessource);
 
                 GenericCompilationHelper compiler = new GenericCompilationHelper();
 
@@ -611,16 +613,26 @@ public class SNLEditor extends LanguageEditor {
         return error;
     }
 
-    private String extractFileName(IFile sourceRessource) {
-        String sourceFileName = sourceRessource.getName();
-        int lastIndexOfDot = sourceFileName.lastIndexOf('.');
-        int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
-        sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1, lastIndexOfDot);
-        return sourceFileName;
-    }
+//    private String extractFileName(IFile sourceRessource) {
+//        String sourceFileName = sourceRessource.getName();
+//        int lastIndexOfDot = sourceFileName.lastIndexOf('.');
+//        int lastIndexOfSlash = sourceFileName.lastIndexOf(File.separator);
+//        sourceFileName = sourceFileName.substring(lastIndexOfSlash + 1, lastIndexOfDot);
+//        return sourceFileName;
+//    }
+
+    private String getBaseName(IPath filePath) {
+    	String basename = filePath.lastSegment();
+    	if (basename == null) return "";
+    	String ext; int idx;
+    	if ((ext = filePath.getFileExtension()) != null && (idx = basename.lastIndexOf("." + ext)) >= 0) {
+    		basename = basename.substring(0, idx);
+    	}
+		return basename;
+	}
 
     private void invokeCompilers(String targetPlatform, IFile sourceRessource, String basePath,
-            String sourceFileName, GenericCompilationHelper compiler) {
+            IPath sourceFilePath, GenericCompilationHelper compiler) {
         AbstractTargetConfigurationProvider provider = ConfigurationService.getInstance()
                 .getProvider(targetPlatform);
         List<AbstractCompilerConfiguration> configurations = provider
@@ -628,10 +640,16 @@ public class SNLEditor extends LanguageEditor {
 
         ErrorUnit errorUnit;
         for (AbstractCompilerConfiguration configuration : configurations) {
-            String sourceFile = createFullFileName(basePath, configuration.getSourceFolder(),
-                    sourceFileName, configuration.getSourceFileExtension());
-            String targetFile = createFullFileName(basePath, configuration.getTargetFolder(),
-                    sourceFileName, configuration.getTargetFileExtension());
+        	String baseName = getBaseName(sourceFilePath);
+        	String sourceFile, targetFile;
+        	if (configuration.getSourceFolder() != null && configuration.getSourceFileExtension() != null) {
+            	sourceFile = createFullFileName(basePath, configuration.getSourceFolder(),
+            		baseName, configuration.getSourceFileExtension());
+        	} else {
+                sourceFile = sourceFilePath.toOSString();
+        	}
+        	targetFile = createFullFileName(basePath, configuration.getTargetFolder(),
+                    getBaseName(sourceFilePath), configuration.getTargetFileExtension());
 
             errorUnit = compiler
                     .compile(configuration.getCompilerParameters(sourceFile, targetFile),
@@ -650,7 +668,7 @@ public class SNLEditor extends LanguageEditor {
         }
     }
 
-    private void deleteFilesInGeneratedFolder(IProject project, IProgressMonitor progressMonitor) {
+	private void deleteFilesInGeneratedFolder(IProject project, IProgressMonitor progressMonitor) {
         IFolder folder = project.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
         if (folder.exists()) {
             try {
@@ -664,25 +682,35 @@ public class SNLEditor extends LanguageEditor {
             }
         }
     }
+	
+	private void createDirs(IContainer parent, IProgressMonitor monitor) throws CoreException {
+		if (parent != null && !parent.exists()) {
+			createDirs(parent.getParent(), monitor);
+			((IFolder)parent).create(true, true, monitor);
+		}
+	}
 
     private List<String> checkDirectories(IProject baseDirectory, IProgressMonitor monitor) {
         List<String> result = new ArrayList<String>();
         IFolder folder = baseDirectory.getFolder(SNLConstants.GENERATED_FOLDER.getValue());
         if (!folder.exists()) {
             try {
-                folder.create(true, true, monitor);
+            	createDirs(folder, monitor);
+                folder.setDerived(true);
             } catch (CoreException e) {
                 result.add("Not able to create " + SNLConstants.GENERATED_FOLDER.getValue()
-                        + " folder");
+                        + " folder:\n" + e.getLocalizedMessage());
             }
         }
 
         folder = baseDirectory.getFolder(SNLConstants.BIN_FOLDER.getValue());
         if (!folder.exists()) {
             try {
-                folder.create(true, true, monitor);
+            	createDirs(folder, monitor);
+                folder.setDerived(true);
             } catch (CoreException e) {
-                result.add("Not able to create " + SNLConstants.BIN_FOLDER.getValue() + " folder");
+                result.add("Not able to create " + SNLConstants.BIN_FOLDER.getValue()
+                        + " folder:\n" + e.getLocalizedMessage());
             }
         }
         return result;

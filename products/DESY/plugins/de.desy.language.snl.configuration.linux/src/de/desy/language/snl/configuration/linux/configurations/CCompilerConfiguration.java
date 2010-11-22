@@ -18,6 +18,7 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 	 * @see de.desy.language.snl.ui.editor.compilerconfiguration.ICompilerConfiguration#getCompilerOptions()
 	 */
 	public List<String> getCompilerParameters(String sourceFile, String targetFile) {
+		boolean arch64 = "amd64".equals(System.getProperty("os.arch"));
 		List<String> result = new ArrayList<String>();
 		result.add(getCompilerPath());
 		result.add("-c");
@@ -34,7 +35,7 @@ public class CCompilerConfiguration extends AbstractCompilerConfiguration {
 		result.add("-ansi");
 		result.add("-O3");
 		result.add("-Wall");
-		result.add("-m32");
+		result.add(arch64 ? "-m64" : "-m32");
 		result.add("-g");
 		result.add("-fPIC");
 		result.add("-I" + getCompilerOptionService().getSeqFolder() + "/include");
