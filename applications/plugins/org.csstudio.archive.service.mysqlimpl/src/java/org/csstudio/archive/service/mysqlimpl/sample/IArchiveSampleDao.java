@@ -49,6 +49,7 @@ public interface IArchiveSampleDao {
     /**
      * Inserts the collection of sample objects into the db.
      * @param samples the sample objects
+     * @throws ArchiveSampleDaoException
      */
-    void createSamples(Collection<IArchiveSample<?>> samples);
+    void createSamples(Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException;
 }

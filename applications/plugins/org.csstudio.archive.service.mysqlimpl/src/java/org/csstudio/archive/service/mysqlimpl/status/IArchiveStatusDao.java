@@ -21,12 +21,35 @@
  */
 package org.csstudio.archive.service.mysqlimpl.status;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.csstudio.archive.service.status.ArchiveStatusId;
+import org.csstudio.archive.service.status.IArchiveStatus;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+
 /**
- * TODO (bknerr) : 
- * 
+ * Dao for archive status.
+ *
  * @author bknerr
  * @since 19.11.2010
  */
 public interface IArchiveStatusDao {
-    
+
+    /**
+     * @param status
+     * @return
+     * @throws ArchiveStatusDaoException
+     */
+    @CheckForNull
+    ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus status) throws ArchiveStatusDaoException;
+
+    /**
+     * @param stts
+     * @return
+     * @throws ArchiveStatusDaoException
+     */
+    @CheckForNull
+    IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException;
+
 }

@@ -75,6 +75,11 @@ public class TimeInstantUnitTest {
         Assert.assertEquals(ts.getMillis(), 123);
         Assert.assertEquals(ts.getSeconds(), 0L);
 
+        ts = new TimeInstantBuilder().withSeconds(3).build();
+        Assert.assertEquals(ts.getFractalSecondInNanos(), 0L);
+        Assert.assertEquals(ts.getMillis(), 3000L);
+        Assert.assertEquals(ts.getSeconds(), 3L);
+
         ts = new TimeInstantBuilder().withSeconds(3).withNanos(600000000L).build();
         Assert.assertEquals(ts.getFractalSecondInNanos(), 600000000L);
         Assert.assertEquals(ts.getMillis(), 3600L);

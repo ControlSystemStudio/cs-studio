@@ -31,9 +31,15 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activator.
+ *
+ * @author bknerr
+ * @since 22.11.2010
+ */
 public class Activator implements BundleActivator {
 
-    final public static String PLUGIN_ID = "org.csstudio.archive.service.mysqlimpl";
+    public static final String PLUGIN_ID = "org.csstudio.archive.service.mysqlimpl";
 
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
 

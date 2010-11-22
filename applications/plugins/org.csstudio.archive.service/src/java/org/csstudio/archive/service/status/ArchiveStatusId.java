@@ -19,21 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.severity;
+package org.csstudio.archive.service.status;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.common.id.Id;
 
 /**
- * TODO (bknerr) :
+ * Id object for status.
  *
  * @author bknerr
- * @since 19.11.2010
+ * @since 22.11.2010
  */
-public interface IArchiveSeverity extends Identifiable<ArchiveSeverityId> {
+public class ArchiveStatusId extends Id<ArchiveStatusId> {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * @return
+     * Serves as "not set"-Id to avoid untyped <code>null</code> ids.
      */
-    String getName();
+    public static final ArchiveStatusId NONE = new ArchiveStatusId(-1L);
 
+    /**
+     * Constructor.
+     *
+     * @param value the value
+     */
+    public ArchiveStatusId(final long value) {
+        super(value);
+    }
 }

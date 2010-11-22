@@ -53,6 +53,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.data.IDoubleValue;
 import org.csstudio.platform.data.IEnumeratedValue;
 import org.csstudio.platform.data.ILongValue;
@@ -135,7 +136,8 @@ public enum ArchiveEngineAdapter {
     @Nonnull
     public TimeInstant adapt(@Nonnull final ITimestamp time) {
 
-        return TimeInstant.fromNanos(time.seconds()*1000000000 + time.nanoseconds());
+        return new TimeInstantBuilder().withSeconds(time.seconds())
+                                       .withNanos(time.nanoseconds()).build();
     }
 
     /**

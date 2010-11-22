@@ -38,7 +38,7 @@ import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Maps;
@@ -96,7 +96,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                                 new ArchiveSampleModeId(sampleMode),
                                                 sampleVal,
                                                 samplePer,
-                                                TimeInstant.fromMillis(ltstSmplTime.getTime()));
+                                                TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime()));
 
                 _channelCache.put(name, channel);
             }

@@ -35,9 +35,14 @@ import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.severity.ArchiveSeverityDaoException;
+import org.csstudio.archive.service.mysqlimpl.status.ArchiveStatusDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
+import org.csstudio.archive.service.severity.ArchiveSeverityId;
+import org.csstudio.archive.service.status.ArchiveStatusId;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.ReadableInstant;
 import org.joda.time.format.DateTimeFormat;
@@ -81,7 +86,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             if (result.next()) {
 
                 final Timestamp ltstSmplTime = result.getTimestamp(1);
-                return TimeInstant.fromMillis(ltstSmplTime.getTime());
+                return TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime());
             }
 
         } catch (final ArchiveConnectionException e) {
@@ -104,26 +109,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public void createSamples(@Nonnull final Collection<IArchiveSample<?>> samples) {
+    public void createSamples(@Nonnull final Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException {
 
-        final StringBuilder values = new StringBuilder();
-        values.append(_insertSamplesStmt);
-        for (final IArchiveSample<?> sample : samples) {
-            final EpicsAlarm alarm = sample.getAlarm();
-
-            final int sevId = DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
-            final int statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
-
-            values.append("(" +
-                          sample.getChannelId().intValue() + "," +
-                          SAMPLE_TIME_FMT.print((ReadableInstant) sample.getTimestamp()) + "," +
-                          sevId + "," +
-                          statusId + "," +
-                          sample.getValue().toString() + "," +
-                          sample.getTimestamp().getFractalSecondInNanos() +
-                          "),");
-        }
-        values.delete(values.length() - 1, values.length()); // deletes last comma
+        final String stmtString = composeCreateSamplesStmt(samples);
 
         // TODO (bknerr) : LOG warning if single statement size is too large.
         // and when com.mysql.jdbc.PacketTooBigException:
@@ -131,16 +119,68 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         // You can change this value on the server by setting the max_allowed_packet' variable.
         PreparedStatement stmt = null;
         try {
-            stmt = getConnection().prepareStatement(values.toString());
+            stmt = getConnection().prepareStatement(stmtString);
             stmt.setQueryTimeout(MySQLArchiveServicePreference.SQL_TIMEOUT.getValue());
             stmt.execute();
             getConnection().commit();
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+        } catch (final SQLException e) {
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+
         } finally {
             if (stmt != null) {
-                stmt.close();
+                try {
+                    stmt.close();
+                } catch (final SQLException e) {
+                    LOG.warn("Closing of statement " + _selectLastSmplTimeByChannelIdStmt + "... failed.");
+                }
             }
         }
 
+    }
+
+    @CheckForNull
+    private String composeCreateSamplesStmt(@Nonnull final Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException {
+        final StringBuilder values = new StringBuilder();
+        values.append(_insertSamplesStmt);
+        try {
+            for (final IArchiveSample<?> sample : samples) {
+                final EpicsAlarm alarm = sample.getAlarm();
+
+                final ArchiveSeverityId sevId =
+                    DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
+                ArchiveStatusId statusId;
+                statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
+
+                final int sev, status;
+
+                if (sevId == null || statusId == null) {
+                    LOG.warn("Ids could not be retrieved for severity "
+                             + alarm.getSeverity().name() + " and/or status " + alarm.getStatus().name() +
+                    ". Severity and/or status table corrupted?");
+                    // FIXME (bknerr) : what to do with the sample? archive or not?
+                } else {
+                    values.append("(" +
+                                  sample.getChannelId().intValue() + "," +
+                                  SAMPLE_TIME_FMT.print((ReadableInstant) sample.getTimestamp()) + "," +
+                                  sevId.intValue() + "," +
+                                  statusId.intValue() + "," +
+                                  sample.getValue().toString() + "," +
+                                  sample.getTimestamp().getFractalSecondInNanos() +
+                    "),");
+                }
+
+            }
+            if (!samples.isEmpty()) {
+                values.delete(values.length() - 1, values.length()); // deletes last comma
+            }
+        } catch (final ArchiveStatusDaoException e) {
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+        } catch (final ArchiveSeverityDaoException e) {
+            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+        }
+        return values.toString();
     }
 
 }

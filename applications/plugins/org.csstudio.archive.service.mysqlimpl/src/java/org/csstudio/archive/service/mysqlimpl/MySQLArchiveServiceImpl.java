@@ -43,6 +43,7 @@ import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoException
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoException;
+import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
@@ -122,20 +123,24 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : get rid of this IValueWithChannelId class...
-        DAO_MGR.getSampleDao().createSamples(Lists.transform(samples,
-                                                             new Function<IValueWithChannelId, IArchiveSample<?>>() {
-                                                                @Override
-                                                                @Nonnull
-                                                                public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
-                                                                    // this line is only for demonstration purposes,
-                                                                    // once we get rid of any incomplete/workaround value abstractions,
-                                                                    // this line will vanish
-                                                                    final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
+        try {
+            DAO_MGR.getSampleDao().createSamples(Lists.transform(samples,
+                                                                 new Function<IValueWithChannelId, IArchiveSample<?>>() {
+                                                                    @Override
+                                                                    @Nonnull
+                                                                    public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
+                                                                        // this line is only for demonstration purposes,
+                                                                        // once we get rid of any incomplete/workaround value abstractions,
+                                                                        // this line will vanish
+                                                                        final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
 
-                                                                    return ADAPT_MGR.adapt(sysVar);
-                                                                }
+                                                                        return ADAPT_MGR.adapt(sysVar);
+                                                                    }
 
-        }));
+            }));
+        } catch (final ArchiveSampleDaoException e) {
+            throw new ArchiveServiceException("Creation of samples failed.", e);
+        }
 
 
         return true;

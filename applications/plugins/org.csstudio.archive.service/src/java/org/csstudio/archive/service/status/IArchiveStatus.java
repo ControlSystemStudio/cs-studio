@@ -19,21 +19,19 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.severity;
+package org.csstudio.archive.service.status;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * TODO (bknerr) :
+ * Read only interface of a status in the archive.
  *
  * @author bknerr
- * @since 19.11.2010
+ * @since 22.11.2010
  */
-public interface IArchiveSeverity extends Identifiable<ArchiveSeverityId> {
-
+public interface IArchiveStatus extends Identifiable<ArchiveStatusId> {
     /**
      * @return
      */
     String getName();
-
 }

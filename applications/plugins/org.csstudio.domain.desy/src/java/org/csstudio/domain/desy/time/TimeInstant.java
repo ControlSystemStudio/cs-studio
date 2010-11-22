@@ -75,6 +75,15 @@ public class TimeInstant {
         public TimeInstantBuilder() {
             // Empty
         }
+
+        /**
+         * Builds time instant from current system instant.
+         * @return the 'now' time instant
+         */
+        public static TimeInstant buildFromNow() {
+            return buildFromMillis(System.currentTimeMillis());
+        }
+
         /**
          * Builds directly from millis (always UTC) from 1970/01/01 00:00:00.
          * @param millis the milliseconds since epoch

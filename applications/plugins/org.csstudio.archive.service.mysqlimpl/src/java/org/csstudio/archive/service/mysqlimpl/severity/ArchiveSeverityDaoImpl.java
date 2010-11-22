@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.severity.ArchiveSeverityDTO;
 import org.csstudio.archive.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.service.severity.IArchiveSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
@@ -67,7 +68,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
      */
     @Override
     @CheckForNull
-    public ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) {
+    public ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException {
 
         final IArchiveSeverity severity = retrieveSeverity(sev);
         if (severity != null) {
@@ -77,8 +78,8 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     }
 
     @Override
-    @Nonnull
-    public IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) {
+    @CheckForNull
+    public IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException {
 
         final IArchiveSeverity severity = _severityCache.get(sev);
         if (severity != null) {
@@ -93,12 +94,11 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
                 final ArchiveSeverityId id = new ArchiveSeverityId(result.getInt(1));
-                final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, name);
+                final IArchiveSeverity newSev = new ArchiveSeverityDTO(id, sev.name());
 
                 _severityCache.put(sev, newSev);
                 return newSev;
             }
-
         } catch (final ArchiveConnectionException e) {
             throw new ArchiveSeverityDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
@@ -112,6 +112,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
                 }
             }
         }
+        return null;
     }
 
 

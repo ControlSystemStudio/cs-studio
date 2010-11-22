@@ -21,19 +21,46 @@
  */
 package org.csstudio.archive.service.severity;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import javax.annotation.Nonnull;
 
 /**
- * TODO (bknerr) :
+ * Immutable data transfer object for DAOs.
  *
  * @author bknerr
- * @since 19.11.2010
+ * @since 22.11.2010
  */
-public interface IArchiveSeverity extends Identifiable<ArchiveSeverityId> {
+public class ArchiveSeverityDTO implements IArchiveSeverity {
+
+    private final ArchiveSeverityId _id;
+
+    // TODO (bknerr) : use EpicsAlarmSeverity directly, here?!
+    private final String _name;
 
     /**
-     * @return
+     * Constructor.
+     * @param id
+     * @param name
      */
-    String getName();
+    public ArchiveSeverityDTO(@Nonnull final ArchiveSeverityId id, @Nonnull final String name) {
+        _id = id;
+        _name = name;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public ArchiveSeverityId getId() {
+        return _id;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getName() {
+        return _name;
+    }
 
 }

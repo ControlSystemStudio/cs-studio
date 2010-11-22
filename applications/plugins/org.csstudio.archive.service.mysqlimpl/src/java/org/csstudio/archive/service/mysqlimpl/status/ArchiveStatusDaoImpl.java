@@ -21,14 +21,102 @@
  */
 package org.csstudio.archive.service.mysqlimpl.status;
 
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Map;
+
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
+import org.apache.log4j.Logger;
+import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.status.ArchiveStatusDTO;
+import org.csstudio.archive.service.status.ArchiveStatusId;
+import org.csstudio.archive.service.status.IArchiveStatus;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
+import org.csstudio.platform.logging.CentralLogger;
+
+import com.google.common.collect.Maps;
 
 /**
- * TODO (bknerr) : 
- * 
+ * Dao implementation for archive status.
+ *
  * @author bknerr
  * @since 19.11.2010
  */
 public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchiveStatusDao {
-    
+
+    private static final Logger LOG =
+        CentralLogger.getInstance().getLogger(ArchiveStatusDaoImpl.class);
+
+    private static final String RETRIEVAL_FAILED = "Status retrieval from archive failed.";
+
+    /**
+     * Archive status configuration cache.
+     */
+    private final Map<EpicsAlarmStatus, IArchiveStatus> _statusCache = Maps.newEnumMap(EpicsAlarmStatus.class);
+
+    // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
+    // TODO (bknerr) : parameterize the database schema name via dao call
+    private static final String _selectStatusByNameStmt =
+        "SELECT status_id FROM archive.status WHERE name=?";
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException {
+        final IArchiveStatus status = retrieveStatus(stts);
+        if (status != null) {
+            return status.getId();
+        }
+        return null;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException {
+
+        final IArchiveStatus status = _statusCache.get(stts);
+        if (status != null) {
+            return status;
+        }
+        PreparedStatement stmt = null;
+        try {
+            stmt = getConnection().prepareStatement(_selectStatusByNameStmt);
+
+            stmt.setString(1, stts.name());
+
+            final ResultSet result = stmt.executeQuery();
+            if (result.next()) {
+                final ArchiveStatusId id = new ArchiveStatusId(result.getInt(1));
+                final IArchiveStatus newStts = new ArchiveStatusDTO(id, stts.name());
+
+                _statusCache.put(stts, newStts);
+                return newStts;
+            }
+        } catch (final ArchiveConnectionException e) {
+            throw new ArchiveStatusDaoException(RETRIEVAL_FAILED, e);
+        } catch (final SQLException e) {
+            throw new ArchiveStatusDaoException(RETRIEVAL_FAILED, e);
+        } finally {
+            if (stmt != null) {
+                try {
+                    stmt.close();
+                } catch (final SQLException e) {
+                    LOG.warn("Closing of statement " + _selectStatusByNameStmt + " failed.");
+                }
+            }
+        }
+        return null;
+    }
+
 }

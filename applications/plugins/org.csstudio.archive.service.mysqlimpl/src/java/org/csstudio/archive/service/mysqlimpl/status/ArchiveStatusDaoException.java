@@ -19,21 +19,28 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.severity;
+package org.csstudio.archive.service.mysqlimpl.status;
 
-import org.csstudio.domain.desy.common.id.Identifiable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
- * TODO (bknerr) :
+ * Archive status dao exception.
  *
  * @author bknerr
- * @since 19.11.2010
+ * @since 22.11.2010
  */
-public interface IArchiveSeverity extends Identifiable<ArchiveSeverityId> {
+public class ArchiveStatusDaoException extends Exception {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * @return
+     * Constructor.
+     *
+     * @param msg the exception message
+     * @param e the wrapped exception
      */
-    String getName();
-
+    public ArchiveStatusDaoException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }
