@@ -95,8 +95,8 @@ public class EPICS_V3_PV
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
      */
-    private boolean running = false; // FIXME : not volatile?!
-
+    private volatile boolean running = false;
+    
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
