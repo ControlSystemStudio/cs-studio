@@ -83,7 +83,7 @@ public enum EpicsAlarmStatus {
     }
 
     /**
-     * Converts an jca status into a CSS epics alarm status.
+     * Converts an {@link Status} into a CSS epics alarm status.
      * @param status the incoming status
      * @return the outgoing status
      */

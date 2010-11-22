@@ -23,6 +23,7 @@ package org.csstudio.domain.desy.time;
 
 import junit.framework.Assert;
 
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.junit.Test;
 
 /**
@@ -35,25 +36,30 @@ public class TimeInstantUnitTest {
 
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromMillisNegative() {
-        TimeInstant.fromMillis(-1);
+        TimeInstantBuilder.buildFromMillis(-1L);
     }
 
     @Test(expected=IllegalArgumentException.class)
     public void constructorFactoryMethodFromNanosNegative() {
-        TimeInstant.fromNanos(-1L);
+        new TimeInstantBuilder().withNanos(-1L).build();
+    }
+
+    @Test(expected=IllegalArgumentException.class)
+    public void constructorFactoryMethodFromNanosTooLarge() {
+        new TimeInstantBuilder().withNanos(1000000000L).build();
     }
 
 
     @Test
     public void constructorFactoryMethodsValidZero() {
 
-        TimeInstant ts = TimeInstant.fromNanos(0L);
+        TimeInstant ts = new TimeInstantBuilder().withNanos(0L).build();
 
         Assert.assertEquals(ts.getFractalSecondInNanos(), 0L);
         Assert.assertEquals(ts.getMillis(), 0L);
         Assert.assertEquals(ts.getSeconds(), 0L);
 
-        ts = TimeInstant.fromMillis(0L);
+        ts = TimeInstantBuilder.buildFromMillis(0L);
 
         Assert.assertEquals(ts.getFractalSecondInNanos(), 0L);
         Assert.assertEquals(ts.getMillis(), 0L);
@@ -63,36 +69,30 @@ public class TimeInstantUnitTest {
     @Test
     public void constructorFactoryMethodsValid() {
 
-        TimeInstant ts = TimeInstant.fromNanos(123456789L);
+        TimeInstant ts = new TimeInstantBuilder().withNanos(123456789L).build();
 
         Assert.assertEquals(ts.getFractalSecondInNanos(), 123456789L);
         Assert.assertEquals(ts.getMillis(), 123);
         Assert.assertEquals(ts.getSeconds(), 0L);
 
-        ts = TimeInstant.fromNanos(3600999999999L);
-        Assert.assertEquals(ts.getFractalSecondInNanos(), 999999999L);
-        Assert.assertEquals(ts.getMillis(), 3600999);
-        Assert.assertEquals(ts.getSeconds(), 3600L);
+        ts = new TimeInstantBuilder().withSeconds(3).withNanos(600000000L).build();
+        Assert.assertEquals(ts.getFractalSecondInNanos(), 600000000L);
+        Assert.assertEquals(ts.getMillis(), 3600L);
+        Assert.assertEquals(ts.getSeconds(), 3L);
 
-        ts = TimeInstant.fromMillis(3601555L);
-        Assert.assertEquals(ts.getFractalSecondInNanos(), 555000000L);
-        Assert.assertEquals(ts.getMillis(), 3601555);
-        Assert.assertEquals(ts.getSeconds(), 3601L);
+        ts = TimeInstantBuilder.buildFromMillis(3600L);
+        Assert.assertEquals(ts.getFractalSecondInNanos(), 600000000L);
+        Assert.assertEquals(ts.getMillis(), 3600L);
+        Assert.assertEquals(ts.getSeconds(), 3L);
 
 
 
-    }
-
-    @Test(expected=IllegalArgumentException.class)
-    public void constructorFactoryMethodsFromMillisGreaterMax() {
-        // 2^63 - 1 = 9,223,372,036,854,775,807
-        TimeInstant.fromMillis(9223372036855L);
     }
 
     @Test
     public void constructorFactoryMethodsFromMillisMax() {
         // 2^63 - 1 = 9,223,372,036,854,775,807
-        TimeInstant.fromMillis(9223372036854L);
+        TimeInstantBuilder.buildFromMillis(9223372036854L);
     }
 
 

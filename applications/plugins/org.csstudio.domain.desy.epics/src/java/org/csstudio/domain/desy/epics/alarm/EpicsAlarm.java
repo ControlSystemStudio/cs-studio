@@ -47,12 +47,12 @@ import org.csstudio.domain.desy.alarm.IComparableAlarm;
  * Status                      Severity
  *
  * NO_ALARM                    (->NO_ALARM) : (in principle, just learned there's an exception
- * LO, HI                      (->MINOR)
- * LOLO, HIHI                  (->MAJOR)
- * disconnected     (->?)                   :used in the archiver code of
- * Archive_Disabled (?=DISABLE) (->?)       :TODO (bknerr) is 'Archive_Disabled' match any epics value, ask bernd.
+ * LO, HI                      (->MINOR)    : but data-type dependent
+ * LOLO, HIHI                  (->MAJOR)    : but data-type dependent
+ * disconnected     (->?)                   : used in the archiver code
+ * Archive_Disabled (?=DISABLE) (->?)       : TODO (bknerr) does 'Archive_Disabled' match any epics value, ask bernd.
  *
- * SoftAlarm
+ * SoftAlarm ??
  *
  * For non-numerical data types LO,HI,LOLO,HIHI isn't defined, hence, not possible.
  * TODO (bknerr) : Checked for plausibility by the {@link EpicsSystemVariable<T>} on setting it's alarm.
@@ -76,6 +76,7 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
         // TODO (bknerr) : plausibility tests necessary?
 
         _severity = sev;
+        // TODO (bknerr) : just found AlarmStatus in pvmanager - more than one status possible per alarm?
         _status = st;
     }
 
