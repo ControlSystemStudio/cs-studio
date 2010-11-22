@@ -19,7 +19,7 @@ import org.junit.Test;
  *      reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")
-public class SpeechPriorityQueueTest
+public class SpeechPriorityQueueUnitTest
 {
     /** Add items to queue, check if they can be retrieved
      *  in the expected order.

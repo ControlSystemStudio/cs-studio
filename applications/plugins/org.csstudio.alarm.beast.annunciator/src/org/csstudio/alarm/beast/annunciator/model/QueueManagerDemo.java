@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.annunciator.model;
 
 import org.junit.Test;
 
-/** JUnit test of the Queue Manager.
+/** JUnit demo of the Queue Manager.
  *   
  *  @author Kay Kasemir
  *  @author Katia Danilova
@@ -17,7 +17,7 @@ import org.junit.Test;
  *  
  *    reviewed by Delphy 1/29/09
  */
-public class QueueManagerTest 
+public class QueueManagerDemo 
 {
     final private JMSAnnunciatorListener listener = new JMSAnnunciatorListener()
     {
