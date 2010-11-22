@@ -4,7 +4,7 @@
 
      <extension point="org.eclipse.ui.editors">
       <editor name="SNL Diagram Editor"
-              extensions="st"
+              extensions="st, stt"
               icon="icons/diagram.gif"
               default="false"
               class="de.desy.language.snl.diagram.ui.DiagramEditor"
