@@ -9,9 +9,9 @@ import org.epics.pvmanager.jca.JCADataSource;
 
 public class Epics3DataSource extends DataSource {
 	
-	private final JCADataSource dataSource;
+	private static final JCADataSource dataSource;
 	
-	public Epics3DataSource() {
+	static {
         boolean use_pure_java = EpicsPlugin.getDefault().usePureJava();
         String className = use_pure_java ?
                 JCALibrary.CHANNEL_ACCESS_JAVA : JCALibrary.JNI_THREAD_SAFE;
