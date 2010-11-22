@@ -200,19 +200,23 @@ public class AnnunciatorView extends ViewPart implements JMSAnnunciatorListener
         final Control control = message_table.getControl();
         if (control.isDisposed())
             return;
+        // Messages 'scroll', so every line in the table changes.
+        // Overall table refresh is accomplished by setting the item count.
+        // Sync & fetch count in this thread
+        final int count;
+        synchronized (messages)
+        {
+            messages.add(annunciation);
+            count = messages.size();
+        }
+        // Update table in UI thread
         control.getDisplay().asyncExec(new Runnable()
         {
             public void run()
             {
                 if (control.isDisposed())
                     return;
-                final int size;
-                synchronized (messages)
-                {
-                    messages.add(annunciation);
-                    size = messages.size();
-                }
-                message_table.setItemCount(size);
+                message_table.setItemCount(count);
                 message_table.refresh();
             }
         });
