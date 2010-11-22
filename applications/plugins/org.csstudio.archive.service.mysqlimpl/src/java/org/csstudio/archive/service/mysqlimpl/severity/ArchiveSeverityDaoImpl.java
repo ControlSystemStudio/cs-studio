@@ -54,7 +54,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     private static final String RETRIEVAL_FAILED = "Severity retrieval from archive failed.";
 
     /**
-     * Archive channel configuration cache.
+     * Archive severity cache.
      */
     private final Map<EpicsAlarmSeverity, IArchiveSeverity> _severityCache = Maps.newEnumMap(EpicsAlarmSeverity.class);
 

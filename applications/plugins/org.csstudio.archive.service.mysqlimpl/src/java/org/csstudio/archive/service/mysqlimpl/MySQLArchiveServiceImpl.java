@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.service.mysqlimpl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -40,6 +41,7 @@ import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
 import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoException;
+import org.csstudio.archive.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoException;
@@ -48,7 +50,6 @@ import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -141,8 +142,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         } catch (final ArchiveSampleDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }
-
-
         return true;
     }
 
@@ -188,16 +187,17 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
             if (channel != null) {
                 return ADAPT_MGR.adapt(channel.getLatestTimestamp());
             }
-            // Access the sample table
-            final TimeInstant ltstSampleTime =
-                DAO_MGR.getSampleDao().retrieveLatestSampleByChannelId(channel.getId());
-            if (ltstSampleTime != null) {
-                return ADAPT_MGR.adapt(ltstSampleTime);
-            }
+            return null;
+
+//            // Access the sample table
+//            final TimeInstant ltstSampleTime =
+//                DAO_MGR.getSampleDao().retrieveLatestSampleByChannelId(channel.getId());
+//            if (ltstSampleTime != null) {
+//                return ADAPT_MGR.adapt(ltstSampleTime);
+//            }
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel information could not be retrieved.", e);
         }
-        return null;
     }
 
     /**
@@ -220,6 +220,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
+    @CheckForNull
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         try {
             return DAO_MGR.getEngineDao().retrieveEngineByName(name);
@@ -233,16 +234,21 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public List<IArchiveChannelGroup> getGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
+    @Nonnull
+    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
+        try {
+            return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
+        } catch (final ArchiveChannelGroupDaoException e) {
+            throw new ArchiveServiceException("Groups for engine " + id.asString() +
+                                              " could not be retrieved.", e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public List<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
+    public Collection<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         // TODO Auto-generated method stub
         return null;
     }

@@ -23,28 +23,66 @@ package org.csstudio.archive.service.channelgroup;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * Read only interface of an channel group in the archive.
+ * Immutable data transfer object for archive channel group object.
  *
  * @author bknerr
- * @since 12.11.2010
+ * @since 22.11.2010
  */
-public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId>{
+public class ArchiveChannelGroupDTO implements IArchiveChannelGroup {
+
+    private final ArchiveChannelGroupId _id;
+
+    private final String _name;
+
+    private final ArchiveChannelId _enablingChannelId;
+
+
 
     /**
-     * @return the channel group name
+     * Constructor.
+     * @param id
+     * @param name
+     * @param enablingChannelId
      */
+    public ArchiveChannelGroupDTO(@Nonnull final ArchiveChannelGroupId id,
+                                  @Nonnull final String name,
+                                  @Nullable final ArchiveChannelId enablingChannelId) {
+        super();
+        _id = id;
+        _name = name;
+        _enablingChannelId = enablingChannelId;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @Nonnull
-    String getName();
+    public ArchiveChannelGroupId getId() {
+        return _id;
+    }
 
     /**
-     * @return the enabling channel id
+     * {@inheritDoc}
      */
+    @Override
+    @Nonnull
+    public String getName() {
+        return _name;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
     @CheckForNull
-    ArchiveChannelId getEnablingChannelId();
+    public ArchiveChannelId getEnablingChannelId() {
+        return _enablingChannelId;
+    }
 
 }

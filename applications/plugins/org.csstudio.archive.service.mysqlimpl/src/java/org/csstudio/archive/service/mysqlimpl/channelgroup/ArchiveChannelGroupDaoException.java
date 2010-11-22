@@ -19,32 +19,30 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service.channelgroup;
+package org.csstudio.archive.service.mysqlimpl.channelgroup;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
-import org.csstudio.archive.service.channel.ArchiveChannelId;
-import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
- * Read only interface of an channel group in the archive.
+ * Archive channel DAO exception.
  *
  * @author bknerr
- * @since 12.11.2010
+ * @since 10.11.2010
  */
-public interface IArchiveChannelGroup extends Identifiable<ArchiveChannelGroupId>{
+public class ArchiveChannelGroupDaoException extends ArchiveDaoException {
+
+    private static final long serialVersionUID = 1L;
 
     /**
-     * @return the channel group name
+     * Constructor.
+     *
+     * @param msg the exception message
+     * @param e the wrapped exception
      */
-    @Nonnull
-    String getName();
-
-    /**
-     * @return the enabling channel id
-     */
-    @CheckForNull
-    ArchiveChannelId getEnablingChannelId();
-
+    public ArchiveChannelGroupDaoException(@Nonnull final String msg, @Nullable final Exception e) {
+        super(msg, e);
+    }
 }

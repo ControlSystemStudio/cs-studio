@@ -19,59 +19,31 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.archive.service;
+package org.csstudio.archive.service.mysqlimpl.channelgroup;
 
 import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.archive.service.channel.IArchiveChannel;
-import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
-import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
-import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoException;
 
 /**
- * Archive engine configuration methods.
+ * Dao for archive channel configurations.
  *
  * @author bknerr
- * @since 12.11.2010
+ * @since 09.11.2010
  */
-public interface IArchiveEngineConfigService extends IArchiveConnectionService {
+public interface IArchiveChannelGroupDao {
 
     /**
-     * Retrieves the engine by id.
-     *
-     *  @param name name of engine to locate
-     *  @return SampleEngineInfo or <code>null</code> when not found
-     *  @throws ArchiveServiceException
+     * @param name the name of the channel
+     * @return the cached or freshly retrieved channel
+     * @throws ArchiveChannelDaoException when the retrieval fails
      */
     @CheckForNull
-    IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException;
+    Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveChannelGroupDaoException;
 
-    /**
-     * @param engineId
-     * @return
-     *  @throws ArchiveServiceException
-     */
-    @Nonnull
-    Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(ArchiveEngineId id) throws ArchiveServiceException;
-
-    /**
-     * @param group_config
-     * @return the list of channels in this group
-     * @throws ArchiveServiceException
-     */
-    @Nonnull
-    Collection<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException;
-
-    /**
-     * @param sampleModeId
-     * @return the sample mode
-     */
-    @CheckForNull
-    IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException;
 }

@@ -8,6 +8,7 @@
 package org.csstudio.archive.engine2.model;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -481,15 +482,15 @@ public class EngineModel
         }
 
         // Get groups
-        final List<IArchiveChannelGroup> engine_groups =
-            service.getGroupsByEngineId(engine.getId());
+        final Collection<IArchiveChannelGroup> engine_groups =
+            service.retrieveGroupsByEngineId(engine.getId());
 
         for (final IArchiveChannelGroup group_config : engine_groups)
         {
             final ArchiveGroup group = addGroup(group_config.getName());
 
             // Add channels to group
-            final List<IArchiveChannel> channel_configs =
+            final Collection<IArchiveChannel> channel_configs =
                 service.getChannelsByGroupId(group_config.getId());
 
             for (final IArchiveChannel channel_config : channel_configs)

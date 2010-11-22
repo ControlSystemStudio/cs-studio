@@ -39,6 +39,8 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.channel.IArchiveChannelDao;
+import org.csstudio.archive.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoImpl;
+import org.csstudio.archive.service.mysqlimpl.channelgroup.IArchiveChannelGroupDao;
 import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoImpl;
 import org.csstudio.archive.service.mysqlimpl.engine.IArchiveEngineDao;
 import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoImpl;
@@ -84,6 +86,7 @@ public enum ArchiveDaoManager {
      * DAOs.
      */
     private IArchiveChannelDao _archiveChannelDao;
+    private IArchiveChannelGroupDao _archiveChannelGroupDao;
     private IArchiveSampleModeDao _archiveSampleModeDao;
     private IArchiveSampleDao _archiveSampleDao;
     private IArchiveEngineDao _archiveEngineDao;
@@ -195,6 +198,17 @@ public enum ArchiveDaoManager {
             _archiveChannelDao = new ArchiveChannelDaoImpl();
         }
         return _archiveChannelDao;
+    }
+
+    /**
+     * @return the archive channel group dao
+     */
+    @Nonnull
+    public IArchiveChannelGroupDao getChannelGroupDao() {
+        if (_archiveChannelGroupDao == null) {
+            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl();
+        }
+        return _archiveChannelGroupDao;
     }
 
     /**

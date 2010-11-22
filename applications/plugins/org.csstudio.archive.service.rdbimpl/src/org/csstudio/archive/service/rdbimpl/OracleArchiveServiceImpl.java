@@ -213,7 +213,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public List<IArchiveChannelGroup> getGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
+    public List<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
         // FIXME (bknerr) : data access object is created anew on every invocation?!
         final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
