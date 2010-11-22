@@ -20,6 +20,10 @@
    </launcher>
 
    <vm>
+      <linux include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</linux>
+      <macos include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</macos>
+      <solaris include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</solaris>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
 
    <plugins>
@@ -39,7 +43,7 @@
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
       <plugin id="org.csstudio.platform.workspace"/>
-      <plugin id="org.csstudio.utility.ldap"/>
+      <plugin id="org.csstudio.utility.ldap" fragment=""/>
       <plugin id="org.csstudio.utility.ldapUpdater"/>
       <plugin id="org.csstudio.utility.namespace.utility"/>
       <plugin id="org.eclipse.ant.core"/>
@@ -179,7 +183,7 @@
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.ecf"/>
       <plugin id="org.remotercp.errorhandling"/>
-      <plugin id="org.remotercp.libs"/>
+      <plugin id="org.remotercp.libs" fragment=""/>
       <plugin id="org.remotercp.preferences"/>
       <plugin id="org.remotercp.preferences.ui"/>
       <plugin id="org.remotercp.util"/>
