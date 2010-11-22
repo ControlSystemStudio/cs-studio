@@ -26,21 +26,23 @@ public class ApplicationCompilerConfiguration extends
 	@Override
 	public List<String> getCompilerParameters(String sourceFile,
 			String targetFile) {
+		boolean arch64 = "amd64".equals(System.getProperty("os.arch"));
+		String libdir = arch64 ? "/lib/linux-x86_64" : "/lib/linux-x86";
 		List<String> result = new ArrayList<String>();
 		result.add(getCompilerPath());
 		result.add("-o");
 		result.add(targetFile);
-		result.add("-L"+getCompilerOptionService().getSeqFolder() + "/lib/linux-x86");
-		result.add("-L/scratch/EpicsR3.14.10/DesyBase/lib/linux-x86");
-		result.add("-L"+getCompilerOptionService().getEpicsFolder() + "/lib/linux-x86");
-		result.add("-WL,-rpath,"+getCompilerOptionService().getSeqFolder() + "/lib/linux-x86");
-		result.add("-WL,-rpath,/scratch/EpicsR3.14.10/DesyBase/lib/linux-x86");
-		result.add("-WL,-rpath,"+getCompilerOptionService().getEpicsFolder() + "/lib/linux-x86");
-		result.add("-m32");
+		result.add("-L"+getCompilerOptionService().getSeqFolder() + libdir);
+//		result.add("-L/scratch/EpicsR3.14.10/DesyBase" + libdir);
+		result.add("-L"+getCompilerOptionService().getEpicsFolder() + libdir);
+		result.add("-Wl,-rpath,"+getCompilerOptionService().getSeqFolder() + libdir);
+//		result.add("-Wl,-rpath,/scratch/EpicsR3.14.10/DesyBase" + libdir);
+		result.add("-Wl,-rpath,"+getCompilerOptionService().getEpicsFolder() + libdir);
+		result.add(arch64 ? "-m64" : "-m32");
 		result.add(sourceFile);
 		result.add("-lseq");
 		result.add("-lpv");
-		result.add("-liocLogClient");
+//		result.add("-liocLogClient");
 		result.add("-lcas");
 		result.add("-lgdd");
 		result.add("-lasHost");
