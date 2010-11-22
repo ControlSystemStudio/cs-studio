@@ -53,6 +53,9 @@ public class MessageRingBufferContentProvider implements ILazyContentProvider
         synchronized (messages)
         {
             final int N = messages.size();
+            // Ignore update in case message count changed
+            if (index >= N)
+            	return;
             message = messages.get(N-1-index);
         }
         viewer.replace(message, index);
