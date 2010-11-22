@@ -15,7 +15,7 @@ public class Activator extends Plugin {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.csstudio.utility.pvmanager";
 
-	private static final String defaultDataSource = "sim";
+	private static final String defaultDataSource = "epics";
 	
 	private static ThreadSwitch SWTThread = new ThreadSwitch() {
 

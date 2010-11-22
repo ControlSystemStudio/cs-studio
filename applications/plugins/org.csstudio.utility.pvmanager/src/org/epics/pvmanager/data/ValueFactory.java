@@ -23,12 +23,12 @@ import java.util.Set;
 public class ValueFactory {
 
     public static VMultiDouble newVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
-            Set<String> alarmStatus, List<String> possibleAlarms,
+            AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
             Double lowerCtrlLimit, Double lowerAlarmLimit, Double lowerWarningLimit,
             String units, NumberFormat format, Double upperWarningLimit, Double upperAlarmLimit,
             Double upperCtrlLimit, Double upperDisplayLimit) {
-        return new IVMultiDouble(values, alarmSeverity, alarmStatus, possibleAlarms,
+        return new IVMultiDouble(values, alarmSeverity, alarmStatus,
                 timeStamp, timeUserTag, lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit,
                 units, format, upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
@@ -37,7 +37,7 @@ public class ValueFactory {
      * Creates new immutable VDouble.
      */
     public static VDouble newVDouble(final Double value, final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final List<String> possibleAlarms, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
             final Integer timeUserTag,
             final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
@@ -111,13 +111,8 @@ public class ValueFactory {
             }
 
             @Override
-            public Set<String> getAlarmStatus() {
+            public AlarmStatus getAlarmStatus() {
                 return alarmStatus;
-            }
-
-            @Override
-            public List<String> getPossibleAlarms() {
-                return possibleAlarms;
             }
 
             @Override
@@ -131,9 +126,9 @@ public class ValueFactory {
      * Creates new immutable new VDouble by using the metadata from the old value.
      */
     public static VDouble newVDouble(final Double value, final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
             VDouble oldValue) {
-        return newVDouble(value, alarmSeverity, alarmStatus, oldValue.getPossibleAlarms(),
+        return newVDouble(value, alarmSeverity, alarmStatus,
                 timeStamp,
                 timeUserTag,
                 oldValue.getLowerDisplayLimit(), oldValue.getLowerAlarmLimit(),
@@ -149,7 +144,7 @@ public class ValueFactory {
     public static VStatistics newVStatistics(final double average, final double stdDev,
             final double min, final double max, final int nSamples,
             final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final List<String> possibleAlarms, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
             final Integer timeUserTag,
             final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
@@ -248,14 +243,10 @@ public class ValueFactory {
             }
 
             @Override
-            public Set<String> getAlarmStatus() {
+            public AlarmStatus getAlarmStatus() {
                 return alarmStatus;
             }
 
-            @Override
-            public List<String> getPossibleAlarms() {
-                return possibleAlarms;
-            }
         };
     }
 
@@ -264,10 +255,10 @@ public class ValueFactory {
      */
     public static VStatistics newVStatistics(final double average, final double stdDev,
             final double min, final double max, final int nSamples, final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
             VDouble aValue) {
         return newVStatistics(average, stdDev, min, max, nSamples,
-                alarmSeverity, alarmStatus, aValue.getPossibleAlarms(),
+                alarmSeverity, alarmStatus,
                 timeStamp,
                 timeUserTag,
                 aValue.getLowerDisplayLimit(), aValue.getLowerAlarmLimit(),
@@ -281,7 +272,7 @@ public class ValueFactory {
      * Creates new immutable VInt.
      */
     public static VInt newEInt(final Integer value, final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final List<String> possibleAlarms, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
             final Integer timeUserTag,
             final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
             final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
@@ -355,13 +346,8 @@ public class ValueFactory {
             }
 
             @Override
-            public Set<String> getAlarmStatus() {
+            public AlarmStatus getAlarmStatus() {
                 return alarmStatus;
-            }
-
-            @Override
-            public List<String> getPossibleAlarms() {
-                return possibleAlarms;
             }
 
             @Override
@@ -375,9 +361,9 @@ public class ValueFactory {
      * Creates new immutable newDbrCtrlInt by using the metadata from the old value.
      */
     public static VInt newEInt(final Integer value, final AlarmSeverity alarmSeverity,
-            final Set<String> alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
+            final AlarmStatus alarmStatus, final Integer timeUserTag, final TimeStamp timeStamp,
             VInt oldValue) {
-        return newEInt(value, alarmSeverity, alarmStatus, oldValue.getPossibleAlarms(),
+        return newEInt(value, alarmSeverity, alarmStatus,
                 timeStamp,
                 timeUserTag,
                 oldValue.getLowerDisplayLimit(), oldValue.getLowerAlarmLimit(),

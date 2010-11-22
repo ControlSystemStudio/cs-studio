@@ -116,7 +116,7 @@ public class TimeDuration {
 
     @Override
     public int hashCode() {
-        return new Long(nanoSec).hashCode();
+        return Long.valueOf(nanoSec).hashCode();
     }
 
     @Override

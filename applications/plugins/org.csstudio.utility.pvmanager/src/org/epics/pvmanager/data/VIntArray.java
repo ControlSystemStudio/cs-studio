@@ -6,6 +6,7 @@
 package org.epics.pvmanager.data;
 
 /**
+ * Int array with alarm, timestamp, display and control information.
  *
  * @author carcassi
  */

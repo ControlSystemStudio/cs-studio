@@ -25,10 +25,15 @@ import org.epics.pvmanager.ValueCache;
  */
 abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSource.ValueProcessor<MonitorEvent, VType> {
 
+    private final DBRType metaType;
+    private final DBRType epicsType;
+
     protected SingleValueProcessor(final Channel channel, Collector collector,
-            ValueCache<VType> cache, final ExceptionHandler handler)
+            ValueCache<VType> cache, final ExceptionHandler handler, DBRType epicsType, DBRType metaType)
             throws CAException {
         super(collector, cache);
+        this.metaType = metaType;
+        this.epicsType = epicsType;
 
         // Need to wait for the connection to be established
         // before reading the metadata
@@ -58,7 +63,13 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
         }
     }
 
-    private synchronized void setup(Channel channel) throws CAException {
+    protected SingleValueProcessor(final Channel channel, Collector collector,
+            ValueCache<VType> cache, final ExceptionHandler handler)
+            throws CAException {
+        this(channel, collector, cache, handler, null, null);
+    }
+
+    synchronized void setup(Channel channel) throws CAException {
         // This method may be called twice, if the connection happens
         // after the ConnectionListener is setup but before
         // the connection state is polled.
@@ -77,15 +88,19 @@ abstract class SingleValueProcessor<VType, EpicsType, MetaType> extends DataSour
         }
     }
 
-    protected abstract DBRType getMetaType();
+    protected DBRType getMetaType() {
+        return metaType;
+    }
 
-    protected abstract DBRType getEpicsType();
+    protected DBRType getEpicsType() {
+        return epicsType;
+    }
 
     protected abstract VType createValue(EpicsType value, MetaType metadata, boolean disconnected);
-    private volatile Monitor monitor;
-    private volatile MetaType metadata;
+    volatile Monitor monitor;
+    volatile MetaType metadata;
     private volatile MonitorEvent event;
-    private final MonitorListener monitorListener = new MonitorListener() {
+    final MonitorListener monitorListener = new MonitorListener() {
 
         @Override
         public void monitorChanged(MonitorEvent event) {

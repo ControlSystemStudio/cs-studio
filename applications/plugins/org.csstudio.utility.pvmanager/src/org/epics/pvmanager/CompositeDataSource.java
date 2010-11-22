@@ -124,8 +124,9 @@ public class CompositeDataSource extends DataSource {
         for (Map.Entry<String, DataRecipe> entry : splitRecipe.entrySet()) {
             try {
                 dataSources.get(entry.getKey()).connect(entry.getValue());
-            } catch(Exception ex) {
+            } catch(RuntimeException ex) {
                 // If data source fail, still go and connect the others
+                recipe.getExceptionHandler().handleException(ex);
             }
         }
     }
@@ -141,8 +142,9 @@ public class CompositeDataSource extends DataSource {
         for (Map.Entry<String, DataRecipe> entry : splitRecipe.entrySet()) {
             try {
                 dataSources.get(entry.getKey()).disconnect(entry.getValue());
-            } catch(Exception ex) {
+            } catch(RuntimeException ex) {
                 // If a data source fails, still go and disconnect the others
+                recipe.getExceptionHandler().handleException(ex);
             }
         }
 
