@@ -148,19 +148,13 @@ class FreeTTS_JSAPI_Annunciator extends BaseAnnunciator
         return synthesizer;
     }
 
-    /** {@inheritDoc} */
-    public void say(final String text)
+    /** {@inheritDoc} 
+     *  @throws Exception on error
+     */
+    public void say(final String text) throws Exception
     {
-        try
-        {
-            synthesizer.speakPlainText(applyTranslations(text), null);
-            synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
-        }
-        catch (Throwable ex)
-        {
-            System.out.println("Annunciation error:");
-            ex.printStackTrace();
-        }
+        synthesizer.speakPlainText(applyTranslations(text), null);
+        synthesizer.waitEngineState(Synthesizer.QUEUE_EMPTY);
     }
 
     /** {@inheritDoc} */
