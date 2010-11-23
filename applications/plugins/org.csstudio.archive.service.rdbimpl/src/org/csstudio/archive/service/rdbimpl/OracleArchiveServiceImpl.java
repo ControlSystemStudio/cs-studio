@@ -213,7 +213,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @Nonnull
-    public List<IArchiveChannelGroup> retrieveGroupsByEngineId(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
+    public List<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
         // FIXME (bknerr) : data access object is created anew on every invocation?!
         final ChannelGroupHelper groupHelper = new ChannelGroupHelper(_archive.get());
         try {
@@ -246,7 +246,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
                                                     // lastTimestamp = channel.getLastTimestamp();
                                                     // Looks like a getter, but is a db call, perform via service:
                                                     lastTimestamp =
-                                                        OracleArchiveServiceImpl.INSTANCE.getLatestTimestampByChannel(from.getName());
+                                                        OracleArchiveServiceImpl.INSTANCE.getLatestTimestampForChannel(from.getName());
 
                                                 } catch (final Exception e) {
                                                     throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
@@ -301,7 +301,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
      * {@inheritDoc}
      */
     @CheckForNull
-    public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
+    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
 
         final ChannelConfig cfg = getChannelConfig(name);
         if (cfg == null) {

@@ -84,7 +84,8 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
                                                       name,
                                                       chanId));
             }
-            // Sort by group name in Java.
+
+            // TODO (bknerr) : check whether this is still necessary, if not just return 'groups'
             // SQL should already give sorted result, but handling of upper/lowercase
             // names seems to differ between Oracle and MySQL, resulting in
             // files that were hard to compare

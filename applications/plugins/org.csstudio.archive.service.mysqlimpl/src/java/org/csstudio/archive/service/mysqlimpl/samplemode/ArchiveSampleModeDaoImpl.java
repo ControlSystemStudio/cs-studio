@@ -57,7 +57,9 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     private final Map<ArchiveSampleModeId, IArchiveSampleMode> _sampleModeCache = Maps.newHashMap();
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
-    private final String _selectSampleModebyIdStmt = "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
+    // TODO (bknerr) : parameterize database schema
+    private final String _selectSampleModeByIdStmt =
+        "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
 
     /**
      * {@inheritDoc}
@@ -72,7 +74,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
         }
         PreparedStatement stmt = null;
         try {
-            stmt = getConnection().prepareStatement(_selectSampleModebyIdStmt);
+            stmt = getConnection().prepareStatement(_selectSampleModeByIdStmt);
             stmt.setInt(1, id.intValue());
 
             final ResultSet result = stmt.executeQuery();
@@ -94,7 +96,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
                 try {
                     stmt.close();
                 } catch (final SQLException e) {
-                    LOG.warn("Closing of statement " + _selectSampleModebyIdStmt + " failed.");
+                    LOG.warn("Closing of statement " + _selectSampleModeByIdStmt + " failed.");
                 }
             }
         }

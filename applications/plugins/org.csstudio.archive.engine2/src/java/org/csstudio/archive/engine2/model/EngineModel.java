@@ -306,7 +306,7 @@ public class EngineModel
         	final IArchiveWriterService service = Activator.getDefault().getArchiveWriterService();
 
         	final ITimestamp last_stamp  =
-        	    service.getLatestTimestampByChannel(channelName);
+        	    service.getLatestTimestampForChannel(channelName);
 
         	if (last_stamp != null) {
         	    // Create fake string sample with that time
@@ -483,7 +483,7 @@ public class EngineModel
 
         // Get groups
         final Collection<IArchiveChannelGroup> engine_groups =
-            service.retrieveGroupsByEngineId(engine.getId());
+            service.getGroupsForEngine(engine.getId());
 
         for (final IArchiveChannelGroup group_config : engine_groups)
         {

@@ -46,6 +46,7 @@ import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoException;
 import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoException;
+import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
@@ -179,7 +180,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     @CheckForNull
-    public ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException {
+    public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
 
         IArchiveChannel channel = null;
         try {
@@ -188,13 +189,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
                 return ADAPT_MGR.adapt(channel.getLatestTimestamp());
             }
             return null;
-
-//            // Access the sample table
-//            final TimeInstant ltstSampleTime =
-//                DAO_MGR.getSampleDao().retrieveLatestSampleByChannelId(channel.getId());
-//            if (ltstSampleTime != null) {
-//                return ADAPT_MGR.adapt(ltstSampleTime);
-//            }
         } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel information could not be retrieved.", e);
         }
@@ -235,7 +229,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId id) throws ArchiveServiceException {
+    public Collection<IArchiveChannelGroup> getGroupsForEngine(final ArchiveEngineId id) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
         } catch (final ArchiveChannelGroupDaoException e) {
@@ -249,8 +243,12 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public Collection<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
+        } catch (final ArchiveChannelDaoException e) {
+            throw new ArchiveServiceException("Channels for group " + groupId.asString() +
+                                              " could not be retrieved.", e);
+        }
     }
 
     /**
@@ -258,8 +256,12 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Override
     public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
-        // TODO Auto-generated method stub
-        return null;
+        try {
+            return DAO_MGR.getSampleModeDao().retrieveSampleModeById(sampleModeId);
+        } catch (final ArchiveSampleModeDaoException e) {
+            throw new ArchiveServiceException("Sample modes for " + sampleModeId.asString() +
+                                              " could not be retrieved.", e);
+        }
     }
 
 }

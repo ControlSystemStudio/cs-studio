@@ -31,7 +31,11 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 
 /**
- * TODO (bknerr) :
+ * Archive engine writer methods.
+ *
+ * TODO (bknerr): all database access methods should definitely return explicit immutables.
+ *                Note guavas immutable collections are implement 'mutable' interfaces with
+ *                throwing UOEs. mmh.
  *
  * @author bknerr
  * @since 12.11.2010
@@ -76,5 +80,5 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
      * @throws ArchiveServiceException if the retrieval of the latest time stamp failed
      */
     @CheckForNull
-    ITimestamp getLatestTimestampByChannel(@Nonnull final String name) throws ArchiveServiceException;
+    ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException;
 }
