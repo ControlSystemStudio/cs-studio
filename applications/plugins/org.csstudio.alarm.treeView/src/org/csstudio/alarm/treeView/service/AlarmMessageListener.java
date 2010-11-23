@@ -29,7 +29,7 @@ import org.csstudio.alarm.service.declaration.IAlarmListener;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
 import org.csstudio.alarm.treeView.views.AbstractPendingUpdate;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -87,6 +87,7 @@ public class AlarmMessageListener implements IAlarmListener {
         /**
          * Takes pending updates from the queue and applies them.
          */
+        @Override
         public void run() {
             final Thread thisThread = Thread.currentThread();
             while (_worker == thisThread) {
@@ -96,7 +97,7 @@ public class AlarmMessageListener implements IAlarmListener {
                     // synchronize access to the updater
                     synchronized (this) {
                         // wait until we have an updater
-                        while (_suspension && (_worker == thisThread)) {
+                        while (_suspension && _worker == thisThread) {
                             wait();
                         }
 
@@ -185,6 +186,7 @@ public class AlarmMessageListener implements IAlarmListener {
     /**
      * Stops this listener. Once stopped, the listener cannot be restarted.
      */
+    @Override
     public void stop() {
         _queueWorker.stop();
     }
@@ -193,6 +195,7 @@ public class AlarmMessageListener implements IAlarmListener {
      * Called when a message is received. The message is interpreted as an alarm message. If the
      * message contains valid information, the respective updates of the alarm tree are triggered.
      */
+    @Override
     public void onMessage(@Nonnull final IAlarmMessage message) {
         //LOG.debug("received: " + message);
         processAlarmMessage(message);
@@ -208,7 +211,7 @@ public class AlarmMessageListener implements IAlarmListener {
             _queueWorker.enqueue(AbstractPendingUpdate.createAcknowledgementUpdate(name, _treeRoot));
         } else {
 
-            final EpicsAlarm severity = message.getSeverity();
+            final EpicsAlarmSeverity severity = message.getSeverity();
             final Date eventtime = message.getEventtimeOrCurrentTime();
 //            LOG.debug("received alarm: name=" + name + ", severity=" + severity + ", eventtime="
 //                    + eventtime);
