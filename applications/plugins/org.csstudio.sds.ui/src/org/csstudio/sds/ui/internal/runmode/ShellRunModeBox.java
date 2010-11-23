@@ -55,8 +55,11 @@ import org.eclipse.swt.events.DisposeListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowData;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
@@ -102,45 +105,54 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 	/**
 	 * {@inheritDoc}
 	 */
+	@SuppressWarnings("unused")
 	protected GraphicalViewer doOpen(final int x, final int y, final int width, final int height, final String title) {
+		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
+		
 		// create a shell
 		_shell = new Shell();
-
 		_shell.setText(title);
 		_shell.setLocation(x, y);
-		_shell.setLayout(new FillLayout());
+		_shell.setLayout(getFillLayout());
 		_shell.setImage(CustomMediaFactory.getInstance().getImageFromPlugin(SdsUiPlugin.PLUGIN_ID, "icons/sds.gif"));
-		_shell.setSize(width + SCROLLBAR_WIDTH + 20, height + SCROLLBAR_WIDTH + 60);
-
+		if (predecessors.size() > 0) {
+			_shell.setSize(width + SCROLLBAR_WIDTH + 17, height + SCROLLBAR_WIDTH + 66); 
+		} else {
+			_shell.setSize(width + SCROLLBAR_WIDTH + 1, height + SCROLLBAR_WIDTH + 50); 
+		}
+		
 		final ScrolledComposite scrollComposite = new ScrolledComposite(_shell, SWT.V_SCROLL | SWT.H_SCROLL);
 		scrollComposite.setExpandHorizontal(true);
 		scrollComposite.setExpandVertical(true);
-		scrollComposite.setSize(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 20);
+		scrollComposite.setSize(width + SCROLLBAR_WIDTH, height + SCROLLBAR_WIDTH + 0);
+		scrollComposite.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0, 0).create());
+		scrollComposite.setLayout(getFillLayout());
 		
 		// create a parent composite that fills the whole shell
+		GridLayout parentLayout = new GridLayout(1, false);
+		parentLayout.marginBottom = -5;
+		parentLayout.marginTop = -5;
+		parentLayout.marginLeft = -5;
+		parentLayout.marginRight = -5;
+		parentLayout.horizontalSpacing = 0;
+		parentLayout.verticalSpacing = 0;
 		final Composite parent = new Composite(scrollComposite, SWT.NONE);
-		GridLayout layout = new GridLayout(1, false);
-		layout.marginBottom = 0;
-		layout.marginTop = 0;
-		layout.marginLeft = 0;
-		layout.marginRight = 0;
-		layout.horizontalSpacing = 0;
-		layout.verticalSpacing = 0;
-		parent.setLayout(layout);
+		parent.setLayout(parentLayout);
 		parent.setSize(width, height + 20);
-
+		
 		// create a composite for the graphical viewer
 		Composite c = new Composite(parent, SWT.NONE);
-		c.setLayout(new FillLayout());
-		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
-
+		c.setLayout(getFillLayout());
+		c.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).indent(0,0).create());
+		
 		// create a composite for path and navigation information
-		List<RunModeBoxInput> predecessors = getPredecessors(getInput());
 
 		if (predecessors.size() > 0) {
 			Composite navigation = new Composite(parent, SWT.NONE);
-			navigation.setLayout(new GridLayout(1, false));
-			navigation.setLayoutData(GridDataFactory.fillDefaults().grab(true, false).create());
+			RowLayout rowLayout = new RowLayout();
+			navigation.setLayout(rowLayout);
+			navigation.setLayoutData(GridDataFactory.fillDefaults().align(SWT.FILL,	SWT.BOTTOM).grab(true, false).create());
+			
 
 			for (int i = 0; i < predecessors.size(); i++) {
 				new LinkLabel(navigation, predecessors.get(i));
@@ -150,8 +162,6 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 				}
 			}
 
-			Composite filler = new Composite(navigation, SWT.NONE);
-			filler.setLayoutData(GridDataFactory.fillDefaults().grab(true, true).create());
 		}
 
 		// configure a graphical viewer
@@ -194,6 +204,17 @@ public final class ShellRunModeBox extends AbstractRunModeBox {
 		_shell.open();
 
 		return graphicalViewer;
+	}
+
+	/**
+	 * @return
+	 */
+	private FillLayout getFillLayout() {
+		FillLayout fillLayout = new FillLayout();
+		fillLayout.marginHeight= 0;
+		fillLayout.marginWidth = 0;
+		fillLayout.spacing = 0;
+		return fillLayout;
 	}
 
 	/**

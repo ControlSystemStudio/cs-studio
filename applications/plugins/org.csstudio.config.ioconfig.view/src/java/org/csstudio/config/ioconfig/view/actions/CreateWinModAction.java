@@ -34,7 +34,7 @@ import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.pbmodel.ProfibusSubnetDBO;
-import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigSiemensGenerator;
+import org.csstudio.config.ioconfig.model.siemens.ProfibusConfigWinModGenerator;
 import org.csstudio.config.ioconfig.view.ProfiBusTreeView;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.preferences.DefaultScope;
@@ -53,21 +53,22 @@ import org.eclipse.swt.widgets.MessageBox;
  * @since 08.10.2010
 
  */
-public class CreateSimensAction extends Action {
+public class CreateWinModAction extends Action {
 
 	private static final Logger LOG = CentralLogger.getInstance().getLogger(
-			CreateSimensAction.class);
+			CreateWinModAction.class);
 	private final ProfiBusTreeView _pbtv;
 	
-	public CreateSimensAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
+	public CreateWinModAction(@Nullable String text, @Nonnull ProfiBusTreeView pbtv) {
 		super(text);
 		_pbtv = pbtv;
 	}
 
 	private void makeXMLFile(@Nonnull final File path,@Nonnull final ProfibusSubnetDBO subnet) {
-	    ProfibusConfigSiemensGenerator cfg = new ProfibusConfigSiemensGenerator(subnet.getName());
+	    ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(subnet.getName());
 	    cfg.setSubnet(subnet);
 	    File xmlFile = new File(path, subnet.getName() + ".cfg");
+	    File txtFile = new File(path, subnet.getName() + ".txt");
 	    if (xmlFile.exists()) {
 	        MessageBox box = new MessageBox(Display.getDefault().getActiveShell(),
 	                                        SWT.ICON_WARNING | SWT.YES | SWT.NO);
@@ -76,6 +77,7 @@ public class CreateSimensAction extends Action {
 	        if (erg == SWT.YES) {
 	            try {
 	                cfg.getXmlFile(xmlFile);
+	                cfg.getTxtFile(txtFile);
 	            } catch (IOException e) {
 	                MessageBox abortBox = new MessageBox(Display.getDefault()
 	                                                     .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);
