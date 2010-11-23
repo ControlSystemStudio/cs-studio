@@ -79,11 +79,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void showInfoDialog() {
 		StringBuilder sb = new StringBuilder();
 		EPICSPlug instance = null;
-		if(EPICSPlug.hasInstance()){
-			readEpicsPlugContex(sb, instance);
-		} else {
-			readEpicsPref(sb);
-		}
+		readEpicsPref(sb);
 		MessageDialog.openInformation(null, "Epics Info", sb.toString());
 	}
 
@@ -130,7 +126,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void appendIntProperty(String propKey, StringBuilder sb,
 			EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Integer integerProperty = instance.getIntegerProperty(propKey, null);
+		Integer integerProperty = new Integer(System.getProperty(propKey, null));
 		if (integerProperty == null) {
 			sb.append("NULL");
 		} else {
@@ -142,7 +138,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void appendLongProperty(String propKey, StringBuilder sb,
 			EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Long property = instance.getLongProperty(propKey, null);
+		Long property = new Long(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -154,7 +150,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void appendDoubleProperty(String propKey, StringBuilder sb,
 			EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Double property = instance.getDoubleProperty(propKey, null);
+		Double property = new Double(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -166,7 +162,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void appendBoolProperty(String propKey, StringBuilder sb,
 			EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		Boolean property = instance.getBooleanProperty(propKey, null);
+		Boolean property = new Boolean(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
@@ -178,7 +174,7 @@ public class EpicsInformationBar extends WorkbenchWindowControlContribution {
 	private void appendStringProperty(String propKey, StringBuilder sb,
 			EPICSPlug instance) {
 		sb.append(String.format(FORMAT, propKey)).append(TRENNER);
-		String property = instance.getStringProperty(propKey);
+		String property = new String(System.getProperty(propKey, null));
 		if (property == null) {
 			sb.append("NULL");
 		} else {
