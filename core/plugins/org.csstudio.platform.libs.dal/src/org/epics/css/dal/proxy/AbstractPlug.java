@@ -121,6 +121,7 @@ public abstract class AbstractPlug implements PlugContext
 	private Identifier identifier;
 	private Logger logger;
 	protected boolean debug = false;
+	// TODO (jpenning) no longer in use?
 	protected AbstractApplicationContext applicationContext;
 
 	/**
