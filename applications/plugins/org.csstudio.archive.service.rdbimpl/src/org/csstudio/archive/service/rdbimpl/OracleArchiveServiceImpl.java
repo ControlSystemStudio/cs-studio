@@ -105,7 +105,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
 
         // TODO (bknerr) : here the RDBArchivePreferences are used - there are still prefs in engine2 as well
-        // get that straight, some prefs' should reside in this plugin.
+        // get that straight, the impl oriented prefs should reside in this plugin
         final String url = (String) prefs.get(RDBArchivePreferences.URL);
         final String user = (String) prefs.get(RDBArchivePreferences.USER);
         final String password = (String) prefs.get(RDBArchivePreferences.PASSWORD);

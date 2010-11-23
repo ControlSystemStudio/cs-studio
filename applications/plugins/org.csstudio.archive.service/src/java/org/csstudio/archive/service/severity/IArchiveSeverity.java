@@ -24,7 +24,7 @@ package org.csstudio.archive.service.severity;
 import org.csstudio.domain.desy.common.id.Identifiable;
 
 /**
- * TODO (bknerr) :
+ * Read only interface of a severity in the archive.
  *
  * @author bknerr
  * @since 19.11.2010
