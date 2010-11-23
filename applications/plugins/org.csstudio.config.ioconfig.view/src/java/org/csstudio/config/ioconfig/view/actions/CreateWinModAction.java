@@ -68,6 +68,7 @@ public class CreateWinModAction extends Action {
 	    ProfibusConfigWinModGenerator cfg = new ProfibusConfigWinModGenerator(subnet.getName());
 	    cfg.setSubnet(subnet);
 	    File xmlFile = new File(path, subnet.getName() + ".cfg");
+	    File txtFile = new File(path, subnet.getName() + ".txt");
 	    if (xmlFile.exists()) {
 	        MessageBox box = new MessageBox(Display.getDefault().getActiveShell(),
 	                                        SWT.ICON_WARNING | SWT.YES | SWT.NO);
@@ -76,6 +77,7 @@ public class CreateWinModAction extends Action {
 	        if (erg == SWT.YES) {
 	            try {
 	                cfg.getXmlFile(xmlFile);
+	                cfg.getTxtFile(txtFile);
 	            } catch (IOException e) {
 	                MessageBox abortBox = new MessageBox(Display.getDefault()
 	                                                     .getActiveShell(), SWT.ICON_WARNING | SWT.ABORT);

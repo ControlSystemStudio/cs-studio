@@ -778,7 +778,7 @@ public class SlaveEditor extends AbstractNodeEditor {
 		if (extUserPrmData != null) {
 			text.setText(extUserPrmData.getText() + ":");
 			prmTextMap = extUserPrmData.getPrmText();
-			if ((extUserPrmData.getPrmText() == null)
+			if ((prmTextMap == null || prmTextMap.isEmpty())
 					&& (extUserPrmData.getMaxValue()
 							- extUserPrmData.getMinValue() > 10)) {
 				_prmTextCV.add(makeTextField(currentUserParamDataGroup, value,
