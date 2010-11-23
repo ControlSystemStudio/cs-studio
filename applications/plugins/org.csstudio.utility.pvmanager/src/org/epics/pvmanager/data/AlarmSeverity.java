@@ -6,7 +6,7 @@
 package org.epics.pvmanager.data;
 
 /**
- * Enumeration for severity of alarm.
+ * Severity of an alarm.
  * <p>
  * One should always bear in mind that the alarm severity of the IOC is set on
  * the record, and not on the individual channel. If you one is not connecting

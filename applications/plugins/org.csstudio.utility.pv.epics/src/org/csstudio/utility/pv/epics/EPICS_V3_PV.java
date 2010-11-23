@@ -95,8 +95,8 @@ public class EPICS_V3_PV
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
      */
-    private boolean running = false; // FIXME : not volatile?!
-
+    private volatile boolean running = false;
+    
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
@@ -290,9 +290,7 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public void removeListener(final PVListener listener)
     { 
-    	listeners.remove(listener); 
-    	if (listeners.size() > 0)
-    		System.out.println("Didn't remove?!");
+    	listeners.remove(listener);
     }
 
     /** Try to connect to the PV.

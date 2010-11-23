@@ -5,14 +5,9 @@
 
 package org.epics.pvmanager.data;
 
-import java.util.List;
-import java.util.Set;
-
 /**
- * Alarm information.
- * <p>
- * The alarm status is represented by a set of status bits that could be either
- * set or unset. This is implemented in Java by the use of Sets.
+ * Alarm information. Represents the severity and status of the highest alarm
+ * associated with the channel.
  *
  * @author carcassi
  */
@@ -27,21 +22,10 @@ public interface Alarm {
     AlarmSeverity getAlarmSeverity();
     
     /**
-     * Returns the set of alarm statuses that are currently active. Never null.
+     * Returns the alarm status of the highest currently active alarm.
+     * Never null.
      *
-     * @return a set of enabled alarms
+     * @return the alarm status
      */
-    Set<String> getAlarmStatus();
-    
-    /**
-     * Defines all possible alarm statuses that are valid on this channel. Never null;
-     * if not connected returns an empty list. In Epics 3, this list is going
-     * to be the same for all PVs. In Epics V, this list is going to be possibly
-     * different for each channel, but the common lists for client/server
-     * pairs should be cached.
-     * 
-     * @return a set of labels
-     */
-    @Metadata
-    List<String> getPossibleAlarms();
+    AlarmStatus getAlarmStatus();
 }

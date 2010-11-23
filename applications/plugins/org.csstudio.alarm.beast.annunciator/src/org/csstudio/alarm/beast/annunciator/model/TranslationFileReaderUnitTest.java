@@ -7,7 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.annunciator.model;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import org.csstudio.utility.speech.Translation;
 import org.junit.Test;
@@ -19,7 +20,8 @@ import org.junit.Test;
  *       reviewed by Delphy 1/29/09
  */
 @SuppressWarnings("nls")
-public class TranslationFileReaderTest {
+public class TranslationFileReaderUnitTest
+{
     /** Read translations from file, see if they match expected content */
     @Test
 	public void testFileRead() throws Exception

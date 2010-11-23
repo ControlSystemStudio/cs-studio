@@ -5,9 +5,9 @@
 
 package org.epics.pvmanager.sim;
 
-import java.util.Collections;
 import org.epics.pvmanager.TimeStamp;
 import org.epics.pvmanager.data.AlarmSeverity;
+import org.epics.pvmanager.data.AlarmStatus;
 import org.epics.pvmanager.data.VDouble;
 import org.epics.pvmanager.data.ValueFactory;
 
@@ -19,7 +19,7 @@ import org.epics.pvmanager.data.ValueFactory;
  *
  * @author carcassi
  */
-class Sine extends SimFunction<VDouble> {
+public class Sine extends SimFunction<VDouble> {
 
     private double min;
     private double max;
@@ -43,15 +43,15 @@ class Sine extends SimFunction<VDouble> {
         this.max = max;
         this.currentValue = 0;
         this.samplesPerCycle = samplesPerCycle;
-        range = max - min;
-        lastValue = ValueFactory.newVDouble(0.0, AlarmSeverity.NONE, Collections.<String>emptySet(),
-                Constants.POSSIBLE_ALARM_STATUS, TimeStamp.now(), null,
+        range = this.max - this.min;
+        lastValue = ValueFactory.newVDouble(0.0, AlarmSeverity.NONE, AlarmStatus.NONE,
+                TimeStamp.now(), null,
                 min, min + range * 0.1, min + range * 0.2, "x", Constants.DOUBLE_FORMAT,
                 min + range * 0.8, min + range * 0.9, max, min, max);
     }
 
     @Override
-    public VDouble nextValue() {
+    VDouble nextValue() {
         double value = Math.sin(currentValue * 2 * Math.PI /samplesPerCycle) * range / 2 + min + (range / 2);
         currentValue++;
 
