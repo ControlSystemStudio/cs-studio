@@ -1185,7 +1185,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
 					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
+//						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
 					}
 				});
 			}
@@ -1235,7 +1235,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
 					plug.flushIO();
 				} catch (CAException e) {
-					plug.getLogger().warn("Recovery from null DBR failed.", e);
+//					plug.getLogger().warn("Recovery from null DBR failed.", e);
 				}
 				
 			}
