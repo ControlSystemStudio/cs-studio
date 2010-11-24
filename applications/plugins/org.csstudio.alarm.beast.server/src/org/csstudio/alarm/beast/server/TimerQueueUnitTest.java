@@ -16,7 +16,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class TimerQueueTest
+public class TimerQueueUnitTest
 {
     static class Check extends TimerTask
     {

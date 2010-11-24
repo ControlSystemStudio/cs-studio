@@ -33,7 +33,7 @@ import org.csstudio.platform.logging.CentralLogger;
  *  control system connection.
  *
  *  @see AlarmPV
- *  @see AlarmLogicTest
+ *  @see AlarmLogicHeadlessTest
  *  @author Kay Kasemir
  */
 public class AlarmLogic
