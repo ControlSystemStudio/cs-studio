@@ -20,7 +20,7 @@ public class ChannelTreeLabelProvider extends LabelProvider {
 	@SuppressWarnings("unchecked")
 	@Override
 	public String getText(Object element) {
-		if (element instanceof ChannelModel) {
+		if (element instanceof ChannelTreeModel) {
 			return "Channels";
 		} else if (element instanceof ICSSChannel) {
 			return ((ICSSChannel) element).getName();

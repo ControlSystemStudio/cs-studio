@@ -62,9 +62,9 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 	 */
 	@Override
 	public Object[] getChildren(Object parentElement) {
-		if(parentElement instanceof ChannelModel){
+		if(parentElement instanceof ChannelTreeModel){
 			//return ((ChannelModel) parentElement).channelInfo.get("name").toArray();
-			return ((ChannelModel) parentElement).getChild().toArray();
+			return ((ChannelTreeModel) parentElement).getChild().toArray();
 		}else if (parentElement instanceof ICSSChannel){
 			Channel channel = ((ICSSChannel) parentElement).getChannel();
 			Object[] array = new Object[4];
@@ -91,7 +91,7 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 		if (element == null) {
 			return null;
 		}
-		return ((ChannelModel) element).getParent();
+		return ((ChannelTreeModel) element).getParent();
 	}
 
 	/*
@@ -103,8 +103,8 @@ public class ChannelTreeContentProvider implements IStructuredContentProvider,
 	 */
 	@Override
 	public boolean hasChildren(Object element) {
-		if (element instanceof ChannelModel) {
-			return (((ChannelModel) element).getChild().size() > 0);
+		if (element instanceof ChannelTreeModel) {
+			return (((ChannelTreeModel) element).getChild().size() > 0);
 		} else if (element instanceof ICSSChannel) {
 			return true;
 		} else if (element instanceof Collection<?>) {

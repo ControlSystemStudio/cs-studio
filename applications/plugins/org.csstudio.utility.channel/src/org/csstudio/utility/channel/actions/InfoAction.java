@@ -96,7 +96,7 @@ public class InfoAction implements IObjectActionDelegate {
 
 	
 	private Object createChannelModel(Collection<ICSSChannel> channels){
-		ChannelModel root = new ChannelModel(0,null);		
+		ChannelTreeModel root = new ChannelTreeModel(0,null);		
 		for (ICSSChannel channel : channels) {
 			root.getChild().add(channel);
 		}

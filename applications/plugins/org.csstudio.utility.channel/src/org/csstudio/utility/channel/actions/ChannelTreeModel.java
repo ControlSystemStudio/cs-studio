@@ -5,25 +5,25 @@ import java.util.HashSet;
 
 import org.csstudio.utility.channel.ICSSChannel;
 
-public class ChannelModel {
-	private ChannelModel parent;
+public class ChannelTreeModel {
+	private ChannelTreeModel parent;
 	private Collection<ICSSChannel> child = new HashSet<ICSSChannel>();
 	private int counter;
 
-	public ChannelModel(Collection<ICSSChannel> child) {
+	public ChannelTreeModel(Collection<ICSSChannel> child) {
 		this.child = child;
 	}
 
-	public ChannelModel(int counter, ChannelModel parent) {
+	public ChannelTreeModel(int counter, ChannelTreeModel parent) {
 		this.parent = parent;
 		this.counter= counter;
 	}
 	
-	public ChannelModel getParent() {
+	public ChannelTreeModel getParent() {
 		return parent;
 	}
 
-	public void setParent(ChannelModel parent) {
+	public void setParent(ChannelTreeModel parent) {
 		this.parent = parent;
 	}
 
