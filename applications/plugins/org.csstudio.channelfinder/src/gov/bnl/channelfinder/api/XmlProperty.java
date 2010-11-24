@@ -1,28 +1,45 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2010 Brookhaven National Laboratory
+ * Copyright (c) 2010 Helmholtz-Zentrum Berlin fuer Materialien und Energie GmbH
+ * Subject to license terms and conditions.
  */
 
 package gov.bnl.channelfinder.api;
 
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 /**
+ * Property object that can be represented as XML/JSON in payload data.
  *
- * @author rlange
+ * @author Ralph Lange <Ralph.Lange@bessy.de>
  */
-@XmlType(name = "property", propOrder = {"name","value","owner"})
-class XmlProperty {
+@XmlType(propOrder = {"name","value","owner","xmlChannels"})
+@XmlRootElement(name = "property")
+public class XmlProperty {
     private String name = null;
     private String value = null;
     private String owner = null;
+    private XmlChannels channels = null;
 
     /**
      * Creates a new instance of XmlProperty.
      *
      */
     public XmlProperty() {
+    }
+
+    /**
+     * Creates a new instance of XmlProperty.
+     *
+     * @param name
+     * @param owner
+     */
+    public XmlProperty(String name, String owner) {
+        this.owner = owner;
+        this.name = name;
     }
 
     /**
@@ -95,4 +112,37 @@ class XmlProperty {
         this.owner = owner;
     }
 
+    /**
+     * Getter for property's XmlChannels.
+     *
+     * @return XmlChannels object
+     */
+    @XmlElement(name = "channels")
+    public XmlChannels getXmlChannels() {
+        return channels;
+    }
+
+    /**
+     * Setter for property's XmlChannels.
+     *
+     * @param channels XmlChannels object
+     */
+    public void setXmlChannels(XmlChannels channels) {
+        this.channels = channels;
+    }
+
+    /**
+     * Creates a compact string representation for the log.
+     *
+     * @param data the XmlProperty to log
+     * @return string representation for log
+     */
+    public static String toLog(XmlProperty data) {
+         if (data.channels == null) {
+            return data.getName() + "(" + data.getOwner() + ")";
+        } else {
+            return data.getName() + "(" + data.getOwner() + ")"
+                    + XmlChannels.toLog(data.channels);
+        }
+    }
 }

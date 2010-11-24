@@ -62,10 +62,10 @@ public class Channel {
 		XmlChannel toXml() {
 			XmlChannel xmlChannel = new XmlChannel(name, owner);
 			for (Tag.Builder tag : tags) {
-				xmlChannel.addTag(tag.toXml());
+				xmlChannel.addXmlTag(tag.toXml());
 			}
 			for (Property.Builder property : properties) {
-				xmlChannel.addProperty(property.toXml());
+				xmlChannel.addXmlProperty(property.toXml());
 			}
 			return xmlChannel;
 
@@ -80,12 +80,12 @@ public class Channel {
 		this.name = channel.getName();
 		this.owner = channel.getOwner();
 		Set<Tag> newTags = new HashSet<Tag>();
-		for (XmlTag tag : channel.getXmlTags()) {
+		for (XmlTag tag : channel.getXmlTags().getTags()) {
 			newTags.add(new Tag(tag));
 		}
 		this.tags = Collections.unmodifiableSet(newTags);
 		Set<Property> newProperties = new HashSet<Property>();
-		for (XmlProperty property : channel.getXmlProperties()) {
+		for (XmlProperty property : channel.getXmlProperties().getProperties()) {
 			newProperties.add(new Property(property));
 		}
 		this.properties = Collections.unmodifiableSet(newProperties);

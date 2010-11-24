@@ -1,30 +1,35 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2010 Brookhaven National Laboratory
+ * Copyright (c) 2010 Helmholtz-Zentrum Berlin fuer Materialien und Energie GmbH
+ * Subject to license terms and conditions.
  */
 
 package gov.bnl.channelfinder.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 
 /**
- *  TODO: either add/remove on this class or on the collection
+ * Channels (collection) object that can be represented as XML/JSON in payload data.
  *
- * @author rlange
+ * @author Ralph Lange <Ralph.Lange@bessy.de>
  */
 
 @XmlRootElement(name = "channels")
-class XmlChannels {
-    private Collection<XmlChannel> items = new ArrayList<XmlChannel>();
+public class XmlChannels {
+    private Collection<XmlChannel> channels = new ArrayList<XmlChannel>();
   
-    /** Creates a new instance of XmlChannels */
+    /** Creates a new instance of XmlChannels. */
     public XmlChannels() {
+    }
+
+    /** Creates a new instance of XmlChannels with one initial channel.
+     * @param c initial element
+     */
+    public XmlChannels(XmlChannel c) {
+        channels.add(c);
     }
 
     /**
@@ -34,11 +39,16 @@ class XmlChannels {
      */
     @XmlElement(name = "channel")
     public Collection<XmlChannel> getChannels() {
-        return items;
+        return channels;
     }
 
+    /**
+     * Sets the collection of channels.
+     *
+     * @param items new channel collection
+     */
     public void setChannels(Collection<XmlChannel> items) {
-        this.items = items;
+        this.channels = items;
     }
 
     /**
@@ -46,27 +56,28 @@ class XmlChannels {
      *
      * @param item the XmlChannel to add
      */
-    public void addChannel(XmlChannel item) {
-        this.items.add(item);
+    public void addXmlChannel(XmlChannel item) {
+        this.channels.add(item);
     }
 
-	public boolean containsKey(String name) {
-		// TODO Auto-generated method stub
-		Iterator<XmlChannel> itr = this.items.iterator();
-		while(itr.hasNext()){
-			if(itr.next().getName().equals(name)){
-				return true;
-			}
-		}
-		return false;
-	}
-	
-	public Collection<String> getChannelNames(){
-		Collection<String> list = new ArrayList<String>();
-		for (XmlChannel channel : items) {
-			list.add(channel.getName());
-		}
-		return list;
-	}
-
+    /**
+     * Creates a compact string representation for the log.
+     *
+     * @param data XmlChannel to create the string representation for
+     * @return string representation
+     */
+    public static String toLog(XmlChannels data) {
+        if (data.getChannels().size() == 0) {
+            return "[None]";
+        } else {
+            StringBuilder s = new StringBuilder();
+            s.append("[");
+            for (XmlChannel c : data.getChannels()) {
+                s.append(XmlChannel.toLog(c) + ",");
+            }
+            s.delete(s.length()-1, s.length());
+            s.append("]");
+            return s.toString();
+        }
+    }
 }

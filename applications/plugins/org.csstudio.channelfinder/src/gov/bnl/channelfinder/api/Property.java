@@ -19,6 +19,12 @@ public class Property {
 		private String owner;
 		private String value;
 
+		public static Builder property(String name){
+			Builder propertyBuilder = new Builder();
+			propertyBuilder.name = name;
+			return propertyBuilder;
+		}
+		
 		/**
 		 * @param name
 		 * @param value
@@ -43,7 +49,12 @@ public class Property {
 			this.owner = owner;
 			return this;
 		}
-
+		
+		public Builder value(String value) {
+			this.value = value;
+			return this;
+		}
+		
 		XmlProperty toXml() {
 			return new XmlProperty(name, owner, value);
 		}

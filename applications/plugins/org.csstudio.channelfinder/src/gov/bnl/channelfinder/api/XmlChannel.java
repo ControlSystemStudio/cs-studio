@@ -1,34 +1,39 @@
 /*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (c) 2010 Brookhaven National Laboratory
+ * Copyright (c) 2010 Helmholtz-Zentrum Berlin fuer Materialien und Energie GmbH
+ * Subject to license terms and conditions.
  */
 
 package gov.bnl.channelfinder.api;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElementWrapper;
 
 /**
+ * Channel object that can be represented as XML/JSON in payload data.
  *
- * TODO: move mode in the same package
- *  TODO: either add/remove on this class or on the collection
- *
- * @author rlange
+ * @author Ralph Lange <Ralph.Lange@bessy.de>
  */
 
 @XmlRootElement(name = "channel")
-class XmlChannel {
-    private String name = null;
-    private String owner = null;
-    private Collection<XmlProperty> properties = new ArrayList<XmlProperty>();
-    private Collection<XmlTag> tags = new ArrayList<XmlTag>();
+public class XmlChannel {
+    private String name;
+    private String owner;
+    private XmlProperties properties = new XmlProperties();
+    private XmlTags tags = new XmlTags();
   
     /** Creates a new instance of XmlChannel */
     public XmlChannel() {
+    }
+
+    /**
+     * Creates a new instance of XmlChannel.
+     *
+     * @param name channel name
+     */
+    public XmlChannel(String name) {
+        this.name = name;
     }
 
     /**
@@ -85,47 +90,45 @@ class XmlChannel {
      *
      * @return XmlProperties
      */
-    @XmlElement(name = "property")
-    @XmlElementWrapper(name = "properties")
-    public Collection<XmlProperty> getXmlProperties() {
+    @XmlElement(name = "properties")
+    public XmlProperties getXmlProperties() {
         return properties;
     }
 
     /**
      * Setter for channel's XmlProperties.
      *
-     * @param properties XmlProperty collection
+     * @param properties XmlProperties
      */
-    public void setXmlProperties(Collection<XmlProperty> properties) {
+    public void setXmlProperties(XmlProperties properties) {
         this.properties = properties;
     }
 
     /**
-     * Adds an XmlProperty to the collection.
+     * Adds an XmlProperty to the channel.
      *
      * @param property single XmlProperty
      */
-    public void addProperty(XmlProperty property) {
-        this.properties.add(property);
+    public void addXmlProperty(XmlProperty property) {
+        this.properties.addXmlProperty(property);
     }
 
     /**
      * Getter for the channel's XmlTags.
      *
-     * @return the XmlTags for this channel
+     * @return XmlTags for this channel
      */
-    @XmlElement(name = "tag")
-    @XmlElementWrapper(name = "tags")
-    public Collection<XmlTag> getXmlTags() {
+    @XmlElement(name = "tags")
+    public XmlTags getXmlTags() {
         return tags;
     }
 
     /**
      * Setter for the channel's XmlTags.
      *
-     * @param tags XmlTag collection
+     * @param tags XmlTags
      */
-    public void setXmlTags(Collection<XmlTag> tags) {
+    public void setXmlTags(XmlTags tags) {
         this.tags = tags;
     }
 
@@ -134,24 +137,20 @@ class XmlChannel {
      *
      * @param tag
      */
-    public void addTag(XmlTag tag) {
-        this.tags.add(tag);
-    }
-    
-    public Collection<String> getPropertyNames(){
-    	Collection<String> list = new ArrayList<String>();
-		for (XmlProperty xmlProperty : properties) {
-			list.add(xmlProperty.getName());
-		}
-		return list;
-    }
-    
-    public Collection<String> getTagNames(){
-    	Collection<String> list = new ArrayList<String>();
-		for (XmlTag xmlTag : tags) {
-			list.add(xmlTag.getName());
-		}
-		return list;
+    public void addXmlTag(XmlTag tag) {
+        this.tags.addXmlTag(tag);
     }
 
+    /**
+     * Creates a compact string representation for the log.
+     *
+     * @param data XmlChannel to create the string representation for
+     * @return string representation
+     */
+    public static String toLog(XmlChannel data) {
+        return data.getName() + "(" + data.getOwner() + "):["
+                + XmlProperties.toLog(data.properties)
+                + XmlTags.toLog(data.tags)
+                + "]";
+    }
 }
