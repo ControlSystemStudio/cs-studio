@@ -21,10 +21,13 @@
  */
 package org.csstudio.domain.desy.time;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 
 /**
@@ -32,18 +35,18 @@ import org.joda.time.ReadableInstant;
  * Slim memory footprint.
  * Thread safe.
  *
- * TODO (bknerr) : consider the usage of Timestamp (in platform.data or pvmanager)
- * or a 'valid' supertype immutable, once it is defined.
- * Consider additional fields, depending on what is used most often (probably millis instead of nanos)
- * Consider wrapped jodatime instant (8byte class, 8byte long millis)
+ * TODO (bknerr) : consider the usage of Timestamp (in pvmanager)
  *
  * @author bknerr
  * @since 16.11.2010
  */
-public class TimeInstant {
+public class TimeInstant implements Comparable<TimeInstant> {
 
     private static final Long MAX_SECONDS = Long.MAX_VALUE / 1000 - 1;
 
+    /**
+     * The wrapped immutable joda time instant.
+     */
     private final ReadableInstant _instant;
 
     /**
@@ -119,7 +122,7 @@ public class TimeInstant {
          */
         public TimeInstantBuilder withNanos(final long nanos) {
             if (nanos < 0 || nanos > 999999999) {
-                throw new IllegalArgumentException("Number of nanos for TimeInstant must be non-negative and smaller than 999,999,999.");
+                throw new IllegalArgumentException("Number of nanos for TimeInstant must be non-negative and smaller than 1,000,000,000.");
             }
             _nanos = nanos;
             return this;
@@ -134,10 +137,12 @@ public class TimeInstant {
     }
 
     /**
-     * Constructor.
+     * Private constructor.
      * Relies on being properly called by the {@link TimeInstantBuilder}.
+     * Shields this hideous constructor with two indistinguishable 'long' parameters.
      *
-     * @param millis milliseconds from start of epoch 1970-01-01T00:00:00Z.
+     * @param seconds seconds from start of epoch 1970-01-01T00:00:00Z.
+     * @param fracSecNanos fractal nanos of the second.
      */
     private TimeInstant(@Nonnull final long seconds, @Nonnull final long fracSecNanos) {
         _instant = new Instant(seconds*1000 + fracSecNanos/1000000);
@@ -162,6 +167,73 @@ public class TimeInstant {
     }
     public long getSeconds() {
         return getMillis() / 1000;
+    }
+    @Nonnull
+    public ReadableInstant getInstant() {
+        return _instant;
+    }
+
+    /**
+     * Formats the instant with the given joda time formatter.
+     * @param sampleTimeFmt
+     * @return
+     */
+    @Nonnull
+    public String formatted(@Nonnull final DateTimeFormatter fmt) {
+        return fmt.print(_instant);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int compareTo(@CheckForNull final TimeInstant other) {
+        final int result = _instant.compareTo(other._instant);
+        if (result == 0) {
+            return _fracSecInNanos < other._fracSecInNanos ? -1 :
+                                                          _fracSecInNanos > other._fracSecInNanos ? 1 :
+                                                                                                   0;
+        }
+        return result;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public int hashCode() {
+        int result = 1;
+        result = 31 * result + (int) (_fracSecInNanos ^ _fracSecInNanos >>> 32);
+        result = 31 * result + _instant.hashCode();
+        return result;
+    }
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) { // performance opt
+            return true;
+        }
+        if (!(obj instanceof TimeInstant)) {
+            return false;
+        }
+        final TimeInstant other = (TimeInstant) obj;
+        if (_fracSecInNanos != other._fracSecInNanos) {
+            return false;
+        }
+        if (!_instant.equals(other._instant)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String toString() {
+        return DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss").print(_instant) + "." + _fracSecInNanos;
     }
 
 }
