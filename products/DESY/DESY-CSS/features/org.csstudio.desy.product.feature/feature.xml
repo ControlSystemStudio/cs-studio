@@ -60,6 +60,18 @@
          id="org.csstudio.desy.platform.user.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.desy.ams.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.epics.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.management.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.desy.product"
          download-size="0"
