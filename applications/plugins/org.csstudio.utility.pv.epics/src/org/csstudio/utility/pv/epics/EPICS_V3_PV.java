@@ -365,6 +365,12 @@ public class EPICS_V3_PV
             final Logger logger = Activator.getLogger();
             try
             {
+            	// TODO Instead of another channel.addMonitor(),
+            	//      the RefCountedChannel should maintain a single
+            	//      subscription to the underlying CAJ/JCA channel.
+            	//      So even with N PVs for the same channel, it's
+            	//      only one subscription on the network instead of
+            	//      N subscriptions.
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;
