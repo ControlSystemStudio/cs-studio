@@ -26,9 +26,21 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		} else {
 			this.response = r; 
 		}
+		
 		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();
 		} else {
+		}
+
+		
+		if (property.isMetaDataInitialized()) {
+			metaData = extractMetaData();
+		} else {
+//Fix to get meta data for channels that are already active in a previous display.
+//			metaData = extractMetaData();
+//			if (metaData == null) {
+//				metaData = MetaDataImpl.createUninitializedMetaData();
+//			}
 			metaData = MetaDataImpl.createUninitializedMetaData();
 		}
 		
