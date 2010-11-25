@@ -33,6 +33,8 @@ import org.osgi.framework.BundleContext;
 
 /**
  * Activator.
+ * Registers two service impls: {@link IArchiveEngineConfigService} and
+ * {@link IArchiveWriterService}.
  *
  * @author bknerr
  * @since 22.11.2010

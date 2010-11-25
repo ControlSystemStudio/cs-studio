@@ -341,7 +341,7 @@ public class EngineModel
                 channel = new ScannedArchiveChannel(channelName, enablement,
                                         buffer_capacity, last_sample, period,
                                         max_repeats);
-                scanner.add((ScannedArchiveChannel)channel, period);
+                scanner.add((ScannedArchiveChannel) channel, period);
             }
             synchronized (this)
             {

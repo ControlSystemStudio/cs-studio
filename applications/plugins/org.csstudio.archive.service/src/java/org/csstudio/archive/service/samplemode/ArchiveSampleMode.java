@@ -30,24 +30,18 @@ import javax.annotation.Nonnull;
  * @since 12.11.2010
  */
 public enum ArchiveSampleMode implements IArchiveSampleMode {
-    MONITOR("Store every received update"),
-    SCAN("Periodic scan");
+    MONITOR(1, "Store every received update"),
+    SCAN(2, "Periodic scan");
 
     private final String _description;
 
     private ArchiveSampleModeId _id;
 
-    static {
-        int id = 0;
-        for (final ArchiveSampleMode mode : values()) {
-            mode._id = new ArchiveSampleModeId(++id);
-        }
-    }
-
     /**
      * Constructor.
      */
-    private ArchiveSampleMode(@Nonnull final String desc) {
+    private ArchiveSampleMode(final int id, @Nonnull final String desc) {
+        _id = new ArchiveSampleModeId(id);
         _description = desc;
     }
 

@@ -33,6 +33,14 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
+/**
+ * Activator.
+ * Registers two service impls: {@link IArchiveEngineConfigService} and
+ * {@link IArchiveWriterService}.
+ *
+ * @author bknerr
+ * @since 23.11.2010
+ */
 public class Activator implements BundleActivator {
 
     final public static String PLUGIN_ID = "org.csstudio.archive.service.oracleimpl";

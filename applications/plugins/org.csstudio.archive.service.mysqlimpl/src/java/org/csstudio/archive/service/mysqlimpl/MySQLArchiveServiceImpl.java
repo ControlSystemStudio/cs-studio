@@ -59,7 +59,6 @@ import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 
-
 /**
  * Example archive service implementation to separate the processing and logic layer from
  * the data access layer.
@@ -126,20 +125,23 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
         // FIXME (bknerr) : get rid of this IValueWithChannelId class...
         try {
-            DAO_MGR.getSampleDao().createSamples(Lists.transform(samples,
-                                                                 new Function<IValueWithChannelId, IArchiveSample<?>>() {
-                                                                    @Override
-                                                                    @Nonnull
-                                                                    public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
-                                                                        // this line is only for demonstration purposes,
-                                                                        // once we get rid of any incomplete/workaround value abstractions,
-                                                                        // this line will vanish
-                                                                        final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
+            final List<IArchiveSample<?>> sampleBeans =
+                Lists.transform(samples,
+                                new Function<IValueWithChannelId, IArchiveSample<?>>() {
+                                    @Override
+                                    @Nonnull
+                                    public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
+                                        // this line is only for demonstration purposes,
+                                        // once we get rid of any incomplete/workaround value abstractions,
+                                        // this line will vanish
+                                        final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
 
-                                                                        return ADAPT_MGR.adapt(sysVar);
-                                                                    }
+                                        return ADAPT_MGR.adapt(sysVar);
+                                    }
 
-            }));
+                                });
+
+            DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveSampleDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }

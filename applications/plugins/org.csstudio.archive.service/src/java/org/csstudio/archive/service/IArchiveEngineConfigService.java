@@ -38,7 +38,7 @@ import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
  * Archive engine configuration methods.
  *
  * TODO (bknerr): all database access methods should definitely return explicit immutables.
- *                guavas immutables are only halfway (they implement 'mutable' interfaces with
+ *                guavas immutable collections are only halfway (they implement 'mutable' interfaces with
  *                throwing UOEs).
  *
  * @author bknerr

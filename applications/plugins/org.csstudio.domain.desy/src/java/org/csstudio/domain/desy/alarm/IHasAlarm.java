@@ -21,27 +21,31 @@
  */
 package org.csstudio.domain.desy.alarm;
 
+import javax.annotation.CheckForNull;
+
 
 /**
- * Interface of an alarm.
+ * The system variable's state/value/entity may represent an alarm according to specified
+ * alarm rules.
+ * In other words any implementor of this type gives information about its current alarm state
+ * and <code>null</code> when (not if!) it's state does not represent an alarm.
  *
- * An alarm is defined as describing characteristic of a identifiable system variable (in form of an
- * distinct value or or state @see also states and values in org.epics.pvmanager) that may yield
- * information about the feature's relevance according to a given rule set and/or value range set.
- * An alarm serves as the ultimate cause to propagate (alarm) notifications throughout the system.
  *
- * Sidenote: Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
- * implementation.
- *
- * TODO (bknerr, jhatje, jpenning, hrickens) : The 'identifiable system feature' may be
- * {@link IProcessVariable} or {@link IControlSystemItem} or any of the many others. I introduced
- * {@link org.csstudio.domain.desy.ISystemVariable} for now, was not sure which one if any to take.
- * Gabriele has a very strong library (pvmanager), but it is not conceptually based around
- * identifiable system variables.
+ * Sidenote for EPICS: Whether a control system considers an OK or UNKNOWN state as alarm or not,
+ * is up to the implementation, hence <code>null</code> represents a possible return value.
+ * @return the alarm object or <code>null</code>
+
+ * TODO (bknerr) : Does the alarm rule set for a alarm system variable belong to it?
  *
  * @author bknerr
- * @since 04.11.2010
+ * @since 24.11.2010
  */
-public interface IAlarm {
-    // Marker
+public interface IHasAlarm {
+
+    /**
+     * Returns the alarm or <code>null</code>.
+     */
+    @CheckForNull
+    IAlarm getAlarm();
+
 }

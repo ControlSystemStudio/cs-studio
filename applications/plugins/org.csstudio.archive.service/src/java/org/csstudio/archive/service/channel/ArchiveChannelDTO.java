@@ -21,7 +21,9 @@
  */
 package org.csstudio.archive.service.channel;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
@@ -69,7 +71,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
                              final double smplVal,
                              final double smplPer,
                              /* @Nonnull final IMetaData metaData */
-                             @Nonnull final TimeInstant ltstTimestamp) {
+                             @Nullable final TimeInstant ltstTimestamp) {
         _id = id;
         _name = name;
         _groupId = grpId;
@@ -138,7 +140,7 @@ public class ArchiveChannelDTO implements IArchiveChannel {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public TimeInstant getLatestTimestamp() {
         return _latestTimestamp;
     }

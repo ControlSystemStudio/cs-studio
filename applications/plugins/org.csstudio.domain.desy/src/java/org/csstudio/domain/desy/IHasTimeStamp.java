@@ -22,37 +22,21 @@
 package org.csstudio.domain.desy;
 
 import javax.annotation.CheckForNull;
-import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
- * A system variable that features an alarm state.
- *
- * The system variable's state/value represents an alarm according to specified alarm rules.
- * In other words any alarm system variable gives information about its current alarm state
- * and <code>null</code> when (not if!) it's state does not represent an alarm.
- *
- * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
- * implementation, hence <code>null</code> represents a possible return value.
- * @return the alarm object or <code>null</code>
-
- * TODO (bknerr) : Does the alarm rule set for a alarm system variable belong to it?
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 16.11.2010
+ * @since 24.11.2010
  */
-public interface IAlarmSystemVariable<T> extends ISystemVariable<T> {
-
+public interface IHasTimeStamp {
     /**
-     * Returns the alarm or <code>null</code>.
+     * Returns the time instant for this system variable.
+     *
+     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
      */
     @CheckForNull
-    IAlarm getAlarm();
-
-    /**
-     * Sets the alarm.
-     * @param alarm the alarm or <code>null</code>
-     */
-    void setAlarm(@Nullable final IAlarm alarm);
+    TimeInstant getTimestamp();
 }

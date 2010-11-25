@@ -135,9 +135,7 @@ public enum ArchiveEngineAdapter {
      */
     @Nonnull
     public TimeInstant adapt(@Nonnull final ITimestamp time) {
-
-        return new TimeInstantBuilder().withSeconds(time.seconds())
-                                       .withNanos(time.nanoseconds()).build();
+        return TimeInstantBuilder.buildFromNanos(time.seconds()*1000000000 + time.nanoseconds());
     }
 
     /**
@@ -240,8 +238,9 @@ public enum ArchiveEngineAdapter {
      * @return the engine side timestamp
      */
     @Nonnull
-    public ITimestamp adapt(@Nonnull final TimeInstant time) {
-        return TimestampFactory.fromMillisecs(time.getMillis());
+    public ITimestamp adapt(@CheckForNull final TimeInstant time) {
+        return time == null ? null :
+                              TimestampFactory.fromMillisecs(time.getMillis());
     }
 
 
@@ -267,20 +266,17 @@ public enum ArchiveEngineAdapter {
         }
         EpicsAlarmSeverity severity = null;
         // Unfortunately ISeverity is not an enum (if it were, I would have used it)
-        // so dispatch
+        // so dispatch - btw whoever implements ISeverity may just returned true or false anytime...
         if (sev.isOK()) {
             severity = EpicsAlarmSeverity.NO_ALARM;
-        }
-        if (sev.isMinor()) {
+        } else if (sev.isMinor()) {
             severity = EpicsAlarmSeverity.MINOR;
-        }
-        if (sev.isMajor()) {
+        } else if (sev.isMajor()) {
             severity = EpicsAlarmSeverity.MAJOR;
-        }
-        if (sev.isInvalid()) {
+        } else if (sev.isInvalid()) {
             severity = EpicsAlarmSeverity.INVALID;
         }
-        // and once after... I love this interface
+        // and once after... in case anything was false... this interface is lovely
         if (severity == null) {
             return null;
         }
@@ -315,9 +311,10 @@ public enum ArchiveEngineAdapter {
 
         // so we convert in a real internal system variable object
 
-        // And this is not my abstraction: asking a value container for the alarm severity to see
-        // whether the value container actually has a value and then casting it to the value
-        // container type (with instanceof cascades) to finally get the value...
+        // fundstueck der woche:
+        // asking a value container for the alarm severity field that
+        // tells us that the enclosing value container actually has a value and then casting the
+        // container  to the corresponding type (with instanceof cascades) to finally get the value.
         final IValue value = valueWithId.getValue();
         if (!value.getSeverity().hasValue()) {
             return null;
@@ -325,9 +322,14 @@ public enum ArchiveEngineAdapter {
         final int id = valueWithId.getChannelId();
 
         final SystemVariableId varId = new SystemVariableId(id);
-        final String name = ""; // here empty, but not when generated in the scan thread when Kay agrees
+        final String name = ""; // here empty, but not when generated in the pv value update, in case Kay agrees (he certainly won't)
         final TimeInstant instant = adapt(value.getTime());
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
+
+
+//        with visitors...if only the IValue would be visitable, and all types have visit
+//        final AdaptIValueVisitor visitor = new AdaptIValueVisitor(varId, name, instant, alarm);
+//        return (EpicsSystemVariable<T>) visitor.adapt(value);
 
 
         if (value instanceof IDoubleValue) {

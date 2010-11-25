@@ -21,12 +21,9 @@
  */
 package org.csstudio.domain.desy;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
  * System variables are the fundamental atomic components of any system.
@@ -42,13 +39,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  *
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
-
-    /**
-     * Sets the value/state or set of values/states of this system variable.
-     * @param the new value
-     */
-    void setValue(@Nonnull T value);
+public interface ISystemVariable<T> extends Identifiable<SystemVariableId>, IHasTimeStamp {
 
     /**
      * The value/state or set of values/states of this system variable.
@@ -57,19 +48,5 @@ public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
     @Nonnull
     T getValue();
 
-    /**
-     * Sets the timestamp for this system variable.
-     * @param timestamp the timestamp
-     */
-    void setTimestamp(@Nullable final TimeInstant timestamp);
-
-    /**
-     * Returns the time instant for this system variable.
-     *
-     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
-     */
-    @CheckForNull
-    TimeInstant getTimestamp();
-
-
 }
+

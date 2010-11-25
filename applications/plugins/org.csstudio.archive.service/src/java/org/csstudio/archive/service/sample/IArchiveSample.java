@@ -37,7 +37,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @since 11.11.2010
  * @param <T> the type of the contained value
  */
-public interface IArchiveSample<T> /* extends Identifiable<ArchiveSampleId> */ {
+public interface IArchiveSample<T /* extends IAlarmValue*/> /* extends Identifiable<ArchiveSampleId> */ {
 
     @Nonnull
     ArchiveChannelId getChannelId();

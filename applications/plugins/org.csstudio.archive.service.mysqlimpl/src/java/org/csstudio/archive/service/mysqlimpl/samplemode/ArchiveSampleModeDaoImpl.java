@@ -31,7 +31,7 @@ import javax.annotation.CheckForNull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
-import org.csstudio.archive.service.samplemode.ArchiveSampleModeDTO;
+import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.platform.logging.CentralLogger;
@@ -59,7 +59,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize database schema
     private final String _selectSampleModeByIdStmt =
-        "SELECT smpl_mode_id, name, descr FROM archive.smpl_mode where smpl_mode_id=?";
+        "SELECT name FROM archive.smpl_mode where smpl_mode_id=?";
 
     /**
      * {@inheritDoc}
@@ -80,10 +80,8 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
 
-                final ArchiveSampleModeId newId = new ArchiveSampleModeId(result.getInt(1));
-                final String name = result.getString(2);
-                final String desc = result.getString(3);
-                mode = new ArchiveSampleModeDTO(newId, name, desc);
+                final String name = result.getString(1);
+                mode = ArchiveSampleMode.valueOf(name);
 
                 _sampleModeCache.put(mode.getId(), mode);
             }
@@ -91,6 +89,8 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
             throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
         } catch (final SQLException e) {
             throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
+        } catch (final IllegalArgumentException e) {
+            LOG.warn("Sample mode for id " + id.intValue() + " does not exist in the archive.");
         } finally {
             if (stmt != null) {
                 try {
@@ -100,7 +100,6 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
                 }
             }
         }
-
         return mode;
     }
 

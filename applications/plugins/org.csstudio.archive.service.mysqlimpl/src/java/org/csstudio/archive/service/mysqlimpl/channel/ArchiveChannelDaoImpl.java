@@ -40,6 +40,7 @@ import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
+import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.platform.logging.CentralLogger;
 
@@ -161,6 +162,8 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 final double sampleVal = result.getDouble(4);
                 final double samplePer = result.getDouble(5);
                 final Timestamp ltstSmplTime = result.getTimestamp(6);
+                final TimeInstant instant = ltstSmplTime == null ? null :
+                                                                   TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime());
 
                 final IArchiveChannel channel =
                     new ArchiveChannelDTO(new ArchiveChannelId(id),
@@ -169,7 +172,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                                           new ArchiveSampleModeId(sampleModeId),
                                           sampleVal,
                                           samplePer,
-                                          TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime()));
+                                          instant);
 
                 tempCache.put(name, channel);
             }
