@@ -78,11 +78,6 @@ public enum EpicsAlarmSeverity {
         LOWEST_SEVERITY = lowestSev;
     }
 
-    /**
-     * Indicates whether this alarm is a real alarm.
-     */
-    private boolean _isAlarm;
-
     private final int _severity;
 
 

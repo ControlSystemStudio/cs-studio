@@ -25,9 +25,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.IAlarmSystemVariable;
+import org.csstudio.domain.desy.ISystemVariable;
 import org.csstudio.domain.desy.SystemVariableId;
-import org.csstudio.domain.desy.alarm.IAlarm;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 
 /**
@@ -36,14 +36,14 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 17.11.2010
  */
-public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
+public class EpicsSystemVariable<T> implements ISystemVariable<T>, IHasAlarm {
 
 
     private final SystemVariableId _id;
     private final String _name;
-    private T _value;
-    private TimeInstant _timestamp;
-    private EpicsAlarm _alarm;
+    private final T _value;
+    private final TimeInstant _timestamp;
+    private final EpicsAlarm _alarm;
 
 
     /**
@@ -85,13 +85,13 @@ public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
         return _name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setValue(@Nonnull final T value) {
-        _value = value;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setValue(@Nonnull final T value) {
+//        _value = value;
+//    }
 
     /**
      * {@inheritDoc}
@@ -102,13 +102,13 @@ public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
         return _value;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setTimestamp(@Nullable final TimeInstant timestamp) {
-        _timestamp = timestamp;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setTimestamp(@Nullable final TimeInstant timestamp) {
+//        _timestamp = timestamp;
+//    }
 
     /**
      * {@inheritDoc}
@@ -119,13 +119,13 @@ public class EpicsSystemVariable<T> implements IAlarmSystemVariable<T> {
         return _timestamp;
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void setAlarm(@Nullable final IAlarm alarm) {
-        _alarm = (EpicsAlarm) alarm;
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void setAlarm(@Nullable final IAlarm alarm) {
+//        _alarm = (EpicsAlarm) alarm;
+//    }
 
 
     /**

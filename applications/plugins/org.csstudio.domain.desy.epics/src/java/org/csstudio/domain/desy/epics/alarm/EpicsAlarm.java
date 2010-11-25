@@ -76,7 +76,6 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
         // TODO (bknerr) : plausibility tests necessary?
 
         _severity = sev;
-        // TODO (bknerr) : just found AlarmStatus in pvmanager - more than one status possible per alarm?
         _status = st;
     }
 
@@ -102,8 +101,7 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
      * {@inheritDoc}
      */
     @Override
-    public int compareAlarmTo(@Nonnull final EpicsAlarm other) {
-
+    public int compareAlarmTo(final EpicsAlarm other) {
         return _severity.compareSeverityTo(other._severity);
     }
 }
