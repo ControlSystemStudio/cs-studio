@@ -119,6 +119,7 @@ public class DynamicValuePropertyImpl<T> extends SimplePropertyImpl<T>
 		public void dynamicValueConditionChange(ProxyEvent<PropertyProxy<T>> e) {
 			DynamicValueCondition oldCond = condition;
 			condition = e.getCondition();
+			metaDataInitialized = !condition.containsAnyOfStates(DynamicValueState.NO_VALUE); 
 			checkAndFireConditionEvents(oldCond, condition);
 		}
 		public void characteristicsChange(PropertyChangeEvent e) {

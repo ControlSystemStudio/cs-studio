@@ -194,6 +194,11 @@ public class DynamicValueCondition implements Severity
 		return new DynamicValueCondition(s, null, description);
 	}
 
+	/**
+	 * Returns <code>true</code> only of all states are inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> only of all states are inside this condition
+	 */
 	public boolean containsStates(final DynamicValueState... states)
 	{
 		for (int i = 0; i < states.length; i++) {
@@ -205,6 +210,11 @@ public class DynamicValueCondition implements Severity
 		return true;
 	}
 
+	/**
+	 * Returns <code>true</code> if at least one of provided states is inside this condition.
+	 * @param states the states to be checked for inclusion
+	 * @return <code>true</code> if at least one of provided states is inside this condition
+	 */
 	public boolean containsAnyOfStates(final DynamicValueState... states)
 	{
 		for (DynamicValueState state : states) {
