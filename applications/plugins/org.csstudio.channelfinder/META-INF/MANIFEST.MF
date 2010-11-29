@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Channelfinder
-Bundle-SymbolicName: org.csstudio.channelfinder
+Bundle-SymbolicName: org.csstudio.utility.channelfinder
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.csstudio.utility.channelfinder.Activator
 Require-Bundle: org.eclipse.ui,
