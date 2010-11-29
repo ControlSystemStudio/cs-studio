@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.resources,
  org.csstudio.platform.libs.jersey;bundle-version="1.0.0",
  org.csstudio.platform.libs.jmock;bundle-version="1.1.0",
- org.csstudio.channelfinder;bundle-version="1.0.0",
+ org.csstudio.utility.channelfinder;bundle-version="1.0.0",
  org.csstudio.platform;bundle-version="1.1.1"
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
