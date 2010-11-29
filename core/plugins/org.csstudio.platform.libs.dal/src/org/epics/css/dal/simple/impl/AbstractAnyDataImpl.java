@@ -30,15 +30,7 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();
 		} else {
-		    //----- Fix to get meta data for channels that already have a proxy in a different simple dal broker
-			metaData = extractMetaData();
-			if (metaData == null) {
-				metaData = MetaDataImpl.createUninitializedMetaData();
-			}
-			//----- end of fix 
-			//----- current version
-//			 metaData = MetaDataImpl.createUninitializedMetaData();
-			//----- end of current version
+			 metaData = MetaDataImpl.createUninitializedMetaData();
 		}
 		
 		this.beamID=beamID;
