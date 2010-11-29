@@ -187,6 +187,6 @@ public final class Alarm implements IRule {
 	@Override
 	public String getDescription() {
 		String msg = "Kann für ein oder mehrere Channels die Severity als Farbe zurückgeben. Ist mehr als ein Channel angeben wird die höste Severity zurückgben.";
-		return null;
+		return msg;
 	}
 }
