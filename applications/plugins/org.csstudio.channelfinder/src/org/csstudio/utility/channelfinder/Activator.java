@@ -1,5 +1,12 @@
 package org.csstudio.utility.channelfinder;
 
+import gov.bnl.channelfinder.api.ChannelFinderClient;
+
+import java.util.prefs.Preferences;
+
+import org.csstudio.platform.security.SecureStorage;
+import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -27,6 +34,7 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
+		installCFPreferences();
 	}
 
 	/*
@@ -45,6 +53,19 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static Activator getDefault() {
 		return plugin;
+	}
+	
+	public void installCFPreferences() {
+		final IPreferencesService prefs = Platform.getPreferencesService();
+		Preferences preferences = Preferences
+				.userNodeForPackage(ChannelFinderClient.class);
+		preferences.put("channel_finder_url", prefs.getString(
+				Activator.PLUGIN_ID, PreferenceConstants.ChannelFinder_URL, "",
+				null));
+		preferences.put("username", prefs.getString(Activator.PLUGIN_ID,
+				PreferenceConstants.Username, "", null));
+		preferences.put("password", SecureStorage.retrieveSecureStorage(
+				Activator.PLUGIN_ID, PreferenceConstants.Password));
 	}
 
 }
