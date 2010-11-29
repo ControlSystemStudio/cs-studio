@@ -21,45 +21,43 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
 {
-	private AlarmState delayed_state = null;
+    private AlarmState delayed_state = null;
 
-	// DelayedAlarmListener
-	public void delayedStateUpdate(AlarmState delayed_state)
+    // DelayedAlarmListener
+    public void delayedStateUpdate(AlarmState delayed_state)
     {
-		System.out.println(new Date() + ": Received update!");
-		synchronized (this)
+        System.out.println(new Date() + ": Received update!");
+        synchronized (this)
         {
-	        this.delayed_state = delayed_state;
-	        notifyAll();
+            this.delayed_state = delayed_state;
+            notifyAll();
         }
     }
 
-	@Test
-	public void testDelayedAlarmUpdate() throws Exception
-	{
-		final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(this);
+    @Test
+    public void testDelayedAlarmUpdate() throws Exception
+    {
+        final DelayedAlarmUpdate delay = new DelayedAlarmUpdate(this);
         final AlarmState state = new AlarmState(SeverityLevel.MAJOR, "Test", null, TimestampFactory.now());
-		System.out.println(new Date() + ": Scheduling delayed alarm update ...");
+        System.out.println(new Date() + ": Scheduling delayed alarm update ...");
         delay.schedule_update(state, 2);
 
         assertEquals(state, delay.getState());
-		// Expect nothing right away
-		synchronized (this)
+        // Expect nothing right away
+        synchronized (this)
         {
-			assertNull(delayed_state);
+            assertNull(delayed_state);
         }
 
-		// .. but after ~2 seconds, the update should arrive
-		synchronized (this)
+        // .. but after ~2 seconds, the update should arrive
+        synchronized (this)
         {
-			for (int secs=0; delayed_state == null  &&  secs<4; ++secs)
-			{
-	        	wait(1000);
-			}
+            for (int secs=0; delayed_state == null  &&  secs<4; ++secs)
+                wait(1000);
         }
-		assertEquals(state, delayed_state);
+        assertEquals(state, delayed_state);
 
-		// Delay should be 'idle', no pending state
+        // Delay should be 'idle', no pending state
         assertNull(delay.getState());
-	}
+    }
 }

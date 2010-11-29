@@ -25,7 +25,7 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class TimerQueueUnitTest
 {
-	final private StringBuilder buf = new StringBuilder();
+    final private StringBuilder buf = new StringBuilder();
 
     class Check extends TimerTask
     {
@@ -43,7 +43,7 @@ public class TimerQueueUnitTest
             System.out.println(new Date() + ": Check " + delay + " done.");
             synchronized (buf)
             {
-            	buf.append(delay + " done\n");
+                buf.append(delay + " done\n");
             }
         }
 
@@ -76,7 +76,7 @@ public class TimerQueueUnitTest
         final String result;
         synchronized (buf)
         {
-        	result = buf.toString();
+            result = buf.toString();
         }
         assertEquals("1.0 done\n2.0 done\n", result);
 
@@ -94,76 +94,76 @@ public class TimerQueueUnitTest
      *  In JProfiler, however, Timer.schedule() uses less than half the CPU of Executor.schedule().
      */
     @Ignore
-	@Test
-	public void runBothTimerTypes() throws Exception
-	{
-		final Timer timer = new Timer();
-		final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
+    @Test
+    public void runBothTimerTypes() throws Exception
+    {
+        final Timer timer = new Timer();
+        final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
 
-		// Schedule stuff on timer in one thread
-		new Thread("TimerTest")
-		{
-			@Override
-            public void run()
-            {
-				int i = 0;
-				while (true)
-				{
-					++i;
-					final int num = i;
-					timer.schedule(new TimerTask()
-					{
-						@Override
-	                    public void run()
-	                    {
-							System.out.println("Timer " + num);
-	                    }
-					}, 100);
-					try
-                    {
-	                    Thread.sleep(100);
-                    }
-                    catch (InterruptedException e)
-                    {
-                    	// Ignore
-                    }
-				}
-            }
-		}.start();
-
-		// Schedule stuff on scheduled executer in other thread
-		new Thread("ExecutorTest")
-		{
-			@Override
-            public void run()
-            {
-				int i = 0;
-				while (true)
-				{
-					++i;
-					final int num = i;
-					executor.schedule(new Runnable()
-					{
-	                    public void run()
-	                    {
-							System.out.println("Sched. " + num);
-	                    }
-					}, 100, TimeUnit.MILLISECONDS);
-					try
-                    {
-	                    Thread.sleep(100);
-                    }
-                    catch (InterruptedException e)
-                    {
-                    	// Ignore
-                    }
-				}
-            }
-		}.start();
-
-		synchronized (this)
+        // Schedule stuff on timer in one thread
+        new Thread("TimerTest")
         {
-	        wait();
+            @Override
+            public void run()
+            {
+                int i = 0;
+                while (true)
+                {
+                    ++i;
+                    final int num = i;
+                    timer.schedule(new TimerTask()
+                    {
+                        @Override
+                        public void run()
+                        {
+                            System.out.println("Timer " + num);
+                        }
+                    }, 100);
+                    try
+                    {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // Ignore
+                    }
+                }
+            }
+        }.start();
+
+        // Schedule stuff on scheduled executer in other thread
+        new Thread("ExecutorTest")
+        {
+            @Override
+            public void run()
+            {
+                int i = 0;
+                while (true)
+                {
+                    ++i;
+                    final int num = i;
+                    executor.schedule(new Runnable()
+                    {
+                        public void run()
+                        {
+                            System.out.println("Sched. " + num);
+                        }
+                    }, 100, TimeUnit.MILLISECONDS);
+                    try
+                    {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e)
+                    {
+                        // Ignore
+                    }
+                }
+            }
+        }.start();
+
+        synchronized (this)
+        {
+            wait();
         }
-	}
+    }
 }

@@ -7,13 +7,12 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
-/** Listener for the {@link DelayedAlarmUpdate}
+/** Listener for the {@link GlobalAlarmUpdate}
  *  @author Kay Kasemir
  */
-public interface DelayedAlarmListener
+public interface GlobalAlarmListener
 {
-    /** Invoked when the DelayedAlarmUpdate expires
-     *   @param delayed_state State that was delayed
-     */
-    public void delayedStateUpdate(AlarmState delayed_state);
+    /** Invoked when the GlobalAlarmUpdate expires */
+    public void updateGlobalState();
+
 }

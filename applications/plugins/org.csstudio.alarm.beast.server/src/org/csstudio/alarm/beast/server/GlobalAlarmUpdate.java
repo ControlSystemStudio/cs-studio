@@ -10,26 +10,18 @@ package org.csstudio.alarm.beast.server;
 import java.util.Timer;
 import java.util.TimerTask;
 
-/** Helper for checking alarms after a delay.
- *  It will trigger a transition to a new state only after a delay.
+/** Helper for sending global alarm updates after a delay.
  *
  *  After the delay, it will invoke the listener.
  *
- *  While the timer is running, the state might be updated,
- *  for example to a higher latched state.
- *
- *  The check can also be canceled because the control system sent an 'OK'
- *  value in time.
+ *  The check can also be canceled because the alarm was ack'ed or cleared in time.
  */
-public class DelayedAlarmUpdate
+public class GlobalAlarmUpdate
 {
-    final private static Timer timer = new Timer("DelayedAlarmUpdate", true); //$NON-NLS-1$
+    final private static Timer timer = new Timer("GlobalAlarmUpdate", true); //$NON-NLS-1$
 
     /** Listener to notify when delay expires */
-    final private DelayedAlarmListener listener;
-
-    /** Alarm state to which we would update after the delay, unless it clears in time */
-    private AlarmState state;
+    final private GlobalAlarmListener listener;
 
     /** Timer task used to perform the delay */
     private TimerTask scheduled_task = null;
@@ -37,24 +29,22 @@ public class DelayedAlarmUpdate
     /** Initialize
      *  @param listener Listener to notify when delay expires
      */
-    DelayedAlarmUpdate(final DelayedAlarmListener listener)
+    GlobalAlarmUpdate(final GlobalAlarmListener listener)
     {
         this.listener = listener;
     }
 
-    /** Schedule a delayed state update, or adjust the update that's already
-     *  scheduled with the latest state information.
+    /** Schedule a state update.
+     *  Has no effect if an update was already started,
+     *  has not expired nor canceled.
      *
-     *  @param new_state State to which we would go if there was no delay
-     *  @param seconds Delay to use if we need to add this to the timer.
-     *                 Ignored when adjusting a pending update
+     *  @param seconds Delay to use
      */
-    void schedule_update(final AlarmState new_state, final int seconds)
+    void schedule_update(final int seconds)
     {
         final TimerTask new_task;
         synchronized (this)
         {
-            this.state = new_state;
             // Already scheduled?
             if (scheduled_task != null)
                 return;
@@ -64,30 +54,19 @@ public class DelayedAlarmUpdate
                 @Override
                 public void run()
                 {
-                    final AlarmState the_state;
-                    synchronized (DelayedAlarmUpdate.this)
+                    synchronized (GlobalAlarmUpdate.this)
                     {
-                        // Save state for call to listener, reset everything
-                        the_state = state;
                         scheduled_task = null;
-                        state = null;
                     }
                     //  Re-evaluate alarm logic with the delayed state,
                     //  not allowing any further delays.
-                    listener.delayedStateUpdate(the_state);
+                    listener.updateGlobalState();
                 }
             };
             scheduled_task = new_task;
         }
         timer.schedule(new_task, seconds * 1000L);
     }
-
-    /** @return Alarm state to which we'll go after the delay expires */
-    synchronized AlarmState getState()
-    {
-        return state;
-    }
-
     /** Cancel delayed alarm check because control system PV cleared.
      *  OK to call multiple times, even when nothing was scheduled.
      */
@@ -96,7 +75,6 @@ public class DelayedAlarmUpdate
         final TimerTask task;
         synchronized (this)
         {
-            state = null;
             task = scheduled_task;
             scheduled_task = null;
         }
