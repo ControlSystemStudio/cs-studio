@@ -397,6 +397,7 @@ public class SimpleDALBroker {
 	 */
 	public <T> Request<T> getValueAsync(final ConnectionParameters cparam, final ResponseListener<T> callback) throws InstantiationException, CommonException {
 		final PropertyHolder ph= getPropertyHolder(cparam);
+		blockUntillConnected(ph.property);
 		if (cparam.getRemoteInfo().getCharacteristic()!=null) {
 			return (Request<T>)ph.property.getCharacteristicAsynchronously(
 					cparam.getRemoteInfo().getCharacteristic(),
@@ -430,6 +431,7 @@ public class SimpleDALBroker {
 
 	public <T> Request<T> setValueAsync(final ConnectionParameters cparam, final Object value, final ResponseListener<T> callback) throws Exception {
 		final PropertyHolder ph = getPropertyHolder(cparam);
+		blockUntillConnected(ph.property);
 		return ((DynamicValueProperty<T>) ph.property).setAsynchronous((T)value, callback);
 	}
 
