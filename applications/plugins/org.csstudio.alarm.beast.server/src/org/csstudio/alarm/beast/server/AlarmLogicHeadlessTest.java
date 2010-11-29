@@ -702,8 +702,8 @@ public class AlarmLogicHeadlessTest
     public void testGlobalNotifications() throws Exception
     {
         System.out.println("* testGlobalNotifications");
-        // Latch, annunciate, no local delay & count, global notification after 5s
-        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, 5);
+        // Latch, annunciate, no local delay & count, global notification after 3s
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, 3);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
 
         // Normal alarm
@@ -721,6 +721,10 @@ public class AlarmLogicHeadlessTest
         // There should have been no global alarm
         logic.checkGlobalUpdates(0);
 
+        // Even after delay, there should be no global update
+        Thread.sleep(4000);
+        logic.checkGlobalUpdates(0);
+
         // ------
 
         // Alarm that clears, but is not acknowledged
@@ -736,8 +740,12 @@ public class AlarmLogicHeadlessTest
         Thread.sleep(6000);
         logic.checkGlobalUpdates(1);
 
+        // Once acknowledged, the global state should also clear
+
         // Alarm that doesn't clear
 
         // There should have been a global alarm
+
+        // Once acknowledged, the global state should also clear
     }
 }

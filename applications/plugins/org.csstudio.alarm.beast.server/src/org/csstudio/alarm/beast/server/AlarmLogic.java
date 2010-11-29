@@ -36,74 +36,30 @@ import org.csstudio.platform.logging.CentralLogger;
  *  @see AlarmLogicHeadlessTest
  *  @author Kay Kasemir
  */
-public class AlarmLogic
+public class AlarmLogic implements DelayedAlarmListener
 {
     /** Timer for handling delayed alarms */
-    private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
+    final private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
 
-    /** Helper for checking alarms after a delay.
-     *  Started with a new state, it will trigger a transition to that
-     *  state only after a delay.
-     *  While the timer is running, the state might be updated,
-     *  for example to a higher latched state.
-     *  Or the check gets canceled because the control system sent an 'OK'
-     *  value in time.
+    /** Helper for sending 'global' alarm updates
      */
-    class DelayedAlarmCheck extends TimerTask
+    class GlobalAlarmCheck extends TimerTask
     {
-        private AlarmState state;
-
-        /** Initialize
-         *  @param new_state State to which we would go if there was no delay
-         *  @param seconds Delay after which to re-evaluate
-         */
-        public DelayedAlarmCheck(final AlarmState new_state,
-                                 final int seconds)
+    	/** Initialize
+    	 *  @param seconds Time after which to send global alarm update
+    	 */
+    	public GlobalAlarmCheck(final int seconds)
         {
-            this.state = new_state;
-            delay_timer.schedule(this, seconds * 1000L);
-            //System.out.println("Update to " + new_state + " delayed for " + delay + " secs");
+    		delay_timer.schedule(this, seconds * 1000L);
         }
 
-        /** @return Alarm state to which we'll go after the delay expires */
-        synchronized public AlarmState getState()
-        {
-            return state;
-        }
-
-        /** Update the alarm state handled by the delayed check because
-         *  another value arrived from the control system
-         *  @param new_state State to which we would go if there was no delay
-         */
-        synchronized public void update(final AlarmState new_state)
-        {
-            this.state = new_state;
-            // System.out.println("DelayedAlarmCheck update to " + new_state);
-        }
-
-        /** Cancel the delayed alarm check because control system PV cleared
-         *  @see java.util.TimerTask#cancel()
-         */
-        @Override
-        public boolean cancel()
-        {
-            //System.out.println("Delayed alarm check canceled: " + state);
-            // delayed_check is volatile, no need to synchronize?
-            // Besides, this is called from computeNewState where we
-            // already sync. on AlarmLogic.this
-            delayed_check = null;
-            return super.cancel();
-        }
-
-        /** Invoked by timer after delay. */
+    	/** Invoked by timer after delay. */
         @Override
         synchronized public void run()
         {
             //System.out.println("Delayed alarm check becomes active: " + state);
-            delayed_check = null;
-            //  Re-evaluate alarm logic with the delayed state,
-            //  not allowing any further delays.
-            updateState(state, false);
+            // delayed_check = null;
+        	updateGlobalState();
         }
     }
 
@@ -119,7 +75,10 @@ public class AlarmLogic
     private volatile boolean enabled = true;
 
     /** Pending delayed alarm state update or <code>null</code> */
-    private volatile DelayedAlarmCheck delayed_check = null;
+    final private DelayedAlarmUpdate delayed_check = new DelayedAlarmUpdate(this);
+
+    /** Pending global alarm state update or <code>null</code> */
+    private volatile GlobalAlarmCheck global_check = null;
 
     /** Latch the highest received alarm severity/status?
      *  When <code>false</code>, the latched alarm state actually
@@ -362,9 +321,13 @@ public class AlarmLogic
                 alarm_state = new AlarmState(SeverityLevel.OK,
                         SeverityLevel.OK.getDisplayName(), "",
                         received_state.getTime());
-                // If a timer was started, cancel it
-                if (delayed_check != null)
-                    delayed_check.cancel();
+                // If a delayed alarm timer was started, cancel it
+                delayed_check.cancel();
+                // Also cancel 'global' timers
+                final GlobalAlarmCheck old_check2 = global_check;
+                global_check = null;
+                if (old_check2 != null)
+                	old_check2.cancel();
             }
         }
         updateState(received_state, getDelay() > 0);
@@ -381,15 +344,15 @@ public class AlarmLogic
     private void updateState(final AlarmState received_state,
                              final boolean with_delay)
     {
-        SeverityLevel annunc_level = null;
+        SeverityLevel raised_level = null;
         final AlarmState current, alarm;
         synchronized (this)
         {
             // Update alarm state. If there is already an update pending,
             // update that delayed state check.
-            final AlarmState state_to_update = delayed_check != null
-                ? delayed_check.getState()
-                : alarm_state;
+            AlarmState state_to_update = delayed_check.getState();
+            if (state_to_update == null)
+            	state_to_update = alarm_state;
             final AlarmState new_state = latchAlarmState(state_to_update, received_state);
             // Computed a new alarm state? Else: Only current_severity update
             if (new_state != null)
@@ -397,26 +360,22 @@ public class AlarmLogic
                 // Delay if requested and this is indeed triggered by alarm, not OK
                 if (with_delay && received_state.getSeverity() != SeverityLevel.OK)
                 {   // Start or update delayed alarm check
-                    if (delayed_check == null)
-                        delayed_check = new DelayedAlarmCheck(new_state, delay);
-                    else
-                        delayed_check.update(new_state);
+                	delayed_check.schedule_update(new_state, delay);
                     // Somewhat in parallel, check for alarm counts
                     if (checkCount(received_state))
-                    {   // Exceeded alarm count threshold; reset delayed alarms
-                        delayed_check.cancel();
+                    {   // Exceeded alarm count threshold.
+                    	// Reset delayed alarms
+                    	delayed_check.cancel();
                         // Annunciate if going to higher alarm severity
-                        if (annunciating &&
-                            new_state.hasHigherUpdatePriority(alarm_state))
-                            annunc_level = new_state.getSeverity();
+                        if (new_state.hasHigherUpdatePriority(alarm_state))
+                            raised_level = new_state.getSeverity();
                         alarm_state = new_state;
                     }
                 }
                 else
                 {   // Annunciate if going to higher alarm severity
-                    if (annunciating &&
-                        new_state.hasHigherUpdatePriority(alarm_state))
-                        annunc_level = new_state.getSeverity();
+                    if (new_state.hasHigherUpdatePriority(alarm_state))
+                        raised_level = new_state.getSeverity();
                     alarm_state = new_state;
                 }
             }
@@ -427,17 +386,38 @@ public class AlarmLogic
                 alarm_state.getSeverity() == SeverityLevel.INVALID)
             {
                 alarm_state = alarm_state.createAcknowledged(alarm_state);
-                annunc_level = null;
+                raised_level = null;
             }
             current = current_state;
             alarm = alarm_state;
         }
+        // Update state
         listener.alarmStateChanged(current, alarm);
-        if (annunc_level != null)
-            listener.annunciateAlarm(annunc_level);
+        // New, higher alarm level?
+        if (raised_level != null)
+        {
+        	if (annunciating)
+                listener.annunciateAlarm(raised_level);
+        	if (global_delay > 0)
+        	{	// Cancel previously scheduled global update
+        		final GlobalAlarmCheck old_global_check = global_check;
+        		if (old_global_check != null)
+        			old_global_check.cancel();
+        		// Schedule 'global' alarm update
+        		global_check = new GlobalAlarmCheck(global_delay);
+        	}
+        }
     }
 
-    /** Check if the new state adds up to 'count' alarms within 'delay'
+    /** {@inheritDoc}
+     *  @see DelayedAlarmListener
+     */
+    public void delayedStateUpdate(final AlarmState delayed_state)
+    {
+    	updateState(delayed_state, false);
+    }
+
+	/** Check if the new state adds up to 'count' alarms within 'delay'
      *  @param received_state
      *  @return <code>true</code> if alarm count reached/exceeded
      */
@@ -481,7 +461,13 @@ public class AlarmLogic
         return null;
     }
 
-    /** Acknowledge current alarm severity
+    /** Send 'global' alarm update */
+    private void updateGlobalState()
+    {
+    	listener.globalStateChanged(alarm_state);
+    }
+
+	/** Acknowledge current alarm severity
      *  @param acknowledge Acknowledge or un-acknowledge?
      */
     public void acknowledge(boolean acknowledge)
@@ -501,7 +487,13 @@ public class AlarmLogic
             current = current_state;
             alarm = alarm_state;
         }
+        // Notify listeners of latest state
         listener.alarmStateChanged(current, alarm);
+        // Cancel 'global' update
+        final GlobalAlarmCheck check = global_check;
+        global_check = null;
+        if (check != null)
+        	check.cancel();
     }
 
     /** @return String representation for debugging */
