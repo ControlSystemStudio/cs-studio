@@ -4,8 +4,8 @@
    <extension
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
-            configId="org.eclipse.ui.intro.universalConfig"
-            content="intro/alarmintro.xml">
+            content="intro/alarmIntro.xml"
+            configId="org.eclipse.ui.intro.universalConfig">
       </configExtension>
    </extension>
 
