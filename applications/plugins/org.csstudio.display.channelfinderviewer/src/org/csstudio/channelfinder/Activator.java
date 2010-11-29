@@ -1,13 +1,5 @@
 package org.csstudio.channelfinder;
 
-import gov.bnl.channelfinder.api.ChannelFinderClient;
-
-import java.util.prefs.Preferences;
-
-import org.csstudio.channelfinder.preferences.PreferenceConstants;
-import org.csstudio.platform.security.SecureStorage;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -39,7 +31,6 @@ public class Activator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		installPreferences();
 	}
 
 	/*
@@ -73,46 +64,5 @@ public class Activator extends AbstractUIPlugin {
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
 		return imageDescriptorFromPlugin(PLUGIN_ID, path);
-	}
-
-	public void installPreferences() {
-		final IPreferencesService prefs = Platform.getPreferencesService();
-		Preferences preferences = Preferences
-				.userNodeForPackage(ChannelFinderClient.class);
-		// try {
-		// for (String key : preferences.keys()) {
-		// System.out.println(key + " " + preferences.get(key, "default"));
-		// }
-		// prefs.exportPreferences( prefs.getRootNode() , System.out, null);
-		// } catch (BackingStoreException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (CoreException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
-		preferences.put("channel_finder_url", prefs.getString(
-				Activator.PLUGIN_ID, PreferenceConstants.ChannelFinder_URL, "",
-				null));
-//		preferences.put("trustStore", prefs.getString(Activator.PLUGIN_ID,
-//				PreferenceConstants.TrustStore_Location, "", null));
-//		preferences.put("trustPass", SecureStorage.retrieveSecureStorage(
-//				Activator.PLUGIN_ID, PreferenceConstants.TrustPass));
-		preferences.put("username", prefs.getString(Activator.PLUGIN_ID,
-				PreferenceConstants.Username, "", null));
-		preferences.put("password", SecureStorage.retrieveSecureStorage(
-				Activator.PLUGIN_ID, PreferenceConstants.Password));
-		// try {
-		// for (String key : preferences.keys()) {
-		// System.out.println(key + " " + preferences.get(key, "default"));
-		// prefs.exportPreferences( prefs.getRootNode() , System.out, null);
-		// }
-		// } catch (BackingStoreException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// } catch (CoreException e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 	}
 }

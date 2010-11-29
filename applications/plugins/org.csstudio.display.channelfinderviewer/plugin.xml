@@ -72,15 +72,6 @@
       </menuContribution>
    </extension>
    <extension
-         point="org.eclipse.ui.preferencePages">
-      <page
-            category="org.csstudio.platform.ui.css.applications.display"
-            class="org.csstudio.channelfinder.preferences.ChannelFinderPreferencePage"
-            id="org.csstudio.channelviewer.preferences.ChannelFinderPreferencePage"
-            name="ChannelFinderPreferences">
-      </page>
-   </extension>
-   <extension
          point="org.eclipse.core.expressions.definitions">
       <definition
             id="atleastOneElementSelected">
