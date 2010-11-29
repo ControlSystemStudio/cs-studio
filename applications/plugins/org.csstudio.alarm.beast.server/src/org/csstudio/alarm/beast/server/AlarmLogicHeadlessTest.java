@@ -11,6 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
+import java.util.concurrent.atomic.AtomicInteger;
+
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.TimestampFactory;
@@ -20,7 +22,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmLogicHeadlessTest 
+public class AlarmLogicHeadlessTest
 {
     private static final String OK = "OK";
 
@@ -28,46 +30,64 @@ public class AlarmLogicHeadlessTest
     static class AlarmLogicDemo implements AlarmLogicListener
     {
     	final private AlarmLogic logic;
-        boolean fired_enablement = false;
-        boolean fired_update = false;
-        boolean annunciated = false;
+    	private boolean fired_enablement = false;
+    	private boolean fired_update = false;
+    	private boolean annunciated = false;
+    	final private AtomicInteger global_updates = new AtomicInteger();
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating)
         {
-            this(latching, annunciating, 0, 0);
+            this(latching, annunciating, 0, 0, 0);
         }
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating,
                        final int delay)
         {
-            this(latching, annunciating, delay, 0);
+            this(latching, annunciating, delay, 0, 0);
         }
 
         AlarmLogicDemo(final boolean latching, final boolean annunciating,
                        final int delay, final int count)
         {
-        	logic = new AlarmLogic(this, latching, annunciating, delay, count,
-                  AlarmState.createClearState(),
-                  AlarmState.createClearState());
+        	this(latching, annunciating, delay, count, 0);
         }
 
+        AlarmLogicDemo(final boolean latching, final boolean annunciating,
+                final int delay, final int count, final int global_delay)
+        {
+        	logic = new AlarmLogic(this, latching, annunciating, delay, count,
+                    AlarmState.createClearState(),
+                    AlarmState.createClearState(),
+                    global_delay);
+        }
+
+        // AlarmLogicListener
         public void alarmEnablementChanged(final boolean is_enabled)
         {
         	System.out.println(is_enabled ? "enabled" : "disabled");
             fired_enablement = true;
         }
 
+        // AlarmLogicListener
         public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
         {
             fired_update = true;
         }
-    
+
+        // AlarmLogicListener
         public void annunciateAlarm(final SeverityLevel level)
         {
             annunciated = true;
         }
 
-        /** Check logic
+        // AlarmLogicListener
+        public void globalStateChanged(final AlarmState alarm)
+        {
+        	System.out.println("Global alarm state: " + alarm);
+        	global_updates.incrementAndGet();
+        }
+
+		/** Check logic
          *  @param update Did we expect an update?
          *  @param annunciate Did we expect an annunciation?
          *  @param current_sevr Expected 'current' severity
@@ -93,12 +113,17 @@ public class AlarmLogicHeadlessTest
             fired_update = false;
             annunciated = false;
         }
-        
+
         void checkEnablementChange()
         {
             assertTrue("Enablement changed", fired_enablement);
             System.out.println("Logic is " + (logic.isEnabled() ? "enabled" : "disabled"));
             fired_enablement = false;
+        }
+
+        void checkGlobalUpdates(final int expected)
+        {
+        	assertEquals(expected, global_updates.get());
         }
 
         public void computeNewState(final String value, final SeverityLevel sevr,
@@ -150,22 +175,22 @@ public class AlarmLogicHeadlessTest
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // Follow into MINOR alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         assertEquals("a", logic.getAlarmState().getValue());
-        
+
         // No updates when state stays
         logic.computeNewState("b", SeverityLevel.MINOR, "high");
         logic.check(false, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         assertEquals("a", logic.getAlarmState().getValue());
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("c", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
         assertEquals("c", logic.getAlarmState().getValue());
-        
+
         // No updates when state stays
         logic.computeNewState("d", SeverityLevel.MAJOR, "ignored");
         logic.check(false, false, SeverityLevel.MAJOR, "ignored", SeverityLevel.MAJOR, "very high");
@@ -193,11 +218,11 @@ public class AlarmLogicHeadlessTest
         System.out.println("* Latched, annunciated: Minor, Major, Minor, OK, Ack");
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Follow into MINOR alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("b", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
@@ -221,11 +246,11 @@ public class AlarmLogicHeadlessTest
         System.out.println("* Latched, annunciated: Major, Minor, Major, Ack, Minor, OK.");
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
-    
+
         // MINOR, but latch MAJOR alarm (not annunciated)
         logic.computeNewState("b", SeverityLevel.MINOR, "just high");
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR, "very high");
@@ -241,7 +266,7 @@ public class AlarmLogicHeadlessTest
         // MINOR
         logic.computeNewState("d", SeverityLevel.MINOR, "just high");
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR_ACK, "very high");
-        
+
         // OK
         logic.computeNewState("e", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -253,11 +278,11 @@ public class AlarmLogicHeadlessTest
         System.out.println("* Latched, annunciated: Major, Minor, Ack, Major, Ack, Minor, OK.");
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
-    
+
         // MINOR, but latched to MAJOR alarm (not annunciated)
         logic.computeNewState("b", SeverityLevel.MINOR, "just high");
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR, "very high");
@@ -281,7 +306,7 @@ public class AlarmLogicHeadlessTest
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MINOR_ACK, "just high");
         assertEquals("d", logic.getAlarmState().getValue());
-        
+
         // OK
         logic.computeNewState("e", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -293,11 +318,11 @@ public class AlarmLogicHeadlessTest
         System.out.println("* Unlatched, annunciated: Major, Minor, Major, Ack, Minor, OK.");
         final AlarmLogicDemo logic = new AlarmLogicDemo(false, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
-    
+
         // Follow into MINOR (not annunc)
         logic.computeNewState("b", SeverityLevel.MINOR, "high");
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
@@ -313,7 +338,7 @@ public class AlarmLogicHeadlessTest
         // MINOR, but remember that MAJOR was ack'ed
         logic.computeNewState("d", SeverityLevel.MINOR, "just high");
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR_ACK, "very high");
-        
+
         // OK
         logic.computeNewState("e", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -326,12 +351,12 @@ public class AlarmLogicHeadlessTest
         final AlarmLogicDemo logic = new AlarmLogicDemo(false, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // Follow into MAJOR alarm
         logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
         assertEquals("a", logic.getAlarmState().getValue());
-    
+
         // Follow into MINOR (not annunc)
         logic.computeNewState("b", SeverityLevel.MINOR, "high");
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
@@ -352,7 +377,7 @@ public class AlarmLogicHeadlessTest
         // MINOR, but remember that MAJOR was ack'ed
         logic.computeNewState("d", SeverityLevel.MINOR, "just high");
         logic.check(true, false, SeverityLevel.MINOR, "just high", SeverityLevel.MAJOR_ACK, "very high");
-        
+
         // OK
         logic.computeNewState("e", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -366,9 +391,9 @@ public class AlarmLogicHeadlessTest
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, delay);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // MAJOR alarm has no immediate effect
-        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");      
+        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
 
@@ -384,7 +409,7 @@ public class AlarmLogicHeadlessTest
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
     }
-    
+
     @Test
     public void testLatchedAnnunciatedDelayed() throws Exception
     {
@@ -393,18 +418,18 @@ public class AlarmLogicHeadlessTest
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, delay);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // MAJOR alarm has no immediate effect
-        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");      
+        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // ... until after some delay
         System.out.println("wait...");
         Thread.sleep(delay * 1500);
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
         assertEquals("a", logic.getAlarmState().getValue());
-        
+
         // Clear PV, but alarm still latched
         logic.computeNewState("b", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MAJOR, "very high");
@@ -415,25 +440,25 @@ public class AlarmLogicHeadlessTest
         assertEquals("", logic.getAlarmState().getValue());
 
         // -----
-        
+
         // MINOR alarm has no immediate effect
-        logic.computeNewState("c", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
         Thread.sleep(500);
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
 
         // Neither has MAJOR
         final ITimestamp now = TimestampFactory.now();
-        logic.computeNewState(new AlarmState(SeverityLevel.MAJOR, "too high", "d", now));      
+        logic.computeNewState(new AlarmState(SeverityLevel.MAJOR, "too high", "d", now));
         logic.check(true, false, SeverityLevel.MAJOR, "too high", SeverityLevel.OK, OK);
         Thread.sleep(delay * 100);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // Back to MINOR
-        logic.computeNewState("e", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("e", SeverityLevel.MINOR, "high");
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
-        
+
         // ... until latched MAJOR (!) appears after some delay
         System.out.println("wait...");
         Thread.sleep(delay * 1500);
@@ -442,7 +467,7 @@ public class AlarmLogicHeadlessTest
         // Time should match the time of MAJOR event
         assertEquals(now, logic.getAlarmState().getTime());
      }
-    
+
     @Test
     public void testUnlatchedAnnunciatedDelayed() throws Exception
     {
@@ -450,36 +475,36 @@ public class AlarmLogicHeadlessTest
         final int delay = 2;
         final AlarmLogicDemo logic = new AlarmLogicDemo(false, true, delay);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // MAJOR alarm has no immediate effect
-        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");      
+        logic.computeNewState("a", SeverityLevel.MAJOR, "very high");
         logic.check(true, false, SeverityLevel.MAJOR, "very high", SeverityLevel.OK, OK);
-        
+
         // ... until after some delay
         System.out.println("wait...");
         Thread.sleep(delay * 1500);
         logic.check(true, true, SeverityLevel.MAJOR, "very high", SeverityLevel.MAJOR, "very high");
-        
+
         // Clearing the alarm
         logic.computeNewState("b", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
 
         // -----
-        
+
         // MAJOR alarm has no immediate effect
-        logic.computeNewState("c", SeverityLevel.MAJOR, "too high");      
+        logic.computeNewState("c", SeverityLevel.MAJOR, "too high");
         logic.check(true, false, SeverityLevel.MAJOR, "too high", SeverityLevel.OK, OK);
 
         // Back to MINOR
-        logic.computeNewState("d", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("d", SeverityLevel.MINOR, "high");
         logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
-        
+
         // ... until alarm persists, using the last alarm (MINOR) because not latched
         System.out.println("wait...");
         Thread.sleep(delay * 1500);
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
      }
-    
+
     @Test
     public void testLatchedAnnunciatedCount() throws Exception
     {
@@ -488,12 +513,12 @@ public class AlarmLogicHeadlessTest
         int count = 3;
         final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, delay, count);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // (count-1) brief MINOR alarms have no effect
         System.out.println((count-1) + " ignored alarms....");
         for (int i=0; i<count-1; ++i)
         {
-            logic.computeNewState("a", SeverityLevel.MINOR, "high");      
+            logic.computeNewState("a", SeverityLevel.MINOR, "high");
             logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
             logic.computeNewState("b", SeverityLevel.OK, OK);
             logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -501,25 +526,25 @@ public class AlarmLogicHeadlessTest
 
         // But when they reach the count, it matters
         System.out.println("Final alarm to get count of " + count);
-        logic.computeNewState("c", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         // Clear alarm
-        logic.computeNewState("d", SeverityLevel.OK, OK);      
+        logic.computeNewState("d", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
         // Ack.
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Change the count
         count = 10;
         logic.setCount(count);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // (count-1) brief MINOR alarms have no effect
         System.out.println((count-1) + " ignored alarms....");
         for (int i=0; i<count-1; ++i)
         {
-            logic.computeNewState("e", SeverityLevel.MINOR, "high");      
+            logic.computeNewState("e", SeverityLevel.MINOR, "high");
             logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
             logic.computeNewState("f", SeverityLevel.OK, OK);
             logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -527,7 +552,7 @@ public class AlarmLogicHeadlessTest
 
         // But when they reach the count, it matters
         System.out.println("Final alarm to get count of " + count);
-        logic.computeNewState("g", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("g", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
     }
 
@@ -539,25 +564,25 @@ public class AlarmLogicHeadlessTest
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         assertEquals("", logic.getAlarmState().getValue());
         assertTrue(logic.isEnabled());
-        
+
         // Disabling results in one update that fakes an all OK
         // with message "Disabled"
         logic.setEnabled(false);
         logic.checkEnablementChange();
         assertFalse(logic.isEnabled());
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, Messages.AlarmMessageDisabled);
-        
+
         // Should now ignore received MINOR alarm
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, Messages.AlarmMessageDisabled);
-        
+
         // Re-enable
         logic.setEnabled(true);
         logic.checkEnablementChange();
         assertTrue(logic.isEnabled());
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         assertEquals("a", logic.getAlarmState().getValue());
-        
+
         // Another Minor doesn't matter
         logic.computeNewState("a2", SeverityLevel.MINOR, "high");
         logic.check(false, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
@@ -567,13 +592,13 @@ public class AlarmLogicHeadlessTest
         logic.computeNewState("b", SeverityLevel.MAJOR, "hihi");
         logic.check(true, true, SeverityLevel.MAJOR, "hihi", SeverityLevel.MAJOR, "hihi");
         assertEquals("b", logic.getAlarmState().getValue());
-        
+
         // Disable again
         logic.setEnabled(false);
         logic.checkEnablementChange();
         assertFalse(logic.isEnabled());
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, Messages.AlarmMessageDisabled);
-        
+
         // Re-enable, and MAJOR alarm resurfaces since nothing else was received
         logic.setEnabled(true);
         logic.checkEnablementChange();
@@ -581,7 +606,7 @@ public class AlarmLogicHeadlessTest
         logic.check(true, true, SeverityLevel.MAJOR, "hihi", SeverityLevel.MAJOR, "hihi");
         assertEquals("b", logic.getAlarmState().getValue());
     }
-    
+
     /** There used to be an error in the logic:
      *  After getting 'count' alarms within 'delay',
      *  it would immediately react to the next one
@@ -596,12 +621,12 @@ public class AlarmLogicHeadlessTest
         int count = 5;
         final AlarmLogicDemo logic = new AlarmLogicDemo(false, true, delay, count);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // (count-1) brief MINOR alarms have no effect
         System.out.println((count-1) + " ignored alarms....");
         for (int i=0; i<count-1; ++i)
         {
-            logic.computeNewState("a", SeverityLevel.MINOR, "high");      
+            logic.computeNewState("a", SeverityLevel.MINOR, "high");
             logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
             logic.computeNewState("b", SeverityLevel.OK, OK);
             logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
@@ -609,27 +634,27 @@ public class AlarmLogicHeadlessTest
 
         // But when they reach the count, it matters
         System.out.println("Final alarm to get count of " + count);
-        logic.computeNewState("c", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         // Clear alarm
-        logic.computeNewState("d", SeverityLevel.OK, OK);      
+        logic.computeNewState("d", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Start over: another (count-1) brief MINOR alarms have no effect
         System.out.println((count-1) + " ignored alarms....");
         for (int i=0; i<count-1; ++i)
         {
-            logic.computeNewState("a2", SeverityLevel.MINOR, "high");      
+            logic.computeNewState("a2", SeverityLevel.MINOR, "high");
             logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.OK, OK);
             logic.computeNewState("b2", SeverityLevel.OK, OK);
             logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         }
         // But when they reach the count, it matters
         System.out.println("Final alarm to get count of " + count);
-        logic.computeNewState("c2", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c2", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
         // Clear alarm
-        logic.computeNewState("d", SeverityLevel.OK, OK);      
+        logic.computeNewState("d", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
     }
 
@@ -639,37 +664,80 @@ public class AlarmLogicHeadlessTest
         System.out.println("* testMaintenanceMode");
         AlarmLogicDemo logic = new AlarmLogicDemo(false, true);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         AlarmLogic.setMaintenanceMode(true);
-     
+
         // Normal alarm
-        logic.computeNewState("a", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        
+
         // INVALID is ack'ed automatically, no annunciation
         logic.computeNewState("b", SeverityLevel.INVALID, "Disconnected");
         logic.check(true, false, SeverityLevel.INVALID, "Disconnected", SeverityLevel.INVALID_ACK, "Disconnected");
 
         // Another non-INVALID alarm comes through
-        logic.computeNewState("c", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        
+
         // -- Similar, but with 'priority' alarm --
         logic = new AlarmLogicDemo(false, true);
         logic.setPriority();
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        
+
         // Normal alarm
-        logic.computeNewState("a", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
-        
+
         // INVALID is _not_ ack'ed, there _is_ annunciation:
         // Priority alarm ignores the maintenance mode
         logic.computeNewState("b", SeverityLevel.INVALID, "Disconnected");
         logic.check(true, true, SeverityLevel.INVALID, "Disconnected", SeverityLevel.INVALID, "Disconnected");
 
         // Another non-INVALID alarm comes through
-        logic.computeNewState("c", SeverityLevel.MINOR, "high");      
+        logic.computeNewState("c", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+    }
+
+    @Test
+    public void testGlobalNotifications() throws Exception
+    {
+        System.out.println("* testGlobalNotifications");
+        // Latch, annunciate, no local delay & count, global notification after 5s
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, 5);
+        logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+
+        // Normal alarm
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
+        logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+
+        // Return to OK
+        logic.computeNewState("b", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
+
+        // Acknowledged in time, all clear
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+
+        // There should have been no global alarm
+        logic.checkGlobalUpdates(0);
+
+        // ------
+
+        // Alarm that clears, but is not acknowledged
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
+        logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+        logic.computeNewState("b", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
+
+        // Nothing happens right away
+        logic.checkGlobalUpdates(0);
+
+        // There should be a global alarm after the delay
+        Thread.sleep(6000);
+        logic.checkGlobalUpdates(1);
+
+        // Alarm that doesn't clear
+
+        // There should have been a global alarm
     }
 }

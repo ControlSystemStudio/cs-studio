@@ -40,7 +40,7 @@ public class AlarmLogic
 {
     /** Timer for handling delayed alarms */
     private static Timer delay_timer = new Timer("Alarm Delay Timer", true); //$NON-NLS-1$
-    
+
     /** Helper for checking alarms after a delay.
      *  Started with a new state, it will trigger a transition to that
      *  state only after a delay.
@@ -52,7 +52,7 @@ public class AlarmLogic
     class DelayedAlarmCheck extends TimerTask
     {
         private AlarmState state;
-        
+
         /** Initialize
          *  @param new_state State to which we would go if there was no delay
          *  @param seconds Delay after which to re-evaluate
@@ -106,13 +106,13 @@ public class AlarmLogic
             updateState(state, false);
         }
     }
-    
+
     /** @see #getMaintenanceMode() */
     private static volatile boolean maintenance_mode = false;
 
     /** Listener to notify on alarm state changes */
     final private AlarmLogicListener listener;
-    
+
     /** Is logic enabled, or only following the 'current' PV state
      *  without actually alarming?
      */
@@ -120,30 +120,33 @@ public class AlarmLogic
 
     /** Pending delayed alarm state update or <code>null</code> */
     private volatile DelayedAlarmCheck delayed_check = null;
-    
+
     /** Latch the highest received alarm severity/status?
      *  When <code>false</code>, the latched alarm state actually
      *  follows the current value of the PV without requiring
      *  acknowledgment.
      */
     private boolean latching;
-    
+
     /** Annunciate alarms? */
     private boolean annunciating;
-    
+
     /** Does this alarm have priority in maintenance mode, i.e.
      *  INVALID should still be annunciated in maintenance mode,
      *  and the annunciator will not suppress it within a flurry of
      *  alarms that are usually throttled/summarized
      */
     private boolean has_priority = false;
-    
+
     /** Require minimum time [seconds] in alarm before indicating alarm */
     private int delay;
-    
+
     /** Alarm when PV != OK more often than this count within delay */
     private AlarmStateHistory alarm_history = null;
-    
+
+    /** Delay [seconds] after which a 'global' alarm state update is sent */
+    final private int global_delay;
+
     /** Current state of the control system channel */
     private AlarmState current_state;
 
@@ -154,7 +157,7 @@ public class AlarmLogic
      *  Is cached in case we get re-enabled, whereupon it is used
      */
     private volatile AlarmState disabled_state = null;
-    
+
     /** Initialize
      *  @param listener {@link AlarmLogicListener}
      *  @param latching Latch the highest received alarm severity?
@@ -163,13 +166,15 @@ public class AlarmLogic
      *  @param count Alarm when PV != OK more often than this count within delay
      *  @param current_state Current alarm state of PV
      *  @param alarm_state Alarm logic state
+     *  @param global_delay Delay [seconds] after which a 'global' notification is sent. 0 to disable
      */
     public AlarmLogic(final AlarmLogicListener listener,
     		final boolean latching, final boolean annunciating,
             final int delay,
             final int count,
             final AlarmState current_state,
-            final AlarmState alarm_state)
+            final AlarmState alarm_state,
+            final int global_delay)
     {
     	this.listener = listener;
         this.latching = latching;
@@ -179,8 +184,9 @@ public class AlarmLogic
             alarm_history = new AlarmStateHistory(count);
         this.current_state = current_state;
         this.alarm_state = alarm_state;
+        this.global_delay = global_delay;
     }
-    
+
     /** Set maintenance mode.
      *  @param maintenance_mode
      *  @see #getMaintenanceMode()
@@ -203,7 +209,7 @@ public class AlarmLogic
     {
         return maintenance_mode;
     }
-    
+
     /** @param enable Enable or disable the logic? */
     public void setEnabled(final boolean enable)
     {
@@ -243,7 +249,7 @@ public class AlarmLogic
     {
         return enabled;
     }
-    
+
     /** @param annunciating <code>true</code> to annunciate */
     synchronized public void setAnnunciate(final boolean annunciating)
     {
@@ -279,13 +285,13 @@ public class AlarmLogic
     {
         delay = seconds;
     }
-    
+
     /** @return Alarm delay in seconds */
     synchronized public int getDelay()
     {
         return delay;
     }
-    
+
     /** @return count Alarm when PV != OK more often than this count within delay */
     synchronized protected int getCount()
     {
@@ -318,7 +324,7 @@ public class AlarmLogic
     {
         return alarm_state;
     }
-    
+
     /** Compute the new alarm state based on new data from control system.
      *  @param received_state Severity/Status received from control system
      */
@@ -340,7 +346,7 @@ public class AlarmLogic
             // If there's no change to the current severity, we're done.
             if (received_state.getSeverity() == previous_severity)
                 return;
-            
+
             // Does this 'clear' an acknowledged severity?
             // - or -
             // are we in maintenance mode, and this is a new
@@ -363,10 +369,10 @@ public class AlarmLogic
         }
         updateState(received_state, getDelay() > 0);
     }
-    
+
     /** Compute the new alarm state based on current state and new data from
      *  control system.
-     *  
+     *
      *  @param received_state Severity/Status received from control system,
      *                                         or
      *                        the delayed new state from DelayedAlarmCheck
@@ -416,7 +422,7 @@ public class AlarmLogic
             }
             // In maint. mode, INVALID is automatically ack'ed and not annunciated,
             // except for 'priority' alarms
-            if (maintenance_mode && 
+            if (maintenance_mode &&
                 !has_priority &&
                 alarm_state.getSeverity() == SeverityLevel.INVALID)
             {
@@ -430,7 +436,7 @@ public class AlarmLogic
         if (annunc_level != null)
             listener.annunciateAlarm(annunc_level);
     }
-    
+
     /** Check if the new state adds up to 'count' alarms within 'delay'
      *  @param received_state
      *  @return <code>true</code> if alarm count reached/exceeded
