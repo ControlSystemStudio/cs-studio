@@ -54,8 +54,8 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
         {
             for (int secs=0; delayed_state == null  &&  secs<4; ++secs)
                 wait(1000);
+            assertEquals(state, delayed_state);
         }
-        assertEquals(state, delayed_state);
 
         // Delay should be 'idle', no pending state
         assertNull(delay.getState());

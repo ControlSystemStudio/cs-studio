@@ -375,7 +375,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
         // New, higher alarm level?
         if (raised_level != null)
         {
-            if (annunciating)
+            if (isAnnunciating())
                 listener.annunciateAlarm(raised_level);
             if (global_delay > 0)
                 global_check.schedule_update(global_delay);
@@ -440,8 +440,13 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
      */
     public void updateGlobalState()
     {
-        in_global_alarm = true;
-        listener.globalStateChanged(alarm_state);
+        final AlarmState state;
+        synchronized (this)
+        {
+            in_global_alarm = true;
+            state = alarm_state;
+        }
+        listener.globalStateChanged(state);
     }
 
     /** If there was a 'global' alarm, clear it and notify listener */
