@@ -40,7 +40,6 @@ public class EllipseAlarmBehavior extends AbstractDesyAlarmBehavior<AbstractWidg
      */
     public EllipseAlarmBehavior() {
         // add Invisible P0roperty Id here
-        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
