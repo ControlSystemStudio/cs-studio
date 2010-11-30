@@ -83,7 +83,7 @@ public class AlarmLogicHeadlessTest
         // AlarmLogicListener
         public void globalStateChanged(final AlarmState alarm)
         {
-        	System.out.println("Global alarm state: " + alarm);
+        	System.out.println(TimestampFactory.now() + ": Global alarm state: " + alarm);
         	global_updates.incrementAndGet();
         }
 
@@ -702,8 +702,10 @@ public class AlarmLogicHeadlessTest
     public void testGlobalNotifications() throws Exception
     {
         System.out.println("* testGlobalNotifications");
-        // Latch, annunciate, no local delay & count, global notification after 3s
-        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, 3);
+        // Latch, annunciate, no local delay & count, global notification after 4s
+        final int global_delay = 4;
+        int expected_count = 0;
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, global_delay);
         logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
 
         // Normal alarm
@@ -715,40 +717,63 @@ public class AlarmLogicHeadlessTest
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
 
         // Acknowledged in time, all clear
+        Thread.sleep(global_delay * 500);
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
 
         // There should have been no global alarm
-        logic.checkGlobalUpdates(0);
+        logic.checkGlobalUpdates(expected_count);
 
         // Even after delay, there should be no global update
-        Thread.sleep(4000);
-        logic.checkGlobalUpdates(0);
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(expected_count);
+
+        // ------
+
+        // Alarm that doesn't clear
+        System.out.println("Trigger of 'global' alarm:");
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
+        logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+
+        // Nothing happens right away
+        logic.checkGlobalUpdates(expected_count);
+
+        // There should be a global alarm after the delay
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(++expected_count);
+
+        // Acknowledged but still in alarm, the global state stays
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.MINOR, "high", SeverityLevel.MINOR_ACK, "high");
+        Thread.sleep(global_delay * 500);
+        logic.checkGlobalUpdates(expected_count);
+
+        // Alarm clears, was already ack'ed: All clear, global update
+        logic.computeNewState("b", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+        Thread.sleep(global_delay * 500);
+        logic.checkGlobalUpdates(++expected_count);
 
         // ------
 
         // Alarm that clears, but is not acknowledged
+        System.out.println("Trigger of 'global' alarm:");
         logic.computeNewState("a", SeverityLevel.MINOR, "high");
         logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+        Thread.sleep(global_delay * 500);
         logic.computeNewState("b", SeverityLevel.OK, OK);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MINOR, "high");
 
         // Nothing happens right away
-        logic.checkGlobalUpdates(0);
+        logic.checkGlobalUpdates(expected_count);
 
         // There should be a global alarm after the delay
-        Thread.sleep(6000);
-        logic.checkGlobalUpdates(1);
+        Thread.sleep(global_delay * 1300);
+        logic.checkGlobalUpdates(++expected_count);
 
         // Once acknowledged, the global state should also clear
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
-        logic.checkGlobalUpdates(2);
-
-        // TODO Alarm that doesn't clear
-
-        // TODO There should have been a global alarm
-
-        // TODO Once acknowledged, the global state should also clear
+        logic.checkGlobalUpdates(++expected_count);
     }
 }
