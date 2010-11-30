@@ -101,7 +101,7 @@ public class TimerQueueUnitTest
         final ScheduledExecutorService executor = Executors.newScheduledThreadPool(10);
 
         // Schedule stuff on timer in one thread
-        new Thread("TimerTest")
+        final Thread timer_thread = new Thread("TimerTest")
         {
             @Override
             public void run()
@@ -129,10 +129,10 @@ public class TimerQueueUnitTest
                     }
                 }
             }
-        }.start();
+        };
 
         // Schedule stuff on scheduled executer in other thread
-        new Thread("ExecutorTest")
+        final Thread executor_thread = new Thread("ExecutorTest")
         {
             @Override
             public void run()
@@ -159,11 +159,13 @@ public class TimerQueueUnitTest
                     }
                 }
             }
-        }.start();
+        };
 
-        synchronized (this)
-        {
-            wait();
-        }
+        timer_thread.start();
+        executor_thread.start();
+
+        // Run forever
+        timer_thread.join();
+        executor_thread.join();
     }
 }
