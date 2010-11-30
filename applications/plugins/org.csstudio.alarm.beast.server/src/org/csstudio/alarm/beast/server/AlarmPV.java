@@ -293,7 +293,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
             message = NLS.bind(Messages.AnnunciationFmt,
                                level.getDisplayName(), description);
         if (server != null)
-            server.getTalker().say(level, message);
+            server.sendAnnunciation(level, message);
     }
 
 	/** AlarmLogicListener: {@inheritDoc} */

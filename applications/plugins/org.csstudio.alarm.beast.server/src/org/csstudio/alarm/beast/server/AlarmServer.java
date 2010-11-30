@@ -27,13 +27,13 @@ import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 
 /** Alarm Server
- *  
+ *
  *  Obtains configuration for all PVs from storage, then updates the PVs'
  *  status/severity from the control system.
  *  <p>
  *  Ignores the hierarchy which (some) of the clients may use to
  *  display the alarm state of PVs.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -47,9 +47,6 @@ public class AlarmServer
 
     /** RDB for configuration/state */
     final private AlarmRDB rdb;
-    
-    /** Talker which can annunciate messages */
-    final private Talker talker;
 
     /** Messenger to communicate with clients */
     final private ServerCommunicator messenger;
@@ -58,12 +55,12 @@ public class AlarmServer
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
 	private AlarmHierarchy alarm_tree;
-    
+
     /** All the PVs in the alarm_tree, sorted by name
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
     private AlarmPV pv_list[] = new AlarmPV[0];
-    
+
     /** All the PVs in the model, mapping PV name (not path name!) to AlarmPV
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
@@ -78,24 +75,22 @@ public class AlarmServer
      *  @param work_queue Work queue of the 'main' thread
      *  @throws Exception on error
      */
-    public AlarmServer(final Talker talker, final WorkQueue work_queue) throws Exception
+    public AlarmServer(final WorkQueue work_queue) throws Exception
     {
         this.work_queue = work_queue;
         rdb = new AlarmRDB(this, Preferences.getRDB_Url(),
         		Preferences.getRDB_User(), Preferences.getRDB_Password(),
         		Preferences.getAlarmTreeRoot());
-        this.talker = talker;
-        this.messenger = new ServerCommunicator(this, work_queue);
-        this.messenger.start();
+        messenger = new ServerCommunicator(this, work_queue);
         readConfiguration();
     }
-    
+
     /** @return Name of configuration root element */
     public String getRootName()
     {
         return root_name;
     }
-    
+
     /** Set maintenance mode.
      *  @param maintenance_mode
      *  @see AlarmLogic#getMaintenanceMode()
@@ -137,7 +132,7 @@ public class AlarmServer
         final double free = Runtime.getRuntime().freeMemory() / (1024.0*1024.0);
         final double total = Runtime.getRuntime().totalMemory() / (1024.0*1024.0);
         final double max = Runtime.getRuntime().maxMemory() / (1024.0*1024.0);
-        
+
         final DateFormat format = new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
         System.out.format("%s == Alarm Server Memory: Max %.2f MB, Free %.2f MB (%.1f %%), total %.2f MB (%.1f %%)\n",
                 format.format(new Date()), max, free, 100.0*free/max, total, 100.0*total/max);
@@ -146,14 +141,16 @@ public class AlarmServer
     /** Release all resources */
     public void close()
     {
-        talker.close();
         messenger.stop();
         rdb.close();
     }
-    
+
     /** Start all the PVs, connect to control system. */
     public void start()
     {
+        messenger.start();
+        messenger.sendAnnunciation(Messages.StartupMessage);
+
         final long delay = Preferences.getPVStartDelay();
         // Must not sync while calling PV, because Channel Access updates
         // might arrive while we're trying to start/stop channels,
@@ -187,6 +184,8 @@ public class AlarmServer
     /** Stop all the PVs, disconnect from control system. */
     public void stop()
     {
+        messenger.sendAnnunciation("Alarm server exiting");
+
         // See deadlock comment in start()
         final AlarmPV pvs[];
         synchronized (this)
@@ -195,12 +194,8 @@ public class AlarmServer
         }
         for (AlarmPV pv : pvs)
             pv.stop();
-    }
-    
-    /** @return Talker */
-    public Talker getTalker()
-    {
-        return talker;
+
+        messenger.stop();
     }
 
     /** Read the initial alarm configuration
@@ -214,7 +209,7 @@ public class AlarmServer
         synchronized (this)
         {
         	alarm_tree = rdb.readConfiguration();
-        	
+
         	// Determine PVs
             final ArrayList<AlarmPV> tmp_pv_array = new ArrayList<AlarmPV>();
             findPVs(alarm_tree, tmp_pv_array);
@@ -374,6 +369,15 @@ public class AlarmServer
         });
 	}
 
+    /** Perform annunciation
+     *  @param level Alarm severity
+     *  @param message Text message to send to annunciator
+     */
+    public void sendAnnunciation(final SeverityLevel level, final String message)
+    {
+        messenger.sendAnnunciation(level, message);
+    }
+
     /** If this is the first successful RDB update after errors,
      *  tell everybody to re-load the configuration because otherwise
      *  they get out of sync.
@@ -383,10 +387,10 @@ public class AlarmServer
     {
         if (! had_RDB_error)
             return;
-        
+
         // We should be on the work queue thread
         work_queue.assertOnThread();
-        
+
         CentralLogger.getInstance().getLogger(this).
             warn("RDB connection recovered, re-loading configuration");
         updateConfig(null);

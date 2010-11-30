@@ -32,6 +32,9 @@ import org.csstudio.platform.logging.JMSLogMessage;
 @SuppressWarnings("nls")
 public class ServerCommunicator extends JMSCommunicationWorkQueueThread
 {
+    /** TYPE identifier used for talk messages */
+    private static final String TYPE_TALK = "talk";
+
     /** Format of time stamps */
     final private SimpleDateFormat date_format =
         new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
@@ -58,10 +61,13 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     // so there is no need to synch' on them.
 
     /** Producer for sending to the 'server' topic */
-    private MessageProducer producer;
+    private MessageProducer server_producer;
+
+    /** Producer for sending to the 'talk' topic */
+    private MessageProducer talk_producer;
 
     /** Consumer for listening to the 'client' topic */
-    private MessageConsumer consumer;
+    private MessageConsumer client_consumer;
 
     /** Initialize communicator that writes to the 'server' topic
      *  and listens to 'client' topic messages
@@ -90,9 +96,10 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     protected void createProducersAndConsumers() throws Exception
     {
         final String config = Preferences.getAlarmTreeRoot();
-        producer = createProducer(Preferences.getJMS_AlarmServerTopic(config));
-        consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
-        consumer.setMessageListener(new MessageListener()
+        server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(config));
+        talk_producer = createProducer(Preferences.getJMS_TalkTopic(config));
+        client_consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
+        client_consumer.setMessageListener(new MessageListener()
         {
             public void onMessage(final Message message)
             {
@@ -109,10 +116,12 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     protected void closeProducersAndConsumers() throws Exception
     {
-        consumer.close();
-        consumer = null;
-        producer.close();
-        producer = null;
+        client_consumer.close();
+        client_consumer = null;
+        talk_producer.close();
+        talk_producer = null;
+        server_producer.close();
+        server_producer = null;
     }
 
     /** Start the communicator */
@@ -145,10 +154,20 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @return MapMessage
      *  @throws Exception on error.
      */
-    private MapMessage createMapMessage(final String text) throws Exception
+    private MapMessage createAlarmMessage(final String text) throws Exception
+    {
+        return createMessage(JMSAlarmMessage.TYPE_ALARM, text);
+    }
+
+    /** Create message initialized with basic alarm & application info
+     *  @param text TEXT property
+     *  @return MapMessage
+     *  @throws Exception on error.
+     */
+    private MapMessage createMessage(final String type, final String text) throws Exception
     {
         final MapMessage map = createMapMessage();
-        map.setString(JMSLogMessage.TYPE, JMSAlarmMessage.TYPE_ALARM);
+        map.setString(JMSLogMessage.TYPE, type);
         map.setString(JMSAlarmMessage.CONFIG, server.getRootName());
         map.setString(JMSLogMessage.TEXT, text);
         map.setString(JMSLogMessage.APPLICATION_ID, Application.APPLICATION_NAME);
@@ -169,11 +188,11 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             {
                 try
                 {
-                    final MapMessage map = createMapMessage(
+                    final MapMessage map = createAlarmMessage(
                            AlarmLogic.getMaintenanceMode()
                            ? JMSAlarmMessage.TEXT_IDLE_MAINTENANCE
                            : JMSAlarmMessage.TEXT_IDLE);
-                    producer.send(map);
+                    server_producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -195,8 +214,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             {
                 try
                 {
-                    final MapMessage map = createMapMessage(JMSAlarmMessage.TEXT_CONFIG);
-                    producer.send(map);
+                    final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_CONFIG);
+                    server_producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -229,7 +248,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             {
                 try
                 {
-                    final MapMessage map = createMapMessage(
+                    final MapMessage map = createAlarmMessage(
                             AlarmLogic.getMaintenanceMode()
                             ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
                             : JMSAlarmMessage.TEXT_STATE);
@@ -241,7 +260,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                     map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
                     map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
                     map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
-                    producer.send(map);
+                    server_producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -266,9 +285,9 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                                             : JMSAlarmMessage.TEXT_DISABLE;
                 try
                 {
-                    final MapMessage map = createMapMessage(text);
+                    final MapMessage map = createAlarmMessage(text);
                     map.setString(JMSLogMessage.NAME, pv.getName());
-                    producer.send(map);
+                    server_producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -278,6 +297,40 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         });
         idle_timer.reset();
 	}
+
+    /** Send message to annunciator
+     *  @param message Message text
+     */
+    public void sendAnnunciation(final String message)
+    {
+        sendAnnunciation (null, message);
+    }
+
+    /** Send message to annunciator
+     *  @param level Severity Level or <code>null</code>
+     *  @param message Message text
+     */
+    public void sendAnnunciation(final SeverityLevel level, final String message)
+    {
+        queueJMSCommunication(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    final MapMessage map = createMessage(TYPE_TALK, message);
+                    if (level != null)
+                        map.setString(JMSLogMessage.SEVERITY, level.name());
+                    talk_producer.send(map);
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).error(
+                            "Error while 'saying' " + message, ex); //$NON-NLS-1$
+                }
+            }
+        });
+    }
 
 	/** Handle messages received from alarm clients.
      *  <p>
