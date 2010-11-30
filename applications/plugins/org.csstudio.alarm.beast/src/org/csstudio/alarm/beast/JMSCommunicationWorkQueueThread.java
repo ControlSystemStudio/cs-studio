@@ -7,16 +7,19 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.util.concurrent.Executor;
+
 import javax.jms.Session;
 
 /** A {@link JMSCommunicationThread} with {@link WorkQueue}.
  *
+ *  Also an {@link Executor}:
  *  Runnables can be added to a work queue, to be executed by the
  *  communication thread.
  *
  *  @author Kay Kasemir
  */
-abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationThread
+abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationThread implements Executor
 {
     /** Work queue handled by the worker thread that connects to JMS */
     final private WorkQueue queue = new WorkQueue();
@@ -31,8 +34,9 @@ abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationTh
 
     /** Add task to the work queue of the JMS communication thread.
      *  @param task Task that will be executed by the communication thread.
+     *  @see Executor
      */
-    protected void queueJMSCommunication(final Runnable task)
+    public void execute(final Runnable task)
     {
         queue.add(task);
     }

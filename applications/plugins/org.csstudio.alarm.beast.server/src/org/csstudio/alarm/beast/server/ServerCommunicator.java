@@ -182,7 +182,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      */
     protected void sendIdleMessage()
     {
-        queueJMSCommunication(new Runnable()
+        execute(new Runnable()
         {
             public void run()
             {
@@ -208,7 +208,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      */
     public void sendReloadMessage()
     {
-        queueJMSCommunication(new Runnable()
+        execute(new Runnable()
         {
             public void run()
             {
@@ -242,7 +242,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             final String value,
             final ITimestamp timestamp)
     {
-        queueJMSCommunication(new Runnable()
+        execute(new Runnable()
         {
             public void run()
             {
@@ -277,7 +277,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      */
     protected void sendEnablementUpdate(final AlarmPV pv, final boolean enabled)
     {
-        queueJMSCommunication(new Runnable()
+        execute(new Runnable()
         {
             public void run()
             {
@@ -312,7 +312,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      */
     public void sendAnnunciation(final SeverityLevel level, final String message)
     {
-        queueJMSCommunication(new Runnable()
+        execute(new Runnable()
         {
             public void run()
             {

@@ -46,7 +46,7 @@ public class JMSCommunicationWorkQueueThreadUnitTest
 
         public void queueMessage(final String text) throws JMSException
         {
-            queueJMSCommunication(new Runnable()
+            execute(new Runnable()
             {
                 public void run()
                 {
