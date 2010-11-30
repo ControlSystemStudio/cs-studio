@@ -7,12 +7,17 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.net.InetAddress;
 import java.text.SimpleDateFormat;
 
 import javax.jms.MapMessage;
+import javax.jms.Message;
+import javax.jms.MessageConsumer;
+import javax.jms.MessageListener;
+import javax.jms.MessageProducer;
 
-import org.csstudio.alarm.beast.JMSAlarmCommunicator;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
+import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
@@ -24,31 +29,48 @@ import org.csstudio.platform.logging.JMSLogMessage;
 /** Communicates alarm system updates between server and clients.
  *  @author Kay Kasemir
  */
-public class ServerCommunicator extends JMSAlarmCommunicator
+@SuppressWarnings("nls")
+public class ServerCommunicator extends JMSCommunicationWorkQueueThread
 {
     /** Format of time stamps */
     final private SimpleDateFormat date_format =
         new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-    
+
     /** Server for which we communicate */
     final private AlarmServer server;
-    
+
     /** Work queue in main application */
     final private WorkQueue work_queue;
 
     /** Timer for sending idle messages */
     final private TimeoutTimer idle_timer;
 
+    /** Host for messages */
+    final private String host = InetAddress.getLocalHost().getHostName();
+
+    /** User for messages. Updated with authenticated user */
+    final private String user = System.getProperty("user.name"); //$NON-NLS-1$
+
+    // Note on synchronization:
+    //
+    // Access to the producer is within the JMSCommunicationThread
+    // that also creates and closes them,
+    // so there is no need to synch' on them.
+
+    /** Producer for sending to the 'server' topic */
+    private MessageProducer producer;
+
+    /** Consumer for listening to the 'client' topic */
+    private MessageConsumer consumer;
+
     /** Initialize communicator that writes to the 'server' topic
      *  and listens to 'client' topic messages
      *  @param server Alarm server
-     *  @param work_queue 
+     *  @param work_queue
      */
     public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue) throws Exception
     {
-        super(server.getRootName(),
-              Preferences.getJMS_AlarmServerTopic(server.getRootName()),
-              Preferences.getJMS_AlarmClientTopic(server.getRootName()), false);
+        super(Preferences.getJMS_URL());
         this.server = server;
         this.work_queue = work_queue;
         idle_timer = new TimeoutTimer(Preferences.getJMS_IdleTimeout()*1000)
@@ -61,8 +83,38 @@ public class ServerCommunicator extends JMSAlarmCommunicator
         };
         // Send initial idle message right away; more via timer
         sendIdleMessage();
-    }    
-    
+    }
+
+    // JMSCommunicationThread
+    @Override
+    protected void createProducersAndConsumers() throws Exception
+    {
+        final String config = Preferences.getAlarmTreeRoot();
+        producer = createProducer(Preferences.getJMS_AlarmServerTopic(config));
+        consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
+        consumer.setMessageListener(new MessageListener()
+        {
+            public void onMessage(final Message message)
+            {
+                if (message instanceof MapMessage)
+                    handleMapMessage((MapMessage) message);
+                else
+                    CentralLogger.getInstance().getLogger(this).error(
+                        "Message type " + message.getClass().getName() + " not handled");
+            }
+        });
+    }
+
+    // JMSCommunicationThread
+    @Override
+    protected void closeProducersAndConsumers() throws Exception
+    {
+        consumer.close();
+        consumer = null;
+        producer.close();
+        producer = null;
+    }
+
     /** Start the communicator */
     @Override
     public void start()
@@ -71,9 +123,9 @@ public class ServerCommunicator extends JMSAlarmCommunicator
     	idle_timer.start();
     }
 
-    /** {@inheritDoc} */
+    /** Stop the communicator */
     @Override
-    synchronized public void close()
+    public void stop()
     {
         idle_timer.cancel();
         try
@@ -85,7 +137,7 @@ public class ServerCommunicator extends JMSAlarmCommunicator
             CentralLogger.getInstance().getLogger(this)
                 .warn("Idle Timer join failed", ex); //$NON-NLS-1$
         }
-        super.close();
+        super.stop();
     }
 
     /** Create message initialized with basic alarm & application info
@@ -95,10 +147,16 @@ public class ServerCommunicator extends JMSAlarmCommunicator
      */
     private MapMessage createMapMessage(final String text) throws Exception
     {
-        return createBasicMapMessage(Application.APPLICATION_NAME,
-                                    JMSAlarmMessage.TYPE_ALARM, text);
+        final MapMessage map = createMapMessage();
+        map.setString(JMSLogMessage.TYPE, JMSAlarmMessage.TYPE_ALARM);
+        map.setString(JMSAlarmMessage.CONFIG, server.getRootName());
+        map.setString(JMSLogMessage.TEXT, text);
+        map.setString(JMSLogMessage.APPLICATION_ID, Application.APPLICATION_NAME);
+        map.setString(JMSLogMessage.HOST, host);
+        map.setString(JMSLogMessage.USER, user);
+        return map;
     }
-    
+
     /** Send idle message, which includes the operating state.
      *  This is usually invoked by the idle_timer,
      *  but can be invoked on purpose to update clients in mode changes ASAP.
@@ -111,14 +169,11 @@ public class ServerCommunicator extends JMSAlarmCommunicator
             {
                 try
                 {
-                    synchronized (this)
-                    {
-                        final MapMessage map = createMapMessage(
-                               AlarmLogic.getMaintenanceMode()
-                               ? JMSAlarmMessage.TEXT_IDLE_MAINTENANCE
-                               : JMSAlarmMessage.TEXT_IDLE);
-                        producer.send(map);
-                    }
+                    final MapMessage map = createMapMessage(
+                           AlarmLogic.getMaintenanceMode()
+                           ? JMSAlarmMessage.TEXT_IDLE_MAINTENANCE
+                           : JMSAlarmMessage.TEXT_IDLE);
+                    producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -140,13 +195,8 @@ public class ServerCommunicator extends JMSAlarmCommunicator
             {
                 try
                 {
-                    synchronized (this)
-                    {
-                        final MapMessage map = createMapMessage(JMSAlarmMessage.TEXT_CONFIG);
-                        producer.send(map);
-                        // Inform idle timer
-                        idle_timer.reset();
-                    }
+                    final MapMessage map = createMapMessage(JMSAlarmMessage.TEXT_CONFIG);
+                    producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -154,6 +204,7 @@ public class ServerCommunicator extends JMSAlarmCommunicator
                 }
             }
         });
+        idle_timer.reset();
     }
 
     /** Notify clients of new alarm state
@@ -178,24 +229,19 @@ public class ServerCommunicator extends JMSAlarmCommunicator
             {
                 try
                 {
-                    synchronized (this)
-                    {
-                        final MapMessage map = createMapMessage(
-                                AlarmLogic.getMaintenanceMode()
-                                ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
-                                : JMSAlarmMessage.TEXT_STATE);
-                        map.setString(JMSLogMessage.NAME, pv.getName());
-                        map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
-                        map.setString(JMSAlarmMessage.STATUS,  alarm_message);
-                        if (value != null)
-                            map.setString(JMSAlarmMessage.VALUE, value);
-                        map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
-                        map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
-                        map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
-                        producer.send(map);
-                        // Inform idle timer
-                        idle_timer.reset();
-                    }
+                    final MapMessage map = createMapMessage(
+                            AlarmLogic.getMaintenanceMode()
+                            ? JMSAlarmMessage.TEXT_STATE_MAINTENANCE
+                            : JMSAlarmMessage.TEXT_STATE);
+                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
+                    map.setString(JMSAlarmMessage.STATUS,  alarm_message);
+                    if (value != null)
+                        map.setString(JMSAlarmMessage.VALUE, value);
+                    map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    map.setString(JMSAlarmMessage.CURRENT_SEVERITY, current_severity.name());
+                    map.setString(JMSAlarmMessage.CURRENT_STATUS, current_message);
+                    producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -203,6 +249,7 @@ public class ServerCommunicator extends JMSAlarmCommunicator
                 }
             }
         });
+        idle_timer.reset();
     }
 
     /** Notify clients of enablement state
@@ -219,14 +266,9 @@ public class ServerCommunicator extends JMSAlarmCommunicator
                                             : JMSAlarmMessage.TEXT_DISABLE;
                 try
                 {
-                    synchronized (this)
-                    {
-                        final MapMessage map = createMapMessage(text);
-                        map.setString(JMSLogMessage.NAME, pv.getName());
-                        producer.send(map);
-                        // Inform idle timer
-                        idle_timer.reset();
-                    }
+                    final MapMessage map = createMapMessage(text);
+                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    producer.send(map);
                 }
                 catch (Exception ex)
                 {
@@ -234,6 +276,7 @@ public class ServerCommunicator extends JMSAlarmCommunicator
                 }
             }
         });
+        idle_timer.reset();
 	}
 
 	/** Handle messages received from alarm clients.
@@ -247,9 +290,7 @@ public class ServerCommunicator extends JMSAlarmCommunicator
      *  but to be on the save side we run model config updates
      *  in the main thread.
      */
-    @SuppressWarnings("nls")
-    @Override
-    protected void handleMapMessage(final MapMessage message)
+    private void handleMapMessage(final MapMessage message)
     {
         try
         {

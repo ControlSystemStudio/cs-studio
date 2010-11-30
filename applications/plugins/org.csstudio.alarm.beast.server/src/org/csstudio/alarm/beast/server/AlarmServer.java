@@ -147,7 +147,7 @@ public class AlarmServer
     public void close()
     {
         talker.close();
-        messenger.close();
+        messenger.stop();
         rdb.close();
     }
     
