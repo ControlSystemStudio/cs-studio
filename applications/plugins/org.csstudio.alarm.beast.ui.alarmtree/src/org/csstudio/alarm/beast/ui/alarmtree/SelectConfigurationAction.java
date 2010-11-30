@@ -21,16 +21,17 @@ import org.eclipse.swt.widgets.ToolItem;
  *  and allows selection of a different alarm configuration
  *  @author Kay Kasemir
  */
-public class ChangeConfigurationAction extends Action implements IMenuCreator, AlarmClientModelConfigListener
+public class SelectConfigurationAction extends Action implements IMenuCreator, AlarmClientModelConfigListener
 {
 	final private AlarmClientModel model;
 	private Menu menu;
 	private ToolBar toolbar;
 
-	public ChangeConfigurationAction(final AlarmClientModel model)
+	public SelectConfigurationAction(final AlarmClientModel model)
     {
 		super(model.getConfigurationName(), IAction.AS_DROP_DOWN_MENU);
 		this.model = model;
+		setToolTipText(Messages.SelectAlarmConfiguration);
 		setMenuCreator(this);
     }
 
@@ -92,10 +93,10 @@ public class ChangeConfigurationAction extends Action implements IMenuCreator, A
 	                        public void widgetSelected(final SelectionEvent e)
 	                        {
 								// Prohibit more changes while loading new config
-								ChangeConfigurationAction.this.setEnabled(false);
+								SelectConfigurationAction.this.setEnabled(false);
 								// Use item text to set model name
 								final String new_config = item.getText();
-								model.setConfigurationName(new_config, ChangeConfigurationAction.this);
+								model.setConfigurationName(new_config, SelectConfigurationAction.this);
 	                        }
 						});
 					}
