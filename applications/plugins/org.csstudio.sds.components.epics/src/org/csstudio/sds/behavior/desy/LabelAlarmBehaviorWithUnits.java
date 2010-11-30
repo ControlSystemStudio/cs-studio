@@ -38,14 +38,15 @@ import org.epics.css.dal.simple.MetaData;
  * @version $Revision: 1.4.2.16 $
  * @since 26.03.2010
  */
-public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
+public class LabelAlarmBehaviorWithUnits extends AbstractDesyAlarmBehavior<LabelModel> {
 
 
     /**
      * Constructor.
      */
-    public LabelAlarmBehavior() {
+    public LabelAlarmBehaviorWithUnits() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
+        addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
     }
 
@@ -73,6 +74,7 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
 
     @Override
     protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
+        model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
     }
 
   }

@@ -43,7 +43,6 @@ public class EllipseConnectionBehavior extends AbstractDesyConnectionBehavior<Ab
      */
     public EllipseConnectionBehavior() {
         // add Invisible Property Id here
-        addInvisiblePropertyId(EllipseModel.PROP_ACTIONDATA);
         addInvisiblePropertyId(EllipseModel.PROP_FILL);
         addInvisiblePropertyId(EllipseModel.PROP_ORIENTATION);
         addInvisiblePropertyId(EllipseModel.PROP_TRANSPARENT);
