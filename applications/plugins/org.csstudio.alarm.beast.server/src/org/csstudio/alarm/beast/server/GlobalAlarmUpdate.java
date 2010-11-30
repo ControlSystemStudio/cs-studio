@@ -67,6 +67,7 @@ public class GlobalAlarmUpdate
         }
         timer.schedule(new_task, seconds * 1000L);
     }
+
     /** Cancel delayed alarm check because control system PV cleared.
      *  OK to call multiple times, even when nothing was scheduled.
      */

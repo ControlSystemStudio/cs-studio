@@ -46,11 +46,10 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
      */
     private volatile boolean enabled = true;
 
-    /** Pending delayed alarm state update or <code>null</code> */
-    final private DelayedAlarmUpdate delayed_check = new DelayedAlarmUpdate(this);
-
-    /** Pending global alarm state update or <code>null</code> */
-    final private GlobalAlarmUpdate global_check = new GlobalAlarmUpdate(this);
+    /** 'Current' state that was received while disabled.
+     *  Is cached in case we get re-enabled, whereupon it is used
+     */
+    private volatile AlarmState disabled_state = null;
 
     /** Latch the highest received alarm severity/status?
      *  When <code>false</code>, the latched alarm state actually
@@ -72,11 +71,11 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     /** Require minimum time [seconds] in alarm before indicating alarm */
     private int delay;
 
+    /** Pending delayed alarm state update or <code>null</code> */
+    final private DelayedAlarmUpdate delayed_check = new DelayedAlarmUpdate(this);
+
     /** Alarm when PV != OK more often than this count within delay */
     private AlarmStateHistory alarm_history = null;
-
-    /** Delay [seconds] after which a 'global' alarm state update is sent */
-    final private int global_delay;
 
     /** Current state of the control system channel */
     private AlarmState current_state;
@@ -84,10 +83,16 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     /** Alarm logic state, with might be latched or delayed from current_state */
     private AlarmState alarm_state;
 
-    /** 'Current' state that was received while disabled.
-     *  Is cached in case we get re-enabled, whereupon it is used
+    /** Delay [seconds] after which a 'global' alarm state update is sent */
+    final private int global_delay;
+
+    /** Pending global alarm state update or <code>null</code> */
+    final private GlobalAlarmUpdate global_check = new GlobalAlarmUpdate(this);
+
+    /** Is there an active 'global' alarm, i.e. a global alarm notification
+     *  has been sent?
      */
-    private volatile AlarmState disabled_state = null;
+    private boolean in_global_alarm = false;
 
     /** Initialize
      *  @param listener {@link AlarmLogicListener}
@@ -259,9 +264,9 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     /** Compute the new alarm state based on new data from control system.
      *  @param received_state Severity/Status received from control system
      */
-    @SuppressWarnings("nls")
     public void computeNewState(final AlarmState received_state)
     {
+        final boolean return_to_ok;
         synchronized (this)
         {
             // When disabled, ignore...
@@ -278,26 +283,31 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             if (received_state.getSeverity() == previous_severity)
                 return;
 
-            // Does this 'clear' an acknowledged severity?
-            // - or -
-            // are we in maintenance mode, and this is a new
+            // Does this 'clear' an acknowledged severity? -> OK
+            final boolean alarm_cleared =
+                   (current_state.getSeverity() == SeverityLevel.OK  &&
+                    !alarm_state.getSeverity().isActive());
+            // Are we in maintenance mode, and this is a new
             // alarm after an INVALID one that was suppressed?
-            if ((current_state.getSeverity() == SeverityLevel.OK  &&
-                 !alarm_state.getSeverity().isActive())
-                 ||
+            // -> At least briefly return to OK so that 'new' alarm
+            //    will take effect
+            final boolean maint_leaving_invalid =
                 (maintenance_mode &&
-                 (alarm_state.getSeverity() == SeverityLevel.INVALID_ACK  ||
-                  alarm_state.getSeverity() == SeverityLevel.INVALID)  &&
-                 current_state.getSeverity() != SeverityLevel.INVALID))
-            {
-                alarm_state = new AlarmState(SeverityLevel.OK,
-                        SeverityLevel.OK.getDisplayName(), "",
-                        received_state.getTime());
-                // If a delayed alarm timer was started, cancel it
-                delayed_check.cancel();
-                // Also cancel 'global' timers
-                global_check.cancel();
-            }
+                        (alarm_state.getSeverity() == SeverityLevel.INVALID_ACK  ||
+                         alarm_state.getSeverity() == SeverityLevel.INVALID)  &&
+                        current_state.getSeverity() != SeverityLevel.INVALID);
+            return_to_ok = alarm_cleared  ||  maint_leaving_invalid;
+            if (return_to_ok)
+                alarm_state = AlarmState.createClearState(received_state.getTime());
+        }
+        // Out of sync'ed section
+        if (return_to_ok)
+        {
+            // If a delayed alarm timer was started, cancel it
+            delayed_check.cancel();
+            // Also cancel 'global' timers
+            global_check.cancel();
+            clearGlobalAlarm();
         }
         updateState(received_state, getDelay() > 0);
     }
@@ -430,7 +440,22 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
      */
     public void updateGlobalState()
     {
+        in_global_alarm = true;
         listener.globalStateChanged(alarm_state);
+    }
+
+    /** If there was a 'global' alarm, clear it and notify listener */
+    private void clearGlobalAlarm()
+    {
+        final AlarmState state;
+        synchronized (this)
+        {
+            if (!in_global_alarm)
+                return;
+            in_global_alarm = false;
+            state = alarm_state;
+        }
+        listener.globalStateChanged(state);
     }
 
     /** Acknowledge current alarm severity
@@ -439,12 +464,18 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     public void acknowledge(boolean acknowledge)
     {
         final AlarmState current, alarm;
+        // Cancel any scheduled 'global' update
+        global_check.cancel();
+        boolean clear_global_alarm = false;
         synchronized (this)
         {
             if (acknowledge)
             {   // Does this actually 'clear' an acknowledged severity?
                 if (current_state.getSeverity() == SeverityLevel.OK)
+                {
                     alarm_state = AlarmState.createClearState();
+                    clear_global_alarm = true;
+                }
                 else
                     alarm_state = alarm_state.createAcknowledged(current_state);
             }
@@ -454,9 +485,9 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
             alarm = alarm_state;
         }
         // Notify listeners of latest state
+        if (clear_global_alarm)
+            clearGlobalAlarm();
         listener.alarmStateChanged(current, alarm);
-        // Cancel 'global' update
-        global_check.cancel();
     }
 
     /** @return String representation for debugging */

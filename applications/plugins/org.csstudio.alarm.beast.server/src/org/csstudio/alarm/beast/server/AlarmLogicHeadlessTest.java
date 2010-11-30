@@ -741,11 +741,14 @@ public class AlarmLogicHeadlessTest
         logic.checkGlobalUpdates(1);
 
         // Once acknowledged, the global state should also clear
+        logic.acknowledge(true);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+        logic.checkGlobalUpdates(2);
 
-        // Alarm that doesn't clear
+        // TODO Alarm that doesn't clear
 
-        // There should have been a global alarm
+        // TODO There should have been a global alarm
 
-        // Once acknowledged, the global state should also clear
+        // TODO Once acknowledged, the global state should also clear
     }
 }
