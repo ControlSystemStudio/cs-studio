@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2007 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -19,9 +19,6 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-/*
- * $Id: LabelAlarmBehavior.java,v 1.4.2.16 2010/08/27 07:29:34 jhatje Exp $
- */
 package org.csstudio.sds.behavior.desy;
 
 import org.csstudio.sds.model.LabelModel;
@@ -30,49 +27,54 @@ import org.epics.css.dal.simple.AnyData;
 import org.epics.css.dal.simple.MetaData;
 
 /**
- *
- * Default DESY-Behavior for the {@link LabelModel} widget with Connection state and Alarms.
- *
+ * Default DESY-Behavior for the {@link LabelModel} widget with Connection state
+ * 
  * @author hrickens
  * @author $Author: jhatje $
  * @version $Revision: 1.4.2.16 $
- * @since 26.03.2010
+ * @since 19.04.2010
  */
-public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
+public class LabeConnectionBehaviorWithUnits extends
+		AbstractDesyConnectionBehavior<LabelModel> {
 
+	/**
+	 * Constructor.
+	 */
+	public LabeConnectionBehaviorWithUnits() {
+		addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
+		addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
+		addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
+	}
 
-    /**
-     * Constructor.
-     */
-    public LabelAlarmBehavior() {
-        addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
-        addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doInitialize(final LabelModel widget) {
+		super.doInitialize(widget);
+		if (widget.getValueType().equals(TextTypeEnum.TEXT)) {
+			widget.setJavaType(String.class);
+		}
+	}
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doInitialize(final LabelModel widget) {
-        super.doInitialize(widget);
-        if(widget.getValueType().equals(TextTypeEnum.TEXT)) {
-            widget.setJavaType(String.class);
-        }
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	protected void doProcessValueChange(final LabelModel model,
+			final AnyData anyData) {
+		super.doProcessValueChange(model, anyData);
+		// .. fill level (influenced by current value)
+		model
+				.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData
+						.stringValue());
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    protected void doProcessValueChange(final LabelModel model, final AnyData anyData) {
-        super.doProcessValueChange(model, anyData);
-        // .. fill level (influenced by current value)
-        model.setPropertyValue(LabelModel.PROP_TEXTVALUE, anyData.stringValue());
+	}
 
-    }
+	@Override
+	protected void doProcessMetaDataChange(final LabelModel model,
+			final MetaData metaData) {
+		model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
+	}
 
-    @Override
-    protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
-    }
-
-  }
+}
