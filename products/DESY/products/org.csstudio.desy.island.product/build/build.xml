@@ -3,9 +3,7 @@
 	<property file="tools.properties" />
 	
 
-<!--	<target name="build" depends="copyPlugins, buildWindows, buildLinux, buildMac, buildLinux64, buildSolaris"/>
-	-->
-	<target name="build" depends="copyPlugins, buildMac, buildLinux, buildWindows"/>
+	<target name="build" depends="copyPlugins, buildWindows, buildLinux, buildMac, buildLinux64, buildSolaris"/>
 
 	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, hudsonUpdateWin"/>
 	<target name="buildLinux" depends="cleanup, pdeBuildLin, updateConfigLin, hudsonUpdateLin"/>
@@ -150,7 +148,7 @@
 			<arg value="-buildfile" />
 			<arg value="${base}/productBuild.xml" />
 			<arg value="-DbaseLocation=${e360TP}" />
-			<arg value="-Dconfigs=macosx, carbon, x86" />
+			<arg value="-Dconfigs=macosx, cocoa, x86" />
 			<classpath>
 				<pathelement location="${eclipse360}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 			</classpath>
@@ -215,7 +213,7 @@
 		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
+		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
 	</target>
 
 	<!--
@@ -254,7 +252,7 @@
 		Copy mac product to artifact folder from hudson
 	-->
 	<target name="hudsonUpdateMac">
-		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
+		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
 	</target>
 
 	<!--
