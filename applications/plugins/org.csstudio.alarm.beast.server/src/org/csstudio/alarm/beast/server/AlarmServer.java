@@ -354,10 +354,10 @@ public class AlarmServer
             final String message,
             final String value, final ITimestamp timestamp)
     {
-        // TODO Persist global alarm state change, send to JMS
-//        messenger.sendStateUpdate(pv, current_severity, current_message,
-//                severity, message, value, timestamp);
-//        // Move the persistence of states into separate queue & thread
+        // Send to JMS
+        messenger.sendGlobalUpdate(pv, severity, message, value, timestamp);
+//        // TODO Persist global alarm state change
+//        //Move the persistence of states into separate queue & thread
 //        // so that it won't delay the alarm server from updating
 //        work_queue.add(new Runnable()
 //        {

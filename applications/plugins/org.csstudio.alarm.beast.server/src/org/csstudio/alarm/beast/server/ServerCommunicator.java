@@ -66,6 +66,9 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     /** Producer for sending to the 'talk' topic */
     private MessageProducer talk_producer;
 
+    /** Producer for sending to the 'global' topic */
+    private MessageProducer global_producer;
+
     /** Consumer for listening to the 'client' topic */
     private MessageConsumer client_consumer;
 
@@ -98,6 +101,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         final String config = Preferences.getAlarmTreeRoot();
         server_producer = createProducer(Preferences.getJMS_AlarmServerTopic(config));
         talk_producer = createProducer(Preferences.getJMS_TalkTopic(config));
+        global_producer = createProducer(Preferences.getJMS_GlobalServerTopic());
         client_consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
         client_consumer.setMessageListener(new MessageListener()
         {
@@ -118,6 +122,8 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         client_consumer.close();
         client_consumer = null;
+        global_producer.close();
+        global_producer = null;
         talk_producer.close();
         talk_producer = null;
         server_producer.close();
@@ -269,6 +275,41 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             }
         });
         idle_timer.reset();
+    }
+
+    /** Notify 'global' clients of new alarm state
+     *  @param pv PV that changes alarm state
+     *  @param alarm_severity Alarm severity
+     *  @param alarm_message Alarm message
+     *  @param value Value that triggered update
+     *  @param timestamp Time stamp for alarm severity/status
+     */
+    protected void sendGlobalUpdate(final AlarmPV pv,
+            final SeverityLevel alarm_severity, final String alarm_message,
+            final String value,
+            final ITimestamp timestamp)
+    {
+        execute(new Runnable()
+        {
+            public void run()
+            {
+                try
+                {
+                    final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
+                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
+                    map.setString(JMSAlarmMessage.STATUS,  alarm_message);
+                    if (value != null)
+                        map.setString(JMSAlarmMessage.VALUE, value);
+                    map.setString(JMSLogMessage.EVENTTIME, date_format.format(timestamp.toCalendar().getTime()));
+                    global_producer.send(map);
+                }
+                catch (Exception ex)
+                {
+                    CentralLogger.getInstance().getLogger(this).error("Exception", ex); //$NON-NLS-1$
+                }
+            }
+        });
     }
 
     /** Notify clients of enablement state

@@ -50,6 +50,7 @@ public class Application implements IApplication
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name));
+        System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
 
         final WorkQueue work_queue = new WorkQueue();
         try
