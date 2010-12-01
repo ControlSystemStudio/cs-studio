@@ -19,24 +19,48 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.types;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.epics.pvmanager.data.Scalar;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 24.11.2010
+ * @since 26.11.2010
  */
-public interface IHasTimeStamp {
+public class CssLong implements CssDataType, Scalar<Long> {
+
+    private final Long _value;
+    private final TimeInstant _timestamp;
+
     /**
-     * Returns the time instant for this system variable.
-     *
-     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
+     * Constructor.
      */
-    @CheckForNull
-    TimeInstant getTimestamp();
+    public CssLong(@Nonnull final Long value, @Nonnull final TimeInstant timestamp) {
+        _value = value;
+        _timestamp = timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public Long getValue() {
+        return _value;
+    }
+
 }

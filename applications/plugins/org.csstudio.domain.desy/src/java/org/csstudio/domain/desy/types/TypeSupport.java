@@ -19,9 +19,12 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.data;
+package org.csstudio.domain.desy.types;
 
 import java.util.Map;
+
+import javax.annotation.CheckForNull;
+
 
 import com.google.common.collect.Maps;
 
@@ -31,7 +34,7 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since 26.11.2010
  */
-public abstract class TypeSupport<T> {
+public abstract class TypeSupport<T extends CssDataType> {
 
     private static Map<Class<?>, TypeSupport<?>> _typeSupports = Maps.newHashMap();
 
@@ -42,7 +45,39 @@ public abstract class TypeSupport<T> {
      * @param typeClass the class of the type
      * @param typeSupport the support for the type
      */
-    public static <T> void addTypeSupport(final Class<T> typeClass, final TypeSupport<T> typeSupport) {
+    public static <T extends CssDataType> void addTypeSupport(final Class<T> typeClass, final TypeSupport<T> typeSupport) {
         _typeSupports.put(typeClass, typeSupport);
+    }
+
+
+
+    /**
+     * Calculates and caches the type support for a particular class, so that
+     * introspection does not occur at every call.
+     *
+     * @param <T> the type to retrieve support for
+     * @param typeClass the class of the type
+     * @return the support for the type or null
+     */
+    @CheckForNull
+    static <T extends CssDataType> TypeSupport<T> cachedTypeSupportFor(final Class<T> typeClass) {
+        @SuppressWarnings("unchecked")
+		final
+        TypeSupport<T> support = (TypeSupport<T>) _typeSupports.get(typeClass);;
+//        if (support == null) {
+//            support = recursiveTypeSupportFor(typeClass);
+//            if (support == null)
+//                throw new RuntimeException("No support found for type " + typeClass);
+//            calculatedTypeSupport.put(typeClass, support);
+//        }
+        return support;
+    }
+
+    public static <T extends CssDataType> CssDouble toDDouble(final T value) throws ConversionTypeSupportException {
+        @SuppressWarnings("unchecked")
+		final
+        Class<T> typeClass = (Class<T>) value.getClass();
+        final ConversionTypeSupport<T> support = (ConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
+        return support.convertToDDouble(value);
     }
 }

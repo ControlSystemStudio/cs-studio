@@ -19,16 +19,23 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.data;
+package org.csstudio.domain.desy.time;
 
-import org.csstudio.domain.desy.IHasTimeStamp;
+import javax.annotation.CheckForNull;
+
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 26.11.2010
+ * @since 24.11.2010
  */
-public interface BaseValueType extends IHasTimeStamp {
-
+public interface IHasTimeStamp {
+    /**
+     * Returns the time instant for this system variable.
+     *
+     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
+     */
+    @CheckForNull
+    TimeInstant getTimestamp();
 }

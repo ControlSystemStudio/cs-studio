@@ -28,7 +28,7 @@ import javax.annotation.Nullable;
 import org.csstudio.domain.desy.ISystemVariable;
 import org.csstudio.domain.desy.SystemVariableId;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.CssDataType;
 
 /**
  * An EPICS system variable is tightly bound to EpicsAlarms
@@ -36,13 +36,12 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 17.11.2010
  */
-public class EpicsSystemVariable<T extends EpicsValue> implements ISystemVariable<T>, IHasAlarm {
+public class EpicsSystemVariable<T extends CssDataType> implements ISystemVariable<T>, IHasAlarm {
 
 
     private final SystemVariableId _id;
     private final String _name;
     private final T _value;
-    private final TimeInstant _timestamp;
     private final EpicsAlarm _alarm;
 
 
@@ -51,18 +50,15 @@ public class EpicsSystemVariable<T extends EpicsValue> implements ISystemVariabl
      * @param id
      * @param name
      * @param value
-     * @param timestamp
      * @param alarm
      */
     public EpicsSystemVariable(@Nonnull final SystemVariableId id,
                                @Nonnull final String name,
                                @Nonnull final T value,
-                               @Nullable final TimeInstant timestamp,
                                @Nullable final EpicsAlarm alarm) {
         _id = id;
         _name = name;
         _value = value;
-        _timestamp = timestamp;
         // TODO (bknerr) : Check for plausibility whether the contained status makes sense for type T.
         _alarm = alarm;
     }
@@ -85,48 +81,14 @@ public class EpicsSystemVariable<T extends EpicsValue> implements ISystemVariabl
         return _name;
     }
 
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void setValue(@Nonnull final T value) {
-//        _value = value;
-//    }
-
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public T getValue() {
+    public T getData() {
         return _value;
     }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void setTimestamp(@Nullable final TimeInstant timestamp) {
-//        _timestamp = timestamp;
-//    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @CheckForNull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-//    /**
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    public void setAlarm(@Nullable final IAlarm alarm) {
-//        _alarm = (EpicsAlarm) alarm;
-//    }
-
 
     /**
      * {@inheritDoc}

@@ -41,14 +41,18 @@ import org.joda.time.format.DateTimeFormatter;
  *
  *
  * TODO (bknerr) : consider the usage of org.epics.pvmanager.TimeStamp (immutable and slim as well,
- *                 but not backed by a well designed lib, still quite strong)
+ *                 but not backed by a lib, still quite strong)
  *
  * @author bknerr
  * @since 16.11.2010
  */
 public class TimeInstant implements Comparable<TimeInstant> {
 
-    private static final Long MAX_SECONDS = Long.MAX_VALUE / 1000 - 1;
+    private static final int NANOS_PER_SECOND = 1000000000;
+    private static final int NANOS_PER_MILLIS = 1000000;
+    private static final int MILLIS_PER_SECOND = 1000;
+
+    public static final Long MAX_SECONDS = Long.MAX_VALUE / MILLIS_PER_SECOND - 1;
 
     /**
      * The wrapped immutable joda time instant.
@@ -60,58 +64,6 @@ public class TimeInstant implements Comparable<TimeInstant> {
      */
     private final long _fracMillisInNanos;
 
-    /**
-     * Factory method for a time instant
-     * @param millis millis since epoch
-     * @return the time instant
-     * @throws IllegalArgumentException on negative values for {@param millis}
-     */
-
-
-//    public interface IBuild {
-//        TimeInstant build();
-//    }
-//
-//    public interface IWithNanos extends IBuild {
-//        public IBuild withNanos(long nanos);
-//    }
-//
-//    public interface IWithMillis extends IWithNanos {
-//        public IWithNanos withMillis(long nanos);
-//
-//        @Override
-//        public IBuild withNanos(long nanos);
-//    }
-//
-//    public interface ITimeInstantBuilder extends IWithMillis {
-//
-//        public IWithMillis withSeconds(long seconds);
-//
-//        @Override
-//        public IBuild withNanos(long seconds);
-//        @Override
-//        public IWithNanos withMillis(long seconds);
-//    }
-//    final ITimeInstantBuilder s = null;
-//    s.build();
-//    // build from time instant builder
-//    s.withMillis(0L).build();
-//    s.withNanos(0L).build();
-//    // seconds from IWithSeconds
-//    s.withSeconds(0L).build();
-//    // build from time instant builder
-//    s.withSeconds(0L).withMillis(0L).build();
-//
-//    s.withMillis(0L).withNanos(0L).build();
-//
-//    s.withSeconds(0L).withNanos(0L).build();
-//
-//
-//    s.withSeconds(0L).build();
-//
-//    s.withSeconds(0L).withMillis(0L).withNanos(0L).build();
-
-
 
     /**
      * Safe time instant builder class for {@link TimeInstant}.
@@ -120,16 +72,12 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @since 22.11.2010
      */
     public static final class TimeInstantBuilder {
-        private long _millis;
-        private long _nanos;
 
         /**
          * Builds time instant from current system instant.
          * @return the 'now' time instant
          */
         public static TimeInstant buildFromNow() {
-
-
             return buildFromMillis(System.currentTimeMillis());
         }
 
@@ -143,7 +91,7 @@ public class TimeInstant implements Comparable<TimeInstant> {
             if (seconds < 0 || seconds > MAX_SECONDS) {
                 throw new IllegalArgumentException("Number of seconds for TimeInstant must be non-negative and smaller " + MAX_SECONDS);
             }
-            return new TimeInstant(seconds*1000);
+            return new TimeInstant(seconds*MILLIS_PER_SECOND, 0L);
         }
         /**
          * Builds directly from millis (always UTC) from 1970/01/01 00:00:00.
@@ -155,7 +103,7 @@ public class TimeInstant implements Comparable<TimeInstant> {
             if (millis < 0) {
                 throw new IllegalArgumentException("Number of milliseconds for TimeInstant must be non-negative.");
             }
-            return new TimeInstant(millis);
+            return new TimeInstant(millis, 0L);
         }
         /**
          * Builds directly from nanos (always UTC) from 1970/01/01 00:00:00.
@@ -167,44 +115,9 @@ public class TimeInstant implements Comparable<TimeInstant> {
             if (nanos < 0) {
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }
-            return new TimeInstant(nanos/1000000000, nanos%1000000000);
+
+            return new TimeInstant(nanos/NANOS_PER_MILLIS, nanos%NANOS_PER_MILLIS);
         }
-//
-//        /**
-//         * With seconds (always UTC) from 1970/01/01 00:00:00.
-//         * @param seconds
-//         * @return this for chaining (withNanos).
-//         * @throws IllegalArgumentException if nanos is smaller 0 or greater than 999,999,999
-//         */
-//        public TimeInstantBuilder withSeconds(final long seconds) {
-//            if (seconds < 0 || seconds > MAX_SECONDS) {
-//                throw new IllegalArgumentException("Number of seconds for TimeInstant must be non-negative and smaller (Long.MAX_VALUE / 1000) - 1.");
-//            }
-//            _millis = seconds*1000;
-//            return this;
-//        }
-//
-//        /**
-//         * With nanos for a fractal second.
-//         * @param nanos
-//         * @return this for chaining.
-//         * @throws IllegalArgumentException if nanos is smaller 0 or greater than 999,999,999
-//         */
-//        public TimeInstantBuilder withNanos(final long nanos) {
-//            if (nanos < 0 || nanos > 999999999) {
-//                throw new IllegalArgumentException("Number of nanos for TimeInstant must be non-negative and smaller than 1,000,000,000.");
-//            }
-//            _millis += nanos / 1000000; // the millis in the nanos
-//            _nanos = nanos % 1000;      // the rest of the nanos
-//            return this;
-//        }
-//        /**
-//         * Builds the time instant object.
-//         * @return the newly built time instant.
-//         */
-//        public TimeInstant build() {
-//            return new TimeInstant(_millis, _nanos);
-//        }
     }
 
     /**
@@ -216,29 +129,46 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @param seconds seconds from start of epoch 1970-01-01T00:00:00Z.
      * @param fracSecNanos fractal nanos of the second.
      */
-    private TimeInstant(@Nonnull final long seconds, @Nonnull final long fracSecNanos) {
-        _instant = new Instant(seconds*1000 + fracSecNanos/1000000);
-        _fracMillisInNanos = fracSecNanos;
+    private TimeInstant(@Nonnull final long millis, @Nonnull final long fracSecMillis) {
+        _fracMillisInNanos = fracSecMillis;
+        _instant = new Instant(millis);
     }
+
     /**
      * Constructor.
      * Relies on being properly called by the {@link TimeInstantBuilder}.
-     *
-     * @param millis milliseconds start of epoch 1970-01-01T00:00:00Z.
+     * @param instant
+     * @param fracSecInNanos
      */
-    private TimeInstant(@Nonnull final long millis) {
-        _instant = new Instant(millis);
-        _fracMillisInNanos = 0;
+    private TimeInstant(@Nonnull final Instant instant, final long fracSecInNanos) {
+        _instant = instant;
+        _fracMillisInNanos = fracSecInNanos;
     }
 
-    public long getFractalSecondInNanos() {
+    public long getFractalMillisInNanos() {
         return _fracMillisInNanos;
     }
+    public long getFractalSecondsInNanos() {
+        final long l = getMillis() % MILLIS_PER_SECOND;
+        return l * NANOS_PER_MILLIS + _fracMillisInNanos;
+    }
+
+    public long getNanos() {
+        return _instant.getMillis() * NANOS_PER_MILLIS + _fracMillisInNanos; // delegate
+    }
+    /**
+     * Get millis since epoch, 1970/01/01 00:00:00.
+     * @return millis
+     */
     public long getMillis() {
         return _instant.getMillis(); // delegate
     }
+    /**
+     * Get seconds since epoch, 1970/01/01 00:00:00.
+     * @return seconds
+     */
     public long getSeconds() {
-        return getMillis() / 1000;
+        return getMillis() / MILLIS_PER_SECOND;
     }
     @Nonnull
     public ReadableInstant getInstant() {
@@ -247,8 +177,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
 
     /**
      * Formats the instant with the given joda time formatter.
-     * @param sampleTimeFmt
-     * @return
+     * @param sampleTimeFmt the formatter (without nano precision)
+     * @return the formatted time string
      */
     @Nonnull
     public String formatted(@Nonnull final DateTimeFormatter fmt) {
@@ -263,8 +193,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
         final int result = _instant.compareTo(other._instant);
         if (result == 0) {
             return _fracMillisInNanos < other._fracMillisInNanos ? -1 :
-                                                          _fracMillisInNanos > other._fracMillisInNanos ? 1 :
-                                                                                                   0;
+                                                                   _fracMillisInNanos > other._fracMillisInNanos ? 1 :
+                                                                                                                   0;
         }
         return result;
     }
@@ -308,18 +238,36 @@ public class TimeInstant implements Comparable<TimeInstant> {
         return DateTimeFormat.forPattern("yyyy/MM/dd HH:mm:ss").print(_instant) + "." + _fracMillisInNanos;
     }
 
+
     public boolean isAfter(@Nonnull final TimeInstant other) {
-        if (_instant.isBefore(other.getInstant())) {
+        if (this.compareTo(other) == 1) {
             return true;
-        } else if (_instant.getMillis() > other.getMillis() + 1) { // + 1 : take care on the additional nanos
-            return false;
         }
-        // equal millis, compare nanos
-        return _fracMillisInNanos > other._fracMillisInNanos;
+        return false;
     }
 
     public boolean isBefore(@Nonnull final TimeInstant other) {
-        return !isAfter(other);
+        if (this.compareTo(other) == -1) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Returns a new immutable time instant object.
+     * @param millis the number of millis to add (or to subtract if negative
+     * @return a new time instant object
+     * @throws IllegalArgumentException when millis is negative and
+     */
+    public TimeInstant plusMillis(final long millis) throws IllegalArgumentException {
+        if (millis < 0) {
+            throw new IllegalArgumentException("Millis may not be negative, use minusMillis.");
+        }
+        if (millis == 0) {
+            return this;
+        }
+        final Instant i = new Instant(getMillis() + millis);
+        return new TimeInstant(i, _fracMillisInNanos);
     }
 
     /**
@@ -328,8 +276,22 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @return
      * @throws IllegalArgumentException when millis
      */
-    public TimeInstant plus(final long millis) throws IllegalArgumentException {
-        // TODO (bknerr) : change that to the new withXXX calls, overflow possible
-        return TimeInstantBuilder.buildFromMillis(_instant.getMillis() + millis);
+    public TimeInstant plusNanosPerSecond(final long nanosPerSecond) throws IllegalArgumentException {
+        if (nanosPerSecond < 0 || nanosPerSecond >= NANOS_PER_SECOND) {
+            throw new IllegalArgumentException("Nanos per second may not be negative and must be smaller " + NANOS_PER_SECOND + ".");
+        }
+        if (nanosPerSecond == 0) {
+            return this;
+        }
+        long addMillis = nanosPerSecond / NANOS_PER_MILLIS;
+        final long addFracMillisInNanos = NANOS_PER_SECOND % NANOS_PER_MILLIS;
+
+        long newNanos = _fracMillisInNanos + addFracMillisInNanos;
+        if (newNanos > NANOS_PER_MILLIS) {
+            addMillis++;
+            newNanos -= NANOS_PER_MILLIS;
+        }
+
+        return new TimeInstant(new Instant(getMillis() + addMillis), newNanos);
     }
 }

@@ -23,7 +23,7 @@ package org.csstudio.domain.desy.epics.alarm;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IComparableAlarm;
+import org.csstudio.domain.desy.alarm.IAlarm;
 
 
 /**
@@ -60,7 +60,7 @@ import org.csstudio.domain.desy.alarm.IComparableAlarm;
  *
  * @author Bastian Knerr
  */
-public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
+public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
 
     private final EpicsAlarmSeverity _severity;
     private final EpicsAlarmStatus _status;
@@ -97,11 +97,12 @@ public class EpicsAlarm implements IComparableAlarm<EpicsAlarm> {
         return _status;
     }
 
+
     /**
      * {@inheritDoc}
      */
     @Override
-    public int compareAlarmTo(final EpicsAlarm other) {
+    public int compareTo(final EpicsAlarm other) {
         return _severity.compareSeverityTo(other._severity);
     }
 }

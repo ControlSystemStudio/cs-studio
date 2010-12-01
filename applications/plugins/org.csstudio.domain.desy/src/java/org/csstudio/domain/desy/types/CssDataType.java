@@ -19,12 +19,9 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.data;
+package org.csstudio.domain.desy.types;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.epics.pvmanager.data.Scalar;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /**
  * TODO (bknerr) :
@@ -32,35 +29,6 @@ import org.epics.pvmanager.data.Scalar;
  * @author bknerr
  * @since 26.11.2010
  */
-public class DDouble implements BaseValueType, Scalar<Double> {
-
-    private final Double _value;
-    private final TimeInstant _timestamp;
-
-    /**
-     * Constructor.
-     */
-    public DDouble(@Nonnull final Double value, @Nonnull final TimeInstant timestamp) {
-        _value = value;
-        _timestamp = timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double getValue() {
-        return _value;
-    }
-
+public interface CssDataType extends IHasTimeStamp {
+    // yet a marker
 }

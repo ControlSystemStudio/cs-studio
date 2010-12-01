@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.data;
+package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
 
@@ -32,7 +32,7 @@ import org.epics.pvmanager.data.Scalar;
  * @author bknerr
  * @since 26.11.2010
  */
-public class DString implements BaseValueType, Scalar<String> {
+public class CssString implements CssDataType, Scalar<String> {
 
     private final String _value;
     private final TimeInstant _timestamp;
@@ -40,7 +40,7 @@ public class DString implements BaseValueType, Scalar<String> {
     /**
      * Constructor.
      */
-    public DString(@Nonnull final String value, @Nonnull final TimeInstant timestamp) {
+    public CssString(@Nonnull final String value, @Nonnull final TimeInstant timestamp) {
         _value = value;
         _timestamp = timestamp;
     }

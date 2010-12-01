@@ -24,57 +24,72 @@ package org.csstudio.domain.desy.data;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.CssDataType;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
+import org.csstudio.domain.desy.types.CssDouble;
+import org.csstudio.domain.desy.types.TypeSupport;
 
 
 /**
- * TODO (bknerr) :
+ * Accumulation cache that implements a cumulative average for the accumulated values.
+ * The returned value on {@link CumulativeAverageCache#getValue()} is the sum over all
+ * accumulated values divided by their number.
+ *
+ * For {@code }
+ *
  *
  * @author bknerr
  * @since 26.11.2010
+ * @param <A> value type parameter, has to have a conversion type support
+ *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<A extends BaseValueType> extends AccumulatorCache<A, DDouble> {
+public class CumulativeAverageCache<A extends CssDataType> extends AccumulatorCache<A, CssDouble> {
 
     /**
      * Constructor.
      */
     public CumulativeAverageCache() {
-        super(DDouble.class);
+        super(CssDouble.class);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
-    protected DDouble calculateAccumulation(@CheckForNull final DDouble accumulatedValue,
-                                            @Nonnull final A nextValue) {
-        final Double curVal = accumulatedValue.getValue();
-        final DDouble nextDVal = ConversionTypeSupport.toDDouble(nextValue);
+    @Nonnull
+    protected CssDouble calculateAccumulation(@CheckForNull final CssDouble accVal,
+                                            @Nonnull final A nVal) throws ConversionTypeSupportException {
+        final CssDouble nextDDouble = TypeSupport.toDDouble(nVal);
 
-        final Double nextVal = nextDVal.getValue();
+        final Double nextVal = nextDDouble.getValue();
+        final TimeInstant timestamp = nextDDouble.getTimestamp();
+        final Double curVal = accVal.getValue();
+
         Double result;
         if (curVal != null) {
             result = curVal + nextVal;
+            // better to calc division once on #getValue)
             //final int n = getNumberOfAccumulations();
             //result = curVal + (nextVal - curVal)/(n + 1);
         } else {
             result = nextVal;
         }
-        return new DDouble(result, nextDVal.getTimestamp());
+        return new CssDouble(result, timestamp);
     }
 
     /**
      * {@inheritDoc}
      */
-    @CheckForNull
     @Override
-    public DDouble getValue() {
-        final DDouble dVal = super.getValue();
+    @CheckForNull
+    public CssDouble getValue() {
+        final CssDouble dVal = super.getValue();
         if (dVal != null) {
             final Double value = dVal.getValue();
             if (value!= null) {
                 final int n = getNumberOfAccumulations();
-                return new DDouble(value / n, dVal.getTimestamp());
+                return new CssDouble(value / n, dVal.getTimestamp());
             }
         }
         return null;

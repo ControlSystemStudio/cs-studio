@@ -19,7 +19,7 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.data;
+package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
 
@@ -32,15 +32,15 @@ import org.epics.pvmanager.data.Scalar;
  * @author bknerr
  * @since 26.11.2010
  */
-public class DLong implements BaseValueType, Scalar<Long> {
+public class CssDouble implements CssDataType, Scalar<Double> {
 
-    private final Long _value;
+    private final Double _value;
     private final TimeInstant _timestamp;
 
     /**
      * Constructor.
      */
-    public DLong(@Nonnull final Long value, @Nonnull final TimeInstant timestamp) {
+    public CssDouble(@Nonnull final Double value, @Nonnull final TimeInstant timestamp) {
         _value = value;
         _timestamp = timestamp;
     }
@@ -59,7 +59,7 @@ public class DLong implements BaseValueType, Scalar<Long> {
      */
     @Override
     @Nonnull
-    public Long getValue() {
+    public Double getValue() {
         return _value;
     }
 
