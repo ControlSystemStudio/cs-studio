@@ -15,13 +15,13 @@ public class TODO
 {
     /**
      * ======== Misc Issues
-     * 
+     *
      * TODO Alarm Tree on Linux has problem: When adding new entries
      * at bottom, the tree widget doesn't "grow" as needed,
      * so the new items are not accessible.
-     * 
+     *
      * ======== Support for multiple alarm setups
-     * 
+     *
      * Idea: Secondary control rooms, not always manned, have their own alarm setup.
      * Could also be used to simply split the alarm configuration into "plant subsystems".
      * These are individual setups with their own config, alarm server, GUI.
@@ -29,28 +29,26 @@ public class TODO
      * But not always.
      * In that case, if there are alarms un-acknowledged for some time,
      * send alarms to a "main" control room.
-     * 
-     * TODO Alarm Server has command-line switch "global_alarm_delay <seconds>", sends alarms to GLOBAL_ALARMSERVER after such delay
-     * 
+     *
      * TODO (New) "Global" Model; Global Alarm Table displays these, fetching guidance etc. in background thread
-     * 
+     *
      * TODO Alarm RDB includes ALARM_TREE.GLOBAL_DELAY (INT), PV.GLOBAL_ALARM (BOOL) for finer configuration
-     * 
+     *
      * TODO Alarm Server uses ALARM_TREE.GLOBAL_DELAY instead of command-line switch
-     * 
+     *
      * TODO Alarm Server updates PV.GLOBAL_ALARM to persist state
-     * 
+     *
      * TODO Global Alarm Table initializes properly:
      *      1) Subscribe to GLOBAL_ALARMSERVER, buffering messages
      *      2) Read all PV with GLOBAL_ALARM set
      *      3) Apply updates from buffered JMS info
-     *      
+     *
      * TODO Alarm Tree supports editing of ALARM_TREE.GLOBAL_DELAY
      *      (Could be done earlier)
-     *      
+     *
      * TODO Combine Global Alarm Table with original Alarm Table
      *      (Nice; not essential)
-     *      
+     *
      * TODO Phone Dialer monitors GLOBAL_ALARMSERVER
      *      Should work for any *_ALARMSERVER, but then immediate, not using GLOBAL_DELAY
      */
