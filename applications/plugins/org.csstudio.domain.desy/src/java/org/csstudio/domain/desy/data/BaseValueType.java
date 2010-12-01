@@ -19,35 +19,16 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy;
+package org.csstudio.domain.desy.data;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.common.id.Identifiable;
-import org.csstudio.domain.desy.data.BaseValueType;
+import org.csstudio.domain.desy.IHasTimeStamp;
 
 /**
- * System variables are the fundamental atomic components of any system.
- * A system variables is an entity in form of a value or state (set of values/states) to a given
- * time instant.
- * A complete system is composed of a non-empty set of system variables.
- *
- * It is identifiable and features to any given time a unique value/state or a set of the same that
- * is unique to that time.
+ * TODO (bknerr) :
  *
  * @author bknerr
- * @since 04.11.2010
- *
- * @param <T> the type of the system variable
+ * @since 26.11.2010
  */
-public interface ISystemVariable<T extends BaseValueType> extends Identifiable<SystemVariableId> {
-
-    /**
-     * The value/state or set of values/states of this system variable.
-     * @return the variable
-     */
-    @Nonnull
-    T getValue();
+public interface BaseValueType extends IHasTimeStamp {
 
 }
-

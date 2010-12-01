@@ -36,7 +36,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 17.11.2010
  */
-public class EpicsSystemVariable<T> implements ISystemVariable<T>, IHasAlarm {
+public class EpicsSystemVariable<T extends EpicsValue> implements ISystemVariable<T>, IHasAlarm {
 
 
     private final SystemVariableId _id;
