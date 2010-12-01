@@ -137,6 +137,11 @@ public class AlarmLogicHeadlessTest
 	        return logic.getAlarmState();
         }
 
+		public int getGlobalUpdates()
+		{
+		    return global_updates.get();
+		}
+
 		public void acknowledge(final boolean acknowledge)
         {
 			logic.acknowledge(acknowledge);
@@ -775,5 +780,48 @@ public class AlarmLogicHeadlessTest
         logic.acknowledge(true);
         logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
         logic.checkGlobalUpdates(++expected_count);
+    }
+
+    @Test
+    public void testGlobalEscalation() throws Exception
+    {
+        System.out.println("* testGlobalEscalation");
+        // Latch, annunciate, no local delay & count, global notification after 4s
+        final int global_delay = 4;
+        final AlarmLogicDemo logic = new AlarmLogicDemo(true, true, 0, 0, global_delay);
+        logic.check(false, false, SeverityLevel.OK, OK, SeverityLevel.OK, OK);
+
+        // Initial, Minor alarm
+        logic.computeNewState("a", SeverityLevel.MINOR, "high");
+        logic.check(true, true, SeverityLevel.MINOR, "high", SeverityLevel.MINOR, "high");
+        final ITimestamp initial_alarm_time = logic.getAlarmState().getTime();
+
+        // Within the 'global' delay, escalates to Major
+        Thread.sleep(global_delay * 500);
+        logic.computeNewState("b", SeverityLevel.MAJOR, "higher");
+        logic.check(true, true, SeverityLevel.MAJOR, "higher", SeverityLevel.MAJOR, "higher");
+
+        // Return to OK
+        logic.computeNewState("b", SeverityLevel.OK, OK);
+        logic.check(true, false, SeverityLevel.OK, OK, SeverityLevel.MAJOR, "higher");
+
+        // No global alarm, yet
+        logic.checkGlobalUpdates(0);
+
+        // After the 'global' delay from the _initial_ (!) alarm, there should be a global update
+        for (int i=0; logic.getGlobalUpdates() < 1  &&  i < global_delay * 10; ++i)
+            Thread.sleep(100);
+        final ITimestamp now = TimestampFactory.now();
+        logic.checkGlobalUpdates(1);
+
+        System.out.println("Initial alarm      : " + initial_alarm_time);
+        System.out.println("Global notification: " + now);
+        // Should use global_delay from the initial alarm...
+        assertEquals(global_delay, now.toDouble() - initial_alarm_time.toDouble(), 0.2);
+
+        // .. but reflect the most severe alarm in the notification.
+        // Not really checking what was in the notification,
+        // assuming that it matches the current alarm state:
+        assertEquals(SeverityLevel.MAJOR, logic.getAlarmState().getSeverity());
     }
 }

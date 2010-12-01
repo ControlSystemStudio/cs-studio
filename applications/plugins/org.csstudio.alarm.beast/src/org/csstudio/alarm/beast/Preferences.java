@@ -35,7 +35,7 @@ public class Preferences
     final public static String RDB_USER = "rdb_user";
     final public static String RDB_PASSWORD = "rdb_password";
     final public static String ROOT_COMPONENT = "root_component";
-    final public static String GLOBAL = "global";
+    final public static String GLOBAL_PREFIX = "global_prefix";
     final public static String JMS_URL = "jms_url";
     final public static String JMS_USER = "jms_user";
     final public static String JMS_PASSWORD = "jms_password";
@@ -156,7 +156,7 @@ public class Preferences
     /**  @return JMS topic used for 'global' alarm messages from servers */
     public static String getJMS_GlobalServerTopic()
     {
-        return getString(GLOBAL) + SERVER_SUFFIX;
+        return getString(GLOBAL_PREFIX) + SERVER_SUFFIX;
     }
 
     /** @return Delay in seconds between expected idle messages */

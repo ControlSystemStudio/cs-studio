@@ -64,6 +64,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
      *  @param annunciating Annunciate alarms?
      *  @param min_alarm_delay Minimum time in alarm before declaring an alarm
      *  @param count Alarm when PV != OK more often than this count within delay
+     *  @param global_delay 'Global' alarm delay [seconds] or 0
      *  @param filter Filter expression for enablement or <code>null</code>
      *  @param current_severity Current alarm severity
      *  @param current_message Current system message
@@ -82,6 +83,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
             final boolean annunciating,
             final int min_alarm_delay,
             final int count,
+            final int global_delay,
             final String filter,
             final SeverityLevel current_severity,
             final String current_message,
@@ -93,9 +95,6 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     	super(parent, name, id);
     	// PV has no child entries
     	setChildren(new AlarmHierarchy[0]);
-
-    	// TODO Configure global_delay
-    	final int global_delay = 0;
 
     	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
