@@ -110,7 +110,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 if (message instanceof MapMessage)
                     handleMapMessage((MapMessage) message);
                 else
-                    CentralLogger.getInstance().getLogger(this).error(
+                    CentralLogger.getInstance().getLogger(this).warn(
                         "Message type " + message.getClass().getName() + " not handled");
             }
         });
