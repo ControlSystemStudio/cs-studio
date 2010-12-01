@@ -186,7 +186,7 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
 	    while (run)
 	    {
 	        if (write_topic != null)
-	            queue.execute(500);
+	            queue.perform_queued_commands(500);
 	        else
 	        {
 	            try
@@ -315,7 +315,7 @@ public class JMSAlarmCommunicator implements Runnable, JMSConnectionListener,
 	 */
 	protected void queueJMSCommunication(final Runnable task)
 	{
-        queue.add(task);
+        queue.execute(task);
 	}
 
 	/** Create map message with basic fields already initialized

@@ -9,38 +9,47 @@ package org.csstudio.alarm.beast;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.concurrent.Executor;
 
 import org.csstudio.platform.logging.CentralLogger;
 
-/** Queue that receives Runnables and executes them.
+/** Queue that receives {@link Runnable}s and executes them.
  *  <p>
- *  Doesn't start a thread to actually handle the work,
- *  only provides a thread-safe way to add Runnables
- *  and to execute them.
+ *  An {@link Executor} that does <b>not</b> create new threads,
+ *  but queues commands for execution by an already existing
+ *  thread.
+ *  <p>
+ *  For example used to re-direct execution of commands to a 'main'
+ *  thread, to assert that all interactions with a certain resource
+ *  happen on the same thread.
+ *
  *  @author Kay Kasemir
  */
-public class WorkQueue
+public class WorkQueue implements Executor
 {
     /** Task queue */
     final Queue<Runnable> tasks = new LinkedList<Runnable>();
-    
+
     /** Thread that executes the queue. Set on first access */
     private Thread thread;
-    
-    /** Add a task to the queue */
-    public void add(final Runnable task)
+
+    /** Add a command to the queue
+     *  @param command Command to be executed
+     *  @see Executor#execute(Runnable)
+     */
+    public void execute(final Runnable command)
     {
         synchronized (tasks)
         {
-            tasks.add(task);
+            tasks.add(command);
             tasks.notifyAll();
         }
     }
 
-    /** Execute queued tasks. If there are none, wait a little, then check again.
+    /** Perform queued commands. If there are none, wait a little, then check again.
      *  @param millisecs Time to wait
      */
-    public void execute(final int millisecs)
+    public void perform_queued_commands(final int millisecs)
     {
         assertOnThread();
         Runnable task;

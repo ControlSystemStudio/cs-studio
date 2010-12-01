@@ -322,7 +322,7 @@ public class AlarmServer
     	        severity, message, value, timestamp);
         // Move the persistence of states into separate queue & thread
         // so that it won't delay the alarm server from updating
-        work_queue.add(new Runnable()
+        work_queue.execute(new Runnable()
         {
             public void run()
             {
@@ -342,6 +342,43 @@ public class AlarmServer
         });
     }
 
+    /** Update 'global' JMS clients and RDB
+     *  @param pv Alarm PV
+     *  @param severity Alarm severity (highest, latched)
+     *  @param message Alarm message
+     *  @param value Value that triggered
+     *  @param timestamp Time of last alarm update
+     */
+    public void sendGlobalUpdate(final AlarmPV pv,
+            final SeverityLevel severity,
+            final String message,
+            final String value, final ITimestamp timestamp)
+    {
+        // TODO Persist global alarm state change, send to JMS
+//        messenger.sendStateUpdate(pv, current_severity, current_message,
+//                severity, message, value, timestamp);
+//        // Move the persistence of states into separate queue & thread
+//        // so that it won't delay the alarm server from updating
+//        work_queue.add(new Runnable()
+//        {
+//            public void run()
+//            {
+//                try
+//                {
+//                    rdb.writeStateUpdate(pv, current_severity, current_message,
+//                            severity, message, value, timestamp);
+//                    recoverFromRDBErrors();
+//                }
+//                catch (Exception ex)
+//                {
+//                    // Remember that there was an error
+//                    had_RDB_error = true;
+//                    CentralLogger.getInstance().getLogger(this).error("Exception during alarm state update", ex);
+//                }
+//            }
+//        });
+    }
+
     /** Update JMS clients and RDB about 'enabled' state of PV
      *  @param pv Alarm PV
      *  @param enabled Enabled or not?
@@ -350,7 +387,7 @@ public class AlarmServer
 	{
 		messenger.sendEnablementUpdate(pv, enabled);
         // Handle in separate queue & thread
-        work_queue.add(new Runnable()
+        work_queue.execute(new Runnable()
         {
             public void run()
             {

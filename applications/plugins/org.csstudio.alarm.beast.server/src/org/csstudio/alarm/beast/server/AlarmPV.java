@@ -299,7 +299,12 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
 	/** AlarmLogicListener: {@inheritDoc} */
     public void globalStateChanged(final AlarmState alarm)
     {
-	    // TODO Persist global alarm state change, send to JMS
+        if (log.isDebugEnabled())
+            log.debug(getName() + " has global state " + alarm);
+        if (server != null)
+            server.sendGlobalUpdate(this,
+                    alarm.getSeverity(), alarm.getMessage(),
+                    alarm.getValue(), alarm.getTime());
     }
 
 	/** @return String representation for debugging (server 'dump') */

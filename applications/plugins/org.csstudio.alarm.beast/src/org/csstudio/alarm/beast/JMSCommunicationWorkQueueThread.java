@@ -38,13 +38,13 @@ abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationTh
      */
     public void execute(final Runnable task)
     {
-        queue.add(task);
+        queue.execute(task);
     }
 
     /** Communicate by executing items on the work queue */
     @Override
     protected void communicate(final Session session) throws Exception
     {
-        queue.execute(WORKER_DELAY);
+        queue.perform_queued_commands(WORKER_DELAY);
     }
 }

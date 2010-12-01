@@ -23,7 +23,7 @@ public class WorkQueueUnitTest
     public void testExecute() throws Exception
     {
         final WorkQueue queue = new WorkQueue();
-        queue.add(new Runnable()
+        queue.execute(new Runnable()
         {
             public void run()
             {
@@ -31,7 +31,7 @@ public class WorkQueueUnitTest
                 result += "Hello";
             }
         });
-        queue.add(new Runnable()
+        queue.execute(new Runnable()
         {
             public void run()
             {
@@ -39,7 +39,7 @@ public class WorkQueueUnitTest
                 result += "Goodbye";
             }
         });
-        queue.execute(1000);
+        queue.perform_queued_commands(1000);
         assertEquals("HelloGoodbye", result);
         
         // Should be on the same thread

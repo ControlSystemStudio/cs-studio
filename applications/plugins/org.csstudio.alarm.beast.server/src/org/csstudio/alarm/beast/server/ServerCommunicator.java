@@ -9,6 +9,7 @@ package org.csstudio.alarm.beast.server;
 
 import java.net.InetAddress;
 import java.text.SimpleDateFormat;
+import java.util.concurrent.Executor;
 
 import javax.jms.MapMessage;
 import javax.jms.Message;
@@ -21,7 +22,6 @@ import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
-import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
@@ -43,7 +43,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     final private AlarmServer server;
 
     /** Work queue in main application */
-    final private WorkQueue work_queue;
+    final private Executor work_queue;
 
     /** Timer for sending idle messages */
     final private TimeoutTimer idle_timer;
@@ -74,7 +74,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
      *  @param server Alarm server
      *  @param work_queue
      */
-    public ServerCommunicator(final AlarmServer server, final WorkQueue work_queue) throws Exception
+    public ServerCommunicator(final AlarmServer server, final Executor work_queue) throws Exception
     {
         super(Preferences.getJMS_URL());
         this.server = server;
@@ -355,7 +355,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             else if (JMSAlarmMessage.TEXT_UNACKNOWLEDGE.equals(text))
                 server.acknowledge(name, false);
             else if (JMSAlarmMessage.TEXT_CONFIG.equals(text))
-                work_queue.add(new Runnable()
+                work_queue.execute(new Runnable()
                 {
                     public void run()
                     {
