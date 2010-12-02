@@ -315,8 +315,10 @@ public class WriteThread implements Runnable
 
         // FIXME (bknerr) : workaround adapter interface for sample (value + channel id)
         // Find a proper abstraction for IArchiveSample!
+        // FIXME (bknerr) : get rid of batch size here, move it to the impl
         final List<IValueWithChannelId> samples =
             new ArrayList<IValueWithChannelId>(batch_size);
+        IValue sample;
 
         for (final SampleBuffer buffer : buffers) {
             // Update max buffer length etc. before we start to remove samples
@@ -326,9 +328,7 @@ public class WriteThread implements Runnable
 
             final int channelId = writerService.getChannelId(channelName);
 
-            IValue sample = buffer.remove();
-            while (sample != null) {
-
+            while ((sample = buffer.poll()) != null) {
                 // sample handling
                 samples.add(new ValueWithChannelId(sample, channelId));
                 if (samples.size() >= batch_size) {
@@ -338,10 +338,7 @@ public class WriteThread implements Runnable
                 }
 
                 // metadata handling
-                writerService.writeMetaData(channelName, sample);
-
-                // next
-                sample = buffer.remove();
+                writerService.commitMetaData(channelName, sample);
             }
         }
         // remaining sample handling of this sample buffer

@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.service.rdbimpl;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -288,7 +289,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
+    public void commitMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
             _archive.get().writeMetaData(getChannelConfig(channelName), sample);
         } catch (final Exception e) {
@@ -323,6 +324,27 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
             throw new ArchiveServiceException("Retrieval of channel failed.", e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean writeSamples(final Collection<?> samples) throws ArchiveServiceException {
+        throw new ArchiveServiceException("Not yet implemented", null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+        throw new ArchiveServiceException("Not yet implemented", null);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public boolean flush() throws ArchiveServiceException {
+        throw new ArchiveServiceException("Not yet implemented", null);
     }
 
 }

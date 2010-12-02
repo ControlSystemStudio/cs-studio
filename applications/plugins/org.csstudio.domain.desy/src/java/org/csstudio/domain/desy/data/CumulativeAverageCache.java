@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssDataType;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.CssDouble;
 import org.csstudio.domain.desy.types.TypeSupport;
@@ -44,7 +44,7 @@ import org.csstudio.domain.desy.types.TypeSupport;
  * @param <A> value type parameter, has to have a conversion type support
  *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<A extends CssDataType> extends AccumulatorCache<A, CssDouble> {
+public class CumulativeAverageCache<A extends ICssValueType> extends AccumulatorCache<A, CssDouble> {
 
     /**
      * Constructor.

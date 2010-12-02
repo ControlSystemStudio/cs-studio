@@ -21,7 +21,7 @@
  */
 package org.csstudio.archive.service;
 
-import java.util.List;
+import java.util.Collection;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -43,17 +43,14 @@ import org.csstudio.platform.data.IValue;
 public interface IArchiveWriterService extends IArchiveConnectionService {
 
     /**
-     * Writes the samples to the archive.
+     * Retrieves the time stamp of the latest sample for the given channel.
      *
-     * FIXME (bknerr, kasemir) : the signature with separated channel id and list of IValues is
-     * not cleanly defined, better having a collection of composite objects,
-     * e.g. Collection<IArchiveSample<T>>. A workaround composite has been introduced.
-     *
-     * @param samples the samples to be archived with their channel id
-     * @return true, if the samples have been persisted
-     * @throws ArchiveServiceException
+     * @param name the identifying channel name.
+     * @return the time stamp of the latest sample
+     * @throws ArchiveServiceException if the retrieval of the latest time stamp failed
      */
-    boolean writeSamples(final List<IValueWithChannelId> samples) throws ArchiveServiceException;
+    @CheckForNull
+    ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
      * Retrieves the channel id for a given channel name.
@@ -64,21 +61,42 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
     int getChannelId(@Nonnull final String name) throws ArchiveServiceException;
 
     /**
-     * Writes metadata out of a sample for a channel.
+     * Writes the samples to the archive.
+     *
+     * @param samples the samples to be archived with their channel id
+     * @return true, if the samples have been persisted
+     * @throws ArchiveServiceException
+     */
+    boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException;
+
+
+
+    /**
+     * Transfers the sample information to the persistence layer.
+     * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
+     * information.
+     * @param channelId
+     * @param value
+     * @throws ArchiveServiceException
+     */
+    void commitSample(int channelId, IValue value) throws ArchiveServiceException;
+
+    /**
+     * Transfers the metadata information out of the given value for this channel to the persistence
+     * layer.
+     * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
+     * information.
      *
      * @param channelName the name of the channel
      * @param sample the current sample
      * @throws ArchiveServiceException if the writing of meta data failed
      */
-    void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
+    void commitMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
 
     /**
-     * Retrieves the time stamp of the latest sample for the given channel.
-     *
-     * @param name the identifying channel name.
-     * @return the time stamp of the latest sample
-     * @throws ArchiveServiceException if the retrieval of the latest time stamp failed
+     * Triggers the persistence layer to actually persist the committed information.
+     * @return true, if the committed information had been successfully persisted.
+     * @throws ArchiveServiceException
      */
-    @CheckForNull
-    ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException;
+    boolean flush() throws ArchiveServiceException;
 }

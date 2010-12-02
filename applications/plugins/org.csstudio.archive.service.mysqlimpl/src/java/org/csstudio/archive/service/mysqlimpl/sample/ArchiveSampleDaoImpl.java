@@ -202,14 +202,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                     // FIXME (bknerr) : what to do with the sample? archive or not?
                 } else {
                     // the VALUES (...) component for the standard sample table
-                    values.add(createSampleValueStmtStr(channelId, sevId, statusId, sample.getValue(), timestamp));
+                    values.add(createSampleValueStmtStr(channelId, sevId, statusId, sample.getData(), timestamp));
 
 
                     final Map<ArchiveChannelId, SampleAggregator> minutesMap = _reducedDataMapForMinutes.get();
 
-                    if (isWriteReducedDataDue(sample.getValue(), timestamp, Minutes.ONE.toStandardDuration(), minutesMap.get(channelId))) {
+                    if (isWriteReducedDataDue(sample.getData(), timestamp, Minutes.ONE.toStandardDuration(), minutesMap.get(channelId))) {
                         final String sampleMValue =
-                            createReducedSampleValueStmtStr(channelId, alarm, sevId, sample.getValue(), timestamp, minutesMap);
+                            createReducedSampleValueStmtStr(channelId, alarm, sevId, sample.getData(), timestamp, minutesMap);
                         valuesPerMinute.add(sampleMValue);
 
 //                        final Double lastAvg = minutesMap.get(channelId).getAvg();
@@ -226,10 +226,10 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                     }
 
                     // aggregate for minutes
-                    if (sample.getValue() instanceof Double) {
-                        minutesMap.get(channelId).aggregateNewVal(sample.getValue(), alarm);
-                    } else if (sample.getValue() instanceof Integer) {
-                        minutesMap.get(channelId).aggregateNewVal(Double.valueOf((Integer) sample.getValue()), alarm);
+                    if (sample.getData() instanceof Double) {
+                        minutesMap.get(channelId).aggregateNewVal(sample.getData(), alarm);
+                    } else if (sample.getData() instanceof Integer) {
+                        minutesMap.get(channelId).aggregateNewVal(Double.valueOf((Integer) sample.getData()), alarm);
                     }
                 }
 
@@ -265,7 +265,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return true;
         }
         final TimeInstant lastWriteTime = agg.getLastWriteTime();
-        final TimeInstant threshold = lastWriteTime.plus(duration.getMillis());
+        final TimeInstant threshold = lastWriteTime.plusMillis(duration.getMillis());
         if (timestamp.isAfter(threshold)) {
             return false; // not due, don't write
         }
@@ -327,7 +327,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                          sevId.intValue() + ", " +
                          statusId.intValue() + ", '" +
                          value + "' ," + // toString() is called - should be overridden in any type BaseValueType
-                         timestamp.getFractalSecondInNanos() +
+                         timestamp.getFractalMillisInNanos() +
                    ")";
         }
 

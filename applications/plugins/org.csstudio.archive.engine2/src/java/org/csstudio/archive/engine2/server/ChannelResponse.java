@@ -87,7 +87,7 @@ class ChannelResponse extends AbstractResponse
         
         final SampleBuffer buffer = channel.getSampleBuffer();
         html.tableLine(new String[]
-        { Messages.HTTP_QueueLen, Integer.toString(buffer.getQueueSize()) });
+        { Messages.HTTP_QueueLen, Integer.toString(buffer.size()) });
 
         final BufferStats stats = buffer.getBufferStats();
         html.tableLine(new String[]

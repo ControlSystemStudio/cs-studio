@@ -23,7 +23,7 @@ package org.csstudio.domain.desy.types;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /**
  * TODO (bknerr) :
@@ -31,35 +31,12 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 26.11.2010
  */
-public class CssDouble implements ICssValueType<Double> {
-
-    private final Double _value;
-    private final TimeInstant _timestamp;
+public interface ICssValueType<T> extends IHasTimeStamp {
 
     /**
-     * Constructor.
+     * Returns the value data.
+     * @return the data
      */
-    public CssDouble(@Nonnull final Double value, @Nonnull final TimeInstant timestamp) {
-        _value = value;
-        _timestamp = timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double getValueData() {
-        return _value;
-    }
-
+    T getValueData();
 }

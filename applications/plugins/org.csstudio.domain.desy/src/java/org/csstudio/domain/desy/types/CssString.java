@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.types;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.epics.pvmanager.data.Scalar;
 
 /**
  * TODO (bknerr) :
@@ -32,7 +31,7 @@ import org.epics.pvmanager.data.Scalar;
  * @author bknerr
  * @since 26.11.2010
  */
-public class CssString implements CssDataType, Scalar<String> {
+public class CssString implements ICssValueType<String> {
 
     private final String _value;
     private final TimeInstant _timestamp;
@@ -59,7 +58,7 @@ public class CssString implements CssDataType, Scalar<String> {
      */
     @Override
     @Nonnull
-    public String getValue() {
+    public String getValueData() {
         return _value;
     }
 

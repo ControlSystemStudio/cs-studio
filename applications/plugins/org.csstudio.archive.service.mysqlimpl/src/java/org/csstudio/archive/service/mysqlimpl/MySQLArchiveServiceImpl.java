@@ -114,14 +114,9 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
     /**
      * {@inheritDoc}
-     *
-     * <p>
-     *  For performance reasons, this call actually only adds
-     *  the sample to a 'batch'.
-     *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
      */
     @Override
-    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples) throws ArchiveServiceException {
+    public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
 
         // FIXME (bknerr) : get rid of this IValueWithChannelId class...
         try {
@@ -153,7 +148,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Deprecated
     @Override
-    public void writeMetaData(@Nonnull final String channelName, final IValue sample) {
+    public void commitMetaData(@Nonnull final String channelName, final IValue sample) {
         // FIXME (bknerr) : check the conception of meta data coming out of caj,jca or whatever
 
         // Metadata are partly themselves record fields (for numerics), which might be again
@@ -264,6 +259,24 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
             throw new ArchiveServiceException("Sample modes for " + sampleModeId.asString() +
                                               " could not be retrieved.", e);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean flush() throws ArchiveServiceException {
+        // TODO Auto-generated method stub
+        return false;
     }
 
 }

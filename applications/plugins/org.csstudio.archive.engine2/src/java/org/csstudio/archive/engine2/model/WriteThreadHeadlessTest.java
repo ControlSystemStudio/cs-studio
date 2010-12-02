@@ -80,7 +80,7 @@ public class WriteThreadHeadlessTest
         }
 
         // Wait for the thread to write all the samples
-        while (buffer.getQueueSize() > 0) {
+        while (buffer.size() > 0) {
             Thread.sleep(500);
         }
         writer.shutdown();

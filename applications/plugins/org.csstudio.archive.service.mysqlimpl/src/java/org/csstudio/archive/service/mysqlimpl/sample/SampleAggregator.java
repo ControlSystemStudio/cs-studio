@@ -22,6 +22,7 @@
 package org.csstudio.archive.service.mysqlimpl.sample;
 
 import org.csstudio.domain.desy.alarm.IComparableAlarm;
+import org.csstudio.domain.desy.data.CumulativeAverageCache;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 
@@ -40,6 +41,8 @@ public class SampleAggregator<V> {
         IComparableAlarm<EpicsAlarm> _alarm;
         IComparableAlarm<EpicsAlarm> _minAlarm;
         int _n = 1;
+
+        CumulativeAverageCache<Double> _avg;
 
         /**
          * Constructor.

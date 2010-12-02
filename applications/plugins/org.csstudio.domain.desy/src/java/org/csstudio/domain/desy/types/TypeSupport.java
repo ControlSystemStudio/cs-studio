@@ -34,7 +34,7 @@ import com.google.common.collect.Maps;
  * @author bknerr
  * @since 26.11.2010
  */
-public abstract class TypeSupport<T extends CssDataType> {
+public abstract class TypeSupport<T extends ICssValueType> {
 
     private static Map<Class<?>, TypeSupport<?>> _typeSupports = Maps.newHashMap();
 
@@ -45,7 +45,7 @@ public abstract class TypeSupport<T extends CssDataType> {
      * @param typeClass the class of the type
      * @param typeSupport the support for the type
      */
-    public static <T extends CssDataType> void addTypeSupport(final Class<T> typeClass, final TypeSupport<T> typeSupport) {
+    public static <T extends ICssValueType> void addTypeSupport(final Class<T> typeClass, final TypeSupport<T> typeSupport) {
         _typeSupports.put(typeClass, typeSupport);
     }
 
@@ -60,7 +60,7 @@ public abstract class TypeSupport<T extends CssDataType> {
      * @return the support for the type or null
      */
     @CheckForNull
-    static <T extends CssDataType> TypeSupport<T> cachedTypeSupportFor(final Class<T> typeClass) {
+    static <T extends ICssValueType> TypeSupport<T> cachedTypeSupportFor(final Class<T> typeClass) {
         @SuppressWarnings("unchecked")
 		final
         TypeSupport<T> support = (TypeSupport<T>) _typeSupports.get(typeClass);;
@@ -73,7 +73,7 @@ public abstract class TypeSupport<T extends CssDataType> {
         return support;
     }
 
-    public static <T extends CssDataType> CssDouble toDDouble(final T value) throws ConversionTypeSupportException {
+    public static <T extends ICssValueType> CssDouble toDDouble(final T value) throws ConversionTypeSupportException {
         @SuppressWarnings("unchecked")
 		final
         Class<T> typeClass = (Class<T>) value.getClass();

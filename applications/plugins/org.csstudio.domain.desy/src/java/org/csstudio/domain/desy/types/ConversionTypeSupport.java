@@ -30,7 +30,7 @@ import javax.annotation.Nonnull;
  * @author bknerr
  * @since 01.12.2010
  */
-public abstract class ConversionTypeSupport<T extends CssDataType> extends TypeSupport<T> {
+public abstract class ConversionTypeSupport<T extends ICssValueType> extends TypeSupport<T> {
 
 	private static boolean INSTALLED = false;
 
@@ -67,8 +67,8 @@ public abstract class ConversionTypeSupport<T extends CssDataType> extends TypeS
 		INSTALLED = true;
 	}
 
-	protected static String createConversionFailedMsg(final Class<? extends CssDataType> from,
-			final Class<? extends CssDataType> to) {
+	protected static String createConversionFailedMsg(final Class<? extends ICssValueType> from,
+			final Class<? extends ICssValueType> to) {
 		return "Type conversion " + from.getName() + " to " + to.getName() + " failed.";
 	}
 

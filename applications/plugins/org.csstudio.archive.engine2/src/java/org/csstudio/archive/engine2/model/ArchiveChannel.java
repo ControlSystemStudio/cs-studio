@@ -136,6 +136,7 @@ abstract public class ArchiveChannel
         pv = PVFactory.createPV(name);
         pv.addListener(new PVListener()
         {
+            @Override
             public void pvValueUpdate(final PV pv)
             {
                 // PV already suppresses updates after 'stop', but check anyway
@@ -149,6 +150,7 @@ abstract public class ArchiveChannel
                 }
             }
 
+            @Override
             public void pvDisconnected(final PV pv)
             {
                 if (is_running) {
@@ -274,6 +276,7 @@ abstract public class ArchiveChannel
     {
         return buffer;
     }
+
 
     /** Reset counters */
     public void reset()

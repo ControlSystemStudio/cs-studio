@@ -121,7 +121,7 @@ class GroupResponse extends AbstractResponse
                 current_value,
                 last_value,
                 Long.toString(channel.getReceivedValues()),
-                Integer.toString(buffer.getQueueSize()),
+                Integer.toString(buffer.size()),
                 String.format("%.1f", stats.getAverageSize()),
                 Integer.toString(stats.getMaxSize()),
                 Integer.toString(buffer.getCapacity()),

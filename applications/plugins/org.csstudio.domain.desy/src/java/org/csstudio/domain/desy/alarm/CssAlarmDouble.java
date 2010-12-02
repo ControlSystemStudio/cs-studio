@@ -19,16 +19,43 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.alarm;
 
-import org.csstudio.domain.desy.time.IHasTimeStamp;
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.CssDouble;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 26.11.2010
+ * @since 02.12.2010
  */
-public interface CssDataType extends IHasTimeStamp {
-    // yet a marker
+public class CssAlarmDouble extends CssDouble implements IHasAlarm {
+
+    private final IAlarm _alarm;
+    /**
+     * Constructor.
+     * @param value
+     * @param timestamp
+     * @param alarm
+     */
+    public CssAlarmDouble(@Nonnull final Double value,
+                          @Nonnull final TimeInstant timestamp,
+                          @Nullable final IAlarm alarm) {
+        super(value, timestamp);
+        _alarm = alarm;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @CheckForNull
+    public IAlarm getAlarm() {
+        return _alarm;
+    }
 }

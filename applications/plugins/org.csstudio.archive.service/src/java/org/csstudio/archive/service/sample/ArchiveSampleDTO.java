@@ -23,11 +23,12 @@ package org.csstudio.archive.service.sample;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Immutable data transfer class for archive sample.
@@ -36,24 +37,18 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @since 15.11.2010
  * @param <T> data type of the contained value
  */
-public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
+public class ArchiveSampleDTO<T extends ICssValueType & IHasAlarm> implements IArchiveSample<T> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;
-    private final TimeInstant _timestamp;
-    private final EpicsAlarm _alarm;
 
     /**
      * Constructor.
      */
     public ArchiveSampleDTO(@Nonnull final ArchiveChannelId chanId,
-                            @Nonnull final T value,
-                            @Nonnull final TimeInstant ts,
-                            @Nullable final EpicsAlarm alarm) {
+                            @Nonnull final T value) {
         _channelId = chanId;
         _value = value;
-        _timestamp = ts;
-        _alarm = alarm;
     }
 
     /**
@@ -70,7 +65,7 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
      */
     @Override
     @Nonnull
-    public T getValue() {
+    public T getData() {
         return _value;
     }
 
@@ -79,7 +74,7 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
      */
     @Override
     public TimeInstant getTimestamp() {
-        return _timestamp;
+        return _value.getTimestamp();
     }
 
     /**
@@ -88,7 +83,7 @@ public class ArchiveSampleDTO<T> implements IArchiveSample<T> {
     @Override
     @CheckForNull
     public EpicsAlarm getAlarm() {
-        return _alarm;
+        return (EpicsAlarm) _value.getAlarm();
     }
 
 }
