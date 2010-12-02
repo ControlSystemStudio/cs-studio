@@ -62,8 +62,19 @@ public class Preferences
      */
     private static String getString(final String setting)
     {
+        return getString(setting, null);
+    }
+
+    /** @param setting Preference identifier
+     *  @param default_value Default value when preferences unavailable
+     *  @return String from preference system, or <code>null</code>
+     */
+    private static String getString(final String setting, final String default_value)
+    {
         final IPreferencesService service = Platform.getPreferencesService();
-        return service.getString(Activator.ID, setting, null, null);
+        if (service == null)
+            return default_value;
+        return service.getString(Activator.ID, setting, default_value, null);
     }
 
     /** @return <code>true</code> for read-only operation */
@@ -156,7 +167,7 @@ public class Preferences
     /**  @return JMS topic used for 'global' alarm messages from servers */
     public static String getJMS_GlobalServerTopic()
     {
-        return getString(GLOBAL_PREFIX) + SERVER_SUFFIX;
+        return getString(GLOBAL_PREFIX, "GLOBAL") + SERVER_SUFFIX;
     }
 
     /** @return Delay in seconds between expected idle messages */
