@@ -46,7 +46,41 @@ public class WorkQueue implements Executor
         }
     }
 
+    /** Perform queued commands, return when done.
+     *  Returns 'immediately' if there are no queued commands.
+     */
+    public void perform_queued_commands()
+    {
+        assertOnThread();
+        Runnable task;
+        // Execute all tasks on queue
+        synchronized (tasks)
+        {
+            task = tasks.poll();
+        }
+        while (task != null)
+        {
+            try
+            {
+                task.run();
+            }
+            catch (Throwable ex)
+            {
+                CentralLogger.getInstance().getLogger(this).error(ex);
+                ex.printStackTrace();
+            }
+            synchronized (tasks)
+            {
+                task = tasks.poll();
+            }
+        }
+    }
+
     /** Perform queued commands. If there are none, wait a little, then check again.
+     *  Meant to be called in a 'main' loop, using the delay to keep
+     *  the loop from using all CPU, yet also not waiting indefinitely
+     *  to allow termination checks.
+     *
      *  @param millisecs Time to wait
      */
     public void perform_queued_commands(final int millisecs)
@@ -93,7 +127,7 @@ public class WorkQueue implements Executor
      *  @throws Error if called from thread other than the initial work queue thread
      */
     @SuppressWarnings("nls")
-    public void assertOnThread()
+    public synchronized void assertOnThread()
     {
         if (thread == null)
         {

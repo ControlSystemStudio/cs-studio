@@ -46,7 +46,7 @@ then
     mkdir -p apps
     
     ## Basic EPICS
-    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-macosx.carbon.x86.zip  CSS_EPICS_$VERSION css.app/Contents/MacOS/css apps/epics_css_$VERSION-macosx.carbon.x86.zip
+    sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-macosx.cocoa.x86.zip   CSS_EPICS_$VERSION css.app/Contents/MacOS/css apps/epics_css_$VERSION-macosx.cocoa.x86.zip
     sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86.zip      CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86.zip
     sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-linux.gtk.x86_64.zip   CSS_EPICS_$VERSION css                        apps/epics_css_$VERSION-linux.gtk.x86_64.zip
     sh patch_product.sh build/I.epics_css_$VERSION/epics_css_$VERSION-win32.win32.x86.zip    CSS_EPICS_$VERSION css.exe                    apps/epics_css_$VERSION-win32.win32.x86.zip
@@ -54,7 +54,7 @@ then
 
     ## SNS CSS
     # OS X
-    sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-macosx.carbon.x86.zip   CSS_$VERSION    css.app/Contents/MacOS/css    apps/sns_css_$VERSION-macosx.carbon.x86.zip
+    sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-macosx.cocoa.x86.zip    CSS_$VERSION    css.app/Contents/MacOS/css    apps/sns_css_$VERSION-macosx.cocoa.x86.zip
 	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86.zip       CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86.zip
 	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-linux.gtk.x86_64.zip    CSS_$VERSION    css                           apps/sns_css_$VERSION-linux.gtk.x86_64.zip
 	sh patch_product.sh build/I.sns_css_$VERSION/sns_css_$VERSION-win32.win32.x86.zip     CSS_$VERSION    css.exe                       apps/sns_css_$VERSION-win32.win32.x86.zip
