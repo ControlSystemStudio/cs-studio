@@ -29,7 +29,7 @@ import java.util.Date;
 
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.model.IProcessVariable;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -68,48 +68,48 @@ public class ProcessVariableNodeUnitTest {
 
     @Test
     public void testNewlyCreatedNodeHasNoAlarm() {
-        assertEquals(EpicsAlarm.UNKNOWN, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
     }
 
     @Test
 	public void testAlarmIncreasesSeverityAndUnacknowledgedSeverity() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MINOR, t1));
-        assertEquals(EpicsAlarm.MINOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.MINOR, _node.getUnacknowledgedAlarmSeverity());
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t1));
+        assertEquals(EpicsAlarmSeverity.MINOR, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MINOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test
 	public void testMajorAlarmIncreasesSeverityAfterMinorAlarm() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MINOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t2));
-        assertEquals(EpicsAlarm.MAJOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.MAJOR, _node.getUnacknowledgedAlarmSeverity());
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t1));
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t2));
+        assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test
 	public void testMinorAfterMajorLowersSeverityButKeepsUnacknowledgedSeverity() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MINOR, t2));
-        assertEquals(EpicsAlarm.MINOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.MAJOR, _node.getUnacknowledgedAlarmSeverity());
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MINOR, t2));
+        assertEquals(EpicsAlarmSeverity.MINOR, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test
 	public void testNoAlarmAfterAlarmKeepsUnacknowledged() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t1));
-		_node.updateAlarm(new Alarm("", EpicsAlarm.NO_ALARM, t2));
-        assertEquals(EpicsAlarm.NO_ALARM, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.MAJOR, _node.getUnacknowledgedAlarmSeverity());
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.NO_ALARM, t2));
+        assertEquals(EpicsAlarmSeverity.NO_ALARM, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     // TODO (bknerr) : project: CSS-Applications - Tracker: Bug - [# 1631] Debug ProcessVariableNode#removeHighestUnacknowledgedAlarm
     @Test
 	public void testAcknowledgeAlarm() throws Exception {
-		_node.updateAlarm(new Alarm("", EpicsAlarm.MAJOR, t1));
+		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
 		_node.removeHighestUnacknowledgedAlarm();
-        assertEquals(EpicsAlarm.MAJOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarm.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test
@@ -130,28 +130,28 @@ public class ProcessVariableNodeUnitTest {
     public void testProcessVariableNodeListener() throws Exception {
         final StringBuilder wasAddedString = new StringBuilder();
         final StringBuilder wasRemovedString = new StringBuilder();
-        
-        SubtreeNode subtreeNode = new SubtreeNode.Builder("SubTree",
+
+        final SubtreeNode subtreeNode = new SubtreeNode.Builder("SubTree",
                                                           LdapEpicsAlarmcfgConfiguration.UNIT,
                                                           TreeNodeSource.XML).build();
-        ProcessVariableNode node = new ProcessVariableNode.Builder("A node", TreeNodeSource.XML)
+        final ProcessVariableNode node = new ProcessVariableNode.Builder("A node", TreeNodeSource.XML)
                 .setParent(subtreeNode).setListener(new IProcessVariableNodeListener() {
-                    
+
                     @Override
                     public void wasAdded(@Nonnull final String newName) {
                         wasAddedString.append(newName);
                     }
-                    
+
                     @Override
                     public void wasRemoved(@Nonnull final String newName) {
                         wasRemovedString.append(newName);
                     }
                 }).build();
         assertEquals("A node", wasAddedString.toString());
-        
+
         subtreeNode.removeChild(node);
         assertEquals("A node", wasRemovedString.toString());
     }
-    
+
 
 }
