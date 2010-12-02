@@ -315,6 +315,14 @@
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.csstudio.platform.startupListener">
+      <startupService
+            class="org.csstudio.utility.quickstart.StartupServiceListener"
+            id="org.csstudio.utility.quickstart.startupService"
+            isHighPriority="False">
+      </startupService>
    </extension>  
 
 </plugin>
