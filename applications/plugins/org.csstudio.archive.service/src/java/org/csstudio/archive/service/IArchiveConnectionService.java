@@ -53,12 +53,4 @@ public interface IArchiveConnectionService {
      * @throws ArchiveConnectionException
      */
     void disconnect() throws ArchiveConnectionException;
-
-    /**
-     * Configures the service to the user's needs.
-     * For instance the ornl implementation needs knowledge about batch sizes etc.
-     *
-     * @param cfgPrefs the configuration preferences
-     */
-    void configure(@Nonnull final Map<String, Object> cfgPrefs);
 }

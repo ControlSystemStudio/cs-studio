@@ -42,9 +42,11 @@ import org.csstudio.archive.service.mysqlimpl.status.ArchiveStatusDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.service.status.ArchiveStatusId;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
 import org.joda.time.Minutes;
@@ -59,7 +61,6 @@ import com.google.common.collect.Maps;
  * Archive sample dao implementation.
  *
  * @author bknerr
- * @param <T>
  * @since 11.11.2010
  */
 public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchiveSampleDao {
@@ -143,7 +144,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public void createSamples(@Nonnull final Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException {
+    public <V, T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException {
 
         // Build complete and reduced set statements
         PreparedStatement stmt = null;
@@ -178,14 +180,15 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException, ArchiveConnectionException, SQLException {
+    private <V, T extends ICssValueType<V> & IHasAlarm>
+    PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException, ArchiveConnectionException, SQLException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
         try {
-            for (final IArchiveSample<?> sample : samples) {
+            for (final IArchiveSample<V, T> sample : samples) {
 
                 final ArchiveChannelId channelId = sample.getChannelId();
                 final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status

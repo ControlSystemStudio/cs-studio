@@ -41,7 +41,6 @@ import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.sample.ArchiveSampleDTO;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
@@ -50,13 +49,14 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.data.TimestampFactory;
 
 import com.google.common.base.Function;
@@ -128,7 +128,7 @@ public enum ArchiveEngineAdapter {
      */
     @Nonnull
     public TimeInstant adapt(@Nonnull final ITimestamp time) {
-        return TimeInstantBuilder.buildFromNanos(time.seconds()*1000000000 + time.nanoseconds());
+        return TimeInstantBuilder.buildFromSeconds(time.seconds()).plusNanosPerSecond(time.nanoseconds());
     }
 
     /**
@@ -192,22 +192,6 @@ public enum ArchiveEngineAdapter {
             }
         }
         return null;
-    }
-    /**
-     * Take care, the IArchiveSample is dedicated to the db abstraction, which is of course very
-     * similar but NOT the same as the fundamental system variable capturing the state of a part
-     * of the system.
-
-     * This placeholder shall replace the IValueWithChannelId workaround and should find its way
-     * up to the alyers into the engine and the namely the scan thread, where it shall
-     * be properly instantiated.
-     */
-    @Nonnull
-    public <T extends ICssValueType & IHasAlarm> IArchiveSample<T>
-        adapt(@Nonnull final EpicsSystemVariable<T> var) {
-
-        return new ArchiveSampleDTO<T>(new ArchiveChannelId(var.getId().intValue()),
-                                       var.getData());
     }
 
     /**
@@ -276,142 +260,51 @@ public enum ArchiveEngineAdapter {
         return new EpicsAlarm(severity, EpicsAlarmStatus.parseStatus(status));
     }
 
-    interface IAlarmCssValueType extends ICssValueType, IHasAlarm {
-
-    }
-
-    public <T extends ICssValueType & IHasAlarm> IArchiveSample<T>
-        adapt(@Nonnull final IValueWithChannelId valueWithId) {
-
-        final CssDataType data = TypeSupport.toCssAlarmDataType(valueWithId.getValue());
-
-        return new ArchiveSampleDTO<T>(valueWithId.getChannelId(),
-                                       data);
-    }
-
-
     /**
-     * TODO (kasemir, bknerr) :
-     * I think, we'll need a bit more science in our code:
-     *
-     * starting with a definition a (CSS) system variable (in general)
-     * (apparently  neither PV, nor IProcessVariable, nor IControlSystemItem, nor the DAL stuff have
-     * been designed under strict definitions
-     *
-     * next: a definition of an (CSS) alarm (in general, not only epics),
-     *       and then certainly (CSS) EpicsAlarm, (CSS) TineAlarm, etc.
-     * next: a definition of the relation between a sys var and an alarm
-     *       has-a, is-a, loosely coupled by third entity
-     *
-     * Unfortunately, even at DESY, there isn't a common notion, let alone definition, of such
-     * things (hence org.csstudio.domain.desy for a first attempt).
-     *
-     * Consider this:  @see org.epics.pvmanager.data.*
-     *
-     * @param <T>
-     * @param valueWithId
-     * @return
-     */
-//    @CheckForNull
-//    public <T extends CssDataType> EpicsSystemVariable<T> adapt(@Nonnull final IValueWithChannelId valueWithId) {
-//        // Actually, we would expect a proper encapsulation of the information retrieved by the
-//        // engine for a system variable for EPICS, there isn't any, let alone a generic one.
-//
-//        // so we convert in a real internal system variable object
-//
-//        // fundstueck der woche:
-//        // asking a value container for the alarm severity field that
-//        // tells us that the enclosing value container actually has a value and then casting the
-//        // container  to the corresponding type (with instanceof cascades) to finally get the value.
-//        final IValue value = valueWithId.getValue();
-//        if (!value.getSeverity().hasValue()) {
-//            return null;
-//        }
-//        final int id = valueWithId.getChannelId();
-//
-//        final SystemVariableId varId = new SystemVariableId(id);
-//        final String name = ""; // here empty, but not when generated in the pv value update, in case Kay agrees (he certainly won't)
-//        final TimeInstant instant = adapt(value.getTime());
-//        final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
-//
-//
-////        with visitors...if only the IValue would be visitable, and all types have visit
-////        final AdaptIValueVisitor visitor = new AdaptIValueVisitor(varId, name, instant, alarm);
-////        return (EpicsSystemVariable<T>) visitor.adapt(value);
-//
-//
-//        if (value instanceof IDoubleValue) {
-//            final IDoubleValue doubleVal = (IDoubleValue) value;
-//            final double[] values = doubleVal.getValues();
-//            if (values.length > 1) {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<List<Double>>(varId,
-//                                                                                      name,
-//                                                                                      Doubles.asList(values),
-//                                                                                      instant,
-//                                                                                      alarm);
-//            } else {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<Double>(varId,
-//                                                                                name,
-//                                                                                Double.valueOf(doubleVal.getValue()),
-//                                                                                instant,
-//                                                                                alarm);
-//            }
-//        }
-//        if (value instanceof ILongValue) {
-//            final ILongValue longVal = (ILongValue) value;
-//            final long[] values = longVal.getValues();
-//            if (values.length > 1) {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<List<Long>>(varId,
-//                                                                                    name,
-//                                                                                    Longs.asList(values),
-//                                                                                    instant,
-//                                                                                    alarm);
-//            } else {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<Long>(varId,
-//                                                                              name,
-//                                                                              Long.valueOf(longVal.getValue()),
-//                                                                              instant,
-//                                                                              alarm);
-//            }
-//        }
-//        if (value instanceof IEnumeratedValue) {
-//            // FIXME : why not a dedicated type instead of integers
-//            // (and where are the describing strings as said in {@link IEnumeratedValue}?)
-//            final IEnumeratedValue enumVal = (IEnumeratedValue) value;
-//            final int[] values = enumVal.getValues();
-//            if (values.length > 1) {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<List<Integer>>(varId,
-//                                                                                       name,
-//                                                                                       Ints.asList(values),
-//                                                                                       instant,
-//                                                                                       alarm);
-//            } else {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<Integer>(varId,
-//                                                                                 name,
-//                                                                                 Integer.valueOf(enumVal.getValue()),
-//                                                                                 instant,
-//                                                                                 alarm);
-//            }
-//        }
-//        if (value instanceof IStringValue) {
-//            final IStringValue strVal = (IStringValue) value;
-//            final String[] values = strVal.getValues();
-//            if (values.length > 1) {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<List<String>>(varId,
-//                                                                                      name,
-//                                                                                      Arrays.asList(values),
-//                                                                                      instant,
-//                                                                                      alarm);
-//            } else {
-//                return (EpicsSystemVariable<T>) new EpicsSystemVariable<String>(varId,
-//                                                                                name,
-//                                                                                strVal.getValue(),
-//                                                                                instant,
-//                                                                                alarm);
-//            }
-//        }
-//
-//        return null;
-//    }
+     * Take care, the IArchiveSample is dedicated to the db abstraction, which is of course very
+     * similar but NOT the same as the fundamental system variable capturing the state of a part
+     * of the system.
 
+     * This placeholder shall replace the IValueWithChannelId workaround and should find its way
+     * up to the alyers into the engine and the namely the scan thread, where it shall
+     * be properly instantiated. See Carcassi's types for that, very likely to replace IValue and
+     * the such.
+     * @throws ConversionTypeSupportException
+     */
+    public <V, T extends ICssValueType<V> & IHasAlarm> IArchiveSample<V, T>
+        adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
+
+        final IValue value = valueWithId.getValue();
+
+        final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
+        final TimeInstant timestamp = adapt(value.getTime());
+        final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
+        @SuppressWarnings("unchecked")
+        final T data = (T) adapt(value);
+
+        final IArchiveSample<V, T> sample = new IArchiveSample<V, T>() {
+            @Override
+            public ArchiveChannelId getChannelId() {
+                return id;
+            }
+            @Override
+            public T getData() {
+                return data;
+            }
+            @Override
+            public TimeInstant getTimestamp() {
+                return timestamp;
+            }
+            @Override
+            public EpicsAlarm getAlarm() {
+                return alarm;
+            }
+        };
+
+        return sample;
+    }
+
+    public <T> T adapt(@Nonnull final IValue value) throws ConversionTypeSupportException {
+        return TypeSupport.toBasicType(value);
+    }
 }

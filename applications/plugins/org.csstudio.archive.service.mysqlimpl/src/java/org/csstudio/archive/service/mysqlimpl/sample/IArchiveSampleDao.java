@@ -28,7 +28,9 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.sample.IArchiveSample;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * Dao for archive samples.
@@ -51,5 +53,6 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    void createSamples(Collection<IArchiveSample<?>> samples) throws ArchiveSampleDaoException;
+    <V, T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException;
 }

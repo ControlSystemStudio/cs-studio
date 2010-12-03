@@ -35,9 +35,10 @@ import org.csstudio.domain.desy.types.ICssValueType;
  *
  * @author bknerr
  * @since 15.11.2010
+ * @param <V> the basic value type
  * @param <T> data type of the contained value
  */
-public class ArchiveSampleDTO<T extends ICssValueType & IHasAlarm> implements IArchiveSample<T> {
+public class ArchiveSampleDTO<V, T extends ICssValueType<V> & IHasAlarm> implements IArchiveSample<V, T> {
 
     private final ArchiveChannelId _channelId;
     private final T _value;

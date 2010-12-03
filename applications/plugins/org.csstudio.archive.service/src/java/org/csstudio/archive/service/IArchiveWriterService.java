@@ -69,8 +69,6 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
      */
     boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException;
 
-
-
     /**
      * Transfers the sample information to the persistence layer.
      * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
@@ -82,19 +80,20 @@ public interface IArchiveWriterService extends IArchiveConnectionService {
     void commitSample(int channelId, IValue value) throws ArchiveServiceException;
 
     /**
-     * Transfers the metadata information out of the given value for this channel to the persistence
+     * TODO (kasemir) : committing or persisting?
+     * Commits AND directly writes the metadata information out of the given value for this channel to the persistence
      * layer.
-     * Has to be followed by {@link IArchiveWriterService#flush()} to actually persist the
-     * information.
+     * Does NOT have to be followed by {@link IArchiveWriterService#flush()}.
      *
      * @param channelName the name of the channel
      * @param sample the current sample
      * @throws ArchiveServiceException if the writing of meta data failed
      */
-    void commitMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
+    void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException;
 
     /**
      * Triggers the persistence layer to actually persist the committed information.
+     *
      * @return true, if the committed information had been successfully persisted.
      * @throws ArchiveServiceException
      */

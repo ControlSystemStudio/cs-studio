@@ -21,6 +21,7 @@
  */
 package org.csstudio.archive.service.mysqlimpl;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,9 @@ import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoExc
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.epics.alarm.EpicsSystemVariable;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
+import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
 import org.csstudio.platform.logging.CentralLogger;
@@ -73,8 +76,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
 
     INSTANCE;
 
-    @SuppressWarnings("unused")
-    private static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
+    static final Logger LOG = CentralLogger.getInstance().getLogger(MySQLArchiveServiceImpl.class);
 
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
     private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
@@ -108,33 +110,38 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      * {@inheritDoc}
      */
     @Override
-    public void configure(@Nonnull final Map<String, Object> cfgPrefs) {
-        // nothing to configure for now
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
     public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
 
-        // FIXME (bknerr) : get rid of this IValueWithChannelId class...
-        try {
-            final List<IArchiveSample<?>> sampleBeans =
-                Lists.transform(samples,
-                                new Function<IValueWithChannelId, IArchiveSample<?>>() {
-                                    @Override
-                                    @Nonnull
-                                    public IArchiveSample<?> apply(@Nonnull final IValueWithChannelId valWithId) {
-                                        // this line is only for demonstration purposes,
-                                        // once we get rid of any incomplete/workaround value abstractions,
-                                        // this line will vanish
-                                        final EpicsSystemVariable<?> sysVar = ADAPT_MGR.adapt(valWithId);
-
-                                        return ADAPT_MGR.adapt(sysVar);
-                                    }
-
-                                });
+        final IArchiveSample<Object,ICssValueType<Object>> adapt =
+            ADAPT_MGR.<Object,ICssValueType<Object>>adapt(samples.iterator().next());
+//        // FIXME (bknerr) : get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
+//        try {
+//            final Function<IValueWithChannelId, IArchiveSample<V, T>> func =
+//                new Function<IValueWithChannelId, IArchiveSample<V, T>>() {
+//                    @Override
+//                    @CheckForNull
+//                    public IArchiveSample<V, T> apply(@Nonnull final IValueWithChannelId valWithId) {
+//                        try {
+//                            return ADAPT_MGR.adapt(valWithId);
+//
+//                        } catch (final ConversionTypeSupportException e) {
+//                            final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
+//                            LOG.error(msg, e);
+//                            try {
+//                                final EMailSender mailer =new EMailSender("smtp.desy.de",
+//                                                                          "archive.service@dontreply",
+//                                                                          "bastian.knerr@desy.de",
+//                                                                          msg);
+//                                mailer.addText(e.getMessage() + "\n" + e.getCause());
+//                                mailer.close();
+//                            } catch (final IOException ioe) {
+//                                LOG.error("Closing of mailer for error message failed.", ioe);
+//                            }
+//                            return null;
+//                        }
+//                    }
+//                };
+//            final List<IArchiveSample<V, T>> sampleBeans = Lists.transform((List<IValueWithChannelId>) samples, func);
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveSampleDaoException e) {
@@ -148,7 +155,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
      */
     @Deprecated
     @Override
-    public void commitMetaData(@Nonnull final String channelName, final IValue sample) {
+    public void writeMetaData(@Nonnull final String channelName, final IValue sample) {
         // FIXME (bknerr) : check the conception of meta data coming out of caj,jca or whatever
 
         // Metadata are partly themselves record fields (for numerics), which might be again

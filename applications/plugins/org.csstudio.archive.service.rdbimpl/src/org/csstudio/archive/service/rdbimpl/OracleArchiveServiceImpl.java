@@ -145,38 +145,8 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public void configure(@Nonnull final Map<String, Object> cfgPrefs) {
-//        _archivePrefix.set((String) cfgPrefs.get(PREFIX_PREF_KEY));
-//        _sampleTable.set((String) cfgPrefs.get(SAMPLE_TB_PREF_KEY));
-//        _arrayValTable.set((String) cfgPrefs.get(ARRAYVAL_TB_PREF_KEY));
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * <p>
-     *  For performance reasons, this call actually only adds
-     *  the sample to a 'batch'.
-     *  Need to follow up with <code>RDBArchive.commitBatch()</code> when done.
-     *
-     *  No transaction handling?
-     */
-    public boolean writeSamples(@Nonnull final List<IValueWithChannelId> samples)
-        throws ArchiveServiceException {
-
-        try {
-            for (final IValueWithChannelId sample : samples) {
-                _archive.get().batchSample(sample.getChannelId(), sample.getValue());
-                // certainly, batching *could* be done in the processing layer, leaving the commitBatch for here,
-                // but that would break encapsulation...
-            }
-            _archive.get().commitBatch();
-        } catch (final Exception e) {
-            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Committing of batch of samples failed.", e);
-        }
-
-        return true;
+    public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
+        throw new ArchiveServiceException("Not implemented", null);
     }
 
 
@@ -253,7 +223,6 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
                                                     throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
                                                                                       " could not be retrieved.", e);
                                                 }
-
                                                 return ADAPT_MGR.adapt(from, lastTimestamp);
 
                                             } catch (final ArchiveServiceException e) {
@@ -262,7 +231,6 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
                                             }
                                         }
                                    });
-
             return moreChannels;
 
         } catch (final Exception e) {
@@ -289,12 +257,12 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public void commitMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
+    public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
             _archive.get().writeMetaData(getChannelConfig(channelName), sample);
         } catch (final Exception e) {
             // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveServiceException("Writing of meta data failed.", e);
+            throw new ArchiveServiceException("Committing of meta data failed.", e);
         }
     }
 
@@ -329,22 +297,26 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
-    public boolean writeSamples(final Collection<?> samples) throws ArchiveServiceException {
-        throw new ArchiveServiceException("Not yet implemented", null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
-        throw new ArchiveServiceException("Not yet implemented", null);
+        try {
+            _archive.get().batchSample(channelId, value);
+        } catch (final Exception e) {
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Batching of samples failed.", e);
+        }
     }
 
     /**
      * {@inheritDoc}
      */
     public boolean flush() throws ArchiveServiceException {
-        throw new ArchiveServiceException("Not yet implemented", null);
+        try {
+            _archive.get().commitBatch();
+        } catch (final Exception e) {
+            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
+            throw new ArchiveServiceException("Committing of batch failed.", e);
+        }
+        return true;
     }
 
 }
