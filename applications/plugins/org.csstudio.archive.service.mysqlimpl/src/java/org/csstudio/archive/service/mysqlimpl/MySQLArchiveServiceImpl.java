@@ -51,6 +51,7 @@ import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoExc
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.email.EMailSender;
@@ -106,42 +107,44 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         DAO_MGR.disconnect();
     }
 
+    interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
+    }
     /**
      * {@inheritDoc}
      */
     @Override
     public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
 
-        final IArchiveSample<Object,ICssValueType<Object>> adapt =
-            ADAPT_MGR.<Object,ICssValueType<Object>>adapt(samples.iterator().next());
-//        // FIXME (bknerr) : get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
-//        try {
-//            final Function<IValueWithChannelId, IArchiveSample<V, T>> func =
-//                new Function<IValueWithChannelId, IArchiveSample<V, T>>() {
-//                    @Override
-//                    @CheckForNull
-//                    public IArchiveSample<V, T> apply(@Nonnull final IValueWithChannelId valWithId) {
-//                        try {
-//                            return ADAPT_MGR.adapt(valWithId);
-//
-//                        } catch (final ConversionTypeSupportException e) {
-//                            final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
-//                            LOG.error(msg, e);
-//                            try {
-//                                final EMailSender mailer =new EMailSender("smtp.desy.de",
-//                                                                          "archive.service@dontreply",
-//                                                                          "bastian.knerr@desy.de",
-//                                                                          msg);
-//                                mailer.addText(e.getMessage() + "\n" + e.getCause());
-//                                mailer.close();
-//                            } catch (final IOException ioe) {
-//                                LOG.error("Closing of mailer for error message failed.", ioe);
-//                            }
-//                            return null;
-//                        }
-//                    }
-//                };
-//            final List<IArchiveSample<V, T>> sampleBeans = Lists.transform((List<IValueWithChannelId>) samples, func);
+        // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
+       //                   And apparently the type insafeness leads to Object instead of generic type...damn
+        try {
+            final Function<IValueWithChannelId, IArchiveSample<Object,ICssAlarmValueType<Object>>> func =
+                new Function<IValueWithChannelId, IArchiveSample<Object,ICssAlarmValueType<Object>>>() {
+                    @Override
+                    @CheckForNull
+                    public IArchiveSample<Object, ICssAlarmValueType<Object>> apply(@Nonnull final IValueWithChannelId valWithId) {
+                        try {
+                            return ADAPT_MGR.adapt(valWithId);
+
+                        } catch (final ConversionTypeSupportException e) {
+                            final String msg = "Value for channel " + valWithId.getChannelId() + " could not be adapted. Sample not written!";
+                            LOG.error(msg, e);
+                            try {
+                                final EMailSender mailer =new EMailSender("smtp.desy.de",
+                                                                          "archive.service@dontreply",
+                                                                          "bastian.knerr@desy.de",
+                                                                          msg);
+                                mailer.addText(e.getMessage() + "\n" + e.getCause());
+                                mailer.close();
+                            } catch (final IOException ioe) {
+                                LOG.error("Closing of mailer for error message failed.", ioe);
+                            }
+                            return null;
+                        }
+                    }
+                };
+            final List<IArchiveSample<Object,ICssAlarmValueType<Object>>> sampleBeans =
+                Lists.transform((List<IValueWithChannelId>) samples, func);
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
         } catch (final ArchiveSampleDaoException e) {

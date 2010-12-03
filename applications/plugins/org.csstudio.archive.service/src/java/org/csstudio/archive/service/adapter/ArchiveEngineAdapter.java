@@ -279,8 +279,7 @@ public enum ArchiveEngineAdapter {
         final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
         final TimeInstant timestamp = adapt(value.getTime());
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
-        @SuppressWarnings("unchecked")
-        final T data = (T) adapt(value);
+        final T data = adapt(value);
 
         final IArchiveSample<V, T> sample = new IArchiveSample<V, T>() {
             @Override

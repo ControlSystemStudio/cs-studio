@@ -21,10 +21,10 @@
  */
 package org.csstudio.archive.service.mysqlimpl.sample;
 
-import org.csstudio.domain.desy.alarm.IComparableAlarm;
 import org.csstudio.domain.desy.data.CumulativeAverageCache;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * TODO (bknerr) :
@@ -32,7 +32,7 @@ import org.csstudio.domain.desy.time.TimeInstant;
  * @author bknerr
  * @since 25.11.2010
  */
-public class SampleAggregator<V> {
+public class SampleAggregator<V, A extends ICssValueType<V>> {
         Double _aggregateVal;
         Double _lastVal;
         Double _minVal;
@@ -42,7 +42,7 @@ public class SampleAggregator<V> {
         IComparableAlarm<EpicsAlarm> _minAlarm;
         int _n = 1;
 
-        CumulativeAverageCache<Double> _avg;
+        CumulativeAverageCache<Double, A> _avg;
 
         /**
          * Constructor.
