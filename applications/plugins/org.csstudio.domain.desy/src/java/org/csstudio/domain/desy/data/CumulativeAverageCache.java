@@ -45,7 +45,7 @@ import org.csstudio.domain.desy.types.TypeSupport;
  * @param <A> value type parameter, has to have a conversion type support
  *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<V, A extends ICssValueType<V>> extends AbstractAccumulatorCache<A, CssDouble> {
+public class CumulativeAverageCache<A extends ICssValueType<?>> extends AbstractAccumulatorCache<A, CssDouble> {
 
     /**
      * Constructor.

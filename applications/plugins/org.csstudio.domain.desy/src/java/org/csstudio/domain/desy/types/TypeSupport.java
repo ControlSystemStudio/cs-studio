@@ -96,11 +96,11 @@ public abstract class TypeSupport<T> {
      * @param <T> the css value type
      */
     @SuppressWarnings("unchecked")
-    public static <V, T extends ICssValueType<V>> CssDouble toCssDouble(final T value) throws ConversionTypeSupportException {
+    public static <T extends ICssValueType<?>> CssDouble toCssDouble(final T value) throws ConversionTypeSupportException {
 		final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractCssValueConversionTypeSupport<V, T> support =
             (AbstractCssValueConversionTypeSupport<V, T>) cachedTypeSupportFor(typeClass);
-        return support.convertToDDouble(value);
+        return support.convertToCssDouble(value);
     }
 
     /**

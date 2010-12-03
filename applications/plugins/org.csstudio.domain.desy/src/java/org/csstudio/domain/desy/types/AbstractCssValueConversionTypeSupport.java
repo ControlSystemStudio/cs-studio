@@ -28,10 +28,9 @@ import javax.annotation.Nonnull;
  *
  * @author bknerr
  * @since 01.12.2010
- * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public abstract class AbstractCssValueConversionTypeSupport<V, T extends ICssValueType<V>> extends TypeSupport<T> {
+public abstract class AbstractCssValueConversionTypeSupport<T extends ICssValueType<?>> extends TypeSupport<T> {
 
 	private static boolean INSTALLED = false;
 
@@ -47,22 +46,22 @@ public abstract class AbstractCssValueConversionTypeSupport<V, T extends ICssVal
 			return;
 		}
 
-		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<Double, CssDouble>() {
+		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<CssDouble>() {
 			@Override
-			public CssDouble convertToDDouble(@Nonnull final CssDouble d) {
+			public CssDouble convertToCssDouble(@Nonnull final CssDouble d) {
 				return d;
 			}
 		});
-		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<Long, CssLong>() {
+		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<CssLong>() {
 			@Override
-			public CssDouble convertToDDouble(@Nonnull final CssLong l) {
+			public CssDouble convertToCssDouble(@Nonnull final CssLong l) {
 				final Long value = l.getValueData();
 				return new CssDouble(value.doubleValue(), l.getTimestamp());
 			}
 		});
-		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<String, CssString>() {
+		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<CssString>() {
 			@Override
-			public CssDouble convertToDDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
+			public CssDouble convertToCssDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
 				final String value = s.getValueData();
 				try {
 					return new CssDouble(Double.valueOf(value), s.getTimestamp());
@@ -80,5 +79,5 @@ public abstract class AbstractCssValueConversionTypeSupport<V, T extends ICssVal
 		return "Type conversion " + from.getName() + " to " + to.getName() + " failed.";
 	}
 
-	public abstract CssDouble convertToDDouble(@Nonnull final T value) throws ConversionTypeSupportException;
+	public abstract CssDouble convertToCssDouble(@Nonnull final T value) throws ConversionTypeSupportException;
 }

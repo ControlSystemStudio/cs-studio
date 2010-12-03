@@ -19,25 +19,42 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.data;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.time.IHasTimeStamp;
+import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
+import org.csstudio.domain.desy.types.ICssValueType;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * TODO (bknerr) :
  *
  * @author bknerr
- * @since 26.11.2010
- * @param <T>
+ * @since 03.12.2010
  */
-public interface ICssValueType<T> extends IHasTimeStamp {
+public class CumulativeAverageCacheTest {
 
-    /**
-     * Returns the value data.
-     * @return the data
-     */
-    @Nonnull
-    T getValueData();
+    @Test
+    public void accumulate() {
+        final CumulativeAverageCache<Integer, ICssValueType<Integer>> cache =
+            new CumulativeAverageCache<Integer, ICssValueType<Integer>>();
+
+        for (int i = 0; i <= 10; i++) {
+            try {
+                cache.accumulate(new ICssValueType<Integer>(){
+                    @Override
+                    public TimeInstant getTimestamp() {
+                        return null;
+                    }
+                    @Override
+                    public Integer getValueData() {
+                        return Integer.valueOf(i);
+                    }
+                });
+            } catch (final ConversionTypeSupportException e) {
+                Assert.fail("Implicit Integer to Double conversion didn't work? WTF?");
+            }
+        }
+    }
 }
