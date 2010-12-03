@@ -1,13 +1,29 @@
+/*************************************************************************\
+* Copyright (c) 2010  UChicago Argonne, LLC
+* This file is distributed subject to a Software License Agreement found
+* in the file LICENSE that is included with this distribution.
+/*************************************************************************/
+
 package org.csstudio.opibuilder.adl2boy.translator;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import org.csstudio.opibuilder.model.AbstractContainerModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
+import org.csstudio.utility.adlparser.fileParser.ColorMap;
+import org.csstudio.utility.adlparser.fileParser.ParserADL;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLDynamicAttribute;
 import org.eclipse.swt.graphics.RGB;
 
+/**
+ * Utilities to aid in translating ADL files to OPI files.
+ * 
+ * @author John Hammonds, Argonne National Laboratory
+ *
+ */
 public class TranslatorUtils {
 	private static ADLBasicAttribute defaultBasicAttribute = new ADLBasicAttribute();
 	private static ADLDynamicAttribute defaultDynamicAttribute = new ADLDynamicAttribute();
@@ -202,5 +218,66 @@ public class TranslatorUtils {
 
 	public static void initDefaultDynamicAttribute(){
 		TranslatorUtils.defaultDynamicAttribute = new ADLDynamicAttribute();
+	}
+
+	/**
+	 * @param fullADLFileName
+	 * @return
+	 */
+	public static DisplayModel convertAdlToModel(String fullADLFileName) {
+		ADLWidget root = ParserADL.getNextElement(new File(fullADLFileName));
+		// Get the color map
+		RGB[] colorMap = getColorMap(root);
+		// Configure the display
+
+		DisplayModel displayModel = initializeDisplayModel(root, colorMap);
+		//Dynamic and basic attribute are static in Translator utils to allow for defaults to be set (used before vers 020200)
+		initDefaultBasicAttribute();
+		initDefaultDynamicAttribute();
+		
+		ConvertChildren(root.getObjects(), displayModel, colorMap);
+		return displayModel;
+	}
+
+	/**
+	 * Get the colorMap from an ADLroot ADLWidget
+	 * @param root
+	 * @return
+	 */
+	protected static RGB[] getColorMap(ADLWidget root) {
+		RGB colorMap[] = new RGB[0];
+		for (ADLWidget adlWidget : root.getObjects()){
+			String widgetType = adlWidget.getType();
+			try {
+				if (widgetType.equals("color map")){
+					ColorMap tempColorMap = new ColorMap(adlWidget);
+					colorMap = tempColorMap.getColors();
+				}
+			}
+			catch (Exception ex) {
+				System.out.println("Error reading ColorMap");
+				ex.printStackTrace();
+			}
+		}
+		return colorMap;
+	}
+
+	/**
+	 * get an initial DisplayModel from a given ADLWidget using a colorMap
+	 * @param root
+	 * @param colorMap
+	 * @return
+	 */
+	protected static DisplayModel initializeDisplayModel(ADLWidget root,
+			RGB[] colorMap) {
+		DisplayModel displayModel = new DisplayModel();
+		
+		for (ADLWidget adlWidget : root.getObjects()){
+			String widgetType = adlWidget.getType();
+			if (widgetType.equals("display")){
+				displayModel = (DisplayModel)(new Display2Model(adlWidget, colorMap, null)).getWidgetModel();
+			}
+		}
+		return displayModel;
 	}
 }
