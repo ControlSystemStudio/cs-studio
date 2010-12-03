@@ -38,9 +38,10 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @author bknerr
  * @since 04.11.2010
  *
+ * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<T extends ICssValueType> extends Identifiable<SystemVariableId> {
+public interface ISystemVariable<V, T extends ICssValueType<V>> extends Identifiable<SystemVariableId> {
 
     /**
      * The datum entity (value(s) and/or state(s) of this system variable.

@@ -24,38 +24,46 @@ package org.csstudio.domain.desy.types;
 import javax.annotation.Nonnull;
 
 /**
- *
- * TODO (bknerr) :
+ * Type conversion support for Css Value Types.
  *
  * @author bknerr
  * @since 01.12.2010
+ * @param <V> the basic type of the value(s) of the system variable
+ * @param <T> the type of the system variable
  */
-public abstract class ConversionTypeSupport<T extends ICssValueType> extends TypeSupport<T> {
+public abstract class AbstractCssValueConversionTypeSupport<V, T extends ICssValueType<V>> extends TypeSupport<T> {
 
 	private static boolean INSTALLED = false;
+
+	/**
+     * Constructor.
+     */
+    AbstractCssValueConversionTypeSupport() {
+        // Don't instantiate outside this class
+    }
 
 	public static void install() {
 		if (INSTALLED) {
 			return;
 		}
 
-		TypeSupport.addTypeSupport(CssDouble.class, new ConversionTypeSupport<CssDouble>() {
+		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<Double, CssDouble>() {
 			@Override
 			public CssDouble convertToDDouble(@Nonnull final CssDouble d) {
 				return d;
 			}
 		});
-		TypeSupport.addTypeSupport(CssLong.class, new ConversionTypeSupport<CssLong>() {
+		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<Long, CssLong>() {
 			@Override
 			public CssDouble convertToDDouble(@Nonnull final CssLong l) {
-				final Long value = l.getValue();
+				final Long value = l.getValueData();
 				return new CssDouble(value.doubleValue(), l.getTimestamp());
 			}
 		});
-		TypeSupport.addTypeSupport(CssString.class, new ConversionTypeSupport<CssString>() {
+		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<String, CssString>() {
 			@Override
 			public CssDouble convertToDDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
-				final String value = s.getValue();
+				final String value = s.getValueData();
 				try {
 					return new CssDouble(Double.valueOf(value), s.getTimestamp());
 				} catch(final NumberFormatException e) {
@@ -67,8 +75,8 @@ public abstract class ConversionTypeSupport<T extends ICssValueType> extends Typ
 		INSTALLED = true;
 	}
 
-	protected static String createConversionFailedMsg(final Class<? extends ICssValueType> from,
-			final Class<? extends ICssValueType> to) {
+	protected static String createConversionFailedMsg(@Nonnull final Class<? extends ICssValueType<?>> from,
+	                                                  @Nonnull final Class<? extends ICssValueType<?>> to) {
 		return "Type conversion " + from.getName() + " to " + to.getName() + " failed.";
 	}
 

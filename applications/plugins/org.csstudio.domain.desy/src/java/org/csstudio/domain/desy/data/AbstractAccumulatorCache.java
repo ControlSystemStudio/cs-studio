@@ -34,8 +34,10 @@ import org.epics.pvmanager.ValueCache;
  *
  * @author bknerr
  * @since 26.11.2010
+ * @param <A> the type of the value to be accumulated
+ * @param <R> the return type of the accumulation result
  */
-public abstract class AccumulatorCache<A, R> extends Function<R> {
+public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
 
     private final ValueCache<R> _accumulatedValue;
     private int _num;
@@ -44,7 +46,7 @@ public abstract class AccumulatorCache<A, R> extends Function<R> {
      * Constructor.
      * @param type
      */
-    public AccumulatorCache(@Nonnull final Class<R> type) {
+    public AbstractAccumulatorCache(@Nonnull final Class<R> type) {
         _accumulatedValue = new ValueCache<R>(type);
         _num = 0;
     }

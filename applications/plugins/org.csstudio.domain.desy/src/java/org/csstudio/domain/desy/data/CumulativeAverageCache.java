@@ -25,9 +25,9 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.CssDouble;
+import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.TypeSupport;
 
 
@@ -41,10 +41,11 @@ import org.csstudio.domain.desy.types.TypeSupport;
  *
  * @author bknerr
  * @since 26.11.2010
+ * @param <V> the basic type of value(s) of the CssValueType
  * @param <A> value type parameter, has to have a conversion type support
  *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<A extends ICssValueType> extends AccumulatorCache<A, CssDouble> {
+public class CumulativeAverageCache<V, A extends ICssValueType<V>> extends AbstractAccumulatorCache<A, CssDouble> {
 
     /**
      * Constructor.
@@ -59,12 +60,12 @@ public class CumulativeAverageCache<A extends ICssValueType> extends Accumulator
     @Override
     @Nonnull
     protected CssDouble calculateAccumulation(@CheckForNull final CssDouble accVal,
-                                            @Nonnull final A nVal) throws ConversionTypeSupportException {
-        final CssDouble nextDDouble = TypeSupport.toDDouble(nVal);
+                                              @Nonnull final A nVal) throws ConversionTypeSupportException {
+        final CssDouble nextDDouble = TypeSupport.toCssDouble(nVal);
 
-        final Double nextVal = nextDDouble.getValue();
+        final Double nextVal = nextDDouble.getValueData();
         final TimeInstant timestamp = nextDDouble.getTimestamp();
-        final Double curVal = accVal.getValue();
+        final Double curVal = accVal.getValueData();
 
         Double result;
         if (curVal != null) {
@@ -86,7 +87,7 @@ public class CumulativeAverageCache<A extends ICssValueType> extends Accumulator
     public CssDouble getValue() {
         final CssDouble dVal = super.getValue();
         if (dVal != null) {
-            final Double value = dVal.getValue();
+            final Double value = dVal.getValueData();
             if (value!= null) {
                 final int n = getNumberOfAccumulations();
                 return new CssDouble(value / n, dVal.getTimestamp());

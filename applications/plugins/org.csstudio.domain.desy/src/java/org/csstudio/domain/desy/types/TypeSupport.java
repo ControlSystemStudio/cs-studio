@@ -24,19 +24,33 @@ package org.csstudio.domain.desy.types;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
+import org.csstudio.platform.data.IValue;
 
 import com.google.common.collect.Maps;
 
 /**
- * TODO (bknerr) :
+ * Type support after carcassi's pattern: {@link org.epics.pvmanager.TypeSupport}
  *
  * @author bknerr
  * @since 26.11.2010
+ * @param <T> the type for the support
+ *
+ * CHECKSTYLE OFF: AbstractClassName
+ *                 This class statically is accessed, hence the name should be short and descriptive!
  */
-public abstract class TypeSupport<T extends ICssValueType> {
+public abstract class TypeSupport<T> {
+// CHECKSTYLE ON: AbstractClassName
 
-    private static Map<Class<?>, TypeSupport<?>> _typeSupports = Maps.newHashMap();
+    /**
+     * Constructor.
+     */
+    protected TypeSupport() {
+        // To be invoked by implementing classes only
+    }
+
+    private static Map<Class<?>, TypeSupport<?>> TYPE_SUPPORTS = Maps.newHashMap();
 
     /**
      * Adds support for a new type.
@@ -45,8 +59,9 @@ public abstract class TypeSupport<T extends ICssValueType> {
      * @param typeClass the class of the type
      * @param typeSupport the support for the type
      */
-    public static <T extends ICssValueType> void addTypeSupport(final Class<T> typeClass, final TypeSupport<T> typeSupport) {
-        _typeSupports.put(typeClass, typeSupport);
+    public static <T> void addTypeSupport(@Nonnull final Class<T> typeClass,
+                                          @Nonnull final TypeSupport<T> typeSupport) {
+        TYPE_SUPPORTS.put(typeClass, typeSupport);
     }
 
 
@@ -55,15 +70,14 @@ public abstract class TypeSupport<T extends ICssValueType> {
      * Calculates and caches the type support for a particular class, so that
      * introspection does not occur at every call.
      *
-     * @param <T> the type to retrieve support for
      * @param typeClass the class of the type
      * @return the support for the type or null
+     * @param <T> the type to retrieve support for
      */
     @CheckForNull
-    static <T extends ICssValueType> TypeSupport<T> cachedTypeSupportFor(final Class<T> typeClass) {
+    static <T> TypeSupport<T> cachedTypeSupportFor(@Nonnull final Class<T> typeClass) {
         @SuppressWarnings("unchecked")
-		final
-        TypeSupport<T> support = (TypeSupport<T>) _typeSupports.get(typeClass);;
+		final TypeSupport<T> support = (TypeSupport<T>) TYPE_SUPPORTS.get(typeClass);
 //        if (support == null) {
 //            support = recursiveTypeSupportFor(typeClass);
 //            if (support == null)
@@ -73,11 +87,37 @@ public abstract class TypeSupport<T extends ICssValueType> {
         return support;
     }
 
-    public static <T extends ICssValueType> CssDouble toDDouble(final T value) throws ConversionTypeSupportException {
-        @SuppressWarnings("unchecked")
-		final
-        Class<T> typeClass = (Class<T>) value.getClass();
-        final ConversionTypeSupport<T> support = (ConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
+    /**
+     * Tries to convert the given css value type to CssDouble.
+     * @param value the value to be converted
+     * @return the conversion result
+     * @throws ConversionTypeSupportException when conversion failed.
+     * @param <V> the basic type of the value(s)
+     * @param <T> the css value type
+     */
+    @SuppressWarnings("unchecked")
+    public static <V, T extends ICssValueType<V>> CssDouble toCssDouble(final T value) throws ConversionTypeSupportException {
+		final Class<T> typeClass = (Class<T>) value.getClass();
+        final AbstractCssValueConversionTypeSupport<V, T> support =
+            (AbstractCssValueConversionTypeSupport<V, T>) cachedTypeSupportFor(typeClass);
         return support.convertToDDouble(value);
     }
+
+    /**
+     * Tries to convert the given IValue type to its basic value type.
+     * @param value the value to be converted
+     * @return the conversion result
+     * @throws ConversionTypeSupportException when conversion failed.
+     * @param <R>
+     * @param <T>
+     */
+    @SuppressWarnings("unchecked")
+    public static <R, T extends IValue> R toBasicType(final T value) throws ConversionTypeSupportException {
+        final Class<T> typeClass = (Class<T>) value.getClass();
+        final AbstractIValueConversionTypeSupport<R, T> support =
+            (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass);
+        return support.convertToBasicType(value);
+    }
+
+
 }

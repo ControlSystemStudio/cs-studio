@@ -129,7 +129,7 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @param seconds seconds from start of epoch 1970-01-01T00:00:00Z.
      * @param fracSecNanos fractal nanos of the second.
      */
-    private TimeInstant(@Nonnull final long millis, @Nonnull final long fracSecMillis) {
+    TimeInstant(@Nonnull final long millis, @Nonnull final long fracSecMillis) {
         _fracMillisInNanos = fracSecMillis;
         _instant = new Instant(millis);
     }
