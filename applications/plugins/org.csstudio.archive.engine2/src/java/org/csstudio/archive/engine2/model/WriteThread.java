@@ -338,7 +338,7 @@ public class WriteThread implements Runnable
                 }
 
                 // metadata handling
-                writerService.commitMetaData(channelName, sample);
+                writerService.writeMetaData(channelName, sample);
             }
         }
         // remaining sample handling of this sample buffer
