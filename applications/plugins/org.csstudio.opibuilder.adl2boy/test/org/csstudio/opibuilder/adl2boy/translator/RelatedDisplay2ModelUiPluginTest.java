@@ -19,7 +19,7 @@ import org.eclipse.core.runtime.Path;
  * @author hammonds
  *
  */
-public class RelatedDisplay2ModelTest extends TestCase {
+public class RelatedDisplay2ModelUiPluginTest extends TestCase {
 	RelatedDisplay2Model converter = null;
 	
 	/**
