@@ -131,6 +131,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         @Override
         protected void timeout()
         {
+            System.out.println("Server timeout for " + AlarmClientCommunicator.this.toString());
             model.fireServerTimeout();
         }
     };
@@ -160,6 +161,9 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         super(Preferences.getJMS_URL());
         this.model = model;
         timeout_timer.start();
+
+        System.out.println("AlarmClientCommunicator " + AlarmClientCommunicator.this.toString() + " for " + model.getConfigurationName());
+
     }
 
     // JMSCommunicationThread
@@ -196,6 +200,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     protected void closeProducersAndConsumers() throws Exception
     {
+        timeout_timer.cancel();
         server_consumer.close();
         server_consumer = null;
         client_consumer.close();
