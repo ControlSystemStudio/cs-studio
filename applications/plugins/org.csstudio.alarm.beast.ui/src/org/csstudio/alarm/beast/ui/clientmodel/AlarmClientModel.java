@@ -23,7 +23,6 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -770,27 +769,19 @@ public class AlarmClientModel
      *  <p>
      *  Called by AlarmUpdateCommunicator, i.e. from JMS thread.
      *
-     *  @param name PV name
-     *  @param current_severity Current severity of PV
-     *  @param current_message Current PV message
-     *  @param severity Alarm severity
-     *  @param message Alarm message
-     *  @param value Value that triggered the update
-     *  @param timestamp Time stamp
+     *  @param into Alarm update info
      */
-    void updatePV(final String name, final SeverityLevel current_severity,
-            final String current_message,
-            final SeverityLevel severity, final String message,
-            final String value,
-            final ITimestamp timestamp)
+    void updatePV(final AlarmUpdateInfo info)
     {
         synchronized (this)
         {
             server_alive = true;
-            final AlarmTreePV pv = findPV(name);
+            final AlarmTreePV pv = findPV(info.getName());
             if (pv != null)
             {
-                pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
+                pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
+                        info.getSeverity(), info.getMessage(),
+                        info.getValue(), info.getTimestamp());
                 return;
             }
         }
@@ -801,7 +792,7 @@ public class AlarmClientModel
         // send info to JMS. Is that a problem?
         // Moved this outside the lock in case that makes a difference.
         CentralLogger.getInstance().getLogger(this).error(
-                "Received update for unknown PV " + name); //$NON-NLS-1$
+                "Received update for unknown PV " + info.getName()); //$NON-NLS-1$
     }
 
     /** Locate item by path
