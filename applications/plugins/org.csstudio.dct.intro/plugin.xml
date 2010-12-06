@@ -5,7 +5,7 @@
          point="org.eclipse.ui.intro.configExtension">
       <configExtension
             configId="org.eclipse.ui.intro.universalConfig"
-            content="intro/dctintro.xml">
+            content="intro/dctIntro.xml">
       </configExtension>
    </extension>
 

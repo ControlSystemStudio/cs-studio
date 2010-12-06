@@ -34,11 +34,14 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         color_provider = new SeverityColorProvider(parent);
         icon_provider = new SeverityIconProvider(parent);
     }
-    
+
     @Override
     public String getToolTipText(Object element)
     {
+        // Saw null here when tree content changes while (slow) tool tip decides to show
         final AlarmTree item = (AlarmTree) element;
+        if (item == null)
+            return ""; //$NON-NLS-1$
         return item.getToolTipText();
     }
 
@@ -60,7 +63,7 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         else
             cell.setImage(icon_provider.getIcon(item.getCurrentSeverity(),
                           item.getSeverity()));
-        
+
         // Color-code AlarmTreePV based on severity.
         final SeverityLevel severity = item.getSeverity();
         //  'OK' severity isn't color-coded.
