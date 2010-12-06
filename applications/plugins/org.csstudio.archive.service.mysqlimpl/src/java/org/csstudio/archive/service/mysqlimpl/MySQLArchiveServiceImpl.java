@@ -41,17 +41,13 @@ import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
-import org.csstudio.archive.service.mysqlimpl.channel.ArchiveChannelDaoException;
-import org.csstudio.archive.service.mysqlimpl.channelgroup.ArchiveChannelGroupDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
-import org.csstudio.archive.service.mysqlimpl.engine.ArchiveEngineDaoException;
-import org.csstudio.archive.service.mysqlimpl.sample.ArchiveSampleDaoException;
-import org.csstudio.archive.service.mysqlimpl.samplemode.ArchiveSampleModeDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.email.EMailSender;
@@ -108,6 +104,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     }
 
     interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
+        // Empty
     }
     /**
      * {@inheritDoc}
@@ -118,11 +115,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
        //                   And apparently the type insafeness leads to Object instead of generic type...damn
         try {
-            final Function<IValueWithChannelId, IArchiveSample<Object,ICssAlarmValueType<Object>>> func =
-                new Function<IValueWithChannelId, IArchiveSample<Object,ICssAlarmValueType<Object>>>() {
+            final Function<IValueWithChannelId, IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> func =
+                new Function<IValueWithChannelId, IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>>() {
                     @Override
                     @CheckForNull
-                    public IArchiveSample<Object, ICssAlarmValueType<Object>> apply(@Nonnull final IValueWithChannelId valWithId) {
+                    public IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
                         try {
                             return ADAPT_MGR.adapt(valWithId);
 
@@ -143,11 +140,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
                         }
                     }
                 };
-            final List<IArchiveSample<Object,ICssAlarmValueType<Object>>> sampleBeans =
+            final List<IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
                 Lists.transform((List<IValueWithChannelId>) samples, func);
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);
-        } catch (final ArchiveSampleDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Creation of samples failed.", e);
         }
         return true;
@@ -210,7 +207,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         IArchiveChannel channel;
         try {
             channel = DAO_MGR.getChannelDao().retrieveChannelByName(name);
-        } catch (final ArchiveChannelDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channel Id information for " + name +
                                               " could not be retrieved.", e);
         }
@@ -225,7 +222,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         try {
             return DAO_MGR.getEngineDao().retrieveEngineByName(name);
-        } catch (final ArchiveEngineDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Engine information for " + name +
                                               " could not be retrieved.", e);
         }
@@ -239,7 +236,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public Collection<IArchiveChannelGroup> getGroupsForEngine(final ArchiveEngineId id) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelGroupDao().retrieveGroupsByEngineId(id);
-        } catch (final ArchiveChannelGroupDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Groups for engine " + id.asString() +
                                               " could not be retrieved.", e);
         }
@@ -252,7 +249,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public Collection<IArchiveChannel> getChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
             return DAO_MGR.getChannelDao().retrieveChannelsByGroupId(groupId);
-        } catch (final ArchiveChannelDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Channels for group " + groupId.asString() +
                                               " could not be retrieved.", e);
         }
@@ -265,7 +262,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     public IArchiveSampleMode getSampleModeById(final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
         try {
             return DAO_MGR.getSampleModeDao().retrieveSampleModeById(sampleModeId);
-        } catch (final ArchiveSampleModeDaoException e) {
+        } catch (final ArchiveDaoException e) {
             throw new ArchiveServiceException("Sample modes for " + sampleModeId.asString() +
                                               " could not be retrieved.", e);
         }

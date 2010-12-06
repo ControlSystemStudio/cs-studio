@@ -45,40 +45,53 @@ public abstract class AbstractCssValueConversionTypeSupport<T> extends TypeSuppo
 		if (INSTALLED) {
 			return;
 		}
-
+//		/**
+//		 * Add direct type support for basic types as well
+//		 */
+//		TypeSupport.addTypeSupport(Number.class, new AbstractCssValueConversionTypeSupport<Number>() {
+//		    @Override
+//		    public Double convertToDouble(@Nonnull final Number d) {
+//		        return d.doubleValue();
+//		    }
+//		});
 		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<CssDouble>() {
 			@Override
+			@Nonnull
 			public Double convertToDouble(@Nonnull final CssDouble d) {
 				return d.getValueData();
 			}
 		});
 		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<CssLong>() {
 			@Override
+			@Nonnull
 			public Double convertToDouble(@Nonnull final CssLong l) {
-				final Double value = Double.valueOf(l.getValueData());
+				final Double value = l.getValueData().doubleValue();
 				return value;
 			}
 		});
-		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<CssString>() {
-			@Override
-			public Double convertToDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
-				final String value = s.getValueData();
-				try {
-					return Double.valueOf(value);
-				} catch(final NumberFormatException e) {
-				    // not very exceptional, just return null
-				    return null;
-				}
-			}
-		});
+//		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<CssString>() {
+//			@Override
+//			@CheckForNull
+//			public Double convertToDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
+//				final String value = s.getValueData();
+//				try {
+//					return Double.valueOf(value);
+//				} catch(final NumberFormatException e) {
+//				    // not very exceptional, just return null
+//				    return null;
+//				}
+//			}
+//		});
 
 		INSTALLED = true;
 	}
 
+	@Nonnull
 	protected static String createConversionFailedMsg(@Nonnull final Class<? extends ICssValueType<?>> from,
 	                                                  @Nonnull final Class<? extends ICssValueType<?>> to) {
 		return "Type conversion " + from.getName() + " to " + to.getName() + " failed.";
 	}
 
+	@Nonnull
 	public abstract Double convertToDouble(@Nonnull final T value) throws ConversionTypeSupportException;
 }

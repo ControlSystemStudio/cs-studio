@@ -25,6 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.engine.IArchiveEngine;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
  * Dao for archive engine configurations.
@@ -40,6 +41,6 @@ public interface IArchiveEngineDao {
      * @throws ArchiveEngineDaoException
      */
     @CheckForNull
-    IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveEngineDaoException;
+    IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveDaoException;
 
 }

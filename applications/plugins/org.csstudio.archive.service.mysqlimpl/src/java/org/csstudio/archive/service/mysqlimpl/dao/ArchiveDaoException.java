@@ -25,12 +25,12 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
- * Abstract archive Dao exception.
+ * Archive Dao exception.
  *
  * @author bknerr
  * @since 10.11.2010
  */
-public abstract class ArchiveDaoException extends Exception {
+public class ArchiveDaoException extends Exception {
     private static final long serialVersionUID = 1L;
 
     /**

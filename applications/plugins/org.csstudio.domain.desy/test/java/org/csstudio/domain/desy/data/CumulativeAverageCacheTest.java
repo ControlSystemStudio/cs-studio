@@ -23,14 +23,12 @@ package org.csstudio.domain.desy.data;
 
 import junit.framework.Assert;
 
-import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
 import org.csstudio.domain.desy.types.AbstractCssValueConversionTypeSupport;
-import org.csstudio.domain.desy.types.CssLong;
 import org.junit.Before;
 import org.junit.Test;
 
 /**
- * TODO (bknerr) :
+ * Tests the cache.
  *
  * @author bknerr
  * @since 03.12.2010
@@ -43,50 +41,25 @@ public class CumulativeAverageCacheTest {
     }
 
     @Test
-    public void accumulateInts() {
-        final CumulativeAverageCache<Integer> cache =
-            new CumulativeAverageCache<Integer>();
+    public void testAccumulate() {
+        final CumulativeAverageCache cache =
+            new CumulativeAverageCache();
 
         Assert.assertEquals(null, cache.getValue());
 
         for (int i = 0; i <= 10; i++) {
-            cache.accumulate(Integer.valueOf(i));
+            cache.accumulate(Double.valueOf(i));
         }
         Assert.assertEquals(5.0, cache.getValue());
-
+        Assert.assertEquals(11, cache.getNumberOfAccumulations());
         cache.clear();
         Assert.assertEquals(null, cache.getValue());
-    }
 
-    @Test
-    public void accumulateStrings() {
-        final CumulativeAverageCache<String> cache =
-            new CumulativeAverageCache<String>();
-
-        Assert.assertEquals(null, cache.getValue());
-
-        for (int i = 0; i <= 10; i++) {
-            cache.accumulate(String.valueOf(i));
+        for (int i = -5; i <= 5; i++) {
+            cache.accumulate(Double.valueOf(i));
         }
-        Assert.assertEquals(5.0, cache.getValue());
-
-        cache.clear();
-        Assert.assertEquals(null, cache.getValue());
-    }
-
-    @Test
-    public void accumulateCssLong() {
-        final CumulativeAverageCache<CssLong> cache =
-            new CumulativeAverageCache<CssLong>();
-
-        Assert.assertEquals(null, cache.getValue());
-
-        for (int i = 0; i <= 10; i++) {
-            cache.accumulate(new CssLong(Long.valueOf(i),
-                                         TimeInstantBuilder.buildFromNow()));
-        }
-        Assert.assertEquals(5.0, cache.getValue());
-
+        Assert.assertEquals(0.0, cache.getValue());
+        Assert.assertEquals(11, cache.getNumberOfAccumulations());
         cache.clear();
         Assert.assertEquals(null, cache.getValue());
     }

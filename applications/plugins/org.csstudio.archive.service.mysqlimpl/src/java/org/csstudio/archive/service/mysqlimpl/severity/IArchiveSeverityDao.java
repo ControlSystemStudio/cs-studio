@@ -24,6 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.severity;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.service.severity.IArchiveSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
@@ -42,7 +43,7 @@ public interface IArchiveSeverityDao {
      * @throws ArchiveSeverityDaoException
      */
     @CheckForNull
-    ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException;
+    ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException;
 
     /**
      *
@@ -51,6 +52,6 @@ public interface IArchiveSeverityDao {
      * @throws ArchiveSeverityDaoException
      */
     @CheckForNull
-    IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException;
+    IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException;
 
 }

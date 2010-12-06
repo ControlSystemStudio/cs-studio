@@ -21,87 +21,104 @@
  */
 package org.csstudio.archive.service.mysqlimpl.sample;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
+
 import org.csstudio.domain.desy.data.CumulativeAverageCache;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
- * TODO (bknerr) :
+ * Cumulative average for Double types.
+ * Caches the sum of the accumulated values, and stores their number.
+ * On the {@link CumulativeAverageCache#getValue()} the accumulated value is divided by this
+ * number of contributing values.
  *
  * @author bknerr
  * @since 25.11.2010
  */
-public class SampleAggregator<V, A extends ICssValueType<V>> {
-        Double _aggregateVal;
-        Double _lastVal;
-        Double _minVal;
-        Double _maxVal;
-        TimeInstant _lastWritetime;
-        IComparableAlarm<EpicsAlarm> _alarm;
-        IComparableAlarm<EpicsAlarm> _minAlarm;
-        int _n = 1;
+public class SampleAggregator {
 
-        CumulativeAverageCache<Double, A> _avg;
+    private final CumulativeAverageCache _avg = new CumulativeAverageCache();
 
-        /**
-         * Constructor.
-         */
-        public SampleAggregator(final V firstVal,
-                           final IComparableAlarm<EpicsAlarm> newAlarm,
-                           final TimeInstant timestamp) {
-            Double val;
-            if (firstVal instanceof Integer) {
-                val = Double.valueOf((Integer) firstVal);
-            } else {
-                val = (Double) firstVal;
-            }
-            _aggregateVal = _minVal = _maxVal = _lastVal = val;
-            _alarm = newAlarm;
-            _minAlarm = newAlarm;
-            _lastWritetime = timestamp;
-        }
+    private Double _minVal;
+    private Double _maxVal;
+    private Double _lastWrittenValue;
+    private TimeInstant _lastWritetime;
+    private EpicsAlarm _highestAlarm;
+    private EpicsAlarm _lowestAlarm;
 
-        void aggregateNewVal(final V newVal,
-                             final EpicsAlarm alarm) {
-            Double val;
-            if (newVal instanceof Integer) {
-                val = Double.valueOf((Integer) newVal);
-            } else {
-                val = (Double) newVal;
-            }
-            _aggregateVal += val;
-            _maxVal = Math.max(_maxVal, val);
-            _minVal = Math.min(_minVal, val);
-            _alarm = _alarm.compareAlarmTo(alarm) < 0 ? alarm : _alarm;
-            _n++;
-        }
 
-        void reset(final TimeInstant threshold) {
-            final double avg = getAvg();
-            _aggregateVal = _lastVal = avg;
-            _minVal = avg;
-            _maxVal = avg;
-            _n = 1;
-            _alarm = _minAlarm;
-            _lastWritetime = threshold;
-        }
+    /**
+     * Constructor.
+     * @param firstVal
+     * @param firstAlarm
+     * @param timestamp
+     */
+    public SampleAggregator(@Nonnull final Double firstVal,
+                            @Nonnull final EpicsAlarm firstAlarm,
+                            @Nonnull final TimeInstant timestamp) {
 
-        Double getAvg() {
-            return _aggregateVal / _n;
-        }
-        Double getMin() {
-            return _minVal;
-        }
-        Double getMax() {
-            return _maxVal;
-        }
-        Double getLastVal() {
-            return _lastVal;
-        }
+        _avg.accumulate(firstVal);
 
-        public TimeInstant getLastWriteTime() {
-            return _lastWritetime;
-        }
+        _minVal = firstVal;
+        _maxVal = firstVal;
+        _lastWrittenValue = null;
 
+        _highestAlarm = firstAlarm;
+        _lowestAlarm = firstAlarm;
+        _lastWritetime = timestamp;
+    }
+
+    void aggregateNewVal(@Nonnull final Double newVal,
+                         @Nonnull final EpicsAlarm alarm) {
+        _avg.accumulate(newVal);
+        _maxVal = Math.max(_maxVal, newVal);
+        _minVal = Math.min(_minVal, newVal);
+        _highestAlarm = _highestAlarm.compareTo(alarm) < 0 ? alarm : _highestAlarm;
+        _lowestAlarm = _lowestAlarm.compareTo(alarm) > 0 ? alarm : _lowestAlarm;
+    }
+
+    /**
+     * Resets the aggregator count to the last accumulated avg value.
+     * Minimum and maximum values equal this last average.
+     * Alarm state is initialised to the minimum known alarm accumulated until now
+     * (not necessarily the minimum alarm possible).
+     *
+     * @param lastWriteTime the time instant of the last accumulated sample
+     */
+    void reset(@Nonnull final TimeInstant lastWriteTime) {
+        final Double lastAvg = _avg.getValue();
+        _lastWrittenValue = lastAvg;
+        _minVal = lastAvg;
+        _maxVal = lastAvg;
+        _highestAlarm = _lowestAlarm;
+        _lastWritetime = lastWriteTime;
+
+        _avg.clear();
+    }
+    @CheckForNull
+    public Double getAvg() {
+        return _avg.getValue();
+    }
+    @Nonnull
+    public Double getMin() {
+        return _minVal;
+    }
+    @Nonnull
+    public Double getMax() {
+        return _maxVal;
+    }
+    @Nonnull
+    public EpicsAlarm getHighestAlarm() {
+        return _highestAlarm;
+    }
+    @Nonnull
+    public Double getLastWrittenValue() {
+        return _lastWrittenValue;
+    }
+    @Nonnull
+    public TimeInstant getLastWriteTime() {
+        return _lastWritetime;
+    }
 }

@@ -28,6 +28,7 @@ import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 
 /**
  * Dao for archive channel configurations.
@@ -43,7 +44,7 @@ public interface IArchiveChannelDao {
      * @throws ArchiveChannelDaoException when the retrieval fails
      */
     @CheckForNull
-    IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveChannelDaoException;
+    IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveDaoException;
 
     /**
      * @param groupId
@@ -51,6 +52,6 @@ public interface IArchiveChannelDao {
      * @throws ArchiveChannelDaoException when the retrieval fails
      */
     @Nonnull
-    Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveChannelDaoException;
+    Collection<IArchiveChannel> retrieveChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveDaoException;
 
 }

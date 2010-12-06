@@ -234,8 +234,7 @@ public enum ArchiveEngineAdapter {
      * @return
      */
     @CheckForNull
-    private EpicsAlarm adapt(@CheckForNull final ISeverity sev,
-                             @Nullable final String status) {
+    private EpicsAlarm adapt(@CheckForNull final ISeverity sev, @Nullable final String status) {
 
         // once before...
         if (sev == null) {
@@ -271,8 +270,8 @@ public enum ArchiveEngineAdapter {
      * the such.
      * @throws ConversionTypeSupportException
      */
-    public <V, T extends ICssValueType<V> & IHasAlarm> IArchiveSample<V, T>
-        adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
+    public <V, T extends ICssValueType<V> & IHasAlarm>
+        IArchiveSample<V, T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
 
         final IValue value = valueWithId.getValue();
 
@@ -281,7 +280,7 @@ public enum ArchiveEngineAdapter {
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
         final T data = adapt(value);
 
-        final IArchiveSample<V, T> sample = new IArchiveSample<V, T>() {
+        final IArchiveSample<V, T, EpicsAlarm> sample = new IArchiveSample<V, T, EpicsAlarm>() {
             @Override
             public ArchiveChannelId getChannelId() {
                 return id;

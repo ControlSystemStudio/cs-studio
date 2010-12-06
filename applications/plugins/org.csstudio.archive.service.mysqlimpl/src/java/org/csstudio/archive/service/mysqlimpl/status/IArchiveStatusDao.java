@@ -24,6 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.status;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.status.ArchiveStatusId;
 import org.csstudio.archive.service.status.IArchiveStatus;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
@@ -42,7 +43,7 @@ public interface IArchiveStatusDao {
      * @throws ArchiveStatusDaoException
      */
     @CheckForNull
-    ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus status) throws ArchiveStatusDaoException;
+    ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus status) throws ArchiveDaoException;
 
     /**
      * @param stts
@@ -50,6 +51,6 @@ public interface IArchiveStatusDao {
      * @throws ArchiveStatusDaoException
      */
     @CheckForNull
-    IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException;
+    IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveDaoException;
 
 }

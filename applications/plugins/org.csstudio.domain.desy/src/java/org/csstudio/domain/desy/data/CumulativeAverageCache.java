@@ -24,24 +24,17 @@ package org.csstudio.domain.desy.data;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.TypeSupport;
-
 
 /**
  * Accumulation cache that implements a cumulative average for the accumulated values.
  * The returned value on {@link CumulativeAverageCache#getValue()} is the sum over all
  * accumulated values divided by their number.
  *
- * For {@code }
- *
  *
  * @author bknerr
  * @since 26.11.2010
- * @param <A> value type parameter, has to have a conversion type support
- *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<A> extends AbstractAccumulatorCache<A, Double> {
+public class CumulativeAverageCache extends AbstractAccumulatorCache<Double, Double> {
 
     /**
      * Constructor.
@@ -54,19 +47,13 @@ public class CumulativeAverageCache<A> extends AbstractAccumulatorCache<A, Doubl
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     protected Double calculateAccumulation(@CheckForNull final Double accVal,
-                                           @Nonnull final A nVal) {
-        Double nextVal;
-        try {
-            nextVal = TypeSupport.toDouble(nVal);
-        } catch (final ConversionTypeSupportException e) {
-            // no conversion type present?
-            nextVal = Double.valueOf(nVal.toString());
-        }
+                                           @Nonnull final Double nextVal) {
+
         if (accVal != null) {
             return accVal + nextVal;
-            // better to calc division once on #getValue invocation
+            // better to calc division once on #getValue invocation instead of this:
             //final int n = getNumberOfAccumulations();
             //result = curVal + (nextVal - curVal)/(n + 1);
         } else {

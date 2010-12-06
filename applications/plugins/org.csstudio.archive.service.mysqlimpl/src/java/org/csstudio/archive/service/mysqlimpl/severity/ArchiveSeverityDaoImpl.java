@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.severity.ArchiveSeverityDTO;
 import org.csstudio.archive.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.service.severity.IArchiveSeverity;
@@ -68,7 +69,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
      */
     @Override
     @CheckForNull
-    public ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException {
+    public ArchiveSeverityId retrieveSeverityId(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException {
 
         final IArchiveSeverity severity = retrieveSeverity(sev);
         if (severity != null) {
@@ -79,7 +80,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
 
     @Override
     @CheckForNull
-    public IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveSeverityDaoException {
+    public IArchiveSeverity retrieveSeverity(@Nonnull final EpicsAlarmSeverity sev) throws ArchiveDaoException {
 
         final IArchiveSeverity severity = _severityCache.get(sev);
         if (severity != null) {
@@ -100,9 +101,9 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
                 return newSev;
             }
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSeverityDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveSeverityDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
             if (stmt != null) {
                 try {

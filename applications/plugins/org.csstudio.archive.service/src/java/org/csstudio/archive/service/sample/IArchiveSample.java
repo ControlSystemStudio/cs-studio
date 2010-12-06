@@ -25,8 +25,8 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
-import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.IHasTimeStamp;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssValueType;
@@ -40,8 +40,12 @@ import org.csstudio.domain.desy.types.ICssValueType;
  * @since 11.11.2010
  * @param <V> the basic type of the contained value data
  * @param <T> the type of the composite system value (with alarm and timestamp)
+ * @param <A> the comparable alarm type
  */
-public interface IArchiveSample<V, T extends ICssValueType<V> & IHasAlarm> extends IHasAlarm, IHasTimeStamp /*, Identifiable<ArchiveSampleId> */ {
+public interface IArchiveSample<V,
+                                T extends ICssValueType<V> & IHasAlarm,
+                                A extends IAlarm & Comparable<? super A>>
+       extends IHasAlarm, IHasTimeStamp /*, Identifiable<ArchiveSampleId> */ {
 
     @Nonnull
     ArchiveChannelId getChannelId();
@@ -53,8 +57,7 @@ public interface IArchiveSample<V, T extends ICssValueType<V> & IHasAlarm> exten
     @Nonnull
     TimeInstant getTimestamp();
 
-    // TODO (bknerr) : should be IAlarm
     @Override
     @CheckForNull
-    EpicsAlarm getAlarm();
+    A getAlarm();
 }

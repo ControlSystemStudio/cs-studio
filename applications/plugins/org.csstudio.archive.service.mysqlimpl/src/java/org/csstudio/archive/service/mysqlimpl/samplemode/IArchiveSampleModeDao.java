@@ -24,6 +24,7 @@ package org.csstudio.archive.service.mysqlimpl.samplemode;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
 
@@ -41,5 +42,5 @@ public interface IArchiveSampleModeDao {
      */
     @CheckForNull
     IArchiveSampleMode retrieveSampleModeById(@Nonnull final ArchiveSampleModeId id)
-        throws ArchiveSampleModeDaoException;
+        throws ArchiveDaoException;
 }

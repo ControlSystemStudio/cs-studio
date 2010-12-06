@@ -97,6 +97,15 @@ public class EpicsAlarm implements IAlarm, Comparable<EpicsAlarm> {
         return _status;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public String toString() {
+        return _severity.name();
+    }
+
 
     /**
      * {@inheritDoc}

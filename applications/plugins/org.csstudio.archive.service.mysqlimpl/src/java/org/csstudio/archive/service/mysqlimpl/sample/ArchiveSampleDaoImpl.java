@@ -37,8 +37,7 @@ import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
-import org.csstudio.archive.service.mysqlimpl.severity.ArchiveSeverityDaoException;
-import org.csstudio.archive.service.mysqlimpl.status.ArchiveStatusDaoException;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.service.status.ArchiveStatusId;
@@ -46,9 +45,12 @@ import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.platform.logging.CentralLogger;
 import org.joda.time.Duration;
+import org.joda.time.Hours;
 import org.joda.time.Minutes;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -108,7 +110,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException {
+    public TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
         try {
@@ -123,9 +125,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             }
 
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
             if (stmt != null) {
                 try {
@@ -145,7 +147,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     public <V, T extends ICssValueType<V> & IHasAlarm>
-    void createSamples(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException {
+        void createSamples(@Nonnull final Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
         PreparedStatement stmt = null;
@@ -163,9 +165,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             getConnection().commit();
 
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
 
         } finally {
             if (stmt != null) {
@@ -176,113 +178,152 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                 }
             }
         }
-
     }
 
     @CheckForNull
     private <V, T extends ICssValueType<V> & IHasAlarm>
-    PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException, ArchiveConnectionException, SQLException {
+        PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
-        try {
-            for (final IArchiveSample<V, T> sample : samples) {
+        for (final IArchiveSample<V, T, EpicsAlarm> sample : samples) {
 
-                final ArchiveChannelId channelId = sample.getChannelId();
-                final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status
-                final TimeInstant timestamp = sample.getTimestamp();
+            final ArchiveChannelId channelId = sample.getChannelId();
+            final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status?
+            final TimeInstant timestamp = sample.getTimestamp();
 
-                final ArchiveSeverityId sevId =
-                    DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
-                final ArchiveStatusId statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
+            final ArchiveSeverityId sevId =
+                DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
+            final ArchiveStatusId statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
 
-                if (sevId == null || statusId == null) {
-                    LOG.warn("Ids could not be retrieved for severity "
-                             + alarm.getSeverity().name() + " and/or status " + alarm.getStatus().name() +
-                    ". Severity and/or status table corrupted?");
-                    // FIXME (bknerr) : what to do with the sample? archive or not?
-                } else {
-                    // the VALUES (...) component for the standard sample table
-                    values.add(createSampleValueStmtStr(channelId, sevId, statusId, sample.getData(), timestamp));
+            if (sevId == null || statusId == null) {
+                LOG.warn("Ids could not be retrieved for severity " +
+                         alarm.getSeverity().name() + " and/or status " + alarm.getStatus().name() +
+                ". Severity and/or status table corrupted?");
+                // FIXME (bknerr) : what to do with the sample? archive/log/backup?
+            } else {
+                // the VALUES (...) component for the standard sample table
+                final T data = sample.getData();
+                values.add(createSampleValueStmtStr(channelId, sevId, statusId, data, timestamp));
 
-
-                    final Map<ArchiveChannelId, SampleAggregator> minutesMap = _reducedDataMapForMinutes.get();
-
-                    if (isWriteReducedDataDue(sample.getData(), timestamp, Minutes.ONE.toStandardDuration(), minutesMap.get(channelId))) {
-                        final String sampleMValue =
-                            createReducedSampleValueStmtStr(channelId, alarm, sevId, sample.getData(), timestamp, minutesMap);
-                        valuesPerMinute.add(sampleMValue);
-
-//                        final Double lastAvg = minutesMap.get(channelId).getAvg();
-//
-//                        final Map<ArchiveChannelId, SampleAggregator> hoursMap = _reducedDataMapForHours.get();
-
-//                        if (isWriteReducedDataDue(lastAvg, timestamp, Hours.ONE.toStandardDuration(), hoursMap.get(channelId))) {
-//                            final String sampleHValue =
-//                                createReducedSampleValueStmtStr(channelId, alarm, sevId, sample.getValue(), timestamp, hoursMap);
-//                            valuesPerHour.add(sampleHValue);
-//                        }
-//                        // aggregate for hours
-//                        hoursMap.get(channelId).aggregateNewVal((Double) sample.getValue(), alarm);
-                    }
-
-                    // aggregate for minutes
-                    if (sample.getData() instanceof Double) {
-                        minutesMap.get(channelId).aggregateNewVal(sample.getData(), alarm);
-                    } else if (sample.getData() instanceof Integer) {
-                        minutesMap.get(channelId).aggregateNewVal(Double.valueOf((Integer) sample.getData()), alarm);
-                    }
-                }
-
+                writeReducedData(channelId,
+                                 data,
+                                 alarm,
+                                 timestamp,
+                                 valuesPerMinute,
+                                 valuesPerHour);
             }
-        } catch (final ArchiveStatusDaoException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
-        } catch (final ArchiveSeverityDaoException e) {
-            throw new ArchiveSampleDaoException(RETRIEVAL_FAILED, e);
         }
-
         return joinStringsToStatementBatch(values, valuesPerMinute, valuesPerHour);
     }
 
 
-    /**
-     * @param <T>
-     * @param channelId
-     * @param object
-     * @param timestamp
-     * @param one
-     * @return
-     */
-    private <T> boolean isWriteReducedDataDue(final T object,
-                                         final TimeInstant timestamp,
-                                         final Duration duration,
-                                         final SampleAggregator agg) {
+    private <T extends ICssValueType<?>>
+        void writeReducedData(@Nonnull final ArchiveChannelId channelId,
+                              @Nonnull final T data,
+                              @Nonnull final EpicsAlarm alarm,
+                              @Nonnull final TimeInstant timestamp,
+                              @Nonnull final List<String> valuesPerMinute,
+                              @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
 
-        if (!(object instanceof Double) && !(object instanceof Integer)) { // TODO (bknerr) : of course not only Double and not with instanceof
-            return false;
+        final Double newValue = isDataConvertibleToDouble(data);
+        if (newValue == null) {
+            return; // not convertible, no data reduction possible
         }
 
-        if (agg == null) { // not yet present, write
-            return true;
+        final String minuteValue = checkAndCreateValueStatement(_reducedDataMapForMinutes.get(),
+                                                                channelId,
+                                                                newValue,
+                                                                alarm,
+                                                                timestamp,
+                                                                Minutes.ONE.toStandardDuration());
+
+        if (minuteValue != null) {
+            valuesPerMinute.add(minuteValue); // add to write VALUES() list for minutes
+            final SampleAggregator minuteAgg = _reducedDataMapForMinutes.get().get(channelId);
+
+            final String hoursValue = checkAndCreateValueStatement(_reducedDataMapForHours.get(),
+                                                                   channelId,
+                                                                   minuteAgg.getAvg(),
+                                                                   minuteAgg.getHighestAlarm(),
+                                                                   minuteAgg.getLastWriteTime(),
+                                                                   Hours.ONE.toStandardDuration());
+            minuteAgg.reset(timestamp); // and reset this aggregator
+
+            if (hoursValue != null) {
+                valuesPerHour.add(hoursValue); // add to the write VALUES() list for hours
+                final SampleAggregator hoursAgg = _reducedDataMapForHours.get().get(channelId);
+
+                // for days would be here...
+
+                hoursAgg.reset(timestamp); // and reset this aggregator
+            }
         }
+
+    }
+
+    @CheckForNull
+    private <T extends ICssValueType<?>>
+        String checkAndCreateValueStatement(final Map<ArchiveChannelId, SampleAggregator> map,
+                                            final ArchiveChannelId channelId,
+                                            final Double newValue, // redundant
+                                            final EpicsAlarm alarm,
+                                            final TimeInstant timestamp,
+                                            final Duration interval) throws ArchiveDaoException {
+
+        SampleAggregator agg =  map.get(channelId);
+        if (agg == null) {
+            // not yet an aggregator present, seems to be the first sample, aggregate and return
+            agg = new SampleAggregator(newValue, alarm, timestamp);
+            map.put(channelId, agg);
+            return null;
+        }
+
+        // aggregate
+        agg.aggregateNewVal(newValue, alarm);
+
+        // aggregator did already exist, check whether the next write is due and whether the data changed
+        if (!isReducedDataWriteDueAndHasChanged(newValue, timestamp, interval, agg)) {
+            return null;
+        }
+
+        // write the reduced data for minutes
+        return createReducedSampleValueString(channelId, timestamp, agg);
+    }
+
+
+    private <T extends ICssValueType<?>> Double isDataConvertibleToDouble(@Nonnull final T data) {
+        try {
+            return TypeSupport.toDouble(data);
+        } catch (final ConversionTypeSupportException e) {
+            return null; // is not convertible. Type support missing.
+        }
+    }
+
+    private boolean isReducedDataWriteDueAndHasChanged(@Nonnull final Double val,
+                                                       @Nonnull final TimeInstant timestamp,
+                                                       @Nonnull final Duration duration,
+                                                       @Nonnull final SampleAggregator agg) {
+
         final TimeInstant lastWriteTime = agg.getLastWriteTime();
-        final TimeInstant threshold = lastWriteTime.plusMillis(duration.getMillis());
-        if (timestamp.isAfter(threshold)) {
-            return false; // not due, don't write
+        final TimeInstant dueTime = lastWriteTime.plusMillis(duration.getMillis());
+        if (timestamp.isBefore(dueTime)) {
+            return false; // not yet due, don't write
         }
-        if (agg.getLastVal().compareTo((Double)object) == 0) {
-            return false; // didn't change don't write
+
+        if (agg.getLastWrittenValue().compareTo(val) == 0) {
+            return false;
         }
         return true;
     }
 
 
     @CheckForNull
-    private PreparedStatement joinStringsToStatementBatch(final List<String> values,
-                                                          final List<String> valuesPerMinute,
-                                                          final List<String> valuesPerHour)
+    private PreparedStatement joinStringsToStatementBatch(@Nonnull final List<String> values,
+                                                          @Nonnull final List<String> valuesPerMinute,
+                                                          @Nonnull final List<String> valuesPerHour)
         throws SQLException, ArchiveConnectionException {
 
         PreparedStatement stmt = null;
@@ -311,14 +352,6 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     /**
      * The simple VALUES component for table sample:
      * "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs),"
-     *
-     * @param <T>
-     * @param channelId
-     * @param sevId
-     * @param statusId
-     * @param value
-     * @param timestamp
-     * @return
      */
     private <T> String createSampleValueStmtStr(final ArchiveChannelId channelId,
                                                 final ArchiveSeverityId sevId,
@@ -335,40 +368,24 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         }
 
 
-
-
-
     /**
-     * @param <T>
-     * @param channelId
-     * @param sevId
-     * @param value
-     * @param timestamp
-     * @return
+     * The averaged VALUES component for table sample_*:
+     * "(channel_id, smpl_time, highest_sev_id, avg_val, min_val, max_val),"
+     * @throws ArchiveSeverityDaoException
      */
-    private <V, A> String createReducedSampleValueStmtStr(final ArchiveChannelId channelId,
-                                                          final EpicsAlarm alarm,
-                                                          final ArchiveSeverityId sevId,
-                                                          final V value,
-                                                          final TimeInstant timestamp,
-                                                          final Map<ArchiveChannelId, SampleAggregator> map) {
-
-
-        SampleAggregator storedStuff = map.get(channelId);
-        if (storedStuff == null) {
-            storedStuff = new SampleAggregator<V>(value, alarm, timestamp);
-            map.put(channelId, storedStuff);
-        }
+    private String createReducedSampleValueString(@Nonnull final ArchiveChannelId channelId,
+                                                  @Nonnull final TimeInstant timestamp,
+                                                  @Nonnull final SampleAggregator agg) throws ArchiveDaoException {
         // write for all samples_x (channel_id, smpl_time, highest_sev_id, avg_val, min_val, max_val)
         final String valueStr =
             "(" + channelId.intValue() + ", '" +
                   SAMPLE_TIME_FMT.print(timestamp.getInstant()) + "', " +
-                  sevId.intValue() + ", " +
-                  storedStuff.getAvg() + " ," +
-                  storedStuff.getMin() + " ," +
-                  storedStuff.getMax() + ")";
+                  DAO_MGR.getSeverityDao().retrieveSeverityId(agg.getHighestAlarm().getSeverity()) + ", " +
+                  agg.getAvg() + " ," +
+                  agg.getMin() + " ," +
+                  agg.getMax() + ")";
 
-        storedStuff.reset(timestamp);
+        agg.reset(timestamp);
 
         return valueStr;
     }

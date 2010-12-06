@@ -31,6 +31,7 @@ import javax.annotation.CheckForNull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
@@ -66,7 +67,7 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
      */
     @Override
     @CheckForNull
-    public IArchiveSampleMode retrieveSampleModeById(final ArchiveSampleModeId id) throws ArchiveSampleModeDaoException {
+    public IArchiveSampleMode retrieveSampleModeById(final ArchiveSampleModeId id) throws ArchiveDaoException {
 
         IArchiveSampleMode mode = _sampleModeCache.get(id);
         if (mode != null) {
@@ -86,9 +87,9 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
                 _sampleModeCache.put(mode.getId(), mode);
             }
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveSampleModeDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FROM_ARCHIVE_FAILED, e);
         } catch (final IllegalArgumentException e) {
             LOG.warn("Sample mode for id " + id.intValue() + " does not exist in the archive.");
         } finally {

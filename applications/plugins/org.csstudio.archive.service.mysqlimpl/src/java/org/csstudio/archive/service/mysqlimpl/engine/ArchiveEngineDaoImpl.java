@@ -36,6 +36,7 @@ import org.csstudio.archive.service.engine.ArchiveEngineDTO;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.engine.IArchiveEngine;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -60,7 +61,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveEngineDaoException {
+    public IArchiveEngine retrieveEngineByName(@Nonnull final String name) throws ArchiveDaoException {
 
         PreparedStatement statement = null;
         try {
@@ -74,17 +75,16 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
                                             new URL(url));
             }
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
         } catch (final SQLException e) {
-            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
         } catch (final MalformedURLException e) {
-            throw new ArchiveEngineDaoException("Engine retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Engine retrieval from archive failed.", e);
         } finally {
             if (statement != null) {
                 try {
                     statement.close();
                 } catch (final SQLException e) {
-                    // Ignore
                     LOG.warn("Closing of statement " + _selectEngineByNameStmt + " failed.");
                 }
             }

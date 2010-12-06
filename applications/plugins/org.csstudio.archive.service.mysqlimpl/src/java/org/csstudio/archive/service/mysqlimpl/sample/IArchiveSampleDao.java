@@ -27,8 +27,10 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.domain.desy.alarm.IHasAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ICssValueType;
 
@@ -46,13 +48,14 @@ public interface IArchiveSampleDao {
      * @throws ArchiveSampleDaoException
      */
     @CheckForNull
-    TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveSampleDaoException;
+    TimeInstant retrieveLatestSampleByChannelId(@Nonnull final ArchiveChannelId id) throws ArchiveDaoException;
 
     /**
      * Inserts the collection of sample objects into the db.
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V, T extends ICssValueType<V> & IHasAlarm>
-    void createSamples(Collection<IArchiveSample<V, T>> samples) throws ArchiveSampleDaoException;
+    <V,
+     T extends ICssValueType<V> & IHasAlarm>
+    void createSamples(Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException;
 }

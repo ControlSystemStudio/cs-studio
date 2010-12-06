@@ -32,6 +32,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.service.ArchiveConnectionException;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.status.ArchiveStatusDTO;
 import org.csstudio.archive.service.status.ArchiveStatusId;
 import org.csstudio.archive.service.status.IArchiveStatus;
@@ -69,7 +70,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException {
+    public ArchiveStatusId retrieveStatusId(@Nonnull final EpicsAlarmStatus stts) throws ArchiveDaoException {
         final IArchiveStatus status = retrieveStatus(stts);
         if (status != null) {
             return status.getId();
@@ -83,7 +84,7 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
      */
     @Override
     @CheckForNull
-    public IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveStatusDaoException {
+    public IArchiveStatus retrieveStatus(@Nonnull final EpicsAlarmStatus stts) throws ArchiveDaoException {
 
         final IArchiveStatus status = _statusCache.get(stts);
         if (status != null) {
@@ -104,9 +105,9 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
                 return newStts;
             }
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveStatusDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } catch (final SQLException e) {
-            throw new ArchiveStatusDaoException(RETRIEVAL_FAILED, e);
+            throw new ArchiveDaoException(RETRIEVAL_FAILED, e);
         } finally {
             if (stmt != null) {
                 try {

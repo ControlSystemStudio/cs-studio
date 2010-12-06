@@ -37,6 +37,7 @@ import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.channelgroup.IArchiveChannelGroup;
 import org.csstudio.archive.service.engine.ArchiveEngineId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.platform.logging.CentralLogger;
 
 import com.google.common.collect.Lists;
@@ -64,7 +65,7 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId engId) throws ArchiveChannelGroupDaoException {
+    public Collection<IArchiveChannelGroup> retrieveGroupsByEngineId(final ArchiveEngineId engId) throws ArchiveDaoException {
 
         PreparedStatement stmt = null;
         try {
@@ -101,9 +102,9 @@ public class ArchiveChannelGroupDaoImpl extends AbstractArchiveDao implements IA
             return o.sortedCopy(groups);
 
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveChannelGroupDaoException("Channel group retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
         } catch (final SQLException e) {
-            throw new ArchiveChannelGroupDaoException("Channel group retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Channel group retrieval from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {

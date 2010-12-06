@@ -96,6 +96,7 @@ public abstract class TypeSupport<T> {
      * @param <T> the css value type
      */
     @SuppressWarnings("unchecked")
+    @Nonnull
     public static <T> Double toDouble(final T value) throws ConversionTypeSupportException {
 		final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractCssValueConversionTypeSupport<T> support =

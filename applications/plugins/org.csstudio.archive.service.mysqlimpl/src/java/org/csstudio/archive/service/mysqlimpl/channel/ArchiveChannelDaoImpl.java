@@ -39,6 +39,7 @@ import org.csstudio.archive.service.channel.ArchiveChannelId;
 import org.csstudio.archive.service.channel.IArchiveChannel;
 import org.csstudio.archive.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.service.mysqlimpl.dao.AbstractArchiveDao;
+import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoException;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -77,7 +78,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Override
     @CheckForNull
-    public IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveChannelDaoException {
+    public IArchiveChannel retrieveChannelByName(@Nonnull final String name) throws ArchiveDaoException {
 
         IArchiveChannel channel = _channelCache.get(name);
         if (channel != null) {
@@ -111,9 +112,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             }
 
         } catch (final SQLException e) {
-            throw new ArchiveChannelDaoException("Channel configuration retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveChannelDaoException("Channel configuration retrieval from archive failed.", e);
+            throw new ArchiveDaoException("Channel configuration retrieval from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {
@@ -131,7 +132,7 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
      */
     @Override
     @Nonnull
-    public Collection<IArchiveChannel> retrieveChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveChannelDaoException {
+    public Collection<IArchiveChannel> retrieveChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveDaoException {
 
         final Collection<IArchiveChannel> filteredList =
             Collections2.filter(_channelCache.values(), new Predicate<IArchiveChannel>() {
@@ -191,9 +192,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
             return o.sortedCopy(tempCache.values());
 
         } catch (final SQLException e) {
-            throw new ArchiveChannelDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
+            throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
         } catch (final ArchiveConnectionException e) {
-            throw new ArchiveChannelDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
+            throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
         } finally {
             if (stmt != null) {
                 try {
