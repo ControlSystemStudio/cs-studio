@@ -196,6 +196,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
     @Override
     protected void closeProducersAndConsumers() throws Exception
     {
+        timeout_timer.cancel();
         server_consumer.close();
         server_consumer = null;
         client_consumer.close();
