@@ -1,0 +1,9069 @@
+# Test database
+#
+#   softIoc -s -d test.db
+
+record(mbbi, "enum")
+{
+   field(NOBT, "2")
+   field(ZRVL, "0")
+   field(ONVL, "1")
+   field(TWVL, "2")
+   field(THVL, "3")
+   field(ZRST, "zero")
+   field(ONST, "one")
+   field(TWST, "two")
+   field(THST, "three")
+   field(VAL, "1")
+   field(PINI, "YES")
+}
+
+record(calc, "fred")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+record(calc, "freddy")
+{
+   field(SCAN, "1 second")
+   field(CALC, "RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+}
+
+
+record(longin, "long_fred")
+{
+   field(INP, "fred CP")
+   field(EGU,  "furlonger")
+}
+
+record(calc, "janet")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(FLNK, "hist")
+}
+record(calc, "jane")
+{
+   field(SCAN, ".1 second")
+   field(CALC, "10+5*RNDM")
+   field(EGU,  "furlong")
+   field(PREC, "4")
+   field(FLNK, "hist")
+}
+
+record(compress, "hist")
+{
+   field(INP,  "janet")
+   field(NSAM, "50")
+   field(ALG,  "Circular Buffer")
+}
+
+record(waveform, "longs")
+{
+   field(INP,  "hist")
+   field(SCAN, "1 second")
+   field(NELM, "50")
+   field(FTVL, "LONG")
+}
+
+record(waveform, "strings")
+{
+   field(NELM, "5")
+   field(FTVL, "STRING")
+}
+
+record(calc, "ramp1")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp1")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp2")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp2")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp3")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp3")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp4")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp4")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp5")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp5")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp6")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp6")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp7")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp7")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp8")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp8")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp9")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp9")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp10")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp10")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp11")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp11")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp12")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp12")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp13")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp13")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp14")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp14")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp15")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp15")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp16")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp16")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp17")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp17")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp18")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp18")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp19")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp19")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp20")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp20")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp21")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp21")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp22")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp22")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp23")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp23")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp24")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp24")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp25")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp25")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp26")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp26")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp27")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp27")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp28")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp28")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp29")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp29")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp30")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp30")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp31")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp31")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp32")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp32")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp33")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp33")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp34")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp34")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp35")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp35")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp36")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp36")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp37")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp37")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp38")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp38")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp39")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp39")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp40")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp40")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp41")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp41")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp42")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp42")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp43")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp43")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp44")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp44")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp45")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp45")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp46")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp46")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp47")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp47")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp48")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp48")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp49")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp49")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp50")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp50")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp51")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp51")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp52")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp52")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp53")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp53")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp54")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp54")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp55")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp55")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp56")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp56")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp57")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp57")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp58")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp58")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp59")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp59")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp60")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp60")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp61")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp61")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp62")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp62")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp63")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp63")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp64")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp64")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp65")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp65")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp66")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp66")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp67")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp67")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp68")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp68")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp69")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp69")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp70")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp70")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp71")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp71")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp72")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp72")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp73")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp73")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp74")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp74")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp75")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp75")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp76")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp76")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp77")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp77")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp78")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp78")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp79")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp79")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp80")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp80")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp81")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp81")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp82")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp82")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp83")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp83")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp84")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp84")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp85")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp85")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp86")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp86")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp87")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp87")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp88")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp88")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp89")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp89")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp90")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp90")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp91")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp91")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp92")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp92")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp93")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp93")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp94")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp94")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp95")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp95")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp96")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp96")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp97")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp97")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp98")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp98")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp99")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp99")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp100")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp100")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp101")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp101")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp102")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp102")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp103")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp103")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp104")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp104")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp105")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp105")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp106")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp106")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp107")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp107")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp108")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp108")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp109")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp109")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp110")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp110")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp111")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp111")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp112")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp112")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp113")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp113")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp114")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp114")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp115")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp115")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp116")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp116")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp117")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp117")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp118")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp118")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp119")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp119")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp120")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp120")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp121")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp121")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp122")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp122")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp123")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp123")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp124")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp124")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp125")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp125")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp126")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp126")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp127")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp127")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp128")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp128")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp129")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp129")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp130")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp130")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp131")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp131")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp132")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp132")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp133")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp133")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp134")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp134")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp135")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp135")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp136")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp136")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp137")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp137")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp138")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp138")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp139")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp139")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp140")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp140")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp141")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp141")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp142")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp142")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp143")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp143")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp144")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp144")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp145")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp145")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp146")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp146")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp147")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp147")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp148")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp148")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp149")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp149")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp150")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp150")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp151")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp151")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp152")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp152")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp153")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp153")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp154")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp154")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp155")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp155")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp156")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp156")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp157")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp157")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp158")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp158")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp159")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp159")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp160")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp160")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp161")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp161")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp162")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp162")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp163")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp163")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp164")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp164")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp165")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp165")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp166")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp166")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp167")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp167")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp168")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp168")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp169")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp169")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp170")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp170")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp171")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp171")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp172")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp172")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp173")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp173")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp174")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp174")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp175")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp175")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp176")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp176")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp177")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp177")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp178")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp178")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp179")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp179")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp180")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp180")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp181")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp181")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp182")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp182")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp183")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp183")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp184")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp184")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp185")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp185")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp186")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp186")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp187")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp187")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp188")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp188")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp189")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp189")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp190")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp190")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp191")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp191")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp192")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp192")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp193")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp193")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp194")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp194")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp195")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp195")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp196")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp196")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp197")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp197")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp198")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp198")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp199")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp199")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp200")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp200")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp201")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp201")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp202")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp202")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp203")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp203")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp204")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp204")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp205")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp205")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp206")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp206")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp207")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp207")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp208")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp208")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp209")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp209")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp210")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp210")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp211")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp211")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp212")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp212")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp213")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp213")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp214")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp214")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp215")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp215")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp216")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp216")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp217")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp217")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp218")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp218")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp219")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp219")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp220")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp220")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp221")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp221")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp222")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp222")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp223")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp223")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp224")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp224")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp225")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp225")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp226")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp226")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp227")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp227")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp228")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp228")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp229")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp229")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp230")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp230")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp231")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp231")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp232")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp232")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp233")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp233")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp234")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp234")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp235")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp235")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp236")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp236")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp237")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp237")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp238")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp238")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp239")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp239")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp240")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp240")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp241")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp241")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp242")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp242")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp243")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp243")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp244")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp244")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp245")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp245")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp246")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp246")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp247")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp247")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp248")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp248")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp249")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp249")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp250")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp250")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp251")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp251")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp252")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp252")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp253")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp253")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp254")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp254")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp255")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp255")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp256")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp256")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp257")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp257")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp258")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp258")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp259")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp259")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp260")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp260")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp261")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp261")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp262")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp262")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp263")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp263")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp264")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp264")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp265")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp265")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp266")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp266")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp267")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp267")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp268")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp268")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp269")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp269")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp270")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp270")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp271")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp271")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp272")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp272")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp273")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp273")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp274")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp274")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp275")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp275")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp276")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp276")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp277")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp277")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp278")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp278")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp279")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp279")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp280")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp280")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp281")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp281")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp282")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp282")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp283")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp283")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp284")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp284")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp285")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp285")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp286")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp286")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp287")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp287")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp288")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp288")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp289")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp289")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp290")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp290")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp291")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp291")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp292")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp292")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp293")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp293")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp294")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp294")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp295")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp295")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp296")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp296")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp297")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp297")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp298")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp298")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp299")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp299")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp300")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp300")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp301")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp301")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp302")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp302")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp303")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp303")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp304")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp304")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp305")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp305")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp306")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp306")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp307")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp307")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp308")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp308")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp309")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp309")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp310")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp310")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp311")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp311")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp312")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp312")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp313")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp313")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp314")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp314")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp315")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp315")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp316")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp316")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp317")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp317")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp318")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp318")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp319")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp319")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp320")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp320")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp321")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp321")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp322")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp322")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp323")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp323")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp324")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp324")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp325")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp325")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp326")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp326")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp327")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp327")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp328")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp328")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp329")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp329")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp330")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp330")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp331")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp331")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp332")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp332")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp333")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp333")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp334")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp334")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp335")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp335")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp336")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp336")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp337")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp337")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp338")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp338")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp339")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp339")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp340")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp340")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp341")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp341")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp342")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp342")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp343")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp343")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp344")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp344")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp345")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp345")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp346")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp346")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp347")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp347")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp348")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp348")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp349")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp349")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp350")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp350")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp351")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp351")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp352")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp352")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp353")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp353")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp354")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp354")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp355")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp355")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp356")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp356")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp357")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp357")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp358")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp358")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp359")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp359")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp360")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp360")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp361")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp361")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp362")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp362")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp363")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp363")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp364")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp364")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp365")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp365")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp366")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp366")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp367")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp367")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp368")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp368")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp369")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp369")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp370")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp370")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp371")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp371")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp372")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp372")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp373")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp373")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp374")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp374")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp375")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp375")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp376")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp376")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp377")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp377")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp378")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp378")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp379")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp379")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp380")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp380")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp381")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp381")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp382")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp382")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp383")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp383")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp384")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp384")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp385")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp385")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp386")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp386")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp387")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp387")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp388")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp388")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp389")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp389")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp390")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp390")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp391")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp391")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp392")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp392")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp393")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp393")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp394")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp394")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp395")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp395")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp396")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp396")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp397")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp397")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp398")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp398")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp399")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp399")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp400")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp400")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp401")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp401")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp402")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp402")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp403")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp403")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp404")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp404")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp405")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp405")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp406")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp406")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp407")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp407")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp408")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp408")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp409")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp409")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp410")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp410")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp411")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp411")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp412")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp412")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp413")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp413")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp414")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp414")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp415")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp415")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp416")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp416")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp417")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp417")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp418")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp418")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp419")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp419")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp420")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp420")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp421")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp421")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp422")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp422")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp423")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp423")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp424")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp424")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp425")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp425")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp426")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp426")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp427")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp427")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp428")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp428")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp429")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp429")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp430")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp430")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp431")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp431")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp432")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp432")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp433")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp433")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp434")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp434")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp435")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp435")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp436")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp436")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp437")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp437")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp438")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp438")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp439")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp439")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp440")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp440")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp441")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp441")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp442")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp442")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp443")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp443")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp444")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp444")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp445")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp445")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp446")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp446")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp447")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp447")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp448")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp448")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp449")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp449")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp450")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp450")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp451")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp451")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp452")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp452")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp453")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp453")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp454")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp454")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp455")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp455")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp456")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp456")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp457")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp457")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp458")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp458")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp459")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp459")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp460")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp460")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp461")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp461")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp462")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp462")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp463")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp463")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp464")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp464")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp465")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp465")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp466")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp466")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp467")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp467")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp468")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp468")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp469")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp469")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp470")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp470")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp471")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp471")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp472")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp472")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp473")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp473")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp474")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp474")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp475")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp475")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp476")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp476")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp477")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp477")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp478")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp478")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp479")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp479")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp480")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp480")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp481")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp481")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp482")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp482")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp483")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp483")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp484")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp484")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp485")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp485")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp486")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp486")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp487")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp487")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp488")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp488")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp489")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp489")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp490")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp490")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp491")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp491")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp492")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp492")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp493")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp493")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp494")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp494")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp495")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp495")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp496")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp496")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp497")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp497")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp498")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp498")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp499")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp499")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp500")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp500")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp501")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp501")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp502")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp502")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp503")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp503")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp504")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp504")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp505")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp505")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp506")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp506")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp507")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp507")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp508")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp508")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp509")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp509")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp510")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp510")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp511")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp511")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp512")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp512")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp513")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp513")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp514")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp514")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp515")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp515")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp516")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp516")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp517")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp517")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp518")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp518")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp519")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp519")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp520")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp520")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp521")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp521")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp522")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp522")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp523")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp523")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp524")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp524")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp525")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp525")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp526")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp526")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp527")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp527")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp528")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp528")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp529")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp529")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp530")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp530")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp531")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp531")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp532")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp532")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp533")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp533")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp534")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp534")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp535")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp535")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp536")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp536")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp537")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp537")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp538")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp538")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp539")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp539")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp540")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp540")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp541")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp541")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp542")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp542")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp543")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp543")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp544")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp544")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp545")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp545")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp546")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp546")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp547")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp547")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp548")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp548")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp549")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp549")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp550")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp550")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp551")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp551")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp552")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp552")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp553")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp553")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp554")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp554")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp555")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp555")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp556")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp556")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp557")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp557")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp558")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp558")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp559")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp559")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp560")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp560")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp561")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp561")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp562")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp562")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp563")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp563")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp564")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp564")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp565")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp565")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp566")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp566")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp567")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp567")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp568")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp568")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp569")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp569")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp570")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp570")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp571")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp571")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp572")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp572")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp573")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp573")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp574")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp574")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp575")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp575")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp576")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp576")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp577")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp577")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp578")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp578")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp579")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp579")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp580")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp580")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp581")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp581")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp582")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp582")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp583")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp583")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp584")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp584")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp585")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp585")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp586")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp586")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp587")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp587")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp588")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp588")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp589")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp589")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp590")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp590")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp591")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp591")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp592")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp592")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp593")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp593")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp594")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp594")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp595")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp595")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp596")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp596")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp597")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp597")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp598")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp598")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp599")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp599")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp600")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp600")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp601")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp601")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp602")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp602")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp603")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp603")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp604")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp604")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp605")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp605")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp606")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp606")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp607")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp607")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp608")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp608")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp609")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp609")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp610")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp610")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp611")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp611")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp612")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp612")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp613")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp613")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp614")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp614")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp615")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp615")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp616")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp616")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp617")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp617")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp618")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp618")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp619")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp619")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp620")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp620")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp621")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp621")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp622")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp622")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp623")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp623")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp624")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp624")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp625")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp625")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp626")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp626")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp627")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp627")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp628")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp628")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp629")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp629")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp630")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp630")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp631")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp631")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp632")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp632")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp633")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp633")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp634")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp634")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp635")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp635")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp636")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp636")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp637")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp637")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp638")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp638")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp639")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp639")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp640")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp640")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp641")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp641")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp642")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp642")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp643")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp643")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp644")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp644")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp645")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp645")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp646")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp646")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp647")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp647")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp648")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp648")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp649")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp649")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp650")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp650")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp651")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp651")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp652")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp652")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp653")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp653")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp654")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp654")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp655")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp655")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp656")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp656")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp657")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp657")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp658")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp658")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp659")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp659")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp660")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp660")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp661")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp661")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp662")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp662")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp663")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp663")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp664")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp664")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp665")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp665")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp666")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp666")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp667")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp667")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp668")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp668")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp669")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp669")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp670")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp670")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp671")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp671")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp672")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp672")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp673")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp673")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp674")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp674")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp675")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp675")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp676")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp676")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp677")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp677")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp678")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp678")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp679")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp679")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp680")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp680")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp681")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp681")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp682")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp682")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp683")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp683")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp684")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp684")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp685")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp685")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp686")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp686")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp687")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp687")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp688")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp688")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp689")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp689")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp690")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp690")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp691")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp691")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp692")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp692")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp693")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp693")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp694")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp694")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp695")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp695")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp696")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp696")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp697")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp697")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp698")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp698")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp699")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp699")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp700")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp700")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp701")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp701")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp702")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp702")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp703")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp703")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp704")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp704")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp705")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp705")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp706")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp706")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp707")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp707")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp708")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp708")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp709")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp709")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp710")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp710")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp711")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp711")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp712")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp712")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp713")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp713")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp714")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp714")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp715")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp715")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp716")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp716")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp717")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp717")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp718")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp718")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp719")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp719")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp720")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp720")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp721")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp721")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp722")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp722")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp723")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp723")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp724")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp724")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp725")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp725")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp726")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp726")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp727")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp727")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp728")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp728")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp729")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp729")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp730")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp730")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp731")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp731")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp732")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp732")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp733")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp733")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp734")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp734")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp735")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp735")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp736")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp736")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp737")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp737")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp738")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp738")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp739")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp739")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp740")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp740")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp741")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp741")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp742")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp742")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp743")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp743")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp744")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp744")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp745")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp745")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp746")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp746")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp747")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp747")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp748")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp748")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp749")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp749")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp750")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp750")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp751")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp751")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp752")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp752")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp753")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp753")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp754")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp754")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp755")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp755")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp756")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp756")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp757")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp757")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp758")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp758")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp759")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp759")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp760")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp760")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp761")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp761")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp762")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp762")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp763")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp763")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp764")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp764")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp765")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp765")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp766")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp766")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp767")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp767")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp768")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp768")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp769")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp769")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp770")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp770")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp771")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp771")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp772")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp772")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp773")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp773")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp774")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp774")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp775")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp775")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp776")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp776")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp777")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp777")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp778")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp778")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp779")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp779")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp780")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp780")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp781")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp781")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp782")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp782")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp783")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp783")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp784")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp784")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp785")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp785")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp786")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp786")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp787")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp787")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp788")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp788")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp789")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp789")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp790")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp790")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp791")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp791")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp792")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp792")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp793")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp793")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp794")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp794")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp795")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp795")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp796")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp796")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp797")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp797")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp798")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp798")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp799")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp799")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp800")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp800")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp801")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp801")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp802")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp802")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp803")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp803")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp804")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp804")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp805")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp805")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp806")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp806")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp807")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp807")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp808")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp808")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp809")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp809")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp810")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp810")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp811")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp811")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp812")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp812")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp813")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp813")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp814")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp814")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp815")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp815")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp816")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp816")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp817")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp817")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp818")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp818")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp819")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp819")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp820")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp820")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp821")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp821")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp822")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp822")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp823")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp823")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp824")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp824")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp825")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp825")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp826")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp826")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp827")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp827")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp828")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp828")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp829")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp829")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp830")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp830")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp831")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp831")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp832")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp832")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp833")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp833")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp834")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp834")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp835")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp835")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp836")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp836")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp837")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp837")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp838")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp838")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp839")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp839")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp840")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp840")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp841")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp841")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp842")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp842")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp843")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp843")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp844")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp844")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp845")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp845")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp846")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp846")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp847")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp847")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp848")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp848")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp849")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp849")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp850")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp850")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp851")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp851")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp852")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp852")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp853")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp853")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp854")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp854")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp855")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp855")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp856")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp856")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp857")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp857")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp858")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp858")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp859")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp859")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp860")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp860")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp861")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp861")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp862")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp862")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp863")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp863")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp864")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp864")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp865")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp865")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp866")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp866")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp867")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp867")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp868")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp868")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp869")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp869")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp870")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp870")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp871")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp871")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp872")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp872")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp873")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp873")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp874")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp874")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp875")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp875")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp876")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp876")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp877")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp877")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp878")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp878")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp879")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp879")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp880")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp880")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp881")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp881")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp882")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp882")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp883")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp883")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp884")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp884")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp885")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp885")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp886")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp886")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp887")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp887")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp888")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp888")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp889")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp889")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp890")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp890")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp891")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp891")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp892")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp892")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp893")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp893")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp894")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp894")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp895")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp895")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp896")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp896")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp897")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp897")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp898")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp898")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp899")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp899")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp900")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp900")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp901")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp901")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp902")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp902")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp903")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp903")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp904")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp904")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp905")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp905")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp906")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp906")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp907")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp907")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp908")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp908")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp909")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp909")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp910")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp910")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp911")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp911")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp912")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp912")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp913")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp913")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp914")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp914")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp915")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp915")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp916")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp916")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp917")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp917")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp918")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp918")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp919")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp919")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp920")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp920")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp921")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp921")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp922")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp922")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp923")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp923")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp924")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp924")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp925")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp925")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp926")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp926")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp927")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp927")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp928")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp928")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp929")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp929")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp930")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp930")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp931")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp931")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp932")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp932")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp933")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp933")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp934")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp934")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp935")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp935")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp936")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp936")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp937")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp937")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp938")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp938")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp939")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp939")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp940")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp940")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp941")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp941")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp942")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp942")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp943")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp943")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp944")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp944")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp945")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp945")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp946")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp946")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp947")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp947")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp948")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp948")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp949")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp949")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp950")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp950")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp951")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp951")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp952")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp952")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp953")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp953")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp954")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp954")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp955")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp955")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp956")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp956")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp957")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp957")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp958")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp958")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp959")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp959")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp960")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp960")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp961")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp961")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp962")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp962")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp963")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp963")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp964")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp964")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp965")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp965")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp966")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp966")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp967")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp967")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp968")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp968")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp969")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp969")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp970")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp970")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp971")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp971")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp972")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp972")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp973")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp973")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp974")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp974")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp975")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp975")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp976")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp976")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp977")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp977")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp978")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp978")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp979")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp979")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp980")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp980")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp981")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp981")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp982")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp982")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp983")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp983")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp984")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp984")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp985")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp985")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp986")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp986")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp987")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp987")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp988")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp988")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp989")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp989")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp990")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp990")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp991")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp991")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp992")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp992")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp993")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp993")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp994")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp994")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp995")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp995")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp996")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp996")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp997")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp997")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp998")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp998")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}
+
+record(calc, "ramp999")
+{
+    field(SCAN, ".1 second")
+    field(CALC, "A>9?0:A+1")
+    field(INPA, "ramp999")
+    field(EGU,  "furlong")
+    field(PREC, "2")
+}

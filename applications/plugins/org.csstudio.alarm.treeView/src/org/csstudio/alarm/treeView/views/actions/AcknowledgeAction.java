@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.table.SendAcknowledge;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -71,7 +71,7 @@ public final class AcknowledgeAction extends Action {
                 final IAlarmSubtreeNode snode = (IAlarmSubtreeNode) o;
                 for (final IAlarmProcessVariableNode pvnode : snode.collectUnacknowledgedAlarms()) {
                     final String name = pvnode.getName();
-                    final EpicsAlarm severity = pvnode.getUnacknowledgedAlarmSeverity();
+                    final EpicsAlarmSeverity severity = pvnode.getUnacknowledgedAlarmSeverity();
                     final Map<String, String> properties = new HashMap<String, String>();
                     properties.put("NAME", name);
                     properties.put("SEVERITY", severity.toString());
@@ -80,7 +80,7 @@ public final class AcknowledgeAction extends Action {
             } else if (o instanceof IAlarmProcessVariableNode) {
                 final IAlarmProcessVariableNode pvnode = (IAlarmProcessVariableNode) o;
                 final String name = pvnode.getName();
-                final EpicsAlarm severity = pvnode.getUnacknowledgedAlarmSeverity();
+                final EpicsAlarmSeverity severity = pvnode.getUnacknowledgedAlarmSeverity();
                 final Map<String, String> properties = new HashMap<String, String>();
                 properties.put("NAME", name);
                 properties.put("SEVERITY", severity.toString());

@@ -48,7 +48,7 @@ import org.csstudio.alarm.treeView.model.IProcessVariableNodeListener;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
 import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.service.ILdapService;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -80,7 +80,7 @@ public final class AlarmTreeBuilder {
     }
 
     private static void ensureTestFacilityExists() throws ServiceUnavailableException {
-        String facilityName = "Test";
+        final String facilityName = "Test";
         try {
             final LdapName testFacilityName = createLdapName(FACILITY.getNodeTypeName(), facilityName,
                                                              UNIT.getNodeTypeName(), UNIT.getUnitTypeValue());
@@ -126,7 +126,7 @@ public final class AlarmTreeBuilder {
         if (RECORD.equals(modelNode.getType())) {
             newNode = new ProcessVariableNode.Builder(simpleName, source).setParent(parentNode).setListener(pvNodeListener).build();
 
-            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, EpicsAlarm.UNKNOWN, new Date(0L)));
+            ((IAlarmProcessVariableNode) newNode).updateAlarm(new Alarm(simpleName, EpicsAlarmSeverity.UNKNOWN, new Date(0L)));
 
         } else {
             newNode = parentNode.getChild(simpleName);
@@ -149,7 +149,7 @@ public final class AlarmTreeBuilder {
                                                    ", but not of tree node type " + RECORD.getNodeTypeName() + " either!");
             }
         }
-        
+
         // Attributes will be set on nodes and leaves. They contain help pages, css displays and the like
         final Attributes attributes = modelNode.getAttributes();
         AlarmTreeNodeModifier.setEpicsAttributes(newNode, attributes == null ? new BasicAttributes() : attributes);
