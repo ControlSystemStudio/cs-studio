@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  */
 public class ColorAndFontUtil {
 	private static final Pattern COLOR_SYNTAX_PATTERN = Pattern.compile("#[0123456789abcdefABCDEF]{6}");
-	private static final Pattern VARIABLE_SYNTAX_PATTERN = Pattern.compile("\\$\\{[a-zA-Z.-]+\\}");
+	private static final Pattern VARIABLE_SYNTAX_PATTERN = Pattern.compile("\\$\\{[a-zA-Z0-9.-]+\\}");
 
 	public static String toFontString(String font, int size) {
 		return toFontString(font, size, false, false);
