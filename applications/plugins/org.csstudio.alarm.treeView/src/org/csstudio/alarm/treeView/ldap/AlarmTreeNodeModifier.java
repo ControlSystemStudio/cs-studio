@@ -39,7 +39,7 @@ import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmTreeNode;
 import org.csstudio.alarm.treeView.model.ProcessVariableNode;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 
@@ -169,7 +169,7 @@ public final class AlarmTreeNodeModifier {
         if (severityAttr != null) {
             final String severityVal = (String) severityAttr.get();
             if (severityVal != null) {
-                final EpicsAlarm sev = EpicsAlarm.parseAlarm(severityVal);
+                final EpicsAlarmSeverity sev = EpicsAlarmSeverity.parseSeverity(severityVal);
                 Date date = new Date();
                 if (eventtimeAttr != null) {
                     final String eventtimeStr = (String) eventtimeAttr.get();
@@ -184,11 +184,11 @@ public final class AlarmTreeNodeModifier {
 
     private static void setHighestUnackAlarm(@Nonnull final IAlarmProcessVariableNode node,
                                              @Nullable final Attribute highUnAcknAttr) throws NamingException {
-        EpicsAlarm unack = EpicsAlarm.NO_ALARM;
+        EpicsAlarmSeverity unack = EpicsAlarmSeverity.NO_ALARM;
         if (highUnAcknAttr != null) {
             final String severity = (String) highUnAcknAttr.get();
             if (severity != null) {
-                unack = EpicsAlarm.parseAlarm(severity);
+                unack = EpicsAlarmSeverity.parseSeverity(severity);
             }
         }
         node.setHighestUnacknowledgedAlarm(new Alarm(node.getName(), unack, new Date()));
