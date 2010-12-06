@@ -145,12 +145,17 @@ public class AlarmServer
         rdb.close();
     }
 
-    /** Start all the PVs, connect to control system. */
+    /** Start all the PVs, connect to JMS */
     public void start()
     {
         messenger.start();
         messenger.sendAnnunciation(Messages.StartupMessage);
+        startPVs();
+    }
 
+    /** Start PVs */
+    private void startPVs()
+    {
         final long delay = Preferences.getPVStartDelay();
         // Must not sync while calling PV, because Channel Access updates
         // might arrive while we're trying to start/stop channels,
@@ -181,11 +186,17 @@ public class AlarmServer
         }
     }
 
-    /** Stop all the PVs, disconnect from control system. */
+    /** Stop all the PVs, disconnect from JMS */
     public void stop()
     {
         messenger.sendAnnunciation("Alarm server exiting");
+        stopPVs();
+        messenger.stop();
+    }
 
+    /** Stop PVs */
+    private void stopPVs()
+    {
         // See deadlock comment in start()
         final AlarmPV pvs[];
         synchronized (this)
@@ -194,8 +205,6 @@ public class AlarmServer
         }
         for (AlarmPV pv : pvs)
             pv.stop();
-
-        messenger.stop();
     }
 
     /** Read the initial alarm configuration
@@ -268,9 +277,9 @@ public class AlarmServer
         }
         if (pv == null)
         {   // Unknown PV, so this must be a new PV. Read whole config again
-            stop();
+            stopPVs();
             readConfiguration();
-            start();
+            startPVs();
             return;
         }
         // Known PV
