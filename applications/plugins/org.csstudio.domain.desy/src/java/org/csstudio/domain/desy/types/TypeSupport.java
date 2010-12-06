@@ -96,11 +96,14 @@ public abstract class TypeSupport<T> {
      * @param <T> the css value type
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ICssValueType<?>> CssDouble toCssDouble(final T value) throws ConversionTypeSupportException {
+    public static <T> Double toDouble(final T value) throws ConversionTypeSupportException {
 		final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractCssValueConversionTypeSupport<T> support =
             (AbstractCssValueConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
-        return support.convertToCssDouble(value);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertToDouble(value);
     }
 
     /**
@@ -116,6 +119,9 @@ public abstract class TypeSupport<T> {
         final Class<T> typeClass = (Class<T>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, T> support =
             (AbstractIValueConversionTypeSupport<R, T>) cachedTypeSupportFor(typeClass);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
         return support.convertToBasicType(value);
     }
 

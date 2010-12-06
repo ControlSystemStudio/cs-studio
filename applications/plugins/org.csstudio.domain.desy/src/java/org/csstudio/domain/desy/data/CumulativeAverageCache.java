@@ -24,10 +24,7 @@ package org.csstudio.domain.desy.data;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.CssDouble;
-import org.csstudio.domain.desy.types.ICssValueType;
 import org.csstudio.domain.desy.types.TypeSupport;
 
 
@@ -41,17 +38,16 @@ import org.csstudio.domain.desy.types.TypeSupport;
  *
  * @author bknerr
  * @since 26.11.2010
- * @param <V> the basic type of value(s) of the CssValueType
  * @param <A> value type parameter, has to have a conversion type support
  *            {@link ConversionTypeSupport#}
  */
-public class CumulativeAverageCache<A extends ICssValueType<?>> extends AbstractAccumulatorCache<A, CssDouble> {
+public class CumulativeAverageCache<A> extends AbstractAccumulatorCache<A, Double> {
 
     /**
      * Constructor.
      */
     public CumulativeAverageCache() {
-        super(CssDouble.class);
+        super(Double.class);
     }
 
     /**
@@ -59,24 +55,23 @@ public class CumulativeAverageCache<A extends ICssValueType<?>> extends Abstract
      */
     @Override
     @Nonnull
-    protected CssDouble calculateAccumulation(@CheckForNull final CssDouble accVal,
-                                              @Nonnull final A nVal) throws ConversionTypeSupportException {
-        final CssDouble nextDDouble = TypeSupport.toCssDouble(nVal);
-
-        final Double nextVal = nextDDouble.getValueData();
-        final TimeInstant timestamp = nextDDouble.getTimestamp();
-        final Double curVal = accVal.getValueData();
-
-        Double result;
-        if (curVal != null) {
-            result = curVal + nextVal;
-            // better to calc division once on #getValue)
+    protected Double calculateAccumulation(@CheckForNull final Double accVal,
+                                           @Nonnull final A nVal) {
+        Double nextVal;
+        try {
+            nextVal = TypeSupport.toDouble(nVal);
+        } catch (final ConversionTypeSupportException e) {
+            // no conversion type present?
+            nextVal = Double.valueOf(nVal.toString());
+        }
+        if (accVal != null) {
+            return accVal + nextVal;
+            // better to calc division once on #getValue invocation
             //final int n = getNumberOfAccumulations();
             //result = curVal + (nextVal - curVal)/(n + 1);
         } else {
-            result = nextVal;
+            return nextVal;
         }
-        return new CssDouble(result, timestamp);
     }
 
     /**
@@ -84,13 +79,12 @@ public class CumulativeAverageCache<A extends ICssValueType<?>> extends Abstract
      */
     @Override
     @CheckForNull
-    public CssDouble getValue() {
-        final CssDouble dVal = super.getValue();
-        if (dVal != null) {
-            final Double value = dVal.getValueData();
-            if (value!= null) {
-                final int n = getNumberOfAccumulations();
-                return new CssDouble(value / n, dVal.getTimestamp());
+    public Double getValue() {
+        final Double accVal = super.getValue();
+        if (accVal != null) {
+            final int n = getNumberOfAccumulations();
+            if (n > 0) {
+                return accVal / n;
             }
         }
         return null;

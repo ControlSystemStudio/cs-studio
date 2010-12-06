@@ -24,13 +24,13 @@ package org.csstudio.domain.desy.types;
 import javax.annotation.Nonnull;
 
 /**
- * Type conversion support for Css Value Types.
+ * Type conversion support.
  *
  * @author bknerr
  * @since 01.12.2010
  * @param <T> the type of the system variable
  */
-public abstract class AbstractCssValueConversionTypeSupport<T extends ICssValueType<?>> extends TypeSupport<T> {
+public abstract class AbstractCssValueConversionTypeSupport<T> extends TypeSupport<T> {
 
 	private static boolean INSTALLED = false;
 
@@ -48,25 +48,26 @@ public abstract class AbstractCssValueConversionTypeSupport<T extends ICssValueT
 
 		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<CssDouble>() {
 			@Override
-			public CssDouble convertToCssDouble(@Nonnull final CssDouble d) {
-				return d;
+			public Double convertToDouble(@Nonnull final CssDouble d) {
+				return d.getValueData();
 			}
 		});
 		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<CssLong>() {
 			@Override
-			public CssDouble convertToCssDouble(@Nonnull final CssLong l) {
-				final Long value = l.getValueData();
-				return new CssDouble(value.doubleValue(), l.getTimestamp());
+			public Double convertToDouble(@Nonnull final CssLong l) {
+				final Double value = Double.valueOf(l.getValueData());
+				return value;
 			}
 		});
 		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<CssString>() {
 			@Override
-			public CssDouble convertToCssDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
+			public Double convertToDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
 				final String value = s.getValueData();
 				try {
-					return new CssDouble(Double.valueOf(value), s.getTimestamp());
+					return Double.valueOf(value);
 				} catch(final NumberFormatException e) {
-					throw new ConversionTypeSupportException(createConversionFailedMsg(s.getClass(), CssDouble.class), e);
+				    // not very exceptional, just return null
+				    return null;
 				}
 			}
 		});
@@ -79,5 +80,5 @@ public abstract class AbstractCssValueConversionTypeSupport<T extends ICssValueT
 		return "Type conversion " + from.getName() + " to " + to.getName() + " failed.";
 	}
 
-	public abstract CssDouble convertToCssDouble(@Nonnull final T value) throws ConversionTypeSupportException;
+	public abstract Double convertToDouble(@Nonnull final T value) throws ConversionTypeSupportException;
 }

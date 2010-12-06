@@ -24,7 +24,6 @@ package org.csstudio.domain.desy.data;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.epics.pvmanager.Function;
 import org.epics.pvmanager.ValueCache;
 
@@ -51,7 +50,7 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
         _num = 0;
     }
 
-    public void accumulate(@Nonnull final A nextValue) throws ConversionTypeSupportException {
+    public void accumulate(@Nonnull final A nextValue) {
         _num++;
         final R val = calculateAccumulation(_accumulatedValue.getValue(), nextValue);
         _accumulatedValue.setValue(val);
@@ -83,8 +82,8 @@ public abstract class AbstractAccumulatorCache<A, R> extends Function<R> {
      * @param accumulatedValue the currently accumulated value in the cache.
      * @param nextValue the new value to be accumulated
      * @return the result to which this cache's value will be set
-     * @throws ConversionTypeSupportException
      */
     @Nonnull
-    abstract protected R calculateAccumulation(@CheckForNull final R accumulatedValue, @Nonnull final A nextValue) throws ConversionTypeSupportException;
+    protected abstract R calculateAccumulation(@CheckForNull final R accumulatedValue,
+                                               @Nonnull final A nextValue);
 }

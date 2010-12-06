@@ -21,10 +21,12 @@
  */
 package org.csstudio.domain.desy.data;
 
-import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.ICssValueType;
-import org.junit.Assert;
+import junit.framework.Assert;
+
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.AbstractCssValueConversionTypeSupport;
+import org.csstudio.domain.desy.types.CssLong;
+import org.junit.Before;
 import org.junit.Test;
 
 /**
@@ -35,26 +37,57 @@ import org.junit.Test;
  */
 public class CumulativeAverageCacheTest {
 
+    @Before
+    public void setup() {
+        AbstractCssValueConversionTypeSupport.install();
+    }
+
     @Test
-    public void accumulate() {
-        final CumulativeAverageCache<Integer, ICssValueType<Integer>> cache =
-            new CumulativeAverageCache<Integer, ICssValueType<Integer>>();
+    public void accumulateInts() {
+        final CumulativeAverageCache<Integer> cache =
+            new CumulativeAverageCache<Integer>();
+
+        Assert.assertEquals(null, cache.getValue());
 
         for (int i = 0; i <= 10; i++) {
-            try {
-                cache.accumulate(new ICssValueType<Integer>(){
-                    @Override
-                    public TimeInstant getTimestamp() {
-                        return null;
-                    }
-                    @Override
-                    public Integer getValueData() {
-                        return Integer.valueOf(i);
-                    }
-                });
-            } catch (final ConversionTypeSupportException e) {
-                Assert.fail("Implicit Integer to Double conversion didn't work? WTF?");
-            }
+            cache.accumulate(Integer.valueOf(i));
         }
+        Assert.assertEquals(5.0, cache.getValue());
+
+        cache.clear();
+        Assert.assertEquals(null, cache.getValue());
+    }
+
+    @Test
+    public void accumulateStrings() {
+        final CumulativeAverageCache<String> cache =
+            new CumulativeAverageCache<String>();
+
+        Assert.assertEquals(null, cache.getValue());
+
+        for (int i = 0; i <= 10; i++) {
+            cache.accumulate(String.valueOf(i));
+        }
+        Assert.assertEquals(5.0, cache.getValue());
+
+        cache.clear();
+        Assert.assertEquals(null, cache.getValue());
+    }
+
+    @Test
+    public void accumulateCssLong() {
+        final CumulativeAverageCache<CssLong> cache =
+            new CumulativeAverageCache<CssLong>();
+
+        Assert.assertEquals(null, cache.getValue());
+
+        for (int i = 0; i <= 10; i++) {
+            cache.accumulate(new CssLong(Long.valueOf(i),
+                                         TimeInstantBuilder.buildFromNow()));
+        }
+        Assert.assertEquals(5.0, cache.getValue());
+
+        cache.clear();
+        Assert.assertEquals(null, cache.getValue());
     }
 }
