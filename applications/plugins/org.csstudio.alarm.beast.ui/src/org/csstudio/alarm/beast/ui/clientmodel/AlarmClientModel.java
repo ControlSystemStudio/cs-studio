@@ -773,10 +773,14 @@ public class AlarmClientModel
      */
     void updatePV(final AlarmUpdateInfo info)
     {
+        // Update should contain PV name
+        String name = info.getNameOrPath();
+        if (AlarmTreePath.isPath(name))
+            name = AlarmTreePath.getName(name);
         synchronized (this)
         {
             server_alive = true;
-            final AlarmTreePV pv = findPV(info.getName());
+            final AlarmTreePV pv = findPV(name);
             if (pv != null)
             {
                 pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
@@ -792,7 +796,7 @@ public class AlarmClientModel
         // send info to JMS. Is that a problem?
         // Moved this outside the lock in case that makes a difference.
         CentralLogger.getInstance().getLogger(this).error(
-                "Received update for unknown PV " + info.getName()); //$NON-NLS-1$
+                "Received update for unknown PV " + name); //$NON-NLS-1$
     }
 
     /** Locate item by path

@@ -28,7 +28,7 @@ public class AlarmUpdateInfo
         new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
 
     final private SeverityLevel current_severity, severity;
-    final private String name, current_message, message, value;
+    final private String name_or_path, current_message, message, value;
     final private ITimestamp timestamp;
 
     /** Initialize from JMS MapMessage
@@ -55,7 +55,7 @@ public class AlarmUpdateInfo
     }
 
     /** Initialize from pieces
-     *  @param name
+     *  @param name_or_path
      *  @param current_severity
      *  @param current_message
      *  @param severity
@@ -63,14 +63,14 @@ public class AlarmUpdateInfo
      *  @param value
      *  @param timestamp
      */
-    private AlarmUpdateInfo(final String name,
+    private AlarmUpdateInfo(final String name_or_path,
             final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel severity, final String message,
             final String value,
             final ITimestamp timestamp)
     {
-        this.name = name;
+        this.name_or_path = name_or_path;
         this.current_severity = current_severity;
         this.current_message = current_message;
         this.severity = severity;
@@ -80,9 +80,9 @@ public class AlarmUpdateInfo
     }
 
     /** @return PV name */
-    public String getName()
+    public String getNameOrPath()
     {
-        return name;
+        return name_or_path;
     }
 
     /** @return Current PV severity */
@@ -125,7 +125,7 @@ public class AlarmUpdateInfo
     @Override
     public String toString()
     {
-        return "Update " + name + " to current " +
+        return "Update " + name_or_path + " to current " +
            current_severity.getDisplayName() + "/" + current_message + ", alarm " +
            severity.getDisplayName() + "/" + message;
     }
