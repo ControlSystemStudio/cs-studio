@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.domain.desy.time.IHasTimeStamp;
 
 /**
- * TODO (bknerr) :
+ * Base value type with a timestamp.
  *
  * @author bknerr
  * @since 26.11.2010
@@ -35,8 +35,8 @@ import org.csstudio.domain.desy.time.IHasTimeStamp;
 public interface ICssValueType<T> extends IHasTimeStamp {
 
     /**
-     * Returns the value data.
-     * @return the data
+     * Returns the value datum/data.
+     * @return the datum/data
      */
     @Nonnull
     T getValueData();

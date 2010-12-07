@@ -21,6 +21,8 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.util.Collection;
+
 import javax.annotation.Nonnull;
 
 /**
@@ -30,58 +32,42 @@ import javax.annotation.Nonnull;
  * @since 01.12.2010
  * @param <T> the type of the system variable
  */
-public abstract class AbstractCssValueConversionTypeSupport<T> extends TypeSupport<T> {
+public abstract class AbstractBasicTypeConversionTypeSupport<T> extends TypeSupport<T> {
 
 	private static boolean INSTALLED = false;
 
 	/**
      * Constructor.
      */
-    AbstractCssValueConversionTypeSupport() {
+    AbstractBasicTypeConversionTypeSupport() {
         // Don't instantiate outside this class
     }
 
-	public static void install() {
+	@SuppressWarnings("rawtypes")
+    public static void install() {
 		if (INSTALLED) {
 			return;
 		}
-//		/**
-//		 * Add direct type support for basic types as well
-//		 */
-//		TypeSupport.addTypeSupport(Number.class, new AbstractCssValueConversionTypeSupport<Number>() {
-//		    @Override
-//		    public Double convertToDouble(@Nonnull final Number d) {
-//		        return d.doubleValue();
-//		    }
-//		});
-		TypeSupport.addTypeSupport(CssDouble.class, new AbstractCssValueConversionTypeSupport<CssDouble>() {
+		/**
+		 * Add direct type support for basic types as well
+		 */
+		TypeSupport.addTypeSupport(Number.class, new AbstractBasicTypeConversionTypeSupport<Number>() {
+		    @Override
+		    public Double convertToDouble(@Nonnull final Number d) {
+		        return d.doubleValue();
+		    }
+		});
+		TypeSupport.addTypeSupport(Collection.class, new AbstractBasicTypeConversionTypeSupport<Collection>() {
 			@Override
 			@Nonnull
-			public Double convertToDouble(@Nonnull final CssDouble d) {
-				return d.getValueData();
+			public Double convertToDouble(@Nonnull final Collection l) throws ConversionTypeSupportException {
+			    if (l.size() == 1) {
+			        final Object value = l.iterator().next();
+			        return TypeSupport.toDouble(value);
+			    }
+			    return Double.NaN;
 			}
 		});
-		TypeSupport.addTypeSupport(CssLong.class, new AbstractCssValueConversionTypeSupport<CssLong>() {
-			@Override
-			@Nonnull
-			public Double convertToDouble(@Nonnull final CssLong l) {
-				final Double value = l.getValueData().doubleValue();
-				return value;
-			}
-		});
-//		TypeSupport.addTypeSupport(CssString.class, new AbstractCssValueConversionTypeSupport<CssString>() {
-//			@Override
-//			@CheckForNull
-//			public Double convertToDouble(@Nonnull final CssString s) throws ConversionTypeSupportException {
-//				final String value = s.getValueData();
-//				try {
-//					return Double.valueOf(value);
-//				} catch(final NumberFormatException e) {
-//				    // not very exceptional, just return null
-//				    return null;
-//				}
-//			}
-//		});
 
 		INSTALLED = true;
 	}

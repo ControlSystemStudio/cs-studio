@@ -45,14 +45,15 @@ import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.domain.desy.types.AbstractBasicTypeConversionTypeSupport;
+import org.csstudio.domain.desy.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.domain.desy.types.TypeSupport;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -74,6 +75,14 @@ import com.google.common.collect.Lists;
 public enum ArchiveEngineAdapter {
 
     INSTANCE;
+
+    /**
+     * Constructor.
+     */
+    private ArchiveEngineAdapter() {
+        AbstractBasicTypeConversionTypeSupport.install();
+        AbstractIValueConversionTypeSupport.install();
+    }
 
     /**
      * @param cfg the archive.rdb type for sample engine config
@@ -222,16 +231,11 @@ public enum ArchiveEngineAdapter {
 
 
     /**
-     * Severity (and status).
-     *
-     * Severity is used synonymously with the 'epics alarm types'
-     * OK, MINOR, MAJOR, INVALID.
-     *
-     * Status is omitted here, because it is quite overlapping and is apparently optional (for an
-     * explanation @see {@link EpicsAlarm}), as not defined for all data types.
+     * Severity and status transferred to typed (epics) alarm.
      *
      * @param severity
-     * @return
+     * @param status
+     * @return the epics alarm object
      */
     @CheckForNull
     private EpicsAlarm adapt(@CheckForNull final ISeverity sev, @Nullable final String status) {
@@ -265,22 +269,22 @@ public enum ArchiveEngineAdapter {
      * of the system.
 
      * This placeholder shall replace the IValueWithChannelId workaround and should find its way
-     * up to the alyers into the engine and the namely the scan thread, where it shall
-     * be properly instantiated. See Carcassi's types for that, very likely to replace IValue and
-     * the such.
+     * up to the layers into the engine and the namely the pvValueUpdate, where it shall
+     * be properly instantiated. See Carcassi's types for that, very likely to replace IValue.
      * @throws ConversionTypeSupportException
      */
-    public <V, T extends ICssValueType<V> & IHasAlarm>
-        IArchiveSample<V, T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
+    @Nonnull
+    public <T extends ICssAlarmValueType<?>>
+        IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
 
         final IValue value = valueWithId.getValue();
 
         final ArchiveChannelId id = new ArchiveChannelId(valueWithId.getChannelId());
         final TimeInstant timestamp = adapt(value.getTime());
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
-        final T data = adapt(value);
+        final T data = TypeSupport.toCssType(value, alarm, timestamp);
 
-        final IArchiveSample<V, T, EpicsAlarm> sample = new IArchiveSample<V, T, EpicsAlarm>() {
+        final IArchiveSample<T, EpicsAlarm> sample = new IArchiveSample<T, EpicsAlarm>() {
             @Override
             public ArchiveChannelId getChannelId() {
                 return id;
@@ -291,18 +295,14 @@ public enum ArchiveEngineAdapter {
             }
             @Override
             public TimeInstant getTimestamp() {
-                return timestamp;
+                return data.getTimestamp();
             }
             @Override
             public EpicsAlarm getAlarm() {
-                return alarm;
+                return (EpicsAlarm) data.getAlarm();
             }
         };
 
         return sample;
-    }
-
-    public <T> T adapt(@Nonnull final IValue value) throws ConversionTypeSupportException {
-        return TypeSupport.toBasicType(value);
     }
 }

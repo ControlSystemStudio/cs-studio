@@ -38,12 +38,10 @@ import org.csstudio.domain.desy.types.ICssValueType;
  *
  * @author bknerr
  * @since 11.11.2010
- * @param <V> the basic type of the contained value data
  * @param <T> the type of the composite system value (with alarm and timestamp)
  * @param <A> the comparable alarm type
  */
-public interface IArchiveSample<V,
-                                T extends ICssValueType<V> & IHasAlarm,
+public interface IArchiveSample<T extends ICssValueType<?> & IHasAlarm,
                                 A extends IAlarm & Comparable<? super A>>
        extends IHasAlarm, IHasTimeStamp /*, Identifiable<ArchiveSampleId> */ {
 

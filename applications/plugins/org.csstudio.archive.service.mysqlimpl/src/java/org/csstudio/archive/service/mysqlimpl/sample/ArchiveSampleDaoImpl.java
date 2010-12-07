@@ -76,8 +76,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectLastSmplTimeByChannelIdStmt =
         "SELECT MAX(smpl_time) FROM archive.sample WHERE channel_id=?";
+
     private final String _insertSamplesStmt =
-        "INSERT INTO archive.sample (channel_id, smpl_time, severity_id, status_id, float_val, nanosecs) VALUES ";
+        "INSERT INTO archive.sample (channel_id, smpl_time, severity_id, status_id, str_val, nanosecs) VALUES ";
     private final String _insertSamplesPerMinuteStmt =
         "INSERT INTO archive.sample_m (channel_id, smpl_time, highest_sev_id, avg_val, min_val, max_val) VALUES ";
     private final String _insertSamplesPerHourStmt =
@@ -146,8 +147,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
      * {@inheritDoc}
      */
     @Override
-    public <V, T extends ICssValueType<V> & IHasAlarm>
-        void createSamples(@Nonnull final Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException {
+    public <T extends ICssValueType<?> & IHasAlarm>
+        void createSamples(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException {
 
         // Build complete and reduced set statements
         PreparedStatement stmt = null;
@@ -181,14 +182,14 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
     @CheckForNull
-    private <V, T extends ICssValueType<V> & IHasAlarm>
-        PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException {
+    private <T extends ICssValueType<?> & IHasAlarm>
+        PreparedStatement composeStatements(@Nonnull final Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException, ArchiveConnectionException, SQLException {
 
         final List<String> values = Lists.newArrayList();
         final List<String> valuesPerMinute = Lists.newArrayList();
         final List<String> valuesPerHour = Lists.newArrayList();
 
-        for (final IArchiveSample<V, T, EpicsAlarm> sample : samples) {
+        for (final IArchiveSample<T, EpicsAlarm> sample : samples) {
 
             final ArchiveChannelId channelId = sample.getChannelId();
             final EpicsAlarm alarm = sample.getAlarm(); // how to cope with alarms that don't have severities and status?
@@ -228,8 +229,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
                               @Nonnull final List<String> valuesPerMinute,
                               @Nonnull final List<String> valuesPerHour) throws ArchiveDaoException {
 
-        final Double newValue = isDataConvertibleToDouble(data);
-        if (newValue == null) {
+        final Double newValue = isDataConvertibleToDouble(data.getValueData());
+        if (newValue == null && newValue != Double.NaN) {
             return; // not convertible, no data reduction possible
         }
 
@@ -294,7 +295,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     }
 
 
-    private <T extends ICssValueType<?>> Double isDataConvertibleToDouble(@Nonnull final T data) {
+    private Double isDataConvertibleToDouble(@Nonnull final Object data) {
         try {
             return TypeSupport.toDouble(data);
         } catch (final ConversionTypeSupportException e) {
@@ -313,8 +314,9 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             return false; // not yet due, don't write
         }
 
-        if (agg.getLastWrittenValue().compareTo(val) == 0) {
-            return false;
+        final Double lastWrittenValue = agg.getLastWrittenValue();
+        if (lastWrittenValue != null && lastWrittenValue.compareTo(val) == 0) {
+            return false; // hasn't changed much TODO (bknerr) : consider a sort of 'deadband' here, too
         }
         return true;
     }
@@ -351,20 +353,27 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
 
     /**
      * The simple VALUES component for table sample:
-     * "(channel_id, smpl_time, severity_id, status_id, float_val, nanosecs),"
+     * "(channel_id, smpl_time, severity_id, status_id, str_val, nanosecs),"
      */
-    private <T> String createSampleValueStmtStr(final ArchiveChannelId channelId,
-                                                final ArchiveSeverityId sevId,
-                                                final ArchiveStatusId statusId,
-                                                final T value,
-                                                final TimeInstant timestamp) {
-            return "(" + channelId.intValue() + ", '" +
-                         timestamp.formatted(SAMPLE_TIME_FMT) + "', " +
-                         sevId.intValue() + ", " +
-                         statusId.intValue() + ", '" +
-                         value + "' ," + // toString() is called - should be overridden in any type BaseValueType
-                         timestamp.getFractalMillisInNanos() +
-                   ")";
+    @Nonnull
+    private <T extends ICssValueType<?> & IHasAlarm>
+        String createSampleValueStmtStr(final ArchiveChannelId channelId,
+                                        final ArchiveSeverityId sevId,
+                                        final ArchiveStatusId statusId,
+                                        final T value,
+                                        final TimeInstant timestamp) {
+            try {
+                return "(" + channelId.intValue() + ", '" +
+                             timestamp.formatted(SAMPLE_TIME_FMT) + "', " +
+                             sevId.intValue() + ", " +
+                             statusId.intValue() + ", '" +
+                             TypeSupport.toArchiveString(value.getValueData()) + "' ," + // toString() is called - should be overridden in any type BaseValueType
+                             timestamp.getFractalMillisInNanos() +
+                       ")";
+            } catch (final ConversionTypeSupportException e) {
+                LOG.warn("No type support for archive string representation.", e);
+                return "";
+            }
         }
 
 

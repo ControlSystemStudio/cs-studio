@@ -113,7 +113,7 @@ public class SampleAggregator {
     public EpicsAlarm getHighestAlarm() {
         return _highestAlarm;
     }
-    @Nonnull
+    @CheckForNull
     public Double getLastWrittenValue() {
         return _lastWrittenValue;
     }

@@ -46,10 +46,9 @@ import org.csstudio.archive.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.service.sample.IArchiveSample;
 import org.csstudio.archive.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.service.samplemode.IArchiveSampleMode;
-import org.csstudio.domain.desy.alarm.IHasAlarm;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
-import org.csstudio.domain.desy.types.ICssValueType;
+import org.csstudio.domain.desy.types.ICssAlarmValueType;
 import org.csstudio.email.EMailSender;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -103,9 +102,6 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         DAO_MGR.disconnect();
     }
 
-    interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
-        // Empty
-    }
     /**
      * {@inheritDoc}
      */
@@ -115,11 +111,11 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
         // FIXME (bknerr) : Get rid of this IValueWithChannelId class..., get rid of the mailer when tests exist
        //                   And apparently the type insafeness leads to Object instead of generic type...damn
         try {
-            final Function<IValueWithChannelId, IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> func =
-                new Function<IValueWithChannelId, IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>>() {
+            final Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> func =
+                new Function<IValueWithChannelId, IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>>() {
                     @Override
                     @CheckForNull
-                    public IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
+                    public IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm> apply(@Nonnull final IValueWithChannelId valWithId) {
                         try {
                             return ADAPT_MGR.adapt(valWithId);
 
@@ -140,7 +136,7 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
                         }
                     }
                 };
-            final List<IArchiveSample<Object, ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
+            final List<IArchiveSample<ICssAlarmValueType<Object>, EpicsAlarm>> sampleBeans =
                 Lists.transform((List<IValueWithChannelId>) samples, func);
 
             DAO_MGR.getSampleDao().createSamples(sampleBeans);

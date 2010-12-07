@@ -19,43 +19,62 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.alarm;
+package org.csstudio.domain.desy.types;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
+import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
-import org.csstudio.domain.desy.types.CssDouble;
 
 /**
- * TODO (bknerr) :
+ * Abstract class for an alarm bearing css value type of base type <T>
  *
  * @author bknerr
- * @since 02.12.2010
+ * @since 07.12.2010
+ * @param <T> the basic value type of the datum/data
  */
-public class CssAlarmDouble extends CssDouble implements IHasAlarm {
+public class AbstractCssAlarmValueType<T> implements ICssAlarmValueType<T> {
 
+    private final T _data;
     private final IAlarm _alarm;
+    private final TimeInstant _timestamp;
+
     /**
      * Constructor.
-     * @param value
-     * @param timestamp
-     * @param alarm
      */
-    public CssAlarmDouble(@Nonnull final Double value,
-                          @Nonnull final TimeInstant timestamp,
-                          @Nullable final IAlarm alarm) {
-        super(value, timestamp);
+    public AbstractCssAlarmValueType(@Nonnull final T data,
+                                     @Nonnull final IAlarm alarm,
+                                     @Nonnull final TimeInstant timestamp) {
+        _data = data;
         _alarm = alarm;
+        _timestamp = timestamp;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @CheckForNull
+    @Nonnull
+    public T getValueData() {
+        return _data;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
+    public TimeInstant getTimestamp() {
+        return _timestamp;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Nonnull
     public IAlarm getAlarm() {
         return _alarm;
     }
+
 }

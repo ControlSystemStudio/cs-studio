@@ -21,45 +21,15 @@
  */
 package org.csstudio.domain.desy.types;
 
-import javax.annotation.Nonnull;
-
-import org.csstudio.domain.desy.time.TimeInstant;
+import org.csstudio.domain.desy.alarm.IHasAlarm;
 
 /**
- * TODO (bknerr) :
+ * Helper interface for this type combination.
  *
  * @author bknerr
- * @since 26.11.2010
+ * @since 06.12.2010
+ * @param <T> basic type of the Css value type
  */
-public class CssLong implements ICssValueType<Long> {
-
-    private final Long _value;
-    private final TimeInstant _timestamp;
-
-    /**
-     * Constructor.
-     */
-    public CssLong(@Nonnull final Long value, @Nonnull final TimeInstant timestamp) {
-        _value = value;
-        _timestamp = timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Long getValueData() {
-        return _value;
-    }
-
+public interface ICssAlarmValueType<T> extends ICssValueType<T>, IHasAlarm {
+    // Empty
 }

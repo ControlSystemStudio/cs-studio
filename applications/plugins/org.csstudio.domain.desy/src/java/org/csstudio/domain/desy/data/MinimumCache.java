@@ -19,47 +19,35 @@
  * PROJECT IN THE FILE LICENSE.HTML. IF THE LICENSE IS NOT INCLUDED YOU MAY FIND A COPY
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
-package org.csstudio.domain.desy.types;
+package org.csstudio.domain.desy.data;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.time.TimeInstant;
-
 /**
- * TODO (bknerr) :
+ * Accumulation cache that implements a minimum  average for the accumulated values.
+ * The returned value on {@link CumulativeAverageCache#getValue()} is the sum over all
+ * accumulated values divided by their number.
  *
  * @author bknerr
- * @since 26.11.2010
+ * @since 06.12.2010
  */
-public class CssDouble implements ICssValueType<Double> {
-
-    private final Double _value;
-    private final TimeInstant _timestamp;
-
+public class MinimumCache<A, R> extends AbstractAccumulatorCache<A, R> {
     /**
      * Constructor.
      */
-    public CssDouble(@Nonnull final Double value, @Nonnull final TimeInstant timestamp) {
-        _value = value;
-        _timestamp = timestamp;
+    public MinimumCache(@Nonnull final Class<R> clazz) {
+        super(clazz);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
-    public TimeInstant getTimestamp() {
-        return _timestamp;
-    }
+    protected R calculateAccumulation(@CheckForNull final R accValue,
+                                      @Nonnull final A nextValue) {
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Double getValueData() {
-        return _value;
+        // TODO Auto-generated method stub
+        return null;
     }
-
 }

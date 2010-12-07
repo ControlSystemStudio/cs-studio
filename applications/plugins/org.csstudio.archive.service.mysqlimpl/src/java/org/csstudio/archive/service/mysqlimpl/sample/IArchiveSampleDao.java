@@ -55,7 +55,6 @@ public interface IArchiveSampleDao {
      * @param samples the sample objects
      * @throws ArchiveSampleDaoException
      */
-    <V,
-     T extends ICssValueType<V> & IHasAlarm>
-    void createSamples(Collection<IArchiveSample<V, T, EpicsAlarm>> samples) throws ArchiveDaoException;
+    <T extends ICssValueType<?> & IHasAlarm>
+    void createSamples(Collection<IArchiveSample<T, EpicsAlarm>> samples) throws ArchiveDaoException;
 }
