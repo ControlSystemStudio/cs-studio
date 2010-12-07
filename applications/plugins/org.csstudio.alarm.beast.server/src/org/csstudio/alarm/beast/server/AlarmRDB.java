@@ -78,7 +78,7 @@ public class AlarmRDB
     public AlarmHierarchy readConfiguration() throws Exception
     {
         final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_item_by_name);
+            rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
         // Disabling the auto-reconnect is about 15% faster, and we don't
         // expect a timeout while we read the configuration.
         rdb.setAutoReconnect(false);
@@ -89,9 +89,6 @@ public class AlarmRDB
             if (!result.next())
                 throw new Exception("Unknown alarm tree root " + root_name);
             final int id = result.getInt(1);
-            final Object parent = result.getObject(2);
-            if (parent != null)
-                throw new Exception("Root element " + root_name + " has parent");
             result.close();
             final AlarmHierarchy root = new AlarmHierarchy(null, root_name, id);
             root.setChildren(getAlarmTreeChildren(root));

@@ -19,13 +19,12 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.utility.rdb.CachingStringIDHelper;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.eclipse.osgi.util.NLS;
 
 /** <p>Alarm Configuration as stored in RDB. It is identified
- *  by rdb_url plus root_component, which means all operations 
+ *  by rdb_url plus root_component, which means all operations
  *  with this object is related to its root_component.</p>
  *  <p>This class can read and write the configuration which is stored in RDB.</p>
  *  <p>The AlarmClientModel combines this with JMS communication,
@@ -36,26 +35,27 @@ public class AlarmConfiguration
 {
     /** Connection to configuration/state snapshot. */
     final private RDBUtil rdb;
-    
+
     /** SQL strings */
     final private SQL sql;
 
     /** Mapping of severity IDs to strings */
-    final private CachingStringIDHelper severity_mapping;
+    final private SeverityReader severity_mapping;
 
     /** Mapping of message IDs to strings */
-    final private CachingStringIDHelper message_mapping;
-    
+    final private MessageReader message_mapping;
+
+    final private AlarmConfigurationReader config_reader;
+
     /** Root of the alarm tree.  */
     final private AlarmTreeRoot config_tree;
 
-    /** Hash of all PVs in config_tree that maps PV name to PV */ 
+    /** Hash of all PVs in config_tree that maps PV name to PV */
     private HashMap<String, AlarmTreePV> pvs = new HashMap<String, AlarmTreePV>();
 
     /** Re-used statements */
     private PreparedStatement sel_items_by_parent_statement,
-        sel_pv_by_id_statement, sel_pvs_by_parent_statement,
-        sel_guidance_statement, sel_displays_statement, sel_commands_statement;
+        sel_pv_by_id_statement, sel_pvs_by_parent_statement;
 
     /** Initialize
      *  @param url RDB URL
@@ -67,7 +67,7 @@ public class AlarmConfiguration
     {
         this(url, root_name, false);
     }
- 
+
     /** Initialize
      *  @param url RDB URL
      *  @param root_name Name of root element
@@ -100,18 +100,15 @@ public class AlarmConfiguration
         // can be 10% faster
         rdb.setAutoReconnect(false);
         sql = new SQL(rdb);
-        severity_mapping = new CachingStringIDHelper(rdb,
-                    sql.schema_prefix + sql.severity_table,
-                    sql.severity_id_col, sql.severity_name_col);
-        message_mapping = new CachingStringIDHelper(rdb,
-                    sql.schema_prefix + sql.message_table,
-                    sql.message_id_col, sql.message_name_col);
+        severity_mapping = new SeverityReader(rdb, sql);
+        message_mapping = new MessageReader(rdb, sql);
+        config_reader = new AlarmConfigurationReader(rdb, sql);
         config_tree = readAlarmTree(root_name, create);
         closeStatements();
         // Re-enable auto-connect
         rdb.setAutoReconnect(true);
     }
-    
+
     /** List all configuration 'root' element names
      *  @return Array of 'root' elements
      *  @throws Exception on error
@@ -138,12 +135,10 @@ public class AlarmConfiguration
     public void close()
     {
         closeStatements();
-        severity_mapping.dispose();
-        message_mapping.dispose();
         rdb.close();
         pvs.clear();
     }
-    
+
     /** @return root of the alarm tree configuration */
     synchronized public AlarmTreeRoot getAlarmTree()
     {
@@ -160,7 +155,7 @@ public class AlarmConfiguration
             return null;
         return pvs.get(name);
     }
-    
+
     /** Create the root element.
      *  <p>
      *  Per default, it's a plain AlarmTreeRoot.
@@ -185,7 +180,7 @@ public class AlarmConfiguration
             final boolean create) throws Exception
     {
         final PreparedStatement statement =
-            rdb.getConnection().prepareStatement(sql.sel_item_by_name);
+            rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
         try
         {
             statement.setString(1, root_name);
@@ -198,15 +193,8 @@ public class AlarmConfiguration
                 return (AlarmTreeRoot) addRootOrComponent(null, root_name);
             }
             final int id = result.getInt(1);
-            final Object parent = result.getObject(2);
-            if (parent != null)
-                throw new Exception("Root element " + root_name +
-                                    " (id " + id + ") has parent");
             final AlarmTreeRoot root = createAlarmTreeRoot(id, root_name);
-            
-            root.setGuidance(readGuidance(id));
-            root.setDisplays(readDisplays(id));
-            root.setCommands(readCommands(id));
+            config_reader.readGUIInfo(root);
             readChildren(root);
             return root;
         }
@@ -216,7 +204,7 @@ public class AlarmConfiguration
             closeStatements();
         }
     }
-   
+
     /** Read configuration for child elements
      *  @param parent Parent node. Children get added to it.
      *  @throws Exception on error
@@ -228,7 +216,7 @@ public class AlarmConfiguration
                 rdb.getConnection().prepareStatement(sql.sel_items_by_parent);
         sel_items_by_parent_statement.setInt(1, parent.getID());
         final ResultSet result = sel_items_by_parent_statement.executeQuery();
-        
+
         final ArrayList<AlarmTreeComponent> nodes = new ArrayList<AlarmTreeComponent>();
         while (result.next())
         {
@@ -237,13 +225,11 @@ public class AlarmConfiguration
             if (!isPV(id))
             {
                 final String name = result.getString(2);
-                final AlarmTreeComponent node = new AlarmTreeComponent(id, name, parent);               
+                final AlarmTreeComponent node = new AlarmTreeComponent(id, name, parent);
                 final Timestamp config_time = result.getTimestamp(3);
                 if (config_time != null)
                     node.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-                node.setGuidance(readGuidance(id));
-                node.setDisplays(readDisplays(id));
-                node.setCommands(readCommands(id));              
+                config_reader.readGUIInfo(node);
                 nodes.add(node);
             }
         }
@@ -276,55 +262,53 @@ public class AlarmConfiguration
             final String name = result.getString(2);
             final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
             pvs.put(name, pv);
-            
-            pv.setGuidance(readGuidance(id));
-            pv.setDisplays(readDisplays(id));
-            pv.setCommands(readCommands(id));
-            
+
+            config_reader.readGUIInfo(pv);
+
             pv.setDescription(result.getString(3));
-           
+
             pv.setEnabled(result.getBoolean(4));
             pv.setAnnunciating(result.getBoolean(5));
             pv.setLatching(result.getBoolean(6));
             pv.setDelay(result.getInt(7));
             pv.setCount(result.getInt(8));
             pv.setFilter(result.getString(9));
-            
+
             final Timestamp config_time = result.getTimestamp(16);
             if (config_time != null)
                 pv.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-            
+
             // If there is severity/status info, use it.
             // Otherwise leave PV "OK" as it was initialized.
             int severity_id = result.getInt(10);
             if (result.wasNull())
                 continue;
-            final SeverityLevel current_severity = SeverityLevel.parse(severity_mapping.find(severity_id).getName());
+            final SeverityLevel current_severity = severity_mapping.getSeverity(severity_id);
 
             // Current message was added later, so assume "" if not set
             int status_id = result.getInt(11);
             final String current_message = result.wasNull()
                 ? "" //$NON-NLS-1$
-                : message_mapping.find(status_id).getName();
+                : message_mapping.getMessage(status_id);
 
             severity_id = result.getInt(12);
             if (result.wasNull())
                 continue;
-            final SeverityLevel severity = SeverityLevel.parse(severity_mapping.find(severity_id).getName());
-            
+            final SeverityLevel severity = severity_mapping.getSeverity(severity_id);
+
             status_id = result.getInt(13);
             if (result.wasNull())
                 continue;
-            final String message = message_mapping.find(status_id).getName();
+            final String message = message_mapping.getMessage(status_id);
             final String value = result.getString(14); // OK to have null value
             final Timestamp sql_time = result.getTimestamp(15);
             if (result.wasNull())
                 continue;
             final ITimestamp timestamp = TimeWarp.getCSSTimestamp(sql_time);
-            pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);      
+            pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
         }
     }
-    
+
     /** Add a component to the model and RDB
      *  @param parent AlarmTreeRoot or ..Component under which to add the component
      *  @param name Name of the new component
@@ -401,7 +385,7 @@ public class AlarmConfiguration
             statement.close();
         }
     }
-    
+
     /** Add a PV to the model and config storage (RDB)
      *  @param parent Component under which to add the PV
      *  @param name Name of the new PV
@@ -414,11 +398,11 @@ public class AlarmConfiguration
     {
         final AlarmTreePV found = findPV(name);
         if (found != null)
-            throw new Exception(name + " already under " + found.getPathName());        
-       
+            throw new Exception(name + " already under " + found.getPathName());
+
         final int id = getNextItemID();
         final PreparedStatement insertAsItem =
-            rdb.getConnection().prepareStatement(sql.insert_item);        
+            rdb.getConnection().prepareStatement(sql.insert_item);
         final PreparedStatement insertAsPV =
             rdb.getConnection().prepareStatement(sql.insert_pv);
         final String description = name;
@@ -427,9 +411,9 @@ public class AlarmConfiguration
         // Not used, but new PV starts out disabled, which makes sense
         // until it's "configured"
         // final boolean enabled = false;
-      
+
         try
-        { 
+        {
         	//Insert the PV as an item in the alarmtree table
             insertAsItem.setInt(1, id);
             insertAsItem.setInt(2, parent.getID());
@@ -440,10 +424,10 @@ public class AlarmConfiguration
             insertAsPV.setString(2, description);
             insertAsPV.setBoolean(3, annunciate);
             insertAsPV.setBoolean(4, latch);
-            insertAsPV.executeUpdate();           
-            
+            insertAsPV.executeUpdate();
+
             rdb.getConnection().commit();
-            
+
         }catch (SQLException e) {
 			rdb.getConnection().rollback();
 			System.out.println("add PV into RDB failed!");
@@ -454,7 +438,7 @@ public class AlarmConfiguration
             insertAsItem.close();
             insertAsPV.close();
         }
-        
+
         final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
         pvs.put(name, pv);
         return pv;
@@ -475,12 +459,12 @@ public class AlarmConfiguration
     	//update guidance, displays and commands
     	updateGDC(item.getID(), guidance, sql.delete_guidance_by_id, sql.insert_guidance);
     	updateGDC(item.getID(), displays, sql.delete_displays_by_id, sql.insert_display);
-    	updateGDC(item.getID(), commands, sql.delete_commands_by_id, sql.insert_command);   	
-    	
+    	updateGDC(item.getID(), commands, sql.delete_commands_by_id, sql.insert_command);
+
     	//update config_time
-    	final PreparedStatement statement = 
+    	final PreparedStatement statement =
     		rdb.getConnection().prepareStatement(sql.update_item_config_time);
-    	
+
     	try {
     		final Timestamp config_time = new Timestamp(new Date().getTime());
     		statement.setTimestamp(1, config_time);
@@ -491,11 +475,11 @@ public class AlarmConfiguration
             item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
     	} finally {
     		statement.close();
-    	} 	
-    	
-    	
+    	}
+
+
     }
-    
+
     /** Change a PV's configuration in RDB.
      *  @param pv PV
      *  @param description Description
@@ -537,7 +521,7 @@ public class AlarmConfiguration
             statement.close();
         }
     }
-    
+
     /** Change item's name
      *  @param item Item to change
      *  @param new_name New name for the item
@@ -629,8 +613,6 @@ public class AlarmConfiguration
                 removeSubtree(child);
         }
         // Then remove item itself
-      
-        
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.delete_component_by_id);
         try
@@ -640,7 +622,7 @@ public class AlarmConfiguration
             statement.executeUpdate();
             rdb.getConnection().commit();
         }catch (SQLException e) {
-			rdb.getConnection().rollback();			
+			rdb.getConnection().rollback();
 			throw e;
         }finally
         {
@@ -662,20 +644,20 @@ public class AlarmConfiguration
             rdb.getConnection().prepareStatement(sql.delete_pv_by_id);
         final PreparedStatement delCMPNTStatement =
             rdb.getConnection().prepareStatement(sql.delete_component_by_id);
-        
+
         try
         {
         	deleteGDCWithoutCommit(pv.getID());
-           
+
         	delPVStatement.setInt(1, pv.getID());
             delPVStatement.executeUpdate();
-            
+
             delCMPNTStatement.setInt(1, pv.getID());
-            delCMPNTStatement.executeUpdate();           
-            
+            delCMPNTStatement.executeUpdate();
+
             rdb.getConnection().commit();
         }catch (SQLException e) {
-			rdb.getConnection().rollback();			
+			rdb.getConnection().rollback();
 			throw e;
         }
         finally
@@ -702,83 +684,17 @@ public class AlarmConfiguration
         if (! result.next())
             throw new Exception("PV " + pv.getPathName() + " not found");
         pv.setDescription(result.getString(1));
-       
+
         pv.setEnabled(result.getBoolean(2));
         pv.setAnnunciating(result.getBoolean(3));
         pv.setLatching(result.getBoolean(4));
         pv.setDelay(result.getInt(5));
         pv.setCount(result.getInt(6));
         pv.setFilter(result.getString(7));
-        
-        pv.setGuidance(readGuidance(pv.getID()));
-        pv.setDisplays(readDisplays(pv.getID()));
-        pv.setCommands(readCommands(pv.getID()));
+        config_reader.readGUIInfo(pv);
     }
 
-    /**Get guidance from RDB by id
-     * @param id The id of the item in alarmtree
-     * @return the guidance messages
-     * @throws Exception on error
-     */
-    private List<GDCDataStructure> readGuidance(final int id) throws Exception
-    {
-        final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
-        if (sel_guidance_statement == null)
-            sel_guidance_statement = rdb.getConnection().prepareStatement(sql.sel_guidance_by_id);
-        sel_guidance_statement.setInt(1, id);
-        final ResultSet result = sel_guidance_statement.executeQuery();
-        while (result.next())
-        {
-            final String title = result.getString(1);
-            final String details = result.getString(2);
-            gdcList.add(new GDCDataStructure(title, details));
-        }
-        return gdcList;
-    }
 
-    /**Get displays from RDB by id
-     * @param id The id of the item in alarmtree
-     * @return the display links
-     * @throws Exception on error
-     */
-    private List<GDCDataStructure> readDisplays(final int id) throws Exception
-    {
-        final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
-        if (sel_displays_statement == null)
-            sel_displays_statement = rdb.getConnection().prepareStatement(sql.sel_displays_by_id);
-        sel_displays_statement.setInt(1, id);
-        final ResultSet result = sel_displays_statement.executeQuery();
-        while (result.next())
-        {
-            final String title = result.getString(1);
-            final String details = result.getString(2);
-            gdcList.add(new GDCDataStructure(title, details));
-        }
-        return gdcList;
-    }
-
-    /**Get commands from RDB by id
-     * @param id The id of the item in alarmtree
-     * @return the display links
-     * @throws Exception on error
-     */
-    private List<GDCDataStructure> readCommands(final int id) throws Exception
-    {
-        final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
-        if (sel_commands_statement == null)
-            sel_commands_statement = rdb.getConnection().prepareStatement(sql.sel_commands_by_id);
-        sel_commands_statement.setInt(1, id);
-        final ResultSet result = sel_commands_statement.executeQuery();
-        while (result.next())
-        {
-            final String title = result.getString(1);
-            final String details = result.getString(2);
-            gdcList.add(new GDCDataStructure(title, details));
-        }
-        return gdcList;
-    }
-
-    
     /**Update guidance/displays/commands in RDB by id
      * @param id The id of the item in alarmtree.
      * @param gdcList guidance/displays/commands ArrayList.
@@ -786,14 +702,14 @@ public class AlarmConfiguration
      * @param insert_gdc_sql The sql update sentence for inserting new GDC.
      * @throws SQLException
      */
-    private void updateGDC(final int id, final List<GDCDataStructure> gdcList, 
+    private void updateGDC(final int id, final List<GDCDataStructure> gdcList,
     		final String del_gdc_sql, final String insert_gdc_sql) throws Exception {
-    	
-    	final PreparedStatement deleteGDC = 
+
+    	final PreparedStatement deleteGDC =
     		rdb.getConnection().prepareStatement(del_gdc_sql);
     	final PreparedStatement insertGDC =
 			rdb.getConnection().prepareStatement(insert_gdc_sql);
-    	
+
     		try {
 				deleteGDC.setInt(1, id);
 				deleteGDC.executeUpdate();
@@ -817,7 +733,7 @@ public class AlarmConfiguration
 				insertGDC.close();
 			}
     }
-    
+
     /** Delete all guidance, displays, commands for an item
      *  @param id Item ID
      *  @throws Exception on error
@@ -839,14 +755,14 @@ public class AlarmConfiguration
             delCommandsStatement.setInt(1, id);
             delCommandsStatement.executeUpdate();
         }
-        finally 
+        finally
         {
         	delGuidanceStatement.close();
         	delDisplayStatement.close();
-        	delCommandsStatement.close();       	
+        	delCommandsStatement.close();
         }
     }
-    
+
     /** Whether the item marked by <code>id</code> is a PV or not.
      * @param id item id in alarmtree.
      * @return true if it is a PV, false if it is not a PV.
@@ -882,26 +798,12 @@ public class AlarmConfiguration
                 sel_pvs_by_parent_statement.close();
                 sel_pvs_by_parent_statement = null;
             }
-            if (sel_guidance_statement != null)
-            {
-                sel_guidance_statement.close();
-                sel_guidance_statement = null;
-            }
-            if (sel_displays_statement != null)
-            {
-                sel_displays_statement.close();
-                sel_displays_statement = null;
-            }
-            if (sel_commands_statement != null)
-            {
-                sel_commands_statement.close();
-                sel_commands_statement = null;
-            }
         }
         catch (SQLException e)
         {
             // Could also ignore: We're closing anyway
             e.printStackTrace();
         }
+        config_reader.closeStatements();
     }
 }
