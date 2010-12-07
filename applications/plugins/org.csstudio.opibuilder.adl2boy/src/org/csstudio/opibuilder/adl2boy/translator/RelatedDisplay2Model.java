@@ -124,7 +124,7 @@ public class RelatedDisplay2Model extends AbstractADL2Model {
 	 */
 	public void addMacrosToOpenDisplayAction(RelatedDisplayItem rdDisplay,
 			OpenDisplayAction odAction) {
-		if (rdDisplay.getArgs() != null) {
+		if (rdDisplay.getArgs() != null && !rdDisplay.getArgs().isEmpty()) {
 			String args = rdDisplay.getArgs().replaceAll("\"", "");
 			MacrosInput macIn = makeMacros(args);
 			odAction.setPropertyValue(OpenDisplayAction.PROP_MACROS, macIn);
