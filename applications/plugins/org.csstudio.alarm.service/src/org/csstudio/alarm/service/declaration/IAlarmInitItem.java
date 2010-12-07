@@ -50,4 +50,11 @@ public interface IAlarmInitItem {
      */
     void init(@Nonnull final IAlarmMessage alarmMessage);
 
+    
+    /**
+     * Is called when the lookup found out that a pv by this name is not existing in the control system. This may be temporarily.
+     * 
+     * @param pvName
+     */
+    void notFound(@Nonnull final String pvName);
 }
