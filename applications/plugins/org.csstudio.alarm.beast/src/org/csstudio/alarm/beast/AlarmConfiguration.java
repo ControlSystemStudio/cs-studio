@@ -18,7 +18,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.csstudio.platform.utility.rdb.TimeWarp;
 import org.eclipse.osgi.util.NLS;
@@ -54,8 +53,7 @@ public class AlarmConfiguration
     private HashMap<String, AlarmTreePV> pvs = new HashMap<String, AlarmTreePV>();
 
     /** Re-used statements */
-    private PreparedStatement sel_items_by_parent_statement,
-        sel_pv_by_id_statement, sel_pvs_by_parent_statement;
+    private PreparedStatement sel_items_by_parent_statement, sel_pv_by_id_statement;
 
     /** Initialize
      *  @param url RDB URL
@@ -217,96 +215,39 @@ public class AlarmConfiguration
         sel_items_by_parent_statement.setInt(1, parent.getID());
         final ResultSet result = sel_items_by_parent_statement.executeQuery();
 
-        final ArrayList<AlarmTreeComponent> nodes = new ArrayList<AlarmTreeComponent>();
+        final List<AlarmTree> recurse_items = new ArrayList<AlarmTree>();
         while (result.next())
         {
             final int id = result.getInt(1);
-            //If this is a component, not a PV...
-            if (!isPV(id))
-            {
-                final String name = result.getString(2);
-                final AlarmTreeComponent node = new AlarmTreeComponent(id, name, parent);
-                final Timestamp config_time = result.getTimestamp(3);
-                if (config_time != null)
-                    node.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-                config_reader.readGUIInfo(node);
-                nodes.add(node);
+            final String name = result.getString(17);
+            final Timestamp config_time = result.getTimestamp(2);
+            final AlarmTree item;
+            // Check PV's ID. If null, this is a component, not PV
+            result.getInt(3);
+            if (result.wasNull())
+            {   // Component (area, system), not a PV
+                item = new AlarmTreeComponent(id, name, parent);
+                recurse_items.add(item);
             }
+            else
+            {
+                final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
+                pvs.put(name, pv);
+                config_reader.configurePVfromResult(pv, result, severity_mapping, message_mapping);
+                item = pv;
+            }
+            if (config_time != null)
+                item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
+            config_reader.readGUIInfo(item);
         }
         result.close();
 
-        // Recurse to children of child entry
+        // Recurse to children
         // Cannot do that inside the above while() because that would reuse
         // the statement of the current ResultSet
-        for (AlarmTreeComponent node : nodes)
-            readChildren(node);
-        nodes.clear();
-
-        readPVs(parent);
-    }
-
-    /** Read configuration of PVs
-     *  @param parent Parent node. PVs get added to it.
-     *  @throws Exception on error
-     */
-    private void readPVs(final AlarmTree parent) throws Exception
-    {
-        if (sel_pvs_by_parent_statement == null)
-            sel_pvs_by_parent_statement =
-                    rdb.getConnection().prepareStatement(sql.sel_pvs_by_parent);
-        sel_pvs_by_parent_statement.setInt(1, parent.getID());
-        final ResultSet result = sel_pvs_by_parent_statement.executeQuery();
-        while (result.next())
-        {
-            final int id = result.getInt(1);
-            final String name = result.getString(2);
-            final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
-            pvs.put(name, pv);
-
-            config_reader.readGUIInfo(pv);
-
-            pv.setDescription(result.getString(3));
-
-            pv.setEnabled(result.getBoolean(4));
-            pv.setAnnunciating(result.getBoolean(5));
-            pv.setLatching(result.getBoolean(6));
-            pv.setDelay(result.getInt(7));
-            pv.setCount(result.getInt(8));
-            pv.setFilter(result.getString(9));
-
-            final Timestamp config_time = result.getTimestamp(16);
-            if (config_time != null)
-                pv.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-
-            // If there is severity/status info, use it.
-            // Otherwise leave PV "OK" as it was initialized.
-            int severity_id = result.getInt(10);
-            if (result.wasNull())
-                continue;
-            final SeverityLevel current_severity = severity_mapping.getSeverity(severity_id);
-
-            // Current message was added later, so assume "" if not set
-            int status_id = result.getInt(11);
-            final String current_message = result.wasNull()
-                ? "" //$NON-NLS-1$
-                : message_mapping.getMessage(status_id);
-
-            severity_id = result.getInt(12);
-            if (result.wasNull())
-                continue;
-            final SeverityLevel severity = severity_mapping.getSeverity(severity_id);
-
-            status_id = result.getInt(13);
-            if (result.wasNull())
-                continue;
-            final String message = message_mapping.getMessage(status_id);
-            final String value = result.getString(14); // OK to have null value
-            final Timestamp sql_time = result.getTimestamp(15);
-            if (result.wasNull())
-                continue;
-            final ITimestamp timestamp = TimeWarp.getCSSTimestamp(sql_time);
-            pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
-        }
+        for (AlarmTree item : recurse_items)
+            readChildren(item);
+        recurse_items.clear();
     }
 
     /** Add a component to the model and RDB
@@ -694,7 +635,6 @@ public class AlarmConfiguration
         config_reader.readGUIInfo(pv);
     }
 
-
     /**Update guidance/displays/commands in RDB by id
      * @param id The id of the item in alarmtree.
      * @param gdcList guidance/displays/commands ArrayList.
@@ -763,21 +703,6 @@ public class AlarmConfiguration
         }
     }
 
-    /** Whether the item marked by <code>id</code> is a PV or not.
-     * @param id item id in alarmtree.
-     * @return true if it is a PV, false if it is not a PV.
-     * @throws Exception
-     */
-    private boolean isPV(final int id) throws Exception
-    {
-        if (sel_pv_by_id_statement == null)
-            sel_pv_by_id_statement = rdb.getConnection()
-                .prepareStatement(sql.sel_pv_by_id);
-        sel_pv_by_id_statement.setInt(1, id);
-        final ResultSet result = sel_pv_by_id_statement.executeQuery();
-        return result.next();
-    }
-
     /** Close prepared statements that are lazily created when reading config */
     private void closeStatements()
     {
@@ -792,11 +717,6 @@ public class AlarmConfiguration
             {
                 sel_pv_by_id_statement.close();
                 sel_pv_by_id_statement = null;
-            }
-            if (sel_pvs_by_parent_statement != null)
-            {
-                sel_pvs_by_parent_statement.close();
-                sel_pvs_by_parent_statement = null;
             }
         }
         catch (SQLException e)

@@ -210,46 +210,8 @@ public class AlarmConfigurationReader
             else
             {
                 final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
-                pv.setDescription(result.getString(4));
-
-                pv.setEnabled(result.getBoolean(5));
-                pv.setAnnunciating(result.getBoolean(6));
-                pv.setLatching(result.getBoolean(7));
-                pv.setDelay(result.getInt(8));
-                pv.setCount(result.getInt(9));
-                pv.setFilter(result.getString(10));
-
-                // If there is severity/status info, use it.
-                // Otherwise leave PV "OK" as it was initialized.
-                int severity_id = result.getInt(11);
-                final SeverityLevel current_severity = result.wasNull()
-                    ? SeverityLevel.OK
-                    : severity_mapping.getSeverity(severity_id);
-
-                // Current message was added later, so assume "" if not set
-                int status_id = result.getInt(12);
-                final String current_message = result.wasNull()
-                    ? ""
-                    : message_mapping.getMessage(status_id);
-
-                severity_id = result.getInt(13);
-                final SeverityLevel severity = result.wasNull()
-                    ? SeverityLevel.OK
-                    : severity_mapping.getSeverity(severity_id);
-
-                status_id = result.getInt(14);
-                final String message =  result.wasNull()
-                    ? ""
-                    : message_mapping.getMessage(status_id);
-
-                final String value = result.getString(15); // OK to have null value
-                final Timestamp sql_time = result.getTimestamp(16);
-                if (!result.wasNull())
-                {
-                    final ITimestamp timestamp = TimeWarp.getCSSTimestamp(sql_time);
-                    pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
-                }
-
+                configurePVfromResult(pv, result, severity_mapping,
+                        message_mapping);
                 item = pv;
             }
             if (config_time != null)
@@ -260,5 +222,56 @@ public class AlarmConfigurationReader
             result.close();
         }
         return item;
+    }
+
+    /** Configure a PV from RDB columns
+     *  @param pv PV to configure
+     *  @param result ResultSet with PV info
+     *  @param severity_mapping
+     *  @param message_mapping
+     *  @throws Exception on error
+     */
+    public void configurePVfromResult(final AlarmTreePV pv,
+            final ResultSet result, final SeverityReader severity_mapping,
+            final MessageReader message_mapping) throws Exception
+    {
+        pv.setDescription(result.getString(4));
+        pv.setEnabled(result.getBoolean(5));
+        pv.setAnnunciating(result.getBoolean(6));
+        pv.setLatching(result.getBoolean(7));
+        pv.setDelay(result.getInt(8));
+        pv.setCount(result.getInt(9));
+        pv.setFilter(result.getString(10));
+
+        // If there is severity/status info, use it.
+        // Otherwise leave PV "OK" as it was initialized.
+        int severity_id = result.getInt(11);
+        final SeverityLevel current_severity = result.wasNull()
+            ? SeverityLevel.OK
+            : severity_mapping.getSeverity(severity_id);
+
+        // Current message was added later, so assume "" if not set
+        int status_id = result.getInt(12);
+        final String current_message = result.wasNull()
+            ? ""
+            : message_mapping.getMessage(status_id);
+
+        severity_id = result.getInt(13);
+        final SeverityLevel severity = result.wasNull()
+            ? SeverityLevel.OK
+            : severity_mapping.getSeverity(severity_id);
+
+        status_id = result.getInt(14);
+        final String message =  result.wasNull()
+            ? ""
+            : message_mapping.getMessage(status_id);
+
+        final String value = result.getString(15); // OK to have null value
+        final Timestamp sql_time = result.getTimestamp(16);
+        if (!result.wasNull())
+        {
+            final ITimestamp timestamp = TimeWarp.getCSSTimestamp(sql_time);
+            pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
+        }
     }
 }

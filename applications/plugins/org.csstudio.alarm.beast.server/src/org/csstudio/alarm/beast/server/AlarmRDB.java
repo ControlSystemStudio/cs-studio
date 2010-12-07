@@ -121,7 +121,7 @@ public class AlarmRDB
             while (result.next())
             {
                 final int child_id = result.getInt(1);
-                final String child_name = result.getString(2);
+                final String child_name = result.getString(17);
                 // Do not recurse if this child has already been added as a PV
                 boolean is_pv = false;
                 for (AlarmHierarchy child : children)

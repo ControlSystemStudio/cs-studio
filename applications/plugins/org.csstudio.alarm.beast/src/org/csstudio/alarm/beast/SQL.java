@@ -88,13 +88,30 @@ public class SQL
             "select TITLE, DETAIL FROM " + schema_prefix + "DISPLAY WHERE COMPONENT_ID=? ORDER BY DISPLAY_ORDER";
         sel_commands_by_id =
             "select TITLE, DETAIL FROM " + schema_prefix + "COMMAND WHERE COMPONENT_ID=? ORDER BY COMMAND_ORDER";
-        // Note how components are ordered by ID, assuming they are originally
-        // added in some divine order, but PVs tend to get ordered by name
+        // Selects components or PVs by parent ID. For PVs, all the p.* columns are null.
+        //
+        // Components are ordered by ID, assuming they are originally
+        // added in some divine order.
+        //
+        // Except for the additional 't.NAME', the columns must match
+        // sel_item_by_parent_and_name!
         sel_items_by_parent =
-            "SELECT COMPONENT_ID, NAME, CONFIG_TIME" +
-            " FROM " + schema_prefix + "ALARM_TREE WHERE PARENT_CMPNT_ID=? ORDER BY COMPONENT_ID";
+            //        1               2
+            "SELECT t.COMPONENT_ID, t.CONFIG_TIME," +
+            //  3               4        5              6
+            " p.COMPONENT_ID, p.DESCR, p.ENABLED_IND, p.ANNUNCIATE_IND," +
+            //  7            8        9              10        11
+            " p.LATCH_IND, p.DELAY, p.DELAY_COUNT, p.FILTER, p.CUR_SEVERITY_ID," +
+            //  12               13             14           15          16
+            " p.CUR_STATUS_ID, p.SEVERITY_ID, p.STATUS_ID, p.PV_VALUE, p.ALARM_TIME," +
+            //  17
+            " t.NAME " +
+            " FROM " + schema_prefix + "ALARM_TREE t" +
+            " LEFT JOIN " + schema_prefix + "PV p ON p.COMPONENT_ID = t.COMPONENT_ID" +
+            " WHERE t.PARENT_CMPNT_ID=? ORDER BY t.COMPONENT_ID";
 
         // Selects component or PV by parent ID and name. For PV, all the p.* columns are null.
+        // Columns must match sel_items_by_parent except for the t.NAME that's not in here!
         sel_item_by_parent_and_name =
             //        1               2
             "SELECT t.COMPONENT_ID, t.CONFIG_TIME," +
@@ -104,8 +121,8 @@ public class SQL
             " p.LATCH_IND, p.DELAY, p.DELAY_COUNT, p.FILTER, p.CUR_SEVERITY_ID," +
             //  12               13             14           15          16
             " p.CUR_STATUS_ID, p.SEVERITY_ID, p.STATUS_ID, p.PV_VALUE, p.ALARM_TIME" +
-            " FROM ALARM.ALARM_TREE t" +
-            " LEFT JOIN ALARM.PV p ON p.COMPONENT_ID = t.COMPONENT_ID" +
+            " FROM " + schema_prefix + "ALARM_TREE t" +
+            " LEFT JOIN " + schema_prefix + "PV p ON p.COMPONENT_ID = t.COMPONENT_ID" +
             " WHERE t.PARENT_CMPNT_ID=? AND t.NAME=?";
 
         sel_last_item_id =
