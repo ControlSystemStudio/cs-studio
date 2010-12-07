@@ -132,6 +132,28 @@ public class ADLTestObjects {
 		return rd;
 	}
 
+	public static RelatedDisplayItem makeRelatedDisplayNoArgs()  {
+		RelatedDisplayItem rd = null;
+		try {
+			rd = new RelatedDisplayItem(setupRelDispNoArgs());
+		} catch (WrongADLFormatException e) {
+			//We should not hit here since we are starting with a well known object
+			e.printStackTrace();
+		}
+		return rd;
+	}
+
+	public static RelatedDisplayItem makeRelatedDisplayEmptyArgs()  {
+		RelatedDisplayItem rd = null;
+		try {
+			rd = new RelatedDisplayItem(setupRelDispEmptyArgs());
+		} catch (WrongADLFormatException e) {
+			//We should not hit here since we are starting with a well known object
+			e.printStackTrace();
+		}
+		return rd;
+	}
+
 	public static ADLWidget setupBasicFile() {
 		ADLWidget object = new ADLWidget("file", null, 0);
 		object.addBody(new FileLine("name=testFile.adl", 1));
