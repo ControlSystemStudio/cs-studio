@@ -21,8 +21,8 @@
  */
 package org.csstudio.domain.desy.time;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.joda.time.Instant;
 import org.joda.time.ReadableInstant;
@@ -72,11 +72,18 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @since 22.11.2010
      */
     public static final class TimeInstantBuilder {
+        /**
+         * Constructor.
+         */
+        private TimeInstantBuilder() {
+            // Empty
+        }
 
         /**
          * Builds time instant from current system instant.
          * @return the 'now' time instant
          */
+        @Nonnull
         public static TimeInstant buildFromNow() {
             return buildFromMillis(System.currentTimeMillis());
         }
@@ -87,7 +94,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
          * @return the time instant object
          * @throws IllegalArgumentException if seconds is smaller 0
          */
-        public static TimeInstant buildFromSeconds(final long seconds) throws IllegalArgumentException {
+        @Nonnull
+        public static TimeInstant buildFromSeconds(final long seconds) {
             if (seconds < 0 || seconds > MAX_SECONDS) {
                 throw new IllegalArgumentException("Number of seconds for TimeInstant must be non-negative and smaller " + MAX_SECONDS);
             }
@@ -99,7 +107,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
          * @return the time instant object
          * @throws IllegalArgumentException if millis is smaller 0
          */
-        public static TimeInstant buildFromMillis(final long millis) throws IllegalArgumentException {
+        @Nonnull
+        public static TimeInstant buildFromMillis(final long millis) {
             if (millis < 0) {
                 throw new IllegalArgumentException("Number of milliseconds for TimeInstant must be non-negative.");
             }
@@ -111,7 +120,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
          * @return the time instant object
          * @throws IllegalArgumentException if nanos is smaller 0
          */
-        public static TimeInstant buildFromNanos(final long nanos) throws IllegalArgumentException {
+        @Nonnull
+        public static TimeInstant buildFromNanos(final long nanos) {
             if (nanos < 0) {
                 throw new IllegalArgumentException("Number of nanoseconds for TimeInstant must be non-negative.");
             }
@@ -189,7 +199,7 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * {@inheritDoc}
      */
     @Override
-    public int compareTo(@CheckForNull final TimeInstant other) {
+    public int compareTo(@Nonnull final TimeInstant other) {
         final int result = _instant.compareTo(other._instant);
         if (result == 0) {
             return _fracMillisInNanos < other._fracMillisInNanos ? -1 :
@@ -213,7 +223,7 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * {@inheritDoc}
      */
     @Override
-    public boolean equals(final Object obj) {
+    public boolean equals(@Nullable final Object obj) {
         if (this == obj) { // performance opt
             return true;
         }
@@ -259,7 +269,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @return a new time instant object
      * @throws IllegalArgumentException when millis is negative and
      */
-    public TimeInstant plusMillis(final long millis) throws IllegalArgumentException {
+    @Nonnull
+    public TimeInstant plusMillis(final long millis) {
         if (millis < 0) {
             throw new IllegalArgumentException("Millis may not be negative, use minusMillis.");
         }
@@ -276,7 +287,8 @@ public class TimeInstant implements Comparable<TimeInstant> {
      * @return
      * @throws IllegalArgumentException when millis
      */
-    public TimeInstant plusNanosPerSecond(final long nanosPerSecond) throws IllegalArgumentException {
+    @Nonnull
+    public TimeInstant plusNanosPerSecond(final long nanosPerSecond) {
         if (nanosPerSecond < 0 || nanosPerSecond >= NANOS_PER_SECOND) {
             throw new IllegalArgumentException("Nanos per second may not be negative and must be smaller " + NANOS_PER_SECOND + ".");
         }

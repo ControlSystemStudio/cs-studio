@@ -176,7 +176,7 @@ public abstract class TypeSupport<T> {
      * @return
      * @throws ConversionTypeSupportException
      */
-    @Nonnull
+    @CheckForNull
     public static <T> String toArchiveString(@Nonnull final T value) throws ConversionTypeSupportException {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
