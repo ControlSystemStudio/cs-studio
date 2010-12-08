@@ -8,7 +8,6 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
@@ -527,8 +526,8 @@ public class AlarmClientModel
      *  @throws Exception on error
      */
     public void configureItem(final AlarmTreeItem item,
-            final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
-            final List<GDCDataStructure> commands) throws Exception
+            final GDCDataStructure guidance[], final GDCDataStructure displays[],
+            final GDCDataStructure commands[]) throws Exception
     {
         if (! allow_write)
             return;
@@ -562,8 +561,8 @@ public class AlarmClientModel
     public void configurePV(final AlarmTreePV pv, final String description,
         final boolean enabled, final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
-        final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
-        final List<GDCDataStructure> commands) throws Exception
+        final GDCDataStructure guidance[], final GDCDataStructure displays[],
+        final GDCDataStructure commands[]) throws Exception
     {
         if (! allow_write)
             return;
@@ -830,7 +829,7 @@ public class AlarmClientModel
     private synchronized void createPseudoAlarmTree(final String info)
     {
         config_tree = new AlarmTreeRoot(-1, "Pseudo"); //$NON-NLS-1$
-        new AlarmTreeItem(0, info, config_tree);
+        new AlarmTreeItem(config_tree, info, 0);
         active_alarms.clear();
         acknowledged_alarms.clear();
     }

@@ -349,11 +349,11 @@ public class ItemConfigDialog extends TitleAreaDialog
         return parent_composite;
     }
 
-    /** Convert list from GDC to plain strings for table editor
+    /** Convert array from GDC to plain strings for table editor
      *  @param gdc_list List of GDCDataStructure
      *  @return List of String[]
      */
-    private List<String[]> getStringList(final List<GDCDataStructure> gdc_list)
+    private List<String[]> getStringList(final GDCDataStructure gdc_list[])
     {
         final List<String[]> result = new ArrayList<String[]>();
         for (GDCDataStructure gdc : gdc_list)
@@ -385,7 +385,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     }
 
     /** Convert table editor's String table into GDC list */
-    public List<GDCDataStructure> getGDBList(final List<String[]> list)
+    private GDCDataStructure[] getGDBArray(final List<String[]> list)
     {
         final List<GDCDataStructure> gdc_list = new ArrayList<GDCDataStructure>();
         for(String[] row : list)
@@ -394,25 +394,25 @@ public class ItemConfigDialog extends TitleAreaDialog
             if (gdc != null)
                 gdc_list.add(gdc);
         }
-        return gdc_list;
+        return gdc_list.toArray(new GDCDataStructure[gdc_list.size()]);
     }
 
     /** @return Guidance messages */
-    public List<GDCDataStructure> getGuidance()
+    public GDCDataStructure[] getGuidance()
     {
-        return getGDBList(guidance_table_list);
+        return getGDBArray(guidance_table_list);
     }
 
     /** @return Commands */
-    public List<GDCDataStructure> getCommands()
+    public GDCDataStructure[] getCommands()
     {
-        return getGDBList(commands_table_list);
+        return getGDBArray(commands_table_list);
     }
 
     /** @return Related displays */
-    public List<GDCDataStructure> getDisplays()
+    public GDCDataStructure[] getDisplays()
     {
-        return getGDBList(displays_table_list);
+        return getGDBArray(displays_table_list);
     }
 
     /** Perform basic syntax check of filter formula

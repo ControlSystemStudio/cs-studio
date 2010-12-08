@@ -11,8 +11,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
 
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
@@ -119,9 +117,11 @@ public class AlarmConfigurationUnitTest
         final AlarmTreeItem sys2 = config.addComponent(fac, "Sys2");
         AlarmTreePV pv1 = config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV1");
         config.configurePV(pv1, "XihuiTestPV1", true, true, true, 0, 0, "",
-        		new ArrayList<GDCDataStructure>(Arrays.asList(
-        				new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
-        				new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'"))),
+        		new GDCDataStructure[]
+                {
+                    new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
+                    new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'")
+                },
         		null, null);
         config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1");

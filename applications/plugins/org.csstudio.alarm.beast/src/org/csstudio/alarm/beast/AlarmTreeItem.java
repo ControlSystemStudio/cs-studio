@@ -10,6 +10,7 @@ package org.csstudio.alarm.beast;
 import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.csstudio.apputil.xml.XMLWriter;
@@ -36,34 +37,36 @@ public class AlarmTreeItem extends TreeItem
     /** Sub-tree elements of this item which are currently in alarm */
     final private List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
 
+    // Using arrays for guidance, ..., commands to be thread-safe
+
     /** Guidance messages */
-    private List<GDCDataStructure> guidance = new ArrayList<GDCDataStructure>();
+    private GDCDataStructure guidance[] = new GDCDataStructure[0];
 
     /** Related displays */
-    private List<GDCDataStructure> displays = new ArrayList<GDCDataStructure>();
+    private GDCDataStructure displays[] = new GDCDataStructure[0];
 
     /** Commands */
-    private List<GDCDataStructure> commands = new ArrayList<GDCDataStructure>();
+    private GDCDataStructure commands[] = new GDCDataStructure[0];
 
     /** Current severity of this item/subtree */
-    protected SeverityLevel current_severity = SeverityLevel.OK;
+    private SeverityLevel current_severity = SeverityLevel.OK;
 
     /** Highest/latched alarm severity of this item/subtree */
-    protected SeverityLevel severity = SeverityLevel.OK;
+    private SeverityLevel severity = SeverityLevel.OK;
 
     /**  Highest/latched alarm message of this item/subtree */
-    protected String message = SeverityLevel.OK.getDisplayName();
+    private String message = SeverityLevel.OK.getDisplayName();
 
     /** Time of last configuration change */
     private ITimestamp config_time;
 
     /** Initialize alarm tree item
-     *  @param id RDB ID
-     *  @param name Name of the item
      *  @param parent Parent item or <code>null</code>
+     *  @param name Name of the item
+     *  @param id RDB ID
      *  @throws Error on tree structure error
      */
-    public AlarmTreeItem(final int id, final String name, final AlarmTreeItem parent)
+    public AlarmTreeItem(final AlarmTreeItem parent, final String name, final int id)
     {
         super(parent, name, id);
     }
@@ -71,7 +74,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Text (multi-line) that can be used as a tool-tip to
      *          describe this item and its current state
      */
-    public String getToolTipText()
+    public synchronized String getToolTipText()
     {
         return NLS.bind(Messages.Alarm_TT,
             new Object[]
@@ -92,15 +95,11 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Alarm tree root element */
-    protected AlarmTreeRoot getRoot()
+    public AlarmTreeRoot getClientRoot()
     {
-        AlarmTreeItem root = this;
-        while (root != null)
-        {
-            if (root instanceof AlarmTreeRoot)
-                return (AlarmTreeRoot) root;
-            root = root.getClientParent();
-        }
+        final TreeItem root = getRoot();
+        if (root instanceof AlarmTreeRoot)
+            return (AlarmTreeRoot) root;
         throw new Error("Alarm tree has no root"); //$NON-NLS-1$
     }
 
@@ -128,61 +127,60 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @return Guidance messages */
-    public List<GDCDataStructure> getGuidance()
+    public synchronized GDCDataStructure[] getGuidance()
     {
-        return guidance;
-    }
-
-    /** Add guidance message.
-     *  @param title
-     *  @param details
-     */
-    public void addGuidance(final String title, final String details)
-    {
-        guidance.add(new GDCDataStructure(title, details));
+        return Arrays.copyOf(guidance, guidance.length);
     }
 
     /** @param guidance Guidance messages */
-    void setGuidance(final List<GDCDataStructure> guidance)
+    synchronized void setGuidance(final GDCDataStructure guidance[])
     {
-        this.guidance = guidance == null ? new ArrayList<GDCDataStructure>() : guidance;
+        if (guidance == null)
+            throw new IllegalArgumentException();
+        this.guidance = guidance;
     }
 
     /** @return Related displays */
-    public List<GDCDataStructure> getDisplays()
+    public synchronized GDCDataStructure[] getDisplays()
     {
-        return displays;
+        return Arrays.copyOf(displays, displays.length);
     }
 
     /** Add related display
      *  @param title
      *  @param display
      */
-    public void addDisplay(final String title, final String display)
+    public synchronized void addDisplay(final String title, final String display)
     {
-        displays.add(new GDCDataStructure(title, display));
+        final GDCDataStructure new_displays[] = Arrays.copyOf(displays, displays.length + 1);
+        new_displays[displays.length] = new GDCDataStructure(title, display);
+        displays = new_displays;
     }
 
     /** @param displays Related displays */
-    void setDisplays(final List<GDCDataStructure> displays)
+    synchronized void setDisplays(final GDCDataStructure displays[])
     {
-        this.displays = displays == null ? new ArrayList<GDCDataStructure>() : displays;
+        if (displays == null)
+            throw new IllegalArgumentException();
+        this.displays = displays;
     }
 
     /** @return Commands */
-    public List<GDCDataStructure> getCommands()
+    public synchronized GDCDataStructure[] getCommands()
     {
-        return commands;
+        return Arrays.copyOf(commands, commands.length);
     }
 
     /** @param commands Commands */
-    void setCommands(final List<GDCDataStructure> commands)
+    synchronized void setCommands(final GDCDataStructure[] commands)
     {
-        this.commands = commands == null ? new ArrayList<GDCDataStructure>() : commands;
+        if (commands == null)
+            throw new IllegalArgumentException();
+        this.commands = commands;
     }
 
     /** @return Time of last configuration change */
-    public String getConfigTime()
+    public synchronized String getConfigTime()
     {
         if (config_time == null)
             return Messages.Unknown;
@@ -190,7 +188,7 @@ public class AlarmTreeItem extends TreeItem
     }
 
     /** @param config_time Time of last configuration change */
-    void setConfigTime(final ITimestamp config_time)
+    synchronized void setConfigTime(final ITimestamp config_time)
     {
         this.config_time = config_time;
     }
@@ -198,7 +196,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Number of sub-elements in configuration hierarchy
      *          which are currently in alarm
      */
-    public int getAlarmChildCount()
+    public synchronized int getAlarmChildCount()
     {
         return alarm_children.size();
     }
@@ -207,27 +205,42 @@ public class AlarmTreeItem extends TreeItem
      *  @param index Child element index 0 .. (getAlarmChildCount()-1)
      *  @return Sub-item in alarm hierarchy
      */
-    public AlarmTreeItem getAlarmChild(final int index)
+    public synchronized AlarmTreeItem getAlarmChild(final int index)
     {
         return alarm_children.get(index);
     }
 
     /** @return Current severity */
-    public SeverityLevel getCurrentSeverity()
+    public synchronized SeverityLevel getCurrentSeverity()
     {
         return current_severity;
     }
 
     /** @return Highest or latched severity */
-    public SeverityLevel getSeverity()
+    public synchronized SeverityLevel getSeverity()
     {
         return severity;
     }
 
     /** @return Highest or latched alarm message */
-    public String getMessage()
+    public synchronized String getMessage()
     {
         return message;
+    }
+
+    /** Update alarm state.
+     *  <u>Won't</u> maximize severity of parent, only affects this item.
+     *
+     *  @param current_severity Current severity of PV
+     *  @param severity Alarm severity
+     *  @param message Alarm message
+     */
+    protected synchronized void setAlarmState(final SeverityLevel current_severity,
+            final SeverityLevel severity, final String message)
+    {
+        this.current_severity = current_severity;
+        this.severity = severity;
+        this.message = message;
     }
 
     /** Acknowledge or un-acknowledge current alarms.
@@ -237,7 +250,7 @@ public class AlarmTreeItem extends TreeItem
      *
      *  @param acknowledge Acknowledge, or un-acknowledge?
      */
-    public void acknowledge(final boolean acknowledge)
+    public synchronized void acknowledge(final boolean acknowledge)
     {
         final int n = getChildCount();
         for (int i=0; i<n; ++i)
@@ -251,7 +264,7 @@ public class AlarmTreeItem extends TreeItem
      *  which will notify listeners.
      *  @param pv PV that triggered this update
      */
-    public void maximizeSeverity(final AlarmTreePV pv)
+    public synchronized void maximizeSeverity(final AlarmTreePV pv)
     {
         // Get maximum child severity and its status
         current_severity = SeverityLevel.OK;
@@ -285,11 +298,11 @@ public class AlarmTreeItem extends TreeItem
     /** {@inheritDoc} */
     @Override
     @SuppressWarnings("nls")
-    protected void dump_item(final PrintStream out, final String indent)
+    protected synchronized void dump_item(final PrintStream out, final String indent)
     {
         final String indent1 = indent + "  ";
         out.println(indent + "* " + toString());
-        if (guidance != null && !guidance.isEmpty())
+        if (guidance.length > 0)
         {
 	        for (GDCDataStructure guide : guidance)
 	        {
@@ -298,7 +311,7 @@ public class AlarmTreeItem extends TreeItem
 	        	out.println(indent1 + "- Details: " + guide.getDetails());
 	        }
         }
-        if (displays != null && !displays.isEmpty())
+        if (displays.length > 0)
         {
 	        for (GDCDataStructure display : displays)
 	        {
@@ -307,7 +320,7 @@ public class AlarmTreeItem extends TreeItem
 	        	out.println(indent1 + "- Details: " + display.getDetails());
 	        }
         }
-        if (commands != null && !commands.isEmpty())
+        if (commands.length > 0)
         {
 	        for (GDCDataStructure command : commands)
 	        {
@@ -330,7 +343,7 @@ public class AlarmTreeItem extends TreeItem
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    final protected void writeItemXML(final PrintWriter out, final int level) throws Exception
+    final protected synchronized void writeItemXML(final PrintWriter out, final int level) throws Exception
     {
         final String tag = getXMLTag();
         XMLWriter.start(out, level, tag + " " + XMLTags.NAME + "=\"" + getName() + "\"");
@@ -349,7 +362,7 @@ public class AlarmTreeItem extends TreeItem
      *  @param out PrintWriter to which to send XML output
      *  @param level Indentation level
      */
-    protected void writeConfigXML(final PrintWriter out, final int level)
+    protected synchronized void writeConfigXML(final PrintWriter out, final int level)
     {
         writeGCD_XML(out, level, XMLTags.GUIDANCE, guidance);
         writeGCD_XML(out, level, XMLTags.DISPLAY, displays);
@@ -363,9 +376,9 @@ public class AlarmTreeItem extends TreeItem
      *  @param gcd The data
      */
     private void writeGCD_XML(final PrintWriter out, final int level,
-            final String tag, final List<GDCDataStructure> gcd)
+            final String tag, final GDCDataStructure gcd[])
     {
-        if (gcd == null  ||  gcd.isEmpty())
+        if (gcd == null  ||  gcd.length <= 0)
             return;
         for (GDCDataStructure guid : gcd)
         {
