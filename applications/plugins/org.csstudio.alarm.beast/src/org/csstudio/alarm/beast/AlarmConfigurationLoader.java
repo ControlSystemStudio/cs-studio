@@ -27,7 +27,7 @@ public class AlarmConfigurationLoader
 {
     /** Maximum title length when loading older config files */
     private static final int MAX_TITLE = 100;
-    
+
     final private AlarmConfiguration config;
 
     /** Initialize
@@ -65,17 +65,17 @@ public class AlarmConfigurationLoader
         doc.getDocumentElement().normalize();
         final Element root_node = doc.getDocumentElement();
         final String root_name = root_node.getNodeName();
-        if (!root_name.equals("config")) 
+        if (!root_name.equals("config"))
             throw new Exception("Expected <config>, found <" + root_name
                     + ">");
-        
+
         // Simple configuration name consistency check
         final String name = loadName(root_node);
         final String config_name = config.getAlarmTree().getName();
         if (!name.equals(config_name))
             throw new Exception("Cannot apply configuration file for '" + name +
                     "' to existing configuration named '" + config_name + "'");
-        
+
         // Load components under root
         loadChildComponents(root_node, config.getAlarmTree());
     }
@@ -86,7 +86,7 @@ public class AlarmConfigurationLoader
      *  @throws Exception on error
      */
     private void loadChildComponents(final Element node,
-                                     final AlarmTree parent) throws Exception
+                                     final AlarmTreeItem parent) throws Exception
     {
         Element component =
             DOMHelper.findFirstElementNode(node.getFirstChild(), XMLTags.COMPONENT);
@@ -102,29 +102,26 @@ public class AlarmConfigurationLoader
      *  @param parent Parent element in alarm tree
      *  @throws Exception
      */
-    private void loadComponent(final Element component, final AlarmTree parent) throws Exception
+    private void loadComponent(final Element component, final AlarmTreeItem parent) throws Exception
     {
         // New component, or modify existing component?
         final String name = loadName(component);
-        final AlarmTreeComponent tree_component;
-        final AlarmTree existing = parent.getChild(name);
-        if (existing == null)
+        AlarmTreeItem tree_component = parent.getClientChild(name);
+        if (tree_component == null)
             tree_component = config.addComponent(parent, name);
-        else if (existing instanceof AlarmTreeComponent)
-            tree_component = (AlarmTreeComponent) existing;
-        else
-            throw new Exception("Cannot turn " + existing.getPathName() +
-                                " into component");
+        else if (tree_component instanceof AlarmTreePV)
+            throw new Exception("Cannot turn PV " + tree_component.getPathName() + " into component");
+
         // Read component config elements
         loadCommonConfig(component, tree_component);
         config.configureItem(tree_component, tree_component.getGuidance(),
                 tree_component.getDisplays(), tree_component.getCommands());
-        
+
         System.out.println("Loading " + tree_component);
-        
+
         // Get sub-components
         loadChildComponents(component, tree_component);
-       
+
         // Get PVs
         Element pv =
             DOMHelper.findFirstElementNode(component.getFirstChild(), XMLTags.PV);
@@ -154,24 +151,24 @@ public class AlarmConfigurationLoader
      *  @throws Exception on error
      */
     private void loadCommonConfig(final Element node,
-            final AlarmTree item) throws Exception
+            final AlarmTreeItem item) throws Exception
     {
     	item.setGuidance(loadGDC(node, XMLTags.GUIDANCE));
     	item.setDisplays(loadGDC(node, XMLTags.DISPLAY));
     	item.setCommands(loadGDC(node, XMLTags.COMMAND));
     }
-    
+
     /** Load AlarmTreePV
      *  @param node Alarm tree PV DOM
      *  @param parent Alarm tree parent
      *  @throws Exception on error
      */
-    private void loadPV(final Element node, final AlarmTreeComponent parent) throws Exception
+    private void loadPV(final Element node, final AlarmTreeItem parent) throws Exception
     {
         final String name = loadName(node);
         // Existing or new PV?
         final AlarmTreePV pv;
-        final AlarmTree existing = parent.getChild(name);
+        final AlarmTreeItem existing = parent.getClientChild(name);
         if (existing == null)
             pv = config.addPV(parent, name);
         else if (existing instanceof AlarmTreePV)
@@ -179,11 +176,11 @@ public class AlarmConfigurationLoader
         else
             throw new Exception("Cannot turn existing " + existing.getPathName()
                                 + " into PV");
-        
+
         System.out.println("Loading " + pv);
 
         loadCommonConfig(node, pv);
-        
+
         pv.setEnabled(DOMHelper.getSubelementBoolean(node, XMLTags.ENABLED, true));
         pv.setDescription(DOMHelper.getSubelementString(node, XMLTags.DESCRIPTION));
         pv.setLatching(DOMHelper.getSubelementBoolean(node, XMLTags.LATCHING));
@@ -196,7 +193,7 @@ public class AlarmConfigurationLoader
                 pv.getDelay(), pv.getCount(), pv.getFilter(),
                 pv.getGuidance(), pv.getDisplays(), pv.getCommands());
     }
-    
+
     /** Load Guidance/Displays/Commands
      * @param node DOM node, could be a component or a PV
      * @param name name of the item to load, it must be one of XMLTags.GUIDANCE/DISPLAY/COMMAND
@@ -206,7 +203,7 @@ public class AlarmConfigurationLoader
 	                                       final String name) throws Exception
     {
 	    final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
- 
+
         Element gdcNode = DOMHelper.findFirstElementNode(node.getFirstChild(), name);
         while (gdcNode != null)
         {
@@ -227,7 +224,7 @@ public class AlarmConfigurationLoader
         	}
             if (title.length() > 0)
                 gdcList.add(new GDCDataStructure(title, details));
-        	gdcNode = DOMHelper.findNextElementNode(gdcNode, name);         	
+        	gdcNode = DOMHelper.findNextElementNode(gdcNode, name);
         }
         return gdcList;
     }

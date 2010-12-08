@@ -37,6 +37,7 @@ public class WorkQueue implements Executor
      *  @param command Command to be executed
      *  @see Executor#execute(Runnable)
      */
+    @Override
     public void execute(final Runnable command)
     {
         synchronized (tasks)

@@ -23,7 +23,7 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
 {
     /** Images for button icon */
     private static ImageDescriptor image_on = null, image_off = null;
-    
+
     /** Model who's Mode we control */
     final private AlarmClientModel model;
 
@@ -35,19 +35,21 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
         super(Messages.MaintenanceMode, AuthIDs.CONFIGURE, false);
         getIcons();
         this.model = model;
-        
+
         //authorization
         setEnabledWithoutAuthorization(true);
         setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
-        
+
         // Reflect mode of model right now, then monitor for mode changes
         reflectModelMode(model.inMaintenanceMode());
         model.addListener(new AlarmClientModelListener()
         {
+            @Override
             public void serverModeUpdate(final AlarmClientModel model, final boolean maintenance_mode)
             {
                 Display.getDefault().asyncExec(new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         reflectModelMode(maintenance_mode);
@@ -55,12 +57,15 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
                 });
             }
 
+            @Override
             public void serverTimeout(AlarmClientModel model) { /* Ignore */ }
+            @Override
             public void newAlarmTree(AlarmClientModel model) { /* Ignore */ }
+            @Override
             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv) { /* Ignore */ }
         });
     }
-    
+
     /** Assert that icons are loaded */
     private static void getIcons()
     {
@@ -69,7 +74,7 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
         image_on = Activator.getImageDescriptor("icons/maintenance_act.gif"); //$NON-NLS-1$
         image_off = Activator.getImageDescriptor("icons/operate.gif"); //$NON-NLS-1$
     }
-    
+
     /** Update button show show current model mode */
     private void reflectModelMode(final boolean maintenance_mode)
     {

@@ -19,6 +19,7 @@ import org.junit.Test;
 public class GlobalAlarmModelTest implements GlobalAlarmModelListener
 {
     // GlobalAlarmModelListener
+    @Override
     public void globalAlarmsChanged(final GlobalAlarmModel model)
     {
         System.out.println("\nGlobal alarms:");

@@ -14,6 +14,7 @@ import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
@@ -40,7 +41,7 @@ public class DuplicatePVAction extends AbstractUserDependentAction
         this.shell = shell;
         this.model = model;
         this.pv = pv;
-        
+
         setEnabledWithoutAuthorization(true);
     	//authorization
     	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
@@ -54,7 +55,7 @@ public class DuplicatePVAction extends AbstractUserDependentAction
                 NLS.bind(Messages.DuplicatePVMesgFmt,
                          pv.getName(), pv.getDescription()),
                 path, null);
-        if (dlg.open() != InputDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         final String new_path = dlg.getValue();
         try

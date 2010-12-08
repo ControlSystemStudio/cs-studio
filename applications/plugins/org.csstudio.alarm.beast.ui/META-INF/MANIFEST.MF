@@ -21,4 +21,4 @@ Require-Bundle: org.junit4;bundle-version="4.3.1",
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.alarm.beast.ui,
  org.csstudio.alarm.beast.ui.clientmodel
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

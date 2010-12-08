@@ -7,8 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTree;
-import org.csstudio.alarm.beast.AlarmTreeComponent;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
@@ -38,19 +37,19 @@ import org.eclipse.swt.widgets.Text;
 public class AddComponentDialog extends TitleAreaDialog
 {
     final private AlarmClientModel model;
-    final private AlarmTree parent_item;
+    final private AlarmTreeItem parent_item;
     private Button type_facility;
     private Button type_component;
     private Button type_pv;
     private Text name;
-           
+
     /** Initialize
      *  @param shell Shell
      *  @param model Alarm model
      *  @param parent Parent component
      */
     public AddComponentDialog(final Shell shell, final AlarmClientModel model,
-            final AlarmTree parent)
+            final AlarmTreeItem parent)
     {
         super(shell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
@@ -65,7 +64,7 @@ public class AddComponentDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.AddComponent);
     }
-    
+
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
     @Override
     protected Control createDialogArea(final Composite parent_widget)
@@ -78,7 +77,7 @@ public class AddComponentDialog extends TitleAreaDialog
         layout.numColumns = 4;
         box.setLayout(layout);
         GridData gd;
-        
+
         // Set title & image, arrange for disposal of image
         setTitle(Messages.AddComponentTT);
         setMessage(Messages.AddComponentDialog_Guidance);
@@ -87,63 +86,62 @@ public class AddComponentDialog extends TitleAreaDialog
         setTitleImage(title_image);
         parent_widget.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 title_image.dispose();
             }
         });
-        
+
         // Type: ( ) Facility ( ) Component () PV
         Label l = new Label(box, 0);
         l.setText(Messages.AddComponentDialog_Type);
         l.setLayoutData(new GridData());
-        
+
         type_facility = new Button(box, SWT.RADIO);
         type_facility.setText(Messages.AlarmArea);
         type_facility.setLayoutData(new GridData());
-        
+
         type_component = new Button(box, SWT.RADIO);
-        
+
         // Is the parent of this a top-level element,
         // a "Facility" just above root?
         final boolean haveTopLevelParent =
-            parent_item.getParent() instanceof AlarmTreeRoot;
+            parent_item.getClientParent() instanceof AlarmTreeRoot;
         type_component.setText(Messages.AlarmComponent);
         type_component.setLayoutData(new GridData());
 
         type_pv = new Button(box, SWT.RADIO);
         type_pv.setText(Messages.AlarmPV);
         type_pv.setLayoutData(new GridData());
-        
-        // Force 'facility' on first level of hierarchy below 'root'
+
+        // Force 'area' on first level of hierarchy below 'root'
         final boolean isAtRoot = parent_item instanceof AlarmTreeRoot;
         if (isAtRoot)
-        {   
+        {
             type_facility.setSelection(true);
             type_component.setEnabled(false);
             type_pv.setEnabled(false);
         }
-        if (haveTopLevelParent)
+        else if (haveTopLevelParent)
         {   // Assume component
             type_component.setSelection(true);
             // Used to not allow PV on this level, but now that's OK, too
             //type_pv.setEnabled(false);
         }
-        else if (parent_item instanceof AlarmTreeComponent)
-        {   // Assume PV
+        else // Assume PV
             type_pv.setSelection(true);
-        }
 
         // Parent: ___ parent ___
         l = new Label(box, 0);
         l.setText(Messages.AddComponentDialog_Parent);
         l.setLayoutData(new GridData());
-        
+
         final Label parent_path = new Label(box, SWT.BORDER);
         if (isAtRoot)
             parent_path.setText(NLS.bind(Messages.RootElementFMT, parent_item.getPathName()));
         else
-            parent_path.setText(parent_item.getPathName());            
+            parent_path.setText(parent_item.getPathName());
         gd = new GridData();
         gd.horizontalSpan =layout.numColumns-1;
         gd.grabExcessHorizontalSpace = true;
@@ -154,7 +152,7 @@ public class AddComponentDialog extends TitleAreaDialog
         l = new Label(box, 0);
         l.setText(Messages.AddComponentDialog_Name);
         l.setLayoutData(new GridData());
-        
+
         name = new Text(box, SWT.BORDER);
         name.setToolTipText(Messages.AddComponentDialog_NameTT);
         gd = new GridData();
@@ -162,7 +160,7 @@ public class AddComponentDialog extends TitleAreaDialog
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         name.setLayoutData(gd);
-        
+
         // Dynamically update help
         type_facility.addSelectionListener(new SelectionAdapter()
         {
@@ -191,7 +189,7 @@ public class AddComponentDialog extends TitleAreaDialog
                 setMessage(NLS.bind(Messages.AddComponentDialog_PV_TT, parent_item.getName()));
             }
         });
-        
+
         return parent_composite;
     }
 
@@ -214,7 +212,7 @@ public class AddComponentDialog extends TitleAreaDialog
             else if (type_component.getSelection())
                 model.addComponent(parent_item, name);
             else
-                model.addPV((AlarmTreeComponent) parent_item, name);
+                model.addPV(parent_item, name);
         }
         catch (Throwable ex)
         {

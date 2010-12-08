@@ -20,7 +20,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>, Serializable
 {
     /** Serializable... */
     private static final long serialVersionUID = 1L;
-    
+
 	final private ColumnInfo col_info;
     final private boolean up;
 
@@ -35,6 +35,7 @@ public class AlarmComparator implements Comparator<AlarmTreePV>, Serializable
     }
 
     /** {@inhericDoc} */
+    @Override
     public int compare(final AlarmTreePV pv1, final AlarmTreePV pv2)
     {
         switch (col_info)

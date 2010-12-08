@@ -59,6 +59,7 @@ public class GlobalAlarmModel
                     {   // Queue update to be executed once RDB info was read
                         update_queue.execute(new Runnable()
                         {
+                            @Override
                             public void run()
                             {
                                 GlobalAlarmModel.this.handleAlarmUpdate(info);
