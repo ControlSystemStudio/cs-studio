@@ -296,7 +296,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
                 try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
-                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSLogMessage.NAME, pv.getPathName());
                     map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
