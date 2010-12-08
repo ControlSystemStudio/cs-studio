@@ -9,7 +9,7 @@
    <launcherArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
-
+   
    <launcher name="css-common">
       <solaris/>
       <win useIco="false">
@@ -19,7 +19,7 @@
 
    <vm>
    </vm>
-
+   
    <plugins>
       <plugin id="com.ibm.icu"/>
       <plugin id="javax.servlet"/>
@@ -64,7 +64,7 @@
       <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
-      <plugin id="org.csstudio.platform.libs.log4j"/>
+	  <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
@@ -122,7 +122,7 @@
       <plugin id="org.eclipse.equinox.p2.director"/>
       <plugin id="org.eclipse.equinox.p2.engine"/>
       <plugin id="org.eclipse.equinox.p2.exemplarysetup"/>
-      <plugin id="org.eclipse.equinox.p2.garbagecollector"/>
+      <plugin id="org.eclipse.equinox.p2.garbagecollector" fragment=""/>
       <plugin id="org.eclipse.equinox.p2.jarprocessor"/>
       <plugin id="org.eclipse.equinox.p2.metadata"/>
       <plugin id="org.eclipse.equinox.p2.metadata.repository"/>
@@ -178,6 +178,5 @@
       <plugin id="org.sat4j.core"/>
       <plugin id="org.sat4j.pb"/>
    </plugins>
-
-
 </product>
+

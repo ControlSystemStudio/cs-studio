@@ -30,49 +30,49 @@ public class AlarmTreeItemUnitTest
         		Arrays.asList(
         				new GDCDataStructure("Run", "Run as fast as you can"),
         				new GDCDataStructure("Fix", "Try to fix it")
-        		)); 
+        		));
         final List<GDCDataStructure> displays = new ArrayList<GDCDataStructure>(
         		Arrays.asList(
         				new GDCDataStructure("main.edl", "edm main.edl"),
         				new GDCDataStructure("master.stp", "StripTool master.stp")
-        		)); 
+        		));
 
         final List<GDCDataStructure> commands = new ArrayList<GDCDataStructure>(
         		Arrays.asList(
-        				new GDCDataStructure("reset PV123", "caput PV123 Reset")        		
-        		));  
-     
-        
+        				new GDCDataStructure("reset PV123", "caput PV123 Reset")
+        		));
+
+
         final AlarmTreeRoot tree = new AlarmTreeRoot(0, "Root");
 
-        final AlarmTree dtl = new AlarmTreeComponent(0, "DTL", tree);
-        final AlarmTree dtl_vac = new AlarmTreeComponent(0, "Vacuum", dtl);
+        final AlarmTreeItem dtl = new AlarmTreeItem(0, "DTL", tree);
+        final AlarmTreeItem dtl_vac = new AlarmTreeItem(0, "Vacuum", dtl);
         AlarmTreePV pv = new AlarmTreePV(0, "DTL_Vac:Sensor1:Pressure", dtl_vac);
         pv.setDescription("Description");
         pv.setGuidance(guidance);
         pv.setDisplays(displays);
         pv.setCommands(commands);
         pv = new AlarmTreePV(0, "DTL_Vac:Sensor2:Pressure", dtl_vac);
-        
-        assertEquals("Root/DTL/Vacuum/DTL_Vac:Sensor2:Pressure", pv.getPathName());
-        assertEquals(pv, tree.getItemByPath("Root/DTL/Vacuum/DTL_Vac:Sensor2:Pressure"));
-        
+
+        assertEquals("/Root/DTL/Vacuum/DTL_Vac:Sensor2:Pressure", pv.getPathName());
+        assertEquals(pv, tree.getItemByPath("/Root/DTL/Vacuum/DTL_Vac:Sensor2:Pressure"));
+
         pv.setGuidance(guidance);
         pv.setDisplays(displays);
-        final AlarmTree dtl_rccs = new AlarmTreeComponent(0, "RCCS", dtl);
+        final AlarmTreeItem dtl_rccs = new AlarmTreeItem(0, "RCCS", dtl);
         pv = new AlarmTreePV(0, "DTL_RCCS:Sensor1:Flow", dtl_rccs);
         pv.setGuidance(guidance);
         pv.setDisplays(displays);
         pv = new AlarmTreePV(0, "DTL_RCCS:Sensor1:Temp", dtl_rccs);
         pv.setGuidance(guidance);
         pv.setDisplays(displays);
-        
-        final AlarmTree ccl = new AlarmTreeComponent(0, "CCL", tree);
-        final AlarmTree ccl_vac = new AlarmTreeComponent(0, "Vacuum", ccl);        
+
+        final AlarmTreeItem ccl = new AlarmTreeItem(0, "CCL", tree);
+        final AlarmTreeItem ccl_vac = new AlarmTreeItem(0, "Vacuum", ccl);
         pv = new AlarmTreePV(0, "DTL_RCCS:Sensor1:Temp", ccl_vac);
 
         assertEquals(5, tree.getPVCount());
-        
+
         // Check severity propagation
         assertEquals(SeverityLevel.OK, ccl.getSeverity());
         pv.setAlarmState(SeverityLevel.MINOR, "Nuissance",
@@ -81,7 +81,10 @@ public class AlarmTreeItemUnitTest
         assertEquals(SeverityLevel.MINOR, ccl.getCurrentSeverity());
         assertEquals(SeverityLevel.MAJOR, ccl.getSeverity());
         assertEquals("Problem", ccl.getMessage());
-        
-        tree.dump();
+
+        tree.dump(System.out);
+
+        System.out.println("Total tree element count: " + tree.getElementCount());
+        assertEquals(11, tree.getElementCount());
     }
 }

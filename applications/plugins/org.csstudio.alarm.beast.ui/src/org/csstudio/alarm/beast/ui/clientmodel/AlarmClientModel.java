@@ -13,8 +13,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.beast.AlarmConfiguration;
-import org.csstudio.alarm.beast.AlarmTree;
-import org.csstudio.alarm.beast.AlarmTreeComponent;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.AlarmTreeRoot;
@@ -477,7 +476,7 @@ public class AlarmClientModel
      *  @param name Name of the new component
      *  @throws Exception on error
      */
-    public void addComponent(final AlarmTree root_or_component,
+    public void addComponent(final AlarmTreeItem root_or_component,
             final String name) throws Exception
     {
         if (! allow_write)
@@ -500,7 +499,7 @@ public class AlarmClientModel
      *  @param name Name of the new PV
      *  @throws Exception on error
      */
-    public void addPV(final AlarmTreeComponent component,
+    public void addPV(final AlarmTreeItem component,
                       final String name) throws Exception
     {
         if (! allow_write)
@@ -527,7 +526,7 @@ public class AlarmClientModel
      *  @param commands Commands
      *  @throws Exception on error
      */
-    public void configureItem(final AlarmTree item,
+    public void configureItem(final AlarmTreeItem item,
             final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
             final List<GDCDataStructure> commands) throws Exception
     {
@@ -588,7 +587,7 @@ public class AlarmClientModel
      *  @param new_name New name for the item
      *  @throws Exception on error
      */
-    public void rename(final AlarmTree item, final String new_name) throws Exception
+    public void rename(final AlarmTreeItem item, final String new_name) throws Exception
     {
         if (! allow_write)
             return;
@@ -614,7 +613,7 @@ public class AlarmClientModel
      *  @param new_path New path for the item
      *  @throws Exception on error
      */
-    public void move(final AlarmTree item, final String new_path) throws Exception
+    public void move(final AlarmTreeItem item, final String new_path) throws Exception
     {
         if (! allow_write)
             return;
@@ -659,16 +658,16 @@ public class AlarmClientModel
                 throw new Exception("New PV name must differ from existing PV name");
 
             // Locate parent item
-            final AlarmTree new_parent =
+            final AlarmTreeItem new_parent =
                 config.getAlarmTree().getItemByPath(new_path);
             if (new_parent == null)
                 throw new Exception("Cannot locate parent entry: " + new_path);
-            if (! (new_parent instanceof AlarmTreeComponent))
+            if (new_parent instanceof AlarmTreePV)
                 throw new Exception("Parent entry has wrong type: " + new_path);
 
             // Add new PV
             final AlarmTreePV new_pv =
-                config.addPV((AlarmTreeComponent)new_parent, new_name);
+                config.addPV(new_parent, new_name);
             // Update configuration of new PV to match duplicated PV
             config.configurePV(new_pv, pv.getDescription(), pv.isEnabled(),
                     pv.isAnnunciating(), pv.isLatching(), pv.getDelay(),
@@ -688,7 +687,7 @@ public class AlarmClientModel
      *  @param item Item to remove
      *  @throws Exception on error
      */
-    public void remove(final AlarmTree item) throws Exception
+    public void remove(final AlarmTreeItem item) throws Exception
     {
         if (! allow_write)
             return;
@@ -710,7 +709,8 @@ public class AlarmClientModel
      */
     public void readConfig(final String path) throws Exception
     {
-        final AlarmTree item = findItem(path);
+        final AlarmTreeItem item = config_tree.getItemByPath(path);
+
         if (item == null  ||  !(item instanceof AlarmTreePV))
         {   // Not a known PV? Update the whole config.
             new ReadConfigJob(this).schedule();
@@ -726,7 +726,7 @@ public class AlarmClientModel
         }
         // This could change the alarm tree after a PV was disabled or enabled.
         // Maximizing the severity would also fireNewAlarmState
-        final AlarmTree parent = pv.getParent();
+        final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
             parent.maximizeSeverity(pv);
         else
@@ -758,7 +758,7 @@ public class AlarmClientModel
         }
         // This could change the alarm tree after a PV was disabled or enabled.
         // Maximizing the severity would also fireNewAlarmState
-        final AlarmTree parent = pv.getParent();
+        final AlarmTreeItem parent = pv.getClientParent();
         if (parent != null)
             parent.maximizeSeverity(pv);
         else
@@ -799,27 +799,6 @@ public class AlarmClientModel
                 "Received update for unknown PV " + name); //$NON-NLS-1$
     }
 
-    /** Locate item by path
-     *  @param path_name Full path to item
-     *  @return Alarm tree item or <code>null</code> if not found
-     */
-    private synchronized AlarmTree findItem(final String path_name)
-    {
-        if (path_name == null)
-            return null;
-        final String path[] = AlarmTreePath.splitPath(path_name);
-        // Same root?
-        if (path.length < 1  ||
-            ! config_tree.getName().equals(path[0]))
-            return null;
-        // Decent down to find item
-        AlarmTree item = config_tree;
-        int i = 0;
-        while (item != null  &&   ++i < path.length)
-            item = item.getChild(path[i]);
-        return item;
-    }
-
     /** Locate PV by name
      *  @param name Name of PV to locate. May be <code>null</code>.
      *  @return PV or <code>null</code> when not found
@@ -851,7 +830,7 @@ public class AlarmClientModel
     private synchronized void createPseudoAlarmTree(final String info)
     {
         config_tree = new AlarmTreeRoot(-1, "Pseudo"); //$NON-NLS-1$
-        new AlarmTreeComponent(0, info, config_tree);
+        new AlarmTreeItem(0, info, config_tree);
         active_alarms.clear();
         acknowledged_alarms.clear();
     }
@@ -969,7 +948,7 @@ public class AlarmClientModel
     public synchronized void dump()
     {
         System.out.println("== AlarmClientModel ==");
-        config_tree.dump();
+        config_tree.dump(System.out);
         System.out.println("= Active alarms =");
         for (AlarmTreePV pv : active_alarms)
             System.out.println(pv.toString());

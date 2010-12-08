@@ -20,35 +20,35 @@ import org.eclipse.osgi.util.NLS;
 /** Leaf item in the alarm configuration tree which refers to a PV
  *  @author Kay Kasemir, Xihui Chen
  */
-public class AlarmTreePV extends AlarmTree implements IProcessVariable
+public class AlarmTreePV extends AlarmTreeItem implements IProcessVariable
 {
     private String description = ""; //$NON-NLS-1$
 
     private boolean enabled = true;
     private boolean latching = true;
     private boolean annunciating = false;
-    
+
     private int delay = 0;
-    
+
     /* Alarm when PV != OK more often than this count within delay */
     private int count = 0;
-    
+
     private String filter = ""; //$NON-NLS-1$
-    
+
     /** Current message of this item/subtree */
     private String current_message = SeverityLevel.OK.getDisplayName();
 
     private String value = null;
-    
+
     private ITimestamp timestamp = null;
-    
+
     /** Initialize
      *  @param id RDB ID
      *  @param name PV name
      *  @param parent Parent component in hierarchy
      */
-    public AlarmTreePV(final int id, 
-            final String name, final AlarmTree parent)
+    public AlarmTreePV(final int id,
+            final String name, final AlarmTreeItem parent)
     {
         super(id, name, parent);
     }
@@ -59,7 +59,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         return AlarmTreePosition.PV;
     }
-    
+
     /** {@inheritDoc} */
     @Override
     public String getToolTipText()
@@ -76,14 +76,14 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
                 getCurrentMessage()
             });
     }
-    
+
     /** @return Current severity */
     @Override
     public SeverityLevel getCurrentSeverity()
     {
         return enabled ? current_severity : SeverityLevel.OK;
     }
-    
+
     /** @return Current message */
     public String getCurrentMessage()
     {
@@ -96,14 +96,14 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         return enabled ? severity : SeverityLevel.OK;
     }
-    
+
     /** @return Highest or latched alarm message */
     @Override
     public String getMessage()
     {
         return enabled ? message : SeverityLevel.OK.getDisplayName();
     }
-    
+
     /** @param description New description */
     public void setDescription(final String description)
     {
@@ -116,7 +116,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
         return description;
     }
 
-    /** @return <code>true</code> if alarms from PV are enabled */ 
+    /** @return <code>true</code> if alarms from PV are enabled */
     public boolean isEnabled()
     {
         return enabled;
@@ -138,7 +138,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         enabled = enable;
     }
-    
+
     /** @return Filter expression for enablement (never <code>null</code>) */
     public String getFilter()
     {
@@ -180,7 +180,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         return delay;
     }
-    
+
     /** @return count Alarm when PV != OK more often than this count within delay */
     public int getCount()
     {
@@ -206,7 +206,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         return timestamp;
     }
-    
+
     /** @return Duration of current alarm state or empty text */
     public String getDuration()
     {
@@ -222,15 +222,6 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
 		return timestamp.format(Format.DateTimeSeconds);
 	}
 
-	/** Assert that PV has no sub-entries
-     *  @see AlarmTree#addChild(AlarmTree)
-     */
-    @Override
-    protected void addChild(final AlarmTree child)
-    {
-        throw new Error("PV elements must remain leaves"); //$NON-NLS-1$
-    }
-    
     /** Update status/message/time stamp
      *  @param current_severity Current severity of PV
      *  @param current_message Current message of the PV
@@ -257,6 +248,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
         this.message = message;
         this.value = value;
         this.timestamp = timestamp;
+        final AlarmTreeItem parent = getClientParent();
         if (parent != null)
             parent.maximizeSeverity(this);
     }
@@ -271,7 +263,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         // NOP
     }
-    
+
     /** Called either directly or recursively from parent item.
      *  @see AlarmTree#acknowledge()
      */
@@ -282,12 +274,15 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     }
 
     /** @see IProcessVariable */
+    @Override
     public String getTypeId()
     {
         return IProcessVariable.TYPE_ID;
     }
 
     /** @see IProcessVariable */
+    @SuppressWarnings("rawtypes")
+    @Override
     public Object getAdapter(Class adapter)
     {
         return null;
@@ -299,7 +294,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
     {
         return XMLTags.PV;
     }
-    
+
 	/** Add PV config detail.
 	 *  @see AlarmTree#writeConfigXML(PrintWriter, String)
 	 */
@@ -342,7 +337,7 @@ public class AlarmTreePV extends AlarmTree implements IProcessVariable
                     getCurrentMessage()
                 });
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override

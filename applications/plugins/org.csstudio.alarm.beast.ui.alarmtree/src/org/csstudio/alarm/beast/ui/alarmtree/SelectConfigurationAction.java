@@ -63,7 +63,8 @@ public class SelectConfigurationAction extends Action implements IMenuCreator, A
 	/** Get menu for the drop-down section of the action
 	 *  @see IMenuCreator
 	 */
-	public Menu getMenu(final Control parent)
+	@Override
+    public Menu getMenu(final Control parent)
     {
 		if (parent instanceof ToolBar)
 			toolbar = (ToolBar) parent;
@@ -114,7 +115,8 @@ public class SelectConfigurationAction extends Action implements IMenuCreator, A
 	/** Never called?
 	 *  @see IMenuCreator
 	 */
-	public Menu getMenu(final Menu parent)
+	@Override
+    public Menu getMenu(final Menu parent)
     {
 		// Never called?
 	    return null;
@@ -123,19 +125,22 @@ public class SelectConfigurationAction extends Action implements IMenuCreator, A
 	/** Dispose menu (in fact there was one)
      *  @see IMenuCreator
      */
+    @Override
     public void dispose()
     {
     	disposeMenu();
     }
 
     /** @see AlarmClientModelConfigListener */
-	public void newAlarmConfiguration(final AlarmClientModel model)
+	@Override
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
 		if (toolbar == null  ||  toolbar.isDisposed())
 			return;
 		toolbar.getDisplay().asyncExec(new Runnable()
 		{
-			public void run()
+			@Override
+            public void run()
 			{
 				if (toolbar == null  ||  toolbar.isDisposed())
 					return;

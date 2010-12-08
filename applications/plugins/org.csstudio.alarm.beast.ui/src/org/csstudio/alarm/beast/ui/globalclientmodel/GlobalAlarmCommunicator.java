@@ -37,6 +37,7 @@ abstract public class GlobalAlarmCommunicator extends JMSCommunicationThread
         consumer = createConsumer(Preferences.getJMS_GlobalServerTopic());
         consumer.setMessageListener(new MessageListener()
         {
+            @Override
             public void onMessage(final Message message)
             {
                 if (message instanceof MapMessage)

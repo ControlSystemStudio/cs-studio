@@ -24,6 +24,7 @@ public class DelayedAlarmUpdateUnitTest implements DelayedAlarmListener
     private AlarmState delayed_state = null;
 
     // DelayedAlarmListener
+    @Override
     public void delayedStateUpdate(AlarmState delayed_state)
     {
         System.out.println(new Date() + ": Received update!");

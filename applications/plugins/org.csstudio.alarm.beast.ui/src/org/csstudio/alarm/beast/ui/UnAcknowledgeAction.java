@@ -7,10 +7,9 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.platform.security.SecurityFacade;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
@@ -26,7 +25,7 @@ import org.csstudio.platform.ui.security.AbstractUserDependentAction;
 public class UnAcknowledgeAction extends AbstractUserDependentAction
 {
 	private ISelectionProvider selection_provider;
-    private List<AlarmTree> alarms;
+    private List<AlarmTreeItem> alarms;
     private static boolean allow_anonymous_acknowledge = Preferences.getAllowAnonyACK();
 
     /** Initialize action
@@ -39,6 +38,7 @@ public class UnAcknowledgeAction extends AbstractUserDependentAction
         this.selection_provider = selection_provider;
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
             	boolean isEmpty = event.getSelection().isEmpty();
@@ -56,26 +56,26 @@ public class UnAcknowledgeAction extends AbstractUserDependentAction
         setEnabledWithoutAuthorization(false);
     }
 
-    
     /** Initialize action
      *  @param alarms Alarms to acknowledge when action runs
      */
-    public UnAcknowledgeAction(final ArrayList<AlarmTree> alarms)
+    public UnAcknowledgeAction(final List<AlarmTreeItem> alarms)
     {
-        
+
     	super(Messages.UnacknowledgeAction,
                 Activator.getImageDescriptor("icons/unacknowledge.gif"), AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge); //$NON-NLS-1$
         this.alarms = alarms;
         //authorization
         setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.ACKNOWLEDGE, allow_anonymous_acknowledge));
-        setEnabledWithoutAuthorization(true);        
+        setEnabledWithoutAuthorization(true);
     }
 
 	@Override
-	protected void doWork() {
+	protected void doWork()
+	{
 		if (alarms != null)
         {
-            for (AlarmTree item : alarms)
+            for (AlarmTreeItem item : alarms)
                 item.acknowledge(false);
         }
         else
@@ -83,8 +83,8 @@ public class UnAcknowledgeAction extends AbstractUserDependentAction
             final Object items[] =
              ((IStructuredSelection)selection_provider.getSelection()).toArray();
             for (Object item : items)
-                if (item instanceof AlarmTree)
-                    ((AlarmTree)item).acknowledge(false);
-        }		
+                if (item instanceof AlarmTreeItem)
+                    ((AlarmTreeItem)item).acknowledge(false);
+        }
 	}
 }

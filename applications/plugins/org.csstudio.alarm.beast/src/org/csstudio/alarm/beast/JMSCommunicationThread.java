@@ -57,6 +57,7 @@ abstract public class JMSCommunicationThread
         this.url = url;
         thread = new Thread(new Runnable()
         {
+            @Override
             public void run()
             {
                 thread_run();
@@ -220,6 +221,7 @@ abstract public class JMSCommunicationThread
         // Try to update JMS server info via connection listener
         JMSConnectionFactory.addListener(connection, new JMSConnectionListener()
         {
+            @Override
             public void linkUp(final String server)
             {
                 synchronized (this)
@@ -228,6 +230,7 @@ abstract public class JMSCommunicationThread
                 }
             }
 
+            @Override
             public void linkDown()
             {
                 synchronized (this)
@@ -239,6 +242,7 @@ abstract public class JMSCommunicationThread
         // Log exceptions
         connection.setExceptionListener(new ExceptionListener()
         {
+            @Override
             public void onException(final JMSException ex)
             {
                 CentralLogger.getInstance().getLogger(this).error(

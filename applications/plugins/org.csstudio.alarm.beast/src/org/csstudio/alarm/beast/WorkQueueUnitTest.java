@@ -25,6 +25,7 @@ public class WorkQueueUnitTest
         final WorkQueue queue = new WorkQueue();
         queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 System.out.println("Hello");
@@ -33,6 +34,7 @@ public class WorkQueueUnitTest
         });
         queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 System.out.println("Goodbye");
@@ -48,6 +50,7 @@ public class WorkQueueUnitTest
         // Detect error when called from wrong thread
         final Thread thread = new Thread(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -72,6 +75,7 @@ public class WorkQueueUnitTest
         final WorkQueue queue = new WorkQueue();
         queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 System.out.println("Hello");

@@ -23,7 +23,7 @@ import org.junit.Test;
  *  <p>
  *  testRDBRead(), testXMLWriteToFile run as a plain JUnit test.
  *  Others might require JUnit Plug-in test.
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 @SuppressWarnings("nls")
@@ -31,7 +31,7 @@ public class AlarmConfigurationUnitTest
 {
 	final private String url, user, password, root;
     final private File filename;
-    
+
     /** Initialize from TestProperties */
     public AlarmConfigurationUnitTest() throws Exception
     {
@@ -67,7 +67,7 @@ public class AlarmConfigurationUnitTest
     		System.out.println(" '" + name + "'");
     }
 
-    
+
     /** Alarm config readout test/demo
      *  <p>
      *  'CUB' on my Linux PC: 3 .. 3.2 seconds
@@ -85,12 +85,12 @@ public class AlarmConfigurationUnitTest
         	return;
         // Quirk: Without 'flush', you don't see anything.
         // With 'close', System.out is actually closed ...
-        
+
         final PrintWriter out = new PrintWriter(System.out);
         config.getAlarmTree().writeXML(out);
         out.flush();
         config.close();
-        
+
         timer.stop();
         System.out.println(timer);
     }
@@ -109,29 +109,29 @@ public class AlarmConfigurationUnitTest
     		return;
         final AlarmTreeRoot root = config.getAlarmTree();
         //print TEST_ROOT AlarmTree to console
-        root.dump();
+        root.dump(System.out);
         //remove TEST_ROOT AlarmTree from RDB
         config.removeAllItems();
-        
+
         //add component and PV in RDB
-        final AlarmTreeComponent fac = config.addComponent(root, "TestFac");
-        final AlarmTreeComponent sys1 = config.addComponent(fac, "Sys1");
-        final AlarmTreeComponent sys2 = config.addComponent(fac, "Sys2");
+        final AlarmTreeItem fac = config.addComponent(root, "TestFac");
+        final AlarmTreeItem sys1 = config.addComponent(fac, "Sys1");
+        final AlarmTreeItem sys2 = config.addComponent(fac, "Sys2");
         AlarmTreePV pv1 = config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV1");
-        config.configurePV(pv1, "XihuiTestPV1", true, true, true, 0, 0, "", 
+        config.configurePV(pv1, "XihuiTestPV1", true, true, true, 0, 0, "",
         		new ArrayList<GDCDataStructure>(Arrays.asList(
         				new GDCDataStructure("call xihui", "Xihui's phone is 123456"),
-        				new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'"))), 
+        				new GDCDataStructure("call fred","Fred's Email is fred@ornl.gov \n !@#$%^&*()_+-=~`:\"|\\?/</details>,.;'"))),
         		null, null);
         config.addPV(sys1, "XihuiTest.TestFac.Sys1.PV2");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV1");
         config.addPV(sys2, "XihuiTest.TestFac.Sys2.PV2");
         //print TEST_ROOT AlarmTree to console
-        root.dump();
+        root.dump(System.out);
         //close the connection with RDB.
         config.close();
     }
-    
+
     /** Read config from RDB, dump to XML file */
     @Test
     @Ignore
@@ -147,7 +147,7 @@ public class AlarmConfigurationUnitTest
         config.close();
 
         System.out.println("Please check this file: " + filename.getCanonicalPath());
-    }        
+    }
 
     /** Read config from RDB, dump to stdout, delete, read file back into RDB from file
      *  !!!!!!!!!!!!!!
@@ -166,11 +166,11 @@ public class AlarmConfigurationUnitTest
     	if (config == null)
     		return;
         System.out.println("******* Configuration read from RDB: ******");
-        config.getAlarmTree().dump();
+        config.getAlarmTree().dump(System.out);
         config.removeAllItems();
- 
+
         new AlarmConfigurationLoader(config, new FileInputStream(filename));
         System.out.println("******* Configuration read back from file: ******");
-        config.getAlarmTree().dump();
+        config.getAlarmTree().dump(System.out);
     }
 }

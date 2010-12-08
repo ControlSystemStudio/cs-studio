@@ -7,15 +7,16 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Shell;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that renames an alarm tree item
  *  @author Kay Kasemir
@@ -25,7 +26,7 @@ public class RenameItemAction extends AbstractUserDependentAction
 {
     private Shell shell;
     private AlarmClientModel model;
-    private AlarmTree item;
+    private AlarmTreeItem item;
 
     /** Initialize
      *  @param shell Shell
@@ -33,7 +34,7 @@ public class RenameItemAction extends AbstractUserDependentAction
      *  @param item PV to configure
      */
     public RenameItemAction(final Shell shell, final AlarmClientModel model,
-            final AlarmTree item)
+            final AlarmTreeItem item)
     {
         super(Messages.RenameItem,
                 Activator.getImageDescriptor("icons/rename.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
@@ -50,15 +51,15 @@ public class RenameItemAction extends AbstractUserDependentAction
      *  @see org.eclipse.jface.action.Action#run()
      */
 	@Override
-	protected void doWork() {
+	protected void doWork()
+	{
 		final InputDialog dlg = new InputDialog(shell, Messages.RenameItem,
                 Messages.RenameItemMsg, item.getName(), null);
-        if (dlg.open() != InputDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         try
         {
             model.rename(item, dlg.getValue());
-
         }
         catch (Throwable ex)
         {
