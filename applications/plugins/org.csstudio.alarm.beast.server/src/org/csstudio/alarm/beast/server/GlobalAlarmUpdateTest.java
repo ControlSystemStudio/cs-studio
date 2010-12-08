@@ -22,6 +22,7 @@ public class GlobalAlarmUpdateTest implements GlobalAlarmListener
     private int update_count = 0;
     private long last_update_millis;
 
+    @Override
     public synchronized void updateGlobalState()
     {
         last_update_millis = System.currentTimeMillis();

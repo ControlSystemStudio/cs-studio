@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.apputil.formula.Formula;
@@ -44,20 +44,20 @@ import org.eclipse.swt.widgets.Text;
  */
 public class ItemConfigDialog extends TitleAreaDialog
 {
-    private AlarmTree item;
-    
+    private AlarmTreeItem item;
+
     /** PV description or null */
     private Text description_text;
-    
+
     /** PV alarm delay or null */
     private Text delay_text;
-    
+
     /** PV enable button or null */
     private Button enable_button;
-    
+
     /** PV latch enable or null */
     private Button latch_button;
-    
+
     /** PV annunciation enable or null */
     private Button annunciate_button;
 
@@ -73,25 +73,25 @@ public class ItemConfigDialog extends TitleAreaDialog
     private int count = 0;
     private Text count_text, filter_text;
 
-    
+
     /** Initialize
      *  @param shell Shell
      *  @param item Item who's configuration is initially displayed.
      *  Dialog will not change the PV, only read its current configuration.
      */
-    public ItemConfigDialog(final Shell shell, final AlarmTree item)
+    public ItemConfigDialog(final Shell shell, final AlarmTreeItem item)
     {
         super(shell);
         setShellStyle(getShellStyle() | SWT.RESIZE);
         this.item = item;
     }
-    
+
     /** @return description */
     public String getDescription()
     {
         return description;
     }
-    
+
     /** @return enabled */
     public boolean isEnabled()
     {
@@ -103,7 +103,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     {
     	return filter;
     }
-    
+
     /** @return latching */
     public boolean isLatch()
     {
@@ -127,7 +127,7 @@ public class ItemConfigDialog extends TitleAreaDialog
     {
         return count;
     }
-    
+
     /** @see org.eclipse.jface.window.Window#configureShell(org.eclipse.swt.widgets.Shell) */
     @Override
     protected void configureShell(Shell shell)
@@ -135,7 +135,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         super.configureShell(shell);
         shell.setText(Messages.Config_Title);
     }
-    
+
     /** @see org.eclipse.jface.dialogs.Dialog#createDialogArea(org.eclipse.swt.widgets.Composite) */
     @Override
     protected Control createDialogArea(final Composite parent)
@@ -147,19 +147,20 @@ public class ItemConfigDialog extends TitleAreaDialog
         layout.numColumns = 4;
         composite.setLayout(layout);
         GridData gd;
-        
+
         // Set title image, arrange for it to be disposed
         final Image title_image =
             Activator.getImageDescriptor("icons/config_image.png").createImage(); //$NON-NLS-1$
         setTitleImage(title_image);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 title_image.dispose();
             }
         });
-        
+
         setTitle(NLS.bind(Messages.Config_ItemFmt, item.getPathName()));
         setMessage(Messages.Config_Message);
 
@@ -171,7 +172,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             Label l = new Label(composite, 0);
             l.setText(Messages.Config_Description);
             l.setLayoutData(new GridData());
-            
+
             description_text = new Text(composite, SWT.BORDER);
             description_text.setText(pv.getDescription());
             description_text.setToolTipText(Messages.Config_DescriptionTT);
@@ -185,7 +186,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             l = new Label(composite, 0);
             l.setText(Messages.Config_Delay);
             l.setLayoutData(new GridData());
-            
+
             delay_text = new Text(composite, SWT.BORDER);
             delay_text.setText(Integer.toString(pv.getDelay()));
             delay_text.setToolTipText(Messages.Config_DelayTT);
@@ -199,7 +200,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             l = new Label(composite, 0);
             l.setText(Messages.Config_Count);
             l.setLayoutData(new GridData());
-            
+
             count_text = new Text(composite, SWT.BORDER);
             count_text.setText(Integer.toString(pv.getCount()));
             count_text.setToolTipText(Messages.Config_CountTT);
@@ -208,7 +209,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             gd.grabExcessHorizontalSpace = true;
             gd.horizontalAlignment = SWT.FILL;
             count_text.setLayoutData(gd);
-            
+
             // Behavior: Enabled[x] Latching [x]  Annunciating [x]
             l = new Label(composite, 0);
             l.setText(Messages.Config_Behavior);
@@ -230,19 +231,19 @@ public class ItemConfigDialog extends TitleAreaDialog
                 }
             });
             enable_button.setSelection(pv.isEnabled());
-            
+
             latch_button = new Button(composite, SWT.CHECK);
             latch_button.setText(Messages.Config_Latch);
             latch_button.setToolTipText(Messages.Config_LatchingTT);
             latch_button.setSelection(pv.isLatching());
             latch_button.setLayoutData(new GridData());
-            
+
             annunciate_button = new Button(composite, SWT.CHECK);
             annunciate_button.setText(Messages.Config_Annunciate);
             annunciate_button.setToolTipText(Messages.Config_AnnunciateTT);
             annunciate_button.setSelection(pv.isAnnunciating());
             annunciate_button.setLayoutData(new GridData());
-            
+
             // Filter: _____________________
             l = new Label(composite, 0);
             l.setText(Messages.Config_Filter);
@@ -258,6 +259,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             filter_text.setLayoutData(gd);
             final ModifyListener filter_overrides_enablement = new ModifyListener()
             {
+                @Override
                 public void modifyText(ModifyEvent e)
                 {
                     final String filter_spec = filter_text.getText().trim();
@@ -277,7 +279,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             filter_text.addModifyListener(filter_overrides_enablement);
             // Run once to initialize
             filter_overrides_enablement.modifyText(null);
-            
+
             // -----------------------------
             l = new Label(composite, SWT.SEPARATOR | SWT.HORIZONTAL);
             gd = new GridData();
@@ -286,7 +288,7 @@ public class ItemConfigDialog extends TitleAreaDialog
             gd.horizontalAlignment = SWT.FILL;
             l.setLayoutData(gd);
         }
-        
+
         // Guidance:
         // +------------------+
         // |     List         |
@@ -299,12 +301,12 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
         guidance_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Detail}, 
+                new String [] { Messages.Title, Messages.Detail},
                 editable, guidance_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[]{120,120});
         guidance_editor.setToolTipText(Messages.Config_GuidanceTT);
         guidance_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // Displays:
         // +------------------+
         // |     List         |
@@ -315,12 +317,12 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
         display_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Command }, 
+                new String [] { Messages.Title, Messages.Command },
                 editable, displays_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[]{120,120});
         display_editor.setToolTipText(Messages.Config_DisplaysTT);
         display_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // Commands:
         // +------------------+
         // |     List         |
@@ -331,19 +333,19 @@ public class ItemConfigDialog extends TitleAreaDialog
         l.setLayoutData(new GridData(SWT.FILL, 0, true, false, layout.numColumns, 1));
 
         command_editor = new StringTableEditor(composite,
-                new String [] { Messages.Title, Messages.Command }, 
+                new String [] { Messages.Title, Messages.Command },
                 editable, commands_table_list, new EditGDCItemDialog(parent.getShell()),
                 new int[]{120,120});
         command_editor.setToolTipText(Messages.Config_CommandsTT);
         command_editor.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, layout.numColumns, 1));
-        
+
         // Item info line
         l = new Label(composite, 0);
         l.setText(NLS.bind(Messages.Config_ItemInfoFmt,
                            Integer.toString(item.getID()),
                            item.getConfigTime()));
         l.setLayoutData(new GridData(0, 0, true, false, layout.numColumns, 1));
-        
+
         return parent_composite;
     }
 
@@ -357,7 +359,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         for (GDCDataStructure gdc : gdc_list)
         {
             final String row[] = { gdc.getTitle(), gdc.getDetails() };
-            result.add(row);         
+            result.add(row);
         }
         return result;
     }
@@ -394,7 +396,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         }
         return gdc_list;
     }
-    
+
     /** @return Guidance messages */
     public List<GDCDataStructure> getGuidance()
     {
@@ -440,7 +442,7 @@ public class ItemConfigDialog extends TitleAreaDialog
         guidance_editor.forceFocus();
         display_editor.forceFocus();
         command_editor.forceFocus();
-        
+
         description = description_text == null
             ? "" : description_text.getText().trim(); //$NON-NLS-1$
         enabled = enable_button == null ? true : enable_button.getSelection();

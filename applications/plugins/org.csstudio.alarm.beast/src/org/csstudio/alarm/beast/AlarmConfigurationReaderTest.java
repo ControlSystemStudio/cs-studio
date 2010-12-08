@@ -53,7 +53,7 @@ public class AlarmConfigurationReaderTest
         reader.readGUIInfo(root);
 
         // Read remaining path elements
-        AlarmTree parent = root;
+        AlarmTreeItem parent = root;
         for (int i=1; i<path.length; ++i)
         {
             parent = reader.readItem(path[i], parent, severities, messages);
@@ -63,6 +63,6 @@ public class AlarmConfigurationReaderTest
         reader.closeStatements();
 
         System.out.println("Sub-tree to item:");
-        root.dump();
+        root.dump(System.out);
     }
 }

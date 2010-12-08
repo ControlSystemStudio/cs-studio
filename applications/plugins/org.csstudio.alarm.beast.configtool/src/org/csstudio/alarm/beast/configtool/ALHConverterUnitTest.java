@@ -11,15 +11,19 @@ import java.io.PrintWriter;
 
 import org.junit.Test;
 
-/** JUnit plug-in test of ALHConverter
+/** JUnit test of ALHConverter
  *  @author Kay Kasemir
  */
-public class ALHConverterTest
+@SuppressWarnings("nls")
+public class ALHConverterUnitTest
 {
+    /** Test doesn't actually check if the generated XML is OK.
+     *  Should simply run without throwing exception.
+     */
     @Test
     public void testConverter() throws Exception
     {
-        final ALHConverter converter = new ALHConverter("alh/Demo2.alhConfig"); //$NON-NLS-1$
+        final ALHConverter converter = new ALHConverter("alh/Demo2.alhConfig");
         final PrintWriter out = new PrintWriter(System.out);
         converter.getAlarmTree().writeXML(out);
         out.flush();

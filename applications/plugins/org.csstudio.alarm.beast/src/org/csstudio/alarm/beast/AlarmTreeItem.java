@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import java.io.PrintStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,66 +17,40 @@ import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.ITimestamp.Format;
 import org.eclipse.osgi.util.NLS;
 
-/** Abstract base class for all items in the alarm configuration tree.
+/** Base class for items in the <u>client's</u> alarm configuration tree.
  *  <p>
  *  Basic hierarchy:
  *  <ul>
  *  <li>One AlarmTreeRoot
- *  <li>Many AlarmTreeComponent entries to build the hierarchy
+ *  <li>Many AlarmTreeItem entries to build the hierarchy
  *  <li>Finally AlarmTreePV entries as leaves
- *  </ul> 
+ *  </ul>
  *  @see AlarmTreeRoot
  *  @see AlarmTreeComponent
  *  @see AlarmTreePV
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
-public abstract class AlarmTree
+public class AlarmTreeItem extends TreeItem
 {
-    /** RDB ID */
-    final private int id;
-    
-    /** Visible name of the item */
-    final private String name;
-
-    /** Parent node */
-    final protected AlarmTree parent;
-
-    // According to JProfiler, equals()/getPathName()/hashCode()
-    // are called A LOT whenever the tree view is updated or
-    // whenever an alarm item is added/removed from various lists,
-    // so they have to be fast.
-    
-    /** Full path name of this item.
-     *  Like parent and hash_code it's final so that it can be computed once,
-     *  because it is used very often.
-     */
-    final private String path_name;
-    
-    /** Hash code of this item */
-    final private int hash_code;
-
-    /** Sub-tree elements of this item */
-    final private List<AlarmTree> children = new ArrayList<AlarmTree>();
-    
     /** Sub-tree elements of this item which are currently in alarm */
-    final private List<AlarmTree> alarm_children = new ArrayList<AlarmTree>();
-    
+    final private List<AlarmTreeItem> alarm_children = new ArrayList<AlarmTreeItem>();
+
     /** Guidance messages */
     private List<GDCDataStructure> guidance = new ArrayList<GDCDataStructure>();
 
     /** Related displays */
     private List<GDCDataStructure> displays = new ArrayList<GDCDataStructure>();
-    
+
     /** Commands */
     private List<GDCDataStructure> commands = new ArrayList<GDCDataStructure>();
-    
+
     /** Current severity of this item/subtree */
     protected SeverityLevel current_severity = SeverityLevel.OK;
-    
+
     /** Highest/latched alarm severity of this item/subtree */
     protected SeverityLevel severity = SeverityLevel.OK;
-    
+
     /**  Highest/latched alarm message of this item/subtree */
     protected String message = SeverityLevel.OK.getDisplayName();
 
@@ -88,66 +63,11 @@ public abstract class AlarmTree
      *  @param parent Parent item or <code>null</code>
      *  @throws Error on tree structure error
      */
-    public AlarmTree(final int id, final String name, final AlarmTree parent)
+    public AlarmTreeItem(final int id, final String name, final AlarmTreeItem parent)
     {
-        this.id = id;
-        this.name = name;
-        this.parent = parent;
-        if (parent == null)
-        {
-            path_name = name;
-        }
-        else
-        {
-            parent.addChild(this);
-            path_name = AlarmTreePath.makePath(parent.getPathName(), name);
-        }
-        hash_code = getPathName().hashCode();
+        super(parent, name, id);
     }
 
-    /** @return RDB ID */
-    public int getID()
-    {
-        return id;
-    }
-    
-    /** @return Name */
-    public String getName()
-    {
-        return name;
-    }
-
-    /** @return Full path name to this item, including the item name itself */
-    final public String getPathName()
-    {
-        return path_name;
-    }
-    
-    /** Compare by path name
-     *  @param obj Other object
-     *  @return <code>true</code> if path names match
-     */
-    @Override
-    public boolean equals(final Object obj)
-    {
-        if (obj == this)
-            return true;
-        if (! (obj instanceof AlarmTree))
-            return false;
-        final AlarmTree other = (AlarmTree) obj;
-        return getPathName().equals(other.getPathName());
-    }
-
-    /** @return Hash code of path name */
-    @Override
-    public int hashCode()
-    {
-        return hash_code;
-    }
-
-    /** @return Description of this item's position in the alarm tree */
-    abstract public AlarmTreePosition getPosition();
-    
     /** @return Text (multi-line) that can be used as a tool-tip to
      *          describe this item and its current state
      */
@@ -161,6 +81,50 @@ public abstract class AlarmTree
                 getSeverity().getDisplayName(),
                 getMessage()
             });
+    }
+
+    /** @return Description of this item's position in the alarm tree */
+    public AlarmTreePosition getPosition()
+    {
+        if (getParent() instanceof AlarmTreeRoot)
+            return AlarmTreePosition.Area;
+        return AlarmTreePosition.System;
+    }
+
+    /** @return Alarm tree root element */
+    protected AlarmTreeRoot getRoot()
+    {
+        AlarmTreeItem root = this;
+        while (root != null)
+        {
+            if (root instanceof AlarmTreeRoot)
+                return (AlarmTreeRoot) root;
+            root = root.getClientParent();
+        }
+        throw new Error("Alarm tree has no root"); //$NON-NLS-1$
+    }
+
+    /** @return Parent as client tree type */
+    public AlarmTreeItem getClientParent()
+    {
+        return (AlarmTreeItem) getParent();
+    }
+
+    /** @param index 0 ... <code>getChildCount()-1</code>
+     *  @return Child item as client tree type
+     */
+    public AlarmTreeItem getClientChild(final int i)
+    {
+        return (AlarmTreeItem) getChild(i);
+    }
+
+    /** Locate child element by name.
+     *  @param child_name Name of child to locate.
+     *  @return Child with given name or <code>null</code> if not found.
+     */
+    public AlarmTreeItem getClientChild(final String name)
+    {
+        return (AlarmTreeItem) super.getChild(name);
     }
 
     /** @return Guidance messages */
@@ -210,7 +174,7 @@ public abstract class AlarmTree
     {
         return commands;
     }
-    
+
     /** @param commands Commands */
     void setCommands(final List<GDCDataStructure> commands)
     {
@@ -224,61 +188,11 @@ public abstract class AlarmTree
             return Messages.Unknown;
         return config_time.format(Format.DateTimeSeconds);
     }
-    
+
     /** @param config_time Time of last configuration change */
     void setConfigTime(final ITimestamp config_time)
     {
         this.config_time = config_time;
-    }
-    
-    /** Return the parent item or <code>null</code> for the root element */
-    public AlarmTree getParent()
-    {
-        return parent;
-    }
-
-    /** @return Alarm tree root element */
-    protected AlarmTreeRoot getRoot()
-    {
-        AlarmTree root = this;
-        while (root != null)
-        {
-            if (root instanceof AlarmTreeRoot)
-                return (AlarmTreeRoot) root;
-            root = root.getParent();
-        }
-        throw new Error("Alarm tree has no root"); //$NON-NLS-1$
-    }
-    
-    /** @param child Child element to add 
-     *  @throws Error on tree structure error
-     */
-    protected void addChild(final AlarmTree child)
-    {
-        children.add(child);
-    }
-
-    /** @param child Child element to remove 
-     *  @throws Error on tree structure error
-     */
-    protected void removeChild(final AlarmTree child)
-    {
-        children.remove(child);
-    }
-
-    /** @return Number of sub-elements in configuration hierarchy */
-    public int getChildCount()
-    {
-        return children.size();
-    }
-    
-    /** Get one child element.
-     *  @param index Child element index 0 .. (getChildCount()-1)
-     *  @return Sub-item in configuration hierarchy
-     */
-    public AlarmTree getChild(final int index)
-    {
-        return children.get(index);
     }
 
     /** @return Number of sub-elements in configuration hierarchy
@@ -288,27 +202,14 @@ public abstract class AlarmTree
     {
         return alarm_children.size();
     }
-    
+
     /** Get one of the child elements which are currently in alarm.
      *  @param index Child element index 0 .. (getAlarmChildCount()-1)
      *  @return Sub-item in alarm hierarchy
      */
-    public AlarmTree getAlarmChild(final int index)
+    public AlarmTreeItem getAlarmChild(final int index)
     {
         return alarm_children.get(index);
-    }
-
-    
-    /** Locate child element by name.
-     *  @param child_name Name of child to locate.
-     *  @return Child with given name or <code>null</code> if not found.
-     */
-    public AlarmTree getChild(final String child_name)
-    {
-        for (AlarmTree child : children)
-            if (child.getName().equals(child_name))
-                return child;
-        return null;
     }
 
     /** @return Current severity */
@@ -322,24 +223,25 @@ public abstract class AlarmTree
     {
         return severity;
     }
-    
+
     /** @return Highest or latched alarm message */
     public String getMessage()
     {
         return message;
     }
-    
+
     /** Acknowledge or un-acknowledge current alarms.
      *  <p>
      *  For PV entries, it actually acknowledges the alarm.
      *  For other hierarchy entries, it acknowledges all child alarms.
-     *  
+     *
      *  @param acknowledge Acknowledge, or un-acknowledge?
      */
     public void acknowledge(final boolean acknowledge)
     {
-        for (AlarmTree child : children)
-            child.acknowledge(acknowledge);
+        final int n = getChildCount();
+        for (int i=0; i<n; ++i)
+            getClientChild(i).acknowledge(acknowledge);
     }
 
     /** Set severity/status of this item by maximizing over its child
@@ -356,8 +258,10 @@ public abstract class AlarmTree
         severity = SeverityLevel.OK;
         message = severity.getDisplayName();
         alarm_children.clear();
-        for (AlarmTree child : children)
+        final int n = getChildCount();
+        for (int i=0; i<n; ++i)
         {
+            final AlarmTreeItem child = getClientChild(i);
             // Maximize 'current' severity
             if (child.getCurrentSeverity().ordinal() > current_severity.ordinal())
                 current_severity = child.getCurrentSeverity();
@@ -373,59 +277,45 @@ public abstract class AlarmTree
             }
         }
         // Percolate changes towards root
+        final AlarmTreeItem parent = getClientParent();
         if (parent != null)
             parent.maximizeSeverity(pv);
     }
 
-    /** Dump this item and sub-items */
-    public void dump()
-    {
-        dump(0);
-    }
-
-    /** Dump this item and sub-items
-     *  @param level Indentation level
-     */
+    /** {@inheritDoc} */
+    @Override
     @SuppressWarnings("nls")
-    private void dump(int level)
+    protected void dump_item(final PrintStream out, final String indent)
     {
-        String indent = "";
-        for (int i=0; i<level; ++i)
-            indent = "   " + indent;
-        final String indent1 = indent + "   ";
-        System.out.println(indent + "* " + toString());
-        if(guidance != null && !guidance.isEmpty()){
-	        for (GDCDataStructure guide : guidance) {
-	        	System.out.println(indent +
-	                    "  - Guidance: ");
-	        	System.out.println(indent1 +
-	                    "  - Title: " + guide.getTitle());
-	        	System.out.println(indent1 +
-	                    "  - Details: " + guide.getDetails());        	
+        final String indent1 = indent + "  ";
+        out.println(indent + "* " + toString());
+        if (guidance != null && !guidance.isEmpty())
+        {
+	        for (GDCDataStructure guide : guidance)
+	        {
+	        	out.println(indent1 + "Guidance:");
+	        	out.println(indent1 + "- Title: " + guide.getTitle());
+	        	out.println(indent1 + "- Details: " + guide.getDetails());
 	        }
         }
-        if(displays != null && !displays.isEmpty()) {    
-	        for (GDCDataStructure display : displays) {
-	        	System.out.println(indent +
-	                    "  - Displays: ");
-	        	System.out.println(indent1 +
-	                    "  - Title: " + display.getTitle());
-	        	System.out.println(indent1 +
-	                    "  - Details: " + display.getDetails());        	
+        if (displays != null && !displays.isEmpty())
+        {
+	        for (GDCDataStructure display : displays)
+	        {
+	        	out.println(indent1 + "Display:");
+	        	out.println(indent1 + "- Title: " + display.getTitle());
+	        	out.println(indent1 + "- Details: " + display.getDetails());
 	        }
         }
-        if(commands != null && !commands.isEmpty()) {
-	        for (GDCDataStructure command : commands) {
-	        	System.out.println(indent +
-	                    "  - Command: ");
-	        	System.out.println(indent1 +
-	                    "  - Title: " + command.getTitle());
-	        	System.out.println(indent1 +
-	                    "  - Details: " + command.getDetails());        	
+        if (commands != null && !commands.isEmpty())
+        {
+	        for (GDCDataStructure command : commands)
+	        {
+	        	out.println(indent1 + "Command:");
+	        	out.println(indent1 + "- Title: " + command.getTitle());
+	        	out.println(indent1 + "- Details: " + command.getDetails());
 	        }
         }
-        for (AlarmTree child : children)
-            child.dump(level + 1);
     }
 
     /** @return XML tag for this tree item */
@@ -433,7 +323,7 @@ public abstract class AlarmTree
     {
         return XMLTags.COMPONENT;
     }
-    
+
     /** Write XML representation of this element, including children
      *  @param out PrintWriter to which to send XML output
      *  @param level Indentation level
@@ -443,15 +333,16 @@ public abstract class AlarmTree
     final protected void writeItemXML(final PrintWriter out, final int level) throws Exception
     {
         final String tag = getXMLTag();
-        XMLWriter.start(out, level, tag + " " + XMLTags.NAME + "=\"" + name + "\"");
+        XMLWriter.start(out, level, tag + " " + XMLTags.NAME + "=\"" + getName() + "\"");
         out.println();
         writeConfigXML(out, level+1);
-        for (AlarmTree child : children)
-            child.writeItemXML(out, level+1);
+        final int n = getChildCount();
+        for (int i=0; i<n; ++i)
+            getClientChild(i).writeItemXML(out, level+1);
         XMLWriter.end(out, level, tag);
         out.println();
     }
-    
+
     /** Write configuration detail in XML format to output.
      *  Default writes guidance, displays, commands.
      *  Derived classes can add more detail
@@ -493,18 +384,19 @@ public abstract class AlarmTree
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append(getPathName());
+        buf.append(super.toString());
         buf.append(" (").append(current_severity.getDisplayName()).append("/");
         buf.append(severity.getDisplayName()).append("/");
         buf.append(message).append(")");
-        if (children.size() > 0)
+        final int n = getChildCount();
+        if (n > 0)
         {
             buf.append(" - ");
-            for (int i=0; i<children.size(); ++i)
+            for (int i=0; i<n; ++i)
             {
                 if (i > 0)
                     buf.append(", ");
-                buf.append(children.get(i).getName());
+                buf.append(getClientChild(i).getName());
             }
         }
         return buf.toString();

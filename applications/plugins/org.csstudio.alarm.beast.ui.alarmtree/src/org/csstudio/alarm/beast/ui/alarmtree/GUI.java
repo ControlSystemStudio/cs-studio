@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui.alarmtree;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.AlarmTreePosition;
 import org.csstudio.alarm.beast.AlarmTreeRoot;
@@ -86,6 +86,7 @@ public class GUI implements AlarmClientModelListener
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.removeListener(GUI.this);
@@ -175,6 +176,7 @@ public class GUI implements AlarmClientModelListener
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
         {
+            @Override
             public void menuAboutToShow(IMenuManager manager)
             {
                 fillContextMenu(manager);
@@ -200,7 +202,7 @@ public class GUI implements AlarmClientModelListener
     private void fillContextMenu(final IMenuManager manager)
     {
         final Shell shell = tree_viewer.getTree().getShell();
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
 
         new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
@@ -215,7 +217,7 @@ public class GUI implements AlarmClientModelListener
 		    }
 		    else if (items.size() == 1)
 	        {
-	            final AlarmTree item = items.get(0);
+	            final AlarmTreeItem item = items.get(0);
 	            // Allow configuration of single item
 
 		        manager.add(new ConfigureItemAction(shell, model, item));
@@ -272,6 +274,7 @@ public class GUI implements AlarmClientModelListener
     }
 
     // @see AlarmClientModelListener
+    @Override
     public void serverModeUpdate(AlarmClientModel model, boolean maintenanceMode)
     {
         // Ignored
@@ -280,10 +283,12 @@ public class GUI implements AlarmClientModelListener
     /** Server connection timeout
      *  @see AlarmClientModelListener
      */
+    @Override
     public void serverTimeout(final AlarmClientModel model)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 setErrorMessage(Messages.ServerTimeout);
@@ -294,11 +299,13 @@ public class GUI implements AlarmClientModelListener
     /** Model changed, redo the whole tree
      *  @see AlarmClientModelListener
      */
+    @Override
     public void newAlarmTree(final AlarmClientModel model)
     {
         final AlarmTreeRoot config = model.getConfigTree();
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 final Tree tree = tree_viewer.getTree();
@@ -321,11 +328,13 @@ public class GUI implements AlarmClientModelListener
     /** Alarm state changed, refresh the display
      *  @see AlarmClientModelListener
      */
+    @Override
     public void newAlarmState(final AlarmClientModel model,
             final AlarmTreePV pv)
     {
         Display.getDefault().asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 final Tree tree = tree_viewer.getTree();
@@ -344,9 +353,9 @@ public class GUI implements AlarmClientModelListener
     @SuppressWarnings("unchecked")
     public void acknowledgeSelectedAlarms()
     {
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             if (item instanceof AlarmTreePV)
                 ((AlarmTreePV)item).acknowledge(true);
     }
@@ -355,9 +364,9 @@ public class GUI implements AlarmClientModelListener
     @SuppressWarnings("unchecked")
     public void unacknowledgeSelectedAlarms()
     {
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)tree_viewer.getSelection()).toList();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             if (item instanceof AlarmTreePV)
                 ((AlarmTreePV)item).acknowledge(false);
     }

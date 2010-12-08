@@ -169,7 +169,7 @@ public class AlarmConfigurationReader
      *  @param item Item to update with GUI info
      *  @throws Exception on error
      */
-    public void readGUIInfo(AlarmTree item) throws Exception
+    public void readGUIInfo(AlarmTreeItem item) throws Exception
     {
         final int id = item.getID();
         item.setGuidance(readGuidance(id));
@@ -186,7 +186,7 @@ public class AlarmConfigurationReader
      *  @return {@link AlarmTreeComponent} or {@link AlarmTreePV}
      *  @throws Exception on error
      */
-    public AlarmTree readItem(final String name, final AlarmTree parent,
+    public AlarmTreeItem readItem(final String name, final AlarmTreeItem parent,
             final SeverityReader severity_mapping, final MessageReader message_mapping) throws Exception
     {
         if (sel_item_by_parent_and_name_statement == null)
@@ -195,7 +195,7 @@ public class AlarmConfigurationReader
         sel_item_by_parent_and_name_statement.setInt(1, parent.getID());
         sel_item_by_parent_and_name_statement.setString(2, name);
         final ResultSet result = sel_item_by_parent_and_name_statement.executeQuery();
-        final AlarmTree item;
+        final AlarmTreeItem item;
         try
         {
             if (!result.next())
@@ -206,7 +206,7 @@ public class AlarmConfigurationReader
             // Check PV's ID. If null, this is a component, not PV
             result.getInt(3);
             if (result.wasNull())
-                item = new AlarmTreeComponent(id, name, parent);
+                item = new AlarmTreeItem(id, name, parent);
             else
             {
                 final AlarmTreePV pv = new AlarmTreePV(id, name, parent);

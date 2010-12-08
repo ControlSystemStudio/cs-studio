@@ -43,8 +43,6 @@ public class SQL
 
     final public String delete_component_by_id;
 
-    final public String sel_pvs_by_parent;
-
     final public String sel_pv_by_id;
     final public String insert_pv;
 
@@ -154,16 +152,6 @@ public class SQL
             "UPDATE " + schema_prefix + "ALARM_TREE SET CONFIG_TIME=? WHERE COMPONENT_ID=?";
 
         delete_component_by_id = "DELETE FROM " + schema_prefix + "ALARM_TREE WHERE COMPONENT_ID = ?";
-
-        sel_pvs_by_parent =
-            //        1               2       3        4              5                 6            7        8
-            "SELECT p.COMPONENT_ID, t.NAME, p.DESCR, p.ENABLED_IND, p.ANNUNCIATE_IND, p.LATCH_IND, p.DELAY, p.DELAY_COUNT," +
-            //  9         10                 11               12             13           14          15            16
-            " p.FILTER, p.CUR_SEVERITY_ID, p.CUR_STATUS_ID, p.SEVERITY_ID, p.STATUS_ID, p.PV_VALUE, p.ALARM_TIME, t.CONFIG_TIME" +
-            " FROM " + schema_prefix + "PV p" +
-            " JOIN " + schema_prefix + "ALARM_TREE t ON p.COMPONENT_ID = t.COMPONENT_ID " +
-            " WHERE t.PARENT_CMPNT_ID=? " +
-            " ORDER BY NAME";
 
         sel_pv_by_id =
             "SELECT DESCR, ENABLED_IND, ANNUNCIATE_IND, LATCH_IND, DELAY, DELAY_COUNT, FILTER FROM " + schema_prefix + "PV WHERE COMPONENT_ID=?";

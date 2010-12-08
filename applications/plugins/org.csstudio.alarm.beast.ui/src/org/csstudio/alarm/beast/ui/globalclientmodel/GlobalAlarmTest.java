@@ -13,6 +13,7 @@ import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;
 
+@SuppressWarnings("nls")
 public class GlobalAlarmTest
 {
     @Test

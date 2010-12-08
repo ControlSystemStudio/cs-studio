@@ -37,6 +37,7 @@ public class Application implements IApplication
     private boolean run = true;
 
     /** {@inheritDoc} */
+    @Override
     public Object start(final IApplicationContext context) throws Exception
     {
         final String version = (String)
@@ -71,6 +72,7 @@ public class Application implements IApplication
     /** From the Equinox console, calling 'stopApp' will invoke this method
      *  {@inheritDoc}
      */
+    @Override
     public void stop()
     {
         run = false;

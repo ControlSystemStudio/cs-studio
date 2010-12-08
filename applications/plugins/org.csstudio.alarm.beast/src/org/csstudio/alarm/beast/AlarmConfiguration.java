@@ -207,7 +207,7 @@ public class AlarmConfiguration
      *  @param parent Parent node. Children get added to it.
      *  @throws Exception on error
      */
-    private void readChildren(final AlarmTree parent) throws Exception
+    private void readChildren(final AlarmTreeItem parent) throws Exception
     {
         if (sel_items_by_parent_statement == null)
             sel_items_by_parent_statement =
@@ -215,18 +215,18 @@ public class AlarmConfiguration
         sel_items_by_parent_statement.setInt(1, parent.getID());
         final ResultSet result = sel_items_by_parent_statement.executeQuery();
 
-        final List<AlarmTree> recurse_items = new ArrayList<AlarmTree>();
+        final List<AlarmTreeItem> recurse_items = new ArrayList<AlarmTreeItem>();
         while (result.next())
         {
             final int id = result.getInt(1);
             final String name = result.getString(17);
             final Timestamp config_time = result.getTimestamp(2);
-            final AlarmTree item;
+            final AlarmTreeItem item;
             // Check PV's ID. If null, this is a component, not PV
             result.getInt(3);
             if (result.wasNull())
             {   // Component (area, system), not a PV
-                item = new AlarmTreeComponent(id, name, parent);
+                item = new AlarmTreeItem(id, name, parent);
                 recurse_items.add(item);
             }
             else
@@ -245,7 +245,7 @@ public class AlarmConfiguration
         // Recurse to children
         // Cannot do that inside the above while() because that would reuse
         // the statement of the current ResultSet
-        for (AlarmTree item : recurse_items)
+        for (AlarmTreeItem item : recurse_items)
             readChildren(item);
         recurse_items.clear();
     }
@@ -256,13 +256,12 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public AlarmTreeComponent addComponent(final AlarmTree parent,
+    public AlarmTreeItem addComponent(final AlarmTreeItem parent,
             final String name) throws Exception
     {
-        if (! ((parent instanceof AlarmTreeRoot) ||
-               (parent instanceof AlarmTreeComponent)))
-           throw new Exception(parent.getName() + " is not root nor Component");
-        return (AlarmTreeComponent) addRootOrComponent(parent, name);
+        if (parent instanceof AlarmTreePV)
+           throw new Exception("Cannot add subtree to PV " + parent.getPathName());
+        return (AlarmTreeItem) addRootOrComponent(parent, name);
     }
 
     /** Create a new tree root, or add (sub)component to existing root
@@ -273,8 +272,8 @@ public class AlarmConfiguration
      * @throws Exception on error
      */
     @SuppressWarnings("nls")
-    private AlarmTree addRootOrComponent(
-            final AlarmTree parent, final String name) throws Exception
+    private AlarmTreeItem addRootOrComponent(
+            final AlarmTreeItem parent, final String name) throws Exception
     {
         if (parent instanceof AlarmTreePV)
             throw new Exception("Cannot add sub-element to PV " +
@@ -305,7 +304,7 @@ public class AlarmConfiguration
         //if added a root...
         if (parent == null)
             return createAlarmTreeRoot(id, name);
-        return new AlarmTreeComponent(id, name, parent);
+        return new AlarmTreeItem(id, name, parent);
     }
 
     /** @return Next RDB ID for alarm component
@@ -334,7 +333,7 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public AlarmTreePV addPV(final AlarmTreeComponent parent,
+    public AlarmTreePV addPV(final AlarmTreeItem parent,
                       final String name) throws Exception
     {
         final AlarmTreePV found = findPV(name);
@@ -393,7 +392,7 @@ public class AlarmConfiguration
      *  @param commands Commands
      *  @throws Exception on error
      */
-    public void configureItem(final AlarmTree item,
+    public void configureItem(final AlarmTreeItem item,
             final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
             final List<GDCDataStructure> commands) throws Exception
     {
@@ -468,7 +467,7 @@ public class AlarmConfiguration
      *  @param new_name New name for the item
      *  @throws Exception on error
      */
-    public void rename(final AlarmTree item, final String new_name) throws Exception
+    public void rename(final AlarmTreeItem item, final String new_name) throws Exception
     {
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.rename_item);
@@ -491,10 +490,10 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     @SuppressWarnings("nls")
-    public void move(final AlarmTree item, final String new_path) throws Exception
+    public void move(final AlarmTreeItem item, final String new_path) throws Exception
     {
         // Locate new parent ID
-        final AlarmTree parent = config_tree.getItemByPath(new_path);
+        final AlarmTreeItem parent = config_tree.getItemByPath(new_path);
         if (parent == null)
             throw new Exception(NLS.bind("Unknown alarm configuration path {0}",
                                          new_path));
@@ -521,14 +520,14 @@ public class AlarmConfiguration
     public void removeAllItems() throws Exception
     {
         while (config_tree.getChildCount() > 0)
-            remove(config_tree.getChild(0));
+            remove(config_tree.getClientChild(0));
     }
 
     /** Remove item and all sub-items from alarm tree.
      *  @param item Item to remove
      *  @throws Exception on error
      */
-    public void remove(final AlarmTree item) throws Exception
+    public void remove(final AlarmTreeItem item) throws Exception
     {
         if (item instanceof AlarmTreePV)
             removePV((AlarmTreePV) item);
@@ -542,12 +541,12 @@ public class AlarmConfiguration
      *  @param item Item to remove with child-items
      *  @throws Exception on error
      */
-    private void removeSubtree(final AlarmTree item) throws Exception
+    private void removeSubtree(final AlarmTreeItem item) throws Exception
     {
         // First recurse down
         while (item.getChildCount() > 0)
         {
-            final AlarmTree child = item.getChild(0);
+            final AlarmTreeItem child = item.getClientChild(0);
             if (child instanceof AlarmTreePV)
                 removePV((AlarmTreePV) child);
             else

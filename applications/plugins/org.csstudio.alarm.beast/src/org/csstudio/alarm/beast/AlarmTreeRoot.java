@@ -14,7 +14,7 @@ import org.csstudio.apputil.xml.XMLWriter;
 /** Root of the alarm configuration tree.
  *  @author Kay Kasemir, Xihui Chen
  */
-public class AlarmTreeRoot extends AlarmTree
+public class AlarmTreeRoot extends AlarmTreeItem
 {
     /** Initialize alarm tree root
      *  @param id RDB ID of root element
@@ -40,7 +40,7 @@ public class AlarmTreeRoot extends AlarmTree
      *  The default alarm tree root does nothing, but the AlarmClientModelRoot
      *  will forward the request to the alarm server
      *  @param pv PV that needs to be ack'ed
-     *  @param acknowledge Ack or un-ack? 
+     *  @param acknowledge Ack or un-ack?
      */
     protected void acknowledge(AlarmTreePV pv, boolean acknowledge)
     {
@@ -52,35 +52,36 @@ public class AlarmTreeRoot extends AlarmTree
     {
         return getPVCount(this);
     }
-    
+
     /** @return Number of PVs below item (counts recursively) */
-    private int getPVCount(final AlarmTree item)
+    private int getPVCount(final AlarmTreeItem item)
     {
         if (item instanceof AlarmTreePV)
             return 1;
         int count = 0;
         for (int i=0; i<item.getChildCount(); ++i)
-            count += getPVCount(item.getChild(i));
+            count += getPVCount(item.getClientChild(i));
         return count;
     }
 
     /** @return Number of elements (children, sub-children) in tree */
     public int getElementCount()
-    {
-        return getElementCount(this);
+    {   // Consider root itself, then count children from here on down
+        return 1 + getElementCount(this);
     }
-    
+
     /** @return Number of elements (children, sub-children) below item (counts recursively) */
-    private int getElementCount(final AlarmTree item)
+    private int getElementCount(final AlarmTreeItem item)
     {
-        // Count children
-        int count = item.getChildCount();
+        // Count direct children
+        final int child_count = item.getChildCount();
         // Then add counts recursively
-        for (int i=0; i<item.getChildCount(); ++i)
-            count += getElementCount(item.getChild(i));
-        return count;
+        int total = child_count;
+        for (int i=0; i<child_count; ++i)
+            total += getElementCount(item.getClientChild(i));
+        return total;
     }
-    
+
     /** Write XML representation of alarm tree
      *  @param out Stream to which to send XML output
      *  @throws Exception on error
@@ -90,9 +91,10 @@ public class AlarmTreeRoot extends AlarmTree
     {
         XMLWriter.header(out);
         out.append("<config name=\"" + getName() +"\">\n");
-        for (int i=0; i<getChildCount(); ++i)
+        final int n = getChildCount();
+        for (int i=0; i<n; ++i)
         {
-            final AlarmTree child = getChild(i);
+            final AlarmTreeItem child = getClientChild(i);
             child.writeItemXML(out, 1);
         }
         out.append("</config>\n");
@@ -102,7 +104,7 @@ public class AlarmTreeRoot extends AlarmTree
      *  @param path Path to item
      *  @return Item or <code>null</code> if not found
      */
-    public AlarmTree getItemByPath(final String path)
+    public AlarmTreeItem getItemByPath(final String path)
     {
         if (path == null)
             return null;
@@ -113,9 +115,9 @@ public class AlarmTreeRoot extends AlarmTree
         if (!steps[0].equals(getName()))
             return null;
         // Descend down the path
-        AlarmTree item = this;
+        AlarmTreeItem item = this;
         for (int i=1;  i < steps.length  &&  item != null;    ++i)
-            item = item.getChild(steps[i]);
+            item = item.getClientChild(steps[i]);
         return item;
     }
 }

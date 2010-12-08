@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -31,10 +31,10 @@ public class AlarmPVDragSource implements DragSourceListener
 {
     /** Provider of currently selected AlarmTreePV items */
     final private ISelectionProvider selection_provider;
-    
+
     /** DND library DragSource */
     final private DragSource source;
-    
+
     /** Currently selected Alarm PVs, updated when drag starts */
     final private ArrayList<AlarmTreePV> pvs = new ArrayList<AlarmTreePV>();
 
@@ -52,14 +52,15 @@ public class AlarmPVDragSource implements DragSourceListener
     }
 
     // @see DragSourceListener
+    @Override
     @SuppressWarnings("unchecked")
     public void dragStart(final DragSourceEvent event)
     {
         // Get currently selected alarm PVs
         pvs.clear();
-        final List<AlarmTree> items =
+        final List<AlarmTreeItem> items =
             ((IStructuredSelection)selection_provider.getSelection()).toList();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             if (item instanceof AlarmTreePV)
                 pvs.add((AlarmTreePV) item);
         // Anything worth dragging?
@@ -68,6 +69,7 @@ public class AlarmPVDragSource implements DragSourceListener
     }
 
     // @see DragSourceListener
+    @Override
     public void dragSetData(final DragSourceEvent event)
     {
         if (TextTransfer.getInstance().isSupportedType(event.dataType))
@@ -80,6 +82,7 @@ public class AlarmPVDragSource implements DragSourceListener
     }
 
     // @see DragSourceListener
+    @Override
     public void dragFinished(final DragSourceEvent event)
     {
         pvs.clear();
