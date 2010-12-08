@@ -372,21 +372,30 @@ public class EPICSPlug extends AbstractPlug
 		// checks for coreThreads and maxThreads values
 		if (maxThreads == 0) { 
 			if (coreThreads != 0) {
-				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 0;
-				System.out.println(coreThreads+".");
+				sb.append(coreThreads+".");
+				//System.out.println(sb.toString());
+				getLogger().warn(sb.toString());
 			}
 		}
 		else {
 			if (coreThreads < 1) {
-				System.out.print("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug number of core threads can not be "+coreThreads+". It was changed to ");
 				coreThreads = 1;
-				System.out.println(coreThreads+".");
+				sb.append(coreThreads+".");
+				//System.out.println(sb.toString());
+				getLogger().warn(sb.toString());
 			}
 			if (maxThreads < 0 || maxThreads < coreThreads) {
-				System.out.print("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
+				StringBuilder sb= new StringBuilder(128);
+				sb.append("> EPICSPlug maximum number of threads can not be "+maxThreads+". It was changed to ");
 				maxThreads = coreThreads;
-				System.out.println(maxThreads+".");
+				sb.append(maxThreads+".");
+				//System.out.println(sb.toString());
+				getLogger().warn(sb.toString());
 			}
 		}
 		
@@ -457,6 +466,8 @@ public class EPICSPlug extends AbstractPlug
 		}
 		
 		timeout = Plugs.getConnectionTimeout(getConfiguration(), 10000)/1000.0;
+		
+		getLogger().info("config {jni: '"+use_jni+"', addr_list: {"+System.getProperty("com.cosylab.epics.caj.CAJContext.addr_list")+"}}");
 		
 	}
 
