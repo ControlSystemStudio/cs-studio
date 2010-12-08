@@ -64,6 +64,7 @@
       <plugin id="org.csstudio.platform.libs.jdom"/>
       <plugin id="org.csstudio.platform.libs.jmock"/>
       <plugin id="org.csstudio.platform.libs.jms"/>
+	  <plugin id="org.csstudio.platform.libs.log4j"/>
       <plugin id="org.csstudio.platform.test" fragment="true"/>
       <plugin id="org.csstudio.platform.ui"/>
       <plugin id="org.csstudio.platform.utility.jms"/>
