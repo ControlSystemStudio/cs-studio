@@ -21,7 +21,9 @@
  */
 package org.csstudio.domain.desy.types;
 
+import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -43,7 +45,7 @@ public class AbstractCssAlarmValueType<T> implements ICssAlarmValueType<T> {
      * Constructor.
      */
     public AbstractCssAlarmValueType(@Nonnull final T data,
-                                     @Nonnull final IAlarm alarm,
+                                     @Nullable final IAlarm alarm,
                                      @Nonnull final TimeInstant timestamp) {
         _data = data;
         _alarm = alarm;
@@ -72,7 +74,7 @@ public class AbstractCssAlarmValueType<T> implements ICssAlarmValueType<T> {
      * {@inheritDoc}
      */
     @Override
-    @Nonnull
+    @CheckForNull
     public IAlarm getAlarm() {
         return _alarm;
     }

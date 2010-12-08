@@ -23,7 +23,7 @@ package org.csstudio.archive.service.mysqlimpl.dao;
 
 import java.sql.Connection;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.ArchiveConnectionException;
 
@@ -43,7 +43,7 @@ public abstract class AbstractArchiveDao {
      * @return the connection
      * @throws ArchiveConnectionException
      */
-    @CheckForNull
+    @Nonnull
     protected Connection getConnection() throws ArchiveConnectionException {
 
         final Connection connection = DAO_MGR.getConnection();

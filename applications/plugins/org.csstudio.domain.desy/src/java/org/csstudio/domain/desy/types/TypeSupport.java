@@ -26,6 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -126,25 +127,6 @@ public abstract class TypeSupport<T> {
         return support;
     }
 
-    /**
-     * Tries to convert the given css value type to CssDouble.
-     * @param value the value to be converted
-     * @return the conversion result
-     * @throws ConversionTypeSupportException when conversion failed.
-     * @param <V> the basic type of the value(s)
-     * @param <T> the css value type
-     */
-    @SuppressWarnings("unchecked")
-    @Nonnull
-    public static <T> Double toDouble(@Nonnull final T value) throws ConversionTypeSupportException {
-		final Class<T> typeClass = (Class<T>) value.getClass();
-        final AbstractBasicTypeConversionTypeSupport<T> support =
-            (AbstractBasicTypeConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
-        if (support == null) {
-            throw new ConversionTypeSupportException("No conversion type support registered.", null);
-        }
-        return support.convertToDouble(value);
-    }
 
     /**
      * Tries to convert the given IValue type and its accompanying parms to the css value type.
@@ -159,7 +141,9 @@ public abstract class TypeSupport<T> {
     @SuppressWarnings("unchecked")
     @CheckForNull
     public static <R extends ICssAlarmValueType<?>, V extends IValue>
-        R toCssType(@Nonnull final V value, @Nonnull final IAlarm alarm, @Nonnull final TimeInstant timestamp) throws ConversionTypeSupportException {
+        R toCssType(@Nonnull final V value,
+                    @Nullable final IAlarm alarm,
+                    @Nonnull final TimeInstant timestamp) throws ConversionTypeSupportException {
 
         final Class<V> typeClass = (Class<V>) value.getClass();
         final AbstractIValueConversionTypeSupport<R, V> support =
@@ -186,5 +170,25 @@ public abstract class TypeSupport<T> {
             throw new ConversionTypeSupportException("No conversion type support registered.", null);
         }
         return support.convertToArchiveString(value);
+    }
+
+    /**
+     * Tries to convert the given css value type to CssDouble.
+     * @param value the value to be converted
+     * @return the conversion result
+     * @throws ConversionTypeSupportException when conversion failed.
+     * @param <V> the basic type of the value(s)
+     * @param <T> the css value type
+     */
+    @SuppressWarnings("unchecked")
+    @Nonnull
+    public static <T> Double toDouble(@Nonnull final T value) throws ConversionTypeSupportException {
+        final Class<T> typeClass = (Class<T>) value.getClass();
+        final AbstractArchiveConversionTypeSupport<T> support =
+            (AbstractArchiveConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertToDouble(value);
     }
 }

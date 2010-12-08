@@ -21,11 +21,11 @@
  */
 package org.csstudio.domain.desy.time;
 
-import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 
 /**
- * TODO (bknerr) :
+ * The timestamp interface
  *
  * @author bknerr
  * @since 24.11.2010
@@ -34,8 +34,8 @@ public interface IHasTimeStamp {
     /**
      * Returns the time instant for this system variable.
      *
-     * @return the timestamp of this system variable or <code>null</code> if not specified yet.
+     * @return the timestamp
      */
-    @CheckForNull
+    @Nonnull
     TimeInstant getTimestamp();
 }

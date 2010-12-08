@@ -50,7 +50,7 @@ import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarmStatus;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
-import org.csstudio.domain.desy.types.AbstractBasicTypeConversionTypeSupport;
+import org.csstudio.domain.desy.types.AbstractArchiveConversionTypeSupport;
 import org.csstudio.domain.desy.types.AbstractIValueConversionTypeSupport;
 import org.csstudio.domain.desy.types.ConversionTypeSupportException;
 import org.csstudio.domain.desy.types.ICssAlarmValueType;
@@ -80,8 +80,9 @@ public enum ArchiveEngineAdapter {
      * Constructor.
      */
     private ArchiveEngineAdapter() {
-        AbstractBasicTypeConversionTypeSupport.install();
+        //AbstractBasicTypeConversionTypeSupport.install();
         AbstractIValueConversionTypeSupport.install();
+        AbstractArchiveConversionTypeSupport.install();
     }
 
     /**
@@ -273,7 +274,7 @@ public enum ArchiveEngineAdapter {
      * be properly instantiated. See Carcassi's types for that, very likely to replace IValue.
      * @throws ConversionTypeSupportException
      */
-    @Nonnull
+    @CheckForNull
     public <T extends ICssAlarmValueType<?>>
         IArchiveSample<T, EpicsAlarm> adapt(@Nonnull final IValueWithChannelId valueWithId) throws ConversionTypeSupportException {
 
@@ -283,21 +284,28 @@ public enum ArchiveEngineAdapter {
         final TimeInstant timestamp = adapt(value.getTime());
         final EpicsAlarm alarm = adapt(value.getSeverity(), value.getStatus());
         final T data = TypeSupport.toCssType(value, alarm, timestamp);
+        if (data == null) {
+            return null;
+        }
 
         final IArchiveSample<T, EpicsAlarm> sample = new IArchiveSample<T, EpicsAlarm>() {
+            @Nonnull
             @Override
             public ArchiveChannelId getChannelId() {
                 return id;
             }
+            @Nonnull
             @Override
             public T getData() {
                 return data;
             }
             @Override
+            @Nonnull
             public TimeInstant getTimestamp() {
                 return data.getTimestamp();
             }
             @Override
+            @Nonnull
             public EpicsAlarm getAlarm() {
                 return (EpicsAlarm) data.getAlarm();
             }

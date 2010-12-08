@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.service.sample;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.csstudio.archive.service.channel.ArchiveChannelId;
@@ -56,6 +55,6 @@ public interface IArchiveSample<T extends ICssValueType<?> & IHasAlarm,
     TimeInstant getTimestamp();
 
     @Override
-    @CheckForNull
+    @Nonnull
     A getAlarm();
 }

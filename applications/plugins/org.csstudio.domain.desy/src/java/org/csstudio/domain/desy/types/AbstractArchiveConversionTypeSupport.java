@@ -65,6 +65,11 @@ public abstract class AbstractArchiveConversionTypeSupport<T> extends TypeSuppor
             public String convertToArchiveString(@Nonnull final Number value) throws ConversionTypeSupportException {
                 return value.toString();
             }
+            @Override
+            @Nonnull
+            public Double convertToDouble(@Nonnull final Number d) {
+                return d.doubleValue();
+            }
         });
         TypeSupport.addTypeSupport(Collection.class, new AbstractArchiveConversionTypeSupport<Collection>() {
             @Override
@@ -82,17 +87,26 @@ public abstract class AbstractArchiveConversionTypeSupport<T> extends TypeSuppor
                             return null;
                         }
                     }
-
                 });
                 final String result = "[" + Joiner.on(",").join(items) + "]";
                 return result;
             }
+            @Override
+            @Nonnull
+            public Double convertToDouble(@Nonnull final Collection l) throws ConversionTypeSupportException {
+                if (l.size() == 1) {
+                    final Object value = l.iterator().next();
+                    return TypeSupport.toDouble(value);
+                }
+                return Double.NaN;
+            }
         });
-
         INSTALLED = true;
     }
 
     @CheckForNull
     public abstract String convertToArchiveString(@Nonnull final T value) throws ConversionTypeSupportException;
+    @Nonnull
+    public abstract Double convertToDouble(@Nonnull final T value) throws ConversionTypeSupportException;
 
 }

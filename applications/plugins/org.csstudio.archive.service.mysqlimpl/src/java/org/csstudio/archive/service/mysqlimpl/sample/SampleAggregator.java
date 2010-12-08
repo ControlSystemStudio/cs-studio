@@ -23,6 +23,7 @@ package org.csstudio.archive.service.mysqlimpl.sample;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.data.CumulativeAverageCache;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
@@ -44,7 +45,7 @@ public class SampleAggregator {
     private Double _minVal;
     private Double _maxVal;
     private Double _lastWrittenValue;
-    private TimeInstant _lastWritetime;
+    private TimeInstant _lastWriteTime;
     private EpicsAlarm _highestAlarm;
     private EpicsAlarm _lowestAlarm;
 
@@ -56,7 +57,7 @@ public class SampleAggregator {
      * @param timestamp
      */
     public SampleAggregator(@Nonnull final Double firstVal,
-                            @Nonnull final EpicsAlarm firstAlarm,
+                            @Nullable final EpicsAlarm firstAlarm,
                             @Nonnull final TimeInstant timestamp) {
 
         _avg.accumulate(firstVal);
@@ -67,16 +68,20 @@ public class SampleAggregator {
 
         _highestAlarm = firstAlarm;
         _lowestAlarm = firstAlarm;
-        _lastWritetime = timestamp;
+        _lastWriteTime = timestamp;
     }
 
     void aggregateNewVal(@Nonnull final Double newVal,
                          @Nonnull final EpicsAlarm alarm) {
         _avg.accumulate(newVal);
-        _maxVal = Math.max(_maxVal, newVal);
-        _minVal = Math.min(_minVal, newVal);
-        _highestAlarm = _highestAlarm.compareTo(alarm) < 0 ? alarm : _highestAlarm;
-        _lowestAlarm = _lowestAlarm.compareTo(alarm) > 0 ? alarm : _lowestAlarm;
+        _maxVal = _maxVal == null ? newVal : Math.max(_maxVal, newVal);
+        _minVal = _minVal == null ? newVal : Math.min(_minVal, newVal);
+        _highestAlarm = _highestAlarm == null ? alarm :
+                                                _highestAlarm.compareTo(alarm) < 0 ? alarm :
+                                                                                     _highestAlarm;
+        _lowestAlarm  = _lowestAlarm  == null ? alarm :
+                                                _lowestAlarm.compareTo(alarm)  > 0 ? alarm :
+                                                                                     _lowestAlarm;
     }
 
     /**
@@ -85,15 +90,15 @@ public class SampleAggregator {
      * Alarm state is initialised to the minimum known alarm accumulated until now
      * (not necessarily the minimum alarm possible).
      *
-     * @param lastWriteTime the time instant of the last accumulated sample
+     * @param lastWriteTime the time instant of the reset (used for last accumulated sample)
      */
     void reset(@Nonnull final TimeInstant lastWriteTime) {
-        final Double lastAvg = _avg.getValue();
-        _lastWrittenValue = lastAvg;
-        _minVal = lastAvg;
-        _maxVal = lastAvg;
-        _highestAlarm = _lowestAlarm;
-        _lastWritetime = lastWriteTime;
+        _lastWriteTime = lastWriteTime;
+        _lastWrittenValue = _avg.getValue();
+        _minVal = null;
+        _maxVal = null;
+        _highestAlarm = null;
+        _lowestAlarm = null;
 
         _avg.clear();
     }
@@ -101,15 +106,15 @@ public class SampleAggregator {
     public Double getAvg() {
         return _avg.getValue();
     }
-    @Nonnull
+    @CheckForNull
     public Double getMin() {
         return _minVal;
     }
-    @Nonnull
+    @CheckForNull
     public Double getMax() {
         return _maxVal;
     }
-    @Nonnull
+    @CheckForNull
     public EpicsAlarm getHighestAlarm() {
         return _highestAlarm;
     }
@@ -119,6 +124,6 @@ public class SampleAggregator {
     }
     @Nonnull
     public TimeInstant getLastWriteTime() {
-        return _lastWritetime;
+        return _lastWriteTime;
     }
 }

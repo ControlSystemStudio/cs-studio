@@ -25,6 +25,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
@@ -69,7 +70,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             @CheckForNull
             @Override
             public ICssAlarmValueType<?> convertToCssType(@Nonnull final IDoubleValue value,
-                                                          @Nonnull final IAlarm alarm,
+                                                          @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final double[] values = value.getValues();
                 if (values.length == 0) {
@@ -90,7 +91,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                 @CheckForNull
                 @Override
                 public ICssAlarmValueType<?> convertToCssType(@Nonnull final IEnumeratedValue value,
-                                                              @Nonnull final IAlarm alarm,
+                                                              @Nullable final IAlarm alarm,
                                                               @Nonnull final TimeInstant timestamp)  {
                     final int[] values = value.getValues();
                     if (values.length == 0) {
@@ -111,7 +112,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             @CheckForNull
             @Override
             public ICssAlarmValueType<?> convertToCssType(@Nonnull final ILongValue value,
-                                                          @Nonnull final IAlarm alarm,
+                                                          @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final long[] values = value.getValues();
                 if (values.length == 0) {
@@ -132,7 +133,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
             @Override
             @CheckForNull
             public ICssAlarmValueType<?> convertToCssType(@Nonnull final IStringValue value,
-                                                          @Nonnull final IAlarm alarm,
+                                                          @Nullable final IAlarm alarm,
                                                           @Nonnull final TimeInstant timestamp)  {
                 final String[] values = value.getValues();
                 if (values.length == 0) {
@@ -140,8 +141,8 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                 }
                 if (values.length == 1) {
                     return new AbstractCssAlarmValueType<String>(values[0],
-                            alarm,
-                            timestamp);
+                                                                 alarm,
+                                                                 timestamp);
                 }
                 return new AbstractCssAlarmValueType<List<String>>(Lists.newArrayList(values),
                                                                    alarm,
@@ -153,7 +154,7 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
 
     @CheckForNull
     public abstract R convertToCssType(@Nonnull final T value,
-                                       @Nonnull final IAlarm alarm,
+                                       @Nullable final IAlarm alarm,
                                        @Nonnull final TimeInstant timestamp) throws ConversionTypeSupportException;
 
 }
