@@ -34,8 +34,10 @@ import java.util.List;
 @SuppressWarnings("nls")
 public class TreeItem
 {
-    /** RDB ID */
-    final private int id;
+    /** RDB ID
+     *  @see #setID(int)
+     */
+    private int id;
 
     /** Visible name of the item */
     final private String name;
@@ -61,9 +63,10 @@ public class TreeItem
     final private int hash_code;
 
     /** Initialize
-     *  @param parent
-     *  @param name
-     *  @param id
+     *  @param parent Parent item or <code>null</code> for root
+     *  @param name Name of this item
+     *  @param id RDB ID. May initially be -1 if set later
+     *  @see #setID(int)
      */
     public TreeItem(final TreeItem parent, final String name, final int id)
     {
@@ -88,10 +91,37 @@ public class TreeItem
         return parent;
     }
 
+    /** @return Alarm tree root element */
+    final public TreeItem getRoot()
+    {
+        TreeItem root = this;
+        TreeItem p = getParent();
+        while (p != null)
+        {
+            root = p;
+            p = p.getParent();
+        }
+        return root;
+    }
+
     /** @return RDB ID */
-    final public int getID()
+    final public synchronized int getID()
     {
         return id;
+    }
+
+    /** Set the RDB ID
+     *  The ID cannot be changed as such, but tree items that start out in
+     *  memory may have a tree ID of -1 until their full detail is read
+     *  from the RDB
+     *  @param id
+     *  @throws IllegalStateException if ID was already set
+     */
+    final public synchronized void setID(final int id)
+    {
+        if (id >= 0)
+            throw new IllegalStateException("ID already set for " + toString());
+        this.id = id;
     }
 
     /** @return Name */
@@ -107,7 +137,7 @@ public class TreeItem
     }
 
     /** @return Number of child nodes */
-    final public int getChildCount()
+    final public synchronized int getChildCount()
     {
         return children.size();
     }
@@ -115,7 +145,7 @@ public class TreeItem
     /** @param index 0 ... <code>getChildCount()-1</code>
      *  @return Child item
      */
-    final public TreeItem getChild(final int index)
+    final public synchronized TreeItem getChild(final int index)
     {
         return children.get(index);
     }
@@ -124,7 +154,7 @@ public class TreeItem
      *  @param child_name Name of child to locate.
      *  @return Child with given name or <code>null</code> if not found.
      */
-    public TreeItem getChild(final String name)
+    final public synchronized TreeItem getChild(final String name)
     {
         for (TreeItem child : children)
             if (child.getName().equals(name))
@@ -136,13 +166,13 @@ public class TreeItem
      *  'private' because child items add themself in constructor.
      *  @param child New child item
      */
-    final private void addChild(final TreeItem child)
+    final synchronized private void addChild(final TreeItem child)
     {
         children.add(child);
     }
 
     /** @param item Child item to remove */
-    void removeChild(final TreeItem item)
+    final synchronized void removeChild(final TreeItem item)
     {
         children.remove(item);
     }
@@ -152,7 +182,7 @@ public class TreeItem
      *  Derived classes should override <code>dump_item()</code>
      *  @param out PrintStream
      */
-    final public void dump(final PrintStream out)
+    final synchronized public void dump(final PrintStream out)
     {
         dump(out, "");
     }
@@ -183,7 +213,7 @@ public class TreeItem
     /** Perform hierarchy consistency check
      *  @throws Exception on error
      */
-    final public void check() throws Exception
+    final synchronized public void check() throws Exception
     {
         // All subtree entries must point back to this as their parent
         for (TreeItem child : children)

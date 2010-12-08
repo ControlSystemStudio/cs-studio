@@ -195,37 +195,37 @@ public class AlarmConfigurationLoader
     }
 
     /** Load Guidance/Displays/Commands
-     * @param node DOM node, could be a component or a PV
-     * @param name name of the item to load, it must be one of XMLTags.GUIDANCE/DISPLAY/COMMAND
-     * @return Guidance/Displays/Commands List.
+     *  @param node DOM node, could be a component or a PV
+     *  @param name name of the item to load, it must be one of XMLTags.GUIDANCE/DISPLAY/COMMAND
+     *  @return Guidance/Displays/Commands array, never null.
      */
-	private List<GDCDataStructure> loadGDC(final Element node,
-	                                       final String name) throws Exception
+    private GDCDataStructure[] loadGDC(final Element node,
+                                       final String name) throws Exception
     {
-	    final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
+        final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
 
         Element gdcNode = DOMHelper.findFirstElementNode(node.getFirstChild(), name);
         while (gdcNode != null)
         {
             String title = DOMHelper.getSubelementString(gdcNode, XMLTags.TITLE);
-        	String details = DOMHelper.getSubelementString(gdcNode, XMLTags.DETAILS);
-        	// New files use
-        	//    <name><title>....</title><details>...</details></name>
-        	// If we find an old file with simply
-        	//    <name>...</name>
-        	// we will use its node value value as title and details
-        	if (title.length() <= 0)
-        	{
-        	    details = gdcNode.getFirstChild().getNodeValue();
-        	    if (details.length() < MAX_TITLE)
-        	        title = details;
-        	    else
-        	        title = details.substring(0, MAX_TITLE);
-        	}
+            String details = DOMHelper.getSubelementString(gdcNode, XMLTags.DETAILS);
+            // New files use
+            //    <name><title>....</title><details>...</details></name>
+            // If we find an old file with simply
+            //    <name>...</name>
+            // we will use its node value value as title and details
+            if (title.length() <= 0)
+            {
+                details = gdcNode.getFirstChild().getNodeValue();
+                if (details.length() < MAX_TITLE)
+                    title = details;
+                else
+                    title = details.substring(0, MAX_TITLE);
+            }
             if (title.length() > 0)
                 gdcList.add(new GDCDataStructure(title, details));
-        	gdcNode = DOMHelper.findNextElementNode(gdcNode, name);
+            gdcNode = DOMHelper.findNextElementNode(gdcNode, name);
         }
-        return gdcList;
+        return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
 }

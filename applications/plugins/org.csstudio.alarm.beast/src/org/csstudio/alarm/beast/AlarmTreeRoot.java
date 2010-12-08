@@ -22,7 +22,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
      */
     public AlarmTreeRoot(final int id, final String name)
     {
-        super(id, name, null);
+        super(null, name, id);
     }
 
     /** {@inheritDoc} */

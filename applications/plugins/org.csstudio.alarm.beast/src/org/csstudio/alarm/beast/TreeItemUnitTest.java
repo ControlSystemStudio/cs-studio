@@ -30,5 +30,8 @@ public class TreeItemUnitTest
 
         assertNotNull(tree.getChild("Two"));
         assertSame(tree.getChild(0), tree.getChild("Two"));
+
+        System.out.println("Parent of " + tree.getChild(0) + " : " + tree.getChild(0).getRoot());
+        assertSame(tree, tree.getChild(0).getRoot());
     }
 }
