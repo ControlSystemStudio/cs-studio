@@ -18,7 +18,6 @@ public class ADLDynamicAttributeTest extends TestCase {
 			attribute = new ADLDynamicAttribute(setupDynamicADLWidget());
 			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
 			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
-			assertFalse( "Test if color is defined", attribute.isColorDefined());
 			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
 			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
 			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
@@ -32,7 +31,19 @@ public class ADLDynamicAttributeTest extends TestCase {
 			attribute = new ADLDynamicAttribute(setupWithAttrSublevelDynamicADLWidget());
 			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
 			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
-			assertFalse( "Test if color is defined", attribute.isColorDefined());
+			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
+			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
+			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
+			assertTrue( "Test default chanc", attribute.get_chanc().equals("chan3"));
+			assertTrue( "Test default chand", attribute.get_chand().equals("chan4"));
+		} catch (WrongADLFormatException e) {
+			fail("This should pass");
+		}
+		
+		try {
+			attribute = new ADLDynamicAttribute(setupWithColorModeDiscreteDynamicADLWidget());
+			assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
+			assertTrue( "Test default visability", attribute.get_vis().equals("if zero"));
 			assertTrue( "Test default calc", attribute.get_calc().equals("A+B"));
 			assertTrue( "Test default chan", attribute.get_chan().equals("chan1"));
 			assertTrue( "Test default chanb", attribute.get_chanb().equals("chan2"));
@@ -55,7 +66,6 @@ public class ADLDynamicAttributeTest extends TestCase {
 	public void testADLDynamicAttribute() {
 		assertTrue( "Test default Name ", attribute.getName().equals("dynamic attribute"));
 		assertTrue( "Test default visability", attribute.get_vis().equals("static"));
-		assertFalse( "Test if color is defined", attribute.isColorDefined());
 		assertTrue( "Test default calc", attribute.get_calc().equals(""));
 		assertTrue( "Test default chan", attribute.get_chan().equals(""));
 		assertTrue( "Test default chanb", attribute.get_chanb().equals(""));
@@ -105,6 +115,23 @@ public class ADLDynamicAttributeTest extends TestCase {
 	private ADLWidget setupBadDynamicADLWidget1() {
 		ADLWidget object = new ADLWidget("dynamic attribute", null, 5);
 		object.addBody(new FileLine("visibility=if zero", 6));
+		object.addBody(new FileLine("calc=A+B", 7));
+		object.addBody(new FileLine("chan=chan1", 8));
+		object.addBody(new FileLine("chanb=chan2", 9));
+		object.addBody(new FileLine("chanc=chan3", 10));
+		object.addBody(new FileLine("chand=chan4", 11));
+
+		return object;
+	}
+
+	/**
+	 * 	Bad parameter vis has changed to visibility
+	 * @return
+	 */
+	private ADLWidget setupWithColorModeDiscreteDynamicADLWidget() {
+		ADLWidget object = new ADLWidget("dynamic attribute", null, 5);
+		object.addBody(new FileLine("clr=discrete", 6));
+		object.addBody(new FileLine("vis=if zero", 6));
 		object.addBody(new FileLine("calc=A+B", 7));
 		object.addBody(new FileLine("chan=chan1", 8));
 		object.addBody(new FileLine("chanb=chan2", 9));
