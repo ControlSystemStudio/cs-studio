@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<fragment>
+     <extension
+        point="org.eclipse.ui.popupMenus">
+     <objectContribution
+           adaptable="false"
+           id="org.csstudio.trends.databrowser2.shell.fragment.run"
+           nameFilter="*plt"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              class="org.csstudio.trends.databrowser.OpenAsShell"
+              id="org.csstudio.utility.quickstart.addtoquickstartaction"
+              label="Open in shell"/>
+     </objectContribution>
+  </extension>
+
+</fragment>

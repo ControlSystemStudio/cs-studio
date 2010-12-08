@@ -95,8 +95,8 @@ public class EPICS_V3_PV
     /** isRunning?
      *  <code>true</code> if we want to receive value updates.
      */
-    private boolean running = false; // FIXME : not volatile?!
-
+    private volatile boolean running = false;
+    
     /** Listener to the get... for meta data */
     private final GetListener meta_get_listener = new GetListener()
     {
@@ -290,9 +290,7 @@ public class EPICS_V3_PV
     /** {@inheritDoc} */
     public void removeListener(final PVListener listener)
     { 
-    	listeners.remove(listener); 
-    	if (listeners.size() > 0)
-    		System.out.println("Didn't remove?!");
+    	listeners.remove(listener);
     }
 
     /** Try to connect to the PV.
@@ -367,6 +365,12 @@ public class EPICS_V3_PV
             final Logger logger = Activator.getLogger();
             try
             {
+            	// TODO Instead of another channel.addMonitor(),
+            	//      the RefCountedChannel should maintain a single
+            	//      subscription to the underlying CAJ/JCA channel.
+            	//      So even with N PVs for the same channel, it's
+            	//      only one subscription on the network instead of
+            	//      N subscriptions.
                 final DBRType type = DBR_Helper.getTimeType(plain,
                                         channel.getFieldType());
                 final MonitorMask mask = PVContext.monitor_mask;

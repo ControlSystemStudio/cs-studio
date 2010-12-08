@@ -20,7 +20,7 @@
  * AT HTTP://WWW.DESY.DE/LEGAL/LICENSE.HTM
  */
 /*
- * $Id: LabelAlarmBehavior.java,v 1.6 2010/07/23 08:40:58 hrickens Exp $
+ * $Id: LabelAlarmBehavior.java,v 1.4.2.16 2010/08/27 07:29:34 jhatje Exp $
  */
 package org.csstudio.sds.behavior.desy;
 
@@ -34,8 +34,8 @@ import org.epics.css.dal.simple.MetaData;
  * Default DESY-Behavior for the {@link LabelModel} widget with Connection state and Alarms.
  *
  * @author hrickens
- * @author $Author: hrickens $
- * @version $Revision: 1.6 $
+ * @author $Author: jhatje $
+ * @version $Revision: 1.4.2.16 $
  * @since 26.03.2010
  */
 public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
@@ -46,7 +46,6 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
      */
     public LabelAlarmBehavior() {
         addInvisiblePropertyId(LabelModel.PROP_TEXTVALUE);
-        addInvisiblePropertyId(LabelModel.PROP_TEXT_UNIT);
         addInvisiblePropertyId(LabelModel.PROP_PERMISSSION_ID);
     }
 
@@ -74,7 +73,6 @@ public class LabelAlarmBehavior extends AbstractDesyAlarmBehavior<LabelModel> {
 
     @Override
     protected void doProcessMetaDataChange(final LabelModel model, final MetaData metaData) {
-        model.setPropertyValue(LabelModel.PROP_TEXT_UNIT, metaData.getUnits());
     }
 
   }

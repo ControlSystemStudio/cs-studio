@@ -24,11 +24,7 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-//**import org.csstudio.sds.internal.rules.ParameterDescriptor;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-//**import org.csstudio.sds.model.DynamicsDescriptor;
 import org.csstudio.utility.adlparser.internationalization.Messages;
-//import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
@@ -64,14 +60,6 @@ public class ADLDynamicAttribute extends WidgetPart{
      * The Color rule.
      */
     private String _colorRule;
-  //**    /**
-  //**     * The dynamic attribute for a boolean.
-  //**     */
-  //**    private DynamicsDescriptor _adlBooleanDynamicAttribute;
-  //**    /**
-  //**     * The dynamic attribute for a color.
-  //**     */
-  //**    private DynamicsDescriptor _adlColorDynamicAttribute;
     /**
      * If the Dynamic Attribute a boolean Attribute.
      */
@@ -102,9 +90,15 @@ public class ADLDynamicAttribute extends WidgetPart{
      */
     @Override
     void init() {
-        name = new String("dynamic attribute");
+        name = String.valueOf("dynamic attribute");
         set_vis("static");
         set_isColorDefined(false);
+        _chan = String.valueOf("");
+        _chanb = String.valueOf("");
+        _chanc = String.valueOf("");
+        _chand = String.valueOf("");
+        _calc = String.valueOf("");
+
     }
     
     /**
@@ -133,7 +127,8 @@ public class ADLDynamicAttribute extends WidgetPart{
             String[] row = {parameter.getLine().replaceAll("\"", "").substring(head.length()+1)};
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$
-                _clr=FileLine.getIntValue(row[0]);
+            	//TODO catch if this is string discrete/alarm/static
+            	_clr=FileLine.getIntValue(row[0]);
                 set_isColorDefined(true);
             }else if(head.equals("vis")){ //$NON-NLS-1$
                 set_vis(FileLine.getTrimmedValue(row[0]));

@@ -23,7 +23,6 @@ import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.ui.Messages;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.osgi.util.NLS;
@@ -34,7 +33,7 @@ import org.eclipse.osgi.util.NLS;
  *  from RDB, then monitors JMS for changes,
  *  sends out acknowledgments or changes to JMS,
  *  signals listeneres about updates, ...
- *  
+ *
  *  @author Kay Kasemir, Xihui Chen
  */
 public class AlarmClientModel
@@ -47,7 +46,7 @@ public class AlarmClientModel
 
     /** Name of this configuration, i.e. root element of the configuration tree */
 	private String config_name;
-    
+
     /** Names of all available configuration, i.e. all root elements */
     private String config_names[] = new String[0];
 
@@ -64,14 +63,14 @@ public class AlarmClientModel
 
     /** JMS Connection to server: alarm updates, send acknowledgment.
      *  May be <code>null</code> when we (re-)read the configuration.
-     *  
+     *
      *  SYNC: on communicator_lock for access.
      */
     private AlarmClientCommunicator communicator = null;
 
     /** Lock for <code>communicator</code> */
     final private Object communicator_lock = new Object();
-    
+
 	/** Root of the alarm tree.
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      *  Usually this would be the same as config.getConfigTree(),
@@ -79,7 +78,7 @@ public class AlarmClientModel
      *  that shows error messages
      */
     private AlarmTreeRoot config_tree;
-    
+
     /** Array of items which are currently in alarm
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
@@ -89,7 +88,7 @@ public class AlarmClientModel
      *  <br><b>SYNC:</b> Access needs to synchronize on <code>this</code>
      */
     private ArrayList<AlarmTreePV> acknowledged_alarms = new ArrayList<AlarmTreePV>();
-    
+
     /** Listeners who registered for notifications */
     final private CopyOnWriteArrayList<AlarmClientModelListener> listeners =
         new CopyOnWriteArrayList<AlarmClientModelListener>();
@@ -107,7 +106,7 @@ public class AlarmClientModel
 
         // Initial dummy alarm info
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
-        
+
         new ReadConfigJob(this).schedule();
     }
 
@@ -125,7 +124,7 @@ public class AlarmClientModel
         ++instance.references;
         return instance;
     }
-    
+
     /** Release the 'instance' */
     private static void releaseInstance()
     {
@@ -156,7 +155,7 @@ public class AlarmClientModel
             {
                 if (communicator != null)
                 {
-                	communicator.close();
+                	communicator.stop();
                 	communicator = null;
                 }
             }
@@ -191,10 +190,10 @@ public class AlarmClientModel
     {
     	return config_name;
     }
-    
+
     /** Load a new alarm configuration.
      *  Ignored if the 'new' configuration name matches the current name.
-     *  
+     *
      *  @param new_root_name Name of configuration to load
      *  @param listener Listener that's notified when done
      */
@@ -205,31 +204,31 @@ public class AlarmClientModel
         {
         	if (new_root_name.equals(config_name))
         		return;
-        	
+
         	// Update config. name
         	config_name = new_root_name;
         }
-    	
+
     	// Update GUI with 'empty' model
         createPseudoAlarmTree(Messages.AlarmClientModel_NotInitialized);
         fireNewConfig();
-    	
+
     	// Clear JMS communicator because it uses topics of the old config. name
         synchronized (communicator_lock)
         {
 	    	if (communicator != null)
 	    	{
 		    	// Close old communicator
-		    	communicator.close();
+		    	communicator.stop();
 		    	communicator = null;
 	    	}
         }
-        
+
         // Load new configuration:
         // Create new JMS communicator, read from RDB, fire events, ...
     	new ReadConfigJob(this, listener).schedule();
     }
-    
+
     /** @return <code>true</code> if model allows write access
      *          (acknowledge, update config)
      */
@@ -249,7 +248,7 @@ public class AlarmClientModel
     {
         listeners.remove(listener);
     }
-    
+
     /** Read alarm configuration.
      *  May be invoked from ReadConfigJob.
      *  @param monitor Progress monitor (has not been called)
@@ -271,7 +270,7 @@ public class AlarmClientModel
 		        // read the whole configuration.
 		    	try
 		    	{
-			    	communicator = new AlarmClientCommunicator(allow_write, this);
+			    	communicator = new AlarmClientCommunicator(this);
 			        communicator.start();
 		    	}
 		    	catch (Exception ex)
@@ -285,7 +284,7 @@ public class AlarmClientModel
 	        	communicator.setQueueMode(true);
 	        }
 	        comm = communicator;
-        }        
+        }
         // Wait for JMS connection
         int wait = 0;
         while (!comm.isConnected())
@@ -384,7 +383,7 @@ public class AlarmClientModel
         fireNewConfig();
         monitor.done();
     }
-    
+
     /** @return Name of JMS server or some text that indicates
      *          disconnected state. For information, not to determine
      *          exact connection state.
@@ -398,7 +397,7 @@ public class AlarmClientModel
         }
         return "No Communicator"; //$NON-NLS-1$
     }
-    
+
     /** Invoked by AlarmClientCommunicator whenever an 'IDLE'
      *  message was received from the server
      *  @param maintenance_mode
@@ -434,7 +433,7 @@ public class AlarmClientModel
     {
         return maintenance_mode;
     }
-    
+
     /** Send request to enable/disable maintenance mode to alarm server
      *  @param maintenance <code>true</code> to enable
      */
@@ -452,7 +451,7 @@ public class AlarmClientModel
     {
         return config_tree;
     }
-    
+
     /** Get the currently active alarms.
      *  <p>
      *  @return Array of active alarms. May be empty, but not <code>null</code>.
@@ -472,7 +471,7 @@ public class AlarmClientModel
         final AlarmTreePV array[] = new AlarmTreePV[acknowledged_alarms.size()];
         return acknowledged_alarms.toArray(array);
     }
-    
+
     /** Add a component to the model and RDB
      *  @param root_or_component Root or Component under which to add the component
      *  @param name Name of the new component
@@ -636,7 +635,7 @@ public class AlarmClientModel
      *  @param pv Existing PV
      *  @param new_path_and_pv Complete path, including PV name, of PV-to-create
      *  @throws Exception on error in new path, duplicate PV name, error while
-     *          adding new PV 
+     *          adding new PV
      */
     @SuppressWarnings("nls")
     public void duplicatePV(final AlarmTreePV pv, final String new_path_and_pv) throws Exception
@@ -658,7 +657,7 @@ public class AlarmClientModel
             final String new_name = new_pieces[new_pieces_len - 1];
             if (new_name.equals(pv.getName()))
                 throw new Exception("New PV name must differ from existing PV name");
-            
+
             // Locate parent item
             final AlarmTree new_parent =
                 config.getAlarmTree().getItemByPath(new_path);
@@ -666,7 +665,7 @@ public class AlarmClientModel
                 throw new Exception("Cannot locate parent entry: " + new_path);
             if (! (new_parent instanceof AlarmTreeComponent))
                 throw new Exception("Parent entry has wrong type: " + new_path);
-            
+
             // Add new PV
             final AlarmTreePV new_pv =
                 config.addPV((AlarmTreeComponent)new_parent, new_name);
@@ -737,7 +736,7 @@ public class AlarmClientModel
 	/** Update the enablement of a PV in model.
      *  <p>
      *  Called by AlarmUpdateCommunicator, i.e. from JMS thread.
-     *  
+     *
      *  @param name PV name
      *  @param enabled Enabled?
      */
@@ -769,28 +768,24 @@ public class AlarmClientModel
 	/** Update the state of a PV in model.
      *  <p>
      *  Called by AlarmUpdateCommunicator, i.e. from JMS thread.
-     *  
-     *  @param name PV name
-     *  @param current_severity Current severity of PV
-     *  @param current_message Current PV message
-     *  @param severity Alarm severity
-     *  @param message Alarm message
-     *  @param value Value that triggered the update
-     *  @param timestamp Time stamp
+     *
+     *  @param into Alarm update info
      */
-    void updatePV(final String name, final SeverityLevel current_severity,
-            final String current_message,
-            final SeverityLevel severity, final String message,
-            final String value,
-            final ITimestamp timestamp)
+    void updatePV(final AlarmUpdateInfo info)
     {
+        // Update should contain PV name
+        String name = info.getNameOrPath();
+        if (AlarmTreePath.isPath(name))
+            name = AlarmTreePath.getName(name);
         synchronized (this)
         {
             server_alive = true;
             final AlarmTreePV pv = findPV(name);
             if (pv != null)
             {
-                pv.setAlarmState(current_severity, current_message, severity, message, value, timestamp);
+                pv.setAlarmState(info.getCurrentSeverity(), info.getCurrentMessage(),
+                        info.getSeverity(), info.getMessage(),
+                        info.getValue(), info.getTimestamp());
                 return;
             }
         }

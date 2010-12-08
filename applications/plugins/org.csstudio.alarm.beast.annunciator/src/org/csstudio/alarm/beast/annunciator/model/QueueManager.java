@@ -11,7 +11,9 @@ import org.csstudio.utility.speech.Annunciator;
 import org.csstudio.utility.speech.AnnunciatorFactory;
 import org.csstudio.utility.speech.Translation;
 
-/** Queue Manager for the JMS-to-speech tool, messages are read from the queue
+/** Queue Manager for the JMS-to-speech tool.
+ *  Reads messages from queue, annunciates them, notifies listener.
+ *  
  *  @author Katia Danilova
  *  @author Delphy Armstrong
  *  @author Kay Kasemir
@@ -34,7 +36,7 @@ public class QueueManager implements Runnable
     private volatile boolean run = true;
    
     /** Initialize Queue Manager
-     *  @param listener Listener
+     *  @param listener Listener to notify about progress
      *  @param queue SpeechPriorityQueue where the messages and Severity information will arrive
      *  @param translations Translations to use or <code>null</code>
      *  @param threshold max. number of queues messages to allow
@@ -96,9 +98,10 @@ public class QueueManager implements Runnable
                     // Exit requested?
                     if (!run)
                         return;
-                    // Log and speak message off queue
-                    listener.performedAnnunciation(qc);
+                    // Speak message off queue
                     speech.say(message);
+                    // .. then notify listener
+                    listener.performedAnnunciation(qc);
 
                     // See if the set threshold for messages waiting in the
                     // queue has been exceeded.
@@ -111,18 +114,18 @@ public class QueueManager implements Runnable
                             qc = queue.poll();
                             if (qc.isStandoutMessage())
                             {
-                                // Log and speak message off queue
+                                // Speak message off queue, then notify listener
                                 message = qc.getMessage();
-                                listener.performedAnnunciation(qc);
                                 speech.say(message);
+                                listener.performedAnnunciation(qc);
                             }
                             else
                                 ++flurry;
                         }
                         final String more = "There are " + flurry
                             + " more messages";
-                        listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
                         speech.say(more);
+                        listener.performedAnnunciation(new AnnunciationMessage(Severity.forInfo(), more));
                     }
                 }
             }

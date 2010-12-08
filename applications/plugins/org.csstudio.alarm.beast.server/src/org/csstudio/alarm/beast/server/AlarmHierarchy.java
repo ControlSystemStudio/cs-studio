@@ -20,16 +20,16 @@ public class AlarmHierarchy
 {
 	/** Parent element, <code>null</code> for root */
 	final protected AlarmHierarchy parent;
-	
+
 	/** Name of the alarm */
 	final private String name;
 
 	/** RDB ID */
 	final private int id;
-	
+
     /** Full path name of this item. */
     final private String path_name;
-	
+
     /** Child entries in the alarm tree */
 	private AlarmHierarchy children[] = new AlarmHierarchy[0];
 
@@ -66,7 +66,7 @@ public class AlarmHierarchy
 		// Set initial severity based on children that were just assigned
 		maximizeSeverity();
 	}
-	
+
     /** @return Full path name to this item, including the item name itself */
     public String getPathName()
     {
@@ -107,7 +107,10 @@ public class AlarmHierarchy
 
     /** Recursively update alarm hierarchy:
      *  Update this node's severity from children,
-     *  then trigger update of parent
+     *  then trigger update of parent.
+     *
+     *  The hierarchical alarm severity is only used for debug purposes.
+     *  Clients determine it locally based on PV state updates.
      */
     protected void maximizeSeverity()
     {
@@ -125,10 +128,6 @@ public class AlarmHierarchy
 
     	alarm_severity = max;
 
-    	// TODO Check if this node is configured to publish alarm updates
-    	// (after a timeout) and if so, do it.
-    	// System.out.println(getPathName() + " changes from " + old.name() + " to " + max.name());
-    	
     	// Percolate change up to parent
     	if (parent != null)
     		parent.maximizeSeverity();
@@ -140,7 +139,7 @@ public class AlarmHierarchy
 	    return alarm_severity;
     }
 
-	/** Dump alarm hierarchy recursively for debugging 
+	/** Dump alarm hierarchy recursively for debugging
 	 *  @param out PrintStream
 	 */
     public void dump(final PrintStream out)
@@ -163,7 +162,7 @@ public class AlarmHierarchy
 			child.check();
 		}
     }
-    
+
     /** @return Debug representation */
 	@Override
 	public String toString()

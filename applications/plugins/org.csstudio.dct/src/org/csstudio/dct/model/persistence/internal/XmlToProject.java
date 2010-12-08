@@ -13,11 +13,11 @@ import org.csstudio.dct.model.IElement;
 import org.csstudio.dct.model.IFolder;
 import org.csstudio.dct.model.IPropertyContainer;
 import org.csstudio.dct.model.IRecord;
-import org.csstudio.dct.model.commands.ChangeDbdFileCommand;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Instance;
 import org.csstudio.dct.model.internal.Parameter;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.internal.Prototype;
 import org.csstudio.dct.model.internal.Record;
 import org.csstudio.dct.model.internal.RecordFactory;
@@ -74,13 +74,9 @@ public final class XmlToProject {
 		determinePreconditions(root);
 
 		// .. create the project
-		UUID id = getIdFromXml(root);
-		project = new Project(root.getAttributeValue("name"), id);
-		project.setIoc(root.getAttributeValue("ioc", ""));
-		String dbdPath = root.getAttributeValue("dbd");
-		new ChangeDbdFileCommand(project, dbdPath).execute();
+		project = ProjectFactory.createExistingDCTProject(root);
 		
-		modelElements.put(id, project);
+		modelElements.put(project.getId(), project);
 		preconditions.remove(root);
 
 		// .. create all other model elements
@@ -194,10 +190,10 @@ public final class XmlToProject {
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the folder
-		UUID id = getIdFromXml(xmlFolderElement);
+		UUID id = ProjectFactory.getIdFromXml(xmlFolderElement);
 
 		// .. the id of the model element that contains the prototype
-		UUID containerId = getIdFromXml(xmlFolderElement.getParentElement());
+		UUID containerId = ProjectFactory.getIdFromXml(xmlFolderElement.getParentElement());
 
 		// CREATE FOLDER
 		IFolder folder = new Folder(xmlFolderElement.getAttributeValue("name"), id);
@@ -244,10 +240,10 @@ public final class XmlToProject {
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the prototype
-		UUID id = getIdFromXml(xmlPrototypeElement);
+		UUID id = ProjectFactory.getIdFromXml(xmlPrototypeElement);
 		
 		// .. the id of the model element that contains the prototype
-		UUID containerId = getIdFromXml(xmlPrototypeElement.getParentElement());
+		UUID containerId = ProjectFactory.getIdFromXml(xmlPrototypeElement.getParentElement());
 
 		// CREATE PROTOTYPE
 		Prototype prototype = new Prototype(xmlPrototypeElement.getAttributeValue("name"), id);
@@ -295,11 +291,11 @@ public final class XmlToProject {
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the instance
-		UUID id = getIdFromXml(xmlInstanceElement);
+		UUID id = ProjectFactory.getIdFromXml(xmlInstanceElement);
 		// .. the id of the parent (another instance or a prototype)
 		UUID parentId = UUID.fromString(xmlInstanceElement.getAttributeValue("parent"));
 		// .. the id of the model element that contains the instance
-		UUID containerId = getIdFromXml(xmlInstanceElement.getParentElement());
+		UUID containerId = ProjectFactory.getIdFromXml(xmlInstanceElement.getParentElement());
 
 		// GET PARENT
 		// .. can be an instance or a prototype
@@ -380,10 +376,10 @@ public final class XmlToProject {
 
 		// DETERMINE IDENTIFIERS
 		// .. the id of the record
-		UUID id = getIdFromXml(xmlRecordElement);
+		UUID id = ProjectFactory.getIdFromXml(xmlRecordElement);
 
 		// .. the id of the model element that contains the record
-		UUID containerId =getIdFromXml(xmlRecordElement.getParentElement());
+		UUID containerId =ProjectFactory.getIdFromXml(xmlRecordElement.getParentElement());
 
 		// .. the id of the parent record
 		UUID parentRecordId = xmlRecordElement.getAttributeValue("parent")!=null?UUID.fromString(xmlRecordElement.getAttributeValue("parent")):null;
@@ -509,7 +505,7 @@ public final class XmlToProject {
 	@SuppressWarnings("unchecked")
 	void determinePreconditions(Element xmlElement) {
 		// only elements with an id may have preconditions
-		UUID id = getIdFromXml(xmlElement);
+		UUID id = ProjectFactory.getIdFromXml(xmlElement);
 
 		if (id != null) {
 			Set<UUID> conditions = new HashSet<UUID>();
@@ -518,7 +514,7 @@ public final class XmlToProject {
 			// be
 			// created before children in any case)
 			if (xmlElement.getParentElement() != null) {
-				UUID containerId = getIdFromXml(xmlElement.getParentElement());
+				UUID containerId = ProjectFactory.getIdFromXml(xmlElement.getParentElement());
 				assert containerId != null;
 				conditions.add(containerId);
 			}
@@ -576,11 +572,5 @@ public final class XmlToProject {
 //
 //		throw new IllegalArgumentException("Element is not created yet.");
 //	}
-	
-	private UUID getIdFromXml(Element xmlElement) {
-		String id = xmlElement.getAttributeValue("id");
-		UUID uuid = id!=null?UUID.fromString(id):null;
-		return uuid;
-	}
 
 }

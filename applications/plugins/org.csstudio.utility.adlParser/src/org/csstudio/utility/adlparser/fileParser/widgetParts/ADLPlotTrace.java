@@ -16,6 +16,13 @@ public class ADLPlotTrace extends WidgetPart {
 	public ADLPlotTrace(ADLWidget widgetPart) throws WrongADLFormatException {
 		super(widgetPart);
 	}
+	
+	/**
+	 * Default constructor
+	 */
+	public ADLPlotTrace(){
+		super();
+	}
 
 	@Override
 	public Object[] getChildren() {

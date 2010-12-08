@@ -23,3 +23,4 @@ Require-Bundle: org.junit4,
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-Vendor: Kay Kasemir <kasemirk@ornl.gov> - SNS
+Eclipse-ExtensibleAPI: true

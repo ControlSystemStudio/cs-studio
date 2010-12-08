@@ -18,9 +18,10 @@ import java.util.regex.Pattern;
  */
 class NameParser {
 
-    static final Pattern doublePattern = Pattern.compile("\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*");
-    static final Pattern commaSeparatedDoubles = Pattern.compile("\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*(,\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*)*");
-    static final Pattern functionAndParameter = Pattern.compile("(\\w+)(\\((\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*(,\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*)*)\\))?");
+    static final Pattern doubleParameter = Pattern.compile("\\s*([-+]?[0-9]*\\.?[0-9]+([eE][-+]?[0-9]+)?)\\s*");
+    static final Pattern commaSeparatedDoubles = Pattern.compile(doubleParameter + "(," + doubleParameter + ")*");
+    static final Pattern functionAndParameter = Pattern.compile("(\\w+)(\\(((" + commaSeparatedDoubles + ")?)\\))?");
+    static final Pattern functionAndStringParameter = Pattern.compile("(\\w+)(\\((\".*\")\\))?");
 
     /**
      * Parses a comma separated list of arguments and returns them as a list.
@@ -40,7 +41,7 @@ class NameParser {
         }
 
         // Parse parameters
-        Matcher matcher = doublePattern.matcher(string);
+        Matcher matcher = doubleParameter.matcher(string);
         List<Object> parameters = new ArrayList<Object>();
         while (matcher.find()) {
             String parameter = matcher.group();
@@ -60,14 +61,25 @@ class NameParser {
      */
     static List<Object> parseFunction(String string) {
         Matcher matcher = functionAndParameter.matcher(string);
-        if (!matcher.matches()) {
-            throw new IllegalArgumentException("Syntax error: function should be like xxx(num1, num2, ...) and was " + string);
+        // Match comma separate double list
+        if (matcher.matches()) {
+            List<Object> parameters = new ArrayList<Object>();
+            parameters.add(matcher.group(1));
+            parameters.addAll(parseParameters(matcher.group(3)));
+            return parameters;
         }
 
-        List<Object> parameters = new ArrayList<Object>();
-        parameters.add(matcher.group(1));
-        parameters.addAll(parseParameters(matcher.group(3)));
-        return parameters;
+        // Match string parameter
+        matcher = functionAndStringParameter.matcher(string);
+        if (matcher.matches()) {
+            List<Object> parameters = new ArrayList<Object>();
+            parameters.add(matcher.group(1));
+            String quotedString = matcher.group(3);
+            parameters.add(quotedString.substring(1, quotedString.length() - 1));
+            return parameters;
+        }
+
+         throw new IllegalArgumentException("Syntax error: function should be like xxx(num1, num2, ...) or xxx(\"string\") and was " + string);
     }
 
     /**
@@ -78,7 +90,7 @@ class NameParser {
      * @param string the function call
      * @return the function
      */
-    static SimFunction<?> createFunction(String string) {
+    static Simulation<?> createFunction(String string) {
         List<Object> parameters = parseFunction(string);
         StringBuilder className = new StringBuilder("org.epics.pvmanager.sim.");
         int firstCharPosition = className.length();

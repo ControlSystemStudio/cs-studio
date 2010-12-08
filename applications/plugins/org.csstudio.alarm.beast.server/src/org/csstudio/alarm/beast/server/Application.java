@@ -23,7 +23,7 @@ import org.eclipse.equinox.app.IApplicationContext;
  *  <p>
  *  When started with command-line argument "-console 4812", you can telnet
  *  to localhost 4812 and influence the application like this:
- *  
+ *
  *  help - list commands
  *  activeApps - show running apps (should be one)
  *  stopApp org.csstudio.alarm.server.application.0 - Stop that one app
@@ -50,28 +50,20 @@ public class Application implements IApplication
         System.out.println("JMS Server Topic:   " + Preferences.getJMS_AlarmServerTopic(config_name));
         System.out.println("JMS Client Topic:   " + Preferences.getJMS_AlarmClientTopic(config_name));
         System.out.println("JMS Talk Topic:     " + Preferences.getJMS_TalkTopic(config_name));
-        
-        final Talker talker = new Talker();
-        talker.start();
+        System.out.println("JMS Global Topic:   " + Preferences.getJMS_GlobalServerTopic());
+
         final WorkQueue work_queue = new WorkQueue();
         try
         {
-            final AlarmServer alarm_server = new AlarmServer(talker, work_queue);
-            // At this point we read the initial alarm configuration
-            talker.say(Messages.StartupMessage);
+            final AlarmServer alarm_server = new AlarmServer(work_queue);
             alarm_server.start();
             while (run)
-                work_queue.execute(500);
+                work_queue.perform_queued_commands(500);
             alarm_server.stop();
         }
         catch (Throwable ex)
         {
             ex.printStackTrace();
-        }
-        finally
-        {
-            talker.say("Alarm server exiting");
-            talker.close();
         }
         return IApplication.EXIT_OK;
     }

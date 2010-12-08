@@ -296,6 +296,16 @@
               id="org.csstudio.utility.quickstart.addtoquickstartaction"
               label="Add to quickstart"/>
      </objectContribution>
+     <objectContribution
+           adaptable="false"
+           id="org.csstudio.utility.quickstart.addtoquickstartplt"
+           nameFilter="*plt"
+           objectClass="org.eclipse.core.resources.IResource">
+        <action
+              class="org.csstudio.utility.quickstart.AddToQuickstartAction"
+              id="org.csstudio.utility.quickstart.addtoquickstartactionplt"
+              label="Add to quickstart"/>
+     </objectContribution>
   </extension>
      <extension
          point="org.eclipse.ui.preferencePages">
@@ -315,6 +325,14 @@
             file="toc.xml"
             primary="true">
       </toc>
+   </extension>
+   <extension
+         point="org.csstudio.platform.startupListener">
+      <startupService
+            class="org.csstudio.utility.quickstart.StartupServiceListener"
+            id="org.csstudio.utility.quickstart.startupService"
+            isHighPriority="False">
+      </startupService>
    </extension>  
 
 </plugin>

@@ -142,8 +142,6 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
             return;
         }
         final MapMessage map = (MapMessage) msg;
-        if (map == null)
-            return;
         // Extract info from map:
         // 'TEXT' is actual message
         // 'SEVERITY' is optional severity name of the message
@@ -154,9 +152,7 @@ public class JMSAnnunciator implements ExceptionListener, MessageListener
  			// Use low-priority default severity
  			if (sevr_text == null)
  			    sevr_text = "NONE";
- 			// Log and queue
-//            final String source = msg.getJMSDestination().toString();
-// 			CentralLogger.getInstance().getLogger(this).debug(source + ": " + text);
+ 			// Enqueue message text with severity
  			queue.add(Severity.fromString(sevr_text), text);
 		}
 		catch (JMSException ex)

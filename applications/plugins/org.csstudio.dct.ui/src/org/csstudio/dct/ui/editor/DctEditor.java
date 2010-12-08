@@ -21,6 +21,7 @@ import org.csstudio.dct.model.IPrototype;
 import org.csstudio.dct.model.IRecord;
 import org.csstudio.dct.model.internal.Folder;
 import org.csstudio.dct.model.internal.Project;
+import org.csstudio.dct.model.internal.ProjectFactory;
 import org.csstudio.dct.model.visitors.ProblemVisitor;
 import org.csstudio.dct.model.visitors.SearchVisitor;
 import org.csstudio.dct.model.visitors.ProblemVisitor.MarkableError;
@@ -84,7 +85,6 @@ import com.cosylab.naming.Criterion;
  * 
  */
 public final class DctEditor extends MultiPageEditorPart implements CommandStackListener {
-	public static final String FILE_EXTENSION = "css-dct";
 	private Project project;
 	private CommandStack commandStack;
 	private ISelectionChangedListener outlineSelectionListener;
@@ -142,7 +142,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 	public Project getProject() {
 		if (project == null) {
-			project = new Project("Project", UUID.randomUUID());
+			project = ProjectFactory.createNewDCTProject();
 			project.addMember(new Folder("Test"));
 		}
 
@@ -362,7 +362,7 @@ public final class DctEditor extends MultiPageEditorPart implements CommandStack
 
 		// .. fallback
 		if (project == null) {
-			project = new Project("New Project", UUID.randomUUID());
+			project = ProjectFactory.createNewDCTProject();
 		}
 
 		// .. refresh markers

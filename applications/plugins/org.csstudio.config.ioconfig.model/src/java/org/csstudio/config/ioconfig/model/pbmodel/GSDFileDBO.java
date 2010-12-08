@@ -27,6 +27,7 @@ package org.csstudio.config.ioconfig.model.pbmodel;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.annotation.Nonnull;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -161,6 +162,7 @@ public class GSDFileDBO {
 
 	/** @return the Name of gsdFile */
 	@Column(unique = true, nullable = false)
+	@Nonnull
 	public String getName() {
 		return _name;
 	}

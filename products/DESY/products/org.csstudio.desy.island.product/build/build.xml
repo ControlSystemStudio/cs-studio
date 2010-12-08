@@ -3,8 +3,8 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, buildLinux"/><!--buildLinux64, buildMac, buildSolaris"/> copyPlugins, pdeBuild, checkBuildFilePresent, updateConfiguration, hudsonUpdate"/>
--->	
+	<target name="build" depends="copyPlugins, buildWindows, buildLinux, buildMac, buildLinux64, buildSolaris"/>
+
 	<target name="buildWindows" depends="cleanup, pdeBuildWin, updateConfigWin, hudsonUpdateWin"/>
 	<target name="buildLinux" depends="cleanup, pdeBuildLin, updateConfigLin, hudsonUpdateLin"/>
 	<target name="buildLinux64" depends="cleanup, pdeBuildLin64, updateConfigLin64, hudsonUpdateLin64"/>
@@ -14,7 +14,7 @@
 	<!--
 		Debug output
 	-->
-	<!--
+	
 	<echo message="'workspaceLocation: ${workspaceLocation}"/>
 	<echo message="'e360TP: ${e360TP}"/>
 	<echo message="'buildDirectory: ${buildDirectory}"/>
@@ -27,7 +27,7 @@
 	<echo message="'buckminsterVersion: ${buckminsterEquinoxLauncherPluginVersion}"/>
 	<echo message="'buckminsterCquery: ${buckminsterCquery}"/>
     <echo message="${e360TP}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
-	-->
+	
 	
 	<!--
 	 Delete previous build directory and copy plugins from mercurial in
@@ -75,6 +75,20 @@
 			
 	<!--
 	    Headless Eclipse Build for Windows
+	-->
+
+<!--	<target name="pdeBuildWin">
+		<ant antfile="${base}/productBuild.xml">
+			<property name="baseLocation" value="${e360}"/>
+			<property name="configs" value="win32, win32, x86"/>
+<property file="build.properties"/>
+<property name="eclipse.pdebuild.scripts" value="${eclipse360}/plugins/org.eclipse.pde.build_3.6.0.v20100603/scripts"/>
+<property name="eclipse.pdebuild.templates" value="${eclipse360}/plugins/org.eclipse.pde.build_3.6.0.v20100603/templates"/>
+		</ant>
+	</target>-->
+
+	<!--
+	    Headless Eclipse Build for Linux
 	-->
 	<target name="pdeBuildWin">
 		<java classname="org.eclipse.equinox.launcher.Main" fork="true" failonerror="true">			
@@ -134,7 +148,7 @@
 			<arg value="-buildfile" />
 			<arg value="${base}/productBuild.xml" />
 			<arg value="-DbaseLocation=${e360TP}" />
-			<arg value="-Dconfigs=macosx, carbon, x86" />
+			<arg value="-Dconfigs=macosx, cocoa, x86" />
 			<classpath>
 				<pathelement location="${eclipse360}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 			</classpath>
@@ -199,7 +213,7 @@
 		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
+		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
 	</target>
 
 	<!--
@@ -238,7 +252,7 @@
 		Copy mac product to artifact folder from hudson
 	-->
 	<target name="hudsonUpdateMac">
-		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
+		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
 	</target>
 
 	<!--

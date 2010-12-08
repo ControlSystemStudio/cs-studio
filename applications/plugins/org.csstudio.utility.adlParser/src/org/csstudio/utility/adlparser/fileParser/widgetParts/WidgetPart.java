@@ -44,9 +44,6 @@ public abstract class WidgetPart {
     /**
      * The Widget that set the parameter from ADLWidget.
      */
-//**    protected AbstractWidgetModel _widgetModel;
-    
-//**    protected AbstractWidgetModel _parentWidgetModel;
 	protected String name = new String();
     /**
      * The default constructor.
@@ -56,14 +53,12 @@ public abstract class WidgetPart {
      * @throws WrongADLFormatException Wrong ADL format or untreated parameter found.
      */
     public WidgetPart(final ADLWidget widgetPart) throws WrongADLFormatException {
-//**        _widgetModel = parentWidgetModel;
-//**        if ((this instanceof ADLMonitor || this instanceof ADLDynamicAttribute || this instanceof ADLControl) &&!(parentWidgetModel instanceof PolygonModel || parentWidgetModel instanceof MenuButtonModel || parentWidgetModel instanceof RectangleModel)) {
-//**            WidgetInitializationService instance = WidgetInitializationService.getInstance();
-//**            instance.initialize(parentWidgetModel);
-//**        }
         init();
+        if (!widgetPart.getType().startsWith(getName())){
+        	throw new WrongADLFormatException("part type does not match widget name(part type, widget name): (" 
+        			+widgetPart.getType() + ", " + getName() + ")");
+        }
         parseWidgetPart(widgetPart);
-//**        generateElements();
     }
 
     public WidgetPart(){
@@ -84,22 +79,6 @@ public abstract class WidgetPart {
 
     abstract public Object[] getChildren();
 
-//**   /**
-  //**     * Set all property's to the Parent Widget Model.
-  //**     */
-  //**    abstract void generateElements();
-  //**
-  //**    public final void setParentWidgetModel(AbstractWidgetModel parentWidgetModel) {
-  //**        _widgetModel = parentWidgetModel;
-  //**    }
-  //**
-  //**    protected void uninit() {
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_COLOR, null);
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_STYLE, null);
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_BORDER_WIDTH, null);
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_BACKGROUND, null);
-  //**        _widgetModel.setDynamicsDescriptor(AbstractWidgetModel.PROP_COLOR_FOREGROUND, null);
-  //**    }
 
     public String getName(){
     	return name;

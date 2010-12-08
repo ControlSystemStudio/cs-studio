@@ -29,18 +29,18 @@ public class AlarmRDB
 {
     /** Alarm Server */
     final private AlarmServer server;
- 
+
     /** Connection to storage for configuration/state */
 	final private RDBUtil rdb;
 
 	/** RDB SQL statements */
 	final private SQL sql;
-	
+
     /** RDB connection. Used to check if the RDB reconnected */
     private Connection connection;
-	
+
 	final private String root_name;
-	
+
     /** Map of severities and severity IDs in RDB */
     final private SeverityMapping severity_mapping;
 
@@ -49,7 +49,7 @@ public class AlarmRDB
 
     /** Lazily (re-)created statement for updating the alarm state of a PV */
     private PreparedStatement updateStateStatement;
-    
+
 	public AlarmRDB(final AlarmServer server, final String url,
 			final String user, final String password, final String root_name) throws Exception
     {
@@ -153,7 +153,7 @@ public class AlarmRDB
         	children.toArray(new AlarmHierarchy[children.size()]);
         return child_array;
     }
-	
+
     /** Read PVs below a parent
      *  @param parent Parent node
      *  @throws Exception on error
@@ -164,7 +164,7 @@ public class AlarmRDB
 		final List<AlarmHierarchy> pvs = new ArrayList<AlarmHierarchy>();
 		// When trying to re-use this statement note the recursive access!
 		final PreparedStatement sel_pv_statement =
-            rdb.getConnection().prepareStatement(sql.sel_pvs_by_parent);   
+            rdb.getConnection().prepareStatement(sql.sel_pvs_by_parent);
         try
         {
             sel_pv_statement.setInt(1, parent.getID());
@@ -195,13 +195,13 @@ public class AlarmRDB
                 final int min_alarm_delay = result.getInt(7);
                 final int count = result.getInt(8);
                 final String filter = result.getString(9);
-                
+
                 // Decode current severity/status IDs, handling NULL as "Ok"
                 int severity_id = result.getInt(10);
                 final SeverityLevel current_severity = result.wasNull()
                     ? SeverityLevel.OK
                     : severity_mapping.getSeverityLevel(severity_id);
-                
+
                 int status_id = result.getInt(11);
                 final String current_status = result.wasNull()
                     ? ""
@@ -212,24 +212,27 @@ public class AlarmRDB
                 final SeverityLevel severity = result.wasNull()
                     ? SeverityLevel.OK
                     : severity_mapping.getSeverityLevel(severity_id);
-                
+
                 status_id = result.getInt(13);
                 final String status = result.wasNull()
                     ? ""
                     : message_mapping.findMessageById(status_id);
-                
+
                 // Alarm value, time
                 final String value = result.getString(14);
-                    
+
                 final Timestamp time = result.getTimestamp(15);
                 final ITimestamp timestamp = result.wasNull()
                     ? TimestampFactory.now()
                     : TimeWarp.getCSSTimestamp(time);
-                    
+
                 // Ignoring config. time from result.getTimestamp(16)
-                    
+
+                // TODO Get global_delay from
+                final int global_delay = AlarmServerPreferences.getGlobalAlarmDelay();
+
                 final AlarmPV pv = new AlarmPV(server, parent, id, name, description,
-                        enabled, latch, annunciate, min_alarm_delay, count, filter,
+                        enabled, latch, annunciate, min_alarm_delay, count, global_delay, filter,
                         current_severity, current_status, severity, status, value, timestamp);
                 pvs.add(pv);
             }
@@ -241,8 +244,8 @@ public class AlarmRDB
         }
         return pvs;
     }
-    
-    
+
+
     /** Read configuration for PV, update it from RDB
      *  @param pv AlarmPV to update
      * 	@throws Exception on error
@@ -291,7 +294,7 @@ public class AlarmRDB
         // Compared to receiving updates from PVs and sending them
         // to JMS clients, the (Oracle) RDB update dominates
         // the combined time spent in CPU usage and network I/O.
-        
+
         // These are usually quick accesses to local caches
         final int current_severity_id = severity_mapping.getSeverityID(current_severity);
         final int severity_id = severity_mapping.getSeverityID(severity);

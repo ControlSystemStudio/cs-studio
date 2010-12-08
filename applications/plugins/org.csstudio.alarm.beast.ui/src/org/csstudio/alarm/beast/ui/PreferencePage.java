@@ -91,7 +91,7 @@ public class PreferencePage extends FieldEditorPreferencePage
         // Must use SEPARATE_LABEL, otherwise GUI layout is broken
         // (bug in BooleanFieldEditor?)
         addField(new BooleanFieldEditor(Preferences.READONLY, Messages.Preferences_Readonly, BooleanFieldEditor.SEPARATE_LABEL, parent));
-        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_CHANGE, Messages.Preferences_ConfigChange, BooleanFieldEditor.SEPARATE_LABEL, parent));
+        addField(new BooleanFieldEditor(Preferences.ALLOW_CONFIG_SELECTION, Messages.Preferences_ConfigSelection, BooleanFieldEditor.SEPARATE_LABEL, parent));
     }
 
     /** Show restart message for any change */

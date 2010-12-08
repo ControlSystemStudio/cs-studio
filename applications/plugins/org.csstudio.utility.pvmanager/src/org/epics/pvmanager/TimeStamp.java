@@ -28,13 +28,6 @@ public class TimeStamp implements Comparable {
      */
     private static final TimeStamp base = TimeStamp.timestampOf(new Date());
     private static final long baseNano = System.nanoTime();
-    
-    /**
-     * Constant to convert epics seconds to UNIX seconds. It counts the number
-     * of seconds for 20 years, 5 of which leap years. It does _not_ count the
-     * number of leap seconds (which should have been 15).
-     */
-    private static long TS_EPOCH_SEC_PAST_1970=631152000; //7305*86400;
 
     /**
      * Unix timestamp
@@ -45,27 +38,12 @@ public class TimeStamp implements Comparable {
      * Nanoseconds past the timestamp. Must be 0 < nanoSec < 999,999,999
      */
     private final long nanoSec;
-    
-    /**
-     * Date object is created lazily. In multi-threaded environments,
-     * the object may be created twice, but it's guaranteed to be of the same
-     * value, so it should not cause problems.
-     */
-    private volatile Date date;
 
     private TimeStamp(long unixSec, long nanoSec) {
         if (nanoSec < 0 || nanoSec > 999999999)
             throw new IllegalArgumentException("Nanoseconds cannot be between 0 and 999,999,999");
         this.unixSec = unixSec;
         this.nanoSec = nanoSec;
-    }
-
-    /**
-     * Epics time; seconds from midnight 1/1/1990.
-     * @return epics time
-     */
-    public long getEpicsSec() {
-        return unixSec - TS_EPOCH_SEC_PAST_1970;
     }
 
     /**
@@ -82,17 +60,6 @@ public class TimeStamp implements Comparable {
      */
     public long getNanoSec() {
         return nanoSec;
-    }
-
-    /**
-     * Returns a new timestamp from EPICS time.
-     *
-     * @param epicsSec number of second in EPICS time
-     * @param nanoSec nanoseconds from the given second (must be 0 < nanoSec < 999,999,999)
-     * @return a new timestamp
-     */
-    public static TimeStamp epicsTime(long epicsSec, long nanoSec) {
-        return new TimeStamp(epicsSec + TS_EPOCH_SEC_PAST_1970, nanoSec);
     }
 
     /**
@@ -138,21 +105,12 @@ public class TimeStamp implements Comparable {
      * @return a date
      */
     public Date asDate() {
-        if (date == null)
-            prepareDate();
-        return date;
-    }
-
-    /**
-     * Prepares the date object
-     */
-    private void prepareDate() {
-        date = new Date((unixSec+TS_EPOCH_SEC_PAST_1970)*1000+nanoSec/1000000);
+        return new Date((unixSec)*1000+nanoSec/1000000);
     }
 
     @Override
     public int hashCode() {
-        return new Long(nanoSec).hashCode();
+        return Long.valueOf(nanoSec).hashCode();
     }
 
     @Override
@@ -235,6 +193,14 @@ public class TimeStamp implements Comparable {
         return unixSec + "." + nanoSec;
     }
 
+    /**
+     * Calculates the time passed from the reference to this timeStamp.
+     * The resulting duration is the absolute value, so it does not matter
+     * on which object the function is called.
+     *
+     * @param reference another time stamp
+     * @return the duration between the two timeStamps
+     */
     public TimeDuration durationFrom(TimeStamp reference) {
         long nanoSecDiff = reference.nanoSec - nanoSec;
         nanoSecDiff += (reference.unixSec - unixSec) * 1000000000;

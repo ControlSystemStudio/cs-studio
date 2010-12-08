@@ -55,6 +55,11 @@ import com.cosylab.util.ListenerList;
  */
 public abstract class AbstractPlug implements PlugContext
 {
+	/**
+	 * By default caching of proxy references is enabled.
+	 */
+	private static final boolean DEFAULT_CACHING_ENABLED=true;
+	
 	static class AbstractProxyHolder {
 		int count;
 		protected String id;
@@ -107,7 +112,7 @@ public abstract class AbstractPlug implements PlugContext
 	private Map<String, PropertyProxyHolder> propertyCache;
 	private Map<String, DirectoryProxyHolder> directoryCache;
 	private Map<String, DeviceProxyHolder> deviceCache;
-	private boolean cachingEnabled = true;
+	private boolean cachingEnabled = DEFAULT_CACHING_ENABLED;
 	private Properties configuration;
 	private Map<Class<?extends AbstractDevice>, Class<?extends AbstractDevice>> deviceImplementationClasses =
 		new HashMap<Class<?extends AbstractDevice>, Class<?extends AbstractDevice>>();
@@ -121,6 +126,7 @@ public abstract class AbstractPlug implements PlugContext
 	private Identifier identifier;
 	private Logger logger;
 	protected boolean debug = false;
+	// TODO (jpenning) no longer in use?
 	protected AbstractApplicationContext applicationContext;
 
 	/**
@@ -139,19 +145,7 @@ public abstract class AbstractPlug implements PlugContext
 	 */
 	protected AbstractPlug(Properties configuration)
 	{
-		super();
-		// at the moment we do not use weak reference
-		propertyCache = new HashMap<String, PropertyProxyHolder>(100);
-		directoryCache = new HashMap<String, DirectoryProxyHolder>(100);
-		deviceCache = new HashMap<String, DeviceProxyHolder>(100);
-
-		if (configuration == null) {
-			this.configuration = new Properties();
-		} else {
-			this.configuration = (Properties)configuration.clone();
-		}
-		
-		getLogger().info("'"+getPlugType()+"' started.");
+		this(configuration,DEFAULT_CACHING_ENABLED);
 	}
 
 	/**
@@ -160,8 +154,20 @@ public abstract class AbstractPlug implements PlugContext
 	     */
 	protected AbstractPlug(Properties configuration, boolean cachingEnabled)
 	{
-		this(configuration);
+		super();
+		// at the moment we do not use weak reference
+		propertyCache = new HashMap<String, PropertyProxyHolder>(100);
+		directoryCache = new HashMap<String, DirectoryProxyHolder>(100);
+		deviceCache = new HashMap<String, DeviceProxyHolder>(100);
 		this.cachingEnabled = cachingEnabled;
+
+		if (configuration == null) {
+			this.configuration = new Properties();
+		} else {
+			this.configuration = (Properties)configuration.clone();
+		}
+		
+		getLogger().info("'"+getPlugType()+"' started.");
 	}
 
 	/**

@@ -545,6 +545,13 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 * @see gov.aps.jca.event.GetListener#getCompleted(gov.aps.jca.event.GetEvent)
 	 */
 	public  void getCompleted(GetEvent ev) {
+		if (channel.getConnectionState()!= Channel.CONNECTED) {
+			/*
+			 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
+			 * In this case CTRL_DBR has nothing to do any more.
+			 */
+			return;
+		}
 		if (ev.getStatus() == CAStatus.NORMAL)
 			createCharacteristics(ev.getDBR());
 		else if (ev.getDBR() == null) {
@@ -567,6 +574,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 	 */
 	protected void createDefaultCharacteristics(boolean notify) {
 		synchronized (characteristics) {
+			
 			characteristics.put(PropertyCharacteristics.C_DESCRIPTION, "EPICS Channel '" + name + "'");
 			characteristics.put(PropertyCharacteristics.C_DISPLAY_NAME, name);
 			characteristics.put(PropertyCharacteristics.C_POSITION, new Double(0));
@@ -575,33 +583,51 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 
 			characteristics.put(SequencePropertyCharacteristics.C_SEQUENCE_LENGTH, new Integer(elementCount));
 
-			if (channel!=null) {
-				DBRType ft= channel.getFieldType();
-				characteristics.put("fieldType",ft);
+			if (channel != null 
+					&& channel.getConnectionState() == Channel.CONNECTED
+					&& getConnectionState() == ConnectionState.CONNECTED) {
 				
-				if (ft.isENUM()) {
-				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xF);
-				} else if (ft.isBYTE()) {
-					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0x8);
-				} else if (ft.isSHORT()) {
-					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFF);
-				} else {
+				try {
+
+					DBRType ft= channel.getFieldType();
+					characteristics.put("fieldType",ft);
+					
+					if (ft.isENUM()) {
+					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xF);
+					} else if (ft.isBYTE()) {
+						characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0x8);
+					} else if (ft.isSHORT()) {
+						characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFF);
+					} else {
+						characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
+					}
+
+					characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()));
+					characteristics.put(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
+					characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
+
+				} catch (IllegalStateException ex) {
+					/*
+					 * JCA channel was probably closed in the mean time, 
+					 * nothing to do.
+					 */
+
 					characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
+					
+					characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
+					characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
+					characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
 				}
-				
+
 			} else {
+
 				characteristics.put(NumericPropertyCharacteristics.C_RESOLUTION, 0xFFFF);
-			}
-			
-			if (channel != null && getConnectionState() == ConnectionState.CONNECTED) {
-				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.getAccess(channel.getReadAccess(),channel.getWriteAccess()));
-				characteristics.put(PropertyCharacteristics.C_HOSTNAME, channel.getHostName());
-				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS, channel.getElementCount());
-			} else {
+				
 				characteristics.put(PropertyCharacteristics.C_ACCESS_TYPE,AccessType.NONE);
 				characteristics.put(PropertyCharacteristics.C_HOSTNAME,"unknown");
 				characteristics.put(EpicsPropertyCharacteristics.EPICS_NUMBER_OF_ELEMENTS,1);
 			}
+
 			characteristics.put(PropertyCharacteristics.C_DATATYPE,PlugUtilities.getDataType(null));
 
 			//characteristics.put(NumericPropertyCharacteristics.C_SCALE_TYPE, );
@@ -630,6 +656,13 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 		synchronized (characteristics) {
 			createDefaultCharacteristics(false);
 	
+			if (channel ==null || channel.getConnectionState()!= Channel.CONNECTED) {
+				/*
+				 * It could happen that SimpleDAL broker does simple get and then destroys connection before CTRL_DBR request finishes.
+				 * In this case CTRL_DBR has nothing to do any more.
+				 */
+				return;
+			}
 
 			if (dbr.isCTRL())
 			{
@@ -1185,7 +1218,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 				executor.setRejectedExecutionHandler(new RejectedExecutionHandler() {
 
 					public void rejectedExecution(Runnable r, ThreadPoolExecutor executor) {
-						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
+//						plug.getLogger().warn("ThreadPoolExecutor has rejected the execution of a runnable.");
 					}
 				});
 			}
@@ -1235,7 +1268,7 @@ public class PropertyProxyImpl<T> extends AbstractProxyImpl implements
 					getChannel().get(DBRType.CTRL_STRING, 1, fallbackListener);
 					plug.flushIO();
 				} catch (CAException e) {
-					plug.getLogger().warn("Recovery from null DBR failed.", e);
+//					plug.getLogger().warn("Recovery from null DBR failed.", e);
 				}
 				
 			}

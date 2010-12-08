@@ -36,12 +36,12 @@ package org.csstudio.sds.ui.figures;
 
 import org.eclipse.draw2d.Figure;
 import org.eclipse.draw2d.Graphics;
-import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.swt.graphics.Color;
 
 /**
- * TODO (hrickens) :
+ * Adapter that paint a rhombus over the Widget. <br>
+ * For example, it used to be identified simulated values.
  *
  * @author hrickens
  * @author $Author: hrickens $
@@ -50,8 +50,7 @@ import org.eclipse.swt.graphics.Color;
  */
 public class RhombusAdapter implements IRhombusEquippedWidget {
 
-    private final Figure _figure;
-    private IFigure _rhombus;
+    private final Figure _rhombusFigure;
     Color _rhombusColor = new Color(null, 255,128,0);
     int _rhombusLineWidth = 2;
     private boolean _visible;
@@ -60,10 +59,11 @@ public class RhombusAdapter implements IRhombusEquippedWidget {
      * Constructor.
      */
     public RhombusAdapter(final Figure figure) {
-        _figure = figure;
+        _rhombusFigure = figure;
     }
 
-    public void setColor(final Color rhombusColor) {
+    @Override
+	public void setColor(final Color rhombusColor) {
         _rhombusColor = rhombusColor;
         refreshRhombus();
     }
@@ -71,7 +71,8 @@ public class RhombusAdapter implements IRhombusEquippedWidget {
     /**
      * @param rhombusLineWidth the rhombusLineWidth to set
      */
-    public void setRhombusLineWidth(final int rhombusLineWidth) {
+    @Override
+	public void setRhombusLineWidth(final int rhombusLineWidth) {
         _rhombusLineWidth = rhombusLineWidth;
         refreshRhombus();
     }
@@ -91,18 +92,19 @@ public class RhombusAdapter implements IRhombusEquippedWidget {
      */
     void refreshRhombus() {
         if(_visible) {
-//        _figure.remove(_rhombus);
+//        _rhombusFigure.remove(_rhombus);
 //        _rhombus = createRhombus();
         }
     }
 
-    public void paint(final Graphics graphics) {
+    @Override
+	public void paint(final Graphics graphics) {
         paint(graphics, true);
     }
 
     public void paint(final Graphics graphics, final boolean absolute) {
         if(_visible) {
-            Rectangle bounds = _figure.getBounds();
+            Rectangle bounds = _rhombusFigure.getBounds();
             int x = 0;
             int y = 0;
             if(absolute) {

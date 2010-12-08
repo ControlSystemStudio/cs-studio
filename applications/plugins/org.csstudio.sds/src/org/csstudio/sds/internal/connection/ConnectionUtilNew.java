@@ -21,6 +21,7 @@
  */
 package org.csstudio.sds.internal.connection;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.csstudio.platform.model.pvs.IProcessVariableAddress;
@@ -228,7 +229,19 @@ public final class ConnectionUtilNew {
 		// the pv ?
 		ValueType type = processVariable.getValueTypeHint();
 
-		// 2nd choice
+		// 2 nd choise from rule
+		/*
+		 * XXX hrickens 2010.11.10: ad as workarround for the DAL crash with
+		 * JNI. DAL crashed in case of wrong pv request. E.g.: get a String Pv
+		 * as Double.
+		 */
+		if (type == null) {
+			if (isStringRecord(processVariable)) {
+				type = ValueType.STRING;
+			}
+		}
+		
+		// 3nd choice
 		if (type == null) {
 			// take the type hint, provided
 			// by the widget
@@ -236,13 +249,30 @@ public final class ConnectionUtilNew {
 			type = property.getPropertyType().getTypeHint();
 		}
 
-		// 3rd choice, take double
+		// 4rd choice, take double
 		if (type == null) {
 			type = ValueType.DOUBLE;
 		}
 		return type;
 	}
 
+	private static boolean isStringRecord(IProcessVariableAddress processVariable) {
+		ArrayList<String> recordTails = SdsPlugin.getDefault().getRecordTails();
+		for (String recTail : recordTails) {
+			if (processVariable.getProperty().endsWith(recTail)) {
+				return true;
+			}
+		}
+		ArrayList<String> recordTailsRegExp = SdsPlugin.getDefault().getRecordTailsRegExp();
+		for (String recTailRegExp : recordTailsRegExp) {
+			if (processVariable.getProperty().matches(recTailRegExp)) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
 	static final RemoteInfo translate(final IProcessVariableAddress pv) {
 	    String cs = "";
 	    final String responsibleDalPlugId = pv.getControlSystem().getResponsibleDalPlugId();

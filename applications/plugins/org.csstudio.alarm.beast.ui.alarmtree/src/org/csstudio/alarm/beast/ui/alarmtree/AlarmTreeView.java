@@ -77,9 +77,9 @@ public class AlarmTreeView extends ViewPart
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
-        	if (Preferences.isConfigChangeAllowed())
+        	if (Preferences.isConfigSelectionAllowed())
         	{
-        		toolbar.add(new ChangeConfigurationAction(model));
+        		toolbar.add(new SelectConfigurationAction(model));
         		toolbar.add(new Separator());
         	}
             toolbar.add(new MaintenanceModeAction(model));

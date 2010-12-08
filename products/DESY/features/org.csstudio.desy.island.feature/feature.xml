@@ -37,6 +37,10 @@
          id="org.csstudio.desy.snl.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.desy.alarm.feature"
+         version="0.0.0"/>
+
    <plugin
          id="org.csstudio.startup"
          download-size="0"
