@@ -9,15 +9,16 @@ package org.csstudio.alarm.beast.ui;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.csstudio.platform.logging.CentralLogger;
-import org.eclipse.jface.dialogs.InputDialog;
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.osgi.util.NLS;
-import org.eclipse.swt.widgets.Shell;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
+import org.eclipse.jface.dialogs.InputDialog;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.window.Window;
+import org.eclipse.osgi.util.NLS;
+import org.eclipse.swt.widgets.Shell;
 
 /** Action that moves an alarm tree item
  *  @author Kay Kasemir
@@ -27,7 +28,7 @@ public class MoveItemAction extends AbstractUserDependentAction
 {
     private Shell shell;
     private AlarmClientModel model;
-    private List<AlarmTree> items;
+    private List<AlarmTreeItem> items;
 
     /** Initialize
      *  @param shell Shell
@@ -35,14 +36,14 @@ public class MoveItemAction extends AbstractUserDependentAction
      *  @param items PV to configure
      */
     public MoveItemAction(final Shell shell, final AlarmClientModel model,
-            final List<AlarmTree> items)
+            final List<AlarmTreeItem> items)
     {
         super(Messages.MoveItem,
                 Activator.getImageDescriptor("icons/move.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.items = items;
-        
+
         setEnabledWithoutAuthorization(true);
     	//authorization
     	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
@@ -52,19 +53,19 @@ public class MoveItemAction extends AbstractUserDependentAction
 	protected void doWork() {
 		if (items.size() <= 0)
             return;
-        
+
         if (!MessageDialog.openConfirm(shell, Messages.MoveItem,
                 NLS.bind(Messages.MoveConfirmationFmt,
                          items.size())))
             return;
 
-        
+
         final String path = items.get(0).getParent().getPathName();
         final InputDialog dlg = new InputDialog(shell, Messages.MoveItem,
                 Messages.MoveItemMsg, path, null);
-        if (dlg.open() != InputDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
         {
             try
             {

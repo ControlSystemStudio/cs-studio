@@ -20,6 +20,7 @@ import java.util.Map;
 import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.ITimestamp;
@@ -54,7 +55,7 @@ public class AlarmServer
     /** Hierarchical alarm configuration
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
      */
-	private AlarmHierarchy alarm_tree;
+	private TreeItem alarm_tree;
 
     /** All the PVs in the alarm_tree, sorted by name
      *  <B>NOTE: Access to tree, PV list and map must synchronize on 'this'</B>
@@ -228,6 +229,7 @@ public class AlarmServer
             // Sort PVs by name
             Arrays.sort(pv_list, new Comparator<AlarmPV>()
             {
+                @Override
                 public int compare(final AlarmPV pv1, final AlarmPV pv2)
                 {
                     return pv1.getName().compareTo(pv2.getName());
@@ -249,7 +251,7 @@ public class AlarmServer
      *  @param node Start node
      *  @param pvs Array to which located AlarmPVs are added
      */
-    private void findPVs(final AlarmHierarchy node, final List<AlarmPV> pvs)
+    private void findPVs(final TreeItem node, final List<AlarmPV> pvs)
     {
     	if (node instanceof AlarmPV)
     	{
@@ -333,6 +335,7 @@ public class AlarmServer
         // so that it won't delay the alarm server from updating
         work_queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -398,6 +401,7 @@ public class AlarmServer
         // Handle in separate queue & thread
         work_queue.execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try

@@ -55,6 +55,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             this.info = info;
         }
 
+        @Override
         public void run()
         {
             model.updatePV(info);
@@ -73,6 +74,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             this.enable = enable;
         }
 
+        @Override
         public void run()
         {
             model.updateEnablement(name, enable);
@@ -150,6 +152,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         // Handle MapMessages
         final MessageListener message_listener = new MessageListener()
         {
+            @Override
             public void onMessage(final Message message)
             {
                 if (message instanceof MapMessage)
@@ -227,6 +230,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -257,6 +261,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -285,6 +290,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -310,6 +316,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try

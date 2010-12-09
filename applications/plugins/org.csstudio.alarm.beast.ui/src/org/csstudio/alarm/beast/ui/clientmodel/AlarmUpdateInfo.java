@@ -63,7 +63,7 @@ public class AlarmUpdateInfo
      *  @param value
      *  @param timestamp
      */
-    private AlarmUpdateInfo(final String name_or_path,
+    public AlarmUpdateInfo(final String name_or_path,
             final SeverityLevel current_severity,
             final String current_message,
             final SeverityLevel severity, final String message,

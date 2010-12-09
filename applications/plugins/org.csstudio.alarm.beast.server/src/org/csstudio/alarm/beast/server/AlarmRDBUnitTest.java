@@ -7,6 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.apputil.test.TestProperties;
 import org.junit.Test;
 
@@ -14,7 +15,7 @@ import org.junit.Test;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmRDBTest
+public class AlarmRDBUnitTest
 {
 	@Test
 	public void readAlarmConfiguration() throws Exception
@@ -26,13 +27,13 @@ public class AlarmRDBTest
         	System.out.println("Skipped, no configuration.");
         	return;
         }
-        
+
 		final AlarmRDB rdb = new AlarmRDB(null,
 				settings.getString("alarm_rdb_url"),
 				settings.getString("alarm_rdb_user"),
 				settings.getString("alarm_rdb_password"),
 				alarm_root);
-		final AlarmHierarchy root = rdb.readConfiguration();
+		final TreeItem root = rdb.readConfiguration();
 		root.dump(System.out);
 	}
 }

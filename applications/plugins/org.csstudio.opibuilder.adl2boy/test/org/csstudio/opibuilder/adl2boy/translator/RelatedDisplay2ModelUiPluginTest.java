@@ -50,35 +50,52 @@ public class RelatedDisplay2ModelUiPluginTest extends TestCase {
 		// Standard test
 		{
 			OpenDisplayAction od = converter.createOpenDisplayAction(ADLTestObjects.makeRelatedDisplay1());
-			Path path = (Path)od.getPropertyValue(OpenDisplayAction.PROP_PATH);
-			assertTrue("FilePath " + path, path.toString().equals("myfile.opi"));
-			Boolean replace = (Boolean)od.getPropertyValue(OpenDisplayAction.PROP_REPLACE);
-			assertTrue("Replace display " + replace, replace.equals(true));
-			String label = od.getDescription();
-			assertTrue(" TestLabel " + label, "myLabel".equals(label));
+			validateOpenDisplayAction(od, "myfile.opi", "myLabel", "",
+					true);
 			
 		}
 		//test where there is no policy defined
 		{
 			OpenDisplayAction od = converter.createOpenDisplayAction(ADLTestObjects.makeRelatedDisplayNoPolicy());
-			Path path = (Path)od.getPropertyValue(OpenDisplayAction.PROP_PATH);
-			assertTrue("FilePath " + path, path.toString().equals("myfile.opi"));
-			Boolean replace = (Boolean)od.getPropertyValue(OpenDisplayAction.PROP_REPLACE);
-			assertTrue("Replace display " + replace, replace.equals(false));
-			String label = (String)od.getPropertyValue(OpenDisplayAction.PROP_DESCRIPTION);
-			assertTrue(" TestLabel " + label, "myLabel".equals(label));
-			
+			validateOpenDisplayAction(od, "myfile.opi", "myLabel", "P=iocT1:,M=m1:",
+					false);
 		}
 		//test where there are mixed set of arguments (from parent and not)
 		{
 			OpenDisplayAction od = converter.createOpenDisplayAction(ADLTestObjects.makeRelatedDisplayMixedArgs());
-			Path path = (Path)od.getPropertyValue(OpenDisplayAction.PROP_PATH);
-			assertTrue("FilePath " + path, path.toString().equals("path/myfile.opi"));
-			Boolean replace = (Boolean)od.getPropertyValue(OpenDisplayAction.PROP_REPLACE);
-			assertTrue("Replace display " + replace, replace.equals(false));
-			String label = (String)od.getPropertyValue(OpenDisplayAction.PROP_DESCRIPTION);
-			assertTrue(" TestLabel " + label, "my label".equals(label));
+			validateOpenDisplayAction(od, "path/myfile.opi", "my label", "T=temp:,PREC=3",
+					false);
 		}
+		//test where the argument list is empty
+		{
+			OpenDisplayAction od = converter.createOpenDisplayAction(ADLTestObjects.makeRelatedDisplayEmptyArgs());
+			validateOpenDisplayAction(od, "path/myfile.opi", "my label", "",
+					false);
+		}
+		//test where the argument list is not defined
+		{
+			OpenDisplayAction od = converter.createOpenDisplayAction(ADLTestObjects.makeRelatedDisplayNoArgs());
+			validateOpenDisplayAction(od, "path/myfile.opi", "my label", "",
+					false);
+		}
+	}
+
+	/**
+	 * @param pathExpect
+	 * @param labelExpect
+	 * @param argsExpect
+	 * @param replaceExpect
+	 */
+	private void validateOpenDisplayAction(OpenDisplayAction od, String pathExpect,
+			String labelExpect, String argsExpect, boolean replaceExpect) {
+		Path path = (Path)od.getPropertyValue(OpenDisplayAction.PROP_PATH);
+		assertTrue("FilePath " + path, path.toString().equals(pathExpect));
+		Boolean replace = (Boolean)od.getPropertyValue(OpenDisplayAction.PROP_REPLACE);
+		assertEquals("Replace display " + replace, new Boolean(replaceExpect), replace);
+		String label = (String)od.getPropertyValue(OpenDisplayAction.PROP_DESCRIPTION);
+		assertTrue(" TestLabel " + label, labelExpect.equals(label));
+		//TODO write a real test for the converted argument list
+		assertTrue(" Arguments " , argsExpect.equals(argsExpect) );
 	}
 
 	public void testAddMacrosToOpenDisplayAction() {

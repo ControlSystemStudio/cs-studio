@@ -22,7 +22,7 @@ import org.eclipse.jface.viewers.Viewer;
  *  But that resulted in flicker on Linux.
  *  Now the 'input' to the table is actually null, and <code>setAlarms()</code>
  *  is used to keep track of the alarms to display.
- *  
+ *
  *  @author Kay Kasemir
  */
 public class AlarmTableContentProvider implements ILazyContentProvider
@@ -30,7 +30,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     private TableViewer table_viewer;
     private AlarmTreePV[] alarms;
     private AlarmComparator comparator = new AlarmComparator(ColumnInfo.SEVERITY, false);
-    
+
     /** Update the list of alarms to display.
      *  @param alarms
      */
@@ -63,12 +63,14 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public void inputChanged(final Viewer viewer, final Object old_input, final Object new_input)
     {
         table_viewer = (TableViewer) viewer;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void updateElement(final int row)
     {
         if (row < alarms.length)
@@ -76,6 +78,7 @@ public class AlarmTableContentProvider implements ILazyContentProvider
     }
 
     /** {@inheritDoc} */
+    @Override
     public void dispose()
     {
         // Nothing to dispose

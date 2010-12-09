@@ -36,6 +36,7 @@ abstract public class JMSCommunicationWorkQueueThread extends JMSCommunicationTh
      *  @param task Task that will be executed by the communication thread.
      *  @see Executor
      */
+    @Override
     public void execute(final Runnable task)
     {
         queue.execute(task);

@@ -9,23 +9,20 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.SeverityLevel;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.platform.data.TimestampFactory;
+import org.junit.Test;
 
-/** A 'global' alarm
- *
- *  @author Kay Kasemir
- */
-public class GlobalAlarm extends AlarmTreeItem
+@SuppressWarnings("nls")
+public class GlobalAlarmTest
 {
-    // Similar to the AlarmTreePV, but doesn't track 'current' state,
-    // only 'alarm' state
-    GlobalAlarm(final AlarmTreeItem parent, final String name, final int id,
-            final SeverityLevel severity, final String message, final ITimestamp timestamp)
+    @Test
+    public void testGlobalAlarm() throws Exception
     {
-        super(parent, name, id);
-
-        setAlarmState(severity, severity, message);
-        if (parent != null)
-            parent.maximizeSeverity(null);
+        final AlarmTreeItem root = new AlarmTreeItem(null, "Root", 1);
+        final AlarmTreeItem area = new AlarmTreeItem(root, "Area", 2);
+        final AlarmTreeItem system = new AlarmTreeItem(area, "System", 3);
+        GlobalAlarm alarm = new GlobalAlarm(system, "TheAlarm", 4,
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        root.dump(System.out);
     }
 }

@@ -10,6 +10,8 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreeItem;
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.ui.Messages;
@@ -35,9 +37,11 @@ public class GlobalAlarmModel
      */
     private WorkQueue update_queue = null;
 
+    // TODO Track list of configurations which then contain the active alarms,
+    //      not just list of alarms
     /** Currently active global alarms.
      *
-     *  Synchronize on <code>this</code> for access.
+     *  Synchronize on <code>alarms</code> for access.
      */
     final private List<GlobalAlarm> alarms = new ArrayList<GlobalAlarm>();
 
@@ -59,6 +63,7 @@ public class GlobalAlarmModel
                     {   // Queue update to be executed once RDB info was read
                         update_queue.execute(new Runnable()
                         {
+                            @Override
                             public void run()
                             {
                                 GlobalAlarmModel.this.handleAlarmUpdate(info);
@@ -71,6 +76,15 @@ public class GlobalAlarmModel
                 GlobalAlarmModel.this.handleAlarmUpdate(info);
             }
         };
+    }
+
+    /** @return Currently active global alarms */
+    public GlobalAlarm[] getAlarms()
+    {
+        synchronized (alarms)
+        {
+            return alarms.toArray(new GlobalAlarm[alarms.size()]);
+        }
     }
 
     /** Read 'global' alarms from RDB
@@ -106,6 +120,10 @@ public class GlobalAlarmModel
         }
 
         // TODO Read global alarms from RDB
+        synchronized (alarms)
+        {
+            alarms.clear();
+        }
 
         // Apply queued updates
         final WorkQueue queued_updates;
@@ -127,24 +145,54 @@ public class GlobalAlarmModel
         // Update currently active alarms
         if (info.getSeverity() == SeverityLevel.OK)
         {   // Remove currently active alarm
-            for (int i=0;  i<alarms.size();  ++i)
-                if (alarms.get(i).getPath().equals(info.getNameOrPath()))
-                {
-                    alarms.remove(i);
-                    break;
-                }
+            if (! removeAlarm(info.getNameOrPath()))
+                    return;
         }
         else
-        {   // Add alarm
-            alarms.add(new GlobalAlarm(info));
+        {
+            // TODO check for existing alarm
+            // Add alarm
+            createNewAlarm(info);
         }
         fireAlarmUpdate();
     }
 
-    /** @return Currently active global alarms */
-    public synchronized GlobalAlarm[] getAlarms()
+    /** Remove alarm because it cleared
+     *  @param path Alarm path
+     *  @return <code>true</code> when removed, <code>false</code> when not found
+     */
+    private boolean removeAlarm(final String path)
     {
-        return alarms.toArray(new GlobalAlarm[alarms.size()]);
+        synchronized (alarms)
+        {
+            for (int i=0;  i<alarms.size();  ++i)
+                if (alarms.get(i).getPathName().equals(path))
+                {
+                    alarms.remove(i);
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    /** Create a temporary alarm: IDs -1, no guidance etc.
+     *  @param info Alarm info
+     */
+    private void createNewAlarm(final AlarmUpdateInfo info)
+    {
+        final String path[] = AlarmTreePath.splitPath(info.getNameOrPath());
+        AlarmTreeItem parent = null;
+        for (int i=0; i<path.length-1; ++i)
+            parent = new AlarmTreeItem(parent, path[i], -1);
+        final GlobalAlarm alarm = new GlobalAlarm(parent, path[path.length-1], -1,
+                info.getSeverity(),
+                info.getMessage(),
+                info.getTimestamp());
+        synchronized (alarms)
+        {
+            alarms.add(alarm);
+        }
+        // TODO schedule background task for fetching GUI detail
     }
 
     /** Inform listener of changes */

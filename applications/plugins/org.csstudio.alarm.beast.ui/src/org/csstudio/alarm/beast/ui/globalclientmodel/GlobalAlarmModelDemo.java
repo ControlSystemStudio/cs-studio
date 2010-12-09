@@ -11,14 +11,15 @@ import org.csstudio.apputil.test.TestProperties;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 
-/** JUnit test of the {@link GlobalAlarmModel}
+/** JUnit demo of the {@link GlobalAlarmModel}
  *
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class GlobalAlarmModelTest implements GlobalAlarmModelListener
+public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
 {
     // GlobalAlarmModelListener
+    @Override
     public void globalAlarmsChanged(final GlobalAlarmModel model)
     {
         System.out.println("\nGlobal alarms:");

@@ -385,6 +385,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
     /** {@inheritDoc}
      *  @see DelayedAlarmListener
      */
+    @Override
     public void delayedStateUpdate(final AlarmState delayed_state)
     {
         updateState(delayed_state, false);
@@ -438,6 +439,7 @@ public class AlarmLogic implements DelayedAlarmListener, GlobalAlarmListener
      *  {@inheritDoc}
      *  @see GlobalAlarmListener
      */
+    @Override
     public void updateGlobalState()
     {
         final AlarmState state;
