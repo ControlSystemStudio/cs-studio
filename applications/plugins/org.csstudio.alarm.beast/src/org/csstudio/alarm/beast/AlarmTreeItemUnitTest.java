@@ -38,7 +38,7 @@ public class AlarmTreeItemUnitTest
                 new GDCDataStructure("reset PV123", "caput PV123 Reset")
         };
 
-        final AlarmTreeRoot tree = new AlarmTreeRoot(0, "Root");
+        final AlarmTreeRoot tree = new AlarmTreeRoot("Root", 0);
 
         final AlarmTreeItem dtl = new AlarmTreeItem(tree, "DTL", 0);
         final AlarmTreeItem dtl_vac = new AlarmTreeItem(dtl, "Vacuum", 0);

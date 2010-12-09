@@ -828,7 +828,7 @@ public class AlarmClientModel
      */
     private synchronized void createPseudoAlarmTree(final String info)
     {
-        config_tree = new AlarmTreeRoot(-1, "Pseudo"); //$NON-NLS-1$
+        config_tree = new AlarmTreeRoot("Pseudo", -1); //$NON-NLS-1$
         new AlarmTreeItem(config_tree, info, 0);
         active_alarms.clear();
         acknowledged_alarms.clear();

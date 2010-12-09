@@ -171,7 +171,7 @@ public class ALHConverter
         System.out.println("Group '" + parent_group + "' / '" + name + "'");
         if (state == State.ROOT)
         {
-            root = new AlarmTreeRoot(0, name);
+            root = new AlarmTreeRoot(name, 0);
             state = State.GROUP;
             return;
         }

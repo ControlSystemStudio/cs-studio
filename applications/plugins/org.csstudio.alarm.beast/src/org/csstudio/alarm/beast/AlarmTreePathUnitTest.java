@@ -19,6 +19,7 @@ public class AlarmTreePathUnitTest
     @Test
     public void testPathCheck()
     {
+        assertEquals("/root", AlarmTreePath.makePath(null, "root"));
         assertTrue(AlarmTreePath.isPath("/path/to/some/pv"));
         assertEquals("pv", AlarmTreePath.getName("/path/to/some/pv"));
         assertFalse(AlarmTreePath.isPath("some_pv"));

@@ -74,13 +74,11 @@ public class TreeItem
         this.name = name;
         this.id = id;
         if (parent == null)
-        {
-            path_name = name;
-        }
+            path_name = AlarmTreePath.makePath(null, name);
         else
         {
-            parent.addChild(this);
             path_name = AlarmTreePath.makePath(parent.getPathName(), name);
+            parent.addChild(this);
         }
         hash_code = getPathName().hashCode();
     }
@@ -119,7 +117,7 @@ public class TreeItem
      */
     final public synchronized void setID(final int id)
     {
-        if (id >= 0)
+        if (this.id >= 0)
             throw new IllegalStateException("ID already set for " + toString());
         this.id = id;
     }

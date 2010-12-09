@@ -164,7 +164,7 @@ public class AlarmConfiguration
      */
     protected AlarmTreeRoot createAlarmTreeRoot(final int id, final String root_name)
     {
-        return new AlarmTreeRoot(id, root_name);
+        return new AlarmTreeRoot(root_name, id);
     }
 
     /** Get alarm tree configuration
@@ -192,7 +192,7 @@ public class AlarmConfiguration
             }
             final int id = result.getInt(1);
             final AlarmTreeRoot root = createAlarmTreeRoot(id, root_name);
-            config_reader.readGUIInfo(root);
+            config_reader.readGuidanceDisplaysCommands(root);
             readChildren(root);
             return root;
         }
@@ -238,7 +238,7 @@ public class AlarmConfiguration
             }
             if (config_time != null)
                 item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-            config_reader.readGUIInfo(item);
+            config_reader.readGuidanceDisplaysCommands(item);
         }
         result.close();
 
@@ -632,7 +632,7 @@ public class AlarmConfiguration
         pv.setDelay(result.getInt(5));
         pv.setCount(result.getInt(6));
         pv.setFilter(result.getString(7));
-        config_reader.readGUIInfo(pv);
+        config_reader.readGuidanceDisplaysCommands(pv);
     }
 
     /**Update guidance/displays/commands in RDB by id

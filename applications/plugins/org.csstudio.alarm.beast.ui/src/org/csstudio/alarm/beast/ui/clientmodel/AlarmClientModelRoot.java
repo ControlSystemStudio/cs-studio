@@ -26,7 +26,7 @@ public class AlarmClientModelRoot extends AlarmTreeRoot
     protected AlarmClientModelRoot(final int id, final String name,
             final AlarmClientModel model)
     {
-        super(id, name);
+        super(name, id);
         this.model = model;
     }
 
