@@ -110,7 +110,7 @@ public class CreateWinModAction extends Action {
 	    filterPath = dDialog.open();
 	    File path = new File(filterPath);
 	    pref.put(filterPathKey, filterPath);
-	    Object selectedNode = _pbtv.getSelectedNode().getFirstElement();
+	    Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
 	    if (selectedNode instanceof ProfibusSubnetDBO) {
 	        ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
 	        LOG.info("Create XML for Subnet: " + subnet);

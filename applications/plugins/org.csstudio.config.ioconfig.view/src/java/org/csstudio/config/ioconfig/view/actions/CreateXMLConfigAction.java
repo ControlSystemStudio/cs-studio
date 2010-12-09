@@ -113,7 +113,7 @@ public class CreateXMLConfigAction extends Action {
 		filterPath = dDialog.open();
 		final File path = new File(filterPath);
 		pref.put(filterPathKey, filterPath);
-		final Object selectedNode = _pbtv.getSelectedNode().getFirstElement();
+		final Object selectedNode = _pbtv.getSelectedNodes().getFirstElement();
 		if (selectedNode instanceof ProfibusSubnetDBO) {
 			final ProfibusSubnetDBO subnet = (ProfibusSubnetDBO) selectedNode;
 			LOG.info("Create XML for Subnet: " + subnet);
