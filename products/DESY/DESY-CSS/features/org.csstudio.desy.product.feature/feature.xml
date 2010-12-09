@@ -74,7 +74,15 @@
          version="0.0.0"/>
 
    <includes
-         id="org.csstudio.desy.platform.base"
+         id="org.csstudio.desy.platform.base.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.library.feature"
+         version="0.0.0"/>
+
+   <includes
+         id="org.csstudio.desy.librarydesy.feature"
          version="0.0.0"/>
 
    <plugin

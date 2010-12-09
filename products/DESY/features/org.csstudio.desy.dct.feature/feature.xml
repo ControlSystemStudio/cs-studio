@@ -25,13 +25,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.dct.desy"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.dct.treemodelexporter"
          download-size="0"
          install-size="0"
@@ -44,12 +37,6 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
-
-   <plugin
-         id="org.csstudio.samples"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
 
    <plugin
          id="org.csstudio.utility.epicsDataBaseCompare"
@@ -66,41 +53,7 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.utility.ldap.service.impl"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
-         id="org.csstudio.utility.treemodel"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.ldap.service"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.utility.namespace.utility"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.csstudio.dct.intro"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
-         id="org.csstudio.domain.desy"
          download-size="0"
          install-size="0"
          version="0.0.0"
