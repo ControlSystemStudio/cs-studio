@@ -10,7 +10,7 @@ package org.csstudio.alarm.beast.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.GDCDataStructure;
 import org.csstudio.alarm.beast.Preferences;
@@ -33,7 +33,7 @@ public class ContextMenuHelper
     private final ArrayList<GDCDataStructure> addedGuidance = new ArrayList<GDCDataStructure>();
     private final ArrayList<GDCDataStructure> addedDisplays = new ArrayList<GDCDataStructure>();
     private final ArrayList<GDCDataStructure> addedCommands = new ArrayList<GDCDataStructure>();
-    
+
     /** Add menu entries for guidance messages, related displays,
      *  and acknowledgment
      *  @param manager Manager of context menu
@@ -43,15 +43,15 @@ public class ContextMenuHelper
      */
     public ContextMenuHelper(final IMenuManager manager,
             final Shell shell,
-            final List<AlarmTree> items,
+            final List<AlarmTreeItem> items,
             final boolean allow_write)
     {
         // Determine how many PVs, with and w/o alarm we have
-        final ArrayList<AlarmTreePV> alarm_pvs = new ArrayList<AlarmTreePV>();
-        final ArrayList<AlarmTree> alarms = new ArrayList<AlarmTree>();
-        final ArrayList<AlarmTree> ack_alarms = new ArrayList<AlarmTree>();
-        
-        for (AlarmTree item : items)
+        final List<AlarmTreePV> alarm_pvs = new ArrayList<AlarmTreePV>();
+        final List<AlarmTreeItem> alarms = new ArrayList<AlarmTreeItem>();
+        final List<AlarmTreeItem> ack_alarms = new ArrayList<AlarmTreeItem>();
+
+        for (AlarmTreeItem item : items)
         {
             final SeverityLevel severity = item.getSeverity();
             if (severity.ordinal() > 0)
@@ -70,17 +70,17 @@ public class ContextMenuHelper
         // Duration of alarm if it's only one
         if (alarm_pvs.size() == 1)
             manager.add(new DurationAction(shell, alarm_pvs.get(0)));
-        
+
         // Add one menu entry per guidance
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             addGuidanceMessages(manager, shell, item);
         // Add one menu entry for each related display
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
             addRelatedDisplays(manager, shell, item);
         if (allow_write)
         {
             // Add one menu entry for each command
-            for (AlarmTree item : items)
+            for (AlarmTreeItem item : items)
                 addCommands(manager, shell, item);
         }
         // In case there are any PVs in alarm,
@@ -95,18 +95,18 @@ public class ContextMenuHelper
                 manager.add(new UnAcknowledgeAction(ack_alarms));
         }
     }
-    
+
     /** Recursively add guidance messages
      *  @param manager Menu to which to add guidance entries
      *  @param shell Shell to use
      *  @param item Item who's displays to add, recursing to parent
      */
     private void addGuidanceMessages(final IMenuManager manager,
-            final Shell shell, final AlarmTree item)
+            final Shell shell, final AlarmTreeItem item)
     {
         if (item == null  ||  addedGuidance.size() > max_context_entries)
             return;
-        addGuidanceMessages(manager, shell, item.getParent());
+        addGuidanceMessages(manager, shell, item.getClientParent());
         for (GDCDataStructure guidance_entry : item.getGuidance())
         {	// avoid duplicates
         	if (addedGuidance.contains(guidance_entry))
@@ -129,11 +129,11 @@ public class ContextMenuHelper
      *  @param item Item who's displays to add, recursing to parent
      */
     private void addRelatedDisplays(final IMenuManager manager,
-            final Shell shell, AlarmTree item)
+            final Shell shell, AlarmTreeItem item)
     {
         if (item == null  ||  addedDisplays.size() > max_context_entries)
             return;
-        addRelatedDisplays(manager, shell, item.getParent());
+        addRelatedDisplays(manager, shell, item.getClientParent());
         for (GDCDataStructure display : item.getDisplays())
         {   // avoid duplicates
         	if (addedDisplays.contains(display))
@@ -159,11 +159,11 @@ public class ContextMenuHelper
      *  @param item Item who's displays to add, recursing to parent
      */
     private void addCommands(final IMenuManager manager,
-            final Shell shell, AlarmTree item)
+            final Shell shell, AlarmTreeItem item)
     {
         if (item == null  ||  addedCommands.size() > max_context_entries)
             return;
-        addCommands(manager, shell, item.getParent());
+        addCommands(manager, shell, item.getClientParent());
         for (GDCDataStructure command : item.getCommands())
         {   // avoid duplicates
         	if (addedCommands.contains(command))
@@ -176,6 +176,6 @@ public class ContextMenuHelper
                          new GDCDataStructure(Messages.MoreTag, Messages.MoreCommandsInfo)));
                  break;
              }
-    	}           
+    	}
     }
 }

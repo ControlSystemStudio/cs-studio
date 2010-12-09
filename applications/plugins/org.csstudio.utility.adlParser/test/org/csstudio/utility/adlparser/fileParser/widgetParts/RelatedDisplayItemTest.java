@@ -41,6 +41,26 @@ public class RelatedDisplayItemTest extends TestCase {
 			fail("This should Pass");
 		}
 		try {
+			rdItem = new RelatedDisplayItem(ADLTestObjects.setupRelDispEmptyArgs());
+			assertTrue( "Test Name ", rdItem.getName().startsWith("display"));
+			assertTrue( "Label " + rdItem.getLabel(), rdItem.getLabel().equals("my label"));
+			assertTrue( "FileName " + rdItem.getFileName(), rdItem.getFileName().equals("path/myfile.adl"));
+			assertTrue( "Args " + rdItem.getArgs(), rdItem.getArgs().equals(""));
+			assertFalse( "Policy " + rdItem.getPolicy(), rdItem.getPolicy().equals("replace display"));
+		} catch (WrongADLFormatException e) {
+			fail("This should Pass");
+		}
+		try {
+			rdItem = new RelatedDisplayItem(ADLTestObjects.setupRelDispNoArgs());
+			assertTrue( "Test Name ", rdItem.getName().startsWith("display"));
+			assertTrue( "Label " + rdItem.getLabel(), rdItem.getLabel().equals("my label"));
+			assertTrue( "FileName " + rdItem.getFileName(), rdItem.getFileName().equals("path/myfile.adl"));
+			assertTrue( "Args " + rdItem.getArgs(), rdItem.getArgs().equals(""));
+			assertFalse( "Policy " + rdItem.getPolicy(), rdItem.getPolicy().equals("replace display"));
+		} catch (WrongADLFormatException e) {
+			fail("This should Pass");
+		}
+		try {
 			rdItem = new RelatedDisplayItem(ADLTestObjects.setupRelDispUnkownElement());
 			fail("This should not Pass");
 		} catch (WrongADLFormatException e) {

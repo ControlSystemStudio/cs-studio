@@ -24,29 +24,11 @@
  */
 package org.csstudio.utility.adlparser.fileParser.widgetParts;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.io.File;
-
-import org.csstudio.platform.logging.CentralLogger;
-//**import org.csstudio.sds.components.model.WaveformModel;
-//**import org.csstudio.sds.model.AbstractWidgetModel;
-//**import org.csstudio.sds.model.ActionData;
-//**import org.csstudio.sds.model.WidgetProperty;
-//**import org.csstudio.sds.model.properties.actions.OpenDisplayActionModel;
-//**import org.csstudio.sds.model.properties.actions.OpenDisplayActionModelFactory;
-import org.csstudio.utility.adlparser.Activator;
-import org.csstudio.utility.adlparser.internationalization.Messages;
-//**import org.csstudio.utility.adlconverter.ui.preferences.ADLConverterPreferenceConstants;
-//**import org.csstudio.utility.adlparser.fileParser.ADLHelper;
 import org.csstudio.utility.adlparser.fileParser.ADLResource;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
-import org.eclipse.core.resources.IWorkspaceRoot;
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import org.csstudio.utility.adlparser.internationalization.Messages;
 
 /**
  * @author hrickens

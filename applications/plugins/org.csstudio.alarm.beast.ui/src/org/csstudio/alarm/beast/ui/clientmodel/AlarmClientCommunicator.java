@@ -8,7 +8,6 @@
 package org.csstudio.alarm.beast.ui.clientmodel;
 
 import java.net.InetAddress;
-import java.text.SimpleDateFormat;
 import javax.jms.MapMessage;
 import javax.jms.Message;
 import javax.jms.MessageConsumer;
@@ -19,11 +18,8 @@ import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.JMSAlarmMessage;
 import org.csstudio.alarm.beast.JMSCommunicationWorkQueueThread;
 import org.csstudio.alarm.beast.Preferences;
-import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.TimeoutTimer;
 import org.csstudio.alarm.beast.WorkQueue;
-import org.csstudio.platform.data.ITimestamp;
-import org.csstudio.platform.data.TimestampFactory;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.logging.JMSLogMessage;
 import org.csstudio.platform.security.SecurityFacade;
@@ -43,9 +39,6 @@ import org.csstudio.platform.security.User;
 @SuppressWarnings("nls")
 class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
 {
-    final protected SimpleDateFormat date_format =
-        new SimpleDateFormat(JMSLogMessage.DATE_FORMAT);
-
     /** Application name used when sending JMS messages */
     final private static String APPLICATION = "CSS";
 
@@ -55,38 +48,17 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
     /** Action to update a PV's state */
     private class UpdateAction implements Runnable
     {
-        final private SeverityLevel current_severity, severity;
-        final private String name, current_message, message, value;
-        final private ITimestamp timestamp;
+        final private AlarmUpdateInfo info;
 
-        public UpdateAction(final String name,
-                final SeverityLevel current_severity,
-                final String current_message,
-                final SeverityLevel severity, final String message,
-                final String value,
-                final ITimestamp timestamp)
+        public UpdateAction(final AlarmUpdateInfo info)
         {
-            this.name = name;
-            this.current_severity = current_severity;
-            this.current_message = current_message;
-            this.severity = severity;
-            this.message = message;
-            this.value = value;
-            this.timestamp = timestamp;
-        }
-
-        public void run()
-        {
-            model.updatePV(name, current_severity, current_message,
-                           severity, message, value, timestamp);
+            this.info = info;
         }
 
         @Override
-        public String toString()
+        public void run()
         {
-            return "Update " + name + " to " +
-               current_severity.getDisplayName() + "/" + current_message + "," +
-               severity.getDisplayName() + "/" + message;
+            model.updatePV(info);
         }
     }
 
@@ -102,6 +74,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             this.enable = enable;
         }
 
+        @Override
         public void run()
         {
             model.updateEnablement(name, enable);
@@ -179,6 +152,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         // Handle MapMessages
         final MessageListener message_listener = new MessageListener()
         {
+            @Override
             public void onMessage(final Message message)
             {
                 if (message instanceof MapMessage)
@@ -256,6 +230,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -286,6 +261,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -314,6 +290,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -339,6 +316,7 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             return;
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -360,7 +338,6 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
     {
         try
         {
-            final String name = message.getString(JMSLogMessage.NAME);
             final String text = message.getString(JMSLogMessage.TEXT);
             Runnable action = null;
 
@@ -371,13 +348,13 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             {
                 // Received a state update from server, reset timeout
                 timeout_timer.reset();
-                action = createAlarmUpdateAction(message, name);
+                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message));
                 model.updateServerState(false);
             }
             else if (JMSAlarmMessage.TEXT_STATE_MAINTENANCE.equals(text))
             {
                 timeout_timer.reset();
-                action = createAlarmUpdateAction(message, name);
+                action = new UpdateAction(AlarmUpdateInfo.fromMapMessage(message));
                 model.updateServerState(true);
             }
             // Idle messages in absence of 'real' traffic?
@@ -395,16 +372,21 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
             else if (JMSAlarmMessage.TEXT_ENABLE.equals(text))
             {
                 timeout_timer.reset();
+                final String name = message.getString(JMSLogMessage.NAME);
                 action = new EnableAction(name, true);
             }
             else if (JMSAlarmMessage.TEXT_DISABLE.equals(text))
             {
                 timeout_timer.reset();
+                final String name = message.getString(JMSLogMessage.NAME);
                 action = new EnableAction(name, false);
             }
             // Configuration change
             else if (JMSAlarmMessage.TEXT_CONFIG.equals(text))
+            {
+                final String name = message.getString(JMSLogMessage.NAME);
                 model.readConfig(name);
+            }
             // Debug trigger
             else if (JMSAlarmMessage.TEXT_DEBUG.equals(text))
                 model.dump();
@@ -427,28 +409,5 @@ class AlarmClientCommunicator extends JMSCommunicationWorkQueueThread
         {
             CentralLogger.getInstance().getLogger(this).error(ex);
         }
-    }
-
-    /** Create an <code>UpdateAction</code> for an alarm state change
-     *  @param message Message that contains info about state change
-     *  @param name Alarm PV
-     *  @return UpdateAction
-     *  @throws Exception on error
-     */
-    private Runnable createAlarmUpdateAction(final MapMessage message, final String name)
-            throws Exception
-    {
-        final SeverityLevel severity = SeverityLevel.parse(
-                message.getString(JMSLogMessage.SEVERITY));
-        final String status = message.getString(JMSAlarmMessage.STATUS);
-        final SeverityLevel current_severity = SeverityLevel.parse(
-                message.getString(JMSAlarmMessage.CURRENT_SEVERITY));
-        final String current_message = message.getString(JMSAlarmMessage.CURRENT_STATUS);
-        final String value = message.getString(JMSAlarmMessage.VALUE);
-        final String timetext = message.getString(JMSLogMessage.EVENTTIME);
-        final long millisecs = date_format.parse(timetext).getTime();
-        final ITimestamp timestamp = TimestampFactory.fromMillisecs(millisecs);
-        return new UpdateAction(name, current_severity, current_message,
-                severity, status, value, timestamp);
     }
 }

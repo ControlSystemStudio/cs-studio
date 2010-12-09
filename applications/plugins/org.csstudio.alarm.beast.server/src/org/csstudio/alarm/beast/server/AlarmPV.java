@@ -7,12 +7,14 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.server;
 
+import java.io.PrintStream;
 import java.util.Timer;
 import java.util.TimerTask;
 
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
+import org.csstudio.alarm.beast.TreeItem;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
 import org.csstudio.platform.data.IValue;
@@ -27,7 +29,7 @@ import org.eclipse.osgi.util.NLS;
  *  @author Kay Kasemir
  */
 @SuppressWarnings("nls")
-public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVListener, FilterListener
+public class AlarmPV extends TreeItem implements AlarmLogicListener, PVListener, FilterListener
 {
     /** Timer used to check for connections at some delay after 'start */
     final private static Timer connection_timer =
@@ -75,7 +77,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
      *  @throws Exception on error
      */
     public AlarmPV(final AlarmServer server,
-    		final AlarmHierarchy parent,
+    		final TreeItem parent,
     		final int id, final String name,
             final String description,
             final boolean enabled,
@@ -93,8 +95,6 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
             final ITimestamp timestamp) throws Exception
     {
     	super(parent, name, id);
-    	// PV has no child entries
-    	setChildren(new AlarmHierarchy[0]);
 
     	logic = new AlarmLogic(this, latching, annunciating, min_alarm_delay, count,
               new AlarmState(current_severity, current_message, "", timestamp),
@@ -111,7 +111,6 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
 	        pv = PVFactory.createPV(name);
 	        setEnablement(enabled, filter);
         }
-        alarm_severity = severity;
     }
 
     /** @return AlarmLogic used by this PV */
@@ -196,6 +195,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     }
 
     /** @see FilterListener */
+    @Override
     public void filterChanged(final double value)
     {
     	final boolean new_enable_state = value > 0.0;
@@ -217,6 +217,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     }
 
     /** @see PVListener */
+    @Override
     public void pvDisconnected(final PV pv)
     {
         // Also ignore the disconnect event that can result from stop()
@@ -228,6 +229,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     }
 
     /** @see PVListener */
+    @Override
     public void pvValueUpdate(final PV pv)
     {
     	// Inspect alarm state of received value
@@ -256,12 +258,14 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     }
 
 	/** AlarmLogicListener: {@inheritDoc} */
+    @Override
     public void alarmEnablementChanged(final boolean is_enabled)
     {
         server.sendEnablementUpdate(this, is_enabled);
     }
 
 	/** AlarmLogicListener: {@inheritDoc} */
+    @Override
     public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
     {
         if (log.isDebugEnabled())
@@ -271,12 +275,10 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
                     current.getSeverity(), current.getMessage(),
                     alarm.getSeverity(), alarm.getMessage(),
                     alarm.getValue(), alarm.getTime());
-        // Update alarm tree 'upwards' from this leaf
-        alarm_severity = alarm.getSeverity();
-        parent.maximizeSeverity();
     }
 
 	/** AlarmLogicListener: {@inheritDoc} */
+    @Override
     public void annunciateAlarm(final SeverityLevel level)
     {
         final String message;
@@ -296,6 +298,7 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
     }
 
 	/** AlarmLogicListener: {@inheritDoc} */
+    @Override
     public void globalStateChanged(final AlarmState alarm)
     {
         if (log.isDebugEnabled())
@@ -306,12 +309,20 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
                     alarm.getValue(), alarm.getTime());
     }
 
-	/** @return String representation for debugging (server 'dump') */
+
+    /** {@inheritDoc} */
+	@Override
+    protected void dump_item(final PrintStream out, final String indent)
+    {
+        out.println(indent + "* " + toString());
+    }
+
+    /** @return String representation for debugging (server 'dump') */
     @Override
     public String toString()
     {
         final StringBuilder buf = new StringBuilder();
-        buf.append(getPathName() + " [" + description + "] - ");
+        buf.append("'").append(getPathName()).append("' [").append(description).append("] - ");
         if (pv != null)
         {
 	        if (pv.isConnected())
@@ -326,9 +337,9 @@ public class AlarmPV extends AlarmHierarchy implements AlarmLogicListener, PVLis
         if  (logic.isLatching())
             buf.append("latching - ");
         if (logic.getDelay() > 0)
-            buf.append(logic.getDelay() + " sec delay - ");
+            buf.append(logic.getDelay()).append(" sec delay - ");
         if (filter != null)
-            buf.append(filter.toString() + " - ");
+            buf.append(filter.toString()).append(" - ");
         buf.append(logic.toString());
         return buf.toString();
     }

@@ -7,7 +7,6 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.csstudio.alarm.beast.AlarmTreePV;
@@ -29,7 +28,7 @@ public class SendToElogAction extends SendToElogActionHelper
     /** Initialize action
      *  @param alarms Alarms to acknowledge when action runs
      */
-    public SendToElogAction(final Shell shell, final ArrayList<AlarmTreePV> alarms)
+    public SendToElogAction(final Shell shell, final List<AlarmTreePV> alarms)
     {
         this.shell = shell;
         this.alarms = alarms;
@@ -42,7 +41,7 @@ public class SendToElogAction extends SendToElogActionHelper
         final StringBuilder selected_alarms = new StringBuilder();
         for (AlarmTreePV alarm : alarms)
             selected_alarms.append(alarm.getVerboseDescription());
-        
+
         try
         {
             final ElogDialog dialog = new ElogDialog(shell,

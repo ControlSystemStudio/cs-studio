@@ -37,6 +37,7 @@ public class WorkQueue implements Executor
      *  @param command Command to be executed
      *  @see Executor#execute(Runnable)
      */
+    @Override
     public void execute(final Runnable command)
     {
         synchronized (tasks)
@@ -51,7 +52,6 @@ public class WorkQueue implements Executor
      */
     public void perform_queued_commands()
     {
-        assertOnThread();
         Runnable task;
         // Execute all tasks on queue
         synchronized (tasks)
@@ -77,8 +77,8 @@ public class WorkQueue implements Executor
     }
 
     /** Perform queued commands. If there are none, wait a little, then check again.
-     *  Meant to be called in a 'main' loop, using the delay to keep
-     *  the loop from using all CPU, yet also not waiting indefinitely
+     *  Meant to be called in a 'main' loop, i.e. always from the same thread,
+     *  using the delay to keep the loop from using all CPU, yet also not waiting indefinitely
      *  to allow termination checks.
      *
      *  @param millisecs Time to wait

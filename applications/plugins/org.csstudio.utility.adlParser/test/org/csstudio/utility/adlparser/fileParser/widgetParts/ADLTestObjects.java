@@ -74,6 +74,31 @@ public class ADLTestObjects {
 		return object;
 	}
 
+	/**
+	 * 	Setup a display with no arguments
+	 * @return
+	 */
+	public static ADLWidget setupRelDispEmptyArgs() {
+		ADLWidget object = new ADLWidget("display[0]", null, 5);
+		object.addBody(new FileLine("label=my label", 6));
+		object.addBody(new FileLine("name=path/myfile.adl", 8));
+		object.addBody(new FileLine("args=", 9));
+	
+		return object;
+	}
+
+	/**
+	 * 	Setup a display with no arguments
+	 * @return
+	 */
+	public static ADLWidget setupRelDispNoArgs() {
+		ADLWidget object = new ADLWidget("display[0]", null, 5);
+		object.addBody(new FileLine("label=my label", 6));
+		object.addBody(new FileLine("name=path/myfile.adl", 8));
+	
+		return object;
+	}
+
 	public static RelatedDisplayItem makeRelatedDisplay1()  {
 		RelatedDisplayItem rd = null;
 		try {
@@ -100,6 +125,28 @@ public class ADLTestObjects {
 		RelatedDisplayItem rd = null;
 		try {
 			rd = new RelatedDisplayItem(setupRelDispMixedArgs());
+		} catch (WrongADLFormatException e) {
+			//We should not hit here since we are starting with a well known object
+			e.printStackTrace();
+		}
+		return rd;
+	}
+
+	public static RelatedDisplayItem makeRelatedDisplayNoArgs()  {
+		RelatedDisplayItem rd = null;
+		try {
+			rd = new RelatedDisplayItem(setupRelDispNoArgs());
+		} catch (WrongADLFormatException e) {
+			//We should not hit here since we are starting with a well known object
+			e.printStackTrace();
+		}
+		return rd;
+	}
+
+	public static RelatedDisplayItem makeRelatedDisplayEmptyArgs()  {
+		RelatedDisplayItem rd = null;
+		try {
+			rd = new RelatedDisplayItem(setupRelDispEmptyArgs());
 		} catch (WrongADLFormatException e) {
 			//We should not hit here since we are starting with a well known object
 			e.printStackTrace();

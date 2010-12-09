@@ -298,7 +298,9 @@ public class MonitorProxyImpl<T> extends RequestImpl<T> implements MonitorProxy,
 
 		DBR dbr = ev.getDBR();
 		
-		if(dbr==null || dbr.getValue()==null) {
+		if(dbr==null 
+				|| dbr.getValue()==null 
+				|| !ev.getStatus().isSuccessful()) {
 			
 			proxy.updateWithDBR(dbr);
 			
