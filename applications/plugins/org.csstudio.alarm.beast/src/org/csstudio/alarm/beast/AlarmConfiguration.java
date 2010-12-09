@@ -226,12 +226,12 @@ public class AlarmConfiguration
             result.getInt(3);
             if (result.wasNull())
             {   // Component (area, system), not a PV
-                item = new AlarmTreeItem(id, name, parent);
+                item = new AlarmTreeItem(parent, name, id);
                 recurse_items.add(item);
             }
             else
             {
-                final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
+                final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
                 pvs.put(name, pv);
                 config_reader.configurePVfromResult(pv, result, severity_mapping, message_mapping);
                 item = pv;
@@ -304,7 +304,7 @@ public class AlarmConfiguration
         //if added a root...
         if (parent == null)
             return createAlarmTreeRoot(id, name);
-        return new AlarmTreeItem(id, name, parent);
+        return new AlarmTreeItem(parent, name, id);
     }
 
     /** @return Next RDB ID for alarm component
@@ -379,7 +379,7 @@ public class AlarmConfiguration
             insertAsPV.close();
         }
 
-        final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
+        final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
         pvs.put(name, pv);
         return pv;
     }
@@ -393,8 +393,8 @@ public class AlarmConfiguration
      *  @throws Exception on error
      */
     public void configureItem(final AlarmTreeItem item,
-            final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
-            final List<GDCDataStructure> commands) throws Exception
+            final GDCDataStructure guidance[], final GDCDataStructure displays[],
+            final GDCDataStructure commands[]) throws Exception
     {
     	//update guidance, displays and commands
     	updateGDC(item.getID(), guidance, sql.delete_guidance_by_id, sql.insert_guidance);
@@ -405,7 +405,8 @@ public class AlarmConfiguration
     	final PreparedStatement statement =
     		rdb.getConnection().prepareStatement(sql.update_item_config_time);
 
-    	try {
+    	try
+    	{
     		final Timestamp config_time = new Timestamp(new Date().getTime());
     		statement.setTimestamp(1, config_time);
     		statement.setInt(2, item.getID());
@@ -413,11 +414,11 @@ public class AlarmConfiguration
     		rdb.getConnection().commit();
     		// Update item's config time after RDB commit succeeded
             item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-    	} finally {
+    	}
+    	finally
+    	{
     		statement.close();
     	}
-
-
     }
 
     /** Change a PV's configuration in RDB.
@@ -437,8 +438,8 @@ public class AlarmConfiguration
     public void configurePV(final AlarmTreePV pv, final String description,
         final boolean enabled, final boolean annunciate, final boolean latch,
         final int delay, final int count, final String filter,
-        final List<GDCDataStructure> guidance, final List<GDCDataStructure> displays,
-        final List<GDCDataStructure> commands) throws Exception
+        final GDCDataStructure guidance[], final GDCDataStructure displays[],
+        final GDCDataStructure commands[]) throws Exception
     {
         configureItem(pv, guidance, displays, commands);
         final PreparedStatement statement =
@@ -641,36 +642,42 @@ public class AlarmConfiguration
      * @param insert_gdc_sql The sql update sentence for inserting new GDC.
      * @throws SQLException
      */
-    private void updateGDC(final int id, final List<GDCDataStructure> gdcList,
-    		final String del_gdc_sql, final String insert_gdc_sql) throws Exception {
-
-    	final PreparedStatement deleteGDC =
-    		rdb.getConnection().prepareStatement(del_gdc_sql);
-    	final PreparedStatement insertGDC =
-			rdb.getConnection().prepareStatement(insert_gdc_sql);
-
-    		try {
-				deleteGDC.setInt(1, id);
-				deleteGDC.executeUpdate();
-				int order = 0;
-				if(gdcList != null && !gdcList.isEmpty()) {
-					for(GDCDataStructure gdc : gdcList) {
-						insertGDC.setInt(1, id);
-						insertGDC.setInt(2, order);
-						insertGDC.setString(3, gdc.getTitle());
-						insertGDC.setString(4, gdc.getDetails());
-						insertGDC.executeUpdate();
-						order++;
-					}
-				}
-				rdb.getConnection().commit();
-			} catch (Exception e) {
-				rdb.getConnection().rollback();
-				throw e;
-			} finally {
-				deleteGDC.close();
-				insertGDC.close();
-			}
+    private void updateGDC(final int id, final GDCDataStructure gdcList[],
+            final String del_gdc_sql, final String insert_gdc_sql) throws Exception
+    {
+        final PreparedStatement deleteGDC =
+            rdb.getConnection().prepareStatement(del_gdc_sql);
+        final PreparedStatement insertGDC =
+            rdb.getConnection().prepareStatement(insert_gdc_sql);
+        try
+        {
+            deleteGDC.setInt(1, id);
+            deleteGDC.executeUpdate();
+            int order = 0;
+            if (gdcList != null && gdcList.length > 0)
+            {
+                for(GDCDataStructure gdc : gdcList)
+                {
+                    insertGDC.setInt(1, id);
+                    insertGDC.setInt(2, order);
+                    insertGDC.setString(3, gdc.getTitle());
+                    insertGDC.setString(4, gdc.getDetails());
+                    insertGDC.executeUpdate();
+                    order++;
+                }
+            }
+            rdb.getConnection().commit();
+        }
+        catch (Exception e)
+        {
+            rdb.getConnection().rollback();
+            throw e;
+        }
+        finally
+        {
+            deleteGDC.close();
+            insertGDC.close();
+        }
     }
 
     /** Delete all guidance, displays, commands for an item

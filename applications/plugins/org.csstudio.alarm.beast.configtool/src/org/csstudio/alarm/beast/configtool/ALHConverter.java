@@ -179,7 +179,7 @@ public class ALHConverter
         if (parent == null)
             throw new Exception("Cannot find parent group '" + parent_group +
                     "' for group '" + name + "'");
-        current_group = new AlarmTreeItem(0, name, parent);
+        current_group = new AlarmTreeItem(parent, name, 0);
         current_pv = null;
     }
 
@@ -190,7 +190,7 @@ public class ALHConverter
         if (current_group == null)
             throw new Exception("Cannot find parent group '" + group_name +
                     "' for channel '" + name + "'");
-        current_pv = new AlarmTreePV(0, name, current_group);
+        current_pv = new AlarmTreePV(current_group, name, 0);
         current_pv.setLatching(true);
     }
 

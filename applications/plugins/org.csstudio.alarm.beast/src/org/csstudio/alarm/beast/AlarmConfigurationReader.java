@@ -104,10 +104,10 @@ public class AlarmConfigurationReader
 
     /**Get guidance from RDB by id
      * @param id The id of the item in alarmtree
-     * @return the guidance messages
+     * @return the guidance messages, never <code>null</code>
      * @throws Exception on error
      */
-    private List<GDCDataStructure> readGuidance(final int id) throws Exception
+    private GDCDataStructure[] readGuidance(final int id) throws Exception
     {
         final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
         if (sel_guidance_statement == null)
@@ -120,7 +120,7 @@ public class AlarmConfigurationReader
             final String details = result.getString(2);
             gdcList.add(new GDCDataStructure(title, details));
         }
-        return gdcList;
+        return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
 
     /**Get displays from RDB by id
@@ -128,7 +128,7 @@ public class AlarmConfigurationReader
      * @return the display links
      * @throws Exception on error
      */
-    private List<GDCDataStructure> readDisplays(final int id) throws Exception
+    private GDCDataStructure[] readDisplays(final int id) throws Exception
     {
         final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
         if (sel_displays_statement == null)
@@ -141,7 +141,7 @@ public class AlarmConfigurationReader
             final String details = result.getString(2);
             gdcList.add(new GDCDataStructure(title, details));
         }
-        return gdcList;
+        return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
 
     /**Get commands from RDB by id
@@ -149,7 +149,7 @@ public class AlarmConfigurationReader
      * @return the display links
      * @throws Exception on error
      */
-    private List<GDCDataStructure> readCommands(final int id) throws Exception
+    private GDCDataStructure[] readCommands(final int id) throws Exception
     {
         final List<GDCDataStructure> gdcList = new ArrayList<GDCDataStructure>();
         if (sel_commands_statement == null)
@@ -162,7 +162,7 @@ public class AlarmConfigurationReader
             final String details = result.getString(2);
             gdcList.add(new GDCDataStructure(title, details));
         }
-        return gdcList;
+        return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
 
     /** Read and set the GUI info (guidance, displays, commands)
@@ -206,10 +206,10 @@ public class AlarmConfigurationReader
             // Check PV's ID. If null, this is a component, not PV
             result.getInt(3);
             if (result.wasNull())
-                item = new AlarmTreeItem(id, name, parent);
+                item = new AlarmTreeItem(parent, name, id);
             else
             {
-                final AlarmTreePV pv = new AlarmTreePV(id, name, parent);
+                final AlarmTreePV pv = new AlarmTreePV(parent, name, id);
                 configurePVfromResult(pv, result, severity_mapping,
                         message_mapping);
                 item = pv;
