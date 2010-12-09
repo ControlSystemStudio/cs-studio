@@ -29,7 +29,7 @@ import org.eclipse.ui.console.MessageConsoleStream;
  *  <p>
  *  The executed command gets written to the console view.
  *  Errors are shown as popup dialog.
- *  
+ *
  *  @author Kay Kasemir
  */
 abstract public class AbstractExecuteAction extends Action
@@ -37,10 +37,10 @@ abstract public class AbstractExecuteAction extends Action
     final private static String CONSOLE_NAME = "Alarm Actions"; //$NON-NLS-1$
     final protected Shell shell;
     final protected String command;
-    
+
     /** CommandExecutorThread for the command, using the wait time
      *  from preferences, displaying errors as dialog.
-     *  
+     *
      *  JProfiler shows that this gets removed by the GC,
      *  but a java.lang.UnixProcess for the external process
      *  remains until the external program exits.
@@ -57,6 +57,7 @@ abstract public class AbstractExecuteAction extends Action
         {
             shell.getDisplay().asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     if (shell.isDisposed())
@@ -69,7 +70,7 @@ abstract public class AbstractExecuteAction extends Action
             });
         }
     }
-    
+
     /** Initialize
      *  @param shell Shell to use for error messages etc.
      *  @param icon_name Name of icon
@@ -85,7 +86,7 @@ abstract public class AbstractExecuteAction extends Action
         setText(label);
         setImageDescriptor(icon);
     }
-    
+
     /** {@inheritDoc} */
     @SuppressWarnings("nls")
     @Override
@@ -104,7 +105,7 @@ abstract public class AbstractExecuteAction extends Action
                          new Object[] { command, "-", ex.getMessage()}));
             return;
         }
-        
+
         final MessageConsoleStream console_out = getConsole().newMessageStream();
         console_out.println(getText() + ": (" + dir + ") '" + command + "'");
         try
@@ -115,16 +116,16 @@ abstract public class AbstractExecuteAction extends Action
         {
             // Ignored
         }
-        
+
         new ExecuteActionThread(dir).start();
     }
-    
+
     /** Get a console in the Eclipse Console View for dumping the output
      *  of invoked alarm actions.
      *  <p>
      *  Code based on
      *  http://wiki.eclipse.org/FAQ_How_do_I_write_to_the_console_from_a_plug-in%3F
-     *  
+     *
      *  @return MessageConsole, newly created or one that already existed.
      */
     private MessageConsole getConsole()

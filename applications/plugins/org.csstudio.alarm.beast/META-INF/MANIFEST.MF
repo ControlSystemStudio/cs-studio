@@ -13,4 +13,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.csstudio.platform.utility.rdb;bundle-version="1.3.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.csstudio.alarm.beast
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

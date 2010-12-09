@@ -7,7 +7,7 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.swt.widgets.Shell;
 import org.csstudio.platform.security.SecurityFacade;
@@ -24,7 +24,7 @@ public class AddComponentAction extends AbstractUserDependentAction
 {
     final private Shell shell;
     final private AlarmClientModel model;
-    final private AlarmTree parent;
+    final private AlarmTreeItem parent;
 
     /** Initialize action
      *  @param shell Shell
@@ -32,7 +32,7 @@ public class AddComponentAction extends AbstractUserDependentAction
      *  @param parent Parent component
      */
     public AddComponentAction(final Shell shell, final AlarmClientModel model,
-            final AlarmTree parent)
+            final AlarmTreeItem parent)
     {
         super(Messages.AddComponent, Activator.getImageDescriptor("icons/add.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
         this.shell = shell;
@@ -49,6 +49,6 @@ public class AddComponentAction extends AbstractUserDependentAction
 	@Override
 	protected void doWork()
 	{
-        new AddComponentDialog(shell, model, parent).open();		
+        new AddComponentDialog(shell, model, parent).open();
 	}
 }

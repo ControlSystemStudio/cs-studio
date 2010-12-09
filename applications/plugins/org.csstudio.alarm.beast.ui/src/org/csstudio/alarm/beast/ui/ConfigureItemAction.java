@@ -7,17 +7,18 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
+import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.security.SecurityFacade;
 import org.csstudio.platform.ui.security.AbstractUserDependentAction;
-import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.window.Window;
 import org.eclipse.osgi.util.NLS;
 import org.eclipse.swt.widgets.Shell;
 
@@ -30,7 +31,7 @@ public class ConfigureItemAction extends AbstractUserDependentAction
     private ISelectionProvider selection_provider;
     private Shell shell;
     private AlarmClientModel model;
-    private AlarmTree item;
+    private AlarmTreeItem item;
 
     /** Initialize
      *  @param shell Shell
@@ -38,14 +39,14 @@ public class ConfigureItemAction extends AbstractUserDependentAction
      *  @param item PV to configure
      */
     public ConfigureItemAction(final Shell shell, final AlarmClientModel model,
-            final AlarmTree item)
+            final AlarmTreeItem item)
     {
         super(Messages.ConfigureItem,
                 Activator.getImageDescriptor("icons/configure.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
         this.item = item;
-        
+
         setEnabledWithoutAuthorization(true);
     	//authorization
     	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
@@ -64,6 +65,7 @@ public class ConfigureItemAction extends AbstractUserDependentAction
         // Enable only when single item is selected
         selection_provider.addSelectionChangedListener(new ISelectionChangedListener()
         {
+            @Override
             public void selectionChanged(SelectionChangedEvent event)
             {
             	boolean oneSelected=(((IStructuredSelection)event.getSelection()).size() == 1);
@@ -72,25 +74,25 @@ public class ConfigureItemAction extends AbstractUserDependentAction
                 	//authorization
                 	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
                 }else {
-                	setEnabledWithoutAuthorization(false); 
+                	setEnabledWithoutAuthorization(false);
                 	setEnabled(false);
                 }
             }
         });
         setEnabled(false);
-        setEnabledWithoutAuthorization(false); 
+        setEnabledWithoutAuthorization(false);
     }
 
 
 	@Override
-	protected void doWork() {		
+	protected void doWork() {
 		if (selection_provider != null)
             item =
-                (AlarmTree) ((IStructuredSelection)selection_provider.getSelection()).getFirstElement();
+                (AlarmTreeItem) ((IStructuredSelection)selection_provider.getSelection()).getFirstElement();
         // else: Fixed item passed into constructor
-        
+
         final ItemConfigDialog dlg = new ItemConfigDialog(shell, item);
-        if (dlg.open() != ItemConfigDialog.OK)
+        if (dlg.open() != Window.OK)
             return;
         try
         {

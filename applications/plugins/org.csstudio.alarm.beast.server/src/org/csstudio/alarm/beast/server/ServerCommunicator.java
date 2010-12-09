@@ -105,6 +105,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
         client_consumer = createConsumer(Preferences.getJMS_AlarmClientTopic(config));
         client_consumer.setMessageListener(new MessageListener()
         {
+            @Override
             public void onMessage(final Message message)
             {
                 if (message instanceof MapMessage)
@@ -190,6 +191,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -216,6 +218,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -250,6 +253,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -291,12 +295,13 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
                 {
                     final MapMessage map = createAlarmMessage(JMSAlarmMessage.TEXT_STATE);
-                    map.setString(JMSLogMessage.NAME, pv.getName());
+                    map.setString(JMSLogMessage.NAME, pv.getPathName());
                     map.setString(JMSLogMessage.SEVERITY, alarm_severity.name());
                     map.setString(JMSAlarmMessage.STATUS,  alarm_message);
                     if (value != null)
@@ -320,6 +325,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 final String text = enabled ? JMSAlarmMessage.TEXT_ENABLE
@@ -355,6 +361,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
     {
         execute(new Runnable()
         {
+            @Override
             public void run()
             {
                 try
@@ -398,6 +405,7 @@ public class ServerCommunicator extends JMSCommunicationWorkQueueThread
             else if (JMSAlarmMessage.TEXT_CONFIG.equals(text))
                 work_queue.execute(new Runnable()
                 {
+                    @Override
                     public void run()
                     {
                         try

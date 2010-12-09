@@ -62,6 +62,7 @@ public class AlarmLogicHeadlessTest
         }
 
         // AlarmLogicListener
+        @Override
         public void alarmEnablementChanged(final boolean is_enabled)
         {
         	System.out.println(is_enabled ? "enabled" : "disabled");
@@ -69,18 +70,21 @@ public class AlarmLogicHeadlessTest
         }
 
         // AlarmLogicListener
+        @Override
         public void alarmStateChanged(final AlarmState current, final AlarmState alarm)
         {
             fired_update = true;
         }
 
         // AlarmLogicListener
+        @Override
         public void annunciateAlarm(final SeverityLevel level)
         {
             annunciated = true;
         }
 
         // AlarmLogicListener
+        @Override
         public void globalStateChanged(final AlarmState alarm)
         {
         	System.out.println(TimestampFactory.now() + ": Global alarm state: " + alarm);

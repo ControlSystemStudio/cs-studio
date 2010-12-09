@@ -58,6 +58,7 @@ public class AlarmTableView extends ViewPart
         // Arrange for model to be released
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.release();

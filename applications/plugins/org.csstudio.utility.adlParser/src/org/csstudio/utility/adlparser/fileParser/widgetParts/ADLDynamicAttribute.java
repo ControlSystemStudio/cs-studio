@@ -42,7 +42,7 @@ public class ADLDynamicAttribute extends WidgetPart{
     /**
      * The Color.
      */
-    private int _clr;
+    private String clrMode;
     /**
      * Visibility of the Widget.
      */
@@ -92,7 +92,8 @@ public class ADLDynamicAttribute extends WidgetPart{
     void init() {
         name = String.valueOf("dynamic attribute");
         set_vis("static");
-        set_isColorDefined(false);
+        setClrMode("static");
+//        set_isColorDefined(false);
         _chan = String.valueOf("");
         _chanb = String.valueOf("");
         _chanc = String.valueOf("");
@@ -128,8 +129,8 @@ public class ADLDynamicAttribute extends WidgetPart{
             head=head.trim().toLowerCase();
             if(head.equals("clr")){ //$NON-NLS-1$
             	//TODO catch if this is string discrete/alarm/static
-            	_clr=FileLine.getIntValue(row[0]);
-                set_isColorDefined(true);
+            	clrMode=FileLine.getTrimmedValue(row[0]);
+//                set_isColorDefined(true);
             }else if(head.equals("vis")){ //$NON-NLS-1$
                 set_vis(FileLine.getTrimmedValue(row[0]));
             }else if(head.equals("chan")){ //$NON-NLS-1$
@@ -168,7 +169,7 @@ public class ADLDynamicAttribute extends WidgetPart{
 	@Override
 	public Object[] getChildren() {
     	Object[] ret = new Object[4];
-		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, _clr);
+		ret[0] = new ADLResource(ADLResource.FOREGROUND_COLOR, clrMode);
 		ret[1] = new ADLResource(ADLResource.VISIBILITY, _vis);
 		ret[2] = new ADLResource(ADLResource.CHANNEL, _chan);
 		ret[2] = new ADLResource(ADLResource.CHANNELB, _chanb);
@@ -179,19 +180,27 @@ public class ADLDynamicAttribute extends WidgetPart{
 		return ret;
 	}
 
-	/**
-	 * @param _isColorDefined the _isColorDefined to set
-	 */
-	private void set_isColorDefined(boolean _isColorDefined) {
-		this._isColorDefined = _isColorDefined;
+	protected String getClrMode() {
+		return clrMode;
 	}
 
-	/**
-	 * @return the _isColorDefined
-	 */
-	public boolean isColorDefined() {
-		return _isColorDefined;
+	protected void setClrMode(String clrMode) {
+		this.clrMode = clrMode;
 	}
+
+//	/**
+//	 * @param _isColorDefined the _isColorDefined to set
+//	 */
+//	private void set_isColorDefined(boolean _isColorDefined) {
+//		this._isColorDefined = _isColorDefined;
+//	}
+//
+//	/**
+//	 * @return the _isColorDefined
+//	 */
+//	public boolean isColorDefined() {
+//		return _isColorDefined;
+//	}
 
 	/**
 	 * @param _chanb the _chanb to set

@@ -16,3 +16,4 @@ Require-Bundle: org.junit4,
  org.csstudio.platform.ui,
  org.csstudio.alarm.beast;bundle-version="2.5.0",
  org.csstudio.alarm.beast.ui;bundle-version="2.5.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

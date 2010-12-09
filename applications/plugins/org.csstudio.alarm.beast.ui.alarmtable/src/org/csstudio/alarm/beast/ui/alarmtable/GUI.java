@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
 import org.csstudio.alarm.beast.ui.AlarmPVDragSource;
 import org.csstudio.alarm.beast.ui.AlarmPerspectiveAction;
@@ -67,10 +67,10 @@ public class GUI implements AlarmClientModelListener
 
     /** Model with all the alarm information */
     final private AlarmClientModel model;
-    
+
     /** TableViewer for active alarms */
     private TableViewer active_table_viewer;
-    
+
     /** TableViewer for acknowledged alarms */
     private TableViewer acknowledged_table_viewer;
 
@@ -84,7 +84,7 @@ public class GUI implements AlarmClientModelListener
 
     /** Is something displayed in <code>error_message</code>? */
     private volatile boolean have_error_message = false;
-    
+
     /** Error message (no server...) */
     private Label error_message;
 
@@ -100,6 +100,7 @@ public class GUI implements AlarmClientModelListener
                 return;
             display.asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     //System.out.println("GUI Update");
@@ -133,13 +134,14 @@ public class GUI implements AlarmClientModelListener
         display = parent.getDisplay();
         this.model = model;
         createComponents(parent);
-        
+
         if (!model.isServerAlive())
             setErrorMessage(Messages.WaitingForServer);
         // Subscribe to model updates, arrange to un-subscribe
         model.addListener(this);
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.removeListener(GUI.this);
@@ -174,14 +176,14 @@ public class GUI implements AlarmClientModelListener
         parent.setLayout(new FillLayout());
         SashForm sash = new SashForm(parent, SWT.VERTICAL | SWT.SMOOTH);
         sash.setLayout(new FillLayout());
-        
+
         color_provider = new SeverityColorProvider(parent);
 
         addActiveAlarmSashElement(sash);
         addAcknowledgedAlarmSashElement(sash);
 
         sash.setWeights(new int[] { 80, 20 });
-        
+
         // Update selection in active & ack'ed alarm table
         // in response to filter changes
         filter.addSelectionListener(new SelectionAdapter()
@@ -205,7 +207,7 @@ public class GUI implements AlarmClientModelListener
                 acknowledged_table_viewer.setSelection(null, true);
             }
         });
-        
+
         gui_update.start();
     }
 
@@ -220,43 +222,43 @@ public class GUI implements AlarmClientModelListener
         box.setLayout(layout);
 
         GridData gd;
-        
+
         // Current Alarms {Error}   Select: ___ filter ___ [X]
         Label l = new Label(box, 0);
         l.setText(Messages.CurrentAlarms);
         l.setLayoutData(new GridData());
-        
+
         error_message = new Label(box, 0);
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         gd.grabExcessHorizontalSpace = true;
         error_message.setLayoutData(gd);
-       
+
         l = new Label(box, 0);
         l.setText(Messages.Filter);
         l.setLayoutData(new GridData());
-        
+
         filter = new Text(box, SWT.BORDER);
         filter.setToolTipText(Messages.FilterTT);
         gd = new GridData();
         gd.grabExcessHorizontalSpace = true;
         gd.horizontalAlignment = SWT.FILL;
         filter.setLayoutData(gd);
-        
+
         unselect = new Button(box, SWT.PUSH);
         unselect.setText(Messages.Unselect);
         unselect.setToolTipText(Messages.UnselectTT);
         gd = new GridData();
         gd.horizontalAlignment = SWT.RIGHT;
         unselect.setLayoutData(gd);
-        
+
         // Table w/ active alarms
         active_table_viewer = createAlarmTable(box);
         active_table_viewer.setInput(null);
         ((AlarmTableContentProvider)
             active_table_viewer.getContentProvider()).setAlarms(model.getActiveAlarms());
     }
-    
+
     /** Add the sash element for acknowledged alarms
      *  @param sash SashForm
      */
@@ -264,7 +266,7 @@ public class GUI implements AlarmClientModelListener
     {
         final Composite box = new Composite(sash, SWT.BORDER);
         box.setLayout(new GridLayout());
-        
+
         // Ack'ed alarms
         Label l = new Label(box, 0);
         l.setText(Messages.AcknowledgedAlarms);
@@ -309,7 +311,7 @@ public class GUI implements AlarmClientModelListener
         final GridLayout layout = (GridLayout) parent.getLayout();
         final TableViewer table_viewer = new TableViewer(parent,
                 SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI | SWT.FULL_SELECTION | SWT.VIRTUAL);
-        
+
         // Some tweaks to the underlying table widget
         final Table table = table_viewer.getTable();
         table.setHeaderVisible(true);
@@ -321,12 +323,12 @@ public class GUI implements AlarmClientModelListener
         gd.horizontalAlignment = SWT.FILL;
         gd.verticalAlignment = SWT.FILL;
         table.setLayoutData(gd);
-        
+
         ColumnViewerToolTipSupport.enableFor(table_viewer, ToolTip.NO_RECREATE);
-    
+
         // Connect TableViewer to the Model: Provide content from model...
         table_viewer.setContentProvider(new AlarmTableContentProvider());
-        
+
         // Create the columns of the table, using a fixed initial width.
         for (AlarmTableLabelProvider.ColumnInfo col_info
                                 : AlarmTableLabelProvider.ColumnInfo.values())
@@ -338,7 +340,7 @@ public class GUI implements AlarmClientModelListener
             view_col.setLabelProvider(new AlarmTableLabelProvider(table,
                                                    color_provider, col_info));
             final TableColumn table_col = view_col.getColumn();
-            
+
             final AlarmColumnSortingSelector sel_listener =
                 new AlarmColumnSortingSelector(table_viewer, table_col, col_info);
             table_col.addSelectionListener(sel_listener);
@@ -363,17 +365,18 @@ public class GUI implements AlarmClientModelListener
 
         final Action auto_size =
             new AutoSizeColumnAction(new AutoSizeControlListener(table, true));
-        
+
         final MenuManager manager = new MenuManager();
         manager.setRemoveAllWhenShown(true);
         manager.addMenuListener(new IMenuListener()
         {
             // Dynamically build menu based on current selection
+            @Override
             @SuppressWarnings("unchecked")
             public void menuAboutToShow(IMenuManager manager)
             {
                 final Shell shell = table.getShell();
-                final List<AlarmTree> items =
+                final List<AlarmTreeItem> items =
                     ((IStructuredSelection)table_viewer.getSelection()).toList();
                 new ContextMenuHelper(manager, shell, items, model.isWriteAllowed());
                 manager.add(new Separator());
@@ -383,7 +386,7 @@ public class GUI implements AlarmClientModelListener
                 // Add edit items
                 if (items.size() == 1 && model.isWriteAllowed())
                 {
-                    AlarmTree item = items.get(0);
+                    final AlarmTreeItem item = items.get(0);
                     manager.add(new ConfigureItemAction(shell, model, item));
                 }
                 manager.add(auto_size);
@@ -391,7 +394,7 @@ public class GUI implements AlarmClientModelListener
             }
         });
         table.setMenu(manager.createContextMenu(table));
-        
+
         // Allow extensions to add to the context menu
         if (site != null)
             site.registerContextMenu(manager, table_viewer);
@@ -430,18 +433,21 @@ public class GUI implements AlarmClientModelListener
             have_error_message = true;
         }
     }
-    
-    // @see AlarmClientModelListener   
+
+    // @see AlarmClientModelListener
+    @Override
     public void serverModeUpdate(AlarmClientModel model, boolean maintenanceMode)
     {
         // Ignored
     }
 
-    // @see AlarmClientModelListener   
+    // @see AlarmClientModelListener
+    @Override
     public void serverTimeout(final AlarmClientModel model)
     {
         display.asyncExec(new Runnable()
         {
+            @Override
             public void run()
             {
                 setErrorMessage(Messages.ServerTimeout);
@@ -450,13 +456,15 @@ public class GUI implements AlarmClientModelListener
     }
 
     // For now, the table responds to any changes with a full update
-    // @see AlarmClientModelListener   
+    // @see AlarmClientModelListener
+    @Override
     public void newAlarmTree(final AlarmClientModel model)
     {
         gui_update.trigger();
     }
 
-    // @see AlarmClientModelListener   
+    // @see AlarmClientModelListener
+    @Override
     public void newAlarmState(final AlarmClientModel model,
             final AlarmTreePV pv)
     {
@@ -465,6 +473,7 @@ public class GUI implements AlarmClientModelListener
         {   // Clear error message now that we have info from the alarm server
             display.asyncExec(new Runnable()
             {
+                @Override
                 public void run()
                 {
                     setErrorMessage(null);
