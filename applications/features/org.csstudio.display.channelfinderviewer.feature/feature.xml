@@ -22,12 +22,16 @@
    </url>
 
    <requires>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
       <import plugin="org.eclipse.core.expressions" version="3.4.101" match="greaterOrEqual"/>
-      <import plugin="org.csstudio.platform.libs.channelfinderAPI" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.csstudio.utility.channelfinder" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.glazedlists" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.libs.guava" version="0.6.0" match="greaterOrEqual"/>
       <import plugin="org.csstudio.platform.libs.jersey" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.platform.ui" version="1.1.1" match="greaterOrEqual"/>
+      <import plugin="org.csstudio.utility.channel" version="1.0.0" match="greaterOrEqual"/>
+      <import plugin="org.junit4"/>
    </requires>
 
    <plugin
