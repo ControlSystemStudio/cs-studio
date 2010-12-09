@@ -256,7 +256,9 @@ public class AlarmTreeNodePropertySource implements IPropertySource2 {
 		    final EpicsAlarmcfgTreeNodeAttribute propId = (EpicsAlarmcfgTreeNodeAttribute) id;
 		    _node.setProperty(propId, (String) value);
 
-		    _view.addLdapTreeModificationItem(new ModifyLdapAttributeModificationItem(_node.getLdapName(), propId, (String) value));
+		    if (_node.getSource().equals(TreeNodeSource.LDAP)) {
+		        _view.addLdapTreeModificationItem(new ModifyLdapAttributeModificationItem(_node.getLdapName(), propId, (String) value));
+		    }
 		}
 
 	}
