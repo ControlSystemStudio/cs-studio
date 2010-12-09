@@ -56,7 +56,7 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 
 	
 
-	private static final String PROJECT_NAME = "BOY Examples";
+	public static final String PROJECT_NAME = "BOY Examples";
 
 	public void dispose() {
 
@@ -70,7 +70,7 @@ public class InstallExamplesAction extends Action implements IWorkbenchWindowAct
 		final IWorkspaceRoot root = ResourcesPlugin.getWorkspace().getRoot();
 		if(root.getProject(PROJECT_NAME).exists()){
 			MessageDialog.openError(null, "Failed", 
-					NLS.bind("There is already a project named {0}." +
+					NLS.bind("There is already a project named \"{0}\"." +
 							"Please make sure there is no project named {0} in the workspace.", 
 							PROJECT_NAME));
 			return;
