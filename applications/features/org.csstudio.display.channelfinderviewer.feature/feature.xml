@@ -2,7 +2,7 @@
 <feature
       id="org.csstudio.display.channelfinderviewer.feature"
       label="Channelfinder Viewer Feature"
-      version="1.0.0.qualifier"
+      version="0.2.0.qualifier"
       provider-name="Kunal Shroff &lt;kshroff@bnl.gov&gt;, Gabriele Carcassi &lt;carcassi@bnl.gov&gt; - Brookhaven National Lab">
 
    <description url="http://www.example.com/description">
