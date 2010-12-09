@@ -245,12 +245,6 @@
          unpack="false"/>
 
    <plugin
-         id="org.csstudio.platform.libs.channelfinderAPI"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"/>
-
-   <plugin
          id="org.csstudio.utility.pv.ui"
          download-size="0"
          install-size="0"
@@ -313,7 +307,7 @@
          version="0.0.0"
          unpack="false"/>
 
-    <plugin
+   <plugin
          id="org.csstudio.platform.libs.log4j"
          download-size="0"
          install-size="0"
