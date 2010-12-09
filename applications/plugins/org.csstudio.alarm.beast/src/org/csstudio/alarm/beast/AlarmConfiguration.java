@@ -518,7 +518,7 @@ public class AlarmConfiguration
      *  (The root element that identifies the configuration remains)
      *  @throws Exception on error
      */
-    public void removeAllItems() throws Exception
+    public synchronized void removeAllItems() throws Exception
     {
         while (config_tree.getChildCount() > 0)
             remove(config_tree.getClientChild(0));
@@ -528,7 +528,7 @@ public class AlarmConfiguration
      *  @param item Item to remove
      *  @throws Exception on error
      */
-    public void remove(final AlarmTreeItem item) throws Exception
+    public synchronized void remove(final AlarmTreeItem item) throws Exception
     {
         if (item instanceof AlarmTreePV)
             removePV((AlarmTreePV) item);

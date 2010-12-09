@@ -90,7 +90,11 @@ public class AlarmTreeLabelProvider extends CellLabelProvider
         switch (item.getPosition())
         {
         case PV:
-            pv = (AlarmTreePV) item;
+            // getPosition indicates that it's a PV, but check to please FindBugs
+            if (item instanceof AlarmTreePV)
+                pv = (AlarmTreePV) item;
+            else
+                throw new RuntimeException("Not a PV?");
             buf.append(Messages.AlarmPV);
             break;
         case Area:
