@@ -37,7 +37,9 @@ import org.epics.pvmanager.PV;
 import org.epics.pvmanager.PVManager;
 import org.epics.pvmanager.PVValueChangeListener;
 import org.epics.pvmanager.data.Alarm;
+import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
+import org.epics.pvmanager.data.Enum;
 import org.epics.pvmanager.data.Formatting;
 import org.epics.pvmanager.data.Time;
 import org.epics.pvmanager.data.Utils;
@@ -367,25 +369,59 @@ public class PVManagerProbe extends ViewPart {
 	protected void showInfo() {
 		final String nl = "\n"; //$NON-NLS-1$
 
-		final StringBuffer info = new StringBuffer();
+		final StringBuilder info = new StringBuilder();
 		if (pv == null) {
-			info.append(Messages.S_NotConnected + nl);
+			info.append(Messages.S_NotConnected).append(nl);
 		} else {
-			info.append(nl + Messages.S_ChannelInfo + "  " + pv.getName() + nl); //$NON-NLS-1$
-			if (!pv.isClosed()) {
-				info.append(Messages.S_STATEConn + nl);
+			Object value = pv.getValue();
+			Alarm alarm = Utils.alarmOf(value);
+			Display display = Utils.displayOf(value);
+			Class<?> type = Utils.typeOf(value);
+			
+			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
+			if (pv.getValue() == null) {
+				info.append(Messages.S_STATEDisconn).append(nl);
 			} else {
-				info.append(Messages.S_STATEDisconn + nl);
+				if (alarm != null && AlarmSeverity.UNDEFINED.equals(alarm.getAlarmSeverity())) {
+					info.append(Messages.S_STATEDisconn).append(nl);
+				} else {
+					info.append(Messages.S_STATEConn).append(nl);
+				}
 			}
-			// TODO
-			// Add value information
+			
+			if (type != null) {
+				info.append("Data type: ").append(type.getSimpleName()).append(nl);
+			}
+			
+			if (display != null) {
+				info.append("Numeric display information:").append(nl)
+			    .append("  Low display limit: ").append(display.getLowerDisplayLimit()).append(nl)
+			    .append("  Low alarm limit: ").append(display.getLowerAlarmLimit()).append(nl)
+			    .append("  Low warn limit: ").append(display.getLowerWarningLimit()).append(nl)
+			    .append("  High warn limit: ").append(display.getUpperWarningLimit()).append(nl)
+			    .append("  High alarm limit: ").append(display.getUpperAlarmLimit()).append(nl)
+			    .append("  High display limit: ").append(display.getUpperDisplayLimit()).append(nl);
+			}
+			
+			if (value instanceof org.epics.pvmanager.data.Enum) {
+				Enum enumValue = (Enum) value;
+				info.append("Enum metadata: ").append(enumValue.getLabels().size()).append(" labels").append(nl);
+				for (String label : enumValue.getLabels()) {
+					info.append("  ").append(label).append(nl);
+				}
+			}
+			
 		}
 		if (info.length() == 0) {
 			info.append(Messages.S_NoInfo);
 		}
 		final MessageBox box = new MessageBox(valueField.getShell(),
 				SWT.ICON_INFORMATION);
-		box.setText(Messages.S_Info);
+		if (pv == null) {
+			box.setText(Messages.S_Info);
+		} else {
+			box.setText("Channel information for " + pv.getName());
+		}
 		box.setMessage(info.toString());
 		box.open();
 	}
