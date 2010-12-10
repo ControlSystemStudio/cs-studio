@@ -23,13 +23,11 @@ package org.csstudio.archive.common.service.sqlimpl;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
@@ -44,7 +42,6 @@ import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
 import org.csstudio.archive.rdb.ChannelConfig;
 import org.csstudio.archive.rdb.RDBArchive;
-import org.csstudio.archive.rdb.RDBArchivePreferences;
 import org.csstudio.archive.rdb.SampleMode;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupConfig;
 import org.csstudio.archive.rdb.engineconfig.ChannelGroupHelper;
@@ -75,13 +72,13 @@ import com.google.common.collect.Lists;
  * @author bknerr
  * @since 01.11.2010
  */
-public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
+public enum SqlArchiveServiceImpl implements IArchiveEngineConfigService, IArchiveWriterService {
 
     INSTANCE;
 
     @SuppressWarnings("unused")
     private static final Logger LOG =
-        CentralLogger.getInstance().getLogger(OracleArchiveServiceImpl.class);
+        CentralLogger.getInstance().getLogger(SqlArchiveServiceImpl.class);
 
     private static final ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
@@ -100,51 +97,11 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
 //    private final ThreadLocal<String> _arrayValTable = new ThreadLocal<String>();
 
 
-    /**
-     * {@inheritDoc}
-     */
-    public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
-
-        // TODO (bknerr) : here the RDBArchivePreferences are used - there are still prefs in engine2 as well
-        // get that straight, the impl oriented prefs should reside in this plugin
-        final String url = (String) prefs.get(RDBArchivePreferences.URL);
-        final String user = (String) prefs.get(RDBArchivePreferences.USER);
-        final String password = (String) prefs.get(RDBArchivePreferences.PASSWORD);
-
-        RDBArchive rdbArchive = null;
-        try {
-            rdbArchive = RDBArchive.connect(url, user, password); // creates a new archive connection instance everytime
-        } catch (final Exception e) {
-            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveConnectionException("Archive connection failed.", e);
-        }
-
-        _archive.set(rdbArchive);
-    }
 
     /**
      * {@inheritDoc}
      */
-    public void reconnect() throws ArchiveConnectionException {
-        try {
-            _archive.get().reconnect();
-        } catch (final Exception e) {
-            // FIXME (bknerr) : untyped exception swallows anything, use dedicated exception
-            throw new ArchiveConnectionException("Archive reconnection failed.", e);
-        }
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public void disconnect() {
-        _archive.get().close();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
+    @Override
     public boolean writeSamples(@Nonnull final Collection<IValueWithChannelId> samples) throws ArchiveServiceException {
         throw new ArchiveServiceException("Not implemented", null);
     }
@@ -153,6 +110,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public int getChannelId(@Nonnull final String channelName) throws ArchiveServiceException {
         try {
@@ -167,6 +125,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public IArchiveEngine findEngine(@Nonnull final String name) throws ArchiveServiceException {
         // FIXME (bknerr) : data access object is created anew on every invocation?!
@@ -183,6 +142,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
     public List<IArchiveChannelGroup> getGroupsForEngine(@Nonnull final ArchiveEngineId id) throws ArchiveServiceException {
         // FIXME (bknerr) : data access object is created anew on every invocation?!
@@ -196,6 +156,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
         }
     }
 
+    @Override
     @Nonnull
     public List<IArchiveChannel> getChannelsByGroupId(@Nonnull final ArchiveChannelGroupId groupId) throws ArchiveServiceException {
         try {
@@ -208,6 +169,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
             // alternatively, the archive.service plugin would need an activator and register for its own service)
             final List<IArchiveChannel> moreChannels = Lists.transform(channels,
                                    new Function<ChannelConfig, IArchiveChannel>() {
+                                        @Override
                                         @CheckForNull
                                         public IArchiveChannel apply(@Nonnull final ChannelConfig from) {
                                             try {
@@ -217,7 +179,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
                                                     // lastTimestamp = channel.getLastTimestamp();
                                                     // Looks like a getter, but is a db call, perform via service:
                                                     lastTimestamp =
-                                                        OracleArchiveServiceImpl.INSTANCE.getLatestTimestampForChannel(from.getName());
+                                                        SqlArchiveServiceImpl.INSTANCE.getLatestTimestampForChannel(from.getName());
 
                                                 } catch (final Exception e) {
                                                     throw new ArchiveServiceException("Last timestamp for channel " + from.getName() +
@@ -242,6 +204,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public IArchiveSampleMode getSampleModeById(@Nonnull final ArchiveSampleModeId sampleModeId) throws ArchiveServiceException {
 
@@ -257,6 +220,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     public void writeMetaData(@Nonnull final String channelName, @Nonnull final IValue sample) throws ArchiveServiceException {
         try {
             _archive.get().writeMetaData(getChannelConfig(channelName), sample);
@@ -269,6 +233,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     @CheckForNull
     public ITimestamp getLatestTimestampForChannel(@Nonnull final String name) throws ArchiveServiceException {
 
@@ -297,6 +262,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     public void commitSample(final int channelId, final IValue value) throws ArchiveServiceException {
         try {
             _archive.get().batchSample(channelId, value);
@@ -309,6 +275,7 @@ public enum OracleArchiveServiceImpl implements IArchiveEngineConfigService, IAr
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean flush() throws ArchiveServiceException {
         try {
             _archive.get().commitBatch();

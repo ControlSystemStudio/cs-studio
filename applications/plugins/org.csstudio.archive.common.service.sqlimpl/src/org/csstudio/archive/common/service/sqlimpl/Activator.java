@@ -83,7 +83,7 @@ public class Activator implements BundleActivator {
         LOG.info("Register Oracle archive engine config service");
 
         context.registerService(IArchiveEngineConfigService.class.getName(),
-                                OracleArchiveServiceImpl.INSTANCE,
+                                SqlArchiveServiceImpl.INSTANCE,
                                 propsCfg);
 
         final Dictionary<String, Object> propsWr = new Hashtable<String, Object>();
@@ -92,7 +92,7 @@ public class Activator implements BundleActivator {
         LOG.info("Register Oracle archive writer service");
 
         context.registerService(IArchiveWriterService.class.getName(),
-                                OracleArchiveServiceImpl.INSTANCE,
+                                SqlArchiveServiceImpl.INSTANCE,
                                 propsWr);
 
 	}
