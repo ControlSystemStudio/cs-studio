@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import org.csstudio.opibuilder.preferences.PreferencesHelper;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
 import org.csstudio.platform.ui.util.UIBundlingThread;
@@ -73,7 +74,14 @@ public class ConsoleService {
 	 * @param message the output string.
 	 */
 	public void writeError(final String message){
-		popConsoleView();
+		switch (PreferencesHelper.getConsolePopupLevel()) {
+		case ALL:
+			popConsoleView();
+			break;
+		default:
+			break;
+		}
+		
 		final String output = getTimeString() + " ERROR: " + message + ENTER;
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 		
@@ -95,7 +103,13 @@ public class ConsoleService {
 	 */
 	public void writeWarning(String message){
 		final String output = getTimeString() + " WARNNING: " + message+ ENTER;
-		popConsoleView();
+		switch (PreferencesHelper.getConsolePopupLevel()) {
+		case ALL:
+			popConsoleView();
+			break;
+		default:
+			break;
+		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable() {
 		
 			public void run() {
@@ -115,7 +129,14 @@ public class ConsoleService {
 	 */
 	public void writeInfo(String message){
 		final String output = getTimeString() + " INFO: " + message+ ENTER;
-		popConsoleView();
+		switch (PreferencesHelper.getConsolePopupLevel()) {
+		case ALL:
+		case ONLY_INFO:
+			popConsoleView();
+			break;
+		default:
+			break;
+		}
 		UIBundlingThread.getInstance().addRunnable(new Runnable(){
 			public void run() {
 				if(infoStream == null){
