@@ -3,8 +3,9 @@ org.csstudio.archivereader.feature
 org.csstudio.channelfinder.feature
 org.csstudio.diag.epics.pvtree.nsls2.feature
 org.csstudio.diag.probe.feature
-org.csstudio.display.pvtable.feature
 org.csstudio.display.channelfinderviewer.feature
+org.csstudio.display.pvtable.feature
+org.csstudio.display.multichannelviewer.feature
 org.csstudio.email.feature
 org.csstudio.trends.databrowser2.feature
 org.csstudio.nsls2.applications.feature
