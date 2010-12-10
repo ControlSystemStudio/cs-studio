@@ -27,11 +27,13 @@ import java.sql.SQLException;
 import java.util.Map;
 
 import javax.annotation.CheckForNull;
+import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleMode;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
@@ -61,6 +63,13 @@ public class ArchiveSampleModeDaoImpl extends AbstractArchiveDao implements IArc
     // TODO (bknerr) : parameterize database schema
     private final String _selectSampleModeByIdStmt =
         "SELECT name FROM archive.smpl_mode where smpl_mode_id=?";
+
+    /**
+     * Constructor.
+     */
+    public ArchiveSampleModeDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
+    }
 
     /**
      * {@inheritDoc}

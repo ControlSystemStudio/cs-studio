@@ -7,9 +7,6 @@
  ******************************************************************************/
 package org.csstudio.archive.common.engine;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.args.ArgParser;
 import org.csstudio.apputil.args.BooleanOption;
@@ -111,12 +108,12 @@ public class Application implements IApplication
             return EXIT_OK;
         }
 
-        if (url == null)
-        {
-            System.out.println(
-                    "No Database URL. Set via preferences or command-line");
-            return EXIT_OK;
-        }
+//        if (url == null)
+//        {
+//            System.out.println(
+//                    "No Database URL. Set via preferences or command-line");
+//            return EXIT_OK;
+//        }
 
         // Setup groups, channels, writer
         // This is all single-threaded!
@@ -124,10 +121,7 @@ public class Application implements IApplication
         logger.info("Archive Engine " + EngineModel.VERSION);
         try
         {
-            // create the connection archive connection prefs
-            final Map<String, Object> prefs = createConnectionPrefsMap();
-
-            model = new EngineModel(prefs);
+            model = new EngineModel();
             // Setup takes some time, but engine server should already respond.
             EngineServer server;
             try
@@ -191,14 +185,6 @@ public class Application implements IApplication
         }
 
         return EXIT_OK;
-    }
-
-    private Map<String, Object> createConnectionPrefsMap() {
-        final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchiveEnginePreferences.URL, url);
-        prefs.put(RDBArchiveEnginePreferences.USER, user);
-        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
-        return prefs;
     }
 
     /** {@inheritDoc} */

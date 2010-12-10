@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.status.ArchiveStatusDTO;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
 import org.csstudio.archive.common.service.status.IArchiveStatus;
@@ -61,9 +62,14 @@ public class ArchiveStatusDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
-    private static final String _selectStatusByNameStmt =
-        "SELECT status_id FROM archive.status WHERE name=?";
+    private final String _selectStatusByNameStmt = "SELECT status_id FROM archive.status WHERE name=?";
 
+    /**
+     * Constructor.
+     */
+    public ArchiveStatusDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
+    }
 
     /**
      * {@inheritDoc}

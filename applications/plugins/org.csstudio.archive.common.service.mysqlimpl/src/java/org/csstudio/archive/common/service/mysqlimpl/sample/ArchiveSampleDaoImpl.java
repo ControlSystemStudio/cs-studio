@@ -39,6 +39,7 @@ import org.csstudio.archive.common.service.channel.ArchiveChannelId;
 import org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.sample.IArchiveSample;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.status.ArchiveStatusId;
@@ -99,10 +100,12 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
     private final ThreadLocal<Map<ArchiveChannelId, SampleAggregator>> _reducedDataMapForHours =
         new ThreadLocal<Map<ArchiveChannelId, SampleAggregator>>();
 
+
     /**
      * Constructor.
      */
-    public ArchiveSampleDaoImpl() {
+    public ArchiveSampleDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
         final Map<ArchiveChannelId, SampleAggregator> minutesMap = Maps.newHashMap();
         _reducedDataMapForMinutes.set(minutesMap);
         final Map<ArchiveChannelId, SampleAggregator> hoursMap = Maps.newHashMap();
@@ -198,8 +201,8 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
             final TimeInstant timestamp = sample.getTimestamp();
 
             final ArchiveSeverityId sevId =
-                DAO_MGR.getSeverityDao().retrieveSeverityId(alarm.getSeverity());
-            final ArchiveStatusId statusId = DAO_MGR.getStatusDao().retrieveStatusId(alarm.getStatus());
+                getDaoMgr().getSeverityDao().retrieveSeverityId(alarm.getSeverity());
+            final ArchiveStatusId statusId = getDaoMgr().getStatusDao().retrieveStatusId(alarm.getStatus());
 
             if (sevId == null || statusId == null) {
                 LOG.warn("Ids could not be retrieved for severity " +
@@ -394,7 +397,7 @@ public class ArchiveSampleDaoImpl extends AbstractArchiveDao implements IArchive
         final EpicsAlarm highestAlarm = agg.getHighestAlarm();
         ArchiveSeverityId sevId = null;
         if (highestAlarm != null) {
-            sevId = DAO_MGR.getSeverityDao().retrieveSeverityId(highestAlarm.getSeverity());
+            sevId = getDaoMgr().getSeverityDao().retrieveSeverityId(highestAlarm.getSeverity());
         }
         final int sevIdInt = sevId == null ? ArchiveSeverityId.NONE.intValue() : sevId.intValue();
         final String valueStr =

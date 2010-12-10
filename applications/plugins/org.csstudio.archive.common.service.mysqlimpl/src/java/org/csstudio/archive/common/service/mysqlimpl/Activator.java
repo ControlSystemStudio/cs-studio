@@ -27,6 +27,7 @@ import java.util.Hashtable;
 import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -46,6 +47,7 @@ public class Activator implements BundleActivator {
     private static final Logger LOG = CentralLogger.getInstance().getLogger(Activator.class);
 
     private static Activator INSTANCE;
+
 
 
     /**
@@ -101,6 +103,8 @@ public class Activator implements BundleActivator {
 	@Override
     public void stop(final BundleContext bundleContext) throws Exception {
 
-        // Services are automatically unregistered
+	    // Services are automatically unregistered
+
+	    ArchiveDaoManager.INSTANCE.disconnect();
 	}
 }

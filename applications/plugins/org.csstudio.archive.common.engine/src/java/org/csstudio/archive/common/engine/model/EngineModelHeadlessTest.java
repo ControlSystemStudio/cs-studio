@@ -9,12 +9,8 @@ package org.csstudio.archive.common.engine.model;
 
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
-import org.csstudio.archive.common.engine.RDBArchiveEnginePreferences;
 import org.junit.Test;
 
 /** [Headless] JUnit Plug-in test of the engine model
@@ -42,14 +38,8 @@ public class EngineModelHeadlessTest
     	final String config = settings.getString("archive_config");
     	final int port = settings.getInteger("archive_port", 4812);
 
-        // Connect writer to the service with the given prefs
-        final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchiveEnginePreferences.URL, url);
-        prefs.put(RDBArchiveEnginePreferences.USER, user);
-        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
-
         final BenchmarkTimer timer = new BenchmarkTimer();
-        final EngineModel model = new EngineModel(prefs);
+        final EngineModel model = new EngineModel();
         model.readConfig(config, port);
         timer.stop();
 

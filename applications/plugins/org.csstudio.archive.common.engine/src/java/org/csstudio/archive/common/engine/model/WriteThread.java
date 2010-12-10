@@ -9,12 +9,10 @@ package org.csstudio.archive.common.engine.model;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.archive.common.engine.Activator;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveWriterService;
 import org.csstudio.archive.common.service.adapter.IValueWithChannelId;
@@ -106,19 +104,12 @@ public class WriteThread implements Runnable
     /** Thread the executes this.run() */
     private Thread thread;
 
-    private final Map<String, Object> connectionPrefs;
 
     /**
      * Construct thread for writing to server
-     *
-     * @param connectionPrefs connection preferences (could differ from the connection prefs of the engine config service)
-     * @throws ArchiveConnectionException on archive connection failure
-     * @throws OsgiServiceUnavailableException on service unavailability
      */
-    public WriteThread(final Map<String, Object> connectionPrefs)
-        throws OsgiServiceUnavailableException, ArchiveConnectionException {
-
-        this.connectionPrefs = connectionPrefs;
+    public WriteThread() {
+        // Empty
     }
 
     /** Add a channel's buffer that this thread reads */
@@ -208,15 +199,15 @@ public class WriteThread implements Runnable
         LOG.info("WriteThread starts");
 
         // establish the connection to the archive.
-        try {
-            Activator.getDefault().getArchiveWriterService().connect(connectionPrefs);
-        } catch (final OsgiServiceUnavailableException e1) {
-            LOG.error("Archive Writer Service unavailable. Did you auto-start the service impl plugin in your launch cfg?");
-            return;
-        } catch (final ArchiveConnectionException e1) {
-            LOG.error("Archive Connection could not be established.");
-            return;
-        }
+//        try {
+//            Activator.getDefault().getArchiveWriterService().connect(connectionPrefs);
+//        } catch (final OsgiServiceUnavailableException e1) {
+//            LOG.error("Archive Writer Service unavailable. Did you auto-start the service impl plugin in your launch cfg?");
+//            return;
+//        } catch (final ArchiveConnectionException e1) {
+//            LOG.error("Archive Connection could not be established.");
+//            return;
+//        }
 
         final BenchmarkTimer timer = new BenchmarkTimer();
         boolean write_error = false;
@@ -227,13 +218,13 @@ public class WriteThread implements Runnable
             try
             {
                 // If there was an error before...
-                if (write_error)
-                {   // .. try to reconnect
-                    Activator.getDefault().getArchiveWriterService().reconnect();
-                    // If we get here, all is OK so far ...
-                    write_error = false;
-                    // .. and we continue to write.
-                }
+//                if (write_error)
+//                {   // .. try to reconnect
+//                    Activator.getDefault().getArchiveWriterService().reconnect();
+//                    // If we get here, all is OK so far ...
+//                    write_error = false;
+//                    // .. and we continue to write.
+//                }
                 timer.start();
                 // In case of a network problem, we can hang in here
                 // for a long time...
@@ -279,13 +270,13 @@ public class WriteThread implements Runnable
             }
         }
 
-        try {
-            Activator.getDefault().getArchiveWriterService().disconnect();
-        } catch (final OsgiServiceUnavailableException e1) {
-            LOG.error("Archive Writer Service unavailable for disconnection. Ignored.");
-        } catch (final ArchiveConnectionException e1) {
-            LOG.error("Archive Disconnection could not be established. Ignored.");
-        }
+//        try {
+//            Activator.getDefault().getArchiveWriterService().disconnect();
+//        } catch (final OsgiServiceUnavailableException e1) {
+//            LOG.error("Archive Writer Service unavailable for disconnection. Ignored.");
+//        } catch (final ArchiveConnectionException e1) {
+//            LOG.error("Archive Disconnection could not be established. Ignored.");
+//        }
 
         LOG.info("WriteThread exists");
     }

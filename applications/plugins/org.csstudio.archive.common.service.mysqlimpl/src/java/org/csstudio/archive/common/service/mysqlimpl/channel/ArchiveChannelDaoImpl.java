@@ -40,6 +40,7 @@ import org.csstudio.archive.common.service.channel.IArchiveChannel;
 import org.csstudio.archive.common.service.channelgroup.ArchiveChannelGroupId;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.samplemode.ArchiveSampleModeId;
 import org.csstudio.domain.desy.time.TimeInstant;
 import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
@@ -72,6 +73,14 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
         "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE name=?";
     private final String _selectChannelsByGroupId =
         "SELECT channel_id, name, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE grp_id=?";
+
+    /**
+     * Constructor.
+     * @param the dao manager
+     */
+    public ArchiveChannelDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
+    }
 
     /**
      * {@inheritDoc}

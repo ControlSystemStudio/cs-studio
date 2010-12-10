@@ -40,7 +40,7 @@ import org.csstudio.platform.data.IValue;
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveWriterService extends IArchiveConnectionService {
+public interface IArchiveWriterService {
 
     /**
      * Retrieves the time stamp of the latest sample for the given channel.

@@ -24,13 +24,11 @@ package org.csstudio.archive.common.service.mysqlimpl;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
-import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.ArchiveServiceException;
 import org.csstudio.archive.common.service.IArchiveEngineConfigService;
 import org.csstudio.archive.common.service.IArchiveWriterService;
@@ -77,30 +75,30 @@ public enum MySQLArchiveServiceImpl implements IArchiveEngineConfigService, IArc
     private static ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
     private static ArchiveEngineAdapter ADAPT_MGR = ArchiveEngineAdapter.INSTANCE;
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException {
-        DAO_MGR.connect(connectionPrefs);
-
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void reconnect() throws ArchiveConnectionException {
-        DAO_MGR.reconnect();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public void disconnect() throws ArchiveConnectionException {
-        DAO_MGR.disconnect();
-    }
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void connect(@Nonnull final Map<String, Object> connectionPrefs) throws ArchiveConnectionException {
+//        DAO_MGR.connect(connectionPrefs);
+//
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void reconnect() throws ArchiveConnectionException {
+//        DAO_MGR.reconnect();
+//    }
+//
+//    /**
+//     * {@inheritDoc}
+//     */
+//    @Override
+//    public void disconnect() throws ArchiveConnectionException {
+//        DAO_MGR.disconnect();
+//    }
 
     /**
      * {@inheritDoc}

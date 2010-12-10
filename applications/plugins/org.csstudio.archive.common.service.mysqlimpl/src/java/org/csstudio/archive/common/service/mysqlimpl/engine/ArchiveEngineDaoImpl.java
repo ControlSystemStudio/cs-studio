@@ -37,6 +37,7 @@ import org.csstudio.archive.common.service.engine.ArchiveEngineId;
 import org.csstudio.archive.common.service.engine.IArchiveEngine;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -55,6 +56,14 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
     private final String _selectEngineByNameStmt =
         "SELECT eng_id, url FROM archive.smpl_eng WHERE name=?";
 
+
+    /**
+     * Constructor.
+     * @param the dao manager
+     */
+    public ArchiveEngineDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
+    }
 
     /**
      * {@inheritDoc}

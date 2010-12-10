@@ -8,11 +8,7 @@
 package org.csstudio.archive.common.engine.model;
 
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.archive.common.engine.RDBArchiveEnginePreferences;
 import org.csstudio.platform.data.INumericMetaData;
 import org.csstudio.platform.data.ISeverity;
 import org.csstudio.platform.data.ITimestamp;
@@ -51,13 +47,7 @@ public class WriteThreadHeadlessTest
     	// Setup buffer
         final SampleBuffer buffer = new SampleBuffer(channel, 1000);
 
-        // Connect writer to the service with the given prefs
-        final Map<String, Object> prefs = new HashMap<String, Object>();
-        prefs.put(RDBArchiveEnginePreferences.URL, url);
-        prefs.put(RDBArchiveEnginePreferences.USER, user);
-        prefs.put(RDBArchiveEnginePreferences.PASSWORD, password);
-
-        final WriteThread writer = new WriteThread(prefs);
+        final WriteThread writer = new WriteThread();
         writer.addSampleBuffer(buffer);
 
         // Trigger thread to write

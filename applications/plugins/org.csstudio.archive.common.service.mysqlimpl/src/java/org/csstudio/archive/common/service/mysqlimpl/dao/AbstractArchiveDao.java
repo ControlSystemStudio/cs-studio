@@ -36,7 +36,15 @@ import org.csstudio.archive.common.service.ArchiveConnectionException;
  */
 public abstract class AbstractArchiveDao {
 
-    protected static final ArchiveDaoManager DAO_MGR = ArchiveDaoManager.INSTANCE;
+    private final ArchiveDaoManager _mgr;
+
+
+    /**
+     * Constructor.
+     */
+    public AbstractArchiveDao(@Nonnull final ArchiveDaoManager mgr) {
+        _mgr = mgr;
+    }
 
     /**
      * Returns the current connection for the dao implementation and its subclasses.
@@ -45,12 +53,11 @@ public abstract class AbstractArchiveDao {
      */
     @Nonnull
     protected Connection getConnection() throws ArchiveConnectionException {
-
-        final Connection connection = DAO_MGR.getConnection();
-        if (connection == null) {
-            throw new ArchiveConnectionException("Archive connection is null.", null);
-        }
-        return connection;
+        return _mgr.getConnection();
     }
 
+    @Nonnull
+    protected ArchiveDaoManager getDaoMgr() {
+        return _mgr;
+    }
 }

@@ -33,6 +33,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.archive.common.service.ArchiveConnectionException;
 import org.csstudio.archive.common.service.mysqlimpl.dao.AbstractArchiveDao;
 import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoException;
+import org.csstudio.archive.common.service.mysqlimpl.dao.ArchiveDaoManager;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityDTO;
 import org.csstudio.archive.common.service.severity.ArchiveSeverityId;
 import org.csstudio.archive.common.service.severity.IArchiveSeverity;
@@ -63,6 +64,13 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectSeverityByNameStmt =
         "SELECT severity_id FROM archive.severity WHERE name=?";
+
+    /**
+     * Constructor.
+     */
+    public ArchiveSeverityDaoImpl(@Nonnull final ArchiveDaoManager mgr) {
+        super(mgr);
+    }
 
     /**
      * {@inheritDoc}

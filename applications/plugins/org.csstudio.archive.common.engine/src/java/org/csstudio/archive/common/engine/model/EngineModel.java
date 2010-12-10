@@ -113,20 +113,15 @@ public class EngineModel
     /** Buffer reserve (N times what's ideally needed) */
     private double buffer_reserve = 2.0;
 
-    /** Construct model that writes to archive
-     * @param prefs
-     * @throws ArchiveConnectionException
-     * @throws OsgiServiceUnavailableException */
-    public EngineModel(final Map<String, Object> connectionPrefs)
+    /**
+     * Construct model that writes to archive
+     */
+    public EngineModel()
         throws OsgiServiceUnavailableException, ArchiveConnectionException
     {
-        // connect to archive engine configuration service
-        // (could differ from the archive writer service connection)
-        Activator.getDefault().getArchiveEngineConfigService().connect(connectionPrefs);
-
         applyPreferences();
 
-        writer = new WriteThread(connectionPrefs);
+        writer = new WriteThread();
     }
 
     /** Read preference settings */
@@ -451,7 +446,7 @@ public class EngineModel
         writer.shutdown();
 
         // Close the engine config connection
-        Activator.getDefault().getArchiveEngineConfigService().disconnect();
+        // Activator.getDefault().getArchiveEngineConfigService().disconnect();
 
         // Update state
         state = State.IDLE;

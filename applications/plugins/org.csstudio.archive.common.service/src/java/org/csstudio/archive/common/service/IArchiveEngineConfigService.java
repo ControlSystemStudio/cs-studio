@@ -44,7 +44,7 @@ import org.csstudio.archive.common.service.samplemode.IArchiveSampleMode;
  * @author bknerr
  * @since 12.11.2010
  */
-public interface IArchiveEngineConfigService extends IArchiveConnectionService {
+public interface IArchiveEngineConfigService {
 
     /**
      * Retrieves the engine by id.

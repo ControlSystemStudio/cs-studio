@@ -21,7 +21,6 @@
  */
 package org.csstudio.archive.common.service.mysqlimpl.dao;
 
-import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.AUTO_CONNECT;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.PASSWORD;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.URL;
 import static org.csstudio.archive.common.service.mysqlimpl.MySQLArchiveServicePreference.USER;
@@ -32,7 +31,6 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Map;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -75,8 +73,6 @@ public enum ArchiveDaoManager {
     private String _user;
     private String _password;
 
-    private final Boolean _autoConnect = AUTO_CONNECT.getValue();
-
     /**
      * Any thread owns a connection.
      */
@@ -98,22 +94,37 @@ public enum ArchiveDaoManager {
      */
     private ArchiveDaoManager() {
 
-        if (_autoConnect) {
-            final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
-
-            try {
-                connect(prefs);
-            } catch (final ArchiveConnectionException e) {
-                // FIXME (bknerr) : Cannot be propagated by enum constructor!
-                _archiveConnection.set(null);
-            }
-        }
+//        final Map<String, Object> prefs = createConnectionPrefsFromEclipsePrefs();
+//
+//        try {
+//            connect(prefs);
+//        } catch (final ArchiveConnectionException e) {
+//            // FIXME (bknerr) : Cannot be propagated by an enum constructor!
+//            final Connection connection = getConnection();
+//            if (connection != null) {
+//                try {
+//                    connection.close();
+//                } catch (final SQLException e1) {
+//                    // LOG.warn() cannot be called from the constructor
+//                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).warn("Closing of connection failed", e1);
+//                }
+//            }
+//            _archiveConnection.set(null);
+//        }
     }
 
-    public void connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
+    /**
+     * Connects with the RDB instance the given preferences.
+     * An existing connection is closed and an new connection is established.
+     * @param prefs
+     * @return connection the newly established connection
+     * @throws ArchiveConnectionException
+     */
+    @Nonnull
+    public Connection connect(@Nonnull final Map<String, Object> prefs) throws ArchiveConnectionException {
 
+        Connection connection = _archiveConnection.get();
         try {
-            Connection connection = _archiveConnection.get();
             if (connection != null) { // close existing connection
                 _archiveConnection.set(null);
                 connection.close();
@@ -126,18 +137,22 @@ public enum ArchiveDaoManager {
             Class.forName("com.mysql.jdbc.Driver").newInstance();
 
             connection = DriverManager.getConnection(_url, _user, _password);
+            if (connection != null) {
+                final DatabaseMetaData meta = connection.getMetaData();
+                if (meta != null) {
+                    // Constructor call -> LOG.debug not possible, not yet initialised
+                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("MySQL connection: " +
+                              meta.getDatabaseProductName() +
+                              " " +
+                              meta.getDatabaseProductVersion());
+                } else {
+                    CentralLogger.getInstance().getLogger(ArchiveDaoManager.class).debug("No meta data for MySQL connection");
+                }
+                // allow for transactions? -> yes
+                connection.setAutoCommit(false);
 
-            final DatabaseMetaData meta = connection.getMetaData();
-            LOG.debug("MySQL connection: " +
-                      meta.getDatabaseProductName() +
-                      " " +
-                      meta.getDatabaseProductVersion());
-
-            // allow for transactions ?!
-            connection.setAutoCommit(false);
-
-            _archiveConnection.set(connection);
-
+                _archiveConnection.set(connection);
+            }
         } catch (final InstantiationException e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         } catch (final IllegalAccessException e) {
@@ -147,6 +162,10 @@ public enum ArchiveDaoManager {
         } catch (final SQLException e) {
             throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, e);
         }
+        if (connection == null) {
+            throw new ArchiveConnectionException(ARCHIVE_CONNECTION_EXCEPTION_MSG, null);
+        }
+        return connection;
     }
 
     public void reconnect() throws ArchiveConnectionException {
@@ -183,10 +202,18 @@ public enum ArchiveDaoManager {
      * This method is invoked by the dedicated daos to retrieve their connection.
      *
      * @return the connection
+     * @throws ArchiveConnectionException
      */
-    @CheckForNull
-    Connection getConnection() {
-        return _archiveConnection.get();
+    @Nonnull
+    Connection getConnection() throws ArchiveConnectionException {
+        // TODO (bknerr) : put here connection pooling
+        final Connection connection = _archiveConnection.get();
+        if (connection == null) {
+            // the calling thread has not yet a connection registered.
+            // for now create a new one for this one
+            return connect(createConnectionPrefsFromEclipsePrefs());
+        }
+        return connection;
     }
 
     /**
@@ -195,7 +222,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveChannelDao getChannelDao() {
         if (_archiveChannelDao == null) {
-            _archiveChannelDao = new ArchiveChannelDaoImpl();
+            _archiveChannelDao = new ArchiveChannelDaoImpl(this);
         }
         return _archiveChannelDao;
     }
@@ -206,7 +233,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveChannelGroupDao getChannelGroupDao() {
         if (_archiveChannelGroupDao == null) {
-            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl();
+            _archiveChannelGroupDao = new ArchiveChannelGroupDaoImpl(this);
         }
         return _archiveChannelGroupDao;
     }
@@ -217,7 +244,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveSampleModeDao getSampleModeDao() {
         if (_archiveSampleModeDao == null) {
-            _archiveSampleModeDao = new ArchiveSampleModeDaoImpl();
+            _archiveSampleModeDao = new ArchiveSampleModeDaoImpl(this);
         }
         return _archiveSampleModeDao;
     }
@@ -228,7 +255,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveSampleDao getSampleDao() {
         if (_archiveSampleDao == null) {
-            _archiveSampleDao = new ArchiveSampleDaoImpl();
+            _archiveSampleDao = new ArchiveSampleDaoImpl(this);
         }
         return _archiveSampleDao;
     }
@@ -239,7 +266,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveEngineDao getEngineDao() {
         if (_archiveEngineDao == null) {
-            _archiveEngineDao = new ArchiveEngineDaoImpl();
+            _archiveEngineDao = new ArchiveEngineDaoImpl(this);
         }
         return _archiveEngineDao;
     }
@@ -250,7 +277,7 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveSeverityDao getSeverityDao() {
         if (_archiveSeverityDao == null) {
-            _archiveSeverityDao = new ArchiveSeverityDaoImpl();
+            _archiveSeverityDao = new ArchiveSeverityDaoImpl(this);
         }
         return _archiveSeverityDao;
     }
@@ -261,8 +288,10 @@ public enum ArchiveDaoManager {
     @Nonnull
     public IArchiveStatusDao getStatusDao() {
         if (_archiveStatusDao == null) {
-            _archiveStatusDao = new ArchiveStatusDaoImpl();
+            _archiveStatusDao = new ArchiveStatusDaoImpl(this);
         }
         return _archiveStatusDao;
     }
+
+
 }
