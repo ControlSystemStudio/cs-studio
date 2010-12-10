@@ -89,7 +89,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
 	    // On Linux, however, that seems to corrupt the overall
 	    // widget layout, so we don't use that option.
 	    // super(parent, style | SWT.NO_BACKGROUND);
-        super(parent, style);
+        super(parent, SWT.NO_BACKGROUND);
 		background_color = new Color(null, 255, 255, 255);
 		face_color = new Color(null, 20, 10, 10);
 		needle_color = new Color(null, 20, 0, 200);
@@ -98,6 +98,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         alarm_color = new Color(null, 250, 0, 0);
 		addDisposeListener(this);
 		addPaintListener(this);
+		
 	}
 
     /** Configure the meter.
@@ -222,6 +223,7 @@ public class MeterWidget extends Canvas implements DisposeListener,
         }
         return end_angle + (start_angle - end_angle) * (max-value) / (max-min);
     }
+    
 
 	/** @see org.eclipse.swt.events.PaintListener */
     public void paintControl(final PaintEvent e)
