@@ -5,11 +5,9 @@ import java.util.List;
 import org.csstudio.opibuilder.model.AbstractContainerModel;
 import org.csstudio.opibuilder.model.AbstractPVWidgetModel;
 import org.csstudio.opibuilder.model.AbstractWidgetModel;
-import org.csstudio.opibuilder.properties.RulesProperty;
 import org.csstudio.opibuilder.script.Expression;
 import org.csstudio.opibuilder.script.PVTuple;
 import org.csstudio.opibuilder.script.RuleData;
-import org.csstudio.opibuilder.script.RuleScriptData;
 import org.csstudio.opibuilder.script.RulesInput;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLBasicAttribute;
@@ -26,6 +24,10 @@ public abstract class AbstractADL2Model {
 	protected String className = new String();
 	
 	public AbstractADL2Model(final ADLWidget adlWidget, RGB colorMap[], AbstractContainerModel parentWidget) {
+		this.colorMap = colorMap;
+	}
+
+	public AbstractADL2Model(RGB colorMap[]) {
 		this.colorMap = colorMap;
 	}
 

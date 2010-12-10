@@ -57,8 +57,8 @@ public final class RenameAction extends Action {
      * @param ldapModificationItems
      */
     RenameAction(@Nonnull final TreeViewer viewer,
-                        @Nonnull final IWorkbenchPartSite site,
-                        @Nonnull final Queue<ITreeModificationItem> ldapModificationItems) {
+                 @Nonnull final IWorkbenchPartSite site,
+                 @Nonnull final Queue<ITreeModificationItem> ldapModificationItems) {
         _viewer = viewer;
         _site = site;
         _ldapModificationItems = ldapModificationItems;

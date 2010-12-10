@@ -9,7 +9,7 @@ package org.csstudio.alarm.beast.ui;
 
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTree;
+import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.ui.clientmodel.AlarmClientModel;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.osgi.util.NLS;
@@ -25,7 +25,7 @@ public class RemoveComponentAction extends AbstractUserDependentAction
 {
     final private Shell shell;
     final private AlarmClientModel model;
-    final private AlarmTree items[];
+    final private AlarmTreeItem items[];
 
     /** Initialize action
      *  @param shell Shell
@@ -33,15 +33,15 @@ public class RemoveComponentAction extends AbstractUserDependentAction
      *  @param items Items to remove
      */
     public RemoveComponentAction(final Shell shell, final AlarmClientModel model,
-            final List<AlarmTree> items)
+            final List<AlarmTreeItem> items)
     {
         super(Messages.RemoveComponents,
               Activator.getImageDescriptor("icons/delete.gif"), AuthIDs.CONFIGURE, false); //$NON-NLS-1$
         this.shell = shell;
         this.model = model;
-        this.items = new AlarmTree[items.size()];
+        this.items = new AlarmTreeItem[items.size()];
         items.toArray(this.items);
-        
+
         setEnabledWithoutAuthorization(true);
     	//authorization
     	setEnabled(SecurityFacade.getInstance().canExecute(AuthIDs.CONFIGURE, false));
@@ -53,7 +53,7 @@ public class RemoveComponentAction extends AbstractUserDependentAction
 	@Override
 	protected void doWork() {
 		final StringBuilder names = new StringBuilder();
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
         {
             if (names.length() > 0)
                 names.append(", "); //$NON-NLS-1$
@@ -63,7 +63,7 @@ public class RemoveComponentAction extends AbstractUserDependentAction
                 NLS.bind(Messages.RemoveConfirmationFmt,
                         names.toString())))
             return;
-        for (AlarmTree item : items)
+        for (AlarmTreeItem item : items)
         {
             try
             {

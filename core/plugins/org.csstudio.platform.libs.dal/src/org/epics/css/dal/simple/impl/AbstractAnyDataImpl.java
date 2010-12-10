@@ -26,10 +26,11 @@ public abstract class AbstractAnyDataImpl<T> implements AnyData {
 		} else {
 			this.response = r; 
 		}
+		
 		if (property.isMetaDataInitialized()) {
 			metaData = extractMetaData();
 		} else {
-			metaData = MetaDataImpl.createUninitializedMetaData();
+			 metaData = MetaDataImpl.createUninitializedMetaData();
 		}
 		
 		this.beamID=beamID;

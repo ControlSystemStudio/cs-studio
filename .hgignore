@@ -24,3 +24,13 @@ products/SNS/product/org.csstudio.sns.updatesite/build/*
 products/SNS/product/org.csstudio.sns.updatesite/apps/*
 products/SNS/product/org.csstudio.sns.updatesite/config_build_*/build.log
 
+# ignore the .settings folder
+# should be changed to */.settings/* ?
+
+syntax: regexp
+^applications/plugins/org\.csstudio\.diag\.pvmanager\.probe/\.settings$
+^applications/plugins/org\.csstudio\.channelfinder/\.settings$
+^core/plugins/org\.csstudio\.platform\.libs\.glazedlists/\.settings$
+^applications/plugins/org\.csstudio\.channelfinder\.ui/\.settings$
+^core/plugins/org\.csstudio\.platform\.libs\.jfreechart/\.settings$
+^applications/plugins/org\.csstudio\.multiChannelViewer/\.settings$

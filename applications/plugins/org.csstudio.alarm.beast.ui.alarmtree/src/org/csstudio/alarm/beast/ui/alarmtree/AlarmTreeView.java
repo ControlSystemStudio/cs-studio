@@ -32,7 +32,7 @@ public class AlarmTreeView extends ViewPart
 {
     /** ID of the view a defined in plugin.xml */
     final public static String ID = "org.csstudio.alarm.beast.ui.alarmtree.View"; //$NON-NLS-1$
-    
+
     private AlarmClientModel model;
 
     private GUI gui = null;
@@ -60,26 +60,27 @@ public class AlarmTreeView extends ViewPart
                 .setText(message);
             return;
         }
-        
+
         // Arrange for model to be released
         parent.addDisposeListener(new DisposeListener()
         {
+            @Override
             public void widgetDisposed(DisposeEvent e)
             {
                 model.release();
                 model = null;
             }
         });
-        
+
         // Have model, create GUI
         gui = new GUI(parent, model, getViewSite());
-        
+
         final IToolBarManager toolbar = getViewSite().getActionBars().getToolBarManager();
         if (model.isWriteAllowed())
         {
-        	if (Preferences.isConfigChangeAllowed())
+        	if (Preferences.isConfigSelectionAllowed())
         	{
-        		toolbar.add(new ChangeConfigurationAction(model));
+        		toolbar.add(new SelectConfigurationAction(model));
         		toolbar.add(new Separator());
         	}
             toolbar.add(new MaintenanceModeAction(model));
@@ -93,7 +94,7 @@ public class AlarmTreeView extends ViewPart
         }
         toolbar.add(new CollapseAlarmTreeAction(gui));
         toolbar.add(new ExpandCurrentAlarmsAction(gui));
-        
+
         // Inform workbench about currently selected alarm in tree viewer
         getSite().setSelectionProvider(gui.getTreeViewer());
     }

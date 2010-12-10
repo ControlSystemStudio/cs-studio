@@ -34,6 +34,7 @@
 .OPNL
 .OUT
 .OVAL
+.RTYP
 .SDIS
 .SELL
 .SENS
@@ -52,6 +53,7 @@
 .TTST
 .TVST
 .TWST
+.VERS
 .ZNAM
 .ZRST
 _si
@@ -62,3 +64,5 @@ _stringin
 _stringin.VAL
 _stro
 _stro.VAL
+:IocInfo
+:ProcessInfo

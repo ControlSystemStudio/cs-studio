@@ -47,10 +47,13 @@
 		<copy todir="${workspaceLocation}/build">
 			<fileset dir="${workspaceLocation}/products/DESY/DESY-CSS"/>
 		</copy>
-		<copy todir="${workspaceLocation}/build">
+		<copy todir="${workspaceLocation}/build/plugins">
+			<fileset dir="${workspaceLocation}/products/NSLS2/plugins"/>
+		</copy>
+<!--		<copy todir="${workspaceLocation}/build">
 			<fileset dir="D:/Java/hudson/EclipseTargetPlatform/e360"/>
 		</copy>
-	</target>
+	--></target>
 		
 	
 	

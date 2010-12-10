@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            allowMultiple="true"
+            category="org.csstudio.channelfinder"
+            class="org.csstudio.multichannelviewer.ChannelsControlList"
+            id="org.csstudio.orbitViewer.channelsView"
+            name="Channels List"
+            restorable="true">
+      </view>
+      <view
+            allowMultiple="true"
+            category="org.csstudio.channelfinder"
+            class="org.csstudio.multichannelviewer.ChannelsPlot"
+            id="org.csstudio.multiChannelViewer.ChannelsPlot"
+            name="Channels Plot"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="false"
+            id="org.csstudio.multiChannelViewer.objectContribution"
+            objectClass="org.csstudio.utility.channel.ICSSChannel">
+         <action
+               class="org.csstudio.multichannelviewer.actions.OpenChannelsControlListView"
+               enablesFor="+"
+               id="org.csstudio.multiChannelViewer.openChannelsView"
+               label="Open Channels View"
+               menubarPath="org.csstudio.utility.channel.menu/group">
+         </action><action
+               class="org.csstudio.multichannelviewer.actions.OpenMultiChannelPlot"
+               enablesFor="+"
+               id="org.csstudio.multiChannelViewer.openmultichannelplot"
+               label="Open MultiChannel Plot"
+               menubarPath="org.csstudio.utility.channel.menu/group">
+         </action>
+      </objectContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.csstudio.multiChannelViewer.plotViewToolbar"
+            targetID="org.csstudio.orbitViewer.channelsView">
+         <menu
+               id="org.csstudio.multiChannelViewer.pullDownMenu"
+               label="channels plot pull down menu"
+               path="additions">
+            <groupMarker
+                  name="content">
+            </groupMarker>
+            <separator
+                  name="additions">
+            </separator>
+         </menu>
+         <action
+               class="org.csstudio.multichannelviewer.actions.AddTestChannels"
+               id="org.csstudio.multiChannelViewer.AddTestChannels"
+               label="Add Test Channels"
+               style="push"
+               toolbarPath="additions">
+         </action>
+         <action
+               class="org.csstudio.multichannelviewer.actions.RemoveTestChannels"
+               id="org.csstudio.multiChannelViewer.RemoveTestChannels"
+               label="Remove Test Channels"
+               style="push"
+               toolbarPath="additions">
+         </action>
+      </viewContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.csstudio.multichannelviewer.MultiChannelPlot"
+            default="true"
+            extensions=".mcp"
+            id="org.csstudio.multiChannelViewer.plot"
+            name="MultiChannel Plot">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.csstudio.multichannelviewer.PerspectiveFactory"
+            id="org.csstudio.multiChannelViewer.perspective"
+            name="MultiChannel Plot Perspective">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.csstudio.multiChannelViewer.actionSet"
+            label="Channel ActionSet">
+         <action
+               class="org.csstudio.multichannelviewer.actions.OpenMultiChannelPlot"
+               id="org.csstudio.multiChannelViewer.openmultichannelplot"
+               label="Open MultiChannel Plot"
+               style="push">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>

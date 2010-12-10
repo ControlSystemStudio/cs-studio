@@ -34,7 +34,7 @@ public class Application implements IApplication
     }
     private Mode mode;
     private String filename;
-    
+
     /** Parse arguments, set member variables */
     private String checkArguments(String[] args)
     {
@@ -90,27 +90,28 @@ public class Application implements IApplication
     }
 
     /** IApplication start */
+    @Override
     public Object start(IApplicationContext context) throws Exception
     {
         System.out.println("Alarm Config Tool");
         // Create parser for arguments and run it.
         final String args[] =
             (String []) context.getArguments().get("application.args");
-      
+
         final String error = checkArguments(args);
         if (error != null)
         {
             System.err.println(error);
             return EXIT_OK;
         }
-        
+
         if (mode == Mode.CONVERT_ALH)
             convertAlh();
         else
             importExport();
         return EXIT_OK;
     }
-    
+
     private void convertAlh()
     {
         try
@@ -192,6 +193,7 @@ public class Application implements IApplication
     }
 
     /** IApplication stop */
+    @Override
     public void stop()
     {
         // Ignored

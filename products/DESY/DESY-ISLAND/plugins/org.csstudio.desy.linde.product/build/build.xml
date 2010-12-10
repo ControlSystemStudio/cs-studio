@@ -3,7 +3,7 @@
 	<property file="tools.properties" />
 	
 
-	<target name="build" depends="copyPlugins, buildWindows, buildLinux, buildMac"/>
+	<target name="build" depends="copyPlugins, buildWindows, buildLinux"/>
 	
 	<target name="buildWindows" depends="cleanup, pdeBuildWin, hudsonUpdateWin"/>
 	<target name="buildLinux" depends="cleanup, pdeBuildLin, hudsonUpdateLin"/>
@@ -57,10 +57,10 @@
 		<copy todir="${workspaceLocation}/build/plugins">
 			<fileset dir="${workspaceLocation}/products/NSLS2/plugins"/>
 		</copy>
-		<copy todir="${workspaceLocation}/build">
+<!--		<copy todir="${workspaceLocation}/build">
 			<fileset dir="D:/Java/hudson/EclipseTargetPlatform/e360"/>
 		</copy>
-	</target>
+-->	</target>
 		
 	
 	
@@ -137,7 +137,7 @@
 			<arg value="-buildfile" />
 			<arg value="${base}/productBuild.xml" />
 			<arg value="-DbaseLocation=${e360TP}" />
-			<arg value="-Dconfigs=macosx, carbon, x86" />
+			<arg value="-Dconfigs=macosx, cocoa, x86" />
 			<classpath>
 				<pathelement location="${eclipse360}/plugins/org.eclipse.equinox.launcher_1.1.0.v20100507.jar" />
 			</classpath>
@@ -202,7 +202,7 @@
 		<copy todir="${workspaceLocation}build/initmp/${archivePrefix}">
 			<fileset file="${workspaceLocation}products/DESY/DESY-CSS/plugins/org.csstudio.desy.product/plugin_customization.ini"/>
 		</copy>
-		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
+		<zip destfile="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" basedir="${workspaceLocation}build/initmp" update="true" />
 	</target>
 
 	<!--
@@ -241,7 +241,7 @@
 		Copy mac product to artifact folder from hudson
 	-->
 	<target name="hudsonUpdateMac">
-		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.carbon.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
+		<copy file="${workspaceLocation}build/${buildLabel}/${buildId}-macosx.cocoa.x86.zip" todir="${hudsonbase}/home/jobs/${hudsonjob}/workspace/artefacts"/>
 	</target>
 
 	<!--
