@@ -531,13 +531,13 @@ public class PVManagerProbe extends ViewPart {
 	private void setMeter(Double value, Display display) {
 		if (value == null || display == null) {
 			meter.setEnabled(false);
-			meter.setValue(0.0);
+			//meter.setValue(0.0);
 		} else if (display.getUpperDisplayLimit() <= display.getLowerDisplayLimit()) {
 			meter.setEnabled(false);
-			meter.setValue(0.0);
+			//meter.setValue(0.0);
 		} else {
 			meter.setEnabled(true);
-			meter.configure(display.getLowerDisplayLimit(),
+			meter.setLimits(display.getLowerDisplayLimit(),
 					display.getLowerAlarmLimit(), 
 					display.getLowerWarningLimit(),
 					display.getUpperWarningLimit(),
