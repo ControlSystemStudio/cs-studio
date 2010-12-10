@@ -9,46 +9,37 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import static org.junit.Assert.*;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePath;
-import org.csstudio.alarm.beast.AlarmTreeRoot;
-import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.apputil.test.TestProperties;
-import org.csstudio.platform.data.ITimestamp;
+import org.csstudio.apputil.time.BenchmarkTimer;
 import org.csstudio.platform.data.TimestampFactory;
-import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;
 
+/** JUnit test of the {@link GlobalAlarm}
+ *  @author Kay Kasemir
+ */
 @SuppressWarnings("nls")
-public class GlobalAlarmTest
+public class GlobalAlarmTest implements ReadInfoJobListener
 {
-    // TODO combine with similar code that'll be needed in the model
-    // to create alarm based on partially available root, area, ...
-    private GlobalAlarm createAlarmFromPath(final String full_path,
-            final SeverityLevel severity, final String message,
-            final ITimestamp timestamp)
-    {
-        final String path[] = AlarmTreePath.splitPath(full_path);
-
-        AlarmTreeItem parent = null;
-        for (int i=0; i<path.length-1; ++i)
-        {
-            if (i == 0)
-                parent = new AlarmTreeRoot(path[i], -1);
-            else
-                parent = new AlarmTreeItem(parent, path[i], -1);
-        }
-        return new GlobalAlarm(parent, path[path.length-1], -1,
-                severity, message, timestamp);
-    }
-
     @Test
     public void testGlobalAlarm() throws Exception
     {
-        GlobalAlarm alarm = createAlarmFromPath("/Root/Area/System/TheAlarm",
+        final GlobalAlarm alarm = GlobalAlarm.fromPath("/Root/Area/System/TheAlarm",
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
         alarm.getRoot().dump(System.out);
+    }
+
+    private boolean received_rdb_info = false;
+
+    // ReadInfoJobListener
+    @Override
+    public void receivedAlarmInfo(GlobalAlarm alarm)
+    {
+        synchronized (this)
+        {
+            received_rdb_info = true;
+            notifyAll();
+        }
     }
 
     @Test
@@ -64,9 +55,9 @@ public class GlobalAlarmTest
             System.out.println("Need test path, skipping test");
             return;
         }
-        final GlobalAlarm alarm = createAlarmFromPath(full_path,
+        final GlobalAlarm alarm = GlobalAlarm.fromPath(full_path,
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
-
+        // It lacks ID, guidance etc.
         assertEquals(-1, alarm.getID());
         assertEquals(0, alarm.getGuidance().length);
 
@@ -79,16 +70,21 @@ public class GlobalAlarmTest
             System.out.println("Need test RDB URL, skipping test");
             return;
         }
-        final RDBUtil rdb = RDBUtil.connect(rdb_url, rdb_user, rdb_password, false);
-        final SQL sql = new SQL(rdb);
-        try
+
+        System.out.println("Before reading GUI info:");
+        alarm.getClientRoot().dump(System.out);
+
+        // Read RDB info in background job
+        BenchmarkTimer timer = new BenchmarkTimer();
+        new ReadInfoJob(rdb_url, rdb_user, rdb_password, alarm, this).schedule();
+        synchronized (this)
         {
-            alarm.completeGuiInfo(rdb, sql);
+            for (int i=0; !received_rdb_info  &&  i<10; ++i)
+                wait(1000);
+            assertTrue(received_rdb_info);
         }
-        finally
-        {
-            rdb.close();
-        }
+        timer.stop();
+        System.out.println("After reading GUI info (" + timer.toString() + "):");
         alarm.getClientRoot().dump(System.out);
 
         assertTrue(alarm.getID() >= 0);

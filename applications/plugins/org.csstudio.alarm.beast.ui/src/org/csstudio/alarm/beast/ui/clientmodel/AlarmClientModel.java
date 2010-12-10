@@ -886,7 +886,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmTree(this);
+                listener.newAlarmConfiguration(this);
             }
             catch (Throwable ex)
             {

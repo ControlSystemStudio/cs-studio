@@ -10,6 +10,8 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import org.csstudio.alarm.beast.AlarmConfigurationReader;
 import org.csstudio.alarm.beast.AlarmTreeItem;
 import org.csstudio.alarm.beast.AlarmTreePV;
+import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.SQL;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.platform.data.ITimestamp;
@@ -21,9 +23,36 @@ import org.csstudio.platform.utility.rdb.RDBUtil;
  */
 public class GlobalAlarm extends AlarmTreePV
 {
+    /** Create global alarm with path and alarm info,
+     *  but without GUI detail (guidance,..) nor valid RDB ID
+     *  @param full_path
+     *  @param severity
+     *  @param message
+     *  @param timestamp
+     *  @return GlobalAlarm
+     */
+    public static GlobalAlarm fromPath(final String full_path,
+            final SeverityLevel severity, final String message,
+            final ITimestamp timestamp)
+    {
+        final String path[] = AlarmTreePath.splitPath(full_path);
+
+        AlarmTreeItem parent = null;
+        for (int i=0; i<path.length-1; ++i)
+        {
+            if (i == 0)
+                parent = new AlarmTreeRoot(path[i], -1);
+            else
+                parent = new AlarmTreeItem(parent, path[i], -1);
+        }
+        return new GlobalAlarm(parent, path[path.length-1], -1,
+                severity, message, timestamp);
+    }
+
+
     // Similar to the AlarmTreePV, but doesn't track 'current' state,
     // only 'alarm' state
-    GlobalAlarm(final AlarmTreeItem parent, final String name, final int id,
+    private GlobalAlarm(final AlarmTreeItem parent, final String name, final int id,
             final SeverityLevel severity, final String message, final ITimestamp timestamp)
     {
         super(parent, name, id);

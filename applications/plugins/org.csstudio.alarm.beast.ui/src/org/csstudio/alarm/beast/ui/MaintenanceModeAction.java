@@ -60,7 +60,7 @@ public class MaintenanceModeAction extends AbstractUserDependentAction
             @Override
             public void serverTimeout(AlarmClientModel model) { /* Ignore */ }
             @Override
-            public void newAlarmTree(AlarmClientModel model) { /* Ignore */ }
+            public void newAlarmConfiguration(AlarmClientModel model) { /* Ignore */ }
             @Override
             public void newAlarmState(AlarmClientModel model, AlarmTreePV pv) { /* Ignore */ }
         });

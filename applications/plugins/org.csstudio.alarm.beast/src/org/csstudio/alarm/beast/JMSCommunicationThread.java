@@ -51,9 +51,12 @@ abstract public class JMSCommunicationThread
 
     /** Initialize
      *  @param url JMS Server URL
+     *  @throws NullPointerException for <code>null</code> URL
      */
     public JMSCommunicationThread(final String url)
     {
+        if (url == null)
+            throw new NullPointerException("JMS URL must not be null");
         this.url = url;
         thread = new Thread(new Runnable()
         {

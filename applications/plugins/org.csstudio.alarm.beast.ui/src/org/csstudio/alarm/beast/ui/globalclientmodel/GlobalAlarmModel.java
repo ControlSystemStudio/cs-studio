@@ -10,8 +10,7 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.csstudio.alarm.beast.AlarmTreeItem;
-import org.csstudio.alarm.beast.AlarmTreePath;
+import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.alarm.beast.WorkQueue;
 import org.csstudio.alarm.beast.ui.Messages;
@@ -21,6 +20,8 @@ import org.eclipse.osgi.util.NLS;
 
 /** Model for a 'global' alarm client.
  *  Initially reads alarms from RDB, then tracks changes via JMS.
+ *
+ *  TODO Check for latency from GUI clearing alarm to global alarm clearing up
  *  @author Kay Kasemir
  */
 public class GlobalAlarmModel
@@ -46,13 +47,12 @@ public class GlobalAlarmModel
     final private List<GlobalAlarm> alarms = new ArrayList<GlobalAlarm>();
 
     /** Initialize
-     *  @param jms_url JMS URL
+     *  @param listener Listener
      */
-    public GlobalAlarmModel(final String jms_url,
-            final GlobalAlarmModelListener listener)
+    public GlobalAlarmModel(final GlobalAlarmModelListener listener)
     {
         this.listener = listener;
-        communicator = new GlobalAlarmCommunicator(jms_url)
+        communicator = new GlobalAlarmCommunicator(Preferences.getJMS_URL())
         {
             @Override
             void handleAlarmUpdate(final AlarmUpdateInfo info)
@@ -83,6 +83,7 @@ public class GlobalAlarmModel
     {
         synchronized (alarms)
         {
+            // Must return thread-save array. For now a copy on every call:
             return alarms.toArray(new GlobalAlarm[alarms.size()]);
         }
     }
@@ -152,7 +153,17 @@ public class GlobalAlarmModel
         {
             // TODO check for existing alarm
             // Add alarm
-            createNewAlarm(info);
+            final GlobalAlarm alarm = GlobalAlarm.fromPath(info.getNameOrPath(),
+                    info.getSeverity(), info.getMessage(), info.getTimestamp());
+            synchronized (alarms)
+            {
+                alarms.add(alarm);
+            }
+            // Complete GUI detail in background
+            final ReadInfoJob read_job = new ReadInfoJob(Preferences.getRDB_Url(),Preferences.getRDB_User(),
+                    Preferences.getRDB_Password(), alarm, null);
+            // Wait a little to give fireAlarmUpdate a head-start
+            read_job.schedule(100);
         }
         fireAlarmUpdate();
     }
@@ -173,26 +184,6 @@ public class GlobalAlarmModel
                 }
         }
         return false;
-    }
-
-    /** Create a temporary alarm: IDs -1, no guidance etc.
-     *  @param info Alarm info
-     */
-    private void createNewAlarm(final AlarmUpdateInfo info)
-    {
-        final String path[] = AlarmTreePath.splitPath(info.getNameOrPath());
-        AlarmTreeItem parent = null;
-        for (int i=0; i<path.length-1; ++i)
-            parent = new AlarmTreeItem(parent, path[i], -1);
-        final GlobalAlarm alarm = new GlobalAlarm(parent, path[path.length-1], -1,
-                info.getSeverity(),
-                info.getMessage(),
-                info.getTimestamp());
-        synchronized (alarms)
-        {
-            alarms.add(alarm);
-        }
-        // TODO schedule background task for fetching GUI detail
     }
 
     /** Inform listener of changes */
