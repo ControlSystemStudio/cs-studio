@@ -44,8 +44,8 @@ import org.csstudio.config.ioconfig.config.view.helper.ConfigHelper;
 import org.csstudio.config.ioconfig.config.view.helper.ProfibusHelper;
 import org.csstudio.config.ioconfig.editorparts.AbstractNodeEditor;
 import org.csstudio.config.ioconfig.model.AbstractNodeDBO;
-import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.FacilityDBO;
+import org.csstudio.config.ioconfig.model.IOConifgActivator;
 import org.csstudio.config.ioconfig.model.IocDBO;
 import org.csstudio.config.ioconfig.model.NamedDBClass;
 import org.csstudio.config.ioconfig.model.PersistenceException;
@@ -60,7 +60,6 @@ import org.csstudio.config.ioconfig.view.actions.CreateWinModAction;
 import org.csstudio.config.ioconfig.view.actions.CreateXMLConfigAction;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.platform.ui.util.CustomMediaFactory;
-import org.eclipse.core.commands.Command;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -119,7 +118,6 @@ import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.IViewSite;
 import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.commands.ICommandService;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.DrillDownAdapter;
 
@@ -137,7 +135,7 @@ public class ProfiBusTreeView extends Composite {
      */
     public static final String ID = ProfiBusTreeView.class.getName();
     public static final String PARENT_NODE_ID = "org.csstudio.config.ioconfig.parent.node";
-    private static final String NEW_NODE_COMMAND_ID = CallNewSiblingNodeEditor.getEditorID();
+//    private static final String NEW_NODE_COMMAND_ID = CallNewSiblingNodeEditor.getEditorID();
 //    private static final String NEW_NODE_COMMAND_ID = IocEditor.ID;
     private final IViewSite _site;
     
@@ -366,7 +364,7 @@ public class ProfiBusTreeView extends Composite {
     /**
      * Open a ConfigComposite for the tree selection Node.
      */
-    private void editNode() {
+    protected void editNode() {
         _editNodeAction.setEnabled(false);
         // setEditComposite();
         
@@ -1106,9 +1104,11 @@ public class ProfiBusTreeView extends Composite {
          * @param selectedNode
          */
         private void copyFacility(@Nonnull AbstractNodeDBO selectedNode) {
-            FacilityDBO copy = (FacilityDBO) selectedNode.copyThisTo(null);
-            getLoad().add(copy);
-            getViewer().setInput(getLoad());
+            final FacilityDBO copy = (FacilityDBO) selectedNode.copyThisTo(null);
+            copy.setSortIndexNonHibernate(selectedNode.getSortIndex()+1);
+            List<FacilityDBO> load = getLoad();
+            load.add(copy);
+            getViewer().setInput(load);
             getViewer().setSelection(new StructuredSelection(copy));
         }
     }
