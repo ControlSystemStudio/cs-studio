@@ -96,7 +96,7 @@ public class MeterWidget extends Canvas
 			
 			@Override
 			public void widgetDisposed(DisposeEvent e) {
-		        resetScale();
+		        invalidateScale();
 		        alarmColor.dispose();
 		        warningColor.dispose();
 		        okColor.dispose();
@@ -173,7 +173,7 @@ public class MeterWidget extends Canvas
             this.highWarning = this.highAlarm;
 
         this.precision = precision;
-        resetScale();
+        invalidateScale();
         redraw();
     }
 
@@ -195,6 +195,7 @@ public class MeterWidget extends Canvas
     	boolean oldEnabled = getEnabled();
     	super.setEnabled(enabled);
     	if (oldEnabled != enabled) {
+    		invalidateScale();
     		redraw();
     	}
     }
@@ -203,7 +204,7 @@ public class MeterWidget extends Canvas
      *  <p>
      *  Clears the scale image, so it will be re-computed on redraw.
      */
-    private void resetScale()
+    private void invalidateScale()
     {
         if (scaleImage != null)
         {
@@ -441,10 +442,14 @@ public class MeterWidget extends Canvas
 
             final String label_text = fmt.format(label_value);
             final Point size = scale_gc.textExtent(label_text);
-            scale_gc.drawString(label_text,
+            
+            // Don't print the numbers if disabled
+            if (getEnabled()) {
+            	scale_gc.drawString(label_text,
                           (int)(pivot_x + tick_x_radius*cos_angle)-size.x/2,
                           (int)(pivot_y - tick_y_radius*sin_angle)-size.y,
                           true);
+            }
         }
 	}
 
