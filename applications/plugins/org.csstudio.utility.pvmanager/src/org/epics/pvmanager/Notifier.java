@@ -20,6 +20,7 @@ class Notifier<T> {
     private final Function<T> function;
     private final ThreadSwitch onThread;
     private volatile PVRecipe pvRecipe;
+    private final ExceptionHandler exceptionHandler;
 
     /**
      * Creates a new notifier. The new notifier will notifier the given pv
@@ -33,10 +34,11 @@ class Notifier<T> {
      * @param function the function used to calculate new values
      * @param onThread the thread switching mechanism
      */
-    Notifier(PV<T> pv, Function<T> function, ThreadSwitch onThread) {
+    Notifier(PV<T> pv, Function<T> function, ThreadSwitch onThread, ExceptionHandler exceptionHandler) {
         this.pvRef = new WeakReference<PV<T>>(pv);
         this.function = function;
         this.onThread = onThread;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -94,25 +96,29 @@ class Notifier<T> {
      * Notifies the PV of a new value.
      */
     void notifyPv() {
-        // Using concurrent queue to safely publish object
-        T newValue = function.getValue();
-        push(newValue);
+        try {
+            // Using concurrent queue to safely publish object
+            T newValue = function.getValue();
+            push(newValue);
 
-        onThread.post(new Runnable() {
+            onThread.post(new Runnable() {
 
-            @Override
-            public void run() {
-                T safeValue = pop();
-                PV<T> pv = pvRef.get();
-                if (pv != null && safeValue != null) {
-                    TypeSupport.Notification<T> notification =
-                            TypeSupport.notification(pv.getValue(), safeValue);
-                    if (notification.isNotificationNeeded()) {
-                        pv.setValue(notification.getNewValue());
+                @Override
+                public void run() {
+                    T safeValue = pop();
+                    PV<T> pv = pvRef.get();
+                    if (pv != null && safeValue != null) {
+                        TypeSupport.Notification<T> notification =
+                                TypeSupport.notification(pv.getValue(), safeValue);
+                        if (notification.isNotificationNeeded()) {
+                            pv.setValue(notification.getNewValue());
+                        }
                     }
                 }
-            }
-        });
+            });
+        } catch(RuntimeException ex) {
+            exceptionHandler.handleException(ex);
+        }
     }
 
     void setPvRecipe(PVRecipe pvRecipe) {

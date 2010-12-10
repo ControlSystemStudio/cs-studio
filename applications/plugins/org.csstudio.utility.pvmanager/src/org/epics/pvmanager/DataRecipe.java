@@ -18,13 +18,14 @@ import java.util.Map;
 public class DataRecipe {
 
     private final Map<Collector, Map<String, ValueCache>> channelsPerCollector;
-    private final ExceptionHandler exceptionHandler = new ExceptionHandler();
+    private final ExceptionHandler exceptionHandler;
 
     /**
      * Creates an empty data recipe.
      */
     public DataRecipe() {
         channelsPerCollector = Collections.emptyMap();
+        exceptionHandler = new ExceptionHandler();
     }
 
     /**
@@ -35,6 +36,12 @@ public class DataRecipe {
      */
     DataRecipe(Map<Collector, Map<String, ValueCache>> channelsPerCollector) {
         this.channelsPerCollector = channelsPerCollector;
+        exceptionHandler = new ExceptionHandler();
+    }
+
+    DataRecipe(Map<Collector, Map<String, ValueCache>> channelsPerCollector, ExceptionHandler exceptionHandler) {
+        this.channelsPerCollector = channelsPerCollector;
+        this.exceptionHandler = exceptionHandler;
     }
 
     /**
@@ -91,6 +98,10 @@ public class DataRecipe {
      */
     public ExceptionHandler getExceptionHandler() {
         return exceptionHandler;
+    }
+
+    public DataRecipe withExceptionHandler(ExceptionHandler handler) {
+        return new DataRecipe(channelsPerCollector, handler);
     }
 
 }

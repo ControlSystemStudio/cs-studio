@@ -24,7 +24,7 @@ public class ExpressionLanguage {
 
     static {
         // Add support for Epics types.
-        EpicsTypeSupport.install();
+        TypeSupport.install();
     }
 
     /**

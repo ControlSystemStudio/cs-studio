@@ -63,6 +63,7 @@ public class PVManager {
     public static class PVManagerExpression<T>  {
 
         private DesiredRateExpression<T> aggregatedPVExpression;
+        private ExceptionHandler exceptionHandler;
         // Initialize to defaults
         private ThreadSwitch onThread = defaultOnThread;
         private DataSource source = defaultDataSource;
@@ -118,8 +119,13 @@ public class PVManager {
             // Create PV and connect
             PV<T> pv = PV.createPv(aggregatedPVExpression.getDefaultName());
             DataRecipe dataRecipe = aggregatedPVExpression.getDataRecipe();
+            if (exceptionHandler == null) {
+                dataRecipe = dataRecipe.withExceptionHandler(new DefaultExceptionHandler(pv, onThread));
+            } else {
+                dataRecipe = dataRecipe.withExceptionHandler(exceptionHandler);
+            }
             Function<T> aggregatedFunction = aggregatedPVExpression.getFunction();
-            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread);
+            Notifier<T> notifier = new Notifier<T>(pv, aggregatedFunction, onThread, dataRecipe.getExceptionHandler());
             Scanner.scan(notifier, scanPeriodMs);
             source.connect(dataRecipe);
             PVRecipe recipe = new PVRecipe(dataRecipe, source, notifier);

@@ -22,6 +22,12 @@ import java.util.Set;
  */
 public class ValueFactory {
 
+    public static VString newVString(String value, AlarmSeverity alarmSeverity,
+            AlarmStatus alarmStatus,
+            TimeStamp timeStamp, Integer timeUserTag) {
+        return new IVString(value, alarmSeverity, alarmStatus, timeStamp, timeUserTag);
+    }
+
     public static VMultiDouble newVMultiDouble(List<VDouble> values, AlarmSeverity alarmSeverity,
             AlarmStatus alarmStatus,
             TimeStamp timeStamp, Integer timeUserTag, Double lowerDisplayLimit,
@@ -371,6 +377,30 @@ public class ValueFactory {
                 oldValue.getFormat(), oldValue.getUpperWarningLimit(),
                 oldValue.getUpperAlarmLimit(), oldValue.getUpperDisplayLimit(),
                 oldValue.getLowerCtrlLimit(), oldValue.getUpperCtrlLimit());
+    }
+
+    static VDoubleArray newVDoubleArray(final double[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
+            final Integer timeUserTag,
+            final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
+            final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
+            final Double upperAlarmLimit, final Double upperDisplayLimit,
+            final Double lowerCtrlLimit, final Double upperCtrlLimit) {
+        return new IVDoubleArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag,
+                lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat,
+                upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
+    }
+
+    static VIntArray newVIntArray(final int[] values, final List<Integer> sizes, final AlarmSeverity alarmSeverity,
+            final AlarmStatus alarmStatus, final TimeStamp timeStamp,
+            final Integer timeUserTag,
+            final Double lowerDisplayLimit, final Double lowerAlarmLimit, final Double lowerWarningLimit,
+            final String units, final NumberFormat numberFormat, final Double upperWarningLimit,
+            final Double upperAlarmLimit, final Double upperDisplayLimit,
+            final Double lowerCtrlLimit, final Double upperCtrlLimit) {
+        return new IVIntArray(values, sizes, alarmSeverity, alarmStatus, timeStamp, timeUserTag,
+                lowerDisplayLimit, lowerCtrlLimit, lowerAlarmLimit, lowerWarningLimit, units, numberFormat,
+                upperWarningLimit, upperAlarmLimit, upperCtrlLimit, upperDisplayLimit);
     }
 
 }

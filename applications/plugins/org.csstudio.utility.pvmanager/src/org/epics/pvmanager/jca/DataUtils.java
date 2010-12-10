@@ -70,7 +70,7 @@ class DataUtils {
      * @return a new pvmanager timestamp
      */
     static org.epics.pvmanager.TimeStamp fromEpics(gov.aps.jca.dbr.TimeStamp epicsTimeStamp) {
-        return org.epics.pvmanager.TimeStamp.time(epicsTimeStamp.secPastEpoch() - TS_EPOCH_SEC_PAST_1970, epicsTimeStamp.nsec());
+        return org.epics.pvmanager.TimeStamp.time(epicsTimeStamp.secPastEpoch() + TS_EPOCH_SEC_PAST_1970, epicsTimeStamp.nsec());
     }
 
     /**
