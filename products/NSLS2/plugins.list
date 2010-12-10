@@ -6,6 +6,7 @@ org.csstudio.archivereader
 org.csstudio.archivereader.channelarchiver
 org.csstudio.archivereader.rdb
 org.csstudio.channelfinder
+org.csstudio.channelfinder.ui
 org.csstudio.diag.epics.pvtree
 org.csstudio.diag.epics.pvtree.intro
 org.csstudio.diag.postanalyser
@@ -13,6 +14,7 @@ org.csstudio.diag.probe
 org.csstudio.diag.probe.intro
 org.csstudio.diag.pvmanager.probe
 org.csstudio.display.pvtable
+org.csstudio.display.channelfinderviewer
 org.csstudio.email
 org.csstudio.email.ui
 org.csstudio.logbook
@@ -48,11 +50,14 @@ org.csstudio.platform.libs.dal
 org.csstudio.platform.libs.dal.epics
 org.csstudio.platform.libs.epics
 org.csstudio.platform.libs.epics.ui
+org.csstudio.platform.libs.glazedlists
+org.csstudio.platform.libs.guava
 org.csstudio.platform.libs.jdbc
 org.csstudio.platform.libs.jdom
 org.csstudio.platform.libs.jersey
 org.csstudio.platform.libs.jmock
 org.csstudio.platform.libs.jms
+org.csstudio.platform.libs.log4j
 org.csstudio.platform.ui
 org.csstudio.platform.utility.jms
 org.csstudio.platform.utility.rdb
@@ -62,3 +67,4 @@ org.csstudio.startuphelper
 org.csstudio.nsls2.product
 org.csstudio.nsls2.startuphelper
 org.csstudio.nsls2.startup.intro
+
