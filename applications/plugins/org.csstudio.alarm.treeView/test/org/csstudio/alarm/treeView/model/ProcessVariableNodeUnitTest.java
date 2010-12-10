@@ -115,14 +115,14 @@ public class ProcessVariableNodeUnitTest {
     @Test
 	public void testPropertiesAreNullByDefault() throws Exception {
 		for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
-			assertNull(_node.getProperty(id));
+			assertNull(_node.getInheritedProperty(id));
 		}
 	}
 
     @Test
     public void testPropertyInheritance() throws Exception {
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
-        assertEquals("foo", _node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("foo", _node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
         assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
     }
 

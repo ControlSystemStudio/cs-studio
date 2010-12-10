@@ -22,6 +22,8 @@
 
 package org.csstudio.utility.ldap.treeconfiguration;
 
+import java.net.URL;
+
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
@@ -35,17 +37,22 @@ import com.google.common.collect.ImmutableSet.Builder;
  * @author Joerg Rathlev
  */
 public enum EpicsAlarmcfgTreeNodeAttribute {
-    
+
 	CSS_ALARM_DISPLAY("epicsCssAlarmDisplay",
-	                  "The CSS alarm display."),
+	                  "The CSS alarm display.",
+	                  URL.class),
 	CSS_DISPLAY("epicsCssDisplay",
-	            "The CSS display."),
+	            "The CSS display.",
+                URL.class),
 	CSS_STRIP_CHART("epicsCssStripChart",
-	                "The CSS strip chart."),
+	                "The CSS strip chart.",
+                    URL.class),
 	HELP_GUIDANCE("epicsHelpGuidance",
-	              "A short description of the object."),
+	              "A short description of the object.",
+                  String.class),
 	HELP_PAGE("epicsHelpPage",
-	          "The help page. This should be the URL of a web page.");
+	          "The help page. This should be the URL of a web page.",
+              URL.class);
 
 
 	private static ImmutableSet<String> LDAP_ATTRIBUTES;
@@ -62,16 +69,19 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
 
 	private final String _description;
 
+	private final Class<?> _propertyClass;
+
 	/**
 	 * Constructor.
 	 * @param ldapAttribute the name as it is defined as attribute in LDAP
-	 *
-	 * CHECKSTYLE:Jsr305Annotations:OFF
 	 */
-	private EpicsAlarmcfgTreeNodeAttribute(final String ldapAttribute,
-	                                       final String description) {
+	private EpicsAlarmcfgTreeNodeAttribute(@Nonnull final String ldapAttribute,
+	                                       @Nonnull final String description,
+	                                       @Nonnull final Class<?> clazz) {
 	    _ldapAttribute = ldapAttribute;
 	    _description = description;
+	    _propertyClass = clazz;
+
     }
 
 	@Nonnull
@@ -108,5 +118,14 @@ public enum EpicsAlarmcfgTreeNodeAttribute {
     @Nonnull
     public String getDescription() {
         return _description;
+    }
+
+    /**
+     * The class to which a property value of this type can be cast.
+     * @return the class
+     */
+    @Nonnull
+    public Class<?> getPropertyClass() {
+        return _propertyClass;
     }
 }

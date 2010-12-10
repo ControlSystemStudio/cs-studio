@@ -643,7 +643,7 @@ public final class AlarmTreeView extends ViewPart {
         return _viewer;
     }
 
-    
+
     // TODO (jpenning) remove connection, use listener concept instead
     /**
      * @return the connection or null
@@ -658,7 +658,7 @@ public final class AlarmTreeView extends ViewPart {
     public IProcessVariableNodeListener getPVNodeListener() {
         if (_processVariableNodeListener == null) {
             _processVariableNodeListener = new IProcessVariableNodeListener() {
-                
+
                 @Override
                 public void wasAdded(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -666,7 +666,7 @@ public final class AlarmTreeView extends ViewPart {
                         AlarmTreeView.LOG.trace("pv registered: " + pvName);
                     }
                 }
-                
+
                 @Override
                 public void wasRemoved(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -678,7 +678,7 @@ public final class AlarmTreeView extends ViewPart {
         }
         return _processVariableNodeListener;
     }
-    
+
 
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm
@@ -690,7 +690,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
+            final String display = ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
             return display != null && display.matches(".+\\.css-sds");
         }
         return false;
@@ -704,7 +704,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
         }
         return false;
     }
@@ -717,7 +717,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
         }
         return false;
     }
@@ -731,7 +731,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpGuidance(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
         }
         return false;
     }
@@ -745,7 +745,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpPage(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
         }
         return false;
     }
@@ -800,7 +800,7 @@ public final class AlarmTreeView extends ViewPart {
      * Passes the focus request to the viewer's control.
      */
     @Override
-    public final void setFocus() {
+    public void setFocus() {
         _viewer.getControl().setFocus();
     }
 
@@ -818,17 +818,17 @@ public final class AlarmTreeView extends ViewPart {
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
         final ConnectionJob connectionJob = createConnectionJob(this);
-        
+
         // Gain access to the connection
         connectionJob.addJobChangeListener(new JobChangeAdapter() {
-            
+
             @SuppressWarnings("synthetic-access")
             @Override
-            public void done(IJobChangeEvent event) {
+            public void done(@Nullable final IJobChangeEvent event) {
                 _connection = connectionJob.getConnection();
             }
         });
-        
+
         progressService.schedule(connectionJob, 0, true);
     }
 
@@ -855,5 +855,13 @@ public final class AlarmTreeView extends ViewPart {
         // Start the directory reader job.
         progressService.schedule(importInitialConfigJob, 0, true);
         return importInitialConfigJob;
+    }
+
+    /**
+     * Adds the given item to the modification item list that is processed on save in ldap action.
+     * @param item
+     */
+    public void addLdapTreeModificationItem(@Nonnull final ITreeModificationItem item) {
+        _ldapModificationItems.add(item);
     }
 }

@@ -61,7 +61,7 @@ public final class ShowHelpGuidanceAction extends Action {
         final Object selected = selection.getFirstElement();
         if (selected instanceof IAlarmTreeNode) {
             final IAlarmTreeNode node = (IAlarmTreeNode) selected;
-            final String helpGuidance = node.getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE);
+            final String helpGuidance = node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE);
             if (helpGuidance != null) {
                 MessageDialog.openInformation(_site.getShell(),
                                               node.getName(),
