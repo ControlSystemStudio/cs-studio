@@ -88,12 +88,16 @@ abstract class SimFunction<T> extends Simulation<T> {
         
         // Calculate new AlarmSeverity, using oldValue ranges
         AlarmSeverity severity = AlarmSeverity.NONE;
-        if (value <= oldValue.getLowerAlarmLimit() || value >= oldValue.getUpperAlarmLimit())
+        AlarmStatus status = AlarmStatus.NONE;
+        if (value <= oldValue.getLowerAlarmLimit() || value >= oldValue.getUpperAlarmLimit()) {
+            status = AlarmStatus.RECORD;
             severity = AlarmSeverity.MAJOR;
-        else if(value <= oldValue.getLowerWarningLimit() || value >= oldValue.getUpperWarningLimit())
+        } else if (value <= oldValue.getLowerWarningLimit() || value >= oldValue.getUpperWarningLimit()) {
+            status = AlarmStatus.RECORD;
             severity = AlarmSeverity.MINOR;
+        }
 
-        return ValueFactory.newVDouble(value, severity, AlarmStatus.NONE,
+        return ValueFactory.newVDouble(value, severity, status,
                 null, lastTime, oldValue);
     }
 
