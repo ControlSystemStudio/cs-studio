@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.csstudio.domain.desy.data.CumulativeAverageCache;
+import org.csstudio.domain.desy.calc.CumulativeAverageCache;
 import org.csstudio.domain.desy.epics.alarm.EpicsAlarm;
 import org.csstudio.domain.desy.time.TimeInstant;
 

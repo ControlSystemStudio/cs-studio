@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.csstudio.archive.service.rdbimpl</name>
+	<name>org.csstudio.archive.service.common.sqlimpl</name>
 	<comment></comment>
 	<projects>
 	</projects>

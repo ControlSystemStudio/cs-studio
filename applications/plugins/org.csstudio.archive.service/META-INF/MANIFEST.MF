@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Service
-Bundle-SymbolicName: org.csstudio.archive.service
+Bundle-SymbolicName: org.csstudio.archive.common.service
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Bastian Knerr <bastian.knerr@desy.de> - DESY
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
