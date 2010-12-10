@@ -244,13 +244,13 @@ public class MeterWidget extends Canvas
 		
 		@Override
 		public void paintControl(PaintEvent e) {
-			//long start = System.currentTimeMillis();
+			//long start = System.nanoTime();
 			
 	        final GC gc = e.gc;
 
 	        // Get the rectangle that exactly fills the 'inner' area
 	        // such that drawRectangle() will match.
-	        final Rectangle client_rect = getClientArea();
+	        Rectangle displayArea = getClientArea();
 	        
 	    	//paintScale(client_rect, gc);
 	        
@@ -263,7 +263,7 @@ public class MeterWidget extends Canvas
 
 	        // To reduce flicker, the scale is drawn as a prepared image into
 	        // the widget whose background has not been cleared.
-	        createScaleImage(gc, client_rect);
+	        createScaleImage(gc, displayArea);
 	        if (getEnabled())
 	        {
 	            gc.drawImage(scaleImage, 0, 0);
@@ -280,10 +280,10 @@ public class MeterWidget extends Canvas
 	            final String message = "No numeric display info";
 	            final Point size = gc.textExtent(message);
 	            gc.drawString(message,
-	             (client_rect.width-size.x)/2, (client_rect.height-size.y)/2, true);
+	             (displayArea.width-size.x)/2, (displayArea.height-size.y)/2, true);
 	        }
 	        
-	        //System.out.println("MeterWidget paint: " + (System.currentTimeMillis() - start));
+	        //System.out.println("MeterWidget paint: " + (System.nanoTime() - start));
 		}
 	};
     
@@ -330,7 +330,7 @@ public class MeterWidget extends Canvas
         scale_gc.dispose();
     }
 
-	private void paintScale(final Rectangle real_client_rect, final GC scale_gc) {
+	private void paintScale(final Rectangle displayArea, final GC scale_gc) {
 		scale_gc.setForeground(faceColor);
         scale_gc.setBackground(backgroundColor);
         scale_gc.setLineWidth(LINE_WIDTH);
@@ -338,23 +338,29 @@ public class MeterWidget extends Canvas
         scale_gc.setLineJoin(SWT.JOIN_ROUND);
 
         // Background, border
-        scale_gc.fillRectangle(real_client_rect);
-        scale_gc.drawRectangle(real_client_rect);
+        scale_gc.fillRectangle(displayArea);
+        scale_gc.drawRectangle(displayArea);
 
-        // Auto-scale everything. Probably sucks.
-        pivot_x = real_client_rect.x + real_client_rect.width / 2;
-        pivot_y = real_client_rect.y + real_client_rect.height;
+        // Calculate meter area and center it.
+        double ratio = 1.654;
+        int meterWidth = (int) Math.min(displayArea.width, displayArea.height * ratio);
+        int meterHeight = (int) Math.min(displayArea.height, displayArea.width / ratio);
+        int meterX = (displayArea.width - meterWidth) / 2;
+        int meterY = (displayArea.height - meterHeight) / 2;
+        Rectangle meterArea = new Rectangle(meterX, meterY, meterWidth, meterHeight);
+        pivot_x = meterArea.x + meterArea.width / 2;
+        pivot_y = meterArea.y + meterArea.height;
         final NumberFormat fmt = NumberFormat.getNumberInstance();
         fmt.setMaximumFractionDigits(precision);
 
         final Point min_size = scale_gc.textExtent(fmt.format(min));
         final Point max_size = scale_gc.textExtent(fmt.format(max));
-        final int text_width_idea = Math.max(min_size.x, max_size.x);
+        final int text_width_idea = Math.max(min_size.x/2, max_size.x/2);
         final int text_height_idea = min_size.y;
 
         // Labels should somehow fit around the outside of the scale
-        final int tick_x_radius = real_client_rect.width/2 - text_width_idea;
-        final int tick_y_radius = real_client_rect.height - 2*text_height_idea;
+        final int tick_x_radius = meterArea.width/2 - text_width_idea;
+        final int tick_y_radius = meterArea.height - 2*text_height_idea;
         y_radius = tick_y_radius - text_height_idea;
         x_radius = tick_x_radius * y_radius/tick_y_radius;
         // Inner radius of scale.
