@@ -38,4 +38,8 @@
          id="org.csstudio.display.channelfinderviewer.feature"
          version="0.0.0"/>
 
+   <includes
+         id="org.csstudio.display.multichannelviewer.feature"
+         version="0.0.0"/>
+
 </feature>
