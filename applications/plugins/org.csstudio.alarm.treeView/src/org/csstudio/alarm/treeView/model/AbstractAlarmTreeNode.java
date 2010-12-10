@@ -131,12 +131,12 @@ public abstract class AbstractAlarmTreeNode extends PlatformObject implements
      */
     @Override
     @CheckForNull
-    public final String getProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property) {
+    public final String getInheritedProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property) {
         String result = _properties.get(property);
         if (result == null) {
             final IAlarmSubtreeNode parent = getParent();
             if (parent != null) {
-                result = parent.getProperty(property);
+                result = parent.getInheritedProperty(property);
             }
         }
         return result;

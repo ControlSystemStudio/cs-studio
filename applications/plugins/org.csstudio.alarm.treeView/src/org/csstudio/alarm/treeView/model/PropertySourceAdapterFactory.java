@@ -45,7 +45,7 @@ public final class PropertySourceAdapterFactory implements IAdapterFactory {
     private static PropertySourceAdapterFactory INSTANCE;
 
     /**
-     * Constructor. Mayo nly be called by the framework via extension points!
+     * Constructor. May only be called by the framework via extension points!
      */
     public PropertySourceAdapterFactory() {
         if (INSTANCE != null) {

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008 Stiftung Deutsches Elektronen-Synchrotron,
+ * Copyright (c) 2010 Stiftung Deutsches Elektronen-Synchrotron,
  * Member of the Helmholtz Association, (DESY), HAMBURG, GERMANY.
  *
  * THIS SOFTWARE IS PROVIDED UNDER THIS LICENSE ON AN "../AS IS" BASIS.
@@ -22,47 +22,52 @@
 package org.csstudio.alarm.treeView.ldap;
 
 import javax.annotation.Nonnull;
+import javax.naming.NamingException;
 import javax.naming.ServiceUnavailableException;
-import javax.naming.directory.Attributes;
+import javax.naming.directory.BasicAttribute;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.ModificationItem;
 import javax.naming.ldap.LdapName;
 
 import org.csstudio.alarm.treeView.AlarmTreePlugin;
 import org.csstudio.alarm.treeView.views.AbstractTreeModificationItem;
 import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.utility.ldap.service.ILdapService;
+import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 
 /**
- * Creates the LDAP component with the given name.
+ * Modifies an LDAP component's attribute.
  *
  * @author bknerr
- * @author $Author$
- * @version $Revision$
- * @since 17.06.2010
+ * @since 09.12.2010
  */
-final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem {
+public class ModifyLdapAttributeModificationItem extends AbstractTreeModificationItem {
 
-    private final LdapName _newName;
-    private final Attributes _attrs;
+    private final LdapName _ldapName;
+    private final EpicsAlarmcfgTreeNodeAttribute _propId;
+    private final String _attrValue;
 
     /**
      * Constructor.
-     * @param parent
-     * @param newName
-     * @param attrs
-     * @param recordName
+     * @param value
+     * @param string
+     * @param ldapName
      */
-    CreateLdapEntryModificationItem(@Nonnull final LdapName newName,
-                                    @Nonnull final Attributes attrs) {
-        _newName = new LdapName(newName.getRdns());
-        _attrs = (Attributes) attrs.clone();
+    public ModifyLdapAttributeModificationItem(@Nonnull final LdapName ldapName,
+                                               @Nonnull final EpicsAlarmcfgTreeNodeAttribute propId,
+                                               @Nonnull final String value) {
+        _ldapName = ldapName;
+        _propId = propId;
+        _attrValue = value;
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
+    @Nonnull
     public String getDescription() {
-        return "CREATE LDAP ENTRY " + _newName.toString();
+        return "MODIFY LDAP ATTRIBUTE FAILED: " + _propId.getLdapAttribute() + "=" + _attrValue + " for node " + _ldapName;
     }
 
     /**
@@ -72,13 +77,22 @@ final class CreateLdapEntryModificationItem extends AbstractTreeModificationItem
     public boolean apply() throws AlarmTreeModificationException {
         final ILdapService service = AlarmTreePlugin.getDefault().getLdapService();
         if (service == null) {
-            throw new AlarmTreeModificationException("Entry creation failed.", new ServiceUnavailableException("LDAP service unavailable."));
+            throw new AlarmTreeModificationException("Attribute modification failed.",
+                                                     new ServiceUnavailableException("LDAP service unavailable."));
         }
-        if (service.createComponent(_newName, _attrs)) {
+        final ModificationItem item =
+            new ModificationItem(DirContext.REPLACE_ATTRIBUTE,
+                                 new BasicAttribute(_propId.getLdapAttribute(), _attrValue));
+
+        try {
+            service.modifyAttributes(_ldapName, new ModificationItem[] {item});
             setApplied(true);
             return true;
+        } catch (final NamingException e) {
+            throw new AlarmTreeModificationException("MODIFY LDAP ATTRIBUTE FAILED: " + _propId.getLdapAttribute() + "=" + _attrValue + " for node " + _ldapName,
+                                                     null);
         }
-        throw new AlarmTreeModificationException("CREATE RECORD for " + _newName.toString() +
-                                                 " failed in LDAP.", null);
     }
+
+
 }

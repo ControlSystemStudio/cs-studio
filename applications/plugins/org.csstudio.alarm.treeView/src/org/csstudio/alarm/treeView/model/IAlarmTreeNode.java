@@ -95,7 +95,7 @@ public interface IAlarmTreeNode {
      *         set on this node or a parent node.
      */
     @CheckForNull
-    String getProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
+    String getInheritedProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
 
     /**
      * Returns the property value that is set on this node. The value is not

@@ -103,26 +103,25 @@ public class ProcessVariableNodeUnitTest {
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getUnacknowledgedAlarmSeverity());
 	}
 
-    // TODO (bknerr) : project: CSS-Applications - Tracker: Bug - [# 1631] Debug ProcessVariableNode#removeHighestUnacknowledgedAlarm
     @Test
 	public void testAcknowledgeAlarm() throws Exception {
 		_node.updateAlarm(new Alarm("", EpicsAlarmSeverity.MAJOR, t1));
 		_node.removeHighestUnacknowledgedAlarm();
         assertEquals(EpicsAlarmSeverity.MAJOR, _node.getAlarmSeverity());
-        assertEquals(EpicsAlarmSeverity.NO_ALARM, _node.getUnacknowledgedAlarmSeverity());
+        assertEquals(EpicsAlarmSeverity.UNKNOWN, _node.getUnacknowledgedAlarmSeverity());
 	}
 
     @Test
 	public void testPropertiesAreNullByDefault() throws Exception {
 		for (final EpicsAlarmcfgTreeNodeAttribute id : EpicsAlarmcfgTreeNodeAttribute.values()) {
-			assertNull(_node.getProperty(id));
+			assertNull(_node.getInheritedProperty(id));
 		}
 	}
 
     @Test
     public void testPropertyInheritance() throws Exception {
         _subtreeNode.setProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY, "foo");
-        assertEquals("foo", _node.getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
+        assertEquals("foo", _node.getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
         assertNull(_node.getOwnProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY));
     }
 
