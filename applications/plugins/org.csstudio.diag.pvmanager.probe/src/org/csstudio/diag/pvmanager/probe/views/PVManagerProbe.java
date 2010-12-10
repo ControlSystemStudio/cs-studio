@@ -471,7 +471,7 @@ public class PVManagerProbe extends ViewPart {
 		}
 		
 		setStatus(Messages.S_Searching);
-		pv = PVManager.read(channel(pvName)).atHz(15);
+		pv = PVManager.read(channel(pvName)).atHz(25);
 		pv.addPVValueChangeListener(new PVValueChangeListener() {
 			
 			@Override
