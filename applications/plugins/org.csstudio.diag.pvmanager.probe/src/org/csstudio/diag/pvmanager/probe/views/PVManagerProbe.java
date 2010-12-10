@@ -57,9 +57,9 @@ public class PVManagerProbe extends ViewPart {
 	public static final String ID = "org.csstudio.diag.pvmanager.probe.views.PVManagerProbe";
 	private static int instance = 0;
 
-	PV<?> pv;
-
 	// GUI
+	private Label lblAlarm;
+	private Label alarmField;
 	private ComboViewer cbo_name;
 	private ComboHistoryHelper name_helper;
 	private Label valueField;
@@ -70,7 +70,15 @@ public class PVManagerProbe extends ViewPart {
 	private Composite bottom_box;
 	private Button show_meter;
 	private Button btn_save_to_ioc;
+	
+	/** Currently displayed pv */
 	private String PVName;
+	
+	/** Currently connected pv */
+	private PV<?> pv;
+	
+	/** Formatting used for the value text field */
+	private Formatting format = Formatting.newFormatting(4, 3);
 	
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
@@ -88,9 +96,6 @@ public class PVManagerProbe extends ViewPart {
 	private static final String PV_TAG = "PVName"; //$NON-NLS-1$
 	/** Memento tag */
 	private static final String METER_TAG = "meter"; //$NON-NLS-1$
-
-	/** Is this a new channel where we never received a value? */
-	private boolean new_channel = true;
 
 	/**
 	 * Id of the save value command.
@@ -427,11 +432,12 @@ public class PVManagerProbe extends ViewPart {
 	}
 
 	/**
+	 * Changes the PV currently displayed by probe.
 	 * 
-	 * @param pvName
+	 * @param pvName the new pv name or null
 	 * @return
 	 */
-	public boolean setPVName(String pvName) {
+	public void setPVName(String pvName) {
 		Activator.getLogger().debug("setPVName(" + pvName + ")");
 		
 		// If we are already scanning that pv, do nothing
@@ -439,7 +445,6 @@ public class PVManagerProbe extends ViewPart {
 			// XXX Seems like something is clearing the combo-box,
 			// reset to the actual pv...
 			cbo_name.getCombo().setText(pvName);
-			return false;
 		}
 		
 		// The PV is different, so disconnect and reset the visuals
@@ -455,7 +460,6 @@ public class PVManagerProbe extends ViewPart {
 		if ((pvName == null) || pvName.equals("")) {
 			cbo_name.getCombo().setText("");
 			setStatus(Messages.S_Waiting);
-			return false;
 		}
 
 		// If new name, add to history and connect
@@ -481,7 +485,15 @@ public class PVManagerProbe extends ViewPart {
             }
 		});
 		this.PVName = pvName;
-		return true;
+	}
+	
+	/**
+	 * Returns the currently displayed PV.
+	 * 
+	 * @return pv name or null
+	 */
+	public String getPVName() {
+		return this.PVName;
 	}
 
 	private void hookContextMenu() {
@@ -523,6 +535,11 @@ public class PVManagerProbe extends ViewPart {
 		return Integer.toString(instance);
 	}
 	
+	/**
+	 * Modifies the prove status.
+	 * 
+	 * @param status new status to be displayed
+	 */
 	private void setStatus(String status) {
 		if (status == null) {
 			statusField.setText(Messages.S_Waiting);
@@ -531,6 +548,11 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 	
+	/**
+	 * Displays the last error in the status.
+	 * 
+	 * @param ex an exception
+	 */
 	private void setLastError(Exception ex) {
 		if (ex == null) {
 			statusField.setText("Connected");
@@ -539,6 +561,11 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 	
+	/**
+	 * Displays the new value.
+	 * 
+	 * @param value a new value
+	 */
 	private void setValue(String value) {
 		if (value == null) {
 			valueField.setText("");
@@ -548,6 +575,11 @@ public class PVManagerProbe extends ViewPart {
 			
 	}
 	
+	/**
+	 * Displays the new alarm.
+	 * 
+	 * @param alarm a new alarm
+	 */
 	private void setAlarm(Alarm alarm) {
 		if (alarm == null) {
 			alarmField.setText("");
@@ -556,6 +588,11 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 	
+	/**
+	 * Displays the new time.
+	 * 
+	 * @param time a new time
+	 */
 	private void setTime(Time time) {
 		if (time == null) {
 			timeField.setText("");
@@ -564,6 +601,12 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 	
+	/**
+	 * Displays a new value in the meter.
+	 * 
+	 * @param value the new value
+	 * @param display the display information
+	 */
 	private void setMeter(Double value, Display display) {
 		if (value == null || display == null) {
 			meter.setEnabled(false);
@@ -584,9 +627,6 @@ public class PVManagerProbe extends ViewPart {
 		}
 	}
 	
-	Formatting format = Formatting.newFormatting(4, 3);
-	private Label lblAlarm;
-	private Label alarmField;
 
 	/**
 	 * {@inheritDoc}
@@ -594,13 +634,14 @@ public class PVManagerProbe extends ViewPart {
 	@Override
 	public void dispose() {
 		pv.close();
+		super.dispose();
 	}
 
 	/**
-	 * Open PVManagerProbe initialised to the given PV
+	 * Open PVManagerProbe initialized to the given PV
 	 * 
-	 * @param pvName
-	 * @return
+	 * @param pvName the pv
+	 * @return true if successful
 	 */
 	public static boolean activateWithPV(IProcessVariable pvName) {
 		 try
