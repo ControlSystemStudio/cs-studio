@@ -200,7 +200,7 @@ public class PVManagerProbe extends ViewPart {
 		lblAlarm = new Label(bottom_box, SWT.NONE);
 		lblAlarm.setText("Alarm:");
 		
-		alarmField = new Label(bottom_box, SWT.NONE);
+		alarmField = new Label(bottom_box, SWT.BORDER);
 		alarmField.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, false, false, 1, 1));
 		alarmField.setText("");
 		new Label(bottom_box, SWT.NONE);
