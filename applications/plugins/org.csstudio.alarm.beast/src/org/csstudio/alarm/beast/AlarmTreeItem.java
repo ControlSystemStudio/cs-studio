@@ -394,7 +394,7 @@ public class AlarmTreeItem extends TreeItem
     /** @return Short string representation for debugging */
     @SuppressWarnings("nls")
     @Override
-    public String toString()
+    public synchronized String toString()
     {
         final StringBuilder buf = new StringBuilder();
         buf.append(super.toString());

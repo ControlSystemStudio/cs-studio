@@ -40,6 +40,19 @@ public class DisplayModel extends AbstractContainerModel {
 	 */
 	public static final String PROP_SHOW_EDIT_RANGE = "show_edit_range"; //$NON-NLS-1$
 	
+	/**
+	 * If the tab close button should be hidden. 
+	 */
+	public static final String PROP_SHOW_CLOSE_BUTTON = "show_close_button"; //$NON-NLS-1$
+		
+	/**
+	 * Auto scale all the widgets as the window resizes. If this is set to true,
+	 * zoom operation will not work.
+	 */
+	public static final String PROP_AUTO_ZOOM_TO_FIT_ALL = "auto_zoom_to_fit_all"; //$NON-NLS-1$
+	
+	
+	
 	private IPath opiFilePath;
 	
 	public DisplayModel() {
@@ -60,6 +73,10 @@ public class DisplayModel extends AbstractContainerModel {
 				WidgetPropertyCategory.Display, true));
 		addProperty(new BooleanProperty(PROP_SHOW_EDIT_RANGE, "Show Edit Range",
 				WidgetPropertyCategory.Display, true));
+		addProperty(new BooleanProperty(PROP_AUTO_ZOOM_TO_FIT_ALL, "Auto Zoom to Fit All", 
+				WidgetPropertyCategory.Behavior, false));
+		addProperty(new BooleanProperty(PROP_SHOW_CLOSE_BUTTON, "Show Close Button", 
+				WidgetPropertyCategory.Display, true));		
 		
 		removeProperty(PROP_BORDER_COLOR);
 		removeProperty(PROP_BORDER_STYLE);
@@ -89,6 +106,15 @@ public class DisplayModel extends AbstractContainerModel {
 	public boolean isShowEditRange(){
 		return (Boolean)getCastedPropertyValue(PROP_SHOW_EDIT_RANGE);
 	}
+	
+	public boolean isShowCloseButton(){
+		return (Boolean)getPropertyValue(PROP_SHOW_CLOSE_BUTTON);
+	}
+	
+	public boolean isAutoZoomToFitAll(){
+		return (Boolean)getPropertyValue(PROP_AUTO_ZOOM_TO_FIT_ALL);
+	}
+	
 	
 	@Override
 	public String getTypeID() {

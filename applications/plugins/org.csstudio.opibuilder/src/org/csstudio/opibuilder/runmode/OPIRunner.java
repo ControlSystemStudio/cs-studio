@@ -11,8 +11,6 @@ import org.csstudio.opibuilder.actions.FullScreenAction;
 import org.csstudio.opibuilder.actions.PrintDisplayAction;
 import org.csstudio.opibuilder.actions.SendEMailAction;
 import org.csstudio.opibuilder.actions.SendToElogAction;
-import org.csstudio.opibuilder.dnd.ProcessVariableNameTransferDropPVTargetListener;
-import org.csstudio.opibuilder.dnd.TextTransferDropPVTargetListener;
 import org.csstudio.opibuilder.editor.PatchedScrollingGraphicalViewer;
 import org.csstudio.opibuilder.editparts.ExecutionMode;
 import org.csstudio.opibuilder.editparts.WidgetEditPartFactory;
@@ -26,6 +24,7 @@ import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.draw2d.FigureCanvas;
 import org.eclipse.gef.ContextMenuProvider;
 import org.eclipse.gef.DefaultEditDomain;
 import org.eclipse.gef.DragTracker;
@@ -44,12 +43,20 @@ import org.eclipse.gef.ui.actions.ZoomOutAction;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.CTabFolder;
+import org.eclipse.swt.events.ControlAdapter;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.FileStoreEditorInput;
+import org.eclipse.ui.internal.PartPane;
+import org.eclipse.ui.internal.PartSite;
+import org.eclipse.ui.internal.PartStack;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.ui.part.FileEditorInput;
 
@@ -57,6 +64,7 @@ import org.eclipse.ui.part.FileEditorInput;
  * @author Xihui Chen
  *
  */
+@SuppressWarnings("restriction")
 public class OPIRunner extends EditorPart {
 	
 	private DisplayModel displayModel;
@@ -82,7 +90,7 @@ public class OPIRunner extends EditorPart {
 	
 
 	@Override
-	public void init(IEditorSite site, IEditorInput input)
+	public void init(final IEditorSite site, IEditorInput input)
 			throws PartInitException {
 		setSite(site);
 		setInput(input);
@@ -127,9 +135,23 @@ public class OPIRunner extends EditorPart {
 			getActionRegistry().registerAction(new SendToElogAction(this));
 		getActionRegistry().registerAction(new SendEMailAction(this));
 		
-	}
-	
-	
+		
+		//hide close button
+		if(!displayModel.isShowCloseButton()){
+			Display.getCurrent().asyncExec(new Runnable() {
+				
+				public void run() {
+					PartPane currentEditorPartPane = ((PartSite) site).getPane(); 
+					PartStack stack = currentEditorPartPane.getStack(); 
+					Control control = stack.getControl(); 
+					if (control instanceof CTabFolder) { 
+						CTabFolder tabFolder = (CTabFolder) control; 
+						tabFolder.getSelection().setShowClose(false);			 
+					}
+				}
+			});
+		}		
+	}	
 	
 	private IPath getOPIFilePath() {
 		IEditorInput editorInput = getEditorInput();
@@ -229,7 +251,7 @@ public class OPIRunner extends EditorPart {
 		
 		setPartName(displayModel.getName());
 		// configure zoom actions
-		ZoomManager zm = root.getZoomManager();
+		final ZoomManager zm = root.getZoomManager();
 		
 		if (zm != null) {
 		List<String> zoomLevels = new ArrayList<String>(3);
@@ -250,6 +272,18 @@ public class OPIRunner extends EditorPart {
 		viewer.setProperty(
 				MouseWheelHandler.KeyGenerator.getKey(SWT.MOD1),
 				MouseWheelZoomHandler.SINGLETON);
+		
+		//auto zoom
+		if(displayModel.isAutoZoomToFitAll()){
+			viewer.getControl().addControlListener(new ControlAdapter() {
+				@Override
+				public void controlResized(ControlEvent e) {
+					Point size = ((FigureCanvas)e.getSource()).getSize();					
+					if(size.x * size.y > 0)
+						zm.setZoomAsText(ZoomManager.FIT_ALL);
+				}
+			});
+		}
 	}
 
 	/**
