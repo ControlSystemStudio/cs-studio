@@ -21,13 +21,16 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.util.Collection;
 import java.util.List;
 
+import org.csstudio.domain.desy.time.TimeInstant.TimeInstantBuilder;
+import org.csstudio.platform.data.TimestampFactory;
+import org.csstudio.platform.data.ValueFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 
 /**
@@ -41,10 +44,11 @@ public class TypeSupportUnitTest {
     @Before
     public void setup() {
         AbstractArchiveTypeConversionSupport.install();
+        AbstractIValueConversionTypeSupport.install();
     }
 
     @Test
-    public void testNumberArchiveStringConversion() {
+    public void testScalarArchiveStringConversion() {
 
         try {
             final Double d = Double.valueOf(1.01010101010101010100101010000010010);
@@ -67,23 +71,99 @@ public class TypeSupportUnitTest {
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
-
         // TODO (bknerr) for all number types...
-    }
 
-    @Test
-    public void testIterableArchiveStringConversion() {
         try {
-            final List<Integer> is = Lists.newArrayList(1,2,3,4);
-            final String ss = Joiner.on(",").join(is);
-            final String archiveString = TypeSupport.toArchiveString(is);
-            Assert.assertTrue(archiveString.equals(ss));
-            final Iterable<?> isFromA = TypeSupport.fromScalarArchiveString(Iterable.class, archiveString);
-
-
+            final String archiveString = TypeSupport.toArchiveString("test me");
+            Assert.assertTrue(archiveString.equals("test me"));
+            final String sFromA = TypeSupport.fromScalarArchiveString(String.class, archiveString);
+            Assert.assertTrue(sFromA.equals(archiveString));
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
 
+    }
+
+    @Test
+    public void testMultiScalarConversion() {
+
+        final List<String> valuesEmpty = Lists.newArrayList();
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesEmpty);
+            Assert.assertEquals("", archiveString);
+
+            TypeSupport.fromMultiScalarArchiveString(IDoNotExist.class, "Iwasborninafactory,,,,whohoo");
+        } catch (final Exception e) {
+            Assert.assertTrue(true);
+        }
+
+        try {
+            TypeSupport.fromMultiScalarArchiveString(Integer.class, "theshapeofpunk,tocome");
+        } catch (final ConversionTypeSupportException e) {
+            Assert.assertTrue(true);
+        }
+
+        final Collection<String> valuesS = Lists.newArrayList("modest", "mouse");
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesS);
+            Assert.assertEquals("modest\\,mouse", archiveString);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+
+        final Collection<Integer> valuesI = Lists.newArrayList(1,2,3,4);
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesI);
+            Assert.assertEquals("1\\,2\\,3\\,4", archiveString);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+
+        final Collection<Double> valuesD = Lists.newArrayList(1.0,2.0);
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesD);
+            Assert.assertEquals("1.0,2.0", archiveString);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    /**
+     * For test purposes.
+     *
+     * @author bknerr
+     * @since 13.12.2010
+     */
+    private static final class IDoNotExist {
+        public IDoNotExist() {
+            // EMPTY
+        }
+    }
+    @Test(expected=RuntimeException.class)
+    public void testTypeNotSuppportedException() {
+        try {
+            TypeSupport.toArchiveString(new IDoNotExist());
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail("Unexpected exception");
+        }
+    }
+
+    @Test
+    public void testIValue2CssValueConversion() {
+        try {
+            final ICssAlarmValueType<List<Double>> cssV = TypeSupport.toCssType(ValueFactory.createDoubleValue(TimestampFactory.now(),
+                                                                                                               ValueFactory.createMinorSeverity(),
+                                                                                                               "HIHI",
+                                                                                                               null,
+                                                                                                               null,
+                                                                                                               new double[]{1.0, 2.0}),
+                                                                                null,
+                                                                                TimeInstantBuilder.buildFromNow());
+            Assert.assertEquals(2, cssV.getValueData().size());
+            Assert.assertEquals(Double.valueOf(1.0), cssV.getValueData().get(0));
+            Assert.assertEquals(Double.valueOf(2.0), cssV.getValueData().get(1));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
     }
 }

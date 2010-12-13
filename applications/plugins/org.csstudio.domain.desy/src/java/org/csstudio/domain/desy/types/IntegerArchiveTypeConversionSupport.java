@@ -62,8 +62,14 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
                 return Integer.parseInt(from);
             }
         });
-        if (Iterables.size(strings) != Iterables.size(ints)) {
-            throw new ConversionTypeSupportException("Values string representation could not be converted into Collection<Integer> representation.", null);
+        int size;
+        try {
+            size = Iterables.size(ints);
+        } catch (final NumberFormatException e) {
+            throw new ConversionTypeSupportException("Values representation is not convertible to Integer.", e);
+        }
+        if (Iterables.size(strings) != size) {
+            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection.", null);
         }
         return Lists.newArrayList(ints);
     }

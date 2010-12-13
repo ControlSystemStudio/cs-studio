@@ -61,8 +61,14 @@ public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTyp
                 return Double.parseDouble(from);
             }
         });
-        if (Iterables.size(strings) != Iterables.size(doubles)) {
-            throw new ConversionTypeSupportException("Values string representation could not be converted into Collection<Double> representation.", null);
+        int size;
+        try {
+            size = Iterables.size(doubles);
+        } catch (final NumberFormatException e) {
+            throw new ConversionTypeSupportException("Values representation is not convertible to Double.", e);
+        }
+        if (Iterables.size(strings) != size) {
+            throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
         }
         return Lists.newArrayList(doubles);
     }

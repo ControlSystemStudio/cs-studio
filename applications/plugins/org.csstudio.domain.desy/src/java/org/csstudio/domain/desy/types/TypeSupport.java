@@ -86,18 +86,17 @@ public abstract class TypeSupport<T> {
         if (support == null) {
             support = recursiveTypeSupportFor(typeClass);
             if (support == null) {
-                final Class<? super T> superclass = typeClass.getSuperclass();
-                while (!superclass.equals(Object.class)) {
-                    Class<? super T> superClass = superclass;
+                Class<? super T> superClass = typeClass.getSuperclass();
+                while (!superClass.equals(Object.class)) {
                     support = (TypeSupport<T>) TYPE_SUPPORTS.get(superClass);
                     if (support != null) {
                         break;
                     }
-                    superClass = superclass.getSuperclass();
+                    superClass = superClass.getSuperclass();
                 }
             }
             if (support == null) {
-                throw new RuntimeException("No support found for type " + typeClass);
+                throw new RuntimeException("No type support found for type " + typeClass, null);
             }
             CALC_TYPE_SUPPORTS.put(typeClass, support);
         }
@@ -171,6 +170,27 @@ public abstract class TypeSupport<T> {
             throw new ConversionTypeSupportException("No conversion type support registered.", null);
         }
         return support.convertScalarToArchiveString(value);
+    }
+
+    /**
+     * Tries to convert the value data/datum into a string representation suitable for archiving purposes.
+     * @param valueData
+     * @return
+     * @throws ConversionTypeSupportException
+     */
+    @CheckForNull
+    public static <T> String toArchiveString(@Nonnull final Collection<T> values) throws ConversionTypeSupportException {
+        if (values.isEmpty()) {
+            return "";
+        }
+        @SuppressWarnings("unchecked")
+        final Class<T> typeClass = (Class<T>) values.iterator().next().getClass();
+        final AbstractArchiveTypeConversionSupport<T> support =
+            (AbstractArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertMultiScalarToArchiveString(values);
     }
 
     /**

@@ -45,7 +45,7 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
     static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveTypeConversionSupport.class);
 
-    protected final String ARCHIVE_COLLECTION_ELEM_SEP = ",";
+    protected final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
 
     private static boolean INSTALLED = false;
 
