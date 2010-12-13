@@ -25,7 +25,6 @@ package org.epics.css.dal.spi;
 import java.util.Properties;
 
 import org.apache.log4j.BasicConfigurator;
-import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.varia.NullAppender;
 import org.epics.css.dal.simulation.SimulatorUtilities;
@@ -462,8 +461,6 @@ public final class Plugs
 	public static final Logger getLogger() {
 		if (logger == null) {
 			logger = Logger.getLogger("DAL");
-			// TODO (jpenning) rely on prefs from css
-			logger.setLevel(Level.OFF);
 			
 			boolean log= Boolean.parseBoolean(System.getProperty(PLUGS_LOGGING, Boolean.TRUE.toString()));
 			
