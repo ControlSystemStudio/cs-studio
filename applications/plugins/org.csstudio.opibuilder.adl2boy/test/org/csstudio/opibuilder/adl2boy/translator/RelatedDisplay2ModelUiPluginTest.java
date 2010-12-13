@@ -7,12 +7,17 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.csstudio.opibuilder.model.AbstractWidgetModel;
+import org.csstudio.opibuilder.model.DisplayModel;
 import org.csstudio.opibuilder.util.MacrosInput;
+import org.csstudio.opibuilder.util.OPIColor;
 import org.csstudio.opibuilder.widgetActions.OpenDisplayAction;
+import org.csstudio.opibuilder.widgets.model.MenuButtonModel;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.ADLTestObjects;
 import org.csstudio.utility.adlparser.fileParser.widgetParts.RelatedDisplayItem;
+import org.csstudio.utility.adlparser.fileParser.widgets.RelatedDisplay;
 import org.eclipse.core.runtime.Path;
 
 /**
@@ -43,6 +48,16 @@ public class RelatedDisplay2ModelUiPluginTest extends TestCase {
 	 * Test method for {@link org.csstudio.opibuilder.adl2boy.translator.RelatedDisplay2Model#RelatedDisplay2Model(org.csstudio.utility.adlparser.fileParser.ADLWidget, org.eclipse.swt.graphics.RGB[], org.csstudio.opibuilder.model.AbstractContainerModel)}.
 	 */
 	public void testRelatedDisplay2Model() {
+		RelatedDisplay adlRd = new RelatedDisplay(ADLTestObjects.setupRelatedDisplayWidget());
+		converter.processWidget(ADLTestObjects.setupRelatedDisplayWidget());
+		MenuButtonModel rd = (MenuButtonModel)converter.getWidgetModel();
+		OPIColor frgd = (OPIColor)rd.getPropertyValue(AbstractWidgetModel.PROP_COLOR_FOREGROUND);
+		OPIColor bkgd = (OPIColor)rd.getPropertyValue(AbstractWidgetModel.PROP_COLOR_BACKGROUND);
+		assertEquals ("Foreground Color", ADLTestObjects.getRGBValue(adlRd.getForegroundColor()), frgd.getRGBValue());
+		assertEquals("ForegroundColorName", ADLTestObjects.getColorName(adlRd.getForegroundColor()), frgd.getColorName());
+		assertEquals ("Background Color", ADLTestObjects.getRGBValue(adlRd.getBackgroundColor()), bkgd.getRGBValue());
+		assertEquals ("BackgroundColorName", ADLTestObjects.getColorName(adlRd.getBackgroundColor()), bkgd.getColorName());
+		//TODO more tests
 		
 	}
 	
