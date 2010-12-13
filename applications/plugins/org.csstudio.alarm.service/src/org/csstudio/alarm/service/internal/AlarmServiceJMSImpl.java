@@ -40,7 +40,6 @@ import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueState;
-import org.epics.css.dal.impl.DefaultApplicationContext;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
@@ -81,49 +80,74 @@ public class AlarmServiceJMSImpl implements IAlarmService {
     public final void retrieveInitialState(@Nonnull final List<IAlarmInitItem> initItems) {
         LOG.debug("retrieveInitialState for " + initItems.size() + " items");
         
-        // There may be more than a thousand pv for which the initial state is requested at once.
+        // There may be several thousand pvs for which the initial state is requested at once.
         // Therefore the process of registering is performed in chunks and resources are freed after each chunk.
         
-        int pvChunkSize = AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
-        int pvChunkWaitMsec = AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
-        int pvRegisterWaitMsec = AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
+        int pvChunkSize = getPvChunkSize();
+        int pvChunkWaitMsec = getPvChunkWaitMsec();
         
         // Queue is filled with announced pvs
         final BlockingQueue<String> announcedPVsQ = new ArrayBlockingQueue<String>(2 * pvChunkSize);
-        
+
+        // initItems are processed in chunks
         final ChunkableCollection<IAlarmInitItem> chunkableCollection = new ChunkableCollection<IAlarmInitItem>(initItems,
                                                                                                                 pvChunkSize);
-        
         for (Collection<IAlarmInitItem> currentChunkOfPVs : chunkableCollection) {
             announcedPVsQ.clear();
-            SimpleDALBroker broker = SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
-            //            LOG.debug("retrieveInitialState about to register " + announcedPVsQ.size() + " pvs");
+            SimpleDALBroker broker = newSimpleDALBroker();
+            LOG.debug("retrieveInitialState about to register " + currentChunkOfPVs.size() + " pvs");
             registerChunkOfPVs(broker, currentChunkOfPVs, announcedPVsQ);
+            LOG.debug("retrieveInitialState about to process " + currentChunkOfPVs.size() + " pvs");
             waitForProcessingOrTimeout(pvChunkWaitMsec, announcedPVsQ, currentChunkOfPVs);
-            //            LOG.debug("retrieveInitialState about to deregister " + announcedPVsQ.size() + " pvs");
+            LOG.debug("retrieveInitialState about to free resources");
             freeResources(broker);
         }
-        
         LOG.debug("retrieveInitialState finished");
+    }
+    
+    protected int getPvRegisterWaitMsec() {
+        return AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
+    }
+    
+    protected int getPvChunkWaitMsec() {
+        return AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
+    }
+    
+    protected int getPvChunkSize() {
+        return AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
+    }
+    
+    /**
+     * May be overridden in a test
+     */
+    protected SimpleDALBroker newSimpleDALBroker() {
+        return SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
     }
     
     private void waitForProcessingOrTimeout(int pvChunkWaitMsec,
                                             @Nonnull final BlockingQueue<String> announcedPVsQ,
                                             @Nonnull final Collection<IAlarmInitItem> currentChunkOfPVs) {
-        final Set<String> processedPVs = new HashSet<String>(currentChunkOfPVs.size());
+        final long startTime = System.currentTimeMillis();
+        final Set<String> remainingPVs = new HashSet<String>(currentChunkOfPVs.size());
+        for (IAlarmInitItem initItem : currentChunkOfPVs) {
+            remainingPVs.add(initItem.getPVName());
+        }
         boolean proceed = true;
         while (proceed) {
             String announcedPV;
             try {
                 announcedPV = announcedPVsQ.poll(pvChunkWaitMsec, TimeUnit.MILLISECONDS);
                 if (announcedPV != null) {
-                    processedPVs.add(announcedPV);
+                    remainingPVs.remove(announcedPV);
                 }
-                proceed = (announcedPV != null) && (processedPVs.size() < currentChunkOfPVs.size());
+                proceed = (announcedPV != null) && !remainingPVs.isEmpty();
             } catch (InterruptedException e) {
+                LOG.debug("retrieveInitialState ended because of InterruptedException");
                 proceed = false;
             }
         }
+        LOG.debug("processing time was " + (System.currentTimeMillis() - startTime) + ". "
+                + remainingPVs.size() + " (of " + currentChunkOfPVs.size() + ") not processed");
     }
     
     @Override
@@ -197,9 +221,11 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
             try {
                 if (channel.getProperty().getCondition()
-                        .containsAnyOfStates(DynamicValueState.LINK_NOT_AVAILABLE)) {
+                        .containsAnyOfStates(DynamicValueState.ERROR)) {
+                    LOG_INNER.warn("notFound: " + channel.getUniqueName());
                     _initItem.notFound(channel.getUniqueName());
-                } else if ( (channel.isConnected()) && (channel.isMetaDataInitialized())) {
+                    _queue.offer(channel.getUniqueName());
+                } else if (!channel.getProperty().getCondition().containsAnyOfStates(DynamicValueState.NO_VALUE)) {
                     processAlarmMessage(channel);
                 }
             } catch (IllegalStateException e) {
