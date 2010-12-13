@@ -3,6 +3,7 @@
 
 <product name="dal2jms" id="org.csstudio.alarm.dal2jms.product" application="org.csstudio.alarm.dal2jms.application" useFeatures="true" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
@@ -11,6 +12,9 @@
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
+   <windowImages/>
+
+
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -18,8 +22,11 @@
       </win>
    </launcher>
 
+
    <vm>
+      <windows include="false">org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6</windows>
    </vm>
+
 
    <plugins>
       <plugin id="com.ibm.icu"/>

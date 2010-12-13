@@ -78,7 +78,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         new AlarmPreference<Integer>("pvChunkSize", 100);
 
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_CHUNK_WAIT_MSEC =
-        new AlarmPreference<Integer>("pvChunkWaitMsec", 100);	// 200 -> 100
+        new AlarmPreference<Integer>("pvChunkWaitMsec", 500);
 
     public static final AlarmPreference<Integer> ALARMSERVICE_PV_REGISTER_WAIT_MSEC =
         new AlarmPreference<Integer>("pvRegisterWaitMsec", 2000);
