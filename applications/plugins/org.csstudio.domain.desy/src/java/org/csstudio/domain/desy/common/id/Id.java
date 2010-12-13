@@ -29,6 +29,7 @@ import javax.annotation.Nullable;
  *
  * @author bknerr
  * @since 02.11.2010
+ * @param <T> the type of the id's entity
  */
 public class Id<T extends Id<T>> extends Number implements Comparable<T> {
 

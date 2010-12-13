@@ -139,7 +139,7 @@ public final class AlarmTreeContentModelBuilder extends AbstractContentModelBuil
 
         final Attributes attributes = new BasicAttributes();
         for (final EpicsAlarmcfgTreeNodeAttribute propId : EpicsAlarmcfgTreeNodeAttribute.values()) {
-            final String property = alarmTreeNode.getProperty(propId);
+            final String property = alarmTreeNode.getInheritedProperty(propId);
             if (property != null) {
                 attributes.put(propId.getLdapAttribute(), property);
             }

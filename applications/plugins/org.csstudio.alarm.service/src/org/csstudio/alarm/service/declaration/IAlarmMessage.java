@@ -23,7 +23,7 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 
 /**
  * Is used by the AlarmService to represent a message from DAL or JMS resp.
@@ -49,7 +49,7 @@ public interface IAlarmMessage {
      * @return the severity
      */
     @Nonnull
-    EpicsAlarm getSeverity();
+    EpicsAlarmSeverity getSeverity();
 
     /**
      * Tries to retrieve the event time and returns the date if it succeeds, else null.

@@ -33,9 +33,11 @@ public class ReadConfigJob extends Job
      *  @param model Model who's config. reader will be invoked.
      *  @param listener Listener to notify when done
      */
-    public ReadConfigJob(final AlarmClientModel model, AlarmClientModelConfigListener listener)
+    public ReadConfigJob(final AlarmClientModel model, final AlarmClientModelConfigListener listener)
     {
         super(Messages.ReadConfigJobName);
+        // Almost always longer than a few seconds, so lower priority
+        setPriority(LONG);
         this.model = model;
         this.listener = listener;
     }

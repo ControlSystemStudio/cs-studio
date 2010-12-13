@@ -164,7 +164,7 @@ public class AlarmConfiguration
      */
     protected AlarmTreeRoot createAlarmTreeRoot(final int id, final String root_name)
     {
-        return new AlarmTreeRoot(id, root_name);
+        return new AlarmTreeRoot(root_name, id);
     }
 
     /** Get alarm tree configuration
@@ -192,7 +192,7 @@ public class AlarmConfiguration
             }
             final int id = result.getInt(1);
             final AlarmTreeRoot root = createAlarmTreeRoot(id, root_name);
-            config_reader.readGUIInfo(root);
+            config_reader.readGuidanceDisplaysCommands(root);
             readChildren(root);
             return root;
         }
@@ -238,7 +238,7 @@ public class AlarmConfiguration
             }
             if (config_time != null)
                 item.setConfigTime(TimeWarp.getCSSTimestamp(config_time));
-            config_reader.readGUIInfo(item);
+            config_reader.readGuidanceDisplaysCommands(item);
         }
         result.close();
 
@@ -518,7 +518,7 @@ public class AlarmConfiguration
      *  (The root element that identifies the configuration remains)
      *  @throws Exception on error
      */
-    public void removeAllItems() throws Exception
+    public synchronized void removeAllItems() throws Exception
     {
         while (config_tree.getChildCount() > 0)
             remove(config_tree.getClientChild(0));
@@ -528,7 +528,7 @@ public class AlarmConfiguration
      *  @param item Item to remove
      *  @throws Exception on error
      */
-    public void remove(final AlarmTreeItem item) throws Exception
+    public synchronized void remove(final AlarmTreeItem item) throws Exception
     {
         if (item instanceof AlarmTreePV)
             removePV((AlarmTreePV) item);
@@ -632,7 +632,7 @@ public class AlarmConfiguration
         pv.setDelay(result.getInt(5));
         pv.setCount(result.getInt(6));
         pv.setFilter(result.getString(7));
-        config_reader.readGUIInfo(pv);
+        config_reader.readGuidanceDisplaysCommands(pv);
     }
 
     /**Update guidance/displays/commands in RDB by id

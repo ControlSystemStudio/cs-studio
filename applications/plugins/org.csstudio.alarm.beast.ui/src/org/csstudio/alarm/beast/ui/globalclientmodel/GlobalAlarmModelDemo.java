@@ -7,11 +7,10 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
-import org.csstudio.apputil.test.TestProperties;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.junit.Test;
 
-/** JUnit demo of the {@link GlobalAlarmModel}
+/** [Headless] JUnit Plug-in demo of the {@link GlobalAlarmModel}
  *
  *  @author Kay Kasemir
  */
@@ -31,15 +30,7 @@ public class GlobalAlarmModelDemo implements GlobalAlarmModelListener
     @Test
     public void testGlobalClientModel() throws Exception
     {
-        final TestProperties settings = new TestProperties();
-        final String jms_url = settings.getString("alarm_jms_url");
-        if (jms_url == null)
-        {
-            System.out.println("Need test URL, skipping test");
-            return;
-        }
-
-        final GlobalAlarmModel model = new GlobalAlarmModel(jms_url, this);
+        final GlobalAlarmModel model = new GlobalAlarmModel(this);
         model.readConfiguration(new NullProgressMonitor());
 
         System.out.println("Model is running ....");

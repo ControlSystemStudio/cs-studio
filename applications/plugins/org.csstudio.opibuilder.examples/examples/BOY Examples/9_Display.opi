@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <display typeId="org.csstudio.opibuilder.Display" version="1.0">
+  <auto_zoom_to_fit_all>false</auto_zoom_to_fit_all>
   <widget_type>Display</widget_type>
   <macros>
     <include_parent_macros>true</include_parent_macros>
     <noisePV>sim://noise</noisePV>
     <my_name>Best OPI Yet</my_name>
   </macros>
+  <show_close_button>true</show_close_button>
   <width>800</width>
+  <rules />
   <scripts />
   <show_ruler>true</show_ruler>
   <height>600</height>
   <show_edit_range>true</show_edit_range>
-  <name>Display</name>
   <grid_space>4</grid_space>
+  <name>Display</name>
   <snap_to_geometry>true</snap_to_geometry>
   <show_grid>true</show_grid>
   <y>0</y>
   <actions hook="false" />
-  <foreground_color>
-    <color red="192" green="192" blue="192" />
-  </foreground_color>
+  <x>0</x>
   <background_color>
     <color red="119" green="187" blue="187" />
   </background_color>
-  <x>0</x>
+  <foreground_color>
+    <color red="192" green="192" blue="192" />
+  </foreground_color>
   <widget typeId="org.csstudio.opibuilder.widgets.Label" version="1.0">
     <widget_type>Label</widget_type>
     <enabled>true</enabled>
@@ -36,8 +39,10 @@ Important Properties:&#xD;
 5. Show Grid.&#xD;
 6. Show Ruler.&#xD;
 7. Snap to Geometry. &#xD;
+8. Auto Zoom to Fit All: Auto scale all the widgets as the window resizes. If this is set to true, zoom in operation may not work.&#xD;
+9. Show Close Button: Set it to true if the tab close button should be hidden.&#xD;
 &#xD;
-Just try them and see what's that.</text>
+Just try them and see what are they.</text>
     <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="10" style="0" />
@@ -46,6 +51,7 @@ Just try them and see what's that.</text>
     <width>745</width>
     <border_style>1</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>251</height>
     <border_width>1</border_width>
@@ -78,6 +84,7 @@ Just try them and see what's that.</text>
     <width>295</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>86</height>
     <border_width>1</border_width>
@@ -110,6 +117,7 @@ Just try them and see what's that.</text>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>43</height>
     <border_width>1</border_width>
@@ -142,6 +150,7 @@ Just try them and see what's that.</text>
     <width>451</width>
     <border_style>0</border_style>
     <auto_size>false</auto_size>
+    <rules />
     <scripts />
     <height>44</height>
     <border_width>1</border_width>
@@ -163,23 +172,36 @@ Just try them and see what's that.</text>
     </foreground_color>
   </widget>
   <widget typeId="org.csstudio.opibuilder.widgets.ActionButton" version="1.0">
+    <border_alarm_sensitive>false</border_alarm_sensitive>
+    <visible>true</visible>
+    <scripts />
+    <height>28</height>
+    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
+    <name>Action Button</name>
+    <pv_name />
+    <background_color>
+      <color red="240" green="240" blue="240" />
+    </background_color>
+    <foreground_color>
+      <color red="0" green="0" blue="128" />
+    </foreground_color>
     <widget_type>Action Button</widget_type>
     <enabled>true</enabled>
     <text>Go Home</text>
     <backcolor_alarm_sensitive>false</backcolor_alarm_sensitive>
-    <visible>true</visible>
     <font>
       <fontdata fontName="Arial" height="9" style="1" />
     </font>
     <width>79</width>
     <push_action_index>0</push_action_index>
+    <border_style>0</border_style>
     <image>pictures/home-16x16.png</image>
-    <scripts />
+    <rules />
     <toggle_button>false</toggle_button>
-    <height>28</height>
-    <forecolor_alarm_sensitive>false</forecolor_alarm_sensitive>
-    <name>Action Button</name>
-    <pv_name />
+    <border_width>1</border_width>
+    <border_color>
+      <color red="0" green="128" blue="255" />
+    </border_color>
     <y>556</y>
     <actions hook="true">
       <action type="OPEN_DISPLAY">
@@ -188,15 +210,10 @@ Just try them and see what's that.</text>
           <include_parent_macros>true</include_parent_macros>
         </macros>
         <replace>false</replace>
+        <description />
       </action>
     </actions>
     <tooltip />
     <x>26</x>
-    <background_color>
-      <color red="240" green="240" blue="240" />
-    </background_color>
-    <foreground_color>
-      <color red="0" green="0" blue="128" />
-    </foreground_color>
   </widget>
 </display>

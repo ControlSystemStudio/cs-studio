@@ -1,8 +1,10 @@
 package org.csstudio.opibuilder.preferences;
 
 import org.csstudio.opibuilder.OPIBuilderPlugin;
+import org.csstudio.opibuilder.preferences.PreferencesHelper.ConsolePopupLevel;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.preference.BooleanFieldEditor;
+import org.eclipse.jface.preference.ComboFieldEditor;
 import org.eclipse.jface.preference.FieldEditor;
 import org.eclipse.jface.preference.FieldEditorPreferencePage;
 import org.eclipse.jface.preference.IntegerFieldEditor;
@@ -124,6 +126,15 @@ public class OPIBuilderPreferencePage extends FieldEditorPreferencePage
 			new BooleanFieldEditor(PreferencesHelper.DISABLE_ADVANCED_GRAPHICS, 
 					"Disable Advanced Graphics", parent);				
 		addField(advanceGraphicsEditor);
+		
+		ComboFieldEditor popupConsoleEditor = 
+			new ComboFieldEditor(PreferencesHelper.POPUP_CONSOLE, 
+					"Console Popup Level", new String[][]{
+					{"Error, Warning and Info", ConsolePopupLevel.ALL.toString()},
+					{"Only Info", ConsolePopupLevel.ONLY_INFO.toString()},
+					{"Don't Popup", ConsolePopupLevel.NO_POP.toString()}}, parent);				
+		addField(popupConsoleEditor);
+		
 		
 		StringFieldEditor topOPIsEditor = 
 			new StringFieldEditor(PreferencesHelper.TOP_OPIS, "Top OPIs", parent);

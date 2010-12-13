@@ -28,7 +28,7 @@ import javax.annotation.Nonnull;
 import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.SimpleProperty;
@@ -287,19 +287,20 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
      *
      * {@inheritDoc}
      */
+    @Override
     @Nonnull
-    public EpicsAlarm getSeverity() {
-        EpicsAlarm result = EpicsAlarm.UNKNOWN;
+    public EpicsAlarmSeverity getSeverity() {
+        EpicsAlarmSeverity result = EpicsAlarmSeverity.UNKNOWN;
 
         final DynamicValueCondition condition = getCondition();
         if (condition.isMajor()) {
-            result = EpicsAlarm.MAJOR;
+            result = EpicsAlarmSeverity.MAJOR;
         } else if (condition.isMinor()) {
-            result = EpicsAlarm.MINOR;
+            result = EpicsAlarmSeverity.MINOR;
         } else if (condition.isOK()) {
-            result = EpicsAlarm.NO_ALARM;
+            result = EpicsAlarmSeverity.NO_ALARM;
         } else if (condition.isInvalid()) {
-            result = EpicsAlarm.INVALID;
+            result = EpicsAlarmSeverity.INVALID;
         }
         return result;
     }
@@ -315,6 +316,7 @@ public final class AlarmMessageDALImpl implements IAlarmMessage {
         return result;
     }
 
+    @Override
     @Nonnull
     public Date getEventtimeOrCurrentTime() {
         Date result = getEventtime();

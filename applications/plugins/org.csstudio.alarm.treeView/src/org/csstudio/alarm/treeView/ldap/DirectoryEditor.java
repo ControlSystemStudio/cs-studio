@@ -102,7 +102,6 @@ public final class DirectoryEditor {
             item = null;
         }
 
-
         if (parent != null) {
             parent.removeChild(node);
         }
@@ -114,53 +113,6 @@ public final class DirectoryEditor {
 
         return item;
     }
-
-    /**
-     * Moves a node into a new subtree node. If the node is a subtree node, the
-     * whole subtree will be moved, including its children.
-     *
-     * @param node
-     *            the node.
-     * @param target
-     *            the target node which will become the new parent of the node.
-     * @throws DirectoryEditException
-     *             if an error occurs.
-     */
-//    @Nonnull
-//    public static ITreeModificationItem moveNode(@Nonnull final IAlarmTreeNode node,
-//                                                 @Nonnull final SubtreeNode target)
-//        throws DirectoryEditException {
-//
-//        final LdapName oldNodeName = node.getLdapName();
-//        final LdapName targetName = target.getLdapName();
-//
-//        final LdapName newLdapName = new LdapName(targetName.getRdns());
-//        final String nodeObjectClass = node.getTreeNodeConfiguration().getNodeTypeName();
-//        final String nodeSimpleName = node.getName();
-//
-//        final ITreeModificationItem item = new MoveSubtreeModificationItem(newLdapName,
-//                                                                           oldNodeName,
-//                                                                           nodeSimpleName,
-//                                                                           nodeObjectClass,
-//                                                                           targetName);
-//
-//        // store parent for child removal at the end of this method
-//        final IAlarmSubtreeNode parent = node.getParent();
-//
-//        if (node instanceof IAlarmSubtreeNode) { // modifies the parent reference of the node
-//            target.addSubtreeChild((IAlarmSubtreeNode) node);
-//        } else {
-//            target.addPVChild((IAlarmProcessVariableNode) node);
-//        }
-//        if (parent == null) {
-//            throw new DirectoryEditException("Node " + node.getName() + " does not have a parent (==ROOT)." +
-//                                             "\nMove action not permitted on ROOT.", null);
-//        }
-//        // remove child from old location
-//        parent.removeChild(node);
-//
-//        return item;
-//    }
 
     /**
      * Recursively deletes a node and all of its children.
@@ -316,7 +268,7 @@ public final class DirectoryEditor {
      */
     @CheckForNull
     public static ITreeModificationItem createProcessVariableRecord(@Nonnull final IAlarmSubtreeNode parent,
-                                                                    @Nonnull final String recordName, 
+                                                                    @Nonnull final String recordName,
                                                                     @Nonnull final IProcessVariableNodeListener pvNodeListener) {
 
         final IAlarmProcessVariableNode node = new ProcessVariableNode.Builder(recordName, parent
