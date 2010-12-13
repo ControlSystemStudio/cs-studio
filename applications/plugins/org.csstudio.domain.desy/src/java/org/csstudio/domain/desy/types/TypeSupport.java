@@ -21,6 +21,7 @@
  */
 package org.csstudio.domain.desy.types;
 
+import java.util.Collection;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -164,15 +165,56 @@ public abstract class TypeSupport<T> {
     public static <T> String toArchiveString(@Nonnull final T value) throws ConversionTypeSupportException {
         @SuppressWarnings("unchecked")
         final Class<T> typeClass = (Class<T>) value.getClass();
-        final AbstractArchiveConversionTypeSupport<T> support =
-            (AbstractArchiveConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
+        final AbstractArchiveTypeConversionSupport<T> support =
+            (AbstractArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
         if (support == null) {
             throw new ConversionTypeSupportException("No conversion type support registered.", null);
         }
-        return support.convertToArchiveString(value);
+        return support.convertScalarToArchiveString(value);
     }
 
     /**
+     * Tries to convert the archive string value data/datum into a the correct type representation.
+     * @param the type of the value
+     * @param valueData the string representation of the value
+     * @return
+     * @throws ConversionTypeSupportException
+     */
+    @CheckForNull
+    public static <T> T fromScalarArchiveString(final Class<T> typeClass, @Nonnull final String value) throws ConversionTypeSupportException {
+        final AbstractArchiveTypeConversionSupport<T> support =
+            (AbstractArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertScalarFromArchiveString(value);
+    }
+
+    /**
+     * Tries to convert the archive string value data (supposed to represent an iterable)
+     * into a typed collection. Whether the collection shall support a {@link java.util.Set}, {@link List}, or
+     * any other subtype of collection has to be handled by the invoker.
+     *
+     * @param elemClass the type of the elements for which the type support has to exist
+     * @param values the string representation for the values
+     * @return the Collection
+     * @throws ConversionTypeSupportException
+     */
+    @CheckForNull
+    public static <T> Collection<T>
+        fromMultiScalarArchiveString(@Nonnull final Class<T> elemClass,
+                                     @Nonnull final String values) throws ConversionTypeSupportException {
+        final AbstractArchiveTypeConversionSupport<T> support =
+            (AbstractArchiveTypeConversionSupport<T>) cachedTypeSupportFor(elemClass);
+        if (support == null) {
+            throw new ConversionTypeSupportException("No conversion type support registered.", null);
+        }
+        return support.convertMultiScalarFromArchiveString(values);
+    }
+
+    /**
+     * TODO (bknerr) : once the type safety is given from the engine front end, we won't need this one
+     *
      * Tries to convert the given css value type to CssDouble.
      * @param value the value to be converted
      * @return the conversion result
@@ -184,8 +226,8 @@ public abstract class TypeSupport<T> {
     @Nonnull
     public static <T> Double toDouble(@Nonnull final T value) throws ConversionTypeSupportException {
         final Class<T> typeClass = (Class<T>) value.getClass();
-        final AbstractArchiveConversionTypeSupport<T> support =
-            (AbstractArchiveConversionTypeSupport<T>) cachedTypeSupportFor(typeClass);
+        final AbstractArchiveTypeConversionSupport<T> support =
+            (AbstractArchiveTypeConversionSupport<T>) cachedTypeSupportFor(typeClass);
         if (support == null) {
             throw new ConversionTypeSupportException("No conversion type support registered.", null);
         }

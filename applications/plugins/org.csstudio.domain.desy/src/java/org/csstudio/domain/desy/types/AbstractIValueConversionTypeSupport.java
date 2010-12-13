@@ -77,11 +77,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                     return null;
                 }
                 if (values.length == 1) {
-                    return new AbstractCssAlarmValueType<Double>(Double.valueOf(values[0]),
+                    return new CssAlarmValueType<Double>(Double.valueOf(values[0]),
                                                                  alarm,
                                                                  timestamp);
                 }
-                return new AbstractCssAlarmValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values)),
+                return new CssAlarmValueType<List<Double>>(Lists.newArrayList(Doubles.asList(values)),
                                                                    alarm,
                                                                    timestamp);
             }
@@ -98,11 +98,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                         return null;
                     }
                     if (values.length == 1) {
-                        return new AbstractCssAlarmValueType<Integer>(Integer.valueOf(values[0]),
+                        return new CssAlarmValueType<Integer>(Integer.valueOf(values[0]),
                                 alarm,
                                 timestamp);
                     }
-                    return new AbstractCssAlarmValueType<List<Integer>>(Lists.newArrayList(Ints.asList(values)),
+                    return new CssAlarmValueType<List<Integer>>(Lists.newArrayList(Ints.asList(values)),
                             alarm,
                             timestamp);
                 }
@@ -119,11 +119,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                     return null;
                 }
                 if (values.length == 1) {
-                    return new AbstractCssAlarmValueType<Long>(Long.valueOf(values[0]),
+                    return new CssAlarmValueType<Long>(Long.valueOf(values[0]),
                                                                alarm,
                                                                timestamp);
                 }
-                return new AbstractCssAlarmValueType<List<Long>>(Lists.newArrayList(Longs.asList(values)),
+                return new CssAlarmValueType<List<Long>>(Lists.newArrayList(Longs.asList(values)),
                                                                  alarm,
                                                                  timestamp);
             }
@@ -140,11 +140,11 @@ public abstract class AbstractIValueConversionTypeSupport<R extends ICssAlarmVal
                     return null;
                 }
                 if (values.length == 1) {
-                    return new AbstractCssAlarmValueType<String>(values[0],
+                    return new CssAlarmValueType<String>(values[0],
                                                                  alarm,
                                                                  timestamp);
                 }
-                return new AbstractCssAlarmValueType<List<String>>(Lists.newArrayList(values),
+                return new CssAlarmValueType<List<String>>(Lists.newArrayList(values),
                                                                    alarm,
                                                                    timestamp);
             }
