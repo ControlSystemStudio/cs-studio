@@ -833,16 +833,7 @@ public class SearchDialog extends Dialog {
 	 * 
 	 */
 	private void showNode() {
-		_profiBusTreeView.getTreeViewer().expandToLevel(_selectedNode, AbstractTreeViewer.ALL_LEVELS);
-		
-		_profiBusTreeView.layout();
-		_profiBusTreeView.refresh();
-		_profiBusTreeView.getTreeViewer().setSelection(
-				new StructuredSelection(_selectedNode),true);
-//		_profiBusTreeView.getTreeViewer().getTree().showSelection();
-//		_profiBusTreeView.getTreeViewer().getTree().
-//		_profiBusTreeView.layout();
-//		_profiBusTreeView.refresh();
+	    _profiBusTreeView.getViewer().setSelection(new StructuredSelection(_selectedNode));
 	}
 
 	public final void setSearchNode(@Nullable SearchNodeDBO searchNode) {

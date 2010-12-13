@@ -208,15 +208,14 @@ public class ProfiBusTreeView extends Composite {
      * The Action to reassemble the EPICS Address String.
      */
     private IAction _assembleEpicsAddressStringAction;
-    // /**
-    // * The actual open Node Config Composite.
-    // */
-    // private NodeConfig _nodeConfigComposite;
     /**
      * A List of all loaded {@link FacilityDBO}'s
      */
     private List<FacilityDBO> _load;
     private Action _infoDialogAction;
+     /**
+     * The actual open Node Config Editor.
+     */
     private AbstractNodeEditor _openNodeEditor;
     private Action _createNewSiemensConfigFile;
     
@@ -351,7 +350,6 @@ public class ProfiBusTreeView extends Composite {
      */
     public final void addFacility(@Nullable final AbstractNodeDBO node) {
         if (node instanceof FacilityDBO) {
-            // _load.add((Facility) node);
             getViewer().setInput(node);
         }
     }
@@ -366,7 +364,6 @@ public class ProfiBusTreeView extends Composite {
      */
     protected void editNode() {
         _editNodeAction.setEnabled(false);
-        // setEditComposite();
         
         closeOpenEditor();
         IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
@@ -384,6 +381,7 @@ public class ProfiBusTreeView extends Composite {
     public void closeOpenEditor() {
         if (_openNodeEditor != null) {
             _openNodeEditor.perfromClose();
+            _openNodeEditor = null;
         }
     }
     
@@ -755,6 +753,10 @@ public class ProfiBusTreeView extends Composite {
             public void run() {
                 SearchDialog searchDialog = new SearchDialog(getShell(), ProfiBusTreeView.this);
                 searchDialog.open();
+//                if(searchDialog.open()==SWT.OK) {
+//                    getViewer().setSelection(new StructuredSelection(searchDialog.getSearchNode()));
+//                }
+                
             }
             
         };
@@ -842,6 +844,7 @@ public class ProfiBusTreeView extends Composite {
     private void openEditor(@Nonnull final String editorID) {
         IHandlerService handlerService = (IHandlerService) _site.getService(IHandlerService.class);
         try {
+            closeOpenEditor();
             handlerService.executeCommand(editorID, null);
         } catch (Exception ex) {
             LOG.error(ex.getMessage(), ex);
@@ -1229,7 +1232,6 @@ public class ProfiBusTreeView extends Composite {
             
             final Text text = new Text(createDialogArea, SWT.BORDER | SWT.H_SCROLL | SWT.V_SCROLL);
             text.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 3, 1));
-            // text.setText(Diagnose.getString());
             
             label = new Label(createDialogArea, SWT.NONE);
             createDialogArea.pack();
