@@ -74,14 +74,13 @@ public final class NotificationMail {
     private static void sendSingleMail(@Nonnull final NotificationType type,
                                        @Nonnull final String receiver,
                                        @Nullable final String additionalBody) throws IOException {
-        EMailSender mailer = null;
-            mailer = new EMailSender(HOST,
-                                     FROM,
-                                     receiver,
-                                     type.getSubject());
+        final EMailSender mailer = new EMailSender(HOST,
+                                             FROM,
+                                             receiver,
+                                             type.getSubject());
 
-            mailer.addText(type.getText() + (additionalBody != null ? additionalBody : ""));
-            mailer.close();
+        mailer.addText(type.getText() + (additionalBody != null ? additionalBody : ""));
+        mailer.close();
     }
 
 }

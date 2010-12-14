@@ -300,7 +300,7 @@ public class GUI implements AlarmClientModelListener
      *  @see AlarmClientModelListener
      */
     @Override
-    public void newAlarmTree(final AlarmClientModel model)
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
         final AlarmTreeRoot config = model.getConfigTree();
         Display.getDefault().asyncExec(new Runnable()

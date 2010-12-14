@@ -17,10 +17,10 @@ import org.csstudio.apputil.xml.XMLWriter;
 public class AlarmTreeRoot extends AlarmTreeItem
 {
     /** Initialize alarm tree root
-     *  @param id RDB ID of root element
-     *  @param name Name of root element
+     * @param name Name of root element
+     * @param id RDB ID of root element
      */
-    public AlarmTreeRoot(final int id, final String name)
+    public AlarmTreeRoot(final String name, final int id)
     {
         super(null, name, id);
     }
@@ -48,7 +48,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
     }
 
     /** @return Number of PVs in tree */
-    public int getPVCount()
+    public synchronized int getPVCount()
     {
         return getPVCount(this);
     }
@@ -65,7 +65,7 @@ public class AlarmTreeRoot extends AlarmTreeItem
     }
 
     /** @return Number of elements (children, sub-children) in tree */
-    public int getElementCount()
+    public synchronized int getElementCount()
     {   // Consider root itself, then count children from here on down
         return 1 + getElementCount(this);
     }

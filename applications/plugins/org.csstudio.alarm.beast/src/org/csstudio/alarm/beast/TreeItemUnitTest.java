@@ -20,7 +20,28 @@ public class TreeItemUnitTest
     @Test
     public void testTreeItem() throws Exception
     {
-        final TreeItem tree = new TreeItem(null, "One", 1);
+        // Item with undefined ID
+        TreeItem tree = new TreeItem(null, "One", -1);
+        assertEquals(-1, tree.getID());
+        assertEquals("One", tree.getName());
+        assertEquals("/One", tree.getPathName());
+
+        // Set ID once
+        tree.setID(1);
+        assertEquals(1, tree.getID());
+
+        // Cannot set again
+        try
+        {
+            tree.setID(10);
+            fail("Must not allow change in ID");
+        }
+        catch (Exception ex)
+        {
+            System.out.println(ex.getMessage());
+            assertTrue(ex.getMessage().contains("ID already set"));
+        }
+
         new TreeItem(tree, "Two", 2);
         tree.dump(System.out);
         tree.check();

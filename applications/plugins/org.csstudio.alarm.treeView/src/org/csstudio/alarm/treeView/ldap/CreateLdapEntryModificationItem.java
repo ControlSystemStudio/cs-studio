@@ -32,7 +32,7 @@ import org.csstudio.alarm.treeView.views.AlarmTreeModificationException;
 import org.csstudio.utility.ldap.service.ILdapService;
 
 /**
- * Creates the LDAP component with the given name;
+ * Creates the LDAP component with the given name.
  *
  * @author bknerr
  * @author $Author$

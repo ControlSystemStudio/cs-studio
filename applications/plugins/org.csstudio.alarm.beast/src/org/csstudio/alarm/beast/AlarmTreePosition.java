@@ -21,18 +21,18 @@ public enum AlarmTreePosition
 {
     /** Root of the alarm tree, held in an AlarmTreeRoot */
     Root,
-    
+
     /** Top-level alarm tree element, meant to describe an area or facility.
-     *  Held in an AlarmTreeComponent
+     *  Held in an AlarmTreeItem
      */
     Area,
-    
+
     /** Alarm tree element just below an Area, meant to describe a system
      *  or component.
-     *  Held in an AlarmTreeComponent
+     *  Held in an AlarmTreeItem
      */
     System,
-    
+
     /** Alarm tree PV.
      *  Held in an AlarmTreePV
      */

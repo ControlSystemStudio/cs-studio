@@ -3,14 +3,14 @@
  */
 package org.csstudio.utility.channel.actions;
 
-import gov.bnl.channelfinder.model.XmlChannel;
-import gov.bnl.channelfinder.model.XmlChannels;
-import gov.bnl.channelfinder.model.XmlTag;
+import static org.csstudio.utility.channel.CSSChannelUtils.getCSSChannelTagNames;
 
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.TreeSet;
 
+import org.csstudio.utility.channel.ICSSChannel;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -20,7 +20,6 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.dialogs.ListSelectionDialog;
-
 /**
  * @author shroffk
  * 
@@ -28,15 +27,14 @@ import org.eclipse.ui.dialogs.ListSelectionDialog;
 public class RemoveTagAction implements IObjectActionDelegate {
 
 	private Shell shell;
-	private XmlChannels channels;
-	private Collection<String> allTags = new TreeSet<String>();
+	private Collection<ICSSChannel> channels;
 
 	/**
 	 * 
 	 */
 	public RemoveTagAction() {
 		super();
-		this.channels = new XmlChannels();
+		this.channels = new HashSet<ICSSChannel>();
 	}
 
 	/*
@@ -58,21 +56,9 @@ public class RemoveTagAction implements IObjectActionDelegate {
 	 */
 	@Override
 	public void run(IAction action) {
-		Collection<String> allProperties = new TreeSet<String>();
-		allTags.clear();
 
-		try {
-			Iterator<XmlChannel> itr = channels.getChannels().iterator();
-			while (itr.hasNext()) {
-				XmlChannel element = itr.next();
-				allProperties.addAll(element.getPropertyNames());
-				allTags.addAll(element.getTagNames());
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 		ListSelectionDialog selectTags = new ListSelectionDialog(shell,
-				allTags, new allTagsContentProvider(),
+				getCSSChannelTagNames(channels), new allTagsContentProvider(),
 				new allTagsLabelProvider(), "Select Tags to be removed.");
 		if (selectTags.open() == Window.OK) {
 			Object[] selected = selectTags.getResult();
@@ -101,10 +87,10 @@ public class RemoveTagAction implements IObjectActionDelegate {
 
 		if (selection != null & selection instanceof IStructuredSelection) {
 			IStructuredSelection strucSelection = (IStructuredSelection) selection;
-			channels.getChannels().clear();
-			for (Iterator<XmlChannel> iterator = strucSelection.iterator(); iterator
+			channels.clear();
+			for (Iterator<ICSSChannel> iterator = strucSelection.iterator(); iterator
 					.hasNext();) {
-				channels.addChannel(iterator.next());
+				channels.add(iterator.next());
 			}
 		}
 	}

@@ -1,0 +1,21 @@
+<h1>Archive Engine</h1>
+
+Sampling Engine for BEAUTY.
+
+<ul>
+<li>See plug-in org.csstudio.archive.rdb for RDB setup.
+<li>ArchiveEngine.product is the actual product.
+    Run with -? for command-line options.
+<li>webroot is used by engine's HTTPD
+<li>lib has example databases and config files
+</ul>
+
+Run as background job:
+<code>
+export DISPLAY="";
+nohup ArchiveEngine ... >log 2>&1 &
+</code>
+
+<h2>Versions</h2>
+Defined in EngineModel.VERSION,
+documented in webroot/version.html

@@ -7,6 +7,8 @@
  ******************************************************************************/
 package org.csstudio.alarm.beast;
 
+import static org.junit.Assert.*;
+
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.platform.utility.rdb.RDBUtil;
 import org.junit.Test;
@@ -48,16 +50,18 @@ public class AlarmConfigurationReaderTest
         // Get root
         final AlarmTreeRoot root = reader.readRoot(path[0]);
         System.out.println("Root: " + root);
+        int id = reader.readRootID(path[0]);
+        assertEquals(root.getID(), id);
 
         // Complete guidance, displays, commands
-        reader.readGUIInfo(root);
+        reader.readGuidanceDisplaysCommands(root);
 
         // Read remaining path elements
         AlarmTreeItem parent = root;
         for (int i=1; i<path.length; ++i)
         {
             parent = reader.readItem(path[i], parent, severities, messages);
-            reader.readGUIInfo(parent);
+            reader.readGuidanceDisplaysCommands(parent);
         }
 
         reader.closeStatements();

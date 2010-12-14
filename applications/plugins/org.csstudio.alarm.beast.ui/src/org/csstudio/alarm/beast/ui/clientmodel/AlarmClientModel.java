@@ -323,7 +323,7 @@ public class AlarmClientModel
             final AlarmConfiguration new_config =
                 new AlarmConfiguration(Preferences.getRDB_Url(),Preferences.getRDB_User(),
                 					   Preferences.getRDB_Password(),
-                                       config_name,false)
+                                       getConfigurationName(),false)
             {
                 @Override
                 protected AlarmTreeRoot createAlarmTreeRoot(int id,
@@ -708,7 +708,7 @@ public class AlarmClientModel
      */
     public void readConfig(final String path) throws Exception
     {
-        final AlarmTreeItem item = config_tree.getItemByPath(path);
+        final AlarmTreeItem item = getConfigTree().getItemByPath(path);
 
         if (item == null  ||  !(item instanceof AlarmTreePV))
         {   // Not a known PV? Update the whole config.
@@ -828,7 +828,7 @@ public class AlarmClientModel
      */
     private synchronized void createPseudoAlarmTree(final String info)
     {
-        config_tree = new AlarmTreeRoot(-1, "Pseudo"); //$NON-NLS-1$
+        config_tree = new AlarmTreeRoot("Pseudo", -1); //$NON-NLS-1$
         new AlarmTreeItem(config_tree, info, 0);
         active_alarms.clear();
         acknowledged_alarms.clear();
@@ -886,7 +886,7 @@ public class AlarmClientModel
         {
             try
             {
-                listener.newAlarmTree(this);
+                listener.newAlarmConfiguration(this);
             }
             catch (Throwable ex)
             {

@@ -26,16 +26,19 @@ public class AlarmTreePath
     }
 
     /** Build path name
-     *  @param path Parent path
+     *  @param path Parent path or <code>null</code> when starting at root
      *  @param item Name of item at end of path
      *  @return Full path name to item
      */
     public static String makePath(final String path, final String item)
     {
         final StringBuilder result = new StringBuilder();
-        if (! isPath(path))
-            result.append(PATH_SEP);
-        result.append(path);
+        if (path != null)
+        {
+            if (! isPath(path))
+                result.append(PATH_SEP);
+            result.append(path);
+        }
         result.append(PATH_SEP);
         // Escape any path-seps inside item with backslashes
         result.append(item.replace(PATH_SEP, "\\/"));

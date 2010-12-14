@@ -21,44 +21,34 @@
  */
 package org.csstudio.domain.desy;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.csstudio.domain.desy.alarm.IAlarm;
 import org.csstudio.domain.desy.common.id.Identifiable;
+import org.csstudio.domain.desy.types.ICssValueType;
 
 /**
  * System variables are the fundamental atomic components of any system.
- * A system variable is a value or state (set of values/states) that describes the composed system.
+ * A system variables is an entity in form of a value or state (set of values/states) to a given
+ * time instant.
+ * A complete system is composed of a non-empty set of system variables.
+ *
  * It is identifiable and features to any given time a unique value/state or a set of the same that
  * is unique to that time.
- *
- * The state/value may represent an alarm according to some rules/ranges.
- * In other words any system variable gives information about its current alarm state
- * and <code>null</code> when its state is not an alarm.
  *
  * @author bknerr
  * @since 04.11.2010
  *
+ * @param <V> the basic type of the value(s) of the system variable
  * @param <T> the type of the system variable
  */
-public interface ISystemVariable<T> extends Identifiable<SystemVariableId> {
+public interface ISystemVariable<V, T extends ICssValueType<V>> extends Identifiable<SystemVariableId> {
 
     /**
-     * The value/state or set of values/states of this system variable.
+     * The datum entity (value(s) and/or state(s) of this system variable.
      * @return the variable
      */
     @Nonnull
-    T getValue();
+    T getData();
 
-    /**
-     * The state/value may represent an alarm according to some rules/ranges.
-     * In other words any system variable gives information about its current alarm state.
-     *
-     * Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
-     * implementation, hence <code>null</code> represents a possible return value.
-     * @return the alarm or <code>null</code>
-     */
-    @CheckForNull
-    IAlarm getAlarm();
 }
+

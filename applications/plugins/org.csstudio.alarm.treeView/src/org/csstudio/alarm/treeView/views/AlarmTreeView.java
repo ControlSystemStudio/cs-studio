@@ -42,7 +42,7 @@ import org.csstudio.alarm.treeView.model.SubtreeNode;
 import org.csstudio.alarm.treeView.model.TreeNodeSource;
 import org.csstudio.alarm.treeView.service.AlarmMessageListener;
 import org.csstudio.alarm.treeView.views.actions.AlarmTreeViewActionFactory;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
@@ -327,7 +327,7 @@ public final class AlarmTreeView extends ViewPart {
         // is selected (selectedElement == null), and during initialization,
         // when it is an instance of PendingUpdateAdapter.
         if (selectedElement instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarm.NO_ALARM;
+            return ((IAlarmTreeNode) selectedElement).getUnacknowledgedAlarmSeverity() != EpicsAlarmSeverity.NO_ALARM;
         }
         return false;
     }
@@ -447,7 +447,7 @@ public final class AlarmTreeView extends ViewPart {
      * {@inheritDoc}
      */
     @Override
-    public final void createPartControl(@Nonnull final Composite parent) {
+    public void createPartControl(@Nonnull final Composite parent) {
 
         final GridLayout layout = new GridLayout(1, false);
         layout.marginHeight = 0;
@@ -501,7 +501,7 @@ public final class AlarmTreeView extends ViewPart {
      * {@inheritDoc}
      */
     @Override
-    public final void dispose() {
+    public void dispose() {
         tryToDisconnect();
         super.dispose();
     }
@@ -643,7 +643,7 @@ public final class AlarmTreeView extends ViewPart {
         return _viewer;
     }
 
-    
+
     // TODO (jpenning) remove connection, use listener concept instead
     /**
      * @return the connection or null
@@ -658,7 +658,7 @@ public final class AlarmTreeView extends ViewPart {
     public IProcessVariableNodeListener getPVNodeListener() {
         if (_processVariableNodeListener == null) {
             _processVariableNodeListener = new IProcessVariableNodeListener() {
-                
+
                 @Override
                 public void wasAdded(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -666,7 +666,7 @@ public final class AlarmTreeView extends ViewPart {
                         AlarmTreeView.LOG.trace("pv registered: " + pvName);
                     }
                 }
-                
+
                 @Override
                 public void wasRemoved(@Nonnull final String pvName) {
                     if (_connection != null) {
@@ -678,7 +678,7 @@ public final class AlarmTreeView extends ViewPart {
         }
         return _processVariableNodeListener;
     }
-    
+
 
     /**
      * Returns whether the given process variable node in the tree has an associated CSS alarm
@@ -690,7 +690,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssAlarmDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            final String display = ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
+            final String display = ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_ALARM_DISPLAY);
             return display != null && display.matches(".+\\.css-sds");
         }
         return false;
@@ -704,7 +704,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssDisplay(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_DISPLAY) != null;
         }
         return false;
     }
@@ -717,7 +717,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasCssStripChart(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.CSS_STRIP_CHART) != null;
         }
         return false;
     }
@@ -731,7 +731,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpGuidance(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_GUIDANCE) != null;
         }
         return false;
     }
@@ -745,7 +745,7 @@ public final class AlarmTreeView extends ViewPart {
      */
     private boolean hasHelpPage(@Nonnull final Object node) {
         if (node instanceof IAlarmTreeNode) {
-            return ((IAlarmTreeNode) node).getProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
+            return ((IAlarmTreeNode) node).getInheritedProperty(EpicsAlarmcfgTreeNodeAttribute.HELP_PAGE) != null;
         }
         return false;
     }
@@ -759,6 +759,7 @@ public final class AlarmTreeView extends ViewPart {
 
         // add menu items to the context menu when it is about to show
         menuMgr.addMenuListener(new IMenuListener() {
+            @SuppressWarnings("synthetic-access")
             @Override
             public void menuAboutToShow(@Nullable final IMenuManager manager) {
                 AlarmTreeView.this.fillContextMenu(manager);
@@ -800,7 +801,7 @@ public final class AlarmTreeView extends ViewPart {
      * Passes the focus request to the viewer's control.
      */
     @Override
-    public final void setFocus() {
+    public void setFocus() {
         _viewer.getControl().setFocus();
     }
 
@@ -818,17 +819,17 @@ public final class AlarmTreeView extends ViewPart {
             (IWorkbenchSiteProgressService) getSite().getAdapter(IWorkbenchSiteProgressService.class);
 
         final ConnectionJob connectionJob = createConnectionJob(this);
-        
+
         // Gain access to the connection
         connectionJob.addJobChangeListener(new JobChangeAdapter() {
-            
+
             @SuppressWarnings("synthetic-access")
             @Override
-            public void done(IJobChangeEvent event) {
+            public void done(@Nullable final IJobChangeEvent event) {
                 _connection = connectionJob.getConnection();
             }
         });
-        
+
         progressService.schedule(connectionJob, 0, true);
     }
 
@@ -855,5 +856,13 @@ public final class AlarmTreeView extends ViewPart {
         // Start the directory reader job.
         progressService.schedule(importInitialConfigJob, 0, true);
         return importInitialConfigJob;
+    }
+
+    /**
+     * Adds the given item to the modification item list that is processed on save in ldap action.
+     * @param item
+     */
+    public void addLdapTreeModificationItem(@Nonnull final ITreeModificationItem item) {
+        _ldapModificationItems.add(item);
     }
 }

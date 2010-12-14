@@ -85,6 +85,16 @@ public class AlarmConfigurationReader
      */
     public AlarmTreeRoot readRoot(final String name) throws Exception
     {
+        return new AlarmTreeRoot(name, readRootID(name));
+    }
+
+    /** Read RDB ID of a 'root' element
+     *  @param name Name of root (i.e. configuration name)
+     *  @return RDB ID
+     *  @throws Exception on error
+     */
+    public int readRootID(final String name) throws Exception
+    {
         final PreparedStatement statement =
             rdb.getConnection().prepareStatement(sql.sel_configuration_by_name);
         try
@@ -93,8 +103,7 @@ public class AlarmConfigurationReader
             final ResultSet result = statement.executeQuery();
             if (!result.next())
                 throw new Exception("Unknown alarm tree root " + name);
-            final int id = result.getInt(1);
-            return new AlarmTreeRoot(id, name);
+            return result.getInt(1);
         }
         finally
         {
@@ -165,11 +174,11 @@ public class AlarmConfigurationReader
         return gdcList.toArray(new GDCDataStructure[gdcList.size()]);
     }
 
-    /** Read and set the GUI info (guidance, displays, commands)
+    /** Read GUI info (guidance, displays, commands)
      *  @param item Item to update with GUI info
      *  @throws Exception on error
      */
-    public void readGUIInfo(AlarmTreeItem item) throws Exception
+    public void readGuidanceDisplaysCommands(final AlarmTreeItem item) throws Exception
     {
         final int id = item.getID();
         item.setGuidance(readGuidance(id));
@@ -181,8 +190,8 @@ public class AlarmConfigurationReader
      *  Does <u>not</u> initialize the GUI info nor alarm state
      *  @param name Name of item
      *  @param parent parent item
-     * @param severity_mapping
-     * @param message_mapping
+     *  @param severity_mapping
+     *  @param message_mapping
      *  @return {@link AlarmTreeComponent} or {@link AlarmTreePV}
      *  @throws Exception on error
      */
@@ -222,6 +231,67 @@ public class AlarmConfigurationReader
             result.close();
         }
         return item;
+    }
+
+    /** Complete the (GUI) information for an alarm tree component or PV.
+     *
+     *  Item must have name and parent, and this method updates the ID,
+     *  guidance, displays, commands, PV description (for PVs)
+     *  @param item parent item
+     *  @throws Exception on error
+     */
+    public void completeItemInfo(final AlarmTreeItem item) throws Exception
+    {
+        final AlarmTreeItem parent = item.getClientParent();
+        // 'root' elements only have an ID, no other info.
+        // In the RDB they could have more info, but the alarm GUI
+        // doesn't show the root element so it's impossible to configure
+        // the root element. Plus in SQL it would require
+        //   WHERE t.PARENT_CMPNT_ID IS NULL
+        // instead of
+        //   WHERE t.PARENT_CMPNT_ID = ?
+        // and for now we only have one sel_item_by_parent_and_name statement
+        if (parent == null)
+        {
+            item.setID(readRootID(item.getName()));
+            return;
+        }
+
+        // Lazy statement creation
+        if (sel_item_by_parent_and_name_statement == null)
+            sel_item_by_parent_and_name_statement =
+                rdb.getConnection().prepareStatement(sql.sel_item_by_parent_and_name);
+            sel_item_by_parent_and_name_statement.setNull(1, java.sql.Types.INTEGER);
+        // Read most of the config
+        sel_item_by_parent_and_name_statement.setInt(1, parent.getID());
+        sel_item_by_parent_and_name_statement.setString(2, item.getName());
+        final ResultSet result = sel_item_by_parent_and_name_statement.executeQuery();
+        try
+        {
+            if (!result.next())
+                throw new Exception("Unknown alarm tree item " + item.getPathName());
+            final int id = result.getInt(1);
+            item.setID(id);
+            // Check PV's ID. If null, this is a component, not PV
+            result.getInt(3);
+            if (! result.wasNull() &&  (item instanceof AlarmTreePV))
+            {
+                final AlarmTreePV pv = (AlarmTreePV) item;
+                pv.setDescription(result.getString(4));
+                pv.setEnabled(result.getBoolean(5));
+                pv.setAnnunciating(result.getBoolean(6));
+                pv.setLatching(result.getBoolean(7));
+                pv.setDelay(result.getInt(8));
+                pv.setCount(result.getInt(9));
+                pv.setFilter(result.getString(10));
+            }
+        }
+        finally
+        {
+            result.close();
+        }
+        // Read
+        readGuidanceDisplaysCommands(item);
     }
 
     /** Configure a PV from RDB columns

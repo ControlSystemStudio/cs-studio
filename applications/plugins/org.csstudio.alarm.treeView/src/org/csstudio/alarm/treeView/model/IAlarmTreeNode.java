@@ -25,7 +25,7 @@ import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 import javax.naming.ldap.LdapName;
 
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.utility.ldap.treeconfiguration.EpicsAlarmcfgTreeNodeAttribute;
 import org.csstudio.utility.ldap.treeconfiguration.LdapEpicsAlarmcfgConfiguration;
 
@@ -95,7 +95,7 @@ public interface IAlarmTreeNode {
      *         set on this node or a parent node.
      */
     @CheckForNull
-    String getProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
+    String getInheritedProperty(@Nonnull final EpicsAlarmcfgTreeNodeAttribute property);
 
     /**
      * Returns the property value that is set on this node. The value is not
@@ -123,7 +123,7 @@ public interface IAlarmTreeNode {
      * @return the alarm severity for this node.
      */
     @Nonnull
-    EpicsAlarm getAlarmSeverity();
+    EpicsAlarmSeverity getAlarmSeverity();
 
     /**
      * Returns the severity of the highest unacknowledged alarm for this node.
@@ -132,7 +132,7 @@ public interface IAlarmTreeNode {
      * @return the severity of the highest unacknowledged alarm for this node.
      */
     @Nonnull
-    EpicsAlarm getUnacknowledgedAlarmSeverity();
+    EpicsAlarmSeverity getUnacknowledgedAlarmSeverity();
 
     /**
      * Returns whether this node has any children.

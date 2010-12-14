@@ -25,7 +25,7 @@ import javax.annotation.Nonnull;
 import org.csstudio.alarm.treeView.model.Alarm;
 import org.csstudio.alarm.treeView.model.IAlarmProcessVariableNode;
 import org.csstudio.alarm.treeView.model.IAlarmSubtreeNode;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
@@ -91,7 +91,7 @@ public abstract class AbstractPendingUpdate {
      */
     @Nonnull
     public static AbstractPendingUpdate createAlarmUpdate(@Nonnull final String name,
-                                                          @Nonnull final EpicsAlarm severity,
+                                                          @Nonnull final EpicsAlarmSeverity severity,
                                                           @Nonnull final Date eventtime,
                                                           @Nonnull final IAlarmSubtreeNode treeRoot) {
         return new AbstractPendingUpdate() {
@@ -119,6 +119,7 @@ public abstract class AbstractPendingUpdate {
      */
     public static void refreshView() {
         Display.getDefault().asyncExec(new Runnable() {
+            @Override
             public void run() {
                 // FIXME: improve this!
                 final IWorkbenchWindow activeWorkbenchWindow = PlatformUI.getWorkbench()

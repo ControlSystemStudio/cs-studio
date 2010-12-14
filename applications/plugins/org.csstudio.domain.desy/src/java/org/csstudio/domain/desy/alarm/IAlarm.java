@@ -21,14 +21,13 @@
  */
 package org.csstudio.domain.desy.alarm;
 
-import javax.annotation.Nonnull;
 
 /**
  * Interface of an alarm.
  *
  * An alarm is defined as describing characteristic of a identifiable system variable (in form of an
- * distinct value or or state) that yields information about the feature's relevance
- * ({@link IAlarmSeverity} according to a given rule set and/or value range set.
+ * distinct value or or state @see also states and values in org.epics.pvmanager) that may yield
+ * information about the feature's relevance according to a given rule set and/or value range set.
  * An alarm serves as the ultimate cause to propagate (alarm) notifications throughout the system.
  *
  * Sidenote: Whether a control system considers an OK or UNKNOWN state as alarm or not, is up to the
@@ -37,17 +36,12 @@ import javax.annotation.Nonnull;
  * TODO (bknerr, jhatje, jpenning, hrickens) : The 'identifiable system feature' may be
  * {@link IProcessVariable} or {@link IControlSystemItem} or any of the many others. I introduced
  * {@link org.csstudio.domain.desy.ISystemVariable} for now, was not sure which one if any to take.
+ * Gabriele has a very strong library (pvmanager), but it is not conceptually based around
+ * identifiable system variables.
  *
  * @author bknerr
  * @since 04.11.2010
  */
 public interface IAlarm {
-
-    /**
-     * Return the alarm's severity
-     * @return the severity
-     */
-    @Nonnull
-    <T extends IAlarmSeverity<T>>
-        IAlarmSeverity<T> getSeverity();
+    // Marker
 }

@@ -6,6 +6,9 @@ package org.csstudio.utility.adlparser.fileParser.widgetParts;
 import org.csstudio.utility.adlparser.fileParser.ADLWidget;
 import org.csstudio.utility.adlparser.fileParser.FileLine;
 import org.csstudio.utility.adlparser.fileParser.WrongADLFormatException;
+import org.csstudio.utility.adlparser.fileParser.widgets.ADLAbstractWidget;
+import org.csstudio.utility.adlparser.fileParser.widgets.ADLDisplay;
+import org.csstudio.utility.adlparser.fileParser.widgets.Line;
 import org.eclipse.swt.graphics.RGB;
 
 /**
@@ -178,7 +181,7 @@ public class ADLTestObjects {
 		return colorMap;
 	}
 
-	private static ADLWidget setupBasicDisplay() {
+	public static ADLWidget setupBasicDisplay() {
 		ADLWidget display = new ADLWidget("display", null, 4);
 		ADLWidget object = new ADLWidget("object", null, 5);
 		object.addBody(new FileLine("x=81", 6));
@@ -196,6 +199,22 @@ public class ADLTestObjects {
 		return display;
 	}
 
+	public static ADLWidget setupRelatedDisplayWidget() {
+		ADLWidget widget = new ADLWidget("related display", null, 0);
+		ADLWidget object = new ADLWidget("object", null, 5);
+		object.addBody(new FileLine("x=81", 6));
+		object.addBody(new FileLine("y=107", 7));
+		object.addBody(new FileLine("width=1020", 8));
+		object.addBody(new FileLine("height=610", 9));
+		widget.addObject(object);
+		widget.addBody(new FileLine("clr=3", 10));
+		widget.addBody(new FileLine("bclr=5", 11));
+		widget.addBody(new FileLine("label=test_entry", 11));
+		widget.addObject(setupRelDispMixedArgs());
+		widget.addObject(setupRelDisp());
+
+		return widget;
+	}
 	/**
 	 *  Convenience method to create a colorMap
 	 * @return the colorMap
@@ -210,4 +229,22 @@ public class ADLTestObjects {
 		map[5] = new RGB(0, 0, 255);
 		return map;
 	}
+
+	public static ADLWidget setupBasicLine() {
+		ADLWidget line = new ADLWidget("oval", null, 4);
+		ADLWidget baParts = new ADLWidget("basic attribute", line, 0);
+		baParts.addBody(new FileLine("clr=2", 10));
+		line.addObject(baParts);
+		return line;
+	}
+
+	public static String getColorName(int index) {
+		RGB rgb = makeColorMap()[index];
+		return "(" + rgb.red + "," + rgb.green + "," + rgb.blue + ")";
+	}
+
+	public static RGB getRGBValue(int index) {
+		return makeColorMap()[index];
+	}
+
 }

@@ -458,7 +458,7 @@ public class GUI implements AlarmClientModelListener
     // For now, the table responds to any changes with a full update
     // @see AlarmClientModelListener
     @Override
-    public void newAlarmTree(final AlarmClientModel model)
+    public void newAlarmConfiguration(final AlarmClientModel model)
     {
         gui_update.trigger();
     }

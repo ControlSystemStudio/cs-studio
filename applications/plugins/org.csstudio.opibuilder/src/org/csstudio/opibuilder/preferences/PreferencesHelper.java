@@ -20,6 +20,13 @@ import org.eclipse.core.runtime.preferences.IPreferencesService;
  *
  */
 public class PreferencesHelper {
+	
+	public enum ConsolePopupLevel {
+		NO_POP,
+		ONLY_INFO,
+		ALL;
+	}
+	
 	public static final String COLOR_FILE = "color_file"; //$NON-NLS-1$
 	public static final String FONT_FILE = "font_file"; //$NON-NLS-1$
 	public static final String RUN_MACROS= "macros"; //$NON-NLS-1$
@@ -28,7 +35,7 @@ public class PreferencesHelper {
 	public static final String NO_EDIT = "no_edit"; //$NON-NLS-1$
 	public static final String TOP_OPIS = "top_opis"; //$NON-NLS-1$
 	public static final String DISABLE_ADVANCED_GRAPHICS = "disable_advanced_graphics"; //$NON-NLS-1$
-		
+	public static final String POPUP_CONSOLE = "popup_console"; ////$NON-NLS-1$
 	private static final char ROW_SEPARATOR = '|'; //$NON-NLS-1$
 	private static final char ITEM_SEPARATOR = ','; //$NON-NLS-1$
 	private static final char MACRO_SEPARATOR = '='; //$NON-NLS-1$
@@ -82,6 +89,14 @@ public class PreferencesHelper {
     	final IPreferencesService service = Platform.getPreferencesService();
     	return service.getBoolean(OPIBuilderPlugin.PLUGIN_ID, NO_EDIT, false, null);
     }
+    
+    public static ConsolePopupLevel getConsolePopupLevel(){
+    	final IPreferencesService service = Platform.getPreferencesService();
+    	String popupLevelString = service.getString(
+    			OPIBuilderPlugin.PLUGIN_ID, POPUP_CONSOLE, ConsolePopupLevel.ALL.toString(), null);
+    	return ConsolePopupLevel.valueOf(popupLevelString);
+    }
+    
     
     public static boolean isAdvancedGraphicsDisabled(){
     	final IPreferencesService service = Platform.getPreferencesService();

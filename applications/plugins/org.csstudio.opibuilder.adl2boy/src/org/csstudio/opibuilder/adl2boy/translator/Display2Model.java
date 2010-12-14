@@ -12,6 +12,13 @@ public class Display2Model extends AbstractADL2Model {
 	
 	public Display2Model(ADLWidget adlWidget, RGB[] colorMap, AbstractContainerModel parentModel) {
 		super(adlWidget, colorMap, parentModel);
+		processWidget(adlWidget);
+	}
+
+	/**
+	 * @param adlWidget
+	 */
+	public void processWidget(ADLWidget adlWidget) {
 		ADLDisplay adlDisp = new ADLDisplay(adlWidget);
 		int displayForeColor = 0;
 		int displayBackColor = 0;
@@ -20,8 +27,8 @@ public class Display2Model extends AbstractADL2Model {
 			setADLObjectProps(adlDisp, displayModel);
 			displayForeColor = adlDisp.getForegroundColor();
 			displayBackColor = adlDisp.getBackgroundColor();
-			displayModel.setBackgroundColor(colorMap[displayBackColor]);
-			displayModel.setForegroundColor(colorMap[displayForeColor]);
+			displayModel.setBackgroundColor(this.colorMap[displayBackColor]);
+			displayModel.setForegroundColor(this.colorMap[displayForeColor]);
 			
 		}
 		if ( adlDisp.is_gridOn()){
@@ -37,9 +44,11 @@ public class Display2Model extends AbstractADL2Model {
 			displayModel.setPropertyValue(DisplayModel.PROP_SNAP_GEOMETRY, false);
 		}
 		displayModel.setPropertyValue(DisplayModel.PROP_GRID_SPACE, adlDisp.get_gridSpacing());
-		
 	}
 
+	public Display2Model(RGB[] colorMap){
+		super(colorMap);
+	}
 	@Override
 	public AbstractWidgetModel getWidgetModel() {
 		return displayModel;
