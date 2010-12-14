@@ -31,7 +31,7 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.experimental.chart.swt.ChartComposite;
 
-import static org.epics.pvmanager.TimeDuration.ms;
+import static org.epics.pvmanager.util.TimeDuration.ms;
 import static org.epics.pvmanager.data.ExpressionLanguage.synchronizedArrayOf;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDouble;
 import static org.epics.pvmanager.data.ExpressionLanguage.vDoubles;
