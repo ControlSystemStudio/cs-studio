@@ -232,22 +232,22 @@ public abstract class AbstractNodeEditor extends EditorPart implements
 
 		@Override
 		public void widgetSelected(@Nonnull final SelectionEvent e) {
-			final StructuredSelection selection = (StructuredSelection) _tableViewer
-					.getSelection();
-			final GSDFileDBO removeFile = (GSDFileDBO) selection
-					.getFirstElement();
-
-			if (MessageDialog.openQuestion(getShell(),
-					"Lösche Datei aus der Datenbank",
-					"Sind sie sicher das sie die Datei " + removeFile.getName()
-							+ " löschen möchten")) {
-				Repository.removeGSDFiles(removeFile);
-				List<GSDFileDBO> gsdFiles = getGsdFiles();
-                if (gsdFiles != null) {
-					gsdFiles.remove(removeFile);
-				}
-				_tableViewer.setInput(gsdFiles);
-			}
+            final StructuredSelection selection = (StructuredSelection) _tableViewer.getSelection();
+            final GSDFileDBO removeFile = (GSDFileDBO) selection.getFirstElement();
+            
+            if (removeFile != null) {
+                if (MessageDialog.openQuestion(getShell(),
+                                               "Lösche Datei aus der Datenbank",
+                                               "Sind sie sicher das sie die Datei "
+                                                       + removeFile.getName() + " löschen möchten")) {
+                    Repository.removeGSDFiles(removeFile);
+                    List<GSDFileDBO> gsdFiles = getGsdFiles();
+                    if (gsdFiles != null) {
+                        gsdFiles.remove(removeFile);
+                    }
+                    _tableViewer.setInput(gsdFiles);
+                }
+            }
 
 		}
 	}
