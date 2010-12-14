@@ -234,6 +234,11 @@ public final class AlarmTreeView extends ViewPart {
     private Action _showPropertyViewAction;
 
     /**
+     * Action to retrieve the initial state of subtrees.
+     */
+    private Action _retrieveInitialStateAction;
+    
+    /**
      * A filter which hides all nodes which are not currently in an alarm state.
      */
     private ViewerFilter _currentAlarmFilter;
@@ -280,6 +285,7 @@ public final class AlarmTreeView extends ViewPart {
 
     // Listener for the life cycle of the pv-nodes in the tree. Used for de/registering pvs at the underlying system.
     private IProcessVariableNodeListener _processVariableNodeListener;
+
 
 
     /**
@@ -412,6 +418,8 @@ public final class AlarmTreeView extends ViewPart {
             AlarmTreeViewActionFactory.createToggleFilterAction(this, viewer, currentAlarmFilter);
 
         _saveAsXmlFileAction = AlarmTreeViewActionFactory.createSaveAsXmlFileAction(site, viewer);
+        
+        _retrieveInitialStateAction = AlarmTreeViewActionFactory.createRetrieveInitialStateAction(site, viewer);
     }
     // CHECKSTYLE ON: MethodLength (this method properly encapsulates all view actions)
 
@@ -538,7 +546,7 @@ public final class AlarmTreeView extends ViewPart {
             menuManager.add(_showHelpPageAction);
             menuManager.add(new Separator(Messages.AlarmTreeView_Menu_Separator_Edit));
             menuManager.add(_deleteNodeAction);
-
+            menuManager.add(_retrieveInitialStateAction);
 
             final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
             final LdapEpicsAlarmcfgConfiguration oc = firstElement.getTreeNodeConfiguration();

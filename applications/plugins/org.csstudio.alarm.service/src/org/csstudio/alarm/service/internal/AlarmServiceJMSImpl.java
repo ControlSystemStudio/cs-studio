@@ -39,7 +39,9 @@ import org.csstudio.alarm.service.declaration.IAlarmResource;
 import org.csstudio.alarm.service.declaration.IAlarmService;
 import org.csstudio.dal.CssApplicationContext;
 import org.csstudio.platform.logging.CentralLogger;
+import org.epics.css.dal.DynamicValueCondition;
 import org.epics.css.dal.DynamicValueState;
+import org.epics.css.dal.context.ConnectionState;
 import org.epics.css.dal.simple.AnyDataChannel;
 import org.epics.css.dal.simple.ChannelListener;
 import org.epics.css.dal.simple.ConnectionParameters;
@@ -88,7 +90,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         
         // Queue is filled with announced pvs
         final BlockingQueue<String> announcedPVsQ = new ArrayBlockingQueue<String>(2 * pvChunkSize);
-
+        
         // initItems are processed in chunks
         final ChunkableCollection<IAlarmInitItem> chunkableCollection = new ChunkableCollection<IAlarmInitItem>(initItems,
                                                                                                                 pvChunkSize);
@@ -132,6 +134,7 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         for (IAlarmInitItem initItem : currentChunkOfPVs) {
             remainingPVs.add(initItem.getPVName());
         }
+        
         boolean proceed = true;
         while (proceed) {
             String announcedPV;
@@ -220,17 +223,28 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         @Override
         public void channelStateUpdate(@Nonnull final AnyDataChannel channel) {
             try {
-                if (channel.getProperty().getCondition()
-                        .containsAnyOfStates(DynamicValueState.ERROR)) {
-                    LOG_INNER.warn("notFound: " + channel.getUniqueName());
-                    _initItem.notFound(channel.getUniqueName());
+                final DynamicValueCondition condition = channel.getProperty().getCondition();
+                boolean isError = condition.containsAnyOfStates(DynamicValueState.ERROR);
+                boolean hasAlarm = !condition.containsAnyOfStates(DynamicValueState.NO_VALUE);
+                boolean hasReported = isError || hasAlarm;
+                boolean isFinished = channel.getProperty().getConnectionState() == ConnectionState.DESTROYED;
+                
+                if (isFinished) {
+                    if (hasAlarm) {
+                        processAlarmMessage(channel);
+                    } else {
+                        processErroneousMessage(channel);
+                    }
+                } else if (hasReported) {
                     _queue.offer(channel.getUniqueName());
-                } else if (!channel.getProperty().getCondition().containsAnyOfStates(DynamicValueState.NO_VALUE)) {
-                    processAlarmMessage(channel);
                 }
             } catch (IllegalStateException e) {
                 // Ignore. This may happen if the channel is already released but still tells us something.
             }
+        }
+        
+        private void processErroneousMessage(@Nonnull final AnyDataChannel channel) {
+            _initItem.notFound(channel.getUniqueName());
         }
         
         private void processAlarmMessage(@Nonnull final AnyDataChannel channel) {
@@ -241,8 +255,8 @@ public class AlarmServiceJMSImpl implements IAlarmService {
             } else {
                 LOG_INNER.warn("Could not create alarm message for "
                         + channel.getProperty().getUniqueName());
+                processErroneousMessage(channel);
             }
-            _queue.offer(channel.getUniqueName());
         }
         
     }

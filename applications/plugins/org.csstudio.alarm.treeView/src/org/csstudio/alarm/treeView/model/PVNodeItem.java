@@ -31,7 +31,7 @@ import org.apache.log4j.Logger;
 import org.csstudio.alarm.service.declaration.AlarmMessageKey;
 import org.csstudio.alarm.service.declaration.IAlarmInitItem;
 import org.csstudio.alarm.service.declaration.IAlarmMessage;
-import org.csstudio.domain.desy.alarm.epics.EpicsAlarm;
+import org.csstudio.domain.desy.epics.alarm.EpicsAlarmSeverity;
 import org.csstudio.platform.logging.CentralLogger;
 
 /**
@@ -75,7 +75,7 @@ public class PVNodeItem implements IAlarmInitItem {
     @Override
     public void notFound(@Nonnull final String pvName) {
         final Alarm alarm = new Alarm(pvName,
-                                      EpicsAlarm.INVALID,
+                                      EpicsAlarmSeverity.INVALID,
                                       new Date(System.currentTimeMillis()));
         _pvNode.updateAlarm(alarm);
     }

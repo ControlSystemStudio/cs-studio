@@ -364,6 +364,19 @@ public final class AlarmTreeViewActionFactory {
     }
 
 
+    /**
+     * @param site
+     * @param viewer
+     * @return
+     */
+    @Nonnull
+    public static Action createRetrieveInitialStateAction(@Nonnull final IWorkbenchPartSite site,
+                                                          @Nonnull final TreeViewer viewer) {
+        Action action = new RetrieveInitialStateAction(site, viewer);
+        action.setText("Retrieve initial state");
+        action.setToolTipText("Retrieve initial state");
+        return action;
+    }
 
 
     /**
