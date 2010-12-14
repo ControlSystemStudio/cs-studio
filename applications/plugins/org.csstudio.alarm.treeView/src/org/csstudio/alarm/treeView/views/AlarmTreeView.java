@@ -546,7 +546,11 @@ public final class AlarmTreeView extends ViewPart {
             menuManager.add(_showHelpPageAction);
             menuManager.add(new Separator(Messages.AlarmTreeView_Menu_Separator_Edit));
             menuManager.add(_deleteNodeAction);
-            menuManager.add(_retrieveInitialStateAction);
+            
+            final Object selected = selection.getFirstElement();
+            if (selected instanceof SubtreeNode) {
+                menuManager.add(_retrieveInitialStateAction);
+            }
 
             final IAlarmTreeNode firstElement = (IAlarmTreeNode) selection.getFirstElement();
             final LdapEpicsAlarmcfgConfiguration oc = firstElement.getTreeNodeConfiguration();
