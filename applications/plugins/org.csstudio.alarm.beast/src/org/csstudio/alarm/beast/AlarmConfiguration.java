@@ -562,15 +562,17 @@ public class AlarmConfiguration
             statement.setInt(1, item.getID());
             statement.executeUpdate();
             rdb.getConnection().commit();
-        }catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
 			rdb.getConnection().rollback();
 			throw e;
-        }finally
+        }
+        finally
         {
             statement.close();
         }
-        if (item.getParent() != null)
-            item.getParent().removeChild(item);
+        item.detachFromParent();
     }
 
     /** Remove PV from alarm tree.
@@ -597,7 +599,9 @@ public class AlarmConfiguration
             delCMPNTStatement.executeUpdate();
 
             rdb.getConnection().commit();
-        }catch (SQLException e) {
+        }
+        catch (SQLException e)
+        {
 			rdb.getConnection().rollback();
 			throw e;
         }
@@ -607,8 +611,7 @@ public class AlarmConfiguration
             delCMPNTStatement.close();
         }
         pvs.remove(pv.getName());
-        if (pv.getParent() != null)
-            pv.getParent().removeChild(pv);
+        pv.detachFromParent();
     }
 
     /** Update PV configuration from RDB

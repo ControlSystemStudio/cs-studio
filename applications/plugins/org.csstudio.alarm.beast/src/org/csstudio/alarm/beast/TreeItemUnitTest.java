@@ -42,17 +42,24 @@ public class TreeItemUnitTest
             assertTrue(ex.getMessage().contains("ID already set"));
         }
 
-        new TreeItem(tree, "Two", 2);
+        // Build simple 'tree'
+        final TreeItem two = new TreeItem(tree, "Two", 2);
         tree.dump(System.out);
         tree.check();
         assertEquals(1, tree.getChildCount());
         assertEquals("Two", tree.getChild(0).getName());
         assertEquals("/One/Two", tree.getChild(0).getPathName());
 
-        assertNotNull(tree.getChild("Two"));
-        assertSame(tree.getChild(0), tree.getChild("Two"));
+        assertSame(two, tree.getChild("Two"));
+        assertSame(two, tree.getChild(0));
 
-        System.out.println("Parent of " + tree.getChild(0) + " : " + tree.getChild(0).getRoot());
-        assertSame(tree, tree.getChild(0).getRoot());
+        System.out.println("Parent of " + two + " : " + two.getRoot());
+        assertSame(tree, two.getRoot());
+
+        // Shrink tree
+        two.detachFromParent();
+        tree.dump(System.out);
+        assertNull(two.getParent());
+        assertEquals(0, tree.getChildCount());
     }
 }

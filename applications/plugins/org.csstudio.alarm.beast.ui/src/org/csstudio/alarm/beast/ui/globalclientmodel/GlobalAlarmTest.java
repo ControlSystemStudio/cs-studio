@@ -8,7 +8,10 @@
 package org.csstudio.alarm.beast.ui.globalclientmodel;
 
 import static org.junit.Assert.*;
+import java.util.List;
+import java.util.ArrayList;
 
+import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.SeverityLevel;
 import org.csstudio.apputil.test.TestProperties;
 import org.csstudio.apputil.time.BenchmarkTimer;
@@ -21,12 +24,37 @@ import org.junit.Test;
 @SuppressWarnings("nls")
 public class GlobalAlarmTest implements ReadInfoJobListener
 {
+    final List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
+
     @Test
     public void testGlobalAlarm() throws Exception
     {
-        final GlobalAlarm alarm = GlobalAlarm.fromPath("/Root/Area/System/TheAlarm",
+        // Create completely new alarm
+        configurations.clear();
+        final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/TheAlarm",
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
-        alarm.getRoot().dump(System.out);
+        final AlarmTreeRoot root = alarm.getClientRoot();
+        root.dump(System.out);
+        // New root should be in list of configurations
+        assertEquals(1, configurations.size());
+        assertEquals(root, configurations.get(0));
+
+        // Create another alarm with same path
+        final GlobalAlarm alarm2 = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/OtherAlarm",
+                SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
+        root.dump(System.out);
+        assertSame(root, alarm2.getRoot());
+        assertSame(alarm.getParent(), alarm2.getParent());
+
+        // Update existing alarm
+        final GlobalAlarm alarm_copy = GlobalAlarm.fromPath(configurations,
+                "/Root/Area/System/TheAlarm",
+                SeverityLevel.MAJOR, "Demo2", TimestampFactory.now());
+        // Locates existing alarm, changes its alarm message
+        assertSame(alarm, alarm_copy);
+        assertEquals("Demo2", alarm.getMessage());
     }
 
     private boolean received_rdb_info = false;
@@ -55,7 +83,7 @@ public class GlobalAlarmTest implements ReadInfoJobListener
             System.out.println("Need test path, skipping test");
             return;
         }
-        final GlobalAlarm alarm = GlobalAlarm.fromPath(full_path,
+        final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations, full_path,
                 SeverityLevel.MAJOR, "Demo", TimestampFactory.now());
         // It lacks ID, guidance etc.
         assertEquals(-1, alarm.getID());
