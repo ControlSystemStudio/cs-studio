@@ -10,6 +10,8 @@ package org.csstudio.alarm.beast.ui.globalclientmodel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.csstudio.alarm.beast.AlarmTreeItem;
+import org.csstudio.alarm.beast.AlarmTreePath;
 import org.csstudio.alarm.beast.AlarmTreeRoot;
 import org.csstudio.alarm.beast.Preferences;
 import org.csstudio.alarm.beast.SeverityLevel;
@@ -39,14 +41,12 @@ public class GlobalAlarmModel
      */
     private WorkQueue update_queue = null;
 
-    // TODO Track list of configurations which then contain the active alarms,
-    //      not just list of alarms
-    /** Currently active global alarms.
+    /** Currently active global alarms, i.e. configurations with partial
+     *  sub-tree of global alarms.
      *
-     *  Synchronize on <code>alarms</code> for access.
+     *  Synchronize on <code>configurations</code> for access.
      */
     final private List<AlarmTreeRoot> configurations = new ArrayList<AlarmTreeRoot>();
-    final private List<GlobalAlarm> alarms = new ArrayList<GlobalAlarm>();
 
     /** Initialize
      *  @param listener Listener
@@ -81,12 +81,11 @@ public class GlobalAlarmModel
     }
 
     /** @return Currently active global alarms */
-    public GlobalAlarm[] getAlarms()
+    public AlarmTreeRoot[] getAlarms()
     {
-        synchronized (alarms)
+        synchronized (configurations)
         {
-            // Must return thread-save array. For now a copy on every call:
-            return alarms.toArray(new GlobalAlarm[alarms.size()]);
+            return configurations.toArray(new AlarmTreeRoot[configurations.size()]);
         }
     }
 
@@ -123,9 +122,9 @@ public class GlobalAlarmModel
         }
 
         // TODO Read global alarms from RDB
-        synchronized (alarms)
+        synchronized (configurations)
         {
-            alarms.clear();
+            configurations.clear();
         }
 
         // Apply queued updates
@@ -154,11 +153,11 @@ public class GlobalAlarmModel
         else
         {
             // Add/update alarm
-            final GlobalAlarm alarm = GlobalAlarm.fromPath(configurations, info.getNameOrPath(),
-                    info.getSeverity(), info.getMessage(), info.getTimestamp());
-            synchronized (alarms)
+            final GlobalAlarm alarm;
+            synchronized (configurations)
             {
-                alarms.add(alarm);
+                alarm = GlobalAlarm.fromPath(configurations, info.getNameOrPath(),
+                        info.getSeverity(), info.getMessage(), info.getTimestamp());
             }
             // Complete GUI detail in background
             final ReadInfoJob read_job = new ReadInfoJob(Preferences.getRDB_Url(),Preferences.getRDB_User(),
@@ -170,21 +169,46 @@ public class GlobalAlarmModel
     }
 
     /** Remove alarm because it cleared
-     *  @param path Alarm path
+     *  @param full_path Alarm path
      *  @return <code>true</code> when removed, <code>false</code> when not found
      */
-    private boolean removeAlarm(final String path)
+    private boolean removeAlarm(final String full_path)
     {
-        synchronized (alarms)
+        final String path[] = AlarmTreePath.splitPath(full_path);
+        if (path.length <= 1)
+            return false;
+        synchronized (configurations)
         {
-            for (int i=0;  i<alarms.size();  ++i)
-                if (alarms.get(i).getPathName().equals(path))
+            // Locate alarm: Root....
+            AlarmTreeItem item = null;
+            for (AlarmTreeRoot root : configurations)
+                if (root.getName().equals(path[0]))
                 {
-                    alarms.remove(i);
-                    return true;
+                    item = root;
+                    break;
                 }
+            if (item == null)
+                return false;
+            // .. descend tree..
+            for (int i=1; item != null &&  i<path.length; ++i)
+                item = item.getClientChild(path[i]);
+            // Found?
+            if (item == null || !(item instanceof GlobalAlarm))
+                return false;
+
+            // Up to the root, delete all 'empty' nodes
+            final AlarmTreeRoot root = item.getClientRoot();
+            while (item != null  &&  item.getChildCount() <= 0)
+            {
+                final AlarmTreeItem tmp = item;
+                item = item.getClientParent();
+                tmp.detachFromParent();
+            }
+            // If root is now unused, delete it from configurations
+            if (root.getChildCount() <= 0)
+                configurations.remove(root);
         }
-        return false;
+        return true;
     }
 
     /** Inform listener of changes */

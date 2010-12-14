@@ -44,7 +44,7 @@ public class GlobalAlarm extends AlarmTreePV
      *  @return GlobalAlarm
      *  @throws Error when path is not complete
      */
-    public static GlobalAlarm fromPath(final List<AlarmTreeRoot> configurations, final String full_path,
+    static GlobalAlarm fromPath(final List<AlarmTreeRoot> configurations, final String full_path,
             final SeverityLevel severity, final String message,
             final ITimestamp timestamp)
     {
