@@ -138,6 +138,7 @@ public class GlobalAlarmModel
 
         // From now on, updates will be executed right away
         monitor.done();
+        // Send initial alarm update after we read configuration
         fireAlarmUpdate();
     }
 
