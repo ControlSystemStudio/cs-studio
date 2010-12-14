@@ -59,7 +59,7 @@ public class IntegerArchiveTypeConversionSupport extends AbstractNumberArchiveTy
             @Override
             @CheckForNull
             public Integer apply(@Nonnull final String from) {
-                return Integer.parseInt(from);
+                return convertScalarFromArchiveString(from);
             }
         });
         int size;

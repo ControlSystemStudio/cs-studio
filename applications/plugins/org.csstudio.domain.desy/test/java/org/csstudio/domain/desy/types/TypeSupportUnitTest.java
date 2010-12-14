@@ -48,7 +48,7 @@ public class TypeSupportUnitTest {
     }
 
     @Test
-    public void testScalarArchiveStringConversion() {
+    public void testScalarDoubleArchiveStringConversion() {
 
         try {
             final Double d = Double.valueOf(1.01010101010101010100101010000010010);
@@ -61,6 +61,10 @@ public class TypeSupportUnitTest {
             Assert.fail();
         }
 
+    }
+
+    @Test
+    public void testScalarIntegerArchiveStringConversion() {
         try {
             final Integer i = Integer.valueOf(-1234567);
             final String si = i.toString();
@@ -72,6 +76,10 @@ public class TypeSupportUnitTest {
             Assert.fail();
         }
 
+    }
+
+    @Test
+    public void testScalarByteArchiveStringConversion() {
         try {
             final Byte b = Byte.valueOf((byte) -128);
             final String sb = b.toString();
@@ -82,6 +90,25 @@ public class TypeSupportUnitTest {
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
+
+    }
+
+    @Test
+    public void testScalarFloatArchiveStringConversion() {
+        try {
+            final Float f = Float.valueOf(44.44F);
+            final String sf = f.toString();
+            final String archiveString = TypeSupport.toArchiveString(f);
+            Assert.assertTrue(archiveString.equals(sf));
+            final Float fFromA = TypeSupport.fromScalarArchiveString(Float.class, archiveString);
+            Assert.assertTrue(fFromA.equals(f));
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
+    }
+
+    @Test
+    public void testScalarStringArchiveStringConversion() {
         // TODO (bknerr) for all number types...
 
         try {
@@ -151,7 +178,17 @@ public class TypeSupportUnitTest {
         } catch (final ConversionTypeSupportException e) {
             Assert.fail();
         }
+    }
 
+    @Test
+    public void testMultiScalarFloatConversion() {
+        final Collection<Float> valuesF = Lists.newArrayList(1.0F, 2.0F);
+        try {
+            final String archiveString = TypeSupport.toArchiveString(valuesF);
+            Assert.assertEquals("1.0\\,2.0", archiveString);
+        } catch (final ConversionTypeSupportException e) {
+            Assert.fail();
+        }
     }
 
     @Test

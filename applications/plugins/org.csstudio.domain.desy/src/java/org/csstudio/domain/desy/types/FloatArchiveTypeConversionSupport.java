@@ -32,20 +32,20 @@ import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 
 /**
- * Type conversions for {@link Byte}.
+ * Type conversions for {@link Float}.
  *
  * @author bknerr
  * @since 14.12.2010
  */
-public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Byte> {
+public class FloatArchiveTypeConversionSupport extends AbstractNumberArchiveTypeConversionSupport<Float> {
 
     /**
      * {@inheritDoc}
      */
     @Override
     @Nonnull
-    public Byte convertScalarFromArchiveString(@Nonnull final String value) {
-        return Byte.parseByte(value);
+    public Float convertScalarFromArchiveString(@Nonnull final String value) {
+        return Float.parseFloat(value);
     }
 
     /**
@@ -53,33 +53,25 @@ public class ByteArchiveTypeConversionSupport extends AbstractNumberArchiveTypeC
      */
     @Override
     @Nonnull
-    public Double convertToDouble(@Nonnull final Byte b) throws ConversionTypeSupportException {
-        throw new ConversionTypeSupportException("Byte shall not be converted to Double.", null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    @Nonnull
-    public Collection<Byte> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
+    public Collection<Float> convertMultiScalarFromArchiveString(@Nonnull final String values) throws ConversionTypeSupportException {
         final Iterable<String> strings = Splitter.on(ARCHIVE_COLLECTION_ELEM_SEP).split(values);
-        final Iterable<Byte> bytes = Iterables.transform(strings, new Function<String, Byte>() {
+        final Iterable<Float> floats = Iterables.transform(strings, new Function<String, Float>() {
             @Override
             @CheckForNull
-            public Byte apply(@Nonnull final String from) {
+            public Float apply(@Nonnull final String from) {
                 return convertScalarFromArchiveString(from);
             }
         });
         int size;
         try {
-            size = Iterables.size(bytes);
+            size = Iterables.size(floats);
         } catch (final NumberFormatException e) {
-            throw new ConversionTypeSupportException("Values representation is not convertible to Byte.", e);
+            throw new ConversionTypeSupportException("Values representation is not convertible to Float.", e);
         }
         if (Iterables.size(strings) != size) {
             throw new ConversionTypeSupportException("Number of values in string representation does not match the size of the result collection..", null);
         }
-        return Lists.newArrayList(bytes);
+        return Lists.newArrayList(floats);
     }
+
 }

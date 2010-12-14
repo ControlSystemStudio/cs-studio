@@ -42,10 +42,10 @@ import com.google.common.collect.Iterables;
  */
 public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSupport<T> {
 
-    static final Logger LOG =
+    protected static final Logger LOG =
         CentralLogger.getInstance().getLogger(AbstractArchiveTypeConversionSupport.class);
 
-    protected final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
+    protected static final String ARCHIVE_COLLECTION_ELEM_SEP = "\\,";
 
     private static boolean INSTALLED = false;
 
@@ -62,6 +62,7 @@ public abstract class AbstractArchiveTypeConversionSupport<T> extends TypeSuppor
             return;
         }
         TypeSupport.addTypeSupport(Double.class, new DoubleArchiveTypeConversionSupport());
+        TypeSupport.addTypeSupport(Float.class, new FloatArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(Integer.class, new IntegerArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(String.class, new StringArchiveTypeConversionSupport());
         TypeSupport.addTypeSupport(Byte.class, new ByteArchiveTypeConversionSupport());

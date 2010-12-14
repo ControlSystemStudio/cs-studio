@@ -58,7 +58,7 @@ public class DoubleArchiveTypeConversionSupport extends AbstractNumberArchiveTyp
             @Override
             @CheckForNull
             public Double apply(@Nonnull final String from) {
-                return Double.parseDouble(from);
+                return convertScalarFromArchiveString(from);
             }
         });
         int size;
