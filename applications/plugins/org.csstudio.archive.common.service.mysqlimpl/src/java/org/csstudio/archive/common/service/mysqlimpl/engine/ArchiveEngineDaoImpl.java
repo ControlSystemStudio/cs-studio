@@ -54,7 +54,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
 
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     private final String _selectEngineByNameStmt =
-        "SELECT eng_id, url FROM archive.smpl_eng WHERE name=?";
+        "SELECT id, url FROM archive.engine WHERE name=?";
 
 
     /**
@@ -78,6 +78,7 @@ public class ArchiveEngineDaoImpl extends AbstractArchiveDao implements IArchive
             statement.setString(1, name);
             final ResultSet result = statement.executeQuery();
             if (result.next()) {
+                // id, url
                 final int id = result.getInt(1);
                 final String url = result.getString(2);
                 return new ArchiveEngineDTO(new ArchiveEngineId(id),

@@ -49,7 +49,6 @@ import org.csstudio.platform.logging.CentralLogger;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Collections2;
 import com.google.common.collect.Maps;
-import com.google.common.collect.Ordering;
 
 /**
  * DAO implementation with simple cache (hashmap).
@@ -70,9 +69,9 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     // FIXME (bknerr) : refactor into CRUD command objects with cmd factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectChannelByNameStmt =
-        "SELECT channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE name=?";
+        "SELECT id, group_id, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE name=?";
     private final String _selectChannelsByGroupId =
-        "SELECT channel_id, name, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time FROM archive.channel WHERE grp_id=?";
+        "SELECT id, name, sample_mode_id, sample_period, last_sample_time FROM archive.channel WHERE group_id=? ORDER BY name";
 
     /**
      * Constructor.
@@ -101,20 +100,20 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
             final ResultSet result = stmt.executeQuery();
             if (result.next()) {
-                // channel_id, grp_id, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time
+                // id, group_id, sample_mode_id, sample_period, last_sample_time
                 final long id = result.getLong(1);
-                final long grpId = result.getLong(2);
+                final long groupId = result.getLong(2);
                 final int sampleMode = result.getInt(3);
-                final double sampleVal = result.getDouble(4);
-                final double samplePer = result.getDouble(5);
-                final Timestamp ltstSmplTime = result.getTimestamp(6);
+                //final double sampleVal = result.getDouble(4);
+                final double samplePeriod = result.getDouble(4);
+                final Timestamp ltstSmplTime = result.getTimestamp(5);
 
                 channel = new ArchiveChannelDTO(new ArchiveChannelId(id),
                                                 name,
-                                                new ArchiveChannelGroupId(grpId),
+                                                new ArchiveChannelGroupId(groupId),
                                                 new ArchiveSampleModeId(sampleMode),
-                                                sampleVal,
-                                                samplePer,
+                                                0.0, // we need that for DeltaArchiveChannel (if != 0.0)?
+                                                samplePeriod,
                                                 TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime()));
 
                 _channelCache.put(name, channel);
@@ -143,20 +142,12 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
     @Nonnull
     public Collection<IArchiveChannel> retrieveChannelsByGroupId(final ArchiveChannelGroupId groupId) throws ArchiveDaoException {
 
-        final Collection<IArchiveChannel> filteredList =
-            Collections2.filter(_channelCache.values(), new Predicate<IArchiveChannel>() {
-                @Override
-                public boolean apply(@Nonnull final IArchiveChannel input) {
-                    return input.getGroupId().equals(groupId);
-                }
-            });
-
+        final Collection<IArchiveChannel> filteredList = getChannelsByGroupIdFromCache(groupId);
         if (!filteredList.isEmpty()) {
             return new ArrayList<IArchiveChannel>(filteredList);
         }
 
         final Map<String, IArchiveChannel> tempCache = Maps.newHashMap();
-
         // Nothing yet in the cache? Ask the database:
         PreparedStatement stmt = null;
         try {
@@ -165,41 +156,28 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
 
             final ResultSet result = stmt.executeQuery();
             while (result.next()) {
-                // channel_id, name, smpl_mode_id, smpl_val, smpl_per, ltst_smpl_time
+                // id, name, sample_mode_id, sample_period, last_sample_time
                 final long id = result.getInt(1);
                 final String name = result.getString(2);
                 final int sampleModeId = result.getInt(3);
-                final double sampleVal = result.getDouble(4);
-                final double samplePer = result.getDouble(5);
-                final Timestamp ltstSmplTime = result.getTimestamp(6);
+                //final double sampleVal = result.getDouble(4);
+                final double samplePer = result.getDouble(4);
+                final Timestamp ltstSmplTime = result.getTimestamp(5);
                 final TimeInstant instant = ltstSmplTime == null ? null :
                                                                    TimeInstantBuilder.buildFromMillis(ltstSmplTime.getTime());
-
                 final IArchiveChannel channel =
                     new ArchiveChannelDTO(new ArchiveChannelId(id),
                                           name,
                                           groupId,
                                           new ArchiveSampleModeId(sampleModeId),
-                                          sampleVal,
+                                          0.0, // we need that for DeltaArchiveChannel (if != 0.0)?
                                           samplePer,
                                           instant);
 
                 tempCache.put(name, channel);
             }
             _channelCache.putAll(tempCache); // cache the overall result
-
-            // TODO (bknerr) : order by sql statement or this way ?
-            final Ordering<IArchiveChannel> o = new Ordering<IArchiveChannel>() {
-                /**
-                 * {@inheritDoc}
-                 */
-                @Override
-                public int compare(@Nonnull final IArchiveChannel o1, @Nonnull final IArchiveChannel o2) {
-                    return o1.getName().compareTo(o2.getName());
-                }
-            };
-            return o.sortedCopy(tempCache.values());
-
+            return tempCache.values();
         } catch (final SQLException e) {
             throw new ArchiveDaoException("Channels retrieval for group " + groupId.intValue() + " from archive failed.", e);
         } catch (final ArchiveConnectionException e) {
@@ -213,6 +191,18 @@ public class ArchiveChannelDaoImpl extends AbstractArchiveDao implements IArchiv
                 }
             }
         }
+    }
+
+    @Nonnull
+    private Collection<IArchiveChannel> getChannelsByGroupIdFromCache(@Nonnull final ArchiveChannelGroupId groupId) {
+        final Collection<IArchiveChannel> filteredList =
+            Collections2.filter(_channelCache.values(), new Predicate<IArchiveChannel>() {
+                @Override
+                public boolean apply(@Nonnull final IArchiveChannel input) {
+                    return input.getGroupId().equals(groupId);
+                }
+            });
+        return filteredList;
     }
 
 

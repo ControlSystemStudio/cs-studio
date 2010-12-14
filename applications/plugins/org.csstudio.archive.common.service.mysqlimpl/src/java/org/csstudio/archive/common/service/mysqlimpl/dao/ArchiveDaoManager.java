@@ -65,6 +65,7 @@ public enum ArchiveDaoManager {
 
     INSTANCE;
 
+    @SuppressWarnings("unused")
     private static final Logger LOG = CentralLogger.getInstance().getLogger(ArchiveDaoManager.class);
 
     private static final String ARCHIVE_CONNECTION_EXCEPTION_MSG = "Archive connection could not be established";

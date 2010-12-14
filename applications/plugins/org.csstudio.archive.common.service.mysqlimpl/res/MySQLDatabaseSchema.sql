@@ -102,6 +102,8 @@ CREATE TABLE `channel` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(100) NOT NULL,
   `description` varchar(100) DEFAULT NULL,
+  `datatype` enum('Byte','Double','Float','Integer','Long','Short','Enum','String'),
+  `metatype` enum('Array','Set','Scalar'),
   `group_id` int(10) unsigned DEFAULT NULL,
   `sample_mode_id` int(10) unsigned DEFAULT NULL,
   `sample_period` double DEFAULT NULL,

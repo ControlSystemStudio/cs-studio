@@ -63,7 +63,7 @@ public class ArchiveSeverityDaoImpl extends AbstractArchiveDao implements IArchi
     // FIXME (bknerr) : refactor this shit into CRUD command objects with factories
     // TODO (bknerr) : parameterize the database schema name via dao call
     private final String _selectSeverityByNameStmt =
-        "SELECT severity_id FROM archive.severity WHERE name=?";
+        "SELECT id FROM archive.severity WHERE name=?";
 
     /**
      * Constructor.
