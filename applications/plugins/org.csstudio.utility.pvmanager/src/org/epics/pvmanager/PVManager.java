@@ -73,6 +73,25 @@ public class PVManager {
         }
 
         /**
+         * Forwards exception to the given exception handler. No thread switch
+         * is done, so the handler is notified on the thread where the exception
+         * was thrown.
+         * <p>
+         * Giving a custom exception handler will disable the default handler,
+         * so {@link PV#lastException() } is no longer set and no notification
+         * is done.
+         *
+         * @param exceptionHandler an exception handler
+         * @return this
+         */
+        public PVManagerExpression<T> routeExceptionsTo(ExceptionHandler exceptionHandler) {
+            if (this.exceptionHandler != null)
+                throw new IllegalArgumentException("Exception handler already set");
+            this.exceptionHandler = exceptionHandler;
+            return this;
+        }
+
+        /**
          * Defines which DataSource should be used to read the data.
          *
          * @param dataSource a connection manager
