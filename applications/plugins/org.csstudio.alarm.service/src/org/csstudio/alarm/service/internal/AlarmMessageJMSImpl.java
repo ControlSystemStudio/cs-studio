@@ -133,6 +133,7 @@ public final class AlarmMessageJMSImpl implements IAlarmMessage {
         return EventtimeUtil.parseTimestamp(getString(AlarmMessageKey.EVENTTIME));
     }
 
+    // CHECKSTYLE OFF: StrictDuplicateCode
     @Override
     @Nonnull
     public Date getEventtimeOrCurrentTime() {

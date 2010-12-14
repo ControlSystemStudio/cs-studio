@@ -21,17 +21,11 @@
  */
 package org.csstudio.alarm.service.declaration;
 
-import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
 import org.apache.log4j.Logger;
@@ -40,8 +34,6 @@ import org.csstudio.platform.AbstractPreference;
 import org.csstudio.platform.logging.CentralLogger;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.osgi.framework.Bundle;
 
 /**
  * Constant definitions for alarm service preferences (mimicked enum with inheritance).
@@ -150,7 +142,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
 
     /**
      * The default file is located in the plugin.
-     * Via preference page a file from the local filesystem may be set.
+     * Via preference page a file from the local file system may be set.
      * The result is not null, but may not point to a valid file.  
      *
      * @return the full pathname
@@ -160,7 +152,7 @@ public final class AlarmPreference<T> extends AbstractPreference<T> {
         return getStringFromPath(ALARMSERVICE_CONFIG_FILENAME.getValue());
     }
 
-    @CheckForNull
+    @Nonnull
     private static String getStringFromPath(@Nonnull final String pathAsString) {
         String result = null;
         Path path = new Path(pathAsString);

@@ -72,7 +72,8 @@ public class ChunkableCollectionUnitTest {
 		assertFalse(iter.hasNext());
 	}
 
-	// CHECKSTYLE:OFF disable checking for duplicated lines
+	// CHECKSTYLE:OFF
+	//disable checking for duplicated lines
 	@Test
 	public void testMatchingChunks() {
 		// the collection has 4 elements, they are iterated in chunks of 2

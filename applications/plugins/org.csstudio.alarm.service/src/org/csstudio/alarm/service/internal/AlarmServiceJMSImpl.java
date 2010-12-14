@@ -107,21 +107,23 @@ public class AlarmServiceJMSImpl implements IAlarmService {
         LOG.debug("retrieveInitialState finished");
     }
     
+    // May be overridden in a test
     protected int getPvRegisterWaitMsec() {
         return AlarmPreference.ALARMSERVICE_PV_REGISTER_WAIT_MSEC.getValue();
     }
     
+    // May be overridden in a test
     protected int getPvChunkWaitMsec() {
         return AlarmPreference.ALARMSERVICE_PV_CHUNK_WAIT_MSEC.getValue();
     }
     
+    // May be overridden in a test
     protected int getPvChunkSize() {
         return AlarmPreference.ALARMSERVICE_PV_CHUNK_SIZE.getValue();
     }
     
-    /**
-     * May be overridden in a test
-     */
+    // May be overridden in a test
+    @Nonnull
     protected SimpleDALBroker newSimpleDALBroker() {
         return SimpleDALBroker.newInstance(new CssApplicationContext("CSS"));
     }
@@ -238,9 +240,11 @@ public class AlarmServiceJMSImpl implements IAlarmService {
                 } else if (hasReported) {
                     _queue.offer(channel.getUniqueName());
                 }
+                // CHECKSTYLE OFF: EmptyBlock
             } catch (IllegalStateException e) {
                 // Ignore. This may happen if the channel is already released but still tells us something.
             }
+            // CHECKSTYLE ON: EmptyBlock
         }
         
         private void processErroneousMessage(@Nonnull final AnyDataChannel channel) {
