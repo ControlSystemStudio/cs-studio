@@ -8,7 +8,7 @@ package org.epics.pvmanager.data;
 import java.util.ArrayList;
 import java.util.List;
 import org.epics.pvmanager.NullUtils;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.TimedTypeSupport;
 
 /**

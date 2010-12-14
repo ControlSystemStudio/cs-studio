@@ -5,7 +5,7 @@
 
 package org.epics.pvmanager.data;
 
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Partial implementation for numeric types.

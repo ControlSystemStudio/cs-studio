@@ -3,7 +3,7 @@
  * All rights reserved. Use is subject to license terms.
  */
 
-package org.epics.pvmanager;
+package org.epics.pvmanager.util;
 
 import java.util.Date;
 

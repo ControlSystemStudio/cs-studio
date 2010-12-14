@@ -4,7 +4,9 @@
  */
 package org.epics.pvmanager.data;
 
+import java.text.FieldPosition;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 import org.epics.pvmanager.util.NumberFormats;
 
 /**
@@ -12,32 +14,33 @@ import org.epics.pvmanager.util.NumberFormats;
  *
  * @author carcassi
  */
-class DefaultFormatting extends Formatting {
+public class SimpleValueFormat extends ValueFormat {
 
     private int maxElements;
-    private NumberFormat format;
 
-    DefaultFormatting(int maxElements) {
+    /**
+     * Formats any scalar and array, by using the server side formatting
+     * and limiting the elements of the array displayed to maxElements.
+     *
+     * @param maxElements maximum number of array elements converted to string
+     */
+    public SimpleValueFormat(int maxElements) {
         this.maxElements = maxElements;
-    }
-
-    DefaultFormatting(int precision, int maxElements) {
-        this.maxElements = maxElements;
-        format = NumberFormats.format(precision);
     }
 
     @Override
-    public String format(Scalar<?> scalar) {
+    protected StringBuffer format(Scalar<?> scalar, StringBuffer toAppendTo, FieldPosition pos) {
         if (scalar == null || scalar.getValue() == null) {
-            return "";
+            return toAppendTo;
         }
 
         if (scalar instanceof Display) {
             NumberFormat f = nf(scalar);
-            return f.format(scalar.getValue());
+            return f.format(scalar.getValue(), toAppendTo, pos);
         }
 
-        return scalar.getValue().toString();
+        toAppendTo.append(scalar.getValue());
+        return toAppendTo;
     }
 
     /**
@@ -48,8 +51,8 @@ class DefaultFormatting extends Formatting {
      * @return number format
      */
     private NumberFormat nf(Object obj) {
-        if (format != null)
-            return format;
+        if (getNumberFormat() != null)
+            return getNumberFormat();
 
         if (obj instanceof Display) {
             return ((Display) obj).getFormat();
@@ -59,9 +62,9 @@ class DefaultFormatting extends Formatting {
     }
 
     @Override
-    public String format(Array<?> array) {
+    protected StringBuffer format(Array<?> array, StringBuffer toAppendTo, FieldPosition pos) {
         if (array == null || array.getArray() == null) {
-            return "";
+            return toAppendTo;
         }
 
         NumberFormat f = null;
@@ -69,8 +72,7 @@ class DefaultFormatting extends Formatting {
             f = nf(array);
         }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
+        toAppendTo.append("[");
         boolean hasMore = false;
 
         // To support all array types, there is no other way than
@@ -84,9 +86,9 @@ class DefaultFormatting extends Formatting {
             }
             for (int i = 0; i < Math.min(data.length, maxElements); i++) {
                 if (i != 0) {
-                    sb.append(", ");
+                    toAppendTo.append(", ");
                 }
-                sb.append(f.format(data[i]));
+                toAppendTo.append(f.format(data[i]));
             }
 
         // double array support
@@ -97,18 +99,18 @@ class DefaultFormatting extends Formatting {
             }
             for (int i = 0; i < Math.min(data.length, maxElements); i++) {
                 if (i != 0) {
-                    sb.append(", ");
+                    toAppendTo.append(", ");
                 }
-                sb.append(f.format(data[i]));
+                toAppendTo.append(f.format(data[i]));
             }
         } else {
             throw new UnsupportedOperationException("Type " + array.getClass().getName() + " not yet supported.");
         }
 
         if (hasMore) {
-            sb.append(", ...");
+            toAppendTo.append(", ...");
         }
-        sb.append("]");
-        return sb.toString();
+        toAppendTo.append("]");
+        return toAppendTo;
     }
 }

@@ -15,8 +15,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import org.epics.pvmanager.TimeDuration;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeDuration;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Value object for replay function. Adds introspection utilities to substitute

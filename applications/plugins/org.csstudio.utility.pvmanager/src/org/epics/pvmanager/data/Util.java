@@ -8,7 +8,6 @@ package org.epics.pvmanager.data;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Various utility methods for runtime handling of the types defined in
@@ -16,7 +15,11 @@ import java.util.Set;
  *
  * @author carcassi
  */
-public class Utils {
+public class Util {
+
+    private Util() {
+        // Can't instanciate
+    }
 
     private static Collection<Class<?>> types = Arrays.<Class<?>>asList(VByteArray.class, VDouble.class,
             VDoubleArray.class, VEnum.class, VEnumArray.class, VFloatArray.class,

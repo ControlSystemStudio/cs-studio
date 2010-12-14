@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.util.TimeDuration;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;

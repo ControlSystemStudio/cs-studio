@@ -3,6 +3,8 @@ package org.csstudio.diag.pvmanager.probe.views;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 import static org.epics.pvmanager.data.ExpressionLanguage.*;
 
+import java.text.DecimalFormat;
+
 import org.csstudio.diag.pvmanager.probe.Activator;
 import org.csstudio.diag.pvmanager.probe.Messages;
 import org.csstudio.platform.model.IProcessVariable;
@@ -40,10 +42,11 @@ import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.Display;
 import org.epics.pvmanager.data.Enum;
-import org.epics.pvmanager.data.Formatting;
+import org.epics.pvmanager.data.SimpleValueFormat;
 import org.epics.pvmanager.data.Time;
-import org.epics.pvmanager.data.Utils;
-import org.epics.pvmanager.data.VDouble;
+import org.epics.pvmanager.data.Util;
+import org.epics.pvmanager.data.ValueFormat;
+import org.epics.pvmanager.util.TimeStampFormat;
 
 /**
  *
@@ -78,7 +81,9 @@ public class PVManagerProbe extends ViewPart {
 	private PV<?> pv;
 	
 	/** Formatting used for the value text field */
-	private Formatting format = Formatting.newFormatting(4, 3);
+	private ValueFormat valueFormat;
+	
+	private TimeStampFormat timeFormat = new TimeStampFormat("yyyy/MM/dd HH:mm:ss.N Z");
 	
 	// No writing to ioc option.
 	// private ICommandListener saveToIocCmdListener;
@@ -109,6 +114,8 @@ public class PVManagerProbe extends ViewPart {
 	 * The constructor.
 	 */
 	public PVManagerProbe() {
+		valueFormat = new SimpleValueFormat(3);
+		//valueFormat.setNumberFormat(new DecimalFormat("0.##########E0"));
 	}
 
 	/**
@@ -379,9 +386,9 @@ public class PVManagerProbe extends ViewPart {
 			info.append(Messages.S_NotConnected).append(nl);
 		} else {
 			Object value = pv.getValue();
-			Alarm alarm = Utils.alarmOf(value);
-			Display display = Utils.displayOf(value);
-			Class<?> type = Utils.typeOf(value);
+			Alarm alarm = Util.alarmOf(value);
+			Display display = Util.displayOf(value);
+			Class<?> type = Util.typeOf(value);
 			
 			//info.append(Messages.S_ChannelInfo).append("  ").append(pv.getName()).append(nl); //$NON-NLS-1$
 			if (pv.getValue() == null) {
@@ -478,10 +485,10 @@ public class PVManagerProbe extends ViewPart {
 			public void pvValueChanged() {
 				Object obj = pv.getValue();
 				setLastError(pv.lastException());
-				setValue(format.format(obj));
-				setAlarm(Utils.alarmOf(obj));
-				setTime(Utils.timeOf(obj));
-				setMeter(Utils.numericValueOf(obj), Utils.displayOf(obj));
+				setValue(valueFormat.format(obj));
+				setAlarm(Util.alarmOf(obj));
+				setTime(Util.timeOf(obj));
+				setMeter(Util.numericValueOf(obj), Util.displayOf(obj));
             }
 		});
 		this.PVName = pvName;
@@ -597,7 +604,7 @@ public class PVManagerProbe extends ViewPart {
 		if (time == null) {
 			timeField.setText("");
 		} else {
-			timeField.setText(time.getTimeStamp().asDate().toString());
+			timeField.setText(timeFormat.format(time.getTimeStamp()));
 		}
 	}
 	

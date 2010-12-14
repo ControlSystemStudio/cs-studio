@@ -16,7 +16,7 @@ import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.DataRecipe;
 import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.ValueCache;
 import org.epics.pvmanager.data.VDouble;
 

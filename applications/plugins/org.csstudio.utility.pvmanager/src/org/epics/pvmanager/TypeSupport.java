@@ -5,6 +5,7 @@
 
 package org.epics.pvmanager;
 
+import org.epics.pvmanager.util.TimeStamp;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 

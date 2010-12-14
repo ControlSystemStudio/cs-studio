@@ -13,9 +13,9 @@ import java.util.logging.Logger;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.DataSource;
 import org.epics.pvmanager.ExceptionHandler;
-import org.epics.pvmanager.TimeDuration;
-import org.epics.pvmanager.TimeInterval;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeDuration;
+import org.epics.pvmanager.util.TimeInterval;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.ValueCache;
 
 /**

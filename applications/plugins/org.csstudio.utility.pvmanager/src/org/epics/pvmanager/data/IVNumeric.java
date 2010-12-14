@@ -6,7 +6,7 @@
 package org.epics.pvmanager.data;
 
 import java.text.NumberFormat;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 
 /**
  * Partial implementation for numeric types.

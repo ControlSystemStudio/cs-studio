@@ -6,7 +6,7 @@
 package org.epics.pvmanager.jca;
 
 import gov.aps.jca.dbr.TIME;
-import org.epics.pvmanager.TimeStamp;
+import org.epics.pvmanager.util.TimeStamp;
 import org.epics.pvmanager.data.Alarm;
 import org.epics.pvmanager.data.AlarmSeverity;
 import org.epics.pvmanager.data.AlarmStatus;

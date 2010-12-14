@@ -11,7 +11,7 @@ import org.epics.pvmanager.DesiredRateExpression;
 import org.epics.pvmanager.Collector;
 import org.epics.pvmanager.SourceRateExpression;
 import org.epics.pvmanager.Function;
-import org.epics.pvmanager.TimeDuration;
+import org.epics.pvmanager.util.TimeDuration;
 import static org.epics.pvmanager.ExpressionLanguage.*;
 
 /**
