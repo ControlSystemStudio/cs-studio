@@ -89,7 +89,6 @@ public class IocEditor extends AbstractNodeEditor {
             getNode();
             newNode();
         }
-        setSavebuttonEnabled(null, getNode().isPersistent());
         main("IOC");
         TabFolder tabFolder = getTabFolder();
 		if(tabFolder!=null) {

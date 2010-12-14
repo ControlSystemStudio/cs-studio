@@ -755,7 +755,6 @@ public class SubnetEditor extends AbstractNodeEditor {
             _subnet.setTtr(750000);
             _subnet.setWatchdog(1000);
         }
-        setSavebuttonEnabled(null, getNode().isPersistent());
         // Headline for the different Tab's.
         String[] heads = { "General", "Net Settings" };
         netSetting(heads[1]);
